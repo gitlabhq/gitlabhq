@@ -27,6 +27,22 @@ RSpec.describe Terraform::State do
     end
   end
 
+  describe '#destroy' do
+    let(:terraform_state) { create(:terraform_state) }
+    let(:user) { terraform_state.project.creator }
+
+    it 'deletes when the state is unlocked' do
+      expect(terraform_state.destroy).to be_truthy
+    end
+
+    it 'fails to delete when the state is locked', :aggregate_failures do
+      terraform_state.update!(lock_xid: SecureRandom.uuid, locked_by_user: user, locked_at: Time.current)
+
+      expect(terraform_state.destroy).to be_falsey
+      expect(terraform_state.errors.full_messages).to eq(["You cannot remove the State file because it's locked. Unlock the State file first before removing it."])
+    end
+  end
+
   describe '#latest_file' do
     let(:terraform_state) { create(:terraform_state, :with_version) }
     let(:latest_version) { terraform_state.latest_version }

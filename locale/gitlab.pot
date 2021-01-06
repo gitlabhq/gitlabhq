@@ -27549,6 +27549,9 @@ msgstr ""
 msgid "Terraform|You are about to remove the State file %{name}. This will permanently delete all the State versions and history. The infrastructure provisioned previously\twill remain intact, only the state file with all its versions are to be removed. This action is non-revertible."
 msgstr ""
 
+msgid "Terraform|You cannot remove the State file because it's locked. Unlock the State file first before removing it."
+msgstr ""
+
 msgid "Test"
 msgstr ""
 

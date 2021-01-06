@@ -1,9 +1,8 @@
 ---
 # Error: gitlab.AlertBoxStyle
 #
-# Makes sure alert boxes are used with block quotes.
+# Makes sure alert boxes are used with block quotes. Checks for 3 formatting issues:
 #
-# Checks for 3 formatting issues:
 # - Alert boxes inside a block quote (">")
 # - Alert boxes with the note text on the same line
 # - Alert boxes using words other than "NOTE" or "WARNING"

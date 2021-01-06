@@ -1,7 +1,7 @@
 ---
 # Error: gitlab.British
 #
-# Checks that US spelling is used over British spelling.
+# Checks that US spelling is used instead of British spelling.
 #
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: substitution

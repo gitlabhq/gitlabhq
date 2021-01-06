@@ -1,8 +1,8 @@
 ---
 # Suggestion: gitlab.SubstitutionSuggestions
 #
-# Suggests better options for frequently misused terms at GitLab that are
-# often - but not always - incorrect.
+# Suggests better options for frequently misused terms that are often - but not always - incorrect.
+# SubstitutionWarning.yml and Substitutions.yml also exist.
 #
 # For a list of all options, see https://errata-ai.github.io/vale/styles/
 extends: substitution

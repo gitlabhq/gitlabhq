@@ -154,10 +154,11 @@ RSpec.shared_examples 'rate-limited token-authenticated requests' do
   end
 
   def make_request(args)
+    path, options = args
     if request_method == 'POST'
-      post(*args)
+      post(path, **options)
     else
-      get(*args)
+      get(path, **options)
     end
   end
 end

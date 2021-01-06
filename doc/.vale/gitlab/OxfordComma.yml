@@ -1,8 +1,7 @@
 ---
 # Warning: gitlab.OxfordComma
 #
-# Checks for the lack of an Oxford comma. In some cases, will catch overly
-# complex sentence structures with lots of commas.
+# Checks for the lack of an Oxford comma. In some cases, will catch overly complex sentence structures with lots of commas.
 #
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence

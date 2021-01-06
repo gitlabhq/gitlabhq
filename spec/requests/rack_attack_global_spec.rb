@@ -196,8 +196,8 @@ RSpec.describe 'Rack Attack global throttles' do
     let(:api_partial_url) { '/todos' }
 
     context 'with the token in the query string' do
-      let(:request_args) { [api(api_partial_url, personal_access_token: token)] }
-      let(:other_user_request_args) { [api(api_partial_url, personal_access_token: other_user_token)] }
+      let(:request_args) { [api(api_partial_url, personal_access_token: token), {}] }
+      let(:other_user_request_args) { [api(api_partial_url, personal_access_token: other_user_token), {}] }
 
       it_behaves_like 'rate-limited token-authenticated requests'
     end
@@ -258,8 +258,8 @@ RSpec.describe 'Rack Attack global throttles' do
     let(:api_partial_url) { '/todos' }
 
     context 'with the token in the query string' do
-      let(:request_args) { [api(api_partial_url, oauth_access_token: token)] }
-      let(:other_user_request_args) { [api(api_partial_url, oauth_access_token: other_user_token)] }
+      let(:request_args) { [api(api_partial_url, oauth_access_token: token), {}] }
+      let(:other_user_request_args) { [api(api_partial_url, oauth_access_token: other_user_token), {}] }
 
       it_behaves_like 'rate-limited token-authenticated requests'
     end
@@ -376,8 +376,8 @@ RSpec.describe 'Rack Attack global throttles' do
       end
 
       context 'with the token in the query string' do
-        let(:request_args) { [api(api_partial_url, personal_access_token: token)] }
-        let(:other_user_request_args) { [api(api_partial_url, personal_access_token: other_user_token)] }
+        let(:request_args) { [api(api_partial_url, personal_access_token: token), {}] }
+        let(:other_user_request_args) { [api(api_partial_url, personal_access_token: other_user_token), {}] }
 
         it_behaves_like 'rate-limited token-authenticated requests'
       end

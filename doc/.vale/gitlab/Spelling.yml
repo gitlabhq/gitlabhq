@@ -1,8 +1,7 @@
 ---
 # Warning: gitlab.Spelling
 #
-# Checks for possible spelling mistakes in content, not code. May find false positives
-# due to links using angle brackets: <https://example.com>. These can be ignored.
+# Checks for possible spelling mistakes in content, not code. Results from links using angle brackets (<https://example.com>) should be corrected.
 #
 # If a word is flagged as a spelling mistake incorrectly, such as a product name,
 # you can submit an MR to update `spelling-exceptions.txt` with the missing word.

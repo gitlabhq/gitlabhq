@@ -1,7 +1,7 @@
 ---
 # Error: gitlab.CurlStringsQuoted
 #
-# Ensures all code blocks using curl quote any URL strings.
+# Ensures all code blocks using `curl` wrap URL strings in quotation marks.
 #
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence
