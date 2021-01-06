@@ -137,6 +137,18 @@ RSpec.describe Projects::RepositoriesController do
             expect(response.header['ETag']).to be_present
             expect(response.header['Cache-Control']).to include('max-age=60, public')
           end
+
+          context 'and repo is private' do
+            let(:project) { create(:project, :repository, :public, :repository_private) }
+
+            it 'sets appropriate caching headers' do
+              get_archive
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response.header['ETag']).to be_present
+              expect(response.header['Cache-Control']).to include('max-age=60, private')
+            end
+          end
         end
 
         context 'when ref is a commit SHA' do
