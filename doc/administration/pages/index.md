@@ -101,6 +101,27 @@ Where `example.io` is the domain GitLab Pages is served from,
 `192.0.2.1` is the IPv4 address of your GitLab instance, and `2001:db8::1` is the
 IPv6 address. If you don't have IPv6, you can omit the AAAA record.
 
+#### Custom domains
+
+If support for custom domains is needed, the Pages root domain and its subdomains should point to
+the secondary IP (which is dedicated for the Pages daemon). `<namespace>.<pages root domain>` should
+point at Pages directly. Without this, users aren't able to use `CNAME` records to point their
+custom domains to their GitLab Pages.
+
+For example, an entry could look like this:
+
+```plaintext
+example.com   1800 IN A    192.0.2.1
+*.example.io. 1800 IN A    192.0.2.2
+```
+
+This example contains the following:
+
+- `example.com`: The GitLab domain.
+- `example.io`: The domain GitLab Pages is served from.
+- `192.0.2.1`: The primary IP of your GitLab instance.
+- `192.0.2.2`: The secondary IP, which is dedicated to GitLab Pages.
+
 NOTE:
 You should not use the GitLab domain to serve user pages. For more information see the [security section](#security).
 

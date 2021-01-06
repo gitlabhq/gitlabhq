@@ -313,7 +313,7 @@ RSpec.describe ApplicationSetting do
 
     it { is_expected.to validate_presence_of(:max_attachment_size) }
 
-    it do
+    specify do
       is_expected.to validate_numericality_of(:max_attachment_size)
         .only_integer
         .is_greater_than(0)
@@ -321,13 +321,13 @@ RSpec.describe ApplicationSetting do
 
     it { is_expected.to validate_presence_of(:max_import_size) }
 
-    it do
+    specify do
       is_expected.to validate_numericality_of(:max_import_size)
         .only_integer
         .is_greater_than_or_equal_to(0)
     end
 
-    it do
+    specify do
       is_expected.to validate_numericality_of(:local_markdown_version)
         .only_integer
         .is_greater_than_or_equal_to(0)
@@ -472,7 +472,7 @@ RSpec.describe ApplicationSetting do
       end
 
       [:gitaly_timeout_default, :gitaly_timeout_medium, :gitaly_timeout_fast].each do |timeout_name|
-        it do
+        specify do
           is_expected.to validate_presence_of(timeout_name)
           is_expected.to validate_numericality_of(timeout_name).only_integer
             .is_greater_than_or_equal_to(0)
@@ -821,7 +821,7 @@ RSpec.describe ApplicationSetting do
       context 'validations' do
         it { is_expected.to validate_presence_of(:diff_max_patch_bytes) }
 
-        it do
+        specify do
           is_expected.to validate_numericality_of(:diff_max_patch_bytes)
           .only_integer
           .is_greater_than_or_equal_to(Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES)

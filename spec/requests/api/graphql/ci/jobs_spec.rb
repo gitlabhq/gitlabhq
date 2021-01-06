@@ -15,7 +15,7 @@ RSpec.describe 'Query.project.pipeline' do
     let(:pipeline) do
       pipeline = create(:ci_pipeline, project: project, user: user)
       stage = create(:ci_stage_entity, project: project, pipeline: pipeline, name: 'first')
-      create(:commit_status, stage_id: stage.id, pipeline: pipeline, name: 'my test job')
+      create(:ci_build, stage_id: stage.id, pipeline: pipeline, name: 'my test job')
 
       pipeline
     end
@@ -42,6 +42,9 @@ RSpec.describe 'Query.project.pipeline' do
             jobs {
               nodes {
                 name
+                needs {
+                  nodes { #{all_graphql_fields_for('CiBuildNeed')} }
+                }
                 pipeline {
                   id
                 }
@@ -51,6 +54,27 @@ RSpec.describe 'Query.project.pipeline' do
         }
       }
       FIELDS
+    end
+
+    context 'when there are build needs' do
+      before do
+        pipeline.statuses.each do |build|
+          create_list(:ci_build_need, 2, build: build)
+        end
+      end
+
+      it 'reports the build needs' do
+        post_graphql(query, current_user: user)
+
+        expect(jobs_graphql_data).to contain_exactly a_hash_including(
+          'needs' => a_hash_including(
+            'nodes' => contain_exactly(
+              a_hash_including('name' => String),
+              a_hash_including('name' => String)
+            )
+          )
+        )
+      end
     end
 
     it 'returns the jobs of a pipeline stage' do

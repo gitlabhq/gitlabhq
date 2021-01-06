@@ -4,9 +4,9 @@
 #   - template: Security/Dependency-Scanning.gitlab-ci.yml
 #   - template: Security/DAST.gitlab-ci.yml
 
-# We need to duplicate this job's definition because it seems it's impossible to
-# override an included `only.refs`.
-# See https://gitlab.com/gitlab-org/gitlab/issues/31371.
+# We need to duplicate this job's definition because the rules
+# defined in the extended jobs rely on local YAML anchors
+# (`*if-default-refs`)
 code_quality:
   extends:
     - .default-retry
@@ -36,9 +36,9 @@ code_quality:
       - gl-code-quality-report.json  # GitLab-specific
     expire_in: 1 week  # GitLab-specific
 
-# We need to duplicate this job's definition because it seems it's impossible to
-# override an included `only.refs`.
-# See https://gitlab.com/gitlab-org/gitlab/issues/31371.
+# We need to duplicate this job's definition because the rules
+# defined in the extended jobs rely on local YAML anchors
+# (`*if-default-refs`)
 .sast:
   extends:
     - .default-retry
@@ -89,74 +89,53 @@ secrets-sast:
       sast: gl-secret-detection-report.json
     expire_in: 1 week  # GitLab-specific
 
-# We need to duplicate this job's definition because it seems it's impossible to
-# override an included `only.refs`.
-# See https://gitlab.com/gitlab-org/gitlab/issues/31371.
-dependency_scanning:
+# We need to duplicate this job's definition because the rules
+# defined in the extended jobs rely on local YAML anchors
+# (`*if-default-refs`)
+.dependency_scanning:
   extends:
     - .default-retry
     - .reports:rules:dependency_scanning
-    - .use-docker-in-docker
   stage: test
   needs: []
   variables:
     DS_MAJOR_VERSION: 2
-    DS_EXCLUDED_PATHS: "qa/qa/ee/fixtures/secure_premade_reports,spec,ee/spec"  # GitLab-specific
-  script:
-    - |
-      if ! docker info &>/dev/null; then
-        if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
-          export DOCKER_HOST='tcp://localhost:2375'
-        fi
-      fi
-    - | # this is required to avoid undesirable reset of Docker image ENV variables being set on build stage
-      function propagate_env_vars() {
-        CURRENT_ENV=$(printenv)
-
-        for VAR_NAME; do
-          echo $CURRENT_ENV | grep "${VAR_NAME}=" > /dev/null && echo "--env $VAR_NAME "
-        done
-      }
-    - |
-      docker run \
-        $(propagate_env_vars \
-          DS_ANALYZER_IMAGES \
-          DS_ANALYZER_IMAGE_PREFIX \
-          DS_ANALYZER_IMAGE_TAG \
-          DS_DEFAULT_ANALYZERS \
-          DS_EXCLUDED_PATHS \
-          DS_DOCKER_CLIENT_NEGOTIATION_TIMEOUT \
-          DS_PULL_ANALYZER_IMAGE_TIMEOUT \
-          DS_RUN_ANALYZER_TIMEOUT \
-          DS_PYTHON_VERSION \
-          DS_PIP_VERSION \
-          DS_PIP_DEPENDENCY_PATH \
-          GEMNASIUM_DB_LOCAL_PATH \
-          GEMNASIUM_DB_REMOTE_URL \
-          GEMNASIUM_DB_REF_NAME \
-          PIP_INDEX_URL \
-          PIP_EXTRA_INDEX_URL \
-          PIP_REQUIREMENTS_FILE \
-          MAVEN_CLI_OPTS \
-          BUNDLER_AUDIT_UPDATE_DISABLED \
-          BUNDLER_AUDIT_ADVISORY_DB_URL \
-          BUNDLER_AUDIT_ADVISORY_DB_REF_NAME \
-        ) \
-        --volume "$PWD:/code" \
-        --volume /var/run/docker.sock:/var/run/docker.sock \
-        "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$DS_MAJOR_VERSION" /code
-    # Post-processing: This will be an after_script once this job will use the Dependency Scanning CI template
-    - apk add jq
-    # Lower execa severity based on https://gitlab.com/gitlab-org/gitlab/-/issues/223859#note_452922390
-    - jq '(.vulnerabilities[] | select (.cve == "yarn.lock:execa:gemnasium:05cfa2e8-2d0c-42c1-8894-638e2f12ff3d")).severity = "Medium"' gl-dependency-scanning-report.json > temp.json && mv temp.json gl-dependency-scanning-report.json
+    DS_EXCLUDED_PATHS: "qa/qa/ee/fixtures/secure_premade_reports, spec, ee/spec"  # GitLab-specific
+    SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
   artifacts:
     paths:
       - gl-dependency-scanning-report.json  # GitLab-specific
     reports:
       dependency_scanning: gl-dependency-scanning-report.json
     expire_in: 1 week  # GitLab-specific
+  script:
+    - /analyzer run
 
-# The job below analysis dependencies for malicous behavior
+dependency_scanning gemnasium:
+  extends: .dependency_scanning
+  image:
+    name: "$SECURE_ANALYZERS_PREFIX/gemnasium:$DS_MAJOR_VERSION"
+  before_script:
+    # git-lfs is needed for auto-remediation
+    - apk add git-lfs
+  after_script:
+    # Post-processing: This will be an after_script once this job will use the Dependency Scanning CI template
+    - apk add jq
+    # Lower execa severity based on https://gitlab.com/gitlab-org/gitlab/-/issues/223859#note_452922390
+    - jq '(.vulnerabilities[] | select (.cve == "yarn.lock:execa:gemnasium:05cfa2e8-2d0c-42c1-8894-638e2f12ff3d")).severity = "Medium"' gl-dependency-scanning-report.json > temp.json && mv temp.json gl-dependency-scanning-report.json
+
+dependency_scanning bundler-audit:
+  extends: .dependency_scanning
+  image:
+    name: "$SECURE_ANALYZERS_PREFIX/bundler-audit:$DS_MAJOR_VERSION"
+
+dependency_scanning retire-js:
+  extends: .dependency_scanning
+  image:
+    name: "$SECURE_ANALYZERS_PREFIX/retire.js:$DS_MAJOR_VERSION"
+
+# Analyze dependencies for malicious behavior
+# See https://gitlab.com/gitlab-com/gl-security/security-research/package-hunter
 package_hunter:
   extends:
     - .reports:schedule-dast

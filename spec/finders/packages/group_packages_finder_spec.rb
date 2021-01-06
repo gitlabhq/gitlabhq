@@ -127,12 +127,6 @@ RSpec.describe Packages::GroupPackagesFinder do
         it { is_expected.to match_array([package1, package2]) }
       end
 
-      context 'does not include packages without version number' do
-        let_it_be(:package_without_version) { create(:maven_package, project: project, version: nil) }
-
-        it { is_expected.not_to include(package_without_version) }
-      end
-
       context 'with package_name' do
         let_it_be(:named_package) { create(:maven_package, project: project, name: 'maven') }
         let(:params) { { package_name: package_name } }
@@ -151,6 +145,8 @@ RSpec.describe Packages::GroupPackagesFinder do
           end
         end
       end
+
+      it_behaves_like 'concerning versionless param'
     end
 
     context 'group has package of all types' do

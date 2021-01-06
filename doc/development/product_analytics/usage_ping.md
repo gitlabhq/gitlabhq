@@ -786,7 +786,7 @@ appear to be associated to any of the services running, since they all appear to
 WARNING:
 This feature is intended solely for internal GitLab use.
 
-In order to add data for aggregated metrics into Usage Ping payload you should add corresponding definition into  [`aggregated_metrics.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/aggregated_metrics.yml) file. Each aggregate definition includes following parts:
+In order to add data for aggregated metrics into Usage Ping payload you should add corresponding definition in [`aggregated_metrics`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/aggregated_metrics/). Each aggregate definition includes following parts:
 
 - name: unique name under which aggregate metric is added to Usage Ping payload
 - operator: operator that defines how aggregated metric data is counted. Available operators are:

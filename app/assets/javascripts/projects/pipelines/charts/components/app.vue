@@ -136,19 +136,13 @@ export default {
       return failedCount === 0 ? 100 : ratio;
     },
     formattedCounts() {
-      const {
-        totalPipelines,
-        successfulPipelines,
-        failedPipelines,
-        totalPipelineDuration,
-      } = this.counts;
+      const { totalPipelines, successfulPipelines, failedPipelines } = this.counts;
 
       return {
         total: totalPipelines?.count,
         success: successfulPipelines?.count,
         failed: failedPipelines?.count,
         successRatio: this.successRatio,
-        totalDuration: totalPipelineDuration,
       };
     },
     areaCharts() {

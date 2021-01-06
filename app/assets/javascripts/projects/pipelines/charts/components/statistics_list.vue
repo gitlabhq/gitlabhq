@@ -1,5 +1,4 @@
 <script>
-import { formatTime } from '~/lib/utils/datetime_utility';
 import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';
 import { s__, n__ } from '~/locale';
 
@@ -13,9 +12,6 @@ export default {
     },
   },
   computed: {
-    totalDuration() {
-      return formatTime(this.counts.totalDuration);
-    },
     statistics() {
       const formatter = getFormatter(SUPPORTED_FORMATS.percentHundred);
 
@@ -35,10 +31,6 @@ export default {
         {
           title: s__('PipelineCharts|Success ratio:'),
           value: formatter(this.counts.successRatio, defaultPrecision),
-        },
-        {
-          title: s__('PipelineCharts|Total duration:'),
-          value: this.totalDuration,
         },
       ];
     },

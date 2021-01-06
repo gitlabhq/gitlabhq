@@ -27,6 +27,11 @@ RSpec.configure do |config|
     QA::Runtime::Logger.debug("\nStarting test: #{example.full_description}\n")
   end
 
+  config.after do
+    # If a .netrc file was created during the test, delete it so that subsequent tests don't try to use the same logins
+    QA::Git::Repository.new.delete_netrc
+  end
+
   config.after(:context) do
     if !QA::Runtime::Browser.blank_page? && QA::Page::Main::Menu.perform(&:signed_in?)
       QA::Page::Main::Menu.perform(&:sign_out)

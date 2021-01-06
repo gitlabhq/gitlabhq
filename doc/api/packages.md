@@ -28,6 +28,7 @@ GET /projects/:id/packages
 | `sort`    | string | no | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 | `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, or `golang`. (_Introduced in GitLab 12.9_)
 | `package_name` | string | no | Filter the project packages with a fuzzy search by name. (_Introduced in GitLab 12.9_)
+| `include_versionless` | boolean | no | When set to true, versionless packages are included in the response. (_Introduced in GitLab 13.8_)
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages"
@@ -88,6 +89,7 @@ GET /groups/:id/packages
 | `sort`    | string | no | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 | `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, or `golang`. (_Introduced in GitLab 12.9_) |
 | `package_name` | string | no | Filter the project packages with a fuzzy search by name. (_[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30980) in GitLab 13.0_)
+| `include_versionless` | boolean | no | When set to true, versionless packages are included in the response. (_Introduced in GitLab 13.8_)
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/packages?exclude_subgroups=true"

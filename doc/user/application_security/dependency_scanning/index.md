@@ -505,7 +505,7 @@ As a workaround, remove the [`retire.js`](analyzers.md#selecting-specific-analyz
 
 ### `Error response from daemon: error processing tar file: docker-tar: relocation error`
 
-This error occurs when the Docker version that runs the dependency scanning job is `19.03.00`.
+This error occurs when the Docker version that runs the dependency scanning job is `19.03.0`.
 Consider updating to Docker `19.03.1` or greater. Older versions are not
 affected. Read more in
 [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/13830#note_211354992 "Current SAST container fails").

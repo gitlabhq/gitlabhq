@@ -220,3 +220,45 @@ RSpec.shared_examples 'package workhorse uploads' do
     end
   end
 end
+
+RSpec.shared_examples 'with versionless packages' do
+  context 'with versionless package' do
+    let!(:versionless_package) { create(:maven_package, project: project, version: nil) }
+
+    shared_examples 'not including the package' do
+      it 'does not return the package' do
+        subject
+
+        expect(json_response.map { |package| package['id'] }).not_to include(versionless_package.id)
+      end
+    end
+
+    it_behaves_like 'not including the package'
+
+    context 'with include_versionless param' do
+      context 'with true include_versionless param' do
+        [true, 'true', 1, '1'].each do |param|
+          context "for param #{param}" do
+            let(:params) { super().merge(include_versionless: param) }
+
+            it 'returns the package' do
+              subject
+
+              expect(json_response.map { |package| package['id'] }).to include(versionless_package.id)
+            end
+          end
+        end
+      end
+
+      context 'with falsy include_versionless param' do
+        [false, '', nil, 'false', 0, '0'].each do |param|
+          context "for param #{param}" do
+            let(:params) { super().merge(include_versionless: param) }
+
+            it_behaves_like 'not including the package'
+          end
+        end
+      end
+    end
+  end
+end

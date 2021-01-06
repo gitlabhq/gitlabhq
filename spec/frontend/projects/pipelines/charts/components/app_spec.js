@@ -57,7 +57,6 @@ describe('ProjectsPipelinesChartsApp', () => {
         success: 23,
         total: 34,
         successRatio: 95.83333333333334,
-        totalDuration: 2471,
       });
     });
 

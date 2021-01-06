@@ -1,4 +1,5 @@
 import { CI_CONFIG_STATUS_VALID } from '~/pipeline_editor/constants';
+import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
 
 export const mockNamespace = 'user1';
 export const mockProjectName = 'project1';
@@ -8,6 +9,7 @@ export const mockNewMergeRequestPath = '/-/merge_requests/new';
 export const mockCommitSha = 'aabbccdd';
 export const mockCommitNextSha = 'eeffgghh';
 export const mockLintHelpPagePath = '/-/lint-help';
+export const mockYmlHelpPagePath = '/-/yml-help';
 export const mockCommitMessage = 'My commit message';
 
 export const mockCiConfigPath = '.gitlab-ci.yml';
@@ -109,6 +111,15 @@ export const mockCiConfigQueryResponse = {
       __typename: 'CiConfig',
     },
   },
+};
+
+export const mergeUnwrappedCiConfig = (mergedConfig) => {
+  const { ciConfig } = mockCiConfigQueryResponse.data;
+  return {
+    ...ciConfig,
+    stages: unwrapStagesWithNeeds(ciConfig.stages.nodes),
+    ...mergedConfig,
+  };
 };
 
 export const mockLintResponse = {

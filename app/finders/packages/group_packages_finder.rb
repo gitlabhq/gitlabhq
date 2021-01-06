@@ -27,9 +27,9 @@ module Packages
         .including_tags
         .for_projects(group_projects_visible_to_current_user.select(:id))
         .processed
-        .has_version
         .sort_by_attribute("#{params[:order_by]}_#{params[:sort]}")
 
+      packages = filter_with_version(packages)
       packages = filter_by_package_type(packages)
       packages = filter_by_package_name(packages)
       packages
@@ -71,6 +71,12 @@ module Packages
       return packages unless params[:package_name].present?
 
       packages.search_by_name(params[:package_name])
+    end
+
+    def filter_with_version(packages)
+      return packages if params[:include_versionless].present?
+
+      packages.has_version
     end
   end
 end

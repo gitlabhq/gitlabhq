@@ -38,14 +38,5 @@ exports[`StatisticsList displays the counts data with labels 1`] = `
       50.00%
     </strong>
   </li>
-  <li>
-    <span>
-      Total duration:
-    </span>
-     
-    <strong>
-      00:01:56
-    </strong>
-  </li>
 </ul>
 `;

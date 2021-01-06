@@ -6,8 +6,9 @@ RSpec.describe API::GroupPackages do
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, :public, namespace: group, name: 'project A') }
   let_it_be(:user) { create(:user) }
+  let(:params) { {} }
 
-  subject { get api(url) }
+  subject { get api(url), params: params }
 
   describe 'GET /groups/:id/packages' do
     let(:url) { "/groups/#{group.id}/packages" }
@@ -142,6 +143,7 @@ RSpec.describe API::GroupPackages do
       it_behaves_like 'returning response status', :bad_request
     end
 
+    it_behaves_like 'with versionless packages'
     it_behaves_like 'does not cause n^2 queries'
   end
 end

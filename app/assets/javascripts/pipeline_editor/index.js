@@ -21,6 +21,7 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     newMergeRequestPath,
     lintHelpPagePath,
     projectPath,
+    ymlHelpPagePath,
   } = el?.dataset;
 
   Vue.use(VueApollo);
@@ -34,6 +35,7 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     apolloProvider,
     provide: {
       lintHelpPagePath,
+      ymlHelpPagePath,
     },
     render(h) {
       return h(PipelineEditorApp, {

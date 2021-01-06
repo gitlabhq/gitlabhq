@@ -9,6 +9,5 @@ query getPipelineCountByStatus($projectPath: ID!) {
     failedPipelines: pipelines(status: FAILED) {
       count
     }
-    totalPipelineDuration
   }
 }

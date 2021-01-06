@@ -32,7 +32,7 @@ module QA
         end
       end
 
-      it 'allows a project to be created via the CLI with a different default branch name', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1019', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/295305', type: :flaky } do
+      it 'allows a project to be created via the CLI with a different default branch name', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1019' do
         project_name = "default-branch-name-via-cli-#{SecureRandom.hex(8)}"
         group = Resource::Group.fabricate_via_api!
 

@@ -2288,6 +2288,48 @@ type BurnupChartDailyTotals {
   scopeWeight: Int!
 }
 
+type CiBuildNeed {
+  """
+  Name of the job we need to complete.
+  """
+  name: String
+}
+
+"""
+The connection type for CiBuildNeed.
+"""
+type CiBuildNeedConnection {
+  """
+  A list of edges.
+  """
+  edges: [CiBuildNeedEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [CiBuildNeed]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type CiBuildNeedEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: CiBuildNeed
+}
+
 type CiConfig {
   """
   Linting errors
@@ -2717,7 +2759,7 @@ type CiJob {
   name: String
 
   """
-  Builds that must complete before the jobs run
+  References to builds that must complete before the jobs run
   """
   needs(
     """
@@ -2739,7 +2781,7 @@ type CiJob {
     Returns the last _n_ elements from the list.
     """
     last: Int
-  ): CiJobConnection
+  ): CiBuildNeedConnection
 
   """
   Pipeline the job belongs to

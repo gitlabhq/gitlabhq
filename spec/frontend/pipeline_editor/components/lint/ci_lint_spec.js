@@ -2,17 +2,7 @@ import { shallowMount, mount } from '@vue/test-utils';
 import { GlAlert, GlLink } from '@gitlab/ui';
 import CiLint from '~/pipeline_editor/components/lint/ci_lint.vue';
 import { CI_CONFIG_STATUS_INVALID } from '~/pipeline_editor/constants';
-import { mockCiConfigQueryResponse, mockLintHelpPagePath } from '../../mock_data';
-import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
-
-const getCiConfig = (mergedConfig) => {
-  const { ciConfig } = mockCiConfigQueryResponse.data;
-  return {
-    ...ciConfig,
-    stages: unwrapStagesWithNeeds(ciConfig.stages.nodes),
-    ...mergedConfig,
-  };
-};
+import { mergeUnwrappedCiConfig, mockLintHelpPagePath } from '../../mock_data';
 
 describe('~/pipeline_editor/components/lint/ci_lint.vue', () => {
   let wrapper;
@@ -23,7 +13,7 @@ describe('~/pipeline_editor/components/lint/ci_lint.vue', () => {
         lintHelpPagePath: mockLintHelpPagePath,
       },
       propsData: {
-        ciConfig: getCiConfig(),
+        ciConfig: mergeUnwrappedCiConfig(),
         ...props,
       },
     });
@@ -63,7 +53,7 @@ describe('~/pipeline_editor/components/lint/ci_lint.vue', () => {
     it('displays invalid results', () => {
       createComponent(
         {
-          ciConfig: getCiConfig({
+          ciConfig: mergeUnwrappedCiConfig({
             status: CI_CONFIG_STATUS_INVALID,
           }),
         },

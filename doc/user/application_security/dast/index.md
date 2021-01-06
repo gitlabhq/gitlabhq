@@ -550,6 +550,7 @@ DAST can be [configured](#customizing-the-dast-settings) using environment varia
 | `DAST_PASSWORD` | string | The password to authenticate to in the website. |
 | `DAST_USERNAME_FIELD` | string | The name of username field at the sign-in HTML form. |
 | `DAST_PASSWORD_FIELD` | string | The name of password field at the sign-in HTML form. |
+| `DAST_SKIP_TARGET_CHECK` | boolean | Set to `true` to prevent DAST from checking that the target is available before scanning. Default: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229067) in GitLab 13.8. |
 | `DAST_MASK_HTTP_HEADERS` | string | Comma-separated list of request and response headers to be masked (GitLab 13.1). Must contain **all** headers to be masked. Refer to [list of headers that are masked by default](#hide-sensitive-information). |
 | `DAST_AUTH_EXCLUDE_URLS` | URLs | The URLs to skip during the authenticated scan; comma-separated. Regular expression syntax can be used to match multiple URLs. For example, `.*` matches an arbitrary character sequence. Not supported for API scans. |
 | `DAST_FULL_SCAN_ENABLED` | boolean | Set to `true` to run a [ZAP Full Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Full-Scan) instead of a [ZAP Baseline Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan). Default: `false` |
