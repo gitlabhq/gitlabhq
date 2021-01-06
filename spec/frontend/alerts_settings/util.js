@@ -19,12 +19,6 @@ export const defaultAlertSettingsConfig = {
     url: PROMETHEUS_URL,
     active: ACTIVE,
   },
-  opsgenie: {
-    opsgenieMvcIsAvailable: true,
-    formPath: INVALID_URL,
-    active: ACTIVE,
-    opsgenieMvcTargetUrl: GENERIC_URL,
-  },
   projectPath: '',
   multiIntegrations: true,
 };

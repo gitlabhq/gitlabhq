@@ -103,7 +103,6 @@ update-yarn-cache:
     WEBPACK_VENDOR_DLL: "true"
   script:
     - run_timed_command "gem install knapsack --no-document"
-    - run_timed_command "scripts/gitaly-test-build"
     - run_timed_command "scripts/gitaly-test-spawn"
     - source ./scripts/rspec_helpers.sh
     - rspec_paralellized_job "--tag frontend_fixture"

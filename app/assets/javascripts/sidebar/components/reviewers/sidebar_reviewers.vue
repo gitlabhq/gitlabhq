@@ -26,11 +26,6 @@ export default {
       type: String,
       required: true,
     },
-    signedIn: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     issuableType: {
       type: String,
       required: false,
@@ -98,7 +93,6 @@ export default {
       :number-of-reviewers="store.reviewers.length"
       :loading="loading || store.isFetching.reviewers"
       :editable="store.editable"
-      :show-toggle="!signedIn"
     />
     <reviewers
       v-if="!store.isFetching.reviewers"

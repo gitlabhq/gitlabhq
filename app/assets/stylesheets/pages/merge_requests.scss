@@ -301,7 +301,8 @@ $mr-widget-min-height: 69px;
       margin: 0 0 0 10px;
     }
 
-    .bold {
+    .bold,
+    .gl-font-weight-bold {
       font-weight: $gl-font-weight-bold;
       color: $gray-600;
       margin-left: 10px;
@@ -317,7 +318,8 @@ $mr-widget-min-height: 69px;
     }
 
     .spacing,
-    .bold {
+    .bold,
+    .gl-font-weight-bold {
       vertical-align: middle;
     }
 

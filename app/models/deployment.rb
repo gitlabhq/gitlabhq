@@ -109,6 +109,23 @@ class Deployment < ApplicationRecord
         Deployments::ExecuteHooksWorker.perform_async(id)
       end
     end
+
+    after_transition any => any - [:skipped] do |deployment, transition|
+      next if transition.loopback?
+      next unless Feature.enabled?(:jira_sync_deployments, deployment.project)
+
+      deployment.run_after_commit do
+        ::JiraConnect::SyncDeploymentsWorker.perform_async(id)
+      end
+    end
+  end
+
+  after_create unless: :importing? do |deployment|
+    next unless Feature.enabled?(:jira_sync_deployments, deployment.project)
+
+    run_after_commit do
+      ::JiraConnect::SyncDeploymentsWorker.perform_async(deployment.id)
+    end
   end
 
   enum status: {

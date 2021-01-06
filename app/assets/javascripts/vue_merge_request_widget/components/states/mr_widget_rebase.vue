@@ -1,19 +1,36 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import { escape } from 'lodash';
+import { __, sprintf } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import simplePoll from '../../../lib/utils/simple_poll';
 import eventHub from '../../event_hub';
 import statusIcon from '../mr_widget_status_icon.vue';
+import rebaseQuery from '../../queries/states/ready_to_merge.query.graphql';
+import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import { deprecatedCreateFlash as Flash } from '../../../flash';
-import { __, sprintf } from '~/locale';
 
 export default {
   name: 'MRWidgetRebase',
+  apollo: {
+    state: {
+      query: rebaseQuery,
+      skip() {
+        return !this.glFeatures.mergeRequestWidgetGraphql;
+      },
+      variables() {
+        return this.mergeRequestQueryVariables;
+      },
+      update: (data) => data.project.mergeRequest,
+    },
+  },
   components: {
     statusIcon,
     GlButton,
+    GlSkeletonLoader,
   },
+  mixins: [glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
   props: {
     mr: {
       type: Object,
@@ -26,16 +43,41 @@ export default {
   },
   data() {
     return {
+      state: {},
       isMakingRequest: false,
       rebasingError: null,
     };
   },
   computed: {
+    isLoading() {
+      return this.glFeatures.mergeRequestWidgetGraphql && this.$apollo.queries.state.loading;
+    },
+    rebaseInProgress() {
+      if (this.glFeatures.mergeRequestWidgetGraphql) {
+        return this.state.rebaseInProgress;
+      }
+
+      return this.mr.rebaseInProgress;
+    },
+    canPushToSourceBranch() {
+      if (this.glFeatures.mergeRequestWidgetGraphql) {
+        return this.state.userPermissions.pushToSourceBranch;
+      }
+
+      return this.mr.canPushToSourceBranch;
+    },
+    targetBranch() {
+      if (this.glFeatures.mergeRequestWidgetGraphql) {
+        return this.state.targetBranch;
+      }
+
+      return this.mr.targetBranch;
+    },
     status() {
-      if (this.mr.rebaseInProgress || this.isMakingRequest) {
+      if (this.rebaseInProgress || this.isMakingRequest) {
         return 'loading';
       }
-      if (!this.mr.canPushToSourceBranch && !this.mr.rebaseInProgress) {
+      if (!this.canPushToSourceBranch && !this.rebaseInProgress) {
         return 'warning';
       }
       return 'success';
@@ -49,7 +91,7 @@ export default {
           'Fast-forward merge is not possible. Rebase the source branch onto %{targetBranch} to allow this merge request to be merged.',
         ),
         {
-          targetBranch: `<span class="label-branch">${escape(this.mr.targetBranch)}</span>`,
+          targetBranch: `<span class="label-branch">${escape(this.targetBranch)}</span>`,
         },
         false,
       );
@@ -105,17 +147,30 @@ export default {
 </script>
 <template>
   <div class="mr-widget-body media">
-    <status-icon :status="status" :show-disabled-button="showDisabledButton" />
+    <div v-if="isLoading" class="gl-w-full mr-conflict-loader">
+      <gl-skeleton-loader :width="334" :height="30">
+        <rect x="0" y="3" width="24" height="24" rx="4" />
+        <rect x="32" y="5" width="302" height="20" rx="4" />
+      </gl-skeleton-loader>
+    </div>
+    <template v-else>
+      <status-icon :status="status" :show-disabled-button="showDisabledButton" />
 
-    <div class="rebase-state-find-class-convention media media-body space-children">
-      <template v-if="mr.rebaseInProgress || isMakingRequest">
-        <span class="bold" data-testid="rebase-message">{{ __('Rebase in progress') }}</span>
-      </template>
-      <template v-if="!mr.rebaseInProgress && !mr.canPushToSourceBranch">
-        <span class="bold" data-testid="rebase-message" v-html="fastForwardMergeText"></span>
-      </template>
-      <template v-if="!mr.rebaseInProgress && mr.canPushToSourceBranch && !isMakingRequest">
+      <div class="rebase-state-find-class-convention media media-body space-children">
+        <span
+          v-if="rebaseInProgress || isMakingRequest"
+          class="gl-font-weight-bold"
+          data-testid="rebase-message"
+          >{{ __('Rebase in progress') }}</span
+        >
+        <span
+          v-if="!rebaseInProgress && !canPushToSourceBranch"
+          class="gl-font-weight-bold"
+          data-testid="rebase-message"
+          v-html="fastForwardMergeText"
+        ></span>
         <div
+          v-if="!rebaseInProgress && canPushToSourceBranch && !isMakingRequest"
           class="accept-merge-holder clearfix js-toggle-container accept-action media space-children"
         >
           <gl-button
@@ -126,14 +181,16 @@ export default {
           >
             {{ __('Rebase') }}
           </gl-button>
-          <span v-if="!rebasingError" class="bold" data-testid="rebase-message">{{
+          <span v-if="!rebasingError" class="gl-font-weight-bold" data-testid="rebase-message">{{
             __(
               'Fast-forward merge is not possible. Rebase the source branch onto the target branch.',
             )
           }}</span>
-          <span v-else class="bold danger" data-testid="rebase-message">{{ rebasingError }}</span>
+          <span v-else class="gl-font-weight-bold danger" data-testid="rebase-message">{{
+            rebasingError
+          }}</span>
         </div>
-      </template>
-    </div>
+      </div>
+    </template>
   </div>
 </template>

@@ -1,14 +1,13 @@
 <script>
 // NOTE! For the first iteration, we are simply copying the implementation of Assignees
 // It will soon be overhauled in Issue https://gitlab.com/gitlab-org/gitlab/-/issues/233736
-import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import { n__ } from '~/locale';
 
 export default {
   name: 'ReviewerTitle',
   components: {
     GlLoadingIcon,
-    GlIcon,
   },
   props: {
     loading: {
@@ -23,11 +22,6 @@ export default {
     editable: {
       type: Boolean,
       required: true,
-    },
-    showToggle: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   computed: {
@@ -51,15 +45,6 @@ export default {
       data-track-property="reviewer"
     >
       {{ __('Edit') }}
-    </a>
-    <a
-      v-if="showToggle"
-      :aria-label="__('Toggle sidebar')"
-      class="gutter-toggle float-right js-sidebar-toggle"
-      href="#"
-      role="button"
-    >
-      <gl-icon data-hidden="true" name="chevron-double-lg-right" :size="12" />
     </a>
   </div>
 </template>

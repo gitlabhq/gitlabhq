@@ -34,11 +34,7 @@ module Ci
 
         pipelines =
           if merge_request.persisted?
-            if Feature.enabled?(:ci_pipelines_for_merge_request_finder_new_cte, target_project)
-              pipelines_using_cte
-            else
-              pipelines_using_legacy_cte
-            end
+            pipelines_using_cte
           else
             triggered_for_branch.for_sha(commit_shas)
           end
@@ -48,18 +44,6 @@ module Ci
     end
 
     private
-
-    def pipelines_using_legacy_cte
-      cte = Gitlab::SQL::CTE.new(:shas, merge_request.all_commits.select(:sha))
-
-      source_sha_join = cte.table[:sha].eq(Ci::Pipeline.arel_table[:source_sha])
-      merged_result_pipelines = filter_by(triggered_by_merge_request, cte, source_sha_join)
-      detached_merge_request_pipelines = filter_by_sha(triggered_by_merge_request, cte)
-      pipelines_for_branch = filter_by_sha(triggered_for_branch, cte)
-
-      Ci::Pipeline.with(cte.to_arel) # rubocop: disable CodeReuse/ActiveRecord
-        .from_union([merged_result_pipelines, detached_merge_request_pipelines, pipelines_for_branch])
-    end
 
     def pipelines_using_cte
       cte = Gitlab::SQL::CTE.new(:shas, merge_request.all_commits.select(:sha))

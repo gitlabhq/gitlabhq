@@ -1,0 +1,11 @@
+query rebaseQuery($projectPath: ID!, $iid: String!) {
+  project(fullPath: $projectPath) {
+    mergeRequest(iid: $iid) {
+      rebaseInProgress
+      targetBranch
+      userPermissions {
+        pushToSourceBranch
+      }
+    }
+  }
+}

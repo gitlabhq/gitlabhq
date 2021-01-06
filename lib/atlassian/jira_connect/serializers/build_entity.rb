@@ -25,8 +25,10 @@ module Atlassian
           # extract Jira issue keys from either the source branch/ref or the
           # merge request title.
           @issue_keys ||= begin
-                            src = "#{pipeline.source_ref} #{pipeline.merge_request&.title}"
-                            JiraIssueKeyExtractor.new(src).issue_keys
+                            pipeline.all_merge_requests.flat_map do |mr|
+                              src = "#{mr.source_branch} #{mr.title}"
+                              JiraIssueKeyExtractor.new(src).issue_keys
+                            end.uniq
                           end
         end
 

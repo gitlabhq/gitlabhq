@@ -1,6 +1,7 @@
 - return unless can?(current_user, :admin_operations, @project)
 - expanded = expanded_by_default?
 - add_page_specific_style 'page_bundles/alert_management_settings'
+- add_page_specific_style 'page_bundles/incident_management_list'
 
 %section.settings.no-animate#js-alert-management-settings{ class: ('expanded' if expanded) }
   .settings-header

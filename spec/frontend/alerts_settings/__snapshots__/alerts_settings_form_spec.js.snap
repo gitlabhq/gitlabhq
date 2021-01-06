@@ -4,11 +4,10 @@ exports[`AlertsSettingsFormNew with default values renders the initial template 
 "<form class=\\"gl-mt-6\\">
   <h5 class=\\"gl-font-lg gl-my-5\\">Add new integrations</h5>
   <div id=\\"integration-type\\" role=\\"group\\" class=\\"form-group gl-form-group\\"><label id=\\"integration-type__BV_label_\\" for=\\"integration-type\\" class=\\"d-block col-form-label\\">1. Select integration type</label>
-    <div class=\\"bv-no-focus-ring\\"><select class=\\"gl-form-select custom-select\\" id=\\"__BVID__8\\">
+    <div class=\\"bv-no-focus-ring\\"><select class=\\"gl-form-select mw-100 custom-select\\" id=\\"__BVID__8\\">
         <option value=\\"\\">Select integration type</option>
         <option value=\\"HTTP\\">HTTP Endpoint</option>
         <option value=\\"PROMETHEUS\\">External Prometheus</option>
-        <option value=\\"OPSGENIE\\">Opsgenie</option>
       </select>
       <!---->
       <!---->

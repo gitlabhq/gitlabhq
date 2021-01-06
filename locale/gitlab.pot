@@ -2502,9 +2502,6 @@ msgstr ""
 msgid "AlertManagement|Open"
 msgstr ""
 
-msgid "AlertManagement|Opsgenie is enabled"
-msgstr ""
-
 msgid "AlertManagement|Please try again."
 msgstr ""
 
@@ -2568,13 +2565,7 @@ msgstr ""
 msgid "AlertManagement|Value"
 msgstr ""
 
-msgid "AlertManagement|View alerts in Opsgenie"
-msgstr ""
-
 msgid "AlertManagement|View incident"
-msgstr ""
-
-msgid "AlertManagement|You have enabled the Opsgenie integration. Your alerts will be visible directly in Opsgenie."
 msgstr ""
 
 msgid "AlertMappingBuilder|Define fallback"
@@ -2602,9 +2593,6 @@ msgid "AlertService|You must provide this URL and authorization key to authorize
 msgstr ""
 
 msgid "AlertSettings|1. Select integration type"
-msgstr ""
-
-msgid "AlertSettings|2. Add link to your Opsgenie alert list"
 msgstr ""
 
 msgid "AlertSettings|2. Name integration"
@@ -2676,9 +2664,6 @@ msgstr ""
 msgid "AlertSettings|Learn more about our our upcoming %{linkStart}integrations%{linkEnd}"
 msgstr ""
 
-msgid "AlertSettings|Opsgenie"
-msgstr ""
-
 msgid "AlertSettings|Proceed with editing"
 msgstr ""
 
@@ -2746,12 +2731,6 @@ msgid "AlertSettings|Utilize the URL and authorization key below to authorize Pr
 msgstr ""
 
 msgid "AlertSettings|Utilize the URL and authorization key below to authorize an external service to send alerts to GitLab. Review your external service's documentation to learn where to add these details, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint."
-msgstr ""
-
-msgid "AlertSettings|Utilizing this option will link the GitLab Alerts navigation item to your existing Opsgenie instance. By selecting this option, you cannot receive alerts from any other source in GitLab; it will effectively be turning Alerts within GitLab off as a feature."
-msgstr ""
-
-msgid "AlertSettings|We will soon be introducing the ability to create multiple unique HTTP endpoints. When this functionality is live,  you will be able to configure an integration with Opsgenie to surface Opsgenie alerts in GitLab. This will replace the current Opsgenie integration which will be deprecated. %{linkStart}More Information%{linkEnd}"
 msgstr ""
 
 msgid "AlertSettings|Webhook URL"
@@ -7677,10 +7656,10 @@ msgstr ""
 msgid "ContainerRegistry|Tags that match these rules are %{strongStart}removed%{strongEnd}, unless a rule above says to keep them."
 msgstr ""
 
-msgid "ContainerRegistry|Tags with names that match this regex pattern are kept. %{linkStart}More information%{linkEnd}"
+msgid "ContainerRegistry|Tags with names that match this regex pattern are kept. %{linkStart}View regex examples.%{linkEnd}"
 msgstr ""
 
-msgid "ContainerRegistry|Tags with names that match this regex pattern are removed. %{linkStart}More information%{linkEnd}"
+msgid "ContainerRegistry|Tags with names that match this regex pattern are removed. %{linkStart}View regex examples.%{linkEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|The cleanup policy timed out before it could delete all tags. An administrator can %{adminLinkStart}manually run cleanup now%{adminLinkEnd} or you can wait for the cleanup policy to automatically run again. %{docLinkStart}More information%{docLinkEnd}"
@@ -14344,6 +14323,9 @@ msgid "Housekeeping successfully started"
 msgstr ""
 
 msgid "Housekeeping, export, path, transfer, remove, archive."
+msgstr ""
+
+msgid "How does cleanup work?"
 msgstr ""
 
 msgid "How it works"

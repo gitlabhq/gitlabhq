@@ -16,17 +16,30 @@ module Atlassian
         common = { project: project, update_sequence_id: update_sequence_id }
         dev_info = args.slice(:commits, :branches, :merge_requests)
         build_info = args.slice(:pipelines)
+        deploy_info = args.slice(:deployments)
 
         responses = []
 
         responses << store_dev_info(**common, **dev_info) if dev_info.present?
         responses << store_build_info(**common, **build_info) if build_info.present?
+        responses << store_deploy_info(**common, **deploy_info) if deploy_info.present?
         raise ArgumentError, 'Invalid arguments' if responses.empty?
 
         responses.compact
       end
 
       private
+
+      def store_deploy_info(project:, deployments:, **opts)
+        return unless Feature.enabled?(:jira_sync_deployments, project)
+
+        items = deployments.map { |d| Serializers::DeploymentEntity.represent(d, opts) }
+        items.reject! { |d| d.issue_keys.empty? }
+
+        return if items.empty?
+
+        post('/rest/deployments/0.1/bulk', { deployments: items })
+      end
 
       def store_build_info(project:, pipelines:, update_sequence_id: nil)
         return unless Feature.enabled?(:jira_sync_builds, project)

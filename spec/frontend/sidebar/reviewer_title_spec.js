@@ -41,27 +41,6 @@ describe('ReviewerTitle component', () => {
     });
   });
 
-  describe('gutter toggle', () => {
-    it('does not show toggle by default', () => {
-      wrapper = createComponent({
-        numberOfReviewers: 2,
-        editable: false,
-      });
-
-      expect(wrapper.vm.$el.querySelector('.gutter-toggle')).toBeNull();
-    });
-
-    it('shows toggle when showToggle is true', () => {
-      wrapper = createComponent({
-        numberOfReviewers: 2,
-        editable: false,
-        showToggle: true,
-      });
-
-      expect(wrapper.vm.$el.querySelector('.gutter-toggle')).toEqual(expect.any(Object));
-    });
-  });
-
   it('does not render spinner by default', () => {
     wrapper = createComponent({
       numberOfReviewers: 0,

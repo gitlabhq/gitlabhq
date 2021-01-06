@@ -166,12 +166,6 @@ Lint/MixedRegexpCaptureTypes:
     - 'lib/gitlab/slash_commands/issue_new.rb'
     - 'lib/gitlab/slash_commands/run.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Lint/NonDeterministicRequireOrder:
-  Exclude:
-    - 'rubocop/rubocop.rb'
-
 # Offense count: 135
 # Cop supports --auto-correct.
 Lint/RedundantCopDisableDirective:

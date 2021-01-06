@@ -65,6 +65,7 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
     }
 
     modules.merge!(build_information_module)
+    modules.merge!(deployment_information_module)
 
     modules
   end
@@ -73,17 +74,33 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
     view_context.image_url('gitlab_logo.png')
   end
 
+  # See: https://developer.atlassian.com/cloud/jira/software/modules/deployment/
+  def deployment_information_module
+    {
+      jiraDeploymentInfoProvider: common_module_properties.merge(
+        actions: {}, # TODO: list deployments
+        name: { value: "GitLab Deployments" },
+        key: "gitlab-deployments"
+      )
+    }
+  end
+
   # See: https://developer.atlassian.com/cloud/jira/software/modules/build/
   def build_information_module
     {
-      jiraBuildInfoProvider: {
-        homeUrl: HOME_URL,
-        logoUrl: logo_url,
-        documentationUrl: DOC_URL,
+      jiraBuildInfoProvider: common_module_properties.merge(
         actions: {},
         name: { value: "GitLab CI" },
         key: "gitlab-ci"
-      }
+      )
+    }
+  end
+
+  def common_module_properties
+    {
+      homeUrl: HOME_URL,
+      logoUrl: logo_url,
+      documentationUrl: DOC_URL
     }
   end
 

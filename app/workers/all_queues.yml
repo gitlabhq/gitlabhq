@@ -891,6 +891,14 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: jira_connect:jira_connect_sync_deployments
+  :feature_category: :integrations
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: jira_connect:jira_connect_sync_merge_request
   :feature_category: :integrations
   :has_external_dependencies: true

@@ -284,7 +284,7 @@ module TestEnv
     @workhorse_path ||= File.join('tmp', 'tests', 'gitlab-workhorse')
   end
 
-  def with_workhorse(workhorse_dir, host, port, upstream, &blk)
+  def with_workhorse(host, port, upstream, &blk)
     host = "[#{host}]" if host.include?(':')
     listen_addr = [host, port].join(':')
 

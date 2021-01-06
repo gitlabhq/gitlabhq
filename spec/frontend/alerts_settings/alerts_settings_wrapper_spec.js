@@ -4,7 +4,7 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import createMockApollo from 'jest/helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
-import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import AlertsSettingsWrapper from '~/alerts_settings/components/alerts_settings_wrapper.vue';
 import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form.vue';
@@ -374,19 +374,6 @@ describe('AlertsSettingsWrapper', () => {
       expect(createFlash).toHaveBeenCalledWith({
         message: DELETE_INTEGRATION_ERROR,
       });
-    });
-  });
-
-  // TODO: Will be removed in 13.7 as part of: https://gitlab.com/gitlab-org/gitlab/-/issues/273657
-  describe('Opsgenie integration', () => {
-    it.each([true, false])('it shows/hides the alert when opsgenie is %s', (active) => {
-      createComponent({
-        data: { integrations: { list: mockIntegrations }, currentIntegration: mockIntegrations[0] },
-        provide: { opsgenie: { active } },
-        loading: false,
-      });
-
-      expect(wrapper.find(GlAlert).exists()).toBe(active);
     });
   });
 });

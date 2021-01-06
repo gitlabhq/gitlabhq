@@ -10,7 +10,6 @@
   # Only install knapsack after bundle install! Otherwise oddly some native
   # gems could not be found under some circumstance. No idea why, hours wasted.
   - run_timed_command "gem install knapsack --no-document"
-  - run_timed_command "scripts/gitaly-test-build"
   - run_timed_command "scripts/gitaly-test-spawn"
   - source ./scripts/rspec_helpers.sh
 
@@ -150,20 +149,35 @@ setup-test-env:
   script:
     - run_timed_command "bundle exec ruby -I. -e 'require \"config/environment\"; TestEnv.init'"
     - run_timed_command "scripts/gitaly-test-build"  # Do not use 'bundle exec' here
-    - rm tmp/tests/gitaly/.ruby-bundle  # This file prevents gems from being installed even if vendor/gitaly-ruby is missing
   artifacts:
     expire_in: 7d
     paths:
       - config/secrets.yml
-      - tmp/tests/gitaly
-      - tmp/tests/gitlab-elasticsearch-indexer
-      - tmp/tests/gitlab-shell
-      - tmp/tests/gitlab-test-fork
-      - tmp/tests/gitlab-test-fork_bare
-      - tmp/tests/gitlab-test
-      - tmp/tests/gitlab-workhorse
-      - tmp/tests/repositories
-      - tmp/tests/second_storage
+      - tmp/tests/gitaly/config.toml
+      - tmp/tests/gitaly/gitaly
+      - tmp/tests/gitaly/gitaly2.config.toml
+      - tmp/tests/gitaly/gitaly-git2go
+      - tmp/tests/gitaly/gitaly-hooks
+      - tmp/tests/gitaly/gitaly-lfs-smudge
+      - tmp/tests/gitaly/gitaly-ssh
+      - tmp/tests/gitaly/internal/
+      - tmp/tests/gitaly/internal_sockets/
+      - tmp/tests/gitaly/Makefile
+      - tmp/tests/gitaly/praefect
+      - tmp/tests/gitaly/praefect.config.toml
+      - tmp/tests/gitaly/ruby/
+      - tmp/tests/gitlab-elasticsearch-indexer/bin/gitlab-elasticsearch-indexer
+      - tmp/tests/gitlab-shell/
+      - tmp/tests/gitlab-test-fork/
+      - tmp/tests/gitlab-test-fork_bare/
+      - tmp/tests/gitlab-test/
+      - tmp/tests/gitlab-workhorse/gitlab-zip-metadata
+      - tmp/tests/gitlab-workhorse/gitlab-zip-cat
+      - tmp/tests/gitlab-workhorse/gitlab-workhorse
+      - tmp/tests/gitlab-workhorse/gitlab-resize-image
+      - tmp/tests/gitlab-workhorse/config.toml
+      - tmp/tests/repositories/
+      - tmp/tests/second_storage/
     when: always
 
 update-rails-cache:

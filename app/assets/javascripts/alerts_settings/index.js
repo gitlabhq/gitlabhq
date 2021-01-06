@@ -29,10 +29,6 @@ export default (el) => {
     formPath,
     authorizationKey,
     url,
-    opsgenieMvcAvailable,
-    opsgenieMvcFormPath,
-    opsgenieMvcEnabled,
-    opsgenieMvcTargetUrl,
     projectPath,
     multiIntegrations,
   } = el.dataset;
@@ -55,12 +51,6 @@ export default (el) => {
         formPath,
         token: authorizationKey,
         url,
-      },
-      opsgenie: {
-        formPath: opsgenieMvcFormPath,
-        active: parseBoolean(opsgenieMvcEnabled),
-        opsgenieMvcTargetUrl,
-        opsgenieMvcIsAvailable: parseBoolean(opsgenieMvcAvailable),
       },
       projectPath,
       multiIntegrations: parseBoolean(multiIntegrations),

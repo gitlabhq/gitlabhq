@@ -77,7 +77,6 @@ function mountReviewersComponent(mediator) {
           issuableIid: String(iid),
           projectPath: fullPath,
           field: el.dataset.field,
-          signedIn: el.hasAttribute('data-signed-in'),
           issuableType: isInIssuePage() ? 'issue' : 'merge_request',
         },
       }),

@@ -15,7 +15,6 @@
     # SEED_NESTED_GROUPS: "false" # requires network connection
 
 .run-dev-fixtures-script: &run-dev-fixtures-script
-  - run_timed_command "scripts/gitaly-test-build"
   - run_timed_command "scripts/gitaly-test-spawn"
   - run_timed_command "RAILS_ENV=test bundle exec rake db:seed_fu"
 
