@@ -1,0 +1,5 @@
+---
+title: Fix stealing API token from GitLab Pages and DoS Prometheus through GitLab Pages
+merge_request:
+author:
+type: security
