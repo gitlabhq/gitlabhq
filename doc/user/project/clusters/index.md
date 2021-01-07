@@ -20,7 +20,7 @@ Using the GitLab project Kubernetes integration, you can:
 - Detect and [monitor Kubernetes](#monitoring-your-kubernetes-cluster).
 - Use it with [Auto DevOps](#auto-devops).
 - Use [Web terminals](#web-terminals).
-- Use [Deploy Boards](#deploy-boards).
+- Use [Deploy Boards](#deploy-boards). **(PREMIUM)**
 - Use [Canary Deployments](#canary-deployments). **(PREMIUM)**
 - Use [deployment variables](#deployment-variables).
 - Use [role-based or attribute-based access controls](add_remove_clusters.md#access-controls).
@@ -316,7 +316,7 @@ the need to leave GitLab.
 
 [Read more about Canary Deployments](../canary_deployments.md)
 
-#### Deploy Boards
+#### Deploy Boards **(PREMIUM)**
 
 GitLab Deploy Boards offer a consolidated view of the current health and
 status of each CI [environment](../../../ci/environments/index.md) running on Kubernetes,

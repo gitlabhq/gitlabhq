@@ -5,10 +5,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto, reference
 ---
 
-# Deploy Boards **(CORE)**
+# Deploy Boards **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1589) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.0.
-> - [Moved](<https://gitlab.com/gitlab-org/gitlab/-/issues/212320>) to GitLab Core in 13.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1589) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.0.
 
 GitLab Deploy Boards offer a consolidated view of the current health and
 status of each CI [environment](../../ci/environments/index.md) running on [Kubernetes](https://kubernetes.io), displaying the status
