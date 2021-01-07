@@ -541,13 +541,16 @@ To enable or disable tracking for specific event within <https://gitlab.com> or 
 /chatops run feature set <feature_name> false
 ```
 
-##### Known events in usage data payload
+##### Known events are added automatically in usage data payload
 
 All events added in [`known_events/common.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/common.yml) are automatically added to usage data generation under the `redis_hll_counters` key. This column is stored in [version-app as a JSON](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/db/schema.rb#L209).
 For each event we add metrics for the weekly and monthly time frames, and totals for each where applicable:
 
 - `#{event_name}_weekly`: Data for 7 days for daily [aggregation](#adding-new-events) events and data for the last complete week for weekly [aggregation](#adding-new-events) events.
 - `#{event_name}_monthly`: Data for 28 days for daily [aggregation](#adding-new-events) events and data for the last 4 complete weeks for weekly [aggregation](#adding-new-events) events.
+
+Redis HLL implementation calculates automatic total metrics, if there are more than one metric for the same category, aggregation and Redis slot. 
+
 - `#{category}_total_unique_counts_weekly`: Total unique counts for events in the same category for the last 7 days or the last complete week, if events are in the same Redis slot and we have more than one metric.
 - `#{category}_total_unique_counts_monthly`: Total unique counts for events in same category for the last 28 days or the last 4 complete weeks, if events are in the same Redis slot and we have more than one metric.
 
@@ -792,7 +795,7 @@ In order to add data for aggregated metrics into Usage Ping payload you should a
 - operator: operator that defines how aggregated metric data is counted. Available operators are:
   - `OR`: removes duplicates and counts all entries that triggered any of listed events
   - `AND`: removes duplicates and counts all elements that were observed triggering all of following events
-- events: list of events names (from [`known_events.yml`](#known-events-in-usage-data-payload)) to aggregate into metric. All events in this list must have the same `redis_slot` and `aggregation` attributes.
+- events: list of events names (from [`known_events.yml`](#known-events-are-added-automatically-in-usage-data-payload)) to aggregate into metric. All events in this list must have the same `redis_slot` and `aggregation` attributes.
 - feature_flag: name of [development feature flag](../feature_flags/development.md#development-type) that is checked before
 metrics aggregation is performed. Corresponding feature flag should have `default_enabled` attribute set to `false`.
 `feature_flag` attribute is **OPTIONAL**  and can be omitted, when `feature_flag` is missing no feature flag is checked.

@@ -4,6 +4,9 @@
 #
 # Used to filter Issues and MergeRequests collections by set of params
 #
+# Note: This class is NOT meant to be instantiated. Instead you should
+#       look at IssuesFinder or EpicsFinder, which inherit from this.
+#
 # Arguments:
 #   klass - actual class like Issue or MergeRequest
 #   current_user - which user use
@@ -90,6 +93,10 @@ class IssuableFinder
 
   def params_class
     IssuableFinder::Params
+  end
+
+  def klass
+    raise NotImplementedError
   end
 
   def initialize(current_user, params = {})
@@ -451,6 +458,7 @@ class IssuableFinder
 
   def by_release(items)
     return items unless params.releases?
+    return items if params.group? # don't allow release filtering at group level
 
     if params.filter_by_no_release?
       items.without_release

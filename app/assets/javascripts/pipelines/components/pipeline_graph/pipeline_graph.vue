@@ -1,5 +1,4 @@
 <script>
-import { isEmpty } from 'lodash';
 import { GlAlert } from '@gitlab/ui';
 import { __ } from '~/locale';
 import JobPill from './job_pill.vue';
@@ -22,8 +21,6 @@ export default {
   errorTexts: {
     [DRAW_FAILURE]: __('Could not draw the lines for job relationships'),
     [DEFAULT]: __('An unknown error occurred.'),
-  },
-  warningTexts: {
     [EMPTY_PIPELINE_DATA]: __(
       'The visualization will appear in this tab when the CI/CD configuration file is populated with valid syntax.',
     ),
@@ -46,23 +43,23 @@ export default {
     };
   },
   computed: {
+    hideGraph() {
+      // We won't even try to render the graph with these condition
+      // because it would cause additional errors down the line for the user
+      // which is confusing.
+      return this.isPipelineDataEmpty || this.isInvalidCiConfig;
+    },
     pipelineStages() {
       return this.pipelineData?.stages || [];
     },
     isPipelineDataEmpty() {
-      return !this.isInvalidCiConfig && isEmpty(this.pipelineStages);
+      return !this.isInvalidCiConfig && this.pipelineStages.length === 0;
     },
     isInvalidCiConfig() {
       return this.pipelineData?.status === CI_CONFIG_STATUS_INVALID;
     },
-    showAlert() {
-      return this.hasError || this.hasWarning;
-    },
     hasError() {
       return this.failureType;
-    },
-    hasWarning() {
-      return this.warning;
     },
     hasHighlightedJob() {
       return Boolean(this.highlightedJob);
@@ -75,26 +72,32 @@ export default {
       return this.warning;
     },
     failure() {
-      const text = this.$options.errorTexts[this.failureType] || this.$options.errorTexts[DEFAULT];
-
-      return { text, variant: 'danger', dismissible: true };
-    },
-    warning() {
-      if (this.isPipelineDataEmpty) {
-        return {
-          text: this.$options.warningTexts[EMPTY_PIPELINE_DATA],
-          variant: 'tip',
-          dismissible: false,
-        };
-      } else if (this.isInvalidCiConfig) {
-        return {
-          text: this.$options.warningTexts[INVALID_CI_CONFIG],
-          variant: 'danger',
-          dismissible: false,
-        };
+      switch (this.failureType) {
+        case DRAW_FAILURE:
+          return {
+            text: this.$options.errorTexts[DRAW_FAILURE],
+            variant: 'danger',
+            dismissible: true,
+          };
+        case EMPTY_PIPELINE_DATA:
+          return {
+            text: this.$options.errorTexts[EMPTY_PIPELINE_DATA],
+            variant: 'tip',
+            dismissible: false,
+          };
+        case INVALID_CI_CONFIG:
+          return {
+            text: this.$options.errorTexts[INVALID_CI_CONFIG],
+            variant: 'danger',
+            dismissible: false,
+          };
+        default:
+          return {
+            text: this.$options.errorTexts[DEFAULT],
+            variant: 'danger',
+            dismissible: true,
+          };
       }
-
-      return null;
     },
     viewBox() {
       return [0, 0, this.width, this.height];
@@ -120,6 +123,24 @@ export default {
       }
 
       return [];
+    },
+  },
+  watch: {
+    isPipelineDataEmpty: {
+      immediate: true,
+      handler(isDataEmpty) {
+        if (isDataEmpty) {
+          this.reportFailure(EMPTY_PIPELINE_DATA);
+        }
+      },
+    },
+    isInvalidCiConfig: {
+      immediate: true,
+      handler(isInvalid) {
+        if (isInvalid) {
+          this.reportFailure(INVALID_CI_CONFIG);
+        }
+      },
     },
   },
   mounted() {
@@ -201,7 +222,7 @@ export default {
 <template>
   <div>
     <gl-alert
-      v-if="showAlert"
+      v-if="hasError"
       :variant="alert.variant"
       :dismissible="alert.dismissible"
       @dismiss="alert.dismissible ? resetFailure : null"
@@ -209,7 +230,7 @@ export default {
       {{ alert.text }}
     </gl-alert>
     <div
-      v-if="!hasWarning"
+      v-if="!hideGraph"
       :id="$options.CONTAINER_ID"
       :ref="$options.CONTAINER_REF"
       class="gl-display-flex gl-bg-gray-50 gl-px-4 gl-overflow-auto gl-relative gl-py-7"

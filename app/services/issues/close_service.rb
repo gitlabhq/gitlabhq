@@ -31,7 +31,7 @@ module Issues
 
         closed_via = _("commit %{commit_id}") % { commit_id: closed_via.id } if closed_via.is_a?(Commit)
 
-        notification_service.async.close_issue(issue, current_user, closed_via: closed_via) if notifications
+        notification_service.async.close_issue(issue, current_user, { closed_via: closed_via }) if notifications
         todo_service.close_issue(issue, current_user)
         resolve_alert(issue)
         execute_hooks(issue, 'close')

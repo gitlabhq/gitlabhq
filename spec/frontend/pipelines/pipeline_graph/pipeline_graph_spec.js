@@ -37,7 +37,7 @@ describe('pipeline graph component', () => {
     });
 
     it('renders an empty section', () => {
-      expect(wrapper.text()).toBe(wrapper.vm.$options.warningTexts[EMPTY_PIPELINE_DATA]);
+      expect(wrapper.text()).toBe(wrapper.vm.$options.errorTexts[EMPTY_PIPELINE_DATA]);
       expect(findPipelineGraph().exists()).toBe(false);
       expect(findAllStagePills()).toHaveLength(0);
       expect(findAllJobPills()).toHaveLength(0);
@@ -51,7 +51,7 @@ describe('pipeline graph component', () => {
 
     it('renders an error message and does not render the graph', () => {
       expect(findAlert().exists()).toBe(true);
-      expect(findAlert().text()).toBe(wrapper.vm.$options.warningTexts[INVALID_CI_CONFIG]);
+      expect(findAlert().text()).toBe(wrapper.vm.$options.errorTexts[INVALID_CI_CONFIG]);
       expect(findPipelineGraph().exists()).toBe(false);
     });
   });

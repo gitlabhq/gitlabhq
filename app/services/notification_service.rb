@@ -118,8 +118,8 @@ class NotificationService
   #  * project team members with notification level higher then Participating
   #  * users with custom level checked with "close issue"
   #
-  def close_issue(issue, current_user, closed_via: nil)
-    close_resource_email(issue, current_user, :closed_issue_email, closed_via: closed_via)
+  def close_issue(issue, current_user, params = {})
+    close_resource_email(issue, current_user, :closed_issue_email, closed_via: params[:closed_via])
   end
 
   # When we reassign an issue we should send an email to:

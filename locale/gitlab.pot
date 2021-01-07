@@ -29037,7 +29037,7 @@ msgstr ""
 msgid "ThreatMonitoring|Time"
 msgstr ""
 
-msgid "ThreatMonitoring|To view this data, ensure you have configured an environment for this project and that at least one threat monitoring feature is enabled."
+msgid "ThreatMonitoring|To view this data, ensure you have configured an environment for this project and that at least one threat monitoring feature is enabled. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
 msgid "ThreatMonitoring|Total Packets"
