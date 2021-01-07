@@ -7,7 +7,7 @@ module Mutations
         field :integration,
               Types::AlertManagement::HttpIntegrationType,
               null: true,
-              description: "The HTTP integration"
+              description: "The HTTP integration."
 
         authorize :admin_operations
 

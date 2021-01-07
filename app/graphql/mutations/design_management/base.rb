@@ -7,11 +7,11 @@ module Mutations
 
       argument :project_path, GraphQL::ID_TYPE,
                required: true,
-               description: "The project where the issue is to upload designs for"
+               description: "The project where the issue is to upload designs for."
 
       argument :iid, GraphQL::ID_TYPE,
                required: true,
-               description: "The IID of the issue to modify designs for"
+               description: "The IID of the issue to modify designs for."
 
       private
 

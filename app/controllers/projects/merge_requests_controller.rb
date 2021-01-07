@@ -69,8 +69,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
                      :toggle_award_emoji, :toggle_subscription, :update
                    ]
 
-  feature_category :code_testing, [:test_reports, :coverage_reports, :terraform_reports]
+  feature_category :code_testing, [:test_reports, :coverage_reports]
   feature_category :accessibility_testing, [:accessibility_reports]
+  feature_category :infrastructure_as_code, [:terraform_reports]
 
   def index
     @merge_requests = @issuables

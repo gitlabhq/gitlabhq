@@ -12,11 +12,11 @@ module Mutations
 
       argument :project_path, GraphQL::ID_TYPE,
                required: true,
-               description: 'Project full path the issue is associated with'
+               description: 'Project full path the issue is associated with.'
 
       argument :iid, GraphQL::INT_TYPE,
                required: false,
-               description: 'The IID (internal ID) of a project issue. Only admins and project owners can modify'
+               description: 'The IID (internal ID) of a project issue. Only admins and project owners can modify.'
 
       argument :title, GraphQL::STRING_TYPE,
                required: true,
@@ -24,7 +24,7 @@ module Mutations
 
       argument :milestone_id, ::Types::GlobalIDType[::Milestone],
                required: false,
-               description: 'The ID of the milestone to assign to the issue. On update milestone will be removed if set to null'
+               description: 'The ID of the milestone to assign to the issue. On update milestone will be removed if set to null.'
 
       argument :labels, [GraphQL::STRING_TYPE],
                required: false,
@@ -32,28 +32,28 @@ module Mutations
 
       argument :label_ids, [::Types::GlobalIDType[::Label]],
                required: false,
-               description: 'The IDs of labels to be added to the issue'
+               description: 'The IDs of labels to be added to the issue.'
 
       argument :created_at, Types::TimeType,
                required: false,
-               description: 'Timestamp when the issue was created. Available only for admins and project owners'
+               description: 'Timestamp when the issue was created. Available only for admins and project owners.'
 
       argument :merge_request_to_resolve_discussions_of, ::Types::GlobalIDType[::MergeRequest],
                required: false,
-               description: 'The IID of a merge request for which to resolve discussions'
+               description: 'The IID of a merge request for which to resolve discussions.'
 
       argument :discussion_to_resolve, GraphQL::STRING_TYPE,
                required: false,
-               description: 'The ID of a discussion to resolve. Also pass `merge_request_to_resolve_discussions_of`'
+               description: 'The ID of a discussion to resolve. Also pass `merge_request_to_resolve_discussions_of`.'
 
       argument :assignee_ids, [::Types::GlobalIDType[::User]],
                required: false,
-               description: 'The array of user IDs to assign to the issue'
+               description: 'The array of user IDs to assign to the issue.'
 
       field :issue,
             Types::IssueType,
             null: true,
-            description: 'The issue after mutation'
+            description: 'The issue after mutation.'
 
       def ready?(**args)
         if args.slice(*mutually_exclusive_label_args).size > 1

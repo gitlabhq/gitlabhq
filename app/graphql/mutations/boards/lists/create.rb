@@ -8,11 +8,11 @@ module Mutations
 
         argument :backlog, GraphQL::BOOLEAN_TYPE,
                  required: false,
-                 description: 'Create the backlog list'
+                 description: 'Create the backlog list.'
 
         argument :label_id, ::Types::GlobalIDType[::Label],
                  required: false,
-                 description: 'Global ID of an existing label'
+                 description: 'Global ID of an existing label.'
 
         def ready?(**args)
           if args.slice(*mutually_exclusive_args).size != 1

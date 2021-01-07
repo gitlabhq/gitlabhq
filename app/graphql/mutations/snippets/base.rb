@@ -6,7 +6,7 @@ module Mutations
       field :snippet,
             Types::SnippetType,
             null: true,
-            description: 'The snippet after mutation'
+            description: 'The snippet after mutation.'
 
       private
 

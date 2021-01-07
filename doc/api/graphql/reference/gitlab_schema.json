@@ -105,7 +105,7 @@
           "inputFields": [
             {
               "name": "awardableId",
-              "description": "The global ID of the awardable resource",
+              "description": "The global ID of the awardable resource.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -153,7 +153,7 @@
           "fields": [
             {
               "name": "awardEmoji",
-              "description": "The award emoji after mutation",
+              "description": "The award emoji after mutation.",
               "args": [
 
               ],
@@ -403,7 +403,7 @@
             },
             {
               "name": "queueName",
-              "description": "The name of the queue to delete jobs from",
+              "description": "The name of the queue to delete jobs from.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -477,7 +477,7 @@
             },
             {
               "name": "result",
-              "description": "Information about the status of the deletion request",
+              "description": "Information about the status of the deletion request.",
               "args": [
 
               ],
@@ -2122,7 +2122,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the alert to mutate is in",
+              "description": "The project the alert to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -2136,7 +2136,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the alert to mutate",
+              "description": "The IID of the alert to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -2202,7 +2202,7 @@
           "fields": [
             {
               "name": "alert",
-              "description": "The alert after mutation",
+              "description": "The alert after mutation.",
               "args": [
 
               ],
@@ -2256,7 +2256,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue created after mutation",
+              "description": "The issue created after mutation.",
               "args": [
 
               ],
@@ -2270,7 +2270,7 @@
             },
             {
               "name": "todo",
-              "description": "The todo after mutation",
+              "description": "The todo after mutation.",
               "args": [
 
               ],
@@ -2298,7 +2298,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the alert to mutate is in",
+              "description": "The project the alert to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -2312,7 +2312,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the alert to mutate",
+              "description": "The IID of the alert to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -2346,7 +2346,7 @@
           "fields": [
             {
               "name": "alert",
-              "description": "The alert after mutation",
+              "description": "The alert after mutation.",
               "args": [
 
               ],
@@ -2400,7 +2400,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue created after mutation",
+              "description": "The issue created after mutation.",
               "args": [
 
               ],
@@ -2414,7 +2414,7 @@
             },
             {
               "name": "todo",
-              "description": "The todo after mutation",
+              "description": "The todo after mutation.",
               "args": [
 
               ],
@@ -2596,7 +2596,7 @@
           "inputFields": [
             {
               "name": "awardableId",
-              "description": "The global ID of the awardable resource",
+              "description": "The global ID of the awardable resource.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -2644,7 +2644,7 @@
           "fields": [
             {
               "name": "awardEmoji",
-              "description": "The award emoji after mutation",
+              "description": "The award emoji after mutation.",
               "args": [
 
               ],
@@ -2712,7 +2712,7 @@
           "inputFields": [
             {
               "name": "awardableId",
-              "description": "The global ID of the awardable resource",
+              "description": "The global ID of the awardable resource.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -2760,7 +2760,7 @@
           "fields": [
             {
               "name": "awardEmoji",
-              "description": "The award emoji after mutation",
+              "description": "The award emoji after mutation.",
               "args": [
 
               ],
@@ -2828,7 +2828,7 @@
           "inputFields": [
             {
               "name": "awardableId",
-              "description": "The global ID of the awardable resource",
+              "description": "The global ID of the awardable resource.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -2876,7 +2876,7 @@
           "fields": [
             {
               "name": "awardEmoji",
-              "description": "The award emoji after mutation",
+              "description": "The award emoji after mutation.",
               "args": [
 
               ],
@@ -5602,7 +5602,7 @@
           "inputFields": [
             {
               "name": "boardId",
-              "description": "Global ID of the issue board to mutate",
+              "description": "Global ID of the issue board to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -5616,7 +5616,7 @@
             },
             {
               "name": "backlog",
-              "description": "Create the backlog list",
+              "description": "Create the backlog list.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
@@ -5626,7 +5626,7 @@
             },
             {
               "name": "labelId",
-              "description": "Global ID of an existing label",
+              "description": "Global ID of an existing label.",
               "type": {
                 "kind": "SCALAR",
                 "name": "LabelID",
@@ -5726,7 +5726,7 @@
             },
             {
               "name": "list",
-              "description": "List of the issue board",
+              "description": "List of the issue board.",
               "args": [
 
               ],
@@ -9564,7 +9564,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "Project full path the branch is associated with",
+              "description": "Project full path the branch is associated with.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -9578,7 +9578,7 @@
             },
             {
               "name": "branch",
-              "description": "Name of the branch to commit into, it can be a new branch",
+              "description": "Name of the branch to commit into, it can be a new branch.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -9592,7 +9592,7 @@
             },
             {
               "name": "startBranch",
-              "description": "If on a new branch, name of the original branch",
+              "description": "If on a new branch, name of the original branch.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -9616,7 +9616,7 @@
             },
             {
               "name": "actions",
-              "description": "Array of action hashes to commit as a batch",
+              "description": "Array of action hashes to commit as a batch.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -9672,7 +9672,7 @@
             },
             {
               "name": "commit",
-              "description": "The commit after mutation",
+              "description": "The commit after mutation.",
               "args": [
 
               ],
@@ -11388,7 +11388,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the alert to mutate is in",
+              "description": "The project the alert to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -11402,7 +11402,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the alert to mutate",
+              "description": "The IID of the alert to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -11436,7 +11436,7 @@
           "fields": [
             {
               "name": "alert",
-              "description": "The alert after mutation",
+              "description": "The alert after mutation.",
               "args": [
 
               ],
@@ -11490,7 +11490,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue created after mutation",
+              "description": "The issue created after mutation.",
               "args": [
 
               ],
@@ -11504,7 +11504,7 @@
             },
             {
               "name": "todo",
-              "description": "The todo after mutation",
+              "description": "The todo after mutation.",
               "args": [
 
               ],
@@ -11532,7 +11532,7 @@
           "inputFields": [
             {
               "name": "environmentId",
-              "description": "The global ID of the environment to add an annotation to",
+              "description": "The global ID of the environment to add an annotation to.",
               "type": {
                 "kind": "SCALAR",
                 "name": "EnvironmentID",
@@ -11542,7 +11542,7 @@
             },
             {
               "name": "clusterId",
-              "description": "The global ID of the cluster to add an annotation to",
+              "description": "The global ID of the cluster to add an annotation to.",
               "type": {
                 "kind": "SCALAR",
                 "name": "ClustersClusterID",
@@ -11552,7 +11552,7 @@
             },
             {
               "name": "startingAt",
-              "description": "Timestamp indicating starting moment to which the annotation relates",
+              "description": "Timestamp indicating starting moment to which the annotation relates.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -11566,7 +11566,7 @@
             },
             {
               "name": "endingAt",
-              "description": "Timestamp indicating ending moment to which the annotation relates",
+              "description": "Timestamp indicating ending moment to which the annotation relates.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Time",
@@ -11576,7 +11576,7 @@
             },
             {
               "name": "dashboardPath",
-              "description": "The path to a file defining the dashboard on which the annotation should be added",
+              "description": "The path to a file defining the dashboard on which the annotation should be added.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -11590,7 +11590,7 @@
             },
             {
               "name": "description",
-              "description": "The description of the annotation",
+              "description": "The description of the annotation.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -11624,7 +11624,7 @@
           "fields": [
             {
               "name": "annotation",
-              "description": "The created annotation",
+              "description": "The created annotation.",
               "args": [
 
               ],
@@ -11692,7 +11692,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project full path the resource is associated with",
+              "description": "The project full path the resource is associated with.",
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
@@ -11702,7 +11702,7 @@
             },
             {
               "name": "groupPath",
-              "description": "The group full path the resource is associated with",
+              "description": "The group full path the resource is associated with.",
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
@@ -11906,7 +11906,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "Project full path the branch is associated with",
+              "description": "Project full path the branch is associated with.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -11920,7 +11920,7 @@
             },
             {
               "name": "name",
-              "description": "Name of the branch",
+              "description": "Name of the branch.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -11934,7 +11934,7 @@
             },
             {
               "name": "ref",
-              "description": "Branch name or commit SHA to create branch from",
+              "description": "Branch name or commit SHA to create branch from.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -11968,7 +11968,7 @@
           "fields": [
             {
               "name": "branch",
-              "description": "Branch after mutation",
+              "description": "Branch after mutation.",
               "args": [
 
               ],
@@ -12268,7 +12268,7 @@
           "inputFields": [
             {
               "name": "groupPath",
-              "description": "Namespace full path the emoji is associated with",
+              "description": "Namespace full path the emoji is associated with.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -12282,7 +12282,7 @@
             },
             {
               "name": "name",
-              "description": "Name of the emoji",
+              "description": "Name of the emoji.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -12296,7 +12296,7 @@
             },
             {
               "name": "url",
-              "description": "Location of the emoji file",
+              "description": "Location of the emoji file.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -12344,7 +12344,7 @@
             },
             {
               "name": "customEmoji",
-              "description": "The new custom emoji",
+              "description": "The new custom emoji.",
               "args": [
 
               ],
@@ -12518,7 +12518,7 @@
           "inputFields": [
             {
               "name": "noteableId",
-              "description": "The global ID of the resource to add a note to",
+              "description": "The global ID of the resource to add a note to.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -12630,7 +12630,7 @@
             },
             {
               "name": "note",
-              "description": "The note after mutation",
+              "description": "The note after mutation.",
               "args": [
 
               ],
@@ -12866,7 +12866,7 @@
           "inputFields": [
             {
               "name": "noteableId",
-              "description": "The global ID of the resource to add a note to",
+              "description": "The global ID of the resource to add a note to.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -12978,7 +12978,7 @@
             },
             {
               "name": "note",
-              "description": "The note after mutation",
+              "description": "The note after mutation.",
               "args": [
 
               ],
@@ -13046,7 +13046,7 @@
             },
             {
               "name": "projectPath",
-              "description": "Project full path the issue is associated with",
+              "description": "Project full path the issue is associated with.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -13060,7 +13060,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID (internal ID) of a project issue. Only admins and project owners can modify",
+              "description": "The IID (internal ID) of a project issue. Only admins and project owners can modify.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
@@ -13084,7 +13084,7 @@
             },
             {
               "name": "milestoneId",
-              "description": "The ID of the milestone to assign to the issue. On update milestone will be removed if set to null",
+              "description": "The ID of the milestone to assign to the issue. On update milestone will be removed if set to null.",
               "type": {
                 "kind": "SCALAR",
                 "name": "MilestoneID",
@@ -13112,7 +13112,7 @@
             },
             {
               "name": "labelIds",
-              "description": "The IDs of labels to be added to the issue",
+              "description": "The IDs of labels to be added to the issue.",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -13130,7 +13130,7 @@
             },
             {
               "name": "createdAt",
-              "description": "Timestamp when the issue was created. Available only for admins and project owners",
+              "description": "Timestamp when the issue was created. Available only for admins and project owners.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Time",
@@ -13140,7 +13140,7 @@
             },
             {
               "name": "mergeRequestToResolveDiscussionsOf",
-              "description": "The IID of a merge request for which to resolve discussions",
+              "description": "The IID of a merge request for which to resolve discussions.",
               "type": {
                 "kind": "SCALAR",
                 "name": "MergeRequestID",
@@ -13150,7 +13150,7 @@
             },
             {
               "name": "discussionToResolve",
-              "description": "The ID of a discussion to resolve. Also pass `merge_request_to_resolve_discussions_of`",
+              "description": "The ID of a discussion to resolve. Also pass `merge_request_to_resolve_discussions_of`.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -13160,7 +13160,7 @@
             },
             {
               "name": "assigneeIds",
-              "description": "The array of user IDs to assign to the issue",
+              "description": "The array of user IDs to assign to the issue.",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -13268,7 +13268,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue after mutation",
+              "description": "The issue after mutation.",
               "args": [
 
               ],
@@ -13444,7 +13444,7 @@
           "inputFields": [
             {
               "name": "noteableId",
-              "description": "The global ID of the resource to add a note to",
+              "description": "The global ID of the resource to add a note to.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -13482,7 +13482,7 @@
             },
             {
               "name": "discussionId",
-              "description": "The global ID of the discussion this note is in reply to",
+              "description": "The global ID of the discussion this note is in reply to.",
               "type": {
                 "kind": "SCALAR",
                 "name": "DiscussionID",
@@ -13552,7 +13552,7 @@
             },
             {
               "name": "note",
-              "description": "The note after mutation",
+              "description": "The note after mutation.",
               "args": [
 
               ],
@@ -13702,7 +13702,7 @@
           "inputFields": [
             {
               "name": "title",
-              "description": "Title of the snippet",
+              "description": "Title of the snippet.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -13716,7 +13716,7 @@
             },
             {
               "name": "description",
-              "description": "Description of the snippet",
+              "description": "Description of the snippet.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -13726,7 +13726,7 @@
             },
             {
               "name": "visibilityLevel",
-              "description": "The visibility level of the snippet",
+              "description": "The visibility level of the snippet.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -13740,7 +13740,7 @@
             },
             {
               "name": "projectPath",
-              "description": "The project full path the snippet is associated with",
+              "description": "The project full path the snippet is associated with.",
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
@@ -13750,7 +13750,7 @@
             },
             {
               "name": "uploadedFiles",
-              "description": "The paths to files uploaded in the snippet description",
+              "description": "The paths to files uploaded in the snippet description.",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -13768,7 +13768,7 @@
             },
             {
               "name": "blobActions",
-              "description": "Actions to perform over the snippet repository and blobs",
+              "description": "Actions to perform over the snippet repository and blobs.",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -13846,7 +13846,7 @@
             },
             {
               "name": "snippet",
-              "description": "The snippet after mutation",
+              "description": "The snippet after mutation.",
               "args": [
 
               ],
@@ -13860,7 +13860,7 @@
             },
             {
               "name": "spam",
-              "description": "Indicates whether the operation returns a record detected as spam",
+              "description": "Indicates whether the operation returns a record detected as spam.",
               "args": [
 
               ],
@@ -16565,7 +16565,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "Global ID of the annotation to delete",
+              "description": "Global ID of the annotation to delete.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -18340,7 +18340,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project where the issue is to upload designs for",
+              "description": "The project where the issue is to upload designs for.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -18354,7 +18354,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the issue to modify designs for",
+              "description": "The IID of the issue to modify designs for.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -18368,7 +18368,7 @@
             },
             {
               "name": "filenames",
-              "description": "The filenames of the designs to delete",
+              "description": "The filenames of the designs to delete.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -18450,7 +18450,7 @@
             },
             {
               "name": "version",
-              "description": "The new version in which the designs are deleted",
+              "description": "The new version in which the designs are deleted.",
               "args": [
 
               ],
@@ -18498,7 +18498,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "ID of the design to move",
+              "description": "ID of the design to move.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -18512,7 +18512,7 @@
             },
             {
               "name": "previous",
-              "description": "ID of the immediately preceding design",
+              "description": "ID of the immediately preceding design.",
               "type": {
                 "kind": "SCALAR",
                 "name": "DesignManagementDesignID",
@@ -18522,7 +18522,7 @@
             },
             {
               "name": "next",
-              "description": "ID of the immediately following design",
+              "description": "ID of the immediately following design.",
               "type": {
                 "kind": "SCALAR",
                 "name": "DesignManagementDesignID",
@@ -18566,7 +18566,7 @@
             },
             {
               "name": "designCollection",
-              "description": "The current state of the collection",
+              "description": "The current state of the collection.",
               "args": [
 
               ],
@@ -18620,7 +18620,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project where the issue is to upload designs for",
+              "description": "The project where the issue is to upload designs for.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -18634,7 +18634,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the issue to modify designs for",
+              "description": "The IID of the issue to modify designs for.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -18648,7 +18648,7 @@
             },
             {
               "name": "files",
-              "description": "The files to upload",
+              "description": "The files to upload.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -18704,7 +18704,7 @@
             },
             {
               "name": "designs",
-              "description": "The designs that were uploaded by the mutation",
+              "description": "The designs that were uploaded by the mutation.",
               "args": [
 
               ],
@@ -19199,7 +19199,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The global ID of the board to destroy",
+              "description": "The global ID of the board to destroy.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -19335,7 +19335,7 @@
           "fields": [
             {
               "name": "board",
-              "description": "The board after mutation",
+              "description": "The board after mutation.",
               "args": [
 
               ],
@@ -19667,7 +19667,7 @@
             },
             {
               "name": "deletedTagNames",
-              "description": "Deleted container repository tags",
+              "description": "Deleted container repository tags.",
               "args": [
 
               ],
@@ -19733,7 +19733,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The global ID of the note to destroy",
+              "description": "The global ID of the note to destroy.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -19807,7 +19807,7 @@
             },
             {
               "name": "note",
-              "description": "The note after mutation",
+              "description": "The note after mutation.",
               "args": [
 
               ],
@@ -19835,7 +19835,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The global ID of the snippet to destroy",
+              "description": "The global ID of the snippet to destroy.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -19909,7 +19909,7 @@
             },
             {
               "name": "snippet",
-              "description": "The snippet after mutation",
+              "description": "The snippet after mutation.",
               "args": [
 
               ],
@@ -21444,7 +21444,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The global ID of the discussion",
+              "description": "The global ID of the discussion.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -21458,7 +21458,7 @@
             },
             {
               "name": "resolve",
-              "description": "Will resolve the discussion when true, and unresolve the discussion when false",
+              "description": "Will resolve the discussion when true, and unresolve the discussion when false.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -21506,7 +21506,7 @@
             },
             {
               "name": "discussion",
-              "description": "The discussion after mutation",
+              "description": "The discussion after mutation.",
               "args": [
 
               ],
@@ -22094,7 +22094,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The global ID of the environment to update",
+              "description": "The global ID of the environment to update.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -22108,7 +22108,7 @@
             },
             {
               "name": "weight",
-              "description": "The weight of the Canary Ingress",
+              "description": "The weight of the Canary Ingress.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -30351,7 +30351,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project to create the integration in",
+              "description": "The project to create the integration in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -30365,7 +30365,7 @@
             },
             {
               "name": "name",
-              "description": "The name of the integration",
+              "description": "The name of the integration.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -30379,7 +30379,7 @@
             },
             {
               "name": "active",
-              "description": "Whether the integration is receiving alerts",
+              "description": "Whether the integration is receiving alerts.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -30453,7 +30453,7 @@
             },
             {
               "name": "integration",
-              "description": "The HTTP integration",
+              "description": "The HTTP integration.",
               "args": [
 
               ],
@@ -30481,7 +30481,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The ID of the integration to remove",
+              "description": "The ID of the integration to remove.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -30555,7 +30555,7 @@
             },
             {
               "name": "integration",
-              "description": "The HTTP integration",
+              "description": "The HTTP integration.",
               "args": [
 
               ],
@@ -30583,7 +30583,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The ID of the integration to mutate",
+              "description": "The ID of the integration to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -30657,7 +30657,7 @@
             },
             {
               "name": "integration",
-              "description": "The HTTP integration",
+              "description": "The HTTP integration.",
               "args": [
 
               ],
@@ -30685,7 +30685,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The ID of the integration to mutate",
+              "description": "The ID of the integration to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -30699,7 +30699,7 @@
             },
             {
               "name": "name",
-              "description": "The name of the integration",
+              "description": "The name of the integration.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -30709,7 +30709,7 @@
             },
             {
               "name": "active",
-              "description": "Whether the integration is receiving alerts",
+              "description": "Whether the integration is receiving alerts.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
@@ -30779,7 +30779,7 @@
             },
             {
               "name": "integration",
-              "description": "The HTTP integration",
+              "description": "The HTTP integration.",
               "args": [
 
               ],
@@ -33167,7 +33167,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the issue to mutate is in",
+              "description": "The project the issue to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -33181,7 +33181,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the issue to mutate",
+              "description": "The IID of the issue to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -33195,7 +33195,7 @@
             },
             {
               "name": "targetProjectPath",
-              "description": "The project to move the issue to",
+              "description": "The project to move the issue to.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -33230,7 +33230,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "Project the issue to mutate is in",
+              "description": "Project the issue to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -33244,7 +33244,7 @@
             },
             {
               "name": "iid",
-              "description": "IID of the issue to mutate",
+              "description": "IID of the issue to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -33258,7 +33258,7 @@
             },
             {
               "name": "boardId",
-              "description": "Global ID of the board that the issue is in",
+              "description": "Global ID of the board that the issue is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -33272,7 +33272,7 @@
             },
             {
               "name": "fromListId",
-              "description": "ID of the board list that the issue will be moved from",
+              "description": "ID of the board list that the issue will be moved from.",
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
@@ -33282,7 +33282,7 @@
             },
             {
               "name": "toListId",
-              "description": "ID of the board list that the issue will be moved to",
+              "description": "ID of the board list that the issue will be moved to.",
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
@@ -33292,7 +33292,7 @@
             },
             {
               "name": "moveBeforeId",
-              "description": "ID of issue that should be placed before the current issue",
+              "description": "ID of issue that should be placed before the current issue.",
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
@@ -33302,7 +33302,7 @@
             },
             {
               "name": "moveAfterId",
-              "description": "ID of issue that should be placed after the current issue",
+              "description": "ID of issue that should be placed after the current issue.",
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
@@ -33382,7 +33382,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue after mutation",
+              "description": "The issue after mutation.",
               "args": [
 
               ],
@@ -33449,7 +33449,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue after mutation",
+              "description": "The issue after mutation.",
               "args": [
 
               ],
@@ -33634,7 +33634,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the issue to mutate is in",
+              "description": "The project the issue to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -33648,7 +33648,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the issue to mutate",
+              "description": "The IID of the issue to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -33754,7 +33754,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue after mutation",
+              "description": "The issue after mutation.",
               "args": [
 
               ],
@@ -33782,7 +33782,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the issue to mutate is in",
+              "description": "The project the issue to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -33796,7 +33796,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the issue to mutate",
+              "description": "The IID of the issue to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -33884,7 +33884,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue after mutation",
+              "description": "The issue after mutation.",
               "args": [
 
               ],
@@ -33912,7 +33912,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the issue to mutate is in",
+              "description": "The project the issue to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -33926,7 +33926,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the issue to mutate",
+              "description": "The IID of the issue to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -33940,7 +33940,7 @@
             },
             {
               "name": "dueDate",
-              "description": "The desired due date for the issue",
+              "description": "The desired due date for the issue.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -34014,7 +34014,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue after mutation",
+              "description": "The issue after mutation.",
               "args": [
 
               ],
@@ -34042,7 +34042,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the issue to mutate is in",
+              "description": "The project the issue to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -34056,7 +34056,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the issue to mutate",
+              "description": "The IID of the issue to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -34140,7 +34140,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue after mutation",
+              "description": "The issue after mutation.",
               "args": [
 
               ],
@@ -34168,7 +34168,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the issue to mutate is in",
+              "description": "The project the issue to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -34182,7 +34182,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the issue to mutate",
+              "description": "The IID of the issue to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -34266,7 +34266,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue after mutation",
+              "description": "The issue after mutation.",
               "args": [
 
               ],
@@ -34294,7 +34294,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the issue to mutate is in",
+              "description": "The project the issue to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -34308,7 +34308,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the issue to mutate",
+              "description": "The IID of the issue to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -34322,7 +34322,7 @@
             },
             {
               "name": "locked",
-              "description": "Whether or not to lock discussion on the issue",
+              "description": "Whether or not to lock discussion on the issue.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -34396,7 +34396,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue after mutation",
+              "description": "The issue after mutation.",
               "args": [
 
               ],
@@ -34424,7 +34424,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the issue to mutate is in",
+              "description": "The project the issue to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -34438,7 +34438,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the issue to mutate",
+              "description": "The IID of the issue to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -34526,7 +34526,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue after mutation",
+              "description": "The issue after mutation.",
               "args": [
 
               ],
@@ -34554,7 +34554,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the issue to mutate is in",
+              "description": "The project the issue to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -34568,7 +34568,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the issue to mutate",
+              "description": "The IID of the issue to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -34582,7 +34582,7 @@
             },
             {
               "name": "subscribedState",
-              "description": "The desired state of the subscription",
+              "description": "The desired state of the subscription.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -34656,7 +34656,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue after mutation",
+              "description": "The issue after mutation.",
               "args": [
 
               ],
@@ -34684,7 +34684,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the issue to mutate is in",
+              "description": "The project the issue to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -34698,7 +34698,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the issue to mutate",
+              "description": "The IID of the issue to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -34786,7 +34786,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue after mutation",
+              "description": "The issue after mutation.",
               "args": [
 
               ],
@@ -35817,7 +35817,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project to import the Jira project into",
+              "description": "The project to import the Jira project into.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -35831,7 +35831,7 @@
             },
             {
               "name": "jiraProjectKey",
-              "description": "Project key of the importer Jira project",
+              "description": "Project key of the importer Jira project.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -35845,7 +35845,7 @@
             },
             {
               "name": "jiraProjectName",
-              "description": "Project name of the importer Jira project",
+              "description": "Project name of the importer Jira project.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -35855,7 +35855,7 @@
             },
             {
               "name": "usersMapping",
-              "description": "The mapping of Jira to GitLab users",
+              "description": "The mapping of Jira to GitLab users.",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -35933,7 +35933,7 @@
             },
             {
               "name": "jiraImport",
-              "description": "The Jira import data after mutation",
+              "description": "The Jira import data after mutation.",
               "args": [
 
               ],
@@ -35961,7 +35961,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project to import the Jira users into",
+              "description": "The project to import the Jira users into.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -35975,7 +35975,7 @@
             },
             {
               "name": "startAt",
-              "description": "The index of the record the import should started at, default 0 (50 records returned)",
+              "description": "The index of the record the import should started at, default 0 (50 records returned).",
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
@@ -36875,7 +36875,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project full path the resource is associated with",
+              "description": "The project full path the resource is associated with.",
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
@@ -36885,7 +36885,7 @@
             },
             {
               "name": "groupPath",
-              "description": "The group full path the resource is associated with",
+              "description": "The group full path the resource is associated with.",
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
@@ -36895,7 +36895,7 @@
             },
             {
               "name": "title",
-              "description": "Title of the label",
+              "description": "Title of the label.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -36909,7 +36909,7 @@
             },
             {
               "name": "description",
-              "description": "Description of the label",
+              "description": "Description of the label.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -36919,7 +36919,7 @@
             },
             {
               "name": "color",
-              "description": "The color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the CSS color names in https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords",
+              "description": "The color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the CSS color names in https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -36989,7 +36989,7 @@
             },
             {
               "name": "label",
-              "description": "The label after mutation",
+              "description": "The label after mutation.",
               "args": [
 
               ],
@@ -37111,7 +37111,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The global ID of the snippet to update",
+              "description": "The global ID of the snippet to update.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -37185,7 +37185,7 @@
             },
             {
               "name": "snippet",
-              "description": "The snippet after mutation",
+              "description": "The snippet after mutation.",
               "args": [
 
               ],
@@ -39381,7 +39381,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "Project full path the merge request is associated with",
+              "description": "Project full path the merge request is associated with.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -39525,7 +39525,7 @@
             },
             {
               "name": "mergeRequest",
-              "description": "The merge request after mutation",
+              "description": "The merge request after mutation.",
               "args": [
 
               ],
@@ -40028,7 +40028,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the merge request to mutate is in",
+              "description": "The project the merge request to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -40042,7 +40042,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the merge request to mutate",
+              "description": "The IID of the merge request to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -40148,7 +40148,7 @@
             },
             {
               "name": "mergeRequest",
-              "description": "The merge request after mutation",
+              "description": "The merge request after mutation.",
               "args": [
 
               ],
@@ -40176,7 +40176,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the merge request to mutate is in",
+              "description": "The project the merge request to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -40190,7 +40190,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the merge request to mutate",
+              "description": "The IID of the merge request to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -40296,7 +40296,7 @@
             },
             {
               "name": "mergeRequest",
-              "description": "The merge request after mutation",
+              "description": "The merge request after mutation.",
               "args": [
 
               ],
@@ -40324,7 +40324,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the merge request to mutate is in",
+              "description": "The project the merge request to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -40338,7 +40338,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the merge request to mutate",
+              "description": "The IID of the merge request to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -40426,7 +40426,7 @@
             },
             {
               "name": "mergeRequest",
-              "description": "The merge request after mutation",
+              "description": "The merge request after mutation.",
               "args": [
 
               ],
@@ -40454,7 +40454,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the merge request to mutate is in",
+              "description": "The project the merge request to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -40468,7 +40468,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the merge request to mutate",
+              "description": "The IID of the merge request to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -40552,7 +40552,7 @@
             },
             {
               "name": "mergeRequest",
-              "description": "The merge request after mutation",
+              "description": "The merge request after mutation.",
               "args": [
 
               ],
@@ -40580,7 +40580,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the merge request to mutate is in",
+              "description": "The project the merge request to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -40594,7 +40594,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the merge request to mutate",
+              "description": "The IID of the merge request to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -40608,7 +40608,7 @@
             },
             {
               "name": "subscribedState",
-              "description": "The desired state of the subscription",
+              "description": "The desired state of the subscription.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -40682,7 +40682,7 @@
             },
             {
               "name": "mergeRequest",
-              "description": "The merge request after mutation",
+              "description": "The merge request after mutation.",
               "args": [
 
               ],
@@ -40710,7 +40710,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the merge request to mutate is in",
+              "description": "The project the merge request to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -40724,7 +40724,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the merge request to mutate",
+              "description": "The IID of the merge request to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -40812,7 +40812,7 @@
             },
             {
               "name": "mergeRequest",
-              "description": "The merge request after mutation",
+              "description": "The merge request after mutation.",
               "args": [
 
               ],
@@ -40988,7 +40988,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the merge request to mutate is in",
+              "description": "The project the merge request to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -41002,7 +41002,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the merge request to mutate",
+              "description": "The IID of the merge request to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -41106,7 +41106,7 @@
             },
             {
               "name": "mergeRequest",
-              "description": "The merge request after mutation",
+              "description": "The merge request after mutation.",
               "args": [
 
               ],
@@ -56321,7 +56321,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project to create the integration in",
+              "description": "The project to create the integration in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -56335,7 +56335,7 @@
             },
             {
               "name": "active",
-              "description": "Whether the integration is receiving alerts",
+              "description": "Whether the integration is receiving alerts.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -56349,7 +56349,7 @@
             },
             {
               "name": "apiUrl",
-              "description": "Endpoint at which prometheus can be queried",
+              "description": "Endpoint at which prometheus can be queried.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -56423,7 +56423,7 @@
             },
             {
               "name": "integration",
-              "description": "The newly created integration",
+              "description": "The newly created integration.",
               "args": [
 
               ],
@@ -56451,7 +56451,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The ID of the integration to mutate",
+              "description": "The ID of the integration to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -56525,7 +56525,7 @@
             },
             {
               "name": "integration",
-              "description": "The newly created integration",
+              "description": "The newly created integration.",
               "args": [
 
               ],
@@ -56553,7 +56553,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The ID of the integration to mutate",
+              "description": "The ID of the integration to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -56567,7 +56567,7 @@
             },
             {
               "name": "active",
-              "description": "Whether the integration is receiving alerts",
+              "description": "Whether the integration is receiving alerts.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
@@ -56577,7 +56577,7 @@
             },
             {
               "name": "apiUrl",
-              "description": "Endpoint at which prometheus can be queried",
+              "description": "Endpoint at which prometheus can be queried.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -56647,7 +56647,7 @@
             },
             {
               "name": "integration",
-              "description": "The newly created integration",
+              "description": "The newly created integration.",
               "args": [
 
               ],
@@ -56685,7 +56685,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the issue to mutate is in",
+              "description": "The project the issue to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -56699,7 +56699,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the issue to mutate",
+              "description": "The IID of the issue to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -56797,7 +56797,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue after mutation",
+              "description": "The issue after mutation.",
               "args": [
 
               ],
@@ -59048,7 +59048,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "Full path of the project the release is associated with",
+              "description": "Full path of the project the release is associated with.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -59062,7 +59062,7 @@
             },
             {
               "name": "tagName",
-              "description": "Name of the tag to associate with the release",
+              "description": "Name of the tag to associate with the release.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -59076,7 +59076,7 @@
             },
             {
               "name": "ref",
-              "description": "The commit SHA or branch name to use if creating a new tag",
+              "description": "The commit SHA or branch name to use if creating a new tag.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -59086,7 +59086,7 @@
             },
             {
               "name": "name",
-              "description": "Name of the release",
+              "description": "Name of the release.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -59096,7 +59096,7 @@
             },
             {
               "name": "description",
-              "description": "Description (also known as \"release notes\") of the release",
+              "description": "Description (also known as \"release notes\") of the release.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -59134,7 +59134,7 @@
             },
             {
               "name": "assets",
-              "description": "Assets associated to the release",
+              "description": "Assets associated to the release.",
               "type": {
                 "kind": "INPUT_OBJECT",
                 "name": "ReleaseAssetsInput",
@@ -59204,7 +59204,7 @@
             },
             {
               "name": "release",
-              "description": "The release after mutation",
+              "description": "The release after mutation.",
               "args": [
 
               ],
@@ -59232,7 +59232,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "Full path of the project the release is associated with",
+              "description": "Full path of the project the release is associated with.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -59877,7 +59877,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "Full path of the project the release is associated with",
+              "description": "Full path of the project the release is associated with.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -59891,7 +59891,7 @@
             },
             {
               "name": "tagName",
-              "description": "Name of the tag associated with the release",
+              "description": "Name of the tag associated with the release.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -59905,7 +59905,7 @@
             },
             {
               "name": "name",
-              "description": "Name of the release",
+              "description": "Name of the release.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -59915,7 +59915,7 @@
             },
             {
               "name": "description",
-              "description": "Description (release notes) of the release",
+              "description": "Description (release notes) of the release.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -59925,7 +59925,7 @@
             },
             {
               "name": "releasedAt",
-              "description": "The release date",
+              "description": "The release date.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Time",
@@ -60041,7 +60041,7 @@
           "inputFields": [
             {
               "name": "awardableId",
-              "description": "The global ID of the awardable resource",
+              "description": "The global ID of the awardable resource.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -60089,7 +60089,7 @@
           "fields": [
             {
               "name": "awardEmoji",
-              "description": "The award emoji after mutation",
+              "description": "The award emoji after mutation.",
               "args": [
 
               ],
@@ -60245,7 +60245,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The global ID of the DiffNote to update",
+              "description": "The global ID of the DiffNote to update.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -60333,7 +60333,7 @@
             },
             {
               "name": "note",
-              "description": "The note after mutation",
+              "description": "The note after mutation.",
               "args": [
 
               ],
@@ -67552,7 +67552,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "Global ID of the Terraform state",
+              "description": "Global ID of the Terraform state.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -67695,7 +67695,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "Global ID of the Terraform state",
+              "description": "Global ID of the Terraform state.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -67783,7 +67783,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "Global ID of the Terraform state",
+              "description": "Global ID of the Terraform state.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -69183,7 +69183,7 @@
           "inputFields": [
             {
               "name": "targetId",
-              "description": "The global ID of the to-do item's parent. Issues, merge requests, designs and epics are supported",
+              "description": "The global ID of the to-do item's parent. Issues, merge requests, designs and epics are supported.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -69257,7 +69257,7 @@
             },
             {
               "name": "todo",
-              "description": "The to-do created",
+              "description": "The to-do created.",
               "args": [
 
               ],
@@ -69340,7 +69340,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The global ID of the todo to mark as done",
+              "description": "The global ID of the todo to mark as done.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -69414,7 +69414,7 @@
             },
             {
               "name": "todo",
-              "description": "The requested todo",
+              "description": "The requested todo.",
               "args": [
 
               ],
@@ -69446,7 +69446,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The global ID of the todo to restore",
+              "description": "The global ID of the todo to restore.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -69481,7 +69481,7 @@
           "inputFields": [
             {
               "name": "ids",
-              "description": "The global IDs of the todos to restore (a maximum of 50 is supported at once)",
+              "description": "The global IDs of the todos to restore (a maximum of 50 is supported at once).",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -69563,7 +69563,7 @@
             },
             {
               "name": "todos",
-              "description": "Updated todos",
+              "description": "Updated todos.",
               "args": [
 
               ],
@@ -69589,7 +69589,7 @@
             },
             {
               "name": "updatedIds",
-              "description": "The IDs of the updated todo items Deprecated in 13.2: Use todos.",
+              "description": "The IDs of the updated todo items. Deprecated in 13.2: Use todos.",
               "args": [
 
               ],
@@ -69668,7 +69668,7 @@
             },
             {
               "name": "todo",
-              "description": "The requested todo",
+              "description": "The requested todo.",
               "args": [
 
               ],
@@ -69840,7 +69840,7 @@
             },
             {
               "name": "todos",
-              "description": "Updated todos",
+              "description": "Updated todos.",
               "args": [
 
               ],
@@ -69866,7 +69866,7 @@
             },
             {
               "name": "updatedIds",
-              "description": "Ids of the updated todos Deprecated in 13.2: Use todos.",
+              "description": "Ids of the updated todos. Deprecated in 13.2: Use todos.",
               "args": [
 
               ],
@@ -69906,7 +69906,7 @@
           "inputFields": [
             {
               "name": "awardableId",
-              "description": "The global ID of the awardable resource",
+              "description": "The global ID of the awardable resource.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -69954,7 +69954,7 @@
           "fields": [
             {
               "name": "awardEmoji",
-              "description": "The award emoji after mutation",
+              "description": "The award emoji after mutation.",
               "args": [
 
               ],
@@ -70536,7 +70536,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the alert to mutate is in",
+              "description": "The project the alert to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -70550,7 +70550,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the alert to mutate",
+              "description": "The IID of the alert to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -70564,7 +70564,7 @@
             },
             {
               "name": "status",
-              "description": "The status to set the alert",
+              "description": "The status to set the alert.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -70598,7 +70598,7 @@
           "fields": [
             {
               "name": "alert",
-              "description": "The alert after mutation",
+              "description": "The alert after mutation.",
               "args": [
 
               ],
@@ -70652,7 +70652,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue created after mutation",
+              "description": "The issue created after mutation.",
               "args": [
 
               ],
@@ -70666,7 +70666,7 @@
             },
             {
               "name": "todo",
-              "description": "The todo after mutation",
+              "description": "The todo after mutation.",
               "args": [
 
               ],
@@ -70979,7 +70979,7 @@
             },
             {
               "name": "position",
-              "description": "Position of list within the board",
+              "description": "Position of list within the board.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
@@ -70989,7 +70989,7 @@
             },
             {
               "name": "collapsed",
-              "description": "Indicates if list is collapsed for this user",
+              "description": "Indicates if list is collapsed for this user.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
@@ -71059,7 +71059,7 @@
             },
             {
               "name": "list",
-              "description": "Mutated list",
+              "description": "Mutated list.",
               "args": [
 
               ],
@@ -71270,7 +71270,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project path where the container expiration policy is located",
+              "description": "The project path where the container expiration policy is located.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -71378,7 +71378,7 @@
             },
             {
               "name": "containerExpirationPolicy",
-              "description": "The container expiration policy after mutation",
+              "description": "The container expiration policy after mutation.",
               "args": [
 
               ],
@@ -71849,7 +71849,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The global ID of the note to update",
+              "description": "The global ID of the note to update.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -71943,7 +71943,7 @@
             },
             {
               "name": "note",
-              "description": "The note after mutation",
+              "description": "The note after mutation.",
               "args": [
 
               ],
@@ -71971,7 +71971,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project the issue to mutate is in",
+              "description": "The project the issue to mutate is in.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -71985,7 +71985,7 @@
             },
             {
               "name": "iid",
-              "description": "The IID of the issue to mutate",
+              "description": "The IID of the issue to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -72049,7 +72049,7 @@
             },
             {
               "name": "milestoneId",
-              "description": "The ID of the milestone to assign to the issue. On update milestone will be removed if set to null",
+              "description": "The ID of the milestone to assign to the issue. On update milestone will be removed if set to null.",
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
@@ -72059,7 +72059,7 @@
             },
             {
               "name": "addLabelIds",
-              "description": "The IDs of labels to be added to the issue",
+              "description": "The IDs of labels to be added to the issue.",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -72077,7 +72077,7 @@
             },
             {
               "name": "removeLabelIds",
-              "description": "The IDs of labels to be removed from the issue",
+              "description": "The IDs of labels to be removed from the issue.",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -72095,7 +72095,7 @@
             },
             {
               "name": "stateEvent",
-              "description": "Close or reopen an issue",
+              "description": "Close or reopen an issue.",
               "type": {
                 "kind": "ENUM",
                 "name": "IssueStateEvent",
@@ -72195,7 +72195,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue after mutation",
+              "description": "The issue after mutation.",
               "args": [
 
               ],
@@ -72501,7 +72501,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The global ID of the note to update",
+              "description": "The global ID of the note to update.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -72595,7 +72595,7 @@
             },
             {
               "name": "note",
-              "description": "The note after mutation",
+              "description": "The note after mutation.",
               "args": [
 
               ],
@@ -72779,7 +72779,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The global ID of the snippet to update",
+              "description": "The global ID of the snippet to update.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -72793,7 +72793,7 @@
             },
             {
               "name": "title",
-              "description": "Title of the snippet",
+              "description": "Title of the snippet.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -72803,7 +72803,7 @@
             },
             {
               "name": "description",
-              "description": "Description of the snippet",
+              "description": "Description of the snippet.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -72813,7 +72813,7 @@
             },
             {
               "name": "visibilityLevel",
-              "description": "The visibility level of the snippet",
+              "description": "The visibility level of the snippet.",
               "type": {
                 "kind": "ENUM",
                 "name": "VisibilityLevelsEnum",
@@ -72823,7 +72823,7 @@
             },
             {
               "name": "blobActions",
-              "description": "Actions to perform over the snippet repository and blobs",
+              "description": "Actions to perform over the snippet repository and blobs.",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -72901,7 +72901,7 @@
             },
             {
               "name": "snippet",
-              "description": "The snippet after mutation",
+              "description": "The snippet after mutation.",
               "args": [
 
               ],
@@ -72915,7 +72915,7 @@
             },
             {
               "name": "spam",
-              "description": "Indicates whether the operation returns a record detected as spam",
+              "description": "Indicates whether the operation returns a record detected as spam.",
               "args": [
 
               ],

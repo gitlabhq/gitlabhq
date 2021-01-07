@@ -13,16 +13,16 @@ module Mutations
 
         argument :position, GraphQL::INT_TYPE,
                   required: false,
-                  description: 'Position of list within the board'
+                  description: 'Position of list within the board.'
 
         argument :collapsed, GraphQL::BOOLEAN_TYPE,
                   required: false,
-                  description: 'Indicates if list is collapsed for this user'
+                  description: 'Indicates if list is collapsed for this user.'
 
         field :list,
               Types::BoardListType,
               null: true,
-              description: 'Mutated list'
+              description: 'Mutated list.'
 
         def resolve(list: nil, **args)
           raise_resource_not_available_error! unless can_read_list?(list)

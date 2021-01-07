@@ -8,15 +8,15 @@ module Mutations
 
         argument :id, Types::GlobalIDType[::AlertManagement::HttpIntegration],
                  required: true,
-                 description: "The ID of the integration to mutate"
+                 description: "The ID of the integration to mutate."
 
         argument :name, GraphQL::STRING_TYPE,
                  required: false,
-                 description: "The name of the integration"
+                 description: "The name of the integration."
 
         argument :active, GraphQL::BOOLEAN_TYPE,
                  required: false,
-                 description: "Whether the integration is receiving alerts"
+                 description: "Whether the integration is receiving alerts."
 
         def resolve(args)
           integration = authorized_find!(id: args[:id])

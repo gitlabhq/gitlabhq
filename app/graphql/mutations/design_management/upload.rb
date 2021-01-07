@@ -7,13 +7,13 @@ module Mutations
 
       argument :files, [ApolloUploadServer::Upload],
                required: true,
-               description: "The files to upload"
+               description: "The files to upload."
 
       authorize :create_design
 
       field :designs, [Types::DesignManagement::DesignType],
             null: false,
-            description: "The designs that were uploaded by the mutation"
+            description: "The designs that were uploaded by the mutation."
 
       field :skipped_designs, [Types::DesignManagement::DesignType],
             null: false,

@@ -372,6 +372,11 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
             expect(gl_auth.find_for_git_client(project_bot_user.username, project_access_token.token, project: project, ip: 'ip'))
               .to eq(Gitlab::Auth::Result.new(project_bot_user, nil, :personal_access_token, described_class.full_authentication_abilities))
           end
+
+          it 'successfully authenticates the project bot with a nil project' do
+            expect(gl_auth.find_for_git_client(project_bot_user.username, project_access_token.token, project: nil, ip: 'ip'))
+              .to eq(Gitlab::Auth::Result.new(project_bot_user, nil, :personal_access_token, described_class.full_authentication_abilities))
+          end
         end
 
         context 'with invalid project access token' do

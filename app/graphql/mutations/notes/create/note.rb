@@ -9,7 +9,7 @@ module Mutations
         argument :discussion_id,
                   ::Types::GlobalIDType[::Discussion],
                   required: false,
-                  description: 'The global ID of the discussion this note is in reply to'
+                  description: 'The global ID of the discussion this note is in reply to.'
 
         private
 

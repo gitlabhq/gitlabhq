@@ -9,7 +9,7 @@ module Mutations
 
       argument :id, ::Types::GlobalIDType[::Snippet],
                required: true,
-               description: 'The global ID of the snippet to destroy'
+               description: 'The global ID of the snippet to destroy.'
 
       def resolve(id:)
         snippet = authorized_find!(id: id)

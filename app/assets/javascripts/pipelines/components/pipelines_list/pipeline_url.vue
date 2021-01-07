@@ -50,7 +50,6 @@ export default {
   <div class="table-section section-10 d-none d-md-block pipeline-tags">
     <gl-link
       :href="pipeline.path"
-      class="js-pipeline-url-link js-onboarding-pipeline-item"
       data-testid="pipeline-url-link"
       data-qa-selector="pipeline_url_link"
     >
@@ -70,7 +69,7 @@ export default {
         v-if="pipeline.flags.latest"
         v-gl-tooltip
         :title="__('Latest pipeline for the most recent commit on this branch')"
-        class="js-pipeline-url-latest badge badge-success"
+        class="badge badge-success"
         data-testid="pipeline-url-latest"
         >{{ __('latest') }}</span
       >
@@ -78,7 +77,7 @@ export default {
         v-if="pipeline.flags.yaml_errors"
         v-gl-tooltip
         :title="pipeline.yaml_errors"
-        class="js-pipeline-url-yaml badge badge-danger"
+        class="badge badge-danger"
         data-testid="pipeline-url-yaml"
         >{{ __('yaml invalid') }}</span
       >
@@ -86,7 +85,7 @@ export default {
         v-if="pipeline.flags.failure_reason"
         v-gl-tooltip
         :title="pipeline.failure_reason"
-        class="js-pipeline-url-failure badge badge-danger"
+        class="badge badge-danger"
         data-testid="pipeline-url-failure"
         >{{ __('error') }}</span
       >
@@ -94,7 +93,7 @@ export default {
         v-if="pipeline.flags.auto_devops"
         :id="`pipeline-url-autodevops-${pipeline.id}`"
         tabindex="0"
-        class="js-pipeline-url-autodevops badge badge-info autodevops-badge"
+        class="badge badge-info autodevops-badge"
         data-testid="pipeline-url-autodevops"
         role="button"
         >{{ __('Auto DevOps') }}</gl-link
@@ -125,7 +124,7 @@ export default {
       </gl-popover>
       <span
         v-if="pipeline.flags.stuck"
-        class="js-pipeline-url-stuck badge badge-warning"
+        class="badge badge-warning"
         data-testid="pipeline-url-stuck"
         >{{ __('stuck') }}</span
       >
@@ -137,7 +136,7 @@ export default {
             'Pipelines for merge requests are configured. A detached pipeline runs in the context of the merge request, and not against the merged result. Learn more in the documentation for Pipelines for Merged Results.',
           )
         "
-        class="js-pipeline-url-detached badge badge-info"
+        class="badge badge-info"
         data-testid="pipeline-url-detached"
         >{{ __('detached') }}</span
       >

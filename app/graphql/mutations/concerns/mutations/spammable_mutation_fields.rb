@@ -8,7 +8,7 @@ module Mutations
       field :spam,
             GraphQL::BOOLEAN_TYPE,
             null: true,
-            description: 'Indicates whether the operation returns a record detected as spam'
+            description: 'Indicates whether the operation returns a record detected as spam.'
     end
 
     def with_spam_params(&block)

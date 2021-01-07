@@ -75,6 +75,8 @@ module Ci
     # TODO: Make sure this can also be parallelized
     # https://gitlab.com/gitlab-org/gitlab/-/issues/270973
     def destroy_pipeline_artifacts_batch
+      return false if ::Feature.enabled?(:ci_split_pipeline_artifacts_removal)
+
       artifacts = Ci::PipelineArtifact.expired(BATCH_SIZE).to_a
       return false if artifacts.empty?
 

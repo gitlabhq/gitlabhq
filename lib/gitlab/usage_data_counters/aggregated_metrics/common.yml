@@ -22,7 +22,6 @@
     'incident_management_alert_todo',
     'incident_management_alert_create_incident'
   ]
-  feature_flag: usage_data_incident_management_alerts_total_unique_counts
 - name: incident_management_incidents_total_unique_counts
   operator: OR
   events: [
@@ -38,4 +37,3 @@
     'incident_management_incident_unrelate',
     'incident_management_incident_change_confidential'
   ]
-  feature_flag: usage_data_incident_management_incidents_total_unique_counts

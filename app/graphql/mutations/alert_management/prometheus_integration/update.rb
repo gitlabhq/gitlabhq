@@ -8,15 +8,15 @@ module Mutations
 
         argument :id, Types::GlobalIDType[::PrometheusService],
                  required: true,
-                 description: "The ID of the integration to mutate"
+                 description: "The ID of the integration to mutate."
 
         argument :active, GraphQL::BOOLEAN_TYPE,
                  required: false,
-                 description: "Whether the integration is receiving alerts"
+                 description: "Whether the integration is receiving alerts."
 
         argument :api_url, GraphQL::STRING_TYPE,
                  required: false,
-                 description: "Endpoint at which prometheus can be queried"
+                 description: "Endpoint at which prometheus can be queried."
 
         def resolve(args)
           integration = authorized_find!(id: args[:id])

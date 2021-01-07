@@ -11,7 +11,7 @@ module Mutations
 
           argument :id, ::Types::GlobalIDType[::Metrics::Dashboard::Annotation],
                   required: true,
-                  description: 'Global ID of the annotation to delete'
+                  description: 'Global ID of the annotation to delete.'
 
           def resolve(id:)
             annotation = authorized_find!(id: id)

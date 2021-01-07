@@ -10,15 +10,15 @@ module Mutations
 
         argument :project_path, GraphQL::ID_TYPE,
                  required: true,
-                 description: 'The project to create the integration in'
+                 description: 'The project to create the integration in.'
 
         argument :active, GraphQL::BOOLEAN_TYPE,
                  required: true,
-                 description: 'Whether the integration is receiving alerts'
+                 description: 'Whether the integration is receiving alerts.'
 
         argument :api_url, GraphQL::STRING_TYPE,
                  required: true,
-                 description: 'Endpoint at which prometheus can be queried'
+                 description: 'Endpoint at which prometheus can be queried.'
 
         def resolve(args)
           project = authorized_find!(full_path: args[:project_path])

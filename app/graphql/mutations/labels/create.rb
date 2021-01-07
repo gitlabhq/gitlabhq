@@ -10,20 +10,20 @@ module Mutations
       field :label,
             Types::LabelType,
             null: true,
-            description: 'The label after mutation'
+            description: 'The label after mutation.'
 
       argument :title, GraphQL::STRING_TYPE,
                required: true,
-               description: 'Title of the label'
+               description: 'Title of the label.'
 
       argument :description, GraphQL::STRING_TYPE,
                required: false,
-               description: 'Description of the label'
+               description: 'Description of the label.'
 
       argument :color, GraphQL::STRING_TYPE,
                required: false,
                default_value: Label::DEFAULT_COLOR,
-               description: "The color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the CSS color names in https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords"
+               description: "The color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the CSS color names in https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords."
 
       authorize :admin_label
 

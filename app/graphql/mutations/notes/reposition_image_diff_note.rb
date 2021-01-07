@@ -16,7 +16,7 @@ module Mutations
                 loads: Types::Notes::NoteType,
                 as: :note,
                 required: true,
-                description: 'The global ID of the DiffNote to update'
+                description: 'The global ID of the DiffNote to update.'
 
       argument :position,
                 Types::Notes::UpdateDiffImagePositionInputType,

@@ -220,10 +220,22 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
 
         before do
           [pipeline_artifact_1, pipeline_artifact_2].each { |pipeline_artifact| pipeline_artifact.pipeline.unlocked! }
+
+          stub_feature_flags(ci_split_pipeline_artifacts_removal: false)
         end
 
         it 'destroys pipeline artifacts' do
           expect { subject }.to change { Ci::PipelineArtifact.count }.by(-2)
+        end
+
+        context 'with ci_split_pipeline_artifacts_removal enabled' do
+          before do
+            stub_feature_flags(ci_split_pipeline_artifacts_removal: true)
+          end
+
+          it 'does not destroy pipeline artifacts' do
+            expect { subject }.not_to change { Ci::PipelineArtifact.count }
+          end
         end
       end
 

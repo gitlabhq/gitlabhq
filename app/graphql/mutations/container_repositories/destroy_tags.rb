@@ -28,7 +28,7 @@ module Mutations
 
       field :deleted_tag_names,
             [GraphQL::STRING_TYPE],
-            description: 'Deleted container repository tags',
+            description: 'Deleted container repository tags.',
             null: false
 
       def resolve(id:, tag_names:)

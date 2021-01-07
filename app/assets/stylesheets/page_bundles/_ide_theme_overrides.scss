@@ -85,13 +85,12 @@
     color: var(--ide-input-border, $gl-text-color-tertiary);
   }
 
-  .dropdown-input .fa,
   .dropdown-input .dropdown-input-clear {
-    color: var(--ide-input-border, $dropdown-input-fa-color);
+    color: var(--ide-input-border, $gray-500);
   }
 
   .ide-nav-form .input-icon {
-    color: var(--ide-input-border, $dropdown-input-fa-color);
+    color: var(--ide-input-border, $gray-500);
   }
 
   code {

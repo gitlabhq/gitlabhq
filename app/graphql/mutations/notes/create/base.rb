@@ -11,7 +11,7 @@ module Mutations
         argument :noteable_id,
                  ::Types::GlobalIDType[::Noteable],
                   required: true,
-                  description: 'The global ID of the resource to add a note to'
+                  description: 'The global ID of the resource to add a note to.'
 
         argument :body,
                   GraphQL::STRING_TYPE,

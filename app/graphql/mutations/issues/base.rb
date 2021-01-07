@@ -7,16 +7,16 @@ module Mutations
 
       argument :project_path, GraphQL::ID_TYPE,
                required: true,
-               description: "The project the issue to mutate is in"
+               description: "The project the issue to mutate is in."
 
       argument :iid, GraphQL::STRING_TYPE,
                required: true,
-               description: "The IID of the issue to mutate"
+               description: "The IID of the issue to mutate."
 
       field :issue,
             Types::IssueType,
             null: true,
-            description: "The issue after mutation"
+            description: "The issue after mutation."
 
       authorize :update_issue
 

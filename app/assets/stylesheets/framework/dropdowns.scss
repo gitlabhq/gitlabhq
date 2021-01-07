@@ -567,14 +567,13 @@
   margin-bottom: 10px;
   padding: 0 10px;
 
-  .fa,
   .input-icon,
   .dropdown-input-clear,
   .dropdown-input-search {
     position: absolute;
     top: $gl-padding-8;
     right: 20px;
-    color: $dropdown-input-fa-color;
+    color: $gray-500;
     font-size: 12px;
     pointer-events: none;
   }

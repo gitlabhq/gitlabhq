@@ -9,31 +9,31 @@ module Mutations
         argument :board_id, GraphQL::ID_TYPE,
                   required: true,
                   loads: Types::BoardType,
-                  description: 'Global ID of the board that the issue is in'
+                  description: 'Global ID of the board that the issue is in.'
 
         argument :project_path, GraphQL::ID_TYPE,
                   required: true,
-                  description: 'Project the issue to mutate is in'
+                  description: 'Project the issue to mutate is in.'
 
         argument :iid, GraphQL::STRING_TYPE,
                   required: true,
-                  description: 'IID of the issue to mutate'
+                  description: 'IID of the issue to mutate.'
 
         argument :from_list_id, GraphQL::ID_TYPE,
                   required: false,
-                  description: 'ID of the board list that the issue will be moved from'
+                  description: 'ID of the board list that the issue will be moved from.'
 
         argument :to_list_id, GraphQL::ID_TYPE,
                   required: false,
-                  description: 'ID of the board list that the issue will be moved to'
+                  description: 'ID of the board list that the issue will be moved to.'
 
         argument :move_before_id, GraphQL::ID_TYPE,
                   required: false,
-                  description: 'ID of issue that should be placed before the current issue'
+                  description: 'ID of issue that should be placed before the current issue.'
 
         argument :move_after_id, GraphQL::ID_TYPE,
                   required: false,
-                  description: 'ID of issue that should be placed after the current issue'
+                  description: 'ID of issue that should be placed after the current issue.'
 
         def ready?(**args)
           if move_arguments(args).blank?

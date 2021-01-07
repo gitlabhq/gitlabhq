@@ -10,16 +10,16 @@ module Mutations
       argument :ids,
                [::Types::GlobalIDType[::Todo]],
                required: true,
-               description: 'The global IDs of the todos to restore (a maximum of 50 is supported at once)'
+               description: 'The global IDs of the todos to restore (a maximum of 50 is supported at once).'
 
       field :updated_ids, [::Types::GlobalIDType[Todo]],
             null: false,
-            description: 'The IDs of the updated todo items',
+            description: 'The IDs of the updated todo items.',
             deprecated: { reason: 'Use todos', milestone: '13.2' }
 
       field :todos, [::Types::TodoType],
             null: false,
-            description: 'Updated todos'
+            description: 'Updated todos.'
 
       def resolve(ids:)
         check_update_amount_limit!(ids)

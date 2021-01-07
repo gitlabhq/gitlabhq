@@ -8,7 +8,7 @@ module Mutations
 
         argument :id, Types::GlobalIDType[::AlertManagement::HttpIntegration],
                  required: true,
-                 description: "The ID of the integration to mutate"
+                 description: "The ID of the integration to mutate."
 
         def resolve(id:)
           integration = authorized_find!(id: id)
