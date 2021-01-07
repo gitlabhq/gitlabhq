@@ -69,7 +69,7 @@ const removeFlashClickListener = (flashEl, fadeTransition) => {
  *  @param {String} message           Flash message text
  *  @param {String} type              Type of Flash, it can be `notice`, `success`, `warning` or `alert` (default)
  *  @param {Object} parent            Reference to parent element under which Flash needs to appear
- *  @param {Object} actonConfig       Map of config to show action on banner
+ *  @param {Object} actionConfig      Map of config to show action on banner
  *    @param {String} href            URL to which action config should point to (default: '#')
  *    @param {String} title           Title of action
  *    @param {Function} clickHandler  Method to call when action is clicked on
@@ -119,7 +119,7 @@ const deprecatedCreateFlash = function deprecatedCreateFlash(
  *  @param {String} options.message           Flash message text
  *  @param {String} options.type              Type of Flash, it can be `notice`, `success`, `warning` or `alert` (default)
  *  @param {Object} options.parent            Reference to parent element under which Flash needs to appear
- *  @param {Object} options.actonConfig       Map of config to show action on banner
+ *  @param {Object} options.actionConfig      Map of config to show action on banner
  *    @param {String} href                    URL to which action config should point to (default: '#')
  *    @param {String} title                   Title of action
  *    @param {Function} clickHandler          Method to call when action is clicked on
