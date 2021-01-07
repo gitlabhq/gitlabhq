@@ -1,5 +1,17 @@
 # Changelog for gitlab-workhorse
 
+## v8.58.2
+
+### Security
+- Allow DELETE HTTP method
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/
+
+## v8.58.1
+
+### Security
+- Reject unknown http methods
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/
+
 ## v8.58.0
 
 ### Added

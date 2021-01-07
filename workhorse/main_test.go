@@ -642,6 +642,24 @@ func TestPropagateCorrelationIdHeader(t *testing.T) {
 	}
 }
 
+func TestRejectUnknownMethod(t *testing.T) {
+	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+	})
+	defer ts.Close()
+	ws := startWorkhorseServer(ts.URL)
+	defer ws.Close()
+
+	req, err := http.NewRequest("UNKNOWN", ws.URL+"/api/v3/projects/123/repository/not/special", nil)
+	require.NoError(t, err)
+
+	resp, err := http.DefaultClient.Do(req)
+	require.NoError(t, err)
+	defer resp.Body.Close()
+
+	require.Equal(t, http.StatusMethodNotAllowed, resp.StatusCode)
+}
+
 func setupStaticFile(fpath, content string) error {
 	return setupStaticFileHelper(fpath, content, testDocumentRoot)
 }

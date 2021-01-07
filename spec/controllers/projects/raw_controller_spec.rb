@@ -250,6 +250,18 @@ RSpec.describe Projects::RawController do
         expect(response.cache_control[:no_store]).to be_nil
       end
 
+      context 'when a public project has private repo' do
+        let(:project) { create(:project, :public, :repository, :repository_private) }
+        let(:user) { create(:user, maintainer_projects: [project]) }
+
+        it 'does not set public caching header' do
+          sign_in user
+          request_file
+
+          expect(response.header['Cache-Control']).to include('max-age=60, private')
+        end
+      end
+
       context 'when If-None-Match header is set' do
         it 'returns a 304 status' do
           request_file
