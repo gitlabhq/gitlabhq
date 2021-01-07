@@ -1,5 +1,6 @@
 import Visibility from 'visibilityjs';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import * as Sentry from '~/sentry/wrapper';
 import { unwrapStagesWithNeeds } from '../unwrapping_utils';
 
 const addMulti = (mainPipelineProjectPath, linkedPipeline) => {
@@ -55,3 +56,10 @@ const toggleQueryPollingByVisibility = (queryRef, interval = 10000) => {
 };
 
 export { unwrapPipelineData, toggleQueryPollingByVisibility };
+
+export const reportToSentry = (component, failureType) => {
+  Sentry.withScope((scope) => {
+    scope.setTag('component', component);
+    Sentry.captureException(failureType);
+  });
+};

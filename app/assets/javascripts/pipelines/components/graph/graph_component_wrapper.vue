@@ -4,7 +4,7 @@ import { __ } from '~/locale';
 import { DEFAULT, LOAD_FAILURE } from '../../constants';
 import getPipelineDetails from '../../graphql/queries/get_pipeline_details.query.graphql';
 import PipelineGraph from './graph_component.vue';
-import { unwrapPipelineData, toggleQueryPollingByVisibility } from './utils';
+import { unwrapPipelineData, toggleQueryPollingByVisibility, reportToSentry } from './utils';
 
 export default {
   name: 'PipelineGraphWrapper',
@@ -86,6 +86,7 @@ export default {
     reportFailure(type) {
       this.showAlert = true;
       this.failureType = type;
+      reportToSentry(this.$options.name, this.failureType);
     },
   },
 };

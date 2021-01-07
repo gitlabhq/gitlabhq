@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/gitlab/change_timzone'
 
-RSpec.describe RuboCop::Cop::Gitlab::ChangeTimezone, type: :rubocop do
+RSpec.describe RuboCop::Cop::Gitlab::ChangeTimezone do
   include CopHelper
 
   subject(:cop) { described_class.new }

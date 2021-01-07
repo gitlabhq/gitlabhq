@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.7.2 (2021-01-07)
+
+### Security (7 changes)
+
+- Forbid public cache for private repos.
+- Deny implicit flow for confidential apps.
+- Update NuGet regular expression to protect against ReDoS.
+- Fix regular expression backtracking issue in package name validation.
+- Fix stealing API token from GitLab Pages and DoS Prometheus through GitLab Pages.
+- Update trusted OAuth applications to set them as confidential.
+- Upgrade Workhorse to 8.58.2.
+
+
 ## 13.7.1 (2020-12-23)
 
 ### Fixed (1 change)
@@ -469,6 +482,19 @@ entry.
 - Add feed_token specs to spec/features/profiles/personal_access_tokens_spec.rb. !50059
 - Replace spec/controllers/ide_controller_spec.rb with request spec. !50075 (Takuya Noguchi)
 - Update GitLab Workhorse to v8.57.0.
+
+
+## 13.6.4 (2021-01-07)
+
+### Security (7 changes)
+
+- Forbid public cache for private repos.
+- Deny implicit flow for confidential apps.
+- Update NuGet regular expression to protect against ReDoS.
+- Fix regular expression backtracking issue in package name validation.
+- Upgrade GitLab Pages to 1.30.2.
+- Update trusted OAuth applications to set them as confidential.
+- Upgrade Workhorse to 8.54.2.
 
 
 ## 13.6.3 (2020-12-10)
@@ -1027,6 +1053,19 @@ entry.
 - Update Workhorse version to 8.54.0. !47625
 - Update GitLab Shell to v13.13.0. !47875
 - Change wording on the project remove fork page. !47878
+
+
+## 13.5.6 (2021-01-07)
+
+### Security (7 changes)
+
+- Forbid public cache for private repos.
+- Deny implicit flow for confidential apps.
+- Update NuGet regular expression to protect against ReDoS.
+- Fix regular expression backtracking issue in package name validation.
+- Upgrade GitLab Pages to 1.28.2.
+- Update trusted OAuth applications to set them as confidential.
+- Upgrade Workhorse to 8.51.2.
 
 
 ## 13.5.5 (2020-12-07)

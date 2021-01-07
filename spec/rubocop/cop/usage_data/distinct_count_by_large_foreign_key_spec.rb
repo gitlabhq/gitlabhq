@@ -7,7 +7,7 @@ require 'rubocop/rspec/support'
 
 require_relative '../../../../rubocop/cop/usage_data/distinct_count_by_large_foreign_key'
 
-RSpec.describe RuboCop::Cop::UsageData::DistinctCountByLargeForeignKey, type: :rubocop do
+RSpec.describe RuboCop::Cop::UsageData::DistinctCountByLargeForeignKey do
   include CopHelper
 
   let(:allowed_foreign_keys) { [:author_id, :user_id, :'merge_requests.target_project_id'] }

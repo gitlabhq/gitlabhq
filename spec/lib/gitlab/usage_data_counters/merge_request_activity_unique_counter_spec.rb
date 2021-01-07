@@ -39,4 +39,36 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
       let(:action) { described_class::MR_DIFFS_USER_SINGLE_FILE_ACTION }
     end
   end
+
+  describe '.track_create_mr_action' do
+    subject { described_class.track_create_mr_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_CREATE_ACTION }
+    end
+  end
+
+  describe '.track_close_mr_action' do
+    subject { described_class.track_close_mr_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_CLOSE_ACTION }
+    end
+  end
+
+  describe '.track_merge_mr_action' do
+    subject { described_class.track_merge_mr_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_MERGE_ACTION }
+    end
+  end
+
+  describe '.track_reopen_mr_action' do
+    subject { described_class.track_reopen_mr_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_REOPEN_ACTION }
+    end
+  end
 end

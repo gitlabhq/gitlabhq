@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 require 'rubocop'
 require_relative '../../../rubocop/cop/avoid_return_from_blocks'
 
-RSpec.describe RuboCop::Cop::AvoidReturnFromBlocks, type: :rubocop do
+RSpec.describe RuboCop::Cop::AvoidReturnFromBlocks do
   include CopHelper
 
   subject(:cop) { described_class.new }

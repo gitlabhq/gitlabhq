@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 require 'rubocop'
 require_relative '../../../../rubocop/cop/migration/with_lock_retries_with_change'
 
-RSpec.describe RuboCop::Cop::Migration::WithLockRetriesWithChange, type: :rubocop do
+RSpec.describe RuboCop::Cop::Migration::WithLockRetriesWithChange do
   include CopHelper
 
   subject(:cop) { described_class.new }

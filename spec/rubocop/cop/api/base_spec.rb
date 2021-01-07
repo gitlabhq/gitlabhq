@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/api/base'
 
-RSpec.describe RuboCop::Cop::API::Base, type: :rubocop do
+RSpec.describe RuboCop::Cop::API::Base do
   include CopHelper
 
   subject(:cop) { described_class.new }

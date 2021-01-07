@@ -17,6 +17,7 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab-workhorse/internal/rejectmethods"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/upload"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/upstream/roundtripper"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/urlprefix"
@@ -63,6 +64,8 @@ func NewUpstream(cfg config.Config, accessLogger *logrus.Logger) http.Handler {
 	}
 
 	handler := correlation.InjectCorrelationID(&up, correlationOpts...)
+	// TODO: move to LabKit https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/339
+	handler = rejectmethods.NewMiddleware(handler)
 	return handler
 }
 

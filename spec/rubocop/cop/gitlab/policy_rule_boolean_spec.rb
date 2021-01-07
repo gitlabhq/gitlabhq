@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/gitlab/policy_rule_boolean'
 
-RSpec.describe RuboCop::Cop::Gitlab::PolicyRuleBoolean, type: :rubocop do
+RSpec.describe RuboCop::Cop::Gitlab::PolicyRuleBoolean do
   include CopHelper
 
   subject(:cop) { described_class.new }

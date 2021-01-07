@@ -23105,6 +23105,10 @@ CREATE INDEX temporary_index_vulnerabilities_on_id ON vulnerabilities USING btre
 
 CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree (user_id, term_id);
 
+CREATE INDEX tmp_index_for_email_unconfirmation_migration ON emails USING btree (id) WHERE (confirmed_at IS NOT NULL);
+
+CREATE INDEX tmp_index_oauth_applications_on_id_where_trusted ON oauth_applications USING btree (id) WHERE (trusted = true);
+
 CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING btree (id) WHERE (state <> 2);
 
 CREATE UNIQUE INDEX unique_merge_request_metrics_by_merge_request_id ON merge_request_metrics USING btree (merge_request_id);

@@ -80,6 +80,14 @@ RSpec.describe MergeRequests::ReopenService do
       described_class.new(project, user, {}).execute(merge_request)
     end
 
+    it 'calls the merge request activity counter' do
+      expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+        .to receive(:track_reopen_mr_action)
+        .with(user: user)
+
+      described_class.new(project, user, {}).execute(merge_request)
+    end
+
     it 'refreshes the number of open merge requests for a valid MR' do
       service = described_class.new(project, user, {})
 

@@ -7,7 +7,7 @@ require 'rubocop/rspec/support'
 
 require_relative '../../../../rubocop/cop/rspec/timecop_freeze'
 
-RSpec.describe RuboCop::Cop::RSpec::TimecopFreeze, type: :rubocop do
+RSpec.describe RuboCop::Cop::RSpec::TimecopFreeze do
   include CopHelper
 
   subject(:cop) { described_class.new }

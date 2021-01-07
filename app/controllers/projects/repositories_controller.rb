@@ -53,7 +53,7 @@ class Projects::RepositoriesController < Projects::ApplicationController
   end
 
   def set_cache_headers
-    expires_in cache_max_age(archive_metadata['CommitId']), public: project.public?
+    expires_in cache_max_age(archive_metadata['CommitId']), public: Guest.can?(:download_code, project)
     fresh_when(etag: archive_metadata['ArchivePath'])
   end
 

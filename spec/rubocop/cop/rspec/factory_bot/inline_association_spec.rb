@@ -6,7 +6,7 @@ require 'rubocop'
 
 require_relative '../../../../../rubocop/cop/rspec/factory_bot/inline_association'
 
-RSpec.describe RuboCop::Cop::RSpec::FactoryBot::InlineAssociation, type: :rubocop do
+RSpec.describe RuboCop::Cop::RSpec::FactoryBot::InlineAssociation do
   include CopHelper
 
   subject(:cop) { described_class.new }

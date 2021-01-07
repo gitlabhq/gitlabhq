@@ -100,7 +100,7 @@ RSpec.describe Gitlab::SidekiqMiddleware do
                   "subject",
                   "body"
                 ],
-                "_aj_symbol_keys" => ["args"]
+                ActiveJob::Arguments.const_get('RUBY2_KEYWORDS_KEY', false) => ["args"]
               }
             ],
             "executions" => 0,

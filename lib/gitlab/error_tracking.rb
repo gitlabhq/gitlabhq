@@ -186,14 +186,6 @@ module Gitlab
 
       def inject_context_for_exception(event, ex)
         case ex
-        when ActiveModel::MissingAttributeError # Debugging for https://gitlab.com/gitlab-org/gitlab/-/issues/26751
-          columns_hash = ActiveRecord::Base
-                            .connection
-                            .schema_cache
-                            .instance_variable_get(:@columns_hash)
-                            .transform_values { |v| v.map(&:first) }
-
-          event.extra.merge!(columns_hash)
         when ActiveRecord::StatementInvalid
           event.extra[:sql] = PgQuery.normalize(ex.sql.to_s)
         else

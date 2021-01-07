@@ -6,38 +6,87 @@ RSpec.describe 'CarrierWave::Storage::Fog::File' do
   let(:uploader_class) { Class.new(CarrierWave::Uploader::Base) }
   let(:uploader) { uploader_class.new }
   let(:storage) { CarrierWave::Storage::Fog.new(uploader) }
-  let(:azure_options) do
-    {
-      azure_storage_account_name: 'AZURE_ACCOUNT_NAME',
-      azure_storage_access_key: 'AZURE_ACCESS_KEY',
-      provider: 'AzureRM'
-    }
-  end
+  let(:bucket_name) { 'some-bucket' }
+  let(:connection) { ::Fog::Storage.new(connection_options) }
+  let(:bucket) { connection.directories.new(key: bucket_name )}
+  let(:test_filename) { 'test' }
+  let(:test_data) { File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')) }
 
-  subject { CarrierWave::Storage::Fog::File.new(uploader, storage, 'test') }
+  subject { CarrierWave::Storage::Fog::File.new(uploader, storage, test_filename) }
 
   before do
     require 'fog/azurerm'
-    allow(uploader).to receive(:fog_credentials).and_return(azure_options)
-    Fog.mock!
+    require 'fog/aws'
+
+    stub_object_storage(connection_params: connection_options, remote_directory: bucket_name)
+
+    allow(uploader).to receive(:fog_directory).and_return(bucket_name)
+    allow(uploader).to receive(:fog_credentials).and_return(connection_options)
+
+    bucket.files.create(key: test_filename, body: test_data) # rubocop:disable Rails/SaveBang
   end
 
-  describe '#authenticated_url' do
-    context 'with Azure' do
-      it 'has an authenticated URL' do
-        expect(subject.authenticated_url).to eq("https://sa.blob.core.windows.net/test_container/test_blob?token")
+  context 'AWS' do
+    let(:connection_options) do
+      {
+        provider: 'AWS',
+        aws_access_key_id: 'AWS_ACCESS_KEY',
+        aws_secret_access_key: 'AWS_SECRET_KEY'
+      }
+    end
+
+    describe '#copy_to' do
+      let(:dest_filename) { 'copied.txt'}
+
+      it 'copies the file' do
+        result = subject.copy_to(dest_filename)
+
+        expect(result.exists?).to be true
+        expect(result.read).to eq(test_data)
+
+        # Sanity check that the file actually is there
+        copied = bucket.files.get(dest_filename)
+        expect(copied).to be_present
+        expect(copied.body).to eq(test_data)
+      end
+    end
+  end
+
+  context 'Azure' do
+    let(:connection_options) do
+      {
+        provider: 'AzureRM',
+        azure_storage_account_name: 'AZURE_ACCOUNT_NAME',
+        azure_storage_access_key: 'AZURE_ACCESS_KEY'
+      }
+    end
+
+    describe '#copy_to' do
+      let(:dest_filename) { 'copied.txt'}
+
+      it 'copies the file' do
+        result = subject.copy_to(dest_filename)
+
+        # Fog Azure provider doesn't mock the actual copied data
+        expect(result.exists?).to be true
       end
     end
 
-    context 'with custom expire_at' do
-      it 'properly sets expires param' do
-        expire_at = 24.hours.from_now
+    describe '#authenticated_url' do
+      it 'has an authenticated URL' do
+        expect(subject.authenticated_url).to eq("https://sa.blob.core.windows.net/test_container/test_blob?token")
+      end
 
-        expect_next_instance_of(Fog::Storage::AzureRM::File) do |file|
-          expect(file).to receive(:url).with(expire_at).and_call_original
+      context 'with custom expire_at' do
+        it 'properly sets expires param' do
+          expire_at = 24.hours.from_now
+
+          expect_next_instance_of(Fog::Storage::AzureRM::File) do |file|
+            expect(file).to receive(:url).with(expire_at).and_call_original
+          end
+
+          expect(subject.authenticated_url(expire_at: expire_at)).to eq("https://sa.blob.core.windows.net/test_container/test_blob?token")
         end
-
-        expect(subject.authenticated_url(expire_at: expire_at)).to eq("https://sa.blob.core.windows.net/test_container/test_blob?token")
       end
     end
   end

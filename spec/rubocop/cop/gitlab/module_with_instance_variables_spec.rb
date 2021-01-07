@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/gitlab/module_with_instance_variables'
 
-RSpec.describe RuboCop::Cop::Gitlab::ModuleWithInstanceVariables, type: :rubocop do
+RSpec.describe RuboCop::Cop::Gitlab::ModuleWithInstanceVariables do
   include CopHelper
 
   subject(:cop) { described_class.new }

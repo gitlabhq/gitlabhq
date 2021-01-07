@@ -77,7 +77,7 @@ module QA
           end
 
           def click_job(job_name)
-            click_element(:job_link, text: job_name)
+            click_element(:job_link, Project::Job::Show, text: job_name)
           end
 
           def expand_child_pipeline

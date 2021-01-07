@@ -15,6 +15,7 @@ module MergeRequests
       todo_service.merge_merge_request(merge_request, current_user)
       create_event(merge_request)
       create_note(merge_request)
+      merge_request_activity_counter.track_merge_mr_action(user: current_user)
       notification_service.merge_mr(merge_request, current_user)
       execute_hooks(merge_request, 'merge')
       invalidate_cache_counts(merge_request, users: merge_request.assignees)

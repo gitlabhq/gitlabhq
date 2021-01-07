@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../rubocop/cop/safe_params'
 
-RSpec.describe RuboCop::Cop::SafeParams, type: :rubocop do
+RSpec.describe RuboCop::Cop::SafeParams do
   include CopHelper
 
   subject(:cop) { described_class.new }

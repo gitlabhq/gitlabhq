@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 
 require_relative '../../../../rubocop/cop/rspec/httparty_basic_auth'
 
-RSpec.describe RuboCop::Cop::RSpec::HTTPartyBasicAuth, type: :rubocop do
+RSpec.describe RuboCop::Cop::RSpec::HTTPartyBasicAuth do
   include CopHelper
 
   subject(:cop) { described_class.new }

@@ -27,6 +27,14 @@ RSpec.describe MergeRequests::AfterCreateService do
       execute_service
     end
 
+    it 'calls the merge request activity counter' do
+      expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+        .to receive(:track_create_mr_action)
+        .with(user: merge_request.author)
+
+      execute_service
+    end
+
     it 'creates a new merge request notification' do
       expect(notification_service)
         .to receive(:new_merge_request).with(merge_request, merge_request.author)

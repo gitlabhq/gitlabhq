@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/gitlab/bulk_insert'
 
-RSpec.describe RuboCop::Cop::Gitlab::BulkInsert, type: :rubocop do
+RSpec.describe RuboCop::Cop::Gitlab::BulkInsert do
   include CopHelper
 
   subject(:cop) { described_class.new }

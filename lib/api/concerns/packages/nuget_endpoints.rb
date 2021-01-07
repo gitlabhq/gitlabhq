@@ -15,7 +15,7 @@ module API
         extend ActiveSupport::Concern
 
         POSITIVE_INTEGER_REGEX = %r{\A[1-9]\d*\z}.freeze
-        NON_NEGATIVE_INTEGER_REGEX = %r{\A0|[1-9]\d*\z}.freeze
+        NON_NEGATIVE_INTEGER_REGEX = %r{\A(0|[1-9]\d*)\z}.freeze
 
         included do
           helpers do

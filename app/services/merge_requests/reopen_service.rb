@@ -8,6 +8,7 @@ module MergeRequests
       if merge_request.reopen
         create_event(merge_request)
         create_note(merge_request, 'reopened')
+        merge_request_activity_counter.track_reopen_mr_action(user: current_user)
         notification_service.async.reopen_mr(merge_request, current_user)
         execute_hooks(merge_request, 'reopen')
         merge_request.reload_diff(current_user)

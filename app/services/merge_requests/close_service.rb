@@ -13,6 +13,7 @@ module MergeRequests
 
       if merge_request.close
         create_event(merge_request)
+        merge_request_activity_counter.track_close_mr_action(user: current_user)
         create_note(merge_request)
         notification_service.async.close_mr(merge_request, current_user)
         todo_service.close_merge_request(merge_request, current_user)

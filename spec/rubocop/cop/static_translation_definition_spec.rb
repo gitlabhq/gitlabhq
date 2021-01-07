@@ -7,7 +7,7 @@ require 'rspec-parameterized'
 
 require_relative '../../../rubocop/cop/static_translation_definition'
 
-RSpec.describe RuboCop::Cop::StaticTranslationDefinition, type: :rubocop do
+RSpec.describe RuboCop::Cop::StaticTranslationDefinition do
   include CopHelper
 
   using RSpec::Parameterized::TableSyntax

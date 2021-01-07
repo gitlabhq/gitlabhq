@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../rubocop/cop/avoid_becomes'
 
-RSpec.describe RuboCop::Cop::AvoidBecomes, type: :rubocop do
+RSpec.describe RuboCop::Cop::AvoidBecomes do
   include CopHelper
 
   subject(:cop) { described_class.new }

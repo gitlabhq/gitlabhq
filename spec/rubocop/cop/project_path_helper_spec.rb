@@ -7,7 +7,7 @@ require 'rubocop/rspec/support'
 
 require_relative '../../../rubocop/cop/project_path_helper'
 
-RSpec.describe RuboCop::Cop::ProjectPathHelper, type: :rubocop do
+RSpec.describe RuboCop::Cop::ProjectPathHelper do
   include CopHelper
 
   subject(:cop) { described_class.new }

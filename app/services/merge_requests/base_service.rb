@@ -52,6 +52,10 @@ module MergeRequests
       "#<#{self.class} #{merge_request.to_reference(full: true)}>"
     end
 
+    def merge_request_activity_counter
+      Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
+    end
+
     private
 
     def enqueue_jira_connect_messages_for(merge_request)

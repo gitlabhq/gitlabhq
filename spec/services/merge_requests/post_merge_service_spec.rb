@@ -37,6 +37,14 @@ RSpec.describe MergeRequests::PostMergeService do
       subject
     end
 
+    it 'calls the merge request activity counter' do
+      expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+        .to receive(:track_merge_mr_action)
+        .with(user: user)
+
+      subject
+    end
+
     it 'deletes non-latest diffs' do
       diff_removal_service = instance_double(MergeRequests::DeleteNonLatestDiffsService, execute: nil)
 

@@ -3,7 +3,7 @@ import getPipelineDetails from '../../graphql/queries/get_pipeline_details.query
 import LinkedPipeline from './linked_pipeline.vue';
 import { LOAD_FAILURE } from '../../constants';
 import { UPSTREAM } from './constants';
-import { unwrapPipelineData, toggleQueryPollingByVisibility } from './utils';
+import { unwrapPipelineData, toggleQueryPollingByVisibility, reportToSentry } from './utils';
 
 export default {
   components: {
@@ -80,8 +80,13 @@ export default {
         result() {
           this.loadingPipelineId = null;
         },
-        error() {
+        error(err, _vm, _key, type) {
           this.$emit('error', LOAD_FAILURE);
+
+          reportToSentry(
+            'linked_pipelines_column',
+            `error type: ${LOAD_FAILURE}, error: ${err}, apollo error type: ${type}`,
+          );
         },
       });
 

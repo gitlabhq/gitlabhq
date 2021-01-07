@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 require 'rubocop'
 require_relative '../../../../rubocop/cop/migration/add_limit_to_text_columns'
 
-RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns, type: :rubocop do
+RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns do
   include CopHelper
 
   subject(:cop) { described_class.new }

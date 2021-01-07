@@ -75,6 +75,14 @@ RSpec.describe MergeRequests::CloseService do
       described_class.new(project, user, {}).execute(merge_request)
     end
 
+    it 'calls the merge request activity counter' do
+      expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+        .to receive(:track_close_mr_action)
+        .with(user: user)
+
+      described_class.new(project, user, {}).execute(merge_request)
+    end
+
     it 'refreshes the number of open merge requests for a valid MR', :use_clean_rails_memory_store_caching do
       service = described_class.new(project, user, {})
 

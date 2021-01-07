@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../rubocop/cop/avoid_keyword_arguments_in_sidekiq_workers'
 
-RSpec.describe RuboCop::Cop::AvoidKeywordArgumentsInSidekiqWorkers, type: :rubocop do
+RSpec.describe RuboCop::Cop::AvoidKeywordArgumentsInSidekiqWorkers do
   include CopHelper
 
   subject(:cop) { described_class.new }

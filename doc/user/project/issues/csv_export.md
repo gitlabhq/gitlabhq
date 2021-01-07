@@ -53,7 +53,7 @@ Exported issues are always sorted by `Issue ID`.
 >
 > **Weight** and **Locked** columns were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5300) in GitLab Starter 10.8.
 
-Data wis encoded with a comma as the column delimiter, with `"` used to quote fields if needed, and newlines to separate rows. The first row contains the headers, which are listed in the following table along with a description of the values:
+Data is encoded with a comma as the column delimiter, with `"` used to quote fields if needed, and newlines to separate rows. The first row contains the headers, which are listed in the following table along with a description of the values:
 
 | Column  | Description |
 |---------|-------------|

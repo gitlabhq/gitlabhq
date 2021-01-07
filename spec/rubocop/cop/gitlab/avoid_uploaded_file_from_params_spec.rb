@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/gitlab/avoid_uploaded_file_from_params'
 
-RSpec.describe RuboCop::Cop::Gitlab::AvoidUploadedFileFromParams, type: :rubocop do
+RSpec.describe RuboCop::Cop::Gitlab::AvoidUploadedFileFromParams do
   include CopHelper
 
   subject(:cop) { described_class.new }

@@ -9,6 +9,8 @@ module Projects
 
       return unless fork_network
 
+      log_info(message: "UnlinkForkService: Unlinking fork network", fork_network_id: fork_network.id)
+
       merge_requests = fork_network
                          .merge_requests
                          .opened
@@ -16,6 +18,7 @@ module Projects
 
       merge_requests.find_each do |mr|
         ::MergeRequests::CloseService.new(@project, @current_user).execute(mr)
+        log_info(message: "UnlinkForkService: Closed merge request", merge_request_id: mr.id)
       end
 
       Project.transaction do
@@ -30,6 +33,16 @@ module Projects
           fork_network.update(root_project: nil, deleted_root_project_name: @project.full_name)
         end
       end
+
+      # rubocop: disable Cop/InBatches
+      Project.uncached do
+        @project.forked_to_members.in_batches do |fork_relation|
+          fork_relation.pluck(:id).each do |fork_id| # rubocop: disable CodeReuse/ActiveRecord
+            log_info(message: "UnlinkForkService: Unlinked fork of root_project", project_id: @project.id, forked_project_id: fork_id)
+          end
+        end
+      end
+      # rubocop: enable Cop/InBatches
 
       # When the project getting out of the network is a node with parent
       # and children, both the parent and the node needs a cache refresh.

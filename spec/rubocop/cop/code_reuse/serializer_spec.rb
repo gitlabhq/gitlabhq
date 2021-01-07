@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/code_reuse/serializer'
 
-RSpec.describe RuboCop::Cop::CodeReuse::Serializer, type: :rubocop do
+RSpec.describe RuboCop::Cop::CodeReuse::Serializer do
   include CopHelper
 
   subject(:cop) { described_class.new }

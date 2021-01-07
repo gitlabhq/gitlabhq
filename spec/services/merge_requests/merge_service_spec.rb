@@ -19,8 +19,12 @@ RSpec.describe MergeRequests::MergeService do
       { commit_message: 'Awesome message', sha: merge_request.diff_head_sha }
     end
 
+    let(:feature_flag_persist_squash) { true }
+
     context 'valid params' do
       before do
+        stub_feature_flags(persist_squash_commit_sha_for_squashes: feature_flag_persist_squash)
+
         allow(service).to receive(:execute_hooks)
         expect(merge_request).to receive(:update_and_mark_in_progress_merge_commit_sha).twice.and_call_original
 
@@ -35,6 +39,10 @@ RSpec.describe MergeRequests::MergeService do
       it 'persists merge_commit_sha and nullifies in_progress_merge_commit_sha' do
         expect(merge_request.merge_commit_sha).not_to be_nil
         expect(merge_request.in_progress_merge_commit_sha).to be_nil
+      end
+
+      it 'does not update squash_commit_sha if it is not a squash' do
+        expect(merge_request.squash_commit_sha).to be_nil
       end
 
       it 'sends email to user2 about merge of new merge_request' do
@@ -75,6 +83,20 @@ RSpec.describe MergeRequests::MergeService do
 
           expect(merge_commit.message).to eq('Merge commit message')
           expect(squash_commit.message).to eq("Squash commit message\n")
+        end
+
+        it 'persists squash_commit_sha' do
+          squash_commit = merge_request.merge_commit.parents.last
+
+          expect(merge_request.squash_commit_sha).to eq(squash_commit.id)
+        end
+
+        context 'when feature flag is disabled' do
+          let(:feature_flag_persist_squash) { false }
+
+          it 'does not populate squash_commit_sha' do
+            expect(merge_request.squash_commit_sha).to be_nil
+          end
         end
       end
     end
@@ -361,6 +383,7 @@ RSpec.describe MergeRequests::MergeService do
           expect(merge_request).to be_open
 
           expect(merge_request.merge_commit_sha).to be_nil
+          expect(merge_request.squash_commit_sha).to be_nil
           expect(merge_request.merge_error).to include(error_message)
           expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
         end
@@ -381,6 +404,7 @@ RSpec.describe MergeRequests::MergeService do
 
           expect(merge_request).to be_open
           expect(merge_request.merge_commit_sha).to be_nil
+          expect(merge_request.squash_commit_sha).to be_nil
           expect(merge_request.merge_error).to include(error_message)
           expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
         end
@@ -395,7 +419,24 @@ RSpec.describe MergeRequests::MergeService do
 
           expect(merge_request).to be_open
           expect(merge_request.merge_commit_sha).to be_nil
+          expect(merge_request.squash_commit_sha).to be_nil
           expect(merge_request.merge_error).to include(error_message)
+          expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
+        end
+
+        it 'logs and saves error if there is an PreReceiveError exception' do
+          error_message = 'error message'
+
+          allow(service).to receive(:repository).and_raise(Gitlab::Git::PreReceiveError, "GitLab: #{error_message}")
+          allow(service).to receive(:execute_hooks)
+          merge_request.update!(squash: true)
+
+          service.execute(merge_request)
+
+          expect(merge_request).to be_open
+          expect(merge_request.merge_commit_sha).to be_nil
+          expect(merge_request.squash_commit_sha).to be_nil
+          expect(merge_request.merge_error).to include('Something went wrong during merge pre-receive hook')
           expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
         end
 
@@ -415,6 +456,7 @@ RSpec.describe MergeRequests::MergeService do
 
               expect(merge_request).to be_open
               expect(merge_request.merge_commit_sha).to be_nil
+              expect(merge_request.squash_commit_sha).to be_nil
               expect(merge_request.merge_error).to include(error_message)
               expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
             end

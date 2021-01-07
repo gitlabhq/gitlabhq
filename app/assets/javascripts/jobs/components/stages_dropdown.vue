@@ -48,7 +48,10 @@ export default {
       <ci-icon :status="pipeline.details.status" class="vertical-align-middle" />
 
       <span class="font-weight-bold">{{ s__('Job|Pipeline') }}</span>
-      <gl-link :href="pipeline.path" class="js-pipeline-path link-commit qa-pipeline-path"
+      <gl-link
+        :href="pipeline.path"
+        class="js-pipeline-path link-commit"
+        data-qa-selector="pipeline_path"
         >#{{ pipeline.id }}</gl-link
       >
       <template v-if="hasRef">

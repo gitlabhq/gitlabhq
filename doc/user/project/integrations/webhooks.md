@@ -28,31 +28,14 @@ notify bug tracking systems.
 
 Webhooks can be used to update an external issue tracker, trigger CI jobs,
 update a backup mirror, or even deploy to your production server.
-They are available **per project** for GitLab Community Edition,
-and **per project and per group** for **GitLab Enterprise Edition**.
 
-Navigate to the webhooks page at your project's **Settings > Webhooks**.
+Webhooks are available:
+
+- Per project, at a project's **Settings > Webhooks** menu. **(CORE)**
+- Additionally per group, at a group's **Settings > Webhooks** menu. **(PREMIUM)**
 
 NOTE:
 On GitLab.com, the [maximum number of webhooks and their size](../../../user/gitlab_com/index.md#webhooks) per project, and per group, is limited.
-
-## Version history
-
-Starting from GitLab 8.5:
-
-- the `repository` key is deprecated in favor of the `project` key
-- the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key
-- the `project.http_url` key is deprecated in favor of the `project.git_http_url` key
-
-Starting from GitLab 11.1, the logs of webhooks are automatically removed after
-one month.
-
-Starting from GitLab 11.2:
-
-- The `description` field for issues, merge requests, comments, and wiki pages
-  is rewritten so that simple Markdown image references (like
-  `![](/uploads/...)`) have their target URL changed to an absolute URL. See
-  [image URL rewriting](#image-url-rewriting) for more details.
 
 ## Possible uses for webhooks
 
@@ -90,8 +73,6 @@ an internal list of Certificate Authorities. This means the certificate cannot
 be self-signed.
 
 You can turn this off in the webhook settings in your GitLab projects.
-
-![SSL Verification](img/webhooks_ssl.png)
 
 ## Branch filtering
 
@@ -1362,7 +1343,7 @@ X-Gitlab-Event: Deployment Hook
 
 Note that `deployable_id` is the ID of the CI job.
 
-### Member events **(PREMIUM)**
+### Group member events **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/260347) in GitLab 13.7.
 
@@ -1554,7 +1535,7 @@ Markdown features, like link labels.
 ## Testing webhooks
 
 You can trigger the webhook manually. Sample data from the project is used.
-> For example: for triggering `Push Events` your project should have at least one commit.
+For example, for triggering `Push Events` your project should have at least one commit.
 
 ![Webhook testing](img/webhook_testing.png)
 

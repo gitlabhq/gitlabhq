@@ -7,7 +7,7 @@ require 'rubocop/rspec/support'
 
 require_relative '../../../../rubocop/cop/qa/ambiguous_page_object_name'
 
-RSpec.describe RuboCop::Cop::QA::AmbiguousPageObjectName, type: :rubocop do
+RSpec.describe RuboCop::Cop::QA::AmbiguousPageObjectName do
   include CopHelper
 
   let(:source_file) { 'qa/page.rb' }
