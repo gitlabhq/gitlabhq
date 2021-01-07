@@ -3,7 +3,7 @@
 module Gitlab
   module Danger
     class Teammate
-      attr_reader :options, :username, :name, :role, :projects, :available, :hungry, :tz_offset_hours
+      attr_reader :options, :username, :name, :role, :projects, :available, :hungry, :reduced_capacity, :tz_offset_hours
 
       # The options data are produced by https://gitlab.com/gitlab-org/gitlab-roulette/-/blob/master/lib/team_member.rb
       def initialize(options = {})
@@ -15,6 +15,7 @@ module Gitlab
         @projects = options['projects']
         @available = options['available']
         @hungry = options['hungry']
+        @reduced_capacity = options['reduced_capacity']
         @tz_offset_hours = options['tz_offset_hours']
       end
 

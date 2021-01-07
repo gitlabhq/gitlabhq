@@ -1205,9 +1205,6 @@ msgstr ""
 msgid "A %{incident_docs_start}modified issue%{incident_docs_end} to guide the resolution of incidents."
 msgstr ""
 
-msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."
-msgstr ""
-
 msgid "A .NET Core console application template, customizable for any .NET Core project"
 msgstr ""
 
@@ -3916,6 +3913,9 @@ msgstr ""
 msgid "Assigned Merge Requests"
 msgstr ""
 
+msgid "Assigned projects"
+msgstr ""
+
 msgid "Assigned to %{assigneeName}"
 msgstr ""
 
@@ -5084,6 +5084,9 @@ msgid "Canceled deployment to"
 msgstr ""
 
 msgid "Cancelling Preview"
+msgstr ""
+
+msgid "Cannot be assigned to other projects."
 msgstr ""
 
 msgid "Cannot be merged automatically"
@@ -10263,9 +10266,6 @@ msgstr ""
 msgid "Dynamic Application Security Testing (DAST)"
 msgstr ""
 
-msgid "Each Runner can be in one of the following states and/or belong to one of the following types:"
-msgstr ""
-
 msgid "Each Runner can be in one of the following states:"
 msgstr ""
 
@@ -10789,6 +10789,9 @@ msgid "Enter the merge request title"
 msgstr ""
 
 msgid "Enter the name of your application, and we'll return a unique %{type}."
+msgstr ""
+
+msgid "Enter the number of seconds, or other human-readable input, like \"1 hour\". This timeout takes precedence over lower timeouts set for the project."
 msgstr ""
 
 msgid "Enter weights for storages for new repositories."
@@ -12422,6 +12425,9 @@ msgstr ""
 msgid "Finished"
 msgstr ""
 
+msgid "Finished at"
+msgstr ""
+
 msgid "First Seen"
 msgstr ""
 
@@ -13083,9 +13089,6 @@ msgid "GitLab Account Request"
 msgstr ""
 
 msgid "GitLab Billing Team."
-msgstr ""
-
-msgid "GitLab Gold trial (optional)"
 msgstr ""
 
 msgid "GitLab Group Runners can execute code for all the projects in this group."
@@ -14334,9 +14337,6 @@ msgstr ""
 msgid "How many days need to pass between marking entity for deletion and actual removing it."
 msgstr ""
 
-msgid "How many employees will use Gitlab?"
-msgstr ""
-
 msgid "How many replicas each Elasticsearch shard has."
 msgstr ""
 
@@ -14503,6 +14503,9 @@ msgid "If you recently signed in and recognize the IP address, you may disregard
 msgstr ""
 
 msgid "If you remove this license, GitLab will fall back on the previous license, if any."
+msgstr ""
+
+msgid "If you want a runner to build only specific projects, restrict the project in the table below. After you restrict a runner to a project, you cannot change it back to a shared runner."
 msgstr ""
 
 msgid "If you want to re-enable two-factor authentication, visit %{two_factor_link}"
@@ -19223,6 +19226,9 @@ msgstr ""
 msgid "Not available for protected branches"
 msgstr ""
 
+msgid "Not available to run jobs."
+msgstr ""
+
 msgid "Not confidential"
 msgstr ""
 
@@ -20368,7 +20374,7 @@ msgstr ""
 msgid "Pause replication"
 msgstr ""
 
-msgid "Paused Runners don't accept new jobs"
+msgid "Paused runners don't accept new jobs"
 msgstr ""
 
 msgid "Pending"
@@ -23080,6 +23086,9 @@ msgstr ""
 msgid "Recent Searches Service is unavailable"
 msgstr ""
 
+msgid "Recent jobs served by this runner"
+msgstr ""
+
 msgid "Recent searches"
 msgstr ""
 
@@ -24033,6 +24042,9 @@ msgstr ""
 msgid "Restrict membership by email domain"
 msgstr ""
 
+msgid "Restrict projects for this runner"
+msgstr ""
+
 msgid "Restricts sign-ups for email addresses that match the given regex. See the %{supported_syntax_link_start}supported syntax%{supported_syntax_link_end} for more information."
 msgstr ""
 
@@ -24187,19 +24199,7 @@ msgstr ""
 msgid "Run untagged jobs"
 msgstr ""
 
-msgid "Runner cannot be assigned to other projects"
-msgstr ""
-
 msgid "Runner is %{status}, last contact was %{runner_contact} ago"
-msgstr ""
-
-msgid "Runner runs jobs from all unassigned projects"
-msgstr ""
-
-msgid "Runner runs jobs from all unassigned projects in its group"
-msgstr ""
-
-msgid "Runner runs jobs from assigned projects"
 msgstr ""
 
 msgid "Runner token"
@@ -24217,9 +24217,6 @@ msgstr ""
 msgid "Runner was successfully updated."
 msgstr ""
 
-msgid "Runner will not receive any new jobs"
-msgstr ""
-
 msgid "Runners"
 msgstr ""
 
@@ -24229,13 +24226,16 @@ msgstr ""
 msgid "Runners activated for this project"
 msgstr ""
 
+msgid "Runners are processes that pick up and execute CI/CD jobs for GitLab."
+msgstr ""
+
 msgid "Runners are processes that pick up and execute jobs for GitLab. Here you can register and see your Runners for this project."
 msgstr ""
 
 msgid "Runners can be placed on separate users, servers, and even on your local machine."
 msgstr ""
 
-msgid "Runners can be placed on separate users, servers, even on your local machine."
+msgid "Runners can be:"
 msgstr ""
 
 msgid "Runners currently online: %{active_runners_count}"
@@ -24311,6 +24311,15 @@ msgid "Running…"
 msgstr ""
 
 msgid "Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects."
+msgstr ""
+
+msgid "Runs jobs from all unassigned projects in its group."
+msgstr ""
+
+msgid "Runs jobs from all unassigned projects."
+msgstr ""
+
+msgid "Runs jobs from assigned projects."
 msgstr ""
 
 msgid "SAML"
@@ -28851,6 +28860,15 @@ msgstr ""
 msgid "This repository was last checked %{last_check_timestamp}. The check passed."
 msgstr ""
 
+msgid "This runner processes jobs for all projects in its group and subgroups."
+msgstr ""
+
+msgid "This runner processes jobs for all unassigned projects."
+msgstr ""
+
+msgid "This runner processes jobs for assigned projects only."
+msgstr ""
+
 msgid "This runner will only run on pipelines triggered on protected branches"
 msgstr ""
 
@@ -28864,9 +28882,6 @@ msgid "This subscription is for"
 msgstr ""
 
 msgid "This suggestion already matches its content."
-msgstr ""
-
-msgid "This timeout will take precedence when lower than project-defined timeout and accepts a human readable time input language like \"1 hour\". Values without specification represent seconds."
 msgstr ""
 
 msgid "This user cannot be unlocked manually from GitLab"
@@ -29673,10 +29688,37 @@ msgstr ""
 msgid "Trials|You won't get a free trial right now but you can always resume this process by clicking on your avatar and choosing 'Start a free trial'"
 msgstr ""
 
+msgid "Trial|Company name"
+msgstr ""
+
+msgid "Trial|Continue using the basic features of GitLab for free."
+msgstr ""
+
+msgid "Trial|Country"
+msgstr ""
+
 msgid "Trial|Dismiss"
 msgstr ""
 
+msgid "Trial|GitLab Gold trial (optional)"
+msgstr ""
+
+msgid "Trial|How many employees will use Gitlab?"
+msgstr ""
+
+msgid "Trial|Number of employees"
+msgstr ""
+
 msgid "Trial|Successful trial activation image"
+msgstr ""
+
+msgid "Trial|Telephone number"
+msgstr ""
+
+msgid "Trial|Upgrade to Gold to keep using GitLab with advanced features."
+msgstr ""
+
+msgid "Trial|We will activate your trial on your group after you complete this step. After 30 days, you can:"
 msgstr ""
 
 msgid "Trigger"
@@ -31321,9 +31363,6 @@ msgstr ""
 msgid "We want to be sure it is you, please confirm you are not a robot."
 msgstr ""
 
-msgid "We will activate your trial on your group once you complete this step. After 30 days, you can upgrade to any plan"
-msgstr ""
-
 msgid "We will notify %{inviter} that you declined their invitation to join GitLab. You will stop receiving reminders."
 msgstr ""
 
@@ -31941,6 +31980,9 @@ msgstr ""
 msgid "You can always edit this later"
 msgstr ""
 
+msgid "You can configure jobs to use runners that are assigned specific tags. Separate tags with commas."
+msgstr ""
+
 msgid "You can create a new %{link}."
 msgstr ""
 
@@ -32031,6 +32073,9 @@ msgstr ""
 msgid "You can recover this project until %{date}"
 msgstr ""
 
+msgid "You can register runners as separate users, on separate servers, and on your local machine. Register as many runners as you want."
+msgstr ""
+
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr ""
 
@@ -32038,9 +32083,6 @@ msgid "You can see your chat accounts."
 msgstr ""
 
 msgid "You can set up as many Runners as you need to run your jobs."
-msgstr ""
-
-msgid "You can set up jobs to only use Runners with specific tags. Separate tags with commas."
 msgstr ""
 
 msgid "You can specify notification level per group or per project."
@@ -32062,6 +32104,9 @@ msgid "You cannot impersonate a user who cannot log in"
 msgstr ""
 
 msgid "You cannot impersonate an internal user"
+msgstr ""
+
+msgid "You cannot make this a shared runner."
 msgstr ""
 
 msgid "You cannot play this scheduled pipeline at the moment. Please wait a minute."

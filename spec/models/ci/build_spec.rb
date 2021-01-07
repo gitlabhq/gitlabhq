@@ -4360,7 +4360,7 @@ RSpec.describe Ci::Build do
   end
 
   describe '#supported_runner?' do
-    let_it_be(:build) { create(:ci_build) }
+    let_it_be_with_refind(:build) { create(:ci_build) }
 
     subject { build.supported_runner?(runner_features) }
 
@@ -4423,6 +4423,41 @@ RSpec.describe Ci::Build do
         let(:runner_features) { {} }
 
         it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when `return_exit_code` feature is required by build' do
+      let(:options) { { allow_failure_criteria: { exit_codes: [1] } } }
+
+      before do
+        build.update!(options: options)
+      end
+
+      context 'when runner provides given feature' do
+        let(:runner_features) { { return_exit_code: true } }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when runner does not provide given feature' do
+        let(:runner_features) { {} }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when the runner does not provide all of the required features' do
+        let(:options) do
+          {
+            allow_failure_criteria: { exit_codes: [1] },
+            artifacts: { reports: { junit: "junit.xml" } }
+          }
+        end
+
+        let(:runner_features) { { return_exit_code: true } }
+
+        it 'requires `upload_multiple_artifacts` too' do
+          is_expected.to be_falsey
+        end
       end
     end
   end
@@ -4925,6 +4960,58 @@ RSpec.describe Ci::Build do
 
         it_behaves_like 'drops the build without changing allow_failure'
       end
+    end
+  end
+
+  describe '#exit_codes_defined?' do
+    let(:options) { {} }
+
+    before do
+      build.options.merge!(options)
+    end
+
+    subject(:exit_codes_defined) do
+      build.exit_codes_defined?
+    end
+
+    context 'without allow_failure_criteria' do
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when exit_codes is nil' do
+      let(:options) do
+        {
+          allow_failure_criteria: {
+            exit_codes: nil
+          }
+        }
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when exit_codes is an empty array' do
+      let(:options) do
+        {
+          allow_failure_criteria: {
+            exit_codes: []
+          }
+        }
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when exit_codes are defined' do
+      let(:options) do
+        {
+          allow_failure_criteria: {
+            exit_codes: [5, 6]
+          }
+        }
+      end
+
+      it { is_expected.to be_truthy }
     end
   end
 end

@@ -842,20 +842,20 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
       it 'does not allow a maintainer of the target project to set `allow_collaboration`' do
         target_project.add_developer(user)
 
-        update_merge_request(allow_collaboration: true, title: 'Updated title')
+        update_merge_request(allow_collaboration: false, title: 'Updated title')
 
         expect(merge_request.title).to eq('Updated title')
-        expect(merge_request.allow_collaboration).to be_falsy
+        expect(merge_request.allow_collaboration).to be_truthy
       end
 
       it 'is allowed by a user that can push to the source and can update the merge request' do
         merge_request.update!(assignees: [user])
         source_project.add_developer(user)
 
-        update_merge_request(allow_collaboration: true, title: 'Updated title')
+        update_merge_request(allow_collaboration: false, title: 'Updated title')
 
         expect(merge_request.title).to eq('Updated title')
-        expect(merge_request.allow_collaboration).to be_truthy
+        expect(merge_request.allow_collaboration).to be_falsy
       end
     end
 

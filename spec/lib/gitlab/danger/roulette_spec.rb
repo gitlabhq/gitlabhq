@@ -245,69 +245,6 @@ RSpec.describe Gitlab::Danger::Roulette do
         end
       end
     end
-
-    describe 'reviewer suggestion probability' do
-      let(:reviewer) { teammate_with_capability('reviewer', 'reviewer backend') }
-      let(:hungry_reviewer) { teammate_with_capability('hungry_reviewer', 'reviewer backend', hungry: true) }
-      let(:traintainer) { teammate_with_capability('traintainer', 'trainee_maintainer backend') }
-      let(:hungry_traintainer) { teammate_with_capability('hungry_traintainer', 'trainee_maintainer backend', hungry: true) }
-      let(:teammates) do
-        [
-          reviewer.to_h,
-          hungry_reviewer.to_h,
-          traintainer.to_h,
-          hungry_traintainer.to_h
-        ]
-      end
-
-      let(:categories) { [:backend] }
-
-      # This test is testing probability with inherent randomness.
-      # The variance is inversely related to sample size
-      # Given large enough sample size, the variance would be smaller,
-      # but the test would take longer.
-      # Given smaller sample size, the variance would be larger,
-      # but the test would take less time.
-      let!(:sample_size) { 500 }
-      let!(:variance) { 0.1 }
-
-      before do
-        # This test needs actual randomness to simulate probabilities
-        allow(subject).to receive(:new_random).and_return(Random.new)
-        WebMock
-          .stub_request(:get, described_class::ROULETTE_DATA_URL)
-          .to_return(body: teammate_json)
-      end
-
-      it 'has 1:2:3:4 probability of picking reviewer, hungry_reviewer, traintainer, hungry_traintainer' do
-        picks = Array.new(sample_size).map do
-          spins = subject.spin(project, categories, timezone_experiment: timezone_experiment)
-          spins.first.reviewer.name
-        end
-
-        expect(probability(picks, 'reviewer')).to be_within(variance).of(0.1)
-        expect(probability(picks, 'hungry_reviewer')).to be_within(variance).of(0.2)
-        expect(probability(picks, 'traintainer')).to be_within(variance).of(0.3)
-        expect(probability(picks, 'hungry_traintainer')).to be_within(variance).of(0.4)
-      end
-
-      def probability(picks, role)
-        picks.count(role).to_f / picks.length
-      end
-
-      def teammate_with_capability(name, capability, hungry: false)
-        Gitlab::Danger::Teammate.new(
-          {
-            'name' => name,
-            'projects' => {
-              'gitlab' => capability
-            },
-            'available' => true,
-            'hungry' => hungry
-          }
-        )
-      end
-    end
   end
 
   RSpec::Matchers.define :match_teammates do |expected|

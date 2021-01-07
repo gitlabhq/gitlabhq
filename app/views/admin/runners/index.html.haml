@@ -5,34 +5,34 @@
   .col-sm-6
     .bs-callout
       %p
-        = (_"A 'Runner' is a process which runs a job. You can set up as many Runners as you need.")
+        = (_"Runners are processes that pick up and execute CI/CD jobs for GitLab.")
         %br
-        = _('Runners can be placed on separate users, servers, even on your local machine.')
+        = _('You can register runners as separate users, on separate servers, and on your local machine. Register as many runners as you want.')
         %br
 
       %div
-        %span= _('Each Runner can be in one of the following states and/or belong to one of the following types:')
+        %span= _('Runners can be:')
         %ul
           %li
             %span.badge.badge-success shared
             \-
-            = _('Runner runs jobs from all unassigned projects')
+            = _('Runs jobs from all unassigned projects.')
           %li
             %span.badge.badge-success group
             \-
-            = _('Runner runs jobs from all unassigned projects in its group')
+            = _('Runs jobs from all unassigned projects in its group.')
           %li
             %span.badge.badge-info specific
             \-
-            = _('Runner runs jobs from assigned projects')
+            = _('Runs jobs from assigned projects.')
           %li
             %span.badge.badge-warning locked
             \-
-            = _('Runner cannot be assigned to other projects')
+            = _('Cannot be assigned to other projects.')
           %li
             %span.badge.badge-danger paused
             \-
-            = _('Runner will not receive any new jobs')
+            = _('Not available to run jobs.')
 
   .col-sm-6
     .bs-callout

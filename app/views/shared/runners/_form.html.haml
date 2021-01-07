@@ -5,7 +5,7 @@
     .col-sm-10
       .form-check
         = f.check_box :active, { class: 'form-check-input' }
-        %label.light{ for: :runner_active }= _("Paused Runners don't accept new jobs")
+        %label.light{ for: :runner_active }= _("Paused runners don't accept new jobs")
   .form-group.row
     = label :protected, _("Protected"), class: 'col-form-label col-sm-2'
     .col-sm-10
@@ -40,13 +40,13 @@
       = _('Maximum job timeout')
     .col-sm-10
       = f.text_field :maximum_timeout_human_readable, class: 'form-control'
-      .form-text.text-muted= _('This timeout will take precedence when lower than project-defined timeout and accepts a human readable time input language like "1 hour". Values without specification represent seconds.')
+      .form-text.text-muted= _('Enter the number of seconds, or other human-readable input, like "1 hour". This timeout takes precedence over lower timeouts set for the project.')
   .form-group.row
     = label_tag :tag_list, class: 'col-form-label col-sm-2' do
       = _('Tags')
     .col-sm-10
       = f.text_field :tag_list, value: runner.tag_list.sort.join(', '), class: 'form-control'
-      .form-text.text-muted= _('You can set up jobs to only use Runners with specific tags. Separate tags with commas.')
+      .form-text.text-muted= _('You can configure jobs to use runners that are assigned specific tags. Separate tags with commas.')
   - if local_assigns[:in_gitlab_com_admin_context]
     .form-group.row
       = label_tag :public_projects_minutes_cost_factor, class: 'col-form-label col-sm-2' do

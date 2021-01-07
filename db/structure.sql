@@ -14018,7 +14018,7 @@ CREATE TABLE merge_requests (
     merge_jid character varying,
     discussion_locked boolean,
     latest_merge_request_diff_id integer,
-    allow_maintainer_to_push boolean,
+    allow_maintainer_to_push boolean DEFAULT true,
     state_id smallint DEFAULT 1 NOT NULL,
     rebase_jid character varying,
     squash_commit_sha bytea,

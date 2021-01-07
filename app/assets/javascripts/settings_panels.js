@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { __ } from './locale';
 
-function expandSection($section) {
+export function expandSection($section) {
   $section.find('.js-settings-toggle:not(.js-settings-toggle-trigger-only)').text(__('Collapse'));
   // eslint-disable-next-line @gitlab/no-global-event-off
   $section.find('.settings-content').off('scroll.expandSection').scrollTop(0);
@@ -13,7 +13,7 @@ function expandSection($section) {
   }
 }
 
-function closeSection($section) {
+export function closeSection($section) {
   $section.find('.js-settings-toggle:not(.js-settings-toggle-trigger-only)').text(__('Expand'));
   $section.find('.settings-content').on('scroll.expandSection', () => expandSection($section));
   $section.removeClass('expanded');
@@ -24,7 +24,7 @@ function closeSection($section) {
   }
 }
 
-function toggleSection($section) {
+export function toggleSection($section) {
   $section.removeClass('no-animate');
   if ($section.hasClass('expanded')) {
     closeSection($section);

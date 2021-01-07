@@ -2,6 +2,8 @@
 
 require_relative 'teammate'
 require_relative 'request_helper' unless defined?(Gitlab::Danger::RequestHelper)
+require_relative 'weightage/reviewers'
+require_relative 'weightage/maintainers'
 
 module Gitlab
   module Danger
@@ -151,20 +153,14 @@ module Gitlab
           %i[reviewer traintainer maintainer].map do |role|
             spin_role_for_category(team, role, project, category)
           end
-        hungry_reviewers = reviewers.select { |member| member.hungry }
-        hungry_traintainers = traintainers.select { |member| member.hungry }
-
-        # TODO: take CODEOWNERS into account?
-        # https://gitlab.com/gitlab-org/gitlab/issues/26723
 
         random = new_random(mr_source_branch)
 
-        # Make hungry traintainers have 4x the chance to be picked as a reviewer
-        # Make traintainers have 3x the chance to be picked as a reviewer
-        # Make hungry reviewers have 2x the chance to be picked as a reviewer
-        weighted_reviewers = reviewers + hungry_reviewers + traintainers + traintainers + traintainers + hungry_traintainers
+        weighted_reviewers = Weightage::Reviewers.new(reviewers, traintainers).execute
+        weighted_maintainers = Weightage::Maintainers.new(maintainers).execute
+
         reviewer = spin_for_person(weighted_reviewers, random: random, timezone_experiment: timezone_experiment)
-        maintainer = spin_for_person(maintainers, random: random, timezone_experiment: timezone_experiment)
+        maintainer = spin_for_person(weighted_maintainers, random: random, timezone_experiment: timezone_experiment)
 
         Spin.new(category, reviewer, maintainer, false, timezone_experiment)
       end

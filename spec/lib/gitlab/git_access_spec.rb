@@ -891,6 +891,10 @@ RSpec.describe Gitlab::GitAccess do
         # Expectations are given a custom failure message proc so that it's
         # easier to identify which check(s) failed.
         it "has the correct permissions for #{role}s" do
+          if role == :admin_without_admin_mode
+            skip("All admins are allowed to perform actions https://gitlab.com/gitlab-org/gitlab/-/issues/296509")
+          end
+
           if [:admin_with_admin_mode, :admin_without_admin_mode].include?(role)
             user.update_attribute(:admin, true)
             enable_admin_mode!(user) if role == :admin_with_admin_mode

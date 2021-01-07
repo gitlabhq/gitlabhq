@@ -3,8 +3,7 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - expanded = expanded_by_default?
 
-- if Feature.enabled?(:search_settings_in_page, @project, default_enabled: false)
-  = render "shared/search_settings"
+= render "shared/search_settings"
 
 %section.settings.general-settings.no-animate.expanded#js-general-settings
   .settings-header
