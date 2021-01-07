@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.7.2 (2021-01-07)
+
+### Security (7 changes)
+
+- Forbid public cache for private repos.
+- Deny implicit flow for confidential apps.
+- Update NuGet regular expression to protect against ReDoS.
+- Fix regular expression backtracking issue in package name validation.
+- Fix stealing API token from GitLab Pages and DoS Prometheus through GitLab Pages.
+- Update trusted OAuth applications to set them as confidential.
+- Upgrade Workhorse to 8.58.2.
+
+
 ## 13.7.1 (2020-12-23)
 
 ### Fixed (1 change)
