@@ -11,7 +11,7 @@ module API
     helpers ::API::Helpers::Packages::BasicAuthHelpers
 
     POSITIVE_INTEGER_REGEX = %r{\A[1-9]\d*\z}.freeze
-    NON_NEGATIVE_INTEGER_REGEX = %r{\A0|[1-9]\d*\z}.freeze
+    NON_NEGATIVE_INTEGER_REGEX = %r{\A(0|[1-9]\d*)\z}.freeze
 
     PACKAGE_FILENAME = 'package.nupkg'
 

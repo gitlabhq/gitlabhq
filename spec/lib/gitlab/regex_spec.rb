@@ -283,6 +283,12 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('my package name') }
     it { is_expected.not_to match('!!()()') }
     it { is_expected.not_to match("..\n..\foo") }
+
+    it 'has no backtracking issue' do
+      Timeout.timeout(1) do
+        expect(subject).not_to match("-" * 50000 + ";")
+      end
+    end
   end
 
   describe '.maven_file_name_regex' do

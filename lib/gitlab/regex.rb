@@ -23,7 +23,18 @@ module Gitlab
       end
 
       def package_name_regex
-        @package_name_regex ||= %r{\A\@?(([\w\-\.\+]*)\/)*([\w\-\.]+)@?(([\w\-\.\+]*)\/)*([\w\-\.]*)\z}.freeze
+        @package_name_regex ||=
+          %r{
+              \A\@?
+              (?> # atomic group to prevent backtracking
+                (([\w\-\.\+]*)\/)*([\w\-\.]+)
+              )
+              @?
+              (?> # atomic group to prevent backtracking
+                (([\w\-\.\+]*)\/)*([\w\-\.]*)
+              )
+              \z
+            }x.freeze
       end
 
       def maven_file_name_regex

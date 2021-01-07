@@ -95,6 +95,20 @@ RSpec.describe Oauth::AuthorizationsController do
     subject { post :create, params: params }
 
     include_examples 'OAuth Authorizations require confirmed user'
+
+    context 'when application is confidential' do
+      before do
+        application.update(confidential: true)
+        params[:response_type] = 'token'
+      end
+
+      it 'does not allow the implicit flow' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template('doorkeeper/authorizations/error')
+      end
+    end
   end
 
   describe 'DELETE #destroy' do
