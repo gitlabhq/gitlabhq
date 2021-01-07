@@ -19,12 +19,12 @@ documentation. This functionality is based on the
 
 GitLab currently supports the following authorization flows:
 
-- **Authorization code with [Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636):** 
+- **Authorization code with [Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636):**
   Most secure. Without PKCE, you'd have to include client secrets on mobile clients,
   and is recommended for both client and server aoos.
-- **Authorization code:** Secure and common flow. Recommended option for secure 
+- **Authorization code:** Secure and common flow. Recommended option for secure
   server-side apps.
-- **Implicit grant:** Originally designed for user-agent only apps, such as 
+- **Implicit grant:** Originally designed for user-agent only apps, such as
   single page web apps running on GitLab Pages).
   The [IETF](https://tools.ietf.org/html/draft-ietf-oauth-security-topics-09#section-2.1.2)
   recommends against Implicit grant flow.
@@ -159,7 +159,7 @@ The authorization code flow is essentially the same as
 
    You should then use `code` to request an access token.
 
-1. Once you have the authorization code you can request an `access_token` using the
+1. After you have the authorization code you can request an `access_token` using the
    code. You can do that by using any HTTP client. In the following example,
    we are using Ruby's `rest-client`:
 
@@ -189,7 +189,7 @@ You can now make requests to the API with the access token returned.
 ### Implicit grant flow
 
 NOTE:
-For a detailed flow diagram, see the [RFC specification](https://tools.ietf.org/html/rfc6749#section-4.2). 
+For a detailed flow diagram, see the [RFC specification](https://tools.ietf.org/html/rfc6749#section-4.2).
 
 WARNING:
 The Implicit grant flow is inherently insecure. The IETF plans to remove it in

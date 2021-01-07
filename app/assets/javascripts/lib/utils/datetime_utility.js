@@ -682,6 +682,34 @@ export const nDaysAfter = (date, numberOfDays) =>
   new Date(newDate(date)).setDate(date.getDate() + numberOfDays);
 
 /**
+ * Returns the date n days before the date provided
+ *
+ * @param {Date} date the initial date
+ * @param {Number} numberOfDays number of days before
+ * @return {Date} the date preceding the date provided
+ */
+export const nDaysBefore = (date, numberOfDays) => nDaysAfter(date, -numberOfDays);
+
+/**
+ * Returns the date n months after the date provided
+ *
+ * @param {Date} date the initial date
+ * @param {Number} numberOfMonths number of months after
+ * @return {Date} the date following the date provided
+ */
+export const nMonthsAfter = (date, numberOfMonths) =>
+  new Date(newDate(date)).setMonth(date.getMonth() + numberOfMonths);
+
+/**
+ * Returns the date n months before the date provided
+ *
+ * @param {Date} date the initial date
+ * @param {Number} numberOfMonths number of months before
+ * @return {Date} the date preceding the date provided
+ */
+export const nMonthsBefore = (date, numberOfMonths) => nMonthsAfter(date, -numberOfMonths);
+
+/**
  * Returns the date after the date provided
  *
  * @param {Date} date the initial date

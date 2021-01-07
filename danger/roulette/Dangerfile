@@ -38,8 +38,8 @@ Please consider creating a merge request to
 for them.
 MARKDOWN
 
-OPTIONAL_REVIEW_TEMPLATE = "%{role} review is optional for %{category}".freeze
-NOT_AVAILABLE_TEMPLATE = 'No %{role} available'.freeze
+OPTIONAL_REVIEW_TEMPLATE = '%{role} review is optional for %{category}'
+NOT_AVAILABLE_TEMPLATE = 'No %{role} available'
 
 def note_for_spins_role(spins, role)
   spins.each do |spin|

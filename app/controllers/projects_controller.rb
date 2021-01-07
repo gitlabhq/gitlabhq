@@ -34,7 +34,6 @@ class ProjectsController < Projects::ApplicationController
   before_action only: [:edit] do
     push_frontend_feature_flag(:approval_suggestions, @project, default_enabled: true)
     push_frontend_feature_flag(:allow_editing_commit_messages, @project)
-    push_frontend_feature_flag(:search_settings_in_page, @project, default_enabled: false)
   end
 
   layout :determine_layout

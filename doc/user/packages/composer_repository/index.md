@@ -21,6 +21,11 @@ If you do not have a Composer package, create one and check it in to
 a repository. This example shows a GitLab repository, but the repository
 can be any public or private repository.
 
+WARNING:
+If you are using a GitLab repository, the project must have been created from
+a group's namespace, rather than a user's namespace. Composer packages
+[can't be published to projects created from a user's namespace](https://gitlab.com/gitlab-org/gitlab/-/issues/235467).
+
 1. Create a directory called `my-composer-package` and change to that directory:
 
    ```shell

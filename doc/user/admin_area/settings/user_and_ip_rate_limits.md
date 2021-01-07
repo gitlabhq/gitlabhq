@@ -36,6 +36,25 @@ Retry later
 
 It is possible to customize this response text in the admin area.
 
+## Response headers
+
+> [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/731) in GitLab 13.8, the `Rate-Limit` headers. `Retry-After` was introduced in an earlier version.
+
+When a client exceeds the associated rate limit, the following requests are
+blocked. The server may respond with rate-limiting information allowing the
+requester to retry after a specific period of time. These information are
+attached into the response headers.
+
+| Header                | Example                         | Description                                                                                                                                                                                                             |
+|:----------------------|:--------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `RateLimit-Limit`     | `60`                            | The request quota for the client **each minute**. If the rate limit period set in the admin area is different from 1 minute, the value of this header is adjusted to approximately the nearest 60-minute period. |
+| `RateLimit-Name`      | `throttle_authenticated_web`    | Name of the throttle blocking the requests.                                                                                                                                                                          |
+| `RateLimit-Observed`  | `67`                            | Number of requests associated to the client in the time window.                                                                                                                                       |
+| `RateLimit-Remaining` | `0`                             | Remaining quota in the time window. The result of `RateLimit-Limit` - `RateLimit-Remaining`.                                                                                                             |
+| `RateLimit-Reset`     | `30`                            | An alias of `Retry-After` header.                                                                                                                                                                                        |
+| `RateLimit-ResetTime` | `Tue, 05 Jan 2021 11:00:00 GMT` | [RFC2616](https://tools.ietf.org/html/rfc2616#section-3.3.1)-formatted date and time when the request quota is reset.                                                     |
+| `Retry-After`         | `30`                            | Remaining duration **in seconds** until the quota is reset. This is a [standard HTTP header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After).                                    |
+
 ## Use an HTTP header to bypass rate limiting
 
 > [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/622) in GitLab 13.6.

@@ -704,6 +704,49 @@ security reports without requiring internet access.
 
 Alternatively, you can use the variable `SECURE_ANALYZERS_PREFIX` to override the base registry address of the `dast` image.
 
+## On-demand scans
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218465) in GitLab 13.2.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/218465) in GitLab 13.3.
+
+An on-demand DAST scan runs outside the DevOps life cycle. Changes in your repository don't trigger
+the scan. You must start it manually.
+
+An on-demand DAST scan:
+
+- Uses settings in the site profile and scanner profile you select when you run the scan,
+  instead of those in the `.gitlab-ci.yml` file.
+- Is associated with your project's default branch.
+
+### On-demand scan modes
+
+An on-demand scan can be run in active or passive mode:
+
+- _Passive mode_ is the default and runs a ZAP Baseline Scan.
+- _Active mode_ runs a ZAP Full Scan which is potentially harmful to the site being scanned. To
+   minimize the risk of accidental damage, running an active scan requires a [validated site
+   profile](#site-profile-validation).
+
+### Run an on-demand DAST scan
+
+NOTE:
+You must have permission to run an on-demand DAST scan against a protected branch.
+The default branch is automatically protected. For more information, see
+[Pipeline security on protected branches](../../../ci/pipelines/index.md#pipeline-security-on-protected-branches).
+
+To run an on-demand DAST scan, you need:
+
+- A [scanner profile](#create-a-scanner-profile).
+- A [site profile](#create-a-site-profile).
+- If you are running an active scan the site profile must be [validated](#validate-a-site-profile).
+
+1. From your project's home page, go to **Security & Compliance > On-demand Scans** in the left sidebar.
+1. In **Scanner profile**, select a scanner profile from the dropdown.
+1. In **Site profile**, select a site profile from the dropdown.
+1. Click **Run scan**.
+
+The on-demand DAST scan runs and the project's dashboard shows the results.
+
 ## Site profile
 
 A site profile describes the attributes of a web site to scan on demand with DAST. A site profile is
@@ -714,31 +757,115 @@ A site profile contains the following:
 - **Profile name**: A name you assign to the site to be scanned.
 - **Target URL**: The URL that DAST runs against.
 
+## Site profile validation
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233020) in GitLab 13.8.
+
+Site profile validation reduces the risk of running an active scan against the wrong website. A site
+must be validated before an active scan can run against it. The site validation methods are as
+follows:
+
+- _Text file validation_ requires a text file be uploaded to the target site. The text file is
+  allocated a name and content that is unique to the project. The validation process checks the
+  file's content.
+- _Header validation_ requires the header `Gitlab-On-Demand-DAST` be added to the target site,
+  with a value unique to the project. The validation process checks that the header is present, and
+  checks its value.
+  
+Both methods are equivalent in functionality. Use whichever is feasible.
+
 ### Create a site profile
 
 To create a site profile:
 
 1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. Click **Manage** in the **DAST Profiles** row.
-1. Click **New Profile > Site Profile**.
-1. Type in a unique **Profile name** and **Target URL** then click **Save profile**.
+1. Select **Manage** in the **DAST Profiles** row.
+1. Select **New Profile > Site Profile**.
+1. Type in a unique **Profile name** and **Target URL** then select **Save profile**.
 
 ### Edit a site profile
 
 To edit an existing site profile:
 
 1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. Click **Manage** in the **DAST Profiles** row.
-1. Click **Edit** in the row of the profile to edit.
-1. Edit the **Profile name** and **Target URL**, then click **Save profile**.
+1. Select **Manage** in the **DAST Profiles** row.
+1. Select **Edit** in the row of the profile to edit.
+1. Edit the **Profile name** and **Target URL**, then select **Save profile**.
 
 ### Delete a site profile
 
 To delete an existing site profile:
 
 1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. Click **Manage** in the **DAST Profiles** row.
-1. Click **{remove}** (Delete profile) in the row of the profile to delete.
+1. Select **Manage** in the **DAST Profiles** row.
+1. Select **{remove}** (Delete profile) in the row of the profile to delete.
+
+### Validate a site profile
+
+To validate a site profile:
+
+1. From your project's home page, go to **Security & Compliance > Configuration**.
+1. Select **Manage** in the **DAST Profiles** row.
+1. Select **Validate target site** beside the profile to validate.
+1. Select the validation method.
+   1. For **Text file validation**:
+      1. Download the validation file listed in **Step 2**.
+      1. Upload the validation file to the host. You can upload the file to the location in
+         **Step 3** or any location you prefer.
+      1. Select **Validate**.
+   1. For **Header validation**:
+      1. Select the clipboard icon in **Step 2**.
+      1. Edit the header of the site to validate, and paste the clipboard content.
+      1. Select the input field in **Step 3** and enter the location of the header.
+      1. Select **Validate**.
+
+The site is validated and an active scan can run against it.
+
+If a validated site profile's target URL is edited, the site is no longer validated.
+
+#### Validated site profile headers
+
+The following are code samples of how you could provide the required site profile header in your
+application.
+
+##### Ruby on Rails example for on-demand scan
+
+Here's how you can add a custom header in a Ruby on Rails application:
+
+```ruby
+class DastWebsiteTargetController < ActionController::Base
+  def dast_website_target
+    response.headers['Gitlab-On-Demand-DAST'] = '0dd79c9a-7b29-4e26-a815-eaaf53fcab1c'
+    head :ok
+  end
+end
+```
+
+##### Django example for on-demand scan
+
+Here's how you can add a
+[custom header in Django](https://docs.djangoproject.com/en/2.2/ref/request-response/#setting-header-fields):
+
+```python
+class DastWebsiteTargetView(View):
+    def head(self, *args, **kwargs):
+      response = HttpResponse()
+      response['Gitlab-On-Demand-DAST'] = '0dd79c9a-7b29-4e26-a815-eaaf53fcab1c'
+
+      return response
+```
+
+##### Node (with Express) example for on-demand scan
+
+Here's how you can add a
+[custom header in Node (with Express)](http://expressjs.com/en/5x/api.html#res.append):
+
+```javascript
+app.get('/dast-website-target', function(req, res) {
+  res.append('Gitlab-On-Demand-DAST', '0dd79c9a-7b29-4e26-a815-eaaf53fcab1c')
+  res.send('Respond to DAST ping')
+})
+```
 
 ## Scanner profile
 
@@ -781,40 +908,6 @@ To delete a scanner profile:
 1. From your project's home page, go to **Security & Compliance > Configuration**.
 1. Click **Manage** in the **DAST Profiles** row.
 1. Click **{remove}** (Delete profile) in the scanner profile's row.
-
-## On-demand scans
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218465) in GitLab 13.2.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/218465) in GitLab 13.3.
-
-An on-demand DAST scan runs outside the DevOps life cycle. Changes in your repository don't trigger
-the scan. You must start it manually.
-
-An on-demand DAST scan:
-
-- Uses settings in the site profile and scanner profile you select when you run the scan,
-  instead of those in the `.gitlab-ci.yml` file.
-- Is associated with your project's default branch.
-
-### Run an on-demand DAST scan
-
-NOTE:
-You must have permission to run an on-demand DAST scan against a protected branch.
-The default branch is automatically protected. For more information, see
-[Pipeline security on protected branches](../../../ci/pipelines/index.md#pipeline-security-on-protected-branches).
-
-To run an on-demand DAST scan, you need:
-
-- A [scanner profile](#create-a-scanner-profile).
-- A [site profile](#create-a-site-profile).
-
-1. From your project's home page, go to **Security & Compliance > On-demand Scans** in the left sidebar.
-1. Click **Create new DAST scan**.
-1. In **Scanner profile**, select a scanner profile from the dropdown.
-1. In **Site profile**, select a site profile from the dropdown.
-1. Click **Run scan**.
-
-The on-demand DAST scan runs and the project's dashboard shows the results.
 
 ## Reports
 

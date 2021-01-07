@@ -1,0 +1,10 @@
+# import "./author.fragment.graphql"
+# import "./post.fragment.graphql"
+
+query($title: String!) {
+  blog(title: $title) {
+    description
+    mainAuthor { ...AuthorF }
+    posts { ...PostF }
+  }
+}

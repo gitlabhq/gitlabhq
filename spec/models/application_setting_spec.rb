@@ -733,6 +733,27 @@ RSpec.describe ApplicationSetting do
         is_expected.to be_invalid
       end
     end
+
+    context 'throttle_* settings' do
+      where(:throttle_setting) do
+        %i[
+          throttle_unauthenticated_requests_per_period
+          throttle_unauthenticated_period_in_seconds
+          throttle_authenticated_api_requests_per_period
+          throttle_authenticated_api_period_in_seconds
+          throttle_authenticated_web_requests_per_period
+          throttle_authenticated_web_period_in_seconds
+        ]
+      end
+
+      with_them do
+        it { is_expected.to allow_value(3).for(throttle_setting) }
+        it { is_expected.not_to allow_value(-3).for(throttle_setting) }
+        it { is_expected.not_to allow_value(0).for(throttle_setting) }
+        it { is_expected.not_to allow_value('three').for(throttle_setting) }
+        it { is_expected.not_to allow_value(nil).for(throttle_setting) }
+      end
+    end
   end
 
   context 'restrict creating duplicates' do

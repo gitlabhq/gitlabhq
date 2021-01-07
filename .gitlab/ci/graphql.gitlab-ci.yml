@@ -1,0 +1,14 @@
+graphql-verify:
+  variables:
+    SETUP_DB: "false"
+  extends:
+    - .default-retry
+    - .rails-cache
+    - .default-before_script
+    - .graphql:rules:graphql-verify
+  stage: test
+  needs: []
+  script:
+    - bundle exec rake gitlab:graphql:validate
+    - bundle exec rake gitlab:graphql:check_docs
+    - bundle exec rake gitlab:graphql:check_schema

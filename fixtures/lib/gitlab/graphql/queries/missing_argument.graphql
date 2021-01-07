@@ -1,0 +1,8 @@
+query {
+  blog {
+    title
+    posts {
+      title
+    }
+  }
+}

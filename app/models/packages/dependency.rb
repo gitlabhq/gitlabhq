@@ -6,7 +6,7 @@ class Packages::Dependency < ApplicationRecord
 
   validates :name, uniqueness: { scope: :version_pattern }
 
-  NAME_VERSION_PATTERN_TUPLE_MATCHING = '(name, version_pattern) = (?, ?)'.freeze
+  NAME_VERSION_PATTERN_TUPLE_MATCHING = '(name, version_pattern) = (?, ?)'
   MAX_STRING_LENGTH = 255.freeze
   MAX_CHUNKED_QUERIES_COUNT = 10.freeze
 

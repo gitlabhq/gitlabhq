@@ -1,0 +1,6 @@
+# import "does-not-exist.graphql"
+
+fragment AuthorF on Author {
+  name
+  handle
+}

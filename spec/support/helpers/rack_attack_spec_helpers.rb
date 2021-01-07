@@ -30,7 +30,19 @@ module RackAttackSpecHelpers
     yield
 
     expect(response).to have_gitlab_http_status(:too_many_requests)
-    expect(response).to have_header('Retry-After')
+
+    expect(response.headers.to_h).to include(
+      'RateLimit-Limit' => a_string_matching(/^\d+$/),
+      'RateLimit-Name' => a_string_matching(/^throttle_.*$/),
+      'RateLimit-Observed' => a_string_matching(/^\d+$/),
+      'RateLimit-Remaining' => a_string_matching(/^\d+$/),
+      'RateLimit-Reset' => a_string_matching(/^\d+$/),
+      'Retry-After' => a_string_matching(/^\d+$/)
+    )
+    expect(response).to have_header('RateLimit-ResetTime')
+    expect do
+      Time.httpdate(response.headers['RateLimit-ResetTime'])
+    end.not_to raise_error
   end
 
   def expect_ok(&block)

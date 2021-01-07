@@ -7,8 +7,8 @@ module Ci
     extend Gitlab::Ci::Model
 
     TERMINAL_SUBPROTOCOL = 'terminal.gitlab.com'
-    DEFAULT_SERVICE_NAME = 'build'.freeze
-    DEFAULT_PORT_NAME = 'default_port'.freeze
+    DEFAULT_SERVICE_NAME = 'build'
+    DEFAULT_PORT_NAME = 'default_port'
 
     self.table_name = 'ci_builds_runner_session'
 

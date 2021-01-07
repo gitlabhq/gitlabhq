@@ -84,16 +84,3 @@ ui-docs-links lint:
   needs: []
   script:
     - bundle exec haml-lint -i DocumentationLinks
-
-graphql-reference-verify:
-  extends:
-    - .default-retry
-    - .rails-cache
-    - .default-before_script
-    - .docs:rules:graphql-reference-verify
-    - .use-pg11
-  stage: test
-  needs: ["setup-test-env"]
-  script:
-    - bundle exec rake gitlab:graphql:check_docs
-    - bundle exec rake gitlab:graphql:check_schema

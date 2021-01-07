@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Packages API
 
-This is the API docs of [GitLab Packages](../administration/packages/index.md).
+This is the API documentation of [GitLab Packages](../administration/packages/index.md).
 
 ## List packages
 
@@ -68,7 +68,7 @@ Example response:
 ]
 ```
 
-By default, the `GET` request returns 20 results, since the API is [paginated](README.md#pagination).
+By default, the `GET` request returns 20 results, because the API is [paginated](README.md#pagination).
 
 ### Within a group
 
@@ -159,7 +159,7 @@ Example response:
 ]
 ```
 
-By default, the `GET` request returns 20 results, since the API is [paginated](README.md#pagination).
+By default, the `GET` request returns 20 results, because the API is [paginated](README.md#pagination).
 
 The `_links` object contains the following properties:
 
@@ -316,7 +316,7 @@ Example response:
 ]
 ```
 
-By default, the `GET` request returns 20 results, since the API is [paginated](README.md#pagination).
+By default, the `GET` request returns 20 results, because the API is [paginated](README.md#pagination).
 
 ## Delete a project package
 

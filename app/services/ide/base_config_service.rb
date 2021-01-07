@@ -4,7 +4,7 @@ module Ide
   class BaseConfigService < ::BaseService
     ValidationError = Class.new(StandardError)
 
-    WEBIDE_CONFIG_FILE = '.gitlab/.gitlab-webide.yml'.freeze
+    WEBIDE_CONFIG_FILE = '.gitlab/.gitlab-webide.yml'
 
     attr_reader :config, :config_content
 

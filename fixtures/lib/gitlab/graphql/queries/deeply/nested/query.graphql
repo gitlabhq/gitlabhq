@@ -1,0 +1,7 @@
+# import "../../author.fragment.graphql"
+
+query($slug: String!) {
+  post(slug: $slug) {
+    author { ...AuthorF }
+  }
+}

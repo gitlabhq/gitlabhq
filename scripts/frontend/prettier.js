@@ -7,7 +7,7 @@ const matchExtensions = ['js', 'vue', 'graphql'];
 
 // This will improve glob performance by excluding certain directories.
 // The .prettierignore file will also be respected, but after the glob has executed.
-const globIgnore = ['**/node_modules/**', 'vendor/**', 'public/**'];
+const globIgnore = ['**/node_modules/**', 'vendor/**', 'public/**', 'fixtures/**'];
 
 const readFileAsync = (file, options) =>
   new Promise((resolve, reject) => {

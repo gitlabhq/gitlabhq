@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class DatadogService < Service
-  DEFAULT_SITE = 'datadoghq.com'.freeze
-  URL_TEMPLATE = 'https://webhooks-http-intake.logs.%{datadog_site}/v1/input/'.freeze
-  URL_TEMPLATE_API_KEYS = 'https://app.%{datadog_site}/account/settings#api'.freeze
-  URL_API_KEYS_DOCS = "https://docs.#{DEFAULT_SITE}/account_management/api-app-keys/".freeze
+  DEFAULT_SITE = 'datadoghq.com'
+  URL_TEMPLATE = 'https://webhooks-http-intake.logs.%{datadog_site}/v1/input/'
+  URL_TEMPLATE_API_KEYS = 'https://app.%{datadog_site}/account/settings#api'
+  URL_API_KEYS_DOCS = "https://docs.#{DEFAULT_SITE}/account_management/api-app-keys/"
 
   SUPPORTED_EVENTS = %w[
     pipeline job

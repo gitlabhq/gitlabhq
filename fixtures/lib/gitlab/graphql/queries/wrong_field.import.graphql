@@ -1,0 +1,7 @@
+# import "./bad.fragment.graphql"
+
+query($title: String!) {
+  blog(title: $title) {
+    ...BadF
+  }
+}

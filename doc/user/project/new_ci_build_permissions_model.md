@@ -72,10 +72,26 @@ Let's consider the following scenario:
 
 ## Job token
 
-A unique job token is generated for each job and provides the user read
-access all projects that would be normally accessible to the user creating that
-job. The unique job token does not have any write permissions, but there
-is a [proposal to add support](https://gitlab.com/groups/gitlab-org/-/epics/3559).
+When a pipeline job is about to run, GitLab generates a unique token and injects it as the
+[`CI_JOB_TOKEN` predefined variable](../../ci/variables/predefined_variables.md).
+This token can authenticate [API requests](../../api/README.md)
+from the job script (Runner) that needs to access the project's resources (for example, when
+fetching a job artifact).
+
+Once the token is authenticated, GitLab identifies the user who triggered the job and uses this user
+to authorize access to the resource. Therefore, this user must be assigned to
+[a role that has the required privileges](../permissions.md).
+
+The job token has these limitations:
+
+- Not all APIs allow job tokens for authentication. See [this list](../../api/README.md#gitlab-ci-job-token)
+  for available endpoints.
+- The token is valid only while the pipeline job runs. Once the job finishes, the token can't be
+  used for authentication.
+
+Although a job token is handy to quickly access a project's resources without any configuration, it
+sometimes gives extra permissions that aren't necessary. There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559)
+to redesign the feature for more strategic control of the access permissions.
 
 If you need your CI pipeline to push to the Package Registry, consider using [deploy tokens](deploy_tokens/index.md).
 

@@ -532,13 +532,10 @@ endpoints](../../user/admin_area/settings/rate_limits_on_raw_endpoints.md).
 
 ### Rate limiting responses
 
-The [`Retry-After`
-header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After)
-indicates when the client should retry.
+For information on rate limiting responses, see:
 
-Rate limits applied by HAProxy (instead of Cloudflare or the
-GitLab application) have `RateLimit-Reset` and `RateLimit-ResetTime`
-headers.
+- [List of headers on responses to blocked requests](../admin_area/settings/user_and_ip_rate_limits.md#response-headers).
+- [Customizable response text](../admin_area/settings/user_and_ip_rate_limits.md#response-text).
 
 ### Protected paths throttle
 
@@ -548,11 +545,7 @@ paths that exceed 10 requests per **minute** per IP address.
 See the source below for which paths are protected. This includes user creation,
 user confirmation, user sign in, and password reset.
 
-This header is included in responses to blocked requests:
-
-```plaintext
-Retry-After: 60
-```
+[User and IP rate limits](../admin_area/settings/user_and_ip_rate_limits.md#response-headers) includes a list of the headers responded to blocked requests.
 
 See [Protected Paths](../admin_area/settings/protected_paths.md) for more details.
 

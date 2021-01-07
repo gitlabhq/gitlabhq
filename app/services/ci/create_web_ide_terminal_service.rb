@@ -6,7 +6,7 @@ module Ci
 
     TerminalCreationError = Class.new(StandardError)
 
-    TERMINAL_NAME = 'terminal'.freeze
+    TERMINAL_NAME = 'terminal'
 
     attr_reader :terminal
 

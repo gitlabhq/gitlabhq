@@ -98,4 +98,207 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
       end
     end
   end
+
+  describe '.throttled_response_headers' do
+    where(:matched, :match_data, :headers) do
+      [
+        [
+          'throttle_unauthenticated',
+          {
+            discriminator: '127.0.0.1',
+            count: 3700,
+            period: 1.hour,
+            limit: 3600,
+            epoch_time: Time.utc(2021, 1, 5, 10, 29, 30).to_i
+          },
+          {
+            'RateLimit-Name' => 'throttle_unauthenticated',
+            'RateLimit-Limit' => '60',
+            'RateLimit-Observed' => '3700',
+            'RateLimit-Remaining' => '0',
+            'RateLimit-Reset' => '1830',
+            'RateLimit-ResetTime' => 'Tue, 05 Jan 2021 11:00:00 GMT',
+            'Retry-After' => '1830'
+          }
+        ],
+        [
+          'throttle_unauthenticated',
+          {
+            discriminator: '127.0.0.1',
+            count: 3700,
+            period: 1.hour,
+            limit: 3600,
+            epoch_time: Time.utc(2021, 1, 5, 10, 59, 59).to_i
+          },
+          {
+            'RateLimit-Name' => 'throttle_unauthenticated',
+            'RateLimit-Limit' => '60',
+            'RateLimit-Observed' => '3700',
+            'RateLimit-Remaining' => '0',
+            'RateLimit-Reset' => '1',
+            'RateLimit-ResetTime' => 'Tue, 05 Jan 2021 11:00:00 GMT',
+            'Retry-After' => '1'
+          }
+        ],
+        [
+          'throttle_unauthenticated',
+          {
+            discriminator: '127.0.0.1',
+            count: 3700,
+            period: 1.hour,
+            limit: 3600,
+            epoch_time: Time.utc(2021, 1, 5, 10, 0, 0).to_i
+          },
+          {
+            'RateLimit-Name' => 'throttle_unauthenticated',
+            'RateLimit-Limit' => '60',
+            'RateLimit-Observed' => '3700',
+            'RateLimit-Remaining' => '0',
+            'RateLimit-Reset' => '3600',
+            'RateLimit-ResetTime' => 'Tue, 05 Jan 2021 11:00:00 GMT',
+            'Retry-After' => '3600'
+          }
+        ],
+        [
+          'throttle_unauthenticated',
+          {
+            discriminator: '127.0.0.1',
+            count: 3700,
+            period: 1.hour,
+            limit: 3600,
+            epoch_time: Time.utc(2021, 1, 5, 23, 30, 0).to_i
+          },
+          {
+            'RateLimit-Name' => 'throttle_unauthenticated',
+            'RateLimit-Limit' => '60',
+            'RateLimit-Observed' => '3700',
+            'RateLimit-Remaining' => '0',
+            'RateLimit-Reset' => '1800',
+            'RateLimit-ResetTime' => 'Wed, 06 Jan 2021 00:00:00 GMT', # Next day
+            'Retry-After' => '1800'
+          }
+        ],
+        [
+          'throttle_unauthenticated',
+          {
+            discriminator: '127.0.0.1',
+            count: 3700,
+            period: 1.hour,
+            limit: 3400,
+            epoch_time: Time.utc(2021, 1, 5, 10, 30, 0).to_i
+          },
+          {
+            'RateLimit-Name' => 'throttle_unauthenticated',
+            'RateLimit-Limit' => '57', # 56.66 requests per minute
+            'RateLimit-Observed' => '3700',
+            'RateLimit-Remaining' => '0',
+            'RateLimit-Reset' => '1800',
+            'RateLimit-ResetTime' => 'Tue, 05 Jan 2021 11:00:00 GMT',
+            'Retry-After' => '1800'
+          }
+        ],
+        [
+          'throttle_unauthenticated',
+          {
+            discriminator: '127.0.0.1',
+            count: 3700,
+            period: 1.hour,
+            limit: 3700,
+            epoch_time: Time.utc(2021, 1, 5, 10, 30, 0).to_i
+          },
+          {
+            'RateLimit-Name' => 'throttle_unauthenticated',
+            'RateLimit-Limit' => '62', # 61.66 requests per minute
+            'RateLimit-Observed' => '3700',
+            'RateLimit-Remaining' => '0',
+            'RateLimit-Reset' => '1800',
+            'RateLimit-ResetTime' => 'Tue, 05 Jan 2021 11:00:00 GMT',
+            'Retry-After' => '1800'
+          }
+        ],
+        [
+          'throttle_unauthenticated',
+          {
+            discriminator: '127.0.0.1',
+            count: 3700,
+            period: 1.hour,
+            limit: 59,
+            epoch_time: Time.utc(2021, 1, 5, 10, 30, 0).to_i
+          },
+          {
+            'RateLimit-Name' => 'throttle_unauthenticated',
+            'RateLimit-Limit' => '1', # 0.9833 requests per minute
+            'RateLimit-Observed' => '3700',
+            'RateLimit-Remaining' => '0',
+            'RateLimit-Reset' => '1800',
+            'RateLimit-ResetTime' => 'Tue, 05 Jan 2021 11:00:00 GMT',
+            'Retry-After' => '1800'
+          }
+        ],
+        [
+          'throttle_unauthenticated',
+          {
+            discriminator: '127.0.0.1',
+            count: 3700,
+            period: 1.hour,
+            limit: 61,
+            epoch_time: Time.utc(2021, 1, 5, 10, 30, 0).to_i
+          },
+          {
+            'RateLimit-Name' => 'throttle_unauthenticated',
+            'RateLimit-Limit' => '2', # 1.016 requests per minute
+            'RateLimit-Observed' => '3700',
+            'RateLimit-Remaining' => '0',
+            'RateLimit-Reset' => '1800',
+            'RateLimit-ResetTime' => 'Tue, 05 Jan 2021 11:00:00 GMT',
+            'Retry-After' => '1800'
+          }
+        ],
+        [
+          'throttle_unauthenticated',
+          {
+            discriminator: '127.0.0.1',
+            count: 3700,
+            period: 15.seconds,
+            limit: 10,
+            epoch_time: Time.utc(2021, 1, 5, 10, 30, 0).to_i
+          },
+          {
+            'RateLimit-Name' => 'throttle_unauthenticated',
+            'RateLimit-Limit' => '40',
+            'RateLimit-Observed' => '3700',
+            'RateLimit-Remaining' => '0',
+            'RateLimit-Reset' => '15',
+            'RateLimit-ResetTime' => 'Tue, 05 Jan 2021 10:30:15 GMT',
+            'Retry-After' => '15'
+          }
+        ],
+        [
+          'throttle_unauthenticated',
+          {
+            discriminator: '127.0.0.1',
+            count: 3700,
+            period: 27.seconds,
+            limit: 10,
+            epoch_time: Time.utc(2021, 1, 5, 10, 30, 0).to_i
+          },
+          {
+            'RateLimit-Name' => 'throttle_unauthenticated',
+            'RateLimit-Limit' => '23',
+            'RateLimit-Observed' => '3700',
+            'RateLimit-Remaining' => '0',
+            'RateLimit-Reset' => '27',
+            'RateLimit-ResetTime' => 'Tue, 05 Jan 2021 10:30:27 GMT',
+            'Retry-After' => '27'
+          }
+        ]
+      ]
+    end
+
+    with_them do
+      it 'generates accurate throttled headers' do
+        expect(described_class.throttled_response_headers(matched, match_data)).to eql(headers)
+      end
+    end
+  end
 end

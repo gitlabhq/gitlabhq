@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55978) in GitLab 11.8.
 
-This is the API docs of the [GitLab Container Registry](../user/packages/container_registry/index.md).
+This is the API documentation of the [GitLab Container Registry](../user/packages/container_registry/index.md).
 
 ## List registry repositories
 

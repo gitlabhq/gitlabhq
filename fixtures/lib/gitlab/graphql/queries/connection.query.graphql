@@ -1,0 +1,9 @@
+query($slug: String!) {
+  post(slug: $slug) {
+    author {
+      posts @connection(key: "posts") {
+        title
+      }
+    }
+  }
+}

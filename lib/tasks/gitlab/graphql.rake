@@ -33,6 +33,44 @@ namespace :gitlab do
   )
 
   namespace :graphql do
+    desc 'Gitlab | GraphQL | Validate queries'
+    task validate: [:environment, :enable_feature_flags] do |t, args|
+      queries = if args.to_a.present?
+                  args.to_a.flat_map { |path| Gitlab::Graphql::Queries.find(path) }
+                else
+                  Gitlab::Graphql::Queries.all
+                end
+
+      failed = queries.flat_map do |defn|
+        summary, errs = defn.validate(GitlabSchema)
+
+        case summary
+        when :client_query
+          warn("SKIP  #{defn.file}: client query")
+        else
+          warn("OK    #{defn.file}") if errs.empty?
+          errs.each do |err|
+            warn(<<~MSG)
+            ERROR #{defn.file}: #{err.message} (at #{err.path.join('.')})
+            MSG
+          end
+        end
+
+        errs.empty? ? [] : [defn.file]
+      end
+
+      if failed.present?
+        format_output(
+          "#{failed.count} GraphQL #{'query'.pluralize(failed.count)} out of #{queries.count} failed validation:",
+          *failed.map do |name|
+            known_failure = Gitlab::Graphql::Queries.known_failure?(name)
+            "- #{name}" + (known_failure ? ' (known failure)' : '')
+          end
+        )
+        abort unless failed.all? { |name| Gitlab::Graphql::Queries.known_failure?(name) }
+      end
+    end
+
     desc 'GitLab | GraphQL | Generate GraphQL docs'
     task compile_docs: [:environment, :enable_feature_flags] do
       renderer = Gitlab::Graphql::Docs::Renderer.new(GitlabSchema.graphql_definition, render_options)
@@ -78,11 +116,11 @@ def render_options
   }
 end
 
-def format_output(str)
+def format_output(*strs)
   heading = '#' * 10
   puts heading
   puts '#'
-  puts "# #{str}"
+  strs.each { |str| puts "# #{str}" }
   puts '#'
   puts heading
 end

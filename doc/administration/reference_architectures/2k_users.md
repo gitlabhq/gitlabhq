@@ -271,7 +271,7 @@ further configuration steps.
    ```ruby
    # Disable all components except PostgreSQL
    roles ['postgres_role']
-   repmgr['enable'] = false
+   patroni['enable'] = false
    consul['enable'] = false
    prometheus['enable'] = false
    alertmanager['enable'] = false

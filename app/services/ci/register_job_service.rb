@@ -8,8 +8,8 @@ module Ci
 
     JOB_QUEUE_DURATION_SECONDS_BUCKETS = [1, 3, 10, 30, 60, 300, 900, 1800, 3600].freeze
     JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET = 5.freeze
-    METRICS_SHARD_TAG_PREFIX = 'metrics_shard::'.freeze
-    DEFAULT_METRICS_SHARD = 'default'.freeze
+    METRICS_SHARD_TAG_PREFIX = 'metrics_shard::'
+    DEFAULT_METRICS_SHARD = 'default'
 
     Result = Struct.new(:build, :build_json, :valid?)
 

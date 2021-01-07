@@ -4,10 +4,10 @@ class DeploymentsFinder
   attr_reader :project, :params
 
   ALLOWED_SORT_VALUES = %w[id iid created_at updated_at ref].freeze
-  DEFAULT_SORT_VALUE = 'id'.freeze
+  DEFAULT_SORT_VALUE = 'id'
 
   ALLOWED_SORT_DIRECTIONS = %w[asc desc].freeze
-  DEFAULT_SORT_DIRECTION = 'asc'.freeze
+  DEFAULT_SORT_DIRECTION = 'asc'
 
   def initialize(project, params = {})
     @project = project

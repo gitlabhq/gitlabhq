@@ -1347,7 +1347,14 @@ Note that `deployable_id` is the ID of the CI job.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/260347) in GitLab 13.7.
 
-Triggered when a user is added as a group member.
+Member events are triggered when:
+
+- A user is added as a group member
+- The access level of a user has changed
+- The expiration date for user access has been updated
+- A user has been removed from the group
+
+#### Add member to group
 
 **Request Header**:
 
@@ -1372,6 +1379,62 @@ X-Gitlab-Event: Member Hook
   "group_plan": null,
   "expires_at": "2020-12-14T00:00:00Z",
   "event_name": "user_add_to_group"
+}
+```
+
+#### Update member access level or expiration date
+
+**Request Header**:
+
+```plaintext
+X-Gitlab-Event: Member Hook
+```
+
+**Request Body**:
+
+```json
+{
+  "created_at": "2020-12-11T04:57:22Z",
+  "updated_at": "2020-12-12T08:48:19Z",
+  "group_name": "webhook-test",
+  "group_path": "webhook-test",
+  "group_id": 100,
+  "user_username": "test_user",
+  "user_name": "Test User",
+  "user_email": "testuser@webhooktest.com",
+  "user_id": 64,
+  "group_access": "Developer",
+  "group_plan": null,
+  "expires_at": "2020-12-20T00:00:00Z",
+  "event_name": "user_update_for_group"
+}
+```
+
+#### Remove member from group
+
+**Request Header**:
+
+```plaintext
+X-Gitlab-Event: Member Hook
+```
+
+**Request Body**:
+
+```json
+{
+  "created_at": "2020-12-11T04:57:22Z",
+  "updated_at": "2020-12-12T08:52:34Z",
+  "group_name": "webhook-test",
+  "group_path": "webhook-test",
+  "group_id": 100,
+  "user_username": "test_user",
+  "user_name": "Test User",
+  "user_email": "testuser@webhooktest.com",
+  "user_id": 64,
+  "group_access": "Guest",
+  "group_plan": null,
+  "expires_at": "2020-12-14T00:00:00Z",
+  "event_name": "user_remove_from_group"
 }
 ```
 

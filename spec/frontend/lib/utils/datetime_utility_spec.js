@@ -608,6 +608,92 @@ describe('secondsToDays', () => {
   });
 });
 
+describe('nDaysAfter', () => {
+  const date = new Date('2019-07-16T00:00:00.000Z');
+
+  it.each`
+    numberOfDays | expectedResult
+    ${1}         | ${new Date('2019-07-17T00:00:00.000Z').valueOf()}
+    ${90}        | ${new Date('2019-10-14T00:00:00.000Z').valueOf()}
+    ${-1}        | ${new Date('2019-07-15T00:00:00.000Z').valueOf()}
+    ${0}         | ${date.valueOf()}
+    ${0.9}       | ${date.valueOf()}
+  `('returns $numberOfDays day(s) after the provided date', ({ numberOfDays, expectedResult }) => {
+    expect(datetimeUtility.nDaysAfter(date, numberOfDays)).toBe(expectedResult);
+  });
+});
+
+describe('nDaysBefore', () => {
+  const date = new Date('2019-07-16T00:00:00.000Z');
+
+  it.each`
+    numberOfDays | expectedResult
+    ${1}         | ${new Date('2019-07-15T00:00:00.000Z').valueOf()}
+    ${90}        | ${new Date('2019-04-17T00:00:00.000Z').valueOf()}
+    ${-1}        | ${new Date('2019-07-17T00:00:00.000Z').valueOf()}
+    ${0}         | ${date.valueOf()}
+    ${0.9}       | ${new Date('2019-07-15T00:00:00.000Z').valueOf()}
+  `('returns $numberOfDays day(s) before the provided date', ({ numberOfDays, expectedResult }) => {
+    expect(datetimeUtility.nDaysBefore(date, numberOfDays)).toBe(expectedResult);
+  });
+});
+
+describe('nMonthsAfter', () => {
+  // February has 28 days
+  const feb2019 = new Date('2019-02-15T00:00:00.000Z');
+  // Except in 2020, it had 29 days
+  const feb2020 = new Date('2020-02-15T00:00:00.000Z');
+  // April has 30 days
+  const apr2020 = new Date('2020-04-15T00:00:00.000Z');
+  // May has 31 days
+  const may2020 = new Date('2020-05-15T00:00:00.000Z');
+
+  it.each`
+    date       | numberOfMonths | expectedResult
+    ${feb2019} | ${1}           | ${new Date('2019-03-15T00:00:00.000Z').valueOf()}
+    ${feb2020} | ${1}           | ${new Date('2020-03-15T00:00:00.000Z').valueOf()}
+    ${apr2020} | ${1}           | ${new Date('2020-05-15T00:00:00.000Z').valueOf()}
+    ${may2020} | ${1}           | ${new Date('2020-06-15T00:00:00.000Z').valueOf()}
+    ${may2020} | ${12}          | ${new Date('2021-05-15T00:00:00.000Z').valueOf()}
+    ${may2020} | ${-1}          | ${new Date('2020-04-15T00:00:00.000Z').valueOf()}
+    ${may2020} | ${0}           | ${may2020.valueOf()}
+    ${may2020} | ${0.9}         | ${may2020.valueOf()}
+  `(
+    'returns $numberOfMonths month(s) after the provided date',
+    ({ date, numberOfMonths, expectedResult }) => {
+      expect(datetimeUtility.nMonthsAfter(date, numberOfMonths)).toBe(expectedResult);
+    },
+  );
+});
+
+describe('nMonthsBefore', () => {
+  // The previous month (February) has 28 days
+  const march2019 = new Date('2019-03-15T00:00:00.000Z');
+  // Except in 2020, it had 29 days
+  const march2020 = new Date('2020-03-15T00:00:00.000Z');
+  // The previous month (April) has 30 days
+  const may2020 = new Date('2020-05-15T00:00:00.000Z');
+  // The previous month (May) has 31 days
+  const june2020 = new Date('2020-06-15T00:00:00.000Z');
+
+  it.each`
+    date         | numberOfMonths | expectedResult
+    ${march2019} | ${1}           | ${new Date('2019-02-15T00:00:00.000Z').valueOf()}
+    ${march2020} | ${1}           | ${new Date('2020-02-15T00:00:00.000Z').valueOf()}
+    ${may2020}   | ${1}           | ${new Date('2020-04-15T00:00:00.000Z').valueOf()}
+    ${june2020}  | ${1}           | ${new Date('2020-05-15T00:00:00.000Z').valueOf()}
+    ${june2020}  | ${12}          | ${new Date('2019-06-15T00:00:00.000Z').valueOf()}
+    ${june2020}  | ${-1}          | ${new Date('2020-07-15T00:00:00.000Z').valueOf()}
+    ${june2020}  | ${0}           | ${june2020.valueOf()}
+    ${june2020}  | ${0.9}         | ${new Date('2020-05-15T00:00:00.000Z').valueOf()}
+  `(
+    'returns $numberOfMonths month(s) before the provided date',
+    ({ date, numberOfMonths, expectedResult }) => {
+      expect(datetimeUtility.nMonthsBefore(date, numberOfMonths)).toBe(expectedResult);
+    },
+  );
+});
+
 describe('approximateDuration', () => {
   it.each`
     seconds

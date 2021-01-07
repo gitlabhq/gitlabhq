@@ -82,3 +82,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Usage::MetricDefinition.prepend_if_ee('EE::Gitlab::Usage::MetricDefinition')

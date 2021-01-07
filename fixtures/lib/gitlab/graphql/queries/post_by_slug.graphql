@@ -1,0 +1,7 @@
+query {
+  post(slug: "validating-queries") {
+    title
+    content
+    author { name }
+  }
+}

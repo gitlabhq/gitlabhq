@@ -349,7 +349,11 @@
       changes: *docs-patterns
       when: on_success
 
-.docs:rules:graphql-reference-verify:
+##################
+# GraphQL rules  #
+##################
+
+.graphql:rules:graphql-verify:
   rules:
     - <<: *if-not-ee
       when: never

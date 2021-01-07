@@ -1,0 +1,11 @@
+#import "./thingy.fragment.graphql"
+
+query($slug: String!, $foo: String) {
+  thingy(someArg: $foo) @client {
+    ...ThingyF
+  }
+  post(slug: $slug) {
+    title
+    otherThing @client
+  }
+}

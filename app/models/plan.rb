@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Plan < ApplicationRecord
-  DEFAULT = 'default'.freeze
+  DEFAULT = 'default'
 
   has_one :limits, class_name: 'PlanLimits'
 

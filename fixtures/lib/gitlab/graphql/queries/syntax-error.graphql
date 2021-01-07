@@ -1,0 +1,5 @@
+query }
+  blog(title: "boom") {
+    description
+  }
+}

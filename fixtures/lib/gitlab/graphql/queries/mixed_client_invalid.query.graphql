@@ -1,0 +1,7 @@
+query {
+  thingy @client
+  post(slug: "validating-queries") {
+    titlz
+    otherThing @client
+  }
+}

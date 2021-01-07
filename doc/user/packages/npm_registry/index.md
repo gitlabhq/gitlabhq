@@ -94,7 +94,10 @@ Some features such as [publishing](#publish-an-npm-package) a package is only av
 
 ## Authenticate to the Package Registry
 
-To authenticate to the Package Registry, you must use one of the following:
+You must authenticate with the Package Registry when the project
+is private. Public projects do not require authentication.
+
+To authenticate, use one of the following:
 
 - A [personal access token](../../../user/profile/personal_access_tokens.md)
   (required for two-factor authentication (2FA)), with the scope set to `api`.

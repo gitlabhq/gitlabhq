@@ -2,8 +2,8 @@
 module Packages
   module Maven
     class FindOrCreatePackageService < BaseService
-      MAVEN_METADATA_FILE = 'maven-metadata.xml'.freeze
-      SNAPSHOT_TERM = '-SNAPSHOT'.freeze
+      MAVEN_METADATA_FILE = 'maven-metadata.xml'
+      SNAPSHOT_TERM = '-SNAPSHOT'
 
       def execute
         package =

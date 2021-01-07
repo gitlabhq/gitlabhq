@@ -19,7 +19,7 @@ module Packages
         metadata: 'Get package metadata.'
       }.freeze
 
-      VERSION = '3.0.0'.freeze
+      VERSION = '3.0.0'
 
       PROJECT_LEVEL_SERVICES = %i[download publish].freeze
       GROUP_LEVEL_SERVICES = %i[search metadata].freeze

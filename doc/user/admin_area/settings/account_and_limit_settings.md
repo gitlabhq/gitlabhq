@@ -7,6 +7,14 @@ type: reference
 
 # Account and limit settings **(CORE ONLY)**
 
+## Default projects limit
+
+You can change the default maximum number of projects that users can create in their personal namespace.
+Navigate to **Admin Area > Settings > General**, then expand **Account and Limit**.
+You can increase or decrease that `Default projects limit` value.
+
+- If you set `Default projects limit` to 0, users are not allowed to create projects in their users personal namespace. However, projects can still be created within a group.
+
 ## Max attachment size
 
 You can change the maximum file size for attachments in comments and replies in GitLab.

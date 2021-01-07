@@ -30,7 +30,7 @@ Parameters:
 | Attribute | Type    | Required | Description                                                                                                                             |
 |:----------|:--------|:---------|:----------------------------------------------------------------------------------------------------------------------------------------|
 | `email`   | string  | yes      | Public email address of the user.                                                                                                       |
-| `size`    | integer | no       | Single pixel dimension (since images are squares). Only used for avatar lookups at `Gravatar` or at the configured `Libravatar` server. |
+| `size`    | integer | no       | Single pixel dimension (because images are squares). Only used for avatar lookups at `Gravatar` or at the configured `Libravatar` server. |
 
 Example request:
 

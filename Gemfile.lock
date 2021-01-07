@@ -609,7 +609,7 @@ GEM
     jaeger-client (1.1.0)
       opentracing (~> 0.3)
       thrift
-    jira-ruby (2.0.0)
+    jira-ruby (2.1.4)
       activesupport
       atlassian-jwt
       multipart-post
@@ -1397,7 +1397,7 @@ DEPENDENCIES
   icalendar
   invisible_captcha (~> 0.12.1)
   ipaddress (~> 0.8.3)
-  jira-ruby (~> 2.0.0)
+  jira-ruby (~> 2.1.4)
   js_regex (~> 3.4)
   json (~> 2.3.0)
   json-schema (~> 2.8.0)

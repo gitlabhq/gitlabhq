@@ -3,8 +3,8 @@
 class ProjectFeatureUsage < ApplicationRecord
   self.primary_key = :project_id
 
-  JIRA_DVCS_CLOUD_FIELD = 'jira_dvcs_cloud_last_sync_at'.freeze
-  JIRA_DVCS_SERVER_FIELD = 'jira_dvcs_server_last_sync_at'.freeze
+  JIRA_DVCS_CLOUD_FIELD = 'jira_dvcs_cloud_last_sync_at'
+  JIRA_DVCS_SERVER_FIELD = 'jira_dvcs_server_last_sync_at'
 
   belongs_to :project
   validates :project, presence: true
