@@ -10,13 +10,20 @@ The following are required to install and test the app:
 
 - A Jira Cloud instance. Atlassian provides [free instances for development and testing](https://developer.atlassian.com/platform/marketplace/getting-started/#free-developer-instances-to-build-and-test-your-app).
 - A GitLab instance available over the internet. For the app to work, Jira Cloud should
-  be able to connect to the GitLab instance through the internet. To easily expose your
-  local development environment, you can use tools like:
-  - [serveo](https://medium.com/automationmaster/how-to-forward-my-local-port-to-public-using-serveo-4979f352a3bf)
-  - [ngrok](https://ngrok.com).
+  be able to connect to the GitLab instance through the internet. For this we
+  recommend using Gitpod or a similar cloud development environment. For more
+  information on using Gitpod with GDK, see the:
 
-  These also take care of SSL for you because Jira requires all connections to the app
-  host to be over SSL.
+  - [GDK in Gitpod](https://www.loom.com/share/9c9711d4876a40869b9294eecb24c54d)
+    video.
+  - [GDK with Gitpod](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/howto/gitpod.md)
+    documentation.
+
+  You **must not** use tunneling tools such as Serveo or `ngrok`. These are
+  security risks, and must not be run on developer laptops.
+
+  Jira requires all connections to the app host to be over SSL, so if you set up
+  your own environment, remember to enable SSL and an appropriate certificate.
 
 ## Install the app in Jira
 
@@ -38,7 +45,7 @@ To install the app in Jira:
       For example:
 
       ```plaintext
-      https://xxxx.serveo.net/-/jira_connect/app_descriptor.json
+      https://xxxx.gitpod.io/-/jira_connect/app_descriptor.json
       ```
 
    1. Click **Upload**.
