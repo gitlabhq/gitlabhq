@@ -666,6 +666,23 @@ For example, you may have two individual images, one for `amd64` and another for
 
 As a workaround, you should include the architecture in the tag name of individual images. For example, use `mygroup/myapp:1.0.0-amd64` instead of using sub repositories, like `mygroup/myapp/amd64:1.0.0`. You can then tag the manifest list with `mygroup/myapp:1.0.0`.
 
+### The cleanup policy doesn't delete any tags
+
+In GitLab 13.6 and earlier, when you run the cleanup policy,
+you may expect it to delete tags and it does not.
+
+This issue occurs when the cleanup policy was saved without
+editing the value in the **Remove tags matching** field.
+
+This field had a grayed out `.*` value as a placeholder.
+Unless `.*` (or other regex pattern) was entered explicitly into the
+field, a `nil` value was submitted. This value prevents the
+saved cleanup policy from matching any tags.
+
+As a workaround, edit the cleanup policy. In the **Remove tags matching**
+field, enter `.*` and save. This value indicates that all tags should
+be removed.
+
 ### Troubleshoot as a GitLab server admin
 
 Troubleshooting the GitLab Container Registry, most of the times, requires

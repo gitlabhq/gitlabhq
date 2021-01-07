@@ -59,7 +59,7 @@ GitLab has several features which can help you manage the number of users:
 - Enable the [**Require administrator approval for new sign ups**](../../user/admin_area/settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups)
   option.
 - Enable the [User cap](../../user/admin_area/settings/sign_up_restrictions.md#user-cap)
-  option. **Available in GitLab 13.6 and later**.
+  option. **Available in GitLab 13.7 and later**.
 - [Disable new sign-ups](../../user/admin_area/settings/sign_up_restrictions.md), and instead manage new
   users manually.
 - View a breakdown of users by role in the [Users statistics](../../user/admin_area/index.md#users-statistics) page.
