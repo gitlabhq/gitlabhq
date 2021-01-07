@@ -1,5 +1,0 @@
----
-title: Fix regular expression backtracking issue in package name validation
-merge_request:
-author:
-type: security
