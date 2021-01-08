@@ -723,6 +723,7 @@ epic:
 - user_mentions
 - note_authors
 - boards_epic_user_preferences
+- epic_board_positions
 epic_issue:
 - epic
 - issue

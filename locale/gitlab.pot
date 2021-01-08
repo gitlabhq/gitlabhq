@@ -31240,6 +31240,9 @@ msgstr ""
 msgid "Vulnerability|Detected"
 msgstr ""
 
+msgid "Vulnerability|Download"
+msgstr ""
+
 msgid "Vulnerability|Evidence"
 msgstr ""
 
@@ -31265,6 +31268,9 @@ msgid "Vulnerability|Namespace"
 msgstr ""
 
 msgid "Vulnerability|Project"
+msgstr ""
+
+msgid "Vulnerability|Reproduction Assets"
 msgstr ""
 
 msgid "Vulnerability|Request"

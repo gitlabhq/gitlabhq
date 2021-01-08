@@ -6,6 +6,8 @@ module Projects
       before_action :authorize_read_build!
       before_action :builds, only: [:show]
 
+      feature_category :code_testing
+
       def summary
         respond_to do |format|
           format.json do

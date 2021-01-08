@@ -1,0 +1,5 @@
+---
+title: Hide "Actions" label on group members view if no action buttons exist
+merge_request: 50304
+author:
+type: fixed

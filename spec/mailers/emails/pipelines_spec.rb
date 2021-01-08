@@ -11,8 +11,8 @@ RSpec.describe Emails::Pipelines do
   shared_examples_for 'correct pipeline information' do
     it 'has a correct information' do
       expect(subject)
-          .to have_subject "#{project.name} | Pipeline ##{pipeline.id} has " \
-                           "#{status} for #{pipeline.source_ref} | " \
+          .to have_subject "#{status} pipeline for #{pipeline.source_ref} | " \
+                           "#{project.name} | " \
                            "#{pipeline.short_sha}".to_s
 
       expect(subject).to have_body_text pipeline.source_ref
@@ -29,8 +29,8 @@ RSpec.describe Emails::Pipelines do
 
       it 'has correct information that there is no merge request link' do
         expect(subject)
-            .to have_subject "#{project.name} | Pipeline ##{pipeline.id} has " \
-                             "#{status} for #{pipeline.source_ref} | " \
+            .to have_subject "#{status} pipeline for #{pipeline.source_ref} | " \
+                             "#{project.name} | " \
                              "#{pipeline.short_sha}".to_s
 
         expect(subject).to have_body_text pipeline.source_ref
@@ -49,9 +49,9 @@ RSpec.describe Emails::Pipelines do
 
       it 'has correct information that there is a merge request link' do
         expect(subject)
-          .to have_subject "#{project.name} | Pipeline ##{pipeline.id} has " \
-                           "#{status} for #{pipeline.source_ref} | " \
-                           "#{pipeline.short_sha} in !#{merge_request.iid}".to_s
+          .to have_subject "#{status} pipeline for #{pipeline.source_ref} | " \
+                           "#{project.name} | " \
+                           "#{pipeline.short_sha}".to_s
 
         expect(subject).to have_body_text merge_request.to_reference
         expect(subject).to have_body_text pipeline.source_ref
@@ -71,9 +71,9 @@ RSpec.describe Emails::Pipelines do
 
       it 'has correct information that there is a merge request link' do
         expect(subject)
-          .to have_subject "#{project.name} | Pipeline ##{pipeline.id} has " \
-                           "#{status} for #{pipeline.source_ref} | " \
-                           "#{pipeline.short_sha} in !#{merge_request.iid}".to_s
+          .to have_subject "#{status} pipeline for #{pipeline.source_ref} | " \
+                           "#{project.name} | " \
+                           "#{pipeline.short_sha}".to_s
 
         expect(subject).to have_body_text merge_request.to_reference
         expect(subject).to have_body_text pipeline.source_ref
@@ -89,8 +89,8 @@ RSpec.describe Emails::Pipelines do
     let(:sha) { project.commit(ref).sha }
 
     it_behaves_like 'correct pipeline information' do
-      let(:status) { 'succeeded' }
-      let(:status_text) { 'Your pipeline has passed.' }
+      let(:status) { 'Succesful' }
+      let(:status_text) { "Pipeline ##{pipeline.id} has passed!" }
     end
   end
 
@@ -102,8 +102,8 @@ RSpec.describe Emails::Pipelines do
     let(:sha) { project.commit(ref).sha }
 
     it_behaves_like 'correct pipeline information' do
-      let(:status) { 'failed' }
-      let(:status_text) { 'Your pipeline has failed.' }
+      let(:status) { 'Failed' }
+      let(:status_text) { "Pipeline ##{pipeline.id} has failed!" }
     end
   end
 
@@ -115,8 +115,8 @@ RSpec.describe Emails::Pipelines do
     let(:sha) { project.commit(ref).sha }
 
     it_behaves_like 'correct pipeline information' do
-      let(:status) { 'been fixed' }
-      let(:status_text) { 'Your pipeline has been fixed!' }
+      let(:status) { 'Fixed' }
+      let(:status_text) { "Pipeline has been fixed and ##{pipeline.id} has passed!" }
     end
   end
 end

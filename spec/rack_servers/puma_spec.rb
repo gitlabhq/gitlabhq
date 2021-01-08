@@ -44,7 +44,7 @@ RSpec.describe 'Puma' do
   end
 
   after(:all) do
-    WebMock.disable_net_connect!(allow_localhost: true)
+    webmock_enable!
     Process.kill('TERM', @puma_master_pid)
   rescue Errno::ESRCH
   end

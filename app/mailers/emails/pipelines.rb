@@ -3,15 +3,15 @@
 module Emails
   module Pipelines
     def pipeline_success_email(pipeline, recipients)
-      pipeline_mail(pipeline, recipients, 'succeeded')
+      pipeline_mail(pipeline, recipients, 'Succesful')
     end
 
     def pipeline_failed_email(pipeline, recipients)
-      pipeline_mail(pipeline, recipients, 'failed')
+      pipeline_mail(pipeline, recipients, 'Failed')
     end
 
     def pipeline_fixed_email(pipeline, recipients)
-      pipeline_mail(pipeline, recipients, 'been fixed')
+      pipeline_mail(pipeline, recipients, 'Fixed')
     end
 
     private
@@ -50,10 +50,13 @@ module Emails
     end
 
     def pipeline_subject(status)
-      commit = [@pipeline.short_sha]
-      commit << "in #{@merge_request.to_reference}" if @merge_request
+      subject = []
 
-      subject("Pipeline ##{@pipeline.id} has #{status} for #{@pipeline.source_ref}", commit.join(' '))
+      subject << "#{status} pipeline for #{@pipeline.source_ref}"
+      subject << @project.name if @project
+      subject << @pipeline.short_sha
+
+      subject.join(' | ')
     end
   end
 end

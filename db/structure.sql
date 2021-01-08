@@ -20946,6 +20946,8 @@ CREATE UNIQUE INDEX index_boards_epic_board_positions_on_epic_board_id_and_epic_
 
 CREATE INDEX index_boards_epic_board_positions_on_epic_id ON boards_epic_board_positions USING btree (epic_id);
 
+CREATE INDEX index_boards_epic_board_positions_on_scoped_relative_position ON boards_epic_board_positions USING btree (epic_board_id, epic_id, relative_position);
+
 CREATE INDEX index_boards_epic_boards_on_group_id ON boards_epic_boards USING btree (group_id);
 
 CREATE INDEX index_boards_epic_lists_on_epic_board_id ON boards_epic_lists USING btree (epic_board_id);

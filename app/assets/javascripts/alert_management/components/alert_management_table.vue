@@ -23,7 +23,7 @@ import {
 } from '~/vue_shared/components/paginated_table_with_search_and_tabs/constants';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { convertToSnakeCase } from '~/lib/utils/text_utility';
-import getAlerts from '~/graphql_shared/queries/get_alerts.query.graphql';
+import getAlertsQuery from '~/graphql_shared/queries/get_alerts.query.graphql';
 import getAlertsCountByStatus from '../graphql/queries/get_count_by_status.query.graphql';
 import {
   ALERTS_STATUS_TABS,
@@ -119,7 +119,7 @@ export default {
   apollo: {
     alerts: {
       fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
-      query: getAlerts,
+      query: getAlertsQuery,
       variables() {
         return {
           searchTerm: this.searchTerm,

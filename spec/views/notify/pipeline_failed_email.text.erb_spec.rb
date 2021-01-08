@@ -27,7 +27,7 @@ RSpec.describe 'notify/pipeline_failed_email.text.erb' do
     it 'renders the email correctly' do
       render
 
-      expect(rendered).to have_content('Your pipeline has failed')
+      expect(rendered).to have_content("Pipeline ##{pipeline.id} has failed!")
       expect(rendered).to have_content(pipeline.project.name)
       expect(rendered).to have_content(pipeline.git_commit_message.truncate(50).gsub(/\s+/, ' '))
       expect(rendered).to have_content(pipeline.commit.author_name)

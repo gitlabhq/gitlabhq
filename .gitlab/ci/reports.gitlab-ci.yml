@@ -119,7 +119,7 @@ dependency_scanning gemnasium:
     # git-lfs is needed for auto-remediation
     - apk add git-lfs
   after_script:
-    # Post-processing: This will be an after_script once this job will use the Dependency Scanning CI template
+    # Post-processing
     - apk add jq
     # Lower execa severity based on https://gitlab.com/gitlab-org/gitlab/-/issues/223859#note_452922390
     - jq '(.vulnerabilities[] | select (.cve == "yarn.lock:execa:gemnasium:05cfa2e8-2d0c-42c1-8894-638e2f12ff3d")).severity = "Medium"' gl-dependency-scanning-report.json > temp.json && mv temp.json gl-dependency-scanning-report.json
@@ -133,6 +133,11 @@ dependency_scanning retire-js:
   extends: .dependency_scanning
   image:
     name: "$SECURE_ANALYZERS_PREFIX/retire.js:$DS_MAJOR_VERSION"
+
+dependency_scanning gemnasium-python:
+  extends: .dependency_scanning
+  image:
+    name: "$SECURE_ANALYZERS_PREFIX/gemnasium-python:$DS_MAJOR_VERSION"
 
 # Analyze dependencies for malicious behavior
 # See https://gitlab.com/gitlab-com/gl-security/security-research/package-hunter

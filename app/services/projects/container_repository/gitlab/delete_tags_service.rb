@@ -24,7 +24,7 @@ module Projects
           return success(deleted: []) if @tag_names.empty?
 
           delete_tags
-        rescue => e
+        rescue TimeoutError, ::Faraday::Error => e
           ::Gitlab::ErrorTracking.track_exception(e, tags_count: @tag_names&.size, container_repository_id: @container_repository&.id)
           error('error while deleting tags', nil, pass_back: { deleted: @deleted_tags, exception_class_name: e.class.name })
         end
