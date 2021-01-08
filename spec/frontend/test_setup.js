@@ -13,6 +13,9 @@ import './helpers/dom_shims';
 import './helpers/jquery';
 import '~/commons/bootstrap';
 
+// This module has some fairly decent visual test coverage in it's own repository.
+jest.mock('@gitlab/favicon-overlay');
+
 process.on('unhandledRejection', global.promiseRejectionHandler);
 
 setupManualMocks();

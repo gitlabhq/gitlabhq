@@ -514,27 +514,6 @@ describe('common_utils', () => {
     });
   });
 
-  describe('resetFavicon', () => {
-    beforeEach(() => {
-      const favicon = document.createElement('link');
-      favicon.setAttribute('id', 'favicon');
-      favicon.setAttribute('data-original-href', 'default/favicon');
-      document.body.appendChild(favicon);
-    });
-
-    afterEach(() => {
-      document.body.removeChild(document.getElementById('favicon'));
-    });
-
-    it('should reset page favicon to the default icon', () => {
-      const favicon = document.getElementById('favicon');
-      favicon.setAttribute('href', 'new/favicon');
-      commonUtils.resetFavicon();
-
-      expect(document.getElementById('favicon').getAttribute('href')).toEqual('default/favicon');
-    });
-  });
-
   describe('spriteIcon', () => {
     let beforeGon;
 

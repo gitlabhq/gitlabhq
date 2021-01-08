@@ -1,5 +1,0 @@
----
-title: Change pages deployments size to bigint
-merge_request: 50262
-author:
-type: fixed

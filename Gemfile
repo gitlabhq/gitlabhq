@@ -81,7 +81,7 @@ gem 'gpgme', '~> 2.0.19'
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
 gem 'gitlab_omniauth-ldap', '~> 2.1.1', require: 'omniauth-ldap'
-gem 'net-ldap'
+gem 'net-ldap', '~> 0.16.3'
 
 # API
 # Locked at Grape v1.4.0 until https://github.com/ruby-grape/grape/pull/2088 is merged

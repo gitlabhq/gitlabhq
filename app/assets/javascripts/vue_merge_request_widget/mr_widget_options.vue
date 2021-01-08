@@ -43,7 +43,7 @@ import SourceBranchRemovalStatus from './components/source_branch_removal_status
 import TerraformPlan from './components/terraform/mr_widget_terraform_container.vue';
 import GroupedCodequalityReportsApp from '../reports/codequality_report/grouped_codequality_reports_app.vue';
 import GroupedTestReportsApp from '../reports/components/grouped_test_reports_app.vue';
-import { setFaviconOverlay } from '../lib/utils/common_utils';
+import { setFaviconOverlay } from '../lib/utils/favicon';
 import GroupedAccessibilityReportsApp from '../reports/accessibility_report/grouped_accessibility_reports_app.vue';
 import getStateQuery from './queries/get_state.query.graphql';
 

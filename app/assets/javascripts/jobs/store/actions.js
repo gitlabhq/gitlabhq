@@ -2,7 +2,7 @@ import Visibility from 'visibilityjs';
 import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import Poll from '~/lib/utils/poll';
-import { setFaviconOverlay, resetFavicon } from '~/lib/utils/common_utils';
+import { setFaviconOverlay, resetFavicon } from '~/lib/utils/favicon';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
 import {

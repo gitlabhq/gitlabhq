@@ -7,12 +7,15 @@ import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import notify from '~/lib/utils/notify';
 import SmartInterval from '~/smart_interval';
+import { setFaviconOverlay } from '~/lib/utils/favicon';
 import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
 import mockData from './mock_data';
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
 import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/constants';
 
 jest.mock('~/smart_interval');
+
+jest.mock('~/lib/utils/favicon');
 
 const returnPromise = (data) =>
   new Promise((resolve) => {
@@ -421,21 +424,12 @@ describe('mrWidgetOptions', () => {
           document.body.removeChild(document.getElementById('favicon'));
         });
 
-        it('should call setFavicon method', (done) => {
+        it('should call setFavicon method', async () => {
           vm.mr.ciStatusFaviconPath = overlayDataUrl;
-          vm.setFaviconHelper()
-            .then(() => {
-              /*
-            It would be better if we'd could mock commonUtils.setFaviconURL
-            with a spy and test that it was called. We are doing the following
-            tests as a proxy to show that the function has been called
-            */
-              expect(faviconElement.getAttribute('href')).not.toEqual(null);
-              expect(faviconElement.getAttribute('href')).not.toEqual(overlayDataUrl);
-              expect(faviconElement.getAttribute('href')).not.toEqual(faviconDataUrl);
-            })
-            .then(done)
-            .catch(done.fail);
+
+          await vm.setFaviconHelper();
+
+          expect(setFaviconOverlay).toHaveBeenCalledWith(overlayDataUrl);
         });
 
         it('should not call setFavicon when there is no ciStatusFaviconPath', (done) => {
