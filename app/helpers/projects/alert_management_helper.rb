@@ -34,5 +34,3 @@ module Projects::AlertManagementHelper
     )
   end
 end
-
-Projects::AlertManagementHelper.prepend_if_ee('EE::Projects::AlertManagementHelper')

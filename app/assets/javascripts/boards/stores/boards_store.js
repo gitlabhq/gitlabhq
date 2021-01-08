@@ -753,10 +753,6 @@ const boardsStore = {
     return axios.get(this.state.endpoints.recentBoardsEndpoint);
   },
 
-  deleteBoard({ id }) {
-    return axios.delete(this.generateBoardsPath(id));
-  },
-
   setCurrentBoard(board) {
     this.state.currentBoard = board;
   },

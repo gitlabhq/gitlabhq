@@ -88,5 +88,3 @@ class AlertsService < Service
       .execute
   end
 end
-
-AlertsService.prepend_if_ee('EE::AlertsService')

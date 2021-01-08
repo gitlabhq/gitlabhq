@@ -918,16 +918,26 @@ RSpec.describe IssuesFinder do
   describe '#row_count', :request_store do
     let_it_be(:admin) { create(:admin) }
 
-    it 'returns the number of rows for the default state' do
-      finder = described_class.new(admin)
+    context 'when admin mode is enabled', :enable_admin_mode do
+      it 'returns the number of rows for the default state' do
+        finder = described_class.new(admin)
 
-      expect(finder.row_count).to eq(5)
+        expect(finder.row_count).to eq(5)
+      end
+
+      it 'returns the number of rows for a given state' do
+        finder = described_class.new(admin, state: 'closed')
+
+        expect(finder.row_count).to be_zero
+      end
     end
 
-    it 'returns the number of rows for a given state' do
-      finder = described_class.new(admin, state: 'closed')
+    context 'when admin mode is disabled' do
+      it 'returns no rows' do
+        finder = described_class.new(admin)
 
-      expect(finder.row_count).to be_zero
+        expect(finder.row_count).to be_zero
+      end
     end
 
     it 'returns -1 if the query times out' do
@@ -996,8 +1006,17 @@ RSpec.describe IssuesFinder do
 
         subject { described_class.new(admin_user, params).with_confidentiality_access_check }
 
-        it 'returns all issues' do
-          expect(subject).to include(public_issue, confidential_issue)
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'returns all issues' do
+            expect(subject).to include(public_issue, confidential_issue)
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it 'returns only public issues' do
+            expect(subject).to include(public_issue)
+            expect(subject).not_to include(confidential_issue)
+          end
         end
       end
     end
@@ -1069,14 +1088,27 @@ RSpec.describe IssuesFinder do
 
         subject { described_class.new(admin_user, params).with_confidentiality_access_check }
 
-        it 'returns all issues' do
-          expect(subject).to include(public_issue, confidential_issue)
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'returns all issues' do
+            expect(subject).to include(public_issue, confidential_issue)
+          end
+
+          it 'does not filter by confidentiality' do
+            expect(Issue).not_to receive(:where).with(a_string_matching('confidential'), anything)
+
+            subject
+          end
         end
 
-        it 'does not filter by confidentiality' do
-          expect(Issue).not_to receive(:where).with(a_string_matching('confidential'), anything)
+        context 'when admin mode is disabled' do
+          it 'returns only public issues' do
+            expect(subject).to include(public_issue)
+            expect(subject).not_to include(confidential_issue)
+          end
 
-          subject
+          it 'filters by confidentiality' do
+            expect(subject.to_sql).to match("issues.confidential")
+          end
         end
       end
     end

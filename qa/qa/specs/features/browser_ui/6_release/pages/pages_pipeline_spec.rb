@@ -30,7 +30,7 @@ module QA
         pipeline.visit!
       end
 
-      it 'runs a Pages-specific pipeline' do
+      it 'runs a Pages-specific pipeline', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/296937' do
         Page::Project::Pipeline::Show.perform do |show|
           expect(show).to have_job(:pages)
           show.click_job(:pages)

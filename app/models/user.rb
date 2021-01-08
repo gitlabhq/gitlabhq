@@ -1358,6 +1358,7 @@ class User < ApplicationRecord
 
   def hook_attrs
     {
+      id: id,
       name: name,
       username: username,
       avatar_url: avatar_url(only_path: false),

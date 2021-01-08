@@ -272,44 +272,16 @@ RSpec.configure do |config|
 
     Sidekiq::Worker.clear_all
 
-    # Temporary patch to force admin mode to be active by default in tests when
-    # using the feature flag :user_mode_in_session, since this will require
-    # modifying a significant number of specs to test both states for admin
-    # mode enabled / disabled.
-    #
-    # This will only be applied to specs below dirs in `admin_mode_mock_dirs`
-    #
-    # See ongoing migration: https://gitlab.com/gitlab-org/gitlab/-/issues/31511
-    #
-    # Until the migration is finished, if it is required to have the real
-    # behaviour in any of the mocked dirs specs that an admin is signed in
-    # with normal user mode and needs to switch to admin mode, it is possible to
-    # mark such tests with the `do_not_mock_admin_mode` metadata tag, e.g:
-    #
-    # context 'some test in mocked dir', :do_not_mock_admin_mode do ... end
-    admin_mode_mock_dirs = %w(
-      ./ee/spec/elastic_integration
-      ./ee/spec/finders
-      ./ee/spec/serializers
-      ./ee/spec/support/shared_examples/finders/geo
-      ./ee/spec/support/shared_examples/graphql/geo
-      ./spec/finders
-      ./spec/serializers
-      ./spec/workers
-    )
-
-    if !example.metadata[:do_not_mock_admin_mode] && example.metadata[:file_path].start_with?(*admin_mode_mock_dirs)
-      allow_any_instance_of(Gitlab::Auth::CurrentUserMode).to receive(:admin_mode?) do |current_user_mode|
-        current_user_mode.send(:user)&.admin?
-      end
-    end
-
     # Administrators have to re-authenticate in order to access administrative
     # functionality when feature flag :user_mode_in_session is active. Any spec
     # that requires administrative access can use the tag :enable_admin_mode
     # to avoid the second auth step (provided the user is already an admin):
     #
     # context 'some test that requires admin mode', :enable_admin_mode do ... end
+    #
+    # Some specs do get admin mode enabled automatically (e.g. `spec/controllers/admin`).
+    # In this case, specs that need to test both admin mode states can use the
+    # :do_not_mock_admin_mode tag to disable auto admin mode.
     #
     # See also spec/support/helpers/admin_mode_helpers.rb
     if example.metadata[:enable_admin_mode] && !example.metadata[:do_not_mock_admin_mode]

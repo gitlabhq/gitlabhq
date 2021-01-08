@@ -1,0 +1,8 @@
+---
+name: ci_build_stuck_badge_performance_experiment
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50521
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/295490
+milestone: '13.7'
+type: development
+group: group::continuous integration
+default_enabled: false

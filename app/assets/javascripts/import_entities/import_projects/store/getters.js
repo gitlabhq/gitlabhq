@@ -1,14 +1,10 @@
-import { STATUSES } from '../../constants';
-import { isProjectImportable, isIncompatible } from '../utils';
+import { isProjectImportable, isIncompatible, isImporting } from '../utils';
 
 export const isLoading = (state) => state.isLoadingRepos || state.isLoadingNamespaces;
 
-export const isImportingAnyRepo = (state) =>
-  state.repositories.some((repo) =>
-    [STATUSES.SCHEDULING, STATUSES.SCHEDULED, STATUSES.STARTED].includes(
-      repo.importedProject?.importStatus,
-    ),
-  );
+export const importingRepoCount = (state) => state.repositories.filter(isImporting).length;
+
+export const isImportingAnyRepo = (state) => state.repositories.some(isImporting);
 
 export const hasIncompatibleRepos = (state) => state.repositories.some(isIncompatible);
 

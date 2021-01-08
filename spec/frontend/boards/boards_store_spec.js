@@ -456,24 +456,6 @@ describe('boardsStore', () => {
     });
   });
 
-  describe('deleteBoard', () => {
-    const id = 'capsized';
-    const url = `${endpoints.boardsEndpoint}/${id}.json`;
-
-    it('makes a request to delete a boards', () => {
-      axiosMock.onDelete(url).replyOnce(200, dummyResponse);
-      const expectedResponse = expect.objectContaining({ data: dummyResponse });
-
-      return expect(boardsStore.deleteBoard({ id })).resolves.toEqual(expectedResponse);
-    });
-
-    it('fails for error response', () => {
-      axiosMock.onDelete(url).replyOnce(500);
-
-      return expect(boardsStore.deleteBoard({ id })).rejects.toThrow();
-    });
-  });
-
   describe('when created', () => {
     beforeEach(() => {
       setupDefaultResponses();

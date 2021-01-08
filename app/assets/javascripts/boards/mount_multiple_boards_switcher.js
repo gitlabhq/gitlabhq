@@ -37,6 +37,7 @@ export default (params = {}) => {
     },
     provide: {
       fullPath: params.fullPath,
+      rootPath: params.rootPath,
     },
     render(createElement) {
       return createElement(BoardsSelector, {

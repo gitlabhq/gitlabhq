@@ -90,7 +90,7 @@ RSpec.describe UsersFinder do
       end
     end
 
-    context 'with an admin user' do
+    context 'with an admin user', :enable_admin_mode do
       let(:admin) { create(:admin) }
 
       it 'filters by external users' do

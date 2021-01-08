@@ -52,7 +52,13 @@ RSpec.describe DeployKeyEntity do
   context 'user is an admin' do
     let(:user) { create(:user, :admin) }
 
-    it { expect(entity.as_json).to include(can_edit: true) }
+    context 'when admin mode is enabled', :enable_admin_mode do
+      it { expect(entity.as_json).to include(can_edit: true) }
+    end
+
+    context 'when admin mode is disabled' do
+      it { expect(entity.as_json).not_to include(can_edit: true) }
+    end
   end
 
   context 'user is a project maintainer' do

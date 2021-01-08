@@ -35,6 +35,7 @@ export default {
     ...mapGetters([
       'isLoading',
       'isImportingAnyRepo',
+      'importingRepoCount',
       'hasImportableRepos',
       'hasIncompatibleRepos',
       'importAllCount',
@@ -60,13 +61,17 @@ export default {
     },
 
     importAllButtonText() {
-      return this.hasIncompatibleRepos
-        ? n__(
-            'Import %d compatible repository',
-            'Import %d compatible repositories',
-            this.importAllCount,
-          )
-        : n__('Import %d repository', 'Import %d repositories', this.importAllCount);
+      if (this.isImportingAnyRepo) {
+        return n__('Importing %d repository', 'Importing %d repositories', this.importingRepoCount);
+      }
+
+      if (this.hasIncompatibleRepos)
+        return n__(
+          'Import %d compatible repository',
+          'Import %d compatible repositories',
+          this.importAllCount,
+        );
+      return n__('Import %d repository', 'Import %d repositories', this.importAllCount);
     },
 
     emptyStateText() {

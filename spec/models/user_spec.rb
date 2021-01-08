@@ -5089,9 +5089,10 @@ RSpec.describe User do
   end
 
   describe '#hook_attrs' do
-    it 'includes name, username, avatar_url, and email' do
+    it 'includes id, name, username, avatar_url, and email' do
       user = create(:user)
       user_attributes = {
+        id: user.id,
         name: user.name,
         username: user.username,
         avatar_url: user.avatar_url(only_path: false),

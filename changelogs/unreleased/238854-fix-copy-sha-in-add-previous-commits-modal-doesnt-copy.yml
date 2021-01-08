@@ -1,0 +1,5 @@
+---
+title: Fix 'copy sha' in 'add previous commits' modal doesn't copy
+merge_request: 50921
+author: Kev @KevSlashNull
+type: fixed

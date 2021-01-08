@@ -14701,6 +14701,11 @@ msgstr ""
 msgid "Imported requirements"
 msgstr ""
 
+msgid "Importing %d repository"
+msgid_plural "Importing %d repositories"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Improve Merge Requests and customer support with GitLab Enterprise Edition."
 msgstr ""
 
@@ -15346,6 +15351,9 @@ msgid "Invitation declined"
 msgstr ""
 
 msgid "Invite"
+msgstr ""
+
+msgid "Invite \"%{email}\" by email"
 msgstr ""
 
 msgid "Invite \"%{trimmed}\" by email"
@@ -19526,6 +19534,9 @@ msgstr ""
 msgid "OnCallSchedules|Add schedule"
 msgstr ""
 
+msgid "OnCallSchedules|Are you sure you want to delete the \"%{deleteRotation}\" rotation? This action cannot be undone."
+msgstr ""
+
 msgid "OnCallSchedules|Are you sure you want to delete the \"%{deleteSchedule}\" schedule? This action cannot be undone."
 msgstr ""
 
@@ -19590,6 +19601,9 @@ msgid "OnCallSchedules|Successfully created a new rotation"
 msgstr ""
 
 msgid "OnCallSchedules|Successfully edited your rotation"
+msgstr ""
+
+msgid "OnCallSchedules|The rotation could not be deleted. Please try again."
 msgstr ""
 
 msgid "OnCallSchedules|The rotation could not be updated. Please try again."

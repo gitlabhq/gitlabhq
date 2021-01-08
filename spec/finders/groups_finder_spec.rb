@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe GroupsFinder do
+  include AdminModeHelper
+
   describe '#execute' do
     let(:user) { create(:user) }
 
@@ -23,11 +25,16 @@ RSpec.describe GroupsFinder do
         :external | { all_available: false } | %i(user_public_group user_internal_group user_private_group)
         :external | {} | %i(public_group user_public_group user_internal_group user_private_group)
 
-        :admin | { all_available: true } | %i(public_group internal_group private_group user_public_group
-                                              user_internal_group user_private_group)
-        :admin | { all_available: false } | %i(user_public_group user_internal_group user_private_group)
-        :admin | {} | %i(public_group internal_group private_group user_public_group user_internal_group
-                         user_private_group)
+        :admin_without_admin_mode | { all_available: true } | %i(public_group internal_group user_public_group
+                                                                 user_internal_group user_private_group)
+        :admin_without_admin_mode | { all_available: false } | %i(user_public_group user_internal_group user_private_group)
+        :admin_without_admin_mode | {} | %i(public_group internal_group user_public_group user_internal_group user_private_group)
+
+        :admin_with_admin_mode | { all_available: true } | %i(public_group internal_group private_group user_public_group
+                                                              user_internal_group user_private_group)
+        :admin_with_admin_mode | { all_available: false } | %i(user_public_group user_internal_group user_private_group)
+        :admin_with_admin_mode | {} | %i(public_group internal_group private_group user_public_group user_internal_group
+                                         user_private_group)
       end
 
       with_them do
@@ -52,8 +59,12 @@ RSpec.describe GroupsFinder do
                 create(:user)
               when :external
                 create(:user, external: true)
-              when :admin
+              when :admin_without_admin_mode
                 create(:user, :admin)
+              when :admin_with_admin_mode
+                admin = create(:user, :admin)
+                enable_admin_mode!(admin)
+                admin
               end
             @groups.values_at(:user_private_group, :user_internal_group, :user_public_group).each do |group|
               group.add_developer(user)

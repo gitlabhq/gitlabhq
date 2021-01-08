@@ -2184,7 +2184,7 @@ POST /projects/:id/housekeeping
 
 ## Push Rules **(STARTER)**
 
-### Get project push rules
+### Get project push rules **(STARTER)**
 
 Get the [push rules](../push_rules/push_rules.md#enabling-push-rules) of a
 project.
@@ -2230,7 +2230,7 @@ parameters:
 }
 ```
 
-### Add project push rule
+### Add project push rule **(STARTER)**
 
 Adds a push rule to a specified project.
 
@@ -2238,22 +2238,22 @@ Adds a push rule to a specified project.
 POST /projects/:id/push_rule
 ```
 
-| Attribute                                     | Type           | Required               | Description |
-|-----------------------------------------------|----------------|------------------------|-------------|
-| `author_email_regex` **(STARTER)**            | string         | **{dotted-circle}** No | All commit author emails must match this, for example `@my-company.com$`. |
-| `branch_name_regex` **(STARTER)**             | string         | **{dotted-circle}** No | All branch names must match this, for example `(feature|hotfix)\/*`. |
-| `commit_committer_check` **(PREMIUM)**        | boolean        | **{dotted-circle}** No | Users can only push commits to this repository that were committed with one of their own verified emails. |
-| `commit_message_negative_regex` **(STARTER)** | string         | **{dotted-circle}** No | No commit message is allowed to match this, for example `ssh\:\/\/`. |
-| `commit_message_regex` **(STARTER)**          | string         | **{dotted-circle}** No | All commit messages must match this, for example `Fixed \d+\..*`. |
-| `deny_delete_tag` **(STARTER)**               | boolean        | **{dotted-circle}** No | Deny deleting a tag. |
-| `file_name_regex` **(STARTER)**               | string         | **{dotted-circle}** No | All committed filenames must **not** match this, for example `(jar|exe)$`. |
-| `id`                                          | integer/string | **{check-circle}** Yes | The ID of the project or NAMESPACE/PROJECT_NAME. |
-| `max_file_size` **(STARTER)**                 | integer        | **{dotted-circle}** No | Maximum file size (MB). |
-| `member_check` **(STARTER)**                  | boolean        | **{dotted-circle}** No | Restrict commits by author (email) to existing GitLab users. |
-| `prevent_secrets` **(STARTER)**               | boolean        | **{dotted-circle}** No | GitLab rejects any files that are likely to contain secrets. |
-| `reject_unsigned_commits` **(PREMIUM)**       | boolean        | **{dotted-circle}** No | Reject commit when it's not signed through GPG. |
+| Attribute                               | Type           | Required               | Description |
+|-----------------------------------------|----------------|------------------------|-------------|
+| `author_email_regex`                    | string         | **{dotted-circle}** No | All commit author emails must match this, for example `@my-company.com$`. |
+| `branch_name_regex`                     | string         | **{dotted-circle}** No | All branch names must match this, for example `(feature|hotfix)\/*`. |
+| `commit_committer_check` **(PREMIUM)**  | boolean        | **{dotted-circle}** No | Users can only push commits to this repository that were committed with one of their own verified emails. |
+| `commit_message_negative_regex`         | string         | **{dotted-circle}** No | No commit message is allowed to match this, for example `ssh\:\/\/`. |
+| `commit_message_regex`                  | string         | **{dotted-circle}** No | All commit messages must match this, for example `Fixed \d+\..*`. |
+| `deny_delete_tag`                       | boolean        | **{dotted-circle}** No | Deny deleting a tag. |
+| `file_name_regex`                       | string         | **{dotted-circle}** No | All committed filenames must **not** match this, for example `(jar|exe)$`. |
+| `id`                                    | integer/string | **{check-circle}** Yes | The ID of the project or NAMESPACE/PROJECT_NAME. |
+| `max_file_size`                         | integer        | **{dotted-circle}** No | Maximum file size (MB). |
+| `member_check`                          | boolean        | **{dotted-circle}** No | Restrict commits by author (email) to existing GitLab users. |
+| `prevent_secrets`                       | boolean        | **{dotted-circle}** No | GitLab rejects any files that are likely to contain secrets. |
+| `reject_unsigned_commits` **(PREMIUM)** | boolean        | **{dotted-circle}** No | Reject commit when it's not signed through GPG. |
 
-### Edit project push rule
+### Edit project push rule **(STARTER)**
 
 Edits a push rule for a specified project.
 
@@ -2261,20 +2261,20 @@ Edits a push rule for a specified project.
 PUT /projects/:id/push_rule
 ```
 
-| Attribute                                     | Type           | Required               | Description |
-|-----------------------------------------------|----------------|------------------------|-------------|
-| `author_email_regex` **(STARTER)**            | string         | **{dotted-circle}** No | All commit author emails must match this, for example `@my-company.com$`. |
-| `branch_name_regex` **(STARTER)**             | string         | **{dotted-circle}** No | All branch names must match this, for example `(feature|hotfix)\/*`. |
-| `commit_committer_check` **(PREMIUM)**        | boolean        | **{dotted-circle}** No | Users can only push commits to this repository that were committed with one of their own verified emails. |
-| `commit_message_negative_regex` **(STARTER)** | string         | **{dotted-circle}** No | No commit message is allowed to match this, for example `ssh\:\/\/`. |
-| `commit_message_regex` **(STARTER)**          | string         | **{dotted-circle}** No | All commit messages must match this, for example `Fixed \d+\..*`. |
-| `deny_delete_tag` **(STARTER)**               | boolean        | **{dotted-circle}** No | Deny deleting a tag. |
-| `file_name_regex` **(STARTER)**               | string         | **{dotted-circle}** No | All committed filenames must **not** match this, for example `(jar|exe)$`. |
-| `id`                                          | integer/string | **{check-circle}** Yes | The ID of the project or NAMESPACE/PROJECT_NAME. |
-| `max_file_size` **(STARTER)**                 | integer        | **{dotted-circle}** No | Maximum file size (MB). |
-| `member_check` **(STARTER)**                  | boolean        | **{dotted-circle}** No | Restrict commits by author (email) to existing GitLab users. |
-| `prevent_secrets` **(STARTER)**               | boolean        | **{dotted-circle}** No | GitLab rejects any files that are likely to contain secrets. |
-| `reject_unsigned_commits` **(PREMIUM)**       | boolean        | **{dotted-circle}** No | Reject commits when they are not GPG signed. |
+| Attribute                               | Type           | Required               | Description |
+|-----------------------------------------|----------------|------------------------|-------------|
+| `author_email_regex`                    | string         | **{dotted-circle}** No | All commit author emails must match this, for example `@my-company.com$`. |
+| `branch_name_regex`                     | string         | **{dotted-circle}** No | All branch names must match this, for example `(feature|hotfix)\/*`. |
+| `commit_committer_check` **(PREMIUM)**  | boolean        | **{dotted-circle}** No | Users can only push commits to this repository that were committed with one of their own verified emails. |
+| `commit_message_negative_regex`         | string         | **{dotted-circle}** No | No commit message is allowed to match this, for example `ssh\:\/\/`. |
+| `commit_message_regex`                  | string         | **{dotted-circle}** No | All commit messages must match this, for example `Fixed \d+\..*`. |
+| `deny_delete_tag`                       | boolean        | **{dotted-circle}** No | Deny deleting a tag. |
+| `file_name_regex`                       | string         | **{dotted-circle}** No | All committed filenames must **not** match this, for example `(jar|exe)$`. |
+| `id`                                    | integer/string | **{check-circle}** Yes | The ID of the project or NAMESPACE/PROJECT_NAME. |
+| `max_file_size`                         | integer        | **{dotted-circle}** No | Maximum file size (MB). |
+| `member_check`                          | boolean        | **{dotted-circle}** No | Restrict commits by author (email) to existing GitLab users. |
+| `prevent_secrets`                       | boolean        | **{dotted-circle}** No | GitLab rejects any files that are likely to contain secrets. |
+| `reject_unsigned_commits` **(PREMIUM)** | boolean        | **{dotted-circle}** No | Reject commits when they are not GPG signed. |
 
 ### Delete project push rule
 

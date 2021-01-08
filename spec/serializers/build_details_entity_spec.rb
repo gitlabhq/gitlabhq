@@ -5,14 +5,13 @@ require 'spec_helper'
 RSpec.describe BuildDetailsEntity do
   include ProjectForksHelper
 
-  let_it_be(:user) { create(:admin) }
-
   it 'inherits from JobEntity' do
     expect(described_class).to be < JobEntity
   end
 
   describe '#as_json' do
     let(:project) { create(:project, :repository) }
+    let(:user) { project.owner }
     let(:pipeline) { create(:ci_pipeline, project: project) }
     let(:build) { create(:ci_build, :failed, pipeline: pipeline) }
     let(:request) { double('request', project: project) }
@@ -66,6 +65,7 @@ RSpec.describe BuildDetailsEntity do
 
         before do
           allow(build).to receive(:merge_request).and_return(merge_request)
+          forked_project.add_developer(user)
         end
 
         let(:merge_request) do
@@ -186,7 +186,7 @@ RSpec.describe BuildDetailsEntity do
     end
 
     context 'when the build has expired artifacts' do
-      let!(:build) { create(:ci_build, :artifacts, artifacts_expire_at: 7.days.ago) }
+      let!(:build) { create(:ci_build, :artifacts, pipeline: pipeline, artifacts_expire_at: 7.days.ago) }
 
       context 'when pipeline is unlocked' do
         before do
@@ -218,7 +218,7 @@ RSpec.describe BuildDetailsEntity do
     end
 
     context 'when the build has archive type artifacts' do
-      let!(:build) { create(:ci_build, :artifacts, artifacts_expire_at: 7.days.from_now) }
+      let!(:build) { create(:ci_build, :artifacts, pipeline: pipeline, artifacts_expire_at: 7.days.from_now) }
       let!(:report) { create(:ci_job_artifact, :codequality, job: build) }
 
       it 'exposes artifact details' do

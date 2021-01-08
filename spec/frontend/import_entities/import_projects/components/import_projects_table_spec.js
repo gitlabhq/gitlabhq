@@ -142,6 +142,29 @@ describe('ImportProjectsTable', () => {
     },
   );
 
+  it.each`
+    importingRepoCount | buttonMessage
+    ${1}               | ${'Importing 1 repository'}
+    ${5}               | ${'Importing 5 repositories'}
+  `(
+    'sets the button text to "$buttonMessage" when importing repos',
+    ({ importingRepoCount, buttonMessage }) => {
+      createComponent({
+        state: {
+          providerRepos: [providerRepo],
+        },
+        getters: {
+          hasIncompatibleRepos: () => false,
+          importAllCount: () => 10,
+          isImportingAnyRepo: () => true,
+          importingRepoCount: () => importingRepoCount,
+        },
+      });
+
+      expect(findImportAllButton().text()).toBe(buttonMessage);
+    },
+  );
+
   it('renders an empty state if there are no repositories available', () => {
     createComponent({ state: { repositories: [] } });
 
@@ -168,7 +191,7 @@ describe('ImportProjectsTable', () => {
   });
 
   it('shows loading spinner when import is in progress', () => {
-    createComponent({ getters: { isImportingAnyRepo: () => true } });
+    createComponent({ getters: { isImportingAnyRepo: () => true, importallCount: () => 1 } });
 
     expect(findImportAllButton().props().loading).toBe(true);
   });

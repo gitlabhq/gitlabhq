@@ -697,10 +697,18 @@ RSpec.describe MergeRequestsFinder do
     context 'with admin user' do
       let(:user) { create(:user, :admin) }
 
-      it 'returns all merge requests' do
-        expect(merge_requests).to eq(
-          [mr_internal_private_repo_access, mr_private_repo_access, mr_internal, mr_private, mr_public]
-        )
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it 'returns all merge requests' do
+          expect(merge_requests).to contain_exactly(
+            mr_internal_private_repo_access, mr_private_repo_access, mr_internal, mr_private, mr_public
+          )
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        it 'returns public and internal merge requests' do
+          expect(merge_requests).to contain_exactly(mr_internal, mr_public)
+        end
       end
     end
 

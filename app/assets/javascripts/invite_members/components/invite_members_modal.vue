@@ -9,6 +9,7 @@ import {
   GlButton,
   GlFormInput,
 } from '@gitlab/ui';
+import { partition, isString } from 'lodash';
 import eventHub from '../event_hub';
 import { s__, __, sprintf } from '~/locale';
 import Api from '~/api';
@@ -58,7 +59,7 @@ export default {
       visible: true,
       modalId: 'invite-members-modal',
       selectedAccessLevel: this.defaultAccessLevel,
-      newUsersToInvite: '',
+      newUsersToInvite: [],
       selectedDate: undefined,
     };
   },
@@ -79,13 +80,12 @@ export default {
       return {
         onComplete: () => {
           this.selectedAccessLevel = this.defaultAccessLevel;
-          this.newUsersToInvite = '';
+          this.newUsersToInvite = [];
         },
       };
     },
-    postData() {
+    basePostData() {
       return {
-        user_id: this.newUsersToInvite,
         access_level: this.selectedAccessLevel,
         expires_at: this.selectedDate,
         format: 'json',
@@ -101,6 +101,17 @@ export default {
     eventHub.$on('openModal', this.openModal);
   },
   methods: {
+    partitionNewUsersToInvite() {
+      const [usersToInviteByEmail, usersToAddById] = partition(
+        this.newUsersToInvite,
+        (user) => isString(user.id) && user.id.includes('user-defined-token'),
+      );
+
+      return [
+        usersToInviteByEmail.map((user) => user.name).join(','),
+        usersToAddById.map((user) => user.id).join(','),
+      ];
+    },
     openModal() {
       this.$root.$emit('bv::show::modal', this.modalId);
     },
@@ -108,7 +119,7 @@ export default {
       this.$root.$emit('bv::hide::modal', this.modalId);
     },
     sendInvite() {
-      this.submitForm(this.postData);
+      this.submitForm();
       this.closeModal();
     },
     cancelInvite() {
@@ -120,15 +131,33 @@ export default {
     changeSelectedItem(item) {
       this.selectedAccessLevel = item;
     },
-    submitForm(formData) {
-      if (this.isProject) {
-        return Api.inviteProjectMembers(this.id, formData)
-          .then(this.showToastMessageSuccess)
-          .catch(this.showToastMessageError);
+    submitForm() {
+      const [usersToInviteByEmail, usersToAddById] = this.partitionNewUsersToInvite();
+      const promises = [];
+
+      if (usersToInviteByEmail !== '') {
+        const apiInviteByEmail = this.isProject
+          ? Api.inviteProjectMembersByEmail.bind(Api)
+          : Api.inviteGroupMembersByEmail.bind(Api);
+
+        promises.push(apiInviteByEmail(this.id, this.inviteByEmailPostData(usersToInviteByEmail)));
       }
-      return Api.inviteGroupMember(this.id, formData)
-        .then(this.showToastMessageSuccess)
-        .catch(this.showToastMessageError);
+
+      if (usersToAddById !== '') {
+        const apiAddByUserId = this.isProject
+          ? Api.addProjectMembersByUserId.bind(Api)
+          : Api.addGroupMembersByUserId.bind(Api);
+
+        promises.push(apiAddByUserId(this.id, this.addByUserIdPostData(usersToAddById)));
+      }
+
+      Promise.all(promises).then(this.showToastMessageSuccess).catch(this.showToastMessageError);
+    },
+    inviteByEmailPostData(usersToInviteByEmail) {
+      return { ...this.basePostData, email: usersToInviteByEmail };
+    },
+    addByUserIdPostData(usersToAddById) {
+      return { ...this.basePostData, user_id: usersToAddById };
     },
     showToastMessageSuccess() {
       this.$toast.show(this.$options.labels.toastMessageSuccessful, this.toastOptions);

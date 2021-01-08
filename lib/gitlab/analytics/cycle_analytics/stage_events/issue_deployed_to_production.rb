@@ -4,13 +4,13 @@ module Gitlab
   module Analytics
     module CycleAnalytics
       module StageEvents
-        class ProductionStageEnd < StageEvent
+        class IssueDeployedToProduction < StageEvent
           def self.name
             _("Issue first deployed to production")
           end
 
           def self.identifier
-            :production_stage_end
+            :issue_deployed_to_production
           end
 
           def object_type

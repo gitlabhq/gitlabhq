@@ -1,0 +1,5 @@
+---
+title: Rename button "CI lint" to "CI Lint" on jobs page
+merge_request: 50987
+author: Kev @KevSlashNull
+type: fixed

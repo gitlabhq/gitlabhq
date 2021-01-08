@@ -1,7 +1,7 @@
 - if invite_members_allowed?(group)
   .js-invite-members-modal{ data: { id: group.id,
     name: group.name,
-    is_project: false,
+    is_project: 'false',
     access_levels: GroupMember.access_level_roles.to_json,
     default_access_level: Gitlab::Access::GUEST,
     help_link: help_page_url('user/permissions') } }
