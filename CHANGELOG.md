@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.7.3 (2021-01-08)
+
+### Fixed (7 changes)
+
+- Fix Canary Ingress weight is not reflected on UI immediately. !50246
+- Change pages deployments size to bigint. !50262
+- Fix viewing container repositories with tags with corrupted manifest. !50362
+- Fix the graphQL type for container repository tags. !50419
+- Fix(eetrialbanner): fix EE trial banner to allow dismiss. !50436
+- Update Helm 2 version to 2.17.0. !50547
+- Fix project access token regression. !50800
+
+
 ## 13.7.2 (2021-01-07)
 
 ### Security (7 changes)

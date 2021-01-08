@@ -1,5 +1,0 @@
----
-title: Fix Canary Ingress weight is not reflected on UI immediately
-merge_request: 50246
-author:
-type: fixed
