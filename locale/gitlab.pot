@@ -10398,6 +10398,9 @@ msgstr ""
 msgid "Elasticsearch HTTP client timeout value in seconds."
 msgstr ""
 
+msgid "Elasticsearch indexing"
+msgstr ""
+
 msgid "Elasticsearch indexing restrictions"
 msgstr ""
 
@@ -20371,6 +20374,9 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
+msgid "Pause Elasticsearch indexing"
+msgstr ""
+
 msgid "Pause replication"
 msgstr ""
 
@@ -23196,7 +23202,7 @@ msgstr ""
 msgid "Regulate approvals by authors/committers. Affects all projects."
 msgstr ""
 
-msgid "Reindexing status"
+msgid "Reindexing Status: %{status}"
 msgstr ""
 
 msgid "Rejected (closed)"
@@ -26687,9 +26693,6 @@ msgstr ""
 msgid "State your message to activate"
 msgstr ""
 
-msgid "State: %{last_reindexing_task_state}"
-msgstr ""
-
 msgid "Static Application Security Testing (SAST)"
 msgstr ""
 
@@ -28210,6 +28213,9 @@ msgid "There are no projects shared with this group yet"
 msgstr ""
 
 msgid "There are no variables yet."
+msgstr ""
+
+msgid "There are pending advanced search migrations. Indexing must remain paused until the migrations are completed."
 msgstr ""
 
 msgid "There are running deployments on the environment. Please retry later."
@@ -30138,7 +30144,7 @@ msgstr ""
 msgid "Until"
 msgstr ""
 
-msgid "Unused, previous index '%{index_name}' will be deleted after %{time} automatically."
+msgid "Unused, previous indices: %{index_names} will be deleted after %{time} automatically."
 msgstr ""
 
 msgid "Unverified"

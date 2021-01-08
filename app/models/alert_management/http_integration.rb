@@ -52,6 +52,10 @@ module AlertManagement
       endpoint_identifier == LEGACY_IDENTIFIER
     end
 
+    def token_changed?
+      attribute_changed?(:token)
+    end
+
     # Blank token assignment triggers token reset
     def prevent_token_assignment
       if token.present? && token_changed?

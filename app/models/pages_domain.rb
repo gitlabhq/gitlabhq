@@ -188,7 +188,7 @@ class PagesDomain < ApplicationRecord
 
   def user_provided_key=(key)
     self.key = key
-    self.certificate_source = 'user_provided' if key_changed?
+    self.certificate_source = 'user_provided' if attribute_changed?(:key)
   end
 
   def user_provided_certificate
@@ -207,7 +207,7 @@ class PagesDomain < ApplicationRecord
 
   def gitlab_provided_key=(key)
     self.key = key
-    self.certificate_source = 'gitlab_provided' if key_changed?
+    self.certificate_source = 'gitlab_provided' if attribute_changed?(:key)
   end
 
   def pages_virtual_domain

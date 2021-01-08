@@ -11,4 +11,8 @@ class AlertsServiceData < ApplicationRecord
     mode: :per_attribute_iv,
     key: Settings.attr_encrypted_db_key_base_truncated,
     algorithm: 'aes-256-gcm'
+
+  def token_changed?
+    attribute_changed?(:token)
+  end
 end
