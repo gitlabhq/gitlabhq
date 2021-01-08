@@ -570,7 +570,7 @@ module API
 
       return unless Feature.enabled?(feature_flag, default_enabled: true)
 
-      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(values, event_name)
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values: values)
     rescue => error
       Gitlab::AppLogger.warn("Redis tracking event failed for event: #{event_name}, message: #{error.message}")
     end

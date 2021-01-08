@@ -88,7 +88,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         it 'does not track the event' do
           stub_application_setting(usage_ping_enabled: false)
 
-          described_class.track_event(entity1, weekly_event, Date.current)
+          described_class.track_event(weekly_event, values: entity1, time: Date.current)
 
           expect(Gitlab::Redis::HLL).not_to receive(:add)
         end
@@ -102,20 +102,27 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         it 'tracks event when using symbol' do
           expect(Gitlab::Redis::HLL).to receive(:add)
 
-          described_class.track_event(entity1, :g_analytics_contribution)
+          described_class.track_event(:g_analytics_contribution, values: entity1)
+        end
+
+        it 'tracks events with multiple values' do
+          values = [entity1, entity2]
+          expect(Gitlab::Redis::HLL).to receive(:add).with(key: /g_{analytics}_contribution/, value: values, expiry: 84.days)
+
+          described_class.track_event(:g_analytics_contribution, values: values)
         end
 
         it "raise error if metrics don't have same aggregation" do
-          expect { described_class.track_event(entity1, different_aggregation, Date.current) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownAggregation)
+          expect { described_class.track_event(different_aggregation, values: entity1, time: Date.current) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownAggregation)
         end
 
         it 'raise error if metrics of unknown aggregation' do
-          expect { described_class.track_event(entity1, 'unknown', Date.current) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
+          expect { described_class.track_event('unknown', values: entity1, time: Date.current) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
         end
 
         context 'for weekly events' do
           it 'sets the keys in Redis to expire automatically after the given expiry time' do
-            described_class.track_event(entity1, "g_analytics_contribution")
+            described_class.track_event("g_analytics_contribution", values: entity1)
 
             Gitlab::Redis::SharedState.with do |redis|
               keys = redis.scan_each(match: "g_{analytics}_contribution-*").to_a
@@ -128,7 +135,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
           end
 
           it 'sets the keys in Redis to expire automatically after 6 weeks by default' do
-            described_class.track_event(entity1, "g_compliance_dashboard")
+            described_class.track_event("g_compliance_dashboard", values: entity1)
 
             Gitlab::Redis::SharedState.with do |redis|
               keys = redis.scan_each(match: "g_{compliance}_dashboard-*").to_a
@@ -143,7 +150,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
 
         context 'for daily events' do
           it 'sets the keys in Redis to expire after the given expiry time' do
-            described_class.track_event(entity1, "g_analytics_search")
+            described_class.track_event("g_analytics_search", values: entity1)
 
             Gitlab::Redis::SharedState.with do |redis|
               keys = redis.scan_each(match: "*-g_{analytics}_search").to_a
@@ -156,7 +163,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
           end
 
           it 'sets the keys in Redis to expire after 29 days by default' do
-            described_class.track_event(entity1, "no_slot")
+            described_class.track_event("no_slot", values: entity1)
 
             Gitlab::Redis::SharedState.with do |redis|
               keys = redis.scan_each(match: "*-{no_slot}").to_a
@@ -173,12 +180,19 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
 
     describe '.track_event_in_context' do
       context 'with valid contex' do
-        it 'increments conext event counte' do
+        it 'increments context event counter' do
           expect(Gitlab::Redis::HLL).to receive(:add) do |kwargs|
             expect(kwargs[:key]).to match(/^#{default_context}\_.*/)
           end
 
-          described_class.track_event_in_context(entity1, context_event, default_context)
+          described_class.track_event_in_context(context_event, values: entity1, context: default_context)
+        end
+
+        it 'tracks events with multiple values' do
+          values = [entity1, entity2]
+          expect(Gitlab::Redis::HLL).to receive(:add).with(key: /g_{analytics}_contribution/, value: values, expiry: 84.days)
+
+          described_class.track_event_in_context(:g_analytics_contribution, values: values, context: default_context)
         end
       end
 
@@ -186,7 +200,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         it 'does not increment a counter' do
           expect(Gitlab::Redis::HLL).not_to receive(:add)
 
-          described_class.track_event_in_context(entity1, context_event, '')
+          described_class.track_event_in_context(context_event, values: entity1, context: '')
         end
       end
 
@@ -194,7 +208,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         it 'does not increment a counter' do
           expect(Gitlab::Redis::HLL).not_to receive(:add)
 
-          described_class.track_event_in_context(entity1, context_event, invalid_context)
+          described_class.track_event_in_context(context_event, values: entity1, context: invalid_context)
         end
       end
     end
@@ -202,35 +216,35 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     describe '.unique_events' do
       before do
         # events in current week, should not be counted as week is not complete
-        described_class.track_event(entity1, weekly_event, Date.current)
-        described_class.track_event(entity2, weekly_event, Date.current)
+        described_class.track_event(weekly_event, values: entity1, time: Date.current)
+        described_class.track_event(weekly_event, values: entity2, time: Date.current)
 
         # Events last week
-        described_class.track_event(entity1, weekly_event, 2.days.ago)
-        described_class.track_event(entity1, weekly_event, 2.days.ago)
-        described_class.track_event(entity1, no_slot, 2.days.ago)
+        described_class.track_event(weekly_event, values: entity1, time: 2.days.ago)
+        described_class.track_event(weekly_event, values: entity1, time: 2.days.ago)
+        described_class.track_event(no_slot, values: entity1, time: 2.days.ago)
 
         # Events 2 weeks ago
-        described_class.track_event(entity1, weekly_event, 2.weeks.ago)
+        described_class.track_event(weekly_event, values: entity1, time: 2.weeks.ago)
 
         # Events 4 weeks ago
-        described_class.track_event(entity3, weekly_event, 4.weeks.ago)
-        described_class.track_event(entity4, weekly_event, 29.days.ago)
+        described_class.track_event(weekly_event, values: entity3, time: 4.weeks.ago)
+        described_class.track_event(weekly_event, values: entity4, time: 29.days.ago)
 
         # events in current day should be counted in daily aggregation
-        described_class.track_event(entity1, daily_event, Date.current)
-        described_class.track_event(entity2, daily_event, Date.current)
+        described_class.track_event(daily_event, values: entity1, time: Date.current)
+        described_class.track_event(daily_event, values: entity2, time: Date.current)
 
         # Events last week
-        described_class.track_event(entity1, daily_event, 2.days.ago)
-        described_class.track_event(entity1, daily_event, 2.days.ago)
+        described_class.track_event(daily_event, values: entity1, time: 2.days.ago)
+        described_class.track_event(daily_event, values: entity1, time: 2.days.ago)
 
         # Events 2 weeks ago
-        described_class.track_event(entity1, daily_event, 14.days.ago)
+        described_class.track_event(daily_event, values: entity1, time: 14.days.ago)
 
         # Events 4 weeks ago
-        described_class.track_event(entity3, daily_event, 28.days.ago)
-        described_class.track_event(entity4, daily_event, 29.days.ago)
+        described_class.track_event(daily_event, values: entity3, time: 28.days.ago)
+        described_class.track_event(daily_event, values: entity4, time: 29.days.ago)
       end
 
       it 'raise error if metrics are not in the same slot' do
@@ -338,10 +352,10 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
       allow(described_class).to receive(:known_events).and_return(known_events)
       allow(described_class).to receive(:categories).and_return(%w(category1 category2))
 
-      described_class.track_event_in_context([entity1, entity3], 'event_name_1', default_context, 2.days.ago)
-      described_class.track_event_in_context(entity3, 'event_name_1', default_context, 2.days.ago)
-      described_class.track_event_in_context(entity3, 'event_name_1', invalid_context, 2.days.ago)
-      described_class.track_event_in_context([entity1, entity2], 'event_name_2', '', 2.weeks.ago)
+      described_class.track_event_in_context('event_name_1', values: [entity1, entity3], context: default_context, time: 2.days.ago)
+      described_class.track_event_in_context('event_name_1', values: entity3, context: default_context, time: 2.days.ago)
+      described_class.track_event_in_context('event_name_1', values: entity3, context: invalid_context, time: 2.days.ago)
+      described_class.track_event_in_context('event_name_2', values: [entity1, entity2], context: '', time: 2.weeks.ago)
     end
 
     subject(:unique_events) { described_class.unique_events(event_names: event_names, start_date: 4.weeks.ago, end_date: Date.current, context: context) }
@@ -379,13 +393,13 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
       allow(described_class).to receive(:known_events).and_return(known_events)
       allow(described_class).to receive(:categories).and_return(%w(category1 category2))
 
-      described_class.track_event(entity1, 'event1_slot', 2.days.ago)
-      described_class.track_event(entity2, 'event2_slot', 2.days.ago)
-      described_class.track_event(entity3, 'event2_slot', 2.weeks.ago)
+      described_class.track_event('event1_slot', values: entity1, time: 2.days.ago)
+      described_class.track_event('event2_slot', values: entity2, time: 2.days.ago)
+      described_class.track_event('event2_slot', values: entity3, time: 2.weeks.ago)
 
       # events in different slots
-      described_class.track_event(entity2, 'event3', 2.days.ago)
-      described_class.track_event(entity2, 'event4', 2.days.ago)
+      described_class.track_event('event3', values: entity2, time: 2.days.ago)
+      described_class.track_event('event4', values: entity2, time: 2.days.ago)
     end
 
     it 'returns the number of unique events for all known events' do
@@ -509,23 +523,23 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
       subject(:aggregated_metrics_data) { described_class.aggregated_metrics_weekly_data }
 
       before do
-        described_class.track_event(entity1, 'event1_slot', 2.days.ago)
-        described_class.track_event(entity2, 'event1_slot', 2.days.ago)
-        described_class.track_event(entity3, 'event1_slot', 2.days.ago)
-        described_class.track_event(entity1, 'event2_slot', 2.days.ago)
-        described_class.track_event(entity2, 'event2_slot', 3.days.ago)
-        described_class.track_event(entity3, 'event2_slot', 3.days.ago)
-        described_class.track_event(entity1, 'event3_slot', 3.days.ago)
-        described_class.track_event(entity2, 'event3_slot', 3.days.ago)
-        described_class.track_event(entity2, 'event5_slot', 3.days.ago)
+        described_class.track_event('event1_slot', values: entity1, time: 2.days.ago)
+        described_class.track_event('event1_slot', values: entity2, time: 2.days.ago)
+        described_class.track_event('event1_slot', values: entity3, time: 2.days.ago)
+        described_class.track_event('event2_slot', values: entity1, time: 2.days.ago)
+        described_class.track_event('event2_slot', values: entity2, time: 3.days.ago)
+        described_class.track_event('event2_slot', values: entity3, time: 3.days.ago)
+        described_class.track_event('event3_slot', values: entity1, time: 3.days.ago)
+        described_class.track_event('event3_slot', values: entity2, time: 3.days.ago)
+        described_class.track_event('event5_slot', values: entity2, time: 3.days.ago)
 
         # events out of time scope
-        described_class.track_event(entity3, 'event2_slot', 8.days.ago)
+        described_class.track_event('event2_slot', values: entity3, time: 8.days.ago)
 
         # events in different slots
-        described_class.track_event(entity1, 'event4', 2.days.ago)
-        described_class.track_event(entity2, 'event4', 2.days.ago)
-        described_class.track_event(entity4, 'event4', 2.days.ago)
+        described_class.track_event('event4', values: entity1, time: 2.days.ago)
+        described_class.track_event('event4', values: entity2, time: 2.days.ago)
+        described_class.track_event('event4', values: entity4, time: 2.days.ago)
       end
 
       it_behaves_like 'aggregated_metrics_data'
@@ -536,23 +550,23 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
 
       it_behaves_like 'aggregated_metrics_data' do
         before do
-          described_class.track_event(entity1, 'event1_slot', 2.days.ago)
-          described_class.track_event(entity2, 'event1_slot', 2.days.ago)
-          described_class.track_event(entity3, 'event1_slot', 2.days.ago)
-          described_class.track_event(entity1, 'event2_slot', 2.days.ago)
-          described_class.track_event(entity2, 'event2_slot', 3.days.ago)
-          described_class.track_event(entity3, 'event2_slot', 3.days.ago)
-          described_class.track_event(entity1, 'event3_slot', 3.days.ago)
-          described_class.track_event(entity2, 'event3_slot', 10.days.ago)
-          described_class.track_event(entity2, 'event5_slot', 4.weeks.ago.advance(days: 1))
+          described_class.track_event('event1_slot', values: entity1, time: 2.days.ago)
+          described_class.track_event('event1_slot', values: entity2, time: 2.days.ago)
+          described_class.track_event('event1_slot', values: entity3, time: 2.days.ago)
+          described_class.track_event('event2_slot', values: entity1, time: 2.days.ago)
+          described_class.track_event('event2_slot', values: entity2, time: 3.days.ago)
+          described_class.track_event('event2_slot', values: entity3, time: 3.days.ago)
+          described_class.track_event('event3_slot', values: entity1, time: 3.days.ago)
+          described_class.track_event('event3_slot', values: entity2, time: 10.days.ago)
+          described_class.track_event('event5_slot', values: entity2, time: 4.weeks.ago.advance(days: 1))
 
           # events out of time scope
-          described_class.track_event(entity1, 'event5_slot', 4.weeks.ago.advance(days: -1))
+          described_class.track_event('event5_slot', values: entity1, time: 4.weeks.ago.advance(days: -1))
 
           # events in different slots
-          described_class.track_event(entity1, 'event4', 2.days.ago)
-          described_class.track_event(entity2, 'event4', 2.days.ago)
-          described_class.track_event(entity4, 'event4', 2.days.ago)
+          described_class.track_event('event4', values: entity1, time: 2.days.ago)
+          described_class.track_event('event4', values: entity2, time: 2.days.ago)
+          described_class.track_event('event4', values: entity4, time: 2.days.ago)
         end
       end
 

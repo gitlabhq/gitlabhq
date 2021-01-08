@@ -1,0 +1,50 @@
+---
+- title: Auto rollback in case of failure
+  body: |
+    If you have a critical problem with a deployment, manual actions to fix it often take too long and lead to a degradation in production that impacts your users. Now, you can leverage an automatic rollback mechanism that reverts your deployment back to the last successful deployment. Also, when GitLab finds problems in production it automatically notifies you with an alert. This gives you peace of mind and precious development time to debug, investigate, and fix problems without causing downtime.
+  stage: Release
+  self-managed: true
+  gitlab-com: true
+  packages: [Ultimate]
+  url: https://docs.gitlab.com/ee/ci/environments/#auto-rollback
+  image_url: https://img.youtube.com/vi/G8fYYrxqF5E/hqdefault.jpg
+  published_at: 2020-12-22
+  release: 13.7
+- title: Reviewers for Merge Requests
+  body: |
+    Asking a colleague to review your code should be a routine part of contributing code, but it's often needlessly complex. A simple task like asking for a review can lead to confusion. For example, how should you ask? An email? Comment? Chat message? Without a formal process, reviews can be inconsistent and hard to keep track of. Previously, an option was to assign a reviewer to a merge request, but even with this formality, both the author and the reviewer appeared in the same assignee field, making it hard for other team members to know who was doing what.
+
+    GitLab 13.7 introduces reviewers for merge requests, which allows authors to request a review from someone. The new "Reviewers" field allows users to be designated as reviewers in a similar way to assignees. The reviewers receive a notification inviting them to review the merge request. This provides a formal process for requesting a review and clarifies the roles of each user in a merge request.
+
+    Future iterations will include showing the most relevant reviewers for a merge request as well as a streamlined merge request approval flow that puts reviewers at the center. You can follow along in the [merge request reviewer assignment epic](https://gitlab.com/groups/gitlab-org/-/epics/1823) for more details.
+  stage: Create
+  self-managed: true
+  gitlab-com: true
+  packages: [Core, Starter, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/project/merge_requests/getting_started#reviewer
+  image_url: https://about.gitlab.com/images/13_7/reviewers_sidebar.png
+  published_at: 2020-12-22
+  release: 13.7
+- title: Clone an issue with a quick action
+  body: |
+    To make generating similar issues more efficient, issues now support a `/clone` quick action, which creates a new issue in the same project, with an identical title, description, and metadata. The `/clone` quick action replaces a more cumbersome process, which involves multiple steps to create an issue, copy the ID or path of the source issue, and use the `copy_meta` quick action.
+
+    By default, issues are cloned into the same project and do not include system notes and comments, but you can also change the default behavior when cloning.
+  stage: Plan
+  self-managed: true
+  gitlab-com: true
+  packages: [Core, Starter, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/project/quick_actions.html
+  image_url: https://about.gitlab.com/images/13_7/clone_issue_with_quick_action.png
+  published_at: 2020-12-22
+  release: 13.7
+- title: GitLab Runner for Red Hat OpenShift
+  packages: [Core, Starter, Premium, Ultimate]
+  self-managed: true
+  gitlab-com: true
+  url: 'https://docs.gitlab.com/runner/install/openshift.html'
+  image_url: 'https://about.gitlab.com/images/13_7/runner-redhat-openshift.png'
+  stage: Verify
+  body: |
+    Available today is the GitLab Runner container image for the [Red Hat OpenShift Container Platform](https://www.openshift.com/products/container-platform). To install the runner on OpenShift, you can use the new [GitLab Runner Operator](https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator) available from the beta channel in Red Hat's Operator Hub -  a web console for OpenShift cluster administrators to discover and select Operators to install on their cluster. Operator Hub is deployed by default in the OpenShift Container Platform. We plan to transition the GitLab Runner Operator to the stable channel, and by extension [GA](https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/-/issues/6), in early 2021. Finally, we are also developing an operator for GitLab, so stay tuned to future release posts for those announcements.
+

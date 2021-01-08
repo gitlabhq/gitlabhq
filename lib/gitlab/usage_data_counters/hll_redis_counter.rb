@@ -39,20 +39,31 @@ module Gitlab
       #
       # Usage:
       #
-      # * Track event: Gitlab::UsageDataCounters::HLLRedisCounter.track_event(user_id, 'g_compliance_dashboard')
+      # * Track event: Gitlab::UsageDataCounters::HLLRedisCounter.track_event('g_compliance_dashboard', values: user_id)
       # * Get unique counts per user: Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: 'g_compliance_dashboard', start_date: 28.days.ago, end_date: Date.current)
       class << self
         include Gitlab::Utils::UsageData
 
-        def track_event(value, event_name, time = Time.zone.now)
-          track(value, event_name, time: time)
+        # Track unique events
+        #
+        # event_name - The event name.
+        # values - One or multiple values counted.
+        # time - Time of the action, set to Time.current.
+        def track_event(event_name, values:, time: Time.current)
+          track(values, event_name, time: time)
         end
 
-        def track_event_in_context(value, event_name, context, time = Time.zone.now)
+        # Track unique events
+        #
+        # event_name - The event name.
+        # values - One or multiple values counted.
+        # context - Event context, plan level tracking.
+        # time - Time of the action, set to Time.current.
+        def track_event_in_context(event_name, values:, context:, time: Time.zone.now)
           return if context.blank?
           return unless context.in?(valid_context_list)
 
-          track(value, event_name, context: context, time: time)
+          track(values, event_name, context: context, time: time)
         end
 
         def unique_events(event_names:, start_date:, end_date:, context: '')
@@ -114,13 +125,13 @@ module Gitlab
 
         private
 
-        def track(value, event_name, context: '', time: Time.zone.now)
+        def track(values, event_name, context: '', time: Time.zone.now)
           return unless Gitlab::CurrentSettings.usage_ping_enabled?
 
           event = event_for(event_name)
           raise UnknownEvent, "Unknown event #{event_name}" unless event.present?
 
-          Gitlab::Redis::HLL.add(key: redis_key(event, time, context), value: value, expiry: expiry(event))
+          Gitlab::Redis::HLL.add(key: redis_key(event, time, context), value: values, expiry: expiry(event))
         end
 
         # The array of valid context on which we allow tracking

@@ -122,7 +122,7 @@ module Gitlab
       def track_usage_event(event_name, values)
         return unless Feature.enabled?(:"usage_data_#{event_name}", default_enabled: true)
 
-        Gitlab::UsageDataCounters::HLLRedisCounter.track_event(values, event_name.to_s)
+        Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name.to_s, values: values)
       end
 
       private

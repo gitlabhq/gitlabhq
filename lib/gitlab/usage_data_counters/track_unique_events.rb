@@ -43,7 +43,7 @@ module Gitlab
 
           return unless Gitlab::UsageDataCounters::HLLRedisCounter.known_event?(transformed_action.to_s)
 
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event(author_id, transformed_action.to_s, time)
+          Gitlab::UsageDataCounters::HLLRedisCounter.track_event(transformed_action.to_s, values: author_id, time: time)
 
           track_git_write_action(author_id, transformed_action, time)
         end
@@ -73,7 +73,7 @@ module Gitlab
         def track_git_write_action(author_id, transformed_action, time)
           return unless GIT_WRITE_ACTIONS.include?(transformed_action)
 
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event(author_id, GIT_WRITE_ACTION, time)
+          Gitlab::UsageDataCounters::HLLRedisCounter.track_event(GIT_WRITE_ACTION, values: author_id, time: time)
         end
       end
     end

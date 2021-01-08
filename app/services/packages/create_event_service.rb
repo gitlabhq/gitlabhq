@@ -5,7 +5,7 @@ module Packages
     def execute
       if Feature.enabled?(:collect_package_events_redis)
         ::Packages::Event.unique_counters_for(event_scope, event_name, originator_type).each do |event_name|
-          ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event(current_user.id, event_name)
+          ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values: current_user.id)
         end
 
         ::Packages::Event.counters_for(event_scope, event_name, originator_type).each do |event_name|

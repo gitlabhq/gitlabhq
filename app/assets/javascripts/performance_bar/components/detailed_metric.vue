@@ -141,7 +141,7 @@ export default {
         </template>
       </table>
 
-      <template #footer>
+      <template #modal-footer>
         <div></div>
       </template>
     </gl-modal>

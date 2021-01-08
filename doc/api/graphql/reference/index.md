@@ -252,6 +252,8 @@ Represents a project or group board.
 | `lists` | BoardListConnection | Lists of the board |
 | `milestone` | Milestone | The board milestone |
 | `name` | String | Name of the board |
+| `webPath` | String! | Web path of the board. |
+| `webUrl` | String! | Web URL of the board. |
 | `weight` | Int | Weight of the board |
 
 ### BoardEpic

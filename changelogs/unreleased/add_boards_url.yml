@@ -1,0 +1,5 @@
+---
+title: Exposed web_path and web_url fields in Board's GraphQL API
+merge_request: 50947
+author:
+type: added

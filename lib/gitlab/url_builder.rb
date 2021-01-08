@@ -18,6 +18,8 @@ module Gitlab
       def build(object, **options)
         # Objects are sometimes wrapped in a BatchLoader instance
         case object.itself
+        when Board
+          board_url(object, **options)
         when ::Ci::Build
           instance.project_job_url(object.project, object, **options)
         when Commit
@@ -51,6 +53,14 @@ module Gitlab
         end
       end
       # rubocop:enable Metrics/CyclomaticComplexity
+
+      def board_url(board, **options)
+        if board.project_board?
+          instance.project_board_url(board.resource_parent, board, **options)
+        else
+          instance.group_board_url(board.resource_parent, board, **options)
+        end
+      end
 
       def commit_url(commit, **options)
         return '' unless commit.project

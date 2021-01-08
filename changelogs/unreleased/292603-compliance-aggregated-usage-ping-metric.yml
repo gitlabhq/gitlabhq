@@ -1,0 +1,5 @@
+---
+title: Add aggregate/union visit tracking for Compliance features
+merge_request: 50978
+author:
+type: added

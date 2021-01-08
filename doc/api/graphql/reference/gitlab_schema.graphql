@@ -1381,6 +1381,16 @@ type Board {
   name: String
 
   """
+  Web path of the board.
+  """
+  webPath: String!
+
+  """
+  Web URL of the board.
+  """
+  webUrl: String!
+
+  """
   Weight of the board
   """
   weight: Int

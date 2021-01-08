@@ -474,19 +474,19 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
    api.trackRedisHllUserEvent('my_already_defined_event_name'),
    ```
 
-1. Track event using base module `Gitlab::UsageDataCounters::HLLRedisCounter.track_event(values, event_name)`.
+1. Track event using base module `Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values:)`.
 
    Arguments:
 
+   - `event_name`: event name.
    - `values`: One value or array of values we count. For example: user_id, visitor_id, user_ids.
-   - `event_name`: event name.
 
-1. Track event on context level using base module `Gitlab::UsageDataCounters::HLLRedisCounter.track_event_in_context(entity_id, event_name, context)`.
+1. Track event on context level using base module `Gitlab::UsageDataCounters::HLLRedisCounter.track_event_in_context(event_name, values:, context:)`.
 
    Arguments:
 
-   - `entity_id`: value we count. For example: user_id, visitor_id.
    - `event_name`: event name.
+   - `values`: values we count. For example: user_id, visitor_id.
    - `context`: context value. Allowed values are `default`, `free`, `bronze`, `silver`, `gold`, `starter`, `premium`, `ultimate`
 
 1. Get event data using `Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names:, start_date:, end_date:, context: '')`.
@@ -503,8 +503,8 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
 Trigger events in rails console by using `track_event` method
 
    ```ruby
-   Gitlab::UsageDataCounters::HLLRedisCounter.track_event(1, 'g_compliance_audit_events')
-   Gitlab::UsageDataCounters::HLLRedisCounter.track_event(2, 'g_compliance_audit_events')
+   Gitlab::UsageDataCounters::HLLRedisCounter.track_event('g_compliance_audit_events', values: 1)
+   Gitlab::UsageDataCounters::HLLRedisCounter.track_event('g_compliance_audit_events', values: [2, 3])
    ```
 
 Next, get the unique events for the current week.
@@ -595,7 +595,7 @@ redis_usage_data { ::Gitlab::UsageCounters::PodLogs.usage_totals[:total] }
 # Define events in common.yml https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/common.yml
 
 # Tracking events
-Gitlab::UsageDataCounters::HLLRedisCounter.track_event(visitor_id, 'expand_vulnerabilities')
+Gitlab::UsageDataCounters::HLLRedisCounter.track_event('expand_vulnerabilities', values: visitor_id)
 
 # Get unique events for metric
 redis_usage_data { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: 'expand_vulnerabilities', start_date: 28.days.ago, end_date: Date.current) }

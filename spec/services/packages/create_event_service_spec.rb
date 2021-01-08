@@ -70,7 +70,7 @@ RSpec.describe Packages::CreateEventService do
       end
 
       it 'tracks the event' do
-        expect(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).with(user.id, /package/)
+        expect(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).with(/package/, values: user.id)
 
         subject
       end

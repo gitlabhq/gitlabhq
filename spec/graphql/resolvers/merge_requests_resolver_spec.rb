@@ -231,6 +231,16 @@ RSpec.describe Resolvers::MergeRequestsResolver do
         it 'sorts merge requests descending' do
           expect(resolve_mr(project, sort: :merged_at_desc)).to eq [merge_request_3, merge_request_1, merge_request_with_milestone, merge_request_6, merge_request_5, merge_request_4, merge_request_2]
         end
+
+        context 'when label filter is given and the optimized_issuable_label_filter feature flag is off' do
+          before do
+            stub_feature_flags(optimized_issuable_label_filter: false)
+          end
+
+          it 'does not raise PG::GroupingError' do
+            expect { resolve_mr(project, sort: :merged_at_desc, labels: %w[a b]) }.not_to raise_error
+          end
+        end
       end
     end
   end

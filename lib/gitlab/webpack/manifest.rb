@@ -69,8 +69,8 @@ module Gitlab
 
         def manifest
           if Gitlab.config.webpack.dev_server.enabled
-            # Don't cache if we're in dev server mode, manifest may change ...
-            load_manifest
+            # Only cache at request level if we're in dev server mode, manifest may change ...
+            Gitlab::SafeRequestStore.fetch('manifest.json') { load_manifest }
           else
             # ... otherwise cache at class level, as JSON loading/parsing can be expensive
             strong_memoize(:manifest) { load_manifest }
