@@ -18,7 +18,7 @@ module MergeRequests
       merge_request_activity_counter.track_merge_mr_action(user: current_user)
       notification_service.merge_mr(merge_request, current_user)
       execute_hooks(merge_request, 'merge')
-      invalidate_cache_counts(merge_request, users: merge_request.assignees)
+      invalidate_cache_counts(merge_request, users: merge_request.assignees | merge_request.reviewers)
       merge_request.update_project_counter_caches
       delete_non_latest_diffs(merge_request)
       cancel_review_app_jobs!(merge_request)

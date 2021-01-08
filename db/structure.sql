@@ -14721,6 +14721,88 @@ CREATE TABLE packages_debian_file_metadata (
     CONSTRAINT check_e6e1fffcca CHECK ((char_length(architecture) <= 255))
 );
 
+CREATE TABLE packages_debian_group_distributions (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    group_id bigint NOT NULL,
+    creator_id bigint,
+    valid_time_duration_seconds integer,
+    file_store smallint DEFAULT 1 NOT NULL,
+    automatic boolean DEFAULT true NOT NULL,
+    automatic_upgrades boolean DEFAULT false NOT NULL,
+    codename text NOT NULL,
+    suite text,
+    origin text,
+    label text,
+    version text,
+    description text,
+    encrypted_signing_keys text,
+    encrypted_signing_keys_iv text,
+    file text,
+    file_signature text,
+    CONSTRAINT check_310ac457b8 CHECK ((char_length(description) <= 255)),
+    CONSTRAINT check_3d6f87fc31 CHECK ((char_length(file_signature) <= 4096)),
+    CONSTRAINT check_3fdadf4a0c CHECK ((char_length(version) <= 255)),
+    CONSTRAINT check_590e18405a CHECK ((char_length(codename) <= 255)),
+    CONSTRAINT check_9b90bc0f07 CHECK ((char_length(encrypted_signing_keys_iv) <= 255)),
+    CONSTRAINT check_b057cd840a CHECK ((char_length(origin) <= 255)),
+    CONSTRAINT check_b811ec1218 CHECK ((char_length(encrypted_signing_keys) <= 2048)),
+    CONSTRAINT check_be5ed8d307 CHECK ((char_length(file) <= 255)),
+    CONSTRAINT check_d3244bfc0b CHECK ((char_length(label) <= 255)),
+    CONSTRAINT check_e7c928a24b CHECK ((char_length(suite) <= 255))
+);
+
+CREATE SEQUENCE packages_debian_group_distributions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE packages_debian_group_distributions_id_seq OWNED BY packages_debian_group_distributions.id;
+
+CREATE TABLE packages_debian_project_distributions (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    creator_id bigint,
+    valid_time_duration_seconds integer,
+    file_store smallint DEFAULT 1 NOT NULL,
+    automatic boolean DEFAULT true NOT NULL,
+    automatic_upgrades boolean DEFAULT false NOT NULL,
+    codename text NOT NULL,
+    suite text,
+    origin text,
+    label text,
+    version text,
+    description text,
+    encrypted_signing_keys text,
+    encrypted_signing_keys_iv text,
+    file text,
+    file_signature text,
+    CONSTRAINT check_6177ccd4a6 CHECK ((char_length(origin) <= 255)),
+    CONSTRAINT check_6f6b55a4c4 CHECK ((char_length(label) <= 255)),
+    CONSTRAINT check_834dabadb6 CHECK ((char_length(codename) <= 255)),
+    CONSTRAINT check_96965792c2 CHECK ((char_length(version) <= 255)),
+    CONSTRAINT check_a56ae58a17 CHECK ((char_length(suite) <= 255)),
+    CONSTRAINT check_a5a2ac6af2 CHECK ((char_length(file_signature) <= 4096)),
+    CONSTRAINT check_b93154339f CHECK ((char_length(description) <= 255)),
+    CONSTRAINT check_c25603a25b CHECK ((char_length(encrypted_signing_keys) <= 2048)),
+    CONSTRAINT check_cb4ac9599e CHECK ((char_length(file) <= 255)),
+    CONSTRAINT check_d488f8cce3 CHECK ((char_length(encrypted_signing_keys_iv) <= 255))
+);
+
+CREATE SEQUENCE packages_debian_project_distributions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE packages_debian_project_distributions_id_seq OWNED BY packages_debian_project_distributions.id;
+
 CREATE TABLE packages_dependencies (
     id bigint NOT NULL,
     name character varying(255) NOT NULL,
@@ -18657,6 +18739,10 @@ ALTER TABLE ONLY packages_conan_file_metadata ALTER COLUMN id SET DEFAULT nextva
 
 ALTER TABLE ONLY packages_conan_metadata ALTER COLUMN id SET DEFAULT nextval('packages_conan_metadata_id_seq'::regclass);
 
+ALTER TABLE ONLY packages_debian_group_distributions ALTER COLUMN id SET DEFAULT nextval('packages_debian_group_distributions_id_seq'::regclass);
+
+ALTER TABLE ONLY packages_debian_project_distributions ALTER COLUMN id SET DEFAULT nextval('packages_debian_project_distributions_id_seq'::regclass);
+
 ALTER TABLE ONLY packages_dependencies ALTER COLUMN id SET DEFAULT nextval('packages_dependencies_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_dependency_links ALTER COLUMN id SET DEFAULT nextval('packages_dependency_links_id_seq'::regclass);
@@ -20007,6 +20093,12 @@ ALTER TABLE ONLY packages_conan_metadata
 
 ALTER TABLE ONLY packages_debian_file_metadata
     ADD CONSTRAINT packages_debian_file_metadata_pkey PRIMARY KEY (package_file_id);
+
+ALTER TABLE ONLY packages_debian_group_distributions
+    ADD CONSTRAINT packages_debian_group_distributions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY packages_debian_project_distributions
+    ADD CONSTRAINT packages_debian_project_distributions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY packages_dependencies
     ADD CONSTRAINT packages_dependencies_pkey PRIMARY KEY (id);
@@ -21984,6 +22076,8 @@ CREATE INDEX index_merge_requests_on_target_project_id_and_iid_and_state_id ON m
 
 CREATE INDEX index_merge_requests_on_target_project_id_and_iid_jira_title ON merge_requests USING btree (target_project_id, iid) WHERE ((title)::text ~ '[A-Z][A-Z_0-9]+-\d+'::text);
 
+CREATE INDEX index_merge_requests_on_target_project_id_and_squash_commit_sha ON merge_requests USING btree (target_project_id, squash_commit_sha);
+
 CREATE INDEX index_merge_requests_on_target_project_id_and_target_branch ON merge_requests USING btree (target_project_id, target_branch) WHERE ((state_id = 1) AND (merge_when_pipeline_succeeds = true));
 
 CREATE INDEX index_merge_requests_on_target_project_id_iid_jira_description ON merge_requests USING btree (target_project_id, iid) WHERE (description ~ '[A-Z][A-Z_0-9]+-\d+'::text);
@@ -22189,6 +22283,14 @@ CREATE UNIQUE INDEX index_packages_composer_metadata_on_package_id_and_target_sh
 CREATE UNIQUE INDEX index_packages_conan_file_metadata_on_package_file_id ON packages_conan_file_metadata USING btree (package_file_id);
 
 CREATE UNIQUE INDEX index_packages_conan_metadata_on_package_id_username_channel ON packages_conan_metadata USING btree (package_id, package_username, package_channel);
+
+CREATE INDEX index_packages_debian_group_distributions_on_creator_id ON packages_debian_group_distributions USING btree (creator_id);
+
+CREATE INDEX index_packages_debian_group_distributions_on_group_id ON packages_debian_group_distributions USING btree (group_id);
+
+CREATE INDEX index_packages_debian_project_distributions_on_creator_id ON packages_debian_project_distributions USING btree (creator_id);
+
+CREATE INDEX index_packages_debian_project_distributions_on_project_id ON packages_debian_project_distributions USING btree (project_id);
 
 CREATE UNIQUE INDEX index_packages_dependencies_on_name_and_version_pattern ON packages_dependencies USING btree (name, version_pattern);
 
@@ -23145,6 +23247,14 @@ CREATE INDEX tmp_index_for_email_unconfirmation_migration ON emails USING btree 
 CREATE INDEX tmp_index_oauth_applications_on_id_where_trusted ON oauth_applications USING btree (id) WHERE (trusted = true);
 
 CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING btree (id) WHERE (state <> 2);
+
+CREATE UNIQUE INDEX uniq_pkgs_debian_group_distributions_group_id_and_codename ON packages_debian_group_distributions USING btree (group_id, codename);
+
+CREATE UNIQUE INDEX uniq_pkgs_debian_group_distributions_group_id_and_suite ON packages_debian_group_distributions USING btree (group_id, suite);
+
+CREATE UNIQUE INDEX uniq_pkgs_debian_project_distributions_project_id_and_codename ON packages_debian_project_distributions USING btree (project_id, codename);
+
+CREATE UNIQUE INDEX uniq_pkgs_debian_project_distributions_project_id_and_suite ON packages_debian_project_distributions USING btree (project_id, suite);
 
 CREATE UNIQUE INDEX unique_merge_request_metrics_by_merge_request_id ON merge_request_metrics USING btree (merge_request_id);
 
@@ -24148,6 +24258,9 @@ ALTER TABLE ONLY trending_projects
 ALTER TABLE ONLY project_deploy_tokens
     ADD CONSTRAINT fk_rails_0aca134388 FOREIGN KEY (deploy_token_id) REFERENCES deploy_tokens(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY packages_debian_group_distributions
+    ADD CONSTRAINT fk_rails_0adf75c347 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE RESTRICT;
+
 ALTER TABLE ONLY packages_conan_file_metadata
     ADD CONSTRAINT fk_rails_0afabd9328 FOREIGN KEY (package_file_id) REFERENCES packages_package_files(id) ON DELETE CASCADE;
 
@@ -24934,6 +25047,9 @@ ALTER TABLE ONLY alert_management_alert_assignees
 ALTER TABLE ONLY scim_identities
     ADD CONSTRAINT fk_rails_9421a0bffb FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY packages_debian_project_distributions
+    ADD CONSTRAINT fk_rails_94b95e1f84 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY packages_pypi_metadata
     ADD CONSTRAINT fk_rails_9698717cdd FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
 
@@ -25294,6 +25410,9 @@ ALTER TABLE ONLY user_callouts
 ALTER TABLE ONLY vulnerability_feedback
     ADD CONSTRAINT fk_rails_debd54e456 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY packages_debian_project_distributions
+    ADD CONSTRAINT fk_rails_df44271a30 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE RESTRICT;
+
 ALTER TABLE ONLY incident_management_oncall_shifts
     ADD CONSTRAINT fk_rails_df4feb286a FOREIGN KEY (rotation_id) REFERENCES incident_management_oncall_rotations(id) ON DELETE CASCADE;
 
@@ -25368,6 +25487,9 @@ ALTER TABLE ONLY snippet_statistics
 
 ALTER TABLE ONLY project_security_settings
     ADD CONSTRAINT fk_rails_ed4abe1338 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_debian_group_distributions
+    ADD CONSTRAINT fk_rails_ede0bb937f FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY experiment_subjects
     ADD CONSTRAINT fk_rails_ede5754774 FOREIGN KEY (experiment_id) REFERENCES experiments(id) ON DELETE CASCADE;

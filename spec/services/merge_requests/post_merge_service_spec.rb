@@ -15,6 +15,7 @@ RSpec.describe MergeRequests::PostMergeService do
 
   describe '#execute' do
     it_behaves_like 'cache counters invalidator'
+    it_behaves_like 'merge request reviewers cache counters invalidator'
 
     it 'refreshes the number of open merge requests for a valid MR', :use_clean_rails_memory_store_caching do
       # Cache the counter before the MR changed state.

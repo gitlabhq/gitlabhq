@@ -234,7 +234,7 @@ advanced functionality is present in [higher tiers only](https://about.gitlab.co
 ### Configurable issue boards **(STARTER)**
 
 > - [Introduced](https://about.gitlab.com/releases/2017/11/22/gitlab-10-2-released/#issue-boards-configuration) in GitLab 10.2.
-> - Setting current iteration as scope [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196804) in GitLab 13.7.
+> - Setting current iteration as scope [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196804) in GitLab 13.8.
 
 An issue board can be associated with a [milestone](milestones/index.md#milestones),
 [labels](labels.md), assignee, weight, and current [iteration](../group/iterations/index.md),

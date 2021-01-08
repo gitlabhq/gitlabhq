@@ -76,13 +76,40 @@ RSpec.describe MergeRequestsFinder do
         expect(merge_requests).to contain_exactly(merge_request3, merge_request4)
       end
 
-      it 'filters by commit sha' do
-        merge_requests = described_class.new(
-          user,
-          commit_sha: merge_request5.merge_request_diff.last_commit_sha
-        ).execute
+      context 'filters by commit sha' do
+        subject(:merge_requests) { described_class.new(user, commit_sha: commit_sha).execute }
 
-        expect(merge_requests).to contain_exactly(merge_request5)
+        context 'when commit belongs to the merge request' do
+          let(:commit_sha) { merge_request5.merge_request_diff.last_commit_sha }
+
+          it 'filters by commit sha' do
+            is_expected.to contain_exactly(merge_request5)
+          end
+        end
+
+        context 'when commit is a squash commit' do
+          before do
+            merge_request4.update!(squash_commit_sha: commit_sha)
+          end
+
+          let(:commit_sha) { '1234abcd' }
+
+          it 'filters by commit sha' do
+            is_expected.to contain_exactly(merge_request4)
+          end
+        end
+
+        context 'when commit is a merge commit' do
+          before do
+            merge_request4.update!(merge_commit_sha: commit_sha)
+          end
+
+          let(:commit_sha) { '1234dcba' }
+
+          it 'filters by commit sha' do
+            is_expected.to contain_exactly(merge_request4)
+          end
+        end
       end
 
       context 'filters by merged_at date' do

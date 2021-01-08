@@ -84,7 +84,7 @@ class MergeRequestsFinder < IssuableFinder
   def by_commit(items)
     return items unless params[:commit_sha].presence
 
-    items.by_commit_sha(params[:commit_sha])
+    items.by_related_commit_sha(params[:commit_sha])
   end
 
   def source_branch

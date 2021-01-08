@@ -7,18 +7,17 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Reference architecture: up to 3,000 users **(PREMIUM ONLY)**
 
-This page describes GitLab reference architecture for up to 3,000 users. For a
-full list of reference architectures, see
-[Available reference architectures](index.md#available-reference-architectures).
-
-NOTE:
-This reference architecture is designed to help your organization achieve a
+This page describes GitLab reference architecture for up to 3,000 users.
+It is designed to help your organization achieve a
 highly-available GitLab deployment. If you do not have the expertise or need to
 maintain a highly-available environment, you can have a simpler and less
 costly-to-operate environment by using the
 [2,000-user reference architecture](2k_users.md).
 If you have fewer than 3,000 users and still want a highly-available GitLab deployment,
 you should still use this reference architecture but scale down the node sizes.
+
+For a full list of reference architectures, see
+[Available reference architectures](index.md#available-reference-architectures).
 
 > - **Supported users (approximate):** 3,000
 > - **High Availability:** Yes

@@ -36,6 +36,10 @@ on the search field on the top-right of your screen:
 
 ### Filtering issue and merge request lists
 
+> - Filtering by Epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195704) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
+> - Filtering by child Epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9029) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0.
+> - Filtering by Iterations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.6.
+
 Follow these steps to filter the **Issues** and **Merge Requests** list pages within projects and
 groups:
 
@@ -44,15 +48,12 @@ groups:
    - Author
    - Assignee
    - [Milestone](../project/milestones/index.md)
-   - [Iteration](../group/iterations/index.md) ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.6)
+   - [Iteration](../group/iterations/index.md)
    - Release
    - [Label](../project/labels.md)
    - My-reaction
    - Confidential
-   - Epic ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195704) in GitLab 12.9),
-     including [child epic](../group/epics/index.md#multi-level-child-epics)
-     ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9029) in
-     [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0)
+   - [Epic and child Epic](../group/epics/index.md) (available only for the group the Epic was created, not for [higher group levels](https://gitlab.com/gitlab-org/gitlab/-/issues/233729)).
    - Search for this text
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:
@@ -299,3 +300,39 @@ GitLab instance.
 Use advanced queries for more targeted search results.
 
 [Learn how to use the Advanced Search Syntax.](advanced_search_syntax.md)
+
+## Search project settings
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292941) in GitLab 13.8.
+> - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-search-project-settings). **(CORE ONLY)**
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+You can search inside the project’s settings sections by entering a search
+term in the search box located at the top of the page. The search results
+will appear highlighted in the sections that match the search term.
+
+![Search project settings](img/project_search_general_settings_v13_8.png)
+
+### Enable or disable Search project settings **(CORE ONLY)**
+
+Search project settings is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:search_settings_in_page)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:search_settings_in_page)
+```

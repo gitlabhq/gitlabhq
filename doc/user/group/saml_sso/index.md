@@ -93,7 +93,7 @@ When SSO enforcement is enabled for a group, users can't share a project in the 
 ## Providers
 
 NOTE:
-GitLab is unable to provide full support for IdPs that are not listed here.
+GitLab is unable to provide full support for integrating identify providers that are not listed here.
 
 | Provider | Documentation |
 |----------|---------------|

@@ -1,0 +1,5 @@
+---
+title: Remove total_pipeline_duration from project_type
+merge_request: 50093
+author:
+type: changed

@@ -411,6 +411,48 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
+  describe '.by_squash_commit_sha' do
+    subject { described_class.by_squash_commit_sha(sha) }
+
+    let(:sha) { '123abc' }
+    let(:merge_request) { create(:merge_request, :merged, squash_commit_sha: sha) }
+
+    it 'returns merge requests that match the given squash commit' do
+      is_expected.to eq([merge_request])
+    end
+  end
+
+  describe '.by_related_commit_sha' do
+    subject { described_class.by_related_commit_sha(sha) }
+
+    context 'when commit is a squash commit' do
+      let!(:merge_request) { create(:merge_request, :merged, squash_commit_sha: sha) }
+      let(:sha) { '123abc' }
+
+      it { is_expected.to eq([merge_request]) }
+    end
+
+    context 'when commit is a part of the merge request' do
+      let!(:merge_request) { create(:merge_request, :with_diffs) }
+      let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+
+      it { is_expected.to eq([merge_request]) }
+    end
+
+    context 'when commit is a merge commit' do
+      let!(:merge_request) { create(:merge_request, :merged, merge_commit_sha: sha) }
+      let(:sha) { '123abc' }
+
+      it { is_expected.to eq([merge_request]) }
+    end
+
+    context 'when commit is not found' do
+      let(:sha) { '0000' }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
   describe '.by_cherry_pick_sha' do
     it 'returns merge requests that match the given merge commit' do
       note = create(:track_mr_picking_note, commit_id: '456abc')

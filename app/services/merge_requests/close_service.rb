@@ -18,7 +18,7 @@ module MergeRequests
         notification_service.async.close_mr(merge_request, current_user)
         todo_service.close_merge_request(merge_request, current_user)
         execute_hooks(merge_request, 'close')
-        invalidate_cache_counts(merge_request, users: merge_request.assignees)
+        invalidate_cache_counts(merge_request, users: merge_request.assignees | merge_request.reviewers)
         merge_request.update_project_counter_caches
         cleanup_environments(merge_request)
         abort_auto_merge(merge_request, 'merge request was closed')

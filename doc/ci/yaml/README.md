@@ -412,9 +412,10 @@ include: '.gitlab-ci-production.yml'
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53903) in GitLab 11.7.
 
-To include files from another private project under the same GitLab instance,
-use `include:file`. This file is referenced with full paths relative to the
-root directory (`/`). For example:
+To include files from another private project on the same GitLab instance,
+use `include:file`. You can use `include:file` in combination with `include:project` only.
+
+The included file is referenced with a full path, relative to the root directory (`/`). For example:
 
 ```yaml
 include:

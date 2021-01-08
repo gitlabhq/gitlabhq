@@ -54461,20 +54461,6 @@
               "deprecationReason": null
             },
             {
-              "name": "totalPipelineDuration",
-              "description": "Total pipeline duration for all of the pipelines in a project",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "userPermissions",
               "description": "Permissions for the current user on the resource",
               "args": [

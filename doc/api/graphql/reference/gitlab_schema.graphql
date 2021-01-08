@@ -18711,11 +18711,6 @@ type Project {
   ): TerraformStateConnection
 
   """
-  Total pipeline duration for all of the pipelines in a project
-  """
-  totalPipelineDuration: Int
-
-  """
   Permissions for the current user on the resource
   """
   userPermissions: ProjectPermissions!

@@ -33287,6 +33287,12 @@ msgstr ""
 msgid "has already been taken"
 msgstr ""
 
+msgid "has already been taken as Codename"
+msgstr ""
+
+msgid "has already been taken as Suite"
+msgstr ""
+
 msgid "has been completed."
 msgstr ""
 

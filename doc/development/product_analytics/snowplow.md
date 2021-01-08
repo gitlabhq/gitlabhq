@@ -478,6 +478,13 @@ For GitLab.com, we're setting up a [QA and Testing environment](https://gitlab.c
 
 ## Snowplow Schemas
 
+### [gitlab_standard](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_standard/jsonschema/1-0-0) Schema
+
+| Field Name   | Required            | Type    | Description                    |
+|--------------|---------------------|---------|--------------------------------|
+| project_id   | **{dotted-circle}** | integer | ID of the associated project   |
+| namespace_id | **{dotted-circle}** | integer | ID of the associated namespace |
+
 ### Default Schema
 
 | Field Name               | Required            | Type      | Description                                                                                                                      |

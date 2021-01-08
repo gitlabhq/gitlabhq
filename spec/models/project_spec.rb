@@ -127,6 +127,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:reviews).inverse_of(:project) }
     it { is_expected.to have_many(:packages).class_name('Packages::Package') }
     it { is_expected.to have_many(:package_files).class_name('Packages::PackageFile') }
+    it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::ProjectDistribution').dependent(:destroy) }
     it { is_expected.to have_many(:pipeline_artifacts) }
     it { is_expected.to have_many(:terraform_states).class_name('Terraform::State').inverse_of(:project) }
 
@@ -6486,6 +6487,25 @@ RSpec.describe Project, factory_default: :keep do
       let(:package_type) { nil }
 
       it { is_expected.to be false }
+    end
+  end
+
+  describe 'with Debian Distributions' do
+    subject { create(:project) }
+
+    let!(:distributions) { create_list(:debian_project_distribution, 2, :with_file, container: subject) }
+
+    it 'removes distribution files on removal' do
+      distribution_file_paths = distributions.map do |distribution|
+        distribution.file.path
+      end
+
+      expect { subject.destroy }
+        .to change {
+          distribution_file_paths.select do |path|
+            File.exist? path
+          end.length
+        }.from(distribution_file_paths.length).to(0)
     end
   end
 

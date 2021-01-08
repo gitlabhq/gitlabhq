@@ -31,7 +31,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       container_expiration_policy service_desk_enabled service_desk_address
       issue_status_counts terraform_states alert_management_integrations
       container_repositories container_repositories_count
-      pipeline_analytics total_pipeline_duration squash_read_only
+      pipeline_analytics squash_read_only
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
