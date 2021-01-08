@@ -131,6 +131,22 @@ The Seat usage listing is updated live, but the usage statistics on the billing 
 only once per day. For this reason there can be a minor difference between the seat usage listing
 and the billing page.
 
+### Search seat usage
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262875) in GitLab 13.8.
+
+To search users in the **Seat usage** page, enter a string in the search field. A minimum of 3
+characters are required.
+
+The search returns those users whose first name, last name, or username contain the search string.
+
+For example:
+
+| First name | Search string | Match ? |
+|:-----------|:--------------|:--------|
+| Amir       | `ami`         | Yes     |
+| Amir       | `amr`         | No      |
+
 ## Renew your GitLab.com subscription
 
 To renew your subscription:
