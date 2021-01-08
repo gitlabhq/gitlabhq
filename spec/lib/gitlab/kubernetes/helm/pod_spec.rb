@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Kubernetes::Helm::Pod do
     using RSpec::Parameterized::TableSyntax
 
     where(:helm_major_version, :expected_helm_version, :expected_command_env) do
-      2 | '2.16.9' | [:TILLER_NAMESPACE]
+      2 | '2.17.0' | [:TILLER_NAMESPACE]
       3 | '3.2.4'  | nil
     end
 

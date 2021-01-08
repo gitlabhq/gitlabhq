@@ -1,0 +1,5 @@
+---
+title: Fix the graphQL type for container repository tags
+merge_request: 50419
+author:
+type: fixed

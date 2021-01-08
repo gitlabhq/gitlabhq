@@ -1212,9 +1212,11 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
   end
 
   describe "GET /:project/jobs/:id/trace.json" do
+    let(:build) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+
     context "Job from project" do
       before do
-        visit trace_project_job_path(project, job, format: :json)
+        visit trace_project_job_path(project, build, format: :json)
       end
 
       it { expect(page.status_code).to eq(200) }

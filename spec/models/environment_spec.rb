@@ -1547,4 +1547,18 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       end
     end
   end
+
+  describe '#clear_all_caches' do
+    subject { environment.clear_all_caches }
+
+    it 'clears all caches on the environment' do
+      expect_next_instance_of(Gitlab::EtagCaching::Store) do |store|
+        expect(store).to receive(:touch).with(environment.etag_cache_key)
+      end
+
+      expect(environment).to receive(:clear_reactive_cache!)
+
+      subject
+    end
+  end
 end

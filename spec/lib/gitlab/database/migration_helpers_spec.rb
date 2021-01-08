@@ -992,7 +992,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           temp_undo_cleanup_column,
           type: :string,
           batch_column_name: :id,
-          type_cast_function: nil
+          type_cast_function: nil,
+          limit: nil
         ).and_return(true)
 
         expect(model).to receive(:rename_column)
@@ -1007,7 +1008,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         model.undo_cleanup_concurrent_column_type_change(:users, :old, :string)
       end
 
-      it 'passes the type_cast_function and batch_column_name' do
+      it 'passes the type_cast_function, batch_column_name and limit' do
         expect(model).to receive(:column_exists?).with(:users, :other_batch_column).and_return(true)
         expect(model).to receive(:check_trigger_permissions!).with(:users)
 
@@ -1017,7 +1018,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           temp_undo_cleanup_column,
           type: :string,
           batch_column_name: :other_batch_column,
-          type_cast_function: :custom_type_cast_function
+          type_cast_function: :custom_type_cast_function,
+          limit: 8
         ).and_return(true)
 
         expect(model).to receive(:rename_column)
@@ -1034,7 +1036,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           :old,
           :string,
           type_cast_function: :custom_type_cast_function,
-          batch_column_name: :other_batch_column
+          batch_column_name: :other_batch_column,
+          limit: 8
         )
       end
 

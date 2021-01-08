@@ -401,40 +401,6 @@ RSpec.describe ProjectPolicy do
     end
   end
 
-  describe 'bot_log_in' do
-    let(:bot_user) { create(:user, :project_bot) }
-    let(:project) { private_project }
-
-    context 'when bot is in project and is not blocked' do
-      before do
-        project.add_maintainer(bot_user)
-      end
-
-      it 'is a valid project bot' do
-        expect(bot_user.can?(:bot_log_in, project)).to be_truthy
-      end
-    end
-
-    context 'when project bot is invalid' do
-      context 'when bot is not in project' do
-        it 'is not a valid project bot' do
-          expect(bot_user.can?(:bot_log_in, project)).to be_falsy
-        end
-      end
-
-      context 'when bot user is blocked' do
-        before do
-          project.add_maintainer(bot_user)
-          bot_user.block!
-        end
-
-        it 'is not a valid project bot' do
-          expect(bot_user.can?(:bot_log_in, project)).to be_falsy
-        end
-      end
-    end
-  end
-
   context 'support bot' do
     let(:current_user) { User.support_bot }
 

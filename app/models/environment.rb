@@ -405,6 +405,11 @@ class Environment < ApplicationRecord
     deployment_platform.patch_ingress(deployment_namespace, ingress, data)
   end
 
+  def clear_all_caches
+    expire_etag_cache
+    clear_reactive_cache!
+  end
+
   private
 
   def rollout_status_available?

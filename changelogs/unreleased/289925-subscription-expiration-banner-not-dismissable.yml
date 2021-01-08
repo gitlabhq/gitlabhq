@@ -1,0 +1,5 @@
+---
+title: 'Fix(eetrialbanner): fix EE trial banner to allow dismiss'
+merge_request: 50436
+author:
+type: fixed

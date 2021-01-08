@@ -27,7 +27,6 @@ import {
   hideSidebar,
   showSidebar,
   toggleSidebar,
-  triggerManualJob,
 } from '~/jobs/store/actions';
 import state from '~/jobs/store/state';
 import * as types from '~/jobs/store/mutation_types';
@@ -158,32 +157,6 @@ describe('Job State actions', () => {
           done,
         );
       });
-    });
-
-    it('fetchTrace is called only if the job has started or has a trace', done => {
-      mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(200, { id: 121212, name: 'karma' });
-
-      mockedState.job.started = true;
-
-      testAction(
-        fetchJob,
-        null,
-        mockedState,
-        [],
-        [
-          {
-            type: 'requestJob',
-          },
-          {
-            payload: { id: 121212, name: 'karma' },
-            type: 'receiveJobSuccess',
-          },
-          {
-            type: 'fetchTrace',
-          },
-        ],
-        done,
-      );
     });
   });
 
@@ -532,45 +505,6 @@ describe('Job State actions', () => {
         mockedState,
         [{ type: types.RECEIVE_JOBS_FOR_STAGE_ERROR }],
         [],
-        done,
-      );
-    });
-  });
-
-  describe('triggerManualJob', () => {
-    let mock;
-
-    beforeEach(() => {
-      mock = new MockAdapter(axios);
-    });
-
-    afterEach(() => {
-      mock.restore();
-    });
-
-    it('should dispatch fetchTrace', done => {
-      const playManualJobEndpoint = `${TEST_HOST}/manual-job/jobs/1000/play`;
-
-      mock.onPost(playManualJobEndpoint).reply(200);
-
-      mockedState.job = {
-        status: {
-          action: {
-            path: playManualJobEndpoint,
-          },
-        },
-      };
-
-      testAction(
-        triggerManualJob,
-        [{ id: '1', key: 'test_var', secret_value: 'test_value' }],
-        mockedState,
-        [],
-        [
-          {
-            type: 'fetchTrace',
-          },
-        ],
         done,
       );
     });

@@ -24,6 +24,7 @@ module Environments
         end
 
         if environment.patch_ingress(canary_ingress, patch_data)
+          environment.clear_all_caches
           success
         else
           error(_('Failed to update the Canary Ingress.'), :bad_request)

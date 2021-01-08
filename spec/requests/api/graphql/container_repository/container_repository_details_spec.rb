@@ -2,6 +2,7 @@
 require 'spec_helper'
 
 RSpec.describe 'container repository details' do
+  include_context 'container registry tags'
   using RSpec::Parameterized::TableSyntax
   include GraphqlHelpers
 
@@ -18,7 +19,7 @@ RSpec.describe 'container repository details' do
 
   let(:user) { project.owner }
   let(:variables) { {} }
-  let(:tags) { %w(latest tag1 tag2 tag3 tag4 tag5) }
+  let(:tags) { %w[latest tag1 tag2 tag3 tag4 tag5] }
   let(:container_repository_global_id) { container_repository.to_global_id.to_s }
   let(:container_repository_details_response) { graphql_data.dig('containerRepository') }
 
@@ -76,6 +77,37 @@ RSpec.describe 'container repository details' do
     end
   end
 
+  context 'with a giant size tag' do
+    let(:tags) { %w[latest] }
+    let(:giant_size) { 1.terabyte }
+    let(:tag_sizes_response) { graphql_data_at('containerRepository', 'tags', 'nodes', 'totalSize') }
+    let(:fields) do
+      <<~GQL
+        tags {
+          nodes {
+            totalSize
+          }
+        }
+      GQL
+    end
+
+    let(:query) do
+      graphql_query_for(
+        'containerRepository',
+        { id: container_repository_global_id },
+        fields
+      )
+    end
+
+    it 'returns the expected value as a string' do
+      stub_next_container_registry_tags_call(:total_size, giant_size)
+
+      subject
+
+      expect(tag_sizes_response.first).to eq(giant_size.to_s)
+    end
+  end
+
   context 'limiting the number of tags' do
     let(:limit) { 2 }
     let(:tags_response) { container_repository_details_response.dig('tags', 'edges') }
@@ -103,6 +135,22 @@ RSpec.describe 'container repository details' do
       subject
 
       expect(tags_response.size).to eq(limit)
+    end
+  end
+
+  context 'with tags with a manifest containing nil fields' do
+    let(:tags_response) { container_repository_details_response.dig('tags', 'nodes') }
+    let(:errors) { container_repository_details_response.dig('errors') }
+
+    %i[digest revision short_revision total_size created_at].each do |nilable_field|
+      it "returns a list of tags with a nil #{nilable_field}" do
+        stub_next_container_registry_tags_call(nilable_field, nil)
+
+        subject
+
+        expect(tags_response.size).to eq(tags.size)
+        expect(graphql_errors).to eq(nil)
+      end
     end
   end
 end

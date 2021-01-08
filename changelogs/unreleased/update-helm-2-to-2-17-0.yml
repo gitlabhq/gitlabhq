@@ -1,0 +1,5 @@
+---
+title: Update Helm 2 version to 2.17.0
+merge_request: 50547
+author:
+type: fixed

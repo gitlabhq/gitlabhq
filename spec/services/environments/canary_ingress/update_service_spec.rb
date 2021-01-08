@@ -117,6 +117,12 @@ RSpec.describe Environments::CanaryIngress::UpdateService, :clean_gitlab_redis_c
           expect(subject[:status]).to eq(:success)
           expect(subject[:message]).to be_nil
         end
+
+        it 'clears all caches' do
+          expect(environment).to receive(:clear_all_caches)
+
+          subject
+        end
       end
 
       context 'when patch request does not succeed' do

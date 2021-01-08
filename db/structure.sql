@@ -14809,10 +14809,11 @@ CREATE TABLE pages_deployments (
     project_id bigint NOT NULL,
     ci_build_id bigint,
     file_store smallint NOT NULL,
-    size integer NOT NULL,
     file text NOT NULL,
     file_count integer NOT NULL,
     file_sha256 bytea NOT NULL,
+    size bigint,
+    CONSTRAINT check_5f9132a958 CHECK ((size IS NOT NULL)),
     CONSTRAINT check_f0fe8032dd CHECK ((char_length(file) <= 255))
 );
 

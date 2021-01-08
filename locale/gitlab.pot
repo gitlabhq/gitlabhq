@@ -23276,6 +23276,9 @@ msgstr ""
 msgid "Rename/Move"
 msgstr ""
 
+msgid "Renew subscription"
+msgstr ""
+
 msgid "Reopen"
 msgstr ""
 
@@ -27441,6 +27444,9 @@ msgid "Thank you for your support request! We are tracking your request as ticke
 msgstr ""
 
 msgid "Thanks for your purchase!"
+msgstr ""
+
+msgid "That is ok, I do not want to renew"
 msgstr ""
 
 msgid "That's it, well done!"

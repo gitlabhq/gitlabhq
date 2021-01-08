@@ -1144,6 +1144,12 @@ type BaseService implements Service {
   type: String
 }
 
+"""
+Represents non-fractional signed whole numeric values. Since the value may
+exceed the size of a 32-bit integer, it's encoded as a string.
+"""
+scalar BigInt
+
 type Blob implements Entry {
   """
   Flat path of the entry
@@ -3788,12 +3794,12 @@ type ContainerRepositoryTag {
   """
   Timestamp when the tag was created.
   """
-  createdAt: Time!
+  createdAt: Time
 
   """
   Digest of the tag.
   """
-  digest: String!
+  digest: String
 
   """
   URL of the tag.
@@ -3813,17 +3819,17 @@ type ContainerRepositoryTag {
   """
   Revision of the tag.
   """
-  revision: String!
+  revision: String
 
   """
   Short revision of the tag.
   """
-  shortRevision: String!
+  shortRevision: String
 
   """
   The size of the tag.
   """
-  totalSize: Int!
+  totalSize: BigInt
 }
 
 """
