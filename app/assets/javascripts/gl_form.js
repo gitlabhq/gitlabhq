@@ -67,6 +67,7 @@ export default class GLForm {
     addMarkdownListeners(this.form);
     this.form.show();
     if (this.isAutosizeable) this.setupAutosize();
+    if (this.textarea.data('autofocus') === true) this.textarea.focus();
   }
 
   setupAutosize() {

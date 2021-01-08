@@ -1242,8 +1242,8 @@ body.gl-dark .navbar-gitlab .search form {
   line-height: 18px;
   margin: 4px 0 4px 2px;
 }
-.title-container .badge.badge-pill,
-.navbar-nav .badge.badge-pill {
+.title-container .badge.badge-pill:not(.merge-request-badge),
+.navbar-nav .badge.badge-pill:not(.merge-request-badge) {
   position: inherit;
   font-weight: 400;
   margin-left: -6px;

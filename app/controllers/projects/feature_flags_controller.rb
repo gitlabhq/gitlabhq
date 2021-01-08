@@ -10,12 +10,10 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
 
   before_action :feature_flag, only: [:edit, :update, :destroy]
 
-  before_action :ensure_legacy_flags_writable!, only: [:update]
+  before_action :ensure_flag_writable!, only: [:update]
 
   before_action do
     push_frontend_feature_flag(:feature_flag_permissions)
-    push_frontend_feature_flag(:feature_flags_legacy_read_only, project, default_enabled: true)
-    push_frontend_feature_flag(:feature_flags_legacy_read_only_override, project)
   end
 
   feature_category :feature_flags
@@ -103,10 +101,8 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
     @feature_flag ||= @noteable = project.operations_feature_flags.find_by_iid!(params[:iid])
   end
 
-  def ensure_legacy_flags_writable!
-    if ::Feature.enabled?(:feature_flags_legacy_read_only, project, default_enabled: true) &&
-        ::Feature.disabled?(:feature_flags_legacy_read_only_override, project) &&
-        feature_flag.legacy_flag?
+  def ensure_flag_writable!
+    if feature_flag.legacy_flag?
       render_error_json(['Legacy feature flags are read-only'])
     end
   end

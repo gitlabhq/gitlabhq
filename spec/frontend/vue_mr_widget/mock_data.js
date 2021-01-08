@@ -1,5 +1,20 @@
 import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/constants';
 
+export const artifacts = [
+  {
+    text: 'result.txt',
+    url: 'bar',
+    job_name: 'generate-artifact',
+    job_path: 'bar',
+  },
+  {
+    text: 'foo.txt',
+    url: 'foo',
+    job_name: 'foo-artifact',
+    job_path: 'foo',
+  },
+];
+
 export default {
   id: 132,
   iid: 22,
@@ -84,6 +99,7 @@ export default {
     coverage: '92.16',
     path: '/root/acets-app/pipelines/172',
     details: {
+      artifacts,
       status: {
         icon: 'status_success',
         favicon: 'favicon_status_success',
@@ -127,7 +143,6 @@ export default {
           dropdown_path: '/root/acets-app/pipelines/172/stage.json?stage=review',
         },
       ],
-      artifacts: [],
       manual_actions: [
         {
           name: 'stop_review',
@@ -275,6 +290,7 @@ export const mockStore = {
   pipeline: {
     id: 0,
     details: {
+      artifacts,
       status: {
         details_path: '/root/review-app-tester/pipelines/66',
         favicon:
@@ -294,6 +310,7 @@ export const mockStore = {
   mergePipeline: {
     id: 1,
     details: {
+      artifacts,
       status: {
         details_path: '/root/review-app-tester/pipelines/66',
         favicon:

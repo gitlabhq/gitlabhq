@@ -31,18 +31,11 @@ export default {
     };
   },
   translations: {
-    legacyFlagAlert: s__('FeatureFlags|Flag becomes read only soon'),
     legacyFlagReadOnlyAlert: s__('FeatureFlags|Flag is read-only'),
   },
   computed: {
     permissions() {
       return this.glFeatures.featureFlagPermissions;
-    },
-    isLegacyReadOnlyFlagsEnabled() {
-      return (
-        this.glFeatures.featureFlagsLegacyReadOnly &&
-        !this.glFeatures.featureFlagsLegacyReadOnlyOverride
-      );
     },
     modalTitle() {
       return sprintf(s__('FeatureFlags|Delete %{name}?'), {
@@ -57,18 +50,13 @@ export default {
     modalId() {
       return 'delete-feature-flag';
     },
-    legacyFlagToolTipText() {
-      const { legacyFlagReadOnlyAlert, legacyFlagAlert } = this.$options.translations;
-
-      return this.isLegacyReadOnlyFlagsEnabled ? legacyFlagReadOnlyAlert : legacyFlagAlert;
-    },
   },
   methods: {
     isLegacyFlag(flag) {
       return flag.version !== NEW_VERSION_FLAG;
     },
     statusToggleDisabled(flag) {
-      return this.isLegacyReadOnlyFlagsEnabled && flag.version === LEGACY_FLAG;
+      return flag.version === LEGACY_FLAG;
     },
     scopeTooltipText(scope) {
       return !scope.active
@@ -123,9 +111,7 @@ export default {
 <template>
   <div class="table-holder js-feature-flag-table">
     <div class="gl-responsive-table-row table-row-header" role="row">
-      <div class="table-section section-10">
-        {{ s__('FeatureFlags|ID') }}
-      </div>
+      <div class="table-section section-10">{{ s__('FeatureFlags|ID') }}</div>
       <div class="table-section section-10" role="columnheader">
         {{ s__('FeatureFlags|Status') }}
       </div>
@@ -161,9 +147,8 @@ export default {
               v-else-if="featureFlag.active"
               variant="success"
               data-testid="feature-flag-status-badge"
+              >{{ s__('FeatureFlags|Active') }}</gl-badge
             >
-              {{ s__('FeatureFlags|Active') }}
-            </gl-badge>
             <gl-badge v-else variant="danger">{{ s__('FeatureFlags|Inactive') }}</gl-badge>
           </div>
         </div>
@@ -179,7 +164,7 @@ export default {
               </div>
               <gl-icon
                 v-if="isLegacyFlag(featureFlag)"
-                v-gl-tooltip.hover="legacyFlagToolTipText"
+                v-gl-tooltip.hover="$options.translations.legacyFlagReadOnlyAlert"
                 class="gl-ml-3"
                 name="information-o"
               />
@@ -205,9 +190,8 @@ export default {
                 :variant="badgeVariant(scope)"
                 :data-qa-selector="`feature-flag-scope-${badgeVariant(scope)}-badge`"
                 class="gl-mr-3 gl-mt-2"
+                >{{ badgeText(scope) }}</gl-badge
               >
-                {{ badgeText(scope) }}
-              </gl-badge>
             </template>
             <template v-else>
               <gl-badge
@@ -216,9 +200,8 @@ export default {
                 data-testid="strategy-badge"
                 variant="info"
                 class="gl-mr-3 gl-mt-2"
+                >{{ strategyBadgeText(strategy) }}</gl-badge
               >
-                {{ strategyBadgeText(strategy) }}
-              </gl-badge>
             </template>
           </div>
         </div>

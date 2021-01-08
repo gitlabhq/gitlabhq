@@ -143,11 +143,7 @@ export default {
       return this.featureFlagIssuesEndpoint.length > 0;
     },
     readOnly() {
-      return (
-        this.glFeatures.featureFlagsLegacyReadOnly &&
-        !this.glFeatures.featureFlagsLegacyReadOnlyOverride &&
-        this.version === LEGACY_FLAG
-      );
+      return this.version === LEGACY_FLAG;
     },
   },
   methods: {

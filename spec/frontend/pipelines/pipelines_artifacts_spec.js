@@ -1,12 +1,12 @@
-import { shallowMount } from '@vue/test-utils';
-import { GlLink } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
+import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import PipelineArtifacts from '~/pipelines/components/pipelines_list/pipelines_artifacts.vue';
 
 describe('Pipelines Artifacts dropdown', () => {
   let wrapper;
 
   const createComponent = () => {
-    wrapper = shallowMount(PipelineArtifacts, {
+    wrapper = mount(PipelineArtifacts, {
       propsData: {
         artifacts: [
           {
@@ -22,8 +22,8 @@ describe('Pipelines Artifacts dropdown', () => {
     });
   };
 
-  const findGlLink = () => wrapper.find(GlLink);
-  const findAllGlLinks = () => wrapper.find('.dropdown-menu').findAll(GlLink);
+  const findFirstGlDropdownItem = () => wrapper.find(GlDropdownItem);
+  const findAllGlDropdownItems = () => wrapper.find(GlDropdown).findAll(GlDropdownItem);
 
   beforeEach(() => {
     createComponent();
@@ -35,12 +35,12 @@ describe('Pipelines Artifacts dropdown', () => {
   });
 
   it('should render a dropdown with all the provided artifacts', () => {
-    expect(findAllGlLinks()).toHaveLength(2);
+    expect(findAllGlDropdownItems()).toHaveLength(2);
   });
 
   it('should render a link with the provided path', () => {
-    expect(findGlLink().attributes('href')).toEqual('/download/path');
+    expect(findFirstGlDropdownItem().find('a').attributes('href')).toEqual('/download/path');
 
-    expect(findGlLink().text()).toContain('artifact');
+    expect(findFirstGlDropdownItem().text()).toContain('artifact');
   });
 });

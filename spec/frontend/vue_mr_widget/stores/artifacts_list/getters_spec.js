@@ -1,6 +1,6 @@
 import { title } from '~/vue_merge_request_widget/stores/artifacts_list/getters';
 import state from '~/vue_merge_request_widget/stores/artifacts_list/state';
-import { artifactsList } from '../../components/mock_data';
+import { artifacts } from '../../mock_data';
 
 describe('Artifacts Store Getters', () => {
   let localState;
@@ -24,7 +24,7 @@ describe('Artifacts Store Getters', () => {
     });
     describe('when it has artifacts', () => {
       it('returns artifacts message', () => {
-        localState.artifacts = artifactsList;
+        localState.artifacts = artifacts;
         expect(title(localState)).toBe('View 2 exposed artifacts');
       });
     });

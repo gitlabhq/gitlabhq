@@ -1,0 +1,381 @@
+# Markdown documentation: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/api/access_requests.md
+
+#/v4/projects/{id}/access_requests
+accessRequestsProjects:
+  get:
+    description: Lists access requests for a project
+    summary: List access requests for a project
+    operationId: accessRequestsProjects_get
+    tags:
+      - access_requests
+    parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project owned by the authenticated user.
+        required: true
+        schema:
+          oneOf:
+            - type: integer
+            - type: string
+    responses:
+      '401':
+        description: Unauthorized operation
+      '200':
+        description: Successful operation
+        content:
+          application/json:
+            schema:
+              title: ProjectAccessResponse
+              type: object
+              properties:
+                id:
+                  type: integer
+                usename:
+                  type: string
+                name:
+                  type: string
+                state:
+                  type: string
+                created_at:
+                  type: string
+                requested_at:
+                  type: string
+            example:
+              - "id": 1
+                "username": "raymond_smith"
+                "name": "Raymond Smith"
+                "state": "active"
+                "created_at": "2012-10-22T14:13:35Z"
+                "requested_at": "2012-10-22T14:13:35Z"                         
+              - "id": 2
+                "username": "john_doe"
+                "name": "John Doe"
+                "state": "active"
+                "created_at": "2012-10-22T14:13:35Z"
+                "requested_at": "2012-10-22T14:13:35Z"                         
+  post:
+    description: Requests access for the authenticated user to a project
+    summary: Requests access for the authenticated user to a project
+    operationId: accessRequestsProjects_post
+    tags:
+      - access_requests
+    parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project owned by the authenticated user.
+        required: true
+        schema:
+          oneOf:
+            - type: integer
+            - type: string
+    responses:
+      '401':
+        description: Unauthorized operation
+      '200':
+        description: Successful operation
+        content:
+          application/json:
+            schema:
+              title: ProjectAccessRequest
+              type: object
+              properties:
+                id:
+                  type: integer
+                usename:
+                  type: string
+                name:
+                  type: string
+                state:
+                  type: string
+                created_at:
+                  type: string
+                requested_at:
+                  type: string
+            example:
+              "id": 1
+              "username": "raymond_smith"
+              "name": "Raymond Smith"
+              "state": "active"
+              "created_at": "2012-10-22T14:13:35Z"
+              "requested_at": "2012-10-22T14:13:35Z"     
+
+#/v4/projects/{id}/access_requests/{user_id}/approve
+accessRequestsProjectsApprove:
+  put:
+    description: Approves access for the authenticated user to a project
+    summary: Approves access for the authenticated user to a project
+    operationId: accessRequestsProjectsApprove_put
+    tags:
+      - access_requests
+    parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project owned by the authenticated user.
+        required: true
+        schema:
+          oneOf:
+            - type: integer
+            - type: string
+      - name: user_id
+        in: path
+        description: The userID of the access requester
+        required: true
+        schema:
+          type: integer
+      - name: access_level
+        in: query
+        description: A valid project access level.  0 = no access , 10 = guest, 20 = reporter, 30 = developer, 40 = Maintainer.  Default is 30.'
+        required: false
+        schema:
+          enum: [0, 10, 20, 30, 40]
+          default: 30
+          type: integer
+    responses:      
+      '401':
+        description: Unauthorized operation
+      '200':
+        description: Successful operation
+        content:
+          application/json:
+            schema:
+              title: ProjectAccessApprove
+              type: object
+              properties:
+                id:
+                  type: integer
+                usename:
+                  type: string
+                name:
+                  type: string
+                state:
+                  type: string
+                created_at:
+                  type: string
+                access_level:
+                  type: integer
+            example:
+              "id": 1
+              "username": "raymond_smith"
+              "name": "Raymond Smith"
+              "state": "active"
+              "created_at": "2012-10-22T14:13:35Z"
+              "access_level": 20
+
+#/v4/projects/{id}/access_requests/{user_id}
+accessRequestsProjectsDeny:
+  delete:
+    description: Denies a project access request for the given user
+    summary: Denies a project access request for the given user
+    operationId: accessRequestProjectsDeny_delete
+    tags:
+      - access_requests
+    parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project owned by the authenticated user.
+        required: true
+        schema:
+            oneOf:
+            - type: integer
+            - type: string
+      - name: user_id
+        in: path
+        description: The user ID of the access requester
+        required: true
+        schema:
+          type: integer
+    responses:    # Does anything go here?  Markdown doc does not list a response.
+      '401':
+        description: Unauthorized operation
+      '200':
+        description: Successful operation
+
+#/v4/groups/{id}/access_requests
+accessRequestsGroups:
+  get:
+    description: List access requests for a group
+    summary: List access requests for a group
+    operationId: accessRequestsGroups_get
+    tags:
+      - access_requests
+    parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the group owned by the authenticated user.
+        required: true
+        schema:
+          oneOf:
+            - type: integer
+            - type: string
+    responses:
+      '401':
+        description: Unauthorized operation
+      '200':
+        description: Successful operation
+        content:
+          application/json:
+            schema:
+              title: GroupAccessResponse
+              type: object
+              properties:
+                id:
+                  type: integer
+                usename:
+                  type: string
+                name:
+                  type: string
+                state:
+                  type: string
+                created_at:
+                  type: string
+                requested_at:
+                  type: string
+            example:
+              - "id": 1
+                "username": "raymond_smith"
+                "name": "Raymond Smith"
+                "state": "active"
+                "created_at": "2012-10-22T14:13:35Z"
+                "requested_at": "2012-10-22T14:13:35Z"                         
+              - "id": 2
+                "username": "john_doe"
+                "name": "John Doe"
+                "state": "active"
+                "created_at": "2012-10-22T14:13:35Z"
+                "requested_at": "2012-10-22T14:13:35Z"   
+  post:
+    description: Requests access for the authenticated user to a group
+    summary: Requests access for the authenticated user to a group
+    operationId: accessRequestsGroups_post
+    tags:
+      - access_requests
+    parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the group owned by the authenticated user.
+        required: true
+        schema:
+          oneOf:
+            - type: integer
+            - type: string
+    responses:
+      '401':
+        description: Unauthorized operation
+      '200':
+        description: Successful operation
+        content:
+          application/json:
+            schema:
+              title: GroupAccessRequest
+              type: object
+              properties:
+                id:
+                  type: integer
+                usename:
+                  type: string
+                name:
+                  type: string
+                state:
+                  type: string
+                created_at:
+                  type: string
+                requested_at:
+                  type: string
+            example:
+              "id": 1
+              "username": "raymond_smith"
+              "name": "Raymond Smith"
+              "state": "active"
+              "created_at": "2012-10-22T14:13:35Z"
+              "requested_at": "2012-10-22T14:13:35Z"                         
+
+#/v4/groups/{id}/access_requests/{user_id}/approve
+accessRequestsGroupsApprove:
+  put:
+    description: Approves access for the authenticated user to a group
+    summary: Approves access for the authenticated user to a group
+    operationId: accessRequestsGroupsApprove_put
+    tags:
+      - access_requests
+    parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the group owned by the authenticated user.
+        required: true
+        schema:
+          oneOf:
+            - type: integer
+            - type: string
+      - name: user_id
+        in: path
+        description: The userID of the access requester
+        required: true
+        schema:
+          type: integer
+      - name: access_level
+        in: query
+        description: A valid group access level.  0 = no access , 10 = Guest, 20 = Reporter, 30 = Developer, 40 = Maintainer, 50 = Owner.  Default is 30.
+        required: false
+        schema:
+          enum: [0, 10, 20, 30, 40, 50]
+          default: 30
+          type: integer
+    responses:      
+      '401':
+        description: Unauthorized operation
+      '200':
+        description: Successful operation
+        content:
+          application/json:
+            schema:
+              title: GroupAccessApprove
+              type: object
+              properties:
+                id:
+                  type: integer
+                usename:
+                  type: string
+                name:
+                  type: string
+                state:
+                  type: string
+                created_at:
+                  type: string
+                access_level:
+                  type: integer
+            example:
+              "id": 1
+              "username": "raymond_smith"
+              "name": "Raymond Smith"
+              "state": "active"
+              "created_at": "2012-10-22T14:13:35Z"
+              "access_level": 20   
+
+#/v4/groups/{id}/access_requests/{user_id}
+accessRequestsGroupsDeny:
+  delete:
+    description: Denies a group access request for the given user
+    summary: Denies a group access request for the given user
+    operationId: accessRequestsGroupsDeny_delete
+    tags:
+      - access_requests
+    parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the group owned by the authenticated user.
+        required: true
+        schema:
+            oneOf:
+            - type: integer
+            - type: string
+      - name: user_id
+        in: path
+        description: The userID of the access requester
+        required: true
+        schema:
+          type: integer
+    responses:    # Does anything go here?  Markdown doc does not list a response.
+      '401':
+        description: Unauthorized operation
+      '200':
+        description: Successful operation

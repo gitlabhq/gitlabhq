@@ -42,7 +42,7 @@
     .col-sm-2.col-form-label= f.label :content, class: 'control-label-full-width'
     .col-sm-10
       = render layout: 'shared/md_preview', locals: { url: wiki_page_path(@wiki, @page, action: :preview_markdown) } do
-        = render 'shared/zen', f: f, attr: :content, classes: 'note-textarea qa-wiki-content-textarea', placeholder: s_("WikiPage|Write your content or drag files here…")
+        = render 'shared/zen', f: f, attr: :content, classes: 'note-textarea qa-wiki-content-textarea', placeholder: s_("WikiPage|Write your content or drag files here…"), autofocus: @page.persisted?
         = render 'shared/notes/hints'
 
       .clearfix

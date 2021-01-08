@@ -123,6 +123,10 @@ RSpec.shared_examples 'User updates wiki page' do
       expect(page).to have_content('Updated Wiki Content')
     end
 
+    it 'focuses on the content field', :js do
+      expect(page).to have_selector '.note-textarea:focus'
+    end
+
     it 'cancels editing of a page' do
       page.within(:css, '.wiki-form .form-actions') do
         click_on('Cancel')

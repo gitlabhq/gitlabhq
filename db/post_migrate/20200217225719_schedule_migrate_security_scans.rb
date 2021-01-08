@@ -6,7 +6,7 @@ class ScheduleMigrateSecurityScans < ActiveRecord::Migration[5.2]
   DOWNTIME = false
   INTERVAL = 2.minutes.to_i
   BATCH_SIZE = 10_000
-  MIGRATION = 'MigrateSecurityScans'.freeze
+  MIGRATION = 'MigrateSecurityScans'
 
   disable_ddl_transaction!
 

@@ -4,7 +4,7 @@ class AddIndexesToDeploymentsOnProjectIdAndRef < ActiveRecord::Migration[5.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  INDEX_NAME = 'partial_index_deployments_for_project_id_and_tag'.freeze
+  INDEX_NAME = 'partial_index_deployments_for_project_id_and_tag'
 
   disable_ddl_transaction!
 

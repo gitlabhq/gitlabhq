@@ -93,11 +93,10 @@ When SSO enforcement is enabled for a group, users can't share a project in the 
 ## Providers
 
 NOTE:
-GitLab is unable to provide support for IdPs that are not listed here.
+GitLab is unable to provide full support for IdPs that are not listed here.
 
 | Provider | Documentation |
 |----------|---------------|
-| ADFS (Active Directory Federation Services) | [Create a Relying Party Trust](https://docs.microsoft.com/en-us/windows-server/identity/ad-fs/operations/create-a-relying-party-trust) |
 | Azure | [Configuring single sign-on to applications](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/view-applications-portal) |
 | Okta | [Setting up a SAML application in Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/overview/) |
 | OneLogin | [Use the OneLogin SAML Test Connector](https://onelogin.service-now.com/support?id=kb_article&sys_id=93f95543db109700d5505eea4b96198f) |
@@ -164,6 +163,7 @@ For more information, see our [discussion on providers](#providers).
 
 Your identity provider may have relevant documentation. It may be generic SAML documentation, or specifically targeted for GitLab. Examples:
 
+- [ADFS (Active Directory Federation Services)](https://docs.microsoft.com/en-us/windows-server/identity/ad-fs/operations/create-a-relying-party-trust)
 - [Auth0](https://auth0.com/docs/protocols/saml-configuration-options/configure-auth0-as-saml-identity-provider)
 - [G Suite](https://support.google.com/a/answer/6087519?hl=en)
 - [JumpCloud](https://support.jumpcloud.com/support/s/article/single-sign-on-sso-with-gitlab-2019-08-21-10-36-47)

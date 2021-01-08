@@ -4,8 +4,8 @@ class AddIndexToEnvironmentsOnProjectIdStateEnvironmentType < ActiveRecord::Migr
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  OLD_INDEX_NAME = 'index_environments_on_project_id_and_state'.freeze
-  NEW_INDEX_NAME = 'index_environments_on_project_id_state_environment_type'.freeze
+  OLD_INDEX_NAME = 'index_environments_on_project_id_and_state'
+  NEW_INDEX_NAME = 'index_environments_on_project_id_state_environment_type'
 
   disable_ddl_transaction!
 

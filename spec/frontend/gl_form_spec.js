@@ -114,6 +114,26 @@ describe('GLForm', () => {
       });
     });
 
+    describe('autofocus', () => {
+      it('focus the textarea when autofocus is true', () => {
+        testContext.textarea.data('autofocus', true);
+        jest.spyOn($.prototype, 'focus');
+
+        testContext.glForm = new GLForm(testContext.form, false);
+
+        expect($.prototype.focus).toHaveBeenCalled();
+      });
+
+      it("doesn't focus the textarea when autofocus is false", () => {
+        testContext.textarea.data('autofocus', false);
+        jest.spyOn($.prototype, 'focus');
+
+        testContext.glForm = new GLForm(testContext.form, false);
+
+        expect($.prototype.focus).not.toHaveBeenCalled();
+      });
+    });
+
     describe('supportsQuickActions', () => {
       it('should return false if textarea does not support quick actions', () => {
         const glForm = new GLForm(testContext.form, false);

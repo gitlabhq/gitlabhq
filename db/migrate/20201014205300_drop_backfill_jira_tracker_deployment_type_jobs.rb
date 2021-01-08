@@ -2,8 +2,8 @@
 
 class DropBackfillJiraTrackerDeploymentTypeJobs < ActiveRecord::Migration[6.0]
   DOWNTIME = false
-  DROPPED_JOB_CLASS = 'BackfillJiraTrackerDeploymentType'.freeze
-  QUEUE = 'background_migration'.freeze
+  DROPPED_JOB_CLASS = 'BackfillJiraTrackerDeploymentType'
+  QUEUE = 'background_migration'
 
   def up
     sidekiq_queues.each do |queue|

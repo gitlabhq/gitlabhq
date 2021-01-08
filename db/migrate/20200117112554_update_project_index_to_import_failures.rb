@@ -5,8 +5,8 @@ class UpdateProjectIndexToImportFailures < ActiveRecord::Migration[5.2]
 
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
-  PROJECT_INDEX_OLD = 'index_import_failures_on_project_id'.freeze
-  PROJECT_INDEX_NEW = 'index_import_failures_on_project_id_not_null'.freeze
+  PROJECT_INDEX_OLD = 'index_import_failures_on_project_id'
+  PROJECT_INDEX_NEW = 'index_import_failures_on_project_id_not_null'
 
   disable_ddl_transaction!
 

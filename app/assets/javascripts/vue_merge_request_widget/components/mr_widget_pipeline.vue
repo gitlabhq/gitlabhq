@@ -11,6 +11,7 @@ import {
 import mrWidgetPipelineMixin from 'ee_else_ce/vue_merge_request_widget/mixins/mr_widget_pipeline';
 import { s__, n__ } from '~/locale';
 import PipelineStage from '~/pipelines/components/pipelines_list/stage.vue';
+import PipelineArtifacts from '~/pipelines/components/pipelines_list/pipelines_artifacts.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 
@@ -23,6 +24,7 @@ export default {
     GlIcon,
     GlSprintf,
     GlTooltip,
+    PipelineArtifacts,
     PipelineStage,
     TooltipOnTruncate,
     LinkedPipelinesMiniList: () =>
@@ -96,6 +98,9 @@ export default {
     },
     hasCommitInfo() {
       return this.pipeline.commit && Object.keys(this.pipeline.commit).length > 0;
+    },
+    hasArtifacts() {
+      return this.pipeline?.details?.artifacts?.length > 0;
     },
     isMergeRequestPipeline() {
       return Boolean(this.pipeline.flags && this.pipeline.flags.merge_request_pipeline);
@@ -218,7 +223,6 @@ export default {
                 data-testid="pipeline-coverage-delta"
                 >({{ pipelineCoverageDelta }}%)</span
               >
-
               {{ pipelineCoverageJobNumberText }}
               <span ref="pipelineCoverageQuestion">
                 <gl-icon name="question" :size="12" />
@@ -258,6 +262,11 @@ export default {
               </template>
             </span>
             <linked-pipelines-mini-list v-if="triggered.length" :triggered="triggered" />
+            <pipeline-artifacts
+              v-if="hasArtifacts"
+              :artifacts="pipeline.details.artifacts"
+              class="gl-ml-3"
+            />
           </span>
         </div>
       </div>

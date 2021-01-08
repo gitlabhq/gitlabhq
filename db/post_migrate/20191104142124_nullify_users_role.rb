@@ -4,7 +4,7 @@ class NullifyUsersRole < ActiveRecord::Migration[5.2]
   include Gitlab::Database::MigrationHelpers
 
   disable_ddl_transaction!
-  INDEX_NAME = 'partial_index_users_updated_at_for_cleaning_mistaken_values'.freeze
+  INDEX_NAME = 'partial_index_users_updated_at_for_cleaning_mistaken_values'
 
   DOWNTIME = false
 

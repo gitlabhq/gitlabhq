@@ -175,7 +175,7 @@ instances](#indexing-large-instances) below.
 
 To enable Advanced Search, you need to have admin access to GitLab:
 
-1. Navigate to **Admin Area** (wrench icon), then **Settings > General**
+1. Navigate to **Admin Area**, then **Settings > General**
    and expand the **Advanced Search** section.
 
    NOTE:
@@ -259,7 +259,7 @@ You can improve the language support for Chinese and Japanese languages by utili
 To enable language(s) support:
 
 1. Install the desired plugin(s), please refer to [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/7.9/installation.html) for plugins installation instructions. The plugin(s) must be installed on every node in the cluster, and each node must be restarted after installation. For a list of plugins, see the table later in this section.
-1. Navigate to the **Admin Area** (wrench icon), then **Settings > General**..
+1. Navigate to the **Admin Area**, then **Settings > General**..
 1. Expand the **Advanced Search** section and locate **Custom analyzers: language support**.
 1. Enable plugin(s) support for **Indexing**.
 1. Click **Save changes** for the changes to take effect.
@@ -279,7 +279,7 @@ For guidance on what to install, see the following Elasticsearch language plugin
 
 To disable the Elasticsearch integration:
 
-1. Navigate to the **Admin Area** (wrench icon), then **Settings > General**.
+1. Navigate to the **Admin Area**, then **Settings > General**.
 1. Expand the **Advanced Search** section and uncheck **Elasticsearch indexing**
    and **Search with Elasticsearch enabled**.
 1. Click **Save changes** for the changes to take effect.

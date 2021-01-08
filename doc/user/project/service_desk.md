@@ -157,6 +157,12 @@ The `%{key}` part is used to find the project where the issue should be created.
 You can set the project name suffix in your project's Service Desk settings.
 It can contain only lowercase letters (`a-z`), numbers (`0-9`), or underscores (`_`).
 
+NOTE:
+The `service_desk_email` and `incoming_email` configurations should
+always use separate mailboxes. This is important, because emails picked from
+`service_desk_email` mailbox are processed by a different worker and it would
+not recognize `incoming_email` emails.
+
 You can add the following snippets to your configuration:
 
 - Example for installations from source:

@@ -5221,13 +5221,31 @@ msgstr ""
 msgid "ChangeTypeActionLabel|Revert in branch"
 msgstr ""
 
+msgid "ChangeTypeAction|A new branch will be created in your fork and a new merge request will be started."
+msgstr ""
+
 msgid "ChangeTypeAction|Cherry-pick"
 msgstr ""
 
 msgid "ChangeTypeAction|Revert"
 msgstr ""
 
+msgid "ChangeTypeAction|Revert in branch"
+msgstr ""
+
+msgid "ChangeTypeAction|Search branches"
+msgstr ""
+
+msgid "ChangeTypeAction|Start a %{newMergeRequest} with these changes"
+msgstr ""
+
+msgid "ChangeTypeAction|Switch branch"
+msgstr ""
+
 msgid "ChangeTypeAction|This will create a new commit in order to revert the existing changes."
+msgstr ""
+
+msgid "ChangeTypeAction|Your changes will be committed to %{branchName} because a merge request is open."
 msgstr ""
 
 msgid "Changed assignee(s)."
@@ -10182,6 +10200,9 @@ msgstr ""
 msgid "Download %{format}:"
 msgstr ""
 
+msgid "Download %{name} artifact"
+msgstr ""
+
 msgid "Download CSV"
 msgstr ""
 
@@ -12092,9 +12113,6 @@ msgstr ""
 msgid "FeatureFlags|Feature flags limit reached (%{featureFlagsLimit}). Delete one or more feature flags before adding new ones."
 msgstr ""
 
-msgid "FeatureFlags|Flag becomes read only soon"
-msgstr ""
-
 msgid "FeatureFlags|Flag is read-only"
 msgstr ""
 
@@ -12102,9 +12120,6 @@ msgid "FeatureFlags|Get started with feature flags"
 msgstr ""
 
 msgid "FeatureFlags|Get started with user lists"
-msgstr ""
-
-msgid "FeatureFlags|GitLab is moving to a new way of managing feature flags, and in 13.4, this feature flag will become read-only. Please create a new feature flag."
 msgstr ""
 
 msgid "FeatureFlags|GitLab is moving to a new way of managing feature flags. This feature flag is read-only, and it will be removed in 14.0. Please create a new feature flag."
@@ -19636,7 +19651,7 @@ msgstr ""
 msgid "OnDemandScans|Create a new site profile"
 msgstr ""
 
-msgid "OnDemandScans|Description"
+msgid "OnDemandScans|Description (optional)"
 msgstr ""
 
 msgid "OnDemandScans|Edit on-demand DAST scan"
@@ -26174,6 +26189,9 @@ msgid "Something went wrong while editing your comment. Please try again."
 msgstr ""
 
 msgid "Something went wrong while fetching %{listType} list"
+msgstr ""
+
+msgid "Something went wrong while fetching branches"
 msgstr ""
 
 msgid "Something went wrong while fetching comments. Please try again."

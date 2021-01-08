@@ -51,7 +51,7 @@
     - if params[:filter].present?
       = hidden_field_tag "filter", h(params[:filter])
     .search-holder
-      .search-field-holder
+      .search-field-holder.gl-mb-4
         = search_field_tag :search_query, params[:search_query], placeholder: s_('AdminUsers|Search by name, email or username'), class: 'form-control search-text-input js-search-input', spellcheck: false, data: { qa_selector: 'user_search_field' }
         - if @sort.present?
           = hidden_field_tag :sort, @sort

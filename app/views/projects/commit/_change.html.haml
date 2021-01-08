@@ -6,34 +6,20 @@
   - revert_commit = _('Revert this commit')
   - description = s_('ChangeTypeAction|This will create a new commit in order to revert the existing changes.')
   - title = commit.merged_merge_request(current_user) ? revert_merge_request : revert_commit
+
+  - if defined?(pajamas)
+    .js-revert-commit-modal{ data: { title: title,
+      endpoint: revert_namespace_project_commit_path(commit, namespace_id: @project.namespace.full_path, project_id: @project),
+      branch: @project.default_branch,
+      push_code: can?(current_user, :push_code, @project).to_s,
+      branch_collaboration: @project.branch_allows_collaboration?(current_user, selected_branch).to_s,
+      existing_branch: ERB::Util.html_escape(selected_branch),
+      branches_endpoint: project_branches_path(@project) } }
+  - else
+    = render "projects/commit/commit_modal", title: title, type: type, commit: commit, branch_label: branch_label, description: description, label: label
+
 - when 'cherry-pick'
   - label = s_('ChangeTypeAction|Cherry-pick')
   - branch_label = s_('ChangeTypeActionLabel|Pick into branch')
   - title = commit.merged_merge_request(current_user) ? _('Cherry-pick this merge request') : _('Cherry-pick this commit')
-
-.modal{ id: "modal-#{type}-commit", tabindex: -1 }
-  .modal-dialog
-    .modal-content
-      .modal-header
-        %h3.page-title= title
-        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
-          %span{ "aria-hidden": true } &times;
-      .modal-body
-        - if description
-          %p= description
-        = form_tag [type.underscore, @project, commit], method: :post, remote: false, class: "js-#{type}-form js-requires-input" do
-          .form-group.branch
-            = label_tag 'start_branch', branch_label, class: 'label-bold'
-
-            = hidden_field_tag :start_branch, @project.default_branch, id: 'start_branch'
-            = dropdown_tag(@project.default_branch, options: { title: s_("BranchSwitcherTitle|Switch branch"), filter: true, placeholder: s_("BranchSwitcherPlaceholder|Search branches"), toggle_class: 'js-project-refs-dropdown dynamic', dropdown_class: 'dropdown-menu-selectable', data: { field_name: "start_branch", selected: @project.default_branch, start_branch: @project.default_branch, refs_url: project_branches_path(@project), submit_form_on_click: false } })
-
-            - if can?(current_user, :push_code, @project)
-              = render 'shared/new_merge_request_checkbox'
-            - else
-              = hidden_field_tag 'create_merge_request', 1, id: nil
-          .form-actions
-            = submit_tag label, class: 'gl-button btn btn-success'
-            = link_to _("Cancel"), '#', class: "gl-button btn btn-cancel", "data-dismiss" => "modal"
-
-            = render 'shared/projects/edit_information'
+  = render "projects/commit/commit_modal", title: title, type: type, commit: commit, branch_label: branch_label, description: description, label: label

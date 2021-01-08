@@ -5,7 +5,7 @@ class ScheduleFixOrphanPromotedIssues < ActiveRecord::Migration[5.2]
 
   DOWNTIME = false
   BATCH_SIZE = 100
-  BACKGROUND_MIGRATION = 'FixOrphanPromotedIssues'.freeze
+  BACKGROUND_MIGRATION = 'FixOrphanPromotedIssues'
 
   disable_ddl_transaction!
 

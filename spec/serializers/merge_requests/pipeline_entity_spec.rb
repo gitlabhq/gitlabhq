@@ -30,7 +30,7 @@ RSpec.describe MergeRequests::PipelineEntity do
       )
       expect(subject[:commit]).to include(:short_id, :commit_path)
       expect(subject[:ref]).to include(:branch)
-      expect(subject[:details]).to include(:name, :status, :stages)
+      expect(subject[:details]).to include(:artifacts, :name, :status, :stages)
       expect(subject[:details][:status]).to include(:icon, :favicon, :text, :label, :tooltip)
       expect(subject[:flags]).to include(:merge_request_pipeline)
     end
@@ -42,4 +42,6 @@ RSpec.describe MergeRequests::PipelineEntity do
       expect(entity.as_json).not_to include(:coverage)
     end
   end
+
+  it_behaves_like 'public artifacts'
 end
