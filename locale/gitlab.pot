@@ -1265,6 +1265,9 @@ msgstr ""
 msgid "A group represents your organization in GitLab. Groups allow you to manage users and collaborate across multiple projects."
 msgstr ""
 
+msgid "A limit of %{ci_project_subscriptions_limit} subscriptions to or from a project applies."
+msgstr ""
+
 msgid "A maximum of %{count} participants can be added"
 msgstr ""
 
@@ -1335,9 +1338,6 @@ msgid "A sign-in to your account has been made from the following IP address: %{
 msgstr ""
 
 msgid "A string appended to the project path to form the Service Desk email address."
-msgstr ""
-
-msgid "A subscription will trigger a new pipeline on the default branch of this project when a pipeline successfully completes for a new tag on the %{default_branch_docs} of the subscribed project."
 msgstr ""
 
 msgid "A user can only participate in a rotation once"
@@ -20541,6 +20541,9 @@ msgstr ""
 msgid "Pipeline subscriptions"
 msgstr ""
 
+msgid "Pipeline subscriptions trigger a new pipeline on the default branch of this project when a pipeline successfully completes for a new tag on the %{default_branch_docs} of the subscribed project."
+msgstr ""
+
 msgid "Pipeline triggers"
 msgstr ""
 
@@ -25626,9 +25629,6 @@ msgstr ""
 msgid "Set up new password"
 msgstr ""
 
-msgid "Set up pipeline subscriptions for this project."
-msgstr ""
-
 msgid "Set up shared runner availability"
 msgstr ""
 
@@ -28278,9 +28278,6 @@ msgid "There are pending advanced search migrations. Indexing must remain paused
 msgstr ""
 
 msgid "There are running deployments on the environment. Please retry later."
-msgstr ""
-
-msgid "There is a limit of %{ci_project_subscriptions_limit} subscriptions from or to a project."
 msgstr ""
 
 msgid "There is already a To-Do for this design."
