@@ -1,7 +1,9 @@
 - page_title s_('Pipelines|Pipeline Editor')
 
 #js-pipeline-editor{ data: { "ci-config-path": @project.ci_config_path_or_default,
-  "project-path" => @project.full_path,
+  "project-path" => @project.path,
+  "project-full-path" => @project.full_path,
+  "project-namespace" => @project.namespace.full_path,
   "default-branch" => @project.default_branch,
   "commit-sha" => @project.commit ? @project.commit.sha : '',
   "new-merge-request-path" => namespace_project_new_merge_request_path,

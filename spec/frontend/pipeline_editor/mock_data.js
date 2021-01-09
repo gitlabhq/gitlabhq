@@ -1,9 +1,9 @@
 import { CI_CONFIG_STATUS_VALID } from '~/pipeline_editor/constants';
 import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
 
-export const mockNamespace = 'user1';
-export const mockProjectName = 'project1';
-export const mockProjectPath = `${mockNamespace}/${mockProjectName}`;
+export const mockProjectNamespace = 'user1';
+export const mockProjectPath = 'project1';
+export const mockProjectFullPath = `${mockProjectNamespace}/${mockProjectPath}`;
 export const mockDefaultBranch = 'master';
 export const mockNewMergeRequestPath = '/-/merge_requests/new';
 export const mockCommitSha = 'aabbccdd';

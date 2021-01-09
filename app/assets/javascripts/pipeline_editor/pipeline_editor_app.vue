@@ -39,11 +39,8 @@ export default {
     ValidationSegment,
   },
   mixins: [glFeatureFlagsMixin()],
+  inject: ['projectFullPath'],
   props: {
-    projectPath: {
-      type: String,
-      required: true,
-    },
     defaultBranch: {
       type: String,
       required: false,
@@ -84,7 +81,7 @@ export default {
       query: getBlobContent,
       variables() {
         return {
-          projectPath: this.projectPath,
+          projectPath: this.projectFullPath,
           path: this.ciConfigPath,
           ref: this.defaultBranch,
         };
@@ -107,7 +104,7 @@ export default {
       },
       variables() {
         return {
-          projectPath: this.projectPath,
+          projectPath: this.projectFullPath,
           content: this.contentModel,
         };
       },
@@ -244,7 +241,7 @@ export default {
         } = await this.$apollo.mutate({
           mutation: commitCiFileMutation,
           variables: {
-            projectPath: this.projectPath,
+            projectPath: this.projectFullPath,
             branch,
             startBranch: this.defaultBranch,
             message,
@@ -318,7 +315,6 @@ export default {
               v-model="contentModel"
               :ci-config-path="ciConfigPath"
               :commit-sha="lastCommitSha"
-              :project-path="projectPath"
             />
           </editor-tab>
           <editor-tab

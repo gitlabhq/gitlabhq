@@ -8,6 +8,7 @@ RSpec.describe QuickActions::InterpretService do
   let_it_be(:project) { public_project }
   let_it_be(:developer) { create(:user) }
   let_it_be(:developer2) { create(:user) }
+  let_it_be(:developer3) { create(:user) }
   let_it_be_with_reload(:issue) { create(:issue, project: project) }
   let(:milestone) { create(:milestone, project: project, title: '9.10') }
   let(:commit) { create(:commit, project: project) }
@@ -23,6 +24,7 @@ RSpec.describe QuickActions::InterpretService do
 
   before do
     stub_licensed_features(multiple_issue_assignees: false,
+                           multiple_merge_request_reviewers: false,
                            multiple_merge_request_assignees: false)
   end
 
@@ -665,6 +667,20 @@ RSpec.describe QuickActions::InterpretService do
       end
     end
 
+    shared_examples 'assign_reviewer command' do
+      it 'assigns a reviewer to a single user' do
+        _, updates, _ = service.execute(content, issuable)
+
+        expect(updates).to eq(reviewer_ids: [developer.id])
+      end
+
+      it 'returns the assign reviewer message' do
+        _, _, message = service.execute(content, issuable)
+
+        expect(message).to eq("Assigned #{developer.to_reference} as reviewer.")
+      end
+    end
+
     it_behaves_like 'reopen command' do
       let(:content) { '/reopen' }
       let(:issuable) { issue }
@@ -857,6 +873,110 @@ RSpec.describe QuickActions::InterpretService do
     it_behaves_like 'empty command', "Failed to assign a user because no user was found." do
       let(:content) { '/assign' }
       let(:issuable) { issue }
+    end
+
+    context 'when the merge_request_reviewers flag is enabled' do
+      context 'assign_reviewer command with one user' do
+        it_behaves_like 'assign_reviewer command' do
+          let(:content) { "/assign_reviewer @#{developer.username}" }
+          let(:issuable) { merge_request }
+        end
+
+        it_behaves_like 'empty command' do
+          let(:content) { "/assign_reviewer @#{developer.username}" }
+          let(:issuable) { issue }
+        end
+      end
+
+      # CE does not have multiple reviewers
+      context 'assign_reviewer command with multiple assignees' do
+        let(:issuable) { merge_request }
+
+        it 'assigns only the first reviewer to the merge request' do
+          content = "/assign_reviewer @#{developer.username} @#{developer2.username}"
+          _, updates, _ = service.execute(content, issuable)
+
+          expect(updates).to eq(reviewer_ids: [developer.id])
+        end
+      end
+
+      context 'assign_reviewer command with me alias' do
+        it_behaves_like 'assign_reviewer command' do
+          let(:content) { '/assign_reviewer me' }
+          let(:issuable) { merge_request }
+        end
+      end
+
+      context 'assign_reviewer command with me alias and whitespace' do
+        it_behaves_like 'assign_reviewer command' do
+          let(:content) { '/assign_reviewer  me ' }
+          let(:issuable) { merge_request }
+        end
+      end
+
+      it_behaves_like 'empty command', "Failed to assign a reviewer because no user was found." do
+        let(:content) { '/assign_reviewer @abcd1234' }
+        let(:issuable) { merge_request }
+      end
+
+      it_behaves_like 'empty command', "Failed to assign a reviewer because no user was found." do
+        let(:content) { '/assign_reviewer' }
+        let(:issuable) { merge_request }
+      end
+
+      describe 'assign_reviewer command' do
+        let(:content) { "/assign_reviewer @#{developer.username} do it!" }
+
+        it 'includes only the user reference' do
+          _, explanations = service.explain(content, merge_request)
+
+          expect(explanations).to eq(["Assigns @#{developer.username} as reviewer."])
+        end
+      end
+
+      describe 'unassign_reviewer command' do
+        let(:content) { '/unassign_reviewer' }
+        let(:merge_request) { create(:merge_request, reviewers: [developer]) }
+
+        it 'includes current reviewer reference' do
+          _, explanations = service.explain(content, merge_request)
+
+          expect(explanations).to eq(["Removes reviewer @#{developer.username}."])
+        end
+
+        it 'populates reviewer_ids: [] if content contains /unassign_reviewer' do
+          _, updates, _ = service.execute(content, merge_request)
+
+          expect(updates).to eq(reviewer_ids: [])
+        end
+
+        it 'returns the unassign reviewer message for all the reviewers if content contains /unassign_reviewer' do
+          merge_request.update!(reviewer_ids: [developer.id, developer2.id])
+          _, _, message = service.execute(content, merge_request)
+
+          expect(message).to eq("Removed reviewers #{developer.to_reference} and #{developer2.to_reference}.")
+        end
+      end
+    end
+
+    context 'when the merge_request_reviewers flag is disabled' do
+      before do
+        stub_feature_flags(merge_request_reviewers: false)
+      end
+
+      describe 'assign_reviewer command' do
+        it_behaves_like 'empty command' do
+          let(:content) { "/assign_reviewer @#{developer.username}" }
+          let(:issuable) { merge_request }
+        end
+      end
+
+      describe 'unassign_reviewer command' do
+        it_behaves_like 'empty command' do
+          let(:content) { "/unassign_reviewer @#{developer.username}" }
+          let(:issuable) { merge_request }
+        end
+      end
     end
 
     context 'unassign command' do

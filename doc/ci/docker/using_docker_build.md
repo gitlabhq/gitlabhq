@@ -404,7 +404,7 @@ To make Docker available in the context of the image:
    commands are siblings of the runner rather than children of the runner.**
    This may have complications and limitations that are unsuitable for your workflow.
 
-   Your `config.toml` file should not have an entry like this:
+   Your `config.toml` file should now have an entry like this:
 
    ```toml
    [[runners]]

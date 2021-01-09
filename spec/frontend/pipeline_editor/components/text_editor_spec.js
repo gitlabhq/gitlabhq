@@ -4,8 +4,7 @@ import {
   mockCiYml,
   mockCommitSha,
   mockProjectPath,
-  mockNamespace,
-  mockProjectName,
+  mockProjectNamespace,
 } from '../mock_data';
 
 import TextEditor from '~/pipeline_editor/components/text_editor.vue';
@@ -33,10 +32,13 @@ describe('~/pipeline_editor/components/text_editor.vue', () => {
 
   const createComponent = (opts = {}, mountFn = shallowMount) => {
     wrapper = mountFn(TextEditor, {
+      provide: {
+        projectPath: mockProjectPath,
+        projectNamespace: mockProjectNamespace,
+      },
       propsData: {
         ciConfigPath: mockCiConfigPath,
         commitSha: mockCommitSha,
-        projectPath: mockProjectPath,
       },
       attrs: {
         value: mockCiYml,
@@ -77,8 +79,8 @@ describe('~/pipeline_editor/components/text_editor.vue', () => {
     expect(mockUse).toHaveBeenCalledTimes(1);
     expect(mockRegisterCiSchema).toHaveBeenCalledTimes(1);
     expect(mockRegisterCiSchema).toHaveBeenCalledWith({
-      projectNamespace: mockNamespace,
-      projectPath: mockProjectName,
+      projectNamespace: mockProjectNamespace,
+      projectPath: mockProjectPath,
       ref: mockCommitSha,
     });
   });

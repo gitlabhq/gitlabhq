@@ -15,12 +15,17 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
   }
 
   const {
+    // props
     ciConfigPath,
     commitSha,
     defaultBranch,
     newMergeRequestPath,
+
+    // `provide/inject` data
     lintHelpPagePath,
+    projectFullPath,
     projectPath,
+    projectNamespace,
     ymlHelpPagePath,
   } = el?.dataset;
 
@@ -35,6 +40,9 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     apolloProvider,
     provide: {
       lintHelpPagePath,
+      projectFullPath,
+      projectPath,
+      projectNamespace,
       ymlHelpPagePath,
     },
     render(h) {
@@ -44,7 +52,6 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
           commitSha,
           defaultBranch,
           newMergeRequestPath,
-          projectPath,
         },
       });
     },

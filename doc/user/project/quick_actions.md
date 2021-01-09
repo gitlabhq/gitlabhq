@@ -31,6 +31,9 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/assign @user`                       | ✓     | ✓             |      | Assign one user.                                                                                                                 |
 | `/assign @user1 @user2`               | ✓     | ✓             |      | Assign multiple users. **(STARTER)**                                                                                             |
 | `/assign me`                          | ✓     | ✓             |      | Assign yourself.                                                                                                                 |
+| `/assign_reviewer @user`              |       | ✓             |      | Assign one user as a reviewer.                                                                                                                 |
+| `/assign_reviewer @user1 @user2`      |       | ✓             |      | Assign multiple users as reviewers. **(STARTER)**                                                                                             |
+| `/assign_reviewer me`                 |       | ✓             |      | Assign yourself as a reviewer.                                                                                                                 |
 | `/award :emoji:`                      | ✓     | ✓             | ✓    | Toggle emoji award.                                                                                                              |
 | `/child_epic <epic>`                  |       |               | ✓    | Add child epic to `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab/-/issues/7330)). **(ULTIMATE)** |
 | `/clear_weight`                       | ✓     |               |      | Clear weight. **(STARTER)**                                                                                                      |
@@ -79,7 +82,9 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/title <new title>`                  | ✓     | ✓             | ✓    | Change title.                                                                                                                  |
 | `/todo`                               | ✓     | ✓             | ✓    | Add a to-do item.                                                                                                                   |
 | `/unassign @user1 @user2`             | ✓     | ✓             |      | Remove specific assignees. **(STARTER)**                                                                                       |
-| `/unassign`                           | ✓     | ✓             |      | Remove all assignees.                                                                                                          |
+| `/unassign`                           |       | ✓             |      | Remove all assignees.                                                                                                          |
+| `/unassign_reviewer @user1 @user2`    |       | ✓             |      | Remove specific reviewers. **(STARTER)**                                                                                       |
+| `/unassign_reviewer`                  |       | ✓             |      | Remove all reviewers.                                                                                                          |
 | `/unlabel ~label1 ~label2` or `/remove_label ~label1 ~label2` | ✓     | ✓             | ✓    | Remove specified labels.                                                                         |
 | `/unlabel` or `/remove_label` | ✓     | ✓             | ✓    | Remove all labels.                                                                          |
 | `/unlock`                             | ✓     | ✓             |      | Unlock the discussions.                                                                                                              |

@@ -18,9 +18,7 @@ module BulkImports
           configuration: configuration
         )
 
-        BulkImports::Groups::Pipelines::GroupPipeline.new.run(context)
-        'BulkImports::EE::Groups::Pipelines::EpicsPipeline'.constantize.new.run(context) if Gitlab.ee?
-        BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline.new.run(context)
+        pipelines.each { |pipeline| pipeline.new.run(context) }
 
         entity.finish!
       end
@@ -28,6 +26,15 @@ module BulkImports
       private
 
       attr_reader :entity
+
+      def pipelines
+        [
+          BulkImports::Groups::Pipelines::GroupPipeline,
+          BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline
+        ]
+      end
     end
   end
 end
+
+BulkImports::Importers::GroupImporter.prepend_if_ee('EE::BulkImports::Importers::GroupImporter')

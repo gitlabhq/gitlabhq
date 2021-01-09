@@ -3889,6 +3889,12 @@ msgstr ""
 msgid "Assign milestone"
 msgstr ""
 
+msgid "Assign reviewer"
+msgstr ""
+
+msgid "Assign reviewer(s)"
+msgstr ""
+
 msgid "Assign some issues to this milestone."
 msgstr ""
 
@@ -3905,6 +3911,9 @@ msgid "Assign yourself to this issue"
 msgstr ""
 
 msgid "Assigned %{assignee_users_sentence}."
+msgstr ""
+
+msgid "Assigned %{reviewer_users_sentence} as %{reviewer_text}."
 msgstr ""
 
 msgid "Assigned Issues"
@@ -3952,6 +3961,9 @@ msgid "Assignees"
 msgstr ""
 
 msgid "Assigns %{assignee_users_sentence}."
+msgstr ""
+
+msgid "Assigns %{reviewer_users_sentence} as %{reviewer_text}."
 msgstr ""
 
 msgid "At least one approval from a code owner is required to change files matching the respective CODEOWNER rules."
@@ -11746,6 +11758,9 @@ msgid "Failed to add a Zoom meeting"
 msgstr ""
 
 msgid "Failed to apply commands."
+msgstr ""
+
+msgid "Failed to assign a reviewer because no user was found."
 msgstr ""
 
 msgid "Failed to assign a user because no user was found."
@@ -23359,6 +23374,9 @@ msgstr ""
 msgid "Remove all or specific label(s)"
 msgstr ""
 
+msgid "Remove all or specific reviewer(s)"
+msgstr ""
+
 msgid "Remove approver"
 msgstr ""
 
@@ -23437,6 +23455,9 @@ msgstr ""
 msgid "Remove report"
 msgstr ""
 
+msgid "Remove reviewer"
+msgstr ""
+
 msgid "Remove secondary node"
 msgstr ""
 
@@ -23471,6 +23492,9 @@ msgid "Removed %{label_references} %{label_text}."
 msgstr ""
 
 msgid "Removed %{milestone_reference} milestone."
+msgstr ""
+
+msgid "Removed %{reviewer_text} %{reviewer_references}."
 msgstr ""
 
 msgid "Removed %{type} with id %{id}"
@@ -23516,6 +23540,9 @@ msgid "Removes %{label_references} %{label_text}."
 msgstr ""
 
 msgid "Removes %{milestone_reference} milestone."
+msgstr ""
+
+msgid "Removes %{reviewer_text} %{reviewer_references}."
 msgstr ""
 
 msgid "Removes all labels."

@@ -70,6 +70,39 @@ build:
     - if: $CI_COMMIT_TAG
 ```
 
+### Building an image with kaniko behind a proxy
+
+If you use a custom GitLab Runner behind an http(s) proxy, kaniko needs to be set
+up accordingly. This means:
+
+- Adding the proxy to `/kaniko/.docker/config.json`
+- Passing the `http_proxy` environment variables as build args so the Dockerfile
+  instructions can use the proxy when building the image.
+
+The previous example can be extended as follows:
+
+```yaml
+build:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - mkdir -p /kaniko/.docker
+    - |-
+       KANIKOPROXYBUILDARGS=""
+       KANIKOCFG="{ \"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}"
+       if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
+         KANIKOCFG="${KANIKOCFG}, \"proxies\": { \"default\": { \"httpProxy\": \"${http_proxy}\", \"httpsProxy\": \"${https_proxy}\", \"noProxy\": \"${no_proxy}\"}}"
+         KANIKOPROXYBUILDARGS="--build-arg http_proxy=${http_proxy} --build-arg https_proxy=${https_proxy} --build-arg no_proxy=${no_proxy}"
+       fi
+       KANIKOCFG="${KANIKOCFG} }"
+       echo "${KANIKOCFG}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile $KANIKOPROXYBUILDARGS --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+  only:
+    - tags
+```
+
 ## Using a registry with a custom certificate
 
 When trying to push to a Docker registry that uses a certificate that is signed

@@ -18,14 +18,14 @@ RSpec.describe BulkImports::Importers::GroupImporter do
   subject { described_class.new(bulk_import_entity) }
 
   before do
-    allow(Gitlab).to receive(:ee?).and_return(false)
     allow(BulkImports::Pipeline::Context).to receive(:new).and_return(context)
   end
 
   describe '#execute' do
     it 'starts the entity and run its pipelines' do
-      expect(bulk_import_entity).to receive(:start).and_call_original
+      expect(bulk_import_entity).to receive(:start!).and_call_original
       expect_to_run_pipeline BulkImports::Groups::Pipelines::GroupPipeline, context: context
+      expect_to_run_pipeline('EE::BulkImports::Groups::Pipelines::EpicsPipeline'.constantize, context: context) if Gitlab.ee?
       expect_to_run_pipeline BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline, context: context
 
       subject.execute

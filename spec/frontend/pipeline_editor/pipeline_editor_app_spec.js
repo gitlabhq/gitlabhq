@@ -15,6 +15,8 @@ import {
   mockCommitMessage,
   mockDefaultBranch,
   mockProjectPath,
+  mockProjectFullPath,
+  mockProjectNamespace,
   mockNewMergeRequestPath,
 } from './mock_data';
 
@@ -39,6 +41,15 @@ const MockEditorLite = {
   template: '<div/>',
 };
 
+const mockProvide = {
+  projectFullPath: mockProjectFullPath,
+  projectPath: mockProjectPath,
+  projectNamespace: mockProjectNamespace,
+  glFeatures: {
+    ciConfigVisualizationTab: true,
+  },
+};
+
 describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
   let wrapper;
 
@@ -53,11 +64,7 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
     lintLoading = false,
     options = {},
     mountFn = shallowMount,
-    provide = {
-      glFeatures: {
-        ciConfigVisualizationTab: true,
-      },
-    },
+    provide = mockProvide,
   } = {}) => {
     mockMutate = jest.fn().mockResolvedValue({
       data: {
@@ -75,7 +82,6 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
         ciConfigPath: mockCiConfigPath,
         commitSha: mockCommitSha,
         defaultBranch: mockDefaultBranch,
-        projectPath: mockProjectPath,
         newMergeRequestPath: mockNewMergeRequestPath,
         ...props,
       },
@@ -211,7 +217,12 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
 
       describe('with feature flag off', () => {
         beforeEach(() => {
-          createComponent({ provide: { glFeatures: { ciConfigVisualizationTab: false } } });
+          createComponent({
+            provide: {
+              ...mockProvide,
+              glFeatures: { ciConfigVisualizationTab: false },
+            },
+          });
         });
 
         it('does not display the tab', () => {
@@ -242,7 +253,6 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
 
     it('configures text editor', () => {
       expect(findTextEditor().props('commitSha')).toBe(mockCommitSha);
-      expect(findTextEditor().props('projectPath')).toBe(mockProjectPath);
     });
 
     describe('commit form', () => {
@@ -251,7 +261,7 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
         filePath: mockCiConfigPath,
         lastCommitId: mockCommitSha,
         message: mockCommitMessage,
-        projectPath: mockProjectPath,
+        projectPath: mockProjectFullPath,
         startBranch: mockDefaultBranch,
       };
 
@@ -435,7 +445,7 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
 
       expect(mockCiConfigData).toHaveBeenCalledWith({
         content: mockCiYml,
-        projectPath: mockProjectPath,
+        projectPath: mockProjectFullPath,
       });
     });
 

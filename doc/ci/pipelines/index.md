@@ -133,8 +133,8 @@ You might do this if the results of a pipeline (for example, a code build) are r
 operation of the pipeline.
 
 [In GitLab 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30101),
-the variables fields are pre-filled with any global variables defined in the
-`.gitlab-ci.yml` file.
+all global variables with descriptions defined in the `.gitlab-ci.yml` file are
+displayed in the variable fields. 
 
 To execute a pipeline manually:
 

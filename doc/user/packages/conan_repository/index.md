@@ -283,6 +283,9 @@ Additional Conan images to use as the basis of your CI file are available in the
 Install a Conan package from the Package Registry so you can use it as a
 dependency.
 
+WARNING:
+Project-level packages [cannot be downloaded currently](https://gitlab.com/gitlab-org/gitlab/-/issues/270129).
+
 Conan packages are often installed as dependencies by using the `conanfile.txt`
 file.
 
@@ -384,3 +387,16 @@ The GitLab Conan repository supports the following Conan CLI commands:
   packages you have permission to view.
 - `conan info`: View the information on a given package from the Package Registry.
 - `conan remove`: Delete the package from the Package Registry.
+
+## Troubleshooting Conan packages
+
+### `ERROR: <package> was not found in remote <remote>`
+
+When you attempt to install a Conan package, you might receive a `404` error
+like `ERROR: <package> was not found in remote <remote>`.
+
+This issue occurs when you request a download from the project-level Conan API.
+The resulting URL is missing is project's `/<id>` and Conan commands, like 
+`conan install`, fail.
+
+For more information, see [issue 270129](https://gitlab.com/gitlab-org/gitlab/-/issues/270129).

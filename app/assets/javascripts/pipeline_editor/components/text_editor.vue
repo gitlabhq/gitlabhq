@@ -7,6 +7,7 @@ export default {
     EditorLite,
   },
   inheritAttrs: false,
+  inject: ['projectPath', 'projectNamespace'],
   props: {
     ciConfigPath: {
       type: String,
@@ -17,20 +18,15 @@ export default {
       required: false,
       default: null,
     },
-    projectPath: {
-      type: String,
-      required: true,
-    },
   },
   methods: {
     onEditorReady() {
       const editorInstance = this.$refs.editor.getEditor();
-      const [projectNamespace, projectPath] = this.projectPath.split('/');
 
       editorInstance.use(new CiSchemaExtension());
       editorInstance.registerCiSchema({
-        projectPath,
-        projectNamespace,
+        projectPath: this.projectPath,
+        projectNamespace: this.projectNamespace,
         ref: this.commitSha,
       });
     },

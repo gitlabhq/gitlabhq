@@ -13,7 +13,7 @@ ignorecase: true
 swap:
   active user: '"billable user"'
   active users: '"billable users"'
-  docs: documentation
+  docs: '"documentation"'
   once that: '"after that"'
   once the: '"after the"'
   once you: '"after you"'
