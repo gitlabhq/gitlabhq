@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Types::Ci::JobType do
   specify { expect(described_class.graphql_name).to eq('CiJob') }
+  specify { expect(described_class).to require_graphql_authorizations(:read_commit_status) }
 
   it 'exposes the expected fields' do
     expected_fields = %i[

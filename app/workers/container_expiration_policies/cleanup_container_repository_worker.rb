@@ -12,6 +12,14 @@ module ContainerExpirationPolicies
     worker_resource_boundary :unknown
     idempotent!
 
+    LOG_ON_DONE_FIELDS = %i[
+      cleanup_status
+      cleanup_tags_service_original_size
+      cleanup_tags_service_before_truncate_size
+      cleanup_tags_service_after_truncate_size
+      cleanup_tags_service_before_delete_size
+    ].freeze
+
     def perform_work
       return unless throttling_enabled?
       return unless container_repository
@@ -26,7 +34,7 @@ module ContainerExpirationPolicies
 
       result = ContainerExpirationPolicies::CleanupService.new(container_repository)
                                                           .execute
-      log_extra_metadata_on_done(:cleanup_status, result.payload[:cleanup_status])
+      log_on_done(result)
     end
 
     def remaining_work_count
@@ -91,6 +99,16 @@ module ContainerExpirationPolicies
 
     def log_info(extra_structure)
       logger.info(structured_payload(extra_structure))
+    end
+
+    def log_on_done(result)
+      LOG_ON_DONE_FIELDS.each do |field|
+        value = result.payload[field]
+
+        next if value.nil?
+
+        log_extra_metadata_on_done(field, value)
+      end
     end
   end
 end

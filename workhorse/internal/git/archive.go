@@ -24,6 +24,7 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/gitaly"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab-workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/senddata"
 )
 
@@ -116,14 +117,14 @@ func (a *archive) Inject(w http.ResponseWriter, r *http.Request, sendData string
 	setArchiveHeaders(w, format, archiveFilename)
 	w.WriteHeader(200) // Don't bother with HTTP 500 from this point on, just return
 	if _, err := io.Copy(w, reader); err != nil {
-		helper.LogError(r, &copyError{fmt.Errorf("SendArchive: copy 'git archive' output: %v", err)})
+		log.WithRequest(r).WithError(&copyError{fmt.Errorf("SendArchive: copy 'git archive' output: %v", err)}).Error()
 		return
 	}
 
 	if cacheEnabled {
 		err := finalizeCachedArchive(tempFile, params.ArchivePath)
 		if err != nil {
-			helper.LogError(r, fmt.Errorf("SendArchive: finalize cached archive: %v", err))
+			log.WithRequest(r).WithError(fmt.Errorf("SendArchive: finalize cached archive: %v", err)).Error()
 			return
 		}
 	}

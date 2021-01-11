@@ -1,0 +1,5 @@
+---
+title: Remove border radius for sidekiq iframe card
+merge_request: 50955
+author: Yogi (@yo)
+type: fixed

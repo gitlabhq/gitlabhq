@@ -7,21 +7,26 @@
       data-toggle="dropdown"
     >
       <span class="dropdown-toggle-text ">some label</span
-      ><i aria-hidden="true" data-hidden="true" class="fa fa-chevron-down"></i>
+      >
+      <svg data-testid="chevron-down-icon" class="gl-icon s16">
+        <use
+          href="/assets/icons-795a2ef2fd636a0538bbef3b8d2787dd90927b42d7617fdda8620930016b333d.svg#chevron-down"
+        ></use>
+      </svg>
     </button>
     <div class="dropdown-menu dropdown-select dropdown-menu-selectable">
       <div class="dropdown-input">
-        <input type="search" id="" class="dropdown-input-field" autocomplete="off" /><i
-          aria-hidden="true"
-          data-hidden="true"
-          class="fa fa-search dropdown-input-search"
-        ></i
-        ><i
-          aria-hidden="true"
-          data-hidden="true"
-          role="button"
-          class="fa fa-times dropdown-input-clear js-dropdown-input-clear"
-        ></i>
+        <input type="search" id="" class="dropdown-input-field" autocomplete="off" />
+        <svg data-testid="search-icon" class="gl-icon s16 dropdown-input-search">
+          <use
+            href="/assets/icons-795a2ef2fd636a0538bbef3b8d2787dd90927b42d7617fdda8620930016b333d.svg#search"
+          ></use>
+        </svg>        
+        <svg data-testid="close-icon" class="gl-icon s16 dropdown-input-clear js-dropdown-input-clear">
+          <use
+            href="/assets/icons-795a2ef2fd636a0538bbef3b8d2787dd90927b42d7617fdda8620930016b333d.svg#close"
+          ></use>
+        </svg>
       </div>
       <div class="dropdown-content js-dropdown-content"></div>
       <div class="dropdown-footer">

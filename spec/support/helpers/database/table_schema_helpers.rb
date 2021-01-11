@@ -17,12 +17,34 @@ module Database
       expect(table_oid(replacement_table)).to be_nil
     end
 
+    def expect_table_columns_to_match(expected_column_attributes, table_name)
+      expect(connection.table_exists?(table_name)).to eq(true)
+
+      actual_columns = connection.columns(table_name)
+      expect(actual_columns.size).to eq(column_attributes.size)
+
+      column_attributes.each_with_index do |attributes, i|
+        actual_column = actual_columns[i]
+
+        attributes.each do |name, value|
+          actual_value = actual_column.public_send(name)
+          message = "expected #{actual_column.name}.#{name} to be #{value}, but got #{actual_value}"
+
+          expect(actual_value).to eq(value), message
+        end
+      end
+    end
+
     def expect_index_to_exist(name, schema: nil)
       expect(index_exists_by_name(name, schema: schema)).to eq(true)
     end
 
     def expect_index_not_to_exist(name, schema: nil)
       expect(index_exists_by_name(name, schema: schema)).to be_nil
+    end
+
+    def expect_check_constraint(table_name, name, definition, schema: nil)
+      expect(check_constraint_definition(table_name, name, schema: schema)).to eq("CHECK ((#{definition}))")
     end
 
     def expect_primary_keys_after_tables(tables, schema: nil)
@@ -108,6 +130,19 @@ module Database
           ON c.relnamespace = n.oid
         WHERE c.relname = '#{index}'
           AND n.nspname = #{schema}
+      SQL
+    end
+
+    def check_constraint_definition(table_name, constraint_name, schema: nil)
+      table_name = schema ? "#{schema}.#{table_name}" : table_name
+
+      connection.select_value(<<~SQL)
+        SELECT
+          pg_get_constraintdef(oid) AS constraint_definition
+        FROM pg_catalog.pg_constraint
+        WHERE pg_constraint.conrelid = '#{table_name}'::regclass
+          AND pg_constraint.contype = 'c'
+          AND pg_constraint.conname = '#{constraint_name}'
       SQL
     end
   end

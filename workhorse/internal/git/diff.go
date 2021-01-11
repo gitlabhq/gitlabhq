@@ -8,6 +8,7 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/gitaly"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab-workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/senddata"
 )
 
@@ -39,10 +40,7 @@ func (d *diff) Inject(w http.ResponseWriter, r *http.Request, sendData string) {
 	}
 
 	if err := diffClient.SendRawDiff(ctx, w, request); err != nil {
-		helper.LogError(
-			r,
-			&copyError{fmt.Errorf("diff.RawDiff: request=%v, err=%v", request, err)},
-		)
+		log.WithRequest(r).WithError(&copyError{fmt.Errorf("diff.RawDiff: %v", err)}).Error()
 		return
 	}
 }

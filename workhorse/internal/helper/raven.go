@@ -17,7 +17,7 @@ var ravenHeaderBlacklist = []string{
 	"Private-Token",
 }
 
-func captureRavenError(r *http.Request, err error, fields log.Fields) {
+func CaptureRavenError(r *http.Request, err error, fields log.Fields) {
 	client := raven.DefaultClient
 	extra := raven.Extra{}
 

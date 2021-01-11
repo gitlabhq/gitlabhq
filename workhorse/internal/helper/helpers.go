@@ -20,13 +20,9 @@ import (
 
 const NginxResponseBufferHeader = "X-Accel-Buffering"
 
-func LogError(r *http.Request, err error) {
-	LogErrorWithFields(r, err, nil)
-}
-
-func LogErrorWithFields(r *http.Request, err error, fields log.Fields) {
+func logErrorWithFields(r *http.Request, err error, fields log.Fields) {
 	if err != nil {
-		captureRavenError(r, err, fields)
+		CaptureRavenError(r, err, fields)
 	}
 
 	printError(r, err, fields)
@@ -34,12 +30,7 @@ func LogErrorWithFields(r *http.Request, err error, fields log.Fields) {
 
 func CaptureAndFail(w http.ResponseWriter, r *http.Request, err error, msg string, code int) {
 	http.Error(w, msg, code)
-	LogError(r, err)
-}
-
-func CaptureAndFailWithFields(w http.ResponseWriter, r *http.Request, err error, msg string, code int, fields log.Fields) {
-	http.Error(w, msg, code)
-	LogErrorWithFields(r, err, fields)
+	logErrorWithFields(r, err, nil)
 }
 
 func Fail500(w http.ResponseWriter, r *http.Request, err error) {
@@ -47,7 +38,8 @@ func Fail500(w http.ResponseWriter, r *http.Request, err error) {
 }
 
 func Fail500WithFields(w http.ResponseWriter, r *http.Request, err error, fields log.Fields) {
-	CaptureAndFailWithFields(w, r, err, "Internal server error", http.StatusInternalServerError, fields)
+	http.Error(w, "Internal server error", http.StatusInternalServerError)
+	logErrorWithFields(r, err, fields)
 }
 
 func RequestEntityTooLarge(w http.ResponseWriter, r *http.Request, err error) {
@@ -60,7 +52,7 @@ func printError(r *http.Request, err error, fields log.Fields) {
 			"method": r.Method,
 			"uri":    mask.URL(r.RequestURI),
 		})
-		entry.WithFields(fields).WithError(err).Error("error")
+		entry.WithFields(fields).WithError(err).Error()
 	} else {
 		log.WithFields(fields).WithError(err).Error("unknown error")
 	}

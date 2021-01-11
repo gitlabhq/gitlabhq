@@ -89,7 +89,7 @@ describe('LineHighlighter', () => {
   describe('clickHandler', () => {
     it('handles clicking on a child icon element', () => {
       const spy = jest.spyOn(testContext.class, 'setHash');
-      $('#L13 i').mousedown().click();
+      $('#L13 [data-testid="link-icon"]').mousedown().click();
 
       expect(spy).toHaveBeenCalledWith(13);
       expect($('#LC13')).toHaveClass(testContext.css);

@@ -9,6 +9,7 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/gitaly"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab-workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/senddata"
 )
 
@@ -59,6 +60,6 @@ func (s *snapshot) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 	w.WriteHeader(http.StatusOK) // Errors aren't detectable beyond this point
 
 	if _, err := io.Copy(w, reader); err != nil {
-		helper.LogError(r, fmt.Errorf("SendSnapshot: copy gitaly output: %v", err))
+		log.WithRequest(r).WithError(fmt.Errorf("SendSnapshot: copy gitaly output: %v", err)).Error()
 	}
 }

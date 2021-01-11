@@ -65,7 +65,7 @@
               data: { data: todo_actions_options, default_label: 'Action' } })
         .filter-item.sort-filter
           .dropdown
-            %button.dropdown-menu-toggle.dropdown-menu-toggle-sort{ type: 'button', 'data-toggle' => 'dropdown' }
+            %button.dropdown-menu-toggle.dropdown-menu-toggle-sort{ type: 'button', class: 'gl-xs-w-full!', 'data-toggle' => 'dropdown' }
               %span.light
               - if @sort.present?
                 = sort_options_hash[@sort]

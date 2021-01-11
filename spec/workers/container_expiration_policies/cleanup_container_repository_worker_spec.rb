@@ -19,22 +19,33 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
 
     RSpec.shared_examples 'handling all repository conditions' do
       it 'sends the repository for cleaning' do
+        service_response = cleanup_service_response(repository: repository)
         expect(ContainerExpirationPolicies::CleanupService)
-          .to receive(:new).with(repository).and_return(double(execute: cleanup_service_response(repository: repository)))
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:cleanup_status, :finished)
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:container_repository_id, repository.id)
+          .to receive(:new).with(repository).and_return(double(execute: service_response))
+        expect_log_extra_metadata(service_response: service_response)
 
         subject
       end
 
       context 'with unfinished cleanup' do
         it 'logs an unfinished cleanup' do
+          service_response = cleanup_service_response(status: :unfinished, repository: repository)
           expect(ContainerExpirationPolicies::CleanupService)
-            .to receive(:new).with(repository).and_return(double(execute: cleanup_service_response(status: :unfinished, repository: repository)))
-          expect(worker).to receive(:log_extra_metadata_on_done).with(:cleanup_status, :unfinished)
-          expect(worker).to receive(:log_extra_metadata_on_done).with(:container_repository_id, repository.id)
+            .to receive(:new).with(repository).and_return(double(execute: service_response))
+          expect_log_extra_metadata(service_response: service_response, cleanup_status: :unfinished)
 
           subject
+        end
+
+        context 'with a truncated list of tags to delete' do
+          it 'logs an unfinished cleanup' do
+            service_response = cleanup_service_response(status: :unfinished, repository: repository, cleanup_tags_service_after_truncate_size: 10, cleanup_tags_service_before_delete_size: 5)
+            expect(ContainerExpirationPolicies::CleanupService)
+              .to receive(:new).with(repository).and_return(double(execute: service_response))
+            expect_log_extra_metadata(service_response: service_response, cleanup_status: :unfinished)
+
+            subject
+          end
         end
       end
 
@@ -87,10 +98,10 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
       let_it_be(:another_repository) { create(:container_repository, :cleanup_unfinished) }
 
       it 'process the cleanup scheduled repository first' do
+        service_response = cleanup_service_response(repository: repository)
         expect(ContainerExpirationPolicies::CleanupService)
-          .to receive(:new).with(repository).and_return(double(execute: cleanup_service_response(repository: repository)))
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:cleanup_status, :finished)
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:container_repository_id, repository.id)
+          .to receive(:new).with(repository).and_return(double(execute: service_response))
+        expect_log_extra_metadata(service_response: service_response)
 
         subject
       end
@@ -105,10 +116,10 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
       end
 
       it 'process the repository with the oldest expiration_policy_started_at' do
+        service_response = cleanup_service_response(repository: repository)
         expect(ContainerExpirationPolicies::CleanupService)
-          .to receive(:new).with(repository).and_return(double(execute: cleanup_service_response(repository: repository)))
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:cleanup_status, :finished)
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:container_repository_id, repository.id)
+          .to receive(:new).with(repository).and_return(double(execute: service_response))
+        expect_log_extra_metadata(service_response: service_response)
 
         subject
       end
@@ -164,8 +175,27 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
       end
     end
 
-    def cleanup_service_response(status: :finished, repository:)
-      ServiceResponse.success(message: "cleanup #{status}", payload: { cleanup_status: status, container_repository_id: repository.id })
+    def cleanup_service_response(status: :finished, repository:, cleanup_tags_service_original_size: 100, cleanup_tags_service_before_truncate_size: 80, cleanup_tags_service_after_truncate_size: 80, cleanup_tags_service_before_delete_size: 50)
+      ServiceResponse.success(
+        message: "cleanup #{status}",
+        payload: {
+          cleanup_status: status,
+          container_repository_id: repository.id,
+          cleanup_tags_service_original_size: cleanup_tags_service_original_size,
+          cleanup_tags_service_before_truncate_size: cleanup_tags_service_before_truncate_size,
+          cleanup_tags_service_after_truncate_size: cleanup_tags_service_after_truncate_size,
+          cleanup_tags_service_before_delete_size: cleanup_tags_service_before_delete_size
+        }.compact
+      )
+    end
+
+    def expect_log_extra_metadata(service_response:, cleanup_status: :finished)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:cleanup_status, cleanup_status)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:container_repository_id, repository.id)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:cleanup_tags_service_original_size, service_response.payload[:cleanup_tags_service_original_size])
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:cleanup_tags_service_before_truncate_size, service_response.payload[:cleanup_tags_service_before_truncate_size])
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:cleanup_tags_service_after_truncate_size, service_response.payload[:cleanup_tags_service_after_truncate_size])
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:cleanup_tags_service_before_delete_size, service_response.payload[:cleanup_tags_service_before_delete_size])
     end
   end
 

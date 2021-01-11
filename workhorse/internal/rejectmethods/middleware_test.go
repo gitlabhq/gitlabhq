@@ -16,7 +16,7 @@ func TestNewMiddleware(t *testing.T) {
 
 	middleware := NewMiddleware(handler)
 
-	acceptedMethods := []string{"GET", "HEAD", "POST", "PUT", "PATCH", "CONNECT", "OPTIONS", "TRACE"}
+	acceptedMethods := []string{"GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "CONNECT", "OPTIONS", "TRACE"}
 	for _, method := range acceptedMethods {
 		t.Run(method, func(t *testing.T) {
 			tmpRequest, _ := http.NewRequest(method, "/", nil)

@@ -1,0 +1,5 @@
+---
+title: Make todo filter sort input full width on mobile
+merge_request: 51171
+author: Kev @KevSlashNull
+type: fixed

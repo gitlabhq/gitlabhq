@@ -1,0 +1,5 @@
+---
+title: Fix long deploy token name overflows revocation modal
+merge_request: 51114
+author: Kev @KevSlashNull
+type: fixed

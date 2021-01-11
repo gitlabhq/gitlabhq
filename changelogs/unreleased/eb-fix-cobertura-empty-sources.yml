@@ -1,0 +1,5 @@
+---
+title: Fix cobertura parser when there is an empty sources node
+merge_request: 50971
+author:
+type: fixed

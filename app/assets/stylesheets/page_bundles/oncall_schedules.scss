@@ -29,6 +29,18 @@
   }
 }
 
+.rotations-modal {
+  .gl-card {
+    min-width: 75%;
+    width: fit-content;
+    @include gl-bg-gray-10;
+  }
+
+  &.gl-modal .modal-md {
+    max-width: 640px;
+  }
+}
+
 //// Copied from roadmaps.scss - adapted for on-call schedules
 $header-item-height: 72px;
 $item-height: 40px;

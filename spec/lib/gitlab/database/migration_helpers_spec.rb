@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::MigrationHelpers do
+  include Database::TableSchemaHelpers
+
   let(:model) do
     ActiveRecord::Migration.new.extend(described_class)
   end
@@ -92,6 +94,131 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         expect do
           model.add_timestamps_with_timezone(:foo)
         end.not_to raise_error
+      end
+    end
+  end
+
+  describe '#create_table_with_constraints' do
+    let(:table_name) { :test_table }
+    let(:column_attributes) do
+      [
+        { name: 'id',         sql_type: 'bigint',                   null: false, default: nil    },
+        { name: 'created_at', sql_type: 'timestamp with time zone', null: false, default: nil    },
+        { name: 'updated_at', sql_type: 'timestamp with time zone', null: false, default: nil    },
+        { name: 'some_id',    sql_type: 'integer',                  null: false, default: nil    },
+        { name: 'active',     sql_type: 'boolean',                  null: false, default: 'true' },
+        { name: 'name',       sql_type: 'text',                     null: true,  default: nil    }
+      ]
+    end
+
+    before do
+      allow(model).to receive(:transaction_open?).and_return(true)
+    end
+
+    context 'when no check constraints are defined' do
+      it 'creates the table as expected' do
+        model.create_table_with_constraints table_name do |t|
+          t.timestamps_with_timezone
+          t.integer :some_id, null: false
+          t.boolean :active, null: false, default: true
+          t.text :name
+        end
+
+        expect_table_columns_to_match(column_attributes, table_name)
+      end
+    end
+
+    context 'when check constraints are defined' do
+      context 'when the text_limit is explicity named' do
+        it 'creates the table as expected' do
+          model.create_table_with_constraints table_name do |t|
+            t.timestamps_with_timezone
+            t.integer :some_id, null: false
+            t.boolean :active, null: false, default: true
+            t.text :name
+
+            t.text_limit :name, 255, name: 'check_name_length'
+            t.check_constraint :some_id_is_positive, 'some_id > 0'
+          end
+
+          expect_table_columns_to_match(column_attributes, table_name)
+
+          expect_check_constraint(table_name, 'check_name_length', 'char_length(name) <= 255')
+          expect_check_constraint(table_name, 'some_id_is_positive', 'some_id > 0')
+        end
+      end
+
+      context 'when the text_limit is not named' do
+        it 'creates the table as expected, naming the text limit' do
+          model.create_table_with_constraints table_name do |t|
+            t.timestamps_with_timezone
+            t.integer :some_id, null: false
+            t.boolean :active, null: false, default: true
+            t.text :name
+
+            t.text_limit :name, 255
+            t.check_constraint :some_id_is_positive, 'some_id > 0'
+          end
+
+          expect_table_columns_to_match(column_attributes, table_name)
+
+          expect_check_constraint(table_name, 'check_cda6f69506', 'char_length(name) <= 255')
+          expect_check_constraint(table_name, 'some_id_is_positive', 'some_id > 0')
+        end
+      end
+
+      it 'runs the change within a with_lock_retries' do
+        expect(model).to receive(:with_lock_retries).ordered.and_yield
+        expect(model).to receive(:create_table).ordered.and_call_original
+        expect(model).to receive(:execute).with(<<~SQL).ordered
+          ALTER TABLE "#{table_name}"\nADD CONSTRAINT "check_cda6f69506" CHECK (char_length("name") <= 255)
+        SQL
+
+        model.create_table_with_constraints table_name do |t|
+          t.text :name
+          t.text_limit :name, 255
+        end
+      end
+
+      context 'when constraints are given invalid names' do
+        let(:expected_max_length) { described_class::MAX_IDENTIFIER_NAME_LENGTH }
+        let(:expected_error_message) { "The maximum allowed constraint name is #{expected_max_length} characters" }
+
+        context 'when the explicit text limit name is not valid' do
+          it 'raises an error' do
+            too_long_length = expected_max_length + 1
+
+            expect do
+              model.create_table_with_constraints table_name do |t|
+                t.timestamps_with_timezone
+                t.integer :some_id, null: false
+                t.boolean :active, null: false, default: true
+                t.text :name
+
+                t.text_limit :name, 255, name: ('a' * too_long_length)
+                t.check_constraint :some_id_is_positive, 'some_id > 0'
+              end
+            end.to raise_error(expected_error_message)
+          end
+        end
+
+        context 'when a check constraint name is not valid' do
+          it 'raises an error' do
+            too_long_length = expected_max_length + 1
+
+            expect do
+              model.create_table_with_constraints table_name do |t|
+                t.timestamps_with_timezone
+                t.integer :some_id, null: false
+                t.boolean :active, null: false, default: true
+                t.text :name
+
+                t.text_limit :name, 255
+                t.check_constraint ('a' * too_long_length), 'some_id > 0'
+              end
+            end.to raise_error(expected_error_message)
+          end
+        end
       end
     end
   end
