@@ -148,7 +148,7 @@ class Commit
     to: :with_pipeline
 
   def with_pipeline
-    @with_pipeline ||= CommitWithPipeline.new(self)
+    @with_pipeline ||= Ci::CommitWithPipeline.new(self)
   end
 
   def id

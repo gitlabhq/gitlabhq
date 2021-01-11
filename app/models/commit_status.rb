@@ -80,9 +80,9 @@ class CommitStatus < ApplicationRecord
     merge(or_conditions)
   end
 
-  # We use `Enums::CommitStatus.failure_reasons` here so that EE can more easily
+  # We use `Enums::Ci::CommitStatus.failure_reasons` here so that EE can more easily
   # extend this `Hash` with new values.
-  enum_with_nil failure_reason: Enums::CommitStatus.failure_reasons
+  enum_with_nil failure_reason: Enums::Ci::CommitStatus.failure_reasons
 
   ##
   # We still create some CommitStatuses outside of CreatePipelineService.

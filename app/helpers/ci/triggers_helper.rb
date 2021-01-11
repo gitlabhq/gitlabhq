@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module TriggersHelper
+module Ci::TriggersHelper
   def builds_trigger_url(project_id, ref: nil)
     if ref.nil?
       "#{Settings.gitlab.url}/api/v4/projects/#{project_id}/trigger/pipeline"

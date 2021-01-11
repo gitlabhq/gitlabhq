@@ -63,6 +63,16 @@ RSpec.shared_examples 'rebase quick action' do
           expect(page).not_to have_content 'Scheduled a rebase'
         end
       end
+
+      context 'when there are conflicts in the merge request' do
+        let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, source_branch: 'conflict-missing-side', target_branch: 'conflict-start', merge_status: :cannot_be_merged) }
+
+        it 'does not rebase the MR' do
+          add_note("/rebase")
+
+          expect(page).to have_content 'This merge request cannot be rebased while there are conflicts.'
+        end
+      end
     end
 
     context 'when the current user cannot rebase the MR' do

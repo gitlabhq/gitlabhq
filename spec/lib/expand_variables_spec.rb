@@ -224,4 +224,41 @@ RSpec.describe ExpandVariables do
       end
     end
   end
+
+  describe '#possible_var_reference?' do
+    context 'table tests' do
+      using RSpec::Parameterized::TableSyntax
+
+      where do
+        {
+          "empty value": {
+            value: '',
+            result: false
+          },
+          "normal value": {
+            value: 'some value',
+            result: false
+          },
+          "simple expansions": {
+            value: 'key$variable',
+            result: true
+          },
+          "complex expansions": {
+            value: 'key${variable}${variable2}',
+            result: true
+          },
+          "complex expansions for Windows": {
+            value: 'key%variable%%variable2%',
+            result: true
+          }
+        }
+      end
+
+      with_them do
+        subject { ExpandVariables.possible_var_reference?(value) }
+
+        it { is_expected.to eq(result) }
+      end
+    end
+  end
 end

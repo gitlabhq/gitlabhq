@@ -112,7 +112,7 @@
 
 .use-kaniko:
   image:
-    name: gcr.io/kaniko-project/executor:debug-v0.20.0
+    name: gcr.io/kaniko-project/executor:debug-v1.3.0
     entrypoint: [""]
   before_script:
     - source scripts/utils.sh

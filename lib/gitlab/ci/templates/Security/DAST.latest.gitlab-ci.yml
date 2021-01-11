@@ -1,0 +1,45 @@
+# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/dast/
+
+# Configure the scanning tool through the environment variables.
+# List of the variables: https://docs.gitlab.com/ee/user/application_security/dast/#available-variables
+# How to set: https://docs.gitlab.com/ee/ci/yaml/#variables
+
+variables:
+  DAST_VERSION: 1
+  # Setting this variable will affect all Security templates
+  # (SAST, Dependency Scanning, ...)
+  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
+
+dast:
+  stage: dast
+  image:
+    name: "$SECURE_ANALYZERS_PREFIX/dast:$DAST_VERSION"
+  variables:
+    GIT_STRATEGY: none
+  allow_failure: true
+  script:
+    - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
+    - if [ -z "$DAST_WEBSITE$DAST_API_SPECIFICATION" ]; then echo "Either DAST_WEBSITE or DAST_API_SPECIFICATION must be set. See https://docs.gitlab.com/ee/user/application_security/dast/#configuration for more details." && exit 1; fi
+    - /analyze
+  artifacts:
+    reports:
+      dast: gl-dast-report.json
+  rules:
+    - if: $DAST_DISABLED
+      when: never
+    - if: $DAST_DISABLED_FOR_DEFAULT_BRANCH &&
+          $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+      when: never
+    - if: $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME &&
+          $REVIEW_DISABLED && $DAST_WEBSITE == null &&
+          $DAST_API_SPECIFICATION == null
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $CI_KUBERNETES_ACTIVE &&
+          $GITLAB_FEATURES =~ /\bdast\b/
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdast\b/ &&
+          $DAST_WEBSITE
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdast\b/ &&
+          $DAST_API_SPECIFICATION

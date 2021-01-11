@@ -259,7 +259,7 @@ RSpec.describe 'Dashboard Projects' do
     # 4. ProjectsHelper#load_pipeline_status
     # 5. RendersMemberAccess#preload_max_member_access_for_collection
     # 6. User#max_member_access_for_project_ids
-    # 7. CommitWithPipeline#last_pipeline
+    # 7. Ci::CommitWithPipeline#last_pipeline
 
     expect { visit dashboard_projects_path }.not_to exceed_query_limit(control_count + 7)
   end

@@ -2275,6 +2275,58 @@ job3:
     - deploy_to_staging
 ```
 
+#### `allow_failure:exit_codes`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/273157) in GitLab 13.8.
+> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-allow_failureexit_codes). **(CORE ONLY)**
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+Use `allow_failure:exit_codes` to dynamically control if a job should be allowed
+to fail. You can list which exit codes are not considered failures. The job fails
+for any other exit code:
+
+```yaml
+test_job_1:
+  script:
+    - echo "Run a script that results in exit code 1. This job fails."
+    - exit 1
+  allow_failure:
+    exit_codes: 137
+
+test_job_2:
+  script:
+    - echo "Run a script that results in exit code 137. This job is allowed to fail."
+    - exit 137
+  allow_failure:
+    exit_codes:
+      - 137
+      - 255
+```
+
+##### Enable or disable `allow_failure:exit_codes` **(CORE ONLY)**
+
+`allow_failure:exit_codes` is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:ci_allow_failure_with_exit_codes)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:ci_allow_failure_with_exit_codes)
+```
+
 ### `when`
 
 `when` is used to implement jobs that are run in case of failure or despite the

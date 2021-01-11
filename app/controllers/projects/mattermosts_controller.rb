@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::MattermostsController < Projects::ApplicationController
-  include TriggersHelper
+  include Ci::TriggersHelper
   include ActionView::Helpers::AssetUrlHelper
 
   layout 'project_settings'

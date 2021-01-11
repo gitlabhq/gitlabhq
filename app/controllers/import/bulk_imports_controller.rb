@@ -8,6 +8,8 @@ class Import::BulkImportsController < ApplicationController
 
   feature_category :importers
 
+  POLLING_INTERVAL = 3_000
+
   rescue_from BulkImports::Clients::Http::ConnectionError, with: :bulk_import_connection_error
 
   def configure
@@ -32,6 +34,12 @@ class Import::BulkImportsController < ApplicationController
     BulkImportService.new(current_user, create_params, credentials).execute
 
     render json: :ok
+  end
+
+  def realtime_changes
+    Gitlab::PollingInterval.set_header(response, interval: POLLING_INTERVAL)
+
+    render json: current_user_bulk_imports.to_json(only: [:id], methods: [:status_name])
   end
 
   private
@@ -151,5 +159,9 @@ class Import::BulkImportsController < ApplicationController
 
   def sanitized_filter_param
     @filter ||= sanitize(params[:filter])&.downcase
+  end
+
+  def current_user_bulk_imports
+    current_user.bulk_imports.gitlab
   end
 end

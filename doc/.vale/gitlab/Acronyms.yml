@@ -58,6 +58,7 @@ exceptions:
   - GPL
   - GUI
   - HAML
+  - HEAD
   - HIPAA
   - HTML
   - HTTP

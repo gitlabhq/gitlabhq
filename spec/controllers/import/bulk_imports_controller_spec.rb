@@ -149,6 +149,22 @@ RSpec.describe Import::BulkImportsController do
         end
       end
 
+      describe 'GET realtime_changes' do
+        let_it_be(:bulk_import) { create(:bulk_import, :created, user: user) }
+
+        it 'returns bulk imports created by current user' do
+          get :realtime_changes
+
+          expect(json_response).to eq([{ 'id' => bulk_import.id, 'status_name' => bulk_import.status_name.to_s }])
+        end
+
+        it 'sets a Poll-Interval header' do
+          get :realtime_changes
+
+          expect(response.headers['Poll-Interval']).to eq(Import::BulkImportsController::POLLING_INTERVAL.to_s)
+        end
+      end
+
       describe 'POST create' do
         let(:instance_url) { "http://fake-intance" }
         let(:pat) { "fake-pat" }

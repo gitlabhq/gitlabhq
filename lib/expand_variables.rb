@@ -16,6 +16,12 @@ module ExpandVariables
       end
     end
 
+    def possible_var_reference?(value)
+      return unless value
+
+      %w[$ %].any? { |symbol| value.include?(symbol) }
+    end
+
     private
 
     def replace_with(value, variables)

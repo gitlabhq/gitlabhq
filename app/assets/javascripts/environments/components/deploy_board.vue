@@ -18,7 +18,7 @@ import {
   GlTooltipDirective,
   GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
-import deployBoardSvg from 'empty_states/icons/_deploy_board.svg';
+import deployBoardSvg from '@gitlab/svgs/dist/illustrations/deploy-boards.svg';
 import instanceComponent from '~/vue_shared/components/deployment_instance.vue';
 import { n__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';

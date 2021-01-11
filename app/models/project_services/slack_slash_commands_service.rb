@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SlackSlashCommandsService < SlashCommandsService
-  include TriggersHelper
+  include Ci::TriggersHelper
 
   def title
     'Slack slash commands'

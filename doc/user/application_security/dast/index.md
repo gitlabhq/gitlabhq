@@ -86,6 +86,20 @@ variables:
   DAST_WEBSITE: https://example.com
 ```
 
+### Latest template
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254325) in GitLab 13.8
+
+To use the latest version of the DAST template, include
+`DAST.latest.gitlab-ci.yml` instead of `DAST.gitlab-ci.yml`.
+See the CI [docs](../../../development/cicd/templates.md#latest-version)
+on template versioning for more information.
+
+Please note that the latest version may include breaking changes. Check the
+[DAST troubleshooting guide](#troubleshooting) if you experience problems.
+
+### Template options
+
 There are two ways to define the URL to be scanned by DAST:
 
 1. Set the `DAST_WEBSITE` [variable](../../../ci/yaml/README.md#variables).
@@ -1039,6 +1053,25 @@ If your DAST job exceeds the job timeout and you need to reduce the scan duratio
 ### Getting warning message `gl-dast-report.json: no matching files`
 
 For information on this, see the [general Application Security troubleshooting section](../../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload).
+
+### Getting error `dast job: chosen stage does not exist` when including DAST CI template
+
+Newer versions of the DAST CI template do not define stages in order to avoid
+overwriting stages from other CI files. If you've recently started using
+`DAST.latest.gitlab-ci.yml` or upgraded to a new major release of GitLab and
+began receiving this error, you will need to define a `dast` stage with your
+other stages. Please note that you must have a running application for DAST to
+scan. If your application is set up in your pipeline, it must be deployed
+ in a stage _before_ the `dast` stage:
+
+```yaml
+stages:
+  - deploy  # DAST needs a running application to scan
+  - dast
+
+include:
+  - template: DAST.latest.gitlab-ci.yml
+```
 
 <!-- ## Troubleshooting
 

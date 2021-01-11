@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CommitWithPipeline do
+RSpec.describe Ci::CommitWithPipeline do
   let(:project) { create(:project, :public, :repository) }
   let(:commit)  { described_class.new(project.commit) }
 

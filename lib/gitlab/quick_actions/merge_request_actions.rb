@@ -57,6 +57,11 @@ module Gitlab
           access_check.can_push_to_branch?(merge_request.source_branch)
         end
         command :rebase do
+          if quick_action_target.cannot_be_merged?
+            @execution_message[:rebase] = _('This merge request cannot be rebased while there are conflicts.')
+            next
+          end
+
           if quick_action_target.rebase_in_progress?
             @execution_message[:rebase] = _('A rebase is already in progress.')
             next

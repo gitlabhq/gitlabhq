@@ -2,7 +2,7 @@
 - can_edit = can?(current_user, :admin_project, @project)
 
 .dropdown.btn-group
-  %button.btn.rounded-right.text-center{ class: ('has-tooltip' if type == :icon), title: (_('Import issues') if type == :icon),
+  %button.btn.gl-button.rounded-right.text-center{ class: ('has-tooltip' if type == :icon), title: (_('Import issues') if type == :icon),
     data: { toggle: 'dropdown', qa_selector: 'import_issues_button' }, 'aria-label' => _('Import issues'), 'aria-haspopup' => 'true', 'aria-expanded' => 'false' }
     - if type == :icon
       = sprite_icon('import')

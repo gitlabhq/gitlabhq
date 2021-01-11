@@ -1,0 +1,5 @@
+---
+title: Update puma & puma_worker_killer to upstream
+merge_request: 48897
+author:
+type: changed

@@ -17670,6 +17670,9 @@ msgstr ""
 msgid "Merged"
 msgstr ""
 
+msgid "Merged (%{linkStart}reverted%{linkEnd})"
+msgstr ""
+
 msgid "Merged (%{reverted})"
 msgstr ""
 
@@ -28833,6 +28836,9 @@ msgid "This may expose confidential information as the selected fork is in anoth
 msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
+msgstr ""
+
+msgid "This merge request cannot be rebased while there are conflicts."
 msgstr ""
 
 msgid "This merge request does not have accessibility reports"

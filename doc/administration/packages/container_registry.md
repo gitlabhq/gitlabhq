@@ -867,6 +867,26 @@ understand the implications.
 WARNING:
 This is a destructive operation.
 
+When you run `registry-garbage-collect` with the -m flag, garbage collection unlinks manifests that
+are part of a multi-arch manifest, unless they're tagged in the same repository.
+See [this issue](https://gitlab.com/gitlab-org/container-registry/-/issues/149) for details.
+
+To work around this issue, instead of:
+
+```plaintext
+myrepo/multiarchmanifest:latest
+myrepo/manifest/amd-64:latest
+myrepo/manifest/arm:latest
+```
+
+Use:
+
+```plaintext
+myrepo/multiarchmanifest:latest
+myrepo/manifest:amd-64-latest
+myrepo/manifest:arm-latest
+```
+
 The GitLab Container Registry follows the same default workflow as Docker Distribution:
 retain untagged manifests and all layers, even ones that are not referenced directly. All content
 can be accessed by using context addressable identifiers.

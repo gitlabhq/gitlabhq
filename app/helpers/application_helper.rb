@@ -4,8 +4,6 @@ require 'digest/md5'
 require 'uri'
 
 module ApplicationHelper
-  include StartupCssHelper
-
   # See https://docs.gitlab.com/ee/development/ee_features.html#code-in-appviews
   # rubocop: disable CodeReuse/ActiveRecord
   # We allow partial to be nil so that collection views can be passed in
@@ -250,11 +248,7 @@ module ApplicationHelper
   end
 
   def stylesheet_link_tag_defer(path)
-    if use_startup_css?
-      stylesheet_link_tag(path, media: "print", crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
-    else
-      stylesheet_link_tag(path, media: "all")
-    end
+    stylesheet_link_tag(path, media: "print", crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
   end
 
   def outdated_browser?

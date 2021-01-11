@@ -184,8 +184,8 @@ group :unicorn do
 end
 
 group :puma do
-  gem 'gitlab-puma', '~> 4.3.3.gitlab.2', require: false
-  gem 'gitlab-puma_worker_killer', '~> 0.1.1.gitlab.1', require: false
+  gem 'puma', '~> 5.1.1', require: false
+  gem 'puma_worker_killer', '~> 0.3.1', require: false
 end
 
 # State machine
@@ -410,7 +410,7 @@ group :test do
   gem 'rspec_profiling', '~> 0.0.6'
   gem 'rspec-parameterized', require: false
 
-  gem 'capybara', '~> 3.33.0'
+  gem 'capybara', '~> 3.34.0'
   gem 'capybara-screenshot', '~> 1.0.22'
   gem 'selenium-webdriver', '~> 3.142'
 
