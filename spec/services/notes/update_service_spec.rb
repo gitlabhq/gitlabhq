@@ -49,11 +49,12 @@ RSpec.describe Notes::UpdateService do
 
     it 'does not track usage data when params is blank' do
       expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_comment_edited_action)
+      expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter).not_to receive(:track_edit_comment_action)
 
       update_note({})
     end
 
-    it 'tracks usage data', :clean_gitlab_redis_shared_state do
+    it 'tracks issue usage data', :clean_gitlab_redis_shared_state do
       event = Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_EDITED
       counter = Gitlab::UsageDataCounters::HLLRedisCounter
 
@@ -61,6 +62,17 @@ RSpec.describe Notes::UpdateService do
       expect do
         update_note(note: 'new text')
       end.to change { counter.unique_events(event_names: event, start_date: 1.day.ago, end_date: 1.day.from_now) }.by(1)
+    end
+
+    context 'when the notable is a merge request' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+      let(:note) { create(:note, project: project, noteable: merge_request, author: user, note: "Old note #{user2.to_reference}") }
+
+      it 'tracks merge request usage data' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter).to receive(:track_edit_comment_action).with(user: user)
+
+        update_note(note: 'new text')
+      end
     end
 
     context 'with system note' do

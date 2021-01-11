@@ -78,23 +78,17 @@ RSpec.describe Notes::CreateService do
         end.to change { counter.unique_events(event_names: event, start_date: 1.day.ago, end_date: 1.day.from_now) }.by(1)
       end
 
+      it 'does not track merge request usage data' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter).not_to receive(:track_create_comment_action)
+
+        described_class.new(project, user, opts).execute
+      end
+
       context 'in a merge request' do
         let_it_be(:project_with_repo) { create(:project, :repository) }
         let_it_be(:merge_request) do
           create(:merge_request, source_project: project_with_repo,
                  target_project: project_with_repo)
-        end
-
-        context 'issue comment usage data' do
-          let(:opts) do
-            { note: 'Awesome comment', noteable_type: 'MergeRequest', noteable_id: merge_request.id }
-          end
-
-          it 'does not track' do
-            expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_comment_added_action)
-
-            described_class.new(project, user, opts).execute
-          end
         end
 
         context 'noteable highlight cache clearing' do
@@ -117,6 +111,18 @@ RSpec.describe Notes::CreateService do
           before do
             allow_any_instance_of(Gitlab::Diff::Position)
               .to receive(:unfolded_diff?) { true }
+          end
+
+          it 'does not track issue comment usage data' do
+            expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_comment_added_action)
+
+            described_class.new(project_with_repo, user, new_opts).execute
+          end
+
+          it 'tracks merge request usage data' do
+            expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter).to receive(:track_create_comment_action).with(user: user)
+
+            described_class.new(project_with_repo, user, new_opts).execute
           end
 
           it 'clears noteable diff cache when it was unfolded for the note position' do

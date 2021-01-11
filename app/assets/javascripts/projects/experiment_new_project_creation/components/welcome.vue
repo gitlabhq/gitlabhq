@@ -37,7 +37,7 @@ export default {
         class="blank-state blank-state-link experiment-new-project-page-blank-state"
         @click="track('click_tab', { label: panel.name })"
       >
-        <div class="blank-state-icon" v-html="panel.illustration"></div>
+        <div class="blank-state-icon gl-text-white" v-html="panel.illustration"></div>
         <div class="blank-state-body gl-pl-4!">
           <h3 class="blank-state-title experiment-new-project-page-blank-state-title">
             {{ panel.title }}

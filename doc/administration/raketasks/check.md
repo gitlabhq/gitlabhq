@@ -51,6 +51,62 @@ sudo gitlab-rake gitlab:git:fsck
 sudo -u git -H bundle exec rake gitlab:git:fsck RAILS_ENV=production
 ```
 
+## Checksum of repository refs
+
+One Git repository can be compared to another by checksumming all refs of each
+repository. If both repositories have the same refs, and if both repositories
+pass an integrity check, then we can be confident that both repositories are the
+same.
+
+For example, this can be used to compare a backup of a repository against the
+source repository.
+
+### Check all GitLab repositories
+
+This task loops through all repositories on the GitLab server and outputs
+checksums in the format `<PROJECT ID>,<CHECKSUM>`.
+
+- If a repository doesn't exist, the project ID will have a blank checksum.
+- If a repository exists but is empty, the output checksum is `0000000000000000000000000000000000000000`.
+- Projects which don't exist are skipped.
+
+**Omnibus Installation**
+
+```shell
+sudo gitlab-rake gitlab:git:checksum_projects
+```
+
+**Source Installation**
+
+```shell
+sudo -u git -H bundle exec rake gitlab:git:checksum_projects RAILS_ENV=production
+```
+
+For example, if:
+
+- Project with ID#2 doesn't exist, it will be skipped.
+- Project with ID#4 doesn't have a repository, its checksum will be blank.
+- Project with ID#5 has an empty repository, its checksum will be `0000000000000000000000000000000000000000`.
+
+The output would then look something like:
+
+```plaintext
+1,cfa3f06ba235c13df0bb28e079bcea62c5848af2
+3,3f3fb58a8106230e3a6c6b48adc2712fb3b6ef87
+4,
+5,0000000000000000000000000000000000000000
+6,6c6b48adc2712fb3b6ef87cfa3f06ba235c13df0
+```
+
+### Check specific GitLab repositories
+
+Optionally, specific project IDs can be checksummed by setting an environment
+variable `CHECKSUM_PROJECT_IDS` with a list of comma-separated integers, for example:
+
+```shell
+CHECKSUM_PROJECT_IDS="1,3" sudo gitlab-rake gitlab:git:checksum_projects
+```
+
 ## Uploaded files integrity
 
 Various types of files can be uploaded to a GitLab installation by users.

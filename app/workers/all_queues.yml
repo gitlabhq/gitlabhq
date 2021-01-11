@@ -889,7 +889,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: jira_connect:jira_connect_sync_builds
   :feature_category: :integrations
@@ -913,7 +913,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: jira_connect:jira_connect_sync_project
   :feature_category: :integrations

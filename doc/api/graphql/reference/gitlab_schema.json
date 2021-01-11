@@ -3981,6 +3981,16 @@
                   "defaultValue": "true"
                 },
                 {
+                  "name": "confidential",
+                  "description": "Filter epics by given confidentiality",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -22398,6 +22408,16 @@
                   "defaultValue": "true"
                 },
                 {
+                  "name": "confidential",
+                  "description": "Filter epics by given confidentiality",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -27604,6 +27624,16 @@
                     "ofType": null
                   },
                   "defaultValue": "true"
+                },
+                {
+                  "name": "confidential",
+                  "description": "Filter epics by given confidentiality",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
                 }
               ],
               "type": {
@@ -27843,6 +27873,16 @@
                     "ofType": null
                   },
                   "defaultValue": "true"
+                },
+                {
+                  "name": "confidential",
+                  "description": "Filter epics by given confidentiality",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
                 },
                 {
                   "name": "after",

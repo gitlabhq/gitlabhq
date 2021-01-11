@@ -4,6 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import { dasherize } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import { reportToSentry } from './utils';
 
 /**
  * Renders either a cancel, retry or play icon button and handles the post request
@@ -70,9 +71,11 @@ export default {
 
           this.$emit('pipelineActionRequestComplete');
         })
-        .catch(() => {
+        .catch((err) => {
           this.isDisabled = false;
           this.isLoading = false;
+
+          reportToSentry('action_component', err);
 
           createFlash(__('An error occurred while making the request.'));
         });

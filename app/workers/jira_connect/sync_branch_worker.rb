@@ -8,8 +8,9 @@ module JiraConnect
     feature_category :integrations
     loggable_arguments 1, 2
     worker_has_external_dependencies!
+    idempotent!
 
-    def perform(project_id, branch_name, commit_shas, update_sequence_id = nil)
+    def perform(project_id, branch_name, commit_shas, update_sequence_id)
       project = Project.find_by_id(project_id)
 
       return unless project

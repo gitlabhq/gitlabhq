@@ -15,6 +15,7 @@ module Notes
       end
 
       track_note_edit_usage_for_issues(note) if note.for_issue?
+      track_note_edit_usage_for_merge_requests(note) if note.for_merge_request?
 
       only_commands = false
 
@@ -94,6 +95,10 @@ module Notes
 
     def track_note_edit_usage_for_issues(note)
       Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_comment_edited_action(author: note.author)
+    end
+
+    def track_note_edit_usage_for_merge_requests(note)
+      Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter.track_edit_comment_action(user: note.author)
     end
   end
 end

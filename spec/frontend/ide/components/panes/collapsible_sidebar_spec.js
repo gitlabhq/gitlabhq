@@ -47,7 +47,7 @@ describe('ide/components/panes/collapsible_sidebar.vue', () => {
 
     beforeEach(() => {
       const FakeComponent = localVue.component(fakeComponentName, {
-        render: () => {},
+        render: () => null,
       });
 
       fakeView = {

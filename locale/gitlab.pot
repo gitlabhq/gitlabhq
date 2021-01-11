@@ -11703,6 +11703,9 @@ msgstr ""
 msgid "Export variable to pipelines running on protected branches and tags only."
 msgstr ""
 
+msgid "Exported requirements"
+msgstr ""
+
 msgid "External Classification Policy Authorization"
 msgstr ""
 
@@ -28565,13 +28568,16 @@ msgstr ""
 msgid "This application will be able to:"
 msgstr ""
 
-msgid "This attachment has been truncated to avoid exceeding the maximum allowed attachment size of 15MB. %{written_count} of %{count} issues have been included. Consider re-exporting with a narrower selection of issues."
+msgid "This attachment has been truncated to avoid exceeding the maximum allowed attachment size of %{size_limit}. %{written_count} of %{count} %{issuables} have been included. Consider re-exporting with a narrower selection of %{issuables}."
 msgstr ""
 
-msgid "This attachment has been truncated to avoid exceeding the maximum allowed attachment size of 15MB. %{written_count} of %{issues_count} issues have been included. Consider re-exporting with a narrower selection of issues."
+msgid "This attachment has been truncated to avoid exceeding the maximum allowed attachment size of %{size_limit}. %{written_count} of %{issues_count} issues have been included. Consider re-exporting with a narrower selection of issues."
 msgstr ""
 
-msgid "This attachment has been truncated to avoid exceeding the maximum allowed attachment size of 15MB. %{written_count} of %{merge_requests_count} issues have been included. Consider re-exporting with a narrower selection of issues."
+msgid "This attachment has been truncated to avoid exceeding the maximum allowed attachment size of %{size_limit}. %{written_count} of %{merge_requests_count} merge requests have been included. Consider re-exporting with a narrower selection of merge requests."
+msgstr ""
+
+msgid "This attachment has been truncated to avoid exceeding the maximum allowed attachment size of %{size_limit}. %{written_count} of %{requirements_count} requirements have been included. Consider re-exporting with a narrower selection of requirements."
 msgstr ""
 
 msgid "This block is self-referential"
