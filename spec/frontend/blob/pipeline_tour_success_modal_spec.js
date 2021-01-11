@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import Cookies from 'js-cookie';
 import { GlSprintf, GlModal, GlLink } from '@gitlab/ui';
 import { mockTracking, triggerEvent, unmockTracking } from 'helpers/tracking_helper';
+import { stubComponent } from 'helpers/stub_component';
 import pipelineTourSuccess from '~/blob/pipeline_tour_success_modal.vue';
 import modalProps from './pipeline_tour_success_mock_data';
 
@@ -15,7 +16,14 @@ describe('PipelineTourSuccessModal', () => {
     wrapper = shallowMount(pipelineTourSuccess, {
       propsData: modalProps,
       stubs: {
-        GlModal,
+        GlModal: stubComponent(GlModal, {
+          template: `
+            <div>
+              <slot name="modal-title"></slot>
+              <slot></slot>
+              <slot name="modal-footer"></slot>
+            </div>`,
+        }),
         GlSprintf,
         GlEmoji,
       },

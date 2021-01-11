@@ -287,7 +287,7 @@ For example, to add support for files referenced by a `Widget` model with a
              t.datetime_with_timezone :created_at, null: false
              t.text :last_sync_failure
 
-             t.index :widget_id, name: :index_widget_registry_on_widget_id
+             t.index :widget_id, name: :index_widget_registry_on_widget_id, unique: true
              t.index :retry_at
              t.index :state
            end

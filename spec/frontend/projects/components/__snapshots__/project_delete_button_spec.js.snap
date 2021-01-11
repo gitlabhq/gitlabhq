@@ -31,6 +31,7 @@ exports[`Project remove modal initialized matches the snapshot 1`] = `
   <gl-modal-stub
     actioncancel="[object Object]"
     actionprimary="[object Object]"
+    dismisslabel="Close"
     footer-class="gl-bg-gray-10 gl-p-5"
     modalclass=""
     modalid="fakeUniqueId"

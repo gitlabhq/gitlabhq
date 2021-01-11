@@ -13,7 +13,7 @@ module MergeRequests
       merge_request.diffs(include_stats: false).write_cache
       merge_request.create_cross_references!(current_user)
 
-      NamespaceOnboardingAction.create_action(merge_request.target_project.namespace, :merge_request_created)
+      OnboardingProgressService.new(merge_request.target_project.namespace).execute(action: :merge_request_created)
     end
   end
 end

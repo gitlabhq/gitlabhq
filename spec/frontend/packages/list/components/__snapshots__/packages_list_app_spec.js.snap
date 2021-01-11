@@ -34,7 +34,7 @@ exports[`packages_list_app renders 1`] = `
                   class="svg-250 svg-content"
                 >
                   <img
-                    alt="There are no packages yet"
+                    alt=""
                     class="gl-max-w-full"
                     src="helpSvg"
                   />
@@ -95,7 +95,7 @@ exports[`packages_list_app renders 1`] = `
                   class="svg-250 svg-content"
                 >
                   <img
-                    alt="There are no Composer packages yet"
+                    alt=""
                     class="gl-max-w-full"
                     src="helpSvg"
                   />
@@ -156,7 +156,7 @@ exports[`packages_list_app renders 1`] = `
                   class="svg-250 svg-content"
                 >
                   <img
-                    alt="There are no Conan packages yet"
+                    alt=""
                     class="gl-max-w-full"
                     src="helpSvg"
                   />
@@ -217,7 +217,7 @@ exports[`packages_list_app renders 1`] = `
                   class="svg-250 svg-content"
                 >
                   <img
-                    alt="There are no Generic packages yet"
+                    alt=""
                     class="gl-max-w-full"
                     src="helpSvg"
                   />
@@ -278,7 +278,7 @@ exports[`packages_list_app renders 1`] = `
                   class="svg-250 svg-content"
                 >
                   <img
-                    alt="There are no Maven packages yet"
+                    alt=""
                     class="gl-max-w-full"
                     src="helpSvg"
                   />
@@ -339,7 +339,7 @@ exports[`packages_list_app renders 1`] = `
                   class="svg-250 svg-content"
                 >
                   <img
-                    alt="There are no NPM packages yet"
+                    alt=""
                     class="gl-max-w-full"
                     src="helpSvg"
                   />
@@ -400,7 +400,7 @@ exports[`packages_list_app renders 1`] = `
                   class="svg-250 svg-content"
                 >
                   <img
-                    alt="There are no NuGet packages yet"
+                    alt=""
                     class="gl-max-w-full"
                     src="helpSvg"
                   />
@@ -461,7 +461,7 @@ exports[`packages_list_app renders 1`] = `
                   class="svg-250 svg-content"
                 >
                   <img
-                    alt="There are no PyPI packages yet"
+                    alt=""
                     class="gl-max-w-full"
                     src="helpSvg"
                   />

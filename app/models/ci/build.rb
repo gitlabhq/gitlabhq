@@ -389,12 +389,8 @@ module Ci
       end
 
       after_transition any => [:skipped, :canceled] do |build, transition|
-        if Feature.enabled?(:cd_skipped_deployment_status, build.project)
-          if transition.to_name == :skipped
-            build.deployment&.skip
-          else
-            build.deployment&.cancel
-          end
+        if transition.to_name == :skipped
+          build.deployment&.skip
         else
           build.deployment&.cancel
         end

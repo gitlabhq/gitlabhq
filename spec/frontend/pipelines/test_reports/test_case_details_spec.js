@@ -44,7 +44,7 @@ describe('Test case details', () => {
     });
 
     it('renders the test case classname as modal title', () => {
-      expect(findModal().attributes('title')).toBe(defaultTestCase.classname);
+      expect(findModal().props('title')).toBe(defaultTestCase.classname);
     });
 
     it('renders the test case name', () => {

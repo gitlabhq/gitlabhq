@@ -11,32 +11,38 @@ RSpec.describe OnboardingProgressService do
     subject(:execute_service) { described_class.new(namespace).execute(action: :subscription_created) }
 
     context 'when the namespace is a root' do
-      it 'records a namespace onboarding progress action fot the given namespace' do
-        expect(NamespaceOnboardingAction).to receive(:create_action)
-          .with(namespace, :subscription_created).and_call_original
+      before do
+        OnboardingProgress.onboard(namespace)
+      end
 
-        expect { execute_service }.to change(NamespaceOnboardingAction, :count).by(1)
+      it 'registers a namespace onboarding progress action for the given namespace' do
+        execute_service
+
+        expect(OnboardingProgress.completed?(namespace, :subscription_created)).to eq(true)
       end
     end
 
     context 'when the namespace is not the root' do
       let(:root_namespace) { build(:namespace) }
 
-      it 'records a namespace onboarding progress action for the root namespace' do
-        expect(NamespaceOnboardingAction).to receive(:create_action)
-          .with(root_namespace, :subscription_created).and_call_original
+      before do
+        OnboardingProgress.onboard(root_namespace)
+      end
 
-        expect { execute_service }.to change(NamespaceOnboardingAction, :count).by(1)
+      it 'registers a namespace onboarding progress action for the root namespace' do
+        execute_service
+
+        expect(OnboardingProgress.completed?(root_namespace, :subscription_created)).to eq(true)
       end
     end
 
     context 'when no namespace is passed' do
       let(:namespace) { nil }
 
-      it 'does not record a namespace onboarding progress action' do
-        expect(NamespaceOnboardingAction).not_to receive(:create_action)
-
+      it 'does not register a namespace onboarding progress action' do
         execute_service
+
+        expect(OnboardingProgress.completed?(root_namespace, :subscription_created)).to be(nil)
       end
     end
   end

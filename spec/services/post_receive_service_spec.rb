@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe PostReceiveService do
   include Gitlab::Routing
+  include AfterNextHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, :wiki_repo, namespace: user.namespace) }
@@ -46,8 +47,8 @@ RSpec.describe PostReceiveService do
       expect(subject).to be_empty
     end
 
-    it 'does not record a namespace onboarding progress action' do
-      expect(NamespaceOnboardingAction).not_to receive(:create_action)
+    it 'does not record an onboarding progress action' do
+      expect_next(OnboardingProgressService).not_to receive(:execute)
 
       subject
     end
@@ -87,9 +88,9 @@ RSpec.describe PostReceiveService do
       expect(response.reference_counter_decreased).to be(true)
     end
 
-    it 'records a namespace onboarding progress action' do
-      expect(NamespaceOnboardingAction).to receive(:create_action)
-        .with(project.namespace, :git_write)
+    it 'records an onboarding progress action' do
+      expect_next(OnboardingProgressService, project.namespace)
+        .to receive(:execute).with(action: :git_write)
 
       subject
     end

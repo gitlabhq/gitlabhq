@@ -8,6 +8,6 @@ class OnboardingProgressService
   def execute(action:)
     return unless @namespace
 
-    NamespaceOnboardingAction.create_action(@namespace, action)
+    OnboardingProgress.register(@namespace, action)
   end
 end

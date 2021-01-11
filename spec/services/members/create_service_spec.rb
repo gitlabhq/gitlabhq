@@ -13,14 +13,20 @@ RSpec.describe Members::CreateService, :clean_gitlab_redis_shared_state, :sideki
   subject(:execute_service) { described_class.new(user, params).execute(source) }
 
   before do
-    source.is_a?(Project) ? source.add_maintainer(user) : source.add_owner(user)
+    if source.is_a?(Project)
+      source.add_maintainer(user)
+      OnboardingProgress.onboard(source.namespace)
+    else
+      source.add_owner(user)
+      OnboardingProgress.onboard(source)
+    end
   end
 
   context 'when passing valid parameters' do
     it 'adds a user to members' do
       expect(execute_service[:status]).to eq(:success)
       expect(source.users).to include member
-      expect(NamespaceOnboardingAction.completed?(source.namespace, :user_added)).to be(true)
+      expect(OnboardingProgress.completed?(source.namespace, :user_added)).to be(true)
     end
 
     context 'when executing on a group' do
@@ -29,7 +35,7 @@ RSpec.describe Members::CreateService, :clean_gitlab_redis_shared_state, :sideki
       it 'adds a user to members' do
         expect(execute_service[:status]).to eq(:success)
         expect(source.users).to include member
-        expect(NamespaceOnboardingAction.completed?(source, :user_added)).to be(true)
+        expect(OnboardingProgress.completed?(source, :user_added)).to be(true)
       end
     end
   end
@@ -41,7 +47,7 @@ RSpec.describe Members::CreateService, :clean_gitlab_redis_shared_state, :sideki
       expect(execute_service[:status]).to eq(:error)
       expect(execute_service[:message]).to be_present
       expect(source.users).not_to include member
-      expect(NamespaceOnboardingAction.completed?(source.namespace, :user_added)).to be(false)
+      expect(OnboardingProgress.completed?(source.namespace, :user_added)).to be(false)
     end
   end
 
@@ -52,7 +58,7 @@ RSpec.describe Members::CreateService, :clean_gitlab_redis_shared_state, :sideki
       expect(execute_service[:status]).to eq(:error)
       expect(execute_service[:message]).to be_present
       expect(source.users).not_to include member
-      expect(NamespaceOnboardingAction.completed?(source.namespace, :user_added)).to be(false)
+      expect(OnboardingProgress.completed?(source.namespace, :user_added)).to be(false)
     end
   end
 
@@ -63,7 +69,7 @@ RSpec.describe Members::CreateService, :clean_gitlab_redis_shared_state, :sideki
       expect(execute_service[:status]).to eq(:error)
       expect(execute_service[:message]).to include("#{member.username}: Access level is not included in the list")
       expect(source.users).not_to include member
-      expect(NamespaceOnboardingAction.completed?(source.namespace, :user_added)).to be(false)
+      expect(OnboardingProgress.completed?(source.namespace, :user_added)).to be(false)
     end
   end
 
@@ -73,7 +79,7 @@ RSpec.describe Members::CreateService, :clean_gitlab_redis_shared_state, :sideki
     it 'does not add a member' do
       expect(execute_service[:status]).to eq(:error)
       expect(execute_service[:message]).to eq('Invite email has already been taken')
-      expect(NamespaceOnboardingAction.completed?(source.namespace, :user_added)).to be(false)
+      expect(OnboardingProgress.completed?(source.namespace, :user_added)).to be(false)
     end
   end
 end

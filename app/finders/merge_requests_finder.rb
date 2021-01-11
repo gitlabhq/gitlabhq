@@ -57,7 +57,7 @@ class MergeRequestsFinder < IssuableFinder
   end
 
   def params_class
-    MergeRequestsFinder::Params
+    MergeRequestsFinder.const_get(:Params, false) # rubocop: disable CodeReuse/Finder
   end
 
   def filter_items(_items)

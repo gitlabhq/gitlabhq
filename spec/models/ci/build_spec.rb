@@ -1183,26 +1183,12 @@ RSpec.describe Ci::Build do
     end
 
     context 'when transits to skipped' do
-      context 'when cd_skipped_deployment_status is disabled' do
-        before do
-          stub_feature_flags(cd_skipped_deployment_status: false)
-          build.skip!
-        end
-
-        it 'transits deployment status to canceled' do
-          expect(deployment).to be_canceled
-        end
+      before do
+        build.skip!
       end
 
-      context 'when cd_skipped_deployment_status is enabled' do
-        before do
-          stub_feature_flags(cd_skipped_deployment_status: project)
-          build.skip!
-        end
-
-        it 'transits deployment status to skipped' do
-          expect(deployment).to be_skipped
-        end
+      it 'transits deployment status to skipped' do
+        expect(deployment).to be_skipped
       end
     end
 

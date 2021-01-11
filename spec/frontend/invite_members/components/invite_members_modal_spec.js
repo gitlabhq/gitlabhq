@@ -68,7 +68,7 @@ describe('InviteMembersModal', () => {
     });
 
     it('renders the modal with the correct title', () => {
-      expect(wrapper.attributes('title')).toBe('Invite team members');
+      expect(wrapper.find(GlModal).props('title')).toBe('Invite team members');
     });
 
     it('renders the Cancel button text correctly', () => {
