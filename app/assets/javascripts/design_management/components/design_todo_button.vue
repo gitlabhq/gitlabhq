@@ -13,18 +13,18 @@ export default {
     TodoButton,
   },
   mixins: [allVersionsMixin],
-  props: {
-    design: {
-      type: Object,
-      required: true,
-    },
-  },
   inject: {
     projectPath: {
       default: '',
     },
     issueIid: {
       default: '',
+    },
+  },
+  props: {
+    design: {
+      type: Object,
+      required: true,
     },
   },
   data() {

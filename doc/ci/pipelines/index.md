@@ -349,18 +349,7 @@ Stages in pipeline mini graphs are collapsible. Hover your mouse over them and c
 
 ### Pipeline success and duration charts
 
-> - Introduced in GitLab 3.1.1 as Commit Stats, and later renamed to Pipeline Charts.
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/38318) to CI / CD Analytics in GitLab 12.8.
-
-GitLab tracks the history of your pipeline successes and failures, as well as how long each pipeline ran. To view this information, go to **Analytics > CI / CD Analytics**.
-
-View successful pipelines:
-
-![Successful pipelines](img/pipelines_success_chart.png)
-
-View pipeline duration history:
-
-![Pipeline duration](img/pipelines_duration_chart.png)
+Pipeline analytics are available on the [**CI/CD Analytics** page](../../user/analytics/ci_cd_analytics.md#pipeline-success-and-duration-charts).
 
 ### Pipeline badges
 

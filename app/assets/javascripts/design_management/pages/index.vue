@@ -72,6 +72,10 @@ export default {
       update: (data) => data.project.issue.userPermissions,
     },
   },
+  beforeRouteUpdate(to, from, next) {
+    this.selectedDesigns = [];
+    next();
+  },
   data() {
     return {
       permissions: {
@@ -323,10 +327,6 @@ export default {
     onDesignMove(designs) {
       this.reorderedDesigns = designs;
     },
-  },
-  beforeRouteUpdate(to, from, next) {
-    this.selectedDesigns = [];
-    next();
   },
   dragOptions: {
     animation: 200,

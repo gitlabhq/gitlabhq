@@ -31,6 +31,7 @@ export default {
     GlButton,
     GlSearchBoxByType,
   },
+  inject: ['environmentsEndpoint'],
   props: {
     value: {
       type: String,
@@ -53,7 +54,6 @@ export default {
       required: false,
     },
   },
-  inject: ['environmentsEndpoint'],
   data() {
     return {
       environmentSearch: this.value,

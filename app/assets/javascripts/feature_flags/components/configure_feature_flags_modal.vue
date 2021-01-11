@@ -31,6 +31,13 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: [
+    'projectName',
+    'featureFlagsHelpPagePath',
+    'unleashApiUrl',
+    'featureFlagsClientExampleHelpPagePath',
+    'featureFlagsClientLibrariesHelpPagePath',
+  ],
 
   props: {
     instanceId: {
@@ -55,13 +62,6 @@ export default {
       required: true,
     },
   },
-  inject: [
-    'projectName',
-    'featureFlagsHelpPagePath',
-    'unleashApiUrl',
-    'featureFlagsClientExampleHelpPagePath',
-    'featureFlagsClientLibrariesHelpPagePath',
-  ],
   translations: {
     cancelActionLabel: __('Close'),
     modalTitle: s__('FeatureFlags|Configure feature flags'),

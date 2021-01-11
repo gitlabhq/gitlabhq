@@ -3,6 +3,7 @@ import { GlAlert, GlBadge, GlEmptyState, GlLink, GlLoadingIcon, GlTab } from '@g
 
 export default {
   components: { GlAlert, GlBadge, GlEmptyState, GlLink, GlLoadingIcon, GlTab },
+  inject: ['errorStateSvgPath', 'featureFlagsHelpPagePath'],
   props: {
     title: {
       required: true,
@@ -46,7 +47,6 @@ export default {
       type: String,
     },
   },
-  inject: ['errorStateSvgPath', 'featureFlagsHelpPagePath'],
   computed: {
     itemCount() {
       return this.count ?? 0;

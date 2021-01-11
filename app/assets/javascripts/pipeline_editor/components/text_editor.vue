@@ -6,8 +6,8 @@ export default {
   components: {
     EditorLite,
   },
-  inheritAttrs: false,
   inject: ['projectPath', 'projectNamespace'],
+  inheritAttrs: false,
   props: {
     ciConfigPath: {
       type: String,

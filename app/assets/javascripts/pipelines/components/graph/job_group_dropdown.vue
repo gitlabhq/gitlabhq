@@ -2,6 +2,7 @@
 import { GlTooltipDirective } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import JobItem from './job_item.vue';
+import { reportToSentry } from './utils';
 
 /**
  * Renders the dropdown for the pipeline graph.
@@ -28,6 +29,9 @@ export default {
       const { name, status } = this.group;
       return `${name} - ${status.label}`;
     },
+  },
+  errorCaptured(err, _vm, info) {
+    reportToSentry('job_group_dropdown', `error: ${err}, info: ${info}`);
   },
   methods: {
     pipelineActionRequestComplete() {

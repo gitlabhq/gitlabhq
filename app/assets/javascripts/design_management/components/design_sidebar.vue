@@ -21,6 +21,14 @@ export default {
     DesignTodoButton,
   },
   mixins: [glFeatureFlagsMixin()],
+  inject: {
+    projectPath: {
+      default: '',
+    },
+    issueIid: {
+      default: '',
+    },
+  },
   props: {
     design: {
       type: Object,
@@ -40,14 +48,6 @@ export default {
       isResolvedCommentsPopoverHidden: parseBoolean(Cookies.get(this.$options.cookieKey)),
       discussionWithOpenForm: '',
     };
-  },
-  inject: {
-    projectPath: {
-      default: '',
-    },
-    issueIid: {
-      default: '',
-    },
   },
   computed: {
     discussions() {

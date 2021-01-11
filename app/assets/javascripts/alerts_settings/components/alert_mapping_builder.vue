@@ -40,6 +40,11 @@ export default {
   directives: {
     GlTooltip,
   },
+  inject: {
+    gitlabAlertFields: {
+      default: gitlabFieldsMock,
+    },
+  },
   props: {
     payloadFields: {
       type: Array,
@@ -56,11 +61,6 @@ export default {
     return {
       gitlabFields: this.gitlabAlertFields,
     };
-  },
-  inject: {
-    gitlabAlertFields: {
-      default: gitlabFieldsMock,
-    },
   },
   computed: {
     mappingData() {

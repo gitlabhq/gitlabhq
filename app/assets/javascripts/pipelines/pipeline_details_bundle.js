@@ -10,6 +10,7 @@ import legacyPipelineHeader from './components/legacy_header_component.vue';
 import eventHub from './event_hub';
 import TestReports from './components/test_reports/test_reports.vue';
 import createTestReportsStore from './stores/test_reports';
+import { reportToSentry } from './components/graph/utils';
 
 Vue.use(Translate);
 
@@ -35,6 +36,9 @@ const createLegacyPipelinesDetailApp = (mediator) => {
       return {
         mediator,
       };
+    },
+    errorCaptured(err, _vm, info) {
+      reportToSentry('pipeline_details_bundle_legacy_details', `error: ${err}, info: ${info}`);
     },
     render(createElement) {
       return createElement('pipeline-graph-legacy', {
@@ -77,6 +81,9 @@ const createLegacyPipelineHeaderApp = (mediator) => {
     beforeDestroy() {
       eventHub.$off('headerPostAction', this.postAction);
       eventHub.$off('headerDeleteAction', this.deleteAction);
+    },
+    errorCaptured(err, _vm, info) {
+      reportToSentry('pipeline_details_bundle_legacy', `error: ${err}, info: ${info}`);
     },
     methods: {
       postAction(path) {

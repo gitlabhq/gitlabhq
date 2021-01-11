@@ -6,6 +6,7 @@ import JobGroupDropdown from './job_group_dropdown.vue';
 import ActionComponent from './action_component.vue';
 import { GRAPHQL } from './constants';
 import { accessValue } from './accessors';
+import { reportToSentry } from './utils';
 
 export default {
   components: {
@@ -53,6 +54,9 @@ export default {
     hasAction() {
       return !isEmpty(this.action);
     },
+  },
+  errorCaptured(err, _vm, info) {
+    reportToSentry('stage_column_component', `error: ${err}, info: ${info}`);
   },
   methods: {
     getGroupId(group) {

@@ -117,6 +117,7 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     generic: {
       default: {},
@@ -125,7 +126,6 @@ export default {
       default: {},
     },
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     loading: {
       type: Boolean,

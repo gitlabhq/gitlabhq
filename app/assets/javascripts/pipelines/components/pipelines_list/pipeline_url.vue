@@ -11,6 +11,11 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: {
+    targetProjectFullPath: {
+      default: '',
+    },
+  },
   props: {
     pipeline: {
       type: Object,
@@ -23,11 +28,6 @@ export default {
     autoDevopsHelpPath: {
       type: String,
       required: true,
-    },
-  },
-  inject: {
-    targetProjectFullPath: {
-      default: '',
     },
   },
   computed: {

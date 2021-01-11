@@ -35,6 +35,9 @@ export default (el) => {
 
   return new Vue({
     el,
+    components: {
+      AlertSettingsWrapper,
+    },
     provide: {
       prometheus: {
         active: parseBoolean(prometheusActivated),
@@ -56,9 +59,6 @@ export default (el) => {
       multiIntegrations: parseBoolean(multiIntegrations),
     },
     apolloProvider,
-    components: {
-      AlertSettingsWrapper,
-    },
     render(createElement) {
       return createElement('alert-settings-wrapper');
     },

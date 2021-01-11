@@ -8,12 +8,6 @@ export default {
   components: {
     ApolloMutation,
   },
-  props: {
-    filenames: {
-      type: Array,
-      required: true,
-    },
-  },
   inject: {
     projectPath: {
       default: '',
@@ -21,6 +15,12 @@ export default {
     iid: {
       from: 'issueIid',
       defaut: '',
+    },
+  },
+  props: {
+    filenames: {
+      type: Array,
+      required: true,
     },
   },
   computed: {

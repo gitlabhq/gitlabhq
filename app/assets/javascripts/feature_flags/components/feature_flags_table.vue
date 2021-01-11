@@ -17,13 +17,13 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagMixin()],
+  inject: ['csrfToken'],
   props: {
     featureFlags: {
       type: Array,
       required: true,
     },
   },
-  inject: ['csrfToken'],
   data() {
     return {
       deleteFeatureFlagUrl: null,

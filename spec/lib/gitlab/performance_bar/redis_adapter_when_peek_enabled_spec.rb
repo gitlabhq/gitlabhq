@@ -31,6 +31,7 @@ RSpec.describe Gitlab::PerformanceBar::RedisAdapterWhenPeekEnabled do
       expect_to_obtain_exclusive_lease(GitlabPerformanceBarStatsWorker::LEASE_KEY, uuid)
       expect(GitlabPerformanceBarStatsWorker).to receive(:perform_in).with(GitlabPerformanceBarStatsWorker::WORKER_DELAY, uuid)
       expect(client).to receive(:sadd).with(GitlabPerformanceBarStatsWorker::STATS_KEY, uuid)
+      expect(client).to receive(:expire).with(GitlabPerformanceBarStatsWorker::STATS_KEY, GitlabPerformanceBarStatsWorker::STATS_KEY_EXPIRE)
 
       peek_adapter.new(client).save('foo')
     end

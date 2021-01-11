@@ -383,7 +383,7 @@ mutation deleteState {
 }
 ```
 
-You can obtain the <global_id_for_the_state> by querying the list of states. For example:
+You can obtain the `<global_id_for_the_state>` by querying the list of states. For example:
 
 ```shell
 query ProjectTerraformStates {

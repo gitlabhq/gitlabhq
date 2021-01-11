@@ -349,6 +349,11 @@ in the GitLab UI to do this:
 
    ![Job artifacts browser button](img/job_artifacts_browser_button.png)
 
+1. While on the details page of a merge request, you can see the download
+   icon for each job's artifacts on the right side of the pipeline widget:
+
+   ![Job artifacts in Merge Request](img/job_artifacts_merge_request.png)
+
 1. And finally, when browsing an archive you can see the download button at
    the top right corner:
 

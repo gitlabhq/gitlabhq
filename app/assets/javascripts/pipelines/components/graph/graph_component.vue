@@ -3,6 +3,7 @@ import LinkedGraphWrapper from '../graph_shared/linked_graph_wrapper.vue';
 import LinkedPipelinesColumn from './linked_pipelines_column.vue';
 import StageColumnComponent from './stage_column_component.vue';
 import { DOWNSTREAM, MAIN, UPSTREAM } from './constants';
+import { reportToSentry } from './utils';
 
 export default {
   name: 'PipelineGraph',
@@ -67,6 +68,9 @@ export default {
     upstreamPipelines() {
       return this.hasUpstreamPipelines ? this.pipeline.upstream : [];
     },
+  },
+  errorCaptured(err, _vm, info) {
+    reportToSentry(this.$options.name, `error: ${err}, info: ${info}`);
   },
   methods: {
     setJob(jobName) {

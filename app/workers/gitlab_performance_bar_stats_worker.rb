@@ -7,12 +7,13 @@ class GitlabPerformanceBarStatsWorker
   LEASE_TIMEOUT = 600
   WORKER_DELAY = 120
   STATS_KEY = 'performance_bar_stats:pending_request_ids'
+  STATS_KEY_EXPIRE = 30.minutes.to_i
 
   feature_category :metrics
   idempotent!
 
   def perform(lease_uuid)
-    Gitlab::Redis::SharedState.with do |redis|
+    Gitlab::Redis::Cache.with do |redis|
       request_ids = fetch_request_ids(redis, lease_uuid)
       stats = Gitlab::PerformanceBar::Stats.new(redis)
 

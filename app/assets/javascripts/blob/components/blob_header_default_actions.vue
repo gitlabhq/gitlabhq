@@ -16,6 +16,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: ['blobHash'],
   props: {
     rawPath: {
       type: String,
@@ -32,7 +33,6 @@ export default {
       default: false,
     },
   },
-  inject: ['blobHash'],
   computed: {
     downloadUrl() {
       return `${this.rawPath}?inline=false`;

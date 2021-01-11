@@ -6,6 +6,7 @@ import { sprintf } from '~/locale';
 import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 import { accessValue } from './accessors';
 import { REST } from './constants';
+import { reportToSentry } from './utils';
 
 /**
  * Renders the badge for the pipeline graph and the job's dropdown.
@@ -129,6 +130,9 @@ export default {
         ? `${this.$options.hoverClass} ${this.cssClassJobName}`
         : this.cssClassJobName;
     },
+  },
+  errorCaptured(err, _vm, info) {
+    reportToSentry('job_item', `error: ${err}, info: ${info}`);
   },
   methods: {
     hideTooltips() {

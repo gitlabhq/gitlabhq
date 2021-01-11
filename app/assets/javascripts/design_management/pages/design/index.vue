@@ -57,6 +57,27 @@ export default {
     DesignSidebar,
   },
   mixins: [allVersionsMixin, glFeatureFlagsMixin()],
+  beforeRouteUpdate(to, from, next) {
+    // reset scale when the active design changes
+    this.scale = DEFAULT_SCALE;
+    next();
+  },
+  beforeRouteEnter(to, from, next) {
+    const pageEl = getPageLayoutElement();
+    if (pageEl) {
+      pageEl.classList.add(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
+    }
+
+    next();
+  },
+  beforeRouteLeave(to, from, next) {
+    const pageEl = getPageLayoutElement();
+    if (pageEl) {
+      pageEl.classList.remove(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
+    }
+
+    next();
+  },
   props: {
     id: {
       type: String,
@@ -160,11 +181,6 @@ export default {
   },
   beforeDestroy() {
     Mousetrap.unbind('esc', this.closeDesign);
-  },
-  beforeRouteUpdate(to, from, next) {
-    // reset scale when the active design changes
-    this.scale = DEFAULT_SCALE;
-    next();
   },
   methods: {
     addImageDiffNoteToStore(store, { data: { createImageDiffNote } }) {
@@ -295,22 +311,6 @@ export default {
     toggleResolvedComments() {
       this.resolvedDiscussionsExpanded = !this.resolvedDiscussionsExpanded;
     },
-  },
-  beforeRouteEnter(to, from, next) {
-    const pageEl = getPageLayoutElement();
-    if (pageEl) {
-      pageEl.classList.add(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
-    }
-
-    next();
-  },
-  beforeRouteLeave(to, from, next) {
-    const pageEl = getPageLayoutElement();
-    if (pageEl) {
-      pageEl.classList.remove(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
-    }
-
-    next();
   },
   createImageDiffNoteMutation,
   DESIGNS_ROUTE_NAME,

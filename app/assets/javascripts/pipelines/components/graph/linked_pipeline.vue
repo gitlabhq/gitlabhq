@@ -4,6 +4,7 @@ import CiStatus from '~/vue_shared/components/ci_icon.vue';
 import { __, sprintf } from '~/locale';
 import { accessValue } from './accessors';
 import { DOWNSTREAM, REST, UPSTREAM } from './constants';
+import { reportToSentry } from './utils';
 
 export default {
   directives: {
@@ -113,6 +114,9 @@ export default {
     expandButtonPosition() {
       return this.isUpstream ? 'gl-left-0 gl-border-r-1!' : 'gl-right-0 gl-border-l-1!';
     },
+  },
+  errorCaptured(err, _vm, info) {
+    reportToSentry('linked_pipeline', `error: ${err}, info: ${info}`);
   },
   methods: {
     onClickLinkedPipeline() {

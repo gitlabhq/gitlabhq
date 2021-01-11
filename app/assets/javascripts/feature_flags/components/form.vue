@@ -46,6 +46,11 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [featureFlagsMixin()],
+  inject: {
+    featureFlagIssuesEndpoint: {
+      default: '',
+    },
+  },
   props: {
     active: {
       type: Boolean,
@@ -84,11 +89,6 @@ export default {
       type: String,
       required: false,
       default: LEGACY_FLAG,
-    },
-  },
-  inject: {
-    featureFlagIssuesEndpoint: {
-      default: '',
     },
   },
   translations: {

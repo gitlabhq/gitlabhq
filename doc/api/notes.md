@@ -185,6 +185,8 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## Snippets
 
+The Snippets Notes API is intended for project-level snippets, and not for personal snippets.
+
 ### List all snippet notes
 
 Gets a list of all notes for a single snippet. Snippet notes are comments users can post to a snippet.
