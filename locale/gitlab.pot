@@ -12680,6 +12680,9 @@ msgstr ""
 msgid "Geo Nodes"
 msgstr ""
 
+msgid "Geo Nodes Beta"
+msgstr ""
+
 msgid "Geo Nodes|Cannot remove a primary node if there is a secondary node"
 msgstr ""
 
