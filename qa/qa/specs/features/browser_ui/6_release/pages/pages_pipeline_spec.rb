@@ -37,7 +37,7 @@ module QA
         end
 
         Page::Project::Job::Show.perform do |show|
-          expect(show).to have_passed
+          expect(show).to have_passed(timeout: 300)
         end
       end
     end

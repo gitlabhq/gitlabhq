@@ -11,6 +11,16 @@ You can install, administer, and maintain your own GitLab instance.
 
 This page covers the details of your GitLab self-managed subscription.
 
+GitLab subscription management requires access to the Customers Portal.
+
+## Customers Portal
+
+GitLab provides the [Customers Portal](../index.md#customers-portal) where you can
+manage your subscriptions and your account details.
+
+Customers of resellers do not have access to this portal and should contact their reseller for any
+changes to their subscription.
+
 ## Subscription
 
 The cost of a GitLab self-managed subscription is determined by the following:
@@ -95,10 +105,10 @@ It also displays the following important statistics:
 
 | Field              | Description |
 |:-------------------|:------------|
-| Users in License   | The number of users you've paid for in the current license loaded on the system. This does not include the amount you've paid for `Users over license` during renewal. |
-| Billable users     | The daily count of billable users on your system. |
-| Maximum users      | The highest number of billable users on your system during the term of the loaded license. If this number exceeds your users in license count at any point, you incur users over license. |
-| Users over license | The number of users that exceed the `Users in License` for the current license term. Charges for this number of users are incurred at the next renewal. |
+| Users in License   | The number of users you've paid for in the current license loaded on the system. The number does not change unless you [add seats](#add-seats-to-a-subscription) during your current subscription period. |
+| Billable users     | The daily count of billable users on your system. The count may change as you block or add users to your instance. |
+| Maximum users      | The highest number of billable users on your system during the term of the loaded license. |
+| Users over license | Calculated as `Maximum users` - `Users in License` for the current license term. This number incurs a retroactive charge that needs to be paid for at renewal. |
 
 ## Renew your subscription
 
@@ -122,28 +132,38 @@ the contact person who manages your subscription.
 
 It's important to regularly review your user accounts, because:
 
-- A GitLab subscription is based on the number of users. You pay more than you should if you renew
-  for too many users, while the renewal fails if you attempt to renew a subscription for too few
-  users.
+- Stale user accounts that are not blocked count as billable users. You may pay more than you should
+  if you renew for too many users.
 - Stale user accounts can be a security risk. A regular review helps reduce this risk.
 
 #### Users over License
 
-A GitLab subscription is valid for a specific number of users. For details, see
-[Billable users](#billable-users). If the billable user
-count exceeds the number included in the subscription, known as the number of
-_users over license_, you must pay for the excess number of users either before
-renewal, or at the time of renewal. This is also known as the _true up_ process.
+A GitLab subscription is valid for a specific number of seats. The number of users over license
+is the number of _Maximum users_ that exceed the _Users in License_ for the current license term.
+You must pay for this number of users either before renewal, or at the time of renewal. This is
+known as the _true up_ process.
 
-To view the number of _Users over License_ go to the **Admin Area**.
+To view the number of _users over license_ go to the **Admin Area**.
 
-### Add users to a subscription
+##### Users over license example
 
-Self-managed instances can add users to a subscription any time during the
-subscription period. The cost of additional users added during the subscription
+You purchase a license for 10 users.
+
+| Event                                              | Billable members | Maximum users |
+|:---------------------------------------------------|:-----------------|:--------------|
+| Ten people (users) occupy all 10 seats.            | 10               | 10            |
+| Two new people join.                               | 12               | 12            |
+| Three people leave and their accounts are removed. | 9                | 12            |
+
+Users over license = 12 - 10 (Maximum users - users in license)
+
+### Add seats to a subscription
+
+The users in license count can be increased by adding seats to a subscription any time during the
+subscription period. The cost of seats added during the subscription
 period is prorated from the date of purchase through the end of the subscription period.
 
-To add users to a subscription:
+To add seats to a subscription:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/).
 1. Navigate to the **Manage Purchases** page.
@@ -311,11 +331,6 @@ only.
 
 However, if you remove the license, you immediately revert to Core
 features, and the instance become read / write again.
-
-## Customers Portal
-
-GitLab provides the [Customers Portal](../index.md#customers-portal) where you can
-manage your subscriptions and your account details.
 
 ## Contact Support
 

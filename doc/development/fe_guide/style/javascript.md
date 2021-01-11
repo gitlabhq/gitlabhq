@@ -7,7 +7,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/development/fe_guide/style_guide_
 
 # JavaScript style guide
 
-We use [Airbnb's JavaScript Style Guide](https://github.com/airbnb/javascript) and it's accompanying
+We use [Airbnb's JavaScript Style Guide](https://github.com/airbnb/javascript) and its accompanying
 linter to manage most of our JavaScript style guidelines.
 
 In addition to the style guidelines set by Airbnb, we also have a few specific rules

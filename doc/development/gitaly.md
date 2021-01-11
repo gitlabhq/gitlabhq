@@ -27,8 +27,9 @@ have changed since then, it should still serve as a good introduction.
 ## Beginner's guide
 
 Start by reading the Gitaly repository's
-[Beginner's guide to Gitaly contributions](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/beginners_guide.md).
-It describes how to set up Gitaly, the various components of Gitaly and what they do, and how to run its test suites.
+[Beginner's guide to Gitaly contributions](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/beginners_guide.md).
+It describes how to set up Gitaly, the various components of Gitaly and what
+they do, and how to run its test suites.
 
 ## Developing new Git features
 
@@ -36,33 +37,17 @@ To read or write Git data, a request has to be made to Gitaly. This means that
 if you're developing a new feature where you need data that's not yet available
 in `lib/gitlab/git` changes have to be made to Gitaly.
 
-> This is a new process that is not clearly defined yet. If you want
-to contribute a Git feature and you're getting stuck, reach out to the
-Gitaly team or `@jacobvosmaer-gitlab`.
+There should be no new code that touches Git repositories via disk access (for example,
+Rugged, `git`, `rm -rf`) anywhere in the `gitlab` repository. Anything that
+needs direct access to the Git repository *must* be implemented in Gitaly, and
+exposed via an RPC.
 
-By 'new feature' we mean any method or class in `lib/gitlab/git` that is
-called from outside `lib/gitlab/git`. For new methods that are called
-from inside `lib/gitlab/git`, see 'Modifying existing Git features'
-below.
+It's often easier to develop a new feature in Gitaly if you make the changes to
+GitLab that will use the new feature in a separate merge request, to be merged
+immediately after the Gitaly one. This allows you to test your changes before
+they are merged.
 
-There should be no new code that touches Git repositories via
-disk access (e.g. Rugged, `git`, `rm -rf`) anywhere outside
-`lib/gitlab/git`.
-
-The process for adding new Gitaly features is:
-
-- exploration / prototyping
-- design and create a new Gitaly RPC in [`gitaly-proto`](https://gitlab.com/gitlab-org/gitaly-proto)
-- release a new version of `gitaly-proto`
-- write implementation and tests for the RPC [in Gitaly](https://gitlab.com/gitlab-org/gitaly), in Go or Ruby
-- release a new version of Gitaly
-- write client code in GitLab CE/EE, GitLab Workhorse or GitLab Shell that calls the new Gitaly RPC
-
-These steps often overlap. It is possible to use an unreleased version
-of Gitaly and `gitaly-proto` during testing and development.
-
-- See the [Gitaly repository](https://gitlab.com/gitlab-org/gitaly/blob/master/CONTRIBUTING.md#development-and-testing-with-a-custom-gitaly-proto) for instructions on writing server side code with an unreleased protocol.
-- See [below](#running-tests-with-a-locally-modified-version-of-gitaly) for instructions on running GitLab CE tests with a modified version of Gitaly.
+- See [below](#running-tests-with-a-locally-modified-version-of-gitaly) for instructions on running GitLab tests with a modified version of Gitaly.
 - In GDK run `gdk install` and restart `gdk run` (or `gdk run app`) to use a locally modified Gitaly version for development
 
 ### `gitaly-ruby`
@@ -208,7 +193,7 @@ to manually run `make` again.
 
 Note that CI tests do not use your locally modified version of
 Gitaly. To use a custom Gitaly version in CI you need to update
-GITALY_SERVER_VERSION as described at the beginning of this paragraph.
+GITALY_SERVER_VERSION as described at the beginning of this section.
 
 To use a different Gitaly repository, e.g., if your changes are present
 on a fork, you can specify a `GITALY_REPO_URL` environment variable when
@@ -243,6 +228,9 @@ the branch with the changes (`new-feature-branch`, for example):
    ```
 
 1. Run `bundle install` to use the modified RPC client.
+
+Re-run `bundle install` in the `gitlab` project each time the Gitaly branch
+changes to embed a new SHA in the `Gemfile.lock` file.
 
 ---
 
