@@ -286,6 +286,14 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def stream_csv_headers(csv_filename)
+    no_cache_headers
+    stream_headers
+
+    headers['Content-Type'] = 'text/csv; charset=utf-8; header=present'
+    headers['Content-Disposition'] = "attachment; filename=\"#{csv_filename}\""
+  end
+
   def default_cache_control
     if request.xhr?
       ActionDispatch::Http::Cache::Response::DEFAULT_CACHE_CONTROL

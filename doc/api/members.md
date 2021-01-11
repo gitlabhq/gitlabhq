@@ -398,7 +398,7 @@ POST /groups/:id/members/:user_id/override
 | `user_id` | integer | yes   | The user ID of the member |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/groups/:id/members/:user_id/override"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/:user_id/override"
 ```
 
 Example response:
@@ -435,7 +435,7 @@ DELETE /groups/:id/members/:user_id/override
 | `user_id` | integer | yes   | The user ID of the member |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/groups/:id/members/:user_id/override"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/:user_id/override"
 ```
 
 Example response:

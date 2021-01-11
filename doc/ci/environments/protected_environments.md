@@ -79,7 +79,7 @@ Alternatively, you can use the API to protect an environment:
 1. Use the API to add a user to the group as a reporter:
 
    ```shell
-   $ curl --request POST --header "PRIVATE-TOKEN: xxxxxxxxxxxx" --data "user_id=3222377&access_level=20" "https://gitlab.com/api/v4/groups/9899826/members"
+   $ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "user_id=3222377&access_level=20" "https://gitlab.com/api/v4/groups/9899826/members"
 
    {"id":3222377,"name":"Sean Carroll","username":"sfcarroll","state":"active","avatar_url":"https://assets.gitlab-static.net/uploads/-/system/user/avatar/3222377/avatar.png","web_url":"https://gitlab.com/sfcarroll","access_level":20,"created_at":"2020-10-26T17:37:50.309Z","expires_at":null}
    ```
@@ -87,7 +87,7 @@ Alternatively, you can use the API to protect an environment:
 1. Use the API to add the group to the project as a reporter:
 
    ```shell
-   $ curl --request POST --header "PRIVATE-TOKEN: xxxxxxxxxxxx" --request POST "https://gitlab.com/api/v4/projects/22034114/share?group_id=9899826&group_access=20"
+   $ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --request POST "https://gitlab.com/api/v4/projects/22034114/share?group_id=9899826&group_access=20"
 
    {"id":1233335,"project_id":22034114,"group_id":9899826,"group_access":20,"expires_at":null}
    ```
@@ -95,7 +95,7 @@ Alternatively, you can use the API to protect an environment:
 1. Use the API to add the group with protected environment access:
 
    ```shell
-   curl --header 'Content-Type: application/json' --request POST --data '{"name": "production", "deploy_access_levels": [{"group_id": 9899826}]}' --header "PRIVATE-TOKEN: xxxxxxxxxxx" "https://gitlab.com/api/v4/projects/22034114/protected_environments"
+   curl --header 'Content-Type: application/json' --request POST --data '{"name": "production", "deploy_access_levels": [{"group_id": 9899826}]}' --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.com/api/v4/projects/22034114/protected_environments"
    ```
 
 The group now has access and can be seen in the UI.

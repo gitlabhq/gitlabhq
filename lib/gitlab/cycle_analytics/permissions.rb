@@ -23,7 +23,7 @@ module Gitlab
       end
 
       def get
-        ::CycleAnalytics::LevelBase::STAGES.each do |stage|
+        Gitlab::Analytics::CycleAnalytics::DefaultStages.symbolized_stage_names.each do |stage|
           @stage_permission_hash[stage] = authorized_stage?(stage)
         end
 

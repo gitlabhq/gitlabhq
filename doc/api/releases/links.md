@@ -27,7 +27,7 @@ GET /projects/:id/releases/:tag_name/assets/links
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: n671WNGecHugsdEDPsyo" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links"
 ```
 
 Example response:
@@ -68,7 +68,7 @@ GET /projects/:id/releases/:tag_name/assets/links/:link_id
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: n671WNGecHugsdEDPsyo" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links/1"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links/1"
 ```
 
 Example response:
@@ -104,7 +104,7 @@ Example request:
 
 ```shell
 curl --request POST \
-    --header "PRIVATE-TOKEN: tkhfG7HgG-LiZd3zfdDC" \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
     --data name="hellodarwin-amd64" \
     --data url="https://gitlab.example.com/mynamespace/hello/-/jobs/688/artifacts/raw/bin/hello-darwin-amd64" \
     --data filepath="/bin/hellodarwin-amd64" \
@@ -148,7 +148,7 @@ You have to specify at least one of `name` or `url`
 Example request:
 
 ```shell
-curl --request PUT --data name="new name" --data link_type="runbook" --header "PRIVATE-TOKEN: n671WNGecHugsdEDPsyo" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links/1"
+curl --request PUT --data name="new name" --data link_type="runbook" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links/1"
 ```
 
 Example response:
@@ -180,7 +180,7 @@ DELETE /projects/:id/releases/:tag_name/assets/links/:link_id
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: n671WNGecHugsdEDPsyo" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links/1"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links/1"
 ```
 
 Example response:

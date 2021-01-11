@@ -73,7 +73,7 @@ POST /import/bitbucket_server
 curl --request POST \
   --url "https://gitlab.example.com/api/v4/import/bitbucket_server" \
   --header "content-type: application/json" \
-  --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --data '{
     "bitbucket_server_url": "http://bitbucket.example.com",
     "bitbucket_server_username": "root",

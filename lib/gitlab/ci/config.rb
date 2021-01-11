@@ -70,6 +70,10 @@ module Gitlab
         @normalized_jobs ||= Ci::Config::Normalizer.new(jobs).normalize_jobs
       end
 
+      def included_templates
+        @context.expandset.filter_map { |i| i[:template] }
+      end
+
       private
 
       def expand_config(config)

@@ -33,7 +33,7 @@ This format was originally developed for Java, but most coverage analysis framew
 for other languages have plugins to add support for it, like:
 
 - [simplecov-cobertura](https://rubygems.org/gems/simplecov-cobertura) (Ruby)
-- [gocover-cobertura](https://github.com/t-yuki/gocover-cobertura) (Golang)
+- [gocover-cobertura](https://github.com/boumenot/gocover-cobertura) (Golang)
 
 Other coverage analysis frameworks support the format out of the box, for example:
 

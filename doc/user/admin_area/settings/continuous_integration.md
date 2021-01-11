@@ -187,6 +187,12 @@ sourced from:
 - The [instance template repository](instance_template_repository.md).
 - GitLab-supplied configuration.
 
+NOTE:
+When you use a configuration defined in an instance template repository,
+nested [`include:`](../../../ci/yaml/README.md#include) keywords
+(including `include:file`, `include:local`, `include:remote`, and `include:template`)
+[do not work](https://gitlab.com/gitlab-org/gitlab/-/issues/35345).
+
 To set required pipeline configuration:
 
 1. Go to **Admin Area > Settings > CI/CD**.

@@ -27,6 +27,7 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::Limit::JobActivity,
                 Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines,
                 Gitlab::Ci::Pipeline::Chain::Metrics,
+                Gitlab::Ci::Pipeline::Chain::TemplateUsage,
                 Gitlab::Ci::Pipeline::Chain::Pipeline::Process].freeze
 
     # Create a new pipeline in the specified project.

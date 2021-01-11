@@ -28,7 +28,7 @@ GET /projects/:id/releases
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "https://gitlab.example.com/api/v4/projects/24/releases"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/24/releases"
 ```
 
 Example response:
@@ -233,7 +233,7 @@ GET /projects/:id/releases/:tag_name
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1"
 ```
 
 Example response:
@@ -374,7 +374,7 @@ POST /projects/:id/releases
 Example request:
 
 ```shell
-curl --header 'Content-Type: application/json' --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" \
+curl --header 'Content-Type: application/json' --header "PRIVATE-TOKEN: <your_access_token>" \
      --data '{ "name": "New release", "tag_name": "v0.3", "description": "Super nice release", "milestones": ["v1.0", "v1.0-rc"], "assets": { "links": [{ "name": "hoge", "url": "https://google.com", "filepath": "/binaries/linux-amd64", "link_type":"other" }] } }' \
      --request POST "https://gitlab.example.com/api/v4/projects/24/releases"
 ```
@@ -513,7 +513,7 @@ POST /projects/:id/releases/:tag_name/evidence
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/evidence"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/evidence"
 ```
 
 Example response:
@@ -542,7 +542,7 @@ PUT /projects/:id/releases/:tag_name
 Example request:
 
 ```shell
-curl --header 'Content-Type: application/json' --request PUT --data '{"name": "new name", "milestones": ["v1.2"]}' --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1"
+curl --header 'Content-Type: application/json' --request PUT --data '{"name": "new name", "milestones": ["v1.2"]}' --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1"
 ```
 
 Example response:
@@ -645,7 +645,7 @@ DELETE /projects/:id/releases/:tag_name
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1"
 ```
 
 Example response:

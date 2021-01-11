@@ -103,7 +103,7 @@ the components outlined above and the pre-loaded demo runbook.
       Enter these values, maintaining the single quotes as follows:
 
       ```sql
-      PRIVATE_TOKEN = 'n671WNGecHugsdEDPsyo'
+      PRIVATE_TOKEN = '<your_access_token>'
       PROJECT_ID = '1234567'
       ```
 

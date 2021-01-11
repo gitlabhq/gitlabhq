@@ -91,6 +91,14 @@ RSpec.describe Ci::CreatePipelineService do
           .with({ source: 'push' }, 5)
       end
 
+      it 'tracks included template usage' do
+        expect_next_instance_of(Gitlab::Ci::Pipeline::Chain::TemplateUsage) do |instance|
+          expect(instance).to receive(:perform!)
+        end
+
+        execute_service
+      end
+
       describe 'recording a conversion event' do
         it 'schedules a record conversion event worker' do
           expect(Experiments::RecordConversionEventWorker).to receive(:perform_async).with(:ci_syntax_templates, user.id)

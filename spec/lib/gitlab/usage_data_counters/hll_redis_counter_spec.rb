@@ -38,7 +38,8 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'ci_secrets_management',
         'snippets',
         'code_review',
-        'terraform'
+        'terraform',
+        'ci_templates'
       )
     end
   end

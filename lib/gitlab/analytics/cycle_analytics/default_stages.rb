@@ -30,6 +30,10 @@ module Gitlab
           all.map { |stage| stage[:name] }
         end
 
+        def self.symbolized_stage_names
+          names.map(&:to_sym)
+        end
+
         def self.params_for_issue_stage
           {
             name: 'issue',

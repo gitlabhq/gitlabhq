@@ -207,9 +207,9 @@ Some examples fail if incorrect capitalization is used:
 Additionally, commands, parameters, values, filenames, and so on must be
 included in backticks. For example:
 
-- "Change the `needs` keyword in your `.gitlab.yml`..."
-  - `needs` is a parameter, and `.gitlab.yml` is a file, so both need backticks.
-    Additionally, `.gitlab.yml` without backticks fails markdownlint because it
+- "Change the `needs` keyword in your `.gitlab-ci.yml`..."
+  - `needs` is a parameter, and `.gitlab-ci.yml` is a file, so both need backticks.
+    Additionally, `.gitlab-ci.yml` without backticks fails markdownlint because it
     does not have capital G or L.
 - "Run `git clone` to clone a Git repository..."
   - `git clone` is a command, so it must be lowercase, while Git is the product,
@@ -512,8 +512,7 @@ You can use these fake tokens as examples:
 
 | Token type            | Token value                                                        |
 |:----------------------|:-------------------------------------------------------------------|
-| Private user token    | `<your_access_token>`                                              |
-| Personal access token | `n671WNGecHugsdEDPsyo`                                             |
+| Personal access token | `<your_access_token>`                                             |
 | Application ID        | `2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6` |
 | Application secret    | `04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df` |
 | CI/CD variable        | `Li8j-mLUVA3eZYjPfd_H`                                             |

@@ -472,3 +472,44 @@
   redis_slot: terraform
   aggregation: weekly
   feature_flag: usage_data_p_terraform_state_api_unique_users
+# CI templates
+- name: p_ci_templates_auto_devops
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
+  feature_flag: usage_data_track_ci_templates_unique_projects
+- name: p_ci_templates_aws_cf_deploy_ec2
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
+  feature_flag: usage_data_track_ci_templates_unique_projects
+- name: p_ci_templates_auto_devops_build
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
+  feature_flag: usage_data_track_ci_templates_unique_projects
+- name: p_ci_templates_auto_devops_deploy
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
+  feature_flag: usage_data_track_ci_templates_unique_projects
+- name: p_ci_templates_auto_devops_deploy_latest
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
+  feature_flag: usage_data_track_ci_templates_unique_projects
+- name: p_ci_templates_security_sast
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
+  feature_flag: usage_data_track_ci_templates_unique_projects
+- name: p_ci_templates_security_secret_detection
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
+  feature_flag: usage_data_track_ci_templates_unique_projects
+- name: p_ci_templates_terraform_base_latest
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
+  feature_flag: usage_data_track_ci_templates_unique_projects
