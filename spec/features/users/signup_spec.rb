@@ -294,15 +294,11 @@ RSpec.describe 'Signup' do
 
   context 'when reCAPTCHA and invisible captcha are enabled' do
     before do
-      InvisibleCaptcha.timestamp_enabled = true
+      stub_application_setting(invisible_captcha_enabled: true)
       stub_application_setting(recaptcha_enabled: true)
       allow_next_instance_of(RegistrationsController) do |instance|
         allow(instance).to receive(:verify_recaptcha).and_return(true)
       end
-    end
-
-    after do
-      InvisibleCaptcha.timestamp_enabled = false
     end
 
     context 'when reCAPTCHA detects malicious behaviour' do

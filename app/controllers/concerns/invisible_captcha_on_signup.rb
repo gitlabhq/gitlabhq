@@ -8,7 +8,7 @@ module InvisibleCaptchaOnSignup
   end
 
   def on_honeypot_spam_callback
-    return unless Feature.enabled?(:invisible_captcha)
+    return unless Gitlab::CurrentSettings.invisible_captcha_enabled
 
     invisible_captcha_honeypot_counter.increment
     log_request('Invisible_Captcha_Honeypot_Request')
@@ -17,7 +17,7 @@ module InvisibleCaptchaOnSignup
   end
 
   def on_timestamp_spam_callback
-    return unless Feature.enabled?(:invisible_captcha)
+    return unless Gitlab::CurrentSettings.invisible_captcha_enabled
 
     invisible_captcha_timestamp_counter.increment
     log_request('Invisible_Captcha_Timestamp_Request')

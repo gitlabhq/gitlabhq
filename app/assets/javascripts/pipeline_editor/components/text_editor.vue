@@ -1,6 +1,6 @@
 <script>
 import EditorLite from '~/vue_shared/components/editor_lite.vue';
-import { CiSchemaExtension } from '~/editor/editor_ci_schema_ext';
+import { CiSchemaExtension } from '~/editor/extensions/editor_ci_schema_ext';
 
 export default {
   components: {

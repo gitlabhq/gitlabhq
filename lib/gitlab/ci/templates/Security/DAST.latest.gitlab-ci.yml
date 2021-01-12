@@ -38,8 +38,6 @@ dast:
           $CI_KUBERNETES_ACTIVE &&
           $GITLAB_FEATURES =~ /\bdast\b/
     - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bdast\b/ &&
           $DAST_WEBSITE
     - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bdast\b/ &&
           $DAST_API_SPECIFICATION

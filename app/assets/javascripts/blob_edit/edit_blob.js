@@ -5,7 +5,7 @@ import { BLOB_EDITOR_ERROR, BLOB_PREVIEW_ERROR } from './constants';
 import TemplateSelectorMediator from '../blob/file_template_mediator';
 import { addEditorMarkdownListeners } from '~/lib/utils/text_markdown';
 import EditorLite from '~/editor/editor_lite';
-import { FileTemplateExtension } from '~/editor/editor_file_template_ext';
+import { FileTemplateExtension } from '~/editor/extensions/editor_file_template_ext';
 import { insertFinalNewline } from '~/lib/utils/text_utility';
 
 export default class EditBlob {
@@ -16,7 +16,7 @@ export default class EditBlob {
     this.configureMonacoEditor();
 
     if (this.options.isMarkdown) {
-      import('~/editor/editor_markdown_ext')
+      import('~/editor/extensions/editor_markdown_ext')
         .then(({ EditorMarkdownExtension: MarkdownExtension } = {}) => {
           this.editor.use(new MarkdownExtension());
           addEditorMarkdownListeners(this.editor);

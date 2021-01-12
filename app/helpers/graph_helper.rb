@@ -22,4 +22,10 @@ module GraphHelper
     ratio = (counts[:success].to_f / (counts[:success] + counts[:failed])) * 100
     ratio.to_i
   end
+
+  def should_render_deployment_frequency_charts
+    false
+  end
 end
+
+GraphHelper.prepend_if_ee('EE::GraphHelper')

@@ -307,8 +307,7 @@ export default {
         callback: this.checkStatus,
         startingInterval: this.startingPollInterval,
         maxInterval: this.startingPollInterval + secondsToMilliseconds(4 * 60),
-        hiddenInterval:
-          window.gon?.features?.widgetVisibilityPolling && secondsToMilliseconds(6 * 60),
+        hiddenInterval: secondsToMilliseconds(6 * 60),
         incrementByFactorOf: 2,
       });
     },

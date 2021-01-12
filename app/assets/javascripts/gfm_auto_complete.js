@@ -103,6 +103,7 @@ class GfmAutoComplete {
       at: '/',
       alias: 'commands',
       searchKey: 'search',
+      limit: 100,
       skipSpecialCharacterTest: true,
       skipMarkdownCharacterTest: true,
       data: GfmAutoComplete.defaultLoadingData,

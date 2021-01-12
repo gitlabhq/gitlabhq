@@ -242,6 +242,7 @@ module ApplicationSettingsHelper
       :housekeeping_incremental_repack_period,
       :html_emails_enabled,
       :import_sources,
+      :invisible_captcha_enabled,
       :max_artifacts_size,
       :max_attachment_size,
       :max_import_size,

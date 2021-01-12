@@ -294,6 +294,15 @@ RSpec.describe 'GFM autocomplete', :js do
         user_item = find('.atwho-view li', text: user.username)
         expect(user_item).to have_content(user.username)
       end
+
+      it 'does not limit quick actions autocomplete list to 5' do
+        note = find('#note-body')
+        page.within '.timeline-content-form' do
+          note.native.send_keys('/')
+        end
+
+        expect(page).to have_selector('.atwho-view li', minimum: 6, visible: true)
+      end
     end
 
     context 'assignees' do

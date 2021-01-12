@@ -14,14 +14,6 @@ module QA
           sign_up.fill_new_user_username_field(user.username)
           sign_up.fill_new_user_email_field(user.email)
           sign_up.fill_new_user_password_field(user.password)
-
-          # Because invisible_captcha would prevent submitting this form
-          # within 4 seconds, sleep here. This can be removed once we
-          # implement invisible_captcha as an application setting instead
-          # of a feature flag, so we can turn it off while testing.
-          # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/284113
-          sleep 5
-
           sign_up.click_new_user_register_button
         end
 

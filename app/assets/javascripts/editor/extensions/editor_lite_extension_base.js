@@ -1,4 +1,4 @@
-import { ERROR_INSTANCE_REQUIRED_FOR_EXTENSION } from './constants';
+import { ERROR_INSTANCE_REQUIRED_FOR_EXTENSION } from '../constants';
 
 export class EditorLiteExtension {
   constructor({ instance, ...options } = {}) {

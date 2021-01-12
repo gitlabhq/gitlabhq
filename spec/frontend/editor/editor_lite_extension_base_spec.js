@@ -1,5 +1,5 @@
 import { ERROR_INSTANCE_REQUIRED_FOR_EXTENSION } from '~/editor/constants';
-import { EditorLiteExtension } from '~/editor/editor_lite_extension_base';
+import { EditorLiteExtension } from '~/editor/extensions/editor_lite_extension_base';
 
 describe('The basis for an Editor Lite extension', () => {
   let ext;

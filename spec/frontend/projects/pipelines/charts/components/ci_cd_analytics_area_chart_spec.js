@@ -1,14 +1,23 @@
 import { mount } from '@vue/test-utils';
-import Component from '~/projects/pipelines/charts/components/pipelines_area_chart.vue';
+import CiCdAnalyticsAreaChart from '~/projects/pipelines/charts/components/ci_cd_analytics_area_chart.vue';
 import { transformedAreaChartData } from '../mock_data';
 
-describe('PipelinesAreaChart', () => {
+describe('CiCdAnalyticsAreaChart', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = mount(Component, {
+    wrapper = mount(CiCdAnalyticsAreaChart, {
       propsData: {
         chartData: transformedAreaChartData,
+        areaChartOptions: {
+          xAxis: {
+            name: 'X axis title',
+            type: 'category',
+          },
+          yAxis: {
+            name: 'Y axis title',
+          },
+        },
       },
       slots: {
         default: 'Some title',

@@ -154,7 +154,7 @@ export default class Todos {
   goToTodoUrl(e) {
     const todoLink = this.dataset.url;
 
-    if (!todoLink || e.target.tagName === 'A' || e.target.tagName === 'IMG') {
+    if (!todoLink || e.target.closest('a')) {
       return;
     }
 

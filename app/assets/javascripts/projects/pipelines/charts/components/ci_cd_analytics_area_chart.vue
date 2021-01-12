@@ -1,10 +1,10 @@
 <script>
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
-import { s__ } from '~/locale';
 import ResizableChartContainer from '~/vue_shared/components/resizable_chart/resizable_chart_container.vue';
 import { CHART_CONTAINER_HEIGHT } from '../constants';
 
 export default {
+  name: 'CiCdAnalyticsAreaChart',
   components: {
     GlAreaChart,
     ResizableChartContainer,
@@ -14,14 +14,9 @@ export default {
       type: Array,
       required: true,
     },
-  },
-  areaChartOptions: {
-    xAxis: {
-      name: s__('Pipeline|Date'),
-      type: 'category',
-    },
-    yAxis: {
-      name: s__('Pipeline|Pipelines'),
+    areaChartOptions: {
+      type: Object,
+      required: true,
     },
   },
   chartContainerHeight: CHART_CONTAINER_HEIGHT,
@@ -39,7 +34,7 @@ export default {
         :height="$options.chartContainerHeight"
         :data="chartData"
         :include-legend-avg-max="false"
-        :option="$options.areaChartOptions"
+        :option="areaChartOptions"
       />
     </resizable-chart-container>
   </div>

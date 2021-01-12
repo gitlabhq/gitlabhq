@@ -9,8 +9,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - Introduced in [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26672):
 >   once an action is executed, an alert appears when a quick action is successfully applied.
-> - In [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/16877) and later, you can use
+> - Introduced in [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/16877): you can use
 >   quick actions when updating the description of issues, epics, and merge requests.
+> - Introduced in [GitLab 13.8](https://gitlab.com/gitlab-org/gitlab/-/issues/292393): when you enter
+>   `/` into a description or comment field, all available quick actions are displayed in a scrollable list.
 
 Quick actions are textual shortcuts for common actions on issues, epics, merge requests,
 and commits that are usually done by clicking buttons or dropdowns in the GitLab UI.

@@ -598,8 +598,8 @@ GEM
     i18n_data (0.8.0)
     icalendar (2.4.1)
     ice_nine (0.11.2)
-    invisible_captcha (0.12.1)
-      rails (>= 3.2.0)
+    invisible_captcha (1.1.0)
+      rails (>= 4.2)
     ipaddress (0.8.3)
     jaeger-client (1.1.0)
       opentracing (~> 0.3)
@@ -1395,7 +1395,7 @@ DEPENDENCIES
   html2text
   httparty (~> 0.16.4)
   icalendar
-  invisible_captcha (~> 0.12.1)
+  invisible_captcha (~> 1.1.0)
   ipaddress (~> 0.8.3)
   jira-ruby (~> 2.1.4)
   js_regex (~> 3.4)

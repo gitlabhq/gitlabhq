@@ -1,7 +1,7 @@
 import Api from '~/api';
 import { registerSchema } from '~/ide/utils';
 import { EditorLiteExtension } from './editor_lite_extension_base';
-import { EXTENSION_CI_SCHEMA_FILE_NAME_MATCH } from './constants';
+import { EXTENSION_CI_SCHEMA_FILE_NAME_MATCH } from '../constants';
 
 export class CiSchemaExtension extends EditorLiteExtension {
   /**

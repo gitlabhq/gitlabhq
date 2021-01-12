@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import ProjectPipelinesChartsLegacy from './components/app_legacy.vue';
 import ProjectPipelinesCharts from './components/app.vue';
 
@@ -35,6 +36,10 @@ const mountPipelineChartsApp = (el) => {
     projectPath,
   } = el.dataset;
 
+  const shouldRenderDeploymentFrequencyCharts = parseBoolean(
+    el.dataset.shouldRenderDeploymentFrequencyCharts,
+  );
+
   const parseAreaChartData = (labels, totals, success) => {
     let parsedData = {};
 
@@ -61,6 +66,7 @@ const mountPipelineChartsApp = (el) => {
       apolloProvider,
       provide: {
         projectPath,
+        shouldRenderDeploymentFrequencyCharts,
       },
       render: (createElement) => createElement(ProjectPipelinesCharts, {}),
     });
@@ -71,6 +77,10 @@ const mountPipelineChartsApp = (el) => {
     name: 'ProjectPipelinesChartsAppLegacy',
     components: {
       ProjectPipelinesChartsLegacy,
+    },
+    provide: {
+      projectPath,
+      shouldRenderDeploymentFrequencyCharts,
     },
     render: (createElement) =>
       createElement(ProjectPipelinesChartsLegacy, {

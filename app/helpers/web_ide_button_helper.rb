@@ -26,7 +26,7 @@ module WebIdeButtonHelper
   end
 
   def show_gitpod_button?
-    show_web_ide_button? && Gitlab::Gitpod.feature_and_settings_enabled?(@project)
+    show_web_ide_button? && Gitlab::CurrentSettings.gitpod_enabled
   end
 
   def can_push_code?
@@ -54,7 +54,7 @@ module WebIdeButtonHelper
   end
 
   def gitpod_url
-    return "" unless Gitlab::Gitpod.feature_and_settings_enabled?(@project)
+    return "" unless Gitlab::CurrentSettings.gitpod_enabled
 
     "#{Gitlab::CurrentSettings.gitpod_url}##{project_tree_url(@project, tree_join(@ref, @path || ''))}"
   end

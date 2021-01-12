@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { GlColumnChart } from '@gitlab/ui/dist/charts';
 import Component from '~/projects/pipelines/charts/components/app_legacy.vue';
 import StatisticsList from '~/projects/pipelines/charts/components/statistics_list.vue';
-import PipelinesAreaChart from '~/projects/pipelines/charts/components/pipelines_area_chart.vue';
+import CiCdAnalyticsAreaChart from '~/projects/pipelines/charts/components/ci_cd_analytics_area_chart.vue';
 import {
   counts,
   timesChartData,
@@ -22,6 +22,13 @@ describe('ProjectsPipelinesChartsApp', () => {
         lastWeekChartData,
         lastMonthChartData,
         lastYearChartData,
+      },
+      provide: {
+        projectPath: 'test/project',
+        shouldRenderDeploymentFrequencyCharts: true,
+      },
+      stubs: {
+        DeploymentFrequencyCharts: true,
       },
     });
   });
@@ -52,12 +59,12 @@ describe('ProjectsPipelinesChartsApp', () => {
 
   describe('pipelines charts', () => {
     it('displays 3 area charts', () => {
-      expect(wrapper.findAll(PipelinesAreaChart).length).toBe(3);
+      expect(wrapper.findAll(CiCdAnalyticsAreaChart).length).toBe(3);
     });
 
     describe('displays individual correctly', () => {
       it('renders with the correct data', () => {
-        const charts = wrapper.findAll(PipelinesAreaChart);
+        const charts = wrapper.findAll(CiCdAnalyticsAreaChart);
 
         for (let i = 0; i < charts.length; i += 1) {
           const chart = charts.at(i);

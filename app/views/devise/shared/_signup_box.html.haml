@@ -10,7 +10,7 @@
   = form_for(resource, as: "new_#{resource_name}", url: url, html: { class: 'new_user gl-show-field-errors', 'aria-live' => 'assertive' }) do |f|
     .devise-errors
       = render 'devise/shared/error_messages', resource: resource
-    - if Feature.enabled?(:invisible_captcha)
+    - if Gitlab::CurrentSettings.invisible_captcha_enabled
       = invisible_captcha
     .name.form-row
       .col.form-group

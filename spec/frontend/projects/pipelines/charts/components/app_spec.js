@@ -1,10 +1,11 @@
+import { merge } from 'lodash';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'jest/helpers/mock_apollo_helper';
 import { GlColumnChart } from '@gitlab/ui/dist/charts';
 import Component from '~/projects/pipelines/charts/components/app.vue';
 import StatisticsList from '~/projects/pipelines/charts/components/statistics_list.vue';
-import PipelinesAreaChart from '~/projects/pipelines/charts/components/pipelines_area_chart.vue';
+import CiCdAnalyticsAreaChart from '~/projects/pipelines/charts/components/ci_cd_analytics_area_chart.vue';
 import getPipelineCountByStatus from '~/projects/pipelines/charts/graphql/queries/get_pipeline_count_by_status.query.graphql';
 import getProjectPipelineStatistics from '~/projects/pipelines/charts/graphql/queries/get_project_pipeline_statistics.query.graphql';
 import { mockPipelineCount, mockPipelineStatistics } from '../mock_data';
@@ -12,6 +13,8 @@ import { mockPipelineCount, mockPipelineStatistics } from '../mock_data';
 const projectPath = 'gitlab-org/gitlab';
 const localVue = createLocalVue();
 localVue.use(VueApollo);
+
+const DeploymentFrequencyChartsStub = { name: 'DeploymentFrequencyCharts', render: () => {} };
 
 describe('ProjectsPipelinesChartsApp', () => {
   let wrapper;
@@ -25,21 +28,29 @@ describe('ProjectsPipelinesChartsApp', () => {
     return createMockApollo(requestHandlers);
   }
 
-  function createComponent(options = {}) {
-    const { fakeApollo } = options;
-
-    return shallowMount(Component, {
-      provide: {
-        projectPath,
-      },
-      localVue,
-      apolloProvider: fakeApollo,
-    });
+  function createComponent(mountOptions = {}) {
+    wrapper = shallowMount(
+      Component,
+      merge(
+        {},
+        {
+          provide: {
+            projectPath,
+            shouldRenderDeploymentFrequencyCharts: false,
+          },
+          localVue,
+          apolloProvider: createMockApolloProvider(),
+          stubs: {
+            DeploymentFrequencyCharts: DeploymentFrequencyChartsStub,
+          },
+        },
+        mountOptions,
+      ),
+    );
   }
 
   beforeEach(() => {
-    const fakeApollo = createMockApolloProvider();
-    wrapper = createComponent({ fakeApollo });
+    createComponent();
   });
 
   afterEach(() => {
@@ -73,12 +84,12 @@ describe('ProjectsPipelinesChartsApp', () => {
 
   describe('pipelines charts', () => {
     it('displays 3 area charts', () => {
-      expect(wrapper.findAll(PipelinesAreaChart)).toHaveLength(3);
+      expect(wrapper.findAll(CiCdAnalyticsAreaChart)).toHaveLength(3);
     });
 
     describe('displays individual correctly', () => {
       it('renders with the correct data', () => {
-        const charts = wrapper.findAll(PipelinesAreaChart);
+        const charts = wrapper.findAll(CiCdAnalyticsAreaChart);
 
         for (let i = 0; i < charts.length; i += 1) {
           const chart = charts.at(i);
@@ -90,6 +101,28 @@ describe('ProjectsPipelinesChartsApp', () => {
           expect(chart.text()).toBe(wrapper.vm.areaCharts[i].title);
         }
       });
+    });
+  });
+
+  const findDeploymentFrequencyCharts = () => wrapper.find(DeploymentFrequencyChartsStub);
+
+  describe('when shouldRenderDeploymentFrequencyCharts is true', () => {
+    beforeEach(() => {
+      createComponent({ provide: { shouldRenderDeploymentFrequencyCharts: true } });
+    });
+
+    it('renders the deployment frequency charts', () => {
+      expect(findDeploymentFrequencyCharts().exists()).toBe(true);
+    });
+  });
+
+  describe('when shouldRenderDeploymentFrequencyCharts is false', () => {
+    beforeEach(() => {
+      createComponent({ provide: { shouldRenderDeploymentFrequencyCharts: false } });
+    });
+
+    it('does not render the deployment frequency charts', () => {
+      expect(findDeploymentFrequencyCharts().exists()).toBe(false);
     });
   });
 });

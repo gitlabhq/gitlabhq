@@ -7,7 +7,8 @@ import { getDateInPast } from '~/lib/utils/datetime_utility';
 import getPipelineCountByStatus from '../graphql/queries/get_pipeline_count_by_status.query.graphql';
 import getProjectPipelineStatistics from '../graphql/queries/get_project_pipeline_statistics.query.graphql';
 import StatisticsList from './statistics_list.vue';
-import PipelinesAreaChart from './pipelines_area_chart.vue';
+import CiCdAnalyticsAreaChart from './ci_cd_analytics_area_chart.vue';
+
 import {
   CHART_CONTAINER_HEIGHT,
   CHART_DATE_FORMAT,
@@ -52,12 +53,18 @@ export default {
     GlColumnChart,
     GlSkeletonLoader,
     StatisticsList,
-    PipelinesAreaChart,
+    CiCdAnalyticsAreaChart,
+    DeploymentFrequencyCharts: () =>
+      import('ee_component/projects/pipelines/charts/components/deployment_frequency_charts.vue'),
   },
   inject: {
     projectPath: {
       type: String,
       default: '',
+    },
+    shouldRenderDeploymentFrequencyCharts: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -260,6 +267,15 @@ export default {
       lastYear: __('Pipelines for last year'),
     };
   },
+  areaChartOptions: {
+    xAxis: {
+      name: s__('Pipeline|Date'),
+      type: 'category',
+    },
+    yAxis: {
+      name: s__('Pipeline|Pipelines'),
+    },
+  },
 };
 </script>
 <template>
@@ -292,12 +308,17 @@ export default {
     </div>
     <hr />
     <h4 class="gl-my-4">{{ __('Pipelines charts') }}</h4>
-    <pipelines-area-chart
+    <ci-cd-analytics-area-chart
       v-for="(chart, index) in areaCharts"
       :key="index"
       :chart-data="chart.data"
+      :area-chart-options="$options.areaChartOptions"
     >
       {{ chart.title }}
-    </pipelines-area-chart>
+    </ci-cd-analytics-area-chart>
+    <template v-if="shouldRenderDeploymentFrequencyCharts">
+      <hr />
+      <deployment-frequency-charts />
+    </template>
   </div>
 </template>

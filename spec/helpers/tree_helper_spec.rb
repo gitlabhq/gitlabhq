@@ -330,9 +330,8 @@ RSpec.describe TreeHelper do
       end
     end
 
-    context 'gitpod feature is enabled' do
+    context 'gitpod settings is enabled' do
       before do
-        stub_feature_flags(gitpod: true)
         allow(Gitlab::CurrentSettings)
           .to receive(:gitpod_enabled)
           .and_return(true)

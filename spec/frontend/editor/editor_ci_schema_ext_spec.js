@@ -1,6 +1,6 @@
 import { languages } from 'monaco-editor';
 import EditorLite from '~/editor/editor_lite';
-import { CiSchemaExtension } from '~/editor/editor_ci_schema_ext';
+import { CiSchemaExtension } from '~/editor/extensions/editor_ci_schema_ext';
 import { EXTENSION_CI_SCHEMA_FILE_NAME_MATCH } from '~/editor/constants';
 
 describe('~/editor/editor_ci_config_ext', () => {

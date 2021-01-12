@@ -9388,6 +9388,7 @@ CREATE TABLE application_settings (
     disable_feed_token boolean DEFAULT false NOT NULL,
     personal_access_token_prefix text,
     rate_limiting_response_text text,
+    invisible_captcha_enabled boolean DEFAULT false NOT NULL,
     container_registry_cleanup_tags_service_max_list_size integer DEFAULT 200 NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_registry_exp_policies_worker_capacity_positive CHECK ((container_registry_expiration_policies_worker_capacity >= 0)),
@@ -14711,7 +14712,8 @@ ALTER SEQUENCE packages_build_infos_id_seq OWNED BY packages_build_infos.id;
 CREATE TABLE packages_composer_metadata (
     package_id bigint NOT NULL,
     target_sha bytea NOT NULL,
-    composer_json jsonb DEFAULT '{}'::jsonb NOT NULL
+    composer_json jsonb DEFAULT '{}'::jsonb NOT NULL,
+    version_cache_sha bytea
 );
 
 CREATE TABLE packages_conan_file_metadata (

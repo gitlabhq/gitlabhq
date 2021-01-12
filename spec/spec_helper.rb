@@ -369,8 +369,5 @@ end
 # Prevent Rugged from picking up local developer gitconfig.
 Rugged::Settings['search_path_global'] = Rails.root.join('tmp/tests').to_s
 
-# Disable timestamp checks for invisible_captcha
-InvisibleCaptcha.timestamp_enabled = false
-
 # Initialize FactoryDefault to use create_default helper
 TestProf::FactoryDefault.init

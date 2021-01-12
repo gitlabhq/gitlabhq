@@ -171,7 +171,7 @@ class ApplicationSetting < ApplicationRecord
   validates :default_artifacts_expire_in, presence: true, duration: true
 
   validates :container_expiration_policies_enable_historic_entries,
-            inclusion: { in: [true, false], message: 'must be a boolean value' }
+            inclusion: { in: [true, false], message: _('must be a boolean value') }
 
   validates :container_registry_token_expire_delay,
             presence: true,
@@ -308,6 +308,9 @@ class ApplicationSetting < ApplicationRecord
 
   validates :container_registry_expiration_policies_worker_capacity,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :invisible_captcha_enabled,
+            inclusion: { in: [true, false], message: _('must be a boolean value') }
 
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
@@ -469,7 +472,7 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :cloud_license_auth_token, encryption_options_base_truncated_aes_256_gcm
 
   validates :disable_feed_token,
-            inclusion: { in: [true, false], message: 'must be a boolean value' }
+            inclusion: { in: [true, false], message: _('must be a boolean value') }
 
   before_validation :ensure_uuid!
 

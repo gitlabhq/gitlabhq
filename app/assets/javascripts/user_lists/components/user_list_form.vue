@@ -41,7 +41,7 @@ export default {
     ],
   },
   translations: {
-    formLabel: s__('UserLists|Feature flag list'),
+    formLabel: s__('UserLists|Feature flag user list'),
     formSubtitle: s__(
       'UserLists|Lists allow you to define a set of users to be used with feature flags. %{linkStart}Read more about feature flag lists.%{linkEnd}',
     ),

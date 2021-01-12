@@ -8827,6 +8827,9 @@ msgstr ""
 msgid "DastProfiles|Do you want to discard your changes?"
 msgstr ""
 
+msgid "DastProfiles|Edit profile"
+msgstr ""
+
 msgid "DastProfiles|Edit scanner profile"
 msgstr ""
 
@@ -8914,6 +8917,9 @@ msgstr ""
 msgid "DastProfiles|Scanner Profiles"
 msgstr ""
 
+msgid "DastProfiles|Scanner name"
+msgstr ""
+
 msgid "DastProfiles|Show debug messages"
 msgstr ""
 
@@ -8921,6 +8927,9 @@ msgid "DastProfiles|Site Profile"
 msgstr ""
 
 msgid "DastProfiles|Site Profiles"
+msgstr ""
+
+msgid "DastProfiles|Site name"
 msgstr ""
 
 msgid "DastProfiles|Spider timeout"
@@ -8941,6 +8950,9 @@ msgstr ""
 msgid "DastProfiles|Turn on AJAX spider"
 msgstr ""
 
+msgid "DastProfiles|URL"
+msgstr ""
+
 msgid "DastProfiles|Username"
 msgstr ""
 
@@ -8948,6 +8960,9 @@ msgid "DastProfiles|Username form field"
 msgstr ""
 
 msgid "DastProfiles|Validated"
+msgstr ""
+
+msgid "DastProfiles|Validation status"
 msgstr ""
 
 msgid "DastSiteValidation|Copy HTTP header to clipboard"
@@ -8960,6 +8975,9 @@ msgid "DastSiteValidation|Download validation text file"
 msgstr ""
 
 msgid "DastSiteValidation|Header validation"
+msgstr ""
+
+msgid "DastSiteValidation|Retry validation"
 msgstr ""
 
 msgid "DastSiteValidation|Step 1 - Choose site validation method"
@@ -9602,6 +9620,27 @@ msgid "Deploying to AWS is easy with GitLab"
 msgstr ""
 
 msgid "Deployment Frequency"
+msgstr ""
+
+msgid "DeploymentFrequencyCharts|Date"
+msgstr ""
+
+msgid "DeploymentFrequencyCharts|Deployments"
+msgstr ""
+
+msgid "DeploymentFrequencyCharts|Deployments charts"
+msgstr ""
+
+msgid "DeploymentFrequencyCharts|Deployments to production for last month (%{startDate} - %{endDate})"
+msgstr ""
+
+msgid "DeploymentFrequencyCharts|Deployments to production for last week (%{startDate} - %{endDate})"
+msgstr ""
+
+msgid "DeploymentFrequencyCharts|Deployments to production for the last 90 days (%{startDate} - %{endDate})"
+msgstr ""
+
+msgid "DeploymentFrequencyCharts|Something went wrong while getting deployment frequency data"
 msgstr ""
 
 msgid "Deployment|API"
@@ -10605,6 +10644,9 @@ msgstr ""
 msgid "Enable Incident Management inbound alert limit"
 msgstr ""
 
+msgid "Enable Invisible Captcha during sign up"
+msgstr ""
+
 msgid "Enable Kroki"
 msgstr ""
 
@@ -10692,7 +10734,7 @@ msgstr ""
 msgid "Enable proxy"
 msgstr ""
 
-msgid "Enable reCAPTCHA or Akismet and set IP limits. For reCAPTCHA, we currently only support %{recaptcha_v2_link_start}v2%{recaptcha_v2_link_end}"
+msgid "Enable reCAPTCHA, Invisible Captcha, Akismet and set IP limits. For reCAPTCHA, we currently only support %{recaptcha_v2_link_start}v2%{recaptcha_v2_link_end}"
 msgstr ""
 
 msgid "Enable shared runners"
@@ -30677,7 +30719,7 @@ msgstr ""
 msgid "UserLists|Enter a comma separated list of user IDs. These IDs should be the users of the system in which the feature flag is set, not GitLab IDs"
 msgstr ""
 
-msgid "UserLists|Feature flag list"
+msgid "UserLists|Feature flag user list"
 msgstr ""
 
 msgid "UserLists|Lists allow you to define a set of users to be used with feature flags. %{linkStart}Read more about feature flag lists.%{linkEnd}"
@@ -33847,6 +33889,9 @@ msgid "mrWidget|to be merged automatically when the pipeline succeeds"
 msgstr ""
 
 msgid "mrWidget|to start a merge train when the pipeline succeeds"
+msgstr ""
+
+msgid "must be a boolean value"
 msgstr ""
 
 msgid "must be a root namespace"

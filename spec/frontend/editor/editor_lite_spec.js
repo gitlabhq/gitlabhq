@@ -2,7 +2,7 @@
 import { editor as monacoEditor, languages as monacoLanguages, Uri } from 'monaco-editor';
 import waitForPromises from 'helpers/wait_for_promises';
 import Editor from '~/editor/editor_lite';
-import { EditorLiteExtension } from '~/editor/editor_lite_extension_base';
+import { EditorLiteExtension } from '~/editor/extensions/editor_lite_extension_base';
 import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
 import { EDITOR_LITE_INSTANCE_ERROR_NO_EL, URI_PREFIX } from '~/editor/constants';
 

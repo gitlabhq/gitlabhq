@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`PipelinesAreaChart matches the snapshot 1`] = `
+exports[`CiCdAnalyticsAreaChart matches the snapshot 1`] = `
 <div
   class="gl-mt-3"
 >

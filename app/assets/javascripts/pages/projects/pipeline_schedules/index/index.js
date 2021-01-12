@@ -13,12 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // eslint-disable-next-line no-new
   new Vue({
     el,
-    render(createElement) {
-      return createElement(PipelineSchedulesCallout);
-    },
     provide: {
       docsUrl,
       illustrationUrl,
+    },
+    render(createElement) {
+      return createElement(PipelineSchedulesCallout);
     },
   });
 });
