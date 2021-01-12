@@ -107,7 +107,7 @@ export default {
   },
   computed: {
     /**
-     * Determines if we shoud render the ref info section based
+     * Determines if we should render the ref info section based
      */
     shouldShowRefInfo() {
       return this.showRefInfo && (this.commitRef || this.mergeRequestRef);

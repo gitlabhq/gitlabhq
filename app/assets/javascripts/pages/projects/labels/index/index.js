@@ -77,5 +77,4 @@ const initLabelIndex = () => {
     },
   });
 };
-
-document.addEventListener('DOMContentLoaded', initLabelIndex);
+initLabelIndex();

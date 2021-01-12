@@ -19,7 +19,7 @@ module ResourceEvents
         state: ResourceStateEvent.states[state],
         close_after_error_tracking_resolve: close_after_error_tracking_resolve,
         close_auto_resolve_prometheus_alert: close_auto_resolve_prometheus_alert,
-        created_at: Time.zone.now
+        created_at: resource.system_note_timestamp
       )
 
       resource.expire_note_etag_cache

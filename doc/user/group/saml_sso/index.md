@@ -212,7 +212,7 @@ When a user tries to sign in with Group SSO, GitLab attempts to find or create a
 To link SAML to your existing GitLab.com account:
 
 1. Sign in to your GitLab.com account.
-1. Locate and visit the **GitLab single sign-on URL** for the group you're signing in to. A group Admin can find this on the group's **Settings > SAML SSO** page. If the sign-in URL is configured, users can connect to the GitLab app from the Identity Provider.
+1. Locate and visit the **GitLab single sign-on URL** for the group you're signing in to. A group owner can find this on the group's **Settings > SAML SSO** page. If the sign-in URL is configured, users can connect to the GitLab app from the Identity Provider.
 1. Click **Authorize**.
 1. Enter your credentials on the Identity Provider if prompted.
 1. You are then redirected back to GitLab.com and should now have access to the group. In the future, you can use SAML to sign in to GitLab.com.

@@ -1,4 +1,4 @@
-#import "~/pipelines/graphql/queries/pipeline_stages_connection.fragment.graphql"
+#import "~/pipelines/graphql/fragments/pipeline_stages_connection.fragment.graphql"
 
 query getCiConfigData($projectPath: ID!, $content: String!) {
   ciConfig(projectPath: $projectPath, content: $content) {

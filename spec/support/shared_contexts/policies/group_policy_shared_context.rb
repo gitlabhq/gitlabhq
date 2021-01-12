@@ -23,6 +23,7 @@ RSpec.shared_context 'GroupPolicy context' do
   let(:reporter_permissions) do
     %i[
         admin_label
+        admin_board
         read_container_image
         read_metrics_dashboard_annotation
         read_prometheus

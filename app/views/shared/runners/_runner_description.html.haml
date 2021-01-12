@@ -1,16 +1,12 @@
 .light.gl-mt-3
   %p
-    = _("You can set up as many Runners as you need to run your jobs.")
-    %br
-    = _('Runners can be placed on separate users, servers, and even on your local machine.')
+    = _("Register as many runners as you want. You can register runners as separate users, on separate servers, and on your local machine. Runners are either:")
 
-  %p
-    = _('Each Runner can be in one of the following states:')
   %div
     %ul
       %li
         %span.badge.badge-success active
-        = _('- Runner is active and can process any new jobs')
+        = _('- Available to run jobs.')
       %li
         %span.badge.badge-danger paused
-        = _('- Runner is paused and will not receive any new jobs')
+        = _('- Not available to run jobs.')

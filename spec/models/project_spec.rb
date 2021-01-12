@@ -1499,63 +1499,13 @@ RSpec.describe Project, factory_default: :keep do
         allow(::Gitlab::ServiceDeskEmail).to receive(:config).and_return(config)
       end
 
-      context 'when service_desk_custom_address flag is enabled' do
-        before do
-          stub_feature_flags(service_desk_custom_address: true)
-        end
+      it 'returns custom address when project_key is set' do
+        create(:service_desk_setting, project: project, project_key: 'key1')
 
-        it 'returns custom address when project_key is set' do
-          create(:service_desk_setting, project: project, project_key: 'key1')
-
-          expect(subject).to eq("foo+#{project.full_path_slug}-key1@bar.com")
-        end
-
-        it_behaves_like 'with incoming email address'
+        expect(subject).to eq("foo+#{project.full_path_slug}-key1@bar.com")
       end
 
-      context 'when service_desk_custom_address flag is disabled' do
-        before do
-          stub_feature_flags(service_desk_custom_address: false)
-        end
-
-        it_behaves_like 'with incoming email address'
-      end
-    end
-  end
-
-  describe '.service_desk_custom_address_enabled?' do
-    let_it_be(:project) { create(:project, service_desk_enabled: true) }
-
-    subject(:address_enabled) { project.service_desk_custom_address_enabled? }
-
-    context 'when service_desk_email is enabled' do
-      before do
-        allow(::Gitlab::ServiceDeskEmail).to receive(:enabled?).and_return(true)
-      end
-
-      it 'returns true' do
-        expect(address_enabled).to be_truthy
-      end
-
-      context 'when service_desk_custom_address flag is disabled' do
-        before do
-          stub_feature_flags(service_desk_custom_address: false)
-        end
-
-        it 'returns false' do
-          expect(address_enabled).to be_falsey
-        end
-      end
-    end
-
-    context 'when service_desk_email is disabled' do
-      before do
-        allow(::Gitlab::ServiceDeskEmail).to receive(:enabled?).and_return(false)
-      end
-
-      it 'returns false when service_desk_email is disabled' do
-        expect(address_enabled).to be_falsey
-      end
+      it_behaves_like 'with incoming email address'
     end
   end
 

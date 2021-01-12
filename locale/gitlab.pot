@@ -1033,15 +1033,15 @@ msgstr ""
 msgid ", or "
 msgstr ""
 
+msgid "- Available to run jobs."
+msgstr ""
+
 msgid "- Event"
 msgid_plural "- Events"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "- Runner is active and can process any new jobs"
-msgstr ""
-
-msgid "- Runner is paused and will not receive any new jobs"
+msgid "- Not available to run jobs."
 msgstr ""
 
 msgid "- User"
@@ -3405,6 +3405,9 @@ msgstr ""
 msgid "Ancestors"
 msgstr ""
 
+msgid "And this registration token:"
+msgstr ""
+
 msgid "Anonymous"
 msgstr ""
 
@@ -3778,13 +3781,13 @@ msgstr ""
 msgid "Are you sure you want to remove this list?"
 msgstr ""
 
-msgid "Are you sure you want to reset registration token?"
-msgstr ""
-
 msgid "Are you sure you want to reset the SCIM token? SCIM provisioning will stop working until the new token is updated."
 msgstr ""
 
 msgid "Are you sure you want to reset the health check token?"
+msgstr ""
+
+msgid "Are you sure you want to reset the registration token?"
 msgstr ""
 
 msgid "Are you sure you want to revoke this %{type}? This action cannot be undone."
@@ -3856,7 +3859,7 @@ msgstr ""
 msgid "Ascending"
 msgstr ""
 
-msgid "Ask your group maintainer to set up a group Runner."
+msgid "Ask your group maintainer to set up a group runner."
 msgstr ""
 
 msgid "Assertion consumer service URL"
@@ -4259,16 +4262,16 @@ msgstr ""
 msgid "Available ID"
 msgstr ""
 
-msgid "Available Runners: %{runners}"
-msgstr ""
-
 msgid "Available for dependency and container scanning"
 msgstr ""
 
-msgid "Available group Runners: %{runners}"
+msgid "Available group runners: %{runners}"
 msgstr ""
 
-msgid "Available shared Runners:"
+msgid "Available runners: %{runners}"
+msgstr ""
+
+msgid "Available shared runners:"
 msgstr ""
 
 msgid "Available specific runners"
@@ -5806,7 +5809,7 @@ msgstr ""
 msgid "Click %{link_to} to view the request."
 msgstr ""
 
-msgid "Click the button below to begin the install process by navigating to the Kubernetes page"
+msgid "Click the button below."
 msgstr ""
 
 msgid "Click to expand it."
@@ -10054,7 +10057,7 @@ msgstr ""
 msgid "Disable for this project"
 msgstr ""
 
-msgid "Disable group Runners"
+msgid "Disable group runners"
 msgstr ""
 
 msgid "Disable public access to Pages sites"
@@ -10345,9 +10348,6 @@ msgid "During this process, you’ll be asked for URLs from GitLab’s side. Use
 msgstr ""
 
 msgid "Dynamic Application Security Testing (DAST)"
-msgstr ""
-
-msgid "Each Runner can be in one of the following states:"
 msgstr ""
 
 msgid "Edit"
@@ -10695,7 +10695,7 @@ msgstr ""
 msgid "Enable for this project"
 msgstr ""
 
-msgid "Enable group Runners"
+msgid "Enable group runners"
 msgstr ""
 
 msgid "Enable header and footer in emails"
@@ -12689,7 +12689,7 @@ msgstr ""
 msgid "From merge request merge until deploy to production"
 msgstr ""
 
-msgid "From the Kubernetes cluster details view, install Runner from the applications list"
+msgid "From the Kubernetes cluster details view, applications list, install GitLab Runner."
 msgstr ""
 
 msgid "Full name"
@@ -13184,9 +13184,6 @@ msgstr ""
 msgid "GitLab Billing Team."
 msgstr ""
 
-msgid "GitLab Group Runners can execute code for all the projects in this group."
-msgstr ""
-
 msgid "GitLab Import"
 msgstr ""
 
@@ -13610,9 +13607,6 @@ msgstr ""
 msgid "Group Audit Events"
 msgstr ""
 
-msgid "Group CI/CD settings"
-msgstr ""
-
 msgid "Group Git LFS status:"
 msgstr ""
 
@@ -13626,9 +13620,6 @@ msgid "Group ID: %{group_id}"
 msgstr ""
 
 msgid "Group Owner must have signed in with SAML before enabling Group Managed Accounts"
-msgstr ""
-
-msgid "Group Runners"
 msgstr ""
 
 msgid "Group SAML must be enabled to test"
@@ -13713,6 +13704,12 @@ msgid "Group push rule exists, try updating"
 msgstr ""
 
 msgid "Group requires separate account"
+msgstr ""
+
+msgid "Group runners"
+msgstr ""
+
+msgid "Group runners can be managed with the %{link}."
 msgstr ""
 
 msgid "Group variables (inherited)"
@@ -14421,6 +14418,9 @@ msgstr ""
 msgid "Housekeeping, export, path, transfer, remove, archive."
 msgstr ""
 
+msgid "How do I configure runners?"
+msgstr ""
+
 msgid "How does cleanup work?"
 msgstr ""
 
@@ -15099,10 +15099,10 @@ msgstr ""
 msgid "Install"
 msgstr ""
 
-msgid "Install GitLab Runner"
+msgid "Install GitLab Runner and ensure it's running."
 msgstr ""
 
-msgid "Install Runner on Kubernetes"
+msgid "Install GitLab Runner on Kubernetes"
 msgstr ""
 
 msgid "Install a soft token authenticator like %{free_otp_link} or Google Authenticator from your application repository and use that app to scan this QR code. More information is available in the %{help_link_start}documentation%{help_link_end}."
@@ -16487,9 +16487,6 @@ msgid "Learn more about %{username}"
 msgstr ""
 
 msgid "Learn more about Auto DevOps"
-msgstr ""
-
-msgid "Learn more about Kubernetes"
 msgstr ""
 
 msgid "Learn more about License-Check"
@@ -20013,6 +20010,9 @@ msgstr ""
 msgid "Other Labels"
 msgstr ""
 
+msgid "Other available runners"
+msgstr ""
+
 msgid "Other information"
 msgstr ""
 
@@ -23315,10 +23315,19 @@ msgstr ""
 msgid "Register WebAuthn Device"
 msgstr ""
 
+msgid "Register a runner on a Kubernetes cluster. %{link_to_help_page}"
+msgstr ""
+
+msgid "Register as many runners as you want. You can register runners as separate users, on separate servers, and on your local machine. Runners are either:"
+msgstr ""
+
 msgid "Register device"
 msgstr ""
 
 msgid "Register now"
+msgstr ""
+
+msgid "Register the runner with this URL:"
 msgstr ""
 
 msgid "Register with two-factor app"
@@ -23446,9 +23455,6 @@ msgstr ""
 msgid "Remove %{displayReference}"
 msgstr ""
 
-msgid "Remove Runner"
-msgstr ""
-
 msgid "Remove Zoom meeting"
 msgstr ""
 
@@ -23540,6 +23546,9 @@ msgid "Remove report"
 msgstr ""
 
 msgid "Remove reviewer"
+msgstr ""
+
+msgid "Remove runner"
 msgstr ""
 
 msgid "Remove secondary node"
@@ -24089,7 +24098,7 @@ msgstr ""
 msgid "Reset key"
 msgstr ""
 
-msgid "Reset runners registration token"
+msgid "Reset registration token"
 msgstr ""
 
 msgid "Reset template"
@@ -24345,6 +24354,9 @@ msgstr ""
 msgid "Run untagged jobs"
 msgstr ""
 
+msgid "Runner API"
+msgstr ""
+
 msgid "Runner is %{status}, last contact was %{runner_contact} ago"
 msgstr ""
 
@@ -24366,19 +24378,7 @@ msgstr ""
 msgid "Runners"
 msgstr ""
 
-msgid "Runners API"
-msgstr ""
-
-msgid "Runners activated for this project"
-msgstr ""
-
 msgid "Runners are processes that pick up and execute CI/CD jobs for GitLab."
-msgstr ""
-
-msgid "Runners are processes that pick up and execute jobs for GitLab. Here you can register and see your Runners for this project."
-msgstr ""
-
-msgid "Runners can be placed on separate users, servers, and even on your local machine."
 msgstr ""
 
 msgid "Runners can be:"
@@ -25281,7 +25281,7 @@ msgstr ""
 msgid "Select all"
 msgstr ""
 
-msgid "Select an existing Kubernetes cluster or create a new one"
+msgid "Select an existing Kubernetes cluster or create a new one."
 msgstr ""
 
 msgid "Select assignee"
@@ -25692,10 +25692,10 @@ msgstr ""
 msgid "Set up Jira Integration"
 msgstr ""
 
-msgid "Set up a %{type} Runner automatically"
+msgid "Set up a %{type} runner automatically"
 msgstr ""
 
-msgid "Set up a %{type} Runner manually"
+msgid "Set up a %{type} runner manually"
 msgstr ""
 
 msgid "Set up a hardware device as a second factor to sign in."
@@ -26662,16 +26662,13 @@ msgstr ""
 msgid "Spam log successfully submitted as ham."
 msgstr ""
 
-msgid "Specific Runners"
+msgid "Specific runners"
 msgstr ""
 
 msgid "Specified URL cannot be used: \"%{reason}\""
 msgstr ""
 
 msgid "Specify an e-mail address regex pattern to identify default internal users."
-msgstr ""
-
-msgid "Specify the following URL during the Runner setup:"
 msgstr ""
 
 msgid "Speed up your pipelines with Needs relationships"
@@ -26780,9 +26777,6 @@ msgid "Start merge train when pipeline succeeds"
 msgstr ""
 
 msgid "Start search"
-msgstr ""
-
-msgid "Start the Runner!"
 msgstr ""
 
 msgid "Start thread"
@@ -28577,10 +28571,16 @@ msgstr ""
 msgid "These paths are protected for POST requests."
 msgstr ""
 
-msgid "These variables are configured in the parent group settings, and will be active in the current project in addition to the project variables."
+msgid "These runners are shared across projects in this group."
 msgstr ""
 
-msgid "They can be managed using the %{link}."
+msgid "These runners are shared across this GitLab instance."
+msgstr ""
+
+msgid "These runners are specific to this project."
+msgstr ""
+
+msgid "These variables are configured in the parent group settings, and will be active in the current project in addition to the project variables."
 msgstr ""
 
 msgid "Third Party Advisory Link"
@@ -28610,7 +28610,7 @@ msgstr ""
 msgid "This Cron pattern is invalid"
 msgstr ""
 
-msgid "This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area."
+msgid "This GitLab instance does not provide any shared runners yet. Instance administrators can register shared runners in the admin area."
 msgstr ""
 
 msgid "This GitLab instance is licensed at the %{insufficient_license} tier. Geo is only available for users who have at least a Premium license."
@@ -28763,7 +28763,7 @@ msgstr ""
 msgid "This group cannot be invited to a project inside a group with enforced SSO"
 msgstr ""
 
-msgid "This group does not provide any group Runners yet."
+msgid "This group does not have any group runners yet."
 msgstr ""
 
 msgid "This group has been scheduled for permanent removal on %{date}"
@@ -28964,7 +28964,7 @@ msgstr ""
 msgid "This project"
 msgstr ""
 
-msgid "This project does not belong to a group and can therefore not make use of group Runners."
+msgid "This project does not belong to a group and cannot make use of group runners."
 msgstr ""
 
 msgid "This project does not have %{service_desk_link_start}Service Desk%{service_desk_link_end} enabled, so the user who created the issue will no longer receive email notifications about new activity."
@@ -29566,12 +29566,6 @@ msgid "To simplify the billing process, GitLab will collect user counts in order
 msgstr ""
 
 msgid "To specify the notification level per project of a group you belong to, you need to visit project page and change notification level there."
-msgstr ""
-
-msgid "To start serving your jobs you can add Runners to your group"
-msgstr ""
-
-msgid "To start serving your jobs you can either add specific Runners to your project or use shared Runners"
 msgstr ""
 
 msgid "To unsubscribe from this issue, please paste the following link into your browser:"
@@ -30627,9 +30621,6 @@ msgid "Use one line per URI"
 msgstr ""
 
 msgid "Use template"
-msgstr ""
-
-msgid "Use the following registration token during setup:"
 msgstr ""
 
 msgid "Use your global notification setting"
@@ -32138,9 +32129,6 @@ msgstr ""
 msgid "You can always edit this later"
 msgstr ""
 
-msgid "You can configure jobs to use runners that are assigned specific tags. Separate tags with commas."
-msgstr ""
-
 msgid "You can create a new %{link}."
 msgstr ""
 
@@ -32163,9 +32151,6 @@ msgid "You can create new ones at your Personal Access Tokens settings %{pat_lin
 msgstr ""
 
 msgid "You can easily contribute to them by requesting to join these groups."
-msgstr ""
-
-msgid "You can easily install a Runner on a Kubernetes cluster. %{link_to_help_page}"
 msgstr ""
 
 msgid "You can filter by 'days to merge' by clicking on the columns in the chart."
@@ -32240,7 +32225,7 @@ msgstr ""
 msgid "You can see your chat accounts."
 msgstr ""
 
-msgid "You can set up as many Runners as you need to run your jobs."
+msgid "You can set up jobs to only use runners with specific tags. Separate tags with commas."
 msgstr ""
 
 msgid "You can specify notification level per group or per project."
@@ -33392,6 +33377,9 @@ msgstr ""
 msgid "group members"
 msgstr ""
 
+msgid "group's CI/CD settings."
+msgstr ""
+
 msgid "groups"
 msgstr ""
 
@@ -34139,6 +34127,9 @@ msgid "reset it."
 msgstr ""
 
 msgid "revised"
+msgstr ""
+
+msgid "runners"
 msgstr ""
 
 msgid "satisfied"

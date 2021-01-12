@@ -193,6 +193,29 @@ RSpec.describe Projects::MergeRequests::DiffsController do
       end
     end
 
+    context "with the :default_merge_ref_for_diffs flag on" do
+      let(:diffable_merge_ref) { true }
+
+      subject do
+        go(diff_head: true,
+           diff_id: merge_request.merge_request_diff.id,
+           start_sha: merge_request.merge_request_diff.start_commit_sha)
+      end
+
+      it "correctly generates the right diff between versions" do
+        MergeRequests::MergeToRefService.new(project, merge_request.author).execute(merge_request)
+
+        expect_next_instance_of(CompareService) do |service|
+          expect(service).to receive(:execute).with(
+            project,
+            merge_request.merge_request_diff.head_commit_sha,
+            straight: true)
+        end
+
+        subject
+      end
+    end
+
     context 'with diff_head param passed' do
       before do
         allow(merge_request).to receive(:diffable_merge_ref?)

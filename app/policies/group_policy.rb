@@ -122,6 +122,7 @@ class GroupPolicy < BasePolicy
   rule { reporter }.policy do
     enable :reporter_access
     enable :read_container_image
+    enable :admin_board
     enable :admin_label
     enable :admin_list
     enable :admin_issue

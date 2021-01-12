@@ -105,9 +105,7 @@ export default {
     highlightedJobs() {
       // If you are hovering on a job, then the jobs we want to highlight are:
       // The job you are currently hovering + all of its needs.
-      return this.hasHighlightedJob
-        ? [this.highlightedJob, ...this.needsObject[this.highlightedJob]]
-        : [];
+      return [this.highlightedJob, ...this.needsObject[this.highlightedJob]];
     },
     highlightedLinks() {
       // If you are hovering on a job, then the links we want to highlight are:

@@ -1,7 +1,9 @@
-%h3
-  = _('Specific Runners')
+%h4
+  = _('Specific runners')
 
 .bs-callout.help-callout
+  = _('These runners are specific to this project.')
+  %hr
   = render partial: 'ci/runner/how_to_setup_runner_automatically',
            locals: { type: 'specific',
                      clusters_path: project_clusters_path(@project) }
@@ -11,14 +13,16 @@
                      type: 'specific',
                      reset_token_url: reset_registration_token_namespace_project_settings_ci_cd_path }
 
+%hr
+
 - if @project_runners.any?
-  %h4.underlined-title= _('Runners activated for this project')
+  %h4.underlined-title= _('Available specific runners')
   %ul.bordered-list.activated-specific-runners
     = render partial: 'projects/runners/runner', collection: @project_runners, as: :runner
   = paginate @project_runners, theme: "gitlab", param_name: "project_page", params: { expand_runners: true, anchor: 'js-runners-settings' }
 
 - if @assignable_runners.any?
-  %h4.underlined-title= _('Available specific runners')
+  %h4.underlined-title= _('Other available runners')
   %ul.bordered-list.available-specific-runners
     = render partial: 'projects/runners/runner', collection: @assignable_runners, as: :runner
   = paginate @assignable_runners, theme: "gitlab", param_name: "specific_page", :params => { :anchor => 'js-runners-settings'}

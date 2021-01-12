@@ -49,6 +49,7 @@ export const mockCiConfigQueryResponse = {
               nodes: [
                 {
                   name: 'job_test_1',
+                  size: 1,
                   jobs: {
                     nodes: [
                       {
@@ -63,10 +64,12 @@ export const mockCiConfigQueryResponse = {
                 },
                 {
                   name: 'job_test_2',
+                  size: 1,
                   jobs: {
                     nodes: [
                       {
                         name: 'job_test_2',
+
                         needs: { nodes: [], __typename: 'CiConfigNeedConnection' },
                         __typename: 'CiConfigJob',
                       },
@@ -86,6 +89,7 @@ export const mockCiConfigQueryResponse = {
               nodes: [
                 {
                   name: 'job_build',
+                  size: 1,
                   jobs: {
                     nodes: [
                       {

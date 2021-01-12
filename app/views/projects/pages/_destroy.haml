@@ -5,10 +5,10 @@
         = s_('GitLabPages|Remove pages')
       .errors-holder
       .card-body
-        %p
+        %p.gl-mb-0
           = s_('GitLabPages|Removing pages will prevent them from being exposed to the outside world.')
-        .form-actions
-          = link_to s_('GitLabPages|Remove pages'), project_pages_path(@project), data: { confirm: s_('GitLabPages|Are you sure?')}, method: :delete, class: "btn gl-button btn-danger"
+      .card-footer
+        = link_to s_('GitLabPages|Remove pages'), project_pages_path(@project), data: { confirm: s_('GitLabPages|Are you sure?')}, method: :delete, class: "btn gl-button btn-danger"
   - else
     .nothing-here-block
       = s_('GitLabPages|Only project maintainers can remove pages')

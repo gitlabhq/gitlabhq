@@ -46,7 +46,7 @@
       = _('Tags')
     .col-sm-10
       = f.text_field :tag_list, value: runner.tag_list.sort.join(', '), class: 'form-control'
-      .form-text.text-muted= _('You can configure jobs to use runners that are assigned specific tags. Separate tags with commas.')
+      .form-text.text-muted= _('You can set up jobs to only use runners with specific tags. Separate tags with commas.')
   - if local_assigns[:in_gitlab_com_admin_context]
     .form-group.row
       = label_tag :public_projects_minutes_cost_factor, class: 'col-form-label col-sm-2' do

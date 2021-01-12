@@ -28,7 +28,7 @@ RSpec.describe 'Group CI/CD settings' do
       let(:page_token) { find('#registration_token').text }
 
       before do
-        click_button 'Reset runners registration token'
+        click_button 'Reset registration token'
       end
 
       it 'changes registration token' do

@@ -12,7 +12,7 @@
         enabled: "#{@project.service_desk_enabled}",
         incoming_email: (@project.service_desk_incoming_address if @project.service_desk_enabled),
         custom_email: (@project.service_desk_custom_address if @project.service_desk_enabled),
-        custom_email_enabled: "#{@project.service_desk_custom_address_enabled?}",
+        custom_email_enabled: "#{Gitlab::ServiceDeskEmail.enabled?}",
         selected_template: "#{@project.service_desk_setting&.issue_template_key}",
         outgoing_name: "#{@project.service_desk_setting&.outgoing_name}",
         project_key: "#{@project.service_desk_setting&.project_key}",

@@ -1,11 +1,11 @@
-- link = link_to _('Runners API'), help_page_path('api/runners.md')
+- link = link_to _('Runner API'), help_page_path('api/runners.md')
 
-%h3
-  = _('Group Runners')
+%h4
+  = _('Group runners')
 
-.bs-callout.bs-callout-warning
-  = _('GitLab Group Runners can execute code for all the projects in this group.')
-  = _('They can be managed using the %{link}.').html_safe % { link: link }
+%p
+  = _('These runners are shared across projects in this group.')
+  = _('Group runners can be managed with the %{link}.').html_safe % { link: link }
 
 -# Proper policies should be implemented per
 -# https://gitlab.com/gitlab-org/gitlab-foss/issues/45894
@@ -18,3 +18,4 @@
            locals: { registration_token: @group.runners_token,
                      type: 'group',
                      reset_token_url: reset_registration_token_group_settings_ci_cd_path }
+  %br

@@ -4,6 +4,7 @@ fragment PipelineStagesConnection on CiConfigStageConnection {
     groups {
       nodes {
         name
+        size
         jobs {
           nodes {
             name
