@@ -10,7 +10,7 @@ module Types
           description: 'Default branch of the repository'
     field :empty, GraphQL::BOOLEAN_TYPE, null: false, method: :empty?, calls_gitaly: true,
           description: 'Indicates repository has no visible content'
-    field :exists, GraphQL::BOOLEAN_TYPE, null: false, method: :exists?,
+    field :exists, GraphQL::BOOLEAN_TYPE, null: false, method: :exists?, calls_gitaly: true,
           description: 'Indicates a corresponding Git repository exists on disk'
     field :tree, Types::Tree::TreeType, null: true, resolver: Resolvers::TreeResolver, calls_gitaly: true,
           description: 'Tree of the repository'

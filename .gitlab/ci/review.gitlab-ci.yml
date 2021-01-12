@@ -38,7 +38,7 @@ review-build-cng:
     - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
     # When the job is manual, review-deploy is also manual and we don't want people
     # to have to manually start the jobs in sequence, so we do it for them.
-    - '[ -z $CI_JOB_MANUAL ] || scripts/api/play_job --job-name "review-deploy"'
+    - '[ -z $CI_JOB_MANUAL ] || scripts/api/play_job.rb --job-name "review-deploy"'
 
 .review-workflow-base:
   extends:
@@ -78,8 +78,8 @@ review-deploy:
     - disable_sign_ups || (delete_release && exit 1)
     # When the job is manual, review-qa-smoke is also manual and we don't want people
     # to have to manually start the jobs in sequence, so we do it for them.
-    - '[ -z $CI_JOB_MANUAL ] || scripts/api/play_job --job-name "review-qa-smoke"'
-    - '[ -z $CI_JOB_MANUAL ] || scripts/api/play_job --job-name "review-performance"'
+    - '[ -z $CI_JOB_MANUAL ] || scripts/api/play_job.rb --job-name "review-qa-smoke"'
+    - '[ -z $CI_JOB_MANUAL ] || scripts/api/play_job.rb --job-name "review-performance"'
   after_script:
     # Run seed-dast-test-data.sh only when DAST_RUN is set to true. This is to pupulate review app with data for DAST scan.
     # Set DAST_RUN to true when jobs are manually scheduled.

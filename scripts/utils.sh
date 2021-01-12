@@ -89,12 +89,12 @@ function echosuccess() {
 
 function fail_pipeline_early() {
   local dont_interrupt_me_job_id
-  dont_interrupt_me_job_id=$(scripts/api/get_job_id --job-query "scope=success" --job-name "dont-interrupt-me")
+  dont_interrupt_me_job_id=$(scripts/api/get_job_id.rb --job-query "scope=success" --job-name "dont-interrupt-me")
 
   if [[ -n "${dont_interrupt_me_job_id}" ]]; then
     echoinfo "This pipeline cannot be interrupted due to \`dont-interrupt-me\` job ${dont_interrupt_me_job_id}"
   else
     echoinfo "Failing pipeline early for fast feedback due to test failures in rspec fail-fast."
-    scripts/api/cancel_pipeline
+    scripts/api/cancel_pipeline.rb
   fi
 }

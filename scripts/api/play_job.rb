@@ -14,7 +14,6 @@ class PlayJob
   }.freeze
 
   def initialize(options)
-    @project = options.delete(:project)
     @options = options
 
     Gitlab.configure do |config|
@@ -24,14 +23,18 @@ class PlayJob
   end
 
   def execute
-    job = JobFinder.new(project, options.slice(:api_token, :pipeline_id, :job_name).merge(scope: 'manual')).execute
+    job = JobFinder.new(options.slice(:project, :api_token, :pipeline_id, :job_name).merge(scope: 'manual')).execute
 
     Gitlab.job_play(project, job.id)
   end
 
   private
 
-  attr_reader :project, :options
+  attr_reader :options
+
+  def project
+    options[:project]
+  end
 end
 
 if $0 == __FILE__

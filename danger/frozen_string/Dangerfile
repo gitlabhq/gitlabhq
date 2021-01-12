@@ -1,13 +1,32 @@
 # frozen_string_literal: true
 
 FILE_EXTENSION = ".rb"
-MAGIC_COMMENT = "# frozen_string_literal: true"
+FROZEN_STRING_MAGIC_COMMENT = "# frozen_string_literal: true"
+SHEBANG_COMMENT = "#!"
 
 def get_files_with_no_magic_comment(files)
-  files.select do |file|
-    file.end_with?(FILE_EXTENSION) &&
-      !File.open(file, &:gets)&.start_with?(MAGIC_COMMENT)
+  files.select do |path|
+    path.end_with?(FILE_EXTENSION) &&
+      file_has_frozen_string_magic_comment?(path)
   end
+end
+
+def file_has_frozen_string_magic_comment?(path)
+  File.open(path) do |file|
+    first_line = file.gets
+
+    line_has_frozen_string_magic_comment?(first_line) ||
+      (line_has_shebang?(first_line) &&
+        line_has_frozen_string_magic_comment?(file.gets))
+  end
+end
+
+def line_has_frozen_string_magic_comment?(line)
+  line&.start_with?(FROZEN_STRING_MAGIC_COMMENT)
+end
+
+def line_has_shebang?(line)
+  line&.start_with?(SHEBANG_COMMENT)
 end
 
 files_to_fix = get_files_with_no_magic_comment(git.added_files)
@@ -20,7 +39,7 @@ if files_to_fix.any?
     markdown(<<~MARKDOWN)
       ## Enable Frozen String Literal
 
-      The following files should have `#{MAGIC_COMMENT}` on the first line:
+      The following files should have `#{FROZEN_STRING_MAGIC_COMMENT}` on the first line:
 
       * #{files_to_fix.map { |path| "`#{path}`" }.join("\n* ")}
     MARKDOWN
