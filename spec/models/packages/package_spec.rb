@@ -599,6 +599,20 @@ RSpec.describe Packages::Package, type: :model do
     end
   end
 
+  describe '.order_by_package_file' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:package1) { create(:maven_package, project: project) }
+    let_it_be(:package2) { create(:maven_package, project: project) }
+
+    it 'orders packages their associated package_file\'s created_at date', :aggregate_failures do
+      expect(project.packages.order_by_package_file).to match_array([package1, package1, package1, package2, package2, package2])
+
+      create(:package_file, :xml, package: package1)
+
+      expect(project.packages.order_by_package_file).to match_array([package1, package1, package1, package2, package2, package2, package1])
+    end
+  end
+
   describe '#versions' do
     let_it_be(:project) { create(:project) }
     let_it_be(:package) { create(:maven_package, project: project) }

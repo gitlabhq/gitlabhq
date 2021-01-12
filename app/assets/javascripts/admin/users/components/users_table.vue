@@ -1,6 +1,7 @@
 <script>
 import { GlTable } from '@gitlab/ui';
 import { __ } from '~/locale';
+import UserAvatar from './user_avatar.vue';
 
 const DEFAULT_TH_CLASSES =
   'gl-bg-transparent! gl-border-b-solid! gl-border-b-gray-100! gl-p-5! gl-border-b-1!';
@@ -9,6 +10,7 @@ const thWidthClass = (width) => `gl-w-${width}p ${DEFAULT_TH_CLASSES}`;
 export default {
   components: {
     GlTable,
+    UserAvatar,
   },
   props: {
     users: {
@@ -58,6 +60,10 @@ export default {
       :empty-text="s__('AdminUsers|No users found')"
       show-empty
       stacked="md"
-    />
+    >
+      <template #cell(name)="{ item: user }">
+        <UserAvatar :user="user" :admin-user-path="paths.adminUser" />
+      </template>
+    </gl-table>
   </div>
 </template>

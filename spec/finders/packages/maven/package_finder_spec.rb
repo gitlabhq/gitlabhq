@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe ::Packages::Maven::PackageFinder do
@@ -51,6 +52,30 @@ RSpec.describe ::Packages::Maven::PackageFinder do
       it 'raises an error' do
         expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
       end
+    end
+
+    context 'versionless maven-metadata.xml package' do
+      let_it_be(:sub_group1) { create(:group, parent: group) }
+      let_it_be(:sub_group2)   { create(:group, parent: group) }
+      let_it_be(:project1) { create(:project, group: sub_group1) }
+      let_it_be(:project2) { create(:project, group: sub_group2) }
+      let_it_be(:project3) { create(:project, group: sub_group1) }
+      let_it_be(:package_name) { 'foo' }
+      let_it_be(:package1) { create(:maven_package, project: project1, name: package_name, version: nil) }
+      let_it_be(:package2) { create(:maven_package, project: project2, name: package_name, version: nil) }
+      let_it_be(:package3) { create(:maven_package, project: project3, name: package_name, version: nil) }
+
+      let(:param_group) { group }
+      let(:param_path) { package_name }
+
+      before do
+        sub_group1.add_developer(user)
+        sub_group2.add_developer(user)
+        # the package with the most recently published file should be returned
+        create(:package_file, :xml, package: package2)
+      end
+
+      it { is_expected.to eq(package2) }
     end
   end
 end

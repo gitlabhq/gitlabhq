@@ -1,0 +1,5 @@
+---
+title: Stop unlinking the fork when changing visibility
+merge_request: 49013
+author:
+type: added

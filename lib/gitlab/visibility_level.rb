@@ -123,14 +123,6 @@ module Gitlab
       end
     end
 
-    def visibility_level_decreased?
-      return false unless visibility_level_previous_changes
-
-      before, after = visibility_level_previous_changes
-
-      before && after && after < before
-    end
-
     def visibility_level_previous_changes
       previous_changes[:visibility_level]
     end

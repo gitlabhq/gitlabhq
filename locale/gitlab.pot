@@ -8435,6 +8435,9 @@ msgstr ""
 msgid "Current Project"
 msgstr ""
 
+msgid "Current forks will keep their visibility level."
+msgstr ""
+
 msgid "Current node"
 msgstr ""
 
@@ -22308,6 +22311,9 @@ msgstr ""
 msgid "ProjectSettings|View project analytics"
 msgstr ""
 
+msgid "ProjectSettings|Visibility options for this fork are limited by the current visibility of the source project."
+msgstr ""
+
 msgid "ProjectSettings|What are badges?"
 msgstr ""
 
@@ -29401,6 +29407,9 @@ msgid "To add an SSH key you need to %{generate_link_start}generate one%{link_en
 msgstr ""
 
 msgid "To add the entry manually, provide the following details to the application on your phone."
+msgstr ""
+
+msgid "To confirm, type %{phrase_code}"
 msgstr ""
 
 msgid "To connect GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the %{code_open}repo%{code_close} scope, so we can display a list of your public and private repositories which are available to connect."

@@ -377,6 +377,11 @@ export default {
             />
           </div>
         </div>
+        <span v-if="!visibilityAllowed(visibilityLevel)" class="form-text text-muted">{{
+          s__(
+            'ProjectSettings|Visibility options for this fork are limited by the current visibility of the source project.',
+          )
+        }}</span>
         <span class="form-text text-muted">{{ visibilityLevelDescription }}</span>
         <label v-if="visibilityLevel !== visibilityOptions.PRIVATE" class="gl-line-height-28">
           <input

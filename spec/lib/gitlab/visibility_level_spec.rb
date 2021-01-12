@@ -131,28 +131,4 @@ RSpec.describe Gitlab::VisibilityLevel do
       end
     end
   end
-
-  describe '#visibility_level_decreased?' do
-    let(:project) { create(:project, :internal) }
-
-    context 'when visibility level decreases' do
-      before do
-        project.update!(visibility_level: described_class::PRIVATE)
-      end
-
-      it 'returns true' do
-        expect(project.visibility_level_decreased?).to be(true)
-      end
-    end
-
-    context 'when visibility level does not decrease' do
-      before do
-        project.update!(visibility_level: described_class::PUBLIC)
-      end
-
-      it 'returns false' do
-        expect(project.visibility_level_decreased?).to be(false)
-      end
-    end
-  end
 end

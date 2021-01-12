@@ -18,9 +18,9 @@
           = _('Once you confirm and press "Reduce project visibility":')
         %ul
           %li
-            = ("Current forks will keep their visibility level but their fork relationship with this project will be %{strong_start}removed%{strong_end}.").html_safe % { strong_start: strong_start, strong_end: strong_end }
+            = _("Current forks will keep their visibility level.").html_safe
         %label{ for: "confirm_path_input" }
-          = ("To confirm, type %{phrase_code}").html_safe % { phrase_code: '<code class="js-confirm-danger-match">%{phrase_name}</code>'.html_safe % { phrase_name: @project.full_path } }
+          = _("To confirm, type %{phrase_code}").html_safe % { phrase_code: '<code class="js-confirm-danger-match">%{phrase_name}</code>'.html_safe % { phrase_name: @project.full_path } }
         .form-group
           = text_field_tag 'confirm_path_input', '', class: 'form-control js-confirm-danger-input qa-confirm-input'
         .form-actions

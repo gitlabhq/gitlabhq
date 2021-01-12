@@ -112,6 +112,7 @@ class Packages::Package < ApplicationRecord
   scope :order_project_name_desc, -> { joins(:project).reorder('projects.name DESC') }
   scope :order_project_path, -> { joins(:project).reorder('projects.path ASC, id ASC') }
   scope :order_project_path_desc, -> { joins(:project).reorder('projects.path DESC, id DESC') }
+  scope :order_by_package_file, -> { joins(:package_files).order('packages_package_files.created_at ASC') }
 
   def self.for_projects(projects)
     return none unless projects.any?
