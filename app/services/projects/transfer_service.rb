@@ -37,7 +37,7 @@ module Projects
 
     private
 
-    attr_reader :old_path, :new_path, :new_namespace
+    attr_reader :old_path, :new_path, :new_namespace, :old_namespace
 
     # rubocop: disable CodeReuse/ActiveRecord
     def transfer(project)
@@ -96,12 +96,17 @@ module Projects
         execute_system_hooks
       end
 
-      move_pages(project)
+      post_update_hooks(project)
     rescue Exception # rubocop:disable Lint/RescueException
       rollback_side_effects
       raise
     ensure
       refresh_permissions
+    end
+
+    # Overridden in EE
+    def post_update_hooks(project)
+      move_pages(project)
     end
 
     def transfer_missing_group_resources(group)

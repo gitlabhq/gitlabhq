@@ -10,10 +10,10 @@ module Resolvers
 
       argument :ids, [DesignID],
                required: false,
-               description: 'Filters designs by their ID'
+               description: 'Filters designs by their ID.'
       argument :filenames, [GraphQL::STRING_TYPE],
                required: false,
-               description: 'Filters designs by their filename'
+               description: 'Filters designs by their filename.'
       argument :at_version, VersionID,
                required: false,
                description: 'Filters designs to only those that existed at the version. ' \

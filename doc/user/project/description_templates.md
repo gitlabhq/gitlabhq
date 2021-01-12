@@ -108,7 +108,7 @@ you should be fine.
 ![Default issue description templates](img/description_templates_issue_settings.png)
 
 After you add the description, hit **Save changes** for the settings to take
-effect. Now, every time a new merge request or issue is created, it is 
+effect. Now, every time a new merge request or issue is created, it is
 pre-filled with the text you entered in the template(s).
 
 ## Description template example

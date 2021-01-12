@@ -9,11 +9,11 @@ module Resolvers
 
       argument :id, ::Types::GlobalIDType[::DesignManagement::Design],
                required: false,
-               description: 'Find a design by its ID'
+               description: 'Find a design by its ID.'
 
       argument :filename, GraphQL::STRING_TYPE,
                required: false,
-               description: 'Find a design by its filename'
+               description: 'Find a design by its filename.'
 
       def resolve(filename: nil, id: nil)
         params = parse_args(filename, id)

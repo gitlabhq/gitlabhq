@@ -92,7 +92,7 @@ the **Failed jobs** tab of the pipeline page.
 
 The Vulnerability Report next displays the total number of vulnerabilities by severity (for example,
 Critical, High, Medium, Low, Info, Unknown). Below this, a table shows each vulnerability's status, severity,
-description and if there is a Merge Request related to it. Clicking a vulnerability takes you to its 
+description and if there is a Merge Request related to it. Clicking a vulnerability takes you to its
 [Vulnerability Details](../vulnerabilities)
 page to view more information about that vulnerability.
 

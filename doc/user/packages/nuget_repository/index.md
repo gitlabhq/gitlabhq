@@ -72,7 +72,7 @@ To use the GitLab endpoint for NuGet Packages, choose an option:
 Some features such as [publishing](#publish-a-nuget-package) a package are only available on the project-level endpoint.
 
 WARNING:
-Because of how NuGet handles credentials, the Package Registry rejects anonymous requests on the group-level endpoint. 
+Because of how NuGet handles credentials, the Package Registry rejects anonymous requests on the group-level endpoint.
 To work around this limitation, set up [authentication](#add-the-package-registry-as-a-source-for-nuget-packages).
 
 ## Add the Package Registry as a source for NuGet packages
@@ -90,7 +90,7 @@ Prerequisites:
     with the scope set to `read_package_registry`, `write_package_registry`, or
     both.
 - A name for your source.
-- Depending on the [endpoint level](#use-the-gitlab-endpoint-for-nuget-packages) you use, either: 
+- Depending on the [endpoint level](#use-the-gitlab-endpoint-for-nuget-packages) you use, either:
   - Your project ID, which is found on your project's home page.
   - Your group ID, which is found on your group's home page.
 

@@ -137,7 +137,7 @@ To edit the custom email display name:
 1. Enter a new name in **Email display name**.
 1. Select **Save Changes**.
 
-### Using custom email address 
+### Using custom email address
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2201) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0.
 > - It was [deployed behind a feature flag](../feature_flags.md), disabled by default.

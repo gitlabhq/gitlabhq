@@ -14,12 +14,12 @@ module Resolvers
       argument :earlier_or_equal_to_sha, GraphQL::STRING_TYPE,
                as: :sha,
                required: false,
-               description: 'The SHA256 of the most recent acceptable version'
+               description: 'The SHA256 of the most recent acceptable version.'
 
       argument :earlier_or_equal_to_id, VersionID,
                as: :id,
                required: false,
-               description: 'The Global ID of the most recent acceptable version'
+               description: 'The Global ID of the most recent acceptable version.'
 
       # This resolver has a custom singular resolver
       def self.single

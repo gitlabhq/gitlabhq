@@ -134,7 +134,7 @@ operation of the pipeline.
 
 [In GitLab 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30101),
 all global variables with descriptions defined in the `.gitlab-ci.yml` file are
-displayed in the variable fields. 
+displayed in the variable fields.
 
 To execute a pipeline manually:
 

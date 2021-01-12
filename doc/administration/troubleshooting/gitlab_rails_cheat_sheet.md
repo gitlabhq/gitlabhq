@@ -384,7 +384,7 @@ project = Project.find_by_full_path('PROJECT_PATH')
 Projects::ImportExport::ExportService.new(project, user).execute
 ```
 
-If the project you wish to export is available at `https://gitlab.example.com/baltig/pipeline-templates`, the value to use for `PROJECT_PATH` would be `baltig/pipeline-templates`. 
+If the project you wish to export is available at `https://gitlab.example.com/baltig/pipeline-templates`, the value to use for `PROJECT_PATH` would be `baltig/pipeline-templates`.
 
 If this all runs successfully, you will see output like the following before being returned to the Rails console prompt:
 
@@ -392,7 +392,7 @@ If this all runs successfully, you will see output like the following before bei
 => nil
 ```
 
-The exported project will be located within a `.tar.gz` file in `/var/opt/gitlab/gitlab-rails/uploads/-/system/import_export_upload/export_file/`. 
+The exported project will be located within a `.tar.gz` file in `/var/opt/gitlab/gitlab-rails/uploads/-/system/import_export_upload/export_file/`.
 
 ## Repository
 
@@ -598,7 +598,7 @@ group = Group.find_by_path_or_name('group-name')
 group.project_creation_level=0
 ```
 
-### Modify group - disable 2FA requirement 
+### Modify group - disable 2FA requirement
 
 WARNING:
 When disabling the 2FA Requirement on a subgroup, the whole parent group (including all subgroups) is affected by this change.

@@ -6,7 +6,7 @@ module Resolvers
     authorize :read_project_member
 
     argument :relations, [Types::ProjectMemberRelationEnum],
-              description: 'Filter members by the given member relations',
+              description: 'Filter members by the given member relations.',
               required: false,
               default_value: MembersFinder::DEFAULT_RELATIONS
 

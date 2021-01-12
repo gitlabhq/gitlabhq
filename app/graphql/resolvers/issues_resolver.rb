@@ -6,9 +6,9 @@ module Resolvers
 
     argument :state, Types::IssuableStateEnum,
               required: false,
-              description: 'Current state of this issue'
+              description: 'Current state of this issue.'
     argument :sort, Types::IssueSortEnum,
-              description: 'Sort issues by this criteria',
+              description: 'Sort issues by this criteria.',
               required: false,
               default_value: :created_desc
 

@@ -50,8 +50,8 @@ The DevOps Adoption tab shows you which segments of your organization are using 
 - Deploys
 - Scanning
 
-Segments are arbitrary collections of GitLab groups that you define. You might define a segment to represent a small team, a large department, or a whole organization. 
-You are limited to creating a maximum of 20 segments, and each segment is limited to a maximum of 20 groups. 
+Segments are arbitrary collections of GitLab groups that you define. You might define a segment to represent a small team, a large department, or a whole organization.
+You are limited to creating a maximum of 20 segments, and each segment is limited to a maximum of 20 groups.
 Buttons to manage your segments appear in the DevOps Adoption section of the page.
 
 DevOps Adoption allows you to:

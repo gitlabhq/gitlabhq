@@ -7,7 +7,7 @@ module Resolvers
 
       argument :id, ::Types::GlobalIDType[::Gitlab::ErrorTracking::DetailedError],
                 required: true,
-                description: 'ID of the Sentry issue'
+                description: 'ID of the Sentry issue.'
 
       def resolve(id:)
         # TODO: remove this line when the compatibility layer is removed

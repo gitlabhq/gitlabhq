@@ -185,7 +185,7 @@ Feature.enable(:ci_enable_live_trace)
 ```
 
 NOTE:
-The transition period is handled gracefully. Upcoming logs are 
+The transition period is handled gracefully. Upcoming logs are
 generated with the incremental architecture, and on-going logs stay with the
 legacy architecture, which means that on-going logs aren't forcibly
 re-generated with the incremental architecture.

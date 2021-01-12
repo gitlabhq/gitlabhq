@@ -15,11 +15,11 @@ module Resolvers
 
         argument :ids, [DesignID],
                  required: false,
-                 description: 'Filters designs by their ID'
+                 description: 'Filters designs by their ID.'
         argument :filenames,
                  [GraphQL::STRING_TYPE],
                  required: false,
-                 description: 'Filters designs by their filename'
+                 description: 'Filters designs by their filename.'
 
         def self.single
           ::Resolvers::DesignManagement::Version::DesignAtVersionResolver

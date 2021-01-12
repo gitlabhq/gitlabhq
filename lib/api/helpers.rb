@@ -521,7 +521,7 @@ module API
       case headers['X-Sendfile-Type']
       when 'X-Sendfile'
         header['X-Sendfile'] = path
-        body
+        body '' # to avoid an error from API::APIGuard::ResponseCoercerMiddleware
       else
         sendfile path
       end
@@ -537,7 +537,7 @@ module API
       else
         header(*Gitlab::Workhorse.send_url(file.url))
         status :ok
-        body ""
+        body '' # to avoid an error from API::APIGuard::ResponseCoercerMiddleware
       end
     end
 

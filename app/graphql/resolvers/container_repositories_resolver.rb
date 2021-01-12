@@ -8,7 +8,7 @@ module Resolvers
 
     argument :name, GraphQL::STRING_TYPE,
               required: false,
-              description: 'Filter the container repositories by their name'
+              description: 'Filter the container repositories by their name.'
 
     def resolve(name: nil)
       ContainerRepositoriesFinder.new(user: current_user, subject: object, params: { name: name })

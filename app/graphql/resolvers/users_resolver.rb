@@ -9,13 +9,13 @@ module Resolvers
 
     argument :ids, [GraphQL::ID_TYPE],
              required: false,
-             description: 'List of user Global IDs'
+             description: 'List of user Global IDs.'
 
     argument :usernames, [GraphQL::STRING_TYPE], required: false,
-              description: 'List of usernames'
+              description: 'List of usernames.'
 
     argument :sort, Types::SortEnum,
-             description: 'Sort users by this criteria',
+             description: 'Sort users by this criteria.',
              required: false,
              default_value: :created_desc
 

@@ -363,4 +363,49 @@ RSpec.describe API::Helpers do
       end
     end
   end
+
+  describe '#present_disk_file!' do
+    let_it_be(:dummy_class) do
+      Class.new do
+        attr_reader :headers
+        alias_method :header, :headers
+
+        def initialize
+          @headers = {}
+        end
+      end
+    end
+
+    let(:dummy_instance) { dummy_class.include(described_class).new }
+    let(:path) { '/tmp/file.txt' }
+    let(:filename) { 'file.txt' }
+
+    subject { dummy_instance.present_disk_file!(path, filename) }
+
+    before do
+      expect(dummy_instance).to receive(:content_type).with('application/octet-stream')
+    end
+
+    context 'with X-Sendfile supported' do
+      before do
+        dummy_instance.headers['X-Sendfile-Type'] = 'X-Sendfile'
+      end
+
+      it 'sends the file using X-Sendfile' do
+        expect(dummy_instance).to receive(:body).with('')
+
+        subject
+
+        expect(dummy_instance.headers['X-Sendfile']).to eq(path)
+      end
+    end
+
+    context 'without X-Sendfile supported' do
+      it 'sends the file' do
+        expect(dummy_instance).to receive(:sendfile).with(path)
+
+        subject
+      end
+    end
+  end
 end

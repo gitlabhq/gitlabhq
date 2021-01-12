@@ -68,7 +68,7 @@ For Conan, you need to add GitLab as a Conan registry remote. Follow the instruc
 Then, create your package using the plus-separated (`+`) project path as your Conan user. For example,
 if your project is located at `https://gitlab.com/foo/bar/my-proj`,
 [create your Conan package](../conan_repository/index.md) using `conan create . foo+bar+my-proj/channel`.
-`channel` is your package channel (such as `stable` or `beta`). 
+`channel` is your package channel (such as `stable` or `beta`).
 
 After you create your package, you're ready to [publish your package](../conan_repository/index.md#publish-a-conan-package),
 depending on your final package recipe. For example:

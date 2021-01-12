@@ -8,27 +8,27 @@ module Resolvers
 
     argument :action, [Types::TodoActionEnum],
              required: false,
-             description: 'The action to be filtered'
+             description: 'The action to be filtered.'
 
     argument :author_id, [GraphQL::ID_TYPE],
              required: false,
-             description: 'The ID of an author'
+             description: 'The ID of an author.'
 
     argument :project_id, [GraphQL::ID_TYPE],
              required: false,
-             description: 'The ID of a project'
+             description: 'The ID of a project.'
 
     argument :group_id, [GraphQL::ID_TYPE],
              required: false,
-             description: 'The ID of a group'
+             description: 'The ID of a group.'
 
     argument :state, [Types::TodoStateEnum],
              required: false,
-             description: 'The state of the todo'
+             description: 'The state of the todo.'
 
     argument :type, [Types::TodoTargetEnum],
              required: false,
-             description: 'The type of the todo'
+             description: 'The type of the todo.'
 
     def resolve(**args)
       return Todo.none unless current_user.present? && target.present?

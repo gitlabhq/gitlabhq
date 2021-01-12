@@ -7,19 +7,19 @@ module Resolvers
 
       argument :platform, GraphQL::STRING_TYPE,
         required: true,
-        description: 'Platform to generate the instructions for'
+        description: 'Platform to generate the instructions for.'
 
       argument :architecture, GraphQL::STRING_TYPE,
         required: true,
-        description: 'Architecture to generate the instructions for'
+        description: 'Architecture to generate the instructions for.'
 
       argument :project_id, ::Types::GlobalIDType[::Project],
         required: false,
-        description: 'Project to register the runner for'
+        description: 'Project to register the runner for.'
 
       argument :group_id, ::Types::GlobalIDType[::Group],
         required: false,
-        description: 'Group to register the runner for'
+        description: 'Group to register the runner for.'
 
       def resolve(platform:, architecture:, **args)
         instructions = Gitlab::Ci::RunnerInstructions.new(

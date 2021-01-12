@@ -1,0 +1,5 @@
+---
+title: Ensure Rake DB create doesn't fail when LDAP is enabled
+merge_request: 51132
+author:
+type: fixed

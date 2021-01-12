@@ -51,6 +51,14 @@ is [planned](https://gitlab.com/groups/gitlab-org/-/epics/2137). This would allo
 administrators to update settings inherited by groups and projects without enabling the
 integration on all non-configured groups and projects by default.
 
+### Remove an instance-level default setting
+
+1. Navigate to **Admin Area > Settings > Integrations**.
+1. Select an integration.
+1. Click **Reset** and confirm.
+
+Resetting an instance-level default setting removes the integration from all projects that have the integration set to use default settings.
+
 ## Manage group-level default settings for a project integration
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2543) in GitLab 13.6.
@@ -85,6 +93,14 @@ Only the complete settings for an integration can be inherited. Per-field inheri
 is [planned](https://gitlab.com/groups/gitlab-org/-/epics/2137). This would allow
 administrators to update settings inherited by subgroups and projects without enabling the
 integration on all non-configured groups and projects by default.
+
+### Remove a group-level default setting
+
+1. Navigate to the group's **Settings > Integrations**.
+1. Select an integration.
+1. Click **Reset** and confirm.
+
+Resetting a group-level default setting removes integrations that use default settings and belong to a project or subgroup of the group.
 
 ## Use instance-level or group-level default settings for a project integration
 

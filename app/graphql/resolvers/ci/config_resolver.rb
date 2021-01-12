@@ -12,11 +12,11 @@ module Resolvers
 
       argument :project_path, GraphQL::ID_TYPE,
                required: true,
-               description: 'The project of the CI config'
+               description: 'The project of the CI config.'
 
       argument :content, GraphQL::STRING_TYPE,
                required: true,
-               description: 'Contents of .gitlab-ci.yml'
+               description: "Contents of '.gitlab-ci.yml'."
 
       def resolve(project_path:, content:)
         project = authorized_find!(project_path: project_path)

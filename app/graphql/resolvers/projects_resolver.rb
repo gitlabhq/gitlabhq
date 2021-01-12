@@ -6,23 +6,23 @@ module Resolvers
 
     argument :membership, GraphQL::BOOLEAN_TYPE,
              required: false,
-             description: 'Limit projects that the current user is a member of'
+             description: 'Limit projects that the current user is a member of.'
 
     argument :search, GraphQL::STRING_TYPE,
              required: false,
-             description: 'Search query for project name, path, or description'
+             description: 'Search query for project name, path, or description.'
 
     argument :ids, [GraphQL::ID_TYPE],
              required: false,
-             description: 'Filter projects by IDs'
+             description: 'Filter projects by IDs.'
 
     argument :search_namespaces, GraphQL::BOOLEAN_TYPE,
              required: false,
-             description: 'Include namespace in project search'
+             description: 'Include namespace in project search.'
 
     argument :sort, GraphQL::STRING_TYPE,
              required: false,
-             description: 'Sort order of results'
+             description: 'Sort order of results.'
 
     def resolve(**args)
       ProjectsFinder

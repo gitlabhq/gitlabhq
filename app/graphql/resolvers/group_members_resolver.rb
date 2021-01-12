@@ -7,7 +7,7 @@ module Resolvers
     authorize :read_group_member
 
     argument :relations, [Types::GroupMemberRelationEnum],
-              description: 'Filter members by the given member relations',
+              description: 'Filter members by the given member relations.',
               required: false,
               default_value: GroupMembersFinder::DEFAULT_RELATIONS
 

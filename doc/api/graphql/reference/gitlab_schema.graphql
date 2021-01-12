@@ -354,7 +354,7 @@ type AlertManagementAlert implements Noteable {
   """
   todos(
     """
-    The action to be filtered
+    The action to be filtered.
     """
     action: [TodoActionEnum!]
 
@@ -364,7 +364,7 @@ type AlertManagementAlert implements Noteable {
     after: String
 
     """
-    The ID of an author
+    The ID of an author.
     """
     authorId: [ID!]
 
@@ -379,7 +379,7 @@ type AlertManagementAlert implements Noteable {
     first: Int
 
     """
-    The ID of a group
+    The ID of a group.
     """
     groupId: [ID!]
 
@@ -389,17 +389,17 @@ type AlertManagementAlert implements Noteable {
     last: Int
 
     """
-    The ID of a project
+    The ID of a project.
     """
     projectId: [ID!]
 
     """
-    The state of the todo
+    The state of the todo.
     """
     state: [TodoStateEnum!]
 
     """
-    The type of the todo
+    The type of the todo.
     """
     type: [TodoTargetEnum!]
   ): TodoConnection
@@ -1355,12 +1355,12 @@ type Board {
     first: Int
 
     """
-    Find a list by its global ID
+    Find a list by its global ID.
     """
     id: ListID
 
     """
-    Filters applied when getting issue metadata in the board list
+    Filters applied when getting issue metadata in the board list.
     """
     issueFilters: BoardIssueInput
 
@@ -1533,7 +1533,7 @@ type BoardEpic implements CurrentUserTodos & Noteable {
     state: EpicState
 
     """
-    List items overlapping the given timeframe
+    List items overlapping the given timeframe.
     """
     timeframe: Timeframe
   ): EpicConnection
@@ -2035,7 +2035,7 @@ type BoardList {
     before: String
 
     """
-    Filters applied when selecting issues in the board list
+    Filters applied when selecting issues in the board list.
     """
     filters: BoardIssueInput
 
@@ -3378,17 +3378,17 @@ type Commit {
     last: Int
 
     """
-    Filter pipelines by the ref they are run for
+    Filter pipelines by the ref they are run for.
     """
     ref: String
 
     """
-    Filter pipelines by the sha of the commit they are run for
+    Filter pipelines by the sha of the commit they are run for.
     """
     sha: String
 
     """
-    Filter pipelines by their status
+    Filter pipelines by their status.
     """
     status: PipelineStatusEnum
   ): PipelineConnection
@@ -6324,12 +6324,12 @@ type Design implements CurrentUserTodos & DesignFields & Noteable {
     before: String
 
     """
-    The Global ID of the most recent acceptable version
+    The Global ID of the most recent acceptable version.
     """
     earlierOrEqualToId: DesignManagementVersionID
 
     """
-    The SHA256 of the most recent acceptable version
+    The SHA256 of the most recent acceptable version.
     """
     earlierOrEqualToSha: String
 
@@ -6459,12 +6459,12 @@ type DesignCollection {
   """
   design(
     """
-    Find a design by its filename
+    Find a design by its filename.
     """
     filename: String
 
     """
-    Find a design by its ID
+    Find a design by its ID.
     """
     id: DesignManagementDesignID
   ): Design
@@ -6474,7 +6474,7 @@ type DesignCollection {
   """
   designAtVersion(
     """
-    The Global ID of the design at this version
+    The Global ID of the design at this version.
     """
     id: DesignManagementDesignAtVersionID!
   ): DesignAtVersion
@@ -6500,7 +6500,7 @@ type DesignCollection {
     before: String
 
     """
-    Filters designs by their filename
+    Filters designs by their filename.
     """
     filenames: [String!]
 
@@ -6510,7 +6510,7 @@ type DesignCollection {
     first: Int
 
     """
-    Filters designs by their ID
+    Filters designs by their ID.
     """
     ids: [DesignManagementDesignID!]
 
@@ -6535,12 +6535,12 @@ type DesignCollection {
   """
   version(
     """
-    The Global ID of the version
+    The Global ID of the version.
     """
     id: DesignManagementVersionID
 
     """
-    The SHA256 of a specific version
+    The SHA256 of a specific version.
     """
     sha: String
   ): DesignVersion
@@ -6560,12 +6560,12 @@ type DesignCollection {
     before: String
 
     """
-    The Global ID of the most recent acceptable version
+    The Global ID of the most recent acceptable version.
     """
     earlierOrEqualToId: DesignManagementVersionID
 
     """
-    The SHA256 of the most recent acceptable version
+    The SHA256 of the most recent acceptable version.
     """
     earlierOrEqualToSha: String
 
@@ -6694,7 +6694,7 @@ type DesignManagement {
   """
   designAtVersion(
     """
-    The Global ID of the design at this version
+    The Global ID of the design at this version.
     """
     id: DesignManagementDesignAtVersionID!
   ): DesignAtVersion
@@ -6704,7 +6704,7 @@ type DesignManagement {
   """
   version(
     """
-    The Global ID of the version
+    The Global ID of the version.
     """
     id: DesignManagementVersionID!
   ): DesignVersion
@@ -6874,17 +6874,17 @@ type DesignVersion {
   """
   designAtVersion(
     """
-    The ID of a specific design
+    The ID of a specific design.
     """
     designId: DesignManagementDesignID
 
     """
-    The filename of a specific design
+    The filename of a specific design.
     """
     filename: String
 
     """
-    The ID of the DesignAtVersion
+    The ID of the DesignAtVersion.
     """
     id: DesignManagementDesignAtVersionID
   ): DesignAtVersion!
@@ -6929,7 +6929,7 @@ type DesignVersion {
     before: String
 
     """
-    Filters designs by their filename
+    Filters designs by their filename.
     """
     filenames: [String!]
 
@@ -6939,7 +6939,7 @@ type DesignVersion {
     first: Int
 
     """
-    Filters designs by their ID
+    Filters designs by their ID.
     """
     ids: [DesignManagementDesignID!]
 
@@ -7894,7 +7894,7 @@ type Environment {
   """
   metricsDashboard(
     """
-    Path to a file which defines metrics dashboard eg: 'config/prometheus/common_metrics.yml'
+    Path to a file which defines metrics dashboard eg: 'config/prometheus/common_metrics.yml'.
     """
     path: String!
   ): MetricsDashboard
@@ -8092,7 +8092,7 @@ type Epic implements CurrentUserTodos & Noteable {
     state: EpicState
 
     """
-    List items overlapping the given timeframe
+    List items overlapping the given timeframe.
     """
     timeframe: Timeframe
   ): EpicConnection
@@ -9757,7 +9757,7 @@ type Group {
   """
   board(
     """
-    The board's ID
+    The board's ID.
     """
     id: BoardID!
   ): Board
@@ -9782,7 +9782,7 @@ type Group {
     first: Int
 
     """
-    Find a board by its ID
+    Find a board by its ID.
     """
     id: BoardID
 
@@ -9878,7 +9878,7 @@ type Group {
     last: Int
 
     """
-    Filter the container repositories by their name
+    Filter the container repositories by their name.
     """
     name: String
   ): ContainerRepositoryConnection
@@ -10006,7 +10006,7 @@ type Group {
     state: EpicState
 
     """
-    List items overlapping the given timeframe
+    List items overlapping the given timeframe.
     """
     timeframe: Timeframe
   ): Epic
@@ -10139,7 +10139,7 @@ type Group {
     state: EpicState
 
     """
-    List items overlapping the given timeframe
+    List items overlapping the given timeframe.
     """
     timeframe: Timeframe
   ): EpicConnection
@@ -10184,12 +10184,12 @@ type Group {
     last: Int
 
     """
-    Filter members by the given member relations
+    Filter members by the given member relations.
     """
     relations: [GroupMemberRelation!] = [DIRECT, INHERITED]
 
     """
-    Search query
+    Search query.
     """
     search: String
   ): GroupMemberConnection
@@ -10219,22 +10219,22 @@ type Group {
     after: String
 
     """
-    ID of a user assigned to the issues, "none" and "any" values are supported
+    ID of a user assigned to the issues, "none" and "any" values are supported.
     """
     assigneeId: String
 
     """
-    Username of a user assigned to the issue
+    Username of a user assigned to the issue.
     """
     assigneeUsername: String
 
     """
-    Usernames of users assigned to the issue
+    Usernames of users assigned to the issue.
     """
     assigneeUsernames: [String!]
 
     """
-    Username of the author of the issue
+    Username of the author of the issue.
     """
     authorUsername: String
 
@@ -10244,22 +10244,22 @@ type Group {
     before: String
 
     """
-    Issues closed after this date
+    Issues closed after this date.
     """
     closedAfter: Time
 
     """
-    Issues closed before this date
+    Issues closed before this date.
     """
     closedBefore: Time
 
     """
-    Issues created after this date
+    Issues created after this date.
     """
     createdAfter: Time
 
     """
-    Issues created before this date
+    Issues created before this date.
     """
     createdBefore: Time
 
@@ -10274,12 +10274,12 @@ type Group {
     first: Int
 
     """
-    IID of the issue. For example, "1"
+    IID of the issue. For example, "1".
     """
     iid: String
 
     """
-    List of IIDs of issues. For example, [1, 2]
+    List of IIDs of issues. For example, [1, 2].
     """
     iids: [String!]
 
@@ -10294,7 +10294,7 @@ type Group {
     iterationId: [ID]
 
     """
-    Labels applied to this issue
+    Labels applied to this issue.
     """
     labelName: [String]
 
@@ -10304,37 +10304,37 @@ type Group {
     last: Int
 
     """
-    Milestone applied to this issue
+    Milestone applied to this issue.
     """
     milestoneTitle: [String]
 
     """
-    Search query for issue title or description
+    Search query for issue title or description.
     """
     search: String
 
     """
-    Sort issues by this criteria
+    Sort issues by this criteria.
     """
     sort: IssueSort = created_desc
 
     """
-    Current state of this issue
+    Current state of this issue.
     """
     state: IssuableState
 
     """
-    Filter issues by the given issue types
+    Filter issues by the given issue types.
     """
     types: [IssueType!]
 
     """
-    Issues updated after this date
+    Issues updated after this date.
     """
     updatedAfter: Time
 
     """
-    Issues updated before this date
+    Issues updated before this date.
     """
     updatedBefore: Time
   ): IssueConnection
@@ -10397,7 +10397,7 @@ type Group {
     state: IterationState
 
     """
-    List items overlapping the given timeframe
+    List items overlapping the given timeframe.
     """
     timeframe: Timeframe
 
@@ -10467,12 +10467,12 @@ type Group {
     after: String
 
     """
-    Username of the assignee
+    Username of the assignee.
     """
     assigneeUsername: String
 
     """
-    Username of the author
+    Username of the author.
     """
     authorUsername: String
 
@@ -10487,7 +10487,7 @@ type Group {
     first: Int
 
     """
-    Array of IIDs of merge requests, for example `[1, 2]`
+    Array of IIDs of merge requests, for example `[1, 2]`.
     """
     iids: [String!]
 
@@ -10507,22 +10507,22 @@ type Group {
     last: Int
 
     """
-    Merge requests merged after this date
+    Merge requests merged after this date.
     """
     mergedAfter: Time
 
     """
-    Merge requests merged before this date
+    Merge requests merged before this date.
     """
     mergedBefore: Time
 
     """
-    Title of the milestone
+    Title of the milestone.
     """
     milestoneTitle: String
 
     """
-    Sort merge requests by this criteria
+    Sort merge requests by this criteria.
     """
     sort: MergeRequestSort = created_desc
 
@@ -10557,7 +10557,7 @@ type Group {
     before: String
 
     """
-    A date that the milestone contains
+    A date that the milestone contains.
     """
     containingDate: Time
 
@@ -10573,12 +10573,12 @@ type Group {
     first: Int
 
     """
-    Array of global milestone IDs, e.g., "gid://gitlab/Milestone/1"
+    Array of global milestone IDs, e.g., "gid://gitlab/Milestone/1".
     """
     ids: [ID!]
 
     """
-    Also return milestones in all subgroups and subprojects
+    Also return milestones in all subgroups and subprojects.
     """
     includeDescendants: Boolean
 
@@ -10588,7 +10588,7 @@ type Group {
     last: Int
 
     """
-    A search string for the title
+    A search string for the title.
     """
     searchTitle: String
 
@@ -10600,17 +10600,17 @@ type Group {
     startDate: Time
 
     """
-    Filter milestones by state
+    Filter milestones by state.
     """
     state: MilestoneStateEnum
 
     """
-    List items overlapping the given timeframe
+    List items overlapping the given timeframe.
     """
     timeframe: Timeframe
 
     """
-    The title of the milestone
+    The title of the milestone.
     """
     title: String
   ): MilestoneConnection
@@ -10665,7 +10665,7 @@ type Group {
     hasVulnerabilities: Boolean = false
 
     """
-    Include also subgroup projects
+    Include also subgroup projects.
     """
     includeSubgroups: Boolean = false
 
@@ -10675,12 +10675,12 @@ type Group {
     last: Int
 
     """
-    Search project with most similar names or paths
+    Search project with most similar names or paths.
     """
     search: String = null
 
     """
-    Sort projects by this criteria
+    Sort projects by this criteria.
     """
     sort: NamespaceProjectSort = null
   ): ProjectConnection!
@@ -13310,7 +13310,7 @@ type JiraService implements Service {
     last: Int
 
     """
-    Project name or key
+    Project name or key.
     """
     name: String
   ): JiraProjectConnection
@@ -14126,17 +14126,17 @@ type MergeRequest implements CurrentUserTodos & Noteable {
     last: Int
 
     """
-    Filter pipelines by the ref they are run for
+    Filter pipelines by the ref they are run for.
     """
     ref: String
 
     """
-    Filter pipelines by the sha of the commit they are run for
+    Filter pipelines by the sha of the commit they are run for.
     """
     sha: String
 
     """
-    Filter pipelines by their status
+    Filter pipelines by their status.
     """
     status: PipelineStatusEnum
   ): PipelineConnection
@@ -15071,7 +15071,7 @@ type MetricsDashboard {
     first: Int
 
     """
-    Timestamp marking date and time from which annotations need to be fetched
+    Timestamp marking date and time from which annotations need to be fetched.
     """
     from: Time!
 
@@ -15081,7 +15081,7 @@ type MetricsDashboard {
     last: Int
 
     """
-    Timestamp marking date and time to which annotations need to be fetched
+    Timestamp marking date and time to which annotations need to be fetched.
     """
     to: Time
   ): MetricsDashboardAnnotationConnection
@@ -15622,7 +15622,7 @@ type Namespace {
     hasVulnerabilities: Boolean = false
 
     """
-    Include also subgroup projects
+    Include also subgroup projects.
     """
     includeSubgroups: Boolean = false
 
@@ -15632,12 +15632,12 @@ type Namespace {
     last: Int
 
     """
-    Search project with most similar names or paths
+    Search project with most similar names or paths.
     """
     search: String = null
 
     """
-    Sort projects by this criteria
+    Sort projects by this criteria.
     """
     sort: NamespaceProjectSort = null
   ): ProjectConnection!
@@ -16722,7 +16722,7 @@ type Pipeline {
     last: Int
 
     """
-    Filter jobs by the type of security report they produce
+    Filter jobs by the type of security report they produce.
     """
     securityReportTypes: [SecurityReportTypeEnum!]
   ): CiJobConnection
@@ -17059,17 +17059,17 @@ type Project {
   """
   alertManagementAlert(
     """
-    Username of a user assigned to the issue
+    Username of a user assigned to the issue.
     """
     assigneeUsername: String
 
     """
-    Filter query for given domain
+    Filter query for given domain.
     """
     domain: AlertManagementDomainFilter! = operations
 
     """
-    IID of the alert. For example, "1"
+    IID of the alert. For example, "1".
     """
     iid: String
 
@@ -17079,12 +17079,12 @@ type Project {
     search: String
 
     """
-    Sort alerts by this criteria
+    Sort alerts by this criteria.
     """
     sort: AlertManagementAlertSort
 
     """
-    Alerts with the specified statues. For example, [TRIGGERED]
+    Alerts with the specified statues. For example, [TRIGGERED].
     """
     statuses: [AlertManagementStatus!]
   ): AlertManagementAlert
@@ -17094,7 +17094,7 @@ type Project {
   """
   alertManagementAlertStatusCounts(
     """
-    Username of a user assigned to the issue
+    Username of a user assigned to the issue.
     """
     assigneeUsername: String
 
@@ -17114,7 +17114,7 @@ type Project {
     after: String
 
     """
-    Username of a user assigned to the issue
+    Username of a user assigned to the issue.
     """
     assigneeUsername: String
 
@@ -17124,7 +17124,7 @@ type Project {
     before: String
 
     """
-    Filter query for given domain
+    Filter query for given domain.
     """
     domain: AlertManagementDomainFilter! = operations
 
@@ -17134,7 +17134,7 @@ type Project {
     first: Int
 
     """
-    IID of the alert. For example, "1"
+    IID of the alert. For example, "1".
     """
     iid: String
 
@@ -17149,12 +17149,12 @@ type Project {
     search: String
 
     """
-    Sort alerts by this criteria
+    Sort alerts by this criteria.
     """
     sort: AlertManagementAlertSort
 
     """
-    Alerts with the specified statues. For example, [TRIGGERED]
+    Alerts with the specified statues. For example, [TRIGGERED].
     """
     statuses: [AlertManagementStatus!]
   ): AlertManagementAlertConnection
@@ -17210,7 +17210,7 @@ type Project {
   """
   board(
     """
-    The board's ID
+    The board's ID.
     """
     id: BoardID!
   ): Board
@@ -17235,7 +17235,7 @@ type Project {
     first: Int
 
     """
-    Find a board by its ID
+    Find a board by its ID.
     """
     id: BoardID
 
@@ -17350,7 +17350,7 @@ type Project {
     last: Int
 
     """
-    Filter the container repositories by their name
+    Filter the container repositories by their name.
     """
     name: String
   ): ContainerRepositoryConnection
@@ -17471,17 +17471,17 @@ type Project {
   """
   environment(
     """
-    Name of the environment
+    Name of the environment.
     """
     name: String
 
     """
-    Search query for environment name
+    Search query for environment name.
     """
     search: String
 
     """
-    States of environments that should be included in result
+    States of environments that should be included in result.
     """
     states: [String!]
   ): Environment
@@ -17511,17 +17511,17 @@ type Project {
     last: Int
 
     """
-    Name of the environment
+    Name of the environment.
     """
     name: String
 
     """
-    Search query for environment name
+    Search query for environment name.
     """
     search: String
 
     """
-    States of environments that should be included in result
+    States of environments that should be included in result.
     """
     states: [String!]
   ): EnvironmentConnection
@@ -17591,42 +17591,42 @@ type Project {
   """
   issue(
     """
-    ID of a user assigned to the issues, "none" and "any" values are supported
+    ID of a user assigned to the issues, "none" and "any" values are supported.
     """
     assigneeId: String
 
     """
-    Username of a user assigned to the issue
+    Username of a user assigned to the issue.
     """
     assigneeUsername: String
 
     """
-    Usernames of users assigned to the issue
+    Usernames of users assigned to the issue.
     """
     assigneeUsernames: [String!]
 
     """
-    Username of the author of the issue
+    Username of the author of the issue.
     """
     authorUsername: String
 
     """
-    Issues closed after this date
+    Issues closed after this date.
     """
     closedAfter: Time
 
     """
-    Issues closed before this date
+    Issues closed before this date.
     """
     closedBefore: Time
 
     """
-    Issues created after this date
+    Issues created after this date.
     """
     createdAfter: Time
 
     """
-    Issues created before this date
+    Issues created before this date.
     """
     createdBefore: Time
 
@@ -17636,12 +17636,12 @@ type Project {
     epicId: String
 
     """
-    IID of the issue. For example, "1"
+    IID of the issue. For example, "1".
     """
     iid: String
 
     """
-    List of IIDs of issues. For example, [1, 2]
+    List of IIDs of issues. For example, [1, 2].
     """
     iids: [String!]
 
@@ -17651,42 +17651,42 @@ type Project {
     iterationId: [ID]
 
     """
-    Labels applied to this issue
+    Labels applied to this issue.
     """
     labelName: [String]
 
     """
-    Milestone applied to this issue
+    Milestone applied to this issue.
     """
     milestoneTitle: [String]
 
     """
-    Search query for issue title or description
+    Search query for issue title or description.
     """
     search: String
 
     """
-    Sort issues by this criteria
+    Sort issues by this criteria.
     """
     sort: IssueSort = created_desc
 
     """
-    Current state of this issue
+    Current state of this issue.
     """
     state: IssuableState
 
     """
-    Filter issues by the given issue types
+    Filter issues by the given issue types.
     """
     types: [IssueType!]
 
     """
-    Issues updated after this date
+    Issues updated after this date.
     """
     updatedAfter: Time
 
     """
-    Issues updated before this date
+    Issues updated before this date.
     """
     updatedBefore: Time
   ): Issue
@@ -17696,82 +17696,82 @@ type Project {
   """
   issueStatusCounts(
     """
-    ID of a user assigned to the issues, "none" and "any" values are supported
+    ID of a user assigned to the issues, "none" and "any" values are supported.
     """
     assigneeId: String
 
     """
-    Username of a user assigned to the issue
+    Username of a user assigned to the issue.
     """
     assigneeUsername: String
 
     """
-    Usernames of users assigned to the issue
+    Usernames of users assigned to the issue.
     """
     assigneeUsernames: [String!]
 
     """
-    Username of the author of the issue
+    Username of the author of the issue.
     """
     authorUsername: String
 
     """
-    Issues closed after this date
+    Issues closed after this date.
     """
     closedAfter: Time
 
     """
-    Issues closed before this date
+    Issues closed before this date.
     """
     closedBefore: Time
 
     """
-    Issues created after this date
+    Issues created after this date.
     """
     createdAfter: Time
 
     """
-    Issues created before this date
+    Issues created before this date.
     """
     createdBefore: Time
 
     """
-    IID of the issue. For example, "1"
+    IID of the issue. For example, "1".
     """
     iid: String
 
     """
-    List of IIDs of issues. For example, [1, 2]
+    List of IIDs of issues. For example, [1, 2].
     """
     iids: [String!]
 
     """
-    Labels applied to this issue
+    Labels applied to this issue.
     """
     labelName: [String]
 
     """
-    Milestone applied to this issue
+    Milestone applied to this issue.
     """
     milestoneTitle: [String]
 
     """
-    Search query for issue title or description
+    Search query for issue title or description.
     """
     search: String
 
     """
-    Filter issues by the given issue types
+    Filter issues by the given issue types.
     """
     types: [IssueType!]
 
     """
-    Issues updated after this date
+    Issues updated after this date.
     """
     updatedAfter: Time
 
     """
-    Issues updated before this date
+    Issues updated before this date.
     """
     updatedBefore: Time
   ): IssueStatusCountsType
@@ -17786,22 +17786,22 @@ type Project {
     after: String
 
     """
-    ID of a user assigned to the issues, "none" and "any" values are supported
+    ID of a user assigned to the issues, "none" and "any" values are supported.
     """
     assigneeId: String
 
     """
-    Username of a user assigned to the issue
+    Username of a user assigned to the issue.
     """
     assigneeUsername: String
 
     """
-    Usernames of users assigned to the issue
+    Usernames of users assigned to the issue.
     """
     assigneeUsernames: [String!]
 
     """
-    Username of the author of the issue
+    Username of the author of the issue.
     """
     authorUsername: String
 
@@ -17811,22 +17811,22 @@ type Project {
     before: String
 
     """
-    Issues closed after this date
+    Issues closed after this date.
     """
     closedAfter: Time
 
     """
-    Issues closed before this date
+    Issues closed before this date.
     """
     closedBefore: Time
 
     """
-    Issues created after this date
+    Issues created after this date.
     """
     createdAfter: Time
 
     """
-    Issues created before this date
+    Issues created before this date.
     """
     createdBefore: Time
 
@@ -17841,12 +17841,12 @@ type Project {
     first: Int
 
     """
-    IID of the issue. For example, "1"
+    IID of the issue. For example, "1".
     """
     iid: String
 
     """
-    List of IIDs of issues. For example, [1, 2]
+    List of IIDs of issues. For example, [1, 2].
     """
     iids: [String!]
 
@@ -17856,7 +17856,7 @@ type Project {
     iterationId: [ID]
 
     """
-    Labels applied to this issue
+    Labels applied to this issue.
     """
     labelName: [String]
 
@@ -17866,37 +17866,37 @@ type Project {
     last: Int
 
     """
-    Milestone applied to this issue
+    Milestone applied to this issue.
     """
     milestoneTitle: [String]
 
     """
-    Search query for issue title or description
+    Search query for issue title or description.
     """
     search: String
 
     """
-    Sort issues by this criteria
+    Sort issues by this criteria.
     """
     sort: IssueSort = created_desc
 
     """
-    Current state of this issue
+    Current state of this issue.
     """
     state: IssuableState
 
     """
-    Filter issues by the given issue types
+    Filter issues by the given issue types.
     """
     types: [IssueType!]
 
     """
-    Issues updated after this date
+    Issues updated after this date.
     """
     updatedAfter: Time
 
     """
-    Issues updated before this date
+    Issues updated before this date.
     """
     updatedBefore: Time
   ): IssueConnection
@@ -17964,7 +17964,7 @@ type Project {
     state: IterationState
 
     """
-    List items overlapping the given timeframe
+    List items overlapping the given timeframe.
     """
     timeframe: Timeframe
 
@@ -18064,7 +18064,7 @@ type Project {
   """
   mergeRequest(
     """
-    IID of the merge request, for example `1`
+    IID of the merge request, for example `1`.
     """
     iid: String!
   ): MergeRequest
@@ -18079,12 +18079,12 @@ type Project {
     after: String
 
     """
-    Username of the assignee
+    Username of the assignee.
     """
     assigneeUsername: String
 
     """
-    Username of the author
+    Username of the author.
     """
     authorUsername: String
 
@@ -18099,7 +18099,7 @@ type Project {
     first: Int
 
     """
-    Array of IIDs of merge requests, for example `[1, 2]`
+    Array of IIDs of merge requests, for example `[1, 2]`.
     """
     iids: [String!]
 
@@ -18114,27 +18114,27 @@ type Project {
     last: Int
 
     """
-    Merge requests merged after this date
+    Merge requests merged after this date.
     """
     mergedAfter: Time
 
     """
-    Merge requests merged before this date
+    Merge requests merged before this date.
     """
     mergedBefore: Time
 
     """
-    Title of the milestone
+    Title of the milestone.
     """
     milestoneTitle: String
 
     """
-    Username of the reviewer
+    Username of the reviewer.
     """
     reviewerUsername: String
 
     """
-    Sort merge requests by this criteria
+    Sort merge requests by this criteria.
     """
     sort: MergeRequestSort = created_desc
 
@@ -18181,7 +18181,7 @@ type Project {
     before: String
 
     """
-    A date that the milestone contains
+    A date that the milestone contains.
     """
     containingDate: Time
 
@@ -18197,12 +18197,12 @@ type Project {
     first: Int
 
     """
-    Array of global milestone IDs, e.g., "gid://gitlab/Milestone/1"
+    Array of global milestone IDs, e.g., "gid://gitlab/Milestone/1".
     """
     ids: [ID!]
 
     """
-    Also return milestones in the project's parent group and its ancestors
+    Also return milestones in the project's parent group and its ancestors.
     """
     includeAncestors: Boolean
 
@@ -18212,7 +18212,7 @@ type Project {
     last: Int
 
     """
-    A search string for the title
+    A search string for the title.
     """
     searchTitle: String
 
@@ -18224,17 +18224,17 @@ type Project {
     startDate: Time
 
     """
-    Filter milestones by state
+    Filter milestones by state.
     """
     state: MilestoneStateEnum
 
     """
-    List items overlapping the given timeframe
+    List items overlapping the given timeframe.
     """
     timeframe: Timeframe
 
     """
-    The title of the milestone
+    The title of the milestone.
     """
     title: String
   ): MilestoneConnection
@@ -18304,7 +18304,7 @@ type Project {
   """
   pipeline(
     """
-    IID of the Pipeline, e.g., "1"
+    IID of the Pipeline, e.g., "1".
     """
     iid: ID!
   ): Pipeline
@@ -18339,17 +18339,17 @@ type Project {
     last: Int
 
     """
-    Filter pipelines by the ref they are run for
+    Filter pipelines by the ref they are run for.
     """
     ref: String
 
     """
-    Filter pipelines by the sha of the commit they are run for
+    Filter pipelines by the sha of the commit they are run for.
     """
     sha: String
 
     """
-    Filter pipelines by their status
+    Filter pipelines by their status.
     """
     status: PipelineStatusEnum
   ): PipelineConnection
@@ -18385,12 +18385,12 @@ type Project {
     last: Int
 
     """
-    Filter members by the given member relations
+    Filter members by the given member relations.
     """
     relations: [ProjectMemberRelation!] = [DIRECT, INHERITED]
 
     """
-    Search query
+    Search query.
     """
     search: String
   ): MemberInterfaceConnection
@@ -18405,7 +18405,7 @@ type Project {
   """
   release(
     """
-    The name of the tag associated to the release
+    The name of the tag associated to the release.
     """
     tagName: String!
   ): Release
@@ -18435,7 +18435,7 @@ type Project {
     last: Int
 
     """
-    Sort releases by this criteria
+    Sort releases by this criteria.
     """
     sort: ReleaseSort = RELEASED_AT_DESC
   ): ReleaseConnection
@@ -18575,7 +18575,7 @@ type Project {
   """
   sentryDetailedError(
     """
-    ID of the Sentry issue
+    ID of the Sentry issue.
     """
     id: GitlabErrorTrackingDetailedErrorID!
   ): SentryDetailedError
@@ -18600,7 +18600,7 @@ type Project {
   """
   services(
     """
-    Indicates if the service is active
+    Indicates if the service is active.
     """
     active: Boolean
 
@@ -18625,7 +18625,7 @@ type Project {
     last: Int
 
     """
-    Class name of the service
+    Class name of the service.
     """
     type: ServiceType
   ): ServiceConnection
@@ -18655,7 +18655,7 @@ type Project {
     first: Int
 
     """
-    Array of global snippet ids, e.g., "gid://gitlab/ProjectSnippet/1"
+    Array of global snippet ids, e.g., "gid://gitlab/ProjectSnippet/1".
     """
     ids: [SnippetID!]
 
@@ -18665,7 +18665,7 @@ type Project {
     last: Int
 
     """
-    The visibility of the snippet
+    The visibility of the snippet.
     """
     visibility: VisibilityScopesEnum
   ): SnippetConnection
@@ -19533,12 +19533,12 @@ type Query {
   """
   ciConfig(
     """
-    Contents of .gitlab-ci.yml
+    Contents of '.gitlab-ci.yml'.
     """
     content: String!
 
     """
-    The project of the CI config
+    The project of the CI config.
     """
     projectPath: ID!
   ): CiConfig
@@ -19593,7 +19593,7 @@ type Query {
   """
   echo(
     """
-    Text to echo back
+    Text to echo back.
     """
     text: String!
   ): String!
@@ -19613,7 +19613,7 @@ type Query {
   """
   group(
     """
-    The full path of the project, group or namespace, e.g., "gitlab-org/gitlab-foss"
+    The full path of the project, group or namespace, e.g., "gitlab-org/gitlab-foss".
     """
     fullPath: ID!
   ): Group
@@ -19643,7 +19643,7 @@ type Query {
     first: Int
 
     """
-    The type of measurement/statistics to retrieve
+    The type of measurement/statistics to retrieve.
     """
     identifier: MeasurementIdentifier!
 
@@ -19653,12 +19653,12 @@ type Query {
     last: Int
 
     """
-    Measurement recorded after this date
+    Measurement recorded after this date.
     """
     recordedAfter: Time
 
     """
-    Measurement recorded before this date
+    Measurement recorded before this date.
     """
     recordedBefore: Time
   ): InstanceStatisticsMeasurementConnection
@@ -19703,7 +19703,7 @@ type Query {
   """
   namespace(
     """
-    The full path of the project, group or namespace, e.g., "gitlab-org/gitlab-foss"
+    The full path of the project, group or namespace, e.g., "gitlab-org/gitlab-foss".
     """
     fullPath: ID!
   ): Namespace
@@ -19713,7 +19713,7 @@ type Query {
   """
   project(
     """
-    The full path of the project, group or namespace, e.g., "gitlab-org/gitlab-foss"
+    The full path of the project, group or namespace, e.g., "gitlab-org/gitlab-foss".
     """
     fullPath: ID!
   ): Project
@@ -19738,7 +19738,7 @@ type Query {
     first: Int
 
     """
-    Filter projects by IDs
+    Filter projects by IDs.
     """
     ids: [ID!]
 
@@ -19748,22 +19748,22 @@ type Query {
     last: Int
 
     """
-    Limit projects that the current user is a member of
+    Limit projects that the current user is a member of.
     """
     membership: Boolean
 
     """
-    Search query for project name, path, or description
+    Search query for project name, path, or description.
     """
     search: String
 
     """
-    Include namespace in project search
+    Include namespace in project search.
     """
     searchNamespaces: Boolean
 
     """
-    Sort order of results
+    Sort order of results.
     """
     sort: String
   ): ProjectConnection
@@ -19798,22 +19798,22 @@ type Query {
   """
   runnerSetup(
     """
-    Architecture to generate the instructions for
+    Architecture to generate the instructions for.
     """
     architecture: String!
 
     """
-    Group to register the runner for
+    Group to register the runner for.
     """
     groupId: GroupID
 
     """
-    Platform to generate the instructions for
+    Platform to generate the instructions for.
     """
     platform: String!
 
     """
-    Project to register the runner for
+    Project to register the runner for.
     """
     projectId: ProjectID
   ): RunnerSetup
@@ -19828,7 +19828,7 @@ type Query {
     after: String
 
     """
-    The ID of an author
+    The ID of an author.
     """
     authorId: UserID
 
@@ -19838,7 +19838,7 @@ type Query {
     before: String
 
     """
-    Explore personal snippets
+    Explore personal snippets.
     """
     explore: Boolean
 
@@ -19848,7 +19848,7 @@ type Query {
     first: Int
 
     """
-    Array of global snippet ids, e.g., "gid://gitlab/ProjectSnippet/1"
+    Array of global snippet ids, e.g., "gid://gitlab/ProjectSnippet/1".
     """
     ids: [SnippetID!]
 
@@ -19858,17 +19858,17 @@ type Query {
     last: Int
 
     """
-    The ID of a project
+    The ID of a project.
     """
     projectId: ProjectID
 
     """
-    The type of snippet
+    The type of snippet.
     """
     type: TypeEnum
 
     """
-    The visibility of the snippet
+    The visibility of the snippet.
     """
     visibility: VisibilityScopesEnum
   ): SnippetConnection
@@ -19878,12 +19878,12 @@ type Query {
   """
   user(
     """
-    ID of the User
+    ID of the User.
     """
     id: UserID
 
     """
-    Username of the User
+    Username of the User.
     """
     username: String
   ): User
@@ -19908,7 +19908,7 @@ type Query {
     first: Int
 
     """
-    List of user Global IDs
+    List of user Global IDs.
     """
     ids: [ID!]
 
@@ -19923,12 +19923,12 @@ type Query {
     search: String
 
     """
-    Sort users by this criteria
+    Sort users by this criteria.
     """
     sort: Sort = created_desc
 
     """
-    List of usernames
+    List of usernames.
     """
     usernames: [String!]
   ): UserConnection
@@ -20924,17 +20924,17 @@ type Repository {
   """
   tree(
     """
-    The path to get the tree for. Default value is the root of the repository
+    The path to get the tree for. Default value is the root of the repository.
     """
     path: String = ""
 
     """
-    Used to get a recursive tree. Default is false
+    Used to get a recursive tree. Default is false.
     """
     recursive: Boolean = false
 
     """
-    The commit ref to get the tree for. Default value is HEAD
+    The commit ref to get the tree for. Default value is HEAD.
     """
     ref: String = "head"
   ): Tree
@@ -22251,7 +22251,7 @@ type SentryErrorCollection {
   """
   detailedError(
     """
-    ID of the Sentry issue
+    ID of the Sentry issue.
     """
     id: GitlabErrorTrackingDetailedErrorID!
   ): SentryDetailedError
@@ -22261,7 +22261,7 @@ type SentryErrorCollection {
   """
   errorStackTrace(
     """
-    ID of the Sentry issue
+    ID of the Sentry issue.
     """
     id: GitlabErrorTrackingDetailedErrorID!
   ): SentryErrorStackTrace
@@ -22291,12 +22291,12 @@ type SentryErrorCollection {
     last: Int
 
     """
-    Search query for the Sentry error details
+    Search query for the Sentry error details.
     """
     searchTerm: String
 
     """
-    Attribute to sort on. Options are frequency, first_seen, last_seen. last_seen is default
+    Attribute to sort on. Options are frequency, first_seen, last_seen. last_seen is default.
     """
     sort: String
   ): SentryErrorConnection
@@ -22585,7 +22585,7 @@ type Snippet implements Noteable {
     last: Int
 
     """
-    Paths of the blobs
+    Paths of the blobs.
     """
     paths: [String!]
   ): SnippetBlobConnection
@@ -25153,7 +25153,7 @@ type User {
     after: String
 
     """
-    Username of the author
+    Username of the author.
     """
     authorUsername: String
 
@@ -25168,7 +25168,7 @@ type User {
     first: Int
 
     """
-    Array of IIDs of merge requests, for example `[1, 2]`
+    Array of IIDs of merge requests, for example `[1, 2]`.
     """
     iids: [String!]
 
@@ -25183,17 +25183,17 @@ type User {
     last: Int
 
     """
-    Merge requests merged after this date
+    Merge requests merged after this date.
     """
     mergedAfter: Time
 
     """
-    Merge requests merged before this date
+    Merge requests merged before this date.
     """
     mergedBefore: Time
 
     """
-    Title of the milestone
+    Title of the milestone.
     """
     milestoneTitle: String
 
@@ -25208,12 +25208,12 @@ type User {
     projectPath: String
 
     """
-    Username of the reviewer
+    Username of the reviewer.
     """
     reviewerUsername: String
 
     """
-    Sort merge requests by this criteria
+    Sort merge requests by this criteria.
     """
     sort: MergeRequestSort = created_desc
 
@@ -25243,7 +25243,7 @@ type User {
     after: String
 
     """
-    Username of the assignee
+    Username of the assignee.
     """
     assigneeUsername: String
 
@@ -25258,7 +25258,7 @@ type User {
     first: Int
 
     """
-    Array of IIDs of merge requests, for example `[1, 2]`
+    Array of IIDs of merge requests, for example `[1, 2]`.
     """
     iids: [String!]
 
@@ -25273,17 +25273,17 @@ type User {
     last: Int
 
     """
-    Merge requests merged after this date
+    Merge requests merged after this date.
     """
     mergedAfter: Time
 
     """
-    Merge requests merged before this date
+    Merge requests merged before this date.
     """
     mergedBefore: Time
 
     """
-    Title of the milestone
+    Title of the milestone.
     """
     milestoneTitle: String
 
@@ -25298,12 +25298,12 @@ type User {
     projectPath: String
 
     """
-    Username of the reviewer
+    Username of the reviewer.
     """
     reviewerUsername: String
 
     """
-    Sort merge requests by this criteria
+    Sort merge requests by this criteria.
     """
     sort: MergeRequestSort = created_desc
 
@@ -25418,12 +25418,12 @@ type User {
     after: String
 
     """
-    Username of the assignee
+    Username of the assignee.
     """
     assigneeUsername: String
 
     """
-    Username of the author
+    Username of the author.
     """
     authorUsername: String
 
@@ -25438,7 +25438,7 @@ type User {
     first: Int
 
     """
-    Array of IIDs of merge requests, for example `[1, 2]`
+    Array of IIDs of merge requests, for example `[1, 2]`.
     """
     iids: [String!]
 
@@ -25453,17 +25453,17 @@ type User {
     last: Int
 
     """
-    Merge requests merged after this date
+    Merge requests merged after this date.
     """
     mergedAfter: Time
 
     """
-    Merge requests merged before this date
+    Merge requests merged before this date.
     """
     mergedBefore: Time
 
     """
-    Title of the milestone
+    Title of the milestone.
     """
     milestoneTitle: String
 
@@ -25478,7 +25478,7 @@ type User {
     projectPath: String
 
     """
-    Sort merge requests by this criteria
+    Sort merge requests by this criteria.
     """
     sort: MergeRequestSort = created_desc
 
@@ -25518,7 +25518,7 @@ type User {
     first: Int
 
     """
-    Array of global snippet ids, e.g., "gid://gitlab/ProjectSnippet/1"
+    Array of global snippet ids, e.g., "gid://gitlab/ProjectSnippet/1".
     """
     ids: [SnippetID!]
 
@@ -25528,12 +25528,12 @@ type User {
     last: Int
 
     """
-    The type of snippet
+    The type of snippet.
     """
     type: TypeEnum
 
     """
-    The visibility of the snippet
+    The visibility of the snippet.
     """
     visibility: VisibilityScopesEnum
   ): SnippetConnection
@@ -25563,7 +25563,7 @@ type User {
     last: Int
 
     """
-    Search query
+    Search query.
     """
     search: String
   ): ProjectConnection
@@ -25583,7 +25583,7 @@ type User {
   """
   todos(
     """
-    The action to be filtered
+    The action to be filtered.
     """
     action: [TodoActionEnum!]
 
@@ -25593,7 +25593,7 @@ type User {
     after: String
 
     """
-    The ID of an author
+    The ID of an author.
     """
     authorId: [ID!]
 
@@ -25608,7 +25608,7 @@ type User {
     first: Int
 
     """
-    The ID of a group
+    The ID of a group.
     """
     groupId: [ID!]
 
@@ -25618,17 +25618,17 @@ type User {
     last: Int
 
     """
-    The ID of a project
+    The ID of a project.
     """
     projectId: [ID!]
 
     """
-    The state of the todo
+    The state of the todo.
     """
     state: [TodoStateEnum!]
 
     """
-    The type of the todo
+    The type of the todo.
     """
     type: [TodoTargetEnum!]
   ): TodoConnection!

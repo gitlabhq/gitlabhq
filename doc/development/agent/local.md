@@ -38,7 +38,7 @@ You can run `kas` and `agentk` locally to test the [Kubernetes Agent](index.md) 
    gdk start
    # Stop GDK's version of kas
    gdk stop gitlab-k8s-agent
-    
+
    # Start kas
    bazel run //cmd/kas -- --configuration-file="$(pwd)/cfg.yaml"
    ```

@@ -22,7 +22,7 @@ All new features built with Vue.js must follow a [Flux architecture](https://fac
 The main goal we are trying to achieve is to have only one data flow and only one data entry.
 In order to achieve this goal we use [vuex](#vuex).
 
-You can also read about this architecture in Vue docs about 
+You can also read about this architecture in Vue docs about
 [state management](https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch)
 and about [one way data flow](https://vuejs.org/v2/guide/components.html#One-Way-Data-Flow).
 
@@ -63,11 +63,11 @@ Be sure to read about [page-specific JavaScript](performance.md#page-specific-ja
 While mounting a Vue application, you might need to provide data from Rails to JavaScript.
 To do that, you can use the `data` attributes in the HTML element and query them while mounting the application.
 
-You should only do this while initializing the application, because the mounted element is replaced 
+You should only do this while initializing the application, because the mounted element is replaced
 with a Vue-generated DOM.
 
-The advantage of providing data from the DOM to the Vue instance through `props` in the `render` 
-function instead of querying the DOM inside the main Vue component is avoiding the need to create a 
+The advantage of providing data from the DOM to the Vue instance through `props` in the `render`
+function instead of querying the DOM inside the main Vue component is avoiding the need to create a
 fixture or an HTML element in the unit test, which makes the tests easier.
 
 See the following example, also, please refer to our [Vue style guide](style/vue.md#basic-rules) for
@@ -96,14 +96,14 @@ return new Vue({
 });
 ```
 
-> When adding an `id` attribute to mount a Vue application, please make sure this `id` is unique 
+> When adding an `id` attribute to mount a Vue application, please make sure this `id` is unique
 across the codebase.
 
 #### Accessing the `gl` object
 
-When we need to query the `gl` object for data that doesn't change during the application's life 
-cycle, we should do it in the same place where we query the DOM. By following this practice, we can 
-avoid the need to mock the `gl` object, which makes tests easier. It should be done while 
+When we need to query the `gl` object for data that doesn't change during the application's life
+cycle, we should do it in the same place where we query the DOM. By following this practice, we can
+avoid the need to mock the `gl` object, which makes tests easier. It should be done while
 initializing our Vue instance, and the data should be provided as `props` to the main component:
 
 ```javascript
@@ -196,17 +196,17 @@ Check this [page](vuex.md) for more details.
 
 In the [Vue documentation](https://vuejs.org/v2/api/#Options-Data) the Data function/object is defined as follows:
 
-> The data object for the Vue instance. Vue recursively converts its properties into getter/setters 
-to make it “reactive”. The object must be plain: native objects such as browser API objects and 
-prototype properties are ignored. A rule of thumb is that data should just be data - it is not 
+> The data object for the Vue instance. Vue recursively converts its properties into getter/setters
+to make it “reactive”. The object must be plain: native objects such as browser API objects and
+prototype properties are ignored. A rule of thumb is that data should just be data - it is not
 recommended to observe objects with their own stateful behavior.
 
 Based on the Vue guidance:
 
-- **Do not** use or create a JavaScript class in your [data function](https://vuejs.org/v2/api/#data), 
+- **Do not** use or create a JavaScript class in your [data function](https://vuejs.org/v2/api/#data),
 such as `user: new User()`.
 - **Do not** add new JavaScript class implementations.
-- **Do** use [GraphQL](../api_graphql_styleguide.md), [Vuex](vuex.md) or a set of components if 
+- **Do** use [GraphQL](../api_graphql_styleguide.md), [Vuex](vuex.md) or a set of components if
 cannot use simple primitives or objects.
 - **Do** maintain existing implementations using such approaches.
 - **Do** Migrate components to a pure object model when there are substantial changes to it.
@@ -218,7 +218,7 @@ There are additional reasons why having a JavaScript class presents maintainabil
 
 - Once a class is created, it is easy to extend it in a way that can infringe Vue reactivity and best practices.
 - A class adds a layer of abstraction, which makes the component API and its inner workings less clear.
-- It makes it harder to test. Since the class is instantiated by the component data function, it is 
+- It makes it harder to test. Since the class is instantiated by the component data function, it is
 harder to 'manage' component and class separately.
 - Adding OOP to a functional codebase adds yet another way of writing code, reducing consistency and clarity.
 
@@ -339,7 +339,7 @@ need to test the rendered output. Visit the [Vue testing guide](https://vuejs.or
 ### Child components
 
 1. Test any directive that defines if/how child component is rendered (for example, `v-if` and `v-for`).
-1. Test any props we are passing to child components (especially if the prop is calculated in the 
+1. Test any props we are passing to child components (especially if the prop is calculated in the
 component under test, with the `computed` property, for example). Remember to use `.props()` and not `.vm.someProp`.
 1. Test we react correctly to any events emitted from child components:
 
@@ -366,10 +366,10 @@ component under test, with the `computed` property, for example). Remember to us
 
 ### Events
 
-We should test for events emitted in response to an action within our component, this is useful to 
+We should test for events emitted in response to an action within our component, this is useful to
 verify the correct events are being fired with the correct arguments.
 
-For any DOM events we should use [`trigger`](https://vue-test-utils.vuejs.org/api/wrapper/#trigger) 
+For any DOM events we should use [`trigger`](https://vue-test-utils.vuejs.org/api/wrapper/#trigger)
 to fire out event.
 
 ```javascript
@@ -385,7 +385,7 @@ it('should fire the click event', () => {
 })
 ```
 
-When we need to fire a Vue event, we should use [`emit`](https://vuejs.org/v2/guide/components-custom-events.html) 
+When we need to fire a Vue event, we should use [`emit`](https://vuejs.org/v2/guide/components-custom-events.html)
 to fire our event.
 
 ```javascript
@@ -399,7 +399,7 @@ it('should fire the itemClicked event', () => {
 })
 ```
 
-We should verify an event has been fired by asserting against the result of the 
+We should verify an event has been fired by asserting against the result of the
 [`emitted()`](https://vue-test-utils.vuejs.org/api/wrapper/#emitted) method.
 
 ## Vue.js Expert Role
@@ -416,7 +416,7 @@ You should only apply to be a Vue.js expert when your own merge requests and you
 
 > This section is added temporarily to support the efforts to migrate the codebase from Vue 2.x to Vue 3.x
 
-Currently, we recommend to minimize adding certain features to the codebase to prevent increasing 
+Currently, we recommend to minimize adding certain features to the codebase to prevent increasing
 the tech debt for the eventual migration:
 
 - filters;
@@ -428,7 +428,7 @@ You can find more details on [Migration to Vue 3](vue3_migration.md)
 
 ## Appendix - Vue component subject under test
 
-This is the template for the example component which is tested in the 
+This is the template for the example component which is tested in the
 [Testing Vue components](#testing-vue-components) section:
 
 ```html

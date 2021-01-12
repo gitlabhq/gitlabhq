@@ -11,7 +11,7 @@ module Resolvers
     argument :iid, GraphQL::STRING_TYPE,
               required: true,
               as: :iids,
-              description: 'IID of the merge request, for example `1`'
+              description: 'IID of the merge request, for example `1`.'
 
     def no_results_possible?(args)
       project.nil?

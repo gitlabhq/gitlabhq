@@ -278,10 +278,10 @@ In GitLab 12.1 and later, only PostgreSQL is supported. In GitLab 13.0 and later
    ```shell
    sudo apt install -y postgresql postgresql-client libpq-dev postgresql-contrib
    ```
- 
+
    For Ubuntu 18.04 and earlier, the available PostgreSQL doesn't meet the minimum
    version requirement. You need to add PostgreSQL's repository:
- 
+
    ```shell
    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
    RELEASE=$(lsb_release -cs) echo "deb http://apt.postgresql.org/pub/repos/apt/ ${RELEASE}"-pgdg main | sudo tee  /etc/apt/sources.list.d/pgdg.list
@@ -1058,7 +1058,7 @@ sudo yum groupinstall 'Development Tools'
 
 While compiling assets, you may receive the following error message:
 
-```plaintext 
+```plaintext
 Killed
 error Command failed with exit code 137.
 ```

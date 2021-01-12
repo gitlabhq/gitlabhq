@@ -232,7 +232,7 @@ Devise.setup do |config|
   end
 
   if Gitlab::Auth::Ldap::Config.enabled?
-    Gitlab::Auth::Ldap::Config.providers.each do |provider|
+    Gitlab::Auth::Ldap::Config.available_providers.each do |provider|
       ldap_config = Gitlab::Auth::Ldap::Config.new(provider)
       config.omniauth(provider, ldap_config.omniauth_options)
     end

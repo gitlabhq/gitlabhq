@@ -250,6 +250,7 @@ Changes to the issue format can be submitted in the
 Any feature flag change that affects any GitLab instance is automatically logged in
 [features_json.log](../../administration/logs.md#features_jsonlog).
 You can search the change history in [Kibana](https://about.gitlab.com/handbook/support/workflows/kibana.html).
+You can access the feature flag change history for GitLab.com [here](https://log.gprd.gitlab.net/goto/d060337c017723084c6d97e09e591fc6).
 
 ## Cleaning up
 

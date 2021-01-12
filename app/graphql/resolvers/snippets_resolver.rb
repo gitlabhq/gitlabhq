@@ -11,20 +11,20 @@ module Resolvers
 
     argument :author_id, ::Types::GlobalIDType[::User],
               required: false,
-              description: 'The ID of an author'
+              description: 'The ID of an author.'
 
     argument :project_id, ::Types::GlobalIDType[::Project],
               required: false,
-              description: 'The ID of a project'
+              description: 'The ID of a project.'
 
     argument :type, Types::Snippets::TypeEnum,
               required: false,
-              description: 'The type of snippet'
+              description: 'The type of snippet.'
 
     argument :explore,
               GraphQL::BOOLEAN_TYPE,
               required: false,
-              description: 'Explore personal snippets'
+              description: 'Explore personal snippets.'
 
     def resolve(**args)
       if args[:author_id].present? && args[:project_id].present?

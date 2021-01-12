@@ -103,7 +103,7 @@ for private forks created in the same group or in a sub-group of the original
 Permissions are inherited from parent groups. When private forks are created
 in the same group or sub-group as the original upstream repository, users
 receive the same permissions in both projects. This inheritance ensures
-Developer users have the needed permissions to both view confidential issues and 
+Developer users have the needed permissions to both view confidential issues and
 resolve them.
 
 ### How it works

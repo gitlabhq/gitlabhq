@@ -17,7 +17,7 @@ WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 To see a visualization of your `gitlab-ci.yml` configuration, navigate to **CI/CD > Editor**
-and select the `Visualization` tab. The visualization shows all stages and jobs. 
+and select the `Visualization` tab. The visualization shows all stages and jobs.
 [`needs`](README.md#needs) relationships are displayed as lines connecting jobs together, showing the hierarchy of execution:
 
 ![CI Config Visualization](img/ci_config_visualization_v13_7.png)
