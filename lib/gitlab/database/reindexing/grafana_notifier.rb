@@ -5,9 +5,10 @@ module Gitlab
     module Reindexing
       # This can be used to send annotations for reindexing to a Grafana API
       class GrafanaNotifier
-        def initialize(api_key = ENV['GITLAB_GRAFANA_API_KEY'], api_url = ENV['GITLAB_GRAFANA_API_URL'])
+        def initialize(api_key = ENV['GITLAB_GRAFANA_API_KEY'], api_url = ENV['GITLAB_GRAFANA_API_URL'], additional_tag = ENV['GITLAB_REINDEXING_GRAFANA_TAG'] || Rails.env)
           @api_key = api_key
           @api_url = api_url
+          @additional_tag = additional_tag
         end
 
         def notify_start(action)
@@ -37,7 +38,7 @@ module Gitlab
         def base_payload(action)
           {
             time: (action.action_start.utc.to_f * 1000).to_i,
-            tags: ['reindex', action.index.tablename, action.index.name]
+            tags: ['reindex', @additional_tag, action.index.tablename, action.index.name].compact
           }
         end
 

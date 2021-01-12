@@ -53,17 +53,6 @@ RSpec.describe API::Boards do
     end
   end
 
-  describe "PUT /projects/:id/boards/:board_id" do
-    let(:url) { "/projects/#{board_parent.id}/boards/#{board.id}" }
-
-    it 'updates the issue board' do
-      put api(url, user), params: { name: 'changed board name' }
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['name']).to eq('changed board name')
-    end
-  end
-
   describe "DELETE /projects/:id/boards/:board_id" do
     let(:url) { "/projects/#{board_parent.id}/boards/#{board.id}" }
 

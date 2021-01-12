@@ -4,6 +4,9 @@ import { spriteIcon } from '~/lib/utils/common_utils';
 
 const groupType = 'Group'; // eslint-disable-line @gitlab/require-i18n-strings
 
+// Number of users to show in the autocomplete menu to avoid doing a mass fetch of 100+ avatars
+const memberLimit = 10;
+
 const nonWordOrInteger = /\W|^\d+$/;
 
 export const GfmAutocompleteType = {
@@ -74,6 +77,7 @@ export const tributeConfig = {
       fillAttr: 'username',
       lookup: (value) =>
         value.type === groupType ? last(value.name.split(' / ')) : `${value.name}${value.username}`,
+      menuItemLimit: memberLimit,
       menuItemTemplate: ({ original }) => {
         const commonClasses = 'gl-avatar gl-avatar-s24 gl-flex-shrink-0';
         const noAvatarClasses = `${commonClasses} gl-rounded-small

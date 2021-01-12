@@ -201,6 +201,10 @@ describe('gfm_autocomplete/utils', () => {
       expect(membersConfig.lookup(groupMember)).toBe(last(groupMember.name.split(' / ')));
     });
 
+    it('limits the items in the autocomplete menu to 10', () => {
+      expect(membersConfig.menuItemLimit).toBe(10);
+    });
+
     it('shows the avatar, name and username in the menu item for a user', () => {
       expect(membersConfig.menuItemTemplate({ original: userMember })).toMatchSnapshot();
     });

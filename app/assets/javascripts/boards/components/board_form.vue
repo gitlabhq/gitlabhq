@@ -49,6 +49,14 @@ export default {
     GlModal,
     BoardConfigurationOptions,
   },
+  inject: {
+    fullPath: {
+      default: '',
+    },
+    rootPath: {
+      default: '',
+    },
+  },
   props: {
     canAdminBoard: {
       type: Boolean,
@@ -90,14 +98,6 @@ export default {
     currentBoard: {
       type: Object,
       required: true,
-    },
-  },
-  inject: {
-    fullPath: {
-      default: '',
-    },
-    rootPath: {
-      default: '',
     },
   },
   data() {

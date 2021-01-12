@@ -16,13 +16,13 @@ export default {
     GlButton,
   },
   mixins: [glFeatureFlagMixin()],
+  inject: ['groupId'],
   props: {
     list: {
       type: Object,
       required: true,
     },
   },
-  inject: ['groupId'],
   data() {
     return {
       title: '',

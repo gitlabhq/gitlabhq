@@ -198,21 +198,6 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
           expect(findLoadingIcon().exists()).toBe(true);
           expect(findPipelineGraph().exists()).toBe(false);
         });
-
-        it('displays the graph only after the tab is mounted and selected', async () => {
-          createComponent({ mountFn: mount });
-
-          expect(findTabAt(1).find(PipelineGraph).exists()).toBe(false);
-
-          await nextTick();
-
-          // Select visualization tab
-          wrapper.find('[data-testid="visualization-tab-btn"]').trigger('click');
-
-          await nextTick();
-
-          expect(findTabAt(1).find(PipelineGraph).exists()).toBe(true);
-        });
       });
 
       describe('with feature flag off', () => {

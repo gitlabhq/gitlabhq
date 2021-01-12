@@ -8,7 +8,6 @@ module BulkImports
       end
 
       def execute
-        entity.start!
         bulk_import = entity.bulk_import
         configuration = bulk_import.configuration
 

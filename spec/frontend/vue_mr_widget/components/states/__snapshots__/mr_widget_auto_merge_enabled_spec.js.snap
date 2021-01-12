@@ -1,0 +1,183 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MRWidgetAutoMergeEnabled when graphql is disabled template should have correct elements 1`] = `
+<div
+  class="mr-widget-body media"
+>
+  <status-icon-stub
+    status="success"
+  />
+   
+  <div
+    class="media-body"
+  >
+    <h4
+      class="gl-display-flex"
+    >
+      <span
+        class="gl-mr-3"
+      >
+        <span
+          class="js-status-text-before-author"
+          data-testid="beforeStatusText"
+        >
+          Set by
+        </span>
+         
+        <mr-widget-author-stub
+          author="[object Object]"
+          showauthorname="true"
+        />
+         
+        <span
+          class="js-status-text-after-author"
+          data-testid="afterStatusText"
+        >
+          to be merged automatically when the pipeline succeeds
+        </span>
+      </span>
+       
+      <a
+        class="btn btn-sm btn-default js-cancel-auto-merge"
+        data-testid="cancelAutomaticMergeButton"
+        href="#"
+        role="button"
+      >
+        <!---->
+        
+          Cancel automatic merge
+        
+      </a>
+    </h4>
+     
+    <section
+      class="mr-info-list"
+    >
+      <p>
+        
+          The changes will be merged into
+          
+        <a
+          class="label-branch"
+          href="/foo/bar"
+        >
+          foo
+        </a>
+      </p>
+       
+      <p
+        class="gl-display-flex"
+      >
+        <span
+          class="gl-mr-3"
+        >
+          The source branch will not be deleted
+        </span>
+         
+        <a
+          class="btn btn-sm btn-default js-remove-source-branch"
+          data-testid="removeSourceBranchButton"
+          href="#"
+          role="button"
+        >
+          <!---->
+          
+            Delete source branch
+          
+        </a>
+      </p>
+    </section>
+  </div>
+</div>
+`;
+
+exports[`MRWidgetAutoMergeEnabled when graphql is enabled template should have correct elements 1`] = `
+<div
+  class="mr-widget-body media"
+>
+  <status-icon-stub
+    status="success"
+  />
+   
+  <div
+    class="media-body"
+  >
+    <h4
+      class="gl-display-flex"
+    >
+      <span
+        class="gl-mr-3"
+      >
+        <span
+          class="js-status-text-before-author"
+          data-testid="beforeStatusText"
+        >
+          Set by
+        </span>
+         
+        <mr-widget-author-stub
+          author="[object Object]"
+          showauthorname="true"
+        />
+         
+        <span
+          class="js-status-text-after-author"
+          data-testid="afterStatusText"
+        >
+          to be merged automatically when the pipeline succeeds
+        </span>
+      </span>
+       
+      <a
+        class="btn btn-sm btn-default js-cancel-auto-merge"
+        data-testid="cancelAutomaticMergeButton"
+        href="#"
+        role="button"
+      >
+        <!---->
+        
+          Cancel automatic merge
+        
+      </a>
+    </h4>
+     
+    <section
+      class="mr-info-list"
+    >
+      <p>
+        
+          The changes will be merged into
+          
+        <a
+          class="label-branch"
+          href="/foo/bar"
+        >
+          foo
+        </a>
+      </p>
+       
+      <p
+        class="gl-display-flex"
+      >
+        <span
+          class="gl-mr-3"
+        >
+          The source branch will not be deleted
+        </span>
+         
+        <a
+          class="btn btn-sm btn-default js-remove-source-branch"
+          data-testid="removeSourceBranchButton"
+          href="#"
+          role="button"
+        >
+          <!---->
+          
+            Delete source branch
+          
+        </a>
+      </p>
+    </section>
+  </div>
+</div>
+`;

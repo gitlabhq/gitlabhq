@@ -11,13 +11,13 @@ export default {
     GlIcon,
     GlTooltip,
   },
+  inject: ['timeTrackingLimitToHours'],
   props: {
     estimate: {
       type: Number,
       required: true,
     },
   },
-  inject: ['timeTrackingLimitToHours'],
   computed: {
     title() {
       return stringifyTime(

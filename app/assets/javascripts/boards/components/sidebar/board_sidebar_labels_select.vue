@@ -14,12 +14,12 @@ export default {
     LabelsSelect,
     GlLabel,
   },
+  inject: ['labelsFetchPath', 'labelsManagePath', 'labelsFilterBasePath'],
   data() {
     return {
       loading: false,
     };
   },
-  inject: ['labelsFetchPath', 'labelsManagePath', 'labelsFilterBasePath'],
   computed: {
     ...mapGetters(['activeIssue', 'projectPathForActiveIssue']),
     selectedLabels() {

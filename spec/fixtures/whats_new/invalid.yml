@@ -1,0 +1,20 @@
+- title: Create and view requirements in GitLab
+  body: The first step towards managing requirements from within GitLab is here! This initial release allows users to create and view requirements at a project level. As Requirements Management evolves in GitLab, stay tuned for support for traceability between all artifacts, creating a seamless workflow to visually demonstrate completeness and compliance.
+  stage: Plan
+  self-managed: true
+  gitlab-com: true
+  packages: [ALL]
+  url: https://docs.gitlab.com/ee/user/project/requirements/index.html
+  image_url: https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png
+  published_at: 2020-04-22
+  release: 12.10
+- title: Retrieve CI/CD secrets from HashiCorp Vault
+  body: In this release, GitLab adds support for lightweight JSON Web Token (JWT) authentication to integrate with your existing HashiCorp Vault. Now, you can seamlessly provide secrets to CI/CD jobs by taking advantage of HashiCorp's JWT authentication method  rather than manually having to provide secrets as a variable in GitLab.
+  stage: Release
+  self-managed: true
+  gitlab-com: true
+  packages: [Starter]
+  url: https://docs.gitlab.com/ee/ci/examples/authenticating-with-hashicorp-vault/index.html
+  image_url: https://about.gitlab.com/images/12_10/jwt-vault-1.png
+  published_at: 2020-04-22
+  release: 12.10

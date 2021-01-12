@@ -220,8 +220,12 @@ module API
 
         file_name, format = extract_format(params[:file_name])
 
-        package = ::Packages::Maven::FindOrCreatePackageService
+        result = ::Packages::Maven::FindOrCreatePackageService
           .new(user_project, current_user, params.merge(build: current_authenticated_job)).execute
+
+        bad_request!(result.errors.first) if result.error?
+
+        package = result.payload[:package]
 
         case format
         when 'sha1'

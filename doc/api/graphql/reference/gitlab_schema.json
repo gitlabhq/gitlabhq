@@ -1500,7 +1500,7 @@
           "enumValues": [
             {
               "name": "operations",
-              "description": "Alerts for operations domain ",
+              "description": "Alerts for operations domain",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -37995,6 +37995,20 @@
               "deprecationReason": null
             },
             {
+              "name": "autoMergeStrategy",
+              "description": "Selected auto merge strategy",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "availableAutoMergeStrategies",
               "description": "Array of available auto merge strategies",
               "args": [
@@ -38640,6 +38654,20 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mergeUser",
+              "description": "User who merged this merge request",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "User",
                 "ofType": null
               },
               "isDeprecated": false,

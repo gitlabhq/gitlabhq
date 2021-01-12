@@ -3,6 +3,7 @@ import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 
 export default {
   components: { GlButton, GlLoadingIcon },
+  inject: ['canUpdate'],
   props: {
     title: {
       type: String,
@@ -25,7 +26,6 @@ export default {
       default: true,
     },
   },
-  inject: ['canUpdate'],
   data() {
     return {
       edit: false,

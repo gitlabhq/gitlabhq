@@ -4,7 +4,8 @@ require 'spec_helper'
 RSpec.describe API::MavenPackages do
   include WorkhorseHelpers
 
-  let_it_be(:group) { create(:group) }
+  let_it_be_with_refind(:package_settings) { create(:namespace_package_setting, :group) }
+  let_it_be(:group) { package_settings.namespace }
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :public, namespace: group) }
   let_it_be(:package, reload: true) { create(:maven_package, project: project, name: project.full_path) }
@@ -18,6 +19,7 @@ RSpec.describe API::MavenPackages do
   let_it_be(:deploy_token_for_group) { create(:deploy_token, :group, read_package_registry: true, write_package_registry: true) }
   let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: deploy_token_for_group, group: group) }
 
+  let(:package_name) { 'com/example/my-app' }
   let(:workhorse_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
   let(:headers) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => workhorse_token } }
   let(:headers_with_token) { headers.merge('Private-Token' => personal_access_token.token) }
@@ -669,6 +671,35 @@ RSpec.describe API::MavenPackages do
         end
       end
 
+      context 'when package duplicates are not allowed' do
+        let(:package_name) { package.name }
+        let(:version) { package.version }
+
+        before do
+          package_settings.update!(maven_duplicates_allowed: false)
+        end
+
+        it 'rejects the request', :aggregate_failures do
+          expect { upload_file_with_token(params: params) }.not_to change { package.package_files.count }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to include('Duplicate package is not allowed')
+        end
+
+        context 'when the package name matches the exception regex' do
+          before do
+            package_settings.update!(maven_duplicate_exception_regex: '.*')
+          end
+
+          it 'stores the package file', :aggregate_failures do
+            expect { upload_file_with_token(params: params) }.to change { package.package_files.count }.by(1)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(jar_file.file_name).to eq(file_upload.original_filename)
+          end
+        end
+      end
+
       context 'for sha1 file' do
         let(:dummy_package) { double(Packages::Package) }
 
@@ -698,7 +729,7 @@ RSpec.describe API::MavenPackages do
     end
 
     def upload_file(params: {}, request_headers: headers, file_extension: 'jar')
-      url = "/projects/#{project.id}/packages/maven/com/example/my-app/#{version}/my-app-1.0-20180724.124855-1.#{file_extension}"
+      url = "/projects/#{project.id}/packages/maven/#{package_name}/#{version}/my-app-1.0-20180724.124855-1.#{file_extension}"
       workhorse_finalize(
         api(url),
         method: :put,

@@ -47,4 +47,5 @@
   stage: Verify
   body: |
     Available today is the GitLab Runner container image for the [Red Hat OpenShift Container Platform](https://www.openshift.com/products/container-platform). To install the runner on OpenShift, you can use the new [GitLab Runner Operator](https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator) available from the beta channel in Red Hat's Operator Hub -  a web console for OpenShift cluster administrators to discover and select Operators to install on their cluster. Operator Hub is deployed by default in the OpenShift Container Platform. We plan to transition the GitLab Runner Operator to the stable channel, and by extension [GA](https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/-/issues/6), in early 2021. Finally, we are also developing an operator for GitLab, so stay tuned to future release posts for those announcements.
-
+  published_at: 2020-12-22
+  release: 13.7

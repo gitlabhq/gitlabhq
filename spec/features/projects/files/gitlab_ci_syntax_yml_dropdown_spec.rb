@@ -34,7 +34,8 @@ RSpec.describe 'Projects > Files > User wants to add a .gitlab-ci.yml file' do
     let(:experiment_active) { true }
     let(:in_experiment_group) { true }
 
-    it 'allows the user to pick a "Learn CI/CD syntax" template from the dropdown', :js do
+    it 'allows the user to pick a "Learn CI/CD syntax" template from the dropdown', :js,
+       { quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/297347' } } do
       expect(page).to have_css('.gitlab-ci-syntax-yml-selector')
 
       find('.js-gitlab-ci-syntax-yml-selector').click

@@ -80,10 +80,20 @@ module API
           requires :label_id, type: Integer, desc: 'The ID of an existing label'
         end
 
-        params :update_params do
+        params :update_params_ce do
+          optional :name, type: String, desc: 'The board name'
+          optional :hide_backlog_list, type: Grape::API::Boolean, desc: 'Hide the Open list'
+          optional :hide_closed_list, type: Grape::API::Boolean, desc: 'Hide the Closed list'
+        end
+
+        params :update_params_ee do
           # Configurable issue boards are not available in CE/EE Core.
           # https://docs.gitlab.com/ee/user/project/issue_board.html#configurable-issue-boards
-          optional :name, type: String, desc: 'The board name'
+        end
+
+        params :update_params do
+          use :update_params_ce
+          use :update_params_ee
         end
       end
     end

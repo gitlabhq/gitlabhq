@@ -1,0 +1,5 @@
+---
+title: Fix fork icon shrinks if branch name is very long
+merge_request: 50915
+author: Kev @KevSlashNull
+type: fixed

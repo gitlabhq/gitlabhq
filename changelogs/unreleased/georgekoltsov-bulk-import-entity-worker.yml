@@ -1,0 +1,5 @@
+---
+title: Move Group Migration entities import to individual sidekiq jobs
+merge_request: 50781
+author:
+type: changed

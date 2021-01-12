@@ -11,29 +11,36 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService do
   let(:file_name) { 'test.jar' }
   let(:param_path) { "#{path}/#{version}" }
   let(:params) { { path: param_path, file_name: file_name } }
+  let(:service) { described_class.new(project, user, params) }
 
   describe '#execute' do
     using RSpec::Parameterized::TableSyntax
 
-    subject { described_class.new(project, user, params).execute }
+    subject { service.execute }
 
-    RSpec.shared_examples 'reuse existing package' do
-      it { expect { subject}.not_to change { Packages::Package.count } }
+    shared_examples 'reuse existing package' do
+      it { expect { subject }.not_to change { Packages::Package.count } }
 
-      it { is_expected.to eq(existing_package) }
+      it 'returns the existing package' do
+        expect(subject.payload).to eq(package: existing_package)
+      end
     end
 
-    RSpec.shared_examples 'create package' do
+    shared_examples 'create package' do
       it { expect { subject }.to change { Packages::Package.count }.by(1) }
 
-      it 'sets the proper name and version' do
-        pkg = subject
+      it 'sets the proper name and version', :aggregate_failures do
+        pkg = subject.payload[:package]
 
         expect(pkg.name).to eq(path)
         expect(pkg.version).to eq(version)
       end
 
-      it_behaves_like 'assigns build to package'
+      context 'with a build' do
+        subject { service.execute.payload[:package] }
+
+        it_behaves_like 'assigns build to package'
+      end
     end
 
     context 'path with version' do
@@ -88,6 +95,28 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService do
 
       it 'creates a build_info' do
         expect { subject }.to change { Packages::BuildInfo.count }.by(1)
+      end
+    end
+
+    context 'when package duplicates are not allowed' do
+      let_it_be_with_refind(:package_settings) { create(:namespace_package_setting, :group, maven_duplicates_allowed: false) }
+      let_it_be_with_refind(:group) { package_settings.namespace }
+      let_it_be_with_refind(:project) { create(:project, group: group) }
+      let!(:existing_package) { create(:maven_package, name: path, version: version, project: project) }
+
+      it { expect { subject }.not_to change { project.package_files.count } }
+
+      it 'returns an error', :aggregate_failures do
+        expect(subject.payload).to be_empty
+        expect(subject.errors).to include('Duplicate package is not allowed')
+      end
+
+      context 'when the package name matches the exception regex' do
+        before do
+          package_settings.update!(maven_duplicate_exception_regex: '.*')
+        end
+
+        it_behaves_like 'reuse existing package'
       end
     end
   end

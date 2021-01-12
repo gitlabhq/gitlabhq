@@ -48,7 +48,6 @@ class Service < ApplicationRecord
 
   after_commit :reset_updated_properties
   after_commit :cache_project_has_external_issue_tracker
-  after_commit :cache_project_has_external_wiki
 
   belongs_to :project, inverse_of: :services
   belongs_to :group, inverse_of: :services
@@ -466,12 +465,6 @@ class Service < ApplicationRecord
   def cache_project_has_external_issue_tracker
     if project && !project.destroyed?
       project.cache_has_external_issue_tracker
-    end
-  end
-
-  def cache_project_has_external_wiki
-    if project && !project.destroyed?
-      project.cache_has_external_wiki
     end
   end
 

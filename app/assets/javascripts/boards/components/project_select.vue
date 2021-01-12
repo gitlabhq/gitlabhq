@@ -33,13 +33,13 @@ export default {
     GlDropdownText,
     GlSearchBoxByType,
   },
+  inject: ['groupId'],
   props: {
     list: {
       type: Object,
       required: true,
     },
   },
-  inject: ['groupId'],
   data() {
     return {
       initialLoading: true,

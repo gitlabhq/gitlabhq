@@ -200,6 +200,12 @@ class Packages::Package < ApplicationRecord
     debian? && !version.nil?
   end
 
+  def package_settings
+    strong_memoize(:package_settings) do
+      project.namespace.package_settings
+    end
+  end
+
   private
 
   def composer_tag_version?

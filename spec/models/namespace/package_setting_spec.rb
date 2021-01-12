@@ -33,4 +33,49 @@ RSpec.describe Namespace::PackageSetting do
       end
     end
   end
+
+  describe '#duplicates_allowed?' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { described_class.duplicates_allowed?(package) }
+
+    context 'package types with package_settings' do
+      # As more package types gain settings they will be added to this list
+      [:maven_package].each do |format|
+        let_it_be(:package) { create(format) } # rubocop:disable Rails/SaveBang
+        let_it_be(:package_type) { package.package_type }
+        let_it_be(:package_setting) { package.project.namespace.package_settings }
+
+        where(:duplicates_allowed, :duplicate_exception_regex, :result) do
+          true  | ''   | true
+          false | ''   | false
+          false | '.*' | true
+        end
+
+        with_them do
+          context "for #{format}" do
+            before do
+              package_setting.update!(
+                "#{package_type}_duplicates_allowed" => duplicates_allowed,
+                "#{package_type}_duplicate_exception_regex" => duplicate_exception_regex
+              )
+            end
+
+            it { is_expected.to be(result) }
+          end
+        end
+      end
+    end
+
+    context 'package types without package_settings' do
+      [:npm_package, :conan_package, :nuget_package, :pypi_package, :composer_package, :generic_package, :golang_package, :debian_package].each do |format|
+        let_it_be(:package) { create(format) } # rubocop:disable Rails/SaveBang
+        let_it_be(:package_setting) { package.project.namespace.package_settings }
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(Namespace::PackageSetting::PackageSettingNotImplemented)
+        end
+      end
+    end
+  end
 end

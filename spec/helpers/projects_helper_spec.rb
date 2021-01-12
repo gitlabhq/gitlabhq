@@ -433,6 +433,7 @@ RSpec.describe ProjectsHelper do
     context 'when project has external wiki' do
       it 'includes external wiki tab' do
         project.create_external_wiki_service(active: true, properties: { 'external_wiki_url' => 'https://gitlab.com' })
+        project.reload
 
         is_expected.to include(:external_wiki)
       end

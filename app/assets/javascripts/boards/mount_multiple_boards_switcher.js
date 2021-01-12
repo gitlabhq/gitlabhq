@@ -18,6 +18,10 @@ export default (params = {}) => {
       BoardsSelector,
     },
     apolloProvider,
+    provide: {
+      fullPath: params.fullPath,
+      rootPath: params.rootPath,
+    },
     data() {
       const { dataset } = boardsSwitcherElement;
 
@@ -34,10 +38,6 @@ export default (params = {}) => {
       };
 
       return { boardsSelectorProps };
-    },
-    provide: {
-      fullPath: params.fullPath,
-      rootPath: params.rootPath,
     },
     render(createElement) {
       return createElement(BoardsSelector, {

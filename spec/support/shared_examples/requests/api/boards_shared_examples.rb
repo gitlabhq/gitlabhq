@@ -44,16 +44,35 @@ RSpec.shared_examples 'group and project boards' do |route_definition, ee = fals
 
         expect_schema_match_for(response, 'public_api/v4/boards', ee)
       end
+    end
+  end
 
-      describe "GET #{route_definition}/:board_id" do
-        let(:url) { "#{root_url}/#{board.id}" }
+  describe "GET #{route_definition}/:board_id" do
+    let(:url) { "#{root_url}/#{board.id}" }
 
-        it 'get a single board by id' do
-          get api(url, user)
+    it 'get a single board by id' do
+      get api(url, user)
 
-          expect_schema_match_for(response, 'public_api/v4/board', ee)
-        end
-      end
+      expect_schema_match_for(response, 'public_api/v4/board', ee)
+    end
+  end
+
+  describe "PUT #{route_definition}/:board_id" do
+    let(:url) { "#{root_url}/#{board.id}" }
+
+    it 'updates the board name' do
+      put api(url, user), params: { name: 'changed board name' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['name']).to eq('changed board name')
+    end
+
+    it 'updates the issue board booleans' do
+      put api(url, user), params: { hide_backlog_list: true, hide_closed_list: true }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['hide_backlog_list']).to eq(true)
+      expect(json_response['hide_closed_list']).to eq(true)
     end
   end
 

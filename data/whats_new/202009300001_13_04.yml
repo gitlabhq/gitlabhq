@@ -63,7 +63,7 @@
   stage: Release
   self-managed: true
   gitlab-com: true
-  packages: [starter, premium, ultimate]
+  packages: [Starter, Premium, Ultimate]
   url: https://www.youtube.com/embed/1FBRaBQTQZk
   image_url: https://img.youtube.com/vi/1FBRaBQTQZk/hqdefault.jpg
   published_at: 2020-09-22

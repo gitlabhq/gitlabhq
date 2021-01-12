@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlLoadingIcon, GlTabs } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon, GlTabs, GlTab } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -28,12 +28,13 @@ const LOAD_FAILURE_UNKNOWN = 'LOAD_FAILURE_UNKNOWN';
 
 export default {
   components: {
-    CommitForm,
     CiLint,
+    CommitForm,
     EditorTab,
     GlAlert,
     GlLoadingIcon,
     GlTabs,
+    GlTab,
     PipelineGraph,
     TextEditor,
     ValidationSegment,
@@ -317,16 +318,15 @@ export default {
               :commit-sha="lastCommitSha"
             />
           </editor-tab>
-          <editor-tab
+          <gl-tab
             v-if="glFeatures.ciConfigVisualizationTab"
             :lazy="true"
             :title="$options.i18n.tabGraph"
-            :title-link-attributes="{ 'data-testid': 'visualization-tab-btn' }"
             data-testid="visualization-tab"
           >
             <gl-loading-icon v-if="isCiConfigDataLoading" size="lg" class="gl-m-3" />
             <pipeline-graph v-else :pipeline-data="ciConfigData" />
-          </editor-tab>
+          </gl-tab>
 
           <editor-tab :title="$options.i18n.tabLint">
             <gl-loading-icon v-if="isCiConfigDataLoading" size="lg" class="gl-m-3" />

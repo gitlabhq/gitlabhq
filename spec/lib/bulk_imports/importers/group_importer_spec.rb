@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe BulkImports::Importers::GroupImporter do
   let(:user) { create(:user) }
   let(:bulk_import) { create(:bulk_import) }
-  let(:bulk_import_entity) { create(:bulk_import_entity, bulk_import: bulk_import) }
+  let(:bulk_import_entity) { create(:bulk_import_entity, :started, bulk_import: bulk_import) }
   let(:bulk_import_configuration) { create(:bulk_import_configuration, bulk_import: bulk_import) }
   let(:context) do
     BulkImports::Pipeline::Context.new(
@@ -23,7 +23,6 @@ RSpec.describe BulkImports::Importers::GroupImporter do
 
   describe '#execute' do
     it 'starts the entity and run its pipelines' do
-      expect(bulk_import_entity).to receive(:start!).and_call_original
       expect_to_run_pipeline BulkImports::Groups::Pipelines::GroupPipeline, context: context
       expect_to_run_pipeline('EE::BulkImports::Groups::Pipelines::EpicsPipeline'.constantize, context: context) if Gitlab.ee?
       expect_to_run_pipeline BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline, context: context

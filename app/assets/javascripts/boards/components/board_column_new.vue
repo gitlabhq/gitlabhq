@@ -9,6 +9,11 @@ export default {
     BoardListHeader,
     BoardList,
   },
+  inject: {
+    boardId: {
+      default: '',
+    },
+  },
   props: {
     list: {
       type: Object,
@@ -23,11 +28,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-  },
-  inject: {
-    boardId: {
-      default: '',
     },
   },
   computed: {

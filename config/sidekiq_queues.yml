@@ -50,6 +50,8 @@
   - 1
 - - bulk_import
   - 1
+- - bulk_imports_entity
+  - 1
 - - chaos
   - 2
 - - chat_notification

@@ -27,6 +27,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [issueCardInner],
+  inject: ['groupId', 'rootPath', 'scopedLabelsAvailable'],
   props: {
     issue: {
       type: Object,
@@ -43,7 +44,6 @@ export default {
       default: false,
     },
   },
-  inject: ['groupId', 'rootPath', 'scopedLabelsAvailable'],
   data() {
     return {
       limitBeforeCounter: 2,

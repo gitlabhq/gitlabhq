@@ -279,7 +279,7 @@ Example response:
   }
 ```
 
-## Update a group issue board **(PREMIUM)**
+## Update a group issue board
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5954) in GitLab 11.1.
 
@@ -289,15 +289,17 @@ Updates a Group Issue Board.
 PUT /groups/:id/boards/:board_id
 ```
 
-| Attribute           | Type           | Required | Description |
-| ------------------- | -------------- | -------- | ----------- |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `board_id`          | integer        | yes      | The ID of a board |
-| `name`              | string         | no       | The new name of the board |
-| `assignee_id`       | integer        | no       | The assignee the board should be scoped to |
-| `milestone_id`      | integer        | no       | The milestone the board should be scoped to |
-| `labels`            | string         | no       | Comma-separated list of label names which the board should be scoped to |
-| `weight`            | integer        | no       | The weight range from 0 to 9, to which the board should be scoped to |
+| Attribute                    | Type           | Required | Description |
+| ---------------------------- | -------------- | -------- | ----------- |
+| `id`                         | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `board_id`                   | integer        | yes      | The ID of a board |
+| `name`                       | string         | no       | The new name of the board |
+| `hide_backlog_list`          | boolean        | no       | Hide the Open list |
+| `hide_closed_list`           | boolean        | no       | Hide the Closed list |
+| `assignee_id` **(PREMIUM)**  | integer        | no       | The assignee the board should be scoped to |
+| `milestone_id` **(PREMIUM)** | integer        | no       | The milestone the board should be scoped to |
+| `labels` **(PREMIUM)**       | string         | no       | Comma-separated list of label names which the board should be scoped to |
+| `weight` **(PREMIUM)**       | integer        | no       | The weight range from 0 to 9, to which the board should be scoped to |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards/1?name=new_name&milestone_id=44&assignee_id=1&labels=GroupLabel&weight=4"

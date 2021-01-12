@@ -37,6 +37,20 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: {
+    boardId: {
+      default: '',
+    },
+    weightFeatureAvailable: {
+      default: false,
+    },
+    scopedLabelsAvailable: {
+      default: false,
+    },
+    currentUserId: {
+      default: null,
+    },
+  },
   props: {
     list: {
       type: Object,
@@ -51,20 +65,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-  },
-  inject: {
-    boardId: {
-      default: '',
-    },
-    weightFeatureAvailable: {
-      default: false,
-    },
-    scopedLabelsAvailable: {
-      default: false,
-    },
-    currentUserId: {
-      default: null,
     },
   },
   computed: {

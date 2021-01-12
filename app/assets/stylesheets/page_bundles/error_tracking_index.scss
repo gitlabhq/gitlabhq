@@ -5,6 +5,10 @@
     min-width: auto;
   }
 
+  .filtered-search-box .form-control {
+    min-width: unset;
+  }
+
   .sort-control {
     .btn {
       padding-right: 2rem;

@@ -175,6 +175,10 @@ module Types
           calls_gitaly: true, description: 'Merge request commits excluding merge commits'
     field :security_auto_fix, GraphQL::BOOLEAN_TYPE, null: true,
           description: 'Indicates if the merge request is created by @GitLab-Security-Bot.'
+    field :auto_merge_strategy, GraphQL::STRING_TYPE, null: true,
+          description: 'Selected auto merge strategy'
+    field :merge_user, Types::UserType, null: true,
+          description: 'User who merged this merge request'
 
     def approved_by
       object.approved_by_users

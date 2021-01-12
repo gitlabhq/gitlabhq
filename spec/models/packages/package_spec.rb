@@ -745,4 +745,14 @@ RSpec.describe Packages::Package, type: :model do
       end
     end
   end
+
+  describe '#package_settings' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:package) { create(:maven_package, project: project) }
+
+    it 'returns the namespace package_settings' do
+      expect(package.package_settings).to eq(group.package_settings)
+    end
+  end
 end
