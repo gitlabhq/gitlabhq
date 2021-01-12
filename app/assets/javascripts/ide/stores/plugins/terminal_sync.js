@@ -1,5 +1,6 @@
 import { debounce } from 'lodash';
 import eventHub from '~/ide/eventhub';
+import { commitActionTypes } from '~/ide/constants';
 import terminalSyncModule from '../modules/terminal_sync';
 import { isEndingStatus, isRunningStatus } from '../modules/terminal/utils';
 
@@ -19,16 +20,25 @@ export default function createMirrorPlugin() {
       store.dispatch(`terminalSync/upload`);
     }, UPLOAD_DEBOUNCE);
 
+    const onFilesChange = (payload) => {
+      // Do nothing on a file update since we only want to trigger manually on "save".
+      if (payload?.type === commitActionTypes.update) {
+        return;
+      }
+
+      upload();
+    };
+
     const stop = () => {
       store.dispatch(`terminalSync/stop`);
-      eventHub.$off('ide.files.change', upload);
+      eventHub.$off('ide.files.change', onFilesChange);
     };
 
     const start = () => {
       store
         .dispatch(`terminalSync/start`)
         .then(() => {
-          eventHub.$on('ide.files.change', upload);
+          eventHub.$on('ide.files.change', onFilesChange);
         })
         .catch(() => {
           // error is handled in store

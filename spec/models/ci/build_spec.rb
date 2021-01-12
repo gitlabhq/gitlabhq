@@ -580,27 +580,9 @@ RSpec.describe Ci::Build do
         is_expected.to be_falsey
       end
 
-      context 'when runners are on-line but none can pick a build' do
-        before do
-          allow_any_instance_of(Ci::Runner)
-            .to receive(:can_pick?).and_return(false)
-        end
-
-        context 'when a performance experiement feature flag is enabled' do
-          before do
-            stub_feature_flags(ci_build_stuck_badge_performance_experiment: true)
-          end
-
-          it { is_expected.to be_truthy }
-        end
-
-        context 'when a performance experiment is not running' do
-          before do
-            stub_feature_flags(ci_build_stuck_badge_performance_experiment: false)
-          end
-
-          it { is_expected.to be_falsey }
-        end
+      it 'that cannot handle build' do
+        expect_any_instance_of(Ci::Runner).to receive(:can_pick?).and_return(false)
+        is_expected.to be_falsey
       end
     end
   end

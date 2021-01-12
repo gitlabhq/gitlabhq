@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Webhooks
 
-Project webhooks allow you to trigger a URL if for example new code is pushed or
+Project webhooks allow you to trigger a percent-encoded URL if, for example, new code is pushed or
 a new issue is created. You can configure webhooks to listen for specific events
 like pushes, issues or merge requests. GitLab sends a POST request with data
 to the webhook URL.

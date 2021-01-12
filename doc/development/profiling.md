@@ -130,6 +130,8 @@ As a follow up to finding `N+1` queries with Bullet, consider writing a [QueryRe
 
 ## Settings that impact performance
 
+### Application settings
+
 1. `development` environment by default works with hot-reloading enabled, this makes Rails to check file changes every request, and create a potential contention lock, as hot reload is single threaded.
 1. `development` environment can load code lazily once the request is fired which results in first request to always be slow.
 
@@ -140,3 +142,34 @@ To disable those features for profiling/benchmarking set the `RAILS_PROFILE` env
 - restart GDK with `gdk restart`
 
 *This environment variable is only applicable for the development mode.*
+
+### GC settings
+
+Ruby's garbage collector (GC) can be tuned via a variety of environment variables that will directly impact application performance.
+
+The following table lists these variables along with their default values.
+
+| Environment variable | Default value |
+|--|--|
+| `RUBY_GC_HEAP_INIT_SLOTS` | `10000` |
+| `RUBY_GC_HEAP_FREE_SLOTS` | `4096` |
+| `RUBY_GC_HEAP_FREE_SLOTS_MIN_RATIO` | `0.20` |
+| `RUBY_GC_HEAP_FREE_SLOTS_GOAL_RATIO` | `0.40` |
+| `RUBY_GC_HEAP_FREE_SLOTS_MAX_RATIO` | `0.65` |
+| `RUBY_GC_HEAP_GROWTH_FACTOR` | `1.8` |
+| `RUBY_GC_HEAP_GROWTH_MAX_SLOTS` | `0 (disable)` |
+| `RUBY_GC_HEAP_OLDOBJECT_LIMIT_FACTOR` | `2.0` |
+| `RUBY_GC_MALLOC_LIMIT(_MIN)` | `(16 * 1024 * 1024 /* 16MB */)` |
+| `RUBY_GC_MALLOC_LIMIT_MAX` | `(32 * 1024 * 1024 /* 32MB */)` |
+| `RUBY_GC_MALLOC_LIMIT_GROWTH_FACTOR` | `1.4` |
+| `RUBY_GC_OLDMALLOC_LIMIT(_MIN)` | `(16 * 1024 * 1024 /* 16MB */)` |
+| `RUBY_GC_OLDMALLOC_LIMIT_MAX` | `(128 * 1024 * 1024 /* 128MB */)` |
+| `RUBY_GC_OLDMALLOC_LIMIT_GROWTH_FACTOR` | `1.2` |
+
+([Source](https://github.com/ruby/ruby/blob/45b29754cfba8435bc4980a87cd0d32c648f8a2e/gc.c#L254-L308))
+
+GitLab may decide to change these settings in order to speed up application performance, lower memory requirements, or both.
+
+You can see how each of these settings affect GC performance, memory use and application start-up time for an idle instance of
+GitLab by runnning the `scripts/perf/gc/collect_gc_stats.rb` script. It will output GC stats and general timing data to standard
+out as CSV.

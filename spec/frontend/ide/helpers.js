@@ -41,5 +41,10 @@ export const createTriggerRenamePayload = (path, newPath) => ({
   newPath,
 });
 
+export const createTriggerUpdatePayload = (path) => ({
+  type: commitActionTypes.update,
+  path,
+});
+
 export const createTriggerRenameAction = (path, newPath) =>
   createTriggerChangeAction(createTriggerRenamePayload(path, newPath));

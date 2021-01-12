@@ -9,7 +9,7 @@ RSpec.describe 'Getting Ci Cd Setting' do
 
   let(:fields) do
     <<~QUERY
-      #{all_graphql_fields_for('ProjectCiCdSetting')}
+      #{all_graphql_fields_for('ProjectCiCdSetting', max_depth: 1)}
     QUERY
   end
 
@@ -43,8 +43,10 @@ RSpec.describe 'Getting Ci Cd Setting' do
 
     it_behaves_like 'a working graphql query'
 
-    specify { expect(settings_data['mergePipelinesEnabled']).to eql project.ci_cd_settings.merge_pipelines_enabled? }
-    specify { expect(settings_data['mergeTrainsEnabled']).to eql project.ci_cd_settings.merge_trains_enabled? }
-    specify { expect(settings_data['project']['id']).to eql "gid://gitlab/Project/#{project.id}" }
+    it 'fetches the settings data' do
+      expect(settings_data['mergePipelinesEnabled']).to eql project.ci_cd_settings.merge_pipelines_enabled?
+      expect(settings_data['mergeTrainsEnabled']).to eql project.ci_cd_settings.merge_trains_enabled?
+      expect(settings_data['keepLatestArtifact']).to eql project.ci_keep_latest_artifact?
+    end
   end
 end

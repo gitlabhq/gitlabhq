@@ -1,0 +1,5 @@
+---
+title: Fix multiple simultaneous requests for vulnerabilities on pipeline security tab
+merge_request: 48426
+author:
+type: fixed

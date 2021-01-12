@@ -726,13 +726,7 @@ module Ci
     end
 
     def any_runners_online?
-      project.any_runners? do |runner|
-        if Feature.enabled?(:ci_build_stuck_badge_performance_experiment, project, type: :development, default_enabled: false)
-          runner.active? && runner.online?
-        else
-          runner.active? && runner.online? && runner.can_pick?(self)
-        end
-      end
+      project.any_runners? { |runner| runner.active? && runner.online? && runner.can_pick?(self) }
     end
 
     def stuck?

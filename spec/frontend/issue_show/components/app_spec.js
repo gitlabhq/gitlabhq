@@ -47,6 +47,7 @@ describe('Issuable output', () => {
       provide: {
         fullPath: 'gitlab-org/incidents',
         iid: '19',
+        uploadMetricsFeatureAvailable: false,
       },
       stubs: {
         HighlightBar: true,

@@ -157,4 +157,25 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build do
       expect(pipeline.target_sha).to eq(external_pull_request.target_sha)
     end
   end
+
+  context 'when keep_latest_artifact is set' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:keep_latest_artifact, :locking_result) do
+      true          | 'artifacts_locked'
+      false         | 'unlocked'
+    end
+
+    with_them do
+      before do
+        project.update!(ci_keep_latest_artifact: keep_latest_artifact)
+      end
+
+      it 'builds a pipeline with appropriate locked value' do
+        step.perform!
+
+        expect(pipeline.locked).to eq(locking_result)
+      end
+    end
+  end
 end

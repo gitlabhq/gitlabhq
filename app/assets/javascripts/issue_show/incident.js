@@ -12,7 +12,17 @@ export default function initIssuableApp(issuableData = {}) {
     defaultClient: createDefaultClient(),
   });
 
-  const { iid, projectNamespace, projectPath, slaFeatureAvailable } = issuableData;
+  const {
+    canUpdate,
+    iid,
+    projectNamespace,
+    projectPath,
+    projectId,
+    slaFeatureAvailable,
+    uploadMetricsFeatureAvailable,
+  } = issuableData;
+
+  const fullPath = `${projectNamespace}/${projectPath}`;
 
   return new Vue({
     el: document.getElementById('js-issuable-app'),
@@ -21,9 +31,12 @@ export default function initIssuableApp(issuableData = {}) {
       issuableApp,
     },
     provide: {
-      fullPath: `${projectNamespace}/${projectPath}`,
+      canUpdate,
+      fullPath,
       iid,
+      projectId,
       slaFeatureAvailable: parseBoolean(slaFeatureAvailable),
+      uploadMetricsFeatureAvailable: parseBoolean(uploadMetricsFeatureAvailable),
     },
     render(createElement) {
       return createElement('issuable-app', {

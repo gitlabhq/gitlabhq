@@ -15535,7 +15535,8 @@ CREATE TABLE project_ci_cd_settings (
     default_git_depth integer,
     forward_deployment_enabled boolean,
     merge_trains_enabled boolean DEFAULT false,
-    auto_rollback_enabled boolean DEFAULT false NOT NULL
+    auto_rollback_enabled boolean DEFAULT false NOT NULL,
+    keep_latest_artifact boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE project_ci_cd_settings_id_seq

@@ -2,11 +2,11 @@
 
 module Pages
   class ZipDirectoryService
+    include BaseServiceUtility
     include Gitlab::Utils::StrongMemoize
 
-    Error = Class.new(::StandardError)
-    InvalidArchiveError = Class.new(Error)
-    InvalidEntryError = Class.new(Error)
+    # used only to track exceptions in Sentry
+    InvalidEntryError = Class.new(StandardError)
 
     PUBLIC_DIR = 'public'
 
@@ -15,19 +15,19 @@ module Pages
     end
 
     def execute
-      raise InvalidArchiveError, "Invalid work directory: #{@input_dir}" unless valid_work_directory?
+      return error("Can not find valid public dir in #{@input_dir}") unless valid_path?(public_dir)
 
       output_file = File.join(real_dir, "@migrated.zip") # '@' to avoid any name collision with groups or projects
 
       FileUtils.rm_f(output_file)
 
-      count = 0
+      entries_count = 0
       ::Zip::File.open(output_file, ::Zip::File::CREATE) do |zipfile|
         write_entry(zipfile, PUBLIC_DIR)
-        count = zipfile.entries.count
+        entries_count = zipfile.entries.count
       end
 
-      [output_file, count]
+      success(archive_path: output_file, entries_count: entries_count)
     rescue => e
       FileUtils.rm_f(output_file) if output_file
       raise e
@@ -39,9 +39,6 @@ module Pages
       disk_file_path = File.join(real_dir, zipfile_path)
 
       unless valid_path?(disk_file_path)
-        # archive without public directory is completelly unusable
-        raise InvalidArchiveError, "Invalid public directory: #{disk_file_path}" if zipfile_path == PUBLIC_DIR
-
         # archive with invalid entry will just have this entry missing
         raise InvalidEntryError
       end
@@ -80,8 +77,7 @@ module Pages
     def valid_path?(disk_file_path)
       realpath = File.realpath(disk_file_path)
 
-      realpath == File.join(real_dir, PUBLIC_DIR) ||
-        realpath.start_with?(File.join(real_dir, PUBLIC_DIR + "/"))
+      realpath == public_dir || realpath.start_with?(public_dir + "/")
     # happens if target of symlink isn't there
     rescue => e
       Gitlab::ErrorTracking.track_exception(e, input_dir: real_dir, disk_file_path: disk_file_path)
@@ -89,17 +85,15 @@ module Pages
       false
     end
 
-    def valid_work_directory?
-      Dir.exist?(real_dir)
-    rescue => e
-      Gitlab::ErrorTracking.track_exception(e, input_dir: @input_dir)
-
-      false
-    end
-
     def real_dir
       strong_memoize(:real_dir) do
         File.realpath(@input_dir) rescue nil
+      end
+    end
+
+    def public_dir
+      strong_memoize(:public_dir) do
+        File.join(real_dir, PUBLIC_DIR) rescue nil
       end
     end
   end

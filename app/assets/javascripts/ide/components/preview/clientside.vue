@@ -1,12 +1,13 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { isEmpty } from 'lodash';
+import { isEmpty, debounce } from 'lodash';
 import { Manager } from 'smooshpack';
 import { listen } from 'codesandbox-api';
 import { GlLoadingIcon } from '@gitlab/ui';
 import Navigator from './navigator.vue';
-import { packageJsonPath } from '../../constants';
+import { packageJsonPath, LIVE_PREVIEW_DEBOUNCE } from '../../constants';
 import { createPathWithExt } from '../../utils';
+import eventHub from '../../eventhub';
 
 export default {
   components: {
@@ -61,13 +62,10 @@ export default {
       };
     },
   },
-  watch: {
-    entries: {
-      deep: true,
-      handler: 'update',
-    },
-  },
   mounted() {
+    this.onFilesChangeCallback = debounce(() => this.update(), LIVE_PREVIEW_DEBOUNCE);
+    eventHub.$on('ide.files.change', this.onFilesChangeCallback);
+
     this.loading = true;
 
     return this.loadFileContent(packageJsonPath)
@@ -78,17 +76,19 @@ export default {
       .then(() => this.initPreview());
   },
   beforeDestroy() {
+    // Setting sandpackReady = false protects us form a phantom `update()` being called when `debounce` finishes.
+    this.sandpackReady = false;
+    eventHub.$off('ide.files.change', this.onFilesChangeCallback);
+
     if (!isEmpty(this.manager)) {
       this.manager.listener();
     }
+
     this.manager = {};
 
     if (this.listener) {
       this.listener();
     }
-
-    clearTimeout(this.timeout);
-    this.timeout = null;
   },
   methods: {
     ...mapActions(['getFileData', 'getRawFileData']),
@@ -122,17 +122,13 @@ export default {
     update() {
       if (!this.sandpackReady) return;
 
-      clearTimeout(this.timeout);
+      if (isEmpty(this.manager)) {
+        this.initPreview();
 
-      this.timeout = setTimeout(() => {
-        if (isEmpty(this.manager)) {
-          this.initPreview();
+        return;
+      }
 
-          return;
-        }
-
-        this.manager.updatePreview(this.sandboxOpts);
-      }, 250);
+      this.manager.updatePreview(this.sandboxOpts);
     },
     initManager() {
       const { codesandboxBundlerUrl: bundlerURL } = this;

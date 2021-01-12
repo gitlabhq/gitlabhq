@@ -6,7 +6,6 @@ import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
 import Tracking from '~/tracking';
-
 import getAlert from './graphql/queries/get_alert.graphql';
 import { trackIncidentDetailsViewsOptions } from '~/incidents/constants';
 
@@ -17,8 +16,9 @@ export default {
     GlTab,
     GlTabs,
     HighlightBar,
+    MetricsTab: () => import('ee_component/issue_show/components/incidents/metrics_tab.vue'),
   },
-  inject: ['fullPath', 'iid'],
+  inject: ['fullPath', 'iid', 'uploadMetricsFeatureAvailable'],
   apollo: {
     alert: {
       query: getAlert,
@@ -67,7 +67,13 @@ export default {
         <highlight-bar :alert="alert" />
         <description-component v-bind="$attrs" />
       </gl-tab>
-      <gl-tab v-if="alert" class="alert-management-details" :title="s__('Incident|Alert details')">
+      <metrics-tab v-if="uploadMetricsFeatureAvailable" data-testid="metrics-tab" />
+      <gl-tab
+        v-if="alert"
+        class="alert-management-details"
+        :title="s__('Incident|Alert details')"
+        data-testid="alert-details-tab"
+      >
         <alert-details-table :alert="alert" :loading="loading" />
       </gl-tab>
     </gl-tabs>

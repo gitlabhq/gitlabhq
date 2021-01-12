@@ -11,9 +11,10 @@ RSpec.describe Pages::MigrateLegacyStorageToDeploymentService do
 
     expect(project.pages_metadatum.reload.deployed).to eq(true)
 
-    expect do
-      service.execute
-    end.to raise_error(described_class::FailedToCreateArchiveError)
+    expect(service.execute).to(
+      eq(status: :error,
+         message: "Can't create zip archive: Can not find valid public dir in #{project.pages_path}")
+    )
 
     expect(project.pages_metadatum.reload.deployed).to eq(false)
   end
@@ -25,9 +26,10 @@ RSpec.describe Pages::MigrateLegacyStorageToDeploymentService do
 
     expect(project.pages_metadatum.reload.deployed).to eq(true)
 
-    expect do
-      service.execute
-    end.to raise_error(described_class::FailedToCreateArchiveError)
+    expect(service.execute).to(
+      eq(status: :error,
+         message: "Can't create zip archive: Can not find valid public dir in #{project.pages_path}")
+    )
 
     expect(project.pages_metadatum.reload.deployed).to eq(true)
   end
@@ -39,9 +41,10 @@ RSpec.describe Pages::MigrateLegacyStorageToDeploymentService do
 
     expect(project.pages_metadatum.reload.deployed).to eq(true)
 
-    expect do
-      service.execute
-    end.to raise_error(described_class::FailedToCreateArchiveError)
+    expect(service.execute).to(
+      eq(status: :error,
+         message: "Can't create zip archive: Can not find valid public dir in #{project.pages_path}")
+    )
 
     expect(project.pages_metadatum.reload.deployed).to eq(true)
   end
@@ -49,7 +52,9 @@ RSpec.describe Pages::MigrateLegacyStorageToDeploymentService do
   it 'removes pages archive when can not save deployment' do
     archive = fixture_file_upload("spec/fixtures/pages.zip")
     expect_next_instance_of(::Pages::ZipDirectoryService) do |zip_service|
-      expect(zip_service).to receive(:execute).and_return([archive.path, 3])
+      expect(zip_service).to receive(:execute).and_return(status: :success,
+                                                          archive_path: archive.path,
+                                                          entries_count: 3)
     end
 
     expect_next_instance_of(PagesDeployment) do |deployment|
@@ -73,7 +78,7 @@ RSpec.describe Pages::MigrateLegacyStorageToDeploymentService do
 
     it 'creates pages deployment' do
       expect do
-        described_class.new(project).execute
+        expect(described_class.new(project).execute).to eq(status: :success)
       end.to change { project.reload.pages_deployments.count }.by(1)
 
       deployment = project.pages_metadatum.pages_deployment

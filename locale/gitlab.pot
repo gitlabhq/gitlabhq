@@ -14952,7 +14952,28 @@ msgstr ""
 msgid "Incidents"
 msgstr ""
 
+msgid "Incidents|Add a URL"
+msgstr ""
+
+msgid "Incidents|Drop or %{linkStart}upload%{linkEnd} a metric screenshot to attach it to the incident"
+msgstr ""
+
+msgid "Incidents|Must start with http or https"
+msgstr ""
+
+msgid "Incidents|There was an issue loading metric images."
+msgstr ""
+
+msgid "Incidents|There was an issue uploading your image."
+msgstr ""
+
+msgid "Incidents|You can optionally add a URL to link users to the original graph."
+msgstr ""
+
 msgid "Incident|Alert details"
+msgstr ""
+
+msgid "Incident|Metrics"
 msgstr ""
 
 msgid "Incident|Summary"
@@ -30384,6 +30405,9 @@ msgid "Upgrade your plan to enable this feature of the Jira Integration."
 msgstr ""
 
 msgid "Upgrade your plan to improve Merge Requests."
+msgstr ""
+
+msgid "Upload"
 msgstr ""
 
 msgid "Upload CSV file"

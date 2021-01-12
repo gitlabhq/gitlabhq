@@ -83,6 +83,7 @@ class Snippet < ApplicationRecord
   scope :inc_author, -> { includes(:author) }
   scope :inc_relations_for_view, -> { includes(author: :status) }
   scope :with_statistics, -> { joins(:statistics) }
+  scope :inc_projects_namespace_route, -> { includes(project: [:route, :namespace]) }
 
   attr_mentionable :description
 

@@ -7,7 +7,7 @@ SHEBANG_COMMENT = "#!"
 def get_files_with_no_magic_comment(files)
   files.select do |path|
     path.end_with?(FILE_EXTENSION) &&
-      file_has_frozen_string_magic_comment?(path)
+      !file_has_frozen_string_magic_comment?(path)
   end
 end
 
