@@ -3,12 +3,12 @@ import { GlEmptyState, GlSprintf, GlLink } from '@gitlab/ui';
 
 export default {
   name: 'GroupEmptyState',
-  inject: ['config'],
   components: {
     GlEmptyState,
     GlSprintf,
     GlLink,
   },
+  inject: ['config'],
 };
 </script>
 <template>

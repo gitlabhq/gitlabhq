@@ -41,6 +41,11 @@ export default {
       },
     },
   },
+  provide() {
+    return {
+      blobHash: Math.random().toString().split('.')[1],
+    };
+  },
   props: {
     snippet: {
       type: Object,
@@ -50,11 +55,6 @@ export default {
       type: Object,
       required: true,
     },
-  },
-  provide() {
-    return {
-      blobHash: Math.random().toString().split('.')[1],
-    };
   },
   data() {
     return {

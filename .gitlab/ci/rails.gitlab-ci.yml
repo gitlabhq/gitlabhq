@@ -423,7 +423,7 @@ rspec:deprecations:
   variables:
     SETUP_DB: "false"
   script:
-    - bundle exec rubocop --only Lint/LastKeywordArgument --parallel
+    - run_timed_command "bundle exec rubocop --only Lint/LastKeywordArgument --parallel"
   artifacts:
     expire_in: 31d
     when: always

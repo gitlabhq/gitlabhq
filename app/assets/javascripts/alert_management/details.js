@@ -51,6 +51,9 @@ export default (selector) => {
   // eslint-disable-next-line no-new
   new Vue({
     el: selector,
+    components: {
+      AlertDetails,
+    },
     provide: {
       projectPath,
       alertId,
@@ -58,9 +61,6 @@ export default (selector) => {
       projectId,
     },
     apolloProvider,
-    components: {
-      AlertDetails,
-    },
     router,
     render(createElement) {
       return createElement('alert-details', {});

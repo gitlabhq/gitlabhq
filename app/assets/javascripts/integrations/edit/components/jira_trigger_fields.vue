@@ -91,6 +91,8 @@ export default {
     <gl-form-group
       v-show="showEnableComments"
       :label="s__('Integrations|Comment settings:')"
+      label-for="service[comment_on_event_enabled]"
+      class="gl-pl-6"
       data-testid="comment-settings"
     >
       <input
@@ -106,6 +108,8 @@ export default {
     <gl-form-group
       v-show="showEnableComments && enableComments"
       :label="s__('Integrations|Comment detail:')"
+      label-for="service[comment_detail]"
+      class="gl-pl-9"
       data-testid="comment-detail"
     >
       <input name="service[comment_detail]" type="hidden" :value="commentDetail" />

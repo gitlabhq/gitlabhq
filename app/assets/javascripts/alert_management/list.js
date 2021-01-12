@@ -48,6 +48,9 @@ export default () => {
 
   return new Vue({
     el: selector,
+    components: {
+      AlertManagementList,
+    },
     provide: {
       projectPath,
       textQuery,
@@ -59,9 +62,6 @@ export default () => {
       userCanEnableAlertManagement: parseBoolean(userCanEnableAlertManagement),
     },
     apolloProvider,
-    components: {
-      AlertManagementList,
-    },
     render(createElement) {
       return createElement('alert-management-list');
     },

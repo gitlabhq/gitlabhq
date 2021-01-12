@@ -58,76 +58,69 @@ RSpec.describe Gitlab::Utils::UsageData do
       expect(described_class.estimate_batch_distinct_count(relation, 'column')).to eq(5)
     end
 
-    context 'quasi integration test for different counting parameters', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/296169' } do
-      let_it_be(:user) { create(:user, email: 'email1@domain.com') }
-      let_it_be(:another_user) { create(:user, email: 'email2@domain.com') }
+    context 'quasi integration test for different counting parameters' do
+      # HyperLogLog http://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf algorithm
+      # used in estimate_batch_distinct_count produce probabilistic
+      # estimations of unique values present in dataset, because of that its results
+      # are always off by some small factor from real value. However for given
+      # dataset it provide consistent and deterministic result. In the following context
+      # analyzed sets consist of values:
+      # build_needs set: ['1', '2', '3', '4', '5']
+      # ci_build set ['a', 'b']
+      # with them, current implementation is expected to consistently report
+      # 5.217656147118495 and 2.0809220082170614 values
+      # This test suite is expected to assure, that HyperLogLog implementation
+      # behaves consistently between changes made to other parts of codebase.
+      # In case of fine tuning or changes to HyperLogLog algorithm implementation
+      # one should run in depth analysis of accuracy with supplementary rake tasks
+      # currently under implementation at https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51118
+      # and adjust used values in this context accordingly.
+      let_it_be(:build) { create(:ci_build, name: 'a') }
+      let_it_be(:another_build) { create(:ci_build, name: 'b') }
 
-      let(:model) { Issue }
-      let(:column) { :author_id }
-
-      context 'different distribution of relation records' do
-        [10, 100, 100_000].each do |spread|
-          context "records are spread within #{spread}" do
-            before do
-              ids = (1..spread).to_a.sample(10)
-              create_list(:issue, 10).each_with_index do |issue, i|
-                issue.id = ids[i]
-              end
-            end
-
-            it 'counts table' do
-              expect(described_class.estimate_batch_distinct_count(model)).to be_within(error_rate).percent_of(10)
-            end
-          end
-        end
-      end
+      let(:model) { Ci::BuildNeed }
+      let(:column) { :name }
+      let(:build_needs_estimated_cardinality) { 5.217656147118495 }
+      let(:ci_builds_estimated_cardinality) { 2.0809220082170614 }
 
       context 'different counting parameters' do
         before_all do
-          create_list(:issue, 3, author: user)
-          create_list(:issue, 2, author: another_user)
+          1.upto(3) { |i| create(:ci_build_need, name: i, build: build) }
+          4.upto(5) { |i| create(:ci_build_need, name: i, build: another_build) }
         end
 
-        it 'counts table' do
-          expect(described_class.estimate_batch_distinct_count(model)).to be_within(error_rate).percent_of(5)
+        it 'counts with symbol passed in column argument' do
+          expect(described_class.estimate_batch_distinct_count(model, column)).to eq(build_needs_estimated_cardinality)
         end
 
-        it 'counts with column field' do
-          expect(described_class.estimate_batch_distinct_count(model, column)).to be_within(error_rate).percent_of(2)
+        it 'counts with string passed in column argument' do
+          expect(described_class.estimate_batch_distinct_count(model, column.to_s)).to eq(build_needs_estimated_cardinality)
         end
 
-        it 'counts with :id field' do
-          expect(described_class.estimate_batch_distinct_count(model, :id)).to be_within(error_rate).percent_of(5)
+        it 'counts with table.column passed in column argument' do
+          expect(described_class.estimate_batch_distinct_count(model, "#{model.table_name}.#{column}")).to eq(build_needs_estimated_cardinality)
         end
 
-        it 'counts with "id" field' do
-          expect(described_class.estimate_batch_distinct_count(model, "id")).to be_within(error_rate).percent_of(5)
-        end
-
-        it 'counts with table.column field' do
-          expect(described_class.estimate_batch_distinct_count(model, "#{model.table_name}.#{column}")).to be_within(error_rate).percent_of(2)
-        end
-
-        it 'counts with Arel column' do
-          expect(described_class.estimate_batch_distinct_count(model, model.arel_table[column])).to be_within(error_rate).percent_of(2)
+        it 'counts with Arel passed in column argument' do
+          expect(described_class.estimate_batch_distinct_count(model, model.arel_table[column])).to eq(build_needs_estimated_cardinality)
         end
 
         it 'counts over joined relations' do
-          expect(described_class.estimate_batch_distinct_count(model.joins(:author), "users.email")).to be_within(error_rate).percent_of(2)
+          expect(described_class.estimate_batch_distinct_count(model.joins(:build), "ci_builds.name")).to eq(ci_builds_estimated_cardinality)
         end
 
         it 'counts with :column field with batch_size of 50K' do
-          expect(described_class.estimate_batch_distinct_count(model, column, batch_size: 50_000)).to be_within(error_rate).percent_of(2)
+          expect(described_class.estimate_batch_distinct_count(model, column, batch_size: 50_000)).to eq(build_needs_estimated_cardinality)
         end
 
         it 'counts with different number of batches and aggregates total result' do
           stub_const('Gitlab::Database::PostgresHll::BatchDistinctCounter::MIN_REQUIRED_BATCH_SIZE', 0)
 
-          [1, 2, 4, 5, 6].each { |i| expect(described_class.estimate_batch_distinct_count(model, batch_size: i)).to be_within(error_rate).percent_of(5) }
+          [1, 2, 4, 5, 6].each { |i| expect(described_class.estimate_batch_distinct_count(model, column, batch_size: i)).to eq(build_needs_estimated_cardinality) }
         end
 
         it 'counts with a start and finish' do
-          expect(described_class.estimate_batch_distinct_count(model, column, start: model.minimum(:id), finish: model.maximum(:id))).to be_within(error_rate).percent_of(2)
+          expect(described_class.estimate_batch_distinct_count(model, column, start: model.minimum(:id), finish: model.maximum(:id))).to eq(build_needs_estimated_cardinality)
         end
       end
     end

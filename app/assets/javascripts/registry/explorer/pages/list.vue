@@ -61,11 +61,11 @@ export default {
     GlSearchBoxByClick,
     RegistryHeader,
   },
-  inject: ['config'],
   directives: {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin()],
+  inject: ['config'],
   loader: {
     repeat: 10,
     width: 1000,

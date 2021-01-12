@@ -14,11 +14,11 @@ export default () => {
 
     return new Vue({
       el: container,
-      provide: {
-        formattedData,
-      },
       components: {
         ActivityChart,
+      },
+      provide: {
+        formattedData,
       },
       render(createElement) {
         return createElement('activity-chart');

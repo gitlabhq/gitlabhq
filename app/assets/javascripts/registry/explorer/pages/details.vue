@@ -37,11 +37,11 @@ export default {
     TagsLoader,
     EmptyTagsState,
   },
-  inject: ['breadCrumbState', 'config'],
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
   },
   mixins: [Tracking.mixin()],
+  inject: ['breadCrumbState', 'config'],
   apollo: {
     image: {
       query: getContainerRepositoryDetailsQuery,

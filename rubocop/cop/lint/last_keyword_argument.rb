@@ -16,7 +16,7 @@ module RuboCop
         KEYWORD_DEPRECATION_STR = 'maybe ** should be added to the call'
 
         def on_send(node)
-          arg = node.arguments.last
+          arg = get_last_argument(node)
           return unless arg
 
           return unless known_match?(processed_source.file_path, node.first_line, node.method_name.to_s)
@@ -43,6 +43,12 @@ module RuboCop
         end
 
         private
+
+        def get_last_argument(node)
+          return node.arguments[-2] if node.block_argument?
+
+          node.arguments.last
+        end
 
         def known_match?(file_path, line_number, method_name)
           file_path_from_root = file_path.sub(File.expand_path('../../..', __dir__), '')

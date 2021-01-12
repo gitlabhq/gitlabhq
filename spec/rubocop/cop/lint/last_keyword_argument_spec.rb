@@ -38,6 +38,8 @@ RSpec.describe RuboCop::Cop::Lint::LastKeywordArgument do
       - |
         DEPRECATION WARNING: /Users/tkuah/code/ee-gdk/gitlab/create_service.rb:1: warning: Using the last argument as keyword parameters is deprecated; maybe ** should be added to the call
         /Users/tkuah/code/ee-gdk/gitlab/user.rb:17: warning: The called method `call' is defined here
+      - |
+        DEPRECATION WARNING: /Users/tkuah/code/ee-gdk/gitlab/other_warning_type.rb:1: warning: Some other warning type
       YAML
     end
 
@@ -62,7 +64,7 @@ RSpec.describe RuboCop::Cop::Lint::LastKeywordArgument do
       allow(File).to receive(:read).and_return(create_spec_yaml, projects_spec_yaml)
     end
 
-    it 'registers an offense' do
+    it 'registers an offense for last keyword warning' do
       expect_offense(<<~SOURCE, 'create_service.rb')
         users.call(params)
                    ^^^^^^ Using the last argument as keyword parameters is deprecated
@@ -70,6 +72,12 @@ RSpec.describe RuboCop::Cop::Lint::LastKeywordArgument do
 
       expect_correction(<<~SOURCE)
         users.call(**params)
+      SOURCE
+    end
+
+    it 'does not register an offense for other warning types' do
+      expect_no_offenses(<<~SOURCE, 'other_warning_type.rb')
+        users.call(params)
       SOURCE
     end
 
@@ -92,6 +100,23 @@ RSpec.describe RuboCop::Cop::Lint::LastKeywordArgument do
 
       expect_correction(<<~SOURCE)
         users.call(id, a: :b, c: :d)
+      SOURCE
+    end
+
+    it 'registers an offense on the last non-block argument' do
+      expect_offense(<<~SOURCE, 'create_service.rb')
+        users.call(id, params, &block)
+                       ^^^^^^ Using the last argument as keyword parameters is deprecated
+      SOURCE
+
+      expect_correction(<<~SOURCE)
+        users.call(id, **params, &block)
+      SOURCE
+    end
+
+    it 'does not register an offense if the only argument is a block argument' do
+      expect_no_offenses(<<~SOURCE, 'create_service.rb')
+        users.call(&block)
       SOURCE
     end
 

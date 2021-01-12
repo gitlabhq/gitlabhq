@@ -44,6 +44,8 @@ export const classNameMapCell = (line, hll, isLoggedIn, isHover) => {
     {
       hll,
       [LINE_HOVER_CLASS_NAME]: isLoggedIn && isHover && !isContextLine(type) && !isMetaLine(type),
+      old_line: line.type === 'old',
+      new_line: line.type === 'new',
     },
   ];
 };
