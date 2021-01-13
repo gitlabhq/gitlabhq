@@ -8,14 +8,14 @@
 %section.settings.general-settings.no-animate.expanded#js-general-settings
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Naming, topics, avatar')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }= _('Collapse')
+    %button.gl-button.btn.btn-default.js-settings-toggle{ type: 'button' }= _('Collapse')
     %p= _('Update your project name, topics, description, and avatar.')
   .settings-content= render 'projects/settings/general'
 
 %section.settings.sharing-permissions.no-animate#js-shared-permissions{ class: ('expanded' if expanded), data: { qa_selector: 'visibility_features_permissions_content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Visibility, project features, permissions')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
+    %button.gl-button.btn.btn-default.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
     %p= _('Choose visibility level, enable/disable project features (issues, repository, wiki, snippets) and set permissions.')
 
   .settings-content
@@ -30,7 +30,7 @@
 %section.qa-merge-request-settings.rspec-merge-request-settings.settings.merge-requests-feature.no-animate#js-merge-request-settings{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)] }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Merge requests')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
+    %button.gl-button.btn.btn-default.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
     = render_if_exists 'projects/merge_request_settings_description_text'
 
   .settings-content
@@ -48,8 +48,7 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = s_('ProjectSettings|Badges')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
-      = expanded ? _('Collapse') : _('Expand')
+    %button.gl-button.btn.btn-default.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
     %p
       = s_('ProjectSettings|Customize this project\'s badges.')
       = link_to s_('ProjectSettings|What are badges?'), help_page_path('user/project/badges')
@@ -63,7 +62,7 @@
 %section.qa-advanced-settings.settings.advanced-settings.no-animate#js-project-advanced-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Advanced')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
+    %button.gl-button.btn.btn-default.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
     %p= _('Housekeeping, export, path, transfer, remove, archive.')
 
   .settings-content

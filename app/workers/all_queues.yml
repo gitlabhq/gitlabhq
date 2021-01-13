@@ -1094,7 +1094,7 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_background:ci_daily_build_group_report_results
-  :feature_category: :continuous_integration
+  :feature_category: :code_testing
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1102,7 +1102,7 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_background:ci_pipeline_artifacts_coverage_report
-  :feature_category: :continuous_integration
+  :feature_category: :code_testing
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown

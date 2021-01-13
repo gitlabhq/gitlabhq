@@ -19,12 +19,8 @@ RSpec.describe MergeRequests::MergeService do
       { commit_message: 'Awesome message', sha: merge_request.diff_head_sha }
     end
 
-    let(:feature_flag_persist_squash) { true }
-
     context 'valid params' do
       before do
-        stub_feature_flags(persist_squash_commit_sha_for_squashes: feature_flag_persist_squash)
-
         allow(service).to receive(:execute_hooks)
         expect(merge_request).to receive(:update_and_mark_in_progress_merge_commit_sha).twice.and_call_original
 
@@ -89,14 +85,6 @@ RSpec.describe MergeRequests::MergeService do
           squash_commit = merge_request.merge_commit.parents.last
 
           expect(merge_request.squash_commit_sha).to eq(squash_commit.id)
-        end
-
-        context 'when feature flag is disabled' do
-          let(:feature_flag_persist_squash) { false }
-
-          it 'does not populate squash_commit_sha' do
-            expect(merge_request.squash_commit_sha).to be_nil
-          end
         end
       end
     end

@@ -217,7 +217,7 @@ You can then see issue statuses in the [issue list](#issues-list) and the
 
 ## Other Issue actions
 
-- [Create an issue from a template](../../project/description_templates.md#using-the-templates)
+- [Create an issue from a template](../../project/description_templates.md#use-the-templates)
 - [Set a due date](due_dates.md)
 - [Bulk edit issues](../bulk_editing.md) - From the Issues List, select multiple issues
   in order to change their status, assignee, milestone, or labels in bulk.

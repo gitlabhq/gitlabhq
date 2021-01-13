@@ -1,0 +1,5 @@
+---
+title: In WebIDE switch files before closing the active one
+merge_request: 51483
+author:
+type: fixed

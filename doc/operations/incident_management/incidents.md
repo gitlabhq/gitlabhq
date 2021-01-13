@@ -52,7 +52,7 @@ With Maintainer or higher [permissions](../../user/permissions.md), you can enab
 1. Navigate to **Settings > Operations > Incidents** and expand **Incidents**.
 1. Check the **Create an incident** checkbox.
 1. To customize the incident, select an
-   [issue template](../../user/project/description_templates.md#creating-issue-templates).
+   [issue template](../../user/project/description_templates.md#create-an-issue-template).
 1. To send [an email notification](alert_notifications.md#email-notifications) to users
    with [Developer permissions](../../user/permissions.md), select
    **Send a separate email notification to Developers**. Email notifications are

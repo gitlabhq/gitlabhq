@@ -27,7 +27,7 @@ Object {
         "echo 'script 1'",
       ],
       "stage": "test",
-      "tagList": Array [
+      "tags": Array [
         "tag 1",
       ],
       "when": "on_success",
@@ -61,7 +61,7 @@ Object {
         "echo 'script 2'",
       ],
       "stage": "test",
-      "tagList": Array [
+      "tags": Array [
         "tag 2",
       ],
       "when": "on_success",

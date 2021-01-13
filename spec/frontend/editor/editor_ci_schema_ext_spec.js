@@ -1,4 +1,5 @@
 import { languages } from 'monaco-editor';
+import { TEST_HOST } from 'helpers/test_constants';
 import EditorLite from '~/editor/editor_lite';
 import { CiSchemaExtension } from '~/editor/extensions/editor_ci_schema_ext';
 import { EXTENSION_CI_SCHEMA_FILE_NAME_MATCH } from '~/editor/constants';
@@ -9,6 +10,7 @@ describe('~/editor/editor_ci_config_ext', () => {
   let editor;
   let instance;
   let editorEl;
+  let originalGitlabUrl;
 
   const createMockEditor = ({ blobPath = defaultBlobPath } = {}) => {
     setFixtures('<div id="editor"></div>');
@@ -21,6 +23,15 @@ describe('~/editor/editor_ci_config_ext', () => {
     });
     instance.use(new CiSchemaExtension());
   };
+
+  beforeAll(() => {
+    originalGitlabUrl = gon.gitlab_url;
+    gon.gitlab_url = TEST_HOST;
+  });
+
+  afterAll(() => {
+    gon.gitlab_url = originalGitlabUrl;
+  });
 
   beforeEach(() => {
     createMockEditor();
@@ -73,7 +84,7 @@ describe('~/editor/editor_ci_config_ext', () => {
         });
 
         expect(getConfiguredYmlSchema()).toEqual({
-          uri: `/${mockProjectNamespace}/${mockProjectPath}/-/schema/${mockRef}/${EXTENSION_CI_SCHEMA_FILE_NAME_MATCH}`,
+          uri: `${TEST_HOST}/${mockProjectNamespace}/${mockProjectPath}/-/schema/${mockRef}/${EXTENSION_CI_SCHEMA_FILE_NAME_MATCH}`,
           fileMatch: [defaultBlobPath],
         });
       });
@@ -87,7 +98,7 @@ describe('~/editor/editor_ci_config_ext', () => {
         });
 
         expect(getConfiguredYmlSchema()).toEqual({
-          uri: `/${mockProjectNamespace}/${mockProjectPath}/-/schema/master/${EXTENSION_CI_SCHEMA_FILE_NAME_MATCH}`,
+          uri: `${TEST_HOST}/${mockProjectNamespace}/${mockProjectPath}/-/schema/master/${EXTENSION_CI_SCHEMA_FILE_NAME_MATCH}`,
           fileMatch: ['another-ci-filename.yml'],
         });
       });

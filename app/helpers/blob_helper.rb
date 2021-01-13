@@ -199,7 +199,7 @@ module BlobHelper
 
     categories.each_with_object({}) do |category, hash|
       hash[category] = grouped[category].map do |item|
-        { name: item.name, id: item.key }
+        { name: item.name, id: item.key, project_id: item.project_id }
       end
     end
   end

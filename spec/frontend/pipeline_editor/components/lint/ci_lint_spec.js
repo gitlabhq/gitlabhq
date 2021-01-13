@@ -23,6 +23,7 @@ describe('~/pipeline_editor/components/lint/ci_lint.vue', () => {
   const findAlert = () => wrapper.find(GlAlert);
   const findLintParameters = () => findAllByTestId('ci-lint-parameter');
   const findLintParameterAt = (i) => findLintParameters().at(i);
+  const findLintValueAt = (i) => findAllByTestId('ci-lint-value').at(i);
 
   afterEach(() => {
     wrapper.destroy();
@@ -48,6 +49,20 @@ describe('~/pipeline_editor/components/lint/ci_lint.vue', () => {
       expect(findLintParameterAt(0).text()).toBe('Test Job - job_test_1');
       expect(findLintParameterAt(1).text()).toBe('Test Job - job_test_2');
       expect(findLintParameterAt(2).text()).toBe('Build Job - job_build');
+    });
+
+    it('displays jobs details', () => {
+      expect(findLintParameters()).toHaveLength(3);
+
+      expect(findLintValueAt(0).text()).toMatchInterpolatedText(
+        'echo "test 1" Only policy: branches, tags When: on_success',
+      );
+      expect(findLintValueAt(1).text()).toMatchInterpolatedText(
+        'echo "test 2" Only policy: branches, tags When: on_success',
+      );
+      expect(findLintValueAt(2).text()).toMatchInterpolatedText(
+        'echo "build" Only policy: branches, tags When: on_success',
+      );
     });
 
     it('displays invalid results', () => {

@@ -2977,56 +2977,9 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '#pushes_since_gc' do
-    let(:project) { build_stubbed(:project) }
-
-    after do
-      project.reset_pushes_since_gc
-    end
-
-    context 'without any pushes' do
-      it 'returns 0' do
-        expect(project.pushes_since_gc).to eq(0)
-      end
-    end
-
-    context 'with a number of pushes' do
-      it 'returns the number of pushes' do
-        3.times { project.increment_pushes_since_gc }
-
-        expect(project.pushes_since_gc).to eq(3)
-      end
-    end
-  end
-
-  describe '#increment_pushes_since_gc' do
-    let(:project) { build_stubbed(:project) }
-
-    after do
-      project.reset_pushes_since_gc
-    end
-
-    it 'increments the number of pushes since the last GC' do
-      3.times { project.increment_pushes_since_gc }
-
-      expect(project.pushes_since_gc).to eq(3)
-    end
-  end
-
-  describe '#reset_pushes_since_gc' do
-    let(:project) { build_stubbed(:project) }
-
-    after do
-      project.reset_pushes_since_gc
-    end
-
-    it 'resets the number of pushes since the last GC' do
-      3.times { project.increment_pushes_since_gc }
-
-      project.reset_pushes_since_gc
-
-      expect(project.pushes_since_gc).to eq(0)
-    end
+  it_behaves_like 'can housekeep repository' do
+    let(:resource) { build_stubbed(:project) }
+    let(:resource_key) { 'projects' }
   end
 
   describe '#deployment_variables' do

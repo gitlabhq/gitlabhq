@@ -17,15 +17,8 @@ export const closeFile = ({ commit, state, dispatch, getters }, file) => {
   const indexOfClosedFile = state.openFiles.findIndex((f) => f.key === file.key);
   const fileWasActive = file.active;
 
-  if (file.pending) {
-    commit(types.REMOVE_PENDING_TAB, file);
-  } else {
-    commit(types.TOGGLE_FILE_OPEN, path);
-    commit(types.SET_FILE_ACTIVE, { path, active: false });
-  }
-
-  if (state.openFiles.length > 0 && fileWasActive) {
-    const nextIndexToOpen = indexOfClosedFile === 0 ? 0 : indexOfClosedFile - 1;
+  if (state.openFiles.length > 1 && fileWasActive) {
+    const nextIndexToOpen = indexOfClosedFile === 0 ? 1 : indexOfClosedFile - 1;
     const nextFileToOpen = state.openFiles[nextIndexToOpen];
 
     if (nextFileToOpen.pending) {
@@ -35,12 +28,20 @@ export const closeFile = ({ commit, state, dispatch, getters }, file) => {
         keyPrefix: nextFileToOpen.staged ? 'staged' : 'unstaged',
       });
     } else {
+      dispatch('setFileActive', nextFileToOpen.path);
       dispatch('router/push', getters.getUrlForPath(nextFileToOpen.path), { root: true });
     }
-  } else if (!state.openFiles.length) {
+  } else if (state.openFiles.length === 1) {
     dispatch('router/push', `/project/${state.currentProjectId}/tree/${state.currentBranchId}/`, {
       root: true,
     });
+  }
+
+  if (file.pending) {
+    commit(types.REMOVE_PENDING_TAB, file);
+  } else {
+    commit(types.TOGGLE_FILE_OPEN, path);
+    commit(types.SET_FILE_ACTIVE, { path, active: false });
   }
 
   eventHub.$emit(`editor.update.model.dispose.${file.key}`);

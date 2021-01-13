@@ -20790,9 +20790,6 @@ msgstr ""
 msgid "Pipelines|More Information"
 msgstr ""
 
-msgid "Pipelines|No CI file found in this repository, please add one."
-msgstr ""
-
 msgid "Pipelines|No triggers have been created yet. Add one using the form above."
 msgstr ""
 
@@ -20803,9 +20800,6 @@ msgid "Pipelines|Pipeline Editor"
 msgstr ""
 
 msgid "Pipelines|Project cache successfully reset."
-msgstr ""
-
-msgid "Pipelines|Repository does not have a default branch, please set one."
 msgstr ""
 
 msgid "Pipelines|Revoke"
@@ -20827,6 +20821,9 @@ msgid "Pipelines|There are currently no finished pipelines."
 msgstr ""
 
 msgid "Pipelines|There are currently no pipelines."
+msgstr ""
+
+msgid "Pipelines|There is no %{filePath} file in this repository, please add one and visit the Pipeline Editor again."
 msgstr ""
 
 msgid "Pipelines|There was an error fetching the pipelines. Try again in a few moments or contact your support team."
@@ -21880,6 +21877,9 @@ msgid "Project Files"
 msgstr ""
 
 msgid "Project ID"
+msgstr ""
+
+msgid "Project Templates"
 msgstr ""
 
 msgid "Project URL"

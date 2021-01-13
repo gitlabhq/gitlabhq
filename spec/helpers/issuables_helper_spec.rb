@@ -199,6 +199,7 @@ RSpec.describe IssuablesHelper do
         markdownDocsPath: '/help/user/markdown',
         lockVersion: issue.lock_version,
         projectPath: @project.path,
+        projectId: @project.id,
         projectNamespace: @project.namespace.path,
         initialTitleHtml: issue.title,
         initialTitleText: issue.title,

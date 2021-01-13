@@ -5,6 +5,8 @@ module Ci
     include ApplicationWorker
     include PipelineBackgroundQueue
 
+    feature_category :code_testing
+
     idempotent!
 
     def perform(pipeline_id)

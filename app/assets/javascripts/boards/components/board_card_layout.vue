@@ -4,7 +4,7 @@ import IssueCardInnerDeprecated from './issue_card_inner_deprecated.vue';
 import boardsStore from '../stores/boards_store';
 
 export default {
-  name: 'BoardsIssueCard',
+  name: 'BoardCardLayout',
   components: {
     IssueCardInner: gon.features?.graphqlBoardLists ? IssueCardInner : IssueCardInnerDeprecated,
   },
@@ -81,7 +81,7 @@ export default {
     :data-issue-iid="issue.iid"
     :data-issue-path="issue.referencePath"
     data-testid="board_card"
-    class="board-card p-3 rounded"
+    class="board-card gl-p-5 gl-rounded-base"
     @mousedown="mouseDown"
     @mousemove="mouseMove"
     @mouseup="showIssue($event)"

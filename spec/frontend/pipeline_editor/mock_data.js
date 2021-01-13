@@ -35,6 +35,21 @@ job_build:
   needs: ["job_test_2"]
 `;
 
+const mockJobFields = {
+  beforeScript: [],
+  afterScript: [],
+  environment: null,
+  allowFailure: false,
+  tags: [],
+  when: 'on_success',
+  only: { refs: ['branches', 'tags'], __typename: 'CiJobLimitType' },
+  except: null,
+  needs: { nodes: [], __typename: 'CiConfigNeedConnection' },
+  __typename: 'CiConfigJob',
+};
+
+// Mock result of the graphql query at:
+// app/assets/javascripts/pipeline_editor/graphql/queries/ci_config.graphql
 export const mockCiConfigQueryResponse = {
   data: {
     ciConfig: {
@@ -54,8 +69,8 @@ export const mockCiConfigQueryResponse = {
                     nodes: [
                       {
                         name: 'job_test_1',
-                        needs: { nodes: [], __typename: 'CiConfigNeedConnection' },
-                        __typename: 'CiConfigJob',
+                        script: ['echo "test 1"'],
+                        ...mockJobFields,
                       },
                     ],
                     __typename: 'CiConfigJobConnection',
@@ -69,9 +84,8 @@ export const mockCiConfigQueryResponse = {
                     nodes: [
                       {
                         name: 'job_test_2',
-
-                        needs: { nodes: [], __typename: 'CiConfigNeedConnection' },
-                        __typename: 'CiConfigJob',
+                        script: ['echo "test 2"'],
+                        ...mockJobFields,
                       },
                     ],
                     __typename: 'CiConfigJobConnection',
@@ -94,11 +108,8 @@ export const mockCiConfigQueryResponse = {
                     nodes: [
                       {
                         name: 'job_build',
-                        needs: {
-                          nodes: [{ name: 'job_test_2', __typename: 'CiConfigNeed' }],
-                          __typename: 'CiConfigNeedConnection',
-                        },
-                        __typename: 'CiConfigJob',
+                        script: ['echo "build"'],
+                        ...mockJobFields,
                       },
                     ],
                     __typename: 'CiConfigJobConnection',

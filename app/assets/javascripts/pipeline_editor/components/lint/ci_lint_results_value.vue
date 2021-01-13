@@ -14,7 +14,7 @@ export default {
   },
   computed: {
     tagList() {
-      return this.item.tagList?.join(', ');
+      return this.item.tags?.join(', ');
     },
     onlyPolicy() {
       return this.item.only ? this.item.only.refs.join(', ') : this.item.only;

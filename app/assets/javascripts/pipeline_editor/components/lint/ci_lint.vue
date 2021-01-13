@@ -1,4 +1,5 @@
 <script>
+import { flatten } from 'lodash';
 import { CI_CONFIG_STATUS_VALID } from '../../constants';
 import CiLintResults from './ci_lint_results.vue';
 
@@ -25,14 +26,18 @@ export default {
       return this.ciConfig?.stages || [];
     },
     jobs() {
-      return this.stages.reduce((acc, { groups, name: stageName }) => {
+      const groupedJobs = this.stages.reduce((acc, { groups, name: stageName }) => {
         return acc.concat(
-          groups.map(({ name: groupName }) => ({
-            stage: stageName,
-            name: groupName,
-          })),
+          groups.map(({ jobs }) => {
+            return jobs.map((job) => ({
+              stage: stageName,
+              ...job,
+            }));
+          }),
         );
       }, []);
+
+      return flatten(groupedJobs);
     },
   },
 };

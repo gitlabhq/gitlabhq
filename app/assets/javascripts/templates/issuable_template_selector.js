@@ -9,6 +9,7 @@ export default class IssuableTemplateSelector extends TemplateSelector {
   constructor(...args) {
     super(...args);
 
+    this.projectId = this.dropdown.data('projectId');
     this.projectPath = this.dropdown.data('projectPath');
     this.namespacePath = this.dropdown.data('namespacePath');
     this.issuableType = this.$dropdownContainer.data('issuableType');
@@ -81,21 +82,21 @@ export default class IssuableTemplateSelector extends TemplateSelector {
   }
 
   requestFile(query) {
+    const callback = (currentTemplate) => {
+      this.currentTemplate = currentTemplate;
+      this.stopLoadingSpinner();
+      this.setInputValueToTemplateContent();
+    };
+
     this.startLoadingSpinner();
 
-    Api.issueTemplate(
-      this.namespacePath,
-      this.projectPath,
-      query.name,
+    Api.projectTemplate(
+      this.projectId,
       this.issuableType,
-      (err, currentTemplate) => {
-        this.currentTemplate = currentTemplate;
-        this.stopLoadingSpinner();
-        if (err) return; // Error handled by global AJAX error handler
-        this.setInputValueToTemplateContent();
-      },
+      query.name,
+      { source_template_project_id: query.project_id },
+      callback,
     );
-    return;
   }
 
   setInputValueToTemplateContent() {

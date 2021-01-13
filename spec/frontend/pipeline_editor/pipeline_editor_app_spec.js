@@ -5,6 +5,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'jest/helpers/mock_apollo_helper';
 
+import httpStatusCodes from '~/lib/utils/http_status';
 import { objectToQuery, redirectTo, refreshCurrentPage } from '~/lib/utils/url_utility';
 import {
   mockCiConfigPath,
@@ -414,58 +415,81 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
       mockCiConfigData.mockResolvedValue(mockCiConfigQueryResponse);
     });
 
-    it('no error is shown when data is set', async () => {
-      createComponentWithApollo();
+    describe('when file exists', () => {
+      beforeEach(async () => {
+        createComponentWithApollo();
 
-      await waitForPromises();
+        await waitForPromises();
+      });
 
-      expect(findAlert().exists()).toBe(false);
-      expect(findEditorLite().attributes('value')).toBe(mockCiYml);
-    });
+      it('shows editor and commit form', () => {
+        expect(findEditorLite().exists()).toBe(true);
+        expect(findTextEditor().exists()).toBe(true);
+      });
 
-    it('ci config query is called with correct variables', async () => {
-      createComponentWithApollo();
+      it('no error is shown when data is set', async () => {
+        expect(findAlert().exists()).toBe(false);
+        expect(findEditorLite().attributes('value')).toBe(mockCiYml);
+      });
 
-      await waitForPromises();
+      it('ci config query is called with correct variables', async () => {
+        createComponentWithApollo();
 
-      expect(mockCiConfigData).toHaveBeenCalledWith({
-        content: mockCiYml,
-        projectPath: mockProjectFullPath,
+        await waitForPromises();
+
+        expect(mockCiConfigData).toHaveBeenCalledWith({
+          content: mockCiYml,
+          projectPath: mockProjectFullPath,
+        });
       });
     });
 
-    it('shows a 404 error message', async () => {
-      mockBlobContentData.mockRejectedValueOnce({
-        response: {
-          status: 404,
-        },
+    describe('when no file exists', () => {
+      const expectedAlertMsg =
+        'There is no .gitlab-ci.yml file in this repository, please add one and visit the Pipeline Editor again.';
+
+      it('does not show editor or commit form', async () => {
+        mockBlobContentData.mockRejectedValueOnce(new Error('My error!'));
+        createComponentWithApollo();
+        await waitForPromises();
+
+        expect(findEditorLite().exists()).toBe(false);
+        expect(findTextEditor().exists()).toBe(false);
       });
-      createComponentWithApollo();
 
-      await waitForPromises();
+      it('shows a 404 error message', async () => {
+        mockBlobContentData.mockRejectedValueOnce({
+          response: {
+            status: httpStatusCodes.NOT_FOUND,
+          },
+        });
+        createComponentWithApollo();
 
-      expect(findAlert().text()).toBe('No CI file found in this repository, please add one.');
-    });
+        await waitForPromises();
 
-    it('shows a 400 error message', async () => {
-      mockBlobContentData.mockRejectedValueOnce({
-        response: {
-          status: 400,
-        },
+        expect(findAlert().text()).toBe(expectedAlertMsg);
       });
-      createComponentWithApollo();
 
-      await waitForPromises();
+      it('shows a 400 error message', async () => {
+        mockBlobContentData.mockRejectedValueOnce({
+          response: {
+            status: httpStatusCodes.BAD_REQUEST,
+          },
+        });
+        createComponentWithApollo();
 
-      expect(findAlert().text()).toBe('Repository does not have a default branch, please set one.');
-    });
+        await waitForPromises();
 
-    it('shows a unkown error message', async () => {
-      mockBlobContentData.mockRejectedValueOnce(new Error('My error!'));
-      createComponentWithApollo();
-      await waitForPromises();
+        expect(findAlert().text()).toBe(expectedAlertMsg);
+      });
 
-      expect(findAlert().text()).toBe('The CI configuration was not loaded, please try again.');
+      it('shows a unkown error message', async () => {
+        mockBlobContentData.mockRejectedValueOnce(new Error('My error!'));
+        createComponentWithApollo();
+        await waitForPromises();
+
+        expect(findAlert().text()).toBe('The CI configuration was not loaded, please try again.');
+      });
     });
   });
 });

@@ -41,7 +41,7 @@ RSpec.describe 'issue state', :js do
     end
   end
 
-  describe 'when open' do
+  describe 'when open', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/297348' do
     context 'when clicking the top `Close issue` button', :aggregate_failures do
       let(:open_issue) { create(:issue, project: project) }
 
@@ -63,7 +63,7 @@ RSpec.describe 'issue state', :js do
     end
   end
 
-  describe 'when closed' do
+  describe 'when closed', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/297201' do
     context 'when clicking the top `Reopen issue` button', :aggregate_failures do
       let(:closed_issue) { create(:issue, project: project, state: 'closed') }
 

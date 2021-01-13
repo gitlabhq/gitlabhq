@@ -27,7 +27,7 @@ export const resolvers = {
             beforeScript: job.before_script,
             script: job.script,
             afterScript: job.after_script,
-            tagList: job.tag_list,
+            tags: job.tag_list,
             environment: job.environment,
             when: job.when,
             allowFailure: job.allow_failure,

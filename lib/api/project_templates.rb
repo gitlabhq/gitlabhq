@@ -45,9 +45,10 @@ module API
 
       get ':id/templates/:type/:name', requirements: TEMPLATE_NAMES_ENDPOINT_REQUIREMENTS do
         begin
-          template = TemplateFinder
-            .build(params[:type], user_project, name: params[:name])
-            .execute
+          template = TemplateFinder.build(
+            params[:type], user_project, name: params[:name],
+            source_template_project_id: params[:source_template_project_id]
+          ).execute
         rescue ::Gitlab::Template::Finders::RepoTemplateFinder::FileNotFoundError
           not_found!('Template')
         end

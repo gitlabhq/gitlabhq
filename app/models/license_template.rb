@@ -12,16 +12,33 @@ class LicenseTemplate
       (fullname|name\sof\s(author|copyright\sowner))
     [\>\}\]]}xi.freeze
 
-  attr_reader :key, :name, :category, :nickname, :url, :meta
+  attr_reader :key, :name, :project, :category, :nickname, :url, :meta
 
-  def initialize(key:, name:, category:, content:, nickname: nil, url: nil, meta: {})
+  def initialize(key:, name:, project:, category:, content:, nickname: nil, url: nil, meta: {})
     @key = key
     @name = name
+    @project = project
     @category = category
     @content = content
     @nickname = nickname
     @url = url
     @meta = meta
+  end
+
+  def project_id
+    project&.id
+  end
+
+  def project_path
+    project&.path
+  end
+
+  def namespace_id
+    project&.namespace&.id
+  end
+
+  def namespace_path
+    project&.namespace&.full_path
   end
 
   def popular?

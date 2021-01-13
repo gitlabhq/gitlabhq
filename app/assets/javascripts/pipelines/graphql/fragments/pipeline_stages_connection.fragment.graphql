@@ -8,6 +8,19 @@ fragment PipelineStagesConnection on CiConfigStageConnection {
         jobs {
           nodes {
             name
+            script
+            beforeScript
+            afterScript
+            environment
+            allowFailure
+            tags
+            when
+            only {
+              refs
+            }
+            except {
+              refs
+            }
             needs {
               nodes {
                 name

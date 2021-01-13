@@ -75,7 +75,7 @@ describe('IDE store file actions', () => {
         });
     });
 
-    it('closes file & opens next available file', () => {
+    it('switches to the next available file before closing the current one ', () => {
       const f = file('newOpenFile');
 
       store.state.openFiles.push(f);
@@ -90,10 +90,12 @@ describe('IDE store file actions', () => {
     });
 
     it('removes file if it pending', () => {
-      store.state.openFiles.push({
-        ...localFile,
-        pending: true,
-      });
+      store.state.openFiles = [
+        {
+          ...localFile,
+          pending: true,
+        },
+      ];
 
       return store.dispatch('closeFile', localFile).then(() => {
         expect(store.state.openFiles.length).toBe(0);
