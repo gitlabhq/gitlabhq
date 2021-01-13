@@ -211,21 +211,6 @@ RSpec.describe ProjectsController do
       end
     end
 
-    context 'when the storage is not available', :broken_storage do
-      let_it_be(:project) { create(:project, :broken_storage) }
-
-      before do
-        project.add_developer(user)
-        sign_in(user)
-      end
-
-      it 'renders a 503' do
-        get :show, params: { namespace_id: project.namespace, id: project }
-
-        expect(response).to have_gitlab_http_status(:service_unavailable)
-      end
-    end
-
     context "project with empty repo" do
       let_it_be(:empty_project) { create(:project_empty_repo, :public) }
 
@@ -616,7 +601,7 @@ RSpec.describe ProjectsController do
           expect { update_project path: 'renamed_path' }
             .not_to change { project.reload.path }
 
-          expect(controller).to set_flash.now[:alert].to(s_('UpdateProject|Cannot rename project because it contains container registry tags!'))
+          expect(controller).to set_flash[:alert].to(s_('UpdateProject|Cannot rename project because it contains container registry tags!'))
           expect(response).to have_gitlab_http_status(:ok)
         end
       end

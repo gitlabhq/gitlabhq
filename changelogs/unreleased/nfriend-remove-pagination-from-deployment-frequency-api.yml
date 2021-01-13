@@ -1,0 +1,5 @@
+---
+title: Remove pagination from Deployment Frequency API endpoint
+merge_request: 51137
+author:
+type: changed

@@ -14114,9 +14114,6 @@ msgstr ""
 msgid "Groups with access to %{strong_open}%{project_name}%{strong_close}"
 msgstr ""
 
-msgid "Groups with access to %{strong_start}%{group_name}%{strong_end}"
-msgstr ""
-
 msgid "GroupsDropdown|Frequently visited"
 msgstr ""
 
@@ -17367,9 +17364,6 @@ msgstr ""
 msgid "Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}"
 msgstr ""
 
-msgid "Members invited to %{strong_start}%{group_name}%{strong_end}"
-msgstr ""
-
 msgid "Members invited to %{strong_start}%{project_name}%{strong_end}"
 msgstr ""
 
@@ -17386,9 +17380,6 @@ msgid "Members of %{strong_open}%{project_name}%{strong_close}"
 msgstr ""
 
 msgid "Members of a group may only view projects they have permission to access"
-msgstr ""
-
-msgid "Members with access to %{strong_start}%{group_name}%{strong_end}"
 msgstr ""
 
 msgid "Members|%{time} by %{user}"
@@ -30911,9 +30902,6 @@ msgstr ""
 msgid "Users requesting access to"
 msgstr ""
 
-msgid "Users requesting access to %{strong_start}%{group_name}%{strong_end}"
-msgstr ""
-
 msgid "Users requesting access to %{strong_start}%{project_name}%{strong_end}"
 msgstr ""
 
@@ -32936,6 +32924,9 @@ msgid "by"
 msgstr ""
 
 msgid "can contain only letters of the Base64 alphabet (RFC4648) with the addition of '@', ':' and '.'"
+msgstr ""
+
+msgid "can't be enabled because signed commits are required for this project"
 msgstr ""
 
 msgid "cannot be a date in the past"

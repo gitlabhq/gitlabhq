@@ -5,12 +5,10 @@ import MembersTable from '~/members/components/table/members_table.vue';
 import FilterSortContainer from '~/members/components/filter_sort/filter_sort_container.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { HIDE_ERROR } from '~/members/store/mutation_types';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'GroupMembersApp',
   components: { MembersTable, FilterSortContainer, GlAlert },
-  mixins: [glFeatureFlagsMixin()],
   computed: {
     ...mapState(['showError', 'errorMessage']),
   },
@@ -36,7 +34,7 @@ export default {
     <gl-alert v-if="showError" ref="errorAlert" variant="danger" @dismiss="hideError">{{
       errorMessage
     }}</gl-alert>
-    <filter-sort-container v-if="glFeatures.groupMembersFilteredSearch" />
+    <filter-sort-container />
     <members-table />
   </div>
 </template>

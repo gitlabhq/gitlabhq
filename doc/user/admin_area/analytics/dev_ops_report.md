@@ -38,7 +38,7 @@ collected before this feature is available.
 
 ## DevOps Adoption **(ULTIMATE)**
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247112) in GitLab 13.7.
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247112) in GitLab 13.7 as a [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta).
 
 The DevOps Adoption tab shows you which segments of your organization are using the most essential features of GitLab:
 
@@ -61,3 +61,21 @@ DevOps Adoption allows you to:
 - Find the groups that have adopted certain features and can provide guidance to other groups on how to use those features.
 
 ![DevOps Report](img/dev_ops_adoption_v13_7.png)
+
+### Disable or enable DevOps Adoption
+
+DevOps Adoption is deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can opt to enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:devops_adoption_feature)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:devops_adoption_feature)
+```

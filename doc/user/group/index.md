@@ -215,10 +215,7 @@ To remove a member from a group:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21727) in GitLab 12.6.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/228675) in GitLab 13.7.
-> - Improvements are [deployed behind a feature flag](../feature_flags.md), enabled by default.
-> - Improvements are enabled on GitLab.com.
-> - Improvements are recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable improvements](#enable-or-disable-improvements-to-the-ability-to-filter-and-sort-group-members). **(CORE ONLY)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/289911) in GitLab 13.8.
 
 The following sections illustrate how you can filter and sort members in a group. To view these options,
 navigate to your desired group, go to **Members**, and include the noted search terms.
@@ -268,30 +265,6 @@ You can search for members by name, username, or email.
 You can sort members by **Account**, **Access granted**, **Max role**, or **Last sign-in** in ascending or descending order.
 
 ![Group members sort](img/group_members_sort_13_7.png)
-
-### Enable or disable improvements to the ability to filter and sort group members **(CORE ONLY)**
-
-Group member filtering and sorting improvements are deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable the improvements.
-
-To disable them:
-
-```ruby
-# For the instance
-Feature.disable(:group_members_filtered_search)
-# For a single group
-Feature.disable(:group_members_filtered_search, Group.find(<group id>))
-```
-
-To enable them:
-
-```ruby
-# For the instance
-Feature.enable(:group_members_filtered_search)
-# For a single group
-Feature.enable(:group_members_filtered_search, Group.find(<group id>))
-```
 
 ## Changing the default branch protection of a group
 

@@ -352,8 +352,9 @@ end
 group :development, :test do
   gem 'deprecation_toolkit', '~> 1.5.1', require: false
   gem 'bullet', '~> 6.1.0'
-  gem 'pry-byebug', '~> 3.9.0', platform: :mri
+  gem 'gitlab-pry-byebug', platform: :mri, require: ['pry-byebug', 'pry-byebug/pry_remote_ext']
   gem 'pry-rails', '~> 0.3.9'
+  gem 'pry-remote'
 
   gem 'awesome_print', require: false
 

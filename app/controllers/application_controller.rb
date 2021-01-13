@@ -103,14 +103,6 @@ class ApplicationController < ActionController::Base
     head :forbidden, retry_after: Gitlab::Auth::UniqueIpsLimiter.config.unique_ips_limit_time_window
   end
 
-  rescue_from GRPC::Unavailable, Gitlab::Git::CommandError do |exception|
-    log_exception(exception)
-
-    headers['Retry-After'] = exception.retry_after if exception.respond_to?(:retry_after)
-
-    render_503
-  end
-
   def redirect_back_or_default(default: root_path, options: {})
     redirect_back(fallback_location: default, **options)
   end
@@ -244,19 +236,6 @@ class ApplicationController < ActionController::Base
 
   def respond_422
     head :unprocessable_entity
-  end
-
-  def render_503
-    respond_to do |format|
-      format.html do
-        render(
-          file: Rails.root.join("public", "503"),
-          layout: false,
-          status: :service_unavailable
-        )
-      end
-      format.any { head :service_unavailable }
-    end
   end
 
   def no_cache_headers
