@@ -53,9 +53,9 @@ module BulkInsertSafe
   class_methods do
     def set_callback(name, *args)
       unless _bulk_insert_callback_allowed?(name, args)
-        raise MethodNotAllowedError.new(
+        raise MethodNotAllowedError,
           "Not allowed to call `set_callback(#{name}, #{args})` when model extends `BulkInsertSafe`." \
-            "Callbacks that fire per each record being inserted do not work with bulk-inserts.")
+            "Callbacks that fire per each record being inserted do not work with bulk-inserts."
       end
 
       super

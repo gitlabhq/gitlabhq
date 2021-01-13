@@ -35,8 +35,6 @@ module JiraConnectSubscriptions
     end
 
     def schedule_sync_project_jobs
-      return unless Feature.enabled?(:jira_connect_full_namespace_sync)
-
       namespace.all_projects.each_batch(of: MERGE_REQUEST_SYNC_BATCH_SIZE) do |projects, index|
         JiraConnect::SyncProjectWorker.bulk_perform_in_with_contexts(
           index * MERGE_REQUEST_SYNC_BATCH_DELAY,

@@ -22,7 +22,7 @@ module FinderMethods
   def raise_not_found_unless_authorized(result)
     result = if_authorized(result)
 
-    raise ActiveRecord::RecordNotFound.new("Couldn't find #{model}") unless result
+    raise(ActiveRecord::RecordNotFound, "Couldn't find #{model}") unless result
 
     result
   end

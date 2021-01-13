@@ -7899,6 +7899,9 @@ msgstr ""
 msgid "Copy commit SHA"
 msgstr ""
 
+msgid "Copy email address"
+msgstr ""
+
 msgid "Copy environment"
 msgstr ""
 
@@ -24307,6 +24310,9 @@ msgid "Revoked personal access token %{personal_access_token_name}!"
 msgstr ""
 
 msgid "Revoked project access token %{project_access_token_name}!"
+msgstr ""
+
+msgid "RightSidebar|Issue email: %{copyText}"
 msgstr ""
 
 msgid "RightSidebar|adding a"

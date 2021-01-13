@@ -251,9 +251,9 @@ Dangerfile @gl-quality/eng-prod
 /doc/user/project/code_owners.md @reprazent @kerrizor @garyh
 
 [Product Intelligence]
-/ee/lib/gitlab/usage_data_counters/ @gitlab-org/growth/product_intelligence/engineers
-/ee/lib/ee/gitlab/usage_data.rb @gitlab-org/growth/product_intelligence/engineers
-/lib/gitlab/grafana_embed_usage_data.rb @gitlab-org/growth/product_intelligence/engineers
+/ee/lib/gitlab/usage_data_counters/ @gitlab-org/growth/product-intelligence/engineers
+/ee/lib/ee/gitlab/usage_data.rb @gitlab-org/growth/product-intelligence/engineers
+/lib/gitlab/grafana_embed_usage_data.rb @gitlab-org/growth/product-intelligence/engineers
 /lib/gitlab/usage_data.rb @gitlab-org/growth/product_intelligence/engineers
-/lib/gitlab/cycle_analytics/usage_data.rb @gitlab-org/growth/product_intelligence/engineers
-/lib/gitlab/usage_data_counters/ @gitlab-org/growth/product_intelligence/engineers
+/lib/gitlab/cycle_analytics/usage_data.rb @gitlab-org/growth/product-intelligence/engineers
+/lib/gitlab/usage_data_counters/ @gitlab-org/growth/product-intelligence/engineers

@@ -12,6 +12,7 @@ import sidebarParticipants from './components/participants/sidebar_participants.
 import sidebarSubscriptions from './components/subscriptions/sidebar_subscriptions.vue';
 import SidebarSeverity from './components/severity/sidebar_severity.vue';
 import Translate from '../vue_shared/translate';
+import CopyEmailToClipboard from './components/copy_email_to_clipboard.vue';
 import createDefaultClient from '~/lib/graphql';
 import { isInIssuePage, isInIncidentPage, parseBoolean } from '~/lib/utils/common_utils';
 import createFlash from '~/flash';
@@ -272,6 +273,21 @@ function mountSeverityComponent() {
   });
 }
 
+function mountCopyEmailComponent() {
+  const el = document.getElementById('issuable-copy-email');
+
+  if (!el) return;
+
+  const { createNoteEmail } = getSidebarOptions();
+
+  // eslint-disable-next-line no-new
+  new Vue({
+    el,
+    render: (createElement) =>
+      createElement(CopyEmailToClipboard, { props: { copyText: createNoteEmail } }),
+  });
+}
+
 export function mountSidebar(mediator) {
   mountAssigneesComponent(mediator);
   mountReviewersComponent(mediator);
@@ -279,6 +295,7 @@ export function mountSidebar(mediator) {
   mountLockComponent();
   mountParticipantsComponent(mediator);
   mountSubscriptionsComponent(mediator);
+  mountCopyEmailComponent();
 
   new SidebarMoveIssue(
     mediator,

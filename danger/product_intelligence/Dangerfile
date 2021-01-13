@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 CHANGED_FILES_MESSAGE = <<~MSG
-For the following files, a review from the [Data team and Product Intelligence team](https://gitlab.com/groups/gitlab-org/growth/product_intelligence/engineers/-/group_members?with_inherited_permissions=exclude) is recommended
+For the following files, a review from the [Data team and Product Intelligence team](https://gitlab.com/groups/gitlab-org/growth/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) is recommended
 Please check the ~"product intelligence" [guide](https://docs.gitlab.com/ee/development/product_analytics/usage_ping.html) and reach out to %<engineers_group>s group for a review.
 
 
@@ -14,7 +14,7 @@ UPDATE_METRICS_DEFINITIONS_MESSAGE = <<~MSG
 
 MSG
 
-ENGINEERS_GROUP = '@gitlab-org/growth/product_intelligence/engineers'
+ENGINEERS_GROUP = '@gitlab-org/growth/product-intelligence/engineers'
 
 tracking_files = [
   'lib/gitlab/tracking.rb',

@@ -35,6 +35,7 @@ The numbers in the image correspond to the following features:
 - **12.** [Participants](#participants)
 - **13.** [Notifications](#notifications)
 - **14.** [Reference](#reference)
+- [Issue email](#email)
 - **15.** [Edit](#edit)
 - **16.** [Description](#description)
 - **17.** [Mentions](#mentions)
@@ -173,6 +174,12 @@ for the issue. Notifications are automatically enabled after you participate in 
 - A quick "copy" button for that issue's reference, which looks like
   `foo/bar#xxx`, where `foo` is the `username` or `groupname`, `bar` is the
   `project-name`, and `xxx` is the issue number.
+
+### Email
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18816) in GitLab 13.8.
+
+Guest users can see a button to copy the email address for the issue. Sending an email to this address creates a comment containing the email body.
 
 ### Edit
 

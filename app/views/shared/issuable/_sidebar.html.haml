@@ -2,6 +2,7 @@
   This should be removed when this sidebar is converted to Vue since assignee data is also available in the `issuable_sidebar` hash
 
 - issuable_type = issuable_sidebar[:type]
+- show_forwarding_email = !issuable_sidebar[:create_note_email].nil?
 - signed_in = !!issuable_sidebar.dig(:current_user, :id)
 - can_edit_issuable = issuable_sidebar.dig(:current_user, :can_edit)
 - add_page_startup_api_call "#{issuable_sidebar[:issuable_json_path]}?serializer=sidebar_extras"
@@ -145,6 +146,9 @@
                 = _('Source branch: %{source_branch_open}%{source_branch}%{source_branch_close}').html_safe % { source_branch_open: "<cite class='ref-name' title='#{source_branch}'>".html_safe, source_branch_close: "</cite>".html_safe, source_branch: source_branch }
               = clipboard_button(text: source_branch, title: _('Copy branch name'), placement: "left", boundary: 'viewport')
 
+      - if show_forwarding_email
+        .block
+          #issuable-copy-email
       - if issuable_sidebar.dig(:current_user, :can_move)
         .block.js-sidebar-move-issue-block
           .sidebar-collapsed-icon{ data: { toggle: 'tooltip', placement: 'left', container: 'body', boundary: 'viewport' }, title: _('Move issue') }
