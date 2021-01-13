@@ -13,10 +13,13 @@ RSpec.describe 'issue state', :js do
 
   shared_examples 'issue closed' do |selector|
     it 'can close an issue' do
+      wait_for_requests
+
       expect(find('.status-box')).to have_content 'Open'
 
       within selector do
         click_button 'Close issue'
+        wait_for_requests
       end
 
       expect(find('.status-box')).to have_content 'Closed'
@@ -25,10 +28,13 @@ RSpec.describe 'issue state', :js do
 
   shared_examples 'issue reopened' do |selector|
     it 'can reopen an issue' do
+      wait_for_requests
+
       expect(find('.status-box')).to have_content 'Closed'
 
       within selector do
         click_button 'Reopen issue'
+        wait_for_requests
       end
 
       expect(find('.status-box')).to have_content 'Open'

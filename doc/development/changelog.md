@@ -47,7 +47,7 @@ the `author` field. GitLab team members **should not**.
 - Any user-facing change **must** have a changelog entry. This includes both visual changes (regardless of how minor), and changes to the rendered DOM which impact how a screen reader may announce the content.
 - Any client-facing change to our REST and GraphQL APIs **must** have a changelog entry.
 - Performance improvements **should** have a changelog entry.
-- Changes that need to be documented in the Product Analytics [Event Dictionary](https://about.gitlab.com/handbook/product/product-analytics-guide/#event-dictionary)
+- Changes that need to be documented in the Product Intelligence [Event Dictionary](https://about.gitlab.com/handbook/product/product-intelligence-guide/#event-dictionary)
   also require a changelog entry.
 - _Any_ contribution from a community member, no matter how small, **may** have
   a changelog entry regardless of these guidelines if the contributor wants one.
@@ -55,7 +55,7 @@ the `author` field. GitLab team members **should not**.
 - Any docs-only changes **should not** have a changelog entry.
 - Any change behind a disabled feature flag **should not** have a changelog entry.
 - Any change behind an enabled feature flag **should** have a changelog entry.
-- Any change that adds new usage data metrics and changes that needs to be documented in Product Analytics [Event Dictionary](https://about.gitlab.com/handbook/product/product-analytics-guide/#event-dictionary) **should** have a changelog entry.
+- Any change that adds new usage data metrics and changes that needs to be documented in Product Intelligence [Event Dictionary](https://about.gitlab.com/handbook/product/product-intelligence-guide/#event-dictionary) **should** have a changelog entry.
 - A change that adds snowplow events **should** have a changelog entry -
 - A change that [removes a feature flag](feature_flags/development.md) **should** have a changelog entry -
   only if the feature flag did not default to true already.

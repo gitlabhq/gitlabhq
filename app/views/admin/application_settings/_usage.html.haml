@@ -33,7 +33,7 @@
             %pre.usage-data.js-syntax-highlight.code.highlight.mt-2.d-none{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }
           - else
             = _('The usage ping is disabled, and cannot be configured through this form.')
-            - deactivating_usage_ping_path = help_page_path('development/product_analytics/usage_ping', anchor: 'disable-usage-ping')
+            - deactivating_usage_ping_path = help_page_path('development/usage_ping', anchor: 'disable-usage-ping')
             - deactivating_usage_ping_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: deactivating_usage_ping_path }
             = s_('For more information, see the documentation on %{deactivating_usage_ping_link_start}deactivating the usage ping%{deactivating_usage_ping_link_end}.').html_safe % { deactivating_usage_ping_link_start: deactivating_usage_ping_link_start, deactivating_usage_ping_link_end: '</a>'.html_safe }
 

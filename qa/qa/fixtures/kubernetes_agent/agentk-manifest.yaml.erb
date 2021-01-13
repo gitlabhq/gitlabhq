@@ -1,0 +1,95 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gitlab-agent
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitlab-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitlab-agent
+  template:
+    metadata:
+      labels:
+        app: gitlab-agent
+    spec:
+      serviceAccountName: gitlab-agent
+      containers:
+        - name: agent
+          image: "registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/agentk:<%= Runtime::Env.gitlab_agentk_version %>"
+          args:
+            - --token-file=/config/token
+            - --kas-address
+            - "<%= kas_wss_address %>" # Use this for GitLab chart deployments
+            # - "<%= kas_grpc_address %>" # Use this for GDK
+          volumeMounts:
+            - name: token-volume
+              mountPath: /config
+      volumes:
+        - name: token-volume
+          secret:
+            secretName: gitlab-agent-token
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: gitlab-agent-write
+rules:
+  - resources:
+      - "*"
+    apiGroups:
+      - "*"
+    verbs:
+      - create
+      - update
+      - delete
+      - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: gitlab-agent-write-binding
+roleRef:
+  name: gitlab-agent-write
+  kind: ClusterRole
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - name: gitlab-agent
+    kind: ServiceAccount
+    namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: gitlab-agent-read
+rules:
+  - resources:
+      - "*"
+    apiGroups:
+      - "*"
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: gitlab-agent-read-binding
+roleRef:
+  name: gitlab-agent-read
+  kind: ClusterRole
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - name: gitlab-agent
+    kind: ServiceAccount
+    namespace: default

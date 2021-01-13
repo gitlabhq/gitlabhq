@@ -1,8 +1,8 @@
 ---
-redirect_to: 'https://about.gitlab.com/handbook/product/product-analytics-guide/'
+redirect_to: 'https://about.gitlab.com/handbook/product/product-intelligence-guide/'
 ---
 
-This document was moved to [another location](https://about.gitlab.com/handbook/product/product-analytics-guide/).
+This document was moved to [another location](https://about.gitlab.com/handbook/product/product-intelligence-guide/).
 
 <!-- Needed by the Product Intelligence group
 

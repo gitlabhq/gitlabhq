@@ -173,7 +173,7 @@ There are two types of redirects:
 - Redirect files added into the docs themselves, for users who view the docs in `/help`
   on self-managed instances. For example, [`/help` on GitLab.com](https://gitlab.com/help).
 - Redirects in a [`_redirects`](../../user/project/pages/redirects.md) file, for users
-  who view the docs on <http://docs.gitlab.com>.
+  who view the docs on <https://docs.gitlab.com>.
 
 To add a redirect:
 

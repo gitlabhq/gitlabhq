@@ -247,7 +247,7 @@ RSpec.describe Gitlab::Ci::Lint do
         include_context 'advanced validations' do
           it 'runs advanced logical validations' do
             expect(subject).not_to be_valid
-            expect(subject.errors).to eq(["test: needs 'build'"])
+            expect(subject.errors).to eq(["'test' job needs 'build' job, but it was not added to the pipeline"])
           end
         end
 

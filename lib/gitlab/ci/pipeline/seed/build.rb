@@ -134,7 +134,7 @@ module Gitlab
                 stage.seeds_names.include?(need[:name])
               end
 
-              "#{name}: needs '#{need[:name]}'" unless result
+              "'#{name}' job needs '#{need[:name]}' job, but it was not added to the pipeline" unless result
             end.compact
           end
 

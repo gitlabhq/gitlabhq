@@ -75,7 +75,7 @@ All the dashboards are powered by [Grafana](https://grafana.com/), a frontend fo
 
   ![Debug 2](img/stage_group_dashboards_debug_2.png)
 
-- [Sentry](https://sentry.gitlab.net/gitlab/gitlabcom) gives us a way to find the exception where we can filter by transaction type and correlation_id from a Kibana's result item.
+- [Sentry](https://sentry.gitlab.net/gitlab/gitlabcom/) gives us a way to find the exception where we can filter by transaction type and correlation_id from a Kibana's result item.
 
   ![Debug 3](img/stage_group_dashboards_debug_3.png)
 

@@ -1713,9 +1713,11 @@ RSpec.describe Ci::CreatePipelineService do
         shared_examples 'has errors' do
           it 'contains the expected errors' do
             expect(pipeline.builds).to be_empty
-            expect(pipeline.yaml_errors).to eq("test_a: needs 'build_a'")
-            expect(pipeline.error_messages.map(&:content)).to contain_exactly("test_a: needs 'build_a'")
-            expect(pipeline.errors[:base]).to contain_exactly("test_a: needs 'build_a'")
+
+            error_message = "'test_a' job needs 'build_a' job, but it was not added to the pipeline"
+            expect(pipeline.yaml_errors).to eq(error_message)
+            expect(pipeline.error_messages.map(&:content)).to contain_exactly(error_message)
+            expect(pipeline.errors[:base]).to contain_exactly(error_message)
           end
         end
 

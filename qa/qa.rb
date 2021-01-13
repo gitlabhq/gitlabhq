@@ -101,6 +101,11 @@ module QA
       autoload :ProjectCluster, 'qa/resource/kubernetes_cluster/project_cluster'
     end
 
+    module Clusters
+      autoload :Agent, 'qa/resource/clusters/agent.rb'
+      autoload :AgentToken, 'qa/resource/clusters/agent_token.rb'
+    end
+
     module Events
       autoload :Base, 'qa/resource/events/base'
       autoload :Project, 'qa/resource/events/project'

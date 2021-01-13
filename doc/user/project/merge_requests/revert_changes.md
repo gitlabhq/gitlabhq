@@ -59,7 +59,7 @@ mainline:
 git revert -m 2 7a39eb0
 ```
 
-From [GitLab 13.7 onwards](https://gitlab.com/gitlab-org/gitlab/-/issues/35824), merge requests
+From [GitLab 13.8 onwards](https://gitlab.com/gitlab-org/gitlab/-/issues/35824), merge requests
 reverted by another merge request through one of the methods described in this document
 will display a link to the reverted merge request at the top-left corner within the **Merged** badge.
 

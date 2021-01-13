@@ -332,7 +332,7 @@ GitLab documentation should be clear and easy to understand.
 ### Trademark
 
 Only use the GitLab name and trademarks in accordance with
-[GitLab Brand Guidelines](https://about.gitlab.com/handbook/marketing/inbound-marketing/digital-experience/brand-guidelines/#trademark).
+[GitLab Brand Guidelines](https://about.gitlab.com/handbook/marketing/corporate-marketing/brand-activation/brand-guidelines/#trademark).
 
 Don't use the possessive form of the word GitLab (`GitLab's`).
 

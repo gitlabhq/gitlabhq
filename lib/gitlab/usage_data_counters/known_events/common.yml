@@ -253,6 +253,11 @@
   redis_slot: testing
   aggregation: weekly
   feature_flag: usage_data_i_testing_metrics_report_widget_total
+- name: i_testing_group_code_coverage_visit_total
+  category: testing
+  redis_slot: testing
+  aggregation: weekly
+  feature_flag: usage_data_i_testing_group_code_coverage_visit_total
 # Project Management group
 - name: g_project_management_issue_title_changed
   category: issues_edit

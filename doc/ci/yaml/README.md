@@ -3483,6 +3483,10 @@ If there is more than one matched line in the job output, the last line is used.
 For the matched line, the first occurence of `\d+(\.\d+)?` is the code coverage.
 Leading zeros are removed.
 
+Coverage output from [child pipelines](../parent_child_pipelines.md) is not recorded
+or displayed. Check [the related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/280818)
+for more details.
+
 ### `retry`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/3442) in GitLab 9.5.
