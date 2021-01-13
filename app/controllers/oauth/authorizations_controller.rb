@@ -4,7 +4,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   include Gitlab::Experimentation::ControllerConcern
   include InitializesCurrentUserMode
 
-  before_action :verify_confirmed_email!
+  before_action :verify_confirmed_email!, :verify_confidential_application!
 
   layout 'profile'
 
@@ -24,18 +24,19 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     end
   end
 
-  def create
-    # Confidential apps require the client_secret to be sent with the request.
-    # Doorkeeper allows implicit grant flow requests (response_type=token) to
-    # work without client_secret regardless of the confidential setting.
-    if pre_auth.authorizable? && pre_auth.response_type == 'token' && pre_auth.client.application.confidential
-      render "doorkeeper/authorizations/error"
-    else
-      super
-    end
+  private
+
+  # Confidential apps require the client_secret to be sent with the request.
+  # Doorkeeper allows implicit grant flow requests (response_type=token) to
+  # work without client_secret regardless of the confidential setting.
+  # This leads to security vulnerabilities and we want to block it.
+  def verify_confidential_application!
+    render 'doorkeeper/authorizations/error' if authorizable_confidential?
   end
 
-  private
+  def authorizable_confidential?
+    pre_auth.authorizable? && pre_auth.response_type == 'token' && pre_auth.client.application.confidential
+  end
 
   def verify_confirmed_email!
     return if current_user&.confirmed?
