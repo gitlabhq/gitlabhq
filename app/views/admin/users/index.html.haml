@@ -44,6 +44,7 @@
         %small.badge.badge-pill= limited_counter_with_delimiter(User.without_projects)
   .nav-controls
     = render_if_exists 'admin/users/admin_email_users'
+    = render_if_exists 'admin/users/admin_export_user_permissions'
     = link_to s_('AdminUsers|New user'), new_admin_user_path, class: 'btn gl-button btn-success btn-search float-right'
 
 .filtered-search-block.row-content-block.border-top-0

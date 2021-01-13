@@ -66,13 +66,15 @@ module Tooling
         %(--output json),
         *args
       ]
-      releases = JSON.parse(run_command(command)) # rubocop:disable Gitlab/Json
+
+      response = run_command(command)
+      releases = JSON.parse(response) # rubocop:disable Gitlab/Json
 
       releases.map do |release|
         Release.new(*release.values_at(*RELEASE_JSON_ATTRIBUTES))
       end
     rescue ::JSON::ParserError => ex
-      puts "Ignoring this JSON parsing error: #{ex}" # rubocop:disable Rails/Output
+      puts "Ignoring this JSON parsing error: #{ex}\n\nResponse was:\n#{response}" # rubocop:disable Rails/Output
       []
     end
 

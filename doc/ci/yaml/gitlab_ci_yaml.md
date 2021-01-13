@@ -27,7 +27,7 @@ The scripts are grouped into **jobs**, and jobs run as part of a larger
 **pipeline**. You can group multiple independent jobs into **stages** that run in a defined order.
 
 You should organize your jobs in a sequence that suits your application and is in accordance with
-the tests you wish to perform. To [visualize](visualization.md) the process, imagine
+the tests you wish to perform. To [visualize](../pipeline_editor/index.md#visualize-ci-configuration) the process, imagine
 the scripts you add to jobs are the same as CLI commands you run on your computer.
 
 When you add a `.gitlab-ci.yml` file to your

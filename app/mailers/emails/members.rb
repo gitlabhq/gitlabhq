@@ -147,3 +147,5 @@ module Emails
     end
   end
 end
+
+Emails::Members.prepend_if_ee('EE::Emails::Members')

@@ -17,9 +17,28 @@ RSpec.describe Tooling::KubernetesClient do
     end
   end
 
-  describe '#cleanup' do
+  describe '#cleanup_by_release' do
     before do
       allow(subject).to receive(:raw_resource_names).and_return(raw_resource_names)
+    end
+
+    shared_examples 'a kubectl command to delete resources' do
+      let(:wait) { true }
+      let(:release_names_in_command) { release_name.respond_to?(:join) ? %(-l 'release in (#{release_name.join(', ')})') : %(-l release="#{release_name}") }
+
+      specify do
+        expect(Gitlab::Popen).to receive(:popen_with_detail)
+          .with(["kubectl delete #{described_class::RESOURCE_LIST} " +
+            %(--namespace "#{namespace}" --now --ignore-not-found --include-uninitialized --wait=#{wait} #{release_names_in_command})])
+          .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
+
+        expect(Gitlab::Popen).to receive(:popen_with_detail)
+          .with([%(kubectl delete --namespace "#{namespace}" --ignore-not-found #{pod_for_release})])
+          .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
+
+        # We're not verifying the output here, just silencing it
+        expect { subject.cleanup_by_release(release_name: release_name) }.to output.to_stdout
+      end
     end
 
     it 'raises an error if the Kubernetes command fails' do
@@ -28,73 +47,81 @@ RSpec.describe Tooling::KubernetesClient do
           %(--namespace "#{namespace}" --now --ignore-not-found --include-uninitialized --wait=true -l release="#{release_name}")])
         .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: false)))
 
-      expect { subject.cleanup(release_name: release_name) }.to raise_error(described_class::CommandFailedError)
+      expect { subject.cleanup_by_release(release_name: release_name) }.to raise_error(described_class::CommandFailedError)
     end
 
-    it 'calls kubectl with the correct arguments' do
-      expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with(["kubectl delete #{described_class::RESOURCE_LIST} " +
-          %(--namespace "#{namespace}" --now --ignore-not-found --include-uninitialized --wait=true -l release="#{release_name}")])
-        .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
-
-      expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with([%(kubectl delete --namespace "#{namespace}" --ignore-not-found #{pod_for_release})])
-        .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
-
-      # We're not verifying the output here, just silencing it
-      expect { subject.cleanup(release_name: release_name) }.to output.to_stdout
-    end
+    it_behaves_like 'a kubectl command to delete resources'
 
     context 'with multiple releases' do
       let(:release_name) { %w[my-release my-release-2] }
 
-      it 'raises an error if the Kubernetes command fails' do
-        expect(Gitlab::Popen).to receive(:popen_with_detail)
-          .with(["kubectl delete #{described_class::RESOURCE_LIST} " +
-            %(--namespace "#{namespace}" --now --ignore-not-found --include-uninitialized --wait=true -l 'release in (#{release_name.join(', ')})')])
-          .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: false)))
-
-        expect { subject.cleanup(release_name: release_name) }.to raise_error(described_class::CommandFailedError)
-      end
-
-      it 'calls kubectl with the correct arguments' do
-        expect(Gitlab::Popen).to receive(:popen_with_detail)
-          .with(["kubectl delete #{described_class::RESOURCE_LIST} " +
-            %(--namespace "#{namespace}" --now --ignore-not-found --include-uninitialized --wait=true -l 'release in (#{release_name.join(', ')})')])
-          .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
-
-        expect(Gitlab::Popen).to receive(:popen_with_detail)
-         .with([%(kubectl delete --namespace "#{namespace}" --ignore-not-found #{pod_for_release})])
-         .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
-
-        # We're not verifying the output here, just silencing it
-        expect { subject.cleanup(release_name: release_name) }.to output.to_stdout
-      end
+      it_behaves_like 'a kubectl command to delete resources'
     end
 
     context 'with `wait: false`' do
-      it 'raises an error if the Kubernetes command fails' do
-        expect(Gitlab::Popen).to receive(:popen_with_detail)
-          .with(["kubectl delete #{described_class::RESOURCE_LIST} " +
-            %(--namespace "#{namespace}" --now --ignore-not-found --include-uninitialized --wait=false -l release="#{release_name}")])
-          .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: false)))
+      let(:wait) { false }
 
-        expect { subject.cleanup(release_name: release_name, wait: false) }.to raise_error(described_class::CommandFailedError)
-      end
+      it_behaves_like 'a kubectl command to delete resources'
+    end
+  end
 
-      it 'calls kubectl with the correct arguments' do
-        expect(Gitlab::Popen).to receive(:popen_with_detail)
-          .with(["kubectl delete #{described_class::RESOURCE_LIST} " +
-            %(--namespace "#{namespace}" --now --ignore-not-found --include-uninitialized --wait=false -l release="#{release_name}")])
-          .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
+  describe '#cleanup_by_created_at' do
+    let(:two_days_ago) { Time.now - 3600 * 24 * 2 }
+    let(:resource_type) { 'pvc' }
+    let(:resource_names) { [pod_for_release] }
 
+    before do
+      allow(subject).to receive(:resource_names_created_before).with(resource_type: resource_type, created_before: two_days_ago).and_return(resource_names)
+    end
+
+    shared_examples 'a kubectl command to delete resources by older than given creation time' do
+      let(:wait) { true }
+      let(:release_names_in_command) { resource_names.join(' ') }
+
+      specify do
         expect(Gitlab::Popen).to receive(:popen_with_detail)
-          .with([%(kubectl delete --namespace "#{namespace}" --ignore-not-found #{pod_for_release})])
+          .with(["kubectl delete #{resource_type} ".squeeze(' ') +
+            %(--namespace "#{namespace}" --now --ignore-not-found --include-uninitialized --wait=#{wait} #{release_names_in_command})])
           .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
 
         # We're not verifying the output here, just silencing it
-        expect { subject.cleanup(release_name: release_name, wait: false) }.to output.to_stdout
+        expect { subject.cleanup_by_created_at(resource_type: resource_type, created_before: two_days_ago) }.to output.to_stdout
       end
+    end
+
+    it 'raises an error if the Kubernetes command fails' do
+      expect(Gitlab::Popen).to receive(:popen_with_detail)
+        .with(["kubectl delete #{resource_type} " +
+          %(--namespace "#{namespace}" --now --ignore-not-found --include-uninitialized --wait=true #{pod_for_release})])
+        .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: false)))
+
+      expect { subject.cleanup_by_created_at(resource_type: resource_type, created_before: two_days_ago) }.to raise_error(described_class::CommandFailedError)
+    end
+
+    it_behaves_like 'a kubectl command to delete resources by older than given creation time'
+
+    context 'with multiple resource names' do
+      let(:resource_names) { %w[pod-1 pod-2] }
+
+      it_behaves_like 'a kubectl command to delete resources by older than given creation time'
+    end
+
+    context 'with `wait: false`' do
+      let(:wait) { false }
+
+      it_behaves_like 'a kubectl command to delete resources by older than given creation time'
+    end
+
+    context 'with no resource_type given' do
+      let(:resource_type) { nil }
+
+      it_behaves_like 'a kubectl command to delete resources by older than given creation time'
+    end
+
+    context 'with multiple resource_type given' do
+      let(:resource_type) { 'pvc,service' }
+
+      it_behaves_like 'a kubectl command to delete resources by older than given creation time'
     end
   end
 
@@ -106,6 +133,61 @@ RSpec.describe Tooling::KubernetesClient do
         .and_return(Gitlab::Popen::Result.new([], raw_resource_names_str, '', double(success?: true)))
 
       expect(subject.__send__(:raw_resource_names)).to eq(raw_resource_names)
+    end
+  end
+
+  describe '#resource_names_created_before' do
+    let(:three_days_ago) { Time.now - 3600 * 24 * 3 }
+    let(:two_days_ago) { Time.now - 3600 * 24 * 2 }
+    let(:pvc_created_three_days_ago) { 'pvc-created-three-days-ago' }
+    let(:resource_type) { 'pvc' }
+    let(:raw_resources) do
+      {
+        items: [
+          {
+            apiVersion: "v1",
+            kind: "PersistentVolumeClaim",
+            metadata: {
+                creationTimestamp: three_days_ago,
+                name: pvc_created_three_days_ago
+            }
+          },
+          {
+            apiVersion: "v1",
+            kind: "PersistentVolumeClaim",
+            metadata: {
+                creationTimestamp: Time.now,
+                name: 'another-pvc'
+            }
+          }
+        ]
+      }.to_json
+    end
+
+    shared_examples 'a kubectl command to retrieve resource names sorted by creationTimestamp' do
+      specify do
+        expect(Gitlab::Popen).to receive(:popen_with_detail)
+          .with(["kubectl get #{resource_type} ".squeeze(' ') +
+            %(--namespace "#{namespace}" ) +
+            "--sort-by='{.metadata.creationTimestamp}' -o json"])
+          .and_return(Gitlab::Popen::Result.new([], raw_resources, '', double(success?: true)))
+
+        expect(subject.__send__(:resource_names_created_before, resource_type: resource_type, created_before: two_days_ago)).to contain_exactly(pvc_created_three_days_ago)
+      end
+    end
+
+    it_behaves_like 'a kubectl command to retrieve resource names sorted by creationTimestamp'
+
+    context 'with no resource_type given' do
+      let(:resource_type) { nil }
+
+      it_behaves_like 'a kubectl command to retrieve resource names sorted by creationTimestamp'
+    end
+
+    context 'with multiple resource_type given' do
+      let(:resource_type) { 'pvc,service' }
+
+      it_behaves_like 'a kubectl command to retrieve resource names sorted by creationTimestamp'
     end
   end
 end

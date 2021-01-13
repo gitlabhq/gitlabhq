@@ -37,7 +37,6 @@ export default {
     openedAgoJira: __('opened %{timeAgoString} by %{user} in Jira'),
     openedAgoServiceDesk: __('opened %{timeAgoString} by %{email} via %{user}'),
   },
-  inject: ['scopedLabelsAvailable'],
   components: {
     IssueAssignees,
     GlLink,
@@ -51,6 +50,7 @@ export default {
     GlTooltip,
     SafeHtml,
   },
+  inject: ['scopedLabelsAvailable'],
   props: {
     issuable: {
       type: Object,

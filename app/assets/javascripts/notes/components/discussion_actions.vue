@@ -2,7 +2,6 @@
 import ReplyPlaceholder from './discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from './discussion_resolve_button.vue';
 import ResolveWithIssueButton from './discussion_resolve_with_issue_button.vue';
-import JumpToNextDiscussionButton from './discussion_jump_to_next_button.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
@@ -11,7 +10,6 @@ export default {
     ReplyPlaceholder,
     ResolveDiscussionButton,
     ResolveWithIssueButton,
-    JumpToNextDiscussionButton,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -38,9 +36,6 @@ export default {
     },
   },
   computed: {
-    hideJumpToNextUnresolvedInThreads() {
-      return this.glFeatures.hideJumpToNextUnresolvedInThreads;
-    },
     resolvableNotes() {
       return this.discussion.notes.filter((x) => x.resolvable);
     },
@@ -73,16 +68,6 @@ export default {
         v-if="discussion.resolvable && resolveWithIssuePath"
         :url="resolveWithIssuePath"
       />
-    </div>
-    <div
-      v-if="
-        !hideJumpToNextUnresolvedInThreads &&
-        discussion.resolvable &&
-        shouldShowJumpToNextDiscussion
-      "
-      class="btn-group discussion-actions ml-sm-2"
-    >
-      <jump-to-next-discussion-button :from-discussion-id="discussion.id" />
     </div>
   </div>
 </template>

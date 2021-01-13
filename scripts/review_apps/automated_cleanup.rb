@@ -115,6 +115,10 @@ class AutomatedCleanup
     delete_helm_releases(releases_to_delete)
   end
 
+  def perform_stale_pvc_cleanup!(days:)
+    kubernetes.cleanup_by_created_at(resource_type: 'pvc', created_before: threshold_time(days: days), wait: false)
+  end
+
   private
 
   def fetch_environment(environment)
@@ -155,7 +159,7 @@ class AutomatedCleanup
 
     releases_names = releases.map(&:name)
     helm.delete(release_name: releases_names)
-    kubernetes.cleanup(release_name: releases_names, wait: false)
+    kubernetes.cleanup_by_release(release_name: releases_names, wait: false)
 
   rescue Tooling::Helm3Client::CommandFailedError => ex
     raise ex unless ignore_exception?(ex.message, IGNORED_HELM_ERRORS)
@@ -196,6 +200,10 @@ puts
 
 timed('Helm releases cleanup') do
   automated_cleanup.perform_helm_releases_cleanup!(days: 7)
+end
+
+timed('Stale PVC cleanup') do
+  automated_cleanup.perform_stale_pvc_cleanup!(days: 30)
 end
 
 exit(0)

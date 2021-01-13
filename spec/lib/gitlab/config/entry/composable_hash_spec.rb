@@ -92,7 +92,7 @@ RSpec.describe Gitlab::Config::Entry::ComposableHash, :aggregate_failures do
     end
 
     let(:entry) do
-      parent_entry = composable_hash_parent_class.new(secrets: config)
+      parent_entry = composable_hash_parent_class.new({ secrets: config })
       parent_entry.compose!
 
       parent_entry[:secrets]

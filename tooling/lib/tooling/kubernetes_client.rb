@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
+require 'json'
+require 'time'
 require_relative '../../../lib/gitlab/popen' unless defined?(Gitlab::Popen)
-require_relative '../../../lib/gitlab/json' unless defined?(Gitlab::JSON)
 
 module Tooling
   class KubernetesClient
@@ -14,9 +15,14 @@ module Tooling
       @namespace = namespace
     end
 
-    def cleanup(release_name:, wait: true)
+    def cleanup_by_release(release_name:, wait: true)
       delete_by_selector(release_name: release_name, wait: wait)
       delete_by_matching_name(release_name: release_name)
+    end
+
+    def cleanup_by_created_at(resource_type:, created_before:, wait: true)
+      resource_names = resource_names_created_before(resource_type: resource_type, created_before: created_before)
+      delete_by_exact_names(resource_type: resource_type, resource_names: resource_names, wait: wait)
     end
 
     private
@@ -40,6 +46,21 @@ module Tooling
         '--include-uninitialized',
         %(--wait=#{wait}),
         selector
+      ]
+
+      run_command(command)
+    end
+
+    def delete_by_exact_names(resource_names:, wait:, resource_type: nil)
+      command = [
+        'delete',
+        resource_type,
+        %(--namespace "#{namespace}"),
+        '--now',
+        '--ignore-not-found',
+        '--include-uninitialized',
+        %(--wait=#{wait}),
+        resource_names.join(' ')
       ]
 
       run_command(command)
@@ -70,8 +91,26 @@ module Tooling
       run_command(command).lines.map(&:strip)
     end
 
+    def resource_names_created_before(resource_type:, created_before:)
+      command = [
+        'get',
+        resource_type,
+        %(--namespace "#{namespace}"),
+        "--sort-by='{.metadata.creationTimestamp}'",
+        '-o json'
+      ]
+
+      response = run_command(command)
+      JSON.parse(response)['items'] # rubocop:disable Gitlab/Json
+        .map { |resource| resource.dig('metadata', 'name') if Time.parse(resource.dig('metadata', 'creationTimestamp')) < created_before }
+        .compact
+    rescue ::JSON::ParserError => ex
+      puts "Ignoring this JSON parsing error: #{ex}\n\nResponse was:\n#{response}" # rubocop:disable Rails/Output
+      []
+    end
+
     def run_command(command)
-      final_command = ['kubectl', *command].join(' ')
+      final_command = ['kubectl', *command.compact].join(' ')
       puts "Running command: `#{final_command}`" # rubocop:disable Rails/Output
 
       result = Gitlab::Popen.popen_with_detail([final_command])

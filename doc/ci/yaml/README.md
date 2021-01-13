@@ -3058,8 +3058,6 @@ larger than the [maximum artifact size](../../user/gitlab_com/index.md#gitlab-ci
 Job artifacts are only collected for successful jobs by default, and
 artifacts are restored after [caches](#cache).
 
-[Not all executors can use caches](https://docs.gitlab.com/runner/executors/#compatibility-chart).
-
 [Read more about artifacts](../pipelines/job_artifacts.md).
 
 #### `artifacts:paths`

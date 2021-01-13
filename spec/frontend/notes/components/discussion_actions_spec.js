@@ -4,7 +4,6 @@ import DiscussionActions from '~/notes/components/discussion_actions.vue';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
 import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
-import JumpToNextDiscussionButton from '~/notes/components/discussion_jump_to_next_button.vue';
 import createStore from '~/notes/stores';
 
 // NOTE: clone mock_data so that it is not accidentally mutated
@@ -21,7 +20,7 @@ const createUnallowedNote = () =>
 
 describe('DiscussionActions', () => {
   let wrapper;
-  const createComponentFactory = (shallow = true) => (props, options) => {
+  const createComponentFactory = (shallow = true) => (props) => {
     const store = createStore();
     const mountFn = shallow ? shallowMount : mount;
 
@@ -34,11 +33,6 @@ describe('DiscussionActions', () => {
         resolveWithIssuePath: '/some/issue/path',
         shouldShowJumpToNextDiscussion: true,
         ...props,
-      },
-      provide: {
-        glFeatures: {
-          hideJumpToNextUnresolvedInThreads: options?.hideJumpToNextUnresolvedInThreads,
-        },
       },
     });
   };
@@ -55,7 +49,6 @@ describe('DiscussionActions', () => {
       expect(wrapper.find(ReplyPlaceholder).exists()).toBe(true);
       expect(wrapper.find(ResolveDiscussionButton).exists()).toBe(true);
       expect(wrapper.find(ResolveWithIssueButton).exists()).toBe(true);
-      expect(wrapper.find(JumpToNextDiscussionButton).exists()).toBe(true);
     });
 
     it('only renders reply placholder if disccusion is not resolvable', () => {
@@ -66,19 +59,12 @@ describe('DiscussionActions', () => {
       expect(wrapper.find(ReplyPlaceholder).exists()).toBe(true);
       expect(wrapper.find(ResolveDiscussionButton).exists()).toBe(false);
       expect(wrapper.find(ResolveWithIssueButton).exists()).toBe(false);
-      expect(wrapper.find(JumpToNextDiscussionButton).exists()).toBe(false);
     });
 
     it('does not render resolve with issue button if resolveWithIssuePath is falsy', () => {
       createComponent({ resolveWithIssuePath: '' });
 
       expect(wrapper.find(ResolveWithIssueButton).exists()).toBe(false);
-    });
-
-    it('does not render jump to next discussion button if shouldShowJumpToNextDiscussion is false', () => {
-      createComponent({ shouldShowJumpToNextDiscussion: false });
-
-      expect(wrapper.find(JumpToNextDiscussionButton).exists()).toBe(false);
     });
 
     describe.each`
@@ -99,13 +85,6 @@ describe('DiscussionActions', () => {
         expect(wrapper.find(ResolveWithIssueButton).exists()).toBe(shouldRender);
       });
     });
-  });
-
-  it('does not render jump to next discussion button if feature flag is enabled', () => {
-    const createComponent = createComponentFactory();
-    createComponent({}, { hideJumpToNextUnresolvedInThreads: true });
-
-    expect(wrapper.find(JumpToNextDiscussionButton).exists()).toBe(false);
   });
 
   describe('events handling', () => {
