@@ -1,19 +1,45 @@
+before_script:
+  - bundle install
+  - bundle exec rake db:create
+
 rspec 0 1:
   stage: build
   script: 'rake spec'
   needs: []
+  tags:
+    - ruby
+    - postgres
+  only:
+    - branches
+    - master
 
 rspec 0 2:
   stage: build
+  allow_failure: true
   script: 'rake spec'
+  when: on_failure
   needs: []
 
 spinach:
   stage: build
   script: 'rake spinach'
   needs: []
+  except:
+    - tags
 
+deploy_job:
+  stage: deploy
+  script:
+    - echo 'done'
+  environment:
+        name: production
 docker:
   stage: test
   script: 'curl http://dockerhub/URL'
   needs: [spinach, rspec 0 1]
+  when: manual
+  except:
+    - branches
+
+after_script:
+  - echo 'run this after'

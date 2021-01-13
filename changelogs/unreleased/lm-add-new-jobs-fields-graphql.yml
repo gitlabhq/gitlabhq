@@ -1,0 +1,5 @@
+---
+title: Updates graphql gitlab-ci.yml linter implementation
+merge_request: 50664
+author:
+type: changed

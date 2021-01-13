@@ -17,18 +17,34 @@ module Atlassian
         dev_info = args.slice(:commits, :branches, :merge_requests)
         build_info = args.slice(:pipelines)
         deploy_info = args.slice(:deployments)
+        ff_info = args.slice(:feature_flags)
 
         responses = []
 
         responses << store_dev_info(**common, **dev_info) if dev_info.present?
         responses << store_build_info(**common, **build_info) if build_info.present?
         responses << store_deploy_info(**common, **deploy_info) if deploy_info.present?
+        responses << store_ff_info(**common, **ff_info) if ff_info.present?
         raise ArgumentError, 'Invalid arguments' if responses.empty?
 
         responses.compact
       end
 
       private
+
+      def store_ff_info(project:, feature_flags:, **opts)
+        return unless Feature.enabled?(:jira_sync_feature_flags, project)
+
+        items = feature_flags.map { |flag| Serializers::FeatureFlagEntity.represent(flag, opts) }
+        items.reject! { |item| item.issue_keys.empty? }
+
+        return if items.empty?
+
+        post('/rest/featureflags/0.1/bulk', {
+          flags: items,
+          properties: { projectId: "project-#{project.id}" }
+        })
+      end
 
       def store_deploy_info(project:, deployments:, **opts)
         return unless Feature.enabled?(:jira_sync_deployments, project)

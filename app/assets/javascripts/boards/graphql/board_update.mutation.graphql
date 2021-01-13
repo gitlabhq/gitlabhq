@@ -2,8 +2,8 @@ mutation UpdateBoard($input: UpdateBoardInput!) {
   updateBoard(input: $input) {
     board {
       id
-      hideClosedList
-      hideBacklogList
+      webPath
     }
+    errors
   }
 }

@@ -12,6 +12,7 @@ RSpec.describe 'Project members list' do
   let(:project) { create(:project, namespace: group) }
 
   before do
+    stub_feature_flags(invite_members_group_modal: false)
     sign_in(user1)
     group.add_owner(user1)
   end

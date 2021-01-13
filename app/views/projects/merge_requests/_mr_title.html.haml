@@ -3,8 +3,6 @@
 - can_reopen_merge_request = can?(current_user, :reopen_merge_request, @merge_request)
 - state_human_name, state_icon_name = state_name_with_icon(@merge_request)
 - are_close_and_open_buttons_hidden = merge_request_button_hidden?(@merge_request, true) && merge_request_button_hidden?(@merge_request, false)
-- is_reverted = @merge_request.reverted_by_merge_request?(current_user)
-- reverted_mr_path = is_reverted ? merge_request_path(@merge_request.reverting_merge_request(current_user)) : nil
 
 - if @merge_request.closed_or_merged_without_fork?
   .gl-alert.gl-alert-danger.gl-mb-5
@@ -14,13 +12,10 @@
 
 .detail-page-header.border-bottom-0.pt-0.pb-0
   .detail-page-header-body
-    .issuable-status-box.status-box.js-mr-status-box{ class: status_box_class(@merge_request), data: { state: @merge_request.state, is_reverted: is_reverted.to_s, reverted_path: reverted_mr_path } }
+    .issuable-status-box.status-box.js-mr-status-box{ class: status_box_class(@merge_request), data: { state: @merge_request.state } }
       = sprite_icon(state_icon_name, css_class: 'gl-display-block gl-display-sm-none!')
       %span.gl-display-none.gl-display-sm-block
-        - if @merge_request.reverted_by_merge_request?(current_user)
-          = _('Merged (%{reverted})').html_safe % { reverted: link_to(s_('MergeRequest|reverted'), reverted_mr_path, class: 'gl-reset-color! gl-text-decoration-underline') }
-        - else
-          = state_human_name
+        = state_human_name
 
     .issuable-meta
       #js-issuable-header-warnings

@@ -99,7 +99,8 @@ module Gitlab
               except: job[:except],
               environment: job[:environment],
               when: job[:when],
-              allow_failure: job[:allow_failure]
+              allow_failure: job[:allow_failure],
+              needs: job.dig(:needs_attributes)
             }
           end
         end

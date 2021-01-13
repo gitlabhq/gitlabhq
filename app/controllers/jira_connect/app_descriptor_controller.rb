@@ -66,6 +66,7 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
 
     modules.merge!(build_information_module)
     modules.merge!(deployment_information_module)
+    modules.merge!(feature_flag_module)
 
     modules
   end
@@ -81,6 +82,19 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
         actions: {}, # TODO: list deployments
         name: { value: "GitLab Deployments" },
         key: "gitlab-deployments"
+      )
+    }
+  end
+
+  # see: https://developer.atlassian.com/cloud/jira/software/modules/feature-flag/
+  def feature_flag_module
+    {
+      jiraFeatureFlagInfoProvider: common_module_properties.merge(
+        actions: {}, # TODO: create, link and list feature flags https://gitlab.com/gitlab-org/gitlab/-/issues/297386
+        name: {
+          value: 'GitLab Feature Flags'
+        },
+        key: 'gitlab-feature-flags'
       )
     }
   end

@@ -428,10 +428,6 @@ class Commit
   end
 
   def has_been_reverted?(current_user, notes_association = nil)
-    reverting_commit(current_user, notes_association).present?
-  end
-
-  def reverting_commit(current_user, notes_association = nil)
     ext = Gitlab::ReferenceExtractor.new(project, current_user)
     notes_association ||= notes_with_associations
 
@@ -439,7 +435,7 @@ class Commit
       note.all_references(current_user, extractor: ext)
     end
 
-    ext.commits.find { |commit_ref| commit_ref.reverts_commit?(self, current_user) }
+    ext.commits.any? { |commit_ref| commit_ref.reverts_commit?(self, current_user) }
   end
 
   def change_type_title(user)

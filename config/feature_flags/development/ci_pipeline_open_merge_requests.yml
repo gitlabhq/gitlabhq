@@ -5,4 +5,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/292727
 milestone: '13.7'
 group: group::memory
 type: development
-default_enabled: false
+default_enabled: true

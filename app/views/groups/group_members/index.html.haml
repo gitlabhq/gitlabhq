@@ -6,20 +6,28 @@
 
 .js-remove-member-modal
 .project-members-page.gl-mt-3
-  %h4
-    = _('Group members')
-  %hr
-  - if can_manage_members
-    %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
-      %li.nav-tab{ role: 'presentation' }
-        %a.nav-link.active{ href: '#invite-member-pane', id: 'invite-member-tab', data: { toggle: 'tab' }, role: 'tab' }= _('Invite member')
+  .gl-display-flex.gl-flex-wrap
+    - if can_manage_members
+      .gl-w-half.gl-xs-w-full
+        %h4
+          = _('Group members')
+      - if invite_members_allowed?(@group)
+        .gl-w-half.gl-xs-w-full
+          .gl-display-flex.gl-flex-wrap.gl-lg-justify-content-end.gl-mx-n2.gl-mb-3
+            .js-invite-members-trigger.gl-px-2.gl-sm-w-auto.gl-w-full.gl-mb-4{ data: { classes: 'btn btn-success gl-button gl-mt-3 gl-sm-w-auto gl-w-full', display_text: _('Invite members') } }
+        = render_if_exists 'groups/invite_members_modal', group: @group
+  - if can_manage_members && !invite_members_allowed?(@group)
+    %hr.gl-mt-4
+      %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
         %li.nav-tab{ role: 'presentation' }
-          %a.nav-link{ href: '#invite-group-pane', id: 'invite-group-tab', data: { toggle: 'tab', qa_selector: 'invite_group_tab' }, role: 'tab' }= _('Invite group')
-    .tab-content.gitlab-tab-content
-      .tab-pane.active{ id: 'invite-member-pane', role: 'tabpanel' }
-        = render_invite_member_for_group(@group, @group_member.access_level)
-      .tab-pane{ id: 'invite-group-pane', role: 'tabpanel' }
-        = render 'shared/members/invite_group', submit_url: group_group_links_path(@group), access_levels: GroupMember.access_level_roles, default_access_level: @group_member.access_level, group_link_field: 'shared_with_group_id', group_access_field: 'shared_group_access'
+          %a.nav-link.active{ href: '#invite-member-pane', id: 'invite-member-tab', data: { toggle: 'tab' }, role: 'tab' }= _('Invite member')
+          %li.nav-tab{ role: 'presentation' }
+            %a.nav-link{ href: '#invite-group-pane', id: 'invite-group-tab', data: { toggle: 'tab', qa_selector: 'invite_group_tab' }, role: 'tab' }= _('Invite group')
+      .tab-content.gitlab-tab-content
+        .tab-pane.active{ id: 'invite-member-pane', role: 'tabpanel' }
+          = render_invite_member_for_group(@group, @group_member.access_level)
+        .tab-pane{ id: 'invite-group-pane', role: 'tabpanel' }
+          = render 'shared/members/invite_group', submit_url: group_group_links_path(@group), access_levels: GroupMember.access_level_roles, default_access_level: @group_member.access_level, group_link_field: 'shared_with_group_id', group_access_field: 'shared_group_access'
 
   = render_if_exists 'groups/group_members/ldap_sync'
 

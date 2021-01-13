@@ -128,6 +128,62 @@ console.
 
 As a follow up to finding `N+1` queries with Bullet, consider writing a [QueryRecoder test](query_recorder.md) to prevent a regression.
 
+## System stats
+
+During or after profiling, you may want to get detailed information about the Ruby virtual machine process,
+such as memory consumption, time spent on CPU, or garbage collector statistics. These are easy to produce individually
+through various tools, but for convenience, a summary endpoint has been added that exports this data as a JSON payload:
+
+```shell
+curl localhost:3000/-/metrics/system | jq
+```
+
+Example output:
+
+```json
+{
+  "version": "ruby 2.7.2p137 (2020-10-01 revision a8323b79eb) [x86_64-linux-gnu]",
+  "gc_stat": {
+    "count": 118,
+    "heap_allocated_pages": 11503,
+    "heap_sorted_length": 11503,
+    "heap_allocatable_pages": 0,
+    "heap_available_slots": 4688580,
+    "heap_live_slots": 3451712,
+    "heap_free_slots": 1236868,
+    "heap_final_slots": 0,
+    "heap_marked_slots": 3451450,
+    "heap_eden_pages": 11503,
+    "heap_tomb_pages": 0,
+    "total_allocated_pages": 11503,
+    "total_freed_pages": 0,
+    "total_allocated_objects": 32679478,
+    "total_freed_objects": 29227766,
+    "malloc_increase_bytes": 84760,
+    "malloc_increase_bytes_limit": 32883343,
+    "minor_gc_count": 88,
+    "major_gc_count": 30,
+    "compact_count": 0,
+    "remembered_wb_unprotected_objects": 114228,
+    "remembered_wb_unprotected_objects_limit": 228456,
+    "old_objects": 3185330,
+    "old_objects_limit": 6370660,
+    "oldmalloc_increase_bytes": 21838024,
+    "oldmalloc_increase_bytes_limit": 119181499
+  },
+  "memory_rss": 1326501888,
+  "memory_uss": 1048563712,
+  "memory_pss": 1139554304,
+  "time_cputime": 82.885264633,
+  "time_realtime": 1610459445.5579069,
+  "time_monotonic": 24001.23145713,
+  "worker_id": "puma_0"
+}
+```
+
+NOTE:
+This endpoint is only available for Rails web workers. Sidekiq workers can not be inspected this way.
+
 ## Settings that impact performance
 
 ### Application settings

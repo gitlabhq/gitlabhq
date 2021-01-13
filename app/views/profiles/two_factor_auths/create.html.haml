@@ -1,8 +1,4 @@
 - page_title _('Two-factor Authentication'), _('Account')
 - add_page_specific_style 'page_bundles/profile_two_factor_auth'
 
-- unless Feature.enabled?(:vue_2fa_recovery_codes, current_user, default_enabled: true)
-  .gl-alert.gl-alert-success.gl-mb-5
-    = _('Congratulations! You have enabled Two-factor Authentication!')
-
 = render 'codes', show_success_alert: true

@@ -4,6 +4,8 @@ import UsersSelect from '~/users_select';
 import groupsSelect from '~/groups_select';
 import RemoveMemberModal from '~/vue_shared/components/remove_member_modal.vue';
 import { initGroupMembersApp } from '~/groups/members';
+import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
+import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
 import { memberRequestFormatter, groupLinkRequestFormatter } from '~/groups/members/utils';
 import { s__ } from '~/locale';
 
@@ -64,5 +66,7 @@ groupsSelect();
 memberExpirationDate();
 memberExpirationDate('.js-access-expiration-date-groups');
 mountRemoveMemberModal();
+initInviteMembersModal();
+initInviteMembersTrigger();
 
 new UsersSelect(); // eslint-disable-line no-new

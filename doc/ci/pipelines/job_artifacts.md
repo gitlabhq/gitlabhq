@@ -464,6 +464,23 @@ To retrieve a job artifact from a different project, you might need to use a
 private token to [authenticate and download](../../api/job_artifacts.md#get-job-artifacts)
 the artifact.
 
+## Keep artifacts from most recent successful jobs
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16267) in GitLab 13.0.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/229936) in GitLab 13.4.
+> - [Made optional with a CI/CD setting](https://gitlab.com/gitlab-org/gitlab/-/issues/241026) in GitLab 13.8.
+
+By default, the latest artifacts from the most recent successful jobs are never deleted.
+If a job is configured with [`expire_in`](../yaml/README.md#artifactsexpire_in),
+its artifacts only expire if a more recent artifact exists.
+
+Keeping the latest artifacts can use a large amount of storage space in projects
+with a lot of jobs or large artifacts. If the latest artifacts are not needed in
+a project, you can disable this behavior to save space:
+
+1. Navigate to **Settings > CI/CD > Artifacts**.
+1. Uncheck **Keep artifacts from most recent successful jobs**.
+
 ## Troubleshooting
 
 ### Error message `No files to upload`

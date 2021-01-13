@@ -2,8 +2,9 @@
 import { GlModal } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { deprecatedCreateFlash as Flash } from '~/flash';
-import { visitUrl, stripFinalUrlSegment } from '~/lib/utils/url_utility';
-import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
+import { visitUrl } from '~/lib/utils/url_utility';
+import { getParameterByName } from '~/lib/utils/common_utils';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import boardsStore from '~/boards/stores/boards_store';
 import { fullLabelId, fullBoardId } from '../boards_util';
 
@@ -216,9 +217,15 @@ export default {
         variables: { input: this.mutationVariables },
       });
 
-      return this.board.id
-        ? getIdFromGraphQLId(response.data.updateBoard.board.id)
-        : getIdFromGraphQLId(response.data.createBoard.board.id);
+      if (!this.board.id) {
+        return response.data.createBoard.board.webPath;
+      }
+
+      const path = response.data.updateBoard.board.webPath;
+      const param = getParameterByName('group_by')
+        ? `?group_by=${getParameterByName('group_by')}`
+        : '';
+      return `${path}${param}`;
     },
     async submit() {
       if (this.board.name.length === 0) return;
@@ -239,9 +246,7 @@ export default {
         }
       } else {
         try {
-          const path = await this.createOrUpdateBoard();
-          const strippedUrl = stripFinalUrlSegment(window.location.href);
-          const url = strippedUrl.includes('boards') ? `${path}` : `boards/${path}`;
+          const url = await this.createOrUpdateBoard();
           visitUrl(url);
         } catch {
           Flash(this.$options.i18n.saveErrorMessage);

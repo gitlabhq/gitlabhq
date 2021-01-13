@@ -35,7 +35,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:approvals_commented_by, @project, default_enabled: true)
     push_frontend_feature_flag(:hide_jump_to_next_unresolved_in_threads, default_enabled: true)
     push_frontend_feature_flag(:merge_request_widget_graphql, @project)
-    push_frontend_feature_flag(:unified_diff_components, @project)
+    push_frontend_feature_flag(:unified_diff_components, @project, default_enabled: true)
     push_frontend_feature_flag(:default_merge_ref_for_diffs, @project)
     push_frontend_feature_flag(:core_security_mr_widget, @project, default_enabled: true)
     push_frontend_feature_flag(:core_security_mr_widget_counts, @project)

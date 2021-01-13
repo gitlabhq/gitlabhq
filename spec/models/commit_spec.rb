@@ -750,27 +750,6 @@ eos
     end
   end
 
-  describe '#reverting_commit' do
-    let(:user) { create(:user) }
-    let(:issue) { create(:issue, author: user, project: project) }
-
-    it 'returns the reverting commit' do
-      create(:note_on_issue,
-             noteable: issue,
-             system: true,
-             note: commit.revert_description(user),
-             project: issue.project)
-
-      expect_next_instance_of(Commit) do |revert_commit|
-        expect(revert_commit).to receive(:reverts_commit?)
-          .with(commit, user)
-          .and_return(true)
-      end
-
-      expect(commit.reverting_commit(user, issue.notes_with_associations)).to eq(commit)
-    end
-  end
-
   describe '#has_been_reverted?' do
     let(:user) { create(:user) }
     let(:issue) { create(:issue, author: user, project: project) }

@@ -111,6 +111,7 @@ RSpec.describe 'Projects members', :js do
 
   context 'with a group requester' do
     before do
+      stub_feature_flags(invite_members_group_modal: false)
       group.request_access(group_requester)
       visit project_project_members_path(project)
     end

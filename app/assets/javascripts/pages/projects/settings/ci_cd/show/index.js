@@ -5,6 +5,7 @@ import initVariableList from '~/ci_variable_list';
 import initDeployFreeze from '~/deploy_freeze';
 import initSettingsPipelinesTriggers from '~/ci_settings_pipeline_triggers';
 import initSharedRunnersToggle from '~/projects/settings/mount_shared_runners_toggle';
+import initArtifactsSettings from '~/artifacts_settings';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize expandable settings panels
@@ -33,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initDeployFreeze();
 
   initSettingsPipelinesTriggers();
+  initArtifactsSettings();
 
   if (gon?.features?.vueifySharedRunnersToggle) {
     initSharedRunnersToggle();

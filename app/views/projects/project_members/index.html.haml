@@ -4,16 +4,34 @@
 .js-remove-member-modal
 .row.gl-mt-3
   .col-lg-12
-    - if project_can_be_shared?
-      %h4
-        = _("Project members")
-      - if can_manage_project_members?(@project)
-        %p= share_project_description(@project)
-      - else
-        %p
-          = html_escape(_("Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % { i_open: '<i>'.html_safe, i_close: '</i>'.html_safe }
+    - if invite_members_allowed?(group)
+      .row
+        .col-md-12.col-lg-6.gl-display-flex
+          .gl-flex-direction-column.gl-flex-wrap.align-items-baseline
+            %h4
+              = _("Project members")
+            .gl-justify-content-bottom.gl-display-flex.align-items-center
+              - if can_manage_project_members?(@project)
+                %p= share_project_description(@project)
+              - else
+                %p
+                  = html_escape(_("Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % { i_open: '<i>'.html_safe, i_close: '</i>'.html_safe }
+        .col-md-12.col-lg-6
+          .gl-display-flex.gl-flex-wrap.gl-lg-justify-content-end.gl-mx-n2.gl-mb-3
+            .js-invite-members-trigger.gl-px-2.gl-sm-w-auto.gl-w-full.gl-mb-4{ data: { classes: 'btn btn-success gl-button gl-mt-3 gl-sm-w-auto gl-w-full', display_text: _('Invite members') } }
+        = render_if_exists 'projects/invite_members_modal', project: @project
 
-    - if can_manage_project_members?(@project) && project_can_be_shared?
+    - else
+      - if project_can_be_shared?
+        %h4
+          = _("Project members")
+        - if can_manage_project_members?(@project)
+          %p= share_project_description(@project)
+        - else
+          %p
+            = html_escape(_("Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % { i_open: '<i>'.html_safe, i_close: '</i>'.html_safe }
+
+    - if !invite_members_allowed?(group) && can_manage_project_members?(@project) && project_can_be_shared?
       - if !membership_locked? && @project.allowed_to_share_with_group?
         %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
           %li.nav-tab{ role: 'presentation' }

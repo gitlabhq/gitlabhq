@@ -40,12 +40,11 @@
 
     .issuable-meta
       %ul.controls.d-flex.align-items-end
-        %li.issuable-status.d-none.d-sm-inline-block
-          - if merge_request.reverted_by_merge_request?(current_user)
-            = _('MERGED (REVERTED)')
-          - elsif merge_request.merged?
+        - if merge_request.merged?
+          %li.issuable-status.d-none.d-sm-inline-block
             = _('MERGED')
-          - elsif merge_request.closed?
+        - elsif merge_request.closed?
+          %li.issuable-status.d-none.d-sm-inline-block
             = sprite_icon('cancel', css_class: 'gl-vertical-align-text-bottom')
             = _('CLOSED')
         = render 'shared/merge_request_pipeline_status', merge_request: merge_request

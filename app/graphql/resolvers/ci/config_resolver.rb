@@ -18,38 +18,49 @@ module Resolvers
                required: true,
                description: "Contents of '.gitlab-ci.yml'."
 
-      def resolve(project_path:, content:)
+      argument :dry_run, GraphQL::BOOLEAN_TYPE,
+               required: false,
+               description: 'Run pipeline creation simulation, or only do static check.'
+
+      def resolve(project_path:, content:, dry_run: false)
         project = authorized_find!(project_path: project_path)
 
-        result = ::Gitlab::Ci::YamlProcessor.new(content, project: project,
-                                                          user:    current_user,
-                                                          sha:     project.repository.commit.sha).execute
+        result = ::Gitlab::Ci::Lint
+          .new(project: project, current_user: context[:current_user])
+          .validate(content, dry_run: dry_run)
 
-        response = if result.errors.empty?
-                     {
-                       status: :valid,
-                       errors: [],
-                       stages: make_stages(result.jobs)
-                     }
-                   else
-                     {
-                       status: :invalid,
-                       errors: result.errors
-                     }
-                   end
-
-        response.merge(merged_yaml: result.merged_yaml)
+        if result.errors.empty?
+          {
+            status: :valid,
+            errors: [],
+            stages: make_stages(result.jobs)
+          }
+        else
+          {
+            status: :invalid,
+            errors: result.errors
+          }
+        end
       end
 
       private
 
       def make_jobs(config_jobs)
-        config_jobs.map do |job_name, job|
+        config_jobs.map do |job|
           {
-            name: job_name,
+            name: job[:name],
             stage: job[:stage],
-            group_name: CommitStatus.new(name: job_name).group_name,
-            needs: job.dig(:needs, :job) || []
+            group_name: CommitStatus.new(name: job[:name]).group_name,
+            needs: job.dig(:needs) || [],
+            allow_failure: job[:allow_failure],
+            before_script: job[:before_script],
+            script: job[:script],
+            after_script: job[:after_script],
+            only: job[:only],
+            except: job[:except],
+            when: job[:when],
+            tags: job[:tag_list],
+            environment: job[:environment]
           }
         end
       end

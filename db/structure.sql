@@ -21993,6 +21993,8 @@ CREATE UNIQUE INDEX index_labels_on_group_id_and_project_id_and_title ON labels 
 
 CREATE UNIQUE INDEX index_labels_on_group_id_and_title_unique ON labels USING btree (group_id, title) WHERE (project_id IS NULL);
 
+CREATE INDEX index_labels_on_group_id_and_title_with_null_project_id ON labels USING btree (group_id, title) WHERE (project_id IS NULL);
+
 CREATE INDEX index_labels_on_project_id ON labels USING btree (project_id);
 
 CREATE UNIQUE INDEX index_labels_on_project_id_and_title_unique ON labels USING btree (project_id, title) WHERE (group_id IS NULL);

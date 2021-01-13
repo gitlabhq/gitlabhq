@@ -18,9 +18,19 @@ class MetricsController < ActionController::Base
     render plain: response, content_type: 'text/plain; version=0.0.4'
   end
 
+  def system
+    render json: system_metrics
+  end
+
   private
 
   def metrics_service
     @metrics_service ||= MetricsService.new
+  end
+
+  def system_metrics
+    Gitlab::Metrics::System.summary.merge(
+      worker_id: Prometheus::PidProvider.worker_id
+    )
   end
 end

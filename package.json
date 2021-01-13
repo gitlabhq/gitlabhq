@@ -163,7 +163,7 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.10.1",
-    "@gitlab/eslint-plugin": "^6.0.0",
+    "@gitlab/eslint-plugin": "6.0.0",
     "@testing-library/dom": "^7.16.2",
     "@vue/test-utils": "1.1.2",
     "acorn": "^6.3.0",

@@ -45,6 +45,17 @@
   .settings-content
     = render 'projects/runners/index'
 
+%section.settings.no-animate#js-artifacts-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _("Artifacts")
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _("A job artifact is an archive of files and directories saved by a job when it finishes.")
+  .settings-content
+    #js-artifacts-settings-app{ data: { full_path: @project.full_path, help_page_path: help_page_path('ci/pipelines/job_artifacts', anchor: 'keep-artifacts-from-most-recent-successful-jobs') } }
+
 %section.qa-variables-settings.settings.no-animate#js-cicd-variables-settings{ class: ('expanded' if expanded), data: { qa_selector: 'variables_settings_content' } }
   .settings-header
     = render 'ci/variables/header', expanded: expanded

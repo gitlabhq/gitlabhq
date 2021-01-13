@@ -159,7 +159,7 @@ describe('BoardForm', () => {
       beforeEach(() => {
         mutate = jest.fn().mockResolvedValue({
           data: {
-            createBoard: { board: { id: 'gid://gitlab/Board/123' } },
+            createBoard: { board: { id: 'gid://gitlab/Board/123', webPath: 'test-path' } },
           },
         });
       });
@@ -174,7 +174,6 @@ describe('BoardForm', () => {
       });
 
       it('calls a correct GraphQL mutation and redirects to correct page from existing board', async () => {
-        window.location = new URL('https://test/boards/1');
         createComponent({ canAdminBoard: true });
         fillForm();
 
@@ -190,27 +189,7 @@ describe('BoardForm', () => {
         });
 
         await waitForPromises();
-        expect(visitUrl).toHaveBeenCalledWith('123');
-      });
-
-      it('calls a correct GraphQL mutation and redirects to correct page from boards list', async () => {
-        window.location = new URL('https://test/boards');
-        createComponent({ canAdminBoard: true });
-        fillForm();
-
-        await waitForPromises();
-
-        expect(mutate).toHaveBeenCalledWith({
-          mutation: createBoardMutation,
-          variables: {
-            input: expect.objectContaining({
-              name: 'test',
-            }),
-          },
-        });
-
-        await waitForPromises();
-        expect(visitUrl).toHaveBeenCalledWith('boards/123');
+        expect(visitUrl).toHaveBeenCalledWith('test-path');
       });
 
       it('shows an error flash if GraphQL mutation fails', async () => {
@@ -261,10 +240,10 @@ describe('BoardForm', () => {
       });
     });
 
-    it('calls GraphQL mutation with correct parameters', async () => {
+    it('calls GraphQL mutation with correct parameters when issues are not grouped', async () => {
       mutate = jest.fn().mockResolvedValue({
         data: {
-          updateBoard: { board: { id: 'gid://gitlab/Board/321' } },
+          updateBoard: { board: { id: 'gid://gitlab/Board/321', webPath: 'test-path' } },
         },
       });
       window.location = new URL('https://test/boards/1');
@@ -284,7 +263,33 @@ describe('BoardForm', () => {
       });
 
       await waitForPromises();
-      expect(visitUrl).toHaveBeenCalledWith('321');
+      expect(visitUrl).toHaveBeenCalledWith('test-path');
+    });
+
+    it('calls GraphQL mutation with correct parameters when issues are grouped by epic', async () => {
+      mutate = jest.fn().mockResolvedValue({
+        data: {
+          updateBoard: { board: { id: 'gid://gitlab/Board/321', webPath: 'test-path' } },
+        },
+      });
+      window.location = new URL('https://test/boards/1?group_by=epic');
+      createComponent({ canAdminBoard: true });
+
+      findInput().trigger('keyup.enter', { metaKey: true });
+
+      await waitForPromises();
+
+      expect(mutate).toHaveBeenCalledWith({
+        mutation: updateBoardMutation,
+        variables: {
+          input: expect.objectContaining({
+            id: `gid://gitlab/Board/${currentBoard.id}`,
+          }),
+        },
+      });
+
+      await waitForPromises();
+      expect(visitUrl).toHaveBeenCalledWith('test-path?group_by=epic');
     });
 
     it('shows an error flash if GraphQL mutation fails', async () => {

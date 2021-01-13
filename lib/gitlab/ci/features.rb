@@ -56,7 +56,7 @@ module Gitlab
       end
 
       def self.pipeline_open_merge_requests?(project)
-        ::Feature.enabled?(:ci_pipeline_open_merge_requests, project, default_enabled: false)
+        ::Feature.enabled?(:ci_pipeline_open_merge_requests, project, default_enabled: true)
       end
 
       def self.ci_pipeline_editor_page_enabled?(project)

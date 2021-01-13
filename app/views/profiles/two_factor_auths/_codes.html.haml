@@ -1,18 +1,3 @@
 - show_success_alert = local_assigns.fetch(:show_success_alert, nil)
 
-- if Feature.enabled?(:vue_2fa_recovery_codes, current_user, default_enabled: true)
-  .js-2fa-recovery-codes{ data: { codes: @codes.to_json, profile_account_path: profile_account_path(two_factor_auth_enabled_successfully: show_success_alert) } }
-- else
-  %p.slead
-    - lose_2fa_message =  _('Should you ever lose your phone or access to your one time password secret, each of these recovery codes can be used one time each to regain access to your account. Please save them in a safe place, or you %{b_start}will%{b_end} lose access to your account.') % { b_start:'<b>', b_end:'</b>' }
-    = lose_2fa_message.html_safe
-
-  .codes.card{ data: { qa_selector: 'codes_content' } }
-    %ul
-      - @codes.each do |code|
-        %li
-          %span.monospace{ data: { qa_selector: 'code_content' } }= code
-
-  .d-flex
-    = link_to _('Proceed'), profile_account_path, class: 'gl-button btn btn-success gl-mr-3', data: { qa_selector: 'proceed_button' }
-    = link_to _('Download codes'), "data:text/plain;charset=utf-8,#{CGI.escape(@codes.join("\n"))}", download: "gitlab-recovery-codes.txt", class: 'gl-button btn btn-default'
+.js-2fa-recovery-codes{ data: { codes: @codes.to_json, profile_account_path: profile_account_path(two_factor_auth_enabled_successfully: show_success_alert) } }

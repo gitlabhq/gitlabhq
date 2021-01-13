@@ -42,7 +42,6 @@ describe('Merge request status box component', () => {
       it('renders human readable test', () => {
         factory({
           initialState: testCase.state,
-          initialIsReverted: false,
         });
 
         expect(wrapper.text()).toContain(testCase.name);
@@ -51,7 +50,6 @@ describe('Merge request status box component', () => {
       it('sets css class', () => {
         factory({
           initialState: testCase.state,
-          initialIsReverted: false,
         });
 
         expect(wrapper.classes()).toContain(testCase.class);
@@ -60,7 +58,6 @@ describe('Merge request status box component', () => {
       it('renders icon', () => {
         factory({
           initialState: testCase.state,
-          initialIsReverted: false,
         });
 
         expect(wrapper.find('[data-testid="status-icon"]').props('name')).toBe(testCase.icon);
@@ -68,29 +65,14 @@ describe('Merge request status box component', () => {
     });
   });
 
-  describe('when merge request is reverted', () => {
-    it('renders a link to the reverted merge request', () => {
-      factory({
-        initialState: 'merged',
-        initialIsReverted: true,
-        initialRevertedPath: 'http://test.com',
-      });
-
-      expect(wrapper.find('[data-testid="reverted-link"]').attributes('href')).toBe(
-        'http://test.com',
-      );
-    });
-  });
-
   it('updates with eventhub event', async () => {
     factory({
       initialState: 'opened',
-      initialIsReverted: false,
     });
 
     expect(wrapper.text()).toContain('Open');
 
-    mrEventHub.$emit('mr.state.updated', { state: 'closed', reverted: false });
+    mrEventHub.$emit('mr.state.updated', { state: 'closed' });
 
     await nextTick();
 

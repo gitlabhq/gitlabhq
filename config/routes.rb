@@ -92,7 +92,10 @@ Rails.application.routes.draw do
     # '/-/health' implemented by BasicHealthCheck middleware
     get 'liveness' => 'health#liveness'
     get 'readiness' => 'health#readiness'
-    resources :metrics, only: [:index]
+    controller :metrics do
+      get 'metrics', action: :index
+      get 'metrics/system', action: :system
+    end
     mount Peek::Railtie => '/peek', as: 'peek_routes'
 
     get 'runner_setup/platforms' => 'runner_setup#platforms'

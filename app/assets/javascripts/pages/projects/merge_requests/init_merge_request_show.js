@@ -2,7 +2,7 @@ import Vue from 'vue';
 import ZenMode from '~/zen_mode';
 import initIssuableSidebar from '~/init_issuable_sidebar';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
-import { handleLocationHash, parseBoolean } from '~/lib/utils/common_utils';
+import { handleLocationHash } from '~/lib/utils/common_utils';
 import initPipelines from '~/commit/pipelines/pipelines_bundle';
 import initSourcegraph from '~/sourcegraph';
 import loadAwardsHandler from '~/awards_handler';
@@ -29,8 +29,6 @@ export default function () {
       return h(StatusBox, {
         props: {
           initialState: el.dataset.state,
-          initialIsReverted: parseBoolean(el.dataset.isReverted),
-          initialRevertedPath: el.dataset.revertedPath,
         },
       });
     },

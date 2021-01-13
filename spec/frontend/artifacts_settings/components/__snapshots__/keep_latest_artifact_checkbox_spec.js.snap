@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Keep latest artifact checkbox sets correct setting value in checkbox with query result 1`] = `
+<div>
+  <!---->
+   
+  <gl-form-checkbox-stub
+    checked="true"
+  >
+    <b
+      class="gl-mr-3"
+    >
+      Keep artifacts from most recent successful jobs
+    </b>
+     
+    <gl-link-stub
+      href="/help/ci/pipelines/job_artifacts"
+    >
+      More information
+    </gl-link-stub>
+  </gl-form-checkbox-stub>
+   
+  <p>
+    
+    The latest artifacts created by jobs in the most recent successful pipeline will be stored.
+  
+  </p>
+</div>
+`;

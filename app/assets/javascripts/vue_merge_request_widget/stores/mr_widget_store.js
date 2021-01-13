@@ -158,8 +158,6 @@ export default class MergeRequestStore {
 
     mrEventHub.$emit('mr.state.updated', {
       state: this.mergeRequestState,
-      reverted: data.reverted,
-      reverted_path: data.revertedPath,
     });
   }
 
