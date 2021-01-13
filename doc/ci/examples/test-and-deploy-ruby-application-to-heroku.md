@@ -28,16 +28,16 @@ test:
 staging:
   stage: deploy
   script:
-    - gem install dpl
-    - dpl --provider=heroku --app=gitlab-ci-ruby-test-staging --api-key=$HEROKU_STAGING_API_KEY
+    - gem install dpl --pre
+    - dpl heroku api --app=gitlab-ci-ruby-test-staging --api-key=$HEROKU_STAGING_API_KEY
   only:
     - master
 
 production:
   stage: deploy
   script:
-    - gem install dpl
-    - dpl --provider=heroku --app=gitlab-ci-ruby-test-prod --api-key=$HEROKU_PRODUCTION_API_KEY
+    - gem install dpl --pre
+    - dpl heroku api --app=gitlab-ci-ruby-test-prod --api-key=$HEROKU_PRODUCTION_API_KEY
   only:
     - tags
 ```
@@ -50,7 +50,7 @@ This project has three jobs:
 
 ## Store API keys
 
-You'll need to create two variables in your project's **Settings > CI/CD > Environment variables**:
+You'll need to create two variables in your project's **Settings > CI/CD > Environment variables** and do not check **Protect variable** and **Mask variable**:
 
 - `HEROKU_STAGING_API_KEY` - Heroku API key used to deploy staging app.
 - `HEROKU_PRODUCTION_API_KEY` - Heroku API key used to deploy production app.

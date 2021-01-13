@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Canary Deployments **(CORE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1659) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.1.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212320) to GitLab Core in 13.7.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212320) to GitLab Core in 13.8.
 
 A popular [Continuous Deployment](https://en.wikipedia.org/wiki/Continuous_deployment)
 strategy, where a small portion of the fleet is updated to the new version of
@@ -72,7 +72,7 @@ can easily notice them.
 ### Advanced traffic control with Canary Ingress
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215501) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.6.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212320) to Core in GitLab 13.7.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212320) to Core in GitLab 13.8.
 
 Canary deployments can be more strategic with [Canary Ingress](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#canary),
 which is an advanced traffic routing service that controls incoming HTTP

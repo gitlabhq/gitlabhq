@@ -499,10 +499,11 @@ GEM
     grape-entity (0.7.1)
       activesupport (>= 4.0)
       multi_json (>= 1.3.2)
-    grape-path-helpers (1.5.0)
+    grape-path-helpers (1.6.1)
       activesupport
       grape (~> 1.3)
       rake (> 12)
+      ruby2_keywords (~> 0.0.2)
     grape_logging (1.8.3)
       grape
       rack
@@ -1373,7 +1374,7 @@ DEPENDENCIES
   gpgme (~> 2.0.19)
   grape (~> 1.5.1)
   grape-entity (~> 0.7.1)
-  grape-path-helpers (~> 1.5)
+  grape-path-helpers (~> 1.6.1)
   grape_logging (~> 1.7)
   graphiql-rails (~> 1.4.10)
   graphlient (~> 0.4.0)

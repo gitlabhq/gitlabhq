@@ -2368,7 +2368,7 @@ RSpec.describe API::Users do
             activate
 
             expect(response).to have_gitlab_http_status(:forbidden)
-            expect(json_response['message']).to eq('403 Forbidden  - A blocked user must be unblocked to be activated')
+            expect(json_response['message']).to eq('403 Forbidden - A blocked user must be unblocked to be activated')
             expect(user.reload.state).to eq('blocked')
           end
         end
@@ -2382,7 +2382,7 @@ RSpec.describe API::Users do
             activate
 
             expect(response).to have_gitlab_http_status(:forbidden)
-            expect(json_response['message']).to eq('403 Forbidden  - A blocked user must be unblocked to be activated')
+            expect(json_response['message']).to eq('403 Forbidden - A blocked user must be unblocked to be activated')
             expect(user.reload.state).to eq('ldap_blocked')
           end
         end
@@ -2439,7 +2439,7 @@ RSpec.describe API::Users do
               deactivate
 
               expect(response).to have_gitlab_http_status(:forbidden)
-              expect(json_response['message']).to eq("403 Forbidden  - The user you are trying to deactivate has been active in the past #{::User::MINIMUM_INACTIVE_DAYS} days and cannot be deactivated")
+              expect(json_response['message']).to eq("403 Forbidden - The user you are trying to deactivate has been active in the past #{::User::MINIMUM_INACTIVE_DAYS} days and cannot be deactivated")
               expect(user.reload.state).to eq('active')
             end
           end
@@ -2467,7 +2467,7 @@ RSpec.describe API::Users do
             deactivate
 
             expect(response).to have_gitlab_http_status(:forbidden)
-            expect(json_response['message']).to eq('403 Forbidden  - A blocked user cannot be deactivated by the API')
+            expect(json_response['message']).to eq('403 Forbidden - A blocked user cannot be deactivated by the API')
             expect(user.reload.state).to eq('blocked')
           end
         end
@@ -2481,7 +2481,7 @@ RSpec.describe API::Users do
             deactivate
 
             expect(response).to have_gitlab_http_status(:forbidden)
-            expect(json_response['message']).to eq('403 Forbidden  - A blocked user cannot be deactivated by the API')
+            expect(json_response['message']).to eq('403 Forbidden - A blocked user cannot be deactivated by the API')
             expect(user.reload.state).to eq('ldap_blocked')
           end
         end
@@ -2493,7 +2493,7 @@ RSpec.describe API::Users do
             deactivate
 
             expect(response).to have_gitlab_http_status(:forbidden)
-            expect(json_response['message']).to eq('403 Forbidden  - An internal user cannot be deactivated by the API')
+            expect(json_response['message']).to eq('403 Forbidden - An internal user cannot be deactivated by the API')
           end
         end
 
