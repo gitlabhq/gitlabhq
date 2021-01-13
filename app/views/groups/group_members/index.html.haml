@@ -5,75 +5,78 @@
 - invited_active = params[:search_invited].present? || params[:invited_members_page].present?
 
 .js-remove-member-modal
-.project-members-page.gl-mt-3
-  .gl-display-flex.gl-flex-wrap
-    - if can_manage_members
-      .gl-w-half.gl-xs-w-full
-        %h4
-          = _('Group members')
-      - if invite_members_allowed?(@group)
+.row.gl-mt-3
+  .col-lg-12
+    .gl-display-flex.gl-flex-wrap
+      - if can_manage_members
         .gl-w-half.gl-xs-w-full
-          .gl-display-flex.gl-flex-wrap.gl-lg-justify-content-end.gl-mx-n2.gl-mb-3
-            .js-invite-members-trigger.gl-px-2.gl-sm-w-auto.gl-w-full.gl-mb-4{ data: { classes: 'btn btn-success gl-button gl-mt-3 gl-sm-w-auto gl-w-full', display_text: _('Invite members') } }
-        = render_if_exists 'groups/invite_members_modal', group: @group
-  - if can_manage_members && !invite_members_allowed?(@group)
-    %hr.gl-mt-4
-      %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
-        %li.nav-tab{ role: 'presentation' }
-          %a.nav-link.active{ href: '#invite-member-pane', id: 'invite-member-tab', data: { toggle: 'tab' }, role: 'tab' }= _('Invite member')
+          %h4
+            = _('Group members')
+          %p
+            = html_escape(_('You can invite a new member to %{strong_start}%{group_name}%{strong_end}.')) % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
+        - if invite_members_allowed?(@group)
+          .gl-w-half.gl-xs-w-full
+            .gl-display-flex.gl-flex-wrap.gl-lg-justify-content-end.gl-mx-n2.gl-mb-3
+              .js-invite-members-trigger.gl-px-2.gl-sm-w-auto.gl-w-full.gl-mb-4{ data: { classes: 'btn btn-success gl-button gl-mt-3 gl-sm-w-auto gl-w-full', display_text: _('Invite members') } }
+          = render_if_exists 'groups/invite_members_modal', group: @group
+    - if can_manage_members && !invite_members_allowed?(@group)
+      %hr.gl-mt-4
+        %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
           %li.nav-tab{ role: 'presentation' }
-            %a.nav-link{ href: '#invite-group-pane', id: 'invite-group-tab', data: { toggle: 'tab', qa_selector: 'invite_group_tab' }, role: 'tab' }= _('Invite group')
-      .tab-content.gitlab-tab-content
-        .tab-pane.active{ id: 'invite-member-pane', role: 'tabpanel' }
-          = render_invite_member_for_group(@group, @group_member.access_level)
-        .tab-pane{ id: 'invite-group-pane', role: 'tabpanel' }
-          = render 'shared/members/invite_group', submit_url: group_group_links_path(@group), access_levels: GroupMember.access_level_roles, default_access_level: @group_member.access_level, group_link_field: 'shared_with_group_id', group_access_field: 'shared_group_access'
+            %a.nav-link.active{ href: '#invite-member-pane', id: 'invite-member-tab', data: { toggle: 'tab' }, role: 'tab' }= _('Invite member')
+            %li.nav-tab{ role: 'presentation' }
+              %a.nav-link{ href: '#invite-group-pane', id: 'invite-group-tab', data: { toggle: 'tab', qa_selector: 'invite_group_tab' }, role: 'tab' }= _('Invite group')
+        .tab-content.gitlab-tab-content
+          .tab-pane.active{ id: 'invite-member-pane', role: 'tabpanel' }
+            = render_invite_member_for_group(@group, @group_member.access_level)
+          .tab-pane{ id: 'invite-group-pane', role: 'tabpanel' }
+            = render 'shared/members/invite_group', submit_url: group_group_links_path(@group), access_levels: GroupMember.access_level_roles, default_access_level: @group_member.access_level, group_link_field: 'shared_with_group_id', group_access_field: 'shared_group_access'
 
-  = render_if_exists 'groups/group_members/ldap_sync'
+    = render_if_exists 'groups/group_members/ldap_sync'
 
-  %ul.nav-links.mobile-separator.nav.nav-tabs
-    %li.nav-item
-      = link_to '#tab-members', class: ['nav-link', ('active' unless invited_active)], data: { toggle: 'tab' } do
-        %span
-          = _('Members')
-        %span.badge.badge-pill= @members.total_count
-    - if @group.shared_with_group_links.any?
+    %ul.nav-links.mobile-separator.nav.nav-tabs
       %li.nav-item
-        = link_to '#tab-groups', class: ['nav-link'] , data: { toggle: 'tab', qa_selector: 'groups_list_tab' } do
+        = link_to '#tab-members', class: ['nav-link', ('active' unless invited_active)], data: { toggle: 'tab' } do
           %span
-            = _('Groups')
-          %span.badge.badge-pill= @group.shared_with_group_links.count
-    - if show_invited_members
-      %li.nav-item
-        = link_to '#tab-invited-members', class: ['nav-link', ('active' if invited_active)], data: { toggle: 'tab' } do
-          %span
-            = _('Invited')
-          %span.badge.badge-pill= @invited_members.total_count
-    - if show_access_requests
-      %li.nav-item
-        = link_to '#tab-access-requests', class: 'nav-link', data: { toggle: 'tab' } do
-          %span
-            = _('Access requests')
-          %span.badge.badge-pill= @requesters.count
-  .tab-content
-    #tab-members.tab-pane{ class: ('active' unless invited_active) }
-      .js-group-members-list{ data: group_members_list_data_attributes(@group, @members) }
-        .loading
-          .spinner.spinner-md
-      = paginate @members, theme: 'gitlab', params: { invited_members_page: nil, search_invited: nil }
-    - if @group.shared_with_group_links.any?
-      #tab-groups.tab-pane
-        .js-group-linked-list{ data: linked_groups_list_data_attributes(@group) }
+            = _('Members')
+          %span.badge.badge-pill= @members.total_count
+      - if @group.shared_with_group_links.any?
+        %li.nav-item
+          = link_to '#tab-groups', class: ['nav-link'] , data: { toggle: 'tab', qa_selector: 'groups_list_tab' } do
+            %span
+              = _('Groups')
+            %span.badge.badge-pill= @group.shared_with_group_links.count
+      - if show_invited_members
+        %li.nav-item
+          = link_to '#tab-invited-members', class: ['nav-link', ('active' if invited_active)], data: { toggle: 'tab' } do
+            %span
+              = _('Invited')
+            %span.badge.badge-pill= @invited_members.total_count
+      - if show_access_requests
+        %li.nav-item
+          = link_to '#tab-access-requests', class: 'nav-link', data: { toggle: 'tab' } do
+            %span
+              = _('Access requests')
+            %span.badge.badge-pill= @requesters.count
+    .tab-content
+      #tab-members.tab-pane{ class: ('active' unless invited_active) }
+        .js-group-members-list{ data: group_members_list_data_attributes(@group, @members) }
           .loading
             .spinner.spinner-md
-    - if show_invited_members
-      #tab-invited-members.tab-pane{ class: ('active' if invited_active) }
-        .js-group-invited-members-list{ data: group_members_list_data_attributes(@group, @invited_members) }
-          .loading
-            .spinner.spinner-md
-        = paginate @invited_members, param_name: 'invited_members_page', theme: 'gitlab', params: { page: nil }
-    - if show_access_requests
-      #tab-access-requests.tab-pane
-        .js-group-access-requests-list{ data: group_members_list_data_attributes(@group, @requesters) }
-          .loading
-            .spinner.spinner-md
+        = paginate @members, theme: 'gitlab', params: { invited_members_page: nil, search_invited: nil }
+      - if @group.shared_with_group_links.any?
+        #tab-groups.tab-pane
+          .js-group-linked-list{ data: linked_groups_list_data_attributes(@group) }
+            .loading
+              .spinner.spinner-md
+      - if show_invited_members
+        #tab-invited-members.tab-pane{ class: ('active' if invited_active) }
+          .js-group-invited-members-list{ data: group_members_list_data_attributes(@group, @invited_members) }
+            .loading
+              .spinner.spinner-md
+          = paginate @invited_members, param_name: 'invited_members_page', theme: 'gitlab', params: { page: nil }
+      - if show_access_requests
+        #tab-access-requests.tab-pane
+          .js-group-access-requests-list{ data: group_members_list_data_attributes(@group, @requesters) }
+            .loading
+              .spinner.spinner-md

@@ -425,7 +425,7 @@ export default {
         }
       });
 
-      if (this.commit && this.glFeatures.mrCommitNeighborNav) {
+      if (this.commit) {
         Mousetrap.bind('c', () => this.moveToNeighboringCommit({ direction: 'next' }));
         Mousetrap.bind('x', () => this.moveToNeighboringCommit({ direction: 'previous' }));
       }

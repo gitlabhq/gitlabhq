@@ -288,7 +288,7 @@ describe('diffs/components/app', () => {
         ({ state }) => {
           state.diffs.commit = { id: 'SHA123' };
         },
-        { glFeatures: { mrCommitNeighborNav: true, ...featureFlags } },
+        { glFeatures: featureFlags },
       );
 
       moveSpy = jest.spyOn(wrapper.vm, 'moveToNeighboringCommit').mockImplementation(() => {});
@@ -303,8 +303,8 @@ describe('diffs/components/app', () => {
         ${'k'} | ${'jumpToFile'}              | ${0} | ${[-1]}                        | ${{}}
         ${']'} | ${'jumpToFile'}              | ${0} | ${[+1]}                        | ${{}}
         ${'j'} | ${'jumpToFile'}              | ${0} | ${[+1]}                        | ${{}}
-        ${'x'} | ${'moveToNeighboringCommit'} | ${1} | ${[{ direction: 'previous' }]} | ${{ mrCommitNeighborNav: true }}
-        ${'c'} | ${'moveToNeighboringCommit'} | ${1} | ${[{ direction: 'next' }]}     | ${{ mrCommitNeighborNav: true }}
+        ${'x'} | ${'moveToNeighboringCommit'} | ${1} | ${[{ direction: 'previous' }]} | ${{}}
+        ${'c'} | ${'moveToNeighboringCommit'} | ${1} | ${[{ direction: 'next' }]}     | ${{}}
       `(
         'calls `$name()` with correct parameters whenever the "$key" key is pressed',
         async ({ key, spy, args, featureFlags }) => {
@@ -320,31 +320,13 @@ describe('diffs/components/app', () => {
       );
 
       it.each`
-        key    | name                         | spy  | featureFlags
-        ${'x'} | ${'moveToNeighboringCommit'} | ${1} | ${{ mrCommitNeighborNav: false }}
-        ${'c'} | ${'moveToNeighboringCommit'} | ${1} | ${{ mrCommitNeighborNav: false }}
-      `(
-        'does not call `$name()` even when the correct key is pressed if the feature flag is disabled',
-        async ({ key, spy, featureFlags }) => {
-          setup({ shouldShow: true }, featureFlags);
-
-          await nextTick();
-          expect(spies[spy]).not.toHaveBeenCalled();
-
-          Mousetrap.trigger(key);
-
-          expect(spies[spy]).not.toHaveBeenCalled();
-        },
-      );
-
-      it.each`
         key    | name                         | spy  | allowed
         ${'d'} | ${'jumpToFile'}              | ${0} | ${['[', ']', 'j', 'k']}
         ${'r'} | ${'moveToNeighboringCommit'} | ${1} | ${['x', 'c']}
       `(
         `does not call \`$name()\` when a key that is not one of \`$allowed\` is pressed`,
         async ({ key, spy }) => {
-          setup({ shouldShow: true }, { mrCommitNeighborNav: true });
+          setup({ shouldShow: true });
 
           await nextTick();
           Mousetrap.trigger(key);
@@ -356,7 +338,7 @@ describe('diffs/components/app', () => {
 
     describe('hidden app', () => {
       beforeEach(async () => {
-        setup({ shouldShow: false }, { mrCommitNeighborNav: true });
+        setup({ shouldShow: false });
 
         await nextTick();
         Mousetrap.reset();

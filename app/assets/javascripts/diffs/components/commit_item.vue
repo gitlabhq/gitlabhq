@@ -148,10 +148,7 @@ export default {
             class="input-group-text"
           />
         </gl-button-group>
-        <div
-          v-if="hasNeighborCommits && glFeatures.mrCommitNeighborNav"
-          class="commit-nav-buttons ml-3"
-        >
+        <div v-if="hasNeighborCommits" class="commit-nav-buttons ml-3">
           <gl-button-group>
             <gl-button
               :href="previousCommitUrl"

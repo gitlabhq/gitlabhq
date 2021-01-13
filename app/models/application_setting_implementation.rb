@@ -97,7 +97,7 @@ module ApplicationSettingImplementation
         login_recaptcha_protection_enabled: false,
         max_artifacts_size: Settings.artifacts['max_size'],
         max_attachment_size: Settings.gitlab['max_attachment_size'],
-        max_import_size: 50,
+        max_import_size: 0,
         minimum_password_length: DEFAULT_MINIMUM_PASSWORD_LENGTH,
         mirror_available: true,
         notify_on_unknown_sign_in: true,

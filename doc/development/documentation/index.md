@@ -369,6 +369,19 @@ You can combine one or more of the following:
      = link_to 'Help page', help_page_path('user/permissions')
    ```
 
+#### Linking to `/help` in JavaScript
+
+To link to the documentation from a JavaScript or a Vue component, use the `helpPagePath` function from [`help_page_helper.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/helpers/help_page_helper.js):
+
+```javascript
+import { helpPagePath } from '~/helpers/help_page_helper';
+
+helpPagePath('user/permissions', { anchor: 'anchor-link' })
+// evaluates to '/help/user/permissions#anchor-link' for GitLab.com
+```
+
+This is preferred over static paths, as the helper also works on instances installed under a [relative URL](../../install/relative_url.md).
+
 ### GitLab `/help` tests
 
 Several [RSpec tests](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/features/help_pages_spec.rb)

@@ -15,6 +15,8 @@ RSpec.shared_examples 'Debian Distribution' do |factory, container, can_freeze|
   describe 'relationships' do
     it { is_expected.to belong_to(container) }
     it { is_expected.to belong_to(:creator).class_name('User') }
+
+    it { is_expected.to have_many(:architectures).class_name("Packages::Debian::#{container.capitalize}Architecture").inverse_of(:distribution) }
   end
 
   describe 'validations' do

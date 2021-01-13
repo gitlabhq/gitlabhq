@@ -32204,6 +32204,9 @@ msgstr ""
 msgid "You can invite a new member to %{project_name}."
 msgstr ""
 
+msgid "You can invite a new member to %{strong_start}%{group_name}%{strong_end}."
+msgstr ""
+
 msgid "You can invite another group to %{project_name}."
 msgstr ""
 
