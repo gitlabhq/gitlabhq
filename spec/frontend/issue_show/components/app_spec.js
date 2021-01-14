@@ -423,9 +423,7 @@ describe('Issuable output', () => {
     });
 
     it('shows the form if template names request is successful', () => {
-      const mockData = {
-        test: [{ name: 'test', id: 'test', project_path: '/', namespace_path: '/' }],
-      };
+      const mockData = [{ name: 'Bug' }];
       mock.onGet('/issuable-templates-path').reply(() => Promise.resolve([200, mockData]));
 
       return wrapper.vm.requestTemplatesAndShowForm().then(() => {

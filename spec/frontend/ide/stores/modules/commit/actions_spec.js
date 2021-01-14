@@ -19,6 +19,17 @@ jest.mock('~/lib/utils/url_utility', () => ({
 }));
 
 const TEST_COMMIT_SHA = '123456789';
+const COMMIT_RESPONSE = {
+  id: '123456',
+  short_id: '123',
+  message: 'test message',
+  committed_date: 'date',
+  parent_ids: [],
+  stats: {
+    additions: '1',
+    deletions: '2',
+  },
+};
 
 describe('IDE commit module actions', () => {
   let mock;
@@ -32,7 +43,9 @@ describe('IDE commit module actions', () => {
     mock = new MockAdapter(axios);
     jest.spyOn(router, 'push').mockImplementation();
 
-    mock.onGet('/api/v1/projects/abcproject/repository/branches/master').reply(200);
+    mock
+      .onGet('/api/v1/projects/abcproject/repository/branches/master')
+      .reply(200, { commit: COMMIT_RESPONSE });
   });
 
   afterEach(() => {
@@ -329,18 +342,6 @@ describe('IDE commit module actions', () => {
     });
 
     describe('success', () => {
-      const COMMIT_RESPONSE = {
-        id: '123456',
-        short_id: '123',
-        message: 'test message',
-        committed_date: 'date',
-        parent_ids: '321',
-        stats: {
-          additions: '1',
-          deletions: '2',
-        },
-      };
-
       beforeEach(() => {
         jest.spyOn(service, 'commit').mockResolvedValue({ data: COMMIT_RESPONSE });
       });
@@ -544,18 +545,6 @@ describe('IDE commit module actions', () => {
     });
 
     describe('first commit of a branch', () => {
-      const COMMIT_RESPONSE = {
-        id: '123456',
-        short_id: '123',
-        message: 'test message',
-        committed_date: 'date',
-        parent_ids: [],
-        stats: {
-          additions: '1',
-          deletions: '2',
-        },
-      };
-
       it('commits TOGGLE_EMPTY_STATE mutation on empty repo', (done) => {
         jest.spyOn(service, 'commit').mockResolvedValue({ data: COMMIT_RESPONSE });
         jest.spyOn(store, 'commit');

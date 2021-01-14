@@ -52,7 +52,6 @@ export const appProps = {
   markdownDocsPath: '/',
   projectNamespace: '/',
   projectPath: '/',
-  projectId: 1,
   issuableTemplateNamesPath: '/issuable-templates-path',
   zoomMeetingUrl,
   publishedIncidentUrl,

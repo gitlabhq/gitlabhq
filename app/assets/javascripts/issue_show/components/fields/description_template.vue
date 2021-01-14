@@ -13,16 +13,12 @@ export default {
       required: true,
     },
     issuableTemplates: {
-      type: Object,
+      type: Array,
       required: false,
-      default: () => {},
+      default: () => [],
     },
     projectPath: {
       type: String,
-      required: true,
-    },
-    projectId: {
-      type: Number,
       required: true,
     },
     projectNamespace: {
@@ -52,12 +48,11 @@ export default {
 </script>
 
 <template>
-  <div class="dropdown js-issuable-selector-wrap" data-issuable-type="issues">
+  <div class="dropdown js-issuable-selector-wrap" data-issuable-type="issue">
     <button
       ref="toggle"
       :data-namespace-path="projectNamespace"
       :data-project-path="projectPath"
-      :data-project-id="projectId"
       :data-data="issuableTemplatesJson"
       class="dropdown-menu-toggle js-issuable-selector"
       type="button"

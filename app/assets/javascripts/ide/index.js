@@ -63,6 +63,10 @@ export function initIde(el, options = {}) {
         codesandboxBundlerUrl: el.dataset.codesandboxBundlerUrl,
       });
     },
+    beforeDestroy() {
+      // This helps tests do Singleton cleanups which we don't really have responsibility to know about here.
+      this.$emit('destroy');
+    },
     methods: {
       ...mapActions(['setEmptyStateSvgs', 'setLinks', 'setInitialData']),
     },

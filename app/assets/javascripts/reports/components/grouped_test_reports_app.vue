@@ -10,7 +10,6 @@ import IssuesList from './issues_list.vue';
 import Modal from './modal.vue';
 import createStore from '../store';
 import Tracking from '~/tracking';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   summaryTextBuilder,
   reportTextBuilder,
@@ -28,7 +27,7 @@ export default {
     Modal,
     GlButton,
   },
-  mixins: [glFeatureFlagsMixin(), Tracking.mixin()],
+  mixins: [Tracking.mixin()],
   props: {
     endpoint: {
       type: String,
@@ -92,7 +91,7 @@ export default {
       return reportTextBuilder(name, summary);
     },
     hasRecentFailures(summary) {
-      return this.glFeatures.testFailureHistory && summary?.recentlyFailed > 0;
+      return summary?.recentlyFailed > 0;
     },
     recentFailuresText(summary) {
       return recentFailuresTextBuilder(summary);

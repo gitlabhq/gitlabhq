@@ -132,10 +132,6 @@ export default {
       type: String,
       required: true,
     },
-    projectId: {
-      type: Number,
-      required: true,
-    },
     projectNamespace: {
       type: String,
       required: true,
@@ -307,7 +303,7 @@ export default {
         });
     },
 
-    updateAndShowForm(templates = {}) {
+    updateAndShowForm(templates = []) {
       if (!this.showForm) {
         this.showForm = true;
         this.store.setFormState({
@@ -423,7 +419,6 @@ export default {
         :markdown-docs-path="markdownDocsPath"
         :markdown-preview-path="markdownPreviewPath"
         :project-path="projectPath"
-        :project-id="projectId"
         :project-namespace="projectNamespace"
         :show-delete-button="showDeleteButton"
         :can-attach-file="canAttachFile"

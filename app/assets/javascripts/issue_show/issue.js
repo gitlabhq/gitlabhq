@@ -54,7 +54,6 @@ export function initIssueHeaderActions(store) {
       issueType: el.dataset.issueType,
       newIssuePath: el.dataset.newIssuePath,
       projectPath: el.dataset.projectPath,
-      projectId: el.dataset.projectId,
       reportAbusePath: el.dataset.reportAbusePath,
       submitAsSpamPath: el.dataset.submitAsSpamPath,
     },

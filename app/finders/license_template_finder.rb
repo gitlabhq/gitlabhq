@@ -36,7 +36,6 @@ class LicenseTemplateFinder
         LicenseTemplate.new(
           key: license.key,
           name: license.name,
-          project: project,
           nickname: license.nickname,
           category: (license.featured? ? :Popular : :Other),
           content: license.content,

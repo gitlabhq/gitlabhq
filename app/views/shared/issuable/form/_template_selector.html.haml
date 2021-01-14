@@ -1,9 +1,9 @@
 - issuable = local_assigns.fetch(:issuable, nil)
 
-- return unless issuable && issuable_templates(ref_project, issuable.class.name.underscore).any?
+- return unless issuable && issuable_templates(issuable).any?
 
 .issuable-form-select-holder.selectbox.form-group
-  .js-issuable-selector-wrap{ data: { issuable_type: issuable.to_ability_name.pluralize } }
+  .js-issuable-selector-wrap{ data: { issuable_type: issuable.to_ability_name } }
     = template_dropdown_tag(issuable) do
       %ul.dropdown-footer-list
         %li

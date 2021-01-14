@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Projects::TemplatesController < Projects::ApplicationController
-  include IssuablesDescriptionTemplatesHelper
-
   before_action :authenticate_user!
   before_action :authorize_can_read_issuable!
   before_action :get_template_class
@@ -26,8 +24,10 @@ class Projects::TemplatesController < Projects::ApplicationController
   end
 
   def names
+    templates = @template_type.dropdown_names(project)
+
     respond_to do |format|
-      format.json { render json: issuable_templates(project, params[:template_type]) }
+      format.json { render json: templates }
     end
   end
 

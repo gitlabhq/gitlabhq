@@ -50,6 +50,8 @@ To enable pipelines for merge results:
 - You must not be using
   [fast forward merges](../../../user/project/merge_requests/fast_forward_merge.md) yet.
   To follow progress, see [#58226](https://gitlab.com/gitlab-org/gitlab/-/issues/26996).
+- Your repository must be a GitLab repository, not an
+  [external repository](../../ci_cd_for_external_repos/index.md).
 
 ## Enable pipelines for merged results
 

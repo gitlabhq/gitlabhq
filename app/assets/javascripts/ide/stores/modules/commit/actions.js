@@ -204,26 +204,25 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
           } else {
             dispatch('updateActivityBarView', leftSidebarViews.edit.name, { root: true });
             dispatch('updateViewer', 'editor', { root: true });
-
-            if (rootGetters.activeFile) {
-              dispatch(
-                'router/push',
-                `/project/${rootState.currentProjectId}/blob/${branchName}/-/${rootGetters.activeFile.path}`,
-                { root: true },
-              );
-            }
           }
         })
         .then(() => dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH))
-        .then(() =>
-          dispatch(
+        .then(() => {
+          if (newBranch) {
+            const path = rootGetters.activeFile ? rootGetters.activeFile.path : '';
+
+            return dispatch(
+              'router/push',
+              `/project/${rootState.currentProjectId}/blob/${branchName}/-/${path}`,
+              { root: true },
+            );
+          }
+
+          return dispatch(
             'refreshLastCommitData',
-            {
-              projectId: rootState.currentProjectId,
-              branchId: rootState.currentBranchId,
-            },
+            { projectId: rootState.currentProjectId, branchId: branchName },
             { root: true },
-          ),
-        );
+          );
+        });
     });
 };

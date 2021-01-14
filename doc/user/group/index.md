@@ -726,9 +726,6 @@ To enable this feature, navigate to the group settings page, expand the
 
 ![Group file template settings](img/group_file_template_settings.png)
 
-To learn how to create templates for issues and merge requests, visit
-[Description templates](../project/description_templates.md).
-
 #### Group-level project templates **(PREMIUM)**
 
 Define project templates at a group level by setting a group as the template source.

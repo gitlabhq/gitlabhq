@@ -51,7 +51,7 @@ export const NO_ISSUE_TEMPLATE_SELECTED = { key: '', name: __('No template selec
 export const TAKING_INCIDENT_ACTION_DOCS_LINK =
   '/help/operations/metrics/alerts#trigger-actions-from-alerts';
 export const ISSUE_TEMPLATES_DOCS_LINK =
-  '/help/user/project/description_templates#create-an-issue-template';
+  '/help/user/project/description_templates#creating-issue-templates';
 
 /* PagerDuty integration settings constants */
 

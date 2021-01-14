@@ -437,7 +437,6 @@ export class GitLabDropdown {
       groupName = el.data('group');
       if (groupName) {
         selectedIndex = el.data('index');
-        this.selectedIndex = selectedIndex;
         selectedObject = this.renderedData[groupName][selectedIndex];
       } else {
         selectedIndex = el.closest('li').index();

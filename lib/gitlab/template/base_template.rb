@@ -8,7 +8,6 @@ module Gitlab
       def initialize(path, project = nil, category: nil)
         @path = path
         @category = category
-        @project = project
         @finder = self.class.finder(project)
       end
 
@@ -30,22 +29,6 @@ module Gitlab
 
       def description
         # override with a comment to be placed at the top of the blob.
-      end
-
-      def project_id
-        @project&.id
-      end
-
-      def project_path
-        @project&.path
-      end
-
-      def namespace_id
-        @project&.namespace&.id
-      end
-
-      def namespace_path
-        @project&.namespace&.full_path
       end
 
       # Present for compatibility with license templates, which can replace text
@@ -99,11 +82,11 @@ module Gitlab
           raise NotImplementedError
         end
 
-        def by_category(category, project = nil, empty_category_title: nil)
+        def by_category(category, project = nil)
           directory = category_directory(category)
           files = finder(project).list_files_for(directory)
 
-          files.map { |f| new(f, project, category: category.presence || empty_category_title) }.sort
+          files.map { |f| new(f, project, category: category) }.sort
         end
 
         def category_directory(category)

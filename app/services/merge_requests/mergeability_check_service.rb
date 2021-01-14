@@ -64,10 +64,6 @@ module MergeRequests
         return ServiceResponse.error(message: 'Merge request is not mergeable')
       end
 
-      unless merge_ref_auto_sync_enabled?
-        return ServiceResponse.error(message: 'Merge ref is outdated due to disabled feature')
-      end
-
       unless payload.fetch(:merge_ref_head)
         return ServiceResponse.error(message: 'Merge ref cannot be updated')
       end
@@ -142,7 +138,6 @@ module MergeRequests
     #
     # Returns true if the merge-ref does not exists or is out of sync.
     def outdated_merge_ref?
-      return false unless merge_ref_auto_sync_enabled?
       return false unless merge_request.open?
 
       return true unless ref_head = merge_request.merge_ref_head
@@ -157,15 +152,9 @@ module MergeRequests
     end
 
     def merge_to_ref
-      return true unless merge_ref_auto_sync_enabled?
-
       params = { allow_conflicts: Feature.enabled?(:display_merge_conflicts_in_diff, project) }
       result = MergeRequests::MergeToRefService.new(project, merge_request.author, params).execute(merge_request)
       result[:status] == :success
-    end
-
-    def merge_ref_auto_sync_enabled?
-      Feature.enabled?(:merge_ref_auto_sync, project, default_enabled: true)
     end
 
     def merge_ref_auto_sync_lock_enabled?

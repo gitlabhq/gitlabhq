@@ -22,19 +22,6 @@ RSpec.describe Ci::TestFailureHistoryService, :aggregate_failures do
         expect(Ci::TestCaseFailure.count).to eq(2)
       end
 
-      context 'when feature flag for test failure history is disabled' do
-        before do
-          stub_feature_flags(test_failure_history: false)
-        end
-
-        it 'does not persist data' do
-          execute_service
-
-          expect(Ci::TestCase.count).to eq(0)
-          expect(Ci::TestCaseFailure.count).to eq(0)
-        end
-      end
-
       context 'when pipeline is not for the default branch' do
         before do
           pipeline.update_column(:ref, 'new-feature')
@@ -134,14 +121,6 @@ RSpec.describe Ci::TestFailureHistoryService, :aggregate_failures do
 
     context 'when feature flag is enabled and pipeline ref is the default branch' do
       it { is_expected.to eq(true) }
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(test_failure_history: false)
-      end
-
-      it { is_expected.to eq(false) }
     end
 
     context 'when pipeline is not equal to the project default branch' do

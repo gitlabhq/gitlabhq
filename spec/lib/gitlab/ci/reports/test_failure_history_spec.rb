@@ -28,18 +28,5 @@ RSpec.describe Gitlab::Ci::Reports::TestFailureHistory, :aggregate_failures do
       expect(failed_rspec.recent_failures).to eq(count: 2, base_branch: 'master')
       expect(failed_java.recent_failures).to eq(count: 1, base_branch: 'master')
     end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(test_failure_history: false)
-      end
-
-      it 'does not set recent failures' do
-        load_history
-
-        expect(failed_rspec.recent_failures).to be_nil
-        expect(failed_java.recent_failures).to be_nil
-      end
-    end
   end
 end

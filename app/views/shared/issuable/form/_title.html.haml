@@ -1,7 +1,7 @@
 - issuable = local_assigns.fetch(:issuable)
 - has_wip_commits = local_assigns.fetch(:has_wip_commits)
 - form = local_assigns.fetch(:form)
-- no_issuable_templates = issuable_templates(ref_project, issuable.class.name.underscore).empty?
+- no_issuable_templates = issuable_templates(issuable).empty?
 - div_class = no_issuable_templates ? 'col-sm-10' : 'col-sm-7 col-lg-8'
 - toggle_wip_link_start = '<a href="" class="js-toggle-wip">'
 - toggle_wip_link_end = '</a>'

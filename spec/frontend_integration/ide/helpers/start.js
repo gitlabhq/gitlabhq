@@ -2,6 +2,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 import extendStore from '~/ide/stores/extend';
 import { IDE_DATASET } from './mock_data';
 import { initIde } from '~/ide';
+import Editor from '~/ide/lib/editor';
 
 export default (container, { isRepoEmpty = false, path = '' } = {}) => {
   global.jsdom.reconfigure({
@@ -13,5 +14,16 @@ export default (container, { isRepoEmpty = false, path = '' } = {}) => {
   const el = document.createElement('div');
   Object.assign(el.dataset, IDE_DATASET);
   container.appendChild(el);
-  return initIde(el, { extendStore });
+  const vm = initIde(el, { extendStore });
+
+  // We need to dispose of editor Singleton things or tests will bump into eachother
+  vm.$on('destroy', () => {
+    if (Editor.editorInstance) {
+      Editor.editorInstance.modelManager.dispose();
+      Editor.editorInstance.dispose();
+      Editor.editorInstance = null;
+    }
+  });
+
+  return vm;
 };

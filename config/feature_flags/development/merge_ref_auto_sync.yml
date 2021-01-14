@@ -1,8 +1,0 @@
----
-name: merge_ref_auto_sync
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29569
-rollout_issue_url: 
-milestone: '12.1'
-type: development
-group: group::code review
-default_enabled: true

@@ -44,8 +44,9 @@ export const refreshLastCommitData = ({ commit }, { projectId, branchId } = {}) 
         commit: data.commit,
       });
     })
-    .catch(() => {
+    .catch((e) => {
       flash(__('Error loading last commit.'), 'alert', document, null, false, true);
+      throw e;
     });
 
 export const createNewBranchFromDefault = ({ state, dispatch, getters }, branch) =>

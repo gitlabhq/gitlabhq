@@ -57,6 +57,6 @@ RSpec.describe LicenseTemplate do
   end
 
   def build_template(content)
-    described_class.new(key: 'foo', name: 'foo', project: nil, category: :Other, content: content)
+    described_class.new(key: 'foo', name: 'foo', category: :Other, content: content)
   end
 end

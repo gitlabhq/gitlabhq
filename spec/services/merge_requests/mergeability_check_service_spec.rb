@@ -167,25 +167,6 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
       end
     end
 
-    context 'disabled merge ref sync feature flag' do
-      before do
-        stub_feature_flags(merge_ref_auto_sync: false)
-      end
-
-      it 'returns error and no payload' do
-        result = subject
-
-        expect(result).to be_a(ServiceResponse)
-        expect(result.error?).to be(true)
-        expect(result.message).to eq('Merge ref is outdated due to disabled feature')
-        expect(result.payload).to be_empty
-      end
-
-      it 'ignores merge-ref and updates merge status' do
-        expect { subject }.to change(merge_request, :merge_status).from('unchecked').to('can_be_merged')
-      end
-    end
-
     context 'when broken' do
       before do
         expect(merge_request).to receive(:broken?) { true }
@@ -304,28 +285,6 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
 
     context 'recheck enforced' do
       subject { described_class.new(merge_request).execute(recheck: true) }
-
-      context 'when MR is mergeable and merge-ref auto-sync is disabled' do
-        before do
-          stub_feature_flags(merge_ref_auto_sync: false)
-          merge_request.mark_as_mergeable!
-        end
-
-        it 'returns ServiceResponse.error' do
-          result = subject
-
-          expect(result).to be_a(ServiceResponse)
-          expect(result.error?).to be(true)
-          expect(result.message).to eq('Merge ref is outdated due to disabled feature')
-          expect(result.payload).to be_empty
-        end
-
-        it 'merge status is not changed' do
-          subject
-
-          expect(merge_request.merge_status).to eq('can_be_merged')
-        end
-      end
 
       context 'when MR is marked as mergeable, but repo is not mergeable and MR is not opened' do
         before do
