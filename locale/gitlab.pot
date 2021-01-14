@@ -15042,6 +15042,9 @@ msgstr ""
 msgid "Incidents|Must start with http or https"
 msgstr ""
 
+msgid "Incidents|There was an issue deleting the image."
+msgstr ""
+
 msgid "Incidents|There was an issue loading metric images."
 msgstr ""
 
@@ -15052,6 +15055,12 @@ msgid "Incidents|You can optionally add a URL to link users to the original grap
 msgstr ""
 
 msgid "Incident|Alert details"
+msgstr ""
+
+msgid "Incident|Are you sure you wish to delete this image?"
+msgstr ""
+
+msgid "Incident|Deleting %{filename}"
 msgstr ""
 
 msgid "Incident|Metrics"

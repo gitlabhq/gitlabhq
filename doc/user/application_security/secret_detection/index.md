@@ -53,6 +53,7 @@ The [default ruleset provided by Gitleaks](https://gitlab.com/gitlab-org/securit
   - Twitter API
 - Cloud SaaS vendors:
   - GitHub API
+  - Shopify API
   - Slack Token
   - Slack Webhook
   - Stripe API

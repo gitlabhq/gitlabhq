@@ -68,6 +68,10 @@ the official analyzers.
 
 ### Selecting specific analyzers
 
+WARNING:
+`SAST_DEFAULT_ANALYZERS` is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50872) in GitLab 13.8,
+and is scheduled for [removal in GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/290777).
+
 You can select the official analyzers you want to run. Here's how to enable
 `bandit` and `flawfinder` while disabling all the other default ones.
 In `.gitlab-ci.yml` define:
@@ -83,9 +87,9 @@ variables:
 `bandit` runs first. When merging the reports, SAST
 removes the duplicates and keeps the `bandit` entries.
 
-### Disabling default analyzers
+### Disabling all default analyzers
 
-Setting `SAST_DEFAULT_ANALYZERS` to an empty string disables all the official
+Setting `SAST_DISABLED` to `true` disables all the official
 default analyzers. In `.gitlab-ci.yml` define:
 
 ```yaml
@@ -93,10 +97,24 @@ include:
   - template: Security/SAST.gitlab-ci.yml
 
 variables:
-  SAST_DEFAULT_ANALYZERS: ""
+  SAST_DISABLED: true
 ```
 
 That's needed when one totally relies on [custom analyzers](#custom-analyzers).
+
+### Disabling specific default analyzers
+
+Set `SAST_EXCLUDED_ANALYZERS` to a comma-delimited string that includes the official
+default analyzers that you want to avoid running. In `.gitlab-ci.yml` define the
+following to prevent the `eslint` analyzer from running:
+
+```yaml
+include:
+  - template: Security/SAST.gitlab-ci.yml
+
+variables:
+  SAST_EXCLUDED_ANALYZERS: "eslint"
+```
 
 ## Custom Analyzers
 

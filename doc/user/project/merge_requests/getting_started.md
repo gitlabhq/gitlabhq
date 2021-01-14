@@ -62,7 +62,7 @@ request's page at the top-right side:
 - Enable the [squash commits when merge request is accepted](squash_and_merge.md) option to combine all the commits into one before merging, thus keep a clean commit history in your repository.
 - Set the merge request as a [**Draft**](work_in_progress_merge_requests.md) to avoid accidental merges before it is ready.
 
-Once you have created the merge request, you can also:
+After you have created the merge request, you can also:
 
 - [Discuss](../../discussions/index.md) your implementation with your team in the merge request thread.
 - [Perform inline code reviews](reviewing_and_managing_merge_requests.md#perform-inline-code-reviews).
@@ -70,7 +70,7 @@ Once you have created the merge request, you can also:
 - Preview continuous integration [pipelines on the merge request widget](reviewing_and_managing_merge_requests.md#pipeline-status-in-merge-requests-widgets).
 - Preview how your changes look directly on your deployed application with [Review Apps](reviewing_and_managing_merge_requests.md#live-preview-with-review-apps).
 - [Allow collaboration on merge requests across forks](allow_collaboration.md).
-- Perform a [Review](../../discussions/index.md#merge-request-reviews) in order to create multiple comments on a diff and publish them once you're ready.
+- Perform a [Review](../../discussions/index.md#merge-request-reviews) to create multiple comments on a diff and publish them when you're ready.
 - Add [code suggestions](../../discussions/index.md#suggest-changes) to change the content of merge requests directly into merge request threads, and easily apply them to the codebase directly from the UI.
 - Add a time estimation and the time spent with that merge request with [Time Tracking](../time_tracking.md#time-tracking).
 
@@ -161,6 +161,53 @@ Feature.disable(:merge_request_reviewers)
 Feature.disable(:merge_request_reviewers, Project.find(<project id>))
 ```
 
+#### Reviewer approval rules
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233736) in GitLab 13.8.
+> - It was [deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
+> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51183) in GitLab 13.8.
+> - It's enabled on GitLab.com.
+> - It's recommended for production use.
+> - It can be enabled or disabled for a single project.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-reviewer-approval-rules). **(CORE ONLY)**
+
+When editing the **Reviewers** field in a new or existing merge request, this feature
+displays the name of the matching [approval rule](merge_request_approvals.md#approval-rules)
+below the name of each suggested reviewer. [Code Owners](../code_owners.md) are displayed as `Codeowner` without group detail. We intend to iterate on this feature in future releases.
+
+This example shows reviewers and approval rules when creating a new merge request:
+
+![Reviewer approval rules in new/edit form](img/reviewer_approval_rules_form_v13_8.png)
+
+This example shows reviewers and approval rules in a merge request sidebar:
+
+![Reviewer approval rules in sidebar](img/reviewer_approval_rules_sidebar_v13_8.png)
+
+##### Enable or disable Reviewer Approval Rules **(CORE ONLY)**
+
+Merge Request Reviewers is under development and ready for production use.
+It is deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can opt to disable it.
+
+To enable it:
+
+```ruby
+# For the instance
+Feature.enable(:reviewer_approval_rules)
+# For a single project
+Feature.enable(:reviewer_approval_rules, Project.find(<project id>))
+```
+
+To disable it:
+
+```ruby
+# For the instance
+Feature.disable(:reviewer_approval_rules)
+# For a single project
+Feature.disable(:reviewer_approval_rules, Project.find(<project id>))
+```
+
 ### Merge requests to close issues
 
 If the merge request is being created to resolve an issue, you can
@@ -200,5 +247,5 @@ is set for deletion, the merge request widget displays the
   at once. By doing so, you save pipeline minutes.
 - Delete feature branches on merge or after merging them to keep your repository clean.
 - Take one thing at a time and ship the smallest changes possible. By doing so,
-  you'll have faster reviews and your changes will be less prone to errors.
+  reviews are faster and your changes are less prone to errors.
 - Do not use capital letters nor special chars in branch names.

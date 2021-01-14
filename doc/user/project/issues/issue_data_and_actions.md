@@ -179,7 +179,8 @@ for the issue. Notifications are automatically enabled after you participate in 
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18816) in GitLab 13.8.
 
-Guest users can see a button to copy the email address for the issue. Sending an email to this address creates a comment containing the email body.
+Guest users can see a button in the right sidebar to copy the email address for the issue.
+Sending an email to this address creates a comment containing the email body.
 
 ### Edit
 

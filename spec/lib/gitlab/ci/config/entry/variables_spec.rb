@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Config::Entry::Variables do
   let(:metadata) { {} }
 
-  subject { described_class.new(config, metadata) }
+  subject { described_class.new(config, **metadata) }
 
   shared_examples 'valid config' do
     describe '#value' do

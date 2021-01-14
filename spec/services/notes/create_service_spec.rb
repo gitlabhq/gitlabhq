@@ -120,7 +120,7 @@ RSpec.describe Notes::CreateService do
           end
 
           it 'tracks merge request usage data' do
-            expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter).to receive(:track_create_comment_action).with(user: user)
+            expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter).to receive(:track_create_comment_action).with(note: kind_of(Note))
 
             described_class.new(project_with_repo, user, new_opts).execute
           end

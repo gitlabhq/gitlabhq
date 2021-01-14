@@ -98,7 +98,7 @@ module Notes
     end
 
     def track_note_edit_usage_for_merge_requests(note)
-      Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter.track_edit_comment_action(user: note.author)
+      Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter.track_edit_comment_action(note: note)
     end
   end
 end

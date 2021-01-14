@@ -15,6 +15,9 @@ module Gitlab
       MR_REMOVE_COMMENT_ACTION = 'i_code_review_user_remove_mr_comment'
       MR_CREATE_REVIEW_NOTE_ACTION = 'i_code_review_user_create_review_note'
       MR_PUBLISH_REVIEW_ACTION = 'i_code_review_user_publish_review'
+      MR_CREATE_MULTILINE_COMMENT_ACTION = 'i_code_review_user_create_multiline_mr_comment'
+      MR_EDIT_MULTILINE_COMMENT_ACTION = 'i_code_review_user_edit_multiline_mr_comment'
+      MR_REMOVE_MULTILINE_COMMENT_ACTION = 'i_code_review_user_remove_multiline_mr_comment'
 
       class << self
         def track_mr_diffs_action(merge_request:)
@@ -42,16 +45,19 @@ module Gitlab
           track_unique_action_by_user(MR_REOPEN_ACTION, user)
         end
 
-        def track_create_comment_action(user:)
-          track_unique_action_by_user(MR_CREATE_COMMENT_ACTION, user)
+        def track_create_comment_action(note:)
+          track_unique_action_by_user(MR_CREATE_COMMENT_ACTION, note.author)
+          track_multiline_unique_action(MR_CREATE_MULTILINE_COMMENT_ACTION, note)
         end
 
-        def track_edit_comment_action(user:)
-          track_unique_action_by_user(MR_EDIT_COMMENT_ACTION, user)
+        def track_edit_comment_action(note:)
+          track_unique_action_by_user(MR_EDIT_COMMENT_ACTION, note.author)
+          track_multiline_unique_action(MR_EDIT_MULTILINE_COMMENT_ACTION, note)
         end
 
-        def track_remove_comment_action(user:)
-          track_unique_action_by_user(MR_REMOVE_COMMENT_ACTION, user)
+        def track_remove_comment_action(note:)
+          track_unique_action_by_user(MR_REMOVE_COMMENT_ACTION, note.author)
+          track_multiline_unique_action(MR_REMOVE_MULTILINE_COMMENT_ACTION, note)
         end
 
         def track_create_review_note_action(user:)
@@ -76,6 +82,12 @@ module Gitlab
 
         def track_unique_action(action, value)
           Gitlab::UsageDataCounters::HLLRedisCounter.track_usage_event(action, value)
+        end
+
+        def track_multiline_unique_action(action, note)
+          return unless note.is_a?(DiffNote) && note.multiline?
+
+          track_unique_action_by_user(action, note.author)
         end
       end
     end

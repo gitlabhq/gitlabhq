@@ -460,7 +460,7 @@ and above.
 There are a few limitations compared to project wikis:
 
 - Git LFS is not supported.
-- Group wikis are not included in global search, group exports, backups, and Geo replication.
+- Group wikis are not included in global search, group exports, and Geo replication.
 - Changes to group wikis don't show up in the group's activity feed.
 - Group wikis [can't be moved](../../api/project_repository_storage_moves.md#limitations) using the project
   repository moves API.

@@ -226,10 +226,10 @@ class BackportEnterpriseSchema < ActiveRecord::Migration[5.0]
     end
   end
 
-  def create_table_if_not_exists(name, *args, &block)
+  def create_table_if_not_exists(name, **args, &block)
     return if table_exists?(name)
 
-    create_table(name, *args, &block)
+    create_table(name, **args, &block)
   end
 
   def add_concurrent_foreign_key(source, target, column:, on_delete: nil, name: nil)

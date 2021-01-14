@@ -1165,9 +1165,9 @@ module Gitlab
         Arel::Nodes::SqlLiteral.new(replace.to_sql)
       end
 
-      def remove_foreign_key_if_exists(*args)
-        if foreign_key_exists?(*args)
-          remove_foreign_key(*args)
+      def remove_foreign_key_if_exists(...)
+        if foreign_key_exists?(...)
+          remove_foreign_key(...)
         end
       end
 

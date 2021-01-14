@@ -752,4 +752,62 @@ RSpec.describe Gitlab::Diff::Position do
       expect(subject.file_hash).to eq(Digest::SHA1.hexdigest(subject.file_path))
     end
   end
+
+  describe '#multiline?' do
+    let(:end_line_code) { "ab09011fa121d0a2bb9fa4ca76094f2482b902b7_#{end_old_line}_#{end_new_line}" }
+
+    let(:line_range) do
+      {
+        "start" => {
+          "line_code" => "ab09011fa121d0a2bb9fa4ca76094f2482b902b7_18_18",
+          "type" => nil,
+          "old_line" => 18,
+          "new_line" => 18
+        },
+         "end" => {
+          "line_code" => end_line_code,
+          "type" => nil,
+          "old_line" => end_old_line,
+          "new_line" => end_new_line
+        }
+      }
+    end
+
+    subject(:multiline) do
+      described_class.new(
+        line_range: line_range,
+        position_type: position_type
+      )
+    end
+
+    let(:end_old_line) { 20 }
+    let(:end_new_line) { 20 }
+
+    context 'when the position type is text' do
+      let(:position_type) { "text" }
+
+      context 'when the start lines equal the end lines' do
+        let(:end_old_line) { 18 }
+        let(:end_new_line) { 18 }
+
+        it "returns true" do
+          expect(subject.multiline?).to be_falsey
+        end
+      end
+
+      context 'when the start lines do not equal the end lines' do
+        it "returns true" do
+          expect(subject.multiline?).to be_truthy
+        end
+      end
+    end
+
+    context 'when the position type is not text' do
+      let(:position_type) { "image" }
+
+      it "returns false" do
+        expect(subject.multiline?).to be_falsey
+      end
+    end
+  end
 end

@@ -17,7 +17,6 @@ class Projects::PipelinesController < Projects::ApplicationController
     push_frontend_feature_flag(:new_pipeline_form, project, default_enabled: true)
     push_frontend_feature_flag(:graphql_pipeline_header, project, type: :development, default_enabled: false)
     push_frontend_feature_flag(:graphql_pipeline_details, project, type: :development, default_enabled: false)
-    push_frontend_feature_flag(:graphql_pipeline_analytics, project, type: :development)
     push_frontend_feature_flag(:new_pipeline_form_prefilled_vars, project, type: :development, default_enabled: true)
   end
   before_action :ensure_pipeline, only: [:show]
@@ -187,23 +186,6 @@ class Projects::PipelinesController < Projects::ApplicationController
 
       format.json { head :no_content }
     end
-  end
-
-  def charts
-    @charts = {}
-    @counts = {}
-
-    return if Feature.enabled?(:graphql_pipeline_analytics)
-
-    @charts[:week] = Gitlab::Ci::Charts::WeekChart.new(project)
-    @charts[:month] = Gitlab::Ci::Charts::MonthChart.new(project)
-    @charts[:year] = Gitlab::Ci::Charts::YearChart.new(project)
-    @charts[:pipeline_times] = Gitlab::Ci::Charts::PipelineTime.new(project)
-
-    @counts[:total] = @project.all_pipelines.count(:all)
-    @counts[:success] = @project.all_pipelines.success.count(:all)
-    @counts[:failed] = @project.all_pipelines.failed.count(:all)
-    @counts[:total_duration] = @project.all_pipelines.total_duration
   end
 
   def test_report

@@ -1,13 +1,4 @@
 - page_title _('CI / CD Analytics')
 
-- if Feature.enabled?(:graphql_pipeline_analytics)
-  #js-project-pipelines-charts-app{ data: { project_path: @project.full_path,
-    should_render_deployment_frequency_charts: should_render_deployment_frequency_charts.to_s } }
-- else
-  #js-project-pipelines-charts-app{ data: { counts: @counts, success_ratio: success_ratio(@counts),
-    times_chart: { labels: @charts[:pipeline_times].labels, values: @charts[:pipeline_times].pipeline_times },
-    last_week_chart: { labels: @charts[:week].labels, totals: @charts[:week].total, success: @charts[:week].success },
-    last_month_chart: { labels: @charts[:month].labels, totals: @charts[:month].total, success: @charts[:month].success },
-    last_year_chart: { labels: @charts[:year].labels, totals: @charts[:year].total, success: @charts[:year].success },
-    project_path: @project.full_path,
-    should_render_deployment_frequency_charts: should_render_deployment_frequency_charts.to_s } }
+#js-project-pipelines-charts-app{ data: { project_path: @project.full_path,
+  should_render_deployment_frequency_charts: should_render_deployment_frequency_charts.to_s } }

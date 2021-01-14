@@ -61,6 +61,7 @@ including:
 - Container Registry images
 - GitLab Pages content
 - Snippets
+- Group wikis **(PREMIUM)**
 
 WARNING:
 GitLab does not back up any configuration files, SSL certificates, or system

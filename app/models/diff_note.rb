@@ -111,6 +111,10 @@ class DiffNote < Note
     super.merge(suggestions_filter_enabled: true)
   end
 
+  def multiline?
+    position&.multiline?
+  end
+
   private
 
   def enqueue_diff_file_creation_job

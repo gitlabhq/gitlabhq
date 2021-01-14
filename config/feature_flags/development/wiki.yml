@@ -4,5 +4,5 @@ introduced_by_url:
 rollout_issue_url: 
 milestone: 
 type: development
-group: 
+group: group::editor
 default_enabled: true

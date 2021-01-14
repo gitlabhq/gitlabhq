@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :clean_gitlab_redis_shared_state do
   let(:merge_request) { build(:merge_request, id: 1) }
   let(:user) { build(:user, id: 1) }
+  let(:note) { build(:note, author: user) }
 
   shared_examples_for 'a tracked merge request unique event' do
     specify do
@@ -73,26 +74,62 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
   end
 
   describe '.track_create_comment_action' do
-    subject { described_class.track_create_comment_action(user: user) }
+    subject { described_class.track_create_comment_action(note: note) }
 
     it_behaves_like 'a tracked merge request unique event' do
       let(:action) { described_class::MR_CREATE_COMMENT_ACTION }
     end
+
+    context 'when the note is multiline diff note' do
+      let(:note) { build(:diff_note_on_merge_request, author: user) }
+
+      before do
+        allow(note).to receive(:multiline?).and_return(true)
+      end
+
+      it_behaves_like 'a tracked merge request unique event' do
+        let(:action) { described_class::MR_CREATE_MULTILINE_COMMENT_ACTION }
+      end
+    end
   end
 
   describe '.track_edit_comment_action' do
-    subject { described_class.track_edit_comment_action(user: user) }
+    subject { described_class.track_edit_comment_action(note: note) }
 
     it_behaves_like 'a tracked merge request unique event' do
       let(:action) { described_class::MR_EDIT_COMMENT_ACTION }
     end
+
+    context 'when the note is multiline diff note' do
+      let(:note) { build(:diff_note_on_merge_request, author: user) }
+
+      before do
+        allow(note).to receive(:multiline?).and_return(true)
+      end
+
+      it_behaves_like 'a tracked merge request unique event' do
+        let(:action) { described_class::MR_EDIT_MULTILINE_COMMENT_ACTION }
+      end
+    end
   end
 
   describe '.track_remove_comment_action' do
-    subject { described_class.track_remove_comment_action(user: user) }
+    subject { described_class.track_remove_comment_action(note: note) }
 
     it_behaves_like 'a tracked merge request unique event' do
       let(:action) { described_class::MR_REMOVE_COMMENT_ACTION }
+    end
+
+    context 'when the note is multiline diff note' do
+      let(:note) { build(:diff_note_on_merge_request, author: user) }
+
+      before do
+        allow(note).to receive(:multiline?).and_return(true)
+      end
+
+      it_behaves_like 'a tracked merge request unique event' do
+        let(:action) { described_class::MR_REMOVE_MULTILINE_COMMENT_ACTION }
+      end
     end
   end
 

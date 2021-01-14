@@ -2211,3 +2211,26 @@ Example response:
     }
 ]
 ```
+
+## Delete metric image
+
+Available only for Incident issues.
+
+```plaintext
+DELETE /projects/:id/issues/:issue_iid/metric_images/:image_id
+```
+
+| Attribute   | Type    | Required | Description                          |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue |
+| `image_id` | integer | yes      | The ID of the image |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" --request DELETE "https://gitlab.example.com/api/v4/projects/5/issues/93/metric_images/1"
+```
+
+Can return the following status codes:
+
+- `204 No Content`, if the image was deleted successfully.
+- `400 Bad Request`, if the image could not be deleted.

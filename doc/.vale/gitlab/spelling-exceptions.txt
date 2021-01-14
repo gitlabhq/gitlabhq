@@ -94,6 +94,7 @@ crosslinking
 crosslinks
 Crossplane
 CrowdIn
+CSV
 Dangerfile
 datetime
 Debian

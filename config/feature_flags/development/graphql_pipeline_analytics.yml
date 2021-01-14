@@ -1,8 +1,0 @@
----
-name: graphql_pipeline_analytics
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48267
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/290153
-milestone: '13.7'
-type: development
-group: group::continuos integration
-default_enabled: false
