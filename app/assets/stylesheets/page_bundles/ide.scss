@@ -179,6 +179,10 @@ $ide-commit-header-height: 48px;
     overflow: auto;
     padding: $gl-padding;
     background-color: var(--ide-empty-state-background, transparent);
+
+    .md {
+      max-width: $limited-layout-width;
+    }
   }
 
   .file-container {

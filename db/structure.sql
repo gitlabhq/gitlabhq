@@ -15572,7 +15572,8 @@ CREATE TABLE project_ci_cd_settings (
     forward_deployment_enabled boolean,
     merge_trains_enabled boolean DEFAULT false,
     auto_rollback_enabled boolean DEFAULT false NOT NULL,
-    keep_latest_artifact boolean DEFAULT true NOT NULL
+    keep_latest_artifact boolean DEFAULT true NOT NULL,
+    restrict_user_defined_variables boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE project_ci_cd_settings_id_seq

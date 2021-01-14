@@ -5,6 +5,9 @@ module Gitlab
     module Pipeline
       module Chain
         class Build < Chain::Base
+          include Gitlab::Allowable
+          include Chain::Helpers
+
           def perform!
             @pipeline.assign_attributes(
               source: @command.source,
@@ -20,13 +23,34 @@ module Gitlab
               pipeline_schedule: @command.schedule,
               merge_request: @command.merge_request,
               external_pull_request: @command.external_pull_request,
-              variables_attributes: Array(@command.variables_attributes),
-              locked: @command.project.latest_pipeline_locked
+              locked: @command.project.latest_pipeline_locked,
+              variables_attributes: variables_attributes
             )
           end
 
           def break?
-            false
+            @pipeline.errors.any?
+          end
+
+          private
+
+          def variables_attributes
+            variables = Array(@command.variables_attributes)
+
+            # We allow parent pipelines to pass variables to child pipelines since
+            # these variables are coming from internal configurations. We will check
+            # permissions to :set_pipeline_variables when those are injected upstream,
+            # to the parent pipeline.
+            # In other scenarios (e.g. multi-project pipelines or run pipeline via UI)
+            # the variables are provided from the outside and those should be guarded.
+            return variables if @command.creates_child_pipeline?
+
+            if variables.present? && !can?(@command.current_user, :set_pipeline_variables, @command.project)
+              error("Insufficient permissions to set pipeline variables")
+              variables = []
+            end
+
+            variables
           end
         end
       end

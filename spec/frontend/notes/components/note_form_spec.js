@@ -1,5 +1,5 @@
+import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import { shallowMount } from '@vue/test-utils';
 import createStore from '~/notes/stores';
 import NoteForm from '~/notes/components/note_form.vue';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
@@ -19,7 +19,7 @@ describe('issue_note_form component', () => {
   let props;
 
   const createComponentWrapper = () => {
-    return shallowMount(NoteForm, {
+    return mount(NoteForm, {
       store,
       propsData: props,
     });

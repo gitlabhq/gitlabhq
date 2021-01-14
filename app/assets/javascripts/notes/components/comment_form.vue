@@ -17,18 +17,17 @@ import {
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
-import NoteableWarning from '~/vue_shared/components/notes/noteable_warning.vue';
 import markdownField from '~/vue_shared/components/markdown/field.vue';
 import userAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import noteSignedOutWidget from './note_signed_out_widget.vue';
 import discussionLockedWidget from './discussion_locked_widget.vue';
 import issuableStateMixin from '../mixins/issuable_state';
+import CommentFieldLayout from './comment_field_layout.vue';
 
 export default {
   name: 'CommentForm',
   components: {
-    NoteableWarning,
     noteSignedOutWidget,
     discussionLockedWidget,
     markdownField,
@@ -36,6 +35,7 @@ export default {
     GlButton,
     TimelineEntryItem,
     GlIcon,
+    CommentFieldLayout,
   },
   mixins: [glFeatureFlagsMixin(), issuableStateMixin],
   props: {
@@ -287,6 +287,9 @@ export default {
         Autosize.update(this.$refs.textarea);
       });
     },
+    hasEmailParticipants() {
+      return this.getNoteableData.issue_email_participants?.length;
+    },
   },
 };
 </script>
@@ -309,46 +312,41 @@ export default {
         </div>
         <div class="timeline-content timeline-content-form">
           <form ref="commentForm" class="new-note common-note-form gfm-form js-main-target-form">
-            <div class="error-alert"></div>
-
-            <noteable-warning
-              v-if="hasWarning(getNoteableData)"
-              :is-locked="isLocked(getNoteableData)"
-              :is-confidential="isConfidential(getNoteableData)"
+            <comment-field-layout
+              :with-alert-container="true"
+              :noteable-data="getNoteableData"
               :noteable-type="noteableType"
-              :locked-noteable-docs-path="lockedIssueDocsPath"
-              :confidential-noteable-docs-path="confidentialIssueDocsPath"
-            />
-
-            <markdown-field
-              ref="markdownField"
-              :is-submitting="isSubmitting"
-              :markdown-preview-path="markdownPreviewPath"
-              :markdown-docs-path="markdownDocsPath"
-              :quick-actions-docs-path="quickActionsDocsPath"
-              :add-spacing-classes="false"
-              :textarea-value="note"
             >
-              <textarea
-                id="note-body"
-                ref="textarea"
-                slot="textarea"
-                v-model="note"
-                dir="auto"
-                :disabled="isSubmitting"
-                name="note[note]"
-                class="note-textarea js-vue-comment-form js-note-text js-gfm-input js-autosize markdown-area"
-                data-qa-selector="comment_field"
-                data-testid="comment-field"
-                :data-supports-quick-actions="!glFeatures.tributeAutocomplete"
-                :aria-label="__('Description')"
-                :placeholder="__('Write a comment or drag your files here…')"
-                @keydown.up="editCurrentUserLastNote()"
-                @keydown.meta.enter="handleSave()"
-                @keydown.ctrl.enter="handleSave()"
-              ></textarea>
-            </markdown-field>
-
+              <markdown-field
+                ref="markdownField"
+                :is-submitting="isSubmitting"
+                :markdown-preview-path="markdownPreviewPath"
+                :markdown-docs-path="markdownDocsPath"
+                :quick-actions-docs-path="quickActionsDocsPath"
+                :add-spacing-classes="false"
+                :textarea-value="note"
+              >
+                <template #textarea>
+                  <textarea
+                    id="note-body"
+                    ref="textarea"
+                    v-model="note"
+                    dir="auto"
+                    :disabled="isSubmitting"
+                    name="note[note]"
+                    class="note-textarea js-vue-comment-form js-note-text js-gfm-input js-autosize markdown-area"
+                    data-qa-selector="comment_field"
+                    data-testid="comment-field"
+                    :data-supports-quick-actions="!glFeatures.tributeAutocomplete"
+                    :aria-label="__('Description')"
+                    :placeholder="__('Write a comment or drag your files here…')"
+                    @keydown.up="editCurrentUserLastNote()"
+                    @keydown.meta.enter="handleSave()"
+                    @keydown.ctrl.enter="handleSave()"
+                  ></textarea>
+                </template>
+              </markdown-field>
+            </comment-field-layout>
             <div class="note-form-actions">
               <div
                 class="btn-group gl-mr-3 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"

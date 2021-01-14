@@ -79,6 +79,10 @@ module Gitlab
             bridge&.parent_pipeline
           end
 
+          def creates_child_pipeline?
+            bridge&.triggers_child_pipeline?
+          end
+
           def metrics
             @metrics ||= ::Gitlab::Ci::Pipeline::Metrics.new
           end

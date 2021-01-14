@@ -30,7 +30,7 @@ job_test_2:
 
 job_build:
   stage: build
-  script: 
+  script:
     - echo "build"
   needs: ["job_test_2"]
 `;

@@ -2,6 +2,7 @@ import { mount, shallowMount } from '@vue/test-utils';
 import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
 import StageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
 import LinkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines_column.vue';
+import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
 import { GRAPHQL } from '~/pipelines/components/graph/constants';
 import {
   generateResponse,
@@ -13,6 +14,7 @@ describe('graph component', () => {
   let wrapper;
 
   const findLinkedColumns = () => wrapper.findAll(LinkedPipelinesColumn);
+  const findLinksLayer = () => wrapper.find(LinksLayer);
   const findStageColumns = () => wrapper.findAll(StageColumnComponent);
 
   const defaultProps = {
@@ -27,6 +29,9 @@ describe('graph component', () => {
       },
       provide: {
         dataMethod: GRAPHQL,
+      },
+      stubs: {
+        'links-inner': true,
       },
     });
   };
@@ -43,6 +48,10 @@ describe('graph component', () => {
 
     it('renders the main columns in the graph', () => {
       expect(findStageColumns()).toHaveLength(defaultProps.pipeline.stages.length);
+    });
+
+    it('renders the links layer', () => {
+      expect(findLinksLayer().exists()).toBe(true);
     });
 
     describe('when column requests a refresh', () => {

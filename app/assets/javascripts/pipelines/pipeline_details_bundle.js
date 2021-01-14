@@ -158,7 +158,7 @@ export default async function () {
       );
 
       const { pipelineProjectPath, pipelineIid } = dataset;
-      createPipelinesDetailApp(SELECTORS.PIPELINE_DETAILS, pipelineProjectPath, pipelineIid);
+      createPipelinesDetailApp(SELECTORS.PIPELINE_GRAPH, pipelineProjectPath, pipelineIid);
     } catch {
       Flash(__('An error occurred while loading the pipeline.'));
     }

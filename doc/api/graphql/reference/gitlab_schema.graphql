@@ -16521,38 +16521,278 @@ input OncallUserInputType {
 }
 
 """
-Represents a package
+Represents a package in the Package Registry
 """
 type Package {
   """
-  The created date
+  The created date.
   """
   createdAt: Time!
 
   """
-  The ID of the package
+  The ID of the package.
   """
   id: ID!
 
   """
-  The name of the package
+  The name of the package.
   """
   name: String!
 
   """
-  The type of the package
+  The type of the package.
   """
   packageType: PackageTypeEnum!
 
   """
-  The update date
+  Pipelines that built the package.
+  """
+  pipelines(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): PipelineConnection
+
+  """
+  Project where the package is stored.
+  """
+  project: Project!
+
+  """
+  The package tags.
+  """
+  tags(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): PackageTagConnection
+
+  """
+  The updated date.
   """
   updatedAt: Time!
 
   """
-  The version of the package
+  The version of the package.
   """
   version: String
+
+  """
+  The other versions of the package.
+  """
+  versions(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): PackageConnection
+}
+
+"""
+Details of a Composer package
+"""
+type PackageComposerDetails {
+  """
+  The Composer metadatum.
+  """
+  composerMetadatum: PackageComposerMetadatumType!
+
+  """
+  The created date.
+  """
+  createdAt: Time!
+
+  """
+  The ID of the package.
+  """
+  id: ID!
+
+  """
+  The name of the package.
+  """
+  name: String!
+
+  """
+  The type of the package.
+  """
+  packageType: PackageTypeEnum!
+
+  """
+  Pipelines that built the package.
+  """
+  pipelines(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): PipelineConnection
+
+  """
+  Project where the package is stored.
+  """
+  project: Project!
+
+  """
+  The package tags.
+  """
+  tags(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): PackageTagConnection
+
+  """
+  The updated date.
+  """
+  updatedAt: Time!
+
+  """
+  The version of the package.
+  """
+  version: String
+
+  """
+  The other versions of the package.
+  """
+  versions(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): PackageConnection
+}
+
+"""
+Represents a composer JSON file
+"""
+type PackageComposerJsonType {
+  """
+  The license set in the Composer JSON file.
+  """
+  license: String
+
+  """
+  The name set in the Composer JSON file.
+  """
+  name: String
+
+  """
+  The type set in the Composer JSON file.
+  """
+  type: String
+
+  """
+  The version set in the Composer JSON file.
+  """
+  version: String
+}
+
+"""
+Composer metadatum
+"""
+type PackageComposerMetadatumType {
+  """
+  Data of the Composer JSON file.
+  """
+  composerJson: PackageComposerJsonType!
+
+  """
+  Target SHA of the package.
+  """
+  targetSha: String!
 }
 
 """
@@ -16686,6 +16926,66 @@ type PackageSettings {
   mavenDuplicatesAllowed: Boolean!
 }
 
+"""
+Represents a package tag
+"""
+type PackageTag {
+  """
+  The created date.
+  """
+  createdAt: Time!
+
+  """
+  The ID of the tag.
+  """
+  id: ID!
+
+  """
+  The name of the tag.
+  """
+  name: String!
+
+  """
+  The updated date.
+  """
+  updatedAt: Time!
+}
+
+"""
+The connection type for PackageTag.
+"""
+type PackageTagConnection {
+  """
+  A list of edges.
+  """
+  edges: [PackageTagEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [PackageTag]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type PackageTagEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: PackageTag
+}
+
 enum PackageTypeEnum {
   """
   Packages from the Composer package manager
@@ -16732,6 +17032,11 @@ enum PackageTypeEnum {
   """
   PYPI
 }
+
+"""
+Identifier of Packages::Package
+"""
+scalar PackagesPackageID
 
 """
 Information about pagination in a connection.
@@ -19866,6 +20171,16 @@ type Query {
     """
     fullPath: ID!
   ): Namespace
+
+  """
+  Find a composer package
+  """
+  packageComposerDetails(
+    """
+    The global ID of the package.
+    """
+    id: PackagesPackageID!
+  ): PackageComposerDetails
 
   """
   Find a project

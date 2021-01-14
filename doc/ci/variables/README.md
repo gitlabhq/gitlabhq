@@ -594,7 +594,35 @@ WARNING:
 Variables with multi-line values are not supported due to
 limitations with the Auto DevOps scripting environment.
 
-### Override a variable by manually running a pipeline
+### When you can override variables
+
+You can override the value of a variable when:
+
+1. [Manually running](#override-a-variable-by-manually-running-a-pipeline) pipelines in the UI.
+1. Manually creating pipelines [via API](../../api/pipelines.md#create-a-new-pipeline).
+1. Manually playing a job via the UI.
+1. Using [push options](../../user/project/push_options.md#push-options-for-gitlab-cicd).
+1. Manually triggering pipelines with [the API](../triggers/README.md#making-use-of-trigger-variables).
+1. Passing variables to a [downstream pipeline](../multi_project_pipelines.md#passing-variables-to-a-downstream-pipeline).
+
+These pipeline variables declared in these events take [priority over other variables](#priority-of-environment-variables).
+
+#### Restrict who can override variables
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/295234) in GitLab 13.8.
+
+To allow only users with Maintainer role to set these variables, you can use
+[the API](../../api/projects.md#edit-project) to enable the project setting `restrict_user_defined_variables`.
+When a user without Maintainer role tries to run a pipeline with overridden
+variables, an `Insufficient permissions to set pipeline variables` error occurs.
+
+The setting is `disabled` by default.
+
+If you [store your CI configurations in a different repository](../../ci/pipelines/settings.md#custom-ci-configuration-path),
+use this setting for strict control over all aspects of the environment
+the pipeline runs in.
+
+#### Override a variable by manually running a pipeline
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44059) in GitLab 10.8.
 

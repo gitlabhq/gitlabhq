@@ -1,0 +1,5 @@
+---
+title: Prevent user-defined variables from being used by non-maintainers
+merge_request: 51682
+author:
+type: security

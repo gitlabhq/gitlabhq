@@ -256,7 +256,7 @@ export default {
           return {
             ...filter,
             value: {
-              data: stripQuotes(valueString),
+              data: typeof valueString === 'string' ? stripQuotes(valueString) : valueString,
               operator: filter.value.operator,
             },
           };

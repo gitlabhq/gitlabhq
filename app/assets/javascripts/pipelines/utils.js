@@ -6,8 +6,6 @@ export const validateParams = (params) => {
   return pickBy(params, (val, key) => SUPPORTED_FILTER_PARAMETERS.includes(key) && val);
 };
 
-export const createUniqueLinkId = (stageName, jobName) => `${stageName}-${jobName}`;
-
 /**
  * This function takes the stages array and transform it
  * into a hash where each key is a job name and the job data

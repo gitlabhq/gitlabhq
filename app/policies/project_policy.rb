@@ -135,6 +135,10 @@ class ProjectPolicy < BasePolicy
     ::Feature.enabled?(:build_service_proxy, @subject)
   end
 
+  condition(:user_defined_variables_allowed) do
+    !@subject.restrict_user_defined_variables?
+  end
+
   with_scope :subject
   condition(:packages_disabled) { !@subject.packages_enabled }
 
@@ -614,6 +618,10 @@ class ProjectPolicy < BasePolicy
 
   rule { resource_access_token_available & can?(:admin_project) }.policy do
     enable :admin_resource_access_tokens
+  end
+
+  rule { user_defined_variables_allowed | can?(:maintainer_access) }.policy do
+    enable :set_pipeline_variables
   end
 
   private

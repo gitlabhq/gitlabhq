@@ -74,6 +74,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    pipelineId: {
+      type: Number,
+      required: false,
+      default: -1,
+    },
   },
   computed: {
     boundary() {
@@ -84,6 +89,9 @@ export default {
     },
     hasDetails() {
       return accessValue(this.dataMethod, 'hasDetails', this.status);
+    },
+    computedJobId() {
+      return this.pipelineId > -1 ? `${this.job.name}-${this.pipelineId}` : '';
     },
     status() {
       return this.job && this.job.status ? this.job.status : {};
@@ -146,6 +154,7 @@ export default {
 </script>
 <template>
   <div
+    :id="computedJobId"
     class="ci-job-component gl-display-flex gl-align-items-center gl-justify-content-space-between"
     data-qa-selector="job_item_container"
   >

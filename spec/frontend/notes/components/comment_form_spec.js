@@ -181,7 +181,7 @@ describe('issue_comment_form component', () => {
 
       describe('edit mode', () => {
         beforeEach(() => {
-          mountComponent();
+          mountComponent({ mountFunction: mount });
         });
 
         it('should enter edit mode when arrow up is pressed', () => {
@@ -200,7 +200,7 @@ describe('issue_comment_form component', () => {
 
       describe('event enter', () => {
         beforeEach(() => {
-          mountComponent();
+          mountComponent({ mountFunction: mount });
         });
 
         it('should save note when cmd+enter is pressed', () => {
@@ -366,17 +366,6 @@ describe('issue_comment_form component', () => {
 
           expect(refreshUserMergeRequestCounts).toHaveBeenCalled();
         });
-      });
-    });
-
-    describe('issue is confidential', () => {
-      it('shows information warning', () => {
-        mountComponent({
-          noteableData: { ...noteableDataMock, confidential: true },
-          mountFunction: mount,
-        });
-
-        expect(wrapper.find('[data-testid="confidential-warning"]').exists()).toBe(true);
       });
     });
   });

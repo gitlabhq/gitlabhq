@@ -1,4 +1,4 @@
-import { createUniqueLinkId } from '~/pipelines/utils';
+import { createUniqueLinkId } from '~/pipelines/components/graph_shared/drawing_utils';
 
 export const yamlString = `stages:
 - empty

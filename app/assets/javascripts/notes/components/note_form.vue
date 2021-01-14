@@ -3,19 +3,19 @@
 import { mapGetters, mapActions, mapState } from 'vuex';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import eventHub from '../event_hub';
-import NoteableWarning from '~/vue_shared/components/notes/noteable_warning.vue';
 import markdownField from '~/vue_shared/components/markdown/field.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
 import { __, sprintf } from '~/locale';
 import { getDraft, updateDraft } from '~/lib/utils/autosave';
+import CommentFieldLayout from './comment_field_layout.vue';
 
 export default {
   name: 'NoteForm',
   components: {
-    NoteableWarning,
     markdownField,
+    CommentFieldLayout,
   },
   mixins: [glFeatureFlagsMixin(), issuableStateMixin, resolvable],
   props: {
@@ -303,6 +303,9 @@ export default {
 
       this.$emit('handleFormUpdateAddToReview', this.updatedNoteBody, shouldResolve);
     },
+    hasEmailParticipants() {
+      return this.getNoteableData.issue_email_participants?.length;
+    },
   },
 };
 </script>
@@ -316,46 +319,41 @@ export default {
     ></div>
     <div class="flash-container timeline-content"></div>
     <form :data-line-code="lineCode" class="edit-note common-note-form js-quick-submit gfm-form">
-      <noteable-warning
-        v-if="hasWarning(getNoteableData)"
-        :is-locked="isLocked(getNoteableData)"
-        :is-confidential="isConfidential(getNoteableData)"
-        :locked-noteable-docs-path="lockedIssueDocsPath"
-        :confidential-noteable-docs-path="confidentialIssueDocsPath"
-      />
-
-      <markdown-field
-        :markdown-preview-path="markdownPreviewPath"
-        :markdown-docs-path="markdownDocsPath"
-        :quick-actions-docs-path="quickActionsDocsPath"
-        :line="line"
-        :note="discussionNote"
-        :can-suggest="canSuggest"
-        :add-spacing-classes="false"
-        :help-page-path="helpPagePath"
-        :show-suggest-popover="showSuggestPopover"
-        :textarea-value="updatedNoteBody"
-        @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
-      >
-        <textarea
-          id="note_note"
-          ref="textarea"
-          slot="textarea"
-          v-model="updatedNoteBody"
-          :data-supports-quick-actions="!isEditing && !glFeatures.tributeAutocomplete"
-          name="note[note]"
-          class="note-textarea js-gfm-input js-note-text js-autosize markdown-area js-vue-issue-note-form"
-          data-qa-selector="reply_field"
-          dir="auto"
-          :aria-label="__('Description')"
-          :placeholder="__('Write a comment or drag your files here…')"
-          @keydown.meta.enter="handleKeySubmit()"
-          @keydown.ctrl.enter="handleKeySubmit()"
-          @keydown.exact.up="editMyLastNote()"
-          @keydown.exact.esc="cancelHandler(true)"
-          @input="onInput"
-        ></textarea>
-      </markdown-field>
+      <comment-field-layout :noteable-data="getNoteableData">
+        <markdown-field
+          :markdown-preview-path="markdownPreviewPath"
+          :markdown-docs-path="markdownDocsPath"
+          :quick-actions-docs-path="quickActionsDocsPath"
+          :line="line"
+          :note="discussionNote"
+          :can-suggest="canSuggest"
+          :add-spacing-classes="false"
+          :help-page-path="helpPagePath"
+          :show-suggest-popover="showSuggestPopover"
+          :textarea-value="updatedNoteBody"
+          @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
+        >
+          <template #textarea>
+            <textarea
+              id="note_note"
+              ref="textarea"
+              v-model="updatedNoteBody"
+              :data-supports-quick-actions="!isEditing && !glFeatures.tributeAutocomplete"
+              name="note[note]"
+              class="note-textarea js-gfm-input js-note-text js-autosize markdown-area js-vue-issue-note-form"
+              data-qa-selector="reply_field"
+              dir="auto"
+              :aria-label="__('Description')"
+              :placeholder="__('Write a comment or drag your files here…')"
+              @keydown.meta.enter="handleKeySubmit()"
+              @keydown.ctrl.enter="handleKeySubmit()"
+              @keydown.exact.up="editMyLastNote()"
+              @keydown.exact.esc="cancelHandler(true)"
+              @input="onInput"
+            ></textarea>
+          </template>
+        </markdown-field>
+      </comment-field-layout>
       <div class="note-form-actions clearfix">
         <template v-if="showBatchCommentsActions">
           <p v-if="showResolveDiscussionToggle">

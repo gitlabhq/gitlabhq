@@ -401,6 +401,48 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  describe 'set_pipeline_variables' do
+    context 'when user is developer' do
+      let(:current_user) { developer }
+
+      context 'when project allows user defined variables' do
+        before do
+          project.update!(restrict_user_defined_variables: false)
+        end
+
+        it { is_expected.to be_allowed(:set_pipeline_variables) }
+      end
+
+      context 'when project restricts use of user defined variables' do
+        before do
+          project.update!(restrict_user_defined_variables: true)
+        end
+
+        it { is_expected.not_to be_allowed(:set_pipeline_variables) }
+      end
+    end
+
+    context 'when user is maintainer' do
+      let(:current_user) { maintainer }
+
+      context 'when project allows user defined variables' do
+        before do
+          project.update!(restrict_user_defined_variables: false)
+        end
+
+        it { is_expected.to be_allowed(:set_pipeline_variables) }
+      end
+
+      context 'when project restricts use of user defined variables' do
+        before do
+          project.update!(restrict_user_defined_variables: true)
+        end
+
+        it { is_expected.to be_allowed(:set_pipeline_variables) }
+      end
+    end
+  end
+
   context 'support bot' do
     let(:current_user) { User.support_bot }
 

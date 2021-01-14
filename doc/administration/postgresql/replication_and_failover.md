@@ -714,28 +714,6 @@ consul['configuration'] = {
 
 The manual steps for this configuration are the same as for the [example recommended setup](#example-recommended-setup-manual-steps).
 
-### Manual failover procedure for Patroni
-
-While Patroni supports automatic failover, you also have the ability to perform
-a manual one, where you have two slightly different options:
-
-- **Failover**: allows you to perform a manual failover when there are no healthy nodes.
-  You can perform this action in any PostgreSQL node:
-
-  ```shell
-  sudo gitlab-ctl patroni failover
-  ```
-
-- **Switchover**: only works when the cluster is healthy and allows you to schedule a switchover (it can happen immediately).
-  You can perform this action in any PostgreSQL node:
-
-  ```shell
-  sudo gitlab-ctl patroni switchover
-  ```
-
-For further details on this subject, see the
-[Patroni documentation](https://patroni.readthedocs.io/en/latest/rest_api.html#switchover-and-failover-endpoints).
-
 ## Patroni
 
 NOTE:
@@ -827,6 +805,38 @@ Note that stopping or restarting Patroni service on the leader node will trigger
 want to signal Patroni to reload its configuration or restart PostgreSQL process without triggering the failover, you
 must use the `reload` or `restart` sub-commands of `gitlab-ctl patroni` instead. These two sub-commands are wrappers of
 the same `patronictl` commands.
+
+### Manual failover procedure for Patroni
+
+While Patroni supports automatic failover, you also have the ability to perform
+a manual one, where you have two slightly different options:
+
+- **Failover**: allows you to perform a manual failover when there are no healthy nodes.
+  You can perform this action in any PostgreSQL node:
+
+  ```shell
+  sudo gitlab-ctl patroni failover
+  ```
+
+- **Switchover**: only works when the cluster is healthy and allows you to schedule a switchover (it can happen immediately).
+  You can perform this action in any PostgreSQL node:
+
+  ```shell
+  sudo gitlab-ctl patroni switchover
+  ```
+
+For further details on this subject, see the
+[Patroni documentation](https://patroni.readthedocs.io/en/latest/rest_api.html#switchover-and-failover-endpoints).
+
+#### Geo secondary site considerations
+
+Similar to `repmgr`, when a Geo secondary site is replicating from a primary site that uses `Patroni` and `PgBouncer`, [replicating through PgBouncer is not supported](https://github.com/pgbouncer/pgbouncer/issues/382#issuecomment-517911529) and the secondary must replicate directly from the leader node in the `Patroni` cluster. Therefore, when there is an automatic or manual failover in the `Patroni` cluster, you will need to manually re-point your secondary site to replicate from the new leader with:
+
+```shell
+sudo gitlab-ctl replicate-geo-database --host=<new_leader_ip> --replication-slot=<slot_name>
+```
+
+Otherwise, the replication will not happen anymore, even if the original node gets re-added as a follower node. This will re-sync your secondary site database and may take a long time depending on the amount of data to sync. You may also need to run `gitlab-ctl reconfigure` if replication is still not working after re-syncing.
 
 ### Recovering the Patroni cluster
 
@@ -1222,7 +1232,7 @@ When a Geo secondary site is replicating from a primary site that uses `repmgr` 
 sudo gitlab-ctl replicate-geo-database --host=<new_leader_ip> --replication-slot=<slot_name>
 ```
 
-Otherwise, the replication will not happen anymore, even if the original node gets re-added as a follower node. This will re-sync your secondary site database and may take a long time depending on the amount of data to sync.
+Otherwise, the replication will not happen anymore, even if the original node gets re-added as a follower node. This will re-sync your secondary site database and may take a long time depending on the amount of data to sync. You may also need to run `gitlab-ctl reconfigure` if replication is still not working after re-syncing.
 
 ### Repmgr Restore procedure
 

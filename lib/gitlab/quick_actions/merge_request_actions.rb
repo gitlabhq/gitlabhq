@@ -163,16 +163,17 @@ module Gitlab
           end
         end
         explanation do |users|
+          reviewers = reviewers_to_add(users)
           _('Assigns %{reviewer_users_sentence} as %{reviewer_text}.') % { reviewer_users_sentence: reviewer_users_sentence(users),
-                                                                           reviewer_text: 'reviewer'.pluralize(users.size) }
+                                                                           reviewer_text: 'reviewer'.pluralize(reviewers.size) }
         end
         execution_message do |users = nil|
-          if users.blank?
+          reviewers = reviewers_to_add(users)
+          if reviewers.blank?
             _("Failed to assign a reviewer because no user was found.")
           else
-            users = [users.first] unless quick_action_target.allows_multiple_reviewers?
             _('Assigned %{reviewer_users_sentence} as %{reviewer_text}.') % { reviewer_users_sentence: reviewer_users_sentence(users),
-                                                                              reviewer_text: 'reviewer'.pluralize(users.size) }
+                                                                              reviewer_text: 'reviewer'.pluralize(reviewers.size) }
           end
         end
         params do
@@ -186,7 +187,7 @@ module Gitlab
         parse_params do |reviewer_param|
           extract_users(reviewer_param)
         end
-        command :assign_reviewer do |users|
+        command :assign_reviewer, :reviewer do |users|
           next if users.empty?
 
           if quick_action_target.allows_multiple_reviewers?
@@ -228,7 +229,7 @@ module Gitlab
           # When multiple users are assigned, all will be unassigned if multiple reviewers are no longer allowed
           extract_users(unassign_reviewer_param) if quick_action_target.allows_multiple_reviewers?
         end
-        command :unassign_reviewer do |users = nil|
+        command :unassign_reviewer, :remove_reviewer do |users = nil|
           if quick_action_target.allows_multiple_reviewers? && users&.any?
             @updates[:reviewer_ids] ||= quick_action_target.reviewers.map(&:id)
             @updates[:reviewer_ids] -= users.map(&:id)
@@ -239,11 +240,7 @@ module Gitlab
       end
 
       def reviewer_users_sentence(users)
-        if quick_action_target.allows_multiple_reviewers?
-          users
-        else
-          [users.first]
-        end.map(&:to_reference).to_sentence
+        reviewers_to_add(users).map(&:to_reference).to_sentence
       end
 
       def reviewers_for_removal(users)
@@ -252,6 +249,16 @@ module Gitlab
           users
         else
           reviewers
+        end
+      end
+
+      def reviewers_to_add(users)
+        return if users.blank?
+
+        if quick_action_target.allows_multiple_reviewers?
+          users
+        else
+          [users.first]
         end
       end
 

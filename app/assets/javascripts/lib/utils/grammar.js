@@ -16,12 +16,12 @@ import { sprintf, s__ } from '~/locale';
  *
  * @param {String[]} items
  */
-export const toNounSeriesText = (items) => {
+export const toNounSeriesText = (items, { onlyCommas = false } = {}) => {
   if (items.length === 0) {
     return '';
   } else if (items.length === 1) {
     return sprintf(s__(`nounSeries|%{item}`), { item: items[0] }, false);
-  } else if (items.length === 2) {
+  } else if (items.length === 2 && !onlyCommas) {
     return sprintf(
       s__('nounSeries|%{firstItem} and %{lastItem}'),
       {
@@ -33,7 +33,7 @@ export const toNounSeriesText = (items) => {
   }
 
   return items.reduce((item, nextItem, idx) =>
-    idx === items.length - 1
+    idx === items.length - 1 && !onlyCommas
       ? sprintf(s__('nounSeries|%{item}, and %{lastItem}'), { item, lastItem: nextItem }, false)
       : sprintf(s__('nounSeries|%{item}, %{nextItem}'), { item, nextItem }, false),
   );

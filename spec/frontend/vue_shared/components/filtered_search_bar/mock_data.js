@@ -155,6 +155,14 @@ export const tokenValueMembership = {
   },
 };
 
+export const tokenValueConfidential = {
+  type: 'confidential',
+  value: {
+    operator: '=',
+    data: true,
+  },
+};
+
 export const tokenValuePlain = {
   type: 'filtered-search-term',
   value: { data: 'foo' },

@@ -100,8 +100,6 @@
   color: $orange-600;
   background-color: $orange-50;
   border-radius: $border-radius-default $border-radius-default 0 0;
-  border: 1px solid $border-gray-normal;
-  border-bottom: 0;
   padding: 3px 12px;
   margin: auto;
   align-items: center;
@@ -453,4 +451,10 @@ table {
 
 .markdown-selector {
   color: $blue-600;
+}
+
+.comment-warning-wrapper {
+  .md-area {
+    border: 0;
+  }
 }

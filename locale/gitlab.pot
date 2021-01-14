@@ -10617,6 +10617,15 @@ msgstr ""
 msgid "EmailError|Your account has been blocked. If you believe this is in error, contact a staff member."
 msgstr ""
 
+msgid "EmailParticipantsWarning|%{emails} will be notified of your comment."
+msgstr ""
+
+msgid "EmailParticipantsWarning|%{emails}, %{andMore} will be notified of your comment."
+msgstr ""
+
+msgid "EmailParticipantsWarning|and %{moreCount} more"
+msgstr ""
+
 msgid "EmailToken|reset it"
 msgstr ""
 
@@ -25947,6 +25956,9 @@ msgstr ""
 msgid "Show latest version"
 msgstr ""
 
+msgid "Show links anyways"
+msgstr ""
+
 msgid "Show list"
 msgstr ""
 
@@ -28797,6 +28809,9 @@ msgid "This feature should be used with an index that was created after 13.0"
 msgstr ""
 
 msgid "This field is required."
+msgstr ""
+
+msgid "This graph has a large number of jobs and showing the links between them may have performance implications."
 msgstr ""
 
 msgid "This group"

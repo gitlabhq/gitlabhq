@@ -23,11 +23,9 @@ const initJiraFormHandlers = () => {
   };
 
   const reqFailed = (res, fallbackErrorMessage) => {
-    const { responseJSON: { error = fallbackErrorMessage } = {} } = res || {};
+    const { error = fallbackErrorMessage } = res || {};
 
     store.commit(SET_ERROR_MESSAGE, error);
-    // eslint-disable-next-line no-alert
-    alert(error);
   };
 
   if (typeof AP.getLocation === 'function') {

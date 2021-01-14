@@ -5,6 +5,10 @@ module Ci
     def execute(build, job_variables_attributes = nil)
       raise Gitlab::Access::AccessDeniedError unless can?(current_user, :play_job, build)
 
+      if job_variables_attributes.present? && !can?(current_user, :set_pipeline_variables, project)
+        raise Gitlab::Access::AccessDeniedError
+      end
+
       # Try to enqueue the build, otherwise create a duplicate.
       #
       if build.enqueue

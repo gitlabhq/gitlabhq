@@ -44,13 +44,21 @@ export default {
 
 <template>
   <div data-testid="ci-lint-value">
-    <pre v-if="scripts.beforeScript.show" data-testid="ci-lint-before-script">{{
-      scripts.beforeScript.content
+    <pre
+      v-if="scripts.beforeScript.show"
+      class="gl-white-space-pre-wrap"
+      data-testid="ci-lint-before-script"
+      >{{ scripts.beforeScript.content }}</pre
+    >
+    <pre v-if="scripts.script.show" class="gl-white-space-pre-wrap" data-testid="ci-lint-script">{{
+      scripts.script.content
     }}</pre>
-    <pre v-if="scripts.script.show" data-testid="ci-lint-script">{{ scripts.script.content }}</pre>
-    <pre v-if="scripts.afterScript.show" data-testid="ci-lint-after-script">{{
-      scripts.afterScript.content
-    }}</pre>
+    <pre
+      v-if="scripts.afterScript.show"
+      class="gl-white-space-pre-wrap"
+      data-testid="ci-lint-after-script"
+      >{{ scripts.afterScript.content }}</pre
+    >
 
     <ul class="gl-list-style-none gl-pl-0 gl-mb-0">
       <li v-if="tagList">

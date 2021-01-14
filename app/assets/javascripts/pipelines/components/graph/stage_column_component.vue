@@ -24,6 +24,10 @@ export default {
       type: Array,
       required: true,
     },
+    pipelineId: {
+      type: Number,
+      required: true,
+    },
     action: {
       type: Object,
       required: false,
@@ -94,16 +98,19 @@ export default {
         :key="getGroupId(group)"
         data-testid="stage-column-group"
         class="gl-relative gl-mb-3 gl-white-space-normal gl-pipeline-job-width"
+        @mouseenter="$emit('jobHover', group.name)"
+        @mouseleave="$emit('jobHover', '')"
       >
         <job-item
           v-if="group.size === 1"
           :job="group.jobs[0]"
           :job-hovered="jobHovered"
           :pipeline-expanded="pipelineExpanded"
+          :pipeline-id="pipelineId"
           css-class-job-name="gl-build-content"
           @pipelineActionRequestComplete="$emit('refreshPipelineGraph')"
         />
-        <job-group-dropdown v-else :group="group" />
+        <job-group-dropdown v-else :group="group" :pipeline-id="pipelineId" />
       </div>
     </template>
   </main-graph-wrapper>

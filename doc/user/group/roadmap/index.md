@@ -67,8 +67,9 @@ You can also filter epics in the Roadmap view by:
 - Author
 - Label
 - Milestone
+- Confidentiality of epics
 
-![roadmap date range in weeks](img/roadmap_filters_v13_7.png)
+![roadmap date range in weeks](img/roadmap_filters_v13_8.png)
 
 Roadmaps can also be [visualized inside an epic](../epics/index.md#roadmap-in-epics).
 

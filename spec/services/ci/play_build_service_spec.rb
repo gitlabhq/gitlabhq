@@ -72,6 +72,31 @@ RSpec.describe Ci::PlayBuildService, '#execute' do
 
         expect(build.reload.job_variables.map(&:key)).to contain_exactly('first', 'second')
       end
+
+      context 'when user defined variables are restricted' do
+        before do
+          project.update!(restrict_user_defined_variables: true)
+        end
+
+        context 'when user is maintainer' do
+          before do
+            project.add_maintainer(user)
+          end
+
+          it 'assigns the variables to the build' do
+            service.execute(build, job_variables)
+
+            expect(build.reload.job_variables.map(&:key)).to contain_exactly('first', 'second')
+          end
+        end
+
+        context 'when user is developer' do
+          it 'raises an error' do
+            expect { service.execute(build, job_variables) }
+              .to raise_error Gitlab::Access::AccessDeniedError
+          end
+        end
+      end
     end
   end
 

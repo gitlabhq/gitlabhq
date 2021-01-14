@@ -371,6 +371,26 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
             expect { service.execute(bridge) }.to change { Ci::Pipeline.count }.by(1)
           end
         end
+
+        context 'when downstream project does not allow user-defined variables for child pipelines' do
+          before do
+            bridge.yaml_variables = [{ key: 'BRIDGE', value: '$PIPELINE_VARIABLE-var', public: true }]
+
+            upstream_pipeline.project.update!(restrict_user_defined_variables: true)
+          end
+
+          it 'creates a new pipeline allowing variables to be passed downstream' do
+            expect { service.execute(bridge) }.to change { Ci::Pipeline.count }.by(1)
+          end
+
+          it 'passes variables downstream from the bridge' do
+            pipeline = service.execute(bridge)
+
+            pipeline.variables.map(&:key).tap do |variables|
+              expect(variables).to include 'BRIDGE'
+            end
+          end
+        end
       end
     end
 
@@ -458,6 +478,33 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
 
           pipeline.variables.find_by(key: 'BRIDGE').tap do |variable|
             expect(variable.value).to eq 'my-value-var'
+          end
+        end
+
+        context 'when downstream project does not allow user-defined variables for multi-project pipelines' do
+          before do
+            downstream_project.update!(restrict_user_defined_variables: true)
+          end
+
+          it 'does not create a new pipeline' do
+            expect { service.execute(bridge) }
+              .not_to change { Ci::Pipeline.count }
+          end
+
+          it 'ignores variables passed downstream from the bridge' do
+            pipeline = service.execute(bridge)
+
+            pipeline.variables.map(&:key).tap do |variables|
+              expect(variables).not_to include 'BRIDGE'
+            end
+          end
+
+          it 'sets errors', :aggregate_failures do
+            service.execute(bridge)
+
+            expect(bridge.reload).to be_failed
+            expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
+            expect(bridge.options[:downstream_errors]).to eq(['Insufficient permissions to set pipeline variables'])
           end
         end
       end

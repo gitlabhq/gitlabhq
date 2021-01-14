@@ -9,10 +9,9 @@
     = link_to _('Sign in to GitLab'), jira_connect_users_path, target: '_blank', rel: 'noopener noreferrer', class: 'js-jira-connect-sign-in'
 
 .jira-connect-app
-  %h1
-    GitLab for Jira Configuration
-
   - if current_user.blank? && @subscriptions.empty?
+    %h1
+      GitLab for Jira Configuration
     %h2.heading-with-border Sign in to GitLab.com to get started.
 
     .gl-mt-5
