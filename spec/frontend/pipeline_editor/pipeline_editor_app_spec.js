@@ -448,16 +448,7 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
       const expectedAlertMsg =
         'There is no .gitlab-ci.yml file in this repository, please add one and visit the Pipeline Editor again.';
 
-      it('does not show editor or commit form', async () => {
-        mockBlobContentData.mockRejectedValueOnce(new Error('My error!'));
-        createComponentWithApollo();
-        await waitForPromises();
-
-        expect(findEditorLite().exists()).toBe(false);
-        expect(findTextEditor().exists()).toBe(false);
-      });
-
-      it('shows a 404 error message', async () => {
+      it('shows a 404 error message and does not show editor or commit form', async () => {
         mockBlobContentData.mockRejectedValueOnce({
           response: {
             status: httpStatusCodes.NOT_FOUND,
@@ -468,9 +459,11 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
         await waitForPromises();
 
         expect(findAlert().text()).toBe(expectedAlertMsg);
+        expect(findEditorLite().exists()).toBe(false);
+        expect(findTextEditor().exists()).toBe(false);
       });
 
-      it('shows a 400 error message', async () => {
+      it('shows a 400 error message and does not show editor or commit form', async () => {
         mockBlobContentData.mockRejectedValueOnce({
           response: {
             status: httpStatusCodes.BAD_REQUEST,
@@ -481,6 +474,8 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
         await waitForPromises();
 
         expect(findAlert().text()).toBe(expectedAlertMsg);
+        expect(findEditorLite().exists()).toBe(false);
+        expect(findTextEditor().exists()).toBe(false);
       });
 
       it('shows a unkown error message', async () => {
@@ -489,6 +484,8 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
         await waitForPromises();
 
         expect(findAlert().text()).toBe('The CI configuration was not loaded, please try again.');
+        expect(findEditorLite().exists()).toBe(true);
+        expect(findTextEditor().exists()).toBe(true);
       });
     });
   });

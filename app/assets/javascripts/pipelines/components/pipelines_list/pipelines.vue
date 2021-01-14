@@ -279,7 +279,7 @@ export default {
   <div class="pipelines-container">
     <div
       v-if="shouldRenderTabs || shouldRenderButtons"
-      class="top-area scrolling-tabs-container inner-page-scroll-tabs"
+      class="top-area scrolling-tabs-container inner-page-scroll-tabs gl-border-none"
     >
       <div class="fade-left"><gl-icon name="chevron-lg-left" :size="12" /></div>
       <div class="fade-right"><gl-icon name="chevron-lg-right" :size="12" /></div>

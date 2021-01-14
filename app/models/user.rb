@@ -1378,7 +1378,14 @@ class User < ApplicationRecord
 
   def set_username_errors
     namespace_path_errors = self.errors.delete(:"namespace.path")
-    self.errors[:username].concat(namespace_path_errors) if namespace_path_errors
+
+    return unless namespace_path_errors&.any?
+
+    if namespace_path_errors.include?('has already been taken') && !User.exists?(username: username)
+      self.errors.add(:base, :username_exists_as_a_different_namespace)
+    else
+      self.errors[:username].concat(namespace_path_errors)
+    end
   end
 
   def username_changed_hook

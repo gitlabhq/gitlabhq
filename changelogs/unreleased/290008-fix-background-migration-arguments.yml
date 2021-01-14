@@ -1,0 +1,5 @@
+---
+title: Fix argument type for background migration
+merge_request: 51475
+author:
+type: fixed

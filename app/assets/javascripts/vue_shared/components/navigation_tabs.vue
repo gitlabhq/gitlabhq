@@ -1,5 +1,6 @@
 <script>
 import $ from 'jquery';
+import { GlBadge, GlTabs, GlTab } from '@gitlab/ui';
 
 /**
  * Given an array of tabs, renders non linked bootstrap tabs.
@@ -23,6 +24,11 @@ import $ from 'jquery';
  */
 export default {
   name: 'NavigationTabs',
+  components: {
+    GlBadge,
+    GlTabs,
+    GlTab,
+  },
   props: {
     tabs: {
       type: Array,
@@ -50,24 +56,21 @@ export default {
 };
 </script>
 <template>
-  <ul class="nav-links scrolling-tabs separator">
-    <li
+  <gl-tabs class="gl-display-flex gl-w-full" nav-class="gl-border-0!">
+    <gl-tab
       v-for="(tab, i) in tabs"
       :key="i"
-      :class="{
-        active: tab.isActive,
-      }"
+      :title-link-class="`js-${scope}-tab-${tab.scope} gl-display-inline-flex`"
+      :title-link-attributes="{ 'data-testid': `${scope}-tab-${tab.scope}` }"
+      :active="tab.isActive"
+      @click="onTabClick(tab)"
     >
-      <a
-        :class="`js-${scope}-tab-${tab.scope}`"
-        :data-testid="`${scope}-tab-${tab.scope}`"
-        role="button"
-        @click="onTabClick(tab)"
-      >
-        {{ tab.name }}
-
-        <span v-if="shouldRenderBadge(tab.count)" class="badge badge-pill"> {{ tab.count }} </span>
-      </a>
-    </li>
-  </ul>
+      <template #title>
+        <span class="gl-mr-2"> {{ tab.name }} </span>
+        <gl-badge v-if="shouldRenderBadge(tab.count)" size="sm" class="gl-tab-counter-badge">{{
+          tab.count
+        }}</gl-badge>
+      </template>
+    </gl-tab>
+  </gl-tabs>
 </template>

@@ -29,7 +29,7 @@ module Gitlab
         end
       end
 
-      def perform(project_ids)
+      def perform(*project_ids)
         types_with_duplicates = Service.types_with_duplicates(project_ids).pluck(:project_id, :type)
 
         types_with_duplicates.each do |project_id, type|

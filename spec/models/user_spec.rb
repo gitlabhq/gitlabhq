@@ -4280,7 +4280,7 @@ RSpec.describe User do
             it 'adds the namespace errors to the user' do
               user.update(username: new_username)
 
-              expect(user.errors.full_messages.first).to eq('Username has already been taken')
+              expect(user.errors.full_messages.first).to eq('A user, alias, or group already exists with that username.')
             end
           end
         end

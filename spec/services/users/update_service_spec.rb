@@ -31,7 +31,7 @@ RSpec.describe Users::UpdateService do
         result = update_user(user, { username: 'taken' })
       end.not_to change { user.reload.username }
       expect(result[:status]).to eq(:error)
-      expect(result[:message]).to eq('Username has already been taken')
+      expect(result[:message]).to eq('A user, alias, or group already exists with that username.')
     end
 
     it 'updates the status if status params were given' do

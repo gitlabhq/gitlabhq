@@ -82,7 +82,7 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateServices, :migration,
     end
 
     expect do
-      subject.perform([project2.id, project3.id])
+      subject.perform(project2.id, project3.id)
     end.to change { services.count }.from(21).to(12)
 
     services1 = services.where(project_id: project1.id)
@@ -109,13 +109,13 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateServices, :migration,
 
   it 'does not delete services without duplicates' do
     expect do
-      subject.perform([project1.id, project4.id])
+      subject.perform(project1.id, project4.id)
     end.not_to change { services.count }
   end
 
   it 'only deletes duplicate services for the current batch' do
     expect do
-      subject.perform([project2.id])
+      subject.perform(project2.id)
     end.to change { services.count }.by(-3)
   end
 end

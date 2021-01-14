@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20201207165956_remove_duplicate_services.rb')
+require Rails.root.join('db', 'post_migrate', '20210112143418_remove_duplicate_services2.rb')
 
-RSpec.describe RemoveDuplicateServices do
+RSpec.describe RemoveDuplicateServices2 do
   let_it_be(:namespaces) { table(:namespaces) }
   let_it_be(:projects) { table(:projects) }
   let_it_be(:services) { table(:services) }

@@ -126,7 +126,7 @@ export default {
       return this.$apollo.queries.content.loading;
     },
     isBlobContentError() {
-      return this.failureType === LOAD_FAILURE_NO_FILE || this.failureType === LOAD_FAILURE_UNKNOWN;
+      return this.failureType === LOAD_FAILURE_NO_FILE;
     },
     isCiConfigDataLoading() {
       return this.$apollo.queries.ciConfigData.loading;
