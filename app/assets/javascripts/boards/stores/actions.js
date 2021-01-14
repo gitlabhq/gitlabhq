@@ -12,6 +12,7 @@ import {
   fullBoardId,
   formatListsPageInfo,
   formatIssue,
+  updateListPosition,
 } from '../boards_util';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
@@ -131,7 +132,7 @@ export default {
   },
 
   addList: ({ commit }, list) => {
-    commit(types.RECEIVE_ADD_LIST_SUCCESS, list);
+    commit(types.RECEIVE_ADD_LIST_SUCCESS, updateListPosition(list));
   },
 
   fetchLabels: ({ state, commit }, searchTerm) => {

@@ -4915,6 +4915,9 @@ msgstr ""
 msgid "By default, all projects and groups will use the global notifications setting."
 msgstr ""
 
+msgid "By default, if any ref (branch, tag, or commit) on the remote mirror has diverged from the local repository, the entire push will fail, and nothing will be updated. Choose this option to override this behavior. After the mirror is created, this can only be modified via the API."
+msgstr ""
+
 msgid "ByAuthor|by"
 msgstr ""
 
@@ -14454,6 +14457,9 @@ msgstr ""
 msgid "How do I configure runners?"
 msgstr ""
 
+msgid "How do I mirror repositories?"
+msgstr ""
+
 msgid "How does cleanup work?"
 msgstr ""
 
@@ -14593,6 +14599,9 @@ msgid "If enabled, GitLab will handle Object Storage replication using Geo. %{li
 msgstr ""
 
 msgid "If enabled, access to projects will be validated on an external service using their classification label."
+msgstr ""
+
+msgid "If enabled, only protected branches will be mirrored."
 msgstr ""
 
 msgid "If the YouTube URL is https://www.youtube.com/watch?v=0t1DgySidms then the video ID is %{id}"
@@ -14839,6 +14848,9 @@ msgid "Improve search with Advanced Search and GitLab Enterprise Edition."
 msgstr ""
 
 msgid "In %{time_to_now}"
+msgstr ""
+
+msgid "In case of pull mirroring, your user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."
 msgstr ""
 
 msgid "In order to enable Service Desk for your instance, you must first set up incoming email."
@@ -15090,7 +15102,7 @@ msgstr ""
 msgid "Input host keys manually"
 msgstr ""
 
-msgid "Input your repository URL"
+msgid "Input the remote repository URL"
 msgstr ""
 
 msgid "Insert a code block"
@@ -18325,6 +18337,9 @@ msgstr ""
 msgid "Mirror direction"
 msgstr ""
 
+msgid "Mirror only protected branches"
+msgstr ""
+
 msgid "Mirror repository"
 msgstr ""
 
@@ -19890,9 +19905,6 @@ msgstr ""
 msgid "Only admins can delete project"
 msgstr ""
 
-msgid "Only mirror protected branches"
-msgstr ""
-
 msgid "Only policy:"
 msgstr ""
 
@@ -20634,6 +20646,9 @@ msgstr ""
 msgid "Pipeline Schedules"
 msgstr ""
 
+msgid "Pipeline cannot be run."
+msgstr ""
+
 msgid "Pipeline minutes quota"
 msgstr ""
 
@@ -20965,6 +20980,9 @@ msgid "Pipeline|Run Pipeline"
 msgstr ""
 
 msgid "Pipeline|Run for"
+msgstr ""
+
+msgid "Pipeline|Run for branch name or tag"
 msgstr ""
 
 msgid "Pipeline|Running"
@@ -28022,9 +28040,6 @@ msgstr[1] ""
 msgid "The fork relationship has been removed."
 msgstr ""
 
-msgid "The form contains the following error:"
-msgstr ""
-
 msgid "The form contains the following errors:"
 msgstr ""
 
@@ -29078,9 +29093,6 @@ msgstr ""
 msgid "This user is the author of this %{noteable}."
 msgstr ""
 
-msgid "This user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."
-msgstr ""
-
 msgid "This variable can not be masked."
 msgstr ""
 
@@ -29909,7 +29921,7 @@ msgstr ""
 msgid "Trigger pipelines for mirror updates"
 msgstr ""
 
-msgid "Trigger pipelines when branches or tags are updated from the upstream repository. Depending on the activity of the upstream repository, this may greatly increase the load on your CI runners. Only enable this if you know they can handle the load."
+msgid "Trigger pipelines when branches or tags are updated in the upstream repository. Depending on the activity of the upstream repository, this may greatly increase the load on your CI runners. Only enable this if you know they can handle the load."
 msgstr ""
 
 msgid "Trigger removed."
@@ -31770,6 +31782,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "When using the %{code_open}http://%{code_close} or %{code_open}https://%{code_close} protocols, please provide the exact URL to the repository. HTTP redirects will not be followed."
+msgstr ""
+
+msgid "When using the %{code_open}http://%{code_close} or %{code_open}https://%{code_close} protocols, provide the exact URL to the repository. HTTP redirects will not be followed."
 msgstr ""
 
 msgid "When:"

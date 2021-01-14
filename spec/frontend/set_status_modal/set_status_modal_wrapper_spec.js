@@ -204,10 +204,7 @@ describe('SetStatusModalWrapper', () => {
         findModal().vm.$emit('ok');
         await wrapper.vm.$nextTick();
 
-        expect($toast.show).toHaveBeenCalledWith('Status updated', {
-          position: 'top-center',
-          type: 'success',
-        });
+        expect($toast.show).toHaveBeenCalledWith('Status updated');
       });
     });
 

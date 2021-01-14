@@ -39,6 +39,14 @@ RSpec.describe 'CarrierWave::Storage::Fog::File' do
       let(:dest_filename) { 'copied.txt'}
 
       it 'copies the file' do
+        fog_file = subject.send(:file)
+
+        expect(fog_file).to receive(:concurrency=).with(10).and_call_original
+        # multipart_chunk_size must be explicitly set in order to leverage
+        # multithreaded, multipart transfers for files below 5GB.
+        expect(fog_file).to receive(:multipart_chunk_size=).with(10.megabytes).and_call_original
+        expect(fog_file).to receive(:copy).with(bucket_name, dest_filename, anything).and_call_original
+
         result = subject.copy_to(dest_filename)
 
         expect(result.exists?).to be true

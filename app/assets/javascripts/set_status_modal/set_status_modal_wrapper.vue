@@ -172,10 +172,7 @@ export default {
         .catch(this.onUpdateFail);
     },
     onUpdateSuccess() {
-      this.$toast.show(s__('SetStatusModal|Status updated'), {
-        type: 'success',
-        position: 'top-center',
-      });
+      this.$toast.show(s__('SetStatusModal|Status updated'));
       this.closeModal();
       window.location.reload();
     },
