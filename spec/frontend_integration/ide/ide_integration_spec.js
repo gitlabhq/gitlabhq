@@ -1,5 +1,6 @@
 import { waitForText } from 'helpers/wait_for_text';
 import waitForPromises from 'helpers/wait_for_promises';
+import { setTestTimeout } from 'helpers/timeout';
 import { useOverclockTimers } from 'test_helpers/utils/overclock_timers';
 import { createCommitId } from 'test_helpers/factories/commit_id';
 import * as ideHelper from './helpers/ide_helper';
@@ -12,6 +13,9 @@ describe('WebIDE', () => {
   let container;
 
   beforeEach(() => {
+    // For some reason these tests were timing out in CI.
+    // We will investigate in https://gitlab.com/gitlab-org/gitlab/-/issues/298714
+    setTestTimeout(20000);
     setFixtures('<div class="webide-container"></div>');
     container = document.querySelector('.webide-container');
   });

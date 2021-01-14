@@ -1,4 +1,5 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { getByTestId, fireEvent } from '@testing-library/dom';
 import Vuex from 'vuex';
 import diffsModule from '~/diffs/store/modules';
 import DiffRow from '~/diffs/components/diff_row.vue';
@@ -42,16 +43,16 @@ describe('DiffRow', () => {
       fileHash: 'abc',
       filePath: 'abc',
       line: {},
+      index: 0,
       ...props,
     };
-    return shallowMount(DiffRow, { propsData, localVue, store });
-  };
 
-  it('isHighlighted returns true if isCommented is true', () => {
-    const props = { isCommented: true };
-    const wrapper = createWrapper({ props });
-    expect(wrapper.vm.isHighlighted).toBe(true);
-  });
+    const provide = {
+      glFeatures: { dragCommentSelection: true },
+    };
+
+    return shallowMount(DiffRow, { propsData, localVue, store, provide });
+  };
 
   it('isHighlighted returns true given line.left', () => {
     const props = {
@@ -123,5 +124,37 @@ describe('DiffRow', () => {
     const wrapper = createWrapper({ props: { line: testLines[0] } });
     const lineNumber = testLines[0].right.new_line;
     expect(wrapper.find(`[data-linenumber="${lineNumber}"]`).exists()).toBe(true);
+  });
+
+  describe('drag operations', () => {
+    let line;
+
+    beforeEach(() => {
+      line = { ...testLines[0] };
+    });
+
+    it.each`
+      side
+      ${'left'}
+      ${'right'}
+    `('emits `enterdragging` onDragEnter $side side', ({ side }) => {
+      const expectation = { ...line[side], index: 0 };
+      const wrapper = createWrapper({ props: { line } });
+      fireEvent.dragEnter(getByTestId(wrapper.element, `${side}-side`));
+
+      expect(wrapper.emitted().enterdragging).toBeTruthy();
+      expect(wrapper.emitted().enterdragging[0]).toEqual([expectation]);
+    });
+
+    it.each`
+      side
+      ${'left'}
+      ${'right'}
+    `('emits `stopdragging` onDrop $side side', ({ side }) => {
+      const wrapper = createWrapper({ props: { line } });
+      fireEvent.dragEnd(getByTestId(wrapper.element, `${side}-side`));
+
+      expect(wrapper.emitted().stopdragging).toBeTruthy();
+    });
   });
 });

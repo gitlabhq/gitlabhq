@@ -14,6 +14,9 @@ You can:
 
 - [Restrict write-access to a critical environment](#restrict-write-access-to-a-critical-environment)
 - [Prevent deployments during deploy freeze windows](#prevent-deployments-during-deploy-freeze-windows)
+- [Set appropriate roles to your project](#setting-appropriate-roles-to-your-project)
+- [Protect production secrets](#protect-production-secrets)
+- [Separate project for deployments](#separate-project-for-deployments)
 
 If you are using a continuous deployment workflow and want to ensure that concurrent deployments to the same environment do not happen, you should enable the following options:
 
@@ -38,8 +41,8 @@ For example:
 
 ```yaml
 deploy:
-  script: deploy-to-prod
-  resource_group: prod
+ script: deploy-to-prod
+ resource_group: prod
 ```
 
 Example of a problematic pipeline flow **before** using the resource group:
@@ -89,6 +92,56 @@ If you want to prevent deployments for a particular period, for example during a
 vacation period when most employees are out, you can set up a [Deploy Freeze](../../user/project/releases/index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze).
 During a deploy freeze period, no deployment can be executed. This is helpful to
 ensure that deployments do not happen unexpectedly.
+  
+## Setting appropriate roles to your project
+
+GitLab supports several different roles that can be assigned to your project members. See
+[Project members permissions](../../user/permissions.md#project-members-permissions)
+for an explanation of these roles and the permissions of each.
+
+<div class="video-fallback">
+  See the video: <a href="https://www.youtube.com/watch?v=Mq3C1KveDc0">How to secure your CD pipelines</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/Mq3C1KveDc0" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
+
+## Protect production secrets
+
+Production secrets are needed to deploy successfully. For example, when deploying to the cloud,
+cloud providers require these secrets to connect to their services. In the project settings, you can
+define and protect environment variables for these secrets. [Protected variables](../variables/README.md#protect-a-custom-variable)
+are only passed to pipelines running on [protected branches](../../user/project/protected_branches.md)
+or [protected tags](../../user/project/protected_tags.md).
+The other pipelines don't get the protected variable. You can also
+[scope variables to specific environments](../variables/where_variables_can_be_used.md#variables-with-an-environment-scope).
+We recommend that you use protected variables on protected environments to make sure that the
+secrets aren't exposed unintentionally. You can also define production secrets on the
+[runner side](../runners/README.md#prevent-runners-from-revealing-sensitive-information).
+This prevents other maintainers from reading the secrets and makes sure that the runner only runs on
+protected branches.
+
+For more information, see [pipeline security](../pipelines/index.md#pipeline-security-on-protected-branches).
+
+## Separate project for deployments
+
+All project maintainers have access to production secrets. If you need to limit the number of users
+that can deploy to a production environment, you can create a separate project and configure a new
+permission model that isolates the CD permissions from the original project and prevents the
+original project's maintainers from accessing the production secret and CD configuration. You can
+connect the CD project to your development projects by using [multi-project pipelines](../multi_project_pipelines.md).
+
+## Protect `gitlab-ci.yml` from change
+
+A `.gitlab-ci.yml` may contain rules to deploy an application to the production server. This
+deployment usually runs automatically after pushing a merge request. To prevent developers from
+changing the `gitlab-ci.yml`, you can define it in a different repository. The configuration can
+reference a file in another project with a completely different set of permissions (similar to
+[separating a project for deployments](#separate-project-for-deployments)).
+In this scenario, the `gitlab-ci.yml` is publicly accessible, but can only be edited by users with
+appropriate permissions in the other project.
+
+For more information, see [Custom CI configuration path](../pipelines/settings.md#custom-ci-configuration-path).
 
 ## Troubleshooting
 
@@ -99,15 +152,13 @@ If you have multiple jobs for the same environment (including non-deployment job
 
 ```yaml
 build:service-a:
-  environment:
-    name: production
-
+ environment:
+   name: production
+ 
 build:service-b:
-  environment:
-    name: production
+ environment:
+   name: production
 ```
 
 The [Skip outdated deployment jobs](../pipelines/settings.md#skip-outdated-deployment-jobs) might
 not work well with this configuration, and must be disabled.
-
-There is a [plan to introduce a new annotation for environments](https://gitlab.com/gitlab-org/gitlab/-/issues/208655) to address this issue.

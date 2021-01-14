@@ -70,7 +70,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Revoke a personal access token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216004) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216004) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/270200) to [GitLab Core](https://about.gitlab.com/pricing/) in 13.6.
 
 Revoke a personal access token.
 

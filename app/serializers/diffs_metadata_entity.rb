@@ -18,7 +18,29 @@ class DiffsMetadataEntity < DiffsEntity
     options[:merge_request].can_be_merged_by?(request.current_user)
   end
 
+  expose :project_path
+  expose :project_name
+
+  expose :username
+  expose :user_full_name
+
   private
+
+  def project_path
+    request.project&.full_path
+  end
+
+  def project_name
+    request.project&.name
+  end
+
+  def username
+    request.current_user&.username
+  end
+
+  def user_full_name
+    request.current_user&.name
+  end
 
   def presenter(merge_request)
     @presenters ||= {}

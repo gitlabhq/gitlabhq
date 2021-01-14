@@ -1,26 +1,12 @@
 <script>
-import dateFormat from 'dateformat';
-import { GlColumnChart } from '@gitlab/ui/dist/charts';
-import { __, s__, sprintf } from '~/locale';
-import { getDateInPast } from '~/lib/utils/datetime_utility';
-import StatisticsList from './statistics_list.vue';
-import CiCdAnalyticsAreaChart from './ci_cd_analytics_area_chart.vue';
-
-import {
-  CHART_CONTAINER_HEIGHT,
-  INNER_CHART_HEIGHT,
-  X_AXIS_LABEL_ROTATION,
-  X_AXIS_TITLE_OFFSET,
-  CHART_DATE_FORMAT,
-  ONE_WEEK_AGO_DAYS,
-  ONE_MONTH_AGO_DAYS,
-} from '../constants';
+import { GlTabs, GlTab } from '@gitlab/ui';
+import PipelineCharts from './pipeline_charts.vue';
 
 export default {
   components: {
-    StatisticsList,
-    GlColumnChart,
-    CiCdAnalyticsAreaChart,
+    GlTabs,
+    GlTab,
+    PipelineCharts,
     DeploymentFrequencyCharts: () =>
       import('ee_component/projects/pipelines/charts/components/deployment_frequency_charts.vue'),
   },
@@ -54,121 +40,41 @@ export default {
   },
   data() {
     return {
-      timesChartTransformedData: [
-        {
-          name: 'full',
-          data: this.mergeLabelsAndValues(this.timesChartData.labels, this.timesChartData.values),
-        },
-      ],
+      // this loading flag gives the echarts library just enough time
+      // to ensure all DOM nodes have been mounted.
+      //
+      // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1131
+      loading: true,
     };
   },
-  computed: {
-    areaCharts() {
-      const { lastWeek, lastMonth, lastYear } = this.$options.chartTitles;
-
-      return [
-        this.buildAreaChartData(lastWeek, this.lastWeekChartData),
-        this.buildAreaChartData(lastMonth, this.lastMonthChartData),
-        this.buildAreaChartData(lastYear, this.lastYearChartData),
-      ];
-    },
-  },
-  methods: {
-    mergeLabelsAndValues(labels, values) {
-      return labels.map((label, index) => [label, values[index]]);
-    },
-    buildAreaChartData(title, data) {
-      const { labels, totals, success } = data;
-
-      return {
-        title,
-        data: [
-          {
-            name: 'all',
-            data: this.mergeLabelsAndValues(labels, totals),
-          },
-          {
-            name: 'success',
-            data: this.mergeLabelsAndValues(labels, success),
-          },
-        ],
-      };
-    },
-  },
-  chartContainerHeight: CHART_CONTAINER_HEIGHT,
-  timesChartOptions: {
-    height: INNER_CHART_HEIGHT,
-    xAxis: {
-      axisLabel: {
-        rotate: X_AXIS_LABEL_ROTATION,
-      },
-      nameGap: X_AXIS_TITLE_OFFSET,
-    },
-  },
-  get chartTitles() {
-    const today = dateFormat(new Date(), CHART_DATE_FORMAT);
-    const pastDate = (timeScale) =>
-      dateFormat(getDateInPast(new Date(), timeScale), CHART_DATE_FORMAT);
-    return {
-      lastWeek: sprintf(__('Pipelines for last week (%{oneWeekAgo} - %{today})'), {
-        oneWeekAgo: pastDate(ONE_WEEK_AGO_DAYS),
-        today,
-      }),
-      lastMonth: sprintf(__('Pipelines for last month (%{oneMonthAgo} - %{today})'), {
-        oneMonthAgo: pastDate(ONE_MONTH_AGO_DAYS),
-        today,
-      }),
-      lastYear: __('Pipelines for last year'),
-    };
-  },
-  areaChartOptions: {
-    xAxis: {
-      name: s__('Pipeline|Date'),
-      type: 'category',
-    },
-    yAxis: {
-      name: s__('Pipeline|Pipelines'),
-    },
+  async mounted() {
+    await this.$nextTick();
+    this.loading = false;
   },
 };
 </script>
 <template>
-  <div>
-    <div class="mb-3">
-      <h3>{{ s__('PipelineCharts|CI / CD Analytics') }}</h3>
-    </div>
-    <h4 class="my-4">{{ s__('PipelineCharts|Overall statistics') }}</h4>
-    <div class="row">
-      <div class="col-md-6">
-        <statistics-list :counts="counts" />
-      </div>
-      <div class="col-md-6">
-        <strong>
-          {{ __('Duration for the last 30 commits') }}
-        </strong>
-        <gl-column-chart
-          :height="$options.chartContainerHeight"
-          :option="$options.timesChartOptions"
-          :bars="timesChartTransformedData"
-          :y-axis-title="__('Minutes')"
-          :x-axis-title="__('Commit')"
-          x-axis-type="category"
-        />
-      </div>
-    </div>
-    <hr />
-    <h4 class="my-4">{{ __('Pipelines charts') }}</h4>
-    <ci-cd-analytics-area-chart
-      v-for="(chart, index) in areaCharts"
-      :key="index"
-      :chart-data="chart.data"
-      :area-chart-options="$options.areaChartOptions"
-    >
-      {{ chart.title }}
-    </ci-cd-analytics-area-chart>
-    <template v-if="shouldRenderDeploymentFrequencyCharts">
-      <hr />
+  <gl-tabs v-if="shouldRenderDeploymentFrequencyCharts">
+    <gl-tab :title="__('Pipelines')">
+      <pipeline-charts
+        :counts="counts"
+        :last-week="lastWeekChartData"
+        :last-month="lastMonthChartData"
+        :last-year="lastYearChartData"
+        :times-chart="timesChartData"
+        :loading="loading"
+      />
+    </gl-tab>
+    <gl-tab :title="__('Deployments')">
       <deployment-frequency-charts />
-    </template>
-  </div>
+    </gl-tab>
+  </gl-tabs>
+  <pipeline-charts
+    v-else
+    :counts="counts"
+    :last-week="lastWeekChartData"
+    :last-month="lastMonthChartData"
+    :last-year="lastYearChartData"
+    :times-chart="timesChartData"
+  />
 </template>

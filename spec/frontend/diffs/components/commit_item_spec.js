@@ -37,14 +37,11 @@ describe('diffs/components/commit_item', () => {
   const getPrevCommitNavElement = () =>
     getCommitNavButtonsElement().find('.btn-group > *:first-child');
 
-  const mountComponent = (propsData, featureFlags = {}) => {
+  const mountComponent = (propsData) => {
     wrapper = mount(Component, {
       propsData: {
         commit,
         ...propsData,
-      },
-      provide: {
-        glFeatures: featureFlags,
       },
       stubs: {
         CommitPipelineStatus: true,

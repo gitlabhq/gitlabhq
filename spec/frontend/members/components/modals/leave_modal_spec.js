@@ -60,11 +60,11 @@ describe('LeaveModal', () => {
   });
 
   it('displays modal title', () => {
-    expect(getByText(`Leave "${member.source.name}"`).exists()).toBe(true);
+    expect(getByText(`Leave "${member.source.fullName}"`).exists()).toBe(true);
   });
 
   it('displays modal body', () => {
-    expect(getByText(`Are you sure you want to leave "${member.source.name}"?`).exists()).toBe(
+    expect(getByText(`Are you sure you want to leave "${member.source.fullName}"?`).exists()).toBe(
       true,
     );
   });

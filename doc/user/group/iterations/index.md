@@ -88,6 +88,22 @@ similar to how they appear when viewing a [milestone](../../project/milestones/i
 Burndown charts help track completion progress of total scope, and burnup charts track the daily
 total count and weight of issues added to and completed in a given timebox.
 
+### Group issues by label
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225500) in GitLab 13.8.
+
+You can group the list of issues by label.
+This can help you view issues that have your team's label,
+and get a more accurate understanding of scope attributable to each label.
+
+To group issues by label:
+
+1. In the **Group by** dropdown, select **Label**.
+1. Select the **Filter by label** dropdown.
+1. Select the labels you want to group by in the labels dropdown.
+   You can also search for labels by typing in the search input.
+1. Click or tap outside of the label dropdown. The page is now grouped by the selected labels.
+
 ## Disable iterations **(STARTER ONLY)**
 
 GitLab Iterations feature is deployed with a feature flag that is **enabled by default**.

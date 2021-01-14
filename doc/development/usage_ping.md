@@ -132,8 +132,8 @@ general guidelines around how to collect those, due to the individual nature of 
 There are several types of counters which are all found in `usage_data.rb`:
 
 - **Ordinary Batch Counters:** Simple count of a given ActiveRecord_Relation
-- **Distinct Batch Counters:** Distinct count of a given ActiveRecord_Relation on given column
-- **Sum Batch Counters:** Sum the values of a given ActiveRecord_Relation on given column
+- **Distinct Batch Counters:** Distinct count of a given ActiveRecord_Relation in a given column
+- **Sum Batch Counters:** Sum the values of a given ActiveRecord_Relation in a given column
 - **Alternative Counters:** Used for settings and configurations
 - **Redis Counters:** Used for in-memory counts.
 
@@ -153,7 +153,15 @@ For GitLab.com, there are extremely large tables with 15 second query timeouts, 
 | `merge_request_diff_files`   | 1082                   |
 | `events`                     | 514                    |
 
-There are two batch counting methods provided, `Ordinary Batch Counters` and `Distinct Batch Counters`. Batch counting requires indexes on columns to calculate max, min, and range queries. In some cases, a specialized index may need to be added on the columns involved in a counter.
+We have several batch counting methods available:
+
+- `Ordinary Batch Counters`
+- `Distinct Batch Counters`
+- `Sum Batch Counters`
+- `Estimated Batch Counters`
+
+Batch counting requires indexes on columns to calculate max, min, and range queries. In some cases,
+you may need to add a specialized index on the columns involved in a counter.
 
 ### Ordinary Batch Counters
 
@@ -248,6 +256,82 @@ sum(Issue.group(:state_id), :weight))
 # returns => {1=>3542, 2=>6820}
 ```
 
+### Estimated Batch Counters
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48233) in GitLab 13.7.
+
+Estimated batch counter functionality handles `ActiveRecord::StatementInvalid` errors
+when used through the provided `estimate_batch_distinct_count` method.
+Errors return a value of `-1`.
+
+WARNING:
+This functionality estimates a distinct count of a specific ActiveRecord_Relation in a given column,
+which uses the [HyperLogLog](http://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf) algorithm.
+As the HyperLogLog algorithm is probabilistic, the **results always include error**.
+The highest encountered error rate is 4.9%.
+
+When correctly used, the `estimate_batch_distinct_count` method enables efficient counting over
+columns that contain non-unique values, which can not be assured by other counters.
+
+Method: [`estimate_batch_distinct_count(relation, column = nil, batch_size: nil, start: nil, finish: nil)`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/utils/usage_data.rb#L63)
+
+The method includes the following arguments:
+
+- `relation`: The ActiveRecord_Relation to perform the count.
+- `column`: The column to perform the distinct count. The default is the primary key.
+- `batch_size`: The default is 10,000, from `Gitlab::Database::PostgresHll::BatchDistinctCounter::DEFAULT_BATCH_SIZE`.
+- `start`: The custom start of the batch count, to avoid complex minimum calculations.
+- `finish`: The custom end of the batch count in order to avoid complex maximum calculations.
+
+The method includes the following prerequisites:
+
+1. The supplied `relation` must include the primary key defined as the numeric column.
+   For example: `id bigint NOT NULL`.
+1. The `estimate_batch_distinct_count` can handle a joined relation. To use its ability to
+   count non-unique columns, the joined relation **must NOT** have a one-to-many relationship,
+   such as `has_many :boards`.
+1. Both `start` and `finish` arguments should always represent primary key relationship values,
+   even if the estimated count refers to another column, for example:
+
+   ```ruby
+     estimate_batch_distinct_count(::Note, :author_id, start: ::Note.minimum(:id), finish: ::Note.maximum(:id))
+   ```
+
+Examples:
+
+1. Simple execution of estimated batch counter, with only relation provided,
+   returned value represents estimated number of unique values in `id` column
+   (which is the primary key) of `Project` relation:
+
+   ```ruby
+     estimate_batch_distinct_count(::Project)
+   ```
+
+1. Execution of estimated batch counter, where provided relation has applied
+   additional filter (`.where(time_period)`), number of unique values estimated
+   in custom column (`:author_id`), and parameters: `start` and `finish` together
+   apply boundaries that defines range of provided relation to analyze:
+
+   ```ruby
+     estimate_batch_distinct_count(::Note.with_suggestions.where(time_period), :author_id, start: ::Note.minimum(:id), finish: ::Note.maximum(:id))
+   ```
+
+1. Execution of estimated batch counter with joined relation (`joins(:cluster)`),
+   for a custom column (`'clusters.user_id'`):
+
+   ```ruby
+     estimate_batch_distinct_count(::Clusters::Applications::CertManager.where(time_period).available.joins(:cluster), 'clusters.user_id')
+   ```
+
+When instrumenting metric with usage of estimated batch counter please add
+`_estimated` suffix to its name, for example:
+
+```ruby
+  "counts": {
+    "ci_builds_estimated": estimate_batch_distinct_count(Ci::Build),
+    ...
+```
+
 ### Redis Counters
 
 Handles `::Redis::CommandError` and `Gitlab::UsageDataCounters::BaseCounter::UnknownEvent`
@@ -308,6 +392,10 @@ Examples of implementation:
    ```
 
 #### Redis HLL Counters
+
+WARNING:
+HyperLogLog (HLL) is a probabilistic algorithm and its **results always includes some small error**. According to [Redis documentation](https://redis.io/commands/pfcount), data from
+used HLL implementation is "approximated with a standard error of 0.81%".
 
 With `Gitlab::UsageDataCounters::HLLRedisCounter` we have available data structures used to count unique values.
 
@@ -414,7 +502,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
    end
    ```
 
-1. Track event using `track_usage_event(event_name, values) in services and graphql
+1. Track event using `track_usage_event(event_name, values) in services and GraphQL
 
    Increment unique values count using Redis HLL, for given event name.
 
@@ -422,7 +510,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
 
    [Track usage event for incident created in service](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/issues/update_service.rb)
 
-   [Track usage event for incident created in graphql](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/alert_management/update_alert_status.rb)
+   [Track usage event for incident created in GraphQL](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/alert_management/update_alert_status.rb)
 
    ```ruby
      track_usage_event(:incident_management_incident_created, current_user.id)
@@ -549,7 +637,7 @@ For each event we add metrics for the weekly and monthly time frames, and totals
 - `#{event_name}_weekly`: Data for 7 days for daily [aggregation](#adding-new-events) events and data for the last complete week for weekly [aggregation](#adding-new-events) events.
 - `#{event_name}_monthly`: Data for 28 days for daily [aggregation](#adding-new-events) events and data for the last 4 complete weeks for weekly [aggregation](#adding-new-events) events.
 
-Redis HLL implementation calculates automatic total metrics, if there are more than one metric for the same category, aggregation and Redis slot. 
+Redis HLL implementation calculates automatic total metrics, if there are more than one metric for the same category, aggregation and Redis slot.
 
 - `#{category}_total_unique_counts_weekly`: Total unique counts for events in the same category for the last 7 days or the last complete week, if events are in the same Redis slot and we have more than one metric.
 - `#{category}_total_unique_counts_monthly`: Total unique counts for events in same category for the last 28 days or the last 4 complete weeks, if events are in the same Redis slot and we have more than one metric.
@@ -732,7 +820,7 @@ On GitLab.com, we have DangerBot setup to monitor Product Intelligence related f
 
 ### 10. Verify your metric
 
-On GitLab.com, the Product Intelligence team regularly monitors Usage Ping. They may alert you that your metrics need further optimization to run quicker and with greater success. You may also use the [Usage Ping QA dashboard](https://app.periscopedata.com/app/gitlab/632033/Usage-Ping-QA) to check how well your metric performs. The dashboard allows filtering by GitLab version, by "Self-managed" & "Saas" and shows you how many failures have occurred for each metric. Whenever you notice a high failure rate, you may re-optimize your metric.
+On GitLab.com, the Product Intelligence team regularly monitors Usage Ping. They may alert you that your metrics need further optimization to run quicker and with greater success. You may also use the [Usage Ping QA dashboard](https://app.periscopedata.com/app/gitlab/632033/Usage-Ping-QA) to check how well your metric performs. The dashboard allows filtering by GitLab version, by "Self-managed" & "SaaS" and shows you how many failures have occurred for each metric. Whenever you notice a high failure rate, you may re-optimize your metric.
 
 ### Optional: Test Prometheus based Usage Ping
 
@@ -783,8 +871,6 @@ appear to be associated to any of the services running, since they all appear to
 ## Aggregated metrics
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45979) in GitLab 13.6.
-> - It's [deployed behind a feature flag](../user/feature_flags.md), disabled by default.
-> - It's enabled on GitLab.com.
 
 WARNING:
 This feature is intended solely for internal GitLab use.

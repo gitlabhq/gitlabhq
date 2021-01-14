@@ -282,14 +282,10 @@ describe('diffs/components/app', () => {
     let moveSpy;
     let jumpSpy;
 
-    function setup(componentProps, featureFlags) {
-      createComponent(
-        componentProps,
-        ({ state }) => {
-          state.diffs.commit = { id: 'SHA123' };
-        },
-        { glFeatures: featureFlags },
-      );
+    function setup(componentProps) {
+      createComponent(componentProps, ({ state }) => {
+        state.diffs.commit = { id: 'SHA123' };
+      });
 
       moveSpy = jest.spyOn(wrapper.vm, 'moveToNeighboringCommit').mockImplementation(() => {});
       jumpSpy = jest.spyOn(wrapper.vm, 'jumpToFile').mockImplementation(() => {});
@@ -298,17 +294,17 @@ describe('diffs/components/app', () => {
 
     describe('visible app', () => {
       it.each`
-        key    | name                         | spy  | args                           | featureFlags
-        ${'['} | ${'jumpToFile'}              | ${0} | ${[-1]}                        | ${{}}
-        ${'k'} | ${'jumpToFile'}              | ${0} | ${[-1]}                        | ${{}}
-        ${']'} | ${'jumpToFile'}              | ${0} | ${[+1]}                        | ${{}}
-        ${'j'} | ${'jumpToFile'}              | ${0} | ${[+1]}                        | ${{}}
-        ${'x'} | ${'moveToNeighboringCommit'} | ${1} | ${[{ direction: 'previous' }]} | ${{}}
-        ${'c'} | ${'moveToNeighboringCommit'} | ${1} | ${[{ direction: 'next' }]}     | ${{}}
+        key    | name                         | spy  | args
+        ${'['} | ${'jumpToFile'}              | ${0} | ${[-1]}
+        ${'k'} | ${'jumpToFile'}              | ${0} | ${[-1]}
+        ${']'} | ${'jumpToFile'}              | ${0} | ${[+1]}
+        ${'j'} | ${'jumpToFile'}              | ${0} | ${[+1]}
+        ${'x'} | ${'moveToNeighboringCommit'} | ${1} | ${[{ direction: 'previous' }]}
+        ${'c'} | ${'moveToNeighboringCommit'} | ${1} | ${[{ direction: 'next' }]}
       `(
         'calls `$name()` with correct parameters whenever the "$key" key is pressed',
-        async ({ key, spy, args, featureFlags }) => {
-          setup({ shouldShow: true }, featureFlags);
+        async ({ key, spy, args }) => {
+          setup({ shouldShow: true });
 
           await nextTick();
           expect(spies[spy]).not.toHaveBeenCalled();

@@ -724,6 +724,9 @@ msgstr ""
 msgid "%{reportType} detected %{totalStart}no%{totalEnd} vulnerabilities."
 msgstr ""
 
+msgid "%{requirementCount} requirements have been selected for export. These will be sent to %{email} as an attachment once finished."
+msgstr ""
+
 msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}."
 msgstr ""
 
@@ -1625,6 +1628,9 @@ msgid "Add a bullet list"
 msgstr ""
 
 msgid "Add a comment to this line"
+msgstr ""
+
+msgid "Add a comment to this line or drag for multiple lines"
 msgstr ""
 
 msgid "Add a general comment to this %{noteableDisplayName}."
@@ -9694,6 +9700,9 @@ msgstr ""
 msgid "DeploymentFrequencyCharts|Something went wrong while getting deployment frequency data"
 msgstr ""
 
+msgid "Deployments"
+msgstr ""
+
 msgid "Deployment|API"
 msgstr ""
 
@@ -9877,7 +9886,7 @@ msgstr ""
 msgid "DesignManagement|There was an error moving your designs. Please upload your designs below."
 msgstr ""
 
-msgid "DesignManagement|To upload designs, you'll need to enable LFS and have admin enable hashed storage. %{requirements_link_start}More information%{requirements_link_end}"
+msgid "DesignManagement|To upload designs, you'll need to enable LFS and have an admin enable hashed storage. %{requirements_link_start}More information%{requirements_link_end}"
 msgstr ""
 
 msgid "DesignManagement|Unresolve thread"
@@ -9928,25 +9937,25 @@ msgstr ""
 msgid "DevopsAdoptionSegment|The maximum number of selections has been reached"
 msgstr ""
 
-msgid "DevopsAdoption|%{selectedCount} group selected (20 max)"
+msgid "DevopsAdoption|%{selectedCount} group selected"
 msgstr ""
 
-msgid "DevopsAdoption|%{selectedCount} groups selected (20 max)"
+msgid "DevopsAdoption|%{selectedCount} groups selected"
 msgstr ""
 
-msgid "DevopsAdoption|Add a segment to get started"
+msgid "DevopsAdoption|Add Group"
 msgstr ""
 
-msgid "DevopsAdoption|Add new segment"
+msgid "DevopsAdoption|Add a group to get started"
 msgstr ""
 
 msgid "DevopsAdoption|Adopted"
 msgstr ""
 
-msgid "DevopsAdoption|An error occured while deleting the segment. Please try again."
+msgid "DevopsAdoption|An error occured while deleting the group. Please try again."
 msgstr ""
 
-msgid "DevopsAdoption|An error occured while saving the segment. Please try again."
+msgid "DevopsAdoption|An error occured while saving the group. Please try again."
 msgstr ""
 
 msgid "DevopsAdoption|Approvals"
@@ -9973,22 +9982,19 @@ msgstr ""
 msgid "DevopsAdoption|At least 1 security scan of any type run in pipeline"
 msgstr ""
 
-msgid "DevopsAdoption|Confirm delete segment"
+msgid "DevopsAdoption|Confirm delete Group"
 msgstr ""
 
-msgid "DevopsAdoption|Create new segment"
-msgstr ""
-
-msgid "DevopsAdoption|Delete segment"
+msgid "DevopsAdoption|Delete Group"
 msgstr ""
 
 msgid "DevopsAdoption|Deploys"
 msgstr ""
 
-msgid "DevopsAdoption|DevOps adoption uses segments to track adoption across key features. Segments are a way to track multiple related projects and groups at once. For example, you could create a segment for the engineering department or a particular product team."
+msgid "DevopsAdoption|DevOps adoption tracks the use of key features across your favorite groups. Add a group to the table to begin."
 msgstr ""
 
-msgid "DevopsAdoption|Edit segment"
+msgid "DevopsAdoption|Edit Group"
 msgstr ""
 
 msgid "DevopsAdoption|Feature adoption is based on usage in the last calendar month. Last updated: %{timestamp}."
@@ -9997,22 +10003,22 @@ msgstr ""
 msgid "DevopsAdoption|Filter by name"
 msgstr ""
 
+msgid "DevopsAdoption|Group data pending until the start of next month"
+msgstr ""
+
 msgid "DevopsAdoption|Issues"
 msgstr ""
 
 msgid "DevopsAdoption|MRs"
 msgstr ""
 
-msgid "DevopsAdoption|Maximum %{maxSegments} segments allowed"
+msgid "DevopsAdoption|Maximum %{maxSegments} groups allowed"
 msgstr ""
 
-msgid "DevopsAdoption|My segment"
+msgid "DevopsAdoption|My group"
 msgstr ""
 
 msgid "DevopsAdoption|Name"
-msgstr ""
-
-msgid "DevopsAdoption|New segment"
 msgstr ""
 
 msgid "DevopsAdoption|No filter results."
@@ -10036,16 +10042,10 @@ msgstr ""
 msgid "DevopsAdoption|Scanning"
 msgstr ""
 
-msgid "DevopsAdoption|Segment"
-msgstr ""
-
-msgid "DevopsAdoption|Segment data pending until the start of next month"
+msgid "DevopsAdoption|There was an error fetching Group adoption data. Please refresh the page to try again."
 msgstr ""
 
 msgid "DevopsAdoption|There was an error fetching Groups. Please refresh the page to try again."
-msgstr ""
-
-msgid "DevopsAdoption|There was an error fetching Segments. Please refresh the page to try again."
 msgstr ""
 
 msgid "DevopsReport|Adoption"
@@ -11799,6 +11799,9 @@ msgstr ""
 msgid "Export project"
 msgstr ""
 
+msgid "Export requirements"
+msgstr ""
+
 msgid "Export this group with all related data to a new GitLab instance. Once complete, you can import the data file from the \"New Group\" page."
 msgstr ""
 
@@ -12636,6 +12639,12 @@ msgid "Footer message"
 msgstr ""
 
 msgid "For a faster browsing experience, some files are collapsed by default."
+msgstr ""
+
+msgid "For additional information, review your %{link_to} or contact your group owner."
+msgstr ""
+
+msgid "For additional information, review your group membership: %{link_to} or contact your group owner."
 msgstr ""
 
 msgid "For help setting up the Service Desk for your instance, please contact an administrator."
@@ -13731,6 +13740,12 @@ msgid "Group maintainers can register group runners in the %{link}"
 msgstr ""
 
 msgid "Group members"
+msgstr ""
+
+msgid "Group membership expiration date changed"
+msgstr ""
+
+msgid "Group membership expiration date removed"
 msgstr ""
 
 msgid "Group milestone"
@@ -26356,6 +26371,9 @@ msgstr ""
 msgid "Something went wrong while editing your comment. Please try again."
 msgstr ""
 
+msgid "Something went wrong while exporting requirements"
+msgstr ""
+
 msgid "Something went wrong while fetching %{listType} list"
 msgstr ""
 
@@ -32639,6 +32657,9 @@ msgstr ""
 msgid "YouTube URL or ID"
 msgstr ""
 
+msgid "Your %{group} membership will now expire in %{days}."
+msgstr ""
+
 msgid "Your %{host} account was signed in to from a new location"
 msgstr ""
 
@@ -32835,6 +32856,9 @@ msgid "Your license is valid from"
 msgstr ""
 
 msgid "Your license will be included in your GitLab backup and will survive upgrades, so in normal usage you should never need to re-upload your %{code_open}.gitlab-license%{code_close} file."
+msgstr ""
+
+msgid "Your membership in %{group} no longer expires."
 msgstr ""
 
 msgid "Your message here"

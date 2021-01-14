@@ -45,7 +45,7 @@ module API
     end
 
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      namespace ':id/packages/nuget' do
+      namespace ':id/-/packages/nuget' do
         after_validation do
           # This API can't be accessed anonymously
           require_authenticated!

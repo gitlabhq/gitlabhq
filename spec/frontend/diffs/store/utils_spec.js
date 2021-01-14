@@ -1159,7 +1159,7 @@ describe('DiffsStoreUtils', () => {
     it('converts inline diff lines to parallel diff lines', () => {
       const file = getDiffFileMock();
 
-      expect(utils.parallelizeDiffLines(file[INLINE_DIFF_LINES_KEY])).toEqual(
+      expect(utils.parallelizeDiffLines(file[INLINE_DIFF_LINES_KEY])).toMatchObject(
         file.parallel_diff_lines,
       );
     });
@@ -1178,16 +1178,17 @@ describe('DiffsStoreUtils', () => {
         {
           left: null,
           right: {
+            chunk: 0,
             type: 'new',
           },
         },
         {
-          left: { type: 'conflict_marker_our' },
-          right: { type: 'conflict_marker_their' },
+          left: { chunk: 0, type: 'conflict_marker_our' },
+          right: { chunk: 0, type: 'conflict_marker_their' },
         },
         {
-          left: { type: 'conflict_our' },
-          right: { type: 'conflict_their' },
+          left: { chunk: 0, type: 'conflict_our' },
+          right: { chunk: 0, type: 'conflict_their' },
         },
       ]);
     });
@@ -1196,9 +1197,9 @@ describe('DiffsStoreUtils', () => {
       const file = getDiffFileMock();
       const files = utils.parallelizeDiffLines(file.highlighted_diff_lines, true);
 
-      expect(files[5].left).toEqual(file.parallel_diff_lines[5].left);
+      expect(files[5].left).toMatchObject(file.parallel_diff_lines[5].left);
       expect(files[5].right).toBeNull();
-      expect(files[6].left).toEqual(file.parallel_diff_lines[5].right);
+      expect(files[6].left).toMatchObject(file.parallel_diff_lines[5].right);
       expect(files[6].right).toBeNull();
     });
   });

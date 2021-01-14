@@ -39,7 +39,7 @@ describe('UserActionButtons', () => {
     it('sets props correctly', () => {
       expect(findRemoveMemberButton().props()).toEqual({
         memberId: member.id,
-        message: `Are you sure you want to remove ${member.user.name} from "${member.source.name}"`,
+        message: `Are you sure you want to remove ${member.user.name} from "${member.source.fullName}"`,
         title: 'Remove member',
         isAccessRequest: false,
         icon: 'remove',
@@ -56,7 +56,7 @@ describe('UserActionButtons', () => {
         });
 
         expect(findRemoveMemberButton().props('message')).toBe(
-          `Are you sure you want to remove this orphaned member from "${orphanedMember.source.name}"`,
+          `Are you sure you want to remove this orphaned member from "${orphanedMember.source.fullName}"`,
         );
       });
     });

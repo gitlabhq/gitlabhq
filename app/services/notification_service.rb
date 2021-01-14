@@ -481,6 +481,12 @@ class NotificationService
     mailer.member_access_granted_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
+  def updated_group_member_expiration(group_member)
+    return true unless group_member.notifiable?(:mention)
+
+    mailer.member_expiration_date_updated_email(group_member.real_source_type, group_member.id).deliver_later
+  end
+
   def project_was_moved(project, old_path_with_namespace)
     recipients = project_moved_recipients(project)
     recipients = notifiable_users(recipients, :custom, custom_action: :moved_project, project: project)

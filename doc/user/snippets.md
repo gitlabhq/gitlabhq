@@ -69,8 +69,8 @@ new commit to the master branch is recorded. Commit messages are automatically
 generated. The snippet's repository has only one branch (master) by default, deleting
 it or creating other branches is not supported.
 
-Existing snippets will be automatically migrated in 13.0. Their current
-content will be saved as the initial commit to the snippets' repository.
+Existing snippets are automatically migrated in 13.0. Their current
+content is saved as the initial commit to the snippets' repository.
 
 ### Filenames
 
@@ -86,10 +86,10 @@ number increases incrementally when more snippets without an attributed
 filename are added.
 
 When upgrading from an earlier version of GitLab to 13.0, existing snippets
-without a supported filename will be renamed to a compatible format. For
-example, if the snippet's filename is `http://a-weird-filename.me` it will
-be changed to `http-a-weird-filename-me` to be included in the snippet's
-repository. As snippets are stored by ID, changing their filenames will not break
+without a supported filename are renamed to a compatible format. For
+example, if the snippet's filename is `http://a-weird-filename.me` it is
+changed to `http-a-weird-filename-me` to be included in the snippet's
+repository. As snippets are stored by ID, changing their filenames breaks
 direct or embedded links to the snippet.
 
 ### Multiple files by Snippet
@@ -105,8 +105,8 @@ to a certain context. For example:
 - A snippet with a `docker-compose.yml` file and its associated `.env` file.
 - A `gulpfile.js` file coupled with a `package.json` file, which together can be used to bootstrap a project and manage its dependencies.
 
-Snippets support between 1 and 10 files. They can be managed via Git (since they're [versioned](#versioned-snippets)
-by a Git repository), through the [Snippets API](../api/snippets.md), or within the GitLab UI.
+Snippets support between 1 and 10 files. They can be managed via Git (because they're [versioned](#versioned-snippets)
+by a Git repository), through the [Snippets API](../api/snippets.md), or in the GitLab UI.
 
 ![Multi-file Snippet](img/gitlab_snippet_v13_5.png)
 
@@ -139,7 +139,7 @@ master branch.
 
 ### Reduce snippets repository size
 
-Since versioned Snippets are considered as part of the [namespace storage size](../user/admin_area/settings/account_and_limit_settings.md),
+Because versioned Snippets are considered as part of the [namespace storage size](../user/admin_area/settings/account_and_limit_settings.md),
 it's recommended to keep snippets' repositories as compact as possible.
 
 For more information about tools to compact repositories,
@@ -151,7 +151,7 @@ see the documentation on [reducing repository size](../user/project/repository/r
 - Creating or deleting branches is not supported. Only a default *master* branch is used.
 - Git tags are not supported in snippet repositories.
 - Snippets' repositories are limited to 10 files. Attempting to push more
-than 10 files will result in an error.
+than 10 files results in an error.
 - Revisions are not *yet* visible to the user on the GitLab UI, but
 it's planned to be added in future iterations. See the [revisions tab issue](https://gitlab.com/gitlab-org/gitlab/-/issues/39271)
 for updates.
@@ -187,9 +187,9 @@ facilitating the collaboration among users.
 
 You can download the raw content of a snippet.
 
-By default snippets will be downloaded with Linux-style line endings (`LF`). If
+By default snippets are downloaded with Linux-style line endings (`LF`). If
 you want to preserve the original line endings you need to add a parameter `line_ending=raw`
-(e.g., `https://gitlab.com/snippets/SNIPPET_ID/raw?line_ending=raw`). In case a
+(For example: `https://gitlab.com/snippets/SNIPPET_ID/raw?line_ending=raw`). In case a
 snippet was created using the GitLab web interface the original line ending is Windows-like (`CRLF`).
 
 ## Embedded snippets
@@ -207,7 +207,7 @@ To embed a snippet, first make sure that:
 - In **Project > Settings > Permissions**, the snippets permissions are
   set to **Everyone with access**
 
-Once the above conditions are met, the "Embed" section will appear in your
+After the above conditions are met, the "Embed" section appears in your
 snippet where you can simply click on the "Copy" button. This copies a one-line
 script that you can add to any website or blog post.
 

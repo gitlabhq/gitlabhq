@@ -1,11 +1,10 @@
 import { merge } from 'lodash';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
+import { GlTabs, GlTab } from '@gitlab/ui';
 import createMockApollo from 'jest/helpers/mock_apollo_helper';
-import { GlColumnChart } from '@gitlab/ui/dist/charts';
 import Component from '~/projects/pipelines/charts/components/app.vue';
-import StatisticsList from '~/projects/pipelines/charts/components/statistics_list.vue';
-import CiCdAnalyticsAreaChart from '~/projects/pipelines/charts/components/ci_cd_analytics_area_chart.vue';
+import PipelineCharts from '~/projects/pipelines/charts/components/pipeline_charts.vue';
 import getPipelineCountByStatus from '~/projects/pipelines/charts/graphql/queries/get_pipeline_count_by_status.query.graphql';
 import getProjectPipelineStatistics from '~/projects/pipelines/charts/graphql/queries/get_project_pipeline_statistics.query.graphql';
 import { mockPipelineCount, mockPipelineStatistics } from '../mock_data';
@@ -58,60 +57,62 @@ describe('ProjectsPipelinesChartsApp', () => {
     wrapper = null;
   });
 
-  describe('overall statistics', () => {
-    it('displays the statistics list', () => {
-      const list = wrapper.find(StatisticsList);
+  describe('pipelines charts', () => {
+    it('displays the pipeline charts', () => {
+      const chart = wrapper.find(PipelineCharts);
+      const analytics = mockPipelineStatistics.data.project.pipelineAnalytics;
 
-      expect(list.exists()).toBe(true);
-      expect(list.props('counts')).toMatchObject({
-        failed: 1,
-        success: 23,
-        total: 34,
-        successRatio: 95.83333333333334,
-      });
-    });
-
-    it('displays the commit duration chart', () => {
-      const chart = wrapper.find(GlColumnChart);
+      const {
+        totalPipelines: total,
+        successfulPipelines: success,
+        failedPipelines: failed,
+      } = mockPipelineCount.data.project;
 
       expect(chart.exists()).toBe(true);
-      expect(chart.props('yAxisTitle')).toBe('Minutes');
-      expect(chart.props('xAxisTitle')).toBe('Commit');
-      expect(chart.props('bars')).toBe(wrapper.vm.timesChartTransformedData);
-      expect(chart.props('option')).toBe(wrapper.vm.$options.timesChartOptions);
-    });
-  });
-
-  describe('pipelines charts', () => {
-    it('displays 3 area charts', () => {
-      expect(wrapper.findAll(CiCdAnalyticsAreaChart)).toHaveLength(3);
-    });
-
-    describe('displays individual correctly', () => {
-      it('renders with the correct data', () => {
-        const charts = wrapper.findAll(CiCdAnalyticsAreaChart);
-
-        for (let i = 0; i < charts.length; i += 1) {
-          const chart = charts.at(i);
-
-          expect(chart.exists()).toBe(true);
-          // TODO: Refactor this to use the mocked data instead of the vm data
-          // https://gitlab.com/gitlab-org/gitlab/-/issues/292085
-          expect(chart.props('chartData')).toBe(wrapper.vm.areaCharts[i].data);
-          expect(chart.text()).toBe(wrapper.vm.areaCharts[i].title);
-        }
+      expect(chart.props()).toMatchObject({
+        counts: {
+          failed: failed.count,
+          success: success.count,
+          total: total.count,
+          successRatio: (success.count / (success.count + failed.count)) * 100,
+        },
+        lastWeek: {
+          labels: analytics.weekPipelinesLabels,
+          totals: analytics.weekPipelinesTotals,
+          success: analytics.weekPipelinesSuccessful,
+        },
+        lastMonth: {
+          labels: analytics.monthPipelinesLabels,
+          totals: analytics.monthPipelinesTotals,
+          success: analytics.monthPipelinesSuccessful,
+        },
+        lastYear: {
+          labels: analytics.yearPipelinesLabels,
+          totals: analytics.yearPipelinesTotals,
+          success: analytics.yearPipelinesSuccessful,
+        },
+        timesChart: {
+          labels: analytics.pipelineTimesLabels,
+          values: analytics.pipelineTimesValues,
+        },
       });
     });
   });
 
   const findDeploymentFrequencyCharts = () => wrapper.find(DeploymentFrequencyChartsStub);
+  const findGlTabs = () => wrapper.find(GlTabs);
+  const findAllGlTab = () => wrapper.findAll(GlTab);
+  const findGlTabAt = (i) => findAllGlTab().at(i);
 
   describe('when shouldRenderDeploymentFrequencyCharts is true', () => {
     beforeEach(() => {
       createComponent({ provide: { shouldRenderDeploymentFrequencyCharts: true } });
     });
 
-    it('renders the deployment frequency charts', () => {
+    it('renders the deployment frequency charts in a tab', () => {
+      expect(findGlTabs().exists()).toBe(true);
+      expect(findGlTabAt(0).attributes('title')).toBe('Pipelines');
+      expect(findGlTabAt(1).attributes('title')).toBe('Deployments');
       expect(findDeploymentFrequencyCharts().exists()).toBe(true);
     });
   });
@@ -121,7 +122,8 @@ describe('ProjectsPipelinesChartsApp', () => {
       createComponent({ provide: { shouldRenderDeploymentFrequencyCharts: false } });
     });
 
-    it('does not render the deployment frequency charts', () => {
+    it('does not render the deployment frequency charts in a tab', () => {
+      expect(findGlTabs().exists()).toBe(false);
       expect(findDeploymentFrequencyCharts().exists()).toBe(false);
     });
   });

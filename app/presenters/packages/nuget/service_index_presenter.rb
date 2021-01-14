@@ -100,7 +100,7 @@ module Packages
 
         case scope
         when :group
-          api_v4_groups_packages_nuget_metadata_package_name_package_version_path(
+          api_v4_groups___packages_nuget_metadata_package_name_package_version_path(
             params,
             true
           )
@@ -115,7 +115,7 @@ module Packages
       def search_service_url
         case scope
         when :group
-          api_v4_groups_packages_nuget_query_path(id: @project_or_group.id)
+          api_v4_groups___packages_nuget_query_path(id: @project_or_group.id)
         when :project
           api_v4_projects_packages_nuget_query_path(id: @project_or_group.id)
         end

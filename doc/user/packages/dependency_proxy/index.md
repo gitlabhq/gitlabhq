@@ -141,11 +141,10 @@ You can use the Dependency Proxy to pull your base image.
    bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
    ```
 
-   This can also be other credentials such as:
+   This can also be a [personal access token](../../../user/profile/personal_access_tokens.md) such as:
 
    ```shell
    echo -n "my_username:personal_access_token" | base64
-   echo -n "deploy_token_username:deploy_token" | base64
    ```
 
 1. Create a [custom environment variables](../../../ci/variables/README.md#custom-environment-variables)

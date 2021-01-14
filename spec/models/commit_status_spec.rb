@@ -519,6 +519,9 @@ RSpec.describe CommitStatus do
     subject { commit_status.group_name }
 
     where(:name, :group_name) do
+      'rspec1'                                              | 'rspec1'
+      'rspec1 0 1'                                          | 'rspec1'
+      'rspec1 0/2'                                          | 'rspec1'
       'rspec:windows'                                       | 'rspec:windows'
       'rspec:windows 0'                                     | 'rspec:windows 0'
       'rspec:windows 0 test'                                | 'rspec:windows 0 test'

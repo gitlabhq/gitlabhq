@@ -35,7 +35,7 @@ You can also view or fork the complete [example source](https://gitlab.com/gitla
    }
    ```
 
-1. Update the `files` key with glob pattern(s) that selects all files that should be included in the published module. More information about `files` can be found [in NPM's documentation](https://docs.npmjs.com/cli/v6/configuring-npm/package-json#files).
+1. Update the `files` key with glob pattern(s) that selects all files that should be included in the published module. More information about `files` can be found [in NPM's documentation](https://docs.npmjs.com/cli/v6/configuring-npm/package-json/#files).
 
 1. Add a `.gitignore` file to the project to avoid committing `node_modules`:
 

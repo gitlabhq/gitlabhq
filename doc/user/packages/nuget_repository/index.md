@@ -123,7 +123,7 @@ nuget source Add -Name "GitLab" -Source "https://gitlab.example.com/api/v4/proje
 To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endpoint, add the Package Registry as a source with `nuget`:
 
 ```shell
-nuget source Add -Name <source_name> -Source "https://gitlab.example.com/api/v4/groups/<your_group_id>/packages/nuget/index.json" -UserName <gitlab_username or deploy_token_username> -Password <gitlab_personal_access_token or deploy_token>
+nuget source Add -Name <source_name> -Source "https://gitlab.example.com/api/v4/groups/<your_group_id>/-/packages/nuget/index.json" -UserName <gitlab_username or deploy_token_username> -Password <gitlab_personal_access_token or deploy_token>
 ```
 
 - `<source_name>` is the desired source name.
@@ -131,7 +131,7 @@ nuget source Add -Name <source_name> -Source "https://gitlab.example.com/api/v4/
 For example:
 
 ```shell
-nuget source Add -Name "GitLab" -Source "https://gitlab.example.com/api/v4/groups/23/packages/nuget/index.json" -UserName carol -Password 12345678asdf
+nuget source Add -Name "GitLab" -Source "https://gitlab.example.com/api/v4/groups/23/-/packages/nuget/index.json" -UserName carol -Password 12345678asdf
 ```
 
 ### Add a source with Visual Studio
@@ -173,7 +173,7 @@ To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endp
 1. Select **Add**.
 1. Complete the following fields:
    - **Name**: Name for the source.
-   - **Location**: `https://gitlab.example.com/api/v4/group/<your_group_id>/packages/nuget/index.json`,
+   - **Location**: `https://gitlab.example.com/api/v4/groups/<your_group_id>/-/packages/nuget/index.json`,
      where `<your_group_id>` is your group ID, and `gitlab.example.com` is
      your domain name.
    - **Username**: Your GitLab username or deploy token username.
@@ -227,7 +227,7 @@ To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) Package Re
    <configuration>
     <packageSources>
         <clear />
-        <add key="gitlab" value="https://gitlab.example.com/api/v4/group/<your_group_id>/packages/nuget/index.json" />
+        <add key="gitlab" value="https://gitlab.example.com/api/v4/groups/<your_group_id>/-/packages/nuget/index.json" />
     </packageSources>
     <packageSourceCredentials>
         <gitlab>

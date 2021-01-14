@@ -35,7 +35,7 @@ export const lineCode = (line) => {
   return line.line_code || line.left?.line_code || line.right?.line_code;
 };
 
-export const classNameMapCell = (line, hll, isLoggedIn, isHover) => {
+export const classNameMapCell = ({ line, hll, isLoggedIn, isHover }) => {
   if (!line) return [];
   const { type } = line;
 
@@ -54,7 +54,9 @@ export const addCommentTooltip = (line) => {
   let tooltip;
   if (!line) return tooltip;
 
-  tooltip = __('Add a comment to this line');
+  tooltip = gon.drag_comment_selection
+    ? __('Add a comment to this line or drag for multiple lines')
+    : __('Add a comment to this line');
   const brokenSymlinks = line.commentsDisabled;
 
   if (brokenSymlinks) {

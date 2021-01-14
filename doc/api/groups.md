@@ -766,7 +766,6 @@ Parameters:
 | `default_branch_protection`          | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). Default to the global level default branch protection setting.      |
 | `shared_runners_minutes_limit`       | integer | no       | **(STARTER ONLY)** Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
 | `extra_shared_runners_minutes_limit` | integer | no       | **(STARTER ONLY)** Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
-| `shared_runners_setting`             | string  | no       | See [Options for `shared_runners_setting`](#options-for-shared_runners_setting). Enable or disable shared runners for a group's subgroups and projects. |
 
 ### Options for `default_branch_protection`
 
@@ -777,16 +776,6 @@ The `default_branch_protection` attribute determines whether developers and main
 | `0`   | No protection. Developers and maintainers can:  <br>- Push new commits<br>- Force push changes<br>- Delete the branch |
 | `1`   | Partial protection. Developers and maintainers can:  <br>- Push new commits |
 | `2`   | Full protection. Only maintainers can:  <br>- Push new commits |
-
-### Options for `shared_runners_setting`
-
-The `shared_runners_setting` attribute determines whether shared runners are enabled for a group's subgroups and projects.
-
-| Value | Description |
-|-------|-------------------------------------------------------------------------------------------------------------|
-| `enabled`                      | Enables shared runners for all projects and subgroups in this group. |
-| `disabled_with_override`       | Disables shared runners for all projects and subgroups in this group, but allows subgroups to override this setting. |
-| `disabled_and_unoverridable`   | Disables shared runners for all projects and subgroups in this group, and prevents subgroups from overriding this setting. |
 
 ## New Subgroup
 
@@ -852,6 +841,7 @@ PUT /groups/:id
 | `shared_runners_minutes_limit`       | integer | no       | **(STARTER ONLY)** Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
 | `extra_shared_runners_minutes_limit` | integer | no       | **(STARTER ONLY)** Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
 | `prevent_forking_outside_group`      | boolean | no       | **(PREMIUM)** When enabled, users can **not** fork projects from this group to external namespaces
+| `shared_runners_setting`             | string  | no       | See [Options for `shared_runners_setting`](#options-for-shared_runners_setting). Enable or disable shared runners for a group's subgroups and projects. |
 
 NOTE:
 The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
@@ -940,6 +930,16 @@ with Rails console access to run the following command:
 ```ruby
 Feature.disable(:limit_projects_in_groups_api)
 ```
+
+### Options for `shared_runners_setting`
+
+The `shared_runners_setting` attribute determines whether shared runners are enabled for a group's subgroups and projects.
+
+| Value | Description |
+|-------|-------------------------------------------------------------------------------------------------------------|
+| `enabled`                      | Enables shared runners for all projects and subgroups in this group. |
+| `disabled_with_override`       | Disables shared runners for all projects and subgroups in this group, but allows subgroups to override this setting. |
+| `disabled_and_unoverridable`   | Disables shared runners for all projects and subgroups in this group, and prevents subgroups from overriding this setting. |
 
 ## Remove group
 

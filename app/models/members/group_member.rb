@@ -74,6 +74,10 @@ class GroupMember < Member
       run_after_commit { notification_service.update_group_member(self) }
     end
 
+    if saved_change_to_expires_at?
+      run_after_commit { notification_service.updated_group_member_expiration(self) }
+    end
+
     super
   end
 

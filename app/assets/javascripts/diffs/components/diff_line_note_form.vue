@@ -56,10 +56,11 @@ export default {
   },
   computed: {
     ...mapState({
-      noteableData: (state) => state.notes.noteableData,
-      diffViewType: (state) => state.diffs.diffViewType,
+      diffViewType: ({ diffs }) => diffs.diffViewType,
+      showSuggestPopover: ({ diffs }) => diffs.showSuggestPopover,
+      noteableData: ({ notes }) => notes.noteableData,
+      selectedCommentPosition: ({ notes }) => notes.selectedCommentPosition,
     }),
-    ...mapState('diffs', ['showSuggestPopover']),
     ...mapGetters('diffs', ['getDiffFileByHash', 'diffLines']),
     ...mapGetters([
       'isLoggedIn',
@@ -125,6 +126,10 @@ export default {
       ];
 
       this.initAutoSave(this.noteableData, keys);
+    }
+
+    if (this.selectedCommentPosition) {
+      this.commentLineStart = this.selectedCommentPosition.start;
     }
   },
   methods: {

@@ -4,6 +4,7 @@ exports[`Design management design version dropdown component renders design vers
 <gl-dropdown-stub
   category="primary"
   headertext=""
+  hideheaderborder="true"
   issueiid=""
   projectpath=""
   size="small"
@@ -44,6 +45,7 @@ exports[`Design management design version dropdown component renders design vers
 <gl-dropdown-stub
   category="primary"
   headertext=""
+  hideheaderborder="true"
   issueiid=""
   projectpath=""
   size="small"

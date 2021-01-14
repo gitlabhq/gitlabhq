@@ -36,7 +36,7 @@ export default {
           s__('Members|Are you sure you want to remove %{usersName} from "%{source}"'),
           {
             usersName: user.name,
-            source: source.name,
+            source: source.fullName,
           },
         );
       }
@@ -44,7 +44,7 @@ export default {
       return sprintf(
         s__('Members|Are you sure you want to remove this orphaned member from "%{source}"'),
         {
-          source: source.name,
+          source: source.fullName,
         },
       );
     },

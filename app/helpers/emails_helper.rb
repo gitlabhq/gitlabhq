@@ -214,6 +214,29 @@ module EmailsHelper
     end
   end
 
+  def group_membership_expiration_changed_text(member, group)
+    if member.expires?
+      days = (member.expires_at - Date.today).to_i
+      days_formatted = pluralize(days, 'day')
+
+      _('Your %{group} membership will now expire in %{days}.') % { group: group.human_name, days: days_formatted }
+    else
+      _('Your membership in %{group} no longer expires.') % { group: group.human_name }
+    end
+  end
+
+  def group_membership_expiration_changed_link(member, group, format: nil)
+    url = group_group_members_url(group, search: member.user.username)
+
+    case format
+    when :html
+      link_to = generate_link('group membership', url).html_safe
+      _('For additional information, review your %{link_to} or contact your group owner.').html_safe % { link_to: link_to }
+    else
+      _('For additional information, review your group membership: %{link_to} or contact your group owner.') % { link_to: url }
+    end
+  end
+
   def instance_access_request_text(user, format: nil)
     gitlab_host = Gitlab.config.gitlab.host
 

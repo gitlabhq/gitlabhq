@@ -13,6 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 >   quick actions when updating the description of issues, epics, and merge requests.
 > - Introduced in [GitLab 13.8](https://gitlab.com/gitlab-org/gitlab/-/issues/292393): when you enter
 >   `/` into a description or comment field, all available quick actions are displayed in a scrollable list.
+> - The rebase quick action was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49800) in GitLab 13.8.
 
 Quick actions are textual shortcuts for common actions on issues, epics, merge requests,
 and commits that are usually done by clicking buttons or dropdowns in the GitLab UI.
@@ -61,7 +62,7 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/promote`                            | ✓     |               |      | Promote issue to epic. **(PREMIUM)**                                                                                            |
 | `/publish`                            | ✓     |               |      | Publish issue to an associated [Status Page](../../operations/incident_management/status_page.md) ([Introduced in GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30906)) **(ULTIMATE)** |
 | `/reassign @user1 @user2`             | ✓     | ✓             |      | Replace current assignees with those specified. **(STARTER)**                                                                                         |
-| `/rebase`                             |       | ✓             |      | Rebase source branch. This will schedule a background task that attempt to rebase the changes in the source branch on the latest commit of the target branch. If `/rebase` is used, `/merge` will be ignored to avoid a race condition where the source branch is merged or deleted before it is rebased. |
+| `/rebase`                             |       | ✓             |      | Rebase source branch. This will schedule a background task that attempt to rebase the changes in the source branch on the latest commit of the target branch. If `/rebase` is used, `/merge` will be ignored to avoid a race condition where the source branch is merged or deleted before it is rebased. If there are merge conflicts, GitLab will display a message that a rebase cannot be scheduled. Rebase failures will be displayed with the merge request status. |
 | `/reassign_reviewer @user1 @user2`    |       | ✓             |      | Replace current reviewers with those specified. **(STARTER)**                                                                                         |
 | `/relabel ~label1 ~label2`            | ✓     | ✓             | ✓    | Replace current labels with those specified.                                                                        |
 | `/relate #issue1 #issue2`             | ✓     |               |      | Mark issues as related. **(STARTER)**                                                                                            |

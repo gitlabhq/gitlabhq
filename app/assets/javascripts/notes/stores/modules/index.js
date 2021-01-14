@@ -15,7 +15,7 @@ export default () => ({
     batchSuggestionsInfo: [],
     currentlyFetchingDiscussions: false,
     /**
-     * selectedCommentPosition & selectedCommentPosition structures are the same as `position.line_range`:
+     * selectedCommentPosition & selectedCommentPositionHover structures are the same as `position.line_range`:
      * {
      *  start: { line_code: string, new_line: number, old_line:number, type: string },
      *  end: { line_code: string, new_line: number, old_line:number, type: string },

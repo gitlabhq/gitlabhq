@@ -126,14 +126,14 @@ describe('lineCode', () => {
 
 describe('classNameMapCell', () => {
   it.each`
-    line               | hll      | loggedIn | hovered  | expectation
-    ${undefined}       | ${true}  | ${true}  | ${true}  | ${[]}
-    ${{ type: 'new' }} | ${false} | ${false} | ${false} | ${['new', { hll: false, 'is-over': false, new_line: true, old_line: false }]}
-    ${{ type: 'new' }} | ${true}  | ${true}  | ${false} | ${['new', { hll: true, 'is-over': false, new_line: true, old_line: false }]}
-    ${{ type: 'new' }} | ${true}  | ${false} | ${true}  | ${['new', { hll: true, 'is-over': false, new_line: true, old_line: false }]}
-    ${{ type: 'new' }} | ${true}  | ${true}  | ${true}  | ${['new', { hll: true, 'is-over': true, new_line: true, old_line: false }]}
-  `('should return $expectation', ({ line, hll, loggedIn, hovered, expectation }) => {
-    const classes = utils.classNameMapCell(line, hll, loggedIn, hovered);
+    line               | hll      | isLoggedIn | isHover  | expectation
+    ${undefined}       | ${true}  | ${true}    | ${true}  | ${[]}
+    ${{ type: 'new' }} | ${false} | ${false}   | ${false} | ${['new', { hll: false, 'is-over': false, new_line: true, old_line: false }]}
+    ${{ type: 'new' }} | ${true}  | ${true}    | ${false} | ${['new', { hll: true, 'is-over': false, new_line: true, old_line: false }]}
+    ${{ type: 'new' }} | ${true}  | ${false}   | ${true}  | ${['new', { hll: true, 'is-over': false, new_line: true, old_line: false }]}
+    ${{ type: 'new' }} | ${true}  | ${true}    | ${true}  | ${['new', { hll: true, 'is-over': true, new_line: true, old_line: false }]}
+  `('should return $expectation', ({ line, hll, isLoggedIn, isHover, expectation }) => {
+    const classes = utils.classNameMapCell({ line, hll, isLoggedIn, isHover });
     expect(classes).toEqual(expectation);
   });
 });

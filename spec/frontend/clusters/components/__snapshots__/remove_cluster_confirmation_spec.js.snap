@@ -41,109 +41,119 @@ exports[`Remove cluster confirmation modal renders splitbutton with modal includ
       role="menu"
       tabindex="-1"
     >
-      <!---->
-       
-      <li
-        class="gl-new-dropdown-item"
-        role="presentation"
+      <div
+        class="gl-new-dropdown-inner"
       >
-        <button
-          class="dropdown-item"
-          role="menuitem"
-          type="button"
+        <!---->
+         
+        <div
+          class="gl-new-dropdown-contents"
         >
-          <svg
-            aria-hidden="true"
-            class="gl-icon s16 gl-new-dropdown-item-check-icon"
-            data-testid="mobile-issue-close-icon"
+          <li
+            class="gl-new-dropdown-item"
+            role="presentation"
           >
-            <use
-              href="#mobile-issue-close"
-            />
-          </svg>
-           
-          <!---->
-           
-          <!---->
-           
-          <div
-            class="gl-new-dropdown-item-text-wrapper"
-          >
-            <p
-              class="gl-new-dropdown-item-text-primary"
+            <button
+              class="dropdown-item"
+              role="menuitem"
+              type="button"
             >
-              <strong>
-                Remove integration and resources
-              </strong>
+              <svg
+                aria-hidden="true"
+                class="gl-icon s16 gl-new-dropdown-item-check-icon"
+                data-testid="mobile-issue-close-icon"
+              >
+                <use
+                  href="#mobile-issue-close"
+                />
+              </svg>
                
-              <div>
-                Deletes all GitLab resources attached to this cluster during removal
+              <!---->
+               
+              <!---->
+               
+              <div
+                class="gl-new-dropdown-item-text-wrapper"
+              >
+                <p
+                  class="gl-new-dropdown-item-text-primary"
+                >
+                  <strong>
+                    Remove integration and resources
+                  </strong>
+                   
+                  <div>
+                    Deletes all GitLab resources attached to this cluster during removal
+                  </div>
+                </p>
+                 
+                <!---->
               </div>
-            </p>
-             
-            <!---->
-          </div>
+               
+              <!---->
+            </button>
+          </li>
            
-          <!---->
-        </button>
-      </li>
-       
-      <li
-        class="gl-new-dropdown-divider"
-        role="presentation"
-      >
-        <hr
-          aria-orientation="horizontal"
-          class="dropdown-divider"
-          role="separator"
-        />
-      </li>
-      <li
-        class="gl-new-dropdown-item"
-        role="presentation"
-      >
-        <button
-          class="dropdown-item"
-          role="menuitem"
-          type="button"
-        >
-          <svg
-            aria-hidden="true"
-            class="gl-icon s16 gl-new-dropdown-item-check-icon gl-visibility-hidden"
-            data-testid="mobile-issue-close-icon"
+          <li
+            class="gl-new-dropdown-divider"
+            role="presentation"
           >
-            <use
-              href="#mobile-issue-close"
+            <hr
+              aria-orientation="horizontal"
+              class="dropdown-divider"
+              role="separator"
             />
-          </svg>
-           
-          <!---->
-           
-          <!---->
-           
-          <div
-            class="gl-new-dropdown-item-text-wrapper"
+          </li>
+          <li
+            class="gl-new-dropdown-item"
+            role="presentation"
           >
-            <p
-              class="gl-new-dropdown-item-text-primary"
+            <button
+              class="dropdown-item"
+              role="menuitem"
+              type="button"
             >
-              <strong>
-                Remove integration
-              </strong>
+              <svg
+                aria-hidden="true"
+                class="gl-icon s16 gl-new-dropdown-item-check-icon gl-visibility-hidden"
+                data-testid="mobile-issue-close-icon"
+              >
+                <use
+                  href="#mobile-issue-close"
+                />
+              </svg>
                
-              <div>
-                Removes cluster from project but keeps associated resources
+              <!---->
+               
+              <!---->
+               
+              <div
+                class="gl-new-dropdown-item-text-wrapper"
+              >
+                <p
+                  class="gl-new-dropdown-item-text-primary"
+                >
+                  <strong>
+                    Remove integration
+                  </strong>
+                   
+                  <div>
+                    Removes cluster from project but keeps associated resources
+                  </div>
+                </p>
+                 
+                <!---->
               </div>
-            </p>
-             
-            <!---->
-          </div>
+               
+              <!---->
+            </button>
+          </li>
            
           <!---->
-        </button>
-      </li>
-       
-      <!---->
+        </div>
+         
+        <!---->
+      </div>
        
     </ul>
   </div>

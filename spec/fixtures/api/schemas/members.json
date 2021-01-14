@@ -1,6 +1,6 @@
 {
   "type": "array",
   "items": {
-    "$ref": "group_member.json"
+    "$ref": "entities/member.json"
   }
 }

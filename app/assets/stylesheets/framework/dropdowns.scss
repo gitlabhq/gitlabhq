@@ -986,6 +986,8 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
 
 .labels-select-wrapper {
   &.is-standalone {
+    min-width: $input-md-width;
+
     .labels-select-dropdown-contents {
       max-height: 350px;
 

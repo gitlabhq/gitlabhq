@@ -24,16 +24,18 @@
       "properties": {
         "integer_value": { "type": "integer" },
         "string_value": { "type": "string" }
-      }
+      },
+      "additionalProperties": false
     },
     "source": {
       "type": "object",
-      "required": ["id", "name", "web_url"],
+      "required": ["id", "full_name", "web_url"],
       "properties": {
         "id": { "type": "integer" },
-        "name": { "type": "string" },
+        "full_name": { "type": "string" },
         "web_url": { "type": "string" }
-      }
+      },
+      "additionalProperties": false
     },
     "valid_roles": { "type": "object" },
     "created_by": {
@@ -42,39 +44,13 @@
       "properties": {
         "name": { "type": "string" },
         "web_url": { "type": "string" }
-      }
+      },
+      "additionalProperties": false
     },
     "user": {
-      "type": "object",
-      "required": [
-        "id",
-        "name",
-        "username",
-        "avatar_url",
-        "web_url",
-        "blocked",
-        "two_factor_enabled"
-      ],
-      "properties": {
-        "id": { "type": "integer" },
-        "name": { "type": "string" },
-        "username": { "type": "string" },
-        "avatar_url": { "type": ["string", "null"] },
-        "web_url": { "type": "string" },
-        "blocked": { "type": "boolean" },
-        "two_factor_enabled": { "type": "boolean" },
-        "status": {
-          "type": "object",
-          "required": [
-            "emoji",
-            "message_html"
-          ],
-          "properties": {
-            "emoji": { "type": "string" },
-            "message_html": { "type": "string" }
-          }
-        }
-      }
+      "allOf": [
+        { "$ref": "member_user.json" }
+      ]
     },
     "invite": {
       "type": "object",
@@ -83,7 +59,8 @@
         "email": { "type": "string" },
         "avatar_url": { "type": "string" },
         "can_resend": { "type": "boolean" }
-      }
+      },
+      "additionalProperties": false
     }
   }
 }

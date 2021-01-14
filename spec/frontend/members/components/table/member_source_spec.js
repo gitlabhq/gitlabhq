@@ -11,7 +11,7 @@ describe('MemberSource', () => {
       propsData: {
         memberSource: {
           id: 102,
-          name: 'Foo bar',
+          fullName: 'Foo bar',
           webUrl: 'https://gitlab.com/groups/foo-bar',
         },
         ...propsData,

@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "required": ["id", "name", "username", "avatar_url", "web_url", "blocked", "two_factor_enabled"],
+  "properties": {
+    "id": { "type": "integer" },
+    "name": { "type": "string" },
+    "username": { "type": "string" },
+    "avatar_url": { "type": ["string", "null"] },
+    "web_url": { "type": "string" },
+    "blocked": { "type": "boolean" },
+    "two_factor_enabled": { "type": "boolean" },
+    "status": {
+      "type": "object",
+      "required": ["emoji"],
+      "properties": {
+        "emoji": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

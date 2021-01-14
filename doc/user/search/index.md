@@ -18,7 +18,7 @@ The number displayed on their right represents the number of issues and merge re
 
 ![issues and MRs dashboard links](img/dashboard_links.png)
 
-When you click **Issues**, you'll see the opened issues assigned to you straight away:
+When you click **Issues**, the opened issues assigned to you are shown straight away:
 
 ![Issues assigned to you](img/issues_assigned_to_you.png)
 
@@ -29,7 +29,7 @@ You can also filter the results using the search and filter field, as described 
 
 ### Issues and MRs assigned to you or created by you
 
-You'll also find shortcuts to issues and merge requests created by you or assigned to you
+GitLab shows shortcuts to issues and merge requests created by you or assigned to you
 on the search field on the top-right of your screen:
 
 ![shortcut to your issues and merge requests](img/issues_mrs_shortcut.png)
@@ -40,7 +40,7 @@ on the search field on the top-right of your screen:
 > - Filtering by child Epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9029) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0.
 > - Filtering by Iterations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.6.
 
-Follow these steps to filter the **Issues** and **Merge Requests** list pages within projects and
+Follow these steps to filter the **Issues** and **Merge Requests** list pages in projects and
 groups:
 
 1. Click in the field **Search or filter results...**.
@@ -74,7 +74,7 @@ Some filter fields like milestone and assignee, allow you to filter by **None** 
 
 ![filter by none any](img/issues_filter_none_any.png)
 
-Selecting **None** returns results that have an empty value for that field. E.g.: no milestone, no assignee.
+Selecting **None** returns results that have an empty value for that field. For example: no milestone, no assignee.
 
 Selecting **Any** does the opposite. It returns results that have a non-empty value for that field.
 
@@ -83,11 +83,11 @@ Selecting **Any** does the opposite. It returns results that have a non-empty va
 You can filter issues and merge requests by specific terms included in titles or descriptions.
 
 - Syntax
-  - Searches look for all the words in a query, in any order. E.g.: searching
-    issues for `display bug` will return all issues matching both those words, in any order.
+  - Searches look for all the words in a query, in any order. For example: searching
+    issues for `display bug` returns all issues matching both those words, in any order.
   - To find the exact term, use double quotes: `"display bug"`
 - Limitation
-  - For performance reasons, terms shorter than 3 chars are ignored. E.g.: searching
+  - For performance reasons, terms shorter than 3 chars are ignored. For example: searching
     issues for `included in titles` is same as `included titles`
   - Search is limited to 4096 characters and 64 terms per query.
 
@@ -157,7 +157,7 @@ relevant users or other attributes.
 
 For performance optimization, there is a requirement of a minimum of three
 characters to begin your search. For example, if you want to search for
-issues that have the assignee "Simone Presley", you'll need to type at
+issues that have the assignee "Simone Presley", you must type at
 least "Sim" before autocomplete gives any relevant results.
 
 ## Search history
@@ -170,11 +170,11 @@ You can view recent searches by clicking on the little arrow-clock icon, which i
 
 Individual filters can be removed by clicking on the filter's (x) button or backspacing. The entire search filter can be cleared by clicking on the search box's (x) button or via <kbd>⌘</kbd> (Mac) + <kbd>⌫</kbd>.
 
-To delete filter tokens one at a time, the <kbd>⌥</kbd> (Mac) / <kbd>Ctrl</kbd> + <kbd>⌫</kbd> keyboard combination can be used.
+To delete filter tokens one at a time, the <kbd>⌥</kbd> (Mac) / <kbd>Control</kbd> + <kbd>⌫</kbd> keyboard combination can be used.
 
 ## Filtering with multiple filters of the same type
 
-Some filters can be added multiple times. These include but are not limited to assignees and labels. When you filter with these multiple filters of the same type, the AND logic is applied. For example, if you were filtering `assignee:@sam assignee:@sarah`, your results will only include entries whereby the assignees are assigned to both Sam and Sarah are returned.
+Some filters can be added multiple times. These include but are not limited to assignees and labels. When you filter with these multiple filters of the same type, the AND logic is applied. For example, if you were filtering `assignee:@sam assignee:@sarah`, your results include only entries whereby the assignees are assigned to both Sam and Sarah are returned.
 
 ![multiple assignees filtering](img/multiple_assignees.png)
 
@@ -190,7 +190,7 @@ author, type, and action. Also, you can sort them by
 
 You can search through your projects from the left menu, by clicking the menu bar, then **Projects**.
 On the field **Filter by name**, type the project or group name you want to find, and GitLab
-will filter them for you as you type.
+filters them for you as you type.
 
 You can also look for the projects you [starred](../project/index.md#star-a-project) (**Starred projects**), and **Explore** all
 public and internal projects available in GitLab.com, from which you can filter by visibility,
@@ -207,7 +207,7 @@ Similarly to [projects search](#projects), you can search through your groups fr
 the left menu, by clicking the menu bar, then **Groups**.
 
 On the field **Filter by name**, type the group name you want to find, and GitLab
-will filter them for you as you type.
+filters them for you as you type.
 
 You can also **Explore** all public and internal groups available in GitLab.com,
 and sort them by **Last created**, **Oldest created**, **Last updated**, or **Oldest updated**.
@@ -219,15 +219,15 @@ You can also filter them by name (issue title), from the field **Filter by name*
 
 When you want to search for issues to add to lists present in your Issue Board, click
 the button **Add issues** on the top-right of your screen, opening a modal window from which
-you'll be able to, besides filtering them by **Name**, **Author**, **Assignee**, **Milestone**,
+you can, besides filtering them by **Name**, **Author**, **Assignee**, **Milestone**,
 and **Labels**, select multiple issues to add to a list of your choice:
 
 ![search and select issues to add to board](img/search_issues_board.png)
 
 ## Shortcut
 
-You'll find a shortcut on the search field on the top-right of the project's dashboard to
-quickly access issues and merge requests created or assigned to you within that project:
+GitLab shows a shortcut on the search field on the top-right of the project's dashboard to
+quickly access issues and merge requests created or assigned to you in that project:
 
 ![search per project - shortcut](img/project_search.png)
 
@@ -242,12 +242,12 @@ You can also type in this search bar to see autocomplete suggestions for:
 - Recently viewed issues (try and type some word from the title of a recently viewed issue)
 - Recently viewed merge requests (try and type some word from the title of a recently viewed merge request)
 - Recently viewed epics (try and type some word from the title of a recently viewed epic)
-- [GitLab Flavored Markdown](../markdown.md#special-gitlab-references) (GFM) for issues within a project (try and type a GFM reference for an issue)
+- [GitLab Flavored Markdown](../markdown.md#special-gitlab-references) (GFM) for issues in a project (try and type a GFM reference for an issue)
 
 ## Basic search
 
 The Basic search in GitLab is a global search service that allows you to search
-across the entire GitLab instance, within a group, or a single project. Basic search is
+across the entire GitLab instance, in a group, or in a single project. Basic search is
 backed by the database and allows searching in:
 
 - Projects
@@ -262,12 +262,12 @@ backed by the database and allows searching in:
 - Wiki (Project only)
 
 To start a search, type into the search bar on the top-right of the screen. You can always search
-in all GitLab and may also see the options to search within a group or project if you are in the
+in all GitLab and may also see the options to search in a group or project if you are in the
 group or project dashboard.
 
 ![basic search](img/basic_search.png)
 
-Once the results are returned, you can modify the search, select a different type of data to
+After the results are returned, you can modify the search, select a different type of data to
 search, or choose a specific group or project.
 
 ![basic_search_results](img/basic_search_results.png)
@@ -282,11 +282,11 @@ the search field on the top-right of your screen while the project page is open.
 
 ### SHA search
 
-You can quickly access a commit from within the project dashboard by entering the SHA
-into the search field on the top right of the screen. If a single result is found, you will be
+You can quickly access a commit from the project dashboard by entering the SHA
+into the search field on the top right of the screen. If a single result is found, you are
 redirected to the commit result and given the option to return to the search results page.
 
-![project sha search redirect](img/project_search_sha_redirect.png)
+![project SHA search redirect](img/project_search_sha_redirect.png)
 
 ## Advanced Search **(STARTER)**
 
@@ -314,7 +314,7 @@ This feature might not be available to you. Check the **version history** note a
 
 You can search inside the project’s settings sections by entering a search
 term in the search box located at the top of the page. The search results
-will appear highlighted in the sections that match the search term.
+appear highlighted in the sections that match the search term.
 
 ![Search project settings](img/project_search_general_settings_v13_8.png)
 

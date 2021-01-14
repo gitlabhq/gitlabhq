@@ -68,20 +68,20 @@ export default {
       return this.fileLineCoverage(this.filePath, this.line.right.new_line);
     },
     classNameMapCellLeft() {
-      return utils.classNameMapCell(
-        this.line.left,
-        this.isHighlighted,
-        this.isLoggedIn,
-        this.isLeftHover,
-      );
+      return utils.classNameMapCell({
+        line: this.line.left,
+        hll: this.isHighlighted,
+        isLoggedIn: this.isLoggedIn,
+        isHover: this.isLeftHover,
+      });
     },
     classNameMapCellRight() {
-      return utils.classNameMapCell(
-        this.line.right,
-        this.isHighlighted,
-        this.isLoggedIn,
-        this.isRightHover,
-      );
+      return utils.classNameMapCell({
+        line: this.line.right,
+        hll: this.isHighlighted,
+        isLoggedIn: this.isLoggedIn,
+        isHover: this.isRightHover,
+      });
     },
     addCommentTooltipLeft() {
       return utils.addCommentTooltip(this.line.left);

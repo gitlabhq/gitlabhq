@@ -181,7 +181,7 @@ secondary. If the node is paused, be sure to resume before promoting. This
 issue has been fixed in GitLab 13.4 and later.
 
 WARNING:
-   If the secondary node [has been paused](../../geo/index.md#pausing-and-resuming-replication), this performs
+If the secondary node [has been paused](../../geo/index.md#pausing-and-resuming-replication), this performs
 a point-in-time recovery to the last known state.
 Data that was created on the primary while the secondary was paused will be lost.
 
@@ -218,6 +218,75 @@ Data that was created on the primary while the secondary was paused will be lost
 
 1. Verify you can connect to the newly promoted **primary** using the URL used
    previously for the **secondary**.
+1. Success! The **secondary** has now been promoted to **primary**.
+
+#### Promoting a **secondary** node with a Patroni standby cluster
+
+The `gitlab-ctl promote-to-primary-node` command cannot be used yet in
+conjunction with a Patroni standby cluster, as it can only
+perform changes on a **secondary** with only a single machine. Instead, you must
+do this manually.
+
+WARNING:
+In GitLab 13.2 and 13.3, promoting a secondary node to a primary while the
+secondary is paused fails. Do not pause replication before promoting a
+secondary. If the node is paused, be sure to resume before promoting. This
+issue has been fixed in GitLab 13.4 and later.
+
+WARNING:
+If the secondary node [has been paused](../../geo/index.md#pausing-and-resuming-replication), this performs
+a point-in-time recovery to the last known state.
+Data that was created on the primary while the secondary was paused will be lost.
+
+1. SSH in to the Standby Leader database node in the **secondary** and trigger PostgreSQL to
+   promote to read-write:
+
+   ```shell
+   sudo gitlab-ctl promote-db
+   ```
+
+1. Disable Patroni auto-failover:
+
+   ```shell
+   sudo gitlab-ctl patroni pause
+   ```
+
+1. Edit `/etc/gitlab/gitlab.rb` on every application and Sidekiq nodes in the secondary to reflect its new status as primary by removing any lines that enabled the `geo_secondary_role`:
+
+   ```ruby
+   ## In pre-11.5 documentation, the role was enabled as follows. Remove this line.
+   geo_secondary_role['enable'] = true
+
+   ## In 11.5+ documentation, the role was enabled as follows. Remove this line.
+   roles ['geo_secondary_role']
+   ```
+
+1. Edit `/etc/gitlab/gitlab.rb` on every Patroni node in the secondary to disable the standby cluster:
+
+   ```ruby
+   patroni['standby_cluster']['enable'] = false
+   ```
+
+1. Reconfigure GitLab on each machine for the changes to take effect:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. Resume Patroni auto-failover:
+
+   ```shell
+   sudo gitlab-ctl patroni resume
+   ```
+
+1. Promote the **secondary** to **primary**. SSH into a single application server and execute:
+
+   ```shell
+   sudo gitlab-rake geo:set_secondary_as_primary
+   ```
+
+1. Verify you can connect to the newly promoted **primary** using the URL used previously for the **secondary**.
+
 1. Success! The **secondary** has now been promoted to **primary**.
 
 #### Promoting a **secondary** node with an external PostgreSQL database
@@ -278,7 +347,7 @@ required:
 1. Verify you can connect to the newly promoted **primary** site using the URL used
    previously for the **secondary** site.
 
-Success! The **secondary** site has now been promoted to **primary**.
+1. Success! The **secondary** site has now been promoted to **primary**.
 
 ### Step 4. (Optional) Updating the primary domain DNS record
 

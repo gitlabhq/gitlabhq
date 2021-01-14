@@ -1,19 +1,19 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import DiffView from '~/diffs/components/diff_view.vue';
-// import DraftNote from '~/batch_comments/components/draft_note.vue';
-// import DiffRow from '~/diffs/components/diff_row.vue';
-// import DiffCommentCell from '~/diffs/components/diff_comment_cell.vue';
-// import DiffExpansionCell from '~/diffs/components/diff_expansion_cell.vue';
 
 describe('DiffView', () => {
   const DiffExpansionCell = { template: `<div/>` };
   const DiffRow = { template: `<div/>` };
   const DiffCommentCell = { template: `<div/>` };
   const DraftNote = { template: `<div/>` };
+  const showCommentForm = jest.fn();
+  const setSelectedCommentPosition = jest.fn();
+  const getDiffRow = (wrapper) => wrapper.findComponent(DiffRow).vm;
+
   const createWrapper = (props) => {
-    const localVue = createLocalVue();
-    localVue.use(Vuex);
+    Vue.use(Vuex);
 
     const batchComments = {
       getters: {
@@ -26,8 +26,13 @@ describe('DiffView', () => {
       },
       namespaced: true,
     };
-    const diffs = { getters: { commitId: () => 'abc123' }, namespaced: true };
+    const diffs = {
+      actions: { showCommentForm },
+      getters: { commitId: () => 'abc123' },
+      namespaced: true,
+    };
     const notes = {
+      actions: { setSelectedCommentPosition },
       state: { selectedCommentPosition: null, selectedCommentPositionHover: null },
     };
 
@@ -41,7 +46,7 @@ describe('DiffView', () => {
       ...props,
     };
     const stubs = { DiffExpansionCell, DiffRow, DiffCommentCell, DraftNote };
-    return shallowMount(DiffView, { propsData, store, localVue, stubs });
+    return shallowMount(DiffView, { propsData, store, stubs });
   };
 
   it('renders a match line', () => {
@@ -73,5 +78,56 @@ describe('DiffView', () => {
       diffLines: [{ renderCommentRow: true, left: { lineDraft: { isDraft: true } } }],
     });
     expect(wrapper.find(DraftNote).exists()).toBe(true);
+  });
+
+  describe('drag operations', () => {
+    it('sets `dragStart` onStartDragging', () => {
+      const wrapper = createWrapper({ diffLines: [{}] });
+
+      wrapper.findComponent(DiffRow).vm.$emit('startdragging', { test: true });
+      expect(wrapper.vm.dragStart).toEqual({ test: true });
+    });
+
+    it('does not call `setSelectedCommentPosition` on different chunks onDragOver', () => {
+      const wrapper = createWrapper({ diffLines: [{}] });
+      const diffRow = getDiffRow(wrapper);
+
+      diffRow.$emit('startdragging', { chunk: 0 });
+      diffRow.$emit('enterdragging', { chunk: 1 });
+
+      expect(setSelectedCommentPosition).not.toHaveBeenCalled();
+    });
+
+    it.each`
+      start | end  | expectation
+      ${1}  | ${2} | ${{ start: { index: 1 }, end: { index: 2 } }}
+      ${2}  | ${1} | ${{ start: { index: 1 }, end: { index: 2 } }}
+      ${1}  | ${1} | ${{ start: { index: 1 }, end: { index: 1 } }}
+    `(
+      'calls `setSelectedCommentPosition` with correct `updatedLineRange`',
+      ({ start, end, expectation }) => {
+        const wrapper = createWrapper({ diffLines: [{}] });
+        const diffRow = getDiffRow(wrapper);
+
+        diffRow.$emit('startdragging', { chunk: 1, index: start });
+        diffRow.$emit('enterdragging', { chunk: 1, index: end });
+
+        const arg = setSelectedCommentPosition.mock.calls[0][1];
+
+        expect(arg).toMatchObject(expectation);
+      },
+    );
+
+    it('sets `dragStart` to null onStopDragging', () => {
+      const wrapper = createWrapper({ diffLines: [{}] });
+      const diffRow = getDiffRow(wrapper);
+
+      diffRow.$emit('startdragging', { test: true });
+      expect(wrapper.vm.dragStart).toEqual({ test: true });
+
+      diffRow.$emit('stopdragging');
+      expect(wrapper.vm.dragStart).toBeNull();
+      expect(showCommentForm).toHaveBeenCalled();
+    });
   });
 });
