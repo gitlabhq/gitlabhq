@@ -2,6 +2,7 @@
 name: null_hypothesis
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45840
 rollout_issue_url:
+milestone: '13.7'
 type: experiment
 group: group::adoption
 default_enabled: false

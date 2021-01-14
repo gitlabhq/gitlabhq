@@ -365,3 +365,18 @@ export const mockRawGroupProjects = [
     path_with_namespace: 'awesome-group/foobar-project',
   },
 ];
+
+export const mockGroupProjects = [
+  {
+    id: 0,
+    name: 'Example Project',
+    nameWithNamespace: 'Awesome Group / Example Project',
+    fullPath: 'awesome-group/example-project',
+  },
+  {
+    id: 1,
+    name: 'Foobar Project',
+    nameWithNamespace: 'Awesome Group / Foobar Project',
+    fullPath: 'awesome-group/foobar-project',
+  },
+];

@@ -1,14 +1,14 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import {
   GlDropdown,
   GlDropdownItem,
   GlDropdownText,
   GlSearchBoxByType,
-  GlIntersectionObserver,
   GlLoadingIcon,
 } from '@gitlab/ui';
+import eventHub from '../eventhub';
 import { s__ } from '~/locale';
+import Api from '../../api';
 import { featureAccessLevel } from '~/pages/projects/shared/permissions/constants';
 import { ListType } from '../constants';
 
@@ -27,29 +27,29 @@ export default {
     order_by: 'similarity',
   },
   components: {
-    GlIntersectionObserver,
     GlLoadingIcon,
     GlDropdown,
     GlDropdownItem,
     GlDropdownText,
     GlSearchBoxByType,
   },
-  inject: ['groupId'],
   props: {
     list: {
       type: Object,
       required: true,
     },
   },
+  inject: ['groupId'],
   data() {
     return {
       initialLoading: true,
+      isFetching: false,
+      projects: [],
       selectedProject: {},
       searchTerm: '',
     };
   },
   computed: {
-    ...mapState(['groupProjects', 'groupProjectsFlags']),
     selectedProjectName() {
       return this.selectedProject.name || this.$options.i18n.dropdownText;
     },
@@ -65,30 +65,43 @@ export default {
       };
     },
     isFetchResultEmpty() {
-      return this.groupProjects.length === 0;
-    },
-    hasNextPage() {
-      return this.groupProjectsFlags.pageInfo?.hasNextPage;
+      return this.projects.length === 0;
     },
   },
   watch: {
     searchTerm() {
-      this.fetchGroupProjects({ search: this.searchTerm });
+      this.fetchProjects();
     },
   },
-  mounted() {
-    this.fetchGroupProjects({});
+  async mounted() {
+    await this.fetchProjects();
 
     this.initialLoading = false;
   },
   methods: {
-    ...mapActions(['fetchGroupProjects', 'setSelectedProject']),
-    selectProject(projectId) {
-      this.selectedProject = this.groupProjects.find((project) => project.id === projectId);
-      this.setSelectedProject(this.selectedProject);
+    async fetchProjects() {
+      this.isFetching = true;
+      try {
+        const projects = await Api.groupProjects(this.groupId, this.searchTerm, this.fetchOptions);
+
+        this.projects = projects.map((project) => {
+          return {
+            id: project.id,
+            name: project.name,
+            namespacedName: project.name_with_namespace,
+            path: project.path_with_namespace,
+          };
+        });
+      } catch (err) {
+        /* Handled in Api.groupProjects */
+      } finally {
+        this.isFetching = false;
+      }
     },
-    loadMoreProjects() {
-      this.fetchGroupProjects({ search: this.searchTerm, fetchNext: true });
+    selectProject(projectId) {
+      this.selectedProject = this.projects.find((project) => project.id === projectId);
+
+      eventHub.$emit('setSelectedProject', this.selectedProject);
     },
   },
 };
@@ -113,29 +126,20 @@ export default {
         :placeholder="$options.i18n.searchPlaceholder"
       />
       <gl-dropdown-item
-        v-for="project in groupProjects"
-        v-show="!groupProjectsFlags.isLoading"
+        v-for="project in projects"
+        v-show="!isFetching"
         :key="project.id"
         :name="project.name"
         @click="selectProject(project.id)"
       >
-        {{ project.nameWithNamespace }}
+        {{ project.namespacedName }}
       </gl-dropdown-item>
-      <gl-dropdown-text
-        v-show="groupProjectsFlags.isLoading"
-        data-testid="dropdown-text-loading-icon"
-      >
+      <gl-dropdown-text v-show="isFetching" data-testid="dropdown-text-loading-icon">
         <gl-loading-icon class="gl-mx-auto" />
       </gl-dropdown-text>
-      <gl-dropdown-text
-        v-if="isFetchResultEmpty && !groupProjectsFlags.isLoading"
-        data-testid="empty-result-message"
-      >
+      <gl-dropdown-text v-if="isFetchResultEmpty && !isFetching" data-testid="empty-result-message">
         <span class="gl-text-gray-500">{{ $options.i18n.emptySearchResult }}</span>
       </gl-dropdown-text>
-      <gl-intersection-observer v-if="hasNextPage" @appear="loadMoreProjects">
-        <gl-loading-icon v-if="groupProjectsFlags.isLoadingMore" size="md" />
-      </gl-intersection-observer>
     </gl-dropdown>
   </div>
 </template>

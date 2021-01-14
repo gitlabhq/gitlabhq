@@ -1,40 +1,31 @@
-import { mount } from '@vue/test-utils';
-import axios from 'axios';
-import AxiosMockAdapter from 'axios-mock-adapter';
+import Vuex from 'vuex';
+import { createLocalVue, mount } from '@vue/test-utils';
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
-import httpStatus from '~/lib/utils/http_status';
-import { featureAccessLevel } from '~/pages/projects/shared/permissions/constants';
-import { ListType } from '~/boards/constants';
-import eventHub from '~/boards/eventhub';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import defaultState from '~/boards/stores/state';
 
 import ProjectSelect from '~/boards/components/project_select.vue';
 
-import { listObj, mockRawGroupProjects } from './mock_data';
+import { mockList, mockGroupProjects } from './mock_data';
 
-jest.mock('~/boards/eventhub');
-jest.mock('~/flash');
+const localVue = createLocalVue();
+localVue.use(Vuex);
 
-const dummyGon = {
-  api_version: 'v4',
-  relative_url_root: '/gitlab',
+const actions = {
+  fetchGroupProjects: jest.fn(),
+  setSelectedProject: jest.fn(),
 };
 
-const mockGroupId = 1;
-const mockProjectsList1 = mockRawGroupProjects.slice(0, 1);
-const mockProjectsList2 = mockRawGroupProjects.slice(1);
-const mockDefaultFetchOptions = {
-  with_issues_enabled: true,
-  with_shared: false,
-  include_subgroups: true,
-  order_by: 'similarity',
+const createStore = (state = defaultState) => {
+  return new Vuex.Store({
+    state,
+    actions,
+  });
 };
 
-const itemsPerPage = 20;
+const mockProjectsList1 = mockGroupProjects.slice(0, 1);
 
 describe('ProjectSelect component', () => {
   let wrapper;
-  let axiosMock;
 
   const findLabel = () => wrapper.find("[data-testid='header-label']");
   const findGlDropdown = () => wrapper.find(GlDropdown);
@@ -46,55 +37,43 @@ describe('ProjectSelect component', () => {
   const findInMenuLoadingIcon = () => wrapper.find("[data-testid='dropdown-text-loading-icon']");
   const findEmptySearchMessage = () => wrapper.find("[data-testid='empty-result-message']");
 
-  const mockGetRequest = (data = [], statusCode = httpStatus.OK) => {
-    axiosMock
-      .onGet(`/gitlab/api/v4/groups/${mockGroupId}/projects.json`)
-      .replyOnce(statusCode, data);
-  };
-
-  const searchForProject = async (keyword, waitForAll = true) => {
-    findGlSearchBoxByType().vm.$emit('input', keyword);
-
-    if (waitForAll) {
-      await axios.waitForAll();
-    }
-  };
-
-  const createWrapper = async ({ list = listObj } = {}, waitForAll = true) => {
-    wrapper = mount(ProjectSelect, {
-      propsData: {
-        list,
+  const createWrapper = (state = {}) => {
+    const store = createStore({
+      groupProjects: [],
+      groupProjectsFlags: {
+        isLoading: false,
+        pageInfo: {
+          hasNextPage: false,
+        },
       },
+      ...state,
+    });
+
+    wrapper = mount(ProjectSelect, {
+      localVue,
+      propsData: {
+        list: mockList,
+      },
+      store,
       provide: {
         groupId: 1,
       },
     });
-
-    if (waitForAll) {
-      await axios.waitForAll();
-    }
   };
-
-  beforeEach(() => {
-    axiosMock = new AxiosMockAdapter(axios);
-    window.gon = dummyGon;
-  });
 
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
-    axiosMock.restore();
-    jest.clearAllMocks();
   });
 
-  it('displays a header title', async () => {
-    createWrapper({});
+  it('displays a header title', () => {
+    createWrapper();
 
     expect(findLabel().text()).toBe('Projects');
   });
 
-  it('renders a default dropdown text', async () => {
-    createWrapper({});
+  it('renders a default dropdown text', () => {
+    createWrapper();
 
     expect(findGlDropdown().exists()).toBe(true);
     expect(findGlDropdown().text()).toContain('Select a project');
@@ -102,18 +81,11 @@ describe('ProjectSelect component', () => {
 
   describe('when mounted', () => {
     it('displays a loading icon while projects are being fetched', async () => {
-      mockGetRequest([]);
-
-      createWrapper({}, false);
+      createWrapper();
 
       expect(findGlDropdownLoadingIcon().exists()).toBe(true);
 
-      await axios.waitForAll();
-
-      expect(axiosMock.history.get[0].params).toMatchObject({ search: '' });
-      expect(axiosMock.history.get[0].url).toBe(
-        `/gitlab/api/v4/groups/${mockGroupId}/projects.json`,
-      );
+      await wrapper.vm.$nextTick();
 
       expect(findGlDropdownLoadingIcon().exists()).toBe(false);
     });
@@ -121,10 +93,8 @@ describe('ProjectSelect component', () => {
 
   describe('when dropdown menu is open', () => {
     describe('by default', () => {
-      beforeEach(async () => {
-        mockGetRequest(mockProjectsList1);
-
-        await createWrapper();
+      beforeEach(() => {
+        createWrapper({ groupProjects: mockGroupProjects });
       });
 
       it('shows GlSearchBoxByType with default attributes', () => {
@@ -144,29 +114,24 @@ describe('ProjectSelect component', () => {
         expect(findInMenuLoadingIcon().isVisible()).toBe(false);
       });
 
-      it('renders empty search result message', async () => {
-        await createWrapper();
+      it('does not render empty search result message', () => {
+        expect(findEmptySearchMessage().exists()).toBe(false);
+      });
+    });
+
+    describe('when no projects are being returned', () => {
+      it('renders empty search result message', () => {
+        createWrapper();
 
         expect(findEmptySearchMessage().exists()).toBe(true);
       });
     });
 
     describe('when a project is selected', () => {
-      beforeEach(async () => {
-        mockGetRequest(mockProjectsList1);
+      beforeEach(() => {
+        createWrapper({ groupProjects: mockProjectsList1 });
 
-        await createWrapper();
-
-        await findFirstGlDropdownItem().find('button').trigger('click');
-      });
-
-      it('emits setSelectedProject with correct project metadata', () => {
-        expect(eventHub.$emit).toHaveBeenCalledWith('setSelectedProject', {
-          id: mockProjectsList1[0].id,
-          path: mockProjectsList1[0].path_with_namespace,
-          name: mockProjectsList1[0].name,
-          namespacedName: mockProjectsList1[0].name_with_namespace,
-        });
+        findFirstGlDropdownItem().find('button').trigger('click');
       });
 
       it('renders the name of the selected project', () => {
@@ -176,85 +141,13 @@ describe('ProjectSelect component', () => {
       });
     });
 
-    describe('when user searches for a project', () => {
-      beforeEach(async () => {
-        mockGetRequest(mockProjectsList1);
-
-        await createWrapper();
+    describe('when projects are loading', () => {
+      beforeEach(() => {
+        createWrapper({ groupProjectsFlags: { isLoading: true } });
       });
 
-      it('calls API with correct parameters with default fetch options', async () => {
-        await searchForProject('foobar');
-
-        const expectedApiParams = {
-          search: 'foobar',
-          per_page: itemsPerPage,
-          ...mockDefaultFetchOptions,
-        };
-
-        expect(axiosMock.history.get[1].params).toMatchObject(expectedApiParams);
-        expect(axiosMock.history.get[1].url).toBe(
-          `/gitlab/api/v4/groups/${mockGroupId}/projects.json`,
-        );
-      });
-
-      describe("when list type is defined and isn't backlog", () => {
-        it('calls API with an additional fetch option (min_access_level)', async () => {
-          axiosMock.reset();
-
-          await createWrapper({ list: { ...listObj, type: ListType.label } });
-
-          await searchForProject('foobar');
-
-          const expectedApiParams = {
-            search: 'foobar',
-            per_page: itemsPerPage,
-            ...mockDefaultFetchOptions,
-            min_access_level: featureAccessLevel.EVERYONE,
-          };
-
-          expect(axiosMock.history.get[1].params).toMatchObject(expectedApiParams);
-          expect(axiosMock.history.get[1].url).toBe(
-            `/gitlab/api/v4/groups/${mockGroupId}/projects.json`,
-          );
-        });
-      });
-
-      it('displays and hides gl-loading-icon while and after fetching data', async () => {
-        await searchForProject('some keyword', false);
-
-        await wrapper.vm.$nextTick();
-
+      it('displays and hides gl-loading-icon while and after fetching data', () => {
         expect(findInMenuLoadingIcon().isVisible()).toBe(true);
-
-        await axios.waitForAll();
-
-        expect(findInMenuLoadingIcon().isVisible()).toBe(false);
-      });
-
-      it('flashes an error message when fetching fails', async () => {
-        mockGetRequest([], httpStatus.INTERNAL_SERVER_ERROR);
-
-        await searchForProject('foobar');
-
-        expect(flash).toHaveBeenCalledTimes(1);
-        expect(flash).toHaveBeenCalledWith('Something went wrong while fetching projects');
-      });
-
-      describe('with non-empty search result', () => {
-        beforeEach(async () => {
-          mockGetRequest(mockProjectsList2);
-
-          await searchForProject('foobar');
-        });
-
-        it('displays the retrieved list of projects', async () => {
-          expect(findFirstGlDropdownItem().text()).toContain(mockProjectsList2[0].name);
-        });
-
-        it('does not render empty search result message', async () => {
-          expect(findEmptySearchMessage().exists()).toBe(false);
-        });
       });
     });
   });

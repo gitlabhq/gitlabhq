@@ -111,6 +111,15 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService do
         expect(subject.errors).to include('Duplicate package is not allowed')
       end
 
+      context 'when uploading different non-duplicate files to the same package' do
+        before do
+          package_file = existing_package.package_files.find_by(file_name: 'my-app-1.0-20180724.124855-1.jar')
+          package_file.destroy!
+        end
+
+        it_behaves_like 'reuse existing package'
+      end
+
       context 'when the package name matches the exception regex' do
         before do
           package_settings.update!(maven_duplicate_exception_regex: '.*')

@@ -1,0 +1,6 @@
+---
+title: Fix behavior of maven_duplicates_allowed setting so new Maven packages can
+  be uploaded
+merge_request: 51524
+author:
+type: fixed

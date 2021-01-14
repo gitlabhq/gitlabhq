@@ -9,6 +9,7 @@ import {
   mockMilestone,
   labels,
   mockActiveIssue,
+  mockGroupProjects,
 } from '../mock_data';
 import actions, { gqlClient } from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
@@ -1034,6 +1035,94 @@ describe('setActiveIssueTitle', () => {
       .mockResolvedValue({ data: { updateIssue: { errors: ['failed mutation'] } } });
 
     await expect(actions.setActiveIssueTitle({ getters }, input)).rejects.toThrow(Error);
+  });
+});
+
+describe('fetchGroupProjects', () => {
+  const state = {
+    fullPath: 'gitlab-org',
+  };
+
+  const pageInfo = {
+    endCursor: '',
+    hasNextPage: false,
+  };
+
+  const queryResponse = {
+    data: {
+      group: {
+        projects: {
+          nodes: mockGroupProjects,
+          pageInfo: {
+            endCursor: '',
+            hasNextPage: false,
+          },
+        },
+      },
+    },
+  };
+
+  it('should commit mutations REQUEST_GROUP_PROJECTS and RECEIVE_GROUP_PROJECTS_SUCCESS on success', (done) => {
+    jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
+
+    testAction(
+      actions.fetchGroupProjects,
+      {},
+      state,
+      [
+        {
+          type: types.REQUEST_GROUP_PROJECTS,
+          payload: false,
+        },
+        {
+          type: types.RECEIVE_GROUP_PROJECTS_SUCCESS,
+          payload: { projects: mockGroupProjects, pageInfo, fetchNext: false },
+        },
+      ],
+      [],
+      done,
+    );
+  });
+
+  it('should commit mutations REQUEST_GROUP_PROJECTS and RECEIVE_GROUP_PROJECTS_FAILURE on failure', (done) => {
+    jest.spyOn(gqlClient, 'query').mockRejectedValue();
+
+    testAction(
+      actions.fetchGroupProjects,
+      {},
+      state,
+      [
+        {
+          type: types.REQUEST_GROUP_PROJECTS,
+          payload: false,
+        },
+        {
+          type: types.RECEIVE_GROUP_PROJECTS_FAILURE,
+        },
+      ],
+      [],
+      done,
+    );
+  });
+});
+
+describe('setSelectedProject', () => {
+  it('should commit mutation SET_SELECTED_PROJECT', (done) => {
+    const project = mockGroupProjects[0];
+
+    testAction(
+      actions.setSelectedProject,
+      project,
+      {},
+      [
+        {
+          type: types.SET_SELECTED_PROJECT,
+          payload: project,
+        },
+      ],
+      [],
+      done,
+    );
   });
 });
 

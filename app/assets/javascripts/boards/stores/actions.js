@@ -29,6 +29,7 @@ import issueSetDueDateMutation from '../graphql/issue_set_due_date.mutation.grap
 import issueSetSubscriptionMutation from '../graphql/issue_set_subscription.mutation.graphql';
 import issueSetMilestoneMutation from '../graphql/issue_set_milestone.mutation.graphql';
 import issueSetTitleMutation from '../graphql/issue_set_title.mutation.graphql';
+import groupProjectsQuery from '../graphql/group_projects.query.graphql';
 
 const notImplemented = () => {
   /* eslint-disable-next-line @gitlab/require-i18n-strings */
@@ -496,6 +497,37 @@ export default {
       prop: 'title',
       value: data.updateIssue.issue.title,
     });
+  },
+
+  fetchGroupProjects: ({ commit, state }, { search = '', fetchNext = false }) => {
+    commit(types.REQUEST_GROUP_PROJECTS, fetchNext);
+
+    const { fullPath } = state;
+
+    const variables = {
+      fullPath,
+      search: search !== '' ? search : undefined,
+      after: fetchNext ? state.groupProjectsFlags.pageInfo.endCursor : undefined,
+    };
+
+    return gqlClient
+      .query({
+        query: groupProjectsQuery,
+        variables,
+      })
+      .then(({ data }) => {
+        const { projects } = data.group;
+        commit(types.RECEIVE_GROUP_PROJECTS_SUCCESS, {
+          projects: projects.nodes,
+          pageInfo: projects.pageInfo,
+          fetchNext,
+        });
+      })
+      .catch(() => commit(types.RECEIVE_GROUP_PROJECTS_FAILURE));
+  },
+
+  setSelectedProject: ({ commit }, project) => {
+    commit(types.SET_SELECTED_PROJECT, project);
   },
 
   fetchBacklog: () => {

@@ -1,7 +1,7 @@
 import mutations from '~/boards/stores/mutations';
 import * as types from '~/boards/stores/mutation_types';
 import defaultState from '~/boards/stores/state';
-import { mockLists, rawIssue, mockIssue, mockIssue2 } from '../mock_data';
+import { mockLists, rawIssue, mockIssue, mockIssue2, mockGroupProjects } from '../mock_data';
 
 const expectNotImplemented = (action) => {
   it('is not implemented', () => {
@@ -528,5 +528,65 @@ describe('Board Store Mutations', () => {
 
   describe('TOGGLE_EMPTY_STATE', () => {
     expectNotImplemented(mutations.TOGGLE_EMPTY_STATE);
+  });
+
+  describe('REQUEST_GROUP_PROJECTS', () => {
+    it('Should set isLoading in groupProjectsFlags to true in state when fetchNext is false', () => {
+      mutations[types.REQUEST_GROUP_PROJECTS](state, false);
+
+      expect(state.groupProjectsFlags.isLoading).toBe(true);
+    });
+
+    it('Should set isLoading in groupProjectsFlags to true in state when fetchNext is true', () => {
+      mutations[types.REQUEST_GROUP_PROJECTS](state, true);
+
+      expect(state.groupProjectsFlags.isLoadingMore).toBe(true);
+    });
+  });
+
+  describe('RECEIVE_GROUP_PROJECTS_SUCCESS', () => {
+    it('Should set groupProjects and pageInfo to state and isLoading in groupProjectsFlags to false', () => {
+      mutations[types.RECEIVE_GROUP_PROJECTS_SUCCESS](state, {
+        projects: mockGroupProjects,
+        pageInfo: { hasNextPage: false },
+      });
+
+      expect(state.groupProjects).toEqual(mockGroupProjects);
+      expect(state.groupProjectsFlags.isLoading).toBe(false);
+      expect(state.groupProjectsFlags.pageInfo).toEqual({ hasNextPage: false });
+    });
+
+    it('Should merge projects in groupProjects in state when fetchNext is true', () => {
+      state = {
+        ...state,
+        groupProjects: [mockGroupProjects[0]],
+      };
+
+      mutations[types.RECEIVE_GROUP_PROJECTS_SUCCESS](state, {
+        projects: [mockGroupProjects[1]],
+        fetchNext: true,
+      });
+
+      expect(state.groupProjects).toEqual(mockGroupProjects);
+    });
+  });
+
+  describe('RECEIVE_GROUP_PROJECTS_FAILURE', () => {
+    it('Should set error in state and isLoading in groupProjectsFlags to false', () => {
+      mutations[types.RECEIVE_GROUP_PROJECTS_FAILURE](state);
+
+      expect(state.error).toEqual(
+        'An error occurred while fetching group projects. Please try again.',
+      );
+      expect(state.groupProjectsFlags.isLoading).toBe(false);
+    });
+  });
+
+  describe('SET_SELECTED_PROJECT', () => {
+    it('Should set selectedProject to state', () => {
+      mutations[types.SET_SELECTED_PROJECT](state, mockGroupProjects[0]);
+
+      expect(state.selectedProject).toEqual(mockGroupProjects[0]);
+    });
   });
 });

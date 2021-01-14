@@ -237,4 +237,25 @@ export default {
   [mutationTypes.TOGGLE_EMPTY_STATE]: () => {
     notImplemented();
   },
+
+  [mutationTypes.REQUEST_GROUP_PROJECTS]: (state, fetchNext) => {
+    Vue.set(state, 'groupProjectsFlags', {
+      [fetchNext ? 'isLoadingMore' : 'isLoading']: true,
+      pageInfo: state.groupProjectsFlags.pageInfo,
+    });
+  },
+
+  [mutationTypes.RECEIVE_GROUP_PROJECTS_SUCCESS]: (state, { projects, pageInfo, fetchNext }) => {
+    Vue.set(state, 'groupProjects', fetchNext ? [...state.groupProjects, ...projects] : projects);
+    Vue.set(state, 'groupProjectsFlags', { isLoading: false, isLoadingMore: false, pageInfo });
+  },
+
+  [mutationTypes.RECEIVE_GROUP_PROJECTS_FAILURE]: (state) => {
+    state.error = s__('Boards|An error occurred while fetching group projects. Please try again.');
+    Vue.set(state, 'groupProjectsFlags', { isLoading: false, isLoadingMore: false });
+  },
+
+  [mutationTypes.SET_SELECTED_PROJECT]: (state, project) => {
+    state.selectedProject = project;
+  },
 };

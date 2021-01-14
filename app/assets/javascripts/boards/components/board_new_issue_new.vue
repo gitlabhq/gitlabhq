@@ -1,5 +1,5 @@
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import { GlButton } from '@gitlab/ui';
 import { getMilestone } from 'ee_else_ce/boards/boards_util';
 import eventHub from '../eventhub';
@@ -28,10 +28,10 @@ export default {
   data() {
     return {
       title: '',
-      selectedProject: {},
     };
   },
   computed: {
+    ...mapState(['selectedProject']),
     disabled() {
       if (this.groupId) {
         return this.title === '' || !this.selectedProject.name;
@@ -45,7 +45,6 @@ export default {
   },
   mounted() {
     this.$refs.input.focus();
-    eventHub.$on('setSelectedProject', this.setSelectedProject);
   },
   methods: {
     ...mapActions(['addListNewIssue']),
@@ -68,7 +67,7 @@ export default {
           labelIds: labels?.map((l) => l.id),
           assigneeIds: assignees?.map((a) => a?.id),
           milestoneId: milestone?.id,
-          projectPath: this.selectedProject.path,
+          projectPath: this.selectedProject.fullPath,
           weight: weight >= 0 ? weight : null,
         },
         list: this.list,
@@ -79,9 +78,6 @@ export default {
     reset() {
       this.title = '';
       eventHub.$emit(`toggle-issue-form-${this.list.id}`);
-    },
-    setSelectedProject(selectedProject) {
-      this.selectedProject = selectedProject;
     },
   },
 };

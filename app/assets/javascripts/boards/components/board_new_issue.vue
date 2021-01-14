@@ -3,7 +3,7 @@ import { GlButton } from '@gitlab/ui';
 import { getMilestone } from 'ee_else_ce/boards/boards_util';
 import ListIssue from 'ee_else_ce/boards/models/issue';
 import eventHub from '../eventhub';
-import ProjectSelect from './project_select.vue';
+import ProjectSelect from './project_select_deprecated.vue';
 import boardsStore from '../stores/boards_store';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 

@@ -679,6 +679,15 @@ RSpec.describe API::MavenPackages do
           package_settings.update!(maven_duplicates_allowed: false)
         end
 
+        shared_examples 'storing the package file' do
+          it 'stores the file', :aggregate_failures do
+            expect { upload_file_with_token(params: params) }.to change { package.package_files.count }.by(1)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(jar_file.file_name).to eq(file_upload.original_filename)
+          end
+        end
+
         it 'rejects the request', :aggregate_failures do
           expect { upload_file_with_token(params: params) }.not_to change { package.package_files.count }
 
@@ -686,17 +695,23 @@ RSpec.describe API::MavenPackages do
           expect(json_response['message']).to include('Duplicate package is not allowed')
         end
 
+        context 'when uploading different non-duplicate files to the same package' do
+          let!(:package) { create(:maven_package, project: project, name: project.full_path) }
+
+          before do
+            package_file = package.package_files.find_by(file_name: 'my-app-1.0-20180724.124855-1.jar')
+            package_file.destroy!
+          end
+
+          it_behaves_like 'storing the package file'
+        end
+
         context 'when the package name matches the exception regex' do
           before do
             package_settings.update!(maven_duplicate_exception_regex: '.*')
           end
 
-          it 'stores the package file', :aggregate_failures do
-            expect { upload_file_with_token(params: params) }.to change { package.package_files.count }.by(1)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(jar_file.file_name).to eq(file_upload.original_filename)
-          end
+          it_behaves_like 'storing the package file'
         end
       end
 

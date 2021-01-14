@@ -3,7 +3,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import BoardNewIssue from '~/boards/components/board_new_issue_new.vue';
 
 import '~/boards/models/list';
-import { mockList } from '../mock_data';
+import { mockList, mockGroupProjects } from '../mock_data';
 
 const localVue = createLocalVue();
 
@@ -29,7 +29,7 @@ describe('Issue boards new issue form', () => {
 
   beforeEach(() => {
     const store = new Vuex.Store({
-      state: {},
+      state: { selectedProject: mockGroupProjects[0] },
       actions: { addListNewIssue: addListNewIssuesSpy },
       getters: {},
     });
