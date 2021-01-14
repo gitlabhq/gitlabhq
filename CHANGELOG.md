@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.7.4 (2021-01-13)
+
+### Security (1 change)
+
+- Deny implicit flow for confidential apps.
+
+
 ## 13.7.3 (2021-01-08)
 
 ### Fixed (7 changes)
