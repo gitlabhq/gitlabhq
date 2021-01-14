@@ -8,8 +8,8 @@ type: reference
 # Pipeline Editor **(CORE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4540) in GitLab 13.8.
-> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
+> - It's [deployed behind a feature flag](../../user/feature_flags.md), enabled by default.
+> - It's enabled on GitLab.com.
 > - It's not recommended for production use.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-pipeline-editor). **(CORE ONLY)**
 
@@ -115,18 +115,18 @@ checkbox appears. Select it to start a new merge request after you commit the ch
 ## Enable or disable pipeline editor **(CORE ONLY)**
 
 The pipeline editor is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
+deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_pipeline_editor_page)
-```
+can disable it.
 
 To disable it:
 
 ```ruby
 Feature.disable(:ci_pipeline_editor_page)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:ci_pipeline_editor_page)
 ```

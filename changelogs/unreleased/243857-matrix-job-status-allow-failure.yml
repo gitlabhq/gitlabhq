@@ -1,0 +1,5 @@
+---
+title: Correct status indicator for jobs groups when failure is allowed
+merge_request: 51478
+author: Sune Keller (sirlatrom)
+type: fixed

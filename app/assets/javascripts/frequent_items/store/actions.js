@@ -1,7 +1,7 @@
-import Api from '~/api';
 import AccessorUtilities from '~/lib/utils/accessor';
 import * as types from './mutation_types';
 import { getTopFrequentItems } from '../utils';
+import { getGroups, getProjects } from '~/rest_api';
 
 export const setNamespace = ({ commit }, namespace) => {
   commit(types.SET_NAMESPACE, namespace);
@@ -54,11 +54,15 @@ export const fetchSearchedItems = ({ state, dispatch }, searchQuery) => {
     membership: Boolean(gon.current_user_id),
   };
 
+  let searchFunction;
   if (state.namespace === 'projects') {
+    searchFunction = getProjects;
     params.order_by = 'last_activity_at';
+  } else {
+    searchFunction = getGroups;
   }
 
-  return Api[state.namespace](searchQuery, params)
+  return searchFunction(searchQuery, params)
     .then((results) => {
       dispatch('receiveSearchedItemsSuccess', results);
     })

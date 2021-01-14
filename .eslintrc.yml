@@ -50,50 +50,6 @@ rules:
   # various vue lint rules as they were in eslint-plugin-vue@6, or disabling
   # new ones, to ease migration to v7, so violations of each can be fixed
   # separately.
-  vue/order-in-components:
-    - error
-    # This is the order from eslint-plugin-vue@6.2.2
-    - order:
-      - el
-      - name
-      - parent
-      - functional
-      -
-        - delimiters
-        - comments
-      -
-        - components
-        - directives
-        - filters
-      - extends
-      - mixins
-      - inheritAttrs
-      - model
-      -
-        - props
-        - propsData
-      - fetch
-      - asyncData
-      - data
-      - computed
-      - watch
-      -
-        - beforeCreate
-        - created
-        - beforeMount
-        - mounted
-        - beforeUpdate
-        - updated
-        - activated
-        - deactivated
-        - beforeDestroy
-        - destroyed
-      - methods
-      - head
-      -
-        - template
-        - render
-      - renderError
   vue/no-mutating-props: off
   vue/one-component-per-file: off
   vue/no-lone-template: off

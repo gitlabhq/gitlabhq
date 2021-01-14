@@ -34,7 +34,13 @@ module Boards
     end
 
     def title
-      label? ? label.name : list_type.humanize
+      if label?
+        label.name
+      elsif backlog?
+        _('Open')
+      else
+        list_type.humanize
+      end
     end
 
     private

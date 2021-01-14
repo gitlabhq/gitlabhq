@@ -10,7 +10,7 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
   describe '.execute' do
     subject { service.execute }
 
-    let_it_be(:artifact, reload: true) do
+    let_it_be(:artifact, refind: true) do
       create(:ci_job_artifact, expire_at: 1.day.ago)
     end
 
@@ -164,13 +164,21 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
     end
 
     context 'when timeout happens' do
+      let!(:second_artifact) { create(:ci_job_artifact, expire_at: 1.day.ago) }
+
       before do
-        stub_const('Ci::DestroyExpiredJobArtifactsService::LOOP_TIMEOUT', 1.second)
-        allow_any_instance_of(described_class).to receive(:destroy_pipeline_artifacts_batch) { true }
+        stub_const('Ci::DestroyExpiredJobArtifactsService::LOOP_TIMEOUT', 0.seconds)
+        stub_const('Ci::DestroyExpiredJobArtifactsService::BATCH_SIZE', 1)
+
+        second_artifact.job.pipeline.unlocked!
       end
 
-      it 'returns false and does not continue destroying' do
-        is_expected.to be_falsy
+      it 'destroys one artifact' do
+        expect { subject }.to change { Ci::JobArtifact.count }.by(-1)
+      end
+
+      it 'reports the number of destroyed artifacts' do
+        is_expected.to eq(1)
       end
     end
 
@@ -187,6 +195,10 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
       it 'destroys one artifact' do
         expect { subject }.to change { Ci::JobArtifact.count }.by(-1)
       end
+
+      it 'reports the number of destroyed artifacts' do
+        is_expected.to eq(1)
+      end
     end
 
     context 'when there are no artifacts' do
@@ -196,6 +208,10 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
 
       it 'does not raise error' do
         expect { subject }.not_to raise_error
+      end
+
+      it 'reports the number of destroyed artifacts' do
+        is_expected.to eq(0)
       end
     end
 
@@ -211,45 +227,9 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
       it 'destroys all expired artifacts' do
         expect { subject }.to change { Ci::JobArtifact.count }.by(-2)
       end
-    end
 
-    context 'when artifact is a pipeline artifact' do
-      context 'when artifacts are expired' do
-        let!(:pipeline_artifact_1) { create(:ci_pipeline_artifact, expire_at: 1.week.ago) }
-        let!(:pipeline_artifact_2) { create(:ci_pipeline_artifact, expire_at: 1.week.ago) }
-
-        before do
-          [pipeline_artifact_1, pipeline_artifact_2].each { |pipeline_artifact| pipeline_artifact.pipeline.unlocked! }
-
-          stub_feature_flags(ci_split_pipeline_artifacts_removal: false)
-        end
-
-        it 'destroys pipeline artifacts' do
-          expect { subject }.to change { Ci::PipelineArtifact.count }.by(-2)
-        end
-
-        context 'with ci_split_pipeline_artifacts_removal enabled' do
-          before do
-            stub_feature_flags(ci_split_pipeline_artifacts_removal: true)
-          end
-
-          it 'does not destroy pipeline artifacts' do
-            expect { subject }.not_to change { Ci::PipelineArtifact.count }
-          end
-        end
-      end
-
-      context 'when artifacts are not expired' do
-        let!(:pipeline_artifact_1) { create(:ci_pipeline_artifact, expire_at: 2.days.from_now) }
-        let!(:pipeline_artifact_2) { create(:ci_pipeline_artifact, expire_at: 2.days.from_now) }
-
-        before do
-          [pipeline_artifact_1, pipeline_artifact_2].each { |pipeline_artifact| pipeline_artifact.pipeline.unlocked! }
-        end
-
-        it 'does not destroy pipeline artifacts' do
-          expect { subject }.not_to change { Ci::PipelineArtifact.count }
-        end
+      it 'reports the number of destroyed artifacts' do
+        is_expected.to eq(2)
       end
     end
 
@@ -263,18 +243,6 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
       it 'destroys only unlocked artifacts' do
         expect { subject }.to change { Ci::JobArtifact.count }.by(-1)
       end
-    end
-  end
-
-  describe '.destroy_job_artifacts_batch' do
-    it 'returns a falsy value without artifacts' do
-      expect(service.send(:destroy_job_artifacts_batch)).to be_falsy
-    end
-  end
-
-  describe '.destroy_pipeline_artifacts_batch' do
-    it 'returns a falsy value without artifacts' do
-      expect(service.send(:destroy_pipeline_artifacts_batch)).to be_falsy
     end
   end
 end

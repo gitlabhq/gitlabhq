@@ -191,9 +191,13 @@ export default {
         mergeError = mergeError.slice(0, -1);
       }
 
-      return sprintf(s__('mrWidget|Merge failed: %{mergeError}. Please try again.'), {
-        mergeError,
-      });
+      return sprintf(
+        s__('mrWidget|Merge failed: %{mergeError}. Please try again.'),
+        {
+          mergeError,
+        },
+        false,
+      );
     },
     shouldShowAccessibilityReport() {
       return this.mr.accessibilityReportPath;

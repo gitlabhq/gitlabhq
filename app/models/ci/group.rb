@@ -24,9 +24,22 @@ module Ci
 
     def status
       strong_memoize(:status) do
+        status_struct.status
+      end
+    end
+
+    def success?
+      status.to_s == 'success'
+    end
+
+    def has_warnings?
+      status_struct.warnings?
+    end
+
+    def status_struct
+      strong_memoize(:status_struct) do
         Gitlab::Ci::Status::Composite
           .new(@jobs)
-          .status
       end
     end
 

@@ -1,0 +1,5 @@
+---
+title: Update Terraform Pipline templaes to support 0.14 lockfile cache
+merge_request: 50647
+author: Aurelian Shuttleworth
+type: fixed

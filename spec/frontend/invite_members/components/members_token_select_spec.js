@@ -3,7 +3,7 @@ import { nextTick } from 'vue';
 import { GlTokenSelector } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
-import Api from '~/api';
+import * as UserApi from '~/api/user_api';
 import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
 
 const label = 'testgroup';
@@ -28,7 +28,7 @@ describe('MembersTokenSelect', () => {
   let wrapper;
 
   beforeEach(() => {
-    jest.spyOn(Api, 'users').mockResolvedValue({ data: allUsers });
+    jest.spyOn(UserApi, 'getUsers').mockResolvedValue({ data: allUsers });
     wrapper = createComponent();
   });
 
@@ -57,7 +57,7 @@ describe('MembersTokenSelect', () => {
 
         await waitForPromises();
 
-        expect(Api.users).not.toHaveBeenCalled();
+        expect(UserApi.getUsers).not.toHaveBeenCalled();
       });
     });
 
@@ -90,7 +90,10 @@ describe('MembersTokenSelect', () => {
 
         await waitForPromises();
 
-        expect(Api.users).toHaveBeenCalledWith(searchParam, wrapper.vm.$options.queryOptions);
+        expect(UserApi.getUsers).toHaveBeenCalledWith(
+          searchParam,
+          wrapper.vm.$options.queryOptions,
+        );
         expect(tokenSelector.props('hideDropdownWithNoItems')).toBe(false);
       });
 

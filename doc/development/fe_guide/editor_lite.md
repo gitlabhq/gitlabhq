@@ -104,7 +104,14 @@ someActionFunction() {
 
 ## Extensions
 
-Editor Lite has been built to provide a universal, extensible editing tool to the whole product, which would not depend on any particular group. Even though the Editor Lite's core is owned by [Create::Editor FE Team](https://about.gitlab.com/handbook/engineering/development/dev/create-editor-fe/), the main functional elements — extensions — can be owned by any group. Editor Lite extensions' main idea is that the core of the editor remains very slim and stable. At the same time, whatever new functionality is needed can be added as an extension to this core, without touching the core itself. It allows any group to build and own any new editing functionality without being afraid of it being broken or overridden with the Editor Lite changes.
+Editor Lite has been built to provide a universal, extensible editing tool to the whole product,
+which would not depend on any particular group. Even though the Editor Lite's core is owned by
+[Create::Editor FE Team](https://about.gitlab.com/handbook/engineering/development/dev/create-editor/),
+the main functional elements — extensions — can be owned by any group. Editor Lite extensions' main idea
+is that the core of the editor remains very slim and stable. At the same time, whatever new functionality
+is needed can be added as an extension to this core, without touching the core itself. It allows any group
+to build and own any new editing functionality without being afraid of it being broken or overridden with
+the Editor Lite changes.
 
 Structurally, the complete implementation of Editor Lite could be presented as the following diagram:
 

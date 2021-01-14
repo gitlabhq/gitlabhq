@@ -203,11 +203,12 @@ If you previously selected the "Busy" checkbox, remember to deselect it when you
 
 ## Busy status indicator
 
-> - Introduced in GitLab 13.6.
-> - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259649) in GitLab 13.6.
+> - It was [deployed behind a feature flag](../feature_flags.md), disabled by default.
+> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/281073) in GitLab 13.8.
+> - It's enabled on GitLab.com.
 > - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-busy-status-feature).
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#disable-busy-status-feature).
 
 To indicate to others that you are busy, you can set an indicator
 
@@ -228,10 +229,16 @@ To set the busy status indicator, either:
   1. Click **Edit profile** (**{pencil}**).
   1. Select the **Busy** checkbox
 
-### Enable busy status feature
+### Disable busy status feature
 
-The busy status feature is deployed behind a feature flag and is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md) can enable it for your instance from the [rails console](../../administration/feature_flags.md#start-the-gitlab-rails-console).
+The busy status feature is deployed behind a feature flag and is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md) can disable it for your instance from the [rails console](../../administration/feature_flags.md#start-the-gitlab-rails-console).
+
+To disable it:
+
+```ruby
+Feature.disable(:set_user_availability_status)
+```
 
 To enable it:
 

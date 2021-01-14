@@ -1,4 +1,4 @@
-import Api from '~/api';
+import * as UserApi from '~/api/user_api';
 import UsersCache from '~/lib/utils/users_cache';
 
 describe('UsersCache', () => {
@@ -88,7 +88,9 @@ describe('UsersCache', () => {
     let apiSpy;
 
     beforeEach(() => {
-      jest.spyOn(Api, 'users').mockImplementation((query, options) => apiSpy(query, options));
+      jest
+        .spyOn(UserApi, 'getUsers')
+        .mockImplementation((query, options) => apiSpy(query, options));
     });
 
     it('stores and returns data from API call if cache is empty', (done) => {
@@ -151,7 +153,7 @@ describe('UsersCache', () => {
     let apiSpy;
 
     beforeEach(() => {
-      jest.spyOn(Api, 'user').mockImplementation((id) => apiSpy(id));
+      jest.spyOn(UserApi, 'getUser').mockImplementation((id) => apiSpy(id));
     });
 
     it('stores and returns data from API call if cache is empty', (done) => {
@@ -208,7 +210,7 @@ describe('UsersCache', () => {
     let apiSpy;
 
     beforeEach(() => {
-      jest.spyOn(Api, 'userStatus').mockImplementation((id) => apiSpy(id));
+      jest.spyOn(UserApi, 'getUserStatus').mockImplementation((id) => apiSpy(id));
     });
 
     it('stores and returns data from API call if cache is empty', (done) => {

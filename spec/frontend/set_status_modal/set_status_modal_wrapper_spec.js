@@ -1,13 +1,12 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlModal, GlFormCheckbox } from '@gitlab/ui';
 import { initEmojiMock } from 'helpers/emoji';
-import Api from '~/api';
+import * as UserApi from '~/api/user_api';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import SetStatusModalWrapper, {
   AVAILABILITY_STATUS,
 } from '~/set_status_modal/set_status_modal_wrapper.vue';
 
-jest.mock('~/api');
 jest.mock('~/flash');
 
 describe('SetStatusModalWrapper', () => {
@@ -150,7 +149,7 @@ describe('SetStatusModalWrapper', () => {
   describe('update status', () => {
     describe('succeeds', () => {
       beforeEach(() => {
-        jest.spyOn(Api, 'postUserStatus').mockResolvedValue();
+        jest.spyOn(UserApi, 'updateUserStatus').mockResolvedValue();
       });
 
       it('clicking "removeStatus" clears the emoji and message fields', async () => {
@@ -173,12 +172,12 @@ describe('SetStatusModalWrapper', () => {
 
         const commonParams = { emoji: defaultEmoji, message: defaultMessage };
 
-        expect(Api.postUserStatus).toHaveBeenCalledTimes(2);
-        expect(Api.postUserStatus).toHaveBeenNthCalledWith(1, {
+        expect(UserApi.updateUserStatus).toHaveBeenCalledTimes(2);
+        expect(UserApi.updateUserStatus).toHaveBeenNthCalledWith(1, {
           availability: AVAILABILITY_STATUS.NOT_SET,
           ...commonParams,
         });
-        expect(Api.postUserStatus).toHaveBeenNthCalledWith(2, {
+        expect(UserApi.updateUserStatus).toHaveBeenNthCalledWith(2, {
           availability: AVAILABILITY_STATUS.BUSY,
           ...commonParams,
         });
@@ -196,7 +195,7 @@ describe('SetStatusModalWrapper', () => {
       beforeEach(async () => {
         mockEmoji = await initEmojiMock();
         wrapper = createComponent({ currentEmoji: '', currentMessage: '' });
-        jest.spyOn(Api, 'postUserStatus').mockResolvedValue();
+        jest.spyOn(UserApi, 'updateUserStatus').mockResolvedValue();
         return initModal({ mockOnUpdateSuccess: false });
       });
 
@@ -210,7 +209,7 @@ describe('SetStatusModalWrapper', () => {
 
     describe('with errors', () => {
       beforeEach(() => {
-        jest.spyOn(Api, 'postUserStatus').mockRejectedValue();
+        jest.spyOn(UserApi, 'updateUserStatus').mockRejectedValue();
       });
 
       it('calls the "onUpdateFail" handler', async () => {
@@ -225,7 +224,7 @@ describe('SetStatusModalWrapper', () => {
       beforeEach(async () => {
         mockEmoji = await initEmojiMock();
         wrapper = createComponent({ currentEmoji: '', currentMessage: '' });
-        jest.spyOn(Api, 'postUserStatus').mockRejectedValue();
+        jest.spyOn(UserApi, 'updateUserStatus').mockRejectedValue();
         return initModal({ mockOnUpdateFailure: false });
       });
 

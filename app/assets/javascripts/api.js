@@ -5,6 +5,12 @@ import { __ } from '~/locale';
 
 const DEFAULT_PER_PAGE = 20;
 
+/**
+ * Slow deprecation Notice: Please rather use for new calls
+ * or during refactors /rest_api as this is doing named exports
+ * which support treeshaking
+ */
+
 const Api = {
   DEFAULT_PER_PAGE,
   groupsPath: '/api/:version/groups.json',
@@ -152,7 +158,10 @@ const Api = {
     });
   },
 
-  // Return groups list. Filtered by query
+  /**
+   * @deprecated This method will be removed soon. Use the
+   * `getGroups` method in `~/rest_api` instead.
+   */
   groups(query, options, callback = () => {}) {
     const url = Api.buildUrl(Api.groupsPath);
     return axios
@@ -188,7 +197,10 @@ const Api = {
       .then(({ data }) => callback(data));
   },
 
-  // Return projects list. Filtered by query
+  /**
+   * @deprecated This method will be removed soon. Use the
+   * `getProjects` method in `~/rest_api` instead.
+   */
   projects(query, options, callback = () => {}) {
     const url = Api.buildUrl(Api.projectsPath);
     const defaults = {
@@ -521,6 +533,10 @@ const Api = {
       .replace(':namespace_path', namespacePath);
   },
 
+  /**
+   * @deprecated This method will be removed soon. Use the
+   * `getUsers` method in `~/rest_api` instead.
+   */
   users(query, options) {
     const url = Api.buildUrl(this.usersPath);
     return axios.get(url, {
@@ -532,6 +548,10 @@ const Api = {
     });
   },
 
+  /**
+   * @deprecated This method will be removed soon. Use the
+   * `getUser` method in `~/rest_api` instead.
+   */
   user(id, options) {
     const url = Api.buildUrl(this.userPath).replace(':id', encodeURIComponent(id));
     return axios.get(url, {
@@ -539,11 +559,19 @@ const Api = {
     });
   },
 
+  /**
+   * @deprecated This method will be removed soon. Use the
+   * `getUserCounts` method in `~/rest_api` instead.
+   */
   userCounts() {
     const url = Api.buildUrl(this.userCountsPath);
     return axios.get(url);
   },
 
+  /**
+   * @deprecated This method will be removed soon. Use the
+   * `getUserStatus` method in `~/rest_api` instead.
+   */
   userStatus(id, options) {
     const url = Api.buildUrl(this.userStatusPath).replace(':id', encodeURIComponent(id));
     return axios.get(url, {
@@ -551,6 +579,10 @@ const Api = {
     });
   },
 
+  /**
+   * @deprecated This method will be removed soon. Use the
+   * `getUserProjects` method in `~/rest_api` instead.
+   */
   userProjects(userId, query, options, callback) {
     const url = Api.buildUrl(Api.userProjectsPath).replace(':id', userId);
     const defaults = {
@@ -586,6 +618,10 @@ const Api = {
     });
   },
 
+  /**
+   * @deprecated This method will be removed soon. Use the
+   * `updateUserStatus` method in `~/rest_api` instead.
+   */
   postUserStatus({ emoji, message, availability }) {
     const url = Api.buildUrl(this.userPostStatusPath);
 

@@ -3,7 +3,7 @@ import {
   closeUserCountsBroadcast,
   refreshUserMergeRequestCounts,
 } from '~/commons/nav/user_merge_requests';
-import Api from '~/api';
+import * as UserApi from '~/api/user_api';
 
 jest.mock('~/api');
 
@@ -33,14 +33,12 @@ describe('User Merge Requests', () => {
 
   describe('refreshUserMergeRequestCounts', () => {
     beforeEach(() => {
-      Api.userCounts.mockReturnValue(
-        Promise.resolve({
-          data: {
-            assigned_merge_requests: TEST_COUNT,
-            review_requested_merge_requests: TEST_COUNT,
-          },
-        }),
-      );
+      jest.spyOn(UserApi, 'getUserCounts').mockResolvedValue({
+        data: {
+          assigned_merge_requests: TEST_COUNT,
+          review_requested_merge_requests: TEST_COUNT,
+        },
+      });
     });
 
     describe('with open broadcast channel', () => {
@@ -55,7 +53,7 @@ describe('User Merge Requests', () => {
       });
 
       it('calls the API', () => {
-        expect(Api.userCounts).toHaveBeenCalled();
+        expect(UserApi.getUserCounts).toHaveBeenCalled();
       });
 
       it('posts count to BroadcastChannel', () => {

@@ -486,6 +486,16 @@
   category: code_review
   aggregation: weekly
   feature_flag: usage_data_i_code_review_user_remove_mr_comment
+- name: i_code_review_user_create_review_note
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+  feature_flag: usage_data_i_code_review_user_create_review_note
+- name: i_code_review_user_publish_review
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+  feature_flag: usage_data_i_code_review_user_publish_review
 # Terraform
 - name: p_terraform_state_api_unique_users
   category: terraform

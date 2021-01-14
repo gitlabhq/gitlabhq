@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.7.4 (2021-01-13)
+
+### Security (1 change)
+
+- Deny implicit flow for confidential apps.
+
+
 ## 13.7.3 (2021-01-08)
 
 ### Fixed (7 changes)
@@ -495,6 +502,13 @@ entry.
 - Add feed_token specs to spec/features/profiles/personal_access_tokens_spec.rb. !50059
 - Replace spec/controllers/ide_controller_spec.rb with request spec. !50075 (Takuya Noguchi)
 - Update GitLab Workhorse to v8.57.0.
+
+
+## 13.6.5 (2021-01-13)
+
+### Security (1 change)
+
+- Deny implicit flow for confidential apps.
 
 
 ## 13.6.4 (2021-01-07)
@@ -1066,6 +1080,13 @@ entry.
 - Update Workhorse version to 8.54.0. !47625
 - Update GitLab Shell to v13.13.0. !47875
 - Change wording on the project remove fork page. !47878
+
+
+## 13.5.7 (2021-01-13)
+
+### Security (1 change)
+
+- Deny implicit flow for confidential apps.
 
 
 ## 13.5.6 (2021-01-07)

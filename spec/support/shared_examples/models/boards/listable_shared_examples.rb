@@ -68,6 +68,12 @@ RSpec.shared_examples 'boards listable model' do |list_factory|
       expect(subject.title).to eq 'Development'
     end
 
+    it 'returns Open when list_type is set to backlog' do
+      subject.list_type = :backlog
+
+      expect(subject.title).to eq 'Open'
+    end
+
     it 'returns Closed when list_type is set to closed' do
       subject.list_type = :closed
 

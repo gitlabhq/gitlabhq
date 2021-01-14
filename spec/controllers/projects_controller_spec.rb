@@ -733,7 +733,7 @@ RSpec.describe ProjectsController do
   describe '#transfer', :enable_admin_mode do
     render_views
 
-    let_it_be(:project, reload: true) { create(:project, :repository) }
+    let_it_be(:project, reload: true) { create(:project) }
     let_it_be(:admin) { create(:admin) }
     let_it_be(:new_namespace) { create(:namespace) }
 

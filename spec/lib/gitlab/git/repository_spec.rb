@@ -520,12 +520,13 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
         forced: true,
         no_tags: true,
         timeout: described_class::GITLAB_PROJECTS_TIMEOUT,
-        prune: false
+        prune: false,
+        check_tags_changed: false
       }
 
       expect(repository.gitaly_repository_client).to receive(:fetch_remote).with('remote-name', expected_opts)
 
-      repository.fetch_remote('remote-name', ssh_auth: ssh_auth, forced: true, no_tags: true, prune: false)
+      repository.fetch_remote('remote-name', ssh_auth: ssh_auth, forced: true, no_tags: true, prune: false, check_tags_changed: false)
     end
 
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RepositoryService, :fetch_remote do

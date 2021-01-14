@@ -95,4 +95,20 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
       let(:action) { described_class::MR_REMOVE_COMMENT_ACTION }
     end
   end
+
+  describe '.track_create_review_note_action' do
+    subject { described_class.track_create_review_note_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_CREATE_REVIEW_NOTE_ACTION }
+    end
+  end
+
+  describe '.track_publish_review_action' do
+    subject { described_class.track_publish_review_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_PUBLISH_REVIEW_ACTION }
+    end
+  end
 end

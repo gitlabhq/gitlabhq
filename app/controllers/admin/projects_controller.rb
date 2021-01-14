@@ -57,6 +57,10 @@ class Admin::ProjectsController < Admin::ApplicationController
     namespace = Namespace.find_by(id: params[:new_namespace_id])
     ::Projects::TransferService.new(@project, current_user, params.dup).execute(namespace)
 
+    if @project.errors[:new_namespace].present?
+      flash[:alert] = @project.errors[:new_namespace].first
+    end
+
     @project.reset
     redirect_to admin_project_path(@project)
   end

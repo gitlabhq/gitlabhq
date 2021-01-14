@@ -9,6 +9,7 @@ module DraftNotes
         publish_draft_note(draft)
       else
         publish_draft_notes
+        merge_request_activity_counter.track_publish_review_action(user: current_user)
       end
 
       success

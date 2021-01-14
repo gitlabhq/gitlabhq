@@ -1,4 +1,4 @@
-import Api from '~/api';
+import { getUserCounts } from '~/rest_api';
 
 let channel;
 
@@ -30,7 +30,7 @@ function updateMergeRequestCounts(newCount) {
  * Refresh user counts (and broadcast if open)
  */
 export function refreshUserMergeRequestCounts() {
-  return Api.userCounts()
+  return getUserCounts()
     .then(({ data }) => {
       const assignedMergeRequests = data.assigned_merge_requests;
       const reviewerMergeRequests = data.review_requested_merge_requests;

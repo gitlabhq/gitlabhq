@@ -157,8 +157,12 @@ class JiraService < IssueTrackerService
     # support any events.
   end
 
+  def find_issue(issue_key)
+    jira_request { client.Issue.find(issue_key) }
+  end
+
   def close_issue(entity, external_issue)
-    issue = jira_request { client.Issue.find(external_issue.iid) }
+    issue = find_issue(external_issue.iid)
 
     return if issue.nil? || has_resolution?(issue) || !jira_issue_transition_id.present?
 
@@ -172,7 +176,7 @@ class JiraService < IssueTrackerService
     # Depending on the Jira project's workflow, a comment during transition
     # may or may not be allowed. Refresh the issue after transition and check
     # if it is closed, so we don't have one comment for every commit.
-    issue = jira_request { client.Issue.find(issue.key) } if transition_issue(issue)
+    issue = find_issue(issue.key) if transition_issue(issue)
     add_issue_solved_comment(issue, commit_id, commit_url) if has_resolution?(issue)
   end
 
@@ -181,7 +185,7 @@ class JiraService < IssueTrackerService
       return s_("JiraService|Events for %{noteable_model_name} are disabled.") % { noteable_model_name: noteable.model_name.plural.humanize(capitalize: false) }
     end
 
-    jira_issue = jira_request { client.Issue.find(mentioned.id) }
+    jira_issue = find_issue(mentioned.id)
 
     return unless jira_issue.present?
 

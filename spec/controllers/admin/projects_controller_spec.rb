@@ -77,4 +77,34 @@ RSpec.describe Admin::ProjectsController do
       expect(response.body).to match(project.name)
     end
   end
+
+  describe 'PUT /projects/transfer/:id' do
+    let_it_be(:project, reload: true) { create(:project) }
+    let_it_be(:new_namespace) { create(:namespace) }
+
+    it 'updates namespace' do
+      put :transfer, params: { namespace_id: project.namespace.path, new_namespace_id: new_namespace.id, id: project.path }
+
+      project.reload
+
+      expect(project.namespace).to eq(new_namespace)
+      expect(response).to have_gitlab_http_status(:redirect)
+      expect(response).to redirect_to(admin_project_path(project))
+    end
+
+    context 'when project transfer fails' do
+      it 'flashes error' do
+        old_namespace = project.namespace
+
+        put :transfer, params: { namespace_id: old_namespace.path, new_namespace_id: nil, id: project.path }
+
+        project.reload
+
+        expect(project.namespace).to eq(old_namespace)
+        expect(response).to have_gitlab_http_status(:redirect)
+        expect(response).to redirect_to(admin_project_path(project))
+        expect(flash[:alert]).to eq s_('TransferProject|Please select a new namespace for your project.')
+      end
+    end
+  end
 end

@@ -12,4 +12,9 @@ RSpec.describe Gitlab::Ci::Status::Group::Factory do
     expect(described_class.common_helpers)
       .to eq Gitlab::Ci::Status::Group::Common
   end
+
+  it 'exposes extended statuses' do
+    expect(described_class.extended_statuses)
+      .to eq([[Gitlab::Ci::Status::SuccessWarning]])
+  end
 end

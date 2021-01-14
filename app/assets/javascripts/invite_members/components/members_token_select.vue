@@ -3,7 +3,7 @@ import { debounce } from 'lodash';
 import { GlTokenSelector, GlAvatar, GlAvatarLabeled, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { USER_SEARCH_DELAY } from '../constants';
-import Api from '~/api';
+import { getUsers } from '~/rest_api';
 
 export default {
   components: {
@@ -54,7 +54,7 @@ export default {
       this.retrieveUsers(query);
     },
     retrieveUsers: debounce(function debouncedRetrieveUsers() {
-      return Api.users(this.query, this.$options.queryOptions)
+      return getUsers(this.query, this.$options.queryOptions)
         .then((response) => {
           this.users = response.data.map((token) => ({
             id: token.id,

@@ -60,7 +60,7 @@ module Gitlab
       end
 
       def self.ci_pipeline_editor_page_enabled?(project)
-        ::Feature.enabled?(:ci_pipeline_editor_page, project, default_enabled: false)
+        ::Feature.enabled?(:ci_pipeline_editor_page, project, default_enabled: :yaml)
       end
 
       def self.allow_failure_with_exit_codes_enabled?
