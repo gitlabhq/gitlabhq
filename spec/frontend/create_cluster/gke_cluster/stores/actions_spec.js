@@ -71,10 +71,12 @@ describe('GCP Cluster Dropdown Store Actions', () => {
     beforeAll(() => {
       originalGapi = window.gapi;
       window.gapi = gapi;
+      window.gapiPromise = Promise.resolve(gapi);
     });
 
     afterAll(() => {
       window.gapi = originalGapi;
+      delete window.gapiPromise;
     });
 
     describe('fetchProjects', () => {

@@ -19,6 +19,10 @@ export default (document) => {
 
   initGkeDropdowns();
 
+  if (isProjectLevelCluster(page)) {
+    initGkeNamespace();
+  }
+
   import(/* webpackChunkName: 'eks_cluster' */ '~/create_cluster/eks_cluster')
     .then(({ default: initCreateEKSCluster }) => {
       const el = document.querySelector('.js-create-eks-cluster-form-container');
@@ -28,8 +32,4 @@ export default (document) => {
       }
     })
     .catch(() => {});
-
-  if (isProjectLevelCluster(page)) {
-    initGkeNamespace();
-  }
 };

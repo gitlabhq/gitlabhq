@@ -16,7 +16,7 @@
                 = logo_text
           - if Gitlab.com_and_canary?
             = link_to 'https://next.gitlab.com', class: 'canary-badge bg-transparent', target: :_blank do
-              %span.color-label.has-tooltip.badge.badge-pill.green-badge
+              %span.gl-badge.gl-bg-green-500.gl-text-white.gl-rounded-pill.gl-font-weight-bold.gl-py-1
                 = _('Next')
 
         - if current_user

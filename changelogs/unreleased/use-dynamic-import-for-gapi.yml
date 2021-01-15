@@ -1,0 +1,5 @@
+---
+title: Dynamically load gapi on GKE cluster creation pages
+merge_request: 49512
+author:
+type: other

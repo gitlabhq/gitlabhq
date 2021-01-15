@@ -13,6 +13,9 @@ type: reference
 You can set up [GitLab CI/CD](README.md) across multiple projects, so that a pipeline
 in one project can trigger a pipeline in another project.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview see the [Multi-project pipelines demo](https://www.youtube.com/watch?v=g_PIwBM1J84).
+
 GitLab CI/CD is a powerful continuous integration tool that works not only per project,
 but also across projects with multi-project pipelines.
 
