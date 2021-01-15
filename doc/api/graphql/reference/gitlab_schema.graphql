@@ -22981,7 +22981,6 @@ type ServiceEdge {
 }
 
 enum ServiceType {
-  ALERTS_SERVICE
   ASANA_SERVICE
   ASSEMBLA_SERVICE
   BAMBOO_SERVICE

@@ -24,7 +24,9 @@ module Gitlab
         Gitlab::CurrentSettings.snowplow_enabled?
       end
 
-      def event(category, action, label: nil, property: nil, value: nil, context: nil)
+      def event(category, action, label: nil, property: nil, value: nil, context: [], standard_context: nil)
+        context.push(standard_context.to_context) if standard_context
+
         snowplow.event(category, action, label: label, property: property, value: value, context: context)
         product_analytics.event(category, action, label: label, property: property, value: value, context: context)
       end

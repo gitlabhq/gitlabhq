@@ -161,7 +161,6 @@ module API
 
       def self.services
         {
-          'alerts' => [],
           'asana' => [
             {
               required: true,
@@ -807,7 +806,6 @@ module API
 
       def self.service_classes
         [
-          ::AlertsService,
           ::AsanaService,
           ::AssemblaService,
           ::BambooService,

@@ -41,21 +41,42 @@ RSpec.describe Gitlab::Tracking do
       allow_any_instance_of(Gitlab::Tracking::Destinations::ProductAnalytics).to receive(:event)
     end
 
-    it 'delegates to snowplow destination' do
-      expect_any_instance_of(Gitlab::Tracking::Destinations::Snowplow)
-        .to receive(:event)
-        .with('category', 'action', label: 'label', property: 'property', value: 1.5, context: nil)
+    shared_examples 'delegates to destination' do |klass|
+      context 'with standard context' do
+        it "delegates to #{klass} destination" do
+          expect_any_instance_of(klass).to receive(:event) do |_, category, action, args|
+            expect(category).to eq('category')
+            expect(action).to eq('action')
+            expect(args[:label]).to eq('label')
+            expect(args[:property]).to eq('property')
+            expect(args[:value]).to eq(1.5)
+            expect(args[:context].length).to eq(1)
+            expect(args[:context].first.to_json[:schema]).to eq(Gitlab::Tracking::StandardContext::GITLAB_STANDARD_SCHEMA_URL)
+            expect(args[:context].first.to_json[:data]).to include(foo: 'bar')
+          end
 
-      described_class.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+          described_class.event('category', 'action', label: 'label', property: 'property', value: 1.5,
+                                standard_context: Gitlab::Tracking::StandardContext.new(foo: 'bar'))
+        end
+      end
+
+      context 'without standard context' do
+        it "delegates to #{klass} destination" do
+          expect_any_instance_of(klass).to receive(:event) do |_, category, action, args|
+            expect(category).to eq('category')
+            expect(action).to eq('action')
+            expect(args[:label]).to eq('label')
+            expect(args[:property]).to eq('property')
+            expect(args[:value]).to eq(1.5)
+          end
+
+          described_class.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+        end
+      end
     end
 
-    it 'delegates to ProductAnalytics destination' do
-      expect_any_instance_of(Gitlab::Tracking::Destinations::ProductAnalytics)
-        .to receive(:event)
-        .with('category', 'action', label: 'label', property: 'property', value: 1.5, context: nil)
-
-      described_class.event('category', 'action', label: 'label', property: 'property', value: 1.5)
-    end
+    include_examples 'delegates to destination', Gitlab::Tracking::Destinations::Snowplow
+    include_examples 'delegates to destination', Gitlab::Tracking::Destinations::ProductAnalytics
   end
 
   describe '.self_describing_event' do

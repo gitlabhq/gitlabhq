@@ -19,7 +19,6 @@ class Service < ApplicationRecord
 
   PROJECT_SPECIFIC_SERVICE_NAMES = %w[
     jenkins
-    alerts
   ].freeze
 
   # Fake services to help with local development.

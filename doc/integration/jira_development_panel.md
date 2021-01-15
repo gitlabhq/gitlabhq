@@ -272,7 +272,13 @@ The GitLab user only needs access when adding a new namespace. For syncing with 
 
    ![Configure namespace on GitLab Jira App](img/jira_dev_panel_setup_com_3.png)
 
-After a namespace is added, all future commits, branches, and merge requests of all projects under that namespace are synced to Jira. Past Merge Request data is initially synced. Past branch and commit data cannot be synced at the moment.
+After a namespace is added:
+
+- All future commits, branches, and merge requests of all projects under that namespace
+  are synced to Jira.
+- From GitLab 13.8, past merge request data is synced to Jira.
+
+Support for syncing past branch and commit data [is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/263240).
 
 For more information, see [Usage](#usage).
 

@@ -1,0 +1,5 @@
+---
+title: Remove deprecated generic alert integration in favor of HTTP Integrations
+merge_request: 50913
+author:
+type: removed

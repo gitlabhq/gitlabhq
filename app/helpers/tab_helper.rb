@@ -72,7 +72,8 @@ module TabHelper
     # Add our custom class into the html_options, which may or may not exist
     # and which may or may not already have a :class key
     o = options.delete(:html_options) || {}
-    o[:class] = [*o[:class], klass].join(' ').strip
+    o[:class] = [*o[:class], klass].join(' ')
+    o[:class].strip!
 
     if block_given?
       content_tag(:li, capture(&block), o)

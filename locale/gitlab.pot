@@ -2760,7 +2760,7 @@ msgstr ""
 msgid "Alerts"
 msgstr ""
 
-msgid "Alerts endpoint"
+msgid "Alerts endpoint is deprecated and should not be created or modified. Use HTTP Integrations instead."
 msgstr ""
 
 msgid "AlertsIntegrations|Alerts will be created through this integration"
@@ -4149,9 +4149,6 @@ msgid "Authorize %{link_to_client} to use your account?"
 msgstr ""
 
 msgid "Authorize %{user} to use your account?"
-msgstr ""
-
-msgid "Authorize external services to send alerts to GitLab"
 msgstr ""
 
 msgid "Authorized %{new_chat_name}"
@@ -32304,9 +32301,6 @@ msgid "You can now close this window."
 msgstr ""
 
 msgid "You can now export your security dashboard to a CSV report."
-msgstr ""
-
-msgid "You can now manage alert endpoint configuration in the Alerts section on the Operations settings page. Fields on this page have been deprecated."
 msgstr ""
 
 msgid "You can now submit a merge request to get this change into the original branch."

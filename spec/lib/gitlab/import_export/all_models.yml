@@ -525,7 +525,6 @@ project:
 - designs
 - project_aliases
 - external_pull_requests
-- alerts_service
 - grafana_integration
 - remove_source_branch_after_merge
 - deleting_user

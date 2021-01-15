@@ -392,6 +392,23 @@ RSpec.describe Gitlab::Utils do
     end
   end
 
+  describe ".safe_downcase!" do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:str, :result) do
+      "test".freeze | "test"
+      "Test".freeze | "test"
+      "test" | "test"
+      "Test" | "test"
+    end
+
+    with_them do
+      it "downcases the string" do
+        expect(described_class.safe_downcase!(str)).to eq(result)
+      end
+    end
+  end
+
   describe '.parse_url' do
     it 'returns Addressable::URI object' do
       expect(described_class.parse_url('http://gitlab.com')).to be_instance_of(Addressable::URI)

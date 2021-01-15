@@ -147,7 +147,6 @@ class Project < ApplicationRecord
   has_many :boards
 
   # Project services
-  has_one :alerts_service
   has_one :campfire_service
   has_one :datadog_service
   has_one :discord_service
@@ -1357,9 +1356,9 @@ class Project < ApplicationRecord
   end
 
   def disabled_services
-    return ['datadog'] unless Feature.enabled?(:datadog_ci_integration, self)
+    return %w(datadog alerts) unless Feature.enabled?(:datadog_ci_integration, self)
 
-    []
+    %w(alerts)
   end
 
   def find_or_initialize_service(name)

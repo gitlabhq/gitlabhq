@@ -1,54 +1,10 @@
 # frozen_string_literal: true
 
-require 'securerandom'
-
+# This service is scheduled for removal. All records must
+# be deleted before the class can be removed.
+# https://gitlab.com/groups/gitlab-org/-/epics/5056
 class AlertsService < Service
-  has_one :data, class_name: 'AlertsServiceData', autosave: true,
-    inverse_of: :service, foreign_key: :service_id
-
-  attribute :token, :string
-  delegate :token, :token=, :token_changed?, :token_was, to: :data
-
-  validates :token, presence: true, if: :activated?
-
-  before_validation :prevent_token_assignment
-  before_validation :ensure_token, if: :activated?
-
-  after_save :update_http_integration
-
-  def url
-    return if instance? || template?
-
-    url_helpers.project_alerts_notify_url(project, format: :json)
-  end
-
-  def json_fields
-    super + %w(token)
-  end
-
-  def editable?
-    false
-  end
-
-  def show_active_box?
-    false
-  end
-
-  def can_test?
-    false
-  end
-
-  def title
-    _('Alerts endpoint')
-  end
-
-  def description
-    _('Authorize external services to send alerts to GitLab')
-  end
-
-  def detailed_description
-    description
-  end
+  before_save :prevent_save
 
   def self.to_param
     'alerts'
@@ -58,33 +14,15 @@ class AlertsService < Service
     %w()
   end
 
-  def data
-    super || build_data
-  end
-
   private
 
-  def prevent_token_assignment
-    self.token = token_was if token.present? && token_changed?
-  end
+  def prevent_save
+    errors.add(:base, _('Alerts endpoint is deprecated and should not be created or modified. Use HTTP Integrations instead.'))
+    log_error('Prevented attempt to save or update deprecated AlertsService')
 
-  def ensure_token
-    self.token = generate_token if token.blank?
-  end
-
-  def generate_token
-    SecureRandom.hex
-  end
-
-  def url_helpers
-    Gitlab::Routing.url_helpers
-  end
-
-  def update_http_integration
-    return unless project_id && type == 'AlertsService'
-
-    AlertManagement::SyncAlertServiceDataService # rubocop: disable CodeReuse/ServiceClass
-      .new(self)
-      .execute
+    # Stops execution of callbacks and database operation while
+    # preserving expectations of #save (will not raise) & #save! (raises)
+    # https://guides.rubyonrails.org/active_record_callbacks.html#halting-execution
+    throw :abort # rubocop:disable Cop/BanCatchThrow
   end
 end
