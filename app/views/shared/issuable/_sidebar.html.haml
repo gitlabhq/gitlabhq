@@ -66,7 +66,7 @@
           // Fallback while content is loading
           .title.hide-collapsed
             = _('Time tracking')
-            = loading_icon
+            = loading_icon(css_class: 'gl-vertical-align-text-bottom')
       - if issuable_sidebar.has_key?(:due_date)
         .block.due_date
           .sidebar-collapsed-icon.has-tooltip{ data: { placement: 'left', container: 'body', html: 'true', boundary: 'viewport' }, title: sidebar_due_date_tooltip_label(issuable_sidebar[:due_date]) }

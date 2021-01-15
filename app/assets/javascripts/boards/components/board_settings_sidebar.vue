@@ -116,7 +116,7 @@ export default {
         v-if="isWipLimitsOn"
         :max-issue-count="activeList.maxIssueCount"
       />
-      <div v-if="canAdminList && !activeList.preset && activeList.id" class="gl-m-4">
+      <div v-if="canAdminList && !activeList.preset && activeList.id" class="gl-mt-4">
         <gl-button
           variant="danger"
           category="secondary"

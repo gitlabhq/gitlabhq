@@ -25,7 +25,7 @@
             %span.access-request-links.gl-ml-3
               = render 'shared/members/access_request_links', source: @project
           - if @project.tag_list.present?
-            %span.home-panel-topic-list.mt-2.w-100.d-inline-flex.gl-font-base.gl-font-weight-normal
+            %span.home-panel-topic-list.mt-2.w-100.d-inline-flex.gl-font-base.gl-font-weight-normal.gl-align-items-center
               = sprite_icon('tag', css_class: 'icon gl-relative gl-mr-2')
 
               - @project.topics_to_show.each do |topic|
