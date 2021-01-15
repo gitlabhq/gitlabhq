@@ -1,6 +1,6 @@
 import VueApollo from 'vue-apollo';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import createMockApollo from 'jest/helpers/mock_apollo_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
 import LinkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines_column.vue';
 import LinkedPipeline from '~/pipelines/components/graph/linked_pipeline.vue';

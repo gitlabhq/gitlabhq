@@ -1,7 +1,7 @@
 import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
-import { extendedWrapper } from 'jest/helpers/vue_test_utils_helper';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import autoMergeEnabledComponent from '~/vue_merge_request_widget/components/states/mr_widget_auto_merge_enabled.vue';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 import eventHub from '~/vue_merge_request_widget/event_hub';

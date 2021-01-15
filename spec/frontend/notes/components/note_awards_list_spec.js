@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import { TEST_HOST } from 'jest/helpers/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import createStore from '~/notes/stores';
 import awardsNote from '~/notes/components/note_awards_list.vue';

@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import Sidebar, { forwardDeploymentFailureModalId } from '~/jobs/components/sidebar.vue';
 import StagesDropdown from '~/jobs/components/stages_dropdown.vue';
 import JobsContainer from '~/jobs/components/jobs_container.vue';
@@ -6,7 +7,6 @@ import JobRetryForwardDeploymentModal from '~/jobs/components/job_retry_forward_
 import JobRetryButton from '~/jobs/components/job_sidebar_retry_button.vue';
 import createStore from '~/jobs/store';
 import job, { jobsInStage } from '../mock_data';
-import { extendedWrapper } from '../../helpers/vue_test_utils_helper';
 
 describe('Sidebar details block', () => {
   let store;

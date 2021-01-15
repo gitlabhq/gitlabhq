@@ -16,10 +16,6 @@ export default {
     MainGraphWrapper,
   },
   props: {
-    title: {
-      type: String,
-      required: true,
-    },
     groups: {
       type: Array,
       required: true,
@@ -28,10 +24,19 @@ export default {
       type: Number,
       required: true,
     },
+    title: {
+      type: String,
+      required: true,
+    },
     action: {
       type: Object,
       required: false,
       default: () => ({}),
+    },
+    highlightedJobs: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
     jobHovered: {
       type: String,
@@ -69,11 +74,18 @@ export default {
     groupId(group) {
       return `ci-badge-${escape(group.name)}`;
     },
+    isFadedOut(jobName) {
+      return (
+        this.jobHovered &&
+        this.highlightedJobs.length > 1 &&
+        !this.highlightedJobs.includes(jobName)
+      );
+    },
   },
 };
 </script>
 <template>
-  <main-graph-wrapper>
+  <main-graph-wrapper class="gl-px-6">
     <template #stages>
       <div
         data-testid="stage-column-title"
@@ -108,9 +120,15 @@ export default {
           :pipeline-expanded="pipelineExpanded"
           :pipeline-id="pipelineId"
           css-class-job-name="gl-build-content"
+          :class="{ 'gl-opacity-3': isFadedOut(group.name) }"
           @pipelineActionRequestComplete="$emit('refreshPipelineGraph')"
         />
-        <job-group-dropdown v-else :group="group" :pipeline-id="pipelineId" />
+        <job-group-dropdown
+          v-else
+          :group="group"
+          :pipeline-id="pipelineId"
+          :class="{ 'gl-opacity-3': isFadedOut(group.name) }"
+        />
       </div>
     </template>
   </main-graph-wrapper>

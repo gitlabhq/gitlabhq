@@ -1,28 +1,22 @@
 <script>
+import { GlModal } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
 import { s__, sprintf } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
-import eventHub from '../event_hub';
 
 export default {
   components: {
-    GlModal: DeprecatedModal2,
+    GlModal,
   },
-  props: {
-    milestoneTitle: {
-      type: String,
-      required: true,
-    },
-    url: {
-      type: String,
-      required: true,
-    },
-    groupName: {
-      type: String,
-      required: true,
-    },
+  data() {
+    return {
+      milestoneTitle: '',
+      url: '',
+      groupName: '',
+      currentButton: null,
+      visible: false,
+    };
   },
   computed: {
     title() {
@@ -38,42 +32,71 @@ export default {
       );
     },
   },
+  mounted() {
+    this.getButtons().forEach((button) => {
+      button.addEventListener('click', this.onPromoteButtonClick);
+      button.removeAttribute('disabled');
+    });
+  },
+  beforeDestroy() {
+    this.getButtons().forEach((button) => {
+      button.removeEventListener('click', this.onPromoteButtonClick);
+    });
+  },
   methods: {
+    onPromoteButtonClick({ currentTarget }) {
+      const { milestoneTitle, url, groupName } = currentTarget.dataset;
+      currentTarget.setAttribute('disabled', '');
+      this.visible = true;
+      this.milestoneTitle = milestoneTitle;
+      this.url = url;
+      this.groupName = groupName;
+      this.currentButton = currentTarget;
+    },
+    getButtons() {
+      return document.querySelectorAll('.js-promote-project-milestone-button');
+    },
     onSubmit() {
-      eventHub.$emit('promoteMilestoneModal.requestStarted', this.url);
       return axios
         .post(this.url, { params: { format: 'json' } })
         .then((response) => {
-          eventHub.$emit('promoteMilestoneModal.requestFinished', {
-            milestoneUrl: this.url,
-            successful: true,
-          });
           visitUrl(response.data.url);
         })
         .catch((error) => {
-          eventHub.$emit('promoteMilestoneModal.requestFinished', {
-            milestoneUrl: this.url,
-            successful: false,
-          });
           createFlash(error);
+        })
+        .finally(() => {
+          this.visible = false;
         });
     },
+    onClose() {
+      this.visible = false;
+      if (this.currentButton) {
+        this.currentButton.removeAttribute('disabled');
+      }
+    },
+  },
+  primaryAction: {
+    text: s__('Milestones|Promote Milestone'),
+    attributes: [{ variant: 'warning' }],
+  },
+  cancelAction: {
+    text: s__('Cancel'),
+    attributes: [],
   },
 };
 </script>
 <template>
   <gl-modal
-    id="promote-milestone-modal"
-    :footer-primary-button-text="s__('Milestones|Promote Milestone')"
-    footer-primary-button-variant="warning"
-    @submit="onSubmit"
+    :visible="visible"
+    modal-id="promote-milestone-modal"
+    :action-primary="$options.primaryAction"
+    :action-cancel="$options.cancelAction"
+    :title="title"
+    @primary="onSubmit"
+    @hide="onClose"
   >
-    <template #title>
-      {{ title }}
-    </template>
-    <div>
-      <p>{{ text }}</p>
-      <p>{{ s__('Milestones|This action cannot be reversed.') }}</p>
-    </div>
+    <p>{{ text }}</p>
+    <p>{{ s__('Milestones|This action cannot be reversed.') }}</p>
   </gl-modal>
 </template>

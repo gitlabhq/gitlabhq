@@ -1,4 +1,4 @@
-import { TEST_HOST } from 'jest/helpers/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
 import ImageDiff from '~/image_diff/image_diff';
 import * as imageUtility from '~/lib/utils/image_utility';
 import imageDiffHelper from '~/image_diff/helpers/index';

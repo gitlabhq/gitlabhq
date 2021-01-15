@@ -1,7 +1,7 @@
 import { escape } from 'lodash';
 import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
-import { extendedWrapper } from 'jest/helpers/vue_test_utils_helper';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { sprintf } from '~/locale';
 import ValidationSegment, { i18n } from '~/pipeline_editor/components/info/validation_segment.vue';
 import { CI_CONFIG_STATUS_INVALID } from '~/pipeline_editor/constants';

@@ -24346,6 +24346,9 @@ msgstr ""
 msgid "Review the process for configuring service providers in your identity provider — in this case, GitLab is the \"service provider\" or \"relying party\"."
 msgstr ""
 
+msgid "Review the target project before submitting to avoid exposing %{source} changes."
+msgstr ""
+
 msgid "Review time"
 msgstr ""
 
@@ -29022,6 +29025,15 @@ msgid "This merge request does not have codequality reports"
 msgstr ""
 
 msgid "This merge request is closed. To apply this suggestion, edit this file directly."
+msgstr ""
+
+msgid "This merge request is from a private project to a public project."
+msgstr ""
+
+msgid "This merge request is from a private project to an internal project."
+msgstr ""
+
+msgid "This merge request is from an internal project to a public project."
 msgstr ""
 
 msgid "This merge request is locked."

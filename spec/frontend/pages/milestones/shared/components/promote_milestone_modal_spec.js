@@ -1,99 +1,109 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import { TEST_HOST } from 'jest/helpers/test_constants';
-import promoteMilestoneModal from '~/pages/milestones/shared/components/promote_milestone_modal.vue';
-import eventHub from '~/pages/milestones/shared/event_hub';
+import { GlModal } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import { TEST_HOST } from 'helpers/test_constants';
+import { setHTMLFixture } from 'helpers/fixtures';
+import waitForPromises from 'helpers/wait_for_promises';
+import PromoteMilestoneModal from '~/pages/milestones/shared/components/promote_milestone_modal.vue';
 import axios from '~/lib/utils/axios_utils';
+import * as urlUtils from '~/lib/utils/url_utility';
+import * as flash from '~/flash';
+
+jest.mock('~/lib/utils/url_utility');
+jest.mock('~/flash');
 
 describe('Promote milestone modal', () => {
-  let vm;
-  const Component = Vue.extend(promoteMilestoneModal);
+  let wrapper;
   const milestoneMockData = {
     milestoneTitle: 'v1.0',
     url: `${TEST_HOST}/dummy/promote/milestones`,
     groupName: 'group',
   };
 
-  describe('Modal title and description', () => {
-    beforeEach(() => {
-      vm = mountComponent(Component, milestoneMockData);
+  const promoteButton = () => document.querySelector('.js-promote-project-milestone-button');
+
+  beforeEach(() => {
+    setHTMLFixture(`<button
+      class="js-promote-project-milestone-button"
+      data-group-name="${milestoneMockData.groupName}"
+      data-milestone-title="${milestoneMockData.milestoneTitle}"
+      data-url="${milestoneMockData.url}">
+      Promote
+      </button>`);
+    wrapper = shallowMount(PromoteMilestoneModal);
+  });
+
+  afterEach(() => {
+    wrapper.destroy();
+  });
+
+  describe('Modal opener button', () => {
+    it('button gets disabled when the modal opens', () => {
+      expect(promoteButton().disabled).toBe(false);
+
+      promoteButton().click();
+
+      expect(promoteButton().disabled).toBe(true);
     });
 
-    afterEach(() => {
-      vm.$destroy();
+    it('button gets enabled when the modal closes', () => {
+      promoteButton().click();
+
+      wrapper.findComponent(GlModal).vm.$emit('hide');
+
+      expect(promoteButton().disabled).toBe(false);
+    });
+  });
+
+  describe('Modal title and description', () => {
+    beforeEach(() => {
+      promoteButton().click();
     });
 
     it('contains the proper description', () => {
-      expect(vm.text).toContain(
+      expect(wrapper.vm.text).toContain(
         `Promoting ${milestoneMockData.milestoneTitle} will make it available for all projects inside ${milestoneMockData.groupName}.`,
       );
     });
 
     it('contains the correct title', () => {
-      expect(vm.title).toEqual('Promote v1.0 to group milestone?');
+      expect(wrapper.vm.title).toBe('Promote v1.0 to group milestone?');
     });
   });
 
   describe('When requesting a milestone promotion', () => {
     beforeEach(() => {
-      vm = mountComponent(Component, {
-        ...milestoneMockData,
-      });
-      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
+      promoteButton().click();
     });
 
-    afterEach(() => {
-      vm.$destroy();
-    });
-
-    it('redirects when a milestone is promoted', (done) => {
+    it('redirects when a milestone is promoted', async () => {
       const responseURL = `${TEST_HOST}/dummy/endpoint`;
       jest.spyOn(axios, 'post').mockImplementation((url) => {
         expect(url).toBe(milestoneMockData.url);
-        expect(eventHub.$emit).toHaveBeenCalledWith(
-          'promoteMilestoneModal.requestStarted',
-          milestoneMockData.url,
-        );
         return Promise.resolve({
-          request: {
-            responseURL,
+          data: {
+            url: responseURL,
           },
         });
       });
 
-      vm.onSubmit()
-        .then(() => {
-          expect(eventHub.$emit).toHaveBeenCalledWith('promoteMilestoneModal.requestFinished', {
-            milestoneUrl: milestoneMockData.url,
-            successful: true,
-          });
-        })
-        .then(done)
-        .catch(done.fail);
+      wrapper.findComponent(GlModal).vm.$emit('primary');
+      await waitForPromises();
+
+      expect(urlUtils.visitUrl).toHaveBeenCalledWith(responseURL);
     });
 
-    it('displays an error if promoting a milestone failed', (done) => {
+    it('displays an error if promoting a milestone failed', async () => {
       const dummyError = new Error('promoting milestone failed');
       dummyError.response = { status: 500 };
       jest.spyOn(axios, 'post').mockImplementation((url) => {
         expect(url).toBe(milestoneMockData.url);
-        expect(eventHub.$emit).toHaveBeenCalledWith(
-          'promoteMilestoneModal.requestStarted',
-          milestoneMockData.url,
-        );
         return Promise.reject(dummyError);
       });
 
-      vm.onSubmit()
-        .catch((error) => {
-          expect(error).toBe(dummyError);
-          expect(eventHub.$emit).toHaveBeenCalledWith('promoteMilestoneModal.requestFinished', {
-            milestoneUrl: milestoneMockData.url,
-            successful: false,
-          });
-        })
-        .then(done)
-        .catch(done.fail);
+      wrapper.findComponent(GlModal).vm.$emit('primary');
+      await waitForPromises();
+
+      expect(flash.deprecatedCreateFlash).toHaveBeenCalledWith(dummyError);
     });
   });
 });

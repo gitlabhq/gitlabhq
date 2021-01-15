@@ -1,7 +1,7 @@
 import Vue from 'vue';
+import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import IdeTreeList from '~/ide/components/ide_tree_list.vue';
 import { createStore } from '~/ide/stores';
-import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import { file } from '../helpers';
 import { projectData } from '../mock_data';
 

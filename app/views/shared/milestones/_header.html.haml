@@ -14,12 +14,9 @@
       = link_to _('Edit'), edit_milestone_path(milestone), class: 'btn gl-button btn-grouped'
 
       - if milestone.project_milestone? && milestone.project.group
-        %button.js-promote-project-milestone-button.btn.gl-button.btn-grouped{ data: { toggle: 'modal',
-          target: '#promote-milestone-modal',
-          milestone_title: milestone.title,
+        %button.js-promote-project-milestone-button.btn.gl-button.btn-grouped{ data: { milestone_title: milestone.title,
           group_name: milestone.project.group.name,
-          url: promote_project_milestone_path(milestone.project, milestone),
-          container: 'body' },
+          url: promote_project_milestone_path(milestone.project, milestone)},
           disabled: true,
           type: 'button' }
           = _('Promote')

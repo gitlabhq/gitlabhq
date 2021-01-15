@@ -1,10 +1,10 @@
 import { escape } from 'lodash';
-import { TEST_HOST } from 'jest/helpers/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
+import FilteredSearchSpecHelper from 'helpers/filtered_search_spec_helper';
 import VisualTokenValue from '~/filtered_search/visual_token_value';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import UsersCache from '~/lib/utils/users_cache';
 import DropdownUtils from '~/filtered_search//dropdown_utils';
-import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 
 describe('Filtered Search Visual Tokens', () => {
   const findElements = (tokenElement) => {

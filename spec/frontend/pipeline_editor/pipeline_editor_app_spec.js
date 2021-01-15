@@ -3,7 +3,7 @@ import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlAlert, GlButton, GlFormInput, GlFormTextarea, GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 import VueApollo from 'vue-apollo';
-import createMockApollo from 'jest/helpers/mock_apollo_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 
 import httpStatusCodes from '~/lib/utils/http_status';
 import { objectToQuery, redirectTo, refreshCurrentPage } from '~/lib/utils/url_utility';

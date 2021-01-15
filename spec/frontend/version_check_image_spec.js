@@ -1,6 +1,6 @@
 import $ from 'jquery';
+import ClassSpecHelper from 'helpers/class_spec_helper';
 import VersionCheckImage from '~/version_check_image';
-import ClassSpecHelper from './helpers/class_spec_helper';
 
 describe('VersionCheckImage', () => {
   let testContext;

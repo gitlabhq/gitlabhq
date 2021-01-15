@@ -56,3 +56,45 @@ for more targets.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 To learn more about how the repository is structured, see
 [GitLab Kubernetes Agent repository overview](https://www.youtube.com/watch?v=j8CyaCWroUY).
+
+## Run tests locally
+
+You can run all tests, or a subset of tests, locally.
+
+- **To run all tests**: Run the command `make test`.
+- **To run all test targets in the directory**: Run the command
+  `bazel test //internal/module/gitops/server:all`.
+
+  You can use `*` in the command, instead of `all`, but it must be quoted to
+  avoid shell expansion: `bazel test '//internal/module/gitops/server:*'`.
+- **To run all tests in a directory and its subdirectories**: Run the command
+  `bazel test //internal/module/gitops/server/...`.
+
+### Run specific test scenarios
+
+To run only a specific test scenario, you need the directory name and the target
+name of the test. For example, to run the tests at
+`internal/module/gitops/server/module_test.go`, the `BUILD.bazel` file that
+defines the test's target name lives at `internal/module/gitops/server/BUILD.bazel`.
+In the latter, the target name is defined like:
+
+```bazel
+go_test(
+    name = "server_test",
+    size = "small",
+    srcs = [
+        "module_test.go",
+```
+
+The target name is `server_test` and the directory is `internal/module/gitops/server/`.
+Run the test scenario with this command:
+
+```shell
+bazel test //internal/module/gitops/server:server_test
+```
+
+### Additional resources
+
+- Bazel documentation about [specifying targets to build](https://docs.bazel.build/versions/master/guide.html#specifying-targets-to-build).
+- [The Bazel query](https://docs.bazel.build/versions/master/query.html)
+- [Bazel query how to](https://docs.bazel.build/versions/master/query-how-to.html)

@@ -1,8 +1,8 @@
 import Vue from 'vue';
+import mountComponent from 'helpers/vue_mount_component_helper';
+import { trimText } from 'helpers/text_helper';
 import component from '~/reports/components/modal.vue';
 import state from '~/reports/store/state';
-import mountComponent from '../../helpers/vue_mount_component_helper';
-import { trimText } from '../../helpers/text_helper';
 
 describe('Grouped Test Reports Modal', () => {
   const Component = Vue.extend(component);

@@ -148,18 +148,13 @@
 
       &:hover {
         box-shadow: inset 0 0 0 0.0625rem $dropdown-toggle-active-border-color;
-        background-color: $gray-darker;
-
-        svg {
-          fill: $gl-text-color;
-        }
+        background-color: var(--gray-50, $gray-50);
       }
 
       .spinner,
       svg {
         width: $ci-action-dropdown-svg-size;
         height: $ci-action-dropdown-svg-size;
-        fill: $gl-text-color-secondary;
         position: relative;
         top: 1px;
         vertical-align: initial;

@@ -1,1 +1,1 @@
-export * from '../frontend/helpers/test_constants';
+export * from '../frontend/__helpers__/test_constants';

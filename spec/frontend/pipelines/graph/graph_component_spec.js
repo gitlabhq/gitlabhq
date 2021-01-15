@@ -1,6 +1,7 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
 import StageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
+import JobItem from '~/pipelines/components/graph/job_item.vue';
 import LinkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines_column.vue';
 import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
 import { GRAPHQL } from '~/pipelines/components/graph/constants';
@@ -21,17 +22,29 @@ describe('graph component', () => {
     pipeline: generateResponse(mockPipelineResponse, 'root/fungi-xoxo'),
   };
 
-  const createComponent = ({ mountFn = shallowMount, props = {} } = {}) => {
+  const createComponent = ({
+    data = {},
+    mountFn = shallowMount,
+    props = {},
+    stubOverride = {},
+  } = {}) => {
     wrapper = mountFn(PipelineGraph, {
       propsData: {
         ...defaultProps,
         ...props,
+      },
+      data() {
+        return { ...data };
       },
       provide: {
         dataMethod: GRAPHQL,
       },
       stubs: {
         'links-inner': true,
+        'linked-pipeline': true,
+        'job-item': true,
+        'job-group-dropdown': true,
+        ...stubOverride,
       },
     });
   };
@@ -61,6 +74,23 @@ describe('graph component', () => {
 
       it('refreshPipelineGraph is emitted', () => {
         expect(wrapper.emitted().refreshPipelineGraph).toHaveLength(1);
+      });
+    });
+
+    describe('when links are present', () => {
+      beforeEach(async () => {
+        createComponent({
+          mountFn: mount,
+          stubOverride: { 'job-item': false },
+          data: { hoveredJobName: 'test_a' },
+        });
+        findLinksLayer().vm.$emit('highlightedJobsChange', ['test_c', 'build_c']);
+      });
+
+      it('dims unrelated jobs', () => {
+        const unrelatedJob = wrapper.find(JobItem);
+        expect(findLinksLayer().emitted().highlightedJobsChange).toHaveLength(1);
+        expect(unrelatedJob.classes('gl-opacity-3')).toBe(true);
       });
     });
   });

@@ -1,7 +1,7 @@
 import sqljs from 'sql.js';
+import ClassSpecHelper from 'helpers/class_spec_helper';
 import axios from '~/lib/utils/axios_utils';
 import BalsamiqViewer from '~/blob/balsamiq/balsamiq_viewer';
-import ClassSpecHelper from '../../helpers/class_spec_helper';
 
 jest.mock('sql.js');
 

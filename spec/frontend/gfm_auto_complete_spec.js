@@ -8,7 +8,7 @@ import GfmAutoComplete, { membersBeforeSave } from 'ee_else_ce/gfm_auto_complete
 import { TEST_HOST } from 'helpers/test_constants';
 import { getJSONFixture } from 'helpers/fixtures';
 
-import waitForPromises from 'jest/helpers/wait_for_promises';
+import waitForPromises from 'helpers/wait_for_promises';
 
 import MockAdapter from 'axios-mock-adapter';
 import AjaxCache from '~/lib/utils/ajax_cache';

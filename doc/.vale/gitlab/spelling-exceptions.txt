@@ -45,6 +45,7 @@ backtraces
 backtracing
 badging
 Bamboo
+Bazel
 Bitbucket
 blockquote
 blockquoted

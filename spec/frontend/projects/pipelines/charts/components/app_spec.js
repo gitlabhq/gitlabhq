@@ -2,7 +2,7 @@ import { merge } from 'lodash';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import { GlTabs, GlTab } from '@gitlab/ui';
-import createMockApollo from 'jest/helpers/mock_apollo_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import Component from '~/projects/pipelines/charts/components/app.vue';
 import PipelineCharts from '~/projects/pipelines/charts/components/pipeline_charts.vue';
 import getPipelineCountByStatus from '~/projects/pipelines/charts/graphql/queries/get_pipeline_count_by_status.query.graphql';

@@ -1,7 +1,7 @@
 import VueApollo from 'vue-apollo';
 import { mount, createLocalVue } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import createMockApollo from 'jest/helpers/mock_apollo_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 import { GlLoadingIcon } from '@gitlab/ui';

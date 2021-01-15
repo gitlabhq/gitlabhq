@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
-import createMockApollo from 'jest/helpers/mock_apollo_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import PipelineGraphWrapper from '~/pipelines/components/graph/graph_component_wrapper.vue';
 import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
 import getPipelineDetails from '~/pipelines/graphql/queries/get_pipeline_details.query.graphql';

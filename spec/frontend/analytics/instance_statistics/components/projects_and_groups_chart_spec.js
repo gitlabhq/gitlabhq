@@ -2,7 +2,7 @@ import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { GlLineChart } from '@gitlab/ui/dist/charts';
 import { GlAlert } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
-import createMockApollo from 'jest/helpers/mock_apollo_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { useFakeDate } from 'helpers/fake_date';
 import ProjectsAndGroupChart from '~/analytics/instance_statistics/components/projects_and_groups_chart.vue';
 import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';

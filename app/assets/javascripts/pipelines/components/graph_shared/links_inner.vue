@@ -83,6 +83,9 @@ export default {
         this.needsObject = generateJobNeedsDict(jobs) ?? {};
       }
     },
+    highlightedJobs(jobs) {
+      this.$emit('highlightedJobsChange', jobs);
+    },
   },
   mounted() {
     if (!isEmpty(this.pipelineData)) {

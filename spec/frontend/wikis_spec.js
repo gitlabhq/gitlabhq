@@ -1,7 +1,7 @@
 import { escape } from 'lodash';
+import { setHTMLFixture } from 'helpers/fixtures';
 import Wikis from '~/pages/shared/wikis/wikis';
 import Tracking from '~/tracking';
-import { setHTMLFixture } from './helpers/fixtures';
 
 describe('Wikis', () => {
   describe('setting the commit message when the title changes', () => {

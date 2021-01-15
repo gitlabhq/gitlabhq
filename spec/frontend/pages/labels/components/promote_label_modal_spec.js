@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
-import { TEST_HOST } from 'jest/helpers/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
 import promoteLabelModal from '~/pages/projects/labels/components/promote_label_modal.vue';
 import eventHub from '~/pages/projects/labels/event_hub';
 import axios from '~/lib/utils/axios_utils';

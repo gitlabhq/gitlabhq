@@ -815,7 +815,7 @@ it('calls mutation on submitting form ', () => {
 
 ### Testing with mocked Apollo Client
 
-To test the logic of Apollo cache updates, we might want to mock an Apollo Client in our unit tests. We use [`mock-apollo-client`](https://www.npmjs.com/package/mock-apollo-client) library to mock Apollo client and [`createMockApollo` helper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/frontend/helpers/mock_apollo_helper.js) we created on top of it.
+To test the logic of Apollo cache updates, we might want to mock an Apollo Client in our unit tests. We use [`mock-apollo-client`](https://www.npmjs.com/package/mock-apollo-client) library to mock Apollo client and [`createMockApollo` helper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/frontend/__helpers__/mock_apollo_helper.js) we created on top of it.
 
 To separate tests with mocked client from 'usual' unit tests, it's recommended to create an additional factory and pass the created `mockApollo` as an option to the `createComponent`-factory. This way we only create Apollo Client instance when it's necessary.
 
@@ -887,7 +887,7 @@ describe('Some component with Apollo mock', () => {
 After this, we need to create a mock Apollo Client instance using a helper:
 
 ```javascript
-import createMockApollo from 'jest/helpers/mock_apollo_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 
 describe('Some component', () => {
   let wrapper;

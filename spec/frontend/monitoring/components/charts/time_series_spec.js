@@ -2,7 +2,7 @@ import { mount, shallowMount } from '@vue/test-utils';
 import { setTestTimeout } from 'helpers/timeout';
 import timezoneMock from 'timezone-mock';
 import { GlLink } from '@gitlab/ui';
-import { TEST_HOST } from 'jest/helpers/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
 import {
   GlAreaChart,
   GlLineChart,

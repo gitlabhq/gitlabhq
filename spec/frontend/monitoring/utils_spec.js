@@ -1,4 +1,4 @@
-import { TEST_HOST } from 'jest/helpers/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
 import * as monitoringUtils from '~/monitoring/utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 import { mockProjectDir, barMockData } from './mock_data';

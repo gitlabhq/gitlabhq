@@ -5,6 +5,7 @@ import '~/behaviors/markdown/render_gfm';
 import { Range } from 'monaco-editor';
 import waitForPromises from 'helpers/wait_for_promises';
 import waitUsingRealTimer from 'helpers/wait_using_real_timer';
+import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import axios from '~/lib/utils/axios_utils';
 import service from '~/ide/services';
 import { createStoreOptions } from '~/ide/stores';
@@ -16,7 +17,6 @@ import {
   FILE_VIEW_MODE_PREVIEW,
   viewerTypes,
 } from '~/ide/constants';
-import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import { file } from '../helpers';
 import { exampleConfigs, exampleFiles } from '../lib/editorconfig/mock_data';
 

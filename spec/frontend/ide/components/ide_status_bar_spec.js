@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import _ from 'lodash';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
-import { TEST_HOST } from '../../helpers/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
 import { createStore } from '~/ide/stores';
 import IdeStatusBar from '~/ide/components/ide_status_bar.vue';
 import { rightSidebarViews } from '~/ide/constants';

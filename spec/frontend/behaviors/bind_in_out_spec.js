@@ -1,5 +1,5 @@
+import ClassSpecHelper from 'helpers/class_spec_helper';
 import BindInOut from '~/behaviors/bind_in_out';
-import ClassSpecHelper from '../helpers/class_spec_helper';
 
 describe('BindInOut', () => {
   let testContext;

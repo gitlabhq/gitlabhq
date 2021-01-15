@@ -2,7 +2,7 @@ import VueApollo, { ApolloMutation } from 'vue-apollo';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import createMockApollo from 'jest/helpers/mock_apollo_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import GetSnippetQuery from 'shared_queries/snippet/snippet.query.graphql';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import * as urlUtils from '~/lib/utils/url_utility';

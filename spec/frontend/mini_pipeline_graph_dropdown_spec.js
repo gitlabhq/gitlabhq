@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
+import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import MiniPipelineGraph from '~/mini_pipeline_graph_dropdown';
-import waitForPromises from './helpers/wait_for_promises';
 
 describe('Mini Pipeline Graph Dropdown', () => {
   preloadFixtures('static/mini_dropdown_graph.html');

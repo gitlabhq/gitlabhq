@@ -1,4 +1,4 @@
-import { TEST_HOST } from 'jest/helpers/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
 
 function getDate(daysMinus) {
   const today = new Date();

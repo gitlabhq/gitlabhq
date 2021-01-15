@@ -1,9 +1,9 @@
 import { mount } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
 import { GlIcon } from '@gitlab/ui';
+import UsersMockHelper from 'helpers/user_mock_data_helper';
 import Assignee from '~/sidebar/components/assignees/assignees.vue';
 import UsersMock from './mock_data';
-import UsersMockHelper from '../helpers/user_mock_data_helper';
 
 describe('Assignee component', () => {
   const getDefaultProps = () => ({

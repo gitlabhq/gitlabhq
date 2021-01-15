@@ -6,6 +6,17 @@
 
 - source_title, target_title = format_mr_branch_names(@merge_request)
 
+- vis010 = _('This merge request is from a private project to an internal project.')
+- vis020 = _('This merge request is from a private project to a public project.')
+- vis1020 = _('This merge request is from an internal project to a public project.')
+- i18n = { '010' => vis010, '020' => vis020, '1020' => vis1020 }
+
+- source_level = @merge_request.source_project.visibility_level
+- source_visibility = @merge_request.source_project.visibility
+- target_level = @merge_request.target_project.visibility_level
+
+- visibilityMismatchString = i18n["#{source_level}#{target_level}"]
+
 .form-group.row.d-flex.gl-px-5.branch-selector
   .align-self-center
     %span
@@ -24,4 +35,12 @@
       = form.hidden_field(:target_branch,
         { class: 'target_branch js-target-branch-select ref-name mw-xl',
           data: { placeholder: _('Select branch'), endpoint: refs_project_path(@project, sort: 'updated_desc', find: 'branches') }})
+
+- if source_level < target_level
+  .gl-alert.gl-alert-warning.gl-mt-4
+    = sprite_icon('warning', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+    .gl-alert-body
+      = visibilityMismatchString
+      %br
+      = _('Review the target project before submitting to avoid exposing %{source} changes.') % { source: source_visibility }
 %hr

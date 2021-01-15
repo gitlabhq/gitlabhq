@@ -64,7 +64,10 @@ export const generateLinksData = ({ links }, containerID, modifier = '') => {
 
     // Make cross-stages lines a straight line all the way
     // until we can safely draw the bezier to look nice.
-    const straightLineDestinationX = targetNodeX - 100;
+    // The adjustment number here is a magic number to make things
+    // look nice and should change if the padding changes. This goes well
+    // with gl-px-6. gl-px-8 is more like 100.
+    const straightLineDestinationX = targetNodeX - 60;
     const controlPointX = straightLineDestinationX + (targetNodeX - straightLineDestinationX) / 2;
 
     if (straightLineDestinationX > 0) {

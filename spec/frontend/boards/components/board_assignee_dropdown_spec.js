@@ -6,7 +6,7 @@ import {
   GlSearchBoxByType,
   GlLoadingIcon,
 } from '@gitlab/ui';
-import createMockApollo from 'jest/helpers/mock_apollo_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import VueApollo from 'vue-apollo';
 import BoardAssigneeDropdown from '~/boards/components/board_assignee_dropdown.vue';
 import IssuableAssignees from '~/sidebar/components/assignees/issuable_assignees.vue';

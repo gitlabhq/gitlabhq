@@ -4,13 +4,13 @@ import 'jquery';
 import * as jqueryMatchers from 'custom-jquery-matchers';
 import { config as testUtilsConfig } from '@vue/test-utils';
 import Translate from '~/vue_shared/translate';
-import { initializeTestTimeout } from './helpers/timeout';
-import { getJSONFixture, loadHTMLFixture, setHTMLFixture } from './helpers/fixtures';
+import { initializeTestTimeout } from './__helpers__/timeout';
+import { getJSONFixture, loadHTMLFixture, setHTMLFixture } from './__helpers__/fixtures';
 import { setupManualMocks } from './mocks/mocks_helper';
 import customMatchers from './matchers';
 
-import './helpers/dom_shims';
-import './helpers/jquery';
+import './__helpers__/dom_shims';
+import './__helpers__/jquery';
 import '~/commons/bootstrap';
 
 // This module has some fairly decent visual test coverage in it's own repository.

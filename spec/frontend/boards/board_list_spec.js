@@ -3,9 +3,9 @@
 
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
+import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import eventHub from '~/boards/eventhub';
-import waitForPromises from '../helpers/wait_for_promises';
 import BoardList from '~/boards/components/board_list.vue';
 import '~/boards/models/issue';
 import '~/boards/models/list';

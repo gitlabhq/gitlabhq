@@ -1,6 +1,7 @@
 import { file } from 'jest/ide/helpers';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import testAction from 'helpers/vuex_action_helper';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { createStore } from '~/ide/stores';
 import service from '~/ide/services';
@@ -11,7 +12,6 @@ import * as mutationTypes from '~/ide/stores/modules/commit/mutation_types';
 import * as actions from '~/ide/stores/modules/commit/actions';
 import { createUnexpectedCommitError } from '~/ide/lib/errors';
 import { commitActionTypes, PERMISSION_CREATE_MR } from '~/ide/constants';
-import testAction from '../../../../helpers/vuex_action_helper';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),

@@ -2,9 +2,9 @@
 import { clone } from 'lodash';
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'spec/test_constants';
+import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import Sidebar from '~/right_sidebar';
-import waitForPromises from './helpers/wait_for_promises';
 
 describe('Issuable right sidebar collapsed todo toggle', () => {
   const fixtureName = 'issues/open-issue.html';

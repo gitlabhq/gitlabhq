@@ -76,7 +76,7 @@ The reported licenses might be incomplete or inaccurate.
 | Elixir     | [Mix](https://elixir-lang.org/getting-started/mix-otp/introduction-to-mix.html)                               |
 | C++/C      | [Conan](https://conan.io/)                                                                                    |
 | Scala      | [sbt](https://www.scala-sbt.org/)                                                                             |
-| Rust       | [Cargo](https://crates.io)                                                                                    |
+| Rust       | [Cargo](https://crates.io/)                                                                                   |
 | PHP        | [Composer](https://getcomposer.org/)                                                                          |
 
 ## Requirements

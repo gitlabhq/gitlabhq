@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 
-import { TEST_HOST } from 'jest/helpers/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
 import { GlModal } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 

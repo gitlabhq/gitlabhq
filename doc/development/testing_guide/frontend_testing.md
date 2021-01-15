@@ -89,7 +89,7 @@ If your test exceeds that time, it fails.
 
 If you cannot improve the performance of the tests, you can increase the timeout
 for a specific test using
-[`setTestTimeout`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/frontend/helpers/timeout.js).
+[`setTestTimeout`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/frontend/__helpers__/timeout.js).
 
 ```javascript
 import { setTestTimeout } from 'helpers/timeout';
@@ -877,7 +877,7 @@ You can import the JSON fixture in a Jest test using the `getJSONFixture` method
 Jest and Karma test suites import fixtures in different ways:
 
 - The Karma test suite are served by [jasmine-jquery](https://github.com/velesin/jasmine-jquery).
-- Jest use `spec/frontend/helpers/fixtures.js`.
+- Jest use `spec/frontend/__helpers__/fixtures.js`.
 
 The following are examples of tests that work for both Karma and Jest:
 
@@ -1062,6 +1062,9 @@ See also [Notes on testing Vue components](../fe_guide/vue.md#testing-vue-compon
 
 ## Test helpers
 
+Test helpers can be found in [`spec/frontend/__helpers__`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/frontend/__helpers__).
+If you introduce new helpers, please place them in that directory.  
+
 ### Vuex Helper: `testAction`
 
 We have a helper available to make testing actions easier, as per [official documentation](https://vuex.vuejs.org/guide/testing.html):
@@ -1103,7 +1106,7 @@ By doing so, the `wrapper` provides you with the ability to perform a `findByTes
 which is a shortcut to the more verbose `wrapper.find('[data-testid="my-test-id"]');`
 
 ```javascript
-import { extendedWrapper } from 'jest/helpers/vue_test_utils_helper';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
 describe('FooComponent', () => {
   const wrapper = extendedWrapper(shallowMount({

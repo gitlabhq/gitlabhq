@@ -3,7 +3,7 @@ import { mount, createLocalVue } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { getJSONFixture } from 'helpers/fixtures';
-import { TEST_HOST } from 'jest/helpers/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import JobApp from '~/jobs/components/job_app.vue';
 import Sidebar from '~/jobs/components/sidebar.vue';

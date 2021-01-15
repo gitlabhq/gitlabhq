@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { TEST_HOST } from 'jest/helpers/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';

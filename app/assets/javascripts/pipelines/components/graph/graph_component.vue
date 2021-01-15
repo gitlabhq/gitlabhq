@@ -39,6 +39,7 @@ export default {
   data() {
     return {
       hoveredJobName: '',
+      highlightedJobs: [],
       measurements: {
         width: 0,
         height: 0,
@@ -106,63 +107,68 @@ export default {
         jobName: expanded ? jobName : '',
       };
     },
+    updateHighlightedJobs(jobs) {
+      this.highlightedJobs = jobs;
+    },
   },
 };
 </script>
 <template>
   <div class="js-pipeline-graph">
     <div
-      :id="containerId"
-      :ref="containerId"
-      class="gl-pipeline-min-h gl-display-flex gl-position-relative gl-overflow-auto gl-bg-gray-10 gl-white-space-nowrap"
-      :class="{ 'gl-py-5': !isLinkedPipeline }"
+      class="gl-display-flex gl-position-relative gl-overflow-auto gl-bg-gray-10 gl-white-space-nowrap"
+      :class="{ 'gl-pipeline-min-h gl-py-5': !isLinkedPipeline }"
     >
-      <links-layer
-        :pipeline-data="graph"
-        :pipeline-id="pipeline.id"
-        :container-id="containerId"
-        :container-measurements="measurements"
-        :highlighted-job="hoveredJobName"
-        default-link-color="gl-stroke-transparent"
-        @error="onError"
-      >
-        <linked-graph-wrapper>
-          <template #upstream>
-            <linked-pipelines-column
-              v-if="showUpstreamPipelines"
-              :linked-pipelines="upstreamPipelines"
-              :column-title="__('Upstream')"
-              :type="$options.pipelineTypeConstants.UPSTREAM"
-              @error="onError"
-            />
-          </template>
-          <template #main>
-            <stage-column-component
-              v-for="stage in graph"
-              :key="stage.name"
-              :title="stage.name"
-              :groups="stage.groups"
-              :action="stage.status.action"
-              :job-hovered="hoveredJobName"
-              :pipeline-expanded="pipelineExpanded"
+      <linked-graph-wrapper>
+        <template #upstream>
+          <linked-pipelines-column
+            v-if="showUpstreamPipelines"
+            :linked-pipelines="upstreamPipelines"
+            :column-title="__('Upstream')"
+            :type="$options.pipelineTypeConstants.UPSTREAM"
+            @error="onError"
+          />
+        </template>
+        <template #main>
+          <div :id="containerId" :ref="containerId">
+            <links-layer
+              :pipeline-data="graph"
               :pipeline-id="pipeline.id"
-              @refreshPipelineGraph="$emit('refreshPipelineGraph')"
-              @jobHover="setJob"
-            />
-          </template>
-          <template #downstream>
-            <linked-pipelines-column
-              v-if="showDownstreamPipelines"
-              :linked-pipelines="downstreamPipelines"
-              :column-title="__('Downstream')"
-              :type="$options.pipelineTypeConstants.DOWNSTREAM"
-              @downstreamHovered="setJob"
-              @pipelineExpandToggle="togglePipelineExpanded"
+              :container-id="containerId"
+              :container-measurements="measurements"
+              :highlighted-job="hoveredJobName"
+              default-link-color="gl-stroke-transparent"
               @error="onError"
-            />
-          </template>
-        </linked-graph-wrapper>
-      </links-layer>
+              @highlightedJobsChange="updateHighlightedJobs"
+            >
+              <stage-column-component
+                v-for="stage in graph"
+                :key="stage.name"
+                :title="stage.name"
+                :groups="stage.groups"
+                :action="stage.status.action"
+                :highlighted-jobs="highlightedJobs"
+                :job-hovered="hoveredJobName"
+                :pipeline-expanded="pipelineExpanded"
+                :pipeline-id="pipeline.id"
+                @refreshPipelineGraph="$emit('refreshPipelineGraph')"
+                @jobHover="setJob"
+              />
+            </links-layer>
+          </div>
+        </template>
+        <template #downstream>
+          <linked-pipelines-column
+            v-if="showDownstreamPipelines"
+            :linked-pipelines="downstreamPipelines"
+            :column-title="__('Downstream')"
+            :type="$options.pipelineTypeConstants.DOWNSTREAM"
+            @downstreamHovered="setJob"
+            @pipelineExpandToggle="togglePipelineExpanded"
+            @error="onError"
+          />
+        </template>
+      </linked-graph-wrapper>
     </div>
   </div>
 </template>

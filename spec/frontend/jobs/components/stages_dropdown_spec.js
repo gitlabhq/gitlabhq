@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { trimText } from 'helpers/text_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import component from '~/jobs/components/stages_dropdown.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 describe('Stages Dropdown', () => {
   const Component = Vue.extend(component);

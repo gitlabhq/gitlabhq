@@ -1,7 +1,7 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import FilteredSearchSpecHelper from 'helpers/filtered_search_spec_helper';
 import FilteredSearchVisualTokens from '~/filtered_search/filtered_search_visual_tokens';
-import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 
 describe('Filtered Search Visual Tokens', () => {
   let mock;

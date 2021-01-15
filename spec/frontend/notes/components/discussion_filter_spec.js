@@ -1,7 +1,7 @@
 import Vuex from 'vuex';
 import { createLocalVue, mount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import { TEST_HOST } from 'jest/helpers/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
 import createEventHub from '~/helpers/event_hub_factory';
 
 import axios from '~/lib/utils/axios_utils';

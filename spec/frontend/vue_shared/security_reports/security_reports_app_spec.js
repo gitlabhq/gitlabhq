@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { merge } from 'lodash';
 import VueApollo from 'vue-apollo';
 import Vuex from 'vuex';
-import createMockApollo from 'jest/helpers/mock_apollo_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { trimText } from 'helpers/text_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import {

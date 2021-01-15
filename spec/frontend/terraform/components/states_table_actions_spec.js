@@ -1,6 +1,6 @@
 import { GlDropdown, GlModal, GlSprintf } from '@gitlab/ui';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import createMockApollo from 'jest/helpers/mock_apollo_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import VueApollo from 'vue-apollo';
 import StateActions from '~/terraform/components/states_table_actions.vue';
 import lockStateMutation from '~/terraform/graphql/mutations/lock_state.mutation.graphql';

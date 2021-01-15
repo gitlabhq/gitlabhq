@@ -79,11 +79,11 @@ to configure alerts for this integration.
 ## Customize the alert payload outside of GitLab
 
 For all integration types, you can customize the payload by sending the following
-parameters. All fields other than `title` are optional:
+parameters. All fields are optional. If the incoming alert does not contain a value for the `Title` field, a default value of `New: Incident` will be applied.
 
 | Property                  | Type            | Description |
 | ------------------------- | --------------- | ----------- |
-| `title`                   | String          | The title of the incident. Required. |
+| `title`                   | String          | The title of the incident. |
 | `description`             | String          | A high-level summary of the problem. |
 | `start_time`              | DateTime        | The time of the incident. If none is provided, a timestamp of the issue is used. |
 | `end_time`                | DateTime        | For existing alerts only. When provided, the alert is resolved and the associated incident is closed. |

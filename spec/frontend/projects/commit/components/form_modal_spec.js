@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMount, mount, createWrapper } from '@vue/test-utils';
-import { extendedWrapper } from 'jest/helpers/vue_test_utils_helper';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { GlModal, GlForm, GlFormCheckbox, GlSprintf } from '@gitlab/ui';
 import { within } from '@testing-library/dom';
 import axios from '~/lib/utils/axios_utils';

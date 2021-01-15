@@ -1,11 +1,12 @@
 <script>
-import { GlLink, GlSprintf } from '@gitlab/ui';
+import { GlLink, GlSprintf, GlAlert } from '@gitlab/ui';
 import { mapState } from 'vuex';
 
 export default {
   components: {
     GlLink,
     GlSprintf,
+    GlAlert,
   },
   computed: {
     ...mapState(['ancestorHelperPath', 'hasAncestorClusters']),
@@ -14,21 +15,19 @@ export default {
 </script>
 
 <template>
-  <div v-if="hasAncestorClusters" class="bs-callout bs-callout-info">
-    <p>
-      <gl-sprintf
-        :message="
-          s__(
-            'ClusterIntegration|Clusters are utilized by selecting the nearest ancestor with a matching environment scope. For example, project clusters will override group clusters. %{linkStart}More information%{linkEnd}',
-          )
-        "
-      >
-        <template #link="{ content }">
-          <gl-link :href="ancestorHelperPath">
-            <strong>{{ content }}</strong>
-          </gl-link>
-        </template>
-      </gl-sprintf>
-    </p>
-  </div>
+  <gl-alert v-if="hasAncestorClusters" variant="info" :dismissible="false" class="gl-my-4">
+    <gl-sprintf
+      :message="
+        s__(
+          'ClusterIntegration|Clusters are utilized by selecting the nearest ancestor with a matching environment scope. For example, project clusters will override group clusters. %{linkStart}More information%{linkEnd}',
+        )
+      "
+    >
+      <template #link="{ content }">
+        <gl-link :href="ancestorHelperPath">
+          <strong>{{ content }}</strong>
+        </gl-link>
+      </template>
+    </gl-sprintf>
+  </gl-alert>
 </template>

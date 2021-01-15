@@ -1,9 +1,9 @@
 import { mount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
+import UsersMockHelper from 'helpers/user_mock_data_helper';
 import UncollapsedAssigneeList from '~/sidebar/components/assignees/uncollapsed_assignee_list.vue';
 import AssigneeAvatarLink from '~/sidebar/components/assignees/assignee_avatar_link.vue';
 import userDataMock from '../../user_data_mock';
-import UsersMockHelper from '../../../helpers/user_mock_data_helper';
 
 const DEFAULT_RENDER_COUNT = 5;
 

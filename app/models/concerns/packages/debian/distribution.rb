@@ -70,6 +70,7 @@ module Packages
         scope :with_container, ->(subject) { where(container_type => subject) }
         scope :with_codename, ->(codename) { where(codename: codename) }
         scope :with_suite, ->(suite) { where(suite: suite) }
+        scope :with_codename_or_suite, ->(codename_or_suite) { with_codename(codename_or_suite).or(with_suite(codename_or_suite)) }
 
         attr_encrypted :signing_keys,
                        mode: :per_attribute_iv,
