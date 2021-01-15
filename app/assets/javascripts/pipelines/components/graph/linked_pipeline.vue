@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlButton, GlLink, GlLoadingIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlButton, GlLink, GlLoadingIcon, GlBadge } from '@gitlab/ui';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
 import { __, sprintf } from '~/locale';
 import { accessValue } from './accessors';
@@ -15,6 +15,7 @@ export default {
     GlButton,
     GlLink,
     GlLoadingIcon,
+    GlBadge,
   },
   inject: {
     dataMethod: {
@@ -172,7 +173,9 @@ export default {
         </div>
       </div>
       <div class="gl-pt-2">
-        <span class="badge badge-primary" data-testid="downstream-pipeline-label">{{ label }}</span>
+        <gl-badge size="sm" variant="info" data-testid="downstream-pipeline-label">
+          {{ label }}
+        </gl-badge>
       </div>
       <gl-button
         :id="buttonId"

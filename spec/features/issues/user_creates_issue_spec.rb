@@ -223,8 +223,8 @@ RSpec.describe "User creates issue" do
         expect(page).not_to have_selector('.epic-dropdown-container')
       end
 
-      it 'hides the milestone select' do
-        expect(page).not_to have_selector('.qa-issuable-milestone-dropdown')
+      it 'shows the milestone select' do
+        expect(page).to have_selector('.qa-issuable-milestone-dropdown')
       end
 
       it 'hides the weight input' do

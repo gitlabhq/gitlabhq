@@ -52,5 +52,19 @@ export default {
         };
       }
     });
+
+    state.modal.open = true;
+  },
+  [types.RESET_ISSUE_MODAL_DATA](state) {
+    state.modal.open = false;
+
+    // Resetting modal data
+    state.modal.title = null;
+    Object.keys(state.modal.data).forEach((key) => {
+      state.modal.data[key] = {
+        ...state.modal.data[key],
+        value: null,
+      };
+    });
   },
 };

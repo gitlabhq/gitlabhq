@@ -45,7 +45,7 @@ RSpec.describe 'Incident details', :js do
 
         expect(page).to have_selector('.right-sidebar[data-issuable-type="issue"]')
         expect(sidebar).to have_selector('.incident-severity')
-        expect(sidebar).not_to have_selector('.milestone')
+        expect(sidebar).to have_selector('.milestone')
       end
     end
   end

@@ -38,6 +38,7 @@ export default () => ({
 
   modal: {
     title: null,
+    open: false,
 
     data: {
       class: {

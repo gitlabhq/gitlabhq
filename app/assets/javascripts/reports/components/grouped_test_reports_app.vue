@@ -45,6 +45,7 @@ export default {
     ...mapState({
       modalTitle: (state) => state.modal.title || '',
       modalData: (state) => state.modal.data || {},
+      modalOpen: (state) => state.modal.open || false,
     }),
     ...mapGetters(['summaryStatus']),
     groupedSummaryText() {
@@ -76,7 +77,7 @@ export default {
     this.fetchReports();
   },
   methods: {
-    ...mapActions(['setEndpoint', 'fetchReports']),
+    ...mapActions(['setEndpoint', 'fetchReports', 'closeModal']),
     reportText(report) {
       const { name, summary } = report || {};
 
@@ -170,8 +171,12 @@ export default {
             class="report-block-group-list"
           />
         </template>
-
-        <modal :title="modalTitle" :modal-data="modalData" />
+        <modal
+          :visible="modalOpen"
+          :title="modalTitle"
+          :modal-data="modalData"
+          @hide="closeModal"
+        />
       </div>
     </template>
   </report-section>

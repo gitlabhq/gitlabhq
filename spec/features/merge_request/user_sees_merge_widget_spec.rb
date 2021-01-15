@@ -605,10 +605,13 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
               within(".js-report-section-container") do
                 click_button 'addTest'
-
-                expect(page).to have_content('6.66')
-                expect(page).to have_content(sample_java_failed_message.gsub(/\s+/, ' ').strip)
               end
+            end
+
+            within("#modal-mrwidget-reports") do
+              expect(page).to have_content('addTest')
+              expect(page).to have_content('6.66')
+              expect(page).to have_content(sample_java_failed_message.gsub(/\s+/, ' ').strip)
             end
           end
         end
@@ -650,10 +653,13 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
               within(".js-report-section-container") do
                 click_button 'Test#sum when a is 1 and b is 3 returns summary'
-
-                expect(page).to have_content('2.22')
-                expect(page).to have_content(sample_rspec_failed_message.gsub(/\s+/, ' ').strip)
               end
+            end
+
+            within("#modal-mrwidget-reports") do
+              expect(page).to have_content('Test#sum when a is 1 and b is 3 returns summary')
+              expect(page).to have_content('2.22')
+              expect(page).to have_content(sample_rspec_failed_message.gsub(/\s+/, ' ').strip)
             end
           end
         end
@@ -694,9 +700,12 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
               within(".js-report-section-container") do
                 click_button 'addTest'
-
-                expect(page).to have_content('5.55')
               end
+            end
+
+            within("#modal-mrwidget-reports") do
+              expect(page).to have_content('addTest')
+              expect(page).to have_content('5.55')
             end
           end
         end
@@ -738,9 +747,12 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
               within(".js-report-section-container") do
                 click_button 'addTest'
-
-                expect(page).to have_content('8.88')
               end
+            end
+
+            within("#modal-mrwidget-reports") do
+              expect(page).to have_content('addTest')
+              expect(page).to have_content('8.88')
             end
           end
         end
@@ -782,9 +794,12 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
               within(".js-report-section-container") do
                 click_button 'Test#sum when a is 4 and b is 4 returns summary'
-
-                expect(page).to have_content('4.44')
               end
+            end
+
+            within("#modal-mrwidget-reports") do
+              expect(page).to have_content('Test#sum when a is 4 and b is 4 returns summary')
+              expect(page).to have_content('4.44')
             end
           end
         end
@@ -825,9 +840,12 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
               within(".js-report-section-container") do
                 click_button 'addTest'
-
-                expect(page).to have_content('5.55')
               end
+            end
+
+            within("#modal-mrwidget-reports") do
+              expect(page).to have_content('addTest')
+              expect(page).to have_content('5.55')
             end
           end
         end

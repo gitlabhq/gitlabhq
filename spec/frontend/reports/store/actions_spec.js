@@ -11,7 +11,7 @@ import {
   receiveReportsSuccess,
   receiveReportsError,
   openModal,
-  setModalData,
+  closeModal,
 } from '~/reports/store/actions';
 import state from '~/reports/store/state';
 import * as types from '~/reports/store/mutation_types';
@@ -144,25 +144,25 @@ describe('Reports Store Actions', () => {
   });
 
   describe('openModal', () => {
-    it('should dispatch setModalData', (done) => {
+    it('should commit SET_ISSUE_MODAL_DATA', (done) => {
       testAction(
         openModal,
         { name: 'foo' },
         mockedState,
+        [{ type: types.SET_ISSUE_MODAL_DATA, payload: { name: 'foo' } }],
         [],
-        [{ type: 'setModalData', payload: { name: 'foo' } }],
         done,
       );
     });
   });
 
-  describe('setModalData', () => {
-    it('should commit SET_ISSUE_MODAL_DATA', (done) => {
+  describe('closeModal', () => {
+    it('should commit RESET_ISSUE_MODAL_DATA', (done) => {
       testAction(
-        setModalData,
-        { name: 'foo' },
+        closeModal,
+        {},
         mockedState,
-        [{ type: types.SET_ISSUE_MODAL_DATA, payload: { name: 'foo' } }],
+        [{ type: types.RESET_ISSUE_MODAL_DATA, payload: {} }],
         [],
         done,
       );

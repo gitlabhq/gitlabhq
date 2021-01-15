@@ -1,54 +1,63 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import { trimText } from 'helpers/text_helper';
-import component from '~/reports/components/modal.vue';
+import { GlLink, GlSprintf } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+
+import CodeBlock from '~/vue_shared/components/code_block.vue';
+import ReportsModal from '~/reports/components/modal.vue';
 import state from '~/reports/store/state';
 
+const StubbedGlModal = { template: '<div><slot></slot></div>', name: 'GlModal', props: ['title'] };
+
 describe('Grouped Test Reports Modal', () => {
-  const Component = Vue.extend(component);
   const modalDataStructure = state().modal.data;
+  const title = 'Test#sum when a is 1 and b is 2 returns summary';
 
   // populate data
   modalDataStructure.execution_time.value = 0.009411;
   modalDataStructure.system_output.value = 'Failure/Error: is_expected.to eq(3)\n\n';
   modalDataStructure.class.value = 'link';
 
-  let vm;
+  let wrapper;
 
   beforeEach(() => {
-    vm = mountComponent(Component, {
-      title: 'Test#sum when a is 1 and b is 2 returns summary',
-      modalData: modalDataStructure,
-    });
+    wrapper = extendedWrapper(
+      shallowMount(ReportsModal, {
+        propsData: {
+          title,
+          modalData: modalDataStructure,
+          visible: true,
+        },
+        stubs: { GlModal: StubbedGlModal, GlSprintf },
+      }),
+    );
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('renders code block', () => {
-    expect(vm.$el.querySelector('code').textContent).toEqual(
-      modalDataStructure.system_output.value,
-    );
+    expect(wrapper.find(CodeBlock).props().code).toEqual(modalDataStructure.system_output.value);
   });
 
   it('renders link', () => {
-    expect(vm.$el.querySelector('.js-modal-link').getAttribute('href')).toEqual(
-      modalDataStructure.class.value,
-    );
+    const link = wrapper.findComponent(GlLink);
 
-    expect(trimText(vm.$el.querySelector('.js-modal-link').textContent)).toEqual(
-      modalDataStructure.class.value,
-    );
+    expect(link.attributes().href).toEqual(modalDataStructure.class.value);
+
+    expect(link.text()).toEqual(modalDataStructure.class.value);
   });
 
   it('renders seconds', () => {
-    expect(vm.$el.textContent).toContain(`${modalDataStructure.execution_time.value} s`);
+    expect(wrapper.text()).toContain(`${modalDataStructure.execution_time.value} s`);
   });
 
   it('render title', () => {
-    expect(trimText(vm.$el.querySelector('.modal-title').textContent)).toEqual(
-      'Test#sum when a is 1 and b is 2 returns summary',
-    );
+    expect(wrapper.findComponent(StubbedGlModal).props().title).toEqual(title);
+  });
+
+  it('re-emits hide event', () => {
+    wrapper.findComponent(StubbedGlModal).vm.$emit('hide');
+    expect(wrapper.emitted().hide).toEqual([[]]);
   });
 });

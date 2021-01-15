@@ -43,16 +43,16 @@
     .label-container
       - if job.tags.any?
         - job.tags.each do |tag|
-          %span.badge.badge-primary
+          %span.badge.badge-pill.gl-badge.sm.badge-primary
             = tag
       - if job.try(:trigger_request)
-        %span.badge.badge-info= _('triggered')
+        %span.badge.badge-pill.gl-badge.sm.badge-info= _('triggered')
       - if job.try(:allow_failure) && !job.success?
-        %span.badge.badge-warning= _('allowed to fail')
+        %span.badge.badge-pill.gl-badge.sm.badge-warning= _('allowed to fail')
       - if job.schedulable?
-        %span.badge.badge-info= s_('DelayedJobs|delayed')
+        %span.badge.badge-pill.gl-badge.sm.badge-info= s_('DelayedJobs|delayed')
       - elsif job.action?
-        %span.badge.badge-info= _('manual')
+        %span.badge.badge-pill.gl-badge.sm.badge-info= _('manual')
 
   - if pipeline_link
     %td
