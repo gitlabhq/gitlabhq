@@ -95,7 +95,7 @@ export default {
       @close="closeDrawer"
     >
       <template #header>
-        <h4 class="page-title gl-my-2">{{ __("What's new at GitLab") }}</h4>
+        <h4 class="page-title gl-my-2">{{ __("What's new") }}</h4>
       </template>
       <template v-if="features.length">
         <gl-infinite-scroll

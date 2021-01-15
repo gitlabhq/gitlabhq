@@ -221,11 +221,3 @@ been necessary. These are:
 #### 10.0
 
 - No breaking changes.
-
-#### 9.0
-
-- [CI variables renaming for GitLab 9.0](variables/deprecated_variables.md#gitlab-90-renamed-variables). Read about the
-  deprecated CI variables and what you should use for GitLab 9.0+.
-- [New CI job permissions model](../user/project/new_ci_build_permissions_model.md).
-  See what changed in GitLab 8.12 and how that affects your jobs.
-  There's a new way to access your Git submodules and LFS objects in jobs.

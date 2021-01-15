@@ -122,3 +122,9 @@ weights are used to determine the storage location the repository is created on.
 
 Beginning with GitLab 8.13.4, multiple paths can be chosen. New repositories
 are randomly placed on one of the selected paths.
+
+## Move a repository to a different repository path
+
+To move a repository to a different repository path, use the
+[Project repository storage moves](../api/project_repository_storage_moves.md) API. Use
+the same process as [migrating existing repositories to Gitaly Cluster](gitaly/praefect.md#migrate-existing-repositories-to-gitaly-cluster).

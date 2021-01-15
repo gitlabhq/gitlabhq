@@ -25305,9 +25305,6 @@ msgstr ""
 msgid "See vulnerability %{vulnerability_link} for any Solution details."
 msgstr ""
 
-msgid "See what's new at GitLab"
-msgstr ""
-
 msgid "Select"
 msgstr ""
 
@@ -31815,7 +31812,7 @@ msgstr ""
 msgid "What is your job title? (optional)"
 msgstr ""
 
-msgid "What's new at GitLab"
+msgid "What's new"
 msgstr ""
 
 msgid "What’s your experience level?"

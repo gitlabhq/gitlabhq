@@ -1,8 +1,0 @@
----
-name: reset_integrations
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47546
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/283875
-milestone: '13.7'
-type: development
-group: group::ecosystem
-default_enabled: false

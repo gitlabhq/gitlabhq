@@ -14,9 +14,6 @@ Some of the predefined environment variables are available only if a minimum
 version of [GitLab Runner](https://docs.gitlab.com/runner/) is used. Consult the table below to find the
 version of GitLab Runner that's required.
 
-In GitLab 9.0, some [variable were deprecated](deprecated_variables.md#gitlab-90-renamed-variables).
-You should ensure you are using the latest variables.
-
 You can add a command to your `.gitlab-ci.yml` file to
 [output the values of all variables available for a job](README.md#list-all-environment-variables).
 
