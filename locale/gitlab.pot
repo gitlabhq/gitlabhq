@@ -10710,6 +10710,9 @@ msgstr ""
 msgid "Enable Pseudonymizer data collection"
 msgstr ""
 
+msgid "Enable SSL verification"
+msgstr ""
+
 msgid "Enable Seat Link"
 msgstr ""
 
@@ -17661,6 +17664,9 @@ msgstr ""
 msgid "Merge request dependencies"
 msgstr ""
 
+msgid "Merge request events"
+msgstr ""
+
 msgid "Merge request was scheduled to merge after pipeline succeeds"
 msgstr ""
 
@@ -24040,6 +24046,9 @@ msgstr ""
 msgid "Repository synchronization concurrency limit"
 msgstr ""
 
+msgid "Repository update events"
+msgstr ""
+
 msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
 msgstr ""
 
@@ -24600,6 +24609,9 @@ msgstr ""
 msgid "SSL Verification:"
 msgstr ""
 
+msgid "SSL verification"
+msgstr ""
+
 msgid "Satisfied"
 msgstr ""
 
@@ -24944,6 +24956,9 @@ msgid "Secret"
 msgstr ""
 
 msgid "Secret Detection"
+msgstr ""
+
+msgid "Secret Token"
 msgstr ""
 
 msgid "Security"
@@ -27496,6 +27511,9 @@ msgstr ""
 msgid "System hook was successfully updated."
 msgstr ""
 
+msgid "System hook will be triggered on set of events like creating project or adding ssh key. But you can also enable extra triggers like Push events."
+msgstr ""
+
 msgid "System metrics (Custom)"
 msgstr ""
 
@@ -27518,6 +27536,9 @@ msgid "Tag name"
 msgstr ""
 
 msgid "Tag name is required"
+msgstr ""
+
+msgid "Tag push events"
 msgstr ""
 
 msgid "Tag this commit."
@@ -28713,6 +28734,18 @@ msgid "This Project is currently archived and read-only. Please unarchive the pr
 msgstr ""
 
 msgid "This URL is already used for another link; duplicate URLs are not allowed"
+msgstr ""
+
+msgid "This URL will be triggered for each branch updated to the repository"
+msgstr ""
+
+msgid "This URL will be triggered when a merge request is created/updated/merged"
+msgstr ""
+
+msgid "This URL will be triggered when a new tag is pushed to the repository"
+msgstr ""
+
+msgid "This URL will be triggered when repository is updated"
 msgstr ""
 
 msgid "This action can lead to data loss. To prevent accidental actions we ask you to confirm your intention."
@@ -30729,6 +30762,9 @@ msgid "Use one line per URI"
 msgstr ""
 
 msgid "Use template"
+msgstr ""
+
+msgid "Use this token to validate received payloads"
 msgstr ""
 
 msgid "Use your global notification setting"
