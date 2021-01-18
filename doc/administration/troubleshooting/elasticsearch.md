@@ -36,6 +36,7 @@ The type of problem will determine what steps to take. The possible troubleshoot
 - Indexing.
 - Integration.
 - Performance.
+- Background Migrations.
 
 ### Search Results workflow
 
@@ -147,6 +148,30 @@ graph TD;
   F7(Escalate to<br>GitLab support.)
 ```
 
+### Background Migrations workflow
+
+```mermaid
+graph TD;
+  D --> |No| D1
+  D --> |Yes| D2
+  D2 --> |No| D3
+  D2 --> |Yes| D4
+  D4 --> |No| D5
+  D4 --> |Yes| D6
+  D6 --> |No| D8
+  D6 --> |Yes| D7
+
+  D{Is there a halted migration?}
+  D1[Migrations run in the<br>background and will<br>stop when completed.]
+  D2{Does the elasticsearch.log<br>file contain errors?}
+  D3[This is likely a bug/issue<br>in GitLab and will require<br>deeper investigation. Escalate<br>to GitLab support.]
+  D4{Have the errors<br>been addressed?}
+  D5[Have an Elasticsearch admin<br>review and address<br>the errors.]
+  D6{Has the migration<br>been retried?}
+  D7[This is likely a bug/issue<br>in GitLab and will require<br>deeper investigation. Escalate<br>to GitLab support.]
+  D8[Retry the migration from<br>the Admin > Settings ><br>Advanced Search UI.]
+```
+
 ## Troubleshooting walkthrough
 
 Most Elasticsearch troubleshooting can be broken down into 4 categories:
@@ -155,6 +180,7 @@ Most Elasticsearch troubleshooting can be broken down into 4 categories:
 - [Troubleshooting indexing](#troubleshooting-indexing)
 - [Troubleshooting integration](#troubleshooting-integration)
 - [Troubleshooting performance](#troubleshooting-performance)
+- [Troubleshooting background migrations](#troubleshooting-background-migrations)
 
 Generally speaking, if it does not fall into those four categories, it is either:
 
@@ -329,6 +355,18 @@ dig further into these.
 
 Feel free to reach out to GitLab support, but this is likely to be something a skilled
 Elasticsearch admin has more experience with.
+
+### Troubleshooting background migrations
+
+Troubleshooting background migration failures can be difficult and may require contacting 
+an Elasticsearch admin or GitLab Support.
+
+The best place to start while debugging issues with a background migration is the 
+[`elasticsearch.log` file](../logs.md#elasticsearchlog). Migrations will
+print information while a migration is in progress and any errors encountered.
+Apply fixes for any errors found in the log and retry the migration.
+
+If you still encounter issues after retrying the migration, reach out to GitLab support.
 
 ## Common issues
 
