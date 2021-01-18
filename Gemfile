@@ -4,9 +4,6 @@ gem 'rails', '~> 6.0.3.1'
 
 gem 'bootsnap', '~> 1.4.6'
 
-# Improves copy-on-write performance for MRI
-gem 'nakayoshi_fork', '~> 0.0.4'
-
 # Responders respond_to and respond_with
 gem 'responders', '~> 3.0'
 

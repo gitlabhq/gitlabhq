@@ -727,7 +727,6 @@ GEM
       ruby2_keywords (~> 0.0.1)
     mustermann-grape (1.0.1)
       mustermann (>= 1.0.0)
-    nakayoshi_fork (0.0.4)
     nap (1.1.0)
     nenv (0.3.0)
     net-http-persistent (4.0.0)
@@ -1426,7 +1425,6 @@ DEPENDENCIES
   mini_magick (~> 4.10.1)
   minitest (~> 5.11.0)
   multi_json (~> 1.14.1)
-  nakayoshi_fork (~> 0.0.4)
   net-ldap (~> 0.16.3)
   net-ntp
   net-ssh (~> 6.0)

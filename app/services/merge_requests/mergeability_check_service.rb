@@ -38,7 +38,6 @@ module MergeRequests
     # error otherwise.
     def execute(recheck: false, retry_lease: true)
       return service_error if service_error
-      return check_mergeability(recheck) unless merge_ref_auto_sync_lock_enabled?
 
       in_write_lock(retry_lease: retry_lease) do |retried|
         # When multiple calls are waiting for the same lock (retry_lease),
@@ -155,10 +154,6 @@ module MergeRequests
       params = { allow_conflicts: Feature.enabled?(:display_merge_conflicts_in_diff, project) }
       result = MergeRequests::MergeToRefService.new(project, merge_request.author, params).execute(merge_request)
       result[:status] == :success
-    end
-
-    def merge_ref_auto_sync_lock_enabled?
-      Feature.enabled?(:merge_ref_auto_sync_lock, project, default_enabled: true)
     end
 
     def service_error

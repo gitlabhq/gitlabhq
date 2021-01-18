@@ -124,14 +124,6 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
 
     it_behaves_like 'mergeable merge request'
 
-    context 'when lock is disabled' do
-      before do
-        stub_feature_flags(merge_ref_auto_sync_lock: false)
-      end
-
-      it_behaves_like 'mergeable merge request'
-    end
-
     context 'when concurrent calls' do
       it 'waits first lock and returns "cached" result in subsequent calls' do
         threads = execute_within_threads(amount: 3)

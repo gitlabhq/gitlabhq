@@ -3,6 +3,8 @@ import { getByTestId, fireEvent } from '@testing-library/dom';
 import Vuex from 'vuex';
 import diffsModule from '~/diffs/store/modules';
 import DiffRow from '~/diffs/components/diff_row.vue';
+import diffFileMockData from '../mock_data/diff_file';
+import { mapParallel } from '~/diffs/components/diff_row_utils';
 
 describe('DiffRow', () => {
   const testLines = [
@@ -155,6 +157,58 @@ describe('DiffRow', () => {
       fireEvent.dragEnd(getByTestId(wrapper.element, `${side}-side`));
 
       expect(wrapper.emitted().stopdragging).toBeTruthy();
+    });
+  });
+
+  describe('sets coverage title and class', () => {
+    const thisLine = diffFileMockData.parallel_diff_lines[2];
+    const rightLine = diffFileMockData.parallel_diff_lines[2].right;
+
+    const mockDiffContent = {
+      diffFile: diffFileMockData,
+      shouldRenderDraftRow: jest.fn(),
+      hasParallelDraftLeft: jest.fn(),
+      hasParallelDraftRight: jest.fn(),
+      draftForLine: jest.fn(),
+    };
+
+    const applyMap = mapParallel(mockDiffContent);
+    const props = {
+      line: applyMap(thisLine),
+      fileHash: diffFileMockData.file_hash,
+      filePath: diffFileMockData.file_path,
+      contextLinesPath: 'contextLinesPath',
+      isHighlighted: false,
+    };
+    const name = diffFileMockData.file_path;
+    const line = rightLine.new_line;
+
+    it('for lines with coverage', () => {
+      const coverageFiles = { files: { [name]: { [line]: 5 } } };
+      const wrapper = createWrapper({ props, state: { coverageFiles } });
+      const coverage = wrapper.find('.line-coverage.right-side');
+
+      expect(coverage.attributes('title')).toContain('Test coverage: 5 hits');
+      expect(coverage.classes('coverage')).toBeTruthy();
+    });
+
+    it('for lines without coverage', () => {
+      const coverageFiles = { files: { [name]: { [line]: 0 } } };
+      const wrapper = createWrapper({ props, state: { coverageFiles } });
+      const coverage = wrapper.find('.line-coverage.right-side');
+
+      expect(coverage.attributes('title')).toContain('No test coverage');
+      expect(coverage.classes('no-coverage')).toBeTruthy();
+    });
+
+    it('for unknown lines', () => {
+      const coverageFiles = {};
+      const wrapper = createWrapper({ props, state: { coverageFiles } });
+      const coverage = wrapper.find('.line-coverage.right-side');
+
+      expect(coverage.attributes('title')).toBeFalsy();
+      expect(coverage.classes('coverage')).toBeFalsy();
+      expect(coverage.classes('no-coverage')).toBeFalsy();
     });
   });
 });
