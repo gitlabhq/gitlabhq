@@ -1,6 +1,6 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import BoardNewIssue from '~/boards/components/board_new_issue_new.vue';
+import BoardNewIssue from '~/boards/components/board_new_issue.vue';
 
 import '~/boards/models/list';
 import { mockList, mockGroupProjects } from '../mock_data';

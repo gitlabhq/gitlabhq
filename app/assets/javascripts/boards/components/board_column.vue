@@ -1,10 +1,8 @@
 <script>
-// This component is being replaced in favor of './board_column_new.vue' for GraphQL boards
-import Sortable from 'sortablejs';
+import { mapGetters, mapActions, mapState } from 'vuex';
 import BoardListHeader from 'ee_else_ce/boards/components/board_list_header.vue';
 import BoardList from './board_list.vue';
-import boardsStore from '../stores/boards_store';
-import { getBoardSortableDefaultOptions, sortableEnd } from '../mixins/sortable_default_options';
+import { isListDraggable } from '../boards_util';
 
 export default {
   components: {
@@ -32,53 +30,27 @@ export default {
       default: false,
     },
   },
-  data() {
-    return {
-      detailIssue: boardsStore.detail,
-      filter: boardsStore.filter,
-    };
-  },
   computed: {
+    ...mapState(['filterParams']),
+    ...mapGetters(['getIssuesByList']),
     listIssues() {
-      return this.list.issues;
+      return this.getIssuesByList(this.list.id);
+    },
+    isListDraggable() {
+      return isListDraggable(this.list);
     },
   },
   watch: {
-    filter: {
+    filterParams: {
       handler() {
-        this.list.page = 1;
-        this.list.getIssues(true).catch(() => {
-          // TODO: handle request error
-        });
+        this.fetchIssuesForList({ listId: this.list.id });
       },
       deep: true,
+      immediate: true,
     },
   },
-  mounted() {
-    const instance = this;
-
-    const sortableOptions = getBoardSortableDefaultOptions({
-      disabled: this.disabled,
-      group: 'boards',
-      draggable: '.is-draggable',
-      handle: '.js-board-handle',
-      onEnd(e) {
-        sortableEnd();
-
-        const sortable = this;
-
-        if (e.newIndex !== undefined && e.oldIndex !== e.newIndex) {
-          const order = sortable.toArray();
-          const list = boardsStore.findList('id', parseInt(e.item.dataset.id, 10));
-
-          instance.$nextTick(() => {
-            boardsStore.moveList(list, order);
-          });
-        }
-      },
-    });
-
-    Sortable.create(this.$el.parentNode, sortableOptions);
+  methods: {
+    ...mapActions(['fetchIssuesForList']),
   },
 };
 </script>
@@ -86,20 +58,25 @@ export default {
 <template>
   <div
     :class="{
-      'is-draggable': !list.preset,
-      'is-expandable': list.isExpandable,
-      'is-collapsed': !list.isExpanded,
-      'board-type-assignee': list.type === 'assignee',
+      'is-draggable': isListDraggable,
+      'is-collapsed': list.collapsed,
+      'board-type-assignee': list.listType === 'assignee',
     }"
     :data-id="list.id"
-    class="board gl-display-inline-block gl-h-full gl-px-3 gl-vertical-align-top gl-white-space-normal"
+    class="board gl-display-inline-block gl-h-full gl-px-3 gl-vertical-align-top gl-white-space-normal is-expandable"
     data-qa-selector="board_list"
   >
     <div
       class="board-inner gl-display-flex gl-flex-direction-column gl-relative gl-h-full gl-rounded-base"
     >
       <board-list-header :can-admin-list="canAdminList" :list="list" :disabled="disabled" />
-      <board-list ref="board-list" :disabled="disabled" :issues="listIssues" :list="list" />
+      <board-list
+        ref="board-list"
+        :disabled="disabled"
+        :issues="listIssues"
+        :list="list"
+        :can-admin-list="canAdminList"
+      />
     </div>
   </div>
 </template>

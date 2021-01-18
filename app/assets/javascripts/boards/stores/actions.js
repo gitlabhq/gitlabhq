@@ -12,6 +12,7 @@ import {
   fullBoardId,
   formatListsPageInfo,
   formatIssue,
+  formatIssueInput,
   updateListPosition,
 } from '../boards_util';
 import createFlash from '~/flash';
@@ -362,7 +363,10 @@ export default {
   },
 
   createNewIssue: ({ commit, state }, issueInput) => {
-    const input = issueInput;
+    const { boardConfig } = state;
+
+    const input = formatIssueInput(issueInput, boardConfig);
+
     const { boardType, fullPath } = state;
     if (boardType === BoardType.project) {
       input.projectPath = fullPath;

@@ -9,8 +9,11 @@
     - params[resource_name].each do |field, value|
       = hidden_field(resource_name, field, value: value)
     = hidden_field_tag(:spam_log_id, spammable.spam_log.id)
-    = hidden_field_tag(:recaptcha_verification, true)
+    -# The reCAPTCHA response value will be returned in the 'g-recaptcha-response' field
     = recaptcha_tags script: script, callback: 'recaptchaDialogCallback' unless Rails.env.test?
+    -# Fake the 'g-recaptcha-response' field in the test environment, so that the feature spec
+    -# can get to the (mocked) SpamVerdictService check.
+    = hidden_field_tag('g-recaptcha-response', 'abc123') if Rails.env.test?
 
     -# Yields a block with given extra params.
     = yield

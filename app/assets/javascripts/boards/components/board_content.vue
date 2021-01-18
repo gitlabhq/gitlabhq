@@ -3,15 +3,15 @@ import Draggable from 'vuedraggable';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { sortBy } from 'lodash';
 import { GlAlert } from '@gitlab/ui';
+import BoardColumnDeprecated from './board_column_deprecated.vue';
 import BoardColumn from './board_column.vue';
-import BoardColumnNew from './board_column_new.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import defaultSortableConfig from '~/sortable/sortable_config';
 import { sortableEnd, sortableStart } from '~/boards/mixins/sortable_default_options';
 
 export default {
   components: {
-    BoardColumn: gon.features?.graphqlBoardLists ? BoardColumnNew : BoardColumn,
+    BoardColumn: gon.features?.graphqlBoardLists ? BoardColumn : BoardColumnDeprecated,
     BoardContentSidebar: () => import('ee_component/boards/components/board_content_sidebar.vue'),
     EpicsSwimlanes: () => import('ee_component/boards/components/epics_swimlanes.vue'),
     GlAlert,
@@ -20,7 +20,8 @@ export default {
   props: {
     lists: {
       type: Array,
-      required: true,
+      required: false,
+      default: () => [],
     },
     canAdminList: {
       type: Boolean,
@@ -53,7 +54,7 @@ export default {
         fallbackOnBody: false,
         group: 'boards-list',
         tag: 'div',
-        value: this.lists,
+        value: this.boardListsToUse,
       };
 
       return this.canDragColumns ? options : {};

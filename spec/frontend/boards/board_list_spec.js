@@ -1,29 +1,51 @@
-/* global List */
-/* global ListIssue */
-
-import Vue from 'vue';
-import MockAdapter from 'axios-mock-adapter';
-import waitForPromises from 'helpers/wait_for_promises';
-import axios from '~/lib/utils/axios_utils';
+import Vuex from 'vuex';
+import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
+import { createLocalVue, mount } from '@vue/test-utils';
 import eventHub from '~/boards/eventhub';
 import BoardList from '~/boards/components/board_list.vue';
-import '~/boards/models/issue';
-import '~/boards/models/list';
-import { listObj, boardsMockInterceptor } from './mock_data';
-import store from '~/boards/stores';
-import boardsStore from '~/boards/stores/boards_store';
+import BoardCard from '~/boards/components/board_card.vue';
+import { mockList, mockIssuesByListId, issues, mockIssues } from './mock_data';
+import defaultState from '~/boards/stores/state';
 
-const createComponent = ({ done, listIssueProps = {}, componentProps = {}, listProps = {} }) => {
-  const el = document.createElement('div');
+const localVue = createLocalVue();
+localVue.use(Vuex);
 
-  document.body.appendChild(el);
-  const mock = new MockAdapter(axios);
-  mock.onAny().reply(boardsMockInterceptor);
-  boardsStore.create();
+const actions = {
+  fetchIssuesForList: jest.fn(),
+};
 
-  const BoardListComp = Vue.extend(BoardList);
-  const list = new List({ ...listObj, ...listProps });
-  const issue = new ListIssue({
+const createStore = (state = defaultState) => {
+  return new Vuex.Store({
+    state,
+    actions,
+  });
+};
+
+const createComponent = ({
+  listIssueProps = {},
+  componentProps = {},
+  listProps = {},
+  state = {},
+} = {}) => {
+  const store = createStore({
+    issuesByListId: mockIssuesByListId,
+    issues,
+    pageInfoByListId: {
+      'gid://gitlab/List/1': { hasNextPage: true },
+      'gid://gitlab/List/2': {},
+    },
+    listsFlags: {
+      'gid://gitlab/List/1': {},
+      'gid://gitlab/List/2': {},
+    },
+    ...state,
+  });
+
+  const list = {
+    ...mockList,
+    ...listProps,
+  };
+  const issue = {
     title: 'Testing',
     id: 1,
     iid: 1,
@@ -31,244 +53,214 @@ const createComponent = ({ done, listIssueProps = {}, componentProps = {}, listP
     labels: [],
     assignees: [],
     ...listIssueProps,
-  });
-  if (!Object.prototype.hasOwnProperty.call(listProps, 'issuesSize')) {
-    list.issuesSize = 1;
+  };
+  if (!Object.prototype.hasOwnProperty.call(listProps, 'issuesCount')) {
+    list.issuesCount = 1;
   }
-  list.issues.push(issue);
 
-  const component = new BoardListComp({
-    el,
-    store,
+  const component = mount(BoardList, {
+    localVue,
     propsData: {
       disabled: false,
       list,
-      issues: list.issues,
+      issues: [issue],
+      canAdminList: true,
       ...componentProps,
     },
+    store,
     provide: {
       groupId: null,
       rootPath: '/',
+      weightFeatureAvailable: false,
+      boardWeight: null,
     },
-  }).$mount();
-
-  Vue.nextTick(() => {
-    done();
   });
 
-  return { component, mock };
+  return component;
 };
 
 describe('Board list component', () => {
-  let mock;
-  let component;
-  let getIssues;
-  function generateIssues(compWrapper) {
-    for (let i = 1; i < 20; i += 1) {
-      const issue = { ...compWrapper.list.issues[0] };
-      issue.id += i;
-      compWrapper.list.issues.push(issue);
-    }
-  }
+  let wrapper;
+  const findByTestId = (testId) => wrapper.find(`[data-testid="${testId}"]`);
+  useFakeRequestAnimationFrame();
+
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
+  });
 
   describe('When Expanded', () => {
-    beforeEach((done) => {
-      getIssues = jest.spyOn(List.prototype, 'getIssues').mockReturnValue(new Promise(() => {}));
-      ({ mock, component } = createComponent({ done }));
-    });
-
-    afterEach(() => {
-      mock.restore();
-      component.$destroy();
-    });
-
-    it('loads first page of issues', () => {
-      return waitForPromises().then(() => {
-        expect(getIssues).toHaveBeenCalled();
-      });
+    beforeEach(() => {
+      wrapper = createComponent();
     });
 
     it('renders component', () => {
-      expect(component.$el.classList.contains('board-list-component')).toBe(true);
+      expect(wrapper.find('.board-list-component').exists()).toBe(true);
     });
 
     it('renders loading icon', () => {
-      component.list.loading = true;
-
-      return Vue.nextTick().then(() => {
-        expect(component.$el.querySelector('.board-list-loading')).not.toBeNull();
+      wrapper = createComponent({
+        state: { listsFlags: { 'gid://gitlab/List/1': { isLoading: true } } },
       });
+
+      expect(findByTestId('board_list_loading').exists()).toBe(true);
     });
 
     it('renders issues', () => {
-      expect(component.$el.querySelectorAll('.board-card').length).toBe(1);
+      expect(wrapper.findAll(BoardCard).length).toBe(1);
     });
 
     it('sets data attribute with issue id', () => {
-      expect(component.$el.querySelector('.board-card').getAttribute('data-issue-id')).toBe('1');
+      expect(wrapper.find('.board-card').attributes('data-issue-id')).toBe('1');
     });
 
-    it('shows new issue form', () => {
-      component.toggleForm();
+    it('shows new issue form', async () => {
+      wrapper.vm.toggleForm();
 
-      return Vue.nextTick().then(() => {
-        expect(component.$el.querySelector('.board-new-issue-form')).not.toBeNull();
-
-        expect(component.$el.querySelector('.is-smaller')).not.toBeNull();
-      });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.board-new-issue-form').exists()).toBe(true);
     });
 
-    it('shows new issue form after eventhub event', () => {
-      eventHub.$emit(`toggle-issue-form-${component.list.id}`);
+    it('shows new issue form after eventhub event', async () => {
+      eventHub.$emit(`toggle-issue-form-${wrapper.vm.list.id}`);
 
-      return Vue.nextTick().then(() => {
-        expect(component.$el.querySelector('.board-new-issue-form')).not.toBeNull();
-
-        expect(component.$el.querySelector('.is-smaller')).not.toBeNull();
-      });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.board-new-issue-form').exists()).toBe(true);
     });
 
     it('does not show new issue form for closed list', () => {
-      component.list.type = 'closed';
-      component.toggleForm();
+      wrapper.setProps({ list: { type: 'closed' } });
+      wrapper.vm.toggleForm();
 
-      return Vue.nextTick().then(() => {
-        expect(component.$el.querySelector('.board-new-issue-form')).toBeNull();
-      });
+      expect(wrapper.find('.board-new-issue-form').exists()).toBe(false);
     });
 
-    it('shows count list item', () => {
-      component.showCount = true;
+    it('shows count list item', async () => {
+      wrapper.vm.showCount = true;
 
-      return Vue.nextTick().then(() => {
-        expect(component.$el.querySelector('.board-list-count')).not.toBeNull();
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.board-list-count').exists()).toBe(true);
 
-        expect(component.$el.querySelector('.board-list-count').textContent.trim()).toBe(
-          'Showing all issues',
-        );
-      });
+      expect(wrapper.find('.board-list-count').text()).toBe('Showing all issues');
     });
 
-    it('sets data attribute with invalid id', () => {
-      component.showCount = true;
+    it('sets data attribute with invalid id', async () => {
+      wrapper.vm.showCount = true;
 
-      return Vue.nextTick().then(() => {
-        expect(component.$el.querySelector('.board-list-count').getAttribute('data-issue-id')).toBe(
-          '-1',
-        );
-      });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.board-list-count').attributes('data-issue-id')).toBe('-1');
     });
 
-    it('shows how many more issues to load', () => {
-      component.showCount = true;
-      component.list.issuesSize = 20;
+    it('shows how many more issues to load', async () => {
+      wrapper.vm.showCount = true;
+      wrapper.setProps({ list: { issuesCount: 20 } });
 
-      return Vue.nextTick().then(() => {
-        expect(component.$el.querySelector('.board-list-count').textContent.trim()).toBe(
-          'Showing 1 of 20 issues',
-        );
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.board-list-count').text()).toBe('Showing 1 of 20 issues');
+    });
+  });
+
+  describe('load more issues', () => {
+    beforeEach(() => {
+      wrapper = createComponent({
+        listProps: { issuesCount: 25 },
       });
     });
 
     it('loads more issues after scrolling', () => {
-      jest.spyOn(component.list, 'nextPage').mockImplementation(() => {});
-      generateIssues(component);
-      component.$refs.list.dispatchEvent(new Event('scroll'));
+      wrapper.vm.listRef.dispatchEvent(new Event('scroll'));
 
-      return waitForPromises().then(() => {
-        expect(component.list.nextPage).toHaveBeenCalled();
-      });
+      expect(actions.fetchIssuesForList).toHaveBeenCalled();
     });
 
     it('does not load issues if already loading', () => {
-      component.list.nextPage = jest
-        .spyOn(component.list, 'nextPage')
-        .mockReturnValue(new Promise(() => {}));
-
-      component.onScroll();
-      component.onScroll();
-
-      return waitForPromises().then(() => {
-        expect(component.list.nextPage).toHaveBeenCalledTimes(1);
+      wrapper = createComponent({
+        state: { listsFlags: { 'gid://gitlab/List/1': { isLoadingMore: true } } },
       });
+      wrapper.vm.listRef.dispatchEvent(new Event('scroll'));
+
+      expect(actions.fetchIssuesForList).not.toHaveBeenCalled();
     });
 
-    it('shows loading more spinner', () => {
-      component.showCount = true;
-      component.list.loadingMore = true;
-
-      return Vue.nextTick().then(() => {
-        expect(component.$el.querySelector('.board-list-count .gl-spinner')).not.toBeNull();
+    it('shows loading more spinner', async () => {
+      wrapper = createComponent({
+        state: { listsFlags: { 'gid://gitlab/List/1': { isLoadingMore: true } } },
       });
-    });
-  });
+      wrapper.vm.showCount = true;
 
-  describe('When Collapsed', () => {
-    beforeEach((done) => {
-      getIssues = jest.spyOn(List.prototype, 'getIssues').mockReturnValue(new Promise(() => {}));
-      ({ mock, component } = createComponent({
-        done,
-        listProps: { type: 'closed', collapsed: true, issuesSize: 50 },
-      }));
-      generateIssues(component);
-      component.scrollHeight = jest.spyOn(component, 'scrollHeight').mockReturnValue(0);
-    });
-
-    afterEach(() => {
-      mock.restore();
-      component.$destroy();
-    });
-
-    it('does not load all issues', () => {
-      return waitForPromises().then(() => {
-        // Initial getIssues from list constructor
-        expect(getIssues).toHaveBeenCalledTimes(1);
-      });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.board-list-count .gl-spinner').exists()).toBe(true);
     });
   });
 
   describe('max issue count warning', () => {
-    beforeEach((done) => {
-      ({ mock, component } = createComponent({
-        done,
-        listProps: { type: 'closed', collapsed: true, issuesSize: 50 },
-      }));
-    });
-
-    afterEach(() => {
-      mock.restore();
-      component.$destroy();
+    beforeEach(() => {
+      wrapper = createComponent({
+        listProps: { issuesCount: 50 },
+      });
     });
 
     describe('when issue count exceeds max issue count', () => {
-      it('sets background to bg-danger-100', () => {
-        component.list.issuesSize = 4;
-        component.list.maxIssueCount = 3;
+      it('sets background to bg-danger-100', async () => {
+        wrapper.setProps({ list: { issuesCount: 4, maxIssueCount: 3 } });
 
-        return Vue.nextTick().then(() => {
-          expect(component.$el.querySelector('.bg-danger-100')).not.toBeNull();
-        });
+        await wrapper.vm.$nextTick();
+        expect(wrapper.find('.bg-danger-100').exists()).toBe(true);
       });
     });
 
     describe('when list issue count does NOT exceed list max issue count', () => {
       it('does not sets background to bg-danger-100', () => {
-        component.list.issuesSize = 2;
-        component.list.maxIssueCount = 3;
+        wrapper.setProps({ list: { issuesCount: 2, maxIssueCount: 3 } });
 
-        return Vue.nextTick().then(() => {
-          expect(component.$el.querySelector('.bg-danger-100')).toBeNull();
-        });
+        expect(wrapper.find('.bg-danger-100').exists()).toBe(false);
       });
     });
 
     describe('when list max issue count is 0', () => {
       it('does not sets background to bg-danger-100', () => {
-        component.list.maxIssueCount = 0;
+        wrapper.setProps({ list: { maxIssueCount: 0 } });
 
-        return Vue.nextTick().then(() => {
-          expect(component.$el.querySelector('.bg-danger-100')).toBeNull();
+        expect(wrapper.find('.bg-danger-100').exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('drag & drop issue', () => {
+    beforeEach(() => {
+      wrapper = createComponent();
+    });
+
+    describe('handleDragOnStart', () => {
+      it('adds a class `is-dragging` to document body', () => {
+        expect(document.body.classList.contains('is-dragging')).toBe(false);
+
+        findByTestId('tree-root-wrapper').vm.$emit('start');
+
+        expect(document.body.classList.contains('is-dragging')).toBe(true);
+      });
+    });
+
+    describe('handleDragOnEnd', () => {
+      it('removes class `is-dragging` from document body', () => {
+        jest.spyOn(wrapper.vm, 'moveIssue').mockImplementation(() => {});
+        document.body.classList.add('is-dragging');
+
+        findByTestId('tree-root-wrapper').vm.$emit('end', {
+          oldIndex: 1,
+          newIndex: 0,
+          item: {
+            dataset: {
+              issueId: mockIssues[0].id,
+              issueIid: mockIssues[0].iid,
+              issuePath: mockIssues[0].referencePath,
+            },
+          },
+          to: { children: [], dataset: { listId: 'gid://gitlab/List/1' } },
+          from: { dataset: { listId: 'gid://gitlab/List/2' } },
         });
+
+        expect(document.body.classList.contains('is-dragging')).toBe(false);
       });
     });
   });

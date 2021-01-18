@@ -88,11 +88,31 @@ export function fullIterationId(id) {
   return `gid://gitlab/Iteration/${id}`;
 }
 
+export function fullUserId(id) {
+  return `gid://gitlab/User/${id}`;
+}
+
+export function fullMilestoneId(id) {
+  return `gid://gitlab/Milestone/${id}`;
+}
+
 export function fullLabelId(label) {
-  if (label.project_id !== null) {
+  if (label.project_id && label.project_id !== null) {
     return `gid://gitlab/ProjectLabel/${label.id}`;
   }
   return `gid://gitlab/GroupLabel/${label.id}`;
+}
+
+export function formatIssueInput(issueInput, boardConfig) {
+  const { labelIds = [], assigneeIds = [] } = issueInput;
+  const { labels, assigneeId, milestoneId } = boardConfig;
+
+  return {
+    milestoneId: milestoneId ? fullMilestoneId(milestoneId) : null,
+    ...issueInput,
+    labelIds: [...labelIds, ...(labels?.map((l) => fullLabelId(l)) || [])],
+    assigneeIds: [...assigneeIds, ...(assigneeId ? [fullUserId(assigneeId)] : [])],
+  };
 }
 
 export function moveIssueListHelper(issue, fromList, toList) {

@@ -1,40 +1,65 @@
+import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import AxiosMockAdapter from 'axios-mock-adapter';
 
+import { TEST_HOST } from 'helpers/test_constants';
 import { listObj } from 'jest/boards/mock_data';
-import BoardColumn from '~/boards/components/board_column_new.vue';
+import Board from '~/boards/components/board_column_deprecated.vue';
+import List from '~/boards/models/list';
 import { ListType } from '~/boards/constants';
-import { createStore } from '~/boards/stores';
+import axios from '~/lib/utils/axios_utils';
 
 describe('Board Column Component', () => {
   let wrapper;
-  let store;
+  let axiosMock;
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
+  beforeEach(() => {
+    window.gon = {};
+    axiosMock = new AxiosMockAdapter(axios);
+    axiosMock.onGet(`${TEST_HOST}/lists/1/issues`).reply(200, { issues: [] });
   });
 
-  const createComponent = ({ listType = ListType.backlog, collapsed = false } = {}) => {
+  afterEach(() => {
+    axiosMock.restore();
+
+    wrapper.destroy();
+
+    localStorage.clear();
+  });
+
+  const createComponent = ({
+    listType = ListType.backlog,
+    collapsed = false,
+    withLocalStorage = true,
+  } = {}) => {
     const boardId = '1';
 
     const listMock = {
       ...listObj,
-      listType,
+      list_type: listType,
       collapsed,
     };
 
     if (listType === ListType.assignee) {
       delete listMock.label;
-      listMock.assignee = {};
+      listMock.user = {};
     }
 
-    store = createStore();
+    // Making List reactive
+    const list = Vue.observable(new List(listMock));
 
-    wrapper = shallowMount(BoardColumn, {
-      store,
+    if (withLocalStorage) {
+      localStorage.setItem(
+        `boards.${boardId}.${list.type}.${list.id}.expanded`,
+        (!collapsed).toString(),
+      );
+    }
+
+    wrapper = shallowMount(Board, {
       propsData: {
+        boardId,
         disabled: false,
-        list: listMock,
+        list,
       },
       provide: {
         boardId,
@@ -57,7 +82,7 @@ describe('Board Column Component', () => {
     it('has class is-collapsed when list is collapsed', () => {
       createComponent({ collapsed: false });
 
-      expect(isCollapsed()).toBe(false);
+      expect(wrapper.vm.list.isExpanded).toBe(true);
     });
 
     it('does not have class is-collapsed when list is expanded', () => {

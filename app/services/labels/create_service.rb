@@ -25,3 +25,5 @@ module Labels
     end
   end
 end
+
+Labels::CreateService.prepend_if_ee('EE::Labels::CreateService')

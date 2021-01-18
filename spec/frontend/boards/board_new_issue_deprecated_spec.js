@@ -4,7 +4,7 @@ import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import boardNewIssue from '~/boards/components/board_new_issue.vue';
+import boardNewIssue from '~/boards/components/board_new_issue_deprecated.vue';
 import boardsStore from '~/boards/stores/boards_store';
 
 import '~/boards/models/list';

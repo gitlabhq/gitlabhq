@@ -16,8 +16,14 @@ import * as types from '~/boards/stores/mutation_types';
 import { inactiveId } from '~/boards/constants';
 import issueMoveListMutation from '~/boards/graphql/issue_move_list.mutation.graphql';
 import destroyBoardListMutation from '~/boards/graphql/board_list_destroy.mutation.graphql';
+import issueCreateMutation from '~/boards/graphql/issue_create.mutation.graphql';
 import updateAssignees from '~/vue_shared/components/sidebar/queries/updateAssignees.mutation.graphql';
-import { fullBoardId, formatListIssues, formatBoardLists } from '~/boards/boards_util';
+import {
+  fullBoardId,
+  formatListIssues,
+  formatBoardLists,
+  formatIssueInput,
+} from '~/boards/boards_util';
 import createFlash from '~/flash';
 
 jest.mock('~/flash');
@@ -728,6 +734,27 @@ describe('createNewIssue', () => {
   const state = {
     boardType: 'group',
     fullPath: 'gitlab-org/gitlab',
+    boardConfig: {
+      labelIds: [],
+      assigneeId: null,
+      milestoneId: -1,
+    },
+  };
+
+  const stateWithBoardConfig = {
+    boardConfig: {
+      labels: [
+        {
+          id: 5,
+          title: 'Test',
+          color: '#ff0000',
+          description: 'testing;',
+          textColor: 'white',
+        },
+      ],
+      assigneeId: 2,
+      milestoneId: 3,
+    },
   };
 
   it('should return issue from API on success', async () => {
@@ -744,11 +771,59 @@ describe('createNewIssue', () => {
     expect(result).toEqual(mockIssue);
   });
 
+  it('should add board scope to the issue being created', async () => {
+    jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
+      data: {
+        createIssue: {
+          issue: mockIssue,
+          errors: [],
+        },
+      },
+    });
+
+    await actions.createNewIssue({ state: stateWithBoardConfig }, mockIssue);
+    expect(gqlClient.mutate).toHaveBeenCalledWith({
+      mutation: issueCreateMutation,
+      variables: {
+        input: formatIssueInput(mockIssue, stateWithBoardConfig.boardConfig),
+      },
+    });
+  });
+
+  it('should add board scope by merging attributes to the issue being created', async () => {
+    const issue = {
+      ...mockIssue,
+      assigneeIds: ['gid://gitlab/User/1'],
+      labelIds: ['gid://gitlab/GroupLabel/4'],
+    };
+
+    jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
+      data: {
+        createIssue: {
+          issue,
+          errors: [],
+        },
+      },
+    });
+
+    const payload = formatIssueInput(issue, stateWithBoardConfig.boardConfig);
+
+    await actions.createNewIssue({ state: stateWithBoardConfig }, issue);
+    expect(gqlClient.mutate).toHaveBeenCalledWith({
+      mutation: issueCreateMutation,
+      variables: {
+        input: formatIssueInput(issue, stateWithBoardConfig.boardConfig),
+      },
+    });
+    expect(payload.labelIds).toEqual(['gid://gitlab/GroupLabel/4', 'gid://gitlab/GroupLabel/5']);
+    expect(payload.assigneeIds).toEqual(['gid://gitlab/User/1', 'gid://gitlab/User/2']);
+  });
+
   it('should commit CREATE_ISSUE_FAILURE mutation when API returns an error', (done) => {
     jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
       data: {
         createIssue: {
-          issue: {},
+          issue: mockIssue,
           errors: [{ foo: 'bar' }],
         },
       },

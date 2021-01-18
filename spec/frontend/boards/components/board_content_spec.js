@@ -4,7 +4,7 @@ import { GlAlert } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
 import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
 import getters from 'ee_else_ce/boards/stores/getters';
-import BoardColumn from '~/boards/components/board_column.vue';
+import BoardColumnDeprecated from '~/boards/components/board_column_deprecated.vue';
 import { mockLists, mockListsWithModel } from '../mock_data';
 import BoardContent from '~/boards/components/board_content.vue';
 
@@ -17,6 +17,7 @@ const actions = {
 
 describe('BoardContent', () => {
   let wrapper;
+  window.gon = {};
 
   const defaultState = {
     isShowingEpicsSwimlanes: false,
@@ -56,10 +57,12 @@ describe('BoardContent', () => {
     wrapper.destroy();
   });
 
-  it('renders a BoardColumn component per list', () => {
+  it('renders a BoardColumnDeprecated component per list', () => {
     createComponent();
 
-    expect(wrapper.findAll(BoardColumn)).toHaveLength(mockLists.length);
+    expect(wrapper.findAllComponents(BoardColumnDeprecated)).toHaveLength(
+      mockListsWithModel.length,
+    );
   });
 
   it('does not display EpicsSwimlanes component', () => {
@@ -70,6 +73,13 @@ describe('BoardContent', () => {
   });
 
   describe('graphqlBoardLists feature flag enabled', () => {
+    beforeEach(() => {
+      createComponent({ graphqlBoardListsEnabled: true });
+      gon.features = {
+        graphqlBoardLists: true,
+      };
+    });
+
     describe('can admin list', () => {
       beforeEach(() => {
         createComponent({ graphqlBoardListsEnabled: true, props: { canAdminList: true } });
@@ -85,7 +95,7 @@ describe('BoardContent', () => {
         createComponent({ graphqlBoardListsEnabled: true, props: { canAdminList: false } });
       });
 
-      it('renders draggable component', () => {
+      it('does not render draggable component', () => {
         expect(wrapper.find(Draggable).exists()).toBe(false);
       });
     });
