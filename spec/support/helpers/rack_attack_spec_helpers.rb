@@ -36,9 +36,12 @@ module RackAttackSpecHelpers
       'RateLimit-Name' => a_string_matching(/^throttle_.*$/),
       'RateLimit-Observed' => a_string_matching(/^\d+$/),
       'RateLimit-Remaining' => a_string_matching(/^\d+$/),
-      'RateLimit-Reset' => a_string_matching(/^\d+$/),
       'Retry-After' => a_string_matching(/^\d+$/)
     )
+    expect(response).to have_header('RateLimit-Reset')
+    expect do
+      DateTime.strptime(response.headers['RateLimit-Reset'], '%s')
+    end.not_to raise_error
     expect(response).to have_header('RateLimit-ResetTime')
     expect do
       Time.httpdate(response.headers['RateLimit-ResetTime'])

@@ -4254,6 +4254,33 @@ Values of types of integrations.
 | `HTTP` | Integration with any monitoring tool |
 | `PROMETHEUS` | Prometheus integration |
 
+### AlertManagementPayloadAlertFieldName
+
+Values for alert field names used in the custom mapping.
+
+| Value | Description |
+| ----- | ----------- |
+| `DESCRIPTION` | A high-level summary of the problem. |
+| `END_TIME` | The resolved time of the incident. |
+| `FINGERPRINT` | The unique identifier of the alert. This can be used to group occurrences of the same alert. |
+| `GITLAB_ENVIRONMENT_NAME` | The name of the associated GitLab environment. |
+| `HOSTS` | One or more hosts, as to where this incident occurred. |
+| `MONITORING_TOOL` | The name of the associated monitoring tool. |
+| `SERVICE` | The affected service. |
+| `SEVERITY` | The severity of the alert. |
+| `START_TIME` | The time of the incident. |
+| `TITLE` | The title of the incident. |
+
+### AlertManagementPayloadAlertFieldType
+
+Values for alert field types used in the custom mapping.
+
+| Value | Description |
+| ----- | ----------- |
+| `ARRAY` | Array field type |
+| `DATETIME` | DateTime field type |
+| `STRING` | String field type |
+
 ### AlertManagementSeverity
 
 Alert severity values.

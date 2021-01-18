@@ -137,7 +137,11 @@ export default {
     @click="clickFile"
     @mouseleave="$emit('mouseleave', $event)"
   >
-    <div class="file-row-name-container">
+    <div
+      class="file-row-name-container"
+      data-qa-selector="file_row_container"
+      :data-qa-file-name="file.name"
+    >
       <span
         ref="textOutput"
         :style="levelIndentation"

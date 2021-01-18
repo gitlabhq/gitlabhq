@@ -91,11 +91,11 @@ describe('User Avatar Image Component', () => {
     });
 
     it('renders the tooltip slot', () => {
-      expect(wrapper.find('.js-user-avatar-image-toolip').exists()).toBe(true);
+      expect(wrapper.find('.js-user-avatar-image-tooltip').exists()).toBe(true);
     });
 
     it('renders the tooltip content', () => {
-      expect(wrapper.find('.js-user-avatar-image-toolip').text()).toContain(slots.default[0]);
+      expect(wrapper.find('.js-user-avatar-image-tooltip').text()).toContain(slots.default[0]);
     });
 
     it('does not render tooltip data attributes for on avatar image', () => {

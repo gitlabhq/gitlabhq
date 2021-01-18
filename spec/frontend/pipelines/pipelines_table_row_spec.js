@@ -82,7 +82,7 @@ describe('Pipelines Table Row', () => {
         ).toEqual(pipeline.user.path);
 
         expect(
-          wrapper.find('.table-section:nth-child(3) .js-user-avatar-image-toolip').text().trim(),
+          wrapper.find('.table-section:nth-child(3) .js-user-avatar-image-tooltip').text().trim(),
         ).toEqual(pipeline.user.name);
       });
     });
@@ -109,7 +109,7 @@ describe('Pipelines Table Row', () => {
 
       const commitAuthorLink = commitAuthorElement.attributes('href');
       const commitAuthorName = commitAuthorElement
-        .find('.js-user-avatar-image-toolip')
+        .find('.js-user-avatar-image-tooltip')
         .text()
         .trim();
 

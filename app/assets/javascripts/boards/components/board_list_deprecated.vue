@@ -242,7 +242,7 @@ export default {
         let toList;
         if (to) {
           const containerEl = to.closest('.js-board-list');
-          toList = boardsStore.findList('id', Number(containerEl.dataset.board), '');
+          toList = boardsStore.findList('id', Number(containerEl.dataset.board));
         }
 
         /**

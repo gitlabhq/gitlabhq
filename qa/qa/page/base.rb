@@ -289,8 +289,11 @@ module QA
         sleep 1
       end
 
-      def within_element(name, text: nil)
-        page.within(element_selector_css(name), text: text) do
+      def within_element(name, **kwargs)
+        wait_for_requests
+        text = kwargs.delete(:text)
+
+        page.within(element_selector_css(name, kwargs), text: text) do
           yield
         end
       end

@@ -38,7 +38,7 @@ RSpec.describe AlertManagement::HttpIntegration do
       context 'with valid JSON schema' do
         let(:attribute_mapping) do
           {
-            title: { path: %w(a b c), type: 'string' },
+            title: { path: %w(a b c), type: 'string', label: 'Title' },
             description: { path: %w(a), type: 'string' }
           }
         end

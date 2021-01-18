@@ -1,0 +1,41 @@
+config:
+  build:
+    stage: build
+    script: exit 1
+
+  test:
+    stage: test
+    script: exit 0
+
+  deploy:
+    stage: deploy
+    script: exit 0
+    when: delayed
+    start_in: 5 seconds
+    needs: [test]
+
+init:
+  expect:
+    pipeline: pending
+    stages:
+      build: pending
+      test: created
+      deploy: created
+    jobs:
+      build: pending
+      test: created
+      deploy: created
+
+transitions:
+  - event: drop
+    jobs: [build]
+    expect:
+      pipeline: failed
+      stages:
+        build: failed
+        test: skipped
+        deploy: skipped
+      jobs:
+        build: failed
+        test: skipped
+        deploy: skipped

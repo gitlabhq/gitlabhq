@@ -22,6 +22,7 @@ module GroupsHelper
       ldap_group_links#index
       hooks#index
       pipeline_quota#index
+      packages_and_registries#index
     ]
   end
 

@@ -1910,6 +1910,177 @@
           "possibleTypes": null
         },
         {
+          "kind": "INPUT_OBJECT",
+          "name": "AlertManagementPayloadAlertFieldInput",
+          "description": "Field that are available while modifying the custom mapping attributes for an HTTP integration",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "fieldName",
+              "description": "A GitLab alert field name.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "AlertManagementPayloadAlertFieldName",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "path",
+              "description": "Path to value inside payload JSON.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "label",
+              "description": "Human-readable label of the payload path.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "type",
+              "description": "Type of the parsed value.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "AlertManagementPayloadAlertFieldType",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "AlertManagementPayloadAlertFieldName",
+          "description": "Values for alert field names used in the custom mapping",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "TITLE",
+              "description": "The title of the incident.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DESCRIPTION",
+              "description": "A high-level summary of the problem.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "START_TIME",
+              "description": "The time of the incident.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "END_TIME",
+              "description": "The resolved time of the incident.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SERVICE",
+              "description": "The affected service.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MONITORING_TOOL",
+              "description": "The name of the associated monitoring tool.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "HOSTS",
+              "description": "One or more hosts, as to where this incident occurred.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SEVERITY",
+              "description": "The severity of the alert.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FINGERPRINT",
+              "description": "The unique identifier of the alert. This can be used to group occurrences of the same alert.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "GITLAB_ENVIRONMENT_NAME",
+              "description": "The name of the associated GitLab environment.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "AlertManagementPayloadAlertFieldType",
+          "description": "Values for alert field types used in the custom mapping",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "ARRAY",
+              "description": "Array field type",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DATETIME",
+              "description": "DateTime field type",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "STRING",
+              "description": "String field type",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "AlertManagementPrometheusIntegration",
           "description": "An endpoint and credentials used to accept Prometheus alerts for a project",
@@ -30958,6 +31129,34 @@
               "defaultValue": null
             },
             {
+              "name": "payloadExample",
+              "description": "The example of an alert payload.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "JsonString",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "payloadAttributeMappings",
+              "description": "The custom mapping of GitLab alert attributes to fields from the payload_example.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "AlertManagementPayloadAlertFieldInput",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
               "name": "clientMutationId",
               "description": "A unique identifier for the client performing the mutation.",
               "type": {
@@ -37233,6 +37432,16 @@
               "deprecationReason": null
             }
           ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "JsonString",
+          "description": "JSON object as raw string",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
           "possibleTypes": null
         },
         {
@@ -59243,6 +59452,16 @@
                     "ofType": null
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "admins",
+                  "description": "Return only admin users.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false"
                 },
                 {
                   "name": "after",

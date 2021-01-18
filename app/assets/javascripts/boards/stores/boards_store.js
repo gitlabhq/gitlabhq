@@ -101,7 +101,7 @@ const boardsStore = {
   },
   new(listObj) {
     const list = this.addList(listObj);
-    const backlogList = this.findList('type', 'backlog', 'backlog');
+    const backlogList = this.findList('type', 'backlog');
 
     list
       .save()
@@ -185,8 +185,8 @@ const boardsStore = {
     return list.issues.find((issue) => issue.id === id);
   },
 
-  removeList(id, type = 'blank') {
-    const list = this.findList('id', id, type);
+  removeList(id) {
+    const list = this.findList('id', id);
 
     if (!list) return;
 
@@ -461,15 +461,8 @@ const boardsStore = {
       moveAfterId: afterId,
     });
   },
-  findList(key, val, type = 'label') {
-    const filteredList = this.state.lists.filter((list) => {
-      const byType = type
-        ? list.type === type || list.type === 'assignee' || list.type === 'milestone'
-        : true;
-
-      return list[key] === val && byType;
-    });
-    return filteredList[0];
+  findList(key, val) {
+    return this.state.lists.find((list) => list[key] === val);
   },
   findListByLabelId(id) {
     return this.state.lists.find((list) => list.type === 'label' && list.label.id === id);

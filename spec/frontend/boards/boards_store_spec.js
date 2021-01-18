@@ -585,7 +585,7 @@ describe('boardsStore', () => {
 
         expect(boardsStore.state.lists.length).toBe(1);
 
-        boardsStore.removeList(listObj.id, 'label');
+        boardsStore.removeList(listObj.id);
 
         expect(boardsStore.state.lists.length).toBe(0);
       });

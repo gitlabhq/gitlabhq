@@ -87,6 +87,7 @@ module API
         optional :created_before, type: DateTime, desc: 'Return users created before the specified time'
         optional :without_projects, type: Boolean, default: false, desc: 'Filters only users without projects'
         optional :exclude_internal, as: :non_internal, type: Boolean, default: false, desc: 'Filters only non internal users'
+        optional :admins, type: Boolean, default: false, desc: 'Filters only admin users'
         all_or_none_of :extern_uid, :provider
 
         use :sort_params

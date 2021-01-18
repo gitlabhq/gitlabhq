@@ -49,6 +49,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
           post :reset
         end
       end
+
+      resources :packages_and_registries, only: [:index]
     end
 
     resource :variables, only: [:show, :update]

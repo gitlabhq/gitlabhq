@@ -83,7 +83,7 @@ describe('User Avatar Link Component', () => {
 
   describe('username', () => {
     it('should not render avatar image tooltip', () => {
-      expect(wrapper.find('.js-user-avatar-image-toolip').exists()).toBe(false);
+      expect(wrapper.find('.js-user-avatar-image-tooltip').exists()).toBe(false);
     });
 
     it('should render username prop in <span>', () => {

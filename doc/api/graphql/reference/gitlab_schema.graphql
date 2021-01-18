@@ -743,6 +743,106 @@ enum AlertManagementIntegrationType {
 }
 
 """
+Field that are available while modifying the custom mapping attributes for an HTTP integration
+"""
+input AlertManagementPayloadAlertFieldInput {
+  """
+  A GitLab alert field name.
+  """
+  fieldName: AlertManagementPayloadAlertFieldName!
+
+  """
+  Human-readable label of the payload path.
+  """
+  label: String
+
+  """
+  Path to value inside payload JSON.
+  """
+  path: [String!]!
+
+  """
+  Type of the parsed value.
+  """
+  type: AlertManagementPayloadAlertFieldType!
+}
+
+"""
+Values for alert field names used in the custom mapping
+"""
+enum AlertManagementPayloadAlertFieldName {
+  """
+  A high-level summary of the problem.
+  """
+  DESCRIPTION
+
+  """
+  The resolved time of the incident.
+  """
+  END_TIME
+
+  """
+  The unique identifier of the alert. This can be used to group occurrences of the same alert.
+  """
+  FINGERPRINT
+
+  """
+  The name of the associated GitLab environment.
+  """
+  GITLAB_ENVIRONMENT_NAME
+
+  """
+  One or more hosts, as to where this incident occurred.
+  """
+  HOSTS
+
+  """
+  The name of the associated monitoring tool.
+  """
+  MONITORING_TOOL
+
+  """
+  The affected service.
+  """
+  SERVICE
+
+  """
+  The severity of the alert.
+  """
+  SEVERITY
+
+  """
+  The time of the incident.
+  """
+  START_TIME
+
+  """
+  The title of the incident.
+  """
+  TITLE
+}
+
+"""
+Values for alert field types used in the custom mapping
+"""
+enum AlertManagementPayloadAlertFieldType {
+  """
+  Array field type
+  """
+  ARRAY
+
+  """
+  DateTime field type
+  """
+  DATETIME
+
+  """
+  String field type
+  """
+  STRING
+}
+
+"""
 An endpoint and credentials used to accept Prometheus alerts for a project
 """
 type AlertManagementPrometheusIntegration implements AlertManagementIntegration {
@@ -11317,6 +11417,16 @@ input HttpIntegrationCreateInput {
   name: String!
 
   """
+  The custom mapping of GitLab alert attributes to fields from the payload_example.
+  """
+  payloadAttributeMappings: [AlertManagementPayloadAlertFieldInput!]
+
+  """
+  The example of an alert payload.
+  """
+  payloadExample: JsonString
+
+  """
   The project to create the integration in.
   """
   projectPath: ID!
@@ -13531,6 +13641,11 @@ enum JobArtifactFileType {
   TERRAFORM
   TRACE
 }
+
+"""
+JSON object as raw string
+"""
+scalar JsonString
 
 type Label {
   """
@@ -20366,6 +20481,11 @@ type Query {
   Find users
   """
   users(
+    """
+    Return only admin users.
+    """
+    admins: Boolean = false
+
     """
     Returns the elements in the list that come after the specified cursor.
     """

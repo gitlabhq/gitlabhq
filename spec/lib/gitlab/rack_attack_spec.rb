@@ -116,7 +116,7 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
             'RateLimit-Limit' => '60',
             'RateLimit-Observed' => '3700',
             'RateLimit-Remaining' => '0',
-            'RateLimit-Reset' => '1830',
+            'RateLimit-Reset' => '1609844400', # Time.utc(2021, 1, 5, 11, 0, 0).to_i.to_s
             'RateLimit-ResetTime' => 'Tue, 05 Jan 2021 11:00:00 GMT',
             'Retry-After' => '1830'
           }
@@ -135,7 +135,7 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
             'RateLimit-Limit' => '60',
             'RateLimit-Observed' => '3700',
             'RateLimit-Remaining' => '0',
-            'RateLimit-Reset' => '1',
+            'RateLimit-Reset' => '1609844400', # Time.utc(2021, 1, 5, 11, 0, 0).to_i.to_s
             'RateLimit-ResetTime' => 'Tue, 05 Jan 2021 11:00:00 GMT',
             'Retry-After' => '1'
           }
@@ -154,7 +154,7 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
             'RateLimit-Limit' => '60',
             'RateLimit-Observed' => '3700',
             'RateLimit-Remaining' => '0',
-            'RateLimit-Reset' => '3600',
+            'RateLimit-Reset' => '1609844400', # Time.utc(2021, 1, 5, 11, 0, 0).to_i.to_s
             'RateLimit-ResetTime' => 'Tue, 05 Jan 2021 11:00:00 GMT',
             'Retry-After' => '3600'
           }
@@ -173,7 +173,7 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
             'RateLimit-Limit' => '60',
             'RateLimit-Observed' => '3700',
             'RateLimit-Remaining' => '0',
-            'RateLimit-Reset' => '1800',
+            'RateLimit-Reset' => '1609891200', # Time.utc(2021, 1, 6, 0, 0, 0).to_i.to_s
             'RateLimit-ResetTime' => 'Wed, 06 Jan 2021 00:00:00 GMT', # Next day
             'Retry-After' => '1800'
           }
@@ -192,7 +192,7 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
             'RateLimit-Limit' => '57', # 56.66 requests per minute
             'RateLimit-Observed' => '3700',
             'RateLimit-Remaining' => '0',
-            'RateLimit-Reset' => '1800',
+            'RateLimit-Reset' => '1609844400', # Time.utc(2021, 1, 5, 11, 0, 0).to_i.to_s
             'RateLimit-ResetTime' => 'Tue, 05 Jan 2021 11:00:00 GMT',
             'Retry-After' => '1800'
           }
@@ -211,7 +211,7 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
             'RateLimit-Limit' => '62', # 61.66 requests per minute
             'RateLimit-Observed' => '3700',
             'RateLimit-Remaining' => '0',
-            'RateLimit-Reset' => '1800',
+            'RateLimit-Reset' => '1609844400', # Time.utc(2021, 1, 5, 11, 0, 0).to_i.to_s
             'RateLimit-ResetTime' => 'Tue, 05 Jan 2021 11:00:00 GMT',
             'Retry-After' => '1800'
           }
@@ -230,7 +230,7 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
             'RateLimit-Limit' => '1', # 0.9833 requests per minute
             'RateLimit-Observed' => '3700',
             'RateLimit-Remaining' => '0',
-            'RateLimit-Reset' => '1800',
+            'RateLimit-Reset' => '1609844400', # Time.utc(2021, 1, 5, 11, 0, 0).to_i.to_s
             'RateLimit-ResetTime' => 'Tue, 05 Jan 2021 11:00:00 GMT',
             'Retry-After' => '1800'
           }
@@ -249,7 +249,7 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
             'RateLimit-Limit' => '2', # 1.016 requests per minute
             'RateLimit-Observed' => '3700',
             'RateLimit-Remaining' => '0',
-            'RateLimit-Reset' => '1800',
+            'RateLimit-Reset' => '1609844400', # Time.utc(2021, 1, 5, 11, 0, 0).to_i.to_s
             'RateLimit-ResetTime' => 'Tue, 05 Jan 2021 11:00:00 GMT',
             'Retry-After' => '1800'
           }
@@ -268,7 +268,7 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
             'RateLimit-Limit' => '40',
             'RateLimit-Observed' => '3700',
             'RateLimit-Remaining' => '0',
-            'RateLimit-Reset' => '15',
+            'RateLimit-Reset' => '1609842615', # Time.utc(2021, 1, 5, 10, 30, 15).to_i.to_s
             'RateLimit-ResetTime' => 'Tue, 05 Jan 2021 10:30:15 GMT',
             'Retry-After' => '15'
           }
@@ -287,7 +287,7 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
             'RateLimit-Limit' => '23',
             'RateLimit-Observed' => '3700',
             'RateLimit-Remaining' => '0',
-            'RateLimit-Reset' => '27',
+            'RateLimit-Reset' => '1609842627', # Time.utc(2021, 1, 5, 10, 30, 27).to_i.to_s
             'RateLimit-ResetTime' => 'Tue, 05 Jan 2021 10:30:27 GMT',
             'Retry-After' => '27'
           }

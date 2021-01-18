@@ -54,7 +54,7 @@ export default {
 </script>
 
 <template>
-  <div class="preview-container">
+  <div class="preview-container" data-qa-selector="preview_container">
     <image-viewer v-if="type === 'image'" :path="path" :file-size="fileSize" />
     <markdown-viewer
       v-if="type === 'markdown'"

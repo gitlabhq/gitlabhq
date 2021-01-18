@@ -82,7 +82,7 @@ export default {
 </script>
 
 <template>
-  <div data-testid="image-viewer">
+  <div data-testid="image-viewer" data-qa-selector="image_viewer_container">
     <div :class="innerCssClasses" class="position-relative">
       <img ref="contentImg" :src="path" @load="onImgLoad" />
       <slot

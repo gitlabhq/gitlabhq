@@ -3,8 +3,7 @@
 
 .container
   .gl-mt-3
-    - feature_already_in_use = Analytics::DevopsAdoption::Segment.any?
-    - if Gitlab.ee? && Feature.enabled?(:devops_adoption_feature, default_enabled: feature_already_in_use) && License.feature_available?(:devops_adoption)
+    - if show_adoption?
       = render_if_exists 'admin/dev_ops_report/devops_tabs'
     - else
       = render 'report'

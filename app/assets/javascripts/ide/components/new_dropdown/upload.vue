@@ -81,6 +81,7 @@ export default {
       type="file"
       class="hidden"
       multiple
+      data-qa-selector="file_upload_field"
       @change="openFile"
     />
   </div>

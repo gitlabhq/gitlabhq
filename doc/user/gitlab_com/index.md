@@ -132,6 +132,23 @@ All our runners are deployed into Google Cloud Platform (GCP) - any IP based
 firewall can be configured by looking up all
 [IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#where_can_i_find_product_name_short_ip_ranges).
 
+## Hostname list
+
+To configure allow-lists in local HTTP(S) proxies, or other
+web-blocking software that govern end-user machines,
+pages on GitLab.com will attempt to load content from
+the following hostnames:
+
+- `gitlab.com`
+- `*.gitlab.com`
+- `*.gitlab-static.net`
+- `*.gitlab.io`
+- `*.gitlab.net`
+
+Documentation and Company pages served over `docs.gitlab.com`
+and `about.gitlab.com` will attempt to also load certain page
+content directly from common public CDN hostnames.
+
 ## Webhooks
 
 A limit of:
