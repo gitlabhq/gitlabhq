@@ -395,7 +395,7 @@ Gitaly makes the following assumptions:
 
 You can't define Gitaly servers with some as a local Gitaly server
 (without `gitaly_address`) and some as remote
-server (with `gitaly_address`) unless you setup with special
+server (with `gitaly_address`) unless you use
 [mixed configuration](#mixed-configuration).
 
 **For Omnibus GitLab**
@@ -502,8 +502,8 @@ If it's excluded, default Git storage directory is used for that storage shard.
 
 ### Disable Gitaly where not required (optional)
 
-If you are running Gitaly [as a remote service](#run-gitaly-on-its-own-server) you may want to
-disable the local Gitaly service that runs on your GitLab server by default, leaving it only running
+If you are running Gitaly [as a remote service](#run-gitaly-on-its-own-server), you may want to
+disable the local Gitaly service that runs on your GitLab server by default and have it only running
 where required.
 
 Disabling Gitaly on the GitLab instance only makes sense when you run GitLab in a custom cluster configuration, where
@@ -1007,7 +1007,7 @@ When GitLab calls a function that has a "Rugged patch", it performs two checks:
 
 - Is the feature flag for this patch set in the database? If so, the feature flag setting controls
   the GitLab use of "Rugged patch" code.
-- If the feature flag is not set, GitLab tries accessing the filesystem underneath the
+- If the feature flag is not set, GitLab tries accessing the file system underneath the
   Gitaly server directly. If it can, it uses the "Rugged patch":
   - If using Unicorn.
   - If using Puma and [thread count](../../install/requirements.md#puma-threads) is set
@@ -1015,9 +1015,9 @@ When GitLab calls a function that has a "Rugged patch", it performs two checks:
 
 The result of these checks is cached.
 
-To see if GitLab can access the repository filesystem directly, we use the following heuristic:
+To see if GitLab can access the repository file system directly, we use the following heuristic:
 
-- Gitaly ensures that the filesystem has a metadata file in its root with a UUID in it.
+- Gitaly ensures that the file system has a metadata file in its root with a UUID in it.
 - Gitaly reports this UUID to GitLab via the `ServerInfo` RPC.
 - GitLab Rails tries to read the metadata file directly. If it exists, and if the UUID's match,
   assume we have direct access.
@@ -1044,13 +1044,11 @@ The second facet presents the only real solution. For this, we developed
 Check [Gitaly timeouts](../../user/admin_area/settings/gitaly_timeouts.md) when troubleshooting
 Gitaly.
 
-### Checking versions when using standalone Gitaly servers
+### Check versions when using standalone Gitaly servers
 
 When using standalone Gitaly servers, you must make sure they are the same version
-as GitLab to ensure full compatibility. Check **Admin Area > Gitaly Servers** on
-your GitLab instance and confirm all Gitaly Servers are `Up to date`.
-
-![Gitaly standalone software versions diagram](img/gitlab_gitaly_version_mismatch_v12_4.png)
+as GitLab to ensure full compatibility. Check **Admin Area > Overview > Gitaly Servers** on
+your GitLab instance and confirm all Gitaly servers indicate that they are up to date.
 
 ### `gitaly-debug`
 

@@ -206,13 +206,8 @@ To make sure your configuration is correct:
 
 ## Troubleshooting Gitaly
 
-### Checking versions when using standalone Gitaly nodes
-
-When using standalone Gitaly nodes, you must make sure they are the same version
-as GitLab to ensure full compatibility. Check **Admin Area > Gitaly Servers** on
-your GitLab instance and confirm all Gitaly Servers are `Up to date`.
-
-![Gitaly standalone software versions diagram](../gitaly/img/gitlab_gitaly_version_mismatch_v12_4.png)
+If you have any problems when using standalone Gitaly nodes, first
+[check all the versions are up to date](../gitaly/index.md#check-versions-when-using-standalone-gitaly-servers).
 
 ### `gitaly-debug`
 

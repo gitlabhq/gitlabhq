@@ -43,7 +43,7 @@ docs-lint markdown:
     - .default-retry
     - .docs:rules:docs-lint
   # When updating the image version here, update it in /scripts/lint-doc.sh too.
-  image: "registry.gitlab.com/gitlab-org/gitlab-docs/lint-markdown:alpine-3.12-vale-2.6.1-markdownlint-0.24.0"
+  image: "registry.gitlab.com/gitlab-org/gitlab-docs/lint-markdown:alpine-3.12-vale-2.8.0-markdownlint-0.26.0"
   stage: test
   needs: []
   script:

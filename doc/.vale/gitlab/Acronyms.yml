@@ -91,6 +91,7 @@ exceptions:
   - NGINX
   - NOTE
   - NPM
+  - NTP
   - ONLY
   - OWASP
   - PAT
