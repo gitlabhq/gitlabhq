@@ -9,8 +9,7 @@ RSpec.describe Gitlab::Experimentation::Experiment do
   let(:params) do
     {
       tracking_category: 'Category1',
-      use_backwards_compatible_subject_index: true,
-      rollout_strategy: nil
+      use_backwards_compatible_subject_index: true
     }
   end
 

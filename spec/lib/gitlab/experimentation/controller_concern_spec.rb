@@ -10,10 +10,6 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
           use_backwards_compatible_subject_index: true
         },
         test_experiment: {
-          tracking_category: 'Team',
-          rollout_strategy: rollout_strategy
-        },
-        my_experiment: {
           tracking_category: 'Team'
         }
       }
@@ -24,7 +20,6 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
   end
 
   let(:enabled_percentage) { 10 }
-  let(:rollout_strategy) { nil }
 
   controller(ApplicationController) do
     include Gitlab::Experimentation::ControllerConcern
@@ -122,7 +117,6 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
       end
 
       context 'when subject is given' do
-        let(:rollout_strategy) { :user }
         let(:user) { build(:user) }
 
         it 'uses the subject' do
@@ -250,7 +244,6 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
 
         it "provides the subject's hashed global_id as label" do
           experiment_subject = double(:subject, to_global_id: 'abc')
-          allow(Gitlab::Experimentation).to receive(:valid_subject_for_rollout_strategy?).and_return(true)
 
           controller.track_experiment_event(:test_experiment, 'start', 1, subject: experiment_subject)
 
@@ -426,26 +419,6 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
           expect(::Experiment).to receive(:add_user).with(:test_experiment, :experimental, user, context)
 
           controller.record_experiment_user(:test_experiment, context)
-        end
-
-        context 'with a cookie based rollout strategy' do
-          it 'calls tracking_group with a nil subject' do
-            expect(controller).to receive(:tracking_group).with(:test_experiment, nil, subject: nil).and_return(:experimental)
-            allow(::Experiment).to receive(:add_user).with(:test_experiment, :experimental, user, context)
-
-            controller.record_experiment_user(:test_experiment, context)
-          end
-        end
-
-        context 'with a user based rollout strategy' do
-          let(:rollout_strategy) { :user }
-
-          it 'calls tracking_group with a user subject' do
-            expect(controller).to receive(:tracking_group).with(:test_experiment, nil, subject: user).and_return(:experimental)
-            allow(::Experiment).to receive(:add_user).with(:test_experiment, :experimental, user, context)
-
-            controller.record_experiment_user(:test_experiment, context)
-          end
         end
       end
 
