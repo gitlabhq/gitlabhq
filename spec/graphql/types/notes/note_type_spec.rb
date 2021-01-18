@@ -22,6 +22,7 @@ RSpec.describe GitlabSchema.types['Note'] do
       system_note_icon_name
       updated_at
       user_permissions
+      url
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

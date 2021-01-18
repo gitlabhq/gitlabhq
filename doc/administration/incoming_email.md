@@ -251,7 +251,7 @@ incoming_email:
 
 #### Gmail
 
-Example configuration for Gmail/G Suite. Assumes mailbox `gitlab-incoming@gmail.com`.
+Example configuration for Gmail/Google Workspace. Assumes mailbox `gitlab-incoming@gmail.com`.
 
 NOTE:
 `incoming_email_email` cannot be a Gmail alias account.

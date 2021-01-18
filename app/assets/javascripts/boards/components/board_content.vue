@@ -109,14 +109,14 @@ export default {
       />
     </component>
 
-    <template v-else>
-      <epics-swimlanes
-        ref="swimlanes"
-        :lists="boardListsToUse"
-        :can-admin-list="canAdminList"
-        :disabled="disabled"
-      />
-      <board-content-sidebar />
-    </template>
+    <epics-swimlanes
+      v-else
+      ref="swimlanes"
+      :lists="boardListsToUse"
+      :can-admin-list="canAdminList"
+      :disabled="disabled"
+    />
+
+    <board-content-sidebar v-if="isSwimlanesOn || glFeatures.graphqlBoardLists" />
   </div>
 </template>

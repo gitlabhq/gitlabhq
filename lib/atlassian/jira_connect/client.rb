@@ -35,33 +35,44 @@ module Atlassian
       def store_ff_info(project:, feature_flags:, **opts)
         return unless Feature.enabled?(:jira_sync_feature_flags, project)
 
-        items = feature_flags.map { |flag| Serializers::FeatureFlagEntity.represent(flag, opts) }
+        items = feature_flags.map { |flag| ::Atlassian::JiraConnect::Serializers::FeatureFlagEntity.represent(flag, opts) }
         items.reject! { |item| item.issue_keys.empty? }
 
         return if items.empty?
 
-        post('/rest/featureflags/0.1/bulk', {
+        r = post('/rest/featureflags/0.1/bulk', {
           flags: items,
           properties: { projectId: "project-#{project.id}" }
         })
+
+        handle_response(r, 'feature flags') do |data|
+          failed = data['failedFeatureFlags']
+          if failed.present?
+            errors = failed.flat_map do |k, errs|
+              errs.map { |e| "#{k}: #{e['message']}" }
+            end
+            { 'errorMessages' => errors }
+          end
+        end
       end
 
       def store_deploy_info(project:, deployments:, **opts)
         return unless Feature.enabled?(:jira_sync_deployments, project)
 
-        items = deployments.map { |d| Serializers::DeploymentEntity.represent(d, opts) }
+        items = deployments.map { |d| ::Atlassian::JiraConnect::Serializers::DeploymentEntity.represent(d, opts) }
         items.reject! { |d| d.issue_keys.empty? }
 
         return if items.empty?
 
-        post('/rest/deployments/0.1/bulk', { deployments: items })
+        r = post('/rest/deployments/0.1/bulk', { deployments: items })
+        handle_response(r, 'deployments') { |data| errors(data, 'rejectedDeployments') }
       end
 
       def store_build_info(project:, pipelines:, update_sequence_id: nil)
         return unless Feature.enabled?(:jira_sync_builds, project)
 
         builds = pipelines.map do |pipeline|
-          build = Serializers::BuildEntity.represent(
+          build = ::Atlassian::JiraConnect::Serializers::BuildEntity.represent(
             pipeline,
             update_sequence_id: update_sequence_id
           )
@@ -71,7 +82,8 @@ module Atlassian
         end.compact
         return if builds.empty?
 
-        post('/rest/builds/0.1/bulk', { builds: builds })
+        r = post('/rest/builds/0.1/bulk', { builds: builds })
+        handle_response(r, 'builds') { |data| errors(data, 'rejectedBuilds') }
       end
 
       def store_dev_info(project:, commits: nil, branches: nil, merge_requests: nil, update_sequence_id: nil)
@@ -102,6 +114,34 @@ module Atlassian
 
       def metadata
         { providerMetadata: { product: "GitLab #{Gitlab::VERSION}" } }
+      end
+
+      def handle_response(response, name, &block)
+        data = response.parsed_response
+
+        case response.code
+        when 200 then yield data
+        when 400 then { 'errorMessages' => data.map { |e| e['message'] } }
+        when 401 then { 'errorMessages' => ['Invalid JWT'] }
+        when 403 then { 'errorMessages' => ["App does not support #{name}"] }
+        when 413 then { 'errorMessages' => ['Data too large'] + data.map { |e| e['message'] } }
+        when 429 then { 'errorMessages' => ['Rate limit exceeded'] }
+        when 503 then { 'errorMessages' => ['Service unavailable'] }
+        else
+          { 'errorMessages' => ['Unknown error'], 'response' => data }
+        end
+      end
+
+      def errors(data, key)
+        messages = if data[key].present?
+                     data[key].flat_map do |rejection|
+                       rejection['errors'].map { |e| e['message'] }
+                     end
+                   else
+                     []
+                   end
+
+        { 'errorMessages' => messages }
       end
 
       def user_notes_count(merge_requests)

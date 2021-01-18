@@ -39,11 +39,6 @@ export default {
       type: String,
       required: true,
     },
-    canaryDeploymentFeatureId: {
-      type: String,
-      required: false,
-      default: '',
-    },
     canCreateEnvironment: {
       type: Boolean,
       required: true,
@@ -74,11 +69,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    },
-    showCanaryDeploymentCallout: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     userCalloutsPath: {
       type: String,
@@ -205,8 +195,6 @@ export default {
         :environments="state.environments"
         :pagination="state.paginationInformation"
         :can-read-environment="canReadEnvironment"
-        :canary-deployment-feature-id="canaryDeploymentFeatureId"
-        :show-canary-deployment-callout="showCanaryDeploymentCallout"
         :user-callouts-path="userCalloutsPath"
         :lock-promotion-svg-path="lockPromotionSvgPath"
         :help-canary-deployments-path="helpCanaryDeploymentsPath"

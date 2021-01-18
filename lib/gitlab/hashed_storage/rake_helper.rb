@@ -65,6 +65,7 @@ module Gitlab
       def self.projects_list(relation_name, relation)
         listing(relation_name, relation.with_route) do |project|
           $stdout.puts "  - #{project.full_path} (id: #{project.id})".color(:red)
+          $stdout.puts "    #{project.repository.disk_path}"
         end
       end
 
@@ -92,6 +93,37 @@ module Gitlab
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      def self.prune(relation_name, relation, dry_run: true, root: nil)
+        root ||= '../repositories'
+
+        known_paths = Set.new
+        listing(relation_name, relation) { |p| known_paths << "#{root}/#{p.repository.disk_path}" }
+
+        marked_for_deletion = Set.new(Dir["#{root}/@hashed/*/*/*"])
+        marked_for_deletion.reject! do |path|
+          base = path.gsub(/\.(\w+\.)?git$/, '')
+          known_paths.include?(base)
+        end
+
+        if marked_for_deletion.empty?
+          $stdout.puts "No orphaned directories found. Nothing to do!"
+        else
+          n = marked_for_deletion.size
+          $stdout.puts "Found #{n} orphaned #{'directory'.pluralize(n)}"
+          $stdout.puts "Dry run. (Run again with FORCE=1 to delete). We would have deleted:" if dry_run
+        end
+
+        marked_for_deletion.each do |p|
+          p = Pathname.new(p)
+          if dry_run
+            $stdout.puts " - #{p}"
+          else
+            $stdout.puts "Removing #{p}"
+            p.rmtree
+          end
+        end
+      end
     end
   end
 end

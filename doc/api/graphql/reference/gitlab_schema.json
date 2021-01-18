@@ -47751,6 +47751,20 @@
               "deprecationReason": null
             },
             {
+              "name": "url",
+              "description": "URL to view this Note in the Web UI",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "userPermissions",
               "description": "Permissions for the current user on the resource",
               "args": [

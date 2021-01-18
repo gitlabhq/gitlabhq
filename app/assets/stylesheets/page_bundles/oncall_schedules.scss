@@ -113,8 +113,6 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
     }
 
     .item-label {
-      @include gl-py-4;
-      @include gl-pl-4;
       border-right: $border-style;
       border-bottom: $border-style;
     }

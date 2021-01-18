@@ -24,7 +24,7 @@ RSpec.describe 'view user notifications' do
     get profile_notifications_path
   end
 
-  describe 'GET /profile/notifications' do
+  describe 'GET /-/profile/notifications' do
     it 'does not have an N+1 due to an additional groups (with no parent group)' do
       get_profile_notifications
 

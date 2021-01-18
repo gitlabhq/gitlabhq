@@ -842,3 +842,58 @@ describe('format24HourTimeStringFromInt', () => {
     });
   });
 });
+
+describe('getOverlappingDaysInPeriods', () => {
+  const start = new Date(2021, 0, 11);
+  const end = new Date(2021, 0, 13);
+
+  describe('when date periods overlap', () => {
+    const givenPeriodLeft = new Date(2021, 0, 11);
+    const givenPeriodRight = new Date(2021, 0, 14);
+
+    it('returns an overlap object that contains the amount of days overlapping, start date of overlap and end date of overlap', () => {
+      expect(
+        datetimeUtility.getOverlappingDaysInPeriods(
+          { start, end },
+          { start: givenPeriodLeft, end: givenPeriodRight },
+        ),
+      ).toEqual({
+        daysOverlap: 2,
+        overlapStartDate: givenPeriodLeft.getTime(),
+        overlapEndDate: end.getTime(),
+      });
+    });
+  });
+
+  describe('when date periods do not overlap', () => {
+    const givenPeriodLeft = new Date(2021, 0, 9);
+    const givenPeriodRight = new Date(2021, 0, 10);
+
+    it('returns an overlap object that contains a 0 value for days overlapping', () => {
+      expect(
+        datetimeUtility.getOverlappingDaysInPeriods(
+          { start, end },
+          { start: givenPeriodLeft, end: givenPeriodRight },
+        ),
+      ).toEqual({ daysOverlap: 0 });
+    });
+  });
+
+  describe('when date periods contain an invalid Date', () => {
+    const startInvalid = new Date(NaN);
+    const endInvalid = new Date(NaN);
+    const error = __('Invalid period');
+
+    it('throws an exception when the left period contains an invalid date', () => {
+      expect(() =>
+        datetimeUtility.getOverlappingDaysInPeriods({ start, end }, { start: startInvalid, end }),
+      ).toThrow(error);
+    });
+
+    it('throws an exception when the right period contains an invalid date', () => {
+      expect(() =>
+        datetimeUtility.getOverlappingDaysInPeriods({ start, end }, { start, end: endInvalid }),
+      ).toThrow(error);
+    });
+  });
+});

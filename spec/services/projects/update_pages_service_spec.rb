@@ -79,6 +79,19 @@ RSpec.describe Projects::UpdatePagesService do
         end
       end
 
+      it 'fails if sha on branch was updated before deployment was uploaded' do
+        expect(subject).to receive(:create_pages_deployment).and_wrap_original do |m, *args|
+          build.update!(ref: 'feature')
+          m.call(*args)
+        end
+
+        expect(execute).not_to eq(:success)
+        expect(project.pages_metadatum).not_to be_deployed
+
+        expect(deploy_status).to be_failed
+        expect(deploy_status.description).to eq('build SHA is outdated for this ref')
+      end
+
       it 'does not fail if pages_metadata is absent' do
         project.pages_metadatum.destroy!
         project.reload

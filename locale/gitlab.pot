@@ -5071,9 +5071,6 @@ msgstr ""
 msgid "Canary"
 msgstr ""
 
-msgid "Canary Deployments is a popular CI strategy, where a small portion of the fleet is updated to the new version of your application."
-msgstr ""
-
 msgid "Canary Ingress does not exist in the environment."
 msgstr ""
 
@@ -7474,9 +7471,6 @@ msgid "Consistency guarantee method"
 msgstr ""
 
 msgid "Contact Sales to upgrade"
-msgstr ""
-
-msgid "Contact sales to upgrade"
 msgstr ""
 
 msgid "Contact support"
@@ -10860,13 +10854,13 @@ msgstr ""
 msgid "End Time"
 msgstr ""
 
-msgid "Ends at %{endsAt}"
-msgstr ""
-
 msgid "Ends at (UTC)"
 msgstr ""
 
 msgid "Ends on"
+msgstr ""
+
+msgid "Ends: %{endsAt}"
 msgstr ""
 
 msgid "Enforce DNS rebinding attack protection"
@@ -15332,6 +15326,9 @@ msgstr ""
 msgid "Integrations|%{integration} settings saved, but not active."
 msgstr ""
 
+msgid "Integrations|Add namespace"
+msgstr ""
+
 msgid "Integrations|All details"
 msgstr ""
 
@@ -15362,6 +15359,9 @@ msgstr ""
 msgid "Integrations|Enable comments"
 msgstr ""
 
+msgid "Integrations|Failed to load namespaces. Please try again."
+msgstr ""
+
 msgid "Integrations|Includes Standard plus entire commit message, commit hash, and issue IDs"
 msgstr ""
 
@@ -15371,10 +15371,16 @@ msgstr ""
 msgid "Integrations|Issues created in Jira are shown here once you have created the issues in project setup in Jira."
 msgstr ""
 
+msgid "Integrations|Link namespaces"
+msgstr ""
+
 msgid "Integrations|Linked namespaces"
 msgstr ""
 
 msgid "Integrations|Namespaces are your GitLab groups and subgroups that will be linked to this Jira instance."
+msgstr ""
+
+msgid "Integrations|No available namespaces."
 msgstr ""
 
 msgid "Integrations|Projects using custom settings will not be affected."
@@ -15426,6 +15432,9 @@ msgid "Integrations|When a Jira issue is mentioned in a commit or merge request 
 msgstr ""
 
 msgid "Integrations|You can now close this window and return to the GitLab for Jira application."
+msgstr ""
+
+msgid "Integrations|You must have owner or maintainer permissions to link namespaces."
 msgstr ""
 
 msgid "Interactive mode"
@@ -15513,6 +15522,9 @@ msgid "Invalid input, please avoid emojis"
 msgstr ""
 
 msgid "Invalid login or password"
+msgstr ""
+
+msgid "Invalid period"
 msgstr ""
 
 msgid "Invalid pin code"
@@ -26926,13 +26938,13 @@ msgstr ""
 msgid "Starts %{startsIn}"
 msgstr ""
 
-msgid "Starts at %{startsAt}"
-msgstr ""
-
 msgid "Starts at (UTC)"
 msgstr ""
 
 msgid "Starts on"
+msgstr ""
+
+msgid "Starts: %{startsAt}"
 msgstr ""
 
 msgid "State your message to activate"
@@ -30536,9 +30548,6 @@ msgstr ""
 msgid "Updating"
 msgstr ""
 
-msgid "Upgrade plan to unlock Canary Deployments feature"
-msgstr ""
-
 msgid "Upgrade your plan"
 msgstr ""
 
@@ -32535,6 +32544,9 @@ msgid "You have insufficient permissions to update an on-call schedule for this 
 msgstr ""
 
 msgid "You have insufficient permissions to update this HTTP integration"
+msgstr ""
+
+msgid "You have insufficient permissions to view shifts for this rotation"
 msgstr ""
 
 msgid "You have no permissions"

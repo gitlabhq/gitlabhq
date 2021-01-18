@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import canaryCalloutMixin from '../mixins/canary_callout_mixin';
 import environmentsFolderApp from './environments_folder_view.vue';
 import { parseBoolean } from '../../lib/utils/common_utils';
 import Translate from '../../vue_shared/translate';
@@ -21,7 +20,6 @@ export default () => {
     components: {
       environmentsFolderApp,
     },
-    mixins: [canaryCalloutMixin],
     apolloProvider,
     provide: {
       projectPath: el.dataset.projectPath,
@@ -43,7 +41,6 @@ export default () => {
           folderName: this.folderName,
           cssContainerClass: this.cssContainerClass,
           canReadEnvironment: this.canReadEnvironment,
-          ...this.canaryCalloutProps,
         },
       });
     },

@@ -1,14 +1,23 @@
 @import 'mixins_and_variables_and_functions';
-/**
-NOTE: We should only import styles that we actually use.
-Ex:
-  @import '@gitlab/ui/src/scss/gitlab_ui';
-*/
+
 @import '@gitlab/ui/src/scss/bootstrap';
 @import 'bootstrap-vue/src/index';
 
 @import '@gitlab/ui/src/scss/utilities';
 @import '@gitlab/ui/src/components/base/alert/alert';
+
+// We should only import styles that we actually use.
+@import '@gitlab/ui/src/components/base/alert/alert';
+@import '@gitlab/ui/src/components/base/avatar/avatar';
+@import '@gitlab/ui/src/components/base/badge/badge';
+@import '@gitlab/ui/src/components/base/button/button';
+@import '@gitlab/ui/src/components/base/icon/icon';
+@import '@gitlab/ui/src/components/base/link/link';
+@import '@gitlab/ui/src/components/base/loading_icon/loading_icon';
+@import '@gitlab/ui/src/components/base/modal/modal';
+@import '@gitlab/ui/src/components/base/pagination/pagination';
+@import '@gitlab/ui/src/components/base/tabs/tabs/tabs';
+@import '@gitlab/ui/src/components/base/tooltip/tooltip';
 
 $atlaskit-border-color: #dfe1e6;
 

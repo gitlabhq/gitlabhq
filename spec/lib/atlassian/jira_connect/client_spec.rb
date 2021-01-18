@@ -107,6 +107,75 @@ RSpec.describe Atlassian::JiraConnect::Client do
     }
   end
 
+  describe '#handle_response' do
+    let(:errors) { [{ 'message' => 'X' }, { 'message' => 'Y' }] }
+    let(:processed) { subject.send(:handle_response, response, 'foo') { |x| [:data, x] } }
+
+    context 'the response is 200 OK' do
+      let(:response) { double(code: 200, parsed_response: :foo) }
+
+      it 'yields to the block' do
+        expect(processed).to eq [:data, :foo]
+      end
+    end
+
+    context 'the response is 400 bad request' do
+      let(:response) { double(code: 400, parsed_response: errors) }
+
+      it 'extracts the errors messages' do
+        expect(processed).to eq('errorMessages' => %w(X Y))
+      end
+    end
+
+    context 'the response is 401 forbidden' do
+      let(:response) { double(code: 401, parsed_response: nil) }
+
+      it 'reports that our JWT is wrong' do
+        expect(processed).to eq('errorMessages' => ['Invalid JWT'])
+      end
+    end
+
+    context 'the response is 403' do
+      let(:response) { double(code: 403, parsed_response: nil) }
+
+      it 'reports that the App is misconfigured' do
+        expect(processed).to eq('errorMessages' => ['App does not support foo'])
+      end
+    end
+
+    context 'the response is 413' do
+      let(:response) { double(code: 413, parsed_response: errors) }
+
+      it 'extracts the errors messages' do
+        expect(processed).to eq('errorMessages' => ['Data too large', 'X', 'Y'])
+      end
+    end
+
+    context 'the response is 429' do
+      let(:response) { double(code: 429, parsed_response: nil) }
+
+      it 'reports that we exceeded the rate limit' do
+        expect(processed).to eq('errorMessages' => ['Rate limit exceeded'])
+      end
+    end
+
+    context 'the response is 503' do
+      let(:response) { double(code: 503, parsed_response: nil) }
+
+      it 'reports that the service is unavailable' do
+        expect(processed).to eq('errorMessages' => ['Service unavailable'])
+      end
+    end
+
+    context 'the response is anything else' do
+      let(:response) { double(code: 1000, parsed_response: :something) }
+
+      it 'reports that this was unanticipated' do
+        expect(processed).to eq('errorMessages' => ['Unknown error'], 'response' => :something)
+      end
+    end
+  end
+
   describe '#store_deploy_info' do
     let_it_be(:environment) { create(:environment, name: 'DEV', project: project) }
     let_it_be(:deployments) do
@@ -126,10 +195,20 @@ RSpec.describe Atlassian::JiraConnect::Client do
       ->(text) { matcher.matches?(text) }
     end
 
+    let(:rejections) { [] }
+    let(:response_body) do
+      {
+        acceptedDeployments: [],
+        rejectedDeployments: rejections,
+        unknownIssueKeys: []
+      }.to_json
+    end
+
     before do
       path = '/rest/deployments/0.1/bulk'
       stub_full_request('https://gitlab-test.atlassian.net' + path, method: :post)
         .with(body: body, headers: expected_headers(path))
+        .to_return(body: response_body, headers: { 'Content-Type': 'application/json' })
     end
 
     it "calls the API with auth headers" do
@@ -137,7 +216,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
     end
 
     it 'only sends information about relevant MRs' do
-      expect(subject).to receive(:post).with('/rest/deployments/0.1/bulk', { deployments: have_attributes(size: 6) })
+      expect(subject).to receive(:post).with('/rest/deployments/0.1/bulk', { deployments: have_attributes(size: 6) }).and_call_original
 
       subject.send(:store_deploy_info, project: project, deployments: deployments)
     end
@@ -146,6 +225,18 @@ RSpec.describe Atlassian::JiraConnect::Client do
       expect(subject).not_to receive(:post)
 
       subject.send(:store_deploy_info, project: project, deployments: deployments.take(1))
+    end
+
+    context 'there are errors' do
+      let(:rejections) do
+        [{ errors: [{ message: 'X' }, { message: 'Y' }] }, { errors: [{ message: 'Z' }] }]
+      end
+
+      it 'reports the errors' do
+        response = subject.send(:store_deploy_info, project: project, deployments: deployments)
+
+        expect(response['errorMessages']).to eq(%w(X Y Z))
+      end
     end
 
     it 'does not call the API if the feature flag is not enabled' do
@@ -159,7 +250,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
     it 'does call the API if the feature flag enabled for the project' do
       stub_feature_flags(jira_sync_deployments: project)
 
-      expect(subject).to receive(:post).with('/rest/deployments/0.1/bulk', { deployments: Array })
+      expect(subject).to receive(:post).with('/rest/deployments/0.1/bulk', { deployments: Array }).and_call_original
 
       subject.send(:store_deploy_info, project: project, deployments: deployments)
     end
@@ -178,12 +269,22 @@ RSpec.describe Atlassian::JiraConnect::Client do
       ->(text) { matcher.matches?(text) }
     end
 
+    let(:failures) { {} }
+    let(:response_body) do
+      {
+        acceptedFeatureFlags: [],
+        failedFeatureFlags: failures,
+        unknownIssueKeys: []
+      }.to_json
+    end
+
     before do
       feature_flags.first.update!(description: 'RELEVANT-123')
       feature_flags.second.update!(description: 'RELEVANT-123')
       path = '/rest/featureflags/0.1/bulk'
       stub_full_request('https://gitlab-test.atlassian.net' + path, method: :post)
         .with(body: body, headers: expected_headers(path))
+        .to_return(body: response_body, headers: { 'Content-Type': 'application/json' })
     end
 
     it "calls the API with auth headers" do
@@ -193,7 +294,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
     it 'only sends information about relevant MRs' do
       expect(subject).to receive(:post).with('/rest/featureflags/0.1/bulk', {
         flags: have_attributes(size: 2), properties: Hash
-      })
+      }).and_call_original
 
       subject.send(:store_ff_info, project: project, feature_flags: feature_flags)
     end
@@ -202,6 +303,21 @@ RSpec.describe Atlassian::JiraConnect::Client do
       expect(subject).not_to receive(:post)
 
       subject.send(:store_ff_info, project: project, feature_flags: [feature_flags.last])
+    end
+
+    context 'there are errors' do
+      let(:failures) do
+        {
+          a: [{ message: 'X' }, { message: 'Y' }],
+          b: [{ message: 'Z' }]
+        }
+      end
+
+      it 'reports the errors' do
+        response = subject.send(:store_ff_info, project: project, feature_flags: feature_flags)
+
+        expect(response['errorMessages']).to eq(['a: X', 'a: Y', 'b: Z'])
+      end
     end
 
     it 'does not call the API if the feature flag is not enabled' do
@@ -217,7 +333,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
 
       expect(subject).to receive(:post).with('/rest/featureflags/0.1/bulk', {
         flags: Array, properties: Hash
-      })
+      }).and_call_original
 
       subject.send(:store_ff_info, project: project, feature_flags: feature_flags)
     end
@@ -234,10 +350,20 @@ RSpec.describe Atlassian::JiraConnect::Client do
       ->(text) { matcher.matches?(text) }
     end
 
+    let(:failures) { [] }
+    let(:response_body) do
+      {
+        acceptedBuilds: [],
+        rejectedBuilds: failures,
+        unknownIssueKeys: []
+      }.to_json
+    end
+
     before do
       path = '/rest/builds/0.1/bulk'
       stub_full_request('https://gitlab-test.atlassian.net' + path, method: :post)
         .with(body: body, headers: expected_headers(path))
+        .to_return(body: response_body, headers: { 'Content-Type': 'application/json' })
     end
 
     it "calls the API with auth headers" do
@@ -245,7 +371,9 @@ RSpec.describe Atlassian::JiraConnect::Client do
     end
 
     it 'only sends information about relevant MRs' do
-      expect(subject).to receive(:post).with('/rest/builds/0.1/bulk', { builds: have_attributes(size: 6) })
+      expect(subject).to receive(:post)
+        .with('/rest/builds/0.1/bulk', { builds: have_attributes(size: 6) })
+        .and_call_original
 
       subject.send(:store_build_info, project: project, pipelines: pipelines)
     end
@@ -267,9 +395,23 @@ RSpec.describe Atlassian::JiraConnect::Client do
     it 'does call the API if the feature flag enabled for the project' do
       stub_feature_flags(jira_sync_builds: project)
 
-      expect(subject).to receive(:post).with('/rest/builds/0.1/bulk', { builds: Array })
+      expect(subject).to receive(:post)
+        .with('/rest/builds/0.1/bulk', { builds: Array })
+        .and_call_original
 
       subject.send(:store_build_info, project: project, pipelines: pipelines)
+    end
+
+    context 'there are errors' do
+      let(:failures) do
+        [{ errors: [{ message: 'X' }, { message: 'Y' }] }, { errors: [{ message: 'Z' }] }]
+      end
+
+      it 'reports the errors' do
+        response = subject.send(:store_build_info, project: project, pipelines: pipelines)
+
+        expect(response['errorMessages']).to eq(%w(X Y Z))
+      end
     end
 
     it 'avoids N+1 database queries' do

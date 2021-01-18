@@ -6,8 +6,6 @@ import CanaryUpdateModal from '~/environments/components/canary_update_modal.vue
 import { folder, deployBoardMockData } from './mock_data';
 
 const eeOnlyProps = {
-  canaryDeploymentFeatureId: 'canary_deployment',
-  showCanaryDeploymentCallout: true,
   userCalloutsPath: '/callouts',
   lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
   helpCanaryDeploymentsPath: 'help/canary-deployments',
@@ -53,8 +51,6 @@ describe('Environment table', () => {
       propsData: {
         environments: [mockItem],
         canReadEnvironment: true,
-        canaryDeploymentFeatureId: 'canary_deployment',
-        showCanaryDeploymentCallout: true,
         userCalloutsPath: '/callouts',
         lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
         helpCanaryDeploymentsPath: 'help/canary-deployments',
@@ -83,8 +79,6 @@ describe('Environment table', () => {
         environments: [mockItem],
         canCreateDeployment: false,
         canReadEnvironment: true,
-        canaryDeploymentFeatureId: 'canary_deployment',
-        showCanaryDeploymentCallout: true,
         userCalloutsPath: '/callouts',
         lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
         helpCanaryDeploymentsPath: 'help/canary-deployments',
@@ -122,8 +116,6 @@ describe('Environment table', () => {
       propsData: {
         environments: [mockItem],
         canReadEnvironment: true,
-        canaryDeploymentFeatureId: 'canary_deployment',
-        showCanaryDeploymentCallout: true,
         userCalloutsPath: '/callouts',
         lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
         helpCanaryDeploymentsPath: 'help/canary-deployments',
@@ -152,8 +144,6 @@ describe('Environment table', () => {
         environments: [mockItem],
         canCreateDeployment: false,
         canReadEnvironment: true,
-        canaryDeploymentFeatureId: 'canary_deployment',
-        showCanaryDeploymentCallout: true,
         userCalloutsPath: '/callouts',
         lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
         helpCanaryDeploymentsPath: 'help/canary-deployments',
@@ -167,32 +157,6 @@ describe('Environment table', () => {
       weight: 40,
       environment: mockItem,
     });
-  });
-
-  it('should render canary callout', async () => {
-    const mockItem = {
-      name: 'review',
-      folderName: 'review',
-      size: 3,
-      isFolder: true,
-      environment_path: 'url',
-      showCanaryCallout: true,
-    };
-
-    await factory({
-      propsData: {
-        environments: [mockItem],
-        canCreateDeployment: false,
-        canReadEnvironment: true,
-        canaryDeploymentFeatureId: 'canary_deployment',
-        showCanaryDeploymentCallout: true,
-        userCalloutsPath: '/callouts',
-        lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
-        helpCanaryDeploymentsPath: 'help/canary-deployments',
-      },
-    });
-
-    expect(wrapper.find('.canary-deployment-callout').exists()).toBe(true);
   });
 
   describe('sortEnvironments', () => {

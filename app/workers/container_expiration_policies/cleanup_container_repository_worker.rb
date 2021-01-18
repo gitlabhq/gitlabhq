@@ -109,6 +109,13 @@ module ContainerExpirationPolicies
 
         log_extra_metadata_on_done(field, value)
       end
+
+      before_truncate_size = result.payload[:cleanup_tags_service_before_truncate_size]
+      after_truncate_size = result.payload[:cleanup_tags_service_after_truncate_size]
+      truncated = before_truncate_size &&
+                    after_truncate_size &&
+                    before_truncate_size != after_truncate_size
+      log_extra_metadata_on_done(:cleanup_tags_service_truncated, !!truncated)
     end
   end
 end

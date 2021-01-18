@@ -205,6 +205,12 @@ To enable Advanced Search, you need to have admin access to GitLab:
    **Admin Area > Settings > General > Advanced Search** and click **Save
    changes**.
 
+NOTE:
+When your Elasticsearch cluster is down while Elasticsearch is enabled,
+you might have problems updating documents such as issues because your
+instance queues a job to index the change, but cannot find a valid
+Elasticsearch cluster.
+
 ### Advanced Search configuration
 
 The following Elasticsearch settings are available:

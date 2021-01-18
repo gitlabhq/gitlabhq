@@ -122,111 +122,115 @@ RSpec.describe HelpController, "routing" do
   end
 end
 
-#             profile_account GET    /profile/account(.:format)             profile#account
-#             profile_history GET    /profile/history(.:format)             profile#history
-#            profile_password PUT    /profile/password(.:format)            profile#password_update
-#               profile_token GET    /profile/token(.:format)               profile#token
-#                     profile GET    /profile(.:format)                     profile#show
-#              profile_update PUT    /profile/update(.:format)              profile#update
+#             profile_account GET    /-/profile/account(.:format)             profile#account
+#             profile_history GET    /-/profile/history(.:format)             profile#history
+#            profile_password PUT    /-/profile/password(.:format)            profile#password_update
+#               profile_token GET    /-/profile/token(.:format)               profile#token
+#                     profile GET    /-/profile(.:format)                     profile#show
+#              profile_update PUT    /-/profile/update(.:format)              profile#update
 RSpec.describe ProfilesController, "routing" do
   it "to #account" do
-    expect(get("/profile/account")).to route_to('profiles/accounts#show')
+    expect(get("/-/profile/account")).to route_to('profiles/accounts#show')
   end
+  it_behaves_like 'redirecting a legacy path', '/profile/account', '/-/profile/account'
 
   it "to #audit_log" do
-    expect(get("/profile/audit_log")).to route_to('profiles#audit_log')
+    expect(get("/-/profile/audit_log")).to route_to('profiles#audit_log')
   end
+  it_behaves_like 'redirecting a legacy path', '/profile/audit_log', '/-/profile/audit_log'
 
   it "to #reset_feed_token" do
-    expect(put("/profile/reset_feed_token")).to route_to('profiles#reset_feed_token')
+    expect(put("/-/profile/reset_feed_token")).to route_to('profiles#reset_feed_token')
   end
 
   it "to #show" do
-    expect(get("/profile")).to route_to('profiles#show')
-  end
-
-  it 'to #show from scope routing' do
     expect(get("/-/profile")).to route_to('profiles#show')
   end
+  it_behaves_like 'redirecting a legacy path', '/profile', '/-/profile'
 end
 
-# profile_preferences GET      /profile/preferences(.:format) profiles/preferences#show
-#                     PATCH    /profile/preferences(.:format) profiles/preferences#update
-#                     PUT      /profile/preferences(.:format) profiles/preferences#update
+# profile_preferences GET      /-/profile/preferences(.:format) profiles/preferences#show
+#                     PATCH    /-/profile/preferences(.:format) profiles/preferences#update
+#                     PUT      /-/profile/preferences(.:format) profiles/preferences#update
 RSpec.describe Profiles::PreferencesController, 'routing' do
   it 'to #show' do
-    expect(get('/profile/preferences')).to route_to('profiles/preferences#show')
+    expect(get('/-/profile/preferences')).to route_to('profiles/preferences#show')
   end
+  it_behaves_like 'redirecting a legacy path', '/profile/preferences', '/-/profile/preferences'
 
   it 'to #update' do
-    expect(put('/profile/preferences')).to   route_to('profiles/preferences#update')
-    expect(patch('/profile/preferences')).to route_to('profiles/preferences#update')
+    expect(put('/-/profile/preferences')).to   route_to('profiles/preferences#update')
+    expect(patch('/-/profile/preferences')).to route_to('profiles/preferences#update')
   end
 end
 
-#     keys GET    /keys(.:format)          keys#index
-#          POST   /keys(.:format)          keys#create
-# edit_key GET    /keys/:id/edit(.:format) keys#edit
-#      key GET    /keys/:id(.:format)      keys#show
-#          PUT    /keys/:id(.:format)      keys#update
-#          DELETE /keys/:id(.:format)      keys#destroy
+#     keys GET    /-/profile/keys(.:format)          keys#index
+#          POST   /-/profile/keys(.:format)          keys#create
+# edit_key GET    /-/profile/keys/:id/edit(.:format) keys#edit
+#      key GET    /-/profile/keys/:id(.:format)      keys#show
+#          PUT    /-/profile/keys/:id(.:format)      keys#update
+#          DELETE /-/profile/keys/:id(.:format)      keys#destroy
 RSpec.describe Profiles::KeysController, "routing" do
   it "to #index" do
-    expect(get("/profile/keys")).to route_to('profiles/keys#index')
+    expect(get("/-/profile/keys")).to route_to('profiles/keys#index')
   end
+  it_behaves_like 'redirecting a legacy path', '/profile/keys', '/-/profile/keys'
 
   it "to #create" do
-    expect(post("/profile/keys")).to route_to('profiles/keys#create')
+    expect(post("/-/profile/keys")).to route_to('profiles/keys#create')
   end
 
   it "to #show" do
-    expect(get("/profile/keys/1")).to route_to('profiles/keys#show', id: '1')
+    expect(get("/-/profile/keys/1")).to route_to('profiles/keys#show', id: '1')
   end
+  it_behaves_like 'redirecting a legacy path', '/profile/keys/1', '/-/profile/keys/1'
 
   it "to #destroy" do
-    expect(delete("/profile/keys/1")).to route_to('profiles/keys#destroy', id: '1')
+    expect(delete("/-/profile/keys/1")).to route_to('profiles/keys#destroy', id: '1')
   end
 end
 
-# keys GET    /gpg_keys      gpg_keys#index
-#  key POST   /gpg_keys      gpg_keys#create
-#      PUT    /gpg_keys/:id  gpg_keys#revoke
-#      DELETE /gpg_keys/:id  gpg_keys#desroy
+# keys GET    /-/profile/gpg_keys      gpg_keys#index
+#  key POST   /-/profile/gpg_keys      gpg_keys#create
+#      PUT    /-/profile/gpg_keys/:id  gpg_keys#revoke
+#      DELETE /-/profile/gpg_keys/:id  gpg_keys#desroy
 RSpec.describe Profiles::GpgKeysController, "routing" do
   it "to #index" do
-    expect(get("/profile/gpg_keys")).to route_to('profiles/gpg_keys#index')
+    expect(get("/-/profile/gpg_keys")).to route_to('profiles/gpg_keys#index')
   end
+  it_behaves_like 'redirecting a legacy path', '/profile/gpg_keys', '/-/profile/gpg_keys'
 
   it "to #create" do
-    expect(post("/profile/gpg_keys")).to route_to('profiles/gpg_keys#create')
+    expect(post("/-/profile/gpg_keys")).to route_to('profiles/gpg_keys#create')
   end
 
   it "to #destroy" do
-    expect(delete("/profile/gpg_keys/1")).to route_to('profiles/gpg_keys#destroy', id: '1')
+    expect(delete("/-/profile/gpg_keys/1")).to route_to('profiles/gpg_keys#destroy', id: '1')
   end
 end
 
-#   emails GET    /emails(.:format)        emails#index
-#          POST   /keys(.:format)          emails#create
-#          DELETE /keys/:id(.:format)      keys#destroy
+#   emails GET    /-/profile/emails(.:format)        emails#index
+#          POST   /-/profile/emails(.:format)          emails#create
+#          DELETE /-/profile/emails/:id(.:format)      keys#destroy
 RSpec.describe Profiles::EmailsController, "routing" do
   it "to #index" do
-    expect(get("/profile/emails")).to route_to('profiles/emails#index')
+    expect(get("/-/profile/emails")).to route_to('profiles/emails#index')
   end
+  it_behaves_like 'redirecting a legacy path', '/profile/emails', '/-/profile/emails'
 
   it "to #create" do
-    expect(post("/profile/emails")).to route_to('profiles/emails#create')
+    expect(post("/-/profile/emails")).to route_to('profiles/emails#create')
   end
 
   it "to #destroy" do
-    expect(delete("/profile/emails/1")).to route_to('profiles/emails#destroy', id: '1')
+    expect(delete("/-/profile/emails/1")).to route_to('profiles/emails#destroy', id: '1')
   end
 end
 
-# profile_avatar DELETE /profile/avatar(.:format) profiles/avatars#destroy
+# profile_avatar DELETE /-/profile/avatar(.:format) profiles/avatars#destroy
 RSpec.describe Profiles::AvatarsController, "routing" do
   it "to #destroy" do
-    expect(delete("/profile/avatar")).to route_to('profiles/avatars#destroy')
+    expect(delete("/-/profile/avatar")).to route_to('profiles/avatars#destroy')
   end
 end
 

@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
 
-import { addSubscription, removeSubscription } from '~/jira_connect/api';
+import { addSubscription, removeSubscription, fetchGroups } from '~/jira_connect/api';
 
 describe('JiraConnect API', () => {
   let mock;
@@ -67,6 +67,38 @@ describe('JiraConnect API', () => {
       expect(axios.delete).toHaveBeenCalledWith(mockRemovePath, {
         params: {
           jwt: mockJwt,
+        },
+      });
+      expect(response.data).toEqual(mockResponse);
+    });
+  });
+
+  describe('fetchGroups', () => {
+    const mockGroupsPath = 'groupsPath';
+    const mockPage = 1;
+    const mockPerPage = 10;
+
+    const makeRequest = () =>
+      fetchGroups(mockGroupsPath, {
+        page: mockPage,
+        perPage: mockPerPage,
+      });
+
+    it('returns success response', async () => {
+      jest.spyOn(axios, 'get');
+      mock
+        .onGet(mockGroupsPath, {
+          page: mockPage,
+          per_page: mockPerPage,
+        })
+        .replyOnce(httpStatus.OK, mockResponse);
+
+      response = await makeRequest();
+
+      expect(axios.get).toHaveBeenCalledWith(mockGroupsPath, {
+        params: {
+          page: mockPage,
+          per_page: mockPerPage,
         },
       });
       expect(response.data).toEqual(mockResponse);

@@ -13,8 +13,6 @@ describe('Environments Folder View', () => {
     folderName: 'review',
     canReadEnvironment: true,
     cssContainerClass: 'container',
-    canaryDeploymentFeatureId: 'canary_deployment',
-    showCanaryDeploymentCallout: true,
     userCalloutsPath: '/callouts',
     lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
     helpCanaryDeploymentsPath: 'help/canary-deployments',

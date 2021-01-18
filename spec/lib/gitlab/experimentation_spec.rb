@@ -102,7 +102,11 @@ RSpec.describe Gitlab::Experimentation do
         context 'when subject has a global_id' do
           let(:experiment_subject) { double(:subject, to_global_id: 'z') }
 
-          it { is_expected.to eq(true) }
+          it do
+            allow(Gitlab::Experimentation).to receive(:valid_subject_for_rollout_strategy?).and_return(true)
+
+            is_expected.to eq(true)
+          end
         end
 
         context 'when subject is nil' do
@@ -150,7 +154,11 @@ RSpec.describe Gitlab::Experimentation do
         context 'when subject has a global_id' do
           let(:experiment_subject) { double(:subject, to_global_id: 'abcd') }
 
-          it { is_expected.to eq(true) }
+          it do
+            allow(Gitlab::Experimentation).to receive(:valid_subject_for_rollout_strategy?).and_return(true)
+
+            is_expected.to eq(true)
+          end
         end
 
         context 'when subject is nil' do

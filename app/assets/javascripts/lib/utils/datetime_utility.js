@@ -4,6 +4,8 @@ import * as timeago from 'timeago.js';
 import dateFormat from 'dateformat';
 import { languageCode, s__, __, n__ } from '../../locale';
 
+const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000;
+
 window.timeago = timeago;
 
 /**
@@ -850,4 +852,46 @@ export const format24HourTimeStringFromInt = (time) => {
 
   const formatted24HourString = time > 9 ? `${time}:00` : `0${time}:00`;
   return formatted24HourString;
+};
+
+/**
+ * A utility function which checks if two date ranges overlap.
+ *
+ * @param {Object} givenPeriodLeft - the first period to compare.
+ * @param {Object} givenPeriodRight - the second period to compare.
+ * @returns {Object} { overlap: number of days the overlap is present, overlapStartDate: the start date of the overlap in time format, overlapEndDate: the end date of the overlap in time format }
+ * @throws {Error} Uncaught Error: Invalid period
+ *
+ * @example
+ * getOverlappingDaysInPeriods(
+ *   { start: new Date(2021, 0, 11), end: new Date(2021, 0, 13) },
+ *   { start: new Date(2021, 0, 11), end: new Date(2021, 0, 14) }
+ * ) => { daysOverlap: 2, overlapStartDate: 1610323200000, overlapEndDate: 1610496000000 }
+ *
+ */
+export const getOverlappingDaysInPeriods = (givenPeriodLeft = {}, givenPeriodRight = {}) => {
+  const leftStartTime = new Date(givenPeriodLeft.start).getTime();
+  const leftEndTime = new Date(givenPeriodLeft.end).getTime();
+  const rightStartTime = new Date(givenPeriodRight.start).getTime();
+  const rightEndTime = new Date(givenPeriodRight.end).getTime();
+
+  if (!(leftStartTime <= leftEndTime && rightStartTime <= rightEndTime)) {
+    throw new Error(__('Invalid period'));
+  }
+
+  const isOverlapping = leftStartTime < rightEndTime && rightStartTime < leftEndTime;
+
+  if (!isOverlapping) {
+    return { daysOverlap: 0 };
+  }
+
+  const overlapStartDate = Math.max(leftStartTime, rightStartTime);
+  const overlapEndDate = rightEndTime > leftEndTime ? leftEndTime : rightEndTime;
+  const differenceInMs = overlapEndDate - overlapStartDate;
+
+  return {
+    daysOverlap: Math.ceil(differenceInMs / MILLISECONDS_IN_DAY),
+    overlapStartDate,
+    overlapEndDate,
+  };
 };

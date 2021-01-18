@@ -22,3 +22,12 @@ export const removeSubscription = async (removePath) => {
     },
   });
 };
+
+export const fetchGroups = async (groupsPath, { page, perPage }) => {
+  return axios.get(groupsPath, {
+    params: {
+      page,
+      per_page: perPage,
+    },
+  });
+};

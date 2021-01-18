@@ -214,18 +214,4 @@ describe('Store', () => {
       expect(store.state.environments[0].deployBoardData).toEqual(deployBoardMockData);
     });
   });
-
-  describe('canaryCallout', () => {
-    it('should add banner underneath the second environment', () => {
-      store.storeEnvironments(serverData);
-
-      expect(store.state.environments[1].showCanaryCallout).toEqual(true);
-    });
-
-    it('should add banner underneath first environment when only one environment', () => {
-      store.storeEnvironments(serverData.slice(0, 1));
-
-      expect(store.state.environments[0].showCanaryCallout).toEqual(true);
-    });
-  });
 });

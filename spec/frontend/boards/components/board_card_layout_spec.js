@@ -1,7 +1,8 @@
 /* global List */
 /* global ListLabel */
 
-import { shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -10,20 +11,35 @@ import axios from '~/lib/utils/axios_utils';
 import '~/boards/models/label';
 import '~/boards/models/assignee';
 import '~/boards/models/list';
-import store from '~/boards/stores';
+import boardsVuexStore from '~/boards/stores';
 import boardsStore from '~/boards/stores/boards_store';
 import BoardCardLayout from '~/boards/components/board_card_layout.vue';
 import issueCardInner from '~/boards/components/issue_card_inner.vue';
 import { listObj, boardsMockInterceptor, setMockEndpoints } from '../mock_data';
 
+import { ISSUABLE } from '~/boards/constants';
+
 describe('Board card layout', () => {
   let wrapper;
   let mock;
   let list;
+  let store;
+
+  const localVue = createLocalVue();
+  localVue.use(Vuex);
+
+  const createStore = ({ getters = {}, actions = {} } = {}) => {
+    store = new Vuex.Store({
+      ...boardsVuexStore,
+      actions,
+      getters,
+    });
+  };
 
   // this particular mount component needs to be used after the root beforeEach because it depends on list being initialized
-  const mountComponent = (propsData) => {
+  const mountComponent = ({ propsData = {}, provide = {} } = {}) => {
     wrapper = shallowMount(BoardCardLayout, {
+      localVue,
       stubs: {
         issueCardInner,
       },
@@ -39,6 +55,7 @@ describe('Board card layout', () => {
         groupId: null,
         rootPath: '/',
         scopedLabelsAvailable: false,
+        ...provide,
       },
     });
   };
@@ -75,6 +92,7 @@ describe('Board card layout', () => {
 
   describe('mouse events', () => {
     it('sets showDetail to true on mousedown', async () => {
+      createStore();
       mountComponent();
 
       wrapper.trigger('mousedown');
@@ -84,6 +102,7 @@ describe('Board card layout', () => {
     });
 
     it('sets showDetail to false on mousemove', async () => {
+      createStore();
       mountComponent();
       wrapper.trigger('mousedown');
       await wrapper.vm.$nextTick();
@@ -91,6 +110,50 @@ describe('Board card layout', () => {
       wrapper.trigger('mousemove');
       await wrapper.vm.$nextTick();
       expect(wrapper.vm.showDetail).toBe(false);
+    });
+
+    it("calls 'setActiveId' when 'graphqlBoardLists' feature flag is turned on", async () => {
+      const setActiveId = jest.fn();
+      createStore({
+        actions: {
+          setActiveId,
+        },
+      });
+      mountComponent({
+        provide: {
+          glFeatures: { graphqlBoardLists: true },
+        },
+      });
+
+      wrapper.trigger('mouseup');
+      await wrapper.vm.$nextTick();
+
+      expect(setActiveId).toHaveBeenCalledTimes(1);
+      expect(setActiveId).toHaveBeenCalledWith(expect.any(Object), {
+        id: list.issues[0].id,
+        sidebarType: ISSUABLE,
+      });
+    });
+
+    it("calls 'setActiveId' when epic swimlanes is active", async () => {
+      const setActiveId = jest.fn();
+      const isSwimlanesOn = () => true;
+      createStore({
+        getters: { isSwimlanesOn },
+        actions: {
+          setActiveId,
+        },
+      });
+      mountComponent();
+
+      wrapper.trigger('mouseup');
+      await wrapper.vm.$nextTick();
+
+      expect(setActiveId).toHaveBeenCalledTimes(1);
+      expect(setActiveId).toHaveBeenCalledWith(expect.any(Object), {
+        id: list.issues[0].id,
+        sidebarType: ISSUABLE,
+      });
     });
   });
 });
