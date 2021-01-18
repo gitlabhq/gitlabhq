@@ -645,7 +645,7 @@ GET /projects/:id/services/github
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20290) in GitLab 11.2.
 
-Google GSuite team collaboration tool.
+Google Workspace team collaboration tool.
 
 ### Create/Edit Hangouts Chat service
 

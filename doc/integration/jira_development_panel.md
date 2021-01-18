@@ -211,7 +211,8 @@ The requested scope is invalid, unknown, or malformed.
 
 Potential resolutions:
 
-- Verify the URL includes `scope=api` on the end of the URL.
+- Verify the URL shown in the browser after being redirected from Jira in step 5 of [Jira DVCS Connector Setp](#jira-dvcs-connector-setup) includes `scope=api` within the query string.
+- If `scope=api` is missing from the URL, return to [GitLab account configuration](#gitlab-account-configuration-for-dvcs) and ensure the application you created in step 1 has the `api` box checked under scopes.
 
 ##### Jira error adding account and no repositories listed
 

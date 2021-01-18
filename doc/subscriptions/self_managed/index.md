@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Fulfillment
+group: Purchase
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: index, reference
 ---
@@ -205,7 +205,7 @@ An invoice is generated for the renewal and available for viewing or download on
 
 Seat Link allows GitLab Inc. to provide our self-managed customers with prorated charges for user growth throughout the year using a quarterly reconciliation process.
 
-Seat Link daily sends a count of all users in connected self-managed instances to GitLab. That information is used to automate prorated reconciliations. The data is sent securely through an encrypted HTTPS connection.
+Seat Link daily sends a count of all users in connected self-managed instances to GitLab. That information is used to automate prorated reconciliations. The data is sent securely through an encrypted HTTPS connection to `customers.gitlab.com` on port `443`.
 
 Seat Link provides **only** the following information to GitLab:
 

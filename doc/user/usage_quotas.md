@@ -22,7 +22,6 @@ To help manage storage, a namespace's owner can view:
 
 - Total storage used in the namespace
 - Total storage used per project
-- Breakdown of storage use per project, by storage type.
 
 To view storage usage, from the namespace's page go to **Settings > Usage Quotas** and select the
 **Storage** tab. The Usage Quotas statistics are updated every 90 minutes.
