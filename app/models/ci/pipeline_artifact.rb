@@ -30,15 +30,18 @@ module Ci
     update_project_statistics project_statistics_name: :pipeline_artifacts_size
 
     enum file_type: {
-      code_coverage: 1
+      code_coverage: 1,
+      code_quality: 2
     }
 
-    def self.has_code_coverage?
-      where(file_type: :code_coverage).exists?
-    end
+    class << self
+      def has_report?(file_type)
+        where(file_type: file_type).exists?
+      end
 
-    def self.find_with_code_coverage
-      find_by(file_type: :code_coverage)
+      def find_by_file_type(file_type)
+        find_by(file_type: file_type)
+      end
     end
 
     def present

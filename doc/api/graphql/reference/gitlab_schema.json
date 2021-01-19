@@ -63880,7 +63880,7 @@
           "fields": [
             {
               "name": "description",
-              "description": "Analyzer description that is displayed on the form",
+              "description": "Analyzer description that is displayed on the form.",
               "args": [
 
               ],
@@ -63894,7 +63894,7 @@
             },
             {
               "name": "enabled",
-              "description": "Indicates whether an analyzer is enabled",
+              "description": "Indicates whether an analyzer is enabled.",
               "args": [
 
               ],
@@ -63908,7 +63908,7 @@
             },
             {
               "name": "label",
-              "description": "Analyzer label used in the config UI",
+              "description": "Analyzer label used in the config UI.",
               "args": [
 
               ],
@@ -63922,7 +63922,7 @@
             },
             {
               "name": "name",
-              "description": "Name of the analyzer",
+              "description": "Name of the analyzer.",
               "args": [
 
               ],
@@ -63936,7 +63936,7 @@
             },
             {
               "name": "variables",
-              "description": "List of supported variables",
+              "description": "List of supported variables.",
               "args": [
                 {
                   "name": "after",
@@ -64115,7 +64115,7 @@
           "inputFields": [
             {
               "name": "name",
-              "description": "Name of analyzer",
+              "description": "Name of analyzer.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -64129,7 +64129,7 @@
             },
             {
               "name": "enabled",
-              "description": "State of the analyzer",
+              "description": "State of the analyzer.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -64143,7 +64143,7 @@
             },
             {
               "name": "variables",
-              "description": "List of variables for the analyzer",
+              "description": "List of variables for the analyzer.",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -64448,7 +64448,7 @@
           "inputFields": [
             {
               "name": "field",
-              "description": "CI keyword of entity",
+              "description": "CI keyword of entity.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -64462,7 +64462,7 @@
             },
             {
               "name": "defaultValue",
-              "description": "Default value that is used if value is empty",
+              "description": "Default value that is used if value is empty.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -64476,7 +64476,7 @@
             },
             {
               "name": "value",
-              "description": "Current value of the entity",
+              "description": "Current value of the entity.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -64501,7 +64501,7 @@
           "inputFields": [
             {
               "name": "global",
-              "description": "List of global entities related to SAST configuration",
+              "description": "List of global entities related to SAST configuration.",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -64519,7 +64519,7 @@
             },
             {
               "name": "pipeline",
-              "description": "List of pipeline entities related to SAST configuration",
+              "description": "List of pipeline entities related to SAST configuration.",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -64537,7 +64537,7 @@
             },
             {
               "name": "analyzers",
-              "description": "List of analyzers and related variables for the SAST configuration",
+              "description": "List of analyzers and related variables for the SAST configuration.",
               "type": {
                 "kind": "LIST",
                 "name": null,

@@ -222,7 +222,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `api_secret_key`  | Full path to file with secret key used to authenticate with the GitLab API. Auto-generated when left unset.
 | `artifacts_server` |  Enable viewing [artifacts](../job_artifacts.md) in GitLab Pages.
 | `artifacts_server_timeout` |  Timeout (in seconds) for a proxied request to the artifacts server.
-| `artifacts_server_url` |  API URL to proxy artifact requests to. Defaults to GitLab `external URL` + `/api/v4`, for example `https://gitlab.com/api/v4`.
+| `artifacts_server_url` |  API URL to proxy artifact requests to. Defaults to GitLab `external URL` + `/api/v4`, for example `https://gitlab.com/api/v4`. When running a [separate Pages server](#running-gitlab-pages-on-a-separate-server), this URL must point to the main GitLab server's API.
 | `auth_redirect_uri` |  Callback URL for authenticating with GitLab. Defaults to project's subdomain of `pages_external_url` + `/auth`.
 | `auth_secret` |  Secret key for signing authentication requests. Leave blank to pull automatically from GitLab during OAuth registration.
 | `dir` |  Working directory for configuration and secrets files.
@@ -940,6 +940,8 @@ Upgrading to an [officially supported operating system](https://about.gitlab.com
 This problem comes from the permissions of the GitLab Pages OAuth application. To fix it, go to
 **Admin > Applications > GitLab Pages** and edit the application. Under **Scopes**, ensure that the
 `api` scope is selected and save your changes.
+When running a [separate Pages server](#running-gitlab-pages-on-a-separate-server),
+this setting needs to be configured on the main GitLab server.
 
 ### Workaround in case no wildcard DNS entry can be set
 

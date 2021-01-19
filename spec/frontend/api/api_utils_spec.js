@@ -20,6 +20,10 @@ describe('~/api/api_utils.js', () => {
       );
     });
 
+    it('ensures the URL is prefixed with a /', () => {
+      expect(apiUtils.buildApiUrl('api/:version/projects/:id')).toEqual('/api/v7/projects/:id');
+    });
+
     describe('when gon includes a relative_url_root property', () => {
       beforeEach(() => {
         window.gon.relative_url_root = '/relative/root';

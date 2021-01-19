@@ -6,7 +6,7 @@
     %button.btn.js-settings-toggle
       = expanded ? _('Collapse') : _('Expand')
     %p
-      = _('Select the branch you want to set as the default for this project. All merge requests and commits will automatically be made against this branch unless you specify a different one.')
+      = _('Set the default branch for this project. All merge requests and commits are made against this branch unless you specify a different one.')
 
   .settings-content
     = form_for @project, remote: true, html: { multipart: true, anchor: 'default-branch-settings' }, authenticity_token: true do |f|
@@ -25,7 +25,7 @@
             = f.label :autoclose_referenced_issues, class: 'form-check-label' do
               %strong= _("Auto-close referenced issues on default branch")
             .form-text.text-muted
-              = _("Issues referenced by merge requests and commits within the default branch will be closed automatically")
+              = _("When merge requests and commits in the default branch close, any issues they reference also close.")
               = link_to sprite_icon('question-o'), help_page_path('user/project/issues/managing_issues.md', anchor: 'disabling-automatic-issue-closing'), target: '_blank'
 
       = f.submit _('Save changes'), class: "gl-button btn btn-success"

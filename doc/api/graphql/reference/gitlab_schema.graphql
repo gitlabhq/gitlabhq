@@ -22102,27 +22102,27 @@ Represents an analyzer entity in SAST CI configuration
 """
 type SastCiConfigurationAnalyzersEntity {
   """
-  Analyzer description that is displayed on the form
+  Analyzer description that is displayed on the form.
   """
   description: String
 
   """
-  Indicates whether an analyzer is enabled
+  Indicates whether an analyzer is enabled.
   """
   enabled: Boolean
 
   """
-  Analyzer label used in the config UI
+  Analyzer label used in the config UI.
   """
   label: String
 
   """
-  Name of the analyzer
+  Name of the analyzer.
   """
   name: String
 
   """
-  List of supported variables
+  List of supported variables.
   """
   variables(
     """
@@ -22187,17 +22187,17 @@ Represents the analyzers entity in SAST CI configuration
 """
 input SastCiConfigurationAnalyzersEntityInput {
   """
-  State of the analyzer
+  State of the analyzer.
   """
   enabled: Boolean!
 
   """
-  Name of analyzer
+  Name of analyzer.
   """
   name: String!
 
   """
-  List of variables for the analyzer
+  List of variables for the analyzer.
   """
   variables: [SastCiConfigurationEntityInput!]
 }
@@ -22307,17 +22307,17 @@ Represents an entity in SAST CI configuration
 """
 input SastCiConfigurationEntityInput {
   """
-  Default value that is used if value is empty
+  Default value that is used if value is empty.
   """
   defaultValue: String!
 
   """
-  CI keyword of entity
+  CI keyword of entity.
   """
   field: String!
 
   """
-  Current value of the entity
+  Current value of the entity.
   """
   value: String!
 }
@@ -22327,17 +22327,17 @@ Represents a CI configuration of SAST
 """
 input SastCiConfigurationInput {
   """
-  List of analyzers and related variables for the SAST configuration
+  List of analyzers and related variables for the SAST configuration.
   """
   analyzers: [SastCiConfigurationAnalyzersEntityInput!]
 
   """
-  List of global entities related to SAST configuration
+  List of global entities related to SAST configuration.
   """
   global: [SastCiConfigurationEntityInput!]
 
   """
-  List of pipeline entities related to SAST configuration
+  List of pipeline entities related to SAST configuration.
   """
   pipeline: [SastCiConfigurationEntityInput!]
 }

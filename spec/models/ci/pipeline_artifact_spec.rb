@@ -76,38 +76,98 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
     end
   end
 
-  describe '.has_code_coverage?' do
-    subject { Ci::PipelineArtifact.has_code_coverage? }
+  describe '.has_report?' do
+    subject(:pipeline_artifact) { Ci::PipelineArtifact.has_report?(file_type) }
 
-    context 'when pipeline artifact has a code coverage' do
-      let!(:pipeline_artifact) { create(:ci_pipeline_artifact) }
+    context 'when file_type is code_coverage' do
+      let(:file_type) { :code_coverage }
 
-      it 'returns true' do
-        expect(subject).to be_truthy
+      context 'when pipeline artifact has a coverage report' do
+        let!(:pipeline_artifact) { create(:ci_pipeline_artifact) }
+
+        it 'returns true' do
+          expect(pipeline_artifact).to be_truthy
+        end
+      end
+
+      context 'when pipeline artifact does not have a coverage report' do
+        it 'returns false' do
+          expect(pipeline_artifact).to be_falsey
+        end
       end
     end
 
-    context 'when pipeline artifact does not have a code coverage' do
+    context 'when file_type is code_quality' do
+      let(:file_type) { :code_quality }
+
+      context 'when pipeline artifact has a quality report' do
+        let!(:pipeline_artifact) { create(:ci_pipeline_artifact, :codequality_report) }
+
+        it 'returns true' do
+          expect(pipeline_artifact).to be_truthy
+        end
+      end
+
+      context 'when pipeline artifact does not have a quality report' do
+        it 'returns false' do
+          expect(pipeline_artifact).to be_falsey
+        end
+      end
+    end
+
+    context 'when file_type is nil' do
+      let(:file_type) { nil }
+
       it 'returns false' do
-        expect(subject).to be_falsey
+        expect(pipeline_artifact).to be_falsey
       end
     end
   end
 
-  describe '.find_with_code_coverage' do
-    subject { Ci::PipelineArtifact.find_with_code_coverage }
+  describe '.find_by_file_type' do
+    subject(:pipeline_artifact) { Ci::PipelineArtifact.find_by_file_type(file_type) }
 
-    context 'when pipeline artifact has a coverage report' do
-      let!(:coverage_report) { create(:ci_pipeline_artifact) }
+    context 'when file_type is code_coverage' do
+      let(:file_type) { :code_coverage }
 
-      it 'returns a pipeline artifact with a code coverage' do
-        expect(subject.file_type).to eq('code_coverage')
+      context 'when pipeline artifact has a coverage report' do
+        let!(:coverage_report) { create(:ci_pipeline_artifact) }
+
+        it 'returns a pipeline artifact with a coverage report' do
+          expect(pipeline_artifact.file_type).to eq('code_coverage')
+        end
+      end
+
+      context 'when pipeline artifact does not have a coverage report' do
+        it 'returns nil' do
+          expect(pipeline_artifact).to be_nil
+        end
       end
     end
 
-    context 'when pipeline artifact does not have a coverage report' do
+    context 'when file_type is code_quality' do
+      let(:file_type) { :code_quality }
+
+      context 'when pipeline artifact has a quality report' do
+        let!(:coverage_report) { create(:ci_pipeline_artifact, :codequality_report) }
+
+        it 'returns a pipeline artifact with a quality report' do
+          expect(pipeline_artifact.file_type).to eq('code_quality')
+        end
+      end
+
+      context 'when pipeline artifact does not have a quality report' do
+        it 'returns nil' do
+          expect(pipeline_artifact).to be_nil
+        end
+      end
+    end
+
+    context 'when file_type is nil' do
+      let(:file_type) { nil }
+
       it 'returns nil' do
-        expect(subject).to be_nil
+        expect(pipeline_artifact).to be_nil
       end
     end
   end

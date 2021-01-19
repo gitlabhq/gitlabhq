@@ -15899,9 +15899,6 @@ msgstr ""
 msgid "Issues closed"
 msgstr ""
 
-msgid "Issues referenced by merge requests and commits within the default branch will be closed automatically"
-msgstr ""
-
 msgid "Issues with comments, merge requests with diffs and comments, labels, milestones, snippets, and other project entities"
 msgstr ""
 
@@ -25494,9 +25491,6 @@ msgstr ""
 msgid "Select target branch"
 msgstr ""
 
-msgid "Select the branch you want to set as the default for this project. All merge requests and commits will automatically be made against this branch unless you specify a different one."
-msgstr ""
-
 msgid "Select the custom project template source group."
 msgstr ""
 
@@ -25777,6 +25771,9 @@ msgid "Set target branch"
 msgstr ""
 
 msgid "Set target branch to %{branch_name}."
+msgstr ""
+
+msgid "Set the default branch for this project. All merge requests and commits are made against this branch unless you specify a different one."
 msgstr ""
 
 msgid "Set the default expiration time for each job's artifacts. 0 for unlimited. The default unit is in seconds, but you can define an alternative. For example: %{code_open}4 mins 2 sec%{code_close}, %{code_open}2h42min%{code_close}."
@@ -31909,6 +31906,9 @@ msgid "When enabled, users cannot use GitLab until the terms have been accepted.
 msgstr ""
 
 msgid "When leaving the URL blank, classification labels can still be specified without disabling cross project features or performing external authorization checks."
+msgstr ""
+
+msgid "When merge requests and commits in the default branch close, any issues they reference also close."
 msgstr ""
 
 msgid "When this merge request is accepted"

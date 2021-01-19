@@ -622,13 +622,6 @@ dropped and users get
 
 To help avoid abuse, project and group imports, exports, and export downloads are rate limited. See [Project import/export rate limits](../../user/project/settings/import_export.md#rate-limits) and [Group import/export rate limits](../../user/group/settings/import_export.md#rate-limits) for details.
 
-GitLab.com Import/Export Rate Limits are set to the default except:
-
-| Setting                                          | GitLab.com | Default |
-|:-------------------------------------------------|:-----------|:--------|
-| Max Project Export requests per minute per user  | 1          | 6       |
-| Max Group Export requests per minute per user    | 1          | 6       |
-
 ### Non-configurable limits
 
 See [non-configurable limits](../../security/rate_limits.md#non-configurable-limits) for information on

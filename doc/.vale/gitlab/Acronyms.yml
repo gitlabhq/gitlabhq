@@ -157,3 +157,4 @@ exceptions:
   - XML
   - XSS
   - YAML
+  - ZIP

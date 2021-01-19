@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlIcon, GlIntersectionObserver } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
 import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
 import { n__, __ } from '~/locale';
 import { DESIGN_ROUTE_NAME } from '../../router/constants';
@@ -10,6 +10,9 @@ export default {
     GlIntersectionObserver,
     GlIcon,
     Timeago,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     id: {
@@ -130,7 +133,7 @@ export default {
     <div
       class="card-body gl-p-0 gl-display-flex gl-align-items-center gl-justify-content-center gl-overflow-hidden gl-relative"
     >
-      <div v-if="icon.name" data-testid="designEvent" class="design-event gl-absolute">
+      <div v-if="icon.name" data-testid="design-event" class="design-event gl-absolute">
         <span :title="icon.tooltip" :aria-label="icon.tooltip">
           <gl-icon
             :name="icon.name"
@@ -153,9 +156,10 @@ export default {
           v-show="showImage"
           :src="imageLink"
           :alt="filename"
-          class="gl-display-block gl-mx-auto gl-max-w-full mh-100 design-img"
+          class="gl-display-block gl-mx-auto gl-max-w-full gl-max-h-full design-img"
           data-qa-selector="design_image"
           :data-qa-filename="filename"
+          :data-testid="`design-img-${id}`"
           @load="onImageLoad"
           @error="onImageError"
         />
@@ -163,9 +167,14 @@ export default {
     </div>
     <div class="card-footer gl-display-flex gl-w-full">
       <div class="gl-display-flex gl-flex-direction-column str-truncated-100">
-        <span class="gl-font-weight-bold str-truncated-100" data-qa-selector="design_file_name">{{
-          filename
-        }}</span>
+        <span
+          v-gl-tooltip
+          class="gl-font-weight-bold str-truncated-100"
+          data-qa-selector="design_file_name"
+          :data-testid="`design-img-filename-${id}`"
+          :title="filename"
+          >{{ filename }}</span
+        >
         <span v-if="updatedAt" class="str-truncated-100">
           {{ __('Updated') }} <timeago :time="updatedAt" tooltip-placement="bottom" />
         </span>

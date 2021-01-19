@@ -26,9 +26,10 @@ exports[`Design management list item component with notes renders item with mult
        
       <img
         alt="test"
-        class="gl-display-block gl-mx-auto gl-max-w-full mh-100 design-img"
+        class="gl-display-block gl-mx-auto gl-max-w-full gl-max-h-full design-img"
         data-qa-filename="test"
         data-qa-selector="design_image"
+        data-testid="design-img-1"
         src=""
       />
     </gl-intersection-observer-stub>
@@ -43,6 +44,8 @@ exports[`Design management list item component with notes renders item with mult
       <span
         class="gl-font-weight-bold str-truncated-100"
         data-qa-selector="design_file_name"
+        data-testid="design-img-filename-1"
+        title="test"
       >
         test
       </span>
@@ -100,9 +103,10 @@ exports[`Design management list item component with notes renders item with sing
        
       <img
         alt="test"
-        class="gl-display-block gl-mx-auto gl-max-w-full mh-100 design-img"
+        class="gl-display-block gl-mx-auto gl-max-w-full gl-max-h-full design-img"
         data-qa-filename="test"
         data-qa-selector="design_image"
+        data-testid="design-img-1"
         src=""
       />
     </gl-intersection-observer-stub>
@@ -117,6 +121,8 @@ exports[`Design management list item component with notes renders item with sing
       <span
         class="gl-font-weight-bold str-truncated-100"
         data-qa-selector="design_file_name"
+        data-testid="design-img-filename-1"
+        title="test"
       >
         test
       </span>

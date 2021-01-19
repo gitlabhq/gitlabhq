@@ -17,42 +17,38 @@ or Grafana supplies package repositories (Yum/Apt) for easy installation.
 See [Grafana installation documentation](https://grafana.com/docs/grafana/latest/installation/)
 for detailed steps.
 
-Before starting Grafana for the first time, set the admin user
+Before starting Grafana for the first time, set the administration user
 and password in `/etc/grafana/grafana.ini`. If you don't, the default password
 is `admin`.
 
 ## Configuration
 
-1. Log in to Grafana as the admin user.
-1. Expand the menu by clicking the Grafana logo in the top left corner.
-1. Choose **Data Sources** from the menu.
-1. Click **Add new** in the top bar:
-   ![Grafana empty data source page](img/grafana_data_source_empty.png)
-1. Edit the data source to fit your needs:
-   ![Grafana data source configurations](img/grafana_data_source_configuration.png)
-1. Click **Save**.
+1. Log in to Grafana as the administration user.
+1. Select **Data Sources** from the **Configuration** menu.
+1. Select the **Add data source** button.
+1. Select the required data source type. For example, [Prometheus](../prometheus/index.md#prometheus-as-a-grafana-data-source).
+1. Complete the details for the data source and select the **Save & Test** button.
+
+Grafana should indicate the data source is working.
 
 ## Import Dashboards
 
 You can now import a set of default dashboards to start displaying useful information.
 GitLab has published a set of default
-[Grafana dashboards](https://gitlab.com/gitlab-org/grafana-dashboards) to get you started.
-Clone the repository, or download a ZIP file or tarball, then follow these steps to import each
-JSON file individually:
+[Grafana dashboards](https://gitlab.com/gitlab-org/grafana-dashboards) to get you started. To use
+them:
 
-1. Log in to Grafana as the admin user.
-1. Open the dashboard dropdown menu and click **Import**:
-   ![Grafana dashboard dropdown](img/grafana_dashboard_dropdown.png)
-1. Click **Choose file**, and browse to the location where you downloaded or
-   cloned the dashboard repository. Select a JSON file to import:
-   ![Grafana dashboard import](img/grafana_dashboard_import.png)
-1. After the dashboard is imported, click the **Save dashboard** icon in the top bar:
-   ![Grafana save icon](img/grafana_save_icon.png)
+1. Clone the repository, or download a ZIP file or tarball.
+1. Follow these steps to import each JSON file individually:
 
-   If you don't save the dashboard after importing it, the dashboard is removed
-   when you navigate away from the page.
+   1. Log in to Grafana as the administration user.
+   1. Select **Manage** from the **Dashboards** menu.
+   1. Select the **Import** button, then the **Upload JSON file** button.
+   1. Locate the JSON file to import and select **Choose for Upload**. Select the **Import** button.
+   1. After the dashboard is imported, select the **Save dashboard** icon in the top bar.
 
-Repeat this process for each dashboard you wish to import.
+If you don't save the dashboard after importing it, the dashboard is removed
+when you navigate away from the page. Repeat this process for each dashboard you wish to import.
 
 Alternatively, you can import all the dashboards into your Grafana
 instance. For more information about this process, see the
@@ -103,7 +99,7 @@ sudo mv /var/opt/gitlab/grafana/data.bak.xxxx/ /var/opt/gitlab/grafana/data/
 
 However, you should **not** reinstate your old data _except_ under one of the following conditions:
 
-1. If you're certain that you changed your default admin password when you enabled Grafana.
+1. If you're certain that you changed your default administration password when you enabled Grafana.
 1. If you run GitLab in a private network, accessed only by trusted users, and your
    Grafana login page has not been exposed to the internet.
 
@@ -120,8 +116,6 @@ existing data and dashboards.
 
 For more information and further mitigation details, please refer to our
 [blog post on the security release](https://about.gitlab.com/releases/2019/08/12/critical-security-release-gitlab-12-dot-1-dot-6-released/).
-
----
 
 Read more on:
 

@@ -9,6 +9,6 @@
     .note-form-actions.clearfix
       .settings-message.note-edit-warning.js-finish-edit-warning
         = _("Finish editing this message first!")
-      = submit_tag _('Save comment'), class: 'btn btn-success js-comment-save-button', data: { qa_selector: 'save_comment_button' }
-      %button.btn.btn-cancel.note-edit-cancel{ type: 'button' }
+      = submit_tag _('Save comment'), class: 'gl-button btn btn-success js-comment-save-button', data: { qa_selector: 'save_comment_button' }
+      %button.btn.gl-button.btn-cancel.note-edit-cancel{ type: 'button' }
         = _("Cancel")

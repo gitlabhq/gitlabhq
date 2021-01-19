@@ -1,0 +1,16 @@
+{
+  "files": {
+    "demo.rb": [
+      {
+        "line": 5,
+        "description": "Method `new_array` has 8 arguments (exceeds 4 allowed). Consider refactoring.",
+        "severity": "major"
+      },
+      {
+        "line": 5,
+        "description": "Avoid parameter lists longer than 5 parameters. [8/5]",
+        "severity": "minor"
+      }
+    ]
+  }
+}
