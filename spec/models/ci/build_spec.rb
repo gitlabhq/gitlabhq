@@ -3605,7 +3605,7 @@ RSpec.describe Ci::Build do
 
     context 'when validates for dependencies is enabled' do
       before do
-        stub_feature_flags(ci_disable_validates_dependencies: false)
+        stub_feature_flags(ci_validate_build_dependencies_override: false)
       end
 
       let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0) }
@@ -3633,7 +3633,7 @@ RSpec.describe Ci::Build do
       let(:options) { { dependencies: ['test'] } }
 
       before do
-        stub_feature_flags(ci_disable_validates_dependencies: true)
+        stub_feature_flags(ci_validate_build_dependencies_override: true)
       end
 
       it_behaves_like 'validation is not active'

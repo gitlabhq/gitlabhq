@@ -238,22 +238,6 @@ RSpec.describe Atlassian::JiraConnect::Client do
         expect(response['errorMessages']).to eq(%w(X Y Z))
       end
     end
-
-    it 'does not call the API if the feature flag is not enabled' do
-      stub_feature_flags(jira_sync_deployments: false)
-
-      expect(subject).not_to receive(:post)
-
-      subject.send(:store_deploy_info, project: project, deployments: deployments)
-    end
-
-    it 'does call the API if the feature flag enabled for the project' do
-      stub_feature_flags(jira_sync_deployments: project)
-
-      expect(subject).to receive(:post).with('/rest/deployments/0.1/bulk', { deployments: Array }).and_call_original
-
-      subject.send(:store_deploy_info, project: project, deployments: deployments)
-    end
   end
 
   describe '#store_ff_info' do

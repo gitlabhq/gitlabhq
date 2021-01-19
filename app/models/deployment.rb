@@ -112,7 +112,6 @@ class Deployment < ApplicationRecord
 
     after_transition any => any - [:skipped] do |deployment, transition|
       next if transition.loopback?
-      next unless Feature.enabled?(:jira_sync_deployments, deployment.project)
 
       deployment.run_after_commit do
         ::JiraConnect::SyncDeploymentsWorker.perform_async(id)
@@ -121,8 +120,6 @@ class Deployment < ApplicationRecord
   end
 
   after_create unless: :importing? do |deployment|
-    next unless Feature.enabled?(:jira_sync_deployments, deployment.project)
-
     run_after_commit do
       ::JiraConnect::SyncDeploymentsWorker.perform_async(deployment.id)
     end

@@ -1,8 +1,0 @@
----
-name: jira_sync_deployments
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49757
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/294034
-milestone: '13.7'
-type: development
-group: group::ecosystem
-default_enabled: false

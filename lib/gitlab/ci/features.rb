@@ -70,6 +70,11 @@ module Gitlab
       def self.rules_variables_enabled?(project)
         ::Feature.enabled?(:ci_rules_variables, project, default_enabled: true)
       end
+
+      def self.validate_build_dependencies?(project)
+        ::Feature.enabled?(:ci_validate_build_dependencies, default_enabled: :yaml) &&
+          ::Feature.disabled?(:ci_validate_build_dependencies_override, project)
+      end
     end
   end
 end

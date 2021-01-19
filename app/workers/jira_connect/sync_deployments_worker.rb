@@ -14,7 +14,6 @@ module JiraConnect
       deployment = Deployment.find_by_id(deployment_id)
 
       return unless deployment
-      return unless Feature.enabled?(:jira_sync_deployments, deployment.project)
 
       ::JiraConnect::SyncService
         .new(deployment.project)

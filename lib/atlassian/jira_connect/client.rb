@@ -57,8 +57,6 @@ module Atlassian
       end
 
       def store_deploy_info(project:, deployments:, **opts)
-        return unless Feature.enabled?(:jira_sync_deployments, project)
-
         items = deployments.map { |d| ::Atlassian::JiraConnect::Serializers::DeploymentEntity.represent(d, opts) }
         items.reject! { |d| d.issue_keys.empty? }
 

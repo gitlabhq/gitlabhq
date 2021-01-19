@@ -375,7 +375,7 @@ default artifacts expiration setting, which you can find in the [CI/CD Admin set
 > Introduced in GitLab 10.3.
 
 To disable [the dependencies validation](../ci/yaml/README.md#when-a-dependent-job-fails),
-you can enable the `ci_disable_validates_dependencies` feature flag from a Rails console.
+you can enable the `ci_validate_build_dependencies_override` feature flag from a Rails console.
 
 **In Omnibus installations:**
 
@@ -388,7 +388,7 @@ you can enable the `ci_disable_validates_dependencies` feature flag from a Rails
 1. Enable the feature flag to disable the validation:
 
    ```ruby
-   Feature.enable(:ci_disable_validates_dependencies)
+   Feature.enable(:ci_validate_build_dependencies_override)
    ```
 
 **In installations from source:**
@@ -403,7 +403,7 @@ you can enable the `ci_disable_validates_dependencies` feature flag from a Rails
 1. Enable the feature flag to disable the validation:
 
    ```ruby
-   Feature.enable(:ci_disable_validates_dependencies)
+   Feature.enable(:ci_validate_build_dependencies_override)
    ```
 
 ## Set the maximum file size of the artifacts

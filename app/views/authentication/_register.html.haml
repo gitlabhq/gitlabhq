@@ -7,13 +7,13 @@
   - if current_user.two_factor_otp_enabled?
     .row.gl-mb-3
       .col-md-5
-        %button#js-setup-token-2fa-device.btn.btn-info= _("Set up new device")
+        %button#js-setup-token-2fa-device.gl-button.btn.btn-info= _("Set up new device")
       .col-md-7
         %p= _("Your device needs to be set up. Plug it in (if needed) and click the button on the left.")
   - else
     .row.gl-mb-3
       .col-md-4
-        %button#js-setup-token-2fa-device.btn.btn-info.btn-block{ disabled: true }= _("Set up new device")
+        %button#js-setup-token-2fa-device.gl-button.btn.btn-info.btn-block{ disabled: true }= _("Set up new device")
       .col-md-8
         %p= _("You need to register a two-factor authentication app before you can set up a device.")
 

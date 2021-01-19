@@ -378,19 +378,6 @@ table.u2f-registrations,
     display: inline;
     margin-right: $gl-padding / 4;
   }
-
-  .badge-verification-status {
-    border-width: 1px;
-    border-style: solid;
-
-    &.verified {
-      @include green-status-color;
-    }
-
-    &.unverified {
-      @include status-color($gray-dark, color('gray'), $common-gray-dark);
-    }
-  }
 }
 
 .edit-user {

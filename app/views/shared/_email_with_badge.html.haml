@@ -1,5 +1,5 @@
-- css_classes = %w(badge badge-verification-status)
-- css_classes << (verified ? 'verified': 'unverified')
+- css_classes = %w(badge gl-badge)
+- css_classes << (verified ? 'badge-success': 'badge-danger')
 - text = verified ? _('Verified') : _('Unverified')
 
 .email-badge
