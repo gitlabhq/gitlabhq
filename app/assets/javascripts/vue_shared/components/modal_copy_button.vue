@@ -55,6 +55,11 @@ export default {
       required: false,
       default: null,
     },
+    category: {
+      type: String,
+      required: false,
+      default: 'primary',
+    },
   },
   computed: {
     modalDomId() {
@@ -95,6 +100,7 @@ export default {
     :data-clipboard-target="target"
     :data-clipboard-text="text"
     :title="title"
+    :category="category"
     icon="copy-to-clipboard"
   />
 </template>

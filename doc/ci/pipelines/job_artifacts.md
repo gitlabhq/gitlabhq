@@ -155,9 +155,10 @@ as artifacts.
 
 The collected Code Quality report uploads to GitLab as an artifact and is summarized in merge requests.
 
-#### `artifacts:reports:sast` **(ULTIMATE)**
+#### `artifacts:reports:sast`
 
 > - Introduced in GitLab 11.5.
+> - Made [available in all tiers](https://gitlab.com/groups/gitlab-org/-/epics/2098) in GitLab 13.3.
 > - Requires GitLab Runner 11.5 and above.
 
 The `sast` report collects [SAST vulnerabilities](../../user/application_security/sast/index.md)
