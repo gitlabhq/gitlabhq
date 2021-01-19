@@ -16498,7 +16498,7 @@ msgstr ""
 msgid "Last edited %{date}"
 msgstr ""
 
-msgid "Last edited by %{name}"
+msgid "Last edited by %{link_start}%{avatar} %{name}%{link_end}"
 msgstr ""
 
 msgid "Last item before this page loaded in your browser:"
