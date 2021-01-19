@@ -67,8 +67,6 @@ module Atlassian
       end
 
       def store_build_info(project:, pipelines:, update_sequence_id: nil)
-        return unless Feature.enabled?(:jira_sync_builds, project)
-
         builds = pipelines.map do |pipeline|
           build = ::Atlassian::JiraConnect::Serializers::BuildEntity.represent(
             pipeline,

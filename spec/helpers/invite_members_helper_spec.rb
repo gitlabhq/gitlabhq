@@ -12,6 +12,40 @@ RSpec.describe InviteMembersHelper do
       assign(:project, project)
     end
 
+    describe "#can_invite_members_for_project?" do
+      context 'when the user can_import_members' do
+        before do
+          allow(helper).to receive(:can_import_members?).and_return(true)
+        end
+
+        it 'returns true' do
+          expect(helper.can_invite_members_for_project?(project)).to eq true
+          expect(helper).to have_received(:can_import_members?)
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(invite_members_group_modal: false)
+          end
+
+          it 'returns false' do
+            expect(helper.can_invite_members_for_project?(project)).to eq false
+            expect(helper).not_to have_received(:can_import_members?)
+          end
+        end
+      end
+
+      context 'when the user can not invite members' do
+        before do
+          expect(helper).to receive(:can_import_members?).and_return(false)
+        end
+
+        it 'returns false' do
+          expect(helper.can_invite_members_for_project?(project)).to eq false
+        end
+      end
+    end
+
     describe "#directly_invite_members?" do
       context 'when the user is an owner' do
         before do
@@ -80,6 +114,51 @@ RSpec.describe InviteMembersHelper do
   context 'with group' do
     let_it_be(:group) { create(:group) }
 
+    describe "#can_invite_members_for_group?" do
+      include Devise::Test::ControllerHelpers
+
+      let_it_be(:user) { create(:user) }
+
+      before do
+        sign_in(user)
+        allow(helper).to receive(:current_user) { user }
+      end
+
+      context 'when the user can_import_members' do
+        before do
+          allow(helper).to receive(:can?).with(user, :admin_group_member, group).and_return(true)
+        end
+
+        it 'returns true' do
+          expect(helper.can_invite_members_for_group?(group)).to eq true
+          expect(helper).to have_received(:can?).with(user, :admin_group_member, group)
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(invite_members_group_modal: false)
+          end
+
+          it 'returns false' do
+            stub_feature_flags(invite_members_group_modal: false)
+
+            expect(helper.can_invite_members_for_group?(group)).to eq false
+            expect(helper).not_to have_received(:can?)
+          end
+        end
+      end
+
+      context 'when the user can not invite members' do
+        before do
+          expect(helper).to receive(:can?).with(user, :admin_group_member, group).and_return(false)
+        end
+
+        it 'returns false' do
+          expect(helper.can_invite_members_for_group?(group)).to eq false
+        end
+      end
+    end
+
     describe "#invite_group_members?" do
       context 'when the user is an owner' do
         before do
@@ -123,7 +202,7 @@ RSpec.describe InviteMembersHelper do
 
       before do
         allow(helper).to receive(:experiment_tracking_category_and_group) { '_track_property_' }
-        allow(helper).to receive(:tracking_label).with(owner)
+        allow(helper).to receive(:tracking_label)
         allow(helper).to receive(:current_user) { owner }
       end
 
@@ -132,8 +211,7 @@ RSpec.describe InviteMembersHelper do
 
         helper.dropdown_invite_members_link(form_model)
 
-        expect(helper).to have_received(:experiment_tracking_category_and_group)
-                            .with(:invite_members_new_dropdown, subject: owner)
+        expect(helper).to have_received(:experiment_tracking_category_and_group).with(:invite_members_new_dropdown)
       end
 
       context 'with experiment enabled' do

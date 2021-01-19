@@ -27,6 +27,8 @@ RSpec.describe Gitlab::Experimentation::EXPERIMENTS do
 end
 
 RSpec.describe Gitlab::Experimentation do
+  using RSpec::Parameterized::TableSyntax
+
   before do
     stub_const('Gitlab::Experimentation::EXPERIMENTS', {
       backwards_compatible_test_experiment: {
@@ -35,6 +37,10 @@ RSpec.describe Gitlab::Experimentation do
       },
       test_experiment: {
         tracking_category: 'Team'
+      },
+      tabular_experiment: {
+        tracking_category: 'Team',
+        rollout_strategy: rollout_strategy
       }
     })
 
@@ -46,6 +52,7 @@ RSpec.describe Gitlab::Experimentation do
   end
 
   let(:enabled_percentage) { 10 }
+  let(:rollout_strategy) { nil }
 
   describe '.get_experiment' do
     subject { described_class.get_experiment(:test_experiment) }
@@ -173,6 +180,61 @@ RSpec.describe Gitlab::Experimentation do
 
         it { is_expected.to eq(false) }
       end
+    end
+  end
+
+  describe '.log_invalid_rollout' do
+    subject { described_class.log_invalid_rollout(:test_experiment, 1) }
+
+    before do
+      allow(described_class).to receive(:valid_subject_for_rollout_strategy?).and_return(valid)
+    end
+
+    context 'subject is not valid for experiment' do
+      let(:valid) { false }
+
+      it 'logs a warning message' do
+        expect_next_instance_of(Gitlab::ExperimentationLogger) do |logger|
+          expect(logger)
+            .to receive(:warn)
+                  .with(
+                    message: 'Subject must conform to the rollout strategy',
+                    experiment_key: :test_experiment,
+                    subject: 'Integer',
+                    rollout_strategy: :cookie
+                  )
+        end
+
+        subject
+      end
+    end
+
+    context 'subject is valid for experiment' do
+      let(:valid) { true }
+
+      it 'does not log a warning message' do
+        expect(Gitlab::ExperimentationLogger).not_to receive(:build)
+
+        subject
+      end
+    end
+  end
+
+  describe '.valid_subject_for_rollout_strategy?' do
+    subject { described_class.valid_subject_for_rollout_strategy?(:tabular_experiment, experiment_subject) }
+
+    where(:rollout_strategy, :experiment_subject, :result) do
+      :cookie | nil       | true
+      nil     | nil       | true
+      :cookie | 'string'  | true
+      nil     | User.new  | false
+      :user   | User.new  | true
+      :group  | User.new  | false
+      :group  | Group.new | true
+    end
+
+    with_them do
+      it { is_expected.to be(result) }
     end
   end
 end

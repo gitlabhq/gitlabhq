@@ -10,7 +10,7 @@ RSpec.describe 'layouts/header/_new_dropdown' do
       before do
         allow(Gitlab::Experimentation).to receive(:active?).and_return(true)
         allow(view).to receive(:experiment_tracking_category_and_group)
-        allow(view).to receive(:tracking_label).with(user)
+        allow(view).to receive(:tracking_label)
       end
 
       context 'with ability to invite members' do
@@ -20,8 +20,8 @@ RSpec.describe 'layouts/header/_new_dropdown' do
           subject
 
           expect(view).to have_received(:experiment_tracking_category_and_group)
-                            .with(:invite_members_new_dropdown, subject: user)
-          expect(view).to have_received(:tracking_label).with(user)
+                            .with(:invite_members_new_dropdown)
+          expect(view).to have_received(:tracking_label)
         end
       end
 

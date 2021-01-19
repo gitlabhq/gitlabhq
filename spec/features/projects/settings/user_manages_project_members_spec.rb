@@ -37,6 +37,8 @@ RSpec.describe 'Projects > Settings > User manages project members' do
   end
 
   it 'imports a team from another project' do
+    stub_feature_flags(invite_members_group_modal: false)
+
     project2.add_maintainer(user)
     project2.add_reporter(user_mike)
 

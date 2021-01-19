@@ -17,13 +17,6 @@ jest.mock('~/smart_interval');
 
 jest.mock('~/lib/utils/favicon');
 
-const returnPromise = (data) =>
-  new Promise((resolve) => {
-    resolve({
-      data,
-    });
-  });
-
 describe('MrWidgetOptions', () => {
   let wrapper;
   let mock;
@@ -281,7 +274,7 @@ describe('MrWidgetOptions', () => {
         let isCbExecuted;
 
         beforeEach(() => {
-          jest.spyOn(wrapper.vm.service, 'checkStatus').mockReturnValue(returnPromise(mockData));
+          jest.spyOn(wrapper.vm.service, 'checkStatus').mockResolvedValue({ data: mockData });
           jest.spyOn(wrapper.vm.mr, 'setData').mockImplementation(() => {});
           jest.spyOn(wrapper.vm, 'handleNotification').mockImplementation(() => {});
 
@@ -331,7 +324,7 @@ describe('MrWidgetOptions', () => {
         it('should fetch deployments', () => {
           jest
             .spyOn(wrapper.vm.service, 'fetchDeployments')
-            .mockReturnValue(returnPromise([{ id: 1, status: SUCCESS }]));
+            .mockResolvedValue({ data: [{ id: 1, status: SUCCESS }] });
 
           wrapper.vm.fetchPreMergeDeployments();
 
@@ -347,7 +340,7 @@ describe('MrWidgetOptions', () => {
         it('should fetch content of Cherry Pick and Revert modals', () => {
           jest
             .spyOn(wrapper.vm.service, 'fetchMergeActionsContent')
-            .mockReturnValue(returnPromise('hello world'));
+            .mockResolvedValue({ data: 'hello world' });
 
           wrapper.vm.fetchActionsContent();
 

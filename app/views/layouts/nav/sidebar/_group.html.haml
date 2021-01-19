@@ -141,7 +141,7 @@
                 %strong.fly-out-top-item-name
                   = _('Members')
 
-      = render_if_exists 'groups/invite_members_side_nav_link', group: @group
+      = content_for :invite_members_sidebar
 
       - if group_sidebar_link?(:settings)
         = nav_link(path: group_settings_nav_link_paths) do

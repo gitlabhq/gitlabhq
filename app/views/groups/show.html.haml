@@ -16,6 +16,11 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, group_url(@group, rss_url_options), title: "#{@group.name} activity")
 
+= content_for :invite_members_sidebar do
+  - if can_invite_members_for_group?(@group)
+    %li
+      .js-invite-members-trigger{ data: { icon: 'plus', classes: 'gl-text-decoration-none! gl-shadow-none!', display_text: _('Invite team members') } }
+
 = render partial: 'flash_messages'
 
 = render_if_exists 'trials/banner', namespace: @group
@@ -26,7 +31,7 @@
 
 = render_if_exists 'groups/group_activity_analytics', group: @group
 
-= render_if_exists 'groups/invite_members_modal', group: @group
+= render 'groups/invite_members_modal', group: @group
 
 .groups-listing{ data: { endpoints: { default: group_children_path(@group, format: :json), shared: group_shared_projects_path(@group, format: :json) } } }
   .top-area.group-nav-container.justify-content-between

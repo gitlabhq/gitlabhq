@@ -368,24 +368,6 @@ RSpec.describe Atlassian::JiraConnect::Client do
       subject.send(:store_build_info, project: project, pipelines: pipelines.take(1))
     end
 
-    it 'does not call the API if the feature flag is not enabled' do
-      stub_feature_flags(jira_sync_builds: false)
-
-      expect(subject).not_to receive(:post)
-
-      subject.send(:store_build_info, project: project, pipelines: pipelines)
-    end
-
-    it 'does call the API if the feature flag enabled for the project' do
-      stub_feature_flags(jira_sync_builds: project)
-
-      expect(subject).to receive(:post)
-        .with('/rest/builds/0.1/bulk', { builds: Array })
-        .and_call_original
-
-      subject.send(:store_build_info, project: project, pipelines: pipelines)
-    end
-
     context 'there are errors' do
       let(:failures) do
         [{ errors: [{ message: 'X' }, { message: 'Y' }] }, { errors: [{ message: 'Z' }] }]

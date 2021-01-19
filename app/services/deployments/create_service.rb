@@ -11,6 +11,8 @@ module Deployments
     end
 
     def execute
+      return last_deployment if last_deployment&.equal_to?(params)
+
       environment.deployments.build(deployment_attributes).tap do |deployment|
         # Deployment#change_status already saves the model, so we only need to
         # call #save ourselves if no status is provided.
@@ -35,6 +37,12 @@ module Deployments
         user: current_user,
         on_stop: params[:on_stop]
       }
+    end
+
+    private
+
+    def last_deployment
+      @environment.last_deployment
     end
   end
 end

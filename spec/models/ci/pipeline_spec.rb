@@ -1261,26 +1261,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
             pipeline.send(event)
           end
-
-          context 'the feature is disabled' do
-            it 'does not trigger a worker' do
-              stub_feature_flags(jira_sync_builds: false)
-
-              expect(worker).not_to receive(:perform_async)
-
-              pipeline.send(event)
-            end
-          end
-
-          context 'the feature is enabled for this project' do
-            it 'does trigger a worker' do
-              stub_feature_flags(jira_sync_builds: pipeline.project)
-
-              expect(worker).to receive(:perform_async)
-
-              pipeline.send(event)
-            end
-          end
         end
       end
     end

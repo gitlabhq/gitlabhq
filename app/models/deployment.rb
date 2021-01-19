@@ -350,6 +350,13 @@ class Deployment < ApplicationRecord
     File.join(environment.ref_path, 'deployments', iid.to_s)
   end
 
+  def equal_to?(params)
+    ref == params[:ref] &&
+      tag == params[:tag] &&
+      sha == params[:sha] &&
+      status == params[:status]
+  end
+
   private
 
   def legacy_finished_at

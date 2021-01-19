@@ -4,7 +4,7 @@
 .js-remove-member-modal
 .row.gl-mt-3
   .col-lg-12
-    - if invite_members_allowed?(group)
+    - if can_invite_members_for_project?(@project)
       .row
         .col-md-12.col-lg-6.gl-display-flex
           .gl-flex-direction-column.gl-flex-wrap.align-items-baseline
@@ -19,7 +19,7 @@
         .col-md-12.col-lg-6
           .gl-display-flex.gl-flex-wrap.gl-lg-justify-content-end.gl-mx-n2.gl-mb-3
             .js-invite-members-trigger.gl-px-2.gl-sm-w-auto.gl-w-full.gl-mb-4{ data: { classes: 'btn btn-success gl-button gl-mt-3 gl-sm-w-auto gl-w-full', display_text: _('Invite members') } }
-        = render_if_exists 'projects/invite_members_modal', project: @project
+        = render 'projects/invite_members_modal', project: @project
 
     - else
       - if project_can_be_shared?
@@ -31,7 +31,7 @@
           %p
             = html_escape(_("Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % { i_open: '<i>'.html_safe, i_close: '</i>'.html_safe }
 
-    - if !invite_members_allowed?(group) && can_manage_project_members?(@project) && project_can_be_shared?
+    - if !can_invite_members_for_project?(@project) && can_manage_project_members?(@project) && project_can_be_shared?
       - if !membership_locked? && @project.allowed_to_share_with_group?
         %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
           %li.nav-tab{ role: 'presentation' }

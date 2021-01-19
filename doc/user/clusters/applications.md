@@ -1199,53 +1199,8 @@ determine the endpoint of your Ingress or Knative application, you can
 
 #### Determining the external endpoint manually
 
-If the cluster is on GKE, click the **Google Kubernetes Engine** link in the
-**Advanced settings**, or go directly to the
-[Google Kubernetes Engine dashboard](https://console.cloud.google.com/kubernetes/)
-and select the proper project and cluster. Then click **Connect** and execute
-the `gcloud` command in a local terminal or using the **Cloud Shell**.
-
-If the cluster is not on GKE, follow the specific instructions for your
-Kubernetes provider to configure `kubectl` with the right credentials.
-The output of the following examples show the external endpoint of your
-cluster. This information can then be used to set up DNS entries and forwarding
-rules that allow external access to your deployed applications.
-
-- If you installed Ingress using the **Applications**, run the following
-  command:
-
-  ```shell
-  kubectl get service --namespace=gitlab-managed-apps ingress-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
-  ```
-
-- Some Kubernetes clusters return a hostname instead, like
-  [Amazon EKS](https://aws.amazon.com/eks/). For these platforms, run:
-
-  ```shell
-  kubectl get service --namespace=gitlab-managed-apps ingress-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
-  ```
-
-  If EKS is used, an [Elastic Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/)
-  is also created, which incurs additional AWS costs.
-
-- For Istio/Knative, the command is different:
-
-  ```shell
-  kubectl get svc --namespace=istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip} '
-  ```
-
-- Otherwise, you can list the IP addresses of all load balancers:
-
-  ```shell
-  kubectl get svc --all-namespaces -o jsonpath='{range.items[?(@.status.loadBalancer.ingress)]}{.status.loadBalancer.ingress[*].ip} '
-  ```
-
-You may see a trailing `%` on some Kubernetes versions. Do not include it.
-
-The Ingress is now available at this address, and routes incoming requests to
-the proper service based on the DNS name in the request. To support this, create
-a wildcard DNS CNAME record for the desired domain name. For example,
-`*.myekscluster.com` would point to the Ingress hostname obtained earlier.
+See the [Base domain section](../project/clusters/index.md#base-domain) for a
+guide on how to determine the external endpoint manually.
 
 #### Using a static IP
 

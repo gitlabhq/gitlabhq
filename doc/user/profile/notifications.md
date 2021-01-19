@@ -149,6 +149,7 @@ Users are notified of the following events:
 | Password changed by administrator | User           | Security email, always sent when an administrator changes the password of another user |
 | Two-factor authentication disabled | User          | Security email, always sent. |
 | New user created             | User                | Sent on user creation, except for OmniAuth (LDAP)|
+| New SAML/SCIM user provisioned. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276018) in GitLab 13.8  | User            | Sent when a user is provisioned through SAML/SCIM |
 | User added to project        | User                | Sent when user is added to project |
 | Project access level changed | User                | Sent when user project access level is changed |
 | User added to group          | User                | Sent when user is added to group |

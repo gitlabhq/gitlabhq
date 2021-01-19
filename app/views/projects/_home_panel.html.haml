@@ -3,7 +3,7 @@
 - max_project_topic_length = 15
 - emails_disabled = @project.emails_disabled?
 
-= render_if_exists 'projects/invite_members_modal', project: @project
+= render 'projects/invite_members_modal', project: @project
 
 .project-home-panel.js-show-on-project-root.gl-my-5{ class: [("empty-project" if empty_repo)] }
   .row.gl-mb-3

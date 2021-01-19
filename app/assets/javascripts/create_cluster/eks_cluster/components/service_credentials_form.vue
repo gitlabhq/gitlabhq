@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { GlButton, GlFormGroup, GlFormInput, GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlFormInput, GlIcon, GlLink, GlSprintf, GlAlert } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { mapState, mapActions } from 'vuex';
 import { DEFAULT_REGION } from '../constants';
@@ -16,6 +16,7 @@ export default {
     GlLink,
     GlSprintf,
     ClipboardButton,
+    GlAlert,
   },
   props: {
     accountAndExternalIdsHelpPath: {
@@ -105,9 +106,14 @@ export default {
         )
       }}
     </p>
-    <div v-if="createRoleError" class="js-invalid-credentials bs-callout bs-callout-danger">
+    <gl-alert
+      v-if="createRoleError"
+      class="js-invalid-credentials gl-mb-5"
+      variant="danger"
+      :dismissible="false"
+    >
       {{ createRoleError }}
-    </div>
+    </gl-alert>
     <div class="form-row">
       <div class="form-group col-md-6">
         <label for="gitlab-account-id">{{ __('Account ID') }}</label>

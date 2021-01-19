@@ -87,12 +87,4 @@ RSpec.describe 'Group navbar' do
 
     it_behaves_like 'verified navigation bar'
   end
-
-  context 'when invite team members is not available' do
-    it 'does not display the js-invite-members-trigger' do
-      visit group_path(group)
-
-      expect(page).not_to have_selector('.js-invite-members-trigger')
-    end
-  end
 end

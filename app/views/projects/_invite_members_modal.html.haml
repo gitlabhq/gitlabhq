@@ -1,4 +1,4 @@
-- if invite_members_allowed?(project.group)
+- if can_invite_members_for_project?(project)
   .js-invite-members-modal{ data: { id: project.id,
     name: project.name,
     is_project: 'true',

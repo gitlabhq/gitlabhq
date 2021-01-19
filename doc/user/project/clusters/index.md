@@ -33,8 +33,10 @@ integrated at the [group level](../../group/clusters/index.md) or
 
 To view your project level Kubernetes clusters, navigate to **Operations > Kubernetes**
 from your project. On this page, you can [add a new cluster](#adding-and-removing-clusters)
-and view information about your existing clusters, such as nodes count and rough estimates
-of memory and CPU usage.
+and view information about your existing clusters, such as:
+
+- Nodes count.
+- Rough estimates of memory and CPU usage.
 
 ## Setting up
 
@@ -76,9 +78,8 @@ to:
 
 You can associate more than one Kubernetes cluster to your
 project. That way you can have different clusters for different environments,
-like dev, staging, production, and so on.
-
-Simply add another cluster, like you did the first time, and make sure to
+like development, staging, production, and so on.
+Add another cluster, like you did the first time, and make sure to
 [set an environment scope](#setting-the-environment-scope) that
 differentiates the new cluster from the rest.
 
@@ -165,7 +166,7 @@ details about the created resources.
 If you choose to manage your own cluster, project-specific resources aren't created
 automatically. If you are using [Auto DevOps](../../../topics/autodevops/index.md), you must
 explicitly provide the `KUBE_NAMESPACE` [deployment variable](#deployment-variables)
-for your deployment jobs to use; otherwise a namespace is created for you.
+for your deployment jobs to use. Otherwise, a namespace is created for you.
 
 #### Important notes
 
@@ -182,10 +183,10 @@ Note the following with GitLab and clusters:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31759) in GitLab 12.6.
 
-If you choose to allow GitLab to manage your cluster for you, GitLab stores a cached
+If you allow GitLab to manage your cluster, GitLab stores a cached
 version of the namespaces and service accounts it creates for your projects. If you
 modify these resources in your cluster manually, this cache can fall out of sync with
-your cluster, which can cause deployment jobs to fail.
+your cluster. This can cause deployment jobs to fail.
 
 To clear the cache:
 
@@ -204,11 +205,60 @@ Specifying a base domain automatically sets `KUBE_INGRESS_BASE_DOMAIN` as an env
 If you are using [Auto DevOps](../../../topics/autodevops/index.md), this domain is used for the different
 stages. For example, Auto Review Apps and Auto Deploy.
 
-The domain should have a wildcard DNS configured to the Ingress IP address. After Ingress has been installed (see [Installing Applications](#installing-applications)),
+The domain should have a wildcard DNS configured to the Ingress IP address.
+After Ingress has been installed (see [Installing Applications](#installing-applications)),
 you can either:
 
 - Create an `A` record that points to the Ingress IP address with your domain provider.
 - Enter a wildcard DNS address using a service such as nip.io or xip.io. For example, `192.168.1.1.xip.io`.
+
+To determine the external Ingress IP address, or external Ingress hostname:
+
+- *If the cluster is on GKE*:
+  1. Click the **Google Kubernetes Engine** link in the **Advanced settings**,
+     or go directly to the [Google Kubernetes Engine dashboard](https://console.cloud.google.com/kubernetes/).
+  1. Select the proper project and cluster.
+  1. Click **Connect**
+  1. Execute the `gcloud` command in a local terminal or using the **Cloud Shell**.
+
+- *If the cluster is not on GKE*: Follow the specific instructions for your
+  Kubernetes provider to configure `kubectl` with the right credentials.
+  The output of the following examples show the external endpoint of your
+  cluster. This information can then be used to set up DNS entries and forwarding
+  rules that allow external access to your deployed applications.
+
+Depending an your Ingress, the external IP address can be retrieved in various ways.
+This list provides a generic solution, and some GitLab-specific approaches:
+
+- In general, you can list the IP addresses of all load balancers by running:
+
+  ```shell
+  kubectl get svc --all-namespaces -o jsonpath='{range.items[?(@.status.loadBalancer.ingress)]}{.status.loadBalancer.ingress[*].ip} '
+  ```
+
+- If you installed Ingress using the **Applications**, run:
+
+  ```shell
+  kubectl get service --namespace=gitlab-managed-apps ingress-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+  ```
+
+- Some Kubernetes clusters return a hostname instead, like
+  [Amazon EKS](https://aws.amazon.com/eks/). For these platforms, run:
+
+  ```shell
+  kubectl get service --namespace=gitlab-managed-apps ingress-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+  ```
+
+  If you use EKS, an [Elastic Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/)
+  is also created, which incurs additional AWS costs.
+
+- Istio/Knative uses a different command. Run:
+
+  ```shell
+  kubectl get svc --namespace=istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip} '
+  ```
+
+If you see a trailing `%` on some Kubernetes versions, do not include it.
 
 ## Installing applications
 
@@ -224,10 +274,10 @@ Auto DevOps automatically detects, builds, tests, deploys, and monitors your
 applications.
 
 To make full use of Auto DevOps (Auto Deploy, Auto Review Apps, and
-Auto Monitoring) the Kubernetes project integration must be enabled, but
+Auto Monitoring) the Kubernetes project integration must be enabled. However,
 Kubernetes clusters can be used without Auto DevOps.
 
-[Read more about Auto DevOps](../../../topics/autodevops/index.md)
+[Read more about Auto DevOps](../../../topics/autodevops/index.md).
 
 ## Deploying to a Kubernetes cluster
 
@@ -260,9 +310,9 @@ following command in your deployment job script, for Kubernetes to access the re
   kubectl create secret docker-registry gitlab-registry --docker-server="$CI_REGISTRY" --docker-username="$CI_DEPLOY_USER" --docker-password="$CI_DEPLOY_PASSWORD" --docker-email="$GITLAB_USER_EMAIL" -o yaml --dry-run | kubectl apply -f -
   ```
 
-The Kubernetes cluster integration exposes the following
+The Kubernetes cluster integration exposes these
 [deployment variables](../../../ci/variables/README.md#deployment-environment-variables) in the
-GitLab CI/CD build environment to deployment jobs, which are jobs that have
+GitLab CI/CD build environment to deployment jobs. Deployment jobs have
 [defined a target environment](../../../ci/environments/index.md#defining-environments).
 
 | Variable                   | Description |
@@ -303,7 +353,7 @@ When you customize the namespace, existing environments remain linked to their c
 namespaces until you [clear the cluster cache](#clearing-the-cluster-cache).
 
 WARNING:
-By default, anyone who can create a deployment job can access any CI variable within
+By default, anyone who can create a deployment job can access any CI variable in
 an environment's deployment job. This includes `KUBECONFIG`, which gives access to
 any secret available to the associated service account in your cluster.
 To keep your production credentials safe, consider using
@@ -327,8 +377,8 @@ the need to leave GitLab.
 #### Deploy Boards
 
 GitLab Deploy Boards offer a consolidated view of the current health and
-status of each CI [environment](../../../ci/environments/index.md) running on Kubernetes,
-displaying the status of the pods in the deployment. Developers and other
+status of each CI [environment](../../../ci/environments/index.md) running on Kubernetes.
+They display the status of the pods in the deployment. Developers and other
 teammates can view the progress and status of a rollout, pod by pod, in the
 workflow they already use without any need to access Kubernetes.
 
@@ -336,7 +386,7 @@ workflow they already use without any need to access Kubernetes.
 
 #### Viewing pod logs
 
-GitLab makes it easy to view the logs of running pods in connected Kubernetes
+GitLab enables you to view the logs of running pods in connected Kubernetes
 clusters. By displaying the logs directly in GitLab, developers can avoid having
 to manage console tools or jump to a different interface.
 
@@ -349,7 +399,7 @@ to manage console tools or jump to a different interface.
 When enabled, the Kubernetes integration adds [web terminal](../../../ci/environments/index.md#web-terminals)
 support to your [environments](../../../ci/environments/index.md). This is based
 on the `exec` functionality found in Docker and Kubernetes, so you get a new
-shell session within your existing containers. To use this integration, you
+shell session in your existing containers. To use this integration, you
 should deploy to Kubernetes using the deployment variables above, ensuring any
 deployments, replica sets, and pods are annotated with:
 

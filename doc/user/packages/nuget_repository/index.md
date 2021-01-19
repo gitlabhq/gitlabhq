@@ -62,6 +62,8 @@ NuGet CLI.
 
 ## Use the GitLab endpoint for NuGet Packages
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36423) group-level endpoint in GitLab 13.8.
+
 To use the GitLab endpoint for NuGet Packages, choose an option:
 
 - **Project-level**: Use when you have few NuGet packages and they are not in

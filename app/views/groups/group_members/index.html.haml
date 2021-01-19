@@ -14,12 +14,12 @@
             = _('Group members')
           %p
             = html_escape(_('You can invite a new member to %{strong_start}%{group_name}%{strong_end}.')) % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
-        - if invite_members_allowed?(@group)
+        - if can_invite_members_for_group?(@group)
           .gl-w-half.gl-xs-w-full
             .gl-display-flex.gl-flex-wrap.gl-lg-justify-content-end.gl-mx-n2.gl-mb-3
               .js-invite-members-trigger.gl-px-2.gl-sm-w-auto.gl-w-full.gl-mb-4{ data: { classes: 'btn btn-success gl-button gl-mt-3 gl-sm-w-auto gl-w-full', display_text: _('Invite members') } }
-          = render_if_exists 'groups/invite_members_modal', group: @group
-    - if can_manage_members && !invite_members_allowed?(@group)
+          = render 'groups/invite_members_modal', group: @group
+    - if can_manage_members && !can_invite_members_for_group?(@group)
       %hr.gl-mt-4
         %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
           %li.nav-tab{ role: 'presentation' }
