@@ -3,9 +3,9 @@ import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import PipelineGraphWrapper from '~/pipelines/components/graph/graph_component_wrapper.vue';
 import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
-import getPipelineDetails from '~/pipelines/graphql/queries/get_pipeline_details.query.graphql';
 import { mockPipelineResponse } from './mock_data';
 
 const defaultProvide = {

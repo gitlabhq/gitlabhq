@@ -442,10 +442,10 @@ const Api = {
     });
   },
 
-  applySuggestion(id) {
+  applySuggestion(id, message) {
     const url = Api.buildUrl(Api.applySuggestionPath).replace(':id', encodeURIComponent(id));
 
-    return axios.put(url);
+    return axios.put(url, { commit_message: message });
   },
 
   applySuggestionBatch(ids) {

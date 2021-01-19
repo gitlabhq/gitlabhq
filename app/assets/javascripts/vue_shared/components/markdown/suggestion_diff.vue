@@ -27,6 +27,10 @@ export default {
       type: String,
       required: true,
     },
+    defaultCommitMessage: {
+      type: String,
+      required: true,
+    },
     suggestionsCount: {
       type: Number,
       required: false,
@@ -47,8 +51,8 @@ export default {
     },
   },
   methods: {
-    applySuggestion(callback) {
-      this.$emit('apply', { suggestionId: this.suggestion.id, callback });
+    applySuggestion(callback, message) {
+      this.$emit('apply', { suggestionId: this.suggestion.id, callback, message });
     },
     applySuggestionBatch() {
       this.$emit('applyBatch');
@@ -74,6 +78,7 @@ export default {
       :is-applying-batch="suggestion.is_applying_batch"
       :batch-suggestions-count="batchSuggestionsCount"
       :help-page-path="helpPagePath"
+      :default-commit-message="defaultCommitMessage"
       :inapplicable-reason="suggestion.inapplicable_reason"
       @apply="applySuggestion"
       @applyBatch="applySuggestionBatch"

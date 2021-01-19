@@ -42,6 +42,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:remove_resolve_note, @project, default_enabled: true)
     push_frontend_feature_flag(:diffs_gradual_load, @project, default_enabled: true)
     push_frontend_feature_flag(:codequality_mr_diff, @project)
+    push_frontend_feature_flag(:suggestions_custom_commit, @project)
 
     record_experiment_user(:invite_members_version_a)
     record_experiment_user(:invite_members_version_b)

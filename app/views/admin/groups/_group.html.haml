@@ -33,5 +33,5 @@
       = visibility_level_icon(group.visibility_level)
 
   .controls.gl-flex-shrink-0.gl-ml-5
-    = link_to _('Edit'), admin_group_edit_path(group), id: "edit_#{dom_id(group)}", class: 'btn'
+    = link_to _('Edit'), admin_group_edit_path(group), id: "edit_#{dom_id(group)}", class: 'gl-button btn'
     = link_to _('Delete'), [:admin, group], data: { confirm: _("Are you sure you want to remove %{group_name}?") % { group_name: group.name } }, method: :delete, class: 'gl-button btn btn-danger'

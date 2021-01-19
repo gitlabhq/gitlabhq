@@ -6,6 +6,9 @@
 - add_page_specific_style 'page_bundles/reports'
 - add_page_specific_style 'page_bundles/ci_status'
 
+- if Feature.enabled?(:graphql_pipeline_details, @project)
+  - add_page_startup_graphql_call('pipelines/get_pipeline_details', { projectPath: @project.full_path, iid: @pipeline.iid })
+
 .js-pipeline-container{ data: { controller_action: "#{controller.action_name}" } }
   #js-pipeline-header-vue.pipeline-header-container{ data: { full_path: @project.full_path, pipeline_iid: @pipeline.iid, pipeline_id: @pipeline.id, pipelines_path: project_pipelines_path(@project) } }
   - if @pipeline.commit.present?

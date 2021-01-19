@@ -1,5 +1,5 @@
 <script>
-import getPipelineDetails from '../../graphql/queries/get_pipeline_details.query.graphql';
+import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import LinkedPipeline from './linked_pipeline.vue';
 import { LOAD_FAILURE } from '../../constants';
 import { UPSTREAM } from './constants';

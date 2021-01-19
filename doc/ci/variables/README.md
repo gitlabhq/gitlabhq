@@ -877,13 +877,7 @@ before making them visible again.
 ### Restricted access to debug logging
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213159) in GitLab 13.7.
-> - It's [deployed behind a feature flag](../../user/feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-restricted-access-to-debug-logging). **(CORE ONLY)**
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292661) in GitLab 13.8.
 
 With restricted access to debug logging, only users with
 [developer or higher permissions](../../user/permissions.md#project-members-permissions)
@@ -896,25 +890,6 @@ WARNING:
 If you add `CI_DEBUG_TRACE` as a local variable to your runners, debug logs are visible
 to all users with access to job logs. The permission levels are not checked by Runner,
 so you should make use of the variable in GitLab only.
-
-#### Enable or disable Restricted access to debug logging **(CORE ONLY)**
-
-Restricted Access to Debug logging is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:restrict_access_to_build_debug_mode)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:restrict_access_to_build_debug_mode)
-```
 
 ### Enable Debug logging
 

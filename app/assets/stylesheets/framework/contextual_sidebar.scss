@@ -471,7 +471,7 @@
       background-color: $black-transparent;
       height: 100%;
       width: 100%;
-      z-index: 300;
+      z-index: $zindex-dropdown-menu;
     }
   }
 }

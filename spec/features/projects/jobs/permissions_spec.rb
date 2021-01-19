@@ -179,34 +179,6 @@ RSpec.describe 'Project Jobs Permissions' do
           expect(status_code).to eq(expected_status_code)
         end
       end
-
-      context 'when restrict_access_to_build_debug_mode feature not enabled' do
-        where(:public_builds, :user_project_role, :ci_debug_trace, :expected_status_code) do
-          true         | 'developer'      | true  | 200
-          true         | 'guest'          | true  | 200
-          true         | 'developer'      | false | 200
-          true         | 'guest'          | false | 200
-          false        | 'developer'      | true  | 200
-          false        | 'guest'          | true  | 403
-          false        | 'developer'      | false | 200
-          false        | 'guest'          | false | 403
-        end
-
-        with_them do
-          before do
-            stub_feature_flags(restrict_access_to_build_debug_mode: false)
-            ci_instance_variable.update!(value: ci_debug_trace)
-            project.update!(public_builds: public_builds)
-            project.add_role(user, user_project_role)
-          end
-
-          it 'renders trace to authorized users' do
-            visit trace_project_job_path(project, job)
-
-            expect(status_code).to eq(expected_status_code)
-          end
-        end
-      end
     end
 
     describe 'raw page' do
@@ -235,35 +207,6 @@ RSpec.describe 'Project Jobs Permissions' do
 
           expect(status_code).to eq(expected_status_code)
           expect(page).to have_content(expected_msg)
-        end
-      end
-
-      context 'when restrict_access_to_build_debug_mode feature not enabled' do
-        where(:public_builds, :user_project_role, :ci_debug_trace, :expected_status_code, :expected_msg) do
-          true         | 'developer'      | true  | 200 | nil
-          true         | 'guest'          | true  | 200 | nil
-          true         | 'developer'      | false | 200 | nil
-          true         | 'guest'          | false | 200 | nil
-          false        | 'developer'      | true  | 200 | nil
-          false        | 'guest'          | true  | 403 | 'The current user is not authorized to access the job log'
-          false        | 'developer'      | false | 200 | nil
-          false        | 'guest'          | false | 403 | 'The current user is not authorized to access the job log'
-        end
-
-        with_them do
-          before do
-            stub_feature_flags(restrict_access_to_build_debug_mode: false)
-            ci_instance_variable.update!(value: ci_debug_trace)
-            project.update!(public_builds: public_builds)
-            project.add_role(user, user_project_role)
-          end
-
-          it 'renders raw trace to authorized users' do
-            visit raw_project_job_path(project, job)
-
-            expect(status_code).to eq(expected_status_code)
-            expect(page).to have_content(expected_msg)
-          end
         end
       end
     end

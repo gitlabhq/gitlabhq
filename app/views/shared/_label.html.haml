@@ -46,7 +46,7 @@
           %button.js-unsubscribe-button.label-subscribe-button.btn.btn-default{ class: ('hidden' if status.unsubscribed?), data: { url: toggle_subscription_path, toggle: 'tooltip' }, title: tooltip_title }
             %span= _('Unsubscribe')
           .dropdown.dropdown-group-label{ class: ('hidden' unless status.unsubscribed?) }
-            %button.label-subscribe-button.btn.btn-default{ data: { toggle: 'dropdown' } }
+            %button.gl-button.label-subscribe-button.btn.btn-default{ data: { toggle: 'dropdown' } }
               %span
                 = _('Subscribe')
                 = sprite_icon('chevron-down')
@@ -59,7 +59,7 @@
                   %button.js-subscribe-button.js-group-level.label-subscribe-button.btn.btn-default{ class: ('hidden' unless status.unsubscribed?), data: { status: status, url: toggle_subscription_group_label_path(label.group, label) } }
                     %span= _('Subscribe at group level')
         - else
-          %button.js-subscribe-button.label-subscribe-button.btn.btn-default{ data: { status: status, url: toggle_subscription_path, toggle: 'tooltip' }, title: tooltip_title }
+          %button.gl-button.js-subscribe-button.label-subscribe-button.btn.btn-default{ data: { status: status, url: toggle_subscription_path, toggle: 'tooltip' }, title: tooltip_title }
             %span= label_subscription_toggle_button_text(label, @project)
 
 = render 'shared/delete_label_modal', label: label

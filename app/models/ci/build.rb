@@ -1020,8 +1020,6 @@ module Ci
     end
 
     def debug_mode?
-      return false unless Feature.enabled?(:restrict_access_to_build_debug_mode, default_enabled: true)
-
       # TODO: Have `debug_mode?` check against data on sent back from runner
       # to capture all the ways that variables can be set.
       # See (https://gitlab.com/gitlab-org/gitlab/-/issues/290955)

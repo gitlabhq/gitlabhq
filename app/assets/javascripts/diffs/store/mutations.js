@@ -36,6 +36,7 @@ export default {
       projectPath,
       dismissEndpoint,
       showSuggestPopover,
+      defaultSuggestionCommitMessage,
       viewDiffsFileByFile,
       mrReviews,
     } = options;
@@ -47,6 +48,7 @@ export default {
       projectPath,
       dismissEndpoint,
       showSuggestPopover,
+      defaultSuggestionCommitMessage,
       viewDiffsFileByFile,
       mrReviews,
     });

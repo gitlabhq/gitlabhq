@@ -2,9 +2,10 @@
 import { GlButton, GlLoadingIcon, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import ApplySuggestion from './apply_suggestion.vue';
 
 export default {
-  components: { GlIcon, GlButton, GlLoadingIcon },
+  components: { GlIcon, GlButton, GlLoadingIcon, ApplySuggestion },
   directives: { 'gl-tooltip': GlTooltipDirective },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -37,6 +38,10 @@ export default {
       type: String,
       required: true,
     },
+    defaultCommitMessage: {
+      type: String,
+      required: true,
+    },
     inapplicableReason: {
       type: String,
       required: false,
@@ -56,6 +61,9 @@ export default {
   computed: {
     canBeBatched() {
       return Boolean(this.glFeatures.batchSuggestions);
+    },
+    canAddCustomCommitMessage() {
+      return this.glFeatures.suggestionsCustomCommit;
     },
     isApplying() {
       return this.isApplyingSingle || this.isApplyingBatch;
@@ -77,10 +85,10 @@ export default {
     },
   },
   methods: {
-    applySuggestion() {
+    applySuggestion(message) {
       if (!this.canApply) return;
       this.isApplyingSingle = true;
-      this.$emit('apply', this.applySuggestionCallback);
+      this.$emit('apply', this.applySuggestionCallback, message);
     },
     applySuggestionCallback() {
       this.isApplyingSingle = false;
@@ -142,7 +150,14 @@ export default {
       >
         {{ __('Add suggestion to batch') }}
       </gl-button>
-      <span v-gl-tooltip.viewport="tooltipMessage" tabindex="0">
+      <apply-suggestion
+        v-if="canAddCustomCommitMessage"
+        :disabled="isDisableButton"
+        :default-commit-message="defaultCommitMessage"
+        class="gl-ml-3"
+        @apply="applySuggestion"
+      />
+      <span v-else v-gl-tooltip.viewport="tooltipMessage" tabindex="0">
         <gl-button
           v-if="isLoggedIn"
           class="btn-inverted js-apply-btn btn-grouped"

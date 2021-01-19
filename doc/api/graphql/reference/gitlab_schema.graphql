@@ -26513,6 +26513,11 @@ type Vulnerability implements Noteable {
   description: String
 
   """
+  Details of the vulnerability
+  """
+  details: [VulnerabilityDetail!]!
+
+  """
   Timestamp of when the vulnerability was first detected
   """
   detectedAt: Time!
@@ -26778,6 +26783,366 @@ type VulnerabilityConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+}
+
+"""
+Represents a vulnerability detail field. The fields with data will depend on the vulnerability detail type
+"""
+union VulnerabilityDetail = VulnerabilityDetailBase | VulnerabilityDetailBoolean | VulnerabilityDetailCode | VulnerabilityDetailCommit | VulnerabilityDetailDiff | VulnerabilityDetailFileLocation | VulnerabilityDetailInt | VulnerabilityDetailList | VulnerabilityDetailMarkdown | VulnerabilityDetailModuleLocation | VulnerabilityDetailTable | VulnerabilityDetailText | VulnerabilityDetailUrl
+
+"""
+Represents the vulnerability details base
+"""
+type VulnerabilityDetailBase {
+  """
+  Description of the field.
+  """
+  description: String!
+
+  """
+  Name of the field.
+  """
+  fieldName: String
+
+  """
+  Name of the field.
+  """
+  name: String!
+}
+
+"""
+Represents the vulnerability details boolean value
+"""
+type VulnerabilityDetailBoolean {
+  """
+  Description of the field.
+  """
+  description: String!
+
+  """
+  Name of the field.
+  """
+  fieldName: String
+
+  """
+  Name of the field.
+  """
+  name: String!
+
+  """
+  Value of the field.
+  """
+  value: Boolean!
+}
+
+"""
+Represents the vulnerability details code field
+"""
+type VulnerabilityDetailCode {
+  """
+  Description of the field.
+  """
+  description: String!
+
+  """
+  Name of the field.
+  """
+  fieldName: String
+
+  """
+  Language of the code.
+  """
+  lang: String
+
+  """
+  Name of the field.
+  """
+  name: String!
+
+  """
+  Source code.
+  """
+  value: String!
+}
+
+"""
+Represents the vulnerability details commit field
+"""
+type VulnerabilityDetailCommit {
+  """
+  Description of the field.
+  """
+  description: String!
+
+  """
+  Name of the field.
+  """
+  fieldName: String
+
+  """
+  Name of the field.
+  """
+  name: String!
+
+  """
+  The commit SHA value.
+  """
+  value: String!
+}
+
+"""
+Represents the vulnerability details diff field
+"""
+type VulnerabilityDetailDiff {
+  """
+  Value of the field after the change.
+  """
+  after: String!
+
+  """
+  Value of the field before the change.
+  """
+  before: String!
+
+  """
+  Description of the field.
+  """
+  description: String!
+
+  """
+  Name of the field.
+  """
+  fieldName: String
+
+  """
+  Name of the field.
+  """
+  name: String!
+}
+
+"""
+Represents the vulnerability details location within a file in the project
+"""
+type VulnerabilityDetailFileLocation {
+  """
+  Description of the field.
+  """
+  description: String!
+
+  """
+  Name of the field.
+  """
+  fieldName: String
+
+  """
+  File name.
+  """
+  fileName: String!
+
+  """
+  End line number of the file location.
+  """
+  lineEnd: Int!
+
+  """
+  Start line number of the file location.
+  """
+  lineStart: Int!
+
+  """
+  Name of the field.
+  """
+  name: String!
+}
+
+"""
+Represents the vulnerability details integer value
+"""
+type VulnerabilityDetailInt {
+  """
+  Description of the field.
+  """
+  description: String!
+
+  """
+  Name of the field.
+  """
+  fieldName: String
+
+  """
+  Name of the field.
+  """
+  name: String!
+
+  """
+  Value of the field.
+  """
+  value: Int!
+}
+
+"""
+Represents the vulnerability details list value
+"""
+type VulnerabilityDetailList {
+  """
+  Description of the field.
+  """
+  description: String!
+
+  """
+  Name of the field.
+  """
+  fieldName: String
+
+  """
+  List of details.
+  """
+  items: [VulnerabilityDetail!]!
+
+  """
+  Name of the field.
+  """
+  name: String!
+}
+
+"""
+Represents the vulnerability details Markdown field
+"""
+type VulnerabilityDetailMarkdown {
+  """
+  Description of the field.
+  """
+  description: String!
+
+  """
+  Name of the field.
+  """
+  fieldName: String
+
+  """
+  Name of the field.
+  """
+  name: String!
+
+  """
+  Value of the Markdown field.
+  """
+  value: String!
+}
+
+"""
+Represents the vulnerability details location within a file in the project
+"""
+type VulnerabilityDetailModuleLocation {
+  """
+  Description of the field.
+  """
+  description: String!
+
+  """
+  Name of the field.
+  """
+  fieldName: String
+
+  """
+  Module name.
+  """
+  moduleName: String!
+
+  """
+  Name of the field.
+  """
+  name: String!
+
+  """
+  Offset of the module location.
+  """
+  offset: Int!
+}
+
+"""
+Represents the vulnerability details table value
+"""
+type VulnerabilityDetailTable {
+  """
+  Description of the field.
+  """
+  description: String!
+
+  """
+  Name of the field.
+  """
+  fieldName: String
+
+  """
+  Table headers.
+  """
+  headers: [VulnerabilityDetail!]!
+
+  """
+  Name of the field.
+  """
+  name: String!
+
+  """
+  Table rows.
+  """
+  rows: [VulnerabilityDetail!]!
+}
+
+"""
+Represents the vulnerability details text field
+"""
+type VulnerabilityDetailText {
+  """
+  Description of the field.
+  """
+  description: String!
+
+  """
+  Name of the field.
+  """
+  fieldName: String
+
+  """
+  Name of the field.
+  """
+  name: String!
+
+  """
+  Value of the text field.
+  """
+  value: String!
+}
+
+"""
+Represents the vulnerability details URL field
+"""
+type VulnerabilityDetailUrl {
+  """
+  Description of the field.
+  """
+  description: String!
+
+  """
+  Name of the field.
+  """
+  fieldName: String
+
+  """
+  Href of the URL.
+  """
+  href: String!
+
+  """
+  Name of the field.
+  """
+  name: String!
+
+  """
+  Text of the URL.
+  """
+  text: String
 }
 
 """

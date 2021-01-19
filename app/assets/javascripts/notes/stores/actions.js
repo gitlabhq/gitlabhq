@@ -559,7 +559,7 @@ export const updateResolvableDiscussionsCounts = ({ commit }) =>
 
 export const submitSuggestion = (
   { commit, dispatch },
-  { discussionId, suggestionId, flashContainer },
+  { discussionId, suggestionId, flashContainer, message },
 ) => {
   const dispatchResolveDiscussion = () =>
     dispatch('resolveDiscussion', { discussionId }).catch(() => {});
@@ -567,7 +567,7 @@ export const submitSuggestion = (
   commit(types.SET_RESOLVING_DISCUSSION, true);
   dispatch('stopPolling');
 
-  return Api.applySuggestion(suggestionId)
+  return Api.applySuggestion(suggestionId, message)
     .then(dispatchResolveDiscussion)
     .catch((err) => {
       const defaultMessage = __(

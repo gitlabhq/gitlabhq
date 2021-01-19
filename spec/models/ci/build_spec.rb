@@ -4775,22 +4775,6 @@ RSpec.describe Ci::Build do
   describe '#debug_mode?' do
     subject { build.debug_mode? }
 
-    context 'when feature is disabled' do
-      before do
-        stub_feature_flags(restrict_access_to_build_debug_mode: false)
-      end
-
-      it { is_expected.to eq false }
-
-      context 'when in variables' do
-        before do
-          create(:ci_instance_variable, key: 'CI_DEBUG_TRACE', value: 'true')
-        end
-
-        it { is_expected.to eq false }
-      end
-    end
-
     context 'when CI_DEBUG_TRACE=true is in variables' do
       context 'when in instance variables' do
         before do

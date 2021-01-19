@@ -44,6 +44,7 @@ const MOCK_DATA = {
   `,
   isApplied: false,
   helpPagePath: 'path_to_docs',
+  defaultCommitMessage: 'Apply suggestion',
 };
 
 describe('Suggestion component', () => {

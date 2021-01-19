@@ -25,7 +25,7 @@
       .js-project-permissions-form
       - if show_visibility_confirm_modal?(@project)
         = render "visibility_modal"
-      = f.submit _('Save changes'), class: "btn btn-success #{('js-confirm-danger' if show_visibility_confirm_modal?(@project))}", data: { qa_selector: 'visibility_features_permissions_save_button', check_field_name: ("project[visibility_level]" if show_visibility_confirm_modal?(@project)), check_compare_value: @project.visibility_level }
+      = f.submit _('Save changes'), class: "gl-button gl-button btn btn-success #{('js-confirm-danger' if show_visibility_confirm_modal?(@project))}", data: { qa_selector: 'visibility_features_permissions_save_button', check_field_name: ("project[visibility_level]" if show_visibility_confirm_modal?(@project)), check_compare_value: @project.visibility_level }
 
 %section.qa-merge-request-settings.rspec-merge-request-settings.settings.merge-requests-feature.no-animate#js-merge-request-settings{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)] }
   .settings-header
@@ -39,7 +39,7 @@
     = form_for @project, remote: true, html: { multipart: true, class: "merge-request-settings-form js-mr-settings-form" }, authenticity_token: true do |f|
       %input{ name: 'update_section', type: 'hidden', value: 'js-merge-request-settings' }
       = render 'projects/merge_request_settings', form: f
-      = f.submit _('Save changes'), class: "btn btn-succes qa-save-merge-request-changes rspec-save-merge-request-changes"
+      = f.submit _('Save changes'), class: "gl-button btn btn-succes qa-save-merge-request-changes rspec-save-merge-request-changes"
 
 = render_if_exists 'projects/merge_request_approvals_settings', expanded: expanded
 
@@ -70,7 +70,7 @@
       %h4= _('Housekeeping')
       %p= _('Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects.')
       = link_to _('Run housekeeping'), housekeeping_project_path(@project),
-        method: :post, class: "btn btn-default"
+        method: :post, class: "gl-button btn btn-default"
 
     = render 'export', project: @project
 
@@ -92,7 +92,7 @@
             %li= _('You will need to update your local repositories to point to the new location.')
             - if @project.deployment_platform.present?
               %li= _('Your deployment services will be broken, you will need to manually fix the services after renaming.')
-        = f.submit _('Change path'), class: "btn btn-warning qa-change-path-button"
+        = f.submit _('Change path'), class: "gl-button btn btn-warning qa-change-path-button"
 
     = render 'transfer', project: @project
 

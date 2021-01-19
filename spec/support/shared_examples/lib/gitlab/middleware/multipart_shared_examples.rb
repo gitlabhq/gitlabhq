@@ -5,7 +5,7 @@ RSpec.shared_examples 'handling all upload parameters conditions' do
     include_context 'with one temporary file for multipart'
 
     let(:rewritten_fields) { rewritten_fields_hash('file' => uploaded_filepath) }
-    let(:params) { upload_parameters_for(filepath: uploaded_filepath, key: 'file', filename: filename, remote_id: remote_id) }
+    let(:params) { upload_parameters_for(filepath: uploaded_filepath, key: 'file', mode: mode, filename: filename, remote_id: remote_id) }
 
     it 'builds an UploadedFile' do
       expect_uploaded_files(filepath: uploaded_filepath, original_filename: filename, remote_id: remote_id, size: uploaded_file.size, params_path: %w(file))
@@ -19,8 +19,8 @@ RSpec.shared_examples 'handling all upload parameters conditions' do
 
     let(:rewritten_fields) { rewritten_fields_hash('file1' => uploaded_filepath, 'file2' => uploaded_filepath2) }
     let(:params) do
-      upload_parameters_for(filepath: uploaded_filepath, key: 'file1', filename: filename, remote_id: remote_id).merge(
-        upload_parameters_for(filepath: uploaded_filepath2, key: 'file2', filename: filename2, remote_id: remote_id2)
+      upload_parameters_for(filepath: uploaded_filepath, key: 'file1', mode: mode, filename: filename, remote_id: remote_id).merge(
+        upload_parameters_for(filepath: uploaded_filepath2, key: 'file2', mode: mode, filename: filename2, remote_id: remote_id2)
       )
     end
 
@@ -38,7 +38,7 @@ RSpec.shared_examples 'handling all upload parameters conditions' do
     include_context 'with one temporary file for multipart'
 
     let(:rewritten_fields) { rewritten_fields_hash('user[avatar]' => uploaded_filepath) }
-    let(:params) { { 'user' => { 'avatar' => upload_parameters_for(filepath: uploaded_filepath, filename: filename, remote_id: remote_id) } } }
+    let(:params) { { 'user' => { 'avatar' => upload_parameters_for(filepath: uploaded_filepath, mode: mode, filename: filename, remote_id: remote_id) } } }
 
     it 'builds an UploadedFile' do
       expect_uploaded_files(filepath: uploaded_filepath, original_filename: filename, remote_id: remote_id, size: uploaded_file.size, params_path: %w(user avatar))
@@ -54,8 +54,8 @@ RSpec.shared_examples 'handling all upload parameters conditions' do
     let(:params) do
       {
         'user' => {
-          'avatar' => upload_parameters_for(filepath: uploaded_filepath, filename: filename, remote_id: remote_id),
-          'screenshot' => upload_parameters_for(filepath: uploaded_filepath2, filename: filename2, remote_id: remote_id2)
+          'avatar' => upload_parameters_for(filepath: uploaded_filepath, mode: mode, filename: filename, remote_id: remote_id),
+          'screenshot' => upload_parameters_for(filepath: uploaded_filepath2, mode: mode, filename: filename2, remote_id: remote_id2)
         }
       }
     end
@@ -74,7 +74,7 @@ RSpec.shared_examples 'handling all upload parameters conditions' do
     include_context 'with one temporary file for multipart'
 
     let(:rewritten_fields) { rewritten_fields_hash('user[avatar][bananas]' => uploaded_filepath) }
-    let(:params) { { 'user' => { 'avatar' => { 'bananas' => upload_parameters_for(filepath: uploaded_filepath, filename: filename, remote_id: remote_id) } } } }
+    let(:params) { { 'user' => { 'avatar' => { 'bananas' => upload_parameters_for(filepath: uploaded_filepath, mode: mode, filename: filename, remote_id: remote_id) } } } }
 
     it 'builds an UploadedFile' do
       expect_uploaded_files(filepath: uploaded_file, original_filename: filename, remote_id: remote_id, size: uploaded_file.size, params_path: %w(user avatar bananas))
@@ -91,10 +91,10 @@ RSpec.shared_examples 'handling all upload parameters conditions' do
       {
         'user' => {
           'avatar' => {
-            'bananas' => upload_parameters_for(filepath: uploaded_filepath, filename: filename, remote_id: remote_id)
+            'bananas' => upload_parameters_for(filepath: uploaded_filepath, mode: mode, filename: filename, remote_id: remote_id)
           },
           'friend' => {
-            'ananas' => upload_parameters_for(filepath: uploaded_filepath2, filename: filename2, remote_id: remote_id2)
+            'ananas' => upload_parameters_for(filepath: uploaded_filepath2, mode: mode, filename: filename2, remote_id: remote_id2)
           }
         }
       }
@@ -122,11 +122,11 @@ RSpec.shared_examples 'handling all upload parameters conditions' do
     end
 
     let(:params) do
-      upload_parameters_for(filepath: uploaded_filepath, filename: filename, key: 'file', remote_id: remote_id).merge(
+      upload_parameters_for(filepath: uploaded_filepath, filename: filename, key: 'file', mode: mode, remote_id: remote_id).merge(
         'user' => {
-          'avatar' => upload_parameters_for(filepath: uploaded_filepath2, filename: filename2, remote_id: remote_id2),
+          'avatar' => upload_parameters_for(filepath: uploaded_filepath2, mode: mode, filename: filename2, remote_id: remote_id2),
           'friend' => {
-            'avatar' => upload_parameters_for(filepath: uploaded_filepath3, filename: filename3, remote_id: remote_id3)
+            'avatar' => upload_parameters_for(filepath: uploaded_filepath3, mode: mode, filename: filename3, remote_id: remote_id3)
           }
         }
       )

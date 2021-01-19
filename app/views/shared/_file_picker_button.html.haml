@@ -1,7 +1,7 @@
 - classes = local_assigns.fetch(:classes, '')
 
 %span.js-filepicker
-  %button.btn.js-filepicker-button{ type: 'button', class: classes }= _("Choose file…")
+  %button.gl-button.btn.js-filepicker-button{ type: 'button', class: classes }= _("Choose file…")
   %span.file_name.js-filepicker-filename= _("No file chosen")
   = f.file_field field, class: "js-filepicker-input hidden"
   - if help_text.present?

@@ -83,6 +83,7 @@ export default {
         :aria-label="ariaLabel"
         category="tertiary"
         class="commit-edit-toggle gl-mr-3"
+        size="small"
         :icon="collapseIcon"
         @click.stop="toggle()"
       />

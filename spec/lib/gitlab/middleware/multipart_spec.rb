@@ -21,10 +21,6 @@ RSpec.describe Gitlab::Middleware::Multipart do
       middleware.call(env)
     end
 
-    before do
-      stub_feature_flags(upload_middleware_jwt_params_handler: false)
-    end
-
     context 'remote file mode' do
       let(:mode) { :remote }
 
@@ -34,7 +30,7 @@ RSpec.describe Gitlab::Middleware::Multipart do
         include_context 'with one temporary file for multipart'
 
         let(:rewritten_fields) { rewritten_fields_hash('file' => uploaded_filepath) }
-        let(:params) { upload_parameters_for(key: 'file', filename: filename, remote_id: remote_id).merge('file.path' => '/should/not/be/read') }
+        let(:params) { upload_parameters_for(key: 'file', mode: mode, filename: filename, remote_id: remote_id).merge('file.path' => '/should/not/be/read') }
 
         it 'builds an UploadedFile' do
           expect_uploaded_files(original_filename: filename, remote_id: remote_id, size: uploaded_file.size, params_path: %w(file))
@@ -62,7 +58,7 @@ RSpec.describe Gitlab::Middleware::Multipart do
 
         context 'in allowed paths' do
           let(:rewritten_fields) { rewritten_fields_hash('file' => uploaded_filepath) }
-          let(:params) { upload_parameters_for(filepath: uploaded_filepath, key: 'file', filename: filename) }
+          let(:params) { upload_parameters_for(filepath: uploaded_filepath, key: 'file', mode: mode, filename: filename) }
 
           it 'builds an UploadedFile' do
             expect_uploaded_files(filepath: uploaded_filepath, original_filename: filename, size: uploaded_file.size, params_path: %w(file))
@@ -75,7 +71,7 @@ RSpec.describe Gitlab::Middleware::Multipart do
           let(:allowed_paths) { [] }
 
           let(:rewritten_fields) { rewritten_fields_hash('file' => uploaded_filepath) }
-          let(:params) { upload_parameters_for(filepath: uploaded_filepath, key: 'file') }
+          let(:params) { upload_parameters_for(filepath: uploaded_filepath, key: 'file', mode: mode) }
 
           it 'returns an error' do
             result = subject
@@ -89,7 +85,7 @@ RSpec.describe Gitlab::Middleware::Multipart do
 
     context 'with dummy params in remote mode' do
       let(:rewritten_fields) { { 'file' => 'should/not/be/read' } }
-      let(:params) { upload_parameters_for(key: 'file') }
+      let(:params) { upload_parameters_for(key: 'file', mode: mode) }
       let(:mode) { :remote }
 
       context 'with an invalid secret' do
@@ -123,35 +119,22 @@ RSpec.describe Gitlab::Middleware::Multipart do
         end
       end
 
-      context 'with invalid key in parameters' do
-        include_context 'with one temporary file for multipart'
-
-        let(:rewritten_fields) { rewritten_fields_hash('file' => uploaded_filepath) }
-        let(:params) { upload_parameters_for(filepath: uploaded_filepath, key: 'wrong_key', filename: filename, remote_id: remote_id) }
-
-        it 'builds no UploadedFile' do
-          expect(app).to receive(:call) do |env|
-            received_params = get_params(env)
-            expect(received_params['file']).to be_nil
-            expect(received_params['wrong_key']).to be_nil
-          end
-
-          subject
-        end
-      end
-
-      context 'with invalid key in header' do
+      context 'with an invalid upload key' do
         include_context 'with one temporary file for multipart'
 
         RSpec.shared_examples 'rejecting the invalid key' do |key_in_header:, key_in_upload_params:, error_message:|
           let(:rewritten_fields) { rewritten_fields_hash(key_in_header => uploaded_filepath) }
-          let(:params) { upload_parameters_for(filepath: uploaded_filepath, key: key_in_upload_params, filename: filename, remote_id: remote_id) }
+          let(:params) { upload_parameters_for(filepath: uploaded_filepath, key: key_in_upload_params, mode: mode, filename: filename, remote_id: remote_id) }
 
           it 'raises an error' do
             expect { subject }.to raise_error(RuntimeError, error_message)
           end
         end
 
+        it_behaves_like 'rejecting the invalid key',
+                        key_in_header: 'file',
+                        key_in_upload_params: 'wrong_key',
+                        error_message: 'Empty JWT param: file.gitlab-workhorse-upload'
         it_behaves_like 'rejecting the invalid key',
                         key_in_header: 'user[avatar',
                         key_in_upload_params: 'user[avatar]',
@@ -178,17 +161,36 @@ RSpec.describe Gitlab::Middleware::Multipart do
                         error_message: "invalid field: \"#{'x' * 11000}\""
       end
 
-      context 'with key with unbalanced brackets in header' do
+      context 'with a modified JWT payload' do
         include_context 'with one temporary file for multipart'
 
-        let(:invalid_key) { 'user[avatar' }
-        let(:rewritten_fields) { rewritten_fields_hash( invalid_key => uploaded_filepath) }
-        let(:params) { upload_parameters_for(filepath: uploaded_filepath, key: 'user[avatar]', filename: filename, remote_id: remote_id) }
+        let(:rewritten_fields) { rewritten_fields_hash('file' => uploaded_filepath) }
+        let(:crafted_payload) { Base64.urlsafe_encode64({ 'path' => 'test' }.to_json) }
+        let(:params) do
+          upload_parameters_for(filepath: uploaded_filepath, key: 'file', mode: mode, filename: filename, remote_id: remote_id).tap do |params|
+            header, _, sig = params['file.gitlab-workhorse-upload'].split('.')
+            params['file.gitlab-workhorse-upload'] = [header, crafted_payload, sig].join('.')
+          end
+        end
 
-        it 'builds no UploadedFile' do
-          expect(app).not_to receive(:call)
+        it 'raises an error' do
+          expect { subject }.to raise_error(JWT::VerificationError, 'Signature verification raised')
+        end
+      end
 
-          expect { subject }.to raise_error(RuntimeError, "invalid field: \"#{invalid_key}\"")
+      context 'with a modified JWT sig' do
+        include_context 'with one temporary file for multipart'
+
+        let(:rewritten_fields) { rewritten_fields_hash('file' => uploaded_filepath) }
+        let(:params) do
+          upload_parameters_for(filepath: uploaded_filepath, key: 'file', mode: mode, filename: filename, remote_id: remote_id).tap do |params|
+            header, payload, sig = params['file.gitlab-workhorse-upload'].split('.')
+            params['file.gitlab-workhorse-upload'] = [header, payload, "#{sig}modified"].join('.')
+          end
+        end
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(JWT::VerificationError, 'Signature verification raised')
         end
       end
     end

@@ -216,7 +216,7 @@
   position: absolute;
   width: auto;
   top: 100%;
-  z-index: 300;
+  z-index: $zindex-dropdown-menu;
   min-width: 240px;
   max-width: 500px;
   margin-top: $dropdown-vertical-offset;

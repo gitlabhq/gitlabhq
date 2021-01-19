@@ -159,13 +159,13 @@ export default {
       <div class="rebase-state-find-class-convention media media-body space-children">
         <span
           v-if="rebaseInProgress || isMakingRequest"
-          class="gl-font-weight-bold"
+          class="gl-font-weight-bold gl-ml-0!"
           data-testid="rebase-message"
           >{{ __('Rebase in progress') }}</span
         >
         <span
           v-if="!rebaseInProgress && !canPushToSourceBranch"
-          class="gl-font-weight-bold"
+          class="gl-font-weight-bold gl-ml-0!"
           data-testid="rebase-message"
           v-html="fastForwardMergeText"
         ></span>
@@ -181,12 +181,17 @@ export default {
           >
             {{ __('Rebase') }}
           </gl-button>
-          <span v-if="!rebasingError" class="gl-font-weight-bold" data-testid="rebase-message">{{
-            __(
-              'Fast-forward merge is not possible. Rebase the source branch onto the target branch.',
-            )
-          }}</span>
-          <span v-else class="gl-font-weight-bold danger" data-testid="rebase-message">{{
+          <span
+            v-if="!rebasingError"
+            class="gl-font-weight-bold gl-ml-0!"
+            data-testid="rebase-message"
+            >{{
+              __(
+                'Fast-forward merge is not possible. Rebase the source branch onto the target branch.',
+              )
+            }}</span
+          >
+          <span v-else class="gl-font-weight-bold danger gl-ml-0!" data-testid="rebase-message">{{
             rebasingError
           }}</span>
         </div>

@@ -3,7 +3,7 @@ import { GlDropdown, GlFormTextarea, GlButton } from '@gitlab/ui';
 import ApplySuggestionComponent from '~/vue_shared/components/markdown/apply_suggestion.vue';
 
 describe('Apply Suggestion component', () => {
-  const propsData = { fileName: 'test.js', disabled: false };
+  const propsData = { defaultCommitMessage: 'Apply suggestion', disabled: false };
   let wrapper;
 
   const createWrapper = (props) => {
@@ -27,7 +27,6 @@ describe('Apply Suggestion component', () => {
 
       expect(dropdown.exists()).toBe(true);
       expect(dropdown.props('text')).toBe('Apply suggestion');
-      expect(dropdown.props('headerText')).toBe('Apply suggestion commit message');
       expect(dropdown.props('disabled')).toBe(false);
     });
 
@@ -35,7 +34,7 @@ describe('Apply Suggestion component', () => {
       const textArea = findTextArea();
 
       expect(textArea.exists()).toBe(true);
-      expect(textArea.attributes('placeholder')).toBe('Apply suggestion on test.js');
+      expect(textArea.attributes('placeholder')).toBe('Apply suggestion');
     });
 
     it('renders an apply button', () => {
@@ -55,11 +54,11 @@ describe('Apply Suggestion component', () => {
   });
 
   describe('apply suggestion', () => {
-    it('emits an apply event with a default message if no message was added', () => {
+    it('emits an apply event with no message if no message was added', () => {
       findTextArea().vm.$emit('input', null);
       findApplyButton().vm.$emit('click');
 
-      expect(wrapper.emitted('apply')).toEqual([['Apply suggestion on test.js']]);
+      expect(wrapper.emitted('apply')).toEqual([[null]]);
     });
 
     it('emits an apply event with a user-defined message', () => {

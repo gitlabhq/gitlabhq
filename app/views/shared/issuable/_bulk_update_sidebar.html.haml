@@ -7,8 +7,8 @@
     = form_tag [:bulk_update, @project, type], method: :post, class: "bulk-update" do
       .block.issuable-sidebar-header
         .filter-item.inline.update-issues-btn.float-left
-          = button_tag _('Update all'), class: "btn update-selected-issues btn-info", disabled: true
-        = button_tag _('Cancel'), class: "btn btn-default js-bulk-update-menu-hide float-right"
+          = button_tag _('Update all'), class: "gl-button btn update-selected-issues btn-info", disabled: true
+        = button_tag _('Cancel'), class: "gl-button btn btn-default js-bulk-update-menu-hide float-right"
       - if params[:state] != 'merged'
         .block
           .title

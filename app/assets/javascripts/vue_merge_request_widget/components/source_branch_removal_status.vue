@@ -18,7 +18,7 @@ export default {
 </script>
 
 <template>
-  <p v-once class="mr-info-list mr-links gl-mb-0">
+  <p v-once class="mr-info-list gl-ml-7 gl-pb-5 gl-mb-0">
     <span class="status-text">
       <gl-sprintf :message="$options.i18n.removesBranchText">
         <template #strong="{ content }">

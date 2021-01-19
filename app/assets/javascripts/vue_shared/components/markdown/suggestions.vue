@@ -38,6 +38,10 @@ export default {
       type: String,
       required: true,
     },
+    defaultCommitMessage: {
+      type: String,
+      required: true,
+    },
     suggestionsCount: {
       type: Number,
       required: false,
@@ -82,16 +86,30 @@ export default {
       this.isRendered = true;
     },
     generateDiff(suggestionIndex) {
-      const { suggestions, disabled, batchSuggestionsInfo, helpPagePath, suggestionsCount } = this;
+      const {
+        suggestions,
+        disabled,
+        batchSuggestionsInfo,
+        helpPagePath,
+        defaultCommitMessage,
+        suggestionsCount,
+      } = this;
       const suggestion =
         suggestions && suggestions[suggestionIndex] ? suggestions[suggestionIndex] : {};
       const SuggestionDiffComponent = Vue.extend(SuggestionDiff);
       const suggestionDiff = new SuggestionDiffComponent({
-        propsData: { disabled, suggestion, batchSuggestionsInfo, helpPagePath, suggestionsCount },
+        propsData: {
+          disabled,
+          suggestion,
+          batchSuggestionsInfo,
+          helpPagePath,
+          defaultCommitMessage,
+          suggestionsCount,
+        },
       });
 
-      suggestionDiff.$on('apply', ({ suggestionId, callback }) => {
-        this.$emit('apply', { suggestionId, callback, flashContainer: this.$el });
+      suggestionDiff.$on('apply', ({ suggestionId, callback, message }) => {
+        this.$emit('apply', { suggestionId, callback, flashContainer: this.$el, message });
       });
 
       suggestionDiff.$on('applyBatch', () => {

@@ -54,6 +54,7 @@ export default {
     ...mapState({
       batchSuggestionsInfo: (state) => state.notes.batchSuggestionsInfo,
     }),
+    ...mapState('diffs', ['defaultSuggestionCommitMessage']),
     noteBody() {
       return this.note.note;
     },
@@ -98,12 +99,16 @@ export default {
     formCancelHandler(shouldConfirm, isDirty) {
       this.$emit('cancelForm', shouldConfirm, isDirty);
     },
-    applySuggestion({ suggestionId, flashContainer, callback = () => {} }) {
+    applySuggestion({ suggestionId, flashContainer, callback = () => {}, message }) {
       const { discussion_id: discussionId, id: noteId } = this.note;
 
-      return this.submitSuggestion({ discussionId, noteId, suggestionId, flashContainer }).then(
-        callback,
-      );
+      return this.submitSuggestion({
+        discussionId,
+        noteId,
+        suggestionId,
+        flashContainer,
+        message,
+      }).then(callback);
     },
     applySuggestionBatch({ flashContainer }) {
       return this.submitSuggestionBatch({ flashContainer });
@@ -130,6 +135,7 @@ export default {
       :note-html="note.note_html"
       :line-type="lineType"
       :help-page-path="helpPagePath"
+      :default-commit-message="defaultSuggestionCommitMessage"
       @apply="applySuggestion"
       @applyBatch="applySuggestionBatch"
       @addToBatch="addSuggestionToBatch"

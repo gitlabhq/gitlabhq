@@ -75,7 +75,7 @@
 
 .right-sidebar-expanded {
   padding-right: 0;
-  z-index: 300;
+  z-index: $zindex-dropdown-menu;
 
   @include media-breakpoint-only(sm) {
     &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {

@@ -124,6 +124,11 @@ export default {
       required: false,
       default: false,
     },
+    defaultSuggestionCommitMessage: {
+      type: String,
+      required: false,
+      default: '',
+    },
     mrReviews: {
       type: Object,
       required: false,
@@ -268,6 +273,7 @@ export default {
       dismissEndpoint: this.dismissEndpoint,
       showSuggestPopover: this.showSuggestPopover,
       viewDiffsFileByFile: fileByFile(this.fileByFileUserPreference),
+      defaultSuggestionCommitMessage: this.defaultSuggestionCommitMessage,
       mrReviews: this.mrReviews || {},
     });
 

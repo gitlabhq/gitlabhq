@@ -165,6 +165,9 @@ production: &base
     ## Disable jQuery and CSS animations
     # disable_animations: true
 
+    ## Application settings cache expiry in seconds (default: 60)
+    # application_settings_cache_seconds: 60
+
   ## Reply by email
   # Allow users to comment on issues and merge requests by replying to notification emails.
   # For documentation on how to set this up, see http://doc.gitlab.com/ce/administration/reply_by_email.html

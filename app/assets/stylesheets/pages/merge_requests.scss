@@ -124,7 +124,7 @@ $mr-widget-min-height: 69px;
       padding: $gl-padding;
 
       @include media-breakpoint-up(md) {
-        padding-left: $gl-padding-8 * 7;
+        margin-left: $gl-spacing-scale-7;
       }
     }
   }
@@ -221,7 +221,7 @@ $mr-widget-min-height: 69px;
 
   .mr-widget-pipeline-graph {
     .dropdown-menu {
-      z-index: 300;
+      z-index: $zindex-dropdown-menu;
     }
   }
 
@@ -394,10 +394,6 @@ $mr-widget-min-height: 69px;
         color: $gl-text-color-quaternary;
       }
     }
-  }
-
-  .mr-widget-help {
-    padding: 10px 16px 10px ($gl-padding-8 * 7);
   }
 
   .ci-coverage {

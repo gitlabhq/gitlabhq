@@ -3543,12 +3543,6 @@ msgstr ""
 msgid "Apply suggestion"
 msgstr ""
 
-msgid "Apply suggestion commit message"
-msgstr ""
-
-msgid "Apply suggestion on %{fileName}"
-msgstr ""
-
 msgid "Apply suggestions"
 msgstr ""
 
@@ -18467,9 +18461,6 @@ msgid "MissingSSHKeyWarningLink|You won't be able to pull or push repositories v
 msgstr ""
 
 msgid "ModalButton|Add projects"
-msgstr ""
-
-msgid "Modal|Cancel"
 msgstr ""
 
 msgid "Modal|Close"

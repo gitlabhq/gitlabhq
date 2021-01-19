@@ -14,7 +14,7 @@
   top: 0;
   margin-top: 3px;
   padding: $gl-padding;
-  z-index: 300;
+  z-index: $zindex-dropdown-menu;
   width: $award-emoji-width;
   font-size: 14px;
   background-color: $white;

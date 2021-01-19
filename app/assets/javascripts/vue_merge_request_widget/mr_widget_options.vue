@@ -48,7 +48,6 @@ import GroupedAccessibilityReportsApp from '../reports/accessibility_report/grou
 import getStateQuery from './queries/get_state.query.graphql';
 
 export default {
-  el: '#js-vue-mr-widget',
   // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
   // eslint-disable-next-line @gitlab/require-i18n-strings
   name: 'MRWidget',

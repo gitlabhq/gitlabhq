@@ -185,6 +185,10 @@ module MergeRequestsHelper
 
     current_user.review_requested_open_merge_requests_count
   end
+
+  def default_suggestion_commit_message
+    @project.suggestion_commit_message.presence || Gitlab::Suggestions::CommitMessage::DEFAULT_SUGGESTION_COMMIT_MESSAGE
+  end
 end
 
 MergeRequestsHelper.prepend_if_ee('EE::MergeRequestsHelper')

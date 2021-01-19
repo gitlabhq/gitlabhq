@@ -1,10 +1,10 @@
 import VueApollo from 'vue-apollo';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
 import LinkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines_column.vue';
 import LinkedPipeline from '~/pipelines/components/graph/linked_pipeline.vue';
-import getPipelineDetails from '~/pipelines/graphql/queries/get_pipeline_details.query.graphql';
 import { DOWNSTREAM, GRAPHQL } from '~/pipelines/components/graph/constants';
 import { LOAD_FAILURE } from '~/pipelines/constants';
 import {
