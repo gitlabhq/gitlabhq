@@ -132,7 +132,7 @@ module QA
                       - 'mvn deploy -s settings.xml'
                       - "mvn dependency:get -Dartifact=#{group_id}:#{artifact_id}:1.0"
                     only:
-                      - master
+                      - "#{project.default_branch}"
                     tags:
                       - "runner-for-#{project.name}"
                 YAML

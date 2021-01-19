@@ -3,7 +3,7 @@
 
 - if can?(current_user, :create_wiki, @wiki.container)
   - create_path = wiki_page_path(@wiki, params[:id], view: 'create')
-  - create_link = link_to s_('WikiEmpty|Create your first page'), create_path, class: 'btn btn-success qa-create-first-page-link', title: s_('WikiEmpty|Create your first page')
+  - create_link = link_to s_('WikiEmpty|Create your first page'), create_path, class: 'btn gl-button btn-success qa-create-first-page-link', title: s_('WikiEmpty|Create your first page')
 
   = render layout: layout_path, locals: { image_path: 'illustrations/wiki_login_empty.svg' } do
     %h4.text-left
@@ -14,11 +14,11 @@
     - if show_enable_confluence_integration?(@wiki.container)
       = link_to s_('WikiEmpty|Enable the Confluence Wiki integration'),
           edit_project_service_path(@project, :confluence),
-          class: 'btn', title: s_('WikiEmpty|Enable the Confluence Wiki integration')
+          class: 'btn gl-button', title: s_('WikiEmpty|Enable the Confluence Wiki integration')
 
 - elsif @project && can?(current_user, :read_issue, @project)
   - issues_link = link_to s_('WikiEmptyIssueMessage|issue tracker'), project_issues_path(@project)
-  - new_issue_link = link_to s_('WikiEmpty|Suggest wiki improvement'), new_project_issue_path(@project), class: 'btn btn-success', title: s_('WikiEmptyIssueMessage|Suggest wiki improvement')
+  - new_issue_link = link_to s_('WikiEmpty|Suggest wiki improvement'), new_project_issue_path(@project), class: 'btn gl-button btn-success', title: s_('WikiEmptyIssueMessage|Suggest wiki improvement')
 
   = render layout: layout_path, locals: { image_path: 'illustrations/wiki_logout_empty.svg' } do
     %h4
