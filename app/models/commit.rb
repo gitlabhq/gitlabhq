@@ -37,7 +37,7 @@ class Commit
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :full_title, pipeline: :single_line
-  cache_markdown_field :description, pipeline: :commit_description
+  cache_markdown_field :description, pipeline: :commit_description, limit: 1.megabyte
 
   class << self
     def decorate(commits, container)

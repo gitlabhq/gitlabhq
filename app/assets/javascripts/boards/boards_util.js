@@ -1,5 +1,4 @@
 import { sortBy } from 'lodash';
-import { __ } from '~/locale';
 import { ListType } from './constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
@@ -9,15 +8,14 @@ export function getMilestone() {
 
 export function updateListPosition(listObj) {
   const { listType } = listObj;
-  let { position, title } = listObj;
+  let { position } = listObj;
   if (listType === ListType.closed) {
     position = Infinity;
   } else if (listType === ListType.backlog) {
     position = -Infinity;
-    title = __('Open');
   }
 
-  return { ...listObj, title, position };
+  return { ...listObj, position };
 }
 
 export function formatBoardLists(lists) {

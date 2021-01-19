@@ -33,8 +33,8 @@ module Projects
       return unless Gitlab::CurrentSettings.housekeeping_enabled?
       return unless Feature.enabled?(:repack_after_shard_migration, project)
 
-      Projects::HousekeepingService.new(project, :gc).execute
-    rescue Projects::HousekeepingService::LeaseTaken
+      Repositories::HousekeepingService.new(project, :gc).execute
+    rescue Repositories::HousekeepingService::LeaseTaken
       # No action required
     end
 

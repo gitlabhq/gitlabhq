@@ -554,7 +554,7 @@ RSpec.describe Git::BranchPushService, services: true do
   end
 
   describe "housekeeping" do
-    let(:housekeeping) { Projects::HousekeepingService.new(project) }
+    let(:housekeeping) { Repositories::HousekeepingService.new(project) }
 
     before do
       # Flush any raw key-value data stored by the housekeeping code.
@@ -562,7 +562,7 @@ RSpec.describe Git::BranchPushService, services: true do
       Gitlab::Redis::Queues.with { |conn| conn.flushall }
       Gitlab::Redis::SharedState.with { |conn| conn.flushall }
 
-      allow(Projects::HousekeepingService).to receive(:new).and_return(housekeeping)
+      allow(Repositories::HousekeepingService).to receive(:new).and_return(housekeeping)
     end
 
     after do

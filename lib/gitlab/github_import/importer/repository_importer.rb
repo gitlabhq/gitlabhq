@@ -56,7 +56,7 @@ module Gitlab
 
           # The initial fetch can bring in lots of loose refs and objects.
           # Running a `git gc` will make importing pull requests faster.
-          Projects::HousekeepingService.new(project, :gc).execute
+          Repositories::HousekeepingService.new(project, :gc).execute
 
           true
         rescue Gitlab::Git::Repository::NoRepository, Gitlab::Shell::Error => e

@@ -48,7 +48,7 @@ It is ultimately performed by the Gitaly RPC `FetchIntoObjectPool`.
 
 This is the current call stack by which it is invoked:
 
-1. `Projects::HousekeepingService#execute_gitlab_shell_gc`
+1. `Repositories::HousekeepingService#execute_gitlab_shell_gc`
 1. `GitGarbageCollectWorker#perform`
 1. `Projects::GitDeduplicationService#fetch_from_source`
 1. `ObjectPool#fetch`

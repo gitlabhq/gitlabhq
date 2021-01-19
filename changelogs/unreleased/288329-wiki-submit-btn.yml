@@ -1,0 +1,5 @@
+---
+title: Disable submit button on wiki if no title and content
+merge_request: 51272
+author:
+type: changed

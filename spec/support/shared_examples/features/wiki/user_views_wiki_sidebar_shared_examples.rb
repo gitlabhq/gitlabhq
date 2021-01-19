@@ -29,7 +29,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
         end
       end
 
-      it 'can create a custom sidebar' do
+      it 'can create a custom sidebar', :js do
         click_on 'Edit sidebar'
         fill_in :wiki_content, with: 'My custom sidebar'
         click_on 'Create page'
@@ -55,7 +55,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
         end
       end
 
-      it 'can edit the custom sidebar' do
+      it 'can edit the custom sidebar', :js do
         click_on 'Edit sidebar'
 
         expect(page).to have_field(:wiki_content, with: 'My custom sidebar')

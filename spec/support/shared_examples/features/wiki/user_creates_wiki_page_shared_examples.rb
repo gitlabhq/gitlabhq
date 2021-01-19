@@ -20,15 +20,25 @@ RSpec.shared_examples 'User creates wiki page' do
       click_link "Create your first page"
     end
 
-    it "shows validation error message" do
+    it "shows validation error message if the form is force submitted", :js do
       page.within(".wiki-form") do
         fill_in(:wiki_content, with: "")
 
-        click_on("Create page")
+        page.execute_script("window.onbeforeunload = null")
+        page.execute_script("document.querySelector('.wiki-form').submit()")
       end
 
       expect(page).to have_content("The form contains the following error:").and have_content("Content can't be blank")
+    end
 
+    it "disables the submit button", :js do
+      page.within(".wiki-form") do
+        fill_in(:wiki_content, with: "")
+        expect(page).to have_button('Create page', disabled: true)
+      end
+    end
+
+    it "makes sure links to unknown pages work correctly", :js do
       page.within(".wiki-form") do
         fill_in(:wiki_content, with: "[link test](test)")
 
@@ -42,7 +52,7 @@ RSpec.shared_examples 'User creates wiki page' do
       expect(page).to have_content("Create New Page")
     end
 
-    it "shows non-escaped link in the pages list" do
+    it "shows non-escaped link in the pages list", :js do
       fill_in(:wiki_title, with: "one/two/three-test")
 
       page.within(".wiki-form") do
@@ -61,7 +71,7 @@ RSpec.shared_examples 'User creates wiki page' do
       expect(page).to have_field("wiki[message]", with: "Create home")
     end
 
-    it "creates a page from the home page" do
+    it "creates a page from the home page", :js do
       fill_in(:wiki_content, with: "[test](test)\n[GitLab API doc](api)\n[Rake tasks](raketasks)\n# Wiki header\n")
       fill_in(:wiki_message, with: "Adding links to wiki")
 
@@ -142,7 +152,7 @@ RSpec.shared_examples 'User creates wiki page' do
       end
     end
 
-    it 'creates a wiki page with Org markup', :aggregate_failures do
+    it 'creates a wiki page with Org markup', :aggregate_failures, :js do
       org_content = <<~ORG
         * Heading
         ** Subheading
@@ -170,7 +180,7 @@ RSpec.shared_examples 'User creates wiki page' do
       visit wiki_path(wiki)
     end
 
-    context "via the `new wiki page` page" do
+    context "via the `new wiki page` page", :js do
       it "creates a page with a single word" do
         click_link("New page")
 
@@ -189,7 +199,7 @@ RSpec.shared_examples 'User creates wiki page' do
                     .and have_content("My awesome wiki!")
       end
 
-      it "creates a page with spaces in the name" do
+      it "creates a page with spaces in the name", :js do
         click_link("New page")
 
         page.within(".wiki-form") do
@@ -207,7 +217,7 @@ RSpec.shared_examples 'User creates wiki page' do
                     .and have_content("My awesome wiki!")
       end
 
-      it "creates a page with hyphens in the name" do
+      it "creates a page with hyphens in the name", :js do
         click_link("New page")
 
         page.within(".wiki-form") do

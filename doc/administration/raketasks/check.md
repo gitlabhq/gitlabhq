@@ -214,7 +214,7 @@ If the issue persists, try triggering `gc` via the
 
 ```ruby
 p = Project.find_by_path("project-name")
-Projects::HousekeepingService.new(p, :gc).execute
+Repositories::HousekeepingService.new(p, :gc).execute
 ```
 
 ### Delete references to missing remote uploads

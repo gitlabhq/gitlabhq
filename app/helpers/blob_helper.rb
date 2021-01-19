@@ -106,11 +106,12 @@ module BlobHelper
     return unless blob
 
     common_classes = "btn btn-#{btn_class}"
+    base_button = button_tag(label, class: "#{common_classes} disabled", disabled: true)
 
     if !on_top_of_branch?(project, ref)
-      button_tag label, class: "#{common_classes} disabled has-tooltip", title: "You can only #{action} files when you are on a branch", data: { container: 'body' }
+      modify_file_button_tooltip(base_button, _("You can only %{action} files when you are on a branch") % { action: action })
     elsif blob.stored_externally?
-      button_tag label, class: "#{common_classes} disabled has-tooltip", title: "It is not possible to #{action} files that are stored in LFS using the web interface", data: { container: 'body' }
+      modify_file_button_tooltip(base_button, _("It is not possible to %{action} files that are stored in LFS using the web interface") % { action: action })
     elsif can_modify_blob?(blob, project, ref)
       button_tag label, class: "#{common_classes}", 'data-target' => "#modal-#{modal_type}-blob", 'data-toggle' => 'modal'
     elsif can?(current_user, :fork_project, project) && can?(current_user, :create_merge_request_in, project)
@@ -364,7 +365,11 @@ module BlobHelper
   end
 
   def edit_disabled_button_tag(button_text, common_classes)
-    button_tag(button_text, class: "#{common_classes} disabled has-tooltip", title: _('You can only edit files when you are on a branch'), data: { container: 'body' })
+    button = button_tag(button_text, class: "#{common_classes} disabled", disabled: true)
+
+    # Disabled buttons with tooltips should have the tooltip attached
+    # to a wrapper element https://bootstrap-vue.org/docs/components/tooltip#disabled-elements
+    content_tag(:span, button, class: 'has-tooltip', title: _('You can only edit files when you are on a branch'), data: { container: 'body' })
   end
 
   def edit_link_tag(link_text, edit_path, common_classes, data)
@@ -400,5 +405,13 @@ module BlobHelper
   def editing_ci_config?
     @path.to_s.end_with?(Ci::Pipeline::CONFIG_EXTENSION) ||
       @path.to_s == @project.ci_config_path_or_default
+  end
+
+  private
+
+  def modify_file_button_tooltip(button, tooltip_message)
+    # Disabled buttons with tooltips should have the tooltip attached
+    # to a wrapper element https://bootstrap-vue.org/docs/components/tooltip#disabled-elements
+    content_tag(:span, button, class: 'btn-group has-tooltip', title: tooltip_message, data: { container: 'body' })
   end
 end

@@ -16,7 +16,7 @@ RSpec.describe BlobHelper do
     end
   end
 
-  describe "#edit_blob_link" do
+  describe "#edit_blob_button" do
     let(:namespace) { create(:namespace, name: 'gitlab') }
     let(:project) { create(:project, :repository, namespace: namespace) }
 
@@ -28,12 +28,13 @@ RSpec.describe BlobHelper do
       allow(helper).to receive(:can_collaborate_with_project?).and_return(true)
     end
 
-    it 'verifies blob is text' do
+    it 'does not render edit button when blob is not text' do
       expect(helper).not_to receive(:blob_text_viewable?)
 
-      button = helper.edit_blob_button(project, 'refs/heads/master', 'README.md')
+      # RADME.md is not a valid file.
+      button = helper.edit_blob_button(project, 'refs/heads/master', 'RADME.md')
 
-      expect(button).to start_with('<button')
+      expect(button).to eq(nil)
     end
 
     it 'uses the passed blob instead retrieve from repository' do

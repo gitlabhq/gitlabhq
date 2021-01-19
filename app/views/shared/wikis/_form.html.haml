@@ -70,10 +70,10 @@
 
   .form-actions
     - if @page && @page.persisted?
-      = f.submit _("Save changes"), class: 'btn gl-button btn-success qa-save-changes-button'
+      = f.submit _("Save changes"), class: 'btn gl-button btn-success qa-save-changes-button js-wiki-btn-submit', disabled: 'true'
       .float-right
         = link_to _("Cancel"), wiki_page_path(@wiki, @page), class: 'btn gl-button btn-cancel btn-default'
     - else
-      = f.submit s_("Wiki|Create page"), class: 'btn-success gl-button btn qa-create-page-button rspec-create-page-button'
+      = f.submit s_("Wiki|Create page"), class: 'btn-success gl-button btn qa-create-page-button rspec-create-page-button js-wiki-btn-submit', disabled: 'true'
       .float-right
         = link_to _("Cancel"), wiki_path(@wiki), class: 'btn gl-button btn-cancel btn-default'

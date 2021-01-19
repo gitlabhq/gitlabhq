@@ -1,0 +1,5 @@
+---
+title: Strip newline from commit description on project overview
+merge_request: 51099
+author: Kev @KevSlashNull
+type: fixed

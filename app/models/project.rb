@@ -34,7 +34,7 @@ class Project < ApplicationRecord
   include FromUnion
   include IgnorableColumns
   include Integration
-  include CanHousekeepRepository
+  include Repositories::CanHousekeepRepository
   include EachBatch
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override

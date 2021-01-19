@@ -35,7 +35,7 @@ class List {
   constructor(obj) {
     this.id = obj.id;
     this.position = obj.position;
-    this.title = (obj.list_type || obj.listType) === 'backlog' ? __('Open') : obj.title;
+    this.title = obj.title;
     this.type = obj.list_type || obj.listType;
 
     const typeInfo = this.getTypeInfo(this.type);

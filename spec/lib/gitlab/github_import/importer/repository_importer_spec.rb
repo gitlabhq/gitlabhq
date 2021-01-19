@@ -205,7 +205,7 @@ RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter do
         .with(project.import_url, refmap: Gitlab::GithubImport.refmap, forced: true, remote_name: 'github')
 
       service = double
-      expect(Projects::HousekeepingService)
+      expect(Repositories::HousekeepingService)
         .to receive(:new).with(project, :gc).and_return(service)
       expect(service).to receive(:execute)
 

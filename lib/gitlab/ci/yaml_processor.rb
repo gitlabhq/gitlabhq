@@ -10,12 +10,6 @@ module Gitlab
     class YamlProcessor
       ValidationError = Class.new(StandardError)
 
-      def self.validation_message(content, opts = {})
-        result = new(content, opts).execute
-
-        result.errors.first
-      end
-
       def initialize(config_content, opts = {})
         @config_content = config_content
         @opts = opts

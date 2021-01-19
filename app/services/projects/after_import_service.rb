@@ -9,7 +9,7 @@ module Projects
     end
 
     def execute
-      service = Projects::HousekeepingService.new(@project)
+      service = Repositories::HousekeepingService.new(@project)
 
       service.execute do
         import_failure_service.with_retry(action: 'delete_all_refs') do
@@ -21,7 +21,7 @@ module Projects
       # import actually changed, so we increment the counter to avoid
       # causing GC to run every time.
       service.increment!
-    rescue Projects::HousekeepingService::LeaseTaken => e
+    rescue Repositories::HousekeepingService::LeaseTaken => e
       Gitlab::Import::Logger.info(
         message: 'Project housekeeping failed',
         project_full_path: @project.full_path,

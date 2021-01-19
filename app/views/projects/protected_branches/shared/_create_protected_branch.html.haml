@@ -6,8 +6,7 @@
     .card-body
       = form_errors(@protected_branch)
       .form-group.row
-        .col-md-2.text-right
-          = f.label :name, 'Branch:'
+        = f.label :name, s_('ProtectedBranch|Branch:'), class: 'col-md-2 text-left text-md-right'
         .col-md-10
           = render partial: "projects/protected_branches/shared/dropdown", locals: { f: f }
           .form-text.text-muted
@@ -15,15 +14,13 @@
             - wildcards_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: wildcards_url }
             = (s_("ProtectedBranch|%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported.") % { wildcards_link_start: wildcards_link_start, wildcards_link_end: '</a>', code_tag_start: '<code>', code_tag_end: '</code>' }).html_safe
       .form-group.row
-        %label.col-md-2.text-right{ for: 'merge_access_levels_attributes' }
-          = s_("ProtectedBranch|Allowed to merge:")
+        = f.label :merge_access_levels_attributes, s_("ProtectedBranch|Allowed to merge:"), class: 'col-md-2 text-left text-md-right'
         .col-md-10
           = yield :merge_access_levels
       .form-group.row
-        %label.col-md-2.text-right{ for: 'push_access_levels_attributes' }
-          = s_("ProtectedBranch|Allowed to push:")
+        = f.label :push_access_levels_attributes, s_("ProtectedBranch|Allowed to push:"), class: 'col-md-2 text-left text-md-right'
         .col-md-10
           = yield :push_access_levels
-      = render_if_exists 'projects/protected_branches/ee/code_owner_approval_form'
+      = render_if_exists 'projects/protected_branches/ee/code_owner_approval_form', f: f
     .card-footer
       = f.submit s_('ProtectedBranch|Protect'), class: 'btn-success btn', disabled: true, data: { qa_selector: 'protect_button' }

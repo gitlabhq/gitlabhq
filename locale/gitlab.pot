@@ -915,6 +915,9 @@ msgstr ""
 msgid "%{webhooks_link_start}%{webhook_type}%{link_end} enable you to send notifications to web applications in response to events in a group or project. We recommend using an %{integrations_link_start}integration%{link_end} in preference to a webhook."
 msgstr ""
 
+msgid "%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}v*%{code_tag_end} or %{code_tag_start}*-release%{code_tag_end} are supported."
+msgstr ""
+
 msgid "&lt; 1 hour"
 msgstr ""
 
@@ -2950,6 +2953,9 @@ msgid "Allowed domains for sign-ups"
 msgstr ""
 
 msgid "Allowed email domain restriction only permitted for top-level groups"
+msgstr ""
+
+msgid "Allowed to create:"
 msgstr ""
 
 msgid "Allowed to fail"
@@ -15941,6 +15947,9 @@ msgstr ""
 msgid "Issue|Title"
 msgstr ""
 
+msgid "It is not possible to %{action} files that are stored in LFS using the web interface"
+msgstr ""
+
 msgid "It looks like you have some draft commits in this branch."
 msgstr ""
 
@@ -22977,6 +22986,9 @@ msgstr ""
 msgid "Protect"
 msgstr ""
 
+msgid "Protect a tag"
+msgstr ""
+
 msgid "Protect variable"
 msgstr ""
 
@@ -23023,6 +23035,9 @@ msgid "ProtectedBranch|Allowed to push:"
 msgstr ""
 
 msgid "ProtectedBranch|Branch"
+msgstr ""
+
+msgid "ProtectedBranch|Branch:"
 msgstr ""
 
 msgid "ProtectedBranch|Code owner approval"
@@ -27566,6 +27581,9 @@ msgid "Tag push events"
 msgstr ""
 
 msgid "Tag this commit."
+msgstr ""
+
+msgid "Tag:"
 msgstr ""
 
 msgid "Tagged this commit to %{tag_name} with \"%{message}\"."
@@ -32364,6 +32382,9 @@ msgid "You can now submit a merge request to get this change into the original b
 msgstr ""
 
 msgid "You can now submit a merge request to get this change into the original project."
+msgstr ""
+
+msgid "You can only %{action} files when you are on a branch"
 msgstr ""
 
 msgid "You can only edit files when you are on a branch"
