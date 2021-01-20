@@ -53,13 +53,13 @@ type uploadPreparers struct {
 }
 
 const (
-	apiPattern           = `^/api/`
-	ciAPIPattern         = `^/ci/api/`
-	gitProjectPattern    = `^/([^/]+/){1,}[^/]+\.git/`
-	projectPattern       = `^/([^/]+/){1,}[^/]+/`
-	snippetUploadPattern = `^/uploads/personal_snippet`
-	userUploadPattern    = `^/uploads/user`
-	importPattern        = `^/import/`
+	apiPattern           = `\A/api/`
+	ciAPIPattern         = `\A/ci/api/`
+	gitRepositoryPattern = `\A/.+\.git/`
+	projectPattern       = `\A/([^/]+/){1,}[^/]+/`
+	snippetUploadPattern = `\A/uploads/personal_snippet`
+	userUploadPattern    = `\A/uploads/user`
+	importPattern        = `\A/import/`
 )
 
 func compileRegexp(regexpStr string) *regexp.Regexp {
@@ -222,10 +222,10 @@ func (u *upstream) configureRoutes() {
 
 	u.Routes = []routeEntry{
 		// Git Clone
-		u.route("GET", gitProjectPattern+`info/refs\z`, git.GetInfoRefsHandler(api)),
-		u.route("POST", gitProjectPattern+`git-upload-pack\z`, contentEncodingHandler(git.UploadPack(api)), withMatcher(isContentType("application/x-git-upload-pack-request"))),
-		u.route("POST", gitProjectPattern+`git-receive-pack\z`, contentEncodingHandler(git.ReceivePack(api)), withMatcher(isContentType("application/x-git-receive-pack-request"))),
-		u.route("PUT", gitProjectPattern+`gitlab-lfs/objects/([0-9a-f]{64})/([0-9]+)\z`, lfs.PutStore(api, signingProxy, preparers.lfs), withMatcher(isContentType("application/octet-stream"))),
+		u.route("GET", gitRepositoryPattern+`info/refs\z`, git.GetInfoRefsHandler(api), withMatcher(git.IsSmartInfoRefs)),
+		u.route("POST", gitRepositoryPattern+`git-upload-pack\z`, contentEncodingHandler(git.UploadPack(api)), withMatcher(isContentType("application/x-git-upload-pack-request"))),
+		u.route("POST", gitRepositoryPattern+`git-receive-pack\z`, contentEncodingHandler(git.ReceivePack(api)), withMatcher(isContentType("application/x-git-receive-pack-request"))),
+		u.route("PUT", gitRepositoryPattern+`gitlab-lfs/objects/([0-9a-f]{64})/([0-9]+)\z`, lfs.PutStore(api, signingProxy, preparers.lfs), withMatcher(isContentType("application/octet-stream"))),
 
 		// CI Artifacts
 		u.route("POST", apiPattern+`v4/jobs/[0-9]+/artifacts\z`, contentEncodingHandler(artifacts.UploadArtifacts(api, signingProxy, preparers.artifacts))),

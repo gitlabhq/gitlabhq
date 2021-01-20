@@ -16,7 +16,7 @@ describe('Applications', () => {
     gon.features = gon.features || {};
   });
 
-  const createApp = ({ applications, type, propsData } = {}, isShallow) => {
+  const createComponent = ({ applications, type, propsData } = {}, isShallow) => {
     const mountMethod = isShallow ? shallowMount : mount;
 
     wrapper = mountMethod(Applications, {
@@ -29,7 +29,7 @@ describe('Applications', () => {
     });
   };
 
-  const createShallowApp = (options) => createApp(options, true);
+  const createShallowComponent = (options) => createComponent(options, true);
   const findByTestId = (id) => wrapper.find(`[data-testid="${id}"]`);
   afterEach(() => {
     wrapper.destroy();
@@ -37,7 +37,7 @@ describe('Applications', () => {
 
   describe('Project cluster applications', () => {
     beforeEach(() => {
-      createApp({ type: CLUSTER_TYPE.PROJECT });
+      createComponent({ type: CLUSTER_TYPE.PROJECT });
     });
 
     it('renders a row for Ingress', () => {
@@ -82,7 +82,7 @@ describe('Applications', () => {
 
   describe('Group cluster applications', () => {
     beforeEach(() => {
-      createApp({ type: CLUSTER_TYPE.GROUP });
+      createComponent({ type: CLUSTER_TYPE.GROUP });
     });
 
     it('renders a row for Ingress', () => {
@@ -128,7 +128,7 @@ describe('Applications', () => {
 
   describe('Instance cluster applications', () => {
     beforeEach(() => {
-      createApp({ type: CLUSTER_TYPE.INSTANCE });
+      createComponent({ type: CLUSTER_TYPE.INSTANCE });
     });
 
     it('renders a row for Ingress', () => {
@@ -174,14 +174,14 @@ describe('Applications', () => {
 
   describe('Helm application', () => {
     it('does not render a row for Helm Tiller', () => {
-      createApp();
+      createComponent();
       expect(wrapper.find('.js-cluster-application-row-helm').exists()).toBe(false);
     });
   });
 
   describe('Ingress application', () => {
     it('shows the correct warning message', () => {
-      createApp();
+      createComponent();
       expect(findByTestId('ingressCostWarning').element).toMatchSnapshot();
     });
 
@@ -195,7 +195,7 @@ describe('Applications', () => {
         },
       };
 
-      beforeEach(() => createShallowApp(propsData));
+      beforeEach(() => createShallowComponent(propsData));
 
       it('renders IngressModsecuritySettings', () => {
         const modsecuritySettings = wrapper.find(IngressModsecuritySettings);
@@ -206,7 +206,7 @@ describe('Applications', () => {
     describe('when installed', () => {
       describe('with ip address', () => {
         it('renders ip address with a clipboard button', () => {
-          createApp({
+          createComponent({
             applications: {
               ingress: {
                 title: 'Ingress',
@@ -225,7 +225,7 @@ describe('Applications', () => {
 
       describe('with hostname', () => {
         it('renders hostname with a clipboard button', () => {
-          createApp({
+          createComponent({
             applications: {
               ingress: {
                 title: 'Ingress',
@@ -255,7 +255,7 @@ describe('Applications', () => {
 
       describe('without ip address', () => {
         it('renders an input text with a loading icon and an alert text', () => {
-          createApp({
+          createComponent({
             applications: {
               ingress: {
                 title: 'Ingress',
@@ -272,7 +272,7 @@ describe('Applications', () => {
 
     describe('before installing', () => {
       it('does not render the IP address', () => {
-        createApp();
+        createComponent();
 
         expect(wrapper.text()).not.toContain('Ingress IP Address');
         expect(wrapper.find('.js-endpoint').exists()).toBe(false);
@@ -282,13 +282,13 @@ describe('Applications', () => {
 
   describe('Cert-Manager application', () => {
     it('shows the correct description', () => {
-      createApp();
+      createComponent();
       expect(findByTestId('certManagerDescription').element).toMatchSnapshot();
     });
 
     describe('when not installed', () => {
       it('renders email & allows editing', () => {
-        createApp({
+        createComponent({
           applications: {
             cert_manager: {
               title: 'Cert-Manager',
@@ -305,7 +305,7 @@ describe('Applications', () => {
 
     describe('when installed', () => {
       it('renders email in readonly', () => {
-        createApp({
+        createComponent({
           applications: {
             cert_manager: {
               title: 'Cert-Manager',
@@ -324,7 +324,7 @@ describe('Applications', () => {
   describe('Jupyter application', () => {
     describe('with ingress installed with ip & jupyter installable', () => {
       it('renders hostname active input', () => {
-        createApp({
+        createComponent({
           applications: {
             ingress: {
               title: 'Ingress',
@@ -342,7 +342,7 @@ describe('Applications', () => {
 
     describe('with ingress installed without external ip', () => {
       it('does not render hostname input', () => {
-        createApp({
+        createComponent({
           applications: {
             ingress: { title: 'Ingress', status: 'installed' },
           },
@@ -356,7 +356,7 @@ describe('Applications', () => {
 
     describe('with ingress & jupyter installed', () => {
       it('renders readonly input', () => {
-        createApp({
+        createComponent({
           applications: {
             ingress: {
               title: 'Ingress',
@@ -375,7 +375,7 @@ describe('Applications', () => {
 
     describe('without ingress installed', () => {
       beforeEach(() => {
-        createApp();
+        createComponent();
       });
 
       it('does not render input', () => {
@@ -388,7 +388,7 @@ describe('Applications', () => {
 
   describe('Prometheus application', () => {
     it('shows the correct description', () => {
-      createApp();
+      createComponent();
       expect(findByTestId('prometheusDescription').element).toMatchSnapshot();
     });
   });
@@ -414,14 +414,14 @@ describe('Applications', () => {
     let knativeDomainEditor;
 
     beforeEach(() => {
-      createShallowApp(propsData);
+      createShallowComponent(propsData);
       jest.spyOn(eventHub, '$emit');
 
       knativeDomainEditor = wrapper.find(KnativeDomainEditor);
     });
 
     it('shows the correct description', async () => {
-      createApp();
+      createComponent();
       wrapper.setProps({
         providerType: PROVIDER_TYPE.GCP,
         preInstalledKnative: true,
@@ -487,7 +487,7 @@ describe('Applications', () => {
       },
     };
 
-    beforeEach(() => createShallowApp(propsData));
+    beforeEach(() => createShallowComponent(propsData));
 
     it('renders the correct Component', () => {
       const crossplane = wrapper.find(CrossplaneProviderStack);
@@ -495,7 +495,7 @@ describe('Applications', () => {
     });
 
     it('shows the correct description', () => {
-      createApp();
+      createComponent();
       expect(findByTestId('crossplaneDescription').element).toMatchSnapshot();
     });
   });
@@ -503,7 +503,7 @@ describe('Applications', () => {
   describe('Elastic Stack application', () => {
     describe('with elastic stack installable', () => {
       it('renders the install button enabled', () => {
-        createApp();
+        createComponent();
 
         expect(
           wrapper
@@ -517,7 +517,7 @@ describe('Applications', () => {
 
     describe('elastic stack installed', () => {
       it('renders uninstall button', () => {
-        createApp({
+        createComponent({
           applications: {
             elastic_stack: { title: 'Elastic Stack', status: 'installed' },
           },
@@ -535,7 +535,7 @@ describe('Applications', () => {
   });
 
   describe('Fluentd application', () => {
-    beforeEach(() => createShallowApp());
+    beforeEach(() => createShallowComponent());
 
     it('renders the correct Component', () => {
       expect(wrapper.find(FluentdOutputSettings).exists()).toBe(true);
@@ -544,7 +544,7 @@ describe('Applications', () => {
 
   describe('Cilium application', () => {
     it('shows the correct description', () => {
-      createApp({ propsData: { ciliumHelpPath: 'cilium-help-path' } });
+      createComponent({ propsData: { ciliumHelpPath: 'cilium-help-path' } });
       expect(findByTestId('ciliumDescription').element).toMatchSnapshot();
     });
   });

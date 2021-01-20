@@ -7,6 +7,7 @@
 extends: substitution
 message: 'Use "administration", "administrator", "administer", or "Admin Area" instead of "admin" or "admin area".'
 link: https://docs.gitlab.com/ee/development/documentation/styleguide.html
+# Do not set `level: error`, as our docs refer to other docs which use "admin" and "Admin"
 level: warning
 ignorecase: true
 swap:

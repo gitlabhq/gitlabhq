@@ -754,9 +754,8 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     context 'when both internal and external issue trackers are enabled' do
       before do
-        subject.project.has_external_issue_tracker = true
-        subject.project.save!
         create(:jira_service, project: subject.project)
+        subject.project.reload
       end
 
       it 'does not cache issues from external trackers' do
@@ -1263,8 +1262,9 @@ RSpec.describe MergeRequest, factory_default: :keep do
   describe '#issues_mentioned_but_not_closing' do
     let(:closing_issue) { create :issue, project: subject.project }
     let(:mentioned_issue) { create :issue, project: subject.project }
-
     let(:commit) { double('commit', safe_message: "Fixes #{closing_issue.to_reference}") }
+
+    subject { create(:merge_request, source_project: create(:project)) }
 
     it 'detects issues mentioned in description but not closed' do
       subject.project.add_developer(subject.author)
@@ -1279,13 +1279,12 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     context 'when the project has an external issue tracker' do
-      subject { create(:merge_request, source_project: create(:project, :repository)) }
-
       before do
         subject.project.add_developer(subject.author)
         commit = double(:commit, safe_message: 'Fixes TEST-3')
 
         create(:jira_service, project: subject.project)
+        subject.project.reload
 
         allow(subject).to receive(:commits).and_return([commit])
         allow(subject).to receive(:description).and_return('Is related to TEST-2 and TEST-3')
@@ -1469,6 +1468,8 @@ RSpec.describe MergeRequest, factory_default: :keep do
   end
 
   describe '#default_merge_commit_message' do
+    subject { create(:merge_request, source_project: create(:project)) }
+
     it 'includes merge information as the title' do
       request = build(:merge_request, source_branch: 'source', target_branch: 'target')
 
@@ -1645,7 +1646,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
   end
 
   it_behaves_like 'an editable mentionable' do
-    subject { create(:merge_request, :simple) }
+    subject { create(:merge_request, :simple, source_project: create(:project, :repository)) }
 
     let(:backref_text) { "merge request #{subject.to_reference}" }
     let(:set_mentionable_text) { ->(txt) { subject.description = txt } }

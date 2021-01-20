@@ -151,7 +151,8 @@ class Repository
       all: !!opts[:all],
       first_parent: !!opts[:first_parent],
       order: opts[:order],
-      literal_pathspec: opts.fetch(:literal_pathspec, true)
+      literal_pathspec: opts.fetch(:literal_pathspec, true),
+      trailers: opts[:trailers]
     }
 
     commits = Gitlab::Git::Commit.where(options)

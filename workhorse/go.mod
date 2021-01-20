@@ -3,11 +3,11 @@ module gitlab.com/gitlab-org/gitlab-workhorse
 go 1.13
 
 require (
-	github.com/Azure/azure-storage-blob-go v0.10.0
+	github.com/Azure/azure-storage-blob-go v0.11.1-0.20201209121048-6df5d9af221d
 	github.com/BurntSushi/toml v0.3.1
 	github.com/FZambia/sentinel v1.0.0
 	github.com/alecthomas/chroma v0.7.3
-	github.com/aws/aws-sdk-go v1.31.13
+	github.com/aws/aws-sdk-go v1.36.1
 	github.com/certifi/gocertifi v0.0.0-20200922220541-2c3bb06c6054 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/disintegration/imaging v1.6.2
@@ -15,7 +15,7 @@ require (
 	github.com/golang/gddo v0.0.0-20190419222130-af0f2af80721
 	github.com/golang/protobuf v1.4.3
 	github.com/gomodule/redigo v2.0.0+incompatible
-	github.com/gorilla/websocket v1.4.0
+	github.com/gorilla/websocket v1.4.1
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/johannesboyne/gofakes3 v0.0.0-20200510090907-02d71f533bec
@@ -30,11 +30,15 @@ require (
 	github.com/stretchr/testify v1.6.1
 	gitlab.com/gitlab-org/gitaly v1.74.0
 	gitlab.com/gitlab-org/labkit v1.0.0
-	gocloud.dev v0.20.0
+	gocloud.dev v0.21.1-0.20201223184910-5094f54ed8bb
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b
-	golang.org/x/net v0.0.0-20200625001655-4c5254603344
-	golang.org/x/tools v0.0.0-20200608174601-1b747fd94509
-	google.golang.org/grpc v1.29.1
+	golang.org/x/net v0.0.0-20201224014010-6772e930b67b
+	golang.org/x/sys v0.0.0-20210110051926-789bb1bd4061 // indirect
+	golang.org/x/text v0.3.5 // indirect
+	golang.org/x/tools v0.0.0-20201203202102-a1a1cbeaa516
+	google.golang.org/genproto v0.0.0-20210111234610-22ae2b108f89 // indirect
+	google.golang.org/grpc v1.34.1
+	google.golang.org/grpc/examples v0.0.0-20201226181154-53788aa5dcb4 // indirect
 	honnef.co/go/tools v0.0.1-2020.1.5
 )
 

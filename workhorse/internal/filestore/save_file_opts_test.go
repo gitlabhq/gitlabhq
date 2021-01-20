@@ -187,6 +187,9 @@ func TestUseWorkhorseClientEnabled(t *testing.T) {
 	iamConfig := missingCfg
 	iamConfig.S3Config.UseIamProfile = true
 
+	missingRegion := cfg
+	missingRegion.S3Config.Region = ""
+
 	tests := []struct {
 		name                string
 		UseWorkhorseClient  bool
@@ -244,6 +247,13 @@ func TestUseWorkhorseClientEnabled(t *testing.T) {
 				S3Config: config.S3Config{},
 			},
 			expected: false,
+		},
+		{
+			name:                "missing S3 region",
+			UseWorkhorseClient:  true,
+			remoteTempObjectID:  "test-object",
+			objectStorageConfig: missingRegion,
+			expected:            true,
 		},
 	}
 

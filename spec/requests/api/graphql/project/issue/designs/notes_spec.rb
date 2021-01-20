@@ -22,6 +22,23 @@ RSpec.describe 'Getting designs related to an issue' do
     end
   end
 
+  it_behaves_like 'a noteable graphql type we can query' do
+    let(:noteable) { design }
+    let(:note_factory) { :diff_note_on_design }
+    let(:discussion_factory) { :diff_note_on_design }
+    let(:path_to_noteable) { [:issue, :design_collection, :designs, :nodes, 0] }
+
+    before do
+      project.add_developer(current_user)
+    end
+
+    def query(fields)
+      graphql_query_for(:issue, { id: global_id_of(issue) }, <<~FIELDS)
+        designCollection { designs { nodes { #{fields} } } }
+      FIELDS
+    end
+  end
+
   it 'is not too deep for anonymous users' do
     note_fields = <<~FIELDS
       id
@@ -37,7 +54,7 @@ RSpec.describe 'Getting designs related to an issue' do
     expect(note_data['id']).to eq(note.to_global_id.to_s)
   end
 
-  def query(note_fields = all_graphql_fields_for(Note))
+  def query(note_fields = all_graphql_fields_for(Note, max_depth: 1))
     design_node = <<~NODE
     designs {
       nodes {

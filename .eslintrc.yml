@@ -51,7 +51,6 @@ rules:
   # new ones, to ease migration to v7, so violations of each can be fixed
   # separately.
   vue/no-mutating-props: off
-  vue/one-component-per-file: off
   vue/no-lone-template: off
   # END eslint-plugin-vue@7 overrides
 overrides:

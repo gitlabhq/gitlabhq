@@ -20,7 +20,13 @@ Features include:
 - **Mention that a commit or MR resolves or closes a specific Jira issue** and when it's merged to the default branch:
   - The GitLab MR displays a note that it closed the Jira issue. Prior to the merge, MRs indicate which issue they close.
   - The Jira issue shows the activity and is closed or otherwise transitioned as specified in your GitLab settings.
-- **View a list of Jira issues directly in GitLab** **(PREMIUM)**
+- **Run a pipeline** on an MR linked to a Jira issue:
+  - The Jira issue shows the current pipeline status (in the sidebar as "builds").
+- **Deploy to an environment** from an MR linked to a Jira issue:
+  - The Jira issue shows the status of the deployment (in the sidebar as "deployments").
+- **Create or modify a feature flag** that mentions a Jira issue in its description:
+  - The Jira issue shows the details of the feature-flag (in the sidebar as "feature flags").
+- **View a list of Jira issues** directly in GitLab **(PREMIUM)**
 
 For additional features, you can install the
 [Jira Development Panel integration](../../../integration/jira_development_panel.md).
@@ -28,6 +34,9 @@ This enables you to:
 
 - In a Jira issue, display relevant GitLab information in the [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/), including related branches, commits, and merge requests.
 - Use Jira [Smart Commits](https://confluence.atlassian.com/fisheye/using-smart-commits-960155400.html) in GitLab to add Jira comments, log time spent on the issue, or apply any issue transition.
+
+Some features (such as showing pipeline, deployment, and feature flags in Jira
+issues) are only available when using the [Jira Development Panel integration](../../../integration/jira_development_panel.md).
 
 See the [feature comparison](jira_integrations.md#feature-comparison) for more details.
 

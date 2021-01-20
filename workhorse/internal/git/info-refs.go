@@ -20,6 +20,11 @@ func GetInfoRefsHandler(a *api.API) http.Handler {
 	return repoPreAuthorizeHandler(a, handleGetInfoRefs)
 }
 
+func IsSmartInfoRefs(r *http.Request) bool {
+	service := r.URL.Query().Get("service")
+	return r.Method == "GET" && (service == "git-upload-pack" || service == "git-receive-pack")
+}
+
 func handleGetInfoRefs(rw http.ResponseWriter, r *http.Request, a *api.Response) {
 	responseWriter := NewHttpResponseWriter(rw)
 	// Log 0 bytes in because we ignore the request body (and there usually is none anyway).

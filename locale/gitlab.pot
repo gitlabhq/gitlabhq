@@ -12650,6 +12650,9 @@ msgstr ""
 msgid "For help setting up the Service Desk for your instance, please contact an administrator."
 msgstr ""
 
+msgid "For individual use, create a separate account under your personal email address, not tied to the Enterprise email domain or group."
+msgstr ""
+
 msgid "For internal projects, any logged in user except external users can view pipelines and access job details (output logs and artifacts)"
 msgstr ""
 
@@ -29658,7 +29661,7 @@ msgstr ""
 msgid "To define internal users, first enable new users set to external"
 msgstr ""
 
-msgid "To ensure no loss of personal content, an Individual User should create a separate account under their own personal email address, not tied to the Enterprise email domain or name-space."
+msgid "To ensure no loss of personal content, this account should only be used for matters related to %{group_name}."
 msgstr ""
 
 msgid "To further protect your account, consider configuring a %{mfa_link_start}two-factor authentication%{mfa_link_end} method."

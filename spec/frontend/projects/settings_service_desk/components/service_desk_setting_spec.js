@@ -1,10 +1,30 @@
 import { shallowMount, mount } from '@vue/test-utils';
-import { GlLoadingIcon } from '@gitlab/ui';
-import eventHub from '~/projects/settings_service_desk/event_hub';
+import { GlButton, GlFormSelect, GlLoadingIcon, GlToggle } from '@gitlab/ui';
+import { nextTick } from 'vue';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import ServiceDeskSetting from '~/projects/settings_service_desk/components/service_desk_setting.vue';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 describe('ServiceDeskSetting', () => {
   let wrapper;
+
+  const findButton = () => wrapper.find(GlButton);
+  const findClipboardButton = () => wrapper.find(ClipboardButton);
+  const findIncomingEmail = () => wrapper.findByTestId('incoming-email');
+  const findIncomingEmailLabel = () => wrapper.findByTestId('incoming-email-describer');
+  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findTemplateDropdown = () => wrapper.find(GlFormSelect);
+  const findToggle = () => wrapper.find(GlToggle);
+
+  const createComponent = ({ props = {}, mountFunction = shallowMount } = {}) =>
+    extendedWrapper(
+      mountFunction(ServiceDeskSetting, {
+        propsData: {
+          isEnabled: true,
+          ...props,
+        },
+      }),
+    );
 
   afterEach(() => {
     if (wrapper) {
@@ -12,52 +32,37 @@ describe('ServiceDeskSetting', () => {
     }
   });
 
-  const findTemplateDropdown = () => wrapper.find('#service-desk-template-select');
-  const findIncomingEmail = () => wrapper.find('[data-testid="incoming-email"]');
-
   describe('when isEnabled=true', () => {
     describe('only isEnabled', () => {
       describe('as project admin', () => {
         beforeEach(() => {
-          wrapper = shallowMount(ServiceDeskSetting, {
-            propsData: {
-              isEnabled: true,
-            },
-          });
+          wrapper = createComponent();
         });
 
         it('should see activation checkbox', () => {
-          expect(wrapper.find('#service-desk-checkbox').exists()).toBe(true);
+          expect(findToggle().exists()).toBe(true);
         });
 
         it('should see main panel with the email info', () => {
-          expect(wrapper.find('#incoming-email-describer').exists()).toBe(true);
+          expect(findIncomingEmailLabel().exists()).toBe(true);
         });
 
         it('should see loading spinner and not the incoming email', () => {
-          expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+          expect(findLoadingIcon().exists()).toBe(true);
           expect(findIncomingEmail().exists()).toBe(false);
         });
       });
     });
 
     describe('service desk toggle', () => {
-      it('emits an event to turn on Service Desk when clicked', () => {
-        const eventSpy = jest.fn();
-        eventHub.$on('serviceDeskEnabledCheckboxToggled', eventSpy);
+      it('emits an event to turn on Service Desk when clicked', async () => {
+        wrapper = createComponent();
 
-        wrapper = mount(ServiceDeskSetting, {
-          propsData: {
-            isEnabled: false,
-          },
-        });
+        findToggle().vm.$emit('change', true);
 
-        wrapper.find('#service-desk-checkbox').trigger('click');
+        await nextTick();
 
-        expect(eventSpy).toHaveBeenCalledWith(true);
-
-        eventHub.$off('serviceDeskEnabledCheckboxToggled', eventSpy);
-        eventSpy.mockRestore();
+        expect(wrapper.emitted('toggle')[0]).toEqual([true]);
       });
     });
 
@@ -65,23 +70,23 @@ describe('ServiceDeskSetting', () => {
       const incomingEmail = 'foo@bar.com';
 
       beforeEach(() => {
-        wrapper = mount(ServiceDeskSetting, {
-          propsData: {
-            isEnabled: true,
-            incomingEmail,
-          },
+        wrapper = createComponent({
+          props: { incomingEmail },
         });
       });
 
       it('should see email and not the loading spinner', () => {
         expect(findIncomingEmail().element.value).toEqual(incomingEmail);
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+        expect(findLoadingIcon().exists()).toBe(false);
       });
 
       it('renders a copy to clipboard button', () => {
-        expect(wrapper.find('.qa-clipboard-button').exists()).toBe(true);
-        expect(wrapper.find('.qa-clipboard-button').element.dataset.clipboardText).toBe(
-          incomingEmail,
+        expect(findClipboardButton().exists()).toBe(true);
+        expect(findClipboardButton().props()).toEqual(
+          expect.objectContaining({
+            title: 'Copy',
+            text: incomingEmail,
+          }),
         );
       });
     });
@@ -92,12 +97,8 @@ describe('ServiceDeskSetting', () => {
         const customEmail = 'custom@bar.com';
 
         beforeEach(() => {
-          wrapper = mount(ServiceDeskSetting, {
-            propsData: {
-              isEnabled: true,
-              incomingEmail,
-              customEmail,
-            },
+          wrapper = createComponent({
+            props: { incomingEmail, customEmail },
           });
         });
 
@@ -110,12 +111,8 @@ describe('ServiceDeskSetting', () => {
         const email = 'foo@bar.com';
 
         beforeEach(() => {
-          wrapper = mount(ServiceDeskSetting, {
-            propsData: {
-              isEnabled: true,
-              incomingEmail: email,
-              customEmail: email,
-            },
+          wrapper = createComponent({
+            props: { incomingEmail: email, customEmail: email },
           });
         });
 
@@ -127,21 +124,13 @@ describe('ServiceDeskSetting', () => {
 
     describe('templates dropdown', () => {
       it('renders a dropdown to choose a template', () => {
-        wrapper = shallowMount(ServiceDeskSetting, {
-          propsData: {
-            isEnabled: true,
-          },
-        });
+        wrapper = createComponent();
 
-        expect(wrapper.find('#service-desk-template-select').exists()).toBe(true);
+        expect(findTemplateDropdown().exists()).toBe(true);
       });
 
       it('renders a dropdown with a default value of ""', () => {
-        wrapper = mount(ServiceDeskSetting, {
-          propsData: {
-            isEnabled: true,
-          },
-        });
+        wrapper = createComponent({ mountFunction: mount });
 
         expect(findTemplateDropdown().element.value).toEqual('');
       });
@@ -149,23 +138,18 @@ describe('ServiceDeskSetting', () => {
       it('renders a dropdown with a value of "Bug" when it is the initial value', () => {
         const templates = ['Bug', 'Documentation', 'Security release'];
 
-        wrapper = mount(ServiceDeskSetting, {
-          propsData: {
-            isEnabled: true,
-            initialSelectedTemplate: 'Bug',
-            templates,
-          },
+        wrapper = createComponent({
+          props: { initialSelectedTemplate: 'Bug', templates },
+          mountFunction: mount,
         });
 
         expect(findTemplateDropdown().element.value).toEqual('Bug');
       });
 
       it('renders a dropdown with no options when the project has no templates', () => {
-        wrapper = mount(ServiceDeskSetting, {
-          propsData: {
-            isEnabled: true,
-            templates: [],
-          },
+        wrapper = createComponent({
+          props: { templates: [] },
+          mountFunction: mount,
         });
 
         // The dropdown by default has one empty option
@@ -174,11 +158,10 @@ describe('ServiceDeskSetting', () => {
 
       it('renders a dropdown with options when the project has templates', () => {
         const templates = ['Bug', 'Documentation', 'Security release'];
-        wrapper = mount(ServiceDeskSetting, {
-          propsData: {
-            isEnabled: true,
-            templates,
-          },
+
+        wrapper = createComponent({
+          props: { templates },
+          mountFunction: mount,
         });
 
         // An empty-named template is prepended so the user can select no template
@@ -199,78 +182,59 @@ describe('ServiceDeskSetting', () => {
 
   describe('save button', () => {
     it('renders a save button to save a template', () => {
-      wrapper = mount(ServiceDeskSetting, {
-        propsData: {
-          isEnabled: true,
-        },
-      });
+      wrapper = createComponent();
 
-      expect(wrapper.find('button.btn-success').text()).toContain('Save changes');
+      expect(findButton().text()).toContain('Save changes');
     });
 
-    it('emits a save event with the chosen template when the save button is clicked', () => {
-      const eventSpy = jest.fn();
-      eventHub.$on('serviceDeskTemplateSave', eventSpy);
-
-      wrapper = mount(ServiceDeskSetting, {
-        propsData: {
-          isEnabled: true,
+    it('emits a save event with the chosen template when the save button is clicked', async () => {
+      wrapper = createComponent({
+        props: {
           initialSelectedTemplate: 'Bug',
           initialOutgoingName: 'GitLab Support Bot',
           initialProjectKey: 'key',
         },
       });
 
-      wrapper.find('button.btn-success').trigger('click');
+      findButton().vm.$emit('click');
 
-      expect(eventSpy).toHaveBeenCalledWith({
+      await nextTick();
+
+      const payload = {
         selectedTemplate: 'Bug',
         outgoingName: 'GitLab Support Bot',
         projectKey: 'key',
-      });
+      };
 
-      eventHub.$off('serviceDeskTemplateSave', eventSpy);
-      eventSpy.mockRestore();
+      expect(wrapper.emitted('save')[0]).toEqual([payload]);
     });
   });
 
   describe('when isEnabled=false', () => {
     beforeEach(() => {
-      wrapper = shallowMount(ServiceDeskSetting, {
-        propsData: {
-          isEnabled: false,
-        },
+      wrapper = createComponent({
+        props: { isEnabled: false },
       });
     });
 
     it('does not render email panel', () => {
-      expect(wrapper.find('#incoming-email-describer').exists()).toBe(false);
+      expect(findIncomingEmailLabel().exists()).toBe(false);
     });
 
     it('does not render template dropdown', () => {
-      expect(wrapper.find('#service-desk-template-select').exists()).toBe(false);
+      expect(findTemplateDropdown().exists()).toBe(false);
     });
 
     it('does not render template save button', () => {
-      expect(wrapper.find('button.btn-success').exists()).toBe(false);
+      expect(findButton().exists()).toBe(false);
     });
 
-    it('emits an event to turn on Service Desk when the toggle is clicked', () => {
-      const eventSpy = jest.fn();
-      eventHub.$on('serviceDeskEnabledCheckboxToggled', eventSpy);
+    it('emits an event to turn on Service Desk when the toggle is clicked', async () => {
+      findToggle().vm.$emit('change', false);
 
-      wrapper = mount(ServiceDeskSetting, {
-        propsData: {
-          isEnabled: true,
-        },
-      });
+      await nextTick();
 
-      wrapper.find('#service-desk-checkbox').trigger('click');
-
-      expect(eventSpy).toHaveBeenCalledWith(false);
-
-      eventHub.$off('serviceDeskEnabledCheckboxToggled', eventSpy);
-      eventSpy.mockRestore();
+      expect(wrapper.emitted('toggle')[0]).toEqual([false]);
     });
   });
 });

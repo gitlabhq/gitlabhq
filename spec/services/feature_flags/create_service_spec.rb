@@ -66,18 +66,6 @@ RSpec.describe FeatureFlags::CreateService do
         subject
       end
 
-      context 'the feature flag is disabled' do
-        before do
-          stub_feature_flags(jira_sync_feature_flags: false)
-        end
-
-        it 'does not sync the feature flag to Jira' do
-          expect(::JiraConnect::SyncFeatureFlagsWorker).not_to receive(:perform_async)
-
-          subject
-        end
-      end
-
       it 'creates audit event' do
         expected_message = 'Created feature flag <strong>feature_flag</strong> '\
                            'with description <strong>"description"</strong>. '\

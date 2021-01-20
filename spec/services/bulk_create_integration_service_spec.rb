@@ -43,46 +43,6 @@ RSpec.describe BulkCreateIntegrationService do
     end
   end
 
-  shared_examples 'updates project callbacks' do
-    it 'updates projects#has_external_issue_tracker for issue tracker services' do
-      described_class.new(integration, batch, association).execute
-
-      expect(project.reload.has_external_issue_tracker).to eq(true)
-      expect(excluded_project.reload.has_external_issue_tracker).to eq(false)
-    end
-
-    context 'with an external wiki integration' do
-      before do
-        integration.update!(category: 'common', type: 'ExternalWikiService')
-      end
-
-      it 'updates projects#has_external_wiki for external wiki services' do
-        described_class.new(integration, batch, association).execute
-
-        expect(project.reload.has_external_wiki).to eq(true)
-        expect(excluded_project.reload.has_external_wiki).to eq(false)
-      end
-    end
-  end
-
-  shared_examples 'does not update project callbacks' do
-    it 'does not update projects#has_external_issue_tracker for issue tracker services' do
-      described_class.new(integration, batch, association).execute
-
-      expect(project.reload.has_external_issue_tracker).to eq(false)
-    end
-
-    context 'with an inactive external wiki integration' do
-      let(:integration) { create(:external_wiki_service, :instance, active: false) }
-
-      it 'does not update projects#has_external_wiki for external wiki services' do
-        described_class.new(integration, batch, association).execute
-
-        expect(project.reload.has_external_wiki).to eq(false)
-      end
-    end
-  end
-
   context 'passing an instance-level integration' do
     let(:integration) { instance_integration }
     let(:inherit_from_id) { integration.id }
@@ -95,15 +55,6 @@ RSpec.describe BulkCreateIntegrationService do
 
       it_behaves_like 'creates integration from batch ids'
       it_behaves_like 'updates inherit_from_id'
-      it_behaves_like 'updates project callbacks'
-
-      context 'when integration is not active' do
-        before do
-          integration.update!(active: false)
-        end
-
-        it_behaves_like 'does not update project callbacks'
-      end
     end
 
     context 'with a group association' do
@@ -130,7 +81,6 @@ RSpec.describe BulkCreateIntegrationService do
 
       it_behaves_like 'creates integration from batch ids'
       it_behaves_like 'updates inherit_from_id'
-      it_behaves_like 'updates project callbacks'
     end
 
     context 'with a group association' do
@@ -157,7 +107,6 @@ RSpec.describe BulkCreateIntegrationService do
       let(:inherit_from_id) { integration.id }
 
       it_behaves_like 'creates integration from batch ids'
-      it_behaves_like 'updates project callbacks'
     end
   end
 end

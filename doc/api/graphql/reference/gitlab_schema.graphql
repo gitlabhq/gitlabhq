@@ -7878,7 +7878,7 @@ type Discussion implements ResolvableInterface {
   """
   ID of this discussion
   """
-  id: ID!
+  id: DiscussionID!
 
   """
   All notes in the discussion
@@ -7908,7 +7908,7 @@ type Discussion implements ResolvableInterface {
   """
   ID used to reply to this discussion
   """
-  replyId: ID!
+  replyId: DiscussionID!
 
   """
   Indicates if the object can be resolved
@@ -16154,7 +16154,7 @@ type Note implements ResolvableInterface {
   """
   ID of the note
   """
-  id: ID!
+  id: NoteID!
 
   """
   The position of this note on a diff

@@ -6,7 +6,7 @@ exports[`packages_list_row renders 1`] = `
   data-qa-selector="package_row"
 >
   <div
-    class="gl-display-flex gl-align-items-center gl-py-5"
+    class="gl-display-flex gl-align-items-center gl-py-3"
   >
     <!---->
      
@@ -14,7 +14,7 @@ exports[`packages_list_row renders 1`] = `
       class="gl-display-flex gl-xs-flex-direction-column gl-justify-content-space-between gl-align-items-stretch gl-flex-fill-1"
     >
       <div
-        class="gl-display-flex gl-flex-direction-column gl-justify-content-space-between gl-xs-mb-3 gl-min-w-0 gl-flex-grow-1"
+        class="gl-display-flex gl-flex-direction-column gl-xs-mb-3 gl-min-w-0 gl-flex-grow-1"
       >
         <div
           class="gl-display-flex gl-align-items-center gl-text-body gl-font-weight-bold gl-min-h-6 gl-min-w-0"
@@ -40,7 +40,7 @@ exports[`packages_list_row renders 1`] = `
         </div>
          
         <div
-          class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-mt-1 gl-min-h-6 gl-min-w-0 gl-flex-fill-1"
+          class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-min-h-6 gl-min-w-0 gl-flex-fill-1"
         >
           <div
             class="gl-display-flex"
@@ -85,7 +85,7 @@ exports[`packages_list_row renders 1`] = `
         </div>
          
         <div
-          class="gl-display-flex gl-align-items-center gl-mt-1 gl-min-h-6"
+          class="gl-display-flex gl-align-items-center gl-min-h-6"
         >
           <span>
             <gl-sprintf-stub

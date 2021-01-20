@@ -303,24 +303,6 @@ RSpec.describe Atlassian::JiraConnect::Client do
         expect(response['errorMessages']).to eq(['a: X', 'a: Y', 'b: Z'])
       end
     end
-
-    it 'does not call the API if the feature flag is not enabled' do
-      stub_feature_flags(jira_sync_feature_flags: false)
-
-      expect(subject).not_to receive(:post)
-
-      subject.send(:store_ff_info, project: project, feature_flags: feature_flags)
-    end
-
-    it 'does call the API if the feature flag enabled for the project' do
-      stub_feature_flags(jira_sync_feature_flags: project)
-
-      expect(subject).to receive(:post).with('/rest/featureflags/0.1/bulk', {
-        flags: Array, properties: Hash
-      }).and_call_original
-
-      subject.send(:store_ff_info, project: project, feature_flags: feature_flags)
-    end
   end
 
   describe '#store_build_info' do

@@ -231,6 +231,7 @@ MergeRequestDiffCommit:
 - committer_name
 - committer_email
 - message
+- trailers
 MergeRequestDiffFile:
 - merge_request_diff_id
 - relative_order
@@ -255,6 +256,7 @@ MergeRequestContextCommit:
 - committer_email
 - message
 - merge_request_id
+- trailers
 MergeRequestContextCommitDiffFile:
 - sha
 - relative_order

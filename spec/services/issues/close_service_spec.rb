@@ -84,6 +84,7 @@ RSpec.describe Issues::CloseService do
         let!(:external_issue_tracker) { create(:jira_service, project: project) }
 
         it 'closes the issue on the external issue tracker' do
+          project.reload
           expect(project.external_issue_tracker).to receive(:close_issue)
 
           described_class.new(project, user).close_issue(external_issue)
@@ -94,6 +95,7 @@ RSpec.describe Issues::CloseService do
         let!(:external_issue_tracker) { create(:jira_service, project: project, active: false) }
 
         it 'does not close the issue on the external issue tracker' do
+          project.reload
           expect(project.external_issue_tracker).not_to receive(:close_issue)
 
           described_class.new(project, user).close_issue(external_issue)
@@ -104,6 +106,7 @@ RSpec.describe Issues::CloseService do
         let!(:external_issue_tracker) { create(:bugzilla_service, project: project) }
 
         it 'does not close the issue on the external issue tracker' do
+          project.reload
           expect(project.external_issue_tracker).not_to receive(:close_issue)
 
           described_class.new(project, user).close_issue(external_issue)

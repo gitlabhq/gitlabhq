@@ -33,8 +33,6 @@ module Atlassian
       private
 
       def store_ff_info(project:, feature_flags:, **opts)
-        return unless Feature.enabled?(:jira_sync_feature_flags, project)
-
         items = feature_flags.map { |flag| ::Atlassian::JiraConnect::Serializers::FeatureFlagEntity.represent(flag, opts) }
         items.reject! { |item| item.issue_keys.empty? }
 

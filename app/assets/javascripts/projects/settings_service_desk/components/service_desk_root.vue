@@ -2,60 +2,42 @@
 import { GlAlert } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import ServiceDeskSetting from './service_desk_setting.vue';
-import ServiceDeskService from '../services/service_desk_service';
-import eventHub from '../event_hub';
+import axios from '~/lib/utils/axios_utils';
 
 export default {
-  name: 'ServiceDeskRoot',
   components: {
     GlAlert,
     ServiceDeskSetting,
   },
-  props: {
+  inject: {
     initialIsEnabled: {
-      type: Boolean,
-      required: true,
+      default: false,
     },
     endpoint: {
-      type: String,
-      required: true,
+      default: '',
     },
-    incomingEmail: {
-      type: String,
-      required: false,
+    initialIncomingEmail: {
       default: '',
     },
     customEmail: {
-      type: String,
-      required: false,
       default: '',
     },
     customEmailEnabled: {
-      type: Boolean,
-      required: false,
+      default: false,
     },
     selectedTemplate: {
-      type: String,
-      required: false,
       default: '',
     },
     outgoingName: {
-      type: String,
-      required: false,
       default: '',
     },
     projectKey: {
-      type: String,
-      required: false,
       default: '',
     },
     templates: {
-      type: Array,
-      required: false,
-      default: () => [],
+      default: [],
     },
   },
-
   data() {
     return {
       isEnabled: this.initialIsEnabled,
@@ -63,28 +45,21 @@ export default {
       isAlertShowing: false,
       alertVariant: 'danger',
       alertMessage: '',
+      incomingEmail: this.initialIncomingEmail,
       updatedCustomEmail: this.customEmail,
     };
   },
-
-  created() {
-    eventHub.$on('serviceDeskEnabledCheckboxToggled', this.onEnableToggled);
-    eventHub.$on('serviceDeskTemplateSave', this.onSaveTemplate);
-    this.service = new ServiceDeskService(this.endpoint);
-  },
-
-  beforeDestroy() {
-    eventHub.$off('serviceDeskEnabledCheckboxToggled', this.onEnableToggled);
-    eventHub.$off('serviceDeskTemplateSave', this.onSaveTemplate);
-  },
-
   methods: {
     onEnableToggled(isChecked) {
       this.isEnabled = isChecked;
       this.incomingEmail = '';
 
-      this.service
-        .toggleServiceDesk(isChecked)
+      const body = {
+        service_desk_enabled: isChecked,
+      };
+
+      return axios
+        .put(this.endpoint, body)
         .then(({ data }) => {
           const email = data.service_desk_address;
           if (isChecked && !email) {
@@ -104,8 +79,16 @@ export default {
 
     onSaveTemplate({ selectedTemplate, outgoingName, projectKey }) {
       this.isTemplateSaving = true;
-      this.service
-        .updateTemplate({ selectedTemplate, outgoingName, projectKey }, this.isEnabled)
+
+      const body = {
+        issue_template_key: selectedTemplate,
+        outgoing_name: outgoingName,
+        project_key: projectKey,
+        service_desk_enabled: this.isEnabled,
+      };
+
+      return axios
+        .put(this.endpoint, body)
         .then(({ data }) => {
           this.updatedCustomEmail = data?.service_desk_address;
           this.showAlert(__('Changes saved.'), 'success');
@@ -150,6 +133,8 @@ export default {
       :initial-project-key="projectKey"
       :templates="templates"
       :is-template-saving="isTemplateSaving"
+      @save="onSaveTemplate"
+      @toggle="onEnableToggled"
     />
   </div>
 </template>

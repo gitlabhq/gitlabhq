@@ -1314,21 +1314,11 @@ class Project < ApplicationRecord
   end
 
   def external_issue_tracker
-    if has_external_issue_tracker.nil?
-      cache_has_external_issue_tracker
-    end
+    cache_has_external_issue_tracker if has_external_issue_tracker.nil?
 
-    if has_external_issue_tracker?
-      strong_memoize(:external_issue_tracker) do
-        services.external_issue_trackers.first
-      end
-    else
-      nil
-    end
-  end
+    return unless has_external_issue_tracker?
 
-  def cache_has_external_issue_tracker
-    update_column(:has_external_issue_tracker, services.external_issue_trackers.any?) if Gitlab::Database.read_write?
+    @external_issue_tracker ||= services.external_issue_trackers.first
   end
 
   def external_references_supported?
@@ -2689,6 +2679,10 @@ class Project < ApplicationRecord
 
   def cache_has_external_wiki
     update_column(:has_external_wiki, services.external_wikis.any?) if Gitlab::Database.read_write?
+  end
+
+  def cache_has_external_issue_tracker
+    update_column(:has_external_issue_tracker, services.external_issue_trackers.any?) if Gitlab::Database.read_write?
   end
 end
 

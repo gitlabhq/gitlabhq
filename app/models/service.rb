@@ -46,7 +46,6 @@ class Service < ApplicationRecord
   after_initialize :initialize_properties
 
   after_commit :reset_updated_properties
-  after_commit :cache_project_has_external_issue_tracker
 
   belongs_to :project, inverse_of: :services
   belongs_to :group, inverse_of: :services
@@ -438,10 +437,6 @@ class Service < ApplicationRecord
     ProjectServiceWorker.perform_async(id, data)
   end
 
-  def external_issue_tracker?
-    category == :issue_tracker && active?
-  end
-
   def external_wiki?
     type == 'ExternalWikiService' && active?
   end
@@ -459,12 +454,6 @@ class Service < ApplicationRecord
 
   def validate_belongs_to_project_or_group
     errors.add(:project_id, 'The service cannot belong to both a project and a group') if project_id && group_id
-  end
-
-  def cache_project_has_external_issue_tracker
-    if project && !project.destroyed?
-      project.cache_has_external_issue_tracker
-    end
   end
 
   def valid_recipients?

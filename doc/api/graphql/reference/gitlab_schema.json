@@ -21766,7 +21766,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "DiscussionID",
                   "ofType": null
                 }
               },
@@ -21841,7 +21841,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "DiscussionID",
                   "ofType": null
                 }
               },
@@ -47730,7 +47730,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "NoteID",
                   "ofType": null
                 }
               },

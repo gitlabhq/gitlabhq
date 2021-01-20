@@ -753,38 +753,6 @@ RSpec.describe Service do
     end
   end
 
-  describe "callbacks" do
-    let!(:service) do
-      RedmineService.new(
-        project: project,
-        active: true,
-        properties: {
-          project_url: 'http://redmine/projects/project_name_in_redmine',
-          issues_url: "http://redmine/#{project.id}/project_name_in_redmine/:id",
-          new_issue_url: 'http://redmine/projects/project_name_in_redmine/issues/new'
-        }
-      )
-    end
-
-    describe "on create" do
-      it "updates the has_external_issue_tracker boolean" do
-        expect do
-          service.save!
-        end.to change { service.project.has_external_issue_tracker }.from(false).to(true)
-      end
-    end
-
-    describe "on update" do
-      it "updates the has_external_issue_tracker boolean" do
-        service.save!
-
-        expect do
-          service.update(active: false)
-        end.to change { service.project.has_external_issue_tracker }.from(true).to(false)
-      end
-    end
-  end
-
   describe '#api_field_names' do
     let(:fake_service) do
       Class.new(Service) do
@@ -860,20 +828,6 @@ RSpec.describe Service do
         expect(Gitlab::JsonLogger).to receive(:info).with(arguments)
 
         service.log_info(test_message, additional_argument: 'some argument')
-      end
-    end
-  end
-
-  describe '#external_issue_tracker?' do
-    where(:category, :active, :result) do
-      :issue_tracker | true  | true
-      :issue_tracker | false | false
-      :common        | true  | false
-    end
-
-    with_them do
-      it 'returns the right result' do
-        expect(build(:service, category: category, active: active).external_issue_tracker?).to eq(result)
       end
     end
   end

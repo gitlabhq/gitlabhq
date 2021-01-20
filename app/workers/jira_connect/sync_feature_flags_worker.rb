@@ -14,7 +14,6 @@ module JiraConnect
       feature_flag = ::Operations::FeatureFlag.find_by_id(feature_flag_id)
 
       return unless feature_flag
-      return unless Feature.enabled?(:jira_sync_feature_flags, feature_flag.project)
 
       ::JiraConnect::SyncService
         .new(feature_flag.project)

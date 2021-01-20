@@ -335,7 +335,8 @@ module Gitlab
           all:          !!options[:all],
           first_parent: !!options[:first_parent],
           global_options: parse_global_options!(options),
-          disable_walk: true # This option is deprecated. The 'walk' implementation is being removed.
+          disable_walk: true, # This option is deprecated. The 'walk' implementation is being removed.
+          trailers: options[:trailers]
         )
         request.after    = GitalyClient.timestamp(options[:after]) if options[:after]
         request.before   = GitalyClient.timestamp(options[:before]) if options[:before]
