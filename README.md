@@ -6,6 +6,8 @@ The canonical source of GitLab where all development takes place is [hosted on G
 
 If you wish to clone a copy of GitLab without proprietary code, you can use the read-only mirror of GitLab located at https://gitlab.com/gitlab-org/gitlab-foss/. However, please do not submit any issues and/or merge requests to that project.
 
+## GET STARTED
+Visit <a href="https://docs.gitlab.com/ee/gitlab-basics/">here</a> to see the documentation.
 ## Free trial
 
 You can request a free trial of GitLab Ultimate [on our website](https://about.gitlab.com/free-trial/).
