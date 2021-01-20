@@ -261,7 +261,7 @@ vulnerability as you learn more over time.
 
 #### Dismissing multiple vulnerabilities
 
-> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35816) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
 
 You can dismiss multiple vulnerabilities at once, providing an optional reason.
 Selecting the checkboxes on the side of each vulnerability in the list selects that individual vulnerability.

@@ -167,6 +167,7 @@ GitHub
 GitLab
 gitlabsos
 Gitleaks
+Gitpod
 Gitter
 globals
 Gmail

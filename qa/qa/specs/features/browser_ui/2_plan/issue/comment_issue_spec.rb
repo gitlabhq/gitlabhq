@@ -9,7 +9,7 @@ module QA
         Resource::Issue.fabricate_via_api!.visit!
       end
 
-      it 'comments on an issue and edits the comment', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/450' do
+      it 'comments on an issue and edits the comment', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1151' do
         Page::Project::Issue::Show.perform do |show|
           first_version_of_comment = 'First version of the comment'
           second_version_of_comment = 'Second version of the comment'
