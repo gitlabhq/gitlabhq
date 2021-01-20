@@ -3,7 +3,10 @@ import { escape } from 'lodash';
 import { mapState, mapGetters, createNamespacedHelpers } from 'vuex';
 import { GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import consts from '../../stores/modules/commit/constants';
+import {
+  COMMIT_TO_CURRENT_BRANCH,
+  COMMIT_TO_NEW_BRANCH,
+} from '../../stores/modules/commit/constants';
 import RadioGroup from './radio_group.vue';
 import NewMergeRequestOption from './new_merge_request_option.vue';
 
@@ -53,14 +56,14 @@ export default {
       }
 
       if (this.shouldDefaultToCurrentBranch) {
-        this.updateCommitAction(consts.COMMIT_TO_CURRENT_BRANCH);
+        this.updateCommitAction(COMMIT_TO_CURRENT_BRANCH);
       } else {
-        this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH);
+        this.updateCommitAction(COMMIT_TO_NEW_BRANCH);
       }
     },
   },
-  commitToCurrentBranch: consts.COMMIT_TO_CURRENT_BRANCH,
-  commitToNewBranch: consts.COMMIT_TO_NEW_BRANCH,
+  commitToCurrentBranch: COMMIT_TO_CURRENT_BRANCH,
+  commitToNewBranch: COMMIT_TO_NEW_BRANCH,
   currentBranchPermissionsTooltip: s__(
     "IDE|This option is disabled because you don't have write permissions for the current branch.",
   ),

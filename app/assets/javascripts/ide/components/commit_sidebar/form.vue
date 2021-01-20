@@ -1,7 +1,7 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { GlModal, GlSafeHtmlDirective, GlButton } from '@gitlab/ui';
-import { n__, __ } from '~/locale';
+import { n__ } from '~/locale';
 import CommitMessageField from './message_field.vue';
 import Actions from './actions.vue';
 import SuccessMessage from './success_message.vue';
@@ -35,10 +35,6 @@ export default {
     overviewText() {
       return n__('%d changed file', '%d changed files', this.stagedFiles.length);
     },
-    commitButtonText() {
-      return this.stagedFiles.length ? __('Commit') : __('Stage & Commit');
-    },
-
     currentViewIsCommitView() {
       return this.currentActivityView === leftSidebarViews.commit.name;
     },
@@ -160,13 +156,19 @@ export default {
           <gl-button
             :loading="submitCommitLoading"
             class="float-left qa-commit-button"
+            data-testid="commit-button"
             category="primary"
             variant="success"
             @click="commit"
           >
             {{ __('Commit') }}
           </gl-button>
-          <gl-button v-if="!discardDraftButtonDisabled" class="float-right" @click="discardDraft">
+          <gl-button
+            v-if="!discardDraftButtonDisabled"
+            class="float-right"
+            data-testid="discard-draft"
+            @click="discardDraft"
+          >
             {{ __('Discard draft') }}
           </gl-button>
           <gl-button

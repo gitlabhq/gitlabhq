@@ -5,38 +5,34 @@ require 'rubocop'
 require_relative '../../../../rubocop/cop/graphql/descriptions'
 
 RSpec.describe RuboCop::Cop::Graphql::Descriptions do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   context 'fields' do
     it 'adds an offense when there is no description' do
-      inspect_source(<<~TYPE)
+      expect_offense(<<~TYPE)
         module Types
           class FakeType < BaseObject
             field :a_thing,
+            ^^^^^^^^^^^^^^^ Please add a `description` property.
               GraphQL::STRING_TYPE,
               null: false
           end
         end
       TYPE
-
-      expect(cop.offenses.size).to eq 1
     end
 
     it 'adds an offense when description does not end in a period' do
-      inspect_source(<<~TYPE)
+      expect_offense(<<~TYPE)
         module Types
           class FakeType < BaseObject
             field :a_thing,
+            ^^^^^^^^^^^^^^^ `description` strings must end with a `.`.
               GraphQL::STRING_TYPE,
               null: false,
               description: 'A descriptive description'
           end
         end
       TYPE
-
-      expect(cop.offenses.size).to eq 1
     end
 
     it 'does not add an offense when description is correct' do
@@ -55,32 +51,30 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
 
   context 'arguments' do
     it 'adds an offense when there is no description' do
-      inspect_source(<<~TYPE)
+      expect_offense(<<~TYPE)
         module Types
           class FakeType < BaseObject
             argument :a_thing,
+            ^^^^^^^^^^^^^^^^^^ Please add a `description` property.
               GraphQL::STRING_TYPE,
               null: false
           end
         end
       TYPE
-
-      expect(cop.offenses.size).to eq 1
     end
 
     it 'adds an offense when description does not end in a period' do
-      inspect_source(<<~TYPE)
+      expect_offense(<<~TYPE)
         module Types
           class FakeType < BaseObject
             argument :a_thing,
+            ^^^^^^^^^^^^^^^^^^ `description` strings must end with a `.`.
               GraphQL::STRING_TYPE,
               null: false,
               description: 'Behold! A description'
           end
         end
       TYPE
-
-      expect(cop.offenses.size).to eq 1
     end
 
     it 'does not add an offense when description is correct' do

@@ -7,7 +7,7 @@
     .settings-header
       %h4
         = _('Default initial branch name')
-      %button.gl-button.js-settings-toggle{ type: 'button' }
+      %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
         = expanded_by_default? ? _('Collapse') : _('Expand')
       %p
         = _('Set the default name of the initial branch when creating new repositories through the user interface.')
@@ -18,7 +18,7 @@
   .settings-header
     %h4
       = _('Repository mirroring')
-    %button.btn.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? 'Collapse' : 'Expand'
     %p
       = _('Configure repository mirroring.')
@@ -29,7 +29,7 @@
   .settings-header
     %h4
       = _('Repository storage')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Configure storage path settings.')
@@ -40,7 +40,7 @@
   .settings-header
     %h4
       = _('Repository maintenance')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Configure automatic git checks and housekeeping on repositories.')
@@ -51,7 +51,7 @@
   .settings-header
     %h4
       = _('Repository static objects')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Serve repository static objects (e.g. archives, blobs, ...) from an external storage (e.g. a CDN).')

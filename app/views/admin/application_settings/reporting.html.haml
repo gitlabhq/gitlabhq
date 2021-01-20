@@ -6,7 +6,7 @@
   .settings-header
     %h4
       = _('Spam and Anti-bot Protection')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       - recaptcha_v2_link_url = 'https://developers.google.com/recaptcha/docs/versions'
@@ -19,7 +19,7 @@
   .settings-header
     %h4
       = _('Abuse reports')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Set notification email for abuse reports.')

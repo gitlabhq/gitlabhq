@@ -6,6 +6,10 @@ module Gitlab
       module Connections
         def self.use(schema)
           schema.connections.add(
+            ::Gitlab::Graphql::Pagination::OffsetPaginatedRelation,
+            ::Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection)
+
+          schema.connections.add(
             ActiveRecord::Relation,
             Gitlab::Graphql::Pagination::Keyset::Connection)
 

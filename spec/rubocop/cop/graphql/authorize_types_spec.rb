@@ -6,21 +6,18 @@ require 'rubocop'
 require_relative '../../../../rubocop/cop/graphql/authorize_types'
 
 RSpec.describe RuboCop::Cop::Graphql::AuthorizeTypes do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   it 'adds an offense when there is no authorize call' do
-    inspect_source(<<~TYPE)
+    expect_offense(<<~TYPE)
       module Types
         class AType < BaseObject
+        ^^^^^^^^^^^^^^^^^^^^^^^^ Add an `authorize :ability` call to the type: https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#type-authorization
           field :a_thing
           field :another_thing
         end
       end
     TYPE
-
-    expect(cop.offenses.size).to eq 1
   end
 
   it 'does not add an offense for classes that have an authorize call' do

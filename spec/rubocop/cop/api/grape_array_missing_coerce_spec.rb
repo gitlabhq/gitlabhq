@@ -5,36 +5,38 @@ require 'rubocop'
 require_relative '../../../../rubocop/cop/api/grape_array_missing_coerce'
 
 RSpec.describe RuboCop::Cop::API::GrapeArrayMissingCoerce do
-  include CopHelper
+  let(:msg) do
+    "This Grape parameter defines an Array but is missing a coerce_with definition. " \
+    "For more details, see " \
+    "https://github.com/ruby-grape/grape/blob/master/UPGRADING.md#ensure-that-array-types-have-explicit-coercions"
+  end
 
   subject(:cop) { described_class.new }
 
   it 'adds an offense with a required parameter' do
-    inspect_source(<<~CODE)
+    expect_offense(<<~TYPE)
       class SomeAPI < Grape::API::Instance
         params do
           requires :values, type: Array[String]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
         end
       end
-    CODE
-
-    expect(cop.offenses.size).to eq(1)
+    TYPE
   end
 
   it 'adds an offense with an optional parameter' do
-    inspect_source(<<~CODE)
+    expect_offense(<<~TYPE)
       class SomeAPI < Grape::API::Instance
         params do
           optional :values, type: Array[String]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
         end
       end
-    CODE
-
-    expect(cop.offenses.size).to eq(1)
+    TYPE
   end
 
   it 'does not add an offense' do
-    inspect_source(<<~CODE)
+    expect_no_offenses(<<~CODE)
       class SomeAPI < Grape::API::Instance
         params do
           requires :values, type: Array[String], coerce_with: ->(val) { val.split(',').map(&:strip) }
@@ -44,19 +46,15 @@ RSpec.describe RuboCop::Cop::API::GrapeArrayMissingCoerce do
         end
       end
     CODE
-
-    expect(cop.offenses.size).to be_zero
   end
 
   it 'does not add an offense for unrelated classes' do
-    inspect_source(<<~CODE)
+    expect_no_offenses(<<~CODE)
       class SomeClass
         params do
           requires :values, type: Array[String]
         end
       end
     CODE
-
-    expect(cop.offenses.size).to be_zero
   end
 end

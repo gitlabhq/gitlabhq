@@ -7,7 +7,10 @@ import { createStore } from '~/ide/stores';
 import service from '~/ide/services';
 import { createRouter } from '~/ide/ide_router';
 import eventHub from '~/ide/eventhub';
-import consts from '~/ide/stores/modules/commit/constants';
+import {
+  COMMIT_TO_CURRENT_BRANCH,
+  COMMIT_TO_NEW_BRANCH,
+} from '~/ide/stores/modules/commit/constants';
 import * as mutationTypes from '~/ide/stores/modules/commit/mutation_types';
 import * as actions from '~/ide/stores/modules/commit/actions';
 import { createUnexpectedCommitError } from '~/ide/lib/errors';
@@ -425,12 +428,12 @@ describe('IDE commit module actions', () => {
       });
 
       it('resets stores commit actions', (done) => {
-        store.state.commit.commitAction = consts.COMMIT_TO_NEW_BRANCH;
+        store.state.commit.commitAction = COMMIT_TO_NEW_BRANCH;
 
         store
           .dispatch('commit/commitChanges')
           .then(() => {
-            expect(store.state.commit.commitAction).not.toBe(consts.COMMIT_TO_NEW_BRANCH);
+            expect(store.state.commit.commitAction).not.toBe(COMMIT_TO_NEW_BRANCH);
           })
           .then(done)
           .catch(done.fail);
@@ -450,7 +453,7 @@ describe('IDE commit module actions', () => {
         it('redirects to new merge request page', (done) => {
           jest.spyOn(eventHub, '$on').mockImplementation();
 
-          store.state.commit.commitAction = consts.COMMIT_TO_NEW_BRANCH;
+          store.state.commit.commitAction = COMMIT_TO_NEW_BRANCH;
           store.state.commit.shouldCreateMR = true;
 
           store
@@ -468,7 +471,7 @@ describe('IDE commit module actions', () => {
         it('does not redirect to new merge request page when shouldCreateMR is not checked', (done) => {
           jest.spyOn(eventHub, '$on').mockImplementation();
 
-          store.state.commit.commitAction = consts.COMMIT_TO_NEW_BRANCH;
+          store.state.commit.commitAction = COMMIT_TO_NEW_BRANCH;
           store.state.commit.shouldCreateMR = false;
 
           store
@@ -483,7 +486,7 @@ describe('IDE commit module actions', () => {
         it('does not redirect to merge request page if shouldCreateMR is checked, but branch is the default branch', async () => {
           jest.spyOn(eventHub, '$on').mockImplementation();
 
-          store.state.commit.commitAction = consts.COMMIT_TO_CURRENT_BRANCH;
+          store.state.commit.commitAction = COMMIT_TO_CURRENT_BRANCH;
           store.state.commit.shouldCreateMR = true;
 
           await store.dispatch('commit/commitChanges');

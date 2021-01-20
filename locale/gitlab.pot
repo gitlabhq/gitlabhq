@@ -26815,9 +26815,6 @@ msgstr ""
 msgid "Stage"
 msgstr ""
 
-msgid "Stage & Commit"
-msgstr ""
-
 msgid "Stage data updated"
 msgstr ""
 
@@ -28325,9 +28322,6 @@ msgstr ""
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
 msgstr ""
 
-msgid "The roadmap shows the progress of your epics along a timeline"
-msgstr ""
-
 msgid "The same shared runner executes code from multiple projects, unless you configure autoscaling with %{link} set to 1 (which it is on GitLab.com)."
 msgstr ""
 
@@ -29755,9 +29749,6 @@ msgid "To view all %{scannedResourcesCount} scanned URLs, %{linkStart}please dow
 msgstr ""
 
 msgid "To view instance-level analytics, ask an admin to turn on %{docLinkStart}usage ping%{docLinkEnd}."
-msgstr ""
-
-msgid "To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown."
 msgstr ""
 
 msgid "To widen your search, change or remove filters above"

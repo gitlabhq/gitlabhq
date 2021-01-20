@@ -1,5 +1,5 @@
 import { sprintf, n__, __ } from '../../../../locale';
-import consts from './constants';
+import { COMMIT_TO_NEW_BRANCH } from './constants';
 
 const BRANCH_SUFFIX_COUNT = 5;
 const createTranslatedTextForFiles = (files, text) => {
@@ -48,7 +48,7 @@ export const preBuiltCommitMessage = (state, _, rootState) => {
     .join('\n');
 };
 
-export const isCreatingNewBranch = (state) => state.commitAction === consts.COMMIT_TO_NEW_BRANCH;
+export const isCreatingNewBranch = (state) => state.commitAction === COMMIT_TO_NEW_BRANCH;
 
 export const shouldHideNewMrOption = (_state, getters, _rootState, rootGetters) =>
   !getters.isCreatingNewBranch &&

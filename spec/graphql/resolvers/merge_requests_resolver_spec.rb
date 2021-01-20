@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Resolvers::MergeRequestsResolver do
   include GraphqlHelpers
+  include SortingHelper
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:milestone) { create(:milestone, project: project) }
@@ -30,6 +31,16 @@ RSpec.describe Resolvers::MergeRequestsResolver do
   end
 
   describe '#resolve' do
+    # One for the initial auth, then MRs, and the load of project and project_feature (for further auth):
+    # SELECT MAX("project_authorizations"."access_level") AS maximum_access_level,
+    #   "project_authorizations"."user_id" AS project_authorizations_user_id
+    #   FROM "project_authorizations"
+    #   WHERE "project_authorizations"."project_id" = 2 AND "project_authorizations"."user_id" = 2
+    #   GROUP BY "project_authorizations"."user_id"
+    # SELECT "merge_requests".* FROM "merge_requests" WHERE "merge_requests"."target_project_id" = 2
+    #   AND "merge_requests"."iid" = 1 ORDER BY "merge_requests"."id" DESC
+    # SELECT "projects".* FROM "projects" WHERE "projects"."id" = 2
+    # SELECT "project_features".* FROM "project_features" WHERE "project_features"."project_id" = 2
     let(:queries_per_project) { 3 }
 
     context 'no arguments' do
@@ -72,15 +83,17 @@ RSpec.describe Resolvers::MergeRequestsResolver do
         expect(result).to contain_exactly(merge_request_1, merge_request_2, merge_request_3)
       end
 
-      it 'can batch-resolve merge requests from different projects' do
+      it 'can batch-resolve merge requests from different projects', :request_store, :use_clean_rails_memory_store_caching do
         # 2 queries for project_authorizations, and 2 for merge_requests
-        result = batch_sync(max_queries: queries_per_project * 2) do
-          resolve_mr(project, iids: [iid_1]) +
-            resolve_mr(project, iids: [iid_2]) +
-            resolve_mr(other_project, iids: [other_iid])
+        results = batch_sync(max_queries: queries_per_project * 2) do
+          a = resolve_mr(project, iids: [iid_1])
+          b = resolve_mr(project, iids: [iid_2])
+          c = resolve_mr(other_project, iids: [other_iid])
+
+          [a, b, c].flat_map(&:to_a)
         end
 
-        expect(result).to contain_exactly(merge_request_1, merge_request_2, other_merge_request)
+        expect(results).to contain_exactly(merge_request_1, merge_request_2, other_merge_request)
       end
 
       it 'resolves an unknown iid to be empty' do
@@ -134,9 +147,9 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       it 'takes more than one argument' do
         mrs = [merge_request_3, merge_request_4]
         branches = mrs.map(&:target_branch)
-        result = resolve_mr(project, target_branches: branches )
+        result = resolve_mr(project, target_branches: branches)
 
-        expect(result.compact).to match_array(mrs)
+        expect(result).to match_array(mrs)
       end
     end
 
@@ -173,7 +186,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       it 'returns merge requests merged between the given period' do
         result = resolve_mr(project, merged_after: 20.days.ago, merged_before: 5.days.ago)
 
-        expect(result).to eq([merge_request_1])
+        expect(result).to contain_exactly(merge_request_1)
       end
 
       it 'does not return anything' do
@@ -187,7 +200,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       it 'filters merge requests by milestone title' do
         result = resolve_mr(project, milestone_title: milestone.title)
 
-        expect(result).to eq([merge_request_with_milestone])
+        expect(result).to contain_exactly(merge_request_with_milestone)
       end
 
       it 'does not find anything' do
@@ -203,18 +216,29 @@ RSpec.describe Resolvers::MergeRequestsResolver do
 
         result = resolve_mr(project, source_branches: [merge_request_4.source_branch], state: 'locked')
 
-        expect(result.compact).to contain_exactly(merge_request_4)
+        expect(result).to contain_exactly(merge_request_4)
       end
     end
 
     describe 'sorting' do
+      let(:mrs) do
+        [
+          merge_request_with_milestone, merge_request_6, merge_request_5, merge_request_4,
+          merge_request_3, merge_request_2, merge_request_1
+        ]
+      end
+
       context 'when sorting by created' do
         it 'sorts merge requests ascending' do
-          expect(resolve_mr(project, sort: 'created_asc')).to eq [merge_request_1, merge_request_2, merge_request_3, merge_request_4, merge_request_5, merge_request_6, merge_request_with_milestone]
+          expect(resolve_mr(project, sort: 'created_asc'))
+            .to match_array(mrs)
+            .and be_sorted(:created_at, :asc)
         end
 
         it 'sorts merge requests descending' do
-          expect(resolve_mr(project, sort: 'created_desc')).to eq [merge_request_with_milestone, merge_request_6, merge_request_5, merge_request_4, merge_request_3, merge_request_2, merge_request_1]
+          expect(resolve_mr(project, sort: 'created_desc'))
+            .to match_array(mrs)
+            .and be_sorted(:created_at, :desc)
         end
       end
 
@@ -225,11 +249,19 @@ RSpec.describe Resolvers::MergeRequestsResolver do
         end
 
         it 'sorts merge requests ascending' do
-          expect(resolve_mr(project, sort: :merged_at_asc)).to eq [merge_request_1, merge_request_3, merge_request_with_milestone, merge_request_6, merge_request_5, merge_request_4, merge_request_2]
+          expect(resolve_mr(project, sort: :merged_at_asc))
+            .to match_array(mrs)
+            .and be_sorted(->(mr) { [merged_at(mr), -mr.id] })
         end
 
         it 'sorts merge requests descending' do
-          expect(resolve_mr(project, sort: :merged_at_desc)).to eq [merge_request_3, merge_request_1, merge_request_with_milestone, merge_request_6, merge_request_5, merge_request_4, merge_request_2]
+          expect(resolve_mr(project, sort: :merged_at_desc))
+            .to match_array(mrs)
+            .and be_sorted(->(mr) { [-merged_at(mr), -mr.id] })
+        end
+
+        def merged_at(mr)
+          nils_last(mr.metrics.merged_at)
         end
 
         context 'when label filter is given and the optimized_issuable_label_filter feature flag is off' do

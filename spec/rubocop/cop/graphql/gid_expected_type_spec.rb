@@ -6,16 +6,13 @@ require 'rubocop'
 require_relative '../../../../rubocop/cop/graphql/gid_expected_type'
 
 RSpec.describe RuboCop::Cop::Graphql::GIDExpectedType do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   it 'adds an offense when there is no expected_type parameter' do
-    inspect_source(<<~TYPE)
+    expect_offense(<<~TYPE)
       GitlabSchema.object_from_id(received_id)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Add an expected_type parameter to #object_from_id calls if possible.
     TYPE
-
-    expect(cop.offenses.size).to eq 1
   end
 
   it 'does not add an offense for calls that have an expected_type parameter' do
