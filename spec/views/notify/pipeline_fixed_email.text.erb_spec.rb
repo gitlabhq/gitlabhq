@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'notify/pipeline_fixed_email.text.erb' do
   it_behaves_like 'pipeline status changes email' do
-    let(:title) { 'Your pipeline has been fixed!' }
+    let(:title) { "Pipeline has been fixed and ##{pipeline.id} has passed!" }
     let(:status) { :success }
   end
 end

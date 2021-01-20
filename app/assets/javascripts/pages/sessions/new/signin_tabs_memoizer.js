@@ -20,7 +20,7 @@ export default class SigninTabsMemoizer {
   bootstrap() {
     const tabs = document.querySelectorAll(this.tabSelector);
     if (tabs.length > 0) {
-      tabs[0].addEventListener('click', e => {
+      tabs[0].addEventListener('click', (e) => {
         if (e.target && e.target.nodeName === 'A') {
           const anchorName = e.target.getAttribute('href');
           this.saveData(anchorName);

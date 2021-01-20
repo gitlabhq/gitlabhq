@@ -1,0 +1,6 @@
+---
+title: 'Refactor(opsgenie): remove Opsgenie integration frontend code from Incident
+  management'
+merge_request: 50525
+author:
+type: deprecated

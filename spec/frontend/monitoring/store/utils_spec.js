@@ -127,7 +127,7 @@ describe('mapToDashboardViewModel', () => {
 
     let dashboard;
 
-    const setupWithPanel = panel => {
+    const setupWithPanel = (panel) => {
       dashboard = {
         panel_groups: [
           {
@@ -340,7 +340,7 @@ describe('mapToDashboardViewModel', () => {
       ],
     });
 
-    const getMappedMetric = dashboard => {
+    const getMappedMetric = (dashboard) => {
       return mapToDashboardViewModel(dashboard).panelGroups[0].panels[0].metrics[0];
     };
 
@@ -775,7 +775,11 @@ describe('normalizeQueryResponseData', () => {
             job: 'prometheus',
             instance: 'localhost:9090',
           },
-          values: [[1435781430.781, '1'], [1435781445.781, '2'], [1435781460.781, '3']],
+          values: [
+            [1435781430.781, '1'],
+            [1435781445.781, '2'],
+            [1435781460.781, '3'],
+          ],
         },
         {
           metric: {
@@ -783,7 +787,11 @@ describe('normalizeQueryResponseData', () => {
             job: 'node',
             instance: 'localhost:9091',
           },
-          values: [[1435781430.781, '4'], [1435781445.781, '5'], [1435781460.781, '6']],
+          values: [
+            [1435781430.781, '4'],
+            [1435781445.781, '5'],
+            [1435781460.781, '6'],
+          ],
         },
       ],
     };
@@ -840,7 +848,10 @@ describe('normalizeQueryResponseData', () => {
             job: 'prometheus',
             instance: 'localhost:9090',
           },
-          values: [[1435781430.781, '1'], [1435781460.781, 'NaN']],
+          values: [
+            [1435781430.781, '1'],
+            [1435781460.781, 'NaN'],
+          ],
         },
       ],
     };
@@ -849,7 +860,10 @@ describe('normalizeQueryResponseData', () => {
       {
         metric: { __name__: 'up', instance: 'localhost:9090', job: 'prometheus' },
         value: ['2015-07-01T20:11:00.781Z', NaN],
-        values: [['2015-07-01T20:10:30.781Z', 1], ['2015-07-01T20:11:00.781Z', NaN]],
+        values: [
+          ['2015-07-01T20:10:30.781Z', 1],
+          ['2015-07-01T20:11:00.781Z', NaN],
+        ],
       },
     ]);
   });

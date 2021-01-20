@@ -21,6 +21,9 @@ module API
                  coerce_with: Validations::Validators::CheckAssigneesCount.coerce,
                  desc: 'Return merge requests which are assigned to the user with the given username'
         mutually_exclusive :assignee_id, :assignee_username
+        optional :reviewer_username,
+                 type: String,
+                 desc: 'Return merge requests which have the user as a reviewer with the given username'
 
         optional :labels,
                  type: Array[String],
@@ -32,6 +35,11 @@ module API
 
       params :merge_requests_base_params do
         use :merge_requests_negatable_params
+        optional :reviewer_id,
+                 types: [Integer, String],
+                 integer_none_any: true,
+                 desc: 'Return merge requests which have the user as a reviewer with the given ID'
+        mutually_exclusive :reviewer_id, :reviewer_username
         optional :state,
                  type: String,
                  values: %w[opened closed locked merged all],
@@ -72,6 +80,10 @@ module API
         optional :wip, type: String, values: %w[yes no], desc: 'Search merge requests for WIP in the title'
         optional :not, type: Hash, desc: 'Parameters to negate' do
           use :merge_requests_negatable_params
+          optional :reviewer_id,
+            types: Integer,
+            desc: 'Return merge requests which have the user as a reviewer with the given ID'
+          mutually_exclusive :reviewer_id, :reviewer_username
         end
 
         optional :deployed_before,

@@ -1,0 +1,8 @@
+---
+name: non_public_artifacts
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49775
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/294503
+milestone: '13.8'
+type: development
+group: group::configure
+default_enabled: false

@@ -89,9 +89,9 @@ function generateUnicodeSupportMap(testMap) {
   ctx.font = `${fontSize}px "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`;
   // Write each emoji to the canvas vertically
   let writeIndex = 0;
-  testMapKeys.forEach(testKey => {
+  testMapKeys.forEach((testKey) => {
     const testEntry = testMap[testKey];
-    [].concat(testEntry).forEach(emojiUnicode => {
+    [].concat(testEntry).forEach((emojiUnicode) => {
       ctx.fillText(emojiUnicode, 0, writeIndex * fontSize + fontSize / 2);
       writeIndex += 1;
     });
@@ -100,11 +100,11 @@ function generateUnicodeSupportMap(testMap) {
   // Read from the canvas
   const resultMap = {};
   let readIndex = 0;
-  testMapKeys.forEach(testKey => {
+  testMapKeys.forEach((testKey) => {
     const testEntry = testMap[testKey];
     // This needs to be a `reduce` instead of `every` because we need to
     // keep the `readIndex` in sync from the writes by running all entries
-    const isTestSatisfied = [].concat(testEntry).reduce(isSatisfied => {
+    const isTestSatisfied = [].concat(testEntry).reduce((isSatisfied) => {
       // Sample along the vertical-middle for a couple of characters
       const imageData = ctx.getImageData(0, readIndex * fontSize + fontSize / 2, 2 * fontSize, 1)
         .data;

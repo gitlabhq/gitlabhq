@@ -33,7 +33,7 @@ describe('Filtered Search Token Keys', () => {
   describe('getKeys', () => {
     it('should return keys', () => {
       const getKeys = new FilteredSearchTokenKeys(tokenKeys).getKeys();
-      const keys = new FilteredSearchTokenKeys(tokenKeys).get().map(i => i.key);
+      const keys = new FilteredSearchTokenKeys(tokenKeys).get().map((i) => i.key);
 
       keys.forEach((key, i) => {
         expect(key).toEqual(getKeys[i]);

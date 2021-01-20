@@ -34,7 +34,7 @@ describe('Discussion navigation mixin', () => {
     setHTMLFixture(
       [...'abcde']
         .map(
-          id =>
+          (id) =>
             `<ul class="notes" data-discussion-id="${id}"></ul>
             <div class="discussion" data-discussion-id="${id}"></div>`,
         )

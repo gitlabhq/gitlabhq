@@ -100,7 +100,7 @@ export default {
         />
 
         <gl-sprintf v-if="errorFn" :message="__('%{spanStart}in%{spanEnd} %{errorFn}')">
-          <template #span="{content}">
+          <template #span="{ content }">
             <span class="gl-text-gray-200">{{ content }}&nbsp;</span>
           </template>
           <template #errorFn>
@@ -109,7 +109,7 @@ export default {
         </gl-sprintf>
 
         <gl-sprintf :message="__('%{spanStart}at line%{spanEnd} %{errorLine}%{errorColumn}')">
-          <template #span="{content}">
+          <template #span="{ content }">
             <span class="gl-text-gray-200">{{ content }}&nbsp;</span>
           </template>
           <template #errorLine>

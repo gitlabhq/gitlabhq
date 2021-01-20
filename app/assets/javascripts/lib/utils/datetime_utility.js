@@ -4,6 +4,8 @@ import * as timeago from 'timeago.js';
 import dateFormat from 'dateformat';
 import { languageCode, s__, __, n__ } from '../../locale';
 
+const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000;
+
 window.timeago = timeago;
 
 /**
@@ -12,7 +14,7 @@ window.timeago = timeago;
  *
  * @param {Date} date
  */
-export const newDate = date => (date instanceof Date ? new Date(date.getTime()) : new Date());
+export const newDate = (date) => (date instanceof Date ? new Date(date.getTime()) : new Date());
 
 /**
  * Returns i18n month names array.
@@ -21,7 +23,7 @@ export const newDate = date => (date instanceof Date ? new Date(date.getTime()) 
  *
  * @param {Boolean} abbreviated
  */
-export const getMonthNames = abbreviated => {
+export const getMonthNames = (abbreviated) => {
   if (abbreviated) {
     return [
       s__('Jan'),
@@ -74,7 +76,7 @@ export const getWeekdayNames = () => [
  * @param {date} date
  * @returns {String}
  */
-export const getDayName = date =>
+export const getDayName = (date) =>
   [
     __('Sunday'),
     __('Monday'),
@@ -242,7 +244,7 @@ export const getDayDifference = (a, b) => {
  * @param  {Number} seconds
  * @return {String}
  */
-export const timeIntervalInWords = intervalInSeconds => {
+export const timeIntervalInWords = (intervalInSeconds) => {
   const secondsInteger = parseInt(intervalInSeconds, 10);
   const minutes = Math.floor(secondsInteger / 60);
   const seconds = secondsInteger - minutes * 60;
@@ -316,7 +318,7 @@ export const monthInWords = (date, abbreviated = false) => {
  *
  * @param {Date} date
  */
-export const totalDaysInMonth = date => {
+export const totalDaysInMonth = (date) => {
   if (!date) {
     return 0;
   }
@@ -329,7 +331,7 @@ export const totalDaysInMonth = date => {
  *
  * @param {Array} quarter
  */
-export const totalDaysInQuarter = quarter =>
+export const totalDaysInQuarter = (quarter) =>
   quarter.reduce((acc, month) => acc + totalDaysInMonth(month), 0);
 
 /**
@@ -338,7 +340,7 @@ export const totalDaysInQuarter = quarter =>
  *
  * @param {Date} date
  */
-export const getSundays = date => {
+export const getSundays = (date) => {
   if (!date) {
     return [];
   }
@@ -449,7 +451,7 @@ window.gl.utils = {
  * @param milliseconds
  * @returns {string}
  */
-export const formatTime = milliseconds => {
+export const formatTime = (milliseconds) => {
   const remainingSeconds = Math.floor(milliseconds / 1000) % 60;
   const remainingMinutes = Math.floor(milliseconds / 1000 / 60) % 60;
   const remainingHours = Math.floor(milliseconds / 1000 / 60 / 60);
@@ -468,7 +470,7 @@ export const formatTime = milliseconds => {
  * @param {String} dateString Date in yyyy-mm-dd format
  * @return {Date} UTC format
  */
-export const parsePikadayDate = dateString => {
+export const parsePikadayDate = (dateString) => {
   const parts = dateString.split('-');
   const year = parseInt(parts[0], 10);
   const month = parseInt(parts[1] - 1, 10);
@@ -482,7 +484,7 @@ export const parsePikadayDate = dateString => {
  * @param {Date} date UTC format
  * @return {String} Date formatted in yyyy-mm-dd
  */
-export const pikadayToString = date => {
+export const pikadayToString = (date) => {
   const day = pad(date.getDate());
   const month = pad(date.getMonth() + 1);
   const year = date.getFullYear();
@@ -523,7 +525,7 @@ export const parseSeconds = (
 
   let unorderedMinutes = Math.abs(seconds / SECONDS_PER_MINUTE);
 
-  return mapValues(timePeriodConstraints, minutesPerPeriod => {
+  return mapValues(timePeriodConstraints, (minutesPerPeriod) => {
     if (minutesPerPeriod === 0) {
       return 0;
     }
@@ -567,7 +569,7 @@ export const stringifyTime = (timeObject, fullNameFormat = false) => {
  * @param endDate date string that the time difference is calculated for
  * @return {Number} number of milliseconds remaining until the given date
  */
-export const calculateRemainingMilliseconds = endDate => {
+export const calculateRemainingMilliseconds = (endDate) => {
   const remainingMilliseconds = new Date(endDate).getTime() - Date.now();
   return Math.max(remainingMilliseconds, 0);
 };
@@ -598,7 +600,7 @@ export const getDateInFuture = (date, daysInFuture) =>
  * @param  {Date} date
  * @returns boolean
  */
-export const isValidDate = date => date instanceof Date && !Number.isNaN(date.getTime());
+export const isValidDate = (date) => date instanceof Date && !Number.isNaN(date.getTime());
 
 /*
  * Appending T00:00:00 makes JS assume local time and prevents it from shifting the date
@@ -606,7 +608,7 @@ export const isValidDate = date => date instanceof Date && !Number.isNaN(date.ge
  * be consistent with the "edit issue -> due date" UI.
  */
 
-export const newDateAsLocaleTime = date => {
+export const newDateAsLocaleTime = (date) => {
   const suffix = 'T00:00:00';
   return new Date(`${date}${suffix}`);
 };
@@ -620,7 +622,7 @@ export const endOfDayTime = 'T23:59:59Z';
  * @param {Function} formatter
  * @return {Any[]} an array of formatted dates between 2 given dates (including start&end date)
  */
-export const getDatesInRange = (d1, d2, formatter = x => x) => {
+export const getDatesInRange = (d1, d2, formatter = (x) => x) => {
   if (!(d1 instanceof Date) || !(d2 instanceof Date)) {
     return [];
   }
@@ -643,7 +645,7 @@ export const getDatesInRange = (d1, d2, formatter = x => x) => {
  * @param {Number} seconds
  * @return {Number} number of milliseconds
  */
-export const secondsToMilliseconds = seconds => seconds * 1000;
+export const secondsToMilliseconds = (seconds) => seconds * 1000;
 
 /**
  * Converts the supplied number of seconds to days.
@@ -651,7 +653,7 @@ export const secondsToMilliseconds = seconds => seconds * 1000;
  * @param {Number} seconds
  * @return {Number} number of days
  */
-export const secondsToDays = seconds => Math.round(seconds / 86400);
+export const secondsToDays = (seconds) => Math.round(seconds / 86400);
 
 /**
  * Converts a numeric utc offset in seconds to +/- hours
@@ -662,7 +664,7 @@ export const secondsToDays = seconds => Math.round(seconds / 86400);
  *
  * @return {String} the + or - offset in hours
  */
-export const secondsToHours = offset => {
+export const secondsToHours = (offset) => {
   const parsed = parseInt(offset, 10);
   if (Number.isNaN(parsed) || parsed === 0) {
     return `0`;
@@ -682,12 +684,40 @@ export const nDaysAfter = (date, numberOfDays) =>
   new Date(newDate(date)).setDate(date.getDate() + numberOfDays);
 
 /**
+ * Returns the date n days before the date provided
+ *
+ * @param {Date} date the initial date
+ * @param {Number} numberOfDays number of days before
+ * @return {Date} the date preceding the date provided
+ */
+export const nDaysBefore = (date, numberOfDays) => nDaysAfter(date, -numberOfDays);
+
+/**
+ * Returns the date n months after the date provided
+ *
+ * @param {Date} date the initial date
+ * @param {Number} numberOfMonths number of months after
+ * @return {Date} the date following the date provided
+ */
+export const nMonthsAfter = (date, numberOfMonths) =>
+  new Date(newDate(date)).setMonth(date.getMonth() + numberOfMonths);
+
+/**
+ * Returns the date n months before the date provided
+ *
+ * @param {Date} date the initial date
+ * @param {Number} numberOfMonths number of months before
+ * @return {Date} the date preceding the date provided
+ */
+export const nMonthsBefore = (date, numberOfMonths) => nMonthsAfter(date, -numberOfMonths);
+
+/**
  * Returns the date after the date provided
  *
  * @param {Date} date the initial date
  * @return {Date} the date following the date provided
  */
-export const dayAfter = date => new Date(newDate(date).setDate(date.getDate() + 1));
+export const dayAfter = (date) => new Date(newDate(date).setDate(date.getDate() + 1));
 
 /**
  * Mimics the behaviour of the rails distance_of_time_in_words function
@@ -795,7 +825,7 @@ export const differenceInMilliseconds = (startDate, endDate = Date.now()) => {
  *
  * @return {Date} the date at the first day of the month
  */
-export const dateAtFirstDayOfMonth = date => new Date(newDate(date).setDate(1));
+export const dateAtFirstDayOfMonth = (date) => new Date(newDate(date).setDate(1));
 
 /**
  * A utility function which checks if two dates match.
@@ -806,3 +836,62 @@ export const dateAtFirstDayOfMonth = date => new Date(newDate(date).setDate(1));
  * @return {Boolean} true if the dates match
  */
 export const datesMatch = (date1, date2) => differenceInMilliseconds(date1, date2) === 0;
+
+/**
+ * A utility function which computes a formatted 24 hour
+ * time string from a positive int in the range 0 - 24.
+ *
+ * @param {Int} time a positive Int between 0 and 24
+ *
+ * @returns {String} formatted 24 hour time String
+ */
+export const format24HourTimeStringFromInt = (time) => {
+  if (!Number.isInteger(time) || time < 0 || time > 24) {
+    return '';
+  }
+
+  const formatted24HourString = time > 9 ? `${time}:00` : `0${time}:00`;
+  return formatted24HourString;
+};
+
+/**
+ * A utility function which checks if two date ranges overlap.
+ *
+ * @param {Object} givenPeriodLeft - the first period to compare.
+ * @param {Object} givenPeriodRight - the second period to compare.
+ * @returns {Object} { overlap: number of days the overlap is present, overlapStartDate: the start date of the overlap in time format, overlapEndDate: the end date of the overlap in time format }
+ * @throws {Error} Uncaught Error: Invalid period
+ *
+ * @example
+ * getOverlappingDaysInPeriods(
+ *   { start: new Date(2021, 0, 11), end: new Date(2021, 0, 13) },
+ *   { start: new Date(2021, 0, 11), end: new Date(2021, 0, 14) }
+ * ) => { daysOverlap: 2, overlapStartDate: 1610323200000, overlapEndDate: 1610496000000 }
+ *
+ */
+export const getOverlappingDaysInPeriods = (givenPeriodLeft = {}, givenPeriodRight = {}) => {
+  const leftStartTime = new Date(givenPeriodLeft.start).getTime();
+  const leftEndTime = new Date(givenPeriodLeft.end).getTime();
+  const rightStartTime = new Date(givenPeriodRight.start).getTime();
+  const rightEndTime = new Date(givenPeriodRight.end).getTime();
+
+  if (!(leftStartTime <= leftEndTime && rightStartTime <= rightEndTime)) {
+    throw new Error(__('Invalid period'));
+  }
+
+  const isOverlapping = leftStartTime < rightEndTime && rightStartTime < leftEndTime;
+
+  if (!isOverlapping) {
+    return { daysOverlap: 0 };
+  }
+
+  const overlapStartDate = Math.max(leftStartTime, rightStartTime);
+  const overlapEndDate = rightEndTime > leftEndTime ? leftEndTime : rightEndTime;
+  const differenceInMs = overlapEndDate - overlapStartDate;
+
+  return {
+    daysOverlap: Math.ceil(differenceInMs / MILLISECONDS_IN_DAY),
+    overlapStartDate,
+    overlapEndDate,
+  };
+};

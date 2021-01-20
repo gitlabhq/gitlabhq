@@ -7,7 +7,7 @@ require 'rubocop/rspec/support'
 
 require_relative '../../../rubocop/cop/ban_catch_throw'
 
-RSpec.describe RuboCop::Cop::BanCatchThrow, type: :rubocop do
+RSpec.describe RuboCop::Cop::BanCatchThrow do
   include CopHelper
 
   subject(:cop) { described_class.new }

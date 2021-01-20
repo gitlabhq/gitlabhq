@@ -7,7 +7,7 @@ require 'rubocop/rspec/support'
 
 require_relative '../../../../rubocop/cop/rspec/factories_in_migration_specs'
 
-RSpec.describe RuboCop::Cop::RSpec::FactoriesInMigrationSpecs, type: :rubocop do
+RSpec.describe RuboCop::Cop::RSpec::FactoriesInMigrationSpecs do
   include CopHelper
 
   subject(:cop) { described_class.new }

@@ -48,7 +48,7 @@ export default {
       this.poll.stop();
 
       const queryString = Object.keys(parameters)
-        .map(parameter => {
+        .map((parameter) => {
           const value = parameters[parameter];
           // update internal state for UI
           this[parameter] = value;

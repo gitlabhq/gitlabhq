@@ -39,7 +39,7 @@ const initManualOrdering = (draggableSelector = 'li.issue') => {
       onStart: () => {
         sortableStart();
       },
-      onUpdate: event => {
+      onUpdate: (event) => {
         const el = event.item;
 
         const url = el.getAttribute('url') || el.dataset.url;

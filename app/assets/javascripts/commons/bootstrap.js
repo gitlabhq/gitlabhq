@@ -13,14 +13,10 @@ import 'bootstrap/js/dist/tab';
 // custom jQuery functions
 $.fn.extend({
   disable() {
-    return $(this)
-      .prop('disabled', true)
-      .addClass('disabled');
+    return $(this).prop('disabled', true).addClass('disabled');
   },
   enable() {
-    return $(this)
-      .prop('disabled', false)
-      .removeClass('disabled');
+    return $(this).prop('disabled', false).removeClass('disabled');
   },
 });
 

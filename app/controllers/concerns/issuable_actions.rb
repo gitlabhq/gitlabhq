@@ -217,6 +217,7 @@ module IssuableActions
       :issuable_ids,
       :assignee_id,
       :milestone_id,
+      :sprint_id,
       :state_event,
       :subscription_event,
       assignee_ids: [],

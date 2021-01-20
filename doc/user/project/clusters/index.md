@@ -20,7 +20,7 @@ Using the GitLab project Kubernetes integration, you can:
 - Detect and [monitor Kubernetes](#monitoring-your-kubernetes-cluster).
 - Use it with [Auto DevOps](#auto-devops).
 - Use [Web terminals](#web-terminals).
-- Use [Deploy Boards](#deploy-boards). **(PREMIUM)**
+- Use [Deploy Boards](#deploy-boards).
 - Use [Canary Deployments](#canary-deployments). **(PREMIUM)**
 - Use [deployment variables](#deployment-variables).
 - Use [role-based or attribute-based access controls](add_remove_clusters.md#access-controls).
@@ -248,9 +248,17 @@ Deployment variables require a valid [Deploy Token](../deploy_tokens/index.md) n
 [`gitlab-deploy-token`](../deploy_tokens/index.md#gitlab-deploy-token), and the
 following command in your deployment job script, for Kubernetes to access the registry:
 
-```plaintext
-kubectl create secret docker-registry gitlab-registry --docker-server="$CI_REGISTRY" --docker-username="$CI_DEPLOY_USER" --docker-password="$CI_DEPLOY_PASSWORD" --docker-email="$GITLAB_USER_EMAIL" -o yaml --dry-run | kubectl apply -f -
-```
+- Using Kubernetes 1.18+:
+
+  ```shell
+  kubectl create secret docker-registry gitlab-registry --docker-server="$CI_REGISTRY" --docker-username="$CI_DEPLOY_USER" --docker-password="$CI_DEPLOY_PASSWORD" --docker-email="$GITLAB_USER_EMAIL" -o yaml --dry-run=client | kubectl apply -f -
+  ```
+
+- Using Kubernetes <1.18:
+
+  ```shell
+  kubectl create secret docker-registry gitlab-registry --docker-server="$CI_REGISTRY" --docker-username="$CI_DEPLOY_USER" --docker-password="$CI_DEPLOY_PASSWORD" --docker-email="$GITLAB_USER_EMAIL" -o yaml --dry-run | kubectl apply -f -
+  ```
 
 The Kubernetes cluster integration exposes the following
 [deployment variables](../../../ci/variables/README.md#deployment-environment-variables) in the
@@ -308,7 +316,7 @@ combined with either
 
 ### Integrations
 
-#### Canary Deployments **(PREMIUM)**
+#### Canary Deployments
 
 Leverage [Kubernetes' Canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments)
 and visualize your canary deployments right inside the Deploy Board, without
@@ -316,7 +324,7 @@ the need to leave GitLab.
 
 [Read more about Canary Deployments](../canary_deployments.md)
 
-#### Deploy Boards **(PREMIUM)**
+#### Deploy Boards
 
 GitLab Deploy Boards offer a consolidated view of the current health and
 status of each CI [environment](../../../ci/environments/index.md) running on Kubernetes,

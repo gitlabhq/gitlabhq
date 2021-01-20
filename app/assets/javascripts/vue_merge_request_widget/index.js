@@ -26,7 +26,11 @@ export default () => {
 
   registerExtension(issueExtension);
 
-  const vm = new Vue({ ...MrWidgetOptions, apolloProvider });
+  const vm = new Vue({
+    el: '#js-vue-mr-widget',
+    ...MrWidgetOptions,
+    apolloProvider,
+  });
 
   window.gl.mrWidget = {
     checkStatus: vm.checkStatus,

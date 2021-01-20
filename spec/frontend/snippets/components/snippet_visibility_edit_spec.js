@@ -40,7 +40,7 @@ describe('Snippet Visibility Edit component', () => {
   const findLink = () => wrapper.find('label').find(GlLink);
   const findRadios = () => wrapper.find(GlFormRadioGroup).findAll(GlFormRadio);
   const findRadiosData = () =>
-    findRadios().wrappers.map(x => {
+    findRadios().wrappers.map((x) => {
       return {
         value: x.find('input').attributes('value'),
         icon: x.find(GlIcon).props('name'),

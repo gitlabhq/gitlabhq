@@ -129,7 +129,7 @@ RSpec.describe Resolvers::ProjectsResolver do
           let(:filters) { { search: 'projA', sort: 'similarity' } }
 
           it 'returns projects in order of similarity to search' do
-            stub_feature_flags(project_finder_similarity_sort: true)
+            stub_feature_flags(project_finder_similarity_sort: current_user)
 
             is_expected.to eq([named_project3, named_project1, named_project2])
           end

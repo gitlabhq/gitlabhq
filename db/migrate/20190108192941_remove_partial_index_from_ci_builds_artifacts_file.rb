@@ -4,7 +4,7 @@ class RemovePartialIndexFromCiBuildsArtifactsFile < ActiveRecord::Migration[5.0]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  INDEX_NAME = 'partial_index_ci_builds_on_id_with_legacy_artifacts'.freeze
+  INDEX_NAME = 'partial_index_ci_builds_on_id_with_legacy_artifacts'
 
   disable_ddl_transaction!
 

@@ -32,7 +32,7 @@ class GlEmoji extends HTMLElement {
 
       const isEmojiUnicode =
         this.childNodes &&
-        Array.prototype.every.call(this.childNodes, childNode => childNode.nodeType === 3);
+        Array.prototype.every.call(this.childNodes, (childNode) => childNode.nodeType === 3);
 
       if (
         emojiUnicode &&

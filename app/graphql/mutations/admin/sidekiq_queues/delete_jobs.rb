@@ -18,12 +18,12 @@ module Mutations
         argument :queue_name,
                  GraphQL::STRING_TYPE,
                  required: true,
-                 description: 'The name of the queue to delete jobs from'
+                 description: 'The name of the queue to delete jobs from.'
 
         field :result,
               Types::Admin::SidekiqQueues::DeleteJobsResponseType,
               null: true,
-              description: 'Information about the status of the deletion request'
+              description: 'Information about the status of the deletion request.'
 
         def ready?(**args)
           unless current_user&.admin?

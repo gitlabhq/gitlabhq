@@ -46,6 +46,13 @@ module Types
       field :confidential, GraphQL::BOOLEAN_TYPE, null: true,
             description: 'Indicates if this note is confidential',
             method: :confidential?
+      field :url, GraphQL::STRING_TYPE,
+            null: true,
+            description: 'URL to view this Note in the Web UI'
+
+      def url
+        ::Gitlab::UrlBuilder.build(object)
+      end
 
       def system_note_icon_name
         SystemNoteHelper.system_note_icon_name(object) if object.system?

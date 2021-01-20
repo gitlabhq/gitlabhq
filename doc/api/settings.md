@@ -83,7 +83,8 @@ Example response:
   "raw_blob_request_limit": 300,
   "wiki_page_max_content_bytes": 52428800,
   "require_admin_approval_after_user_signup": false,
-  "personal_access_token_prefix": "GL-"
+  "personal_access_token_prefix": "GL-",
+  "rate_limiting_response_text": null
 }
 ```
 
@@ -176,7 +177,8 @@ Example response:
   "raw_blob_request_limit": 300,
   "wiki_page_max_content_bytes": 52428800,
   "require_admin_approval_after_user_signup": false,
-  "personal_access_token_prefix": "GL-"
+  "personal_access_token_prefix": "GL-",
+  "rate_limiting_response_text": null
 }
 ```
 
@@ -298,13 +300,14 @@ listed in the descriptions of the relevant settings.
 | `housekeeping_incremental_repack_period` | integer          | required by: `housekeeping_enabled`  | Number of Git pushes after which an incremental `git repack` is run. |
 | `html_emails_enabled`                    | boolean          | no                                   | Enable HTML emails. |
 | `import_sources`                         | array of strings | no                                   | Sources to allow project import from, possible values: `github`, `bitbucket`, `bitbucket_server`, `gitlab`, `fogbugz`, `git`, `gitlab_project`, `gitea`, `manifest`, and `phabricator`. |
+| `invisible_captcha_enabled`              | boolean          | no                                   | Enable Invisible Captcha spam detection during signup. Disabled by default. |
 | `issues_create_limit`                    | integer          | no                                   | Max number of issue creation requests per minute per user. Disabled by default.|
 | `local_markdown_version`                 | integer          | no                                   | Increase this value when any cached Markdown should be invalidated. |
 | `maintenance_mode_message`               | string           | no                                   | **(PREMIUM)** Message displayed when instance is in maintenance mode |
 | `maintenance_mode`                       | boolean          | no                                   | **(PREMIUM)** When instance is in maintenance mode, non-admin users can sign in with read-only access and make read-only API requests |
 | `max_artifacts_size`                     | integer          | no                                   | Maximum artifacts size in MB |
 | `max_attachment_size`                    | integer          | no                                   | Limit attachment size in MB |
-| `max_import_size`                        | integer          | no                                   | Maximum import size in MB. 0 for unlimited. Default = 50 |
+| `max_import_size`                        | integer          | no                                   | Maximum import size in MB. 0 for unlimited. Default = 0 (unlimited) |
 | `max_pages_size`                         | integer          | no                                   | Maximum size of pages repositories in MB |
 | `max_personal_access_token_lifetime`     | integer          | no                                   | **(ULTIMATE ONLY)** Maximum allowable lifetime for personal access tokens in days |
 | `metrics_method_call_threshold`          | integer          | no                                   | A method call is only tracked when it takes longer than the given amount of milliseconds. |
@@ -330,6 +333,7 @@ listed in the descriptions of the relevant settings.
 | `pseudonymizer_enabled`                  | boolean          | no                                   | **(PREMIUM)** When enabled, GitLab runs a background job that produces pseudonymized CSVs of the GitLab database to upload to your configured object storage directory.
 | `push_event_activities_limit`            | integer          | no                                   | Number of changes (branches or tags) in a single push to determine whether individual push events or bulk push events are created. [Bulk push events are created](../user/admin_area/settings/push_event_activities_limit.md) if it surpasses that value. |
 | `push_event_hooks_limit`                 | integer          | no                                   | Number of changes (branches or tags) in a single push to determine whether webhooks and services fire or not. Webhooks and services aren't submitted if it surpasses that value. |
+| `rate_limiting_response_text`            | string           | no                                   | When rate limiting is enabled via the `throttle_*` settings, send this plain text response when a rate limit is exceeded. 'Retry later' is sent if this is blank. |
 | `raw_blob_request_limit`                 | integer          | no                                   | Max number of requests per minute for each raw path. Default: 300. To disable throttling set to 0.|
 | `recaptcha_enabled`                      | boolean          | no                                   | (**If enabled, requires:** `recaptcha_private_key` and `recaptcha_site_key`) Enable reCAPTCHA. |
 | `recaptcha_private_key`                  | string           | required by: `recaptcha_enabled`     | Private key for reCAPTCHA. |

@@ -43,8 +43,6 @@
     = stylesheet_link_tag_defer "application"
     = yield :page_specific_styles
     = stylesheet_link_tag_defer "application_utilities"
-  - unless use_startup_css?
-    = stylesheet_link_tag_defer "themes/#{user_application_theme_css_filename}" if user_application_theme_css_filename
   = stylesheet_link_tag "disable_animations", media: "all" if Rails.env.test? || Gitlab.config.gitlab['disable_animations']
 
   = stylesheet_link_tag_defer "highlight/themes/#{user_color_scheme}"

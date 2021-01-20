@@ -1,6 +1,6 @@
-export const getStorageKey = appEl => appEl.getAttribute('data-storage-key');
+export const getStorageKey = (appEl) => appEl.getAttribute('data-storage-key');
 
-export const setNotification = appEl => {
+export const setNotification = (appEl) => {
   const storageKey = getStorageKey(appEl);
   const notificationEl = document.querySelector('.header-help');
   let notificationCountEl = notificationEl.querySelector('.js-whats-new-notification-count');

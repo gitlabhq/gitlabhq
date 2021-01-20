@@ -21,7 +21,7 @@ export const fetchMergeRequests = ({ state, dispatch }) => {
 
   return axios
     .get(`${state.apiEndpoint}?per_page=${REQUEST_PAGE_COUNT}`)
-    .then(res => {
+    .then((res) => {
       const { headers, data } = res;
       const total = Number(normalizeHeaders(headers)['X-TOTAL']) || 0;
 

@@ -7,7 +7,7 @@
 
 RSpec.shared_examples 'tracking unique hll events' do |feature_flag|
   it 'tracks unique event' do
-    expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).with(expected_type, target_id)
+    expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).with(target_id, values: expected_type)
 
     request
   end

@@ -110,8 +110,16 @@ module CommitsHelper
     end
   end
 
-  def revert_commit_link(commit, continue_to_path, btn_class: nil, has_tooltip: true)
-    commit_action_link('revert', commit, continue_to_path, btn_class: btn_class, has_tooltip: has_tooltip)
+  def revert_commit_link(commit, continue_to_path, btn_class: nil, pajamas: false)
+    return unless current_user
+
+    action = 'revert'
+
+    if pajamas && can_collaborate_with_project?(@project)
+      tag(:div, data: { display_text: action.capitalize }, class: "js-revert-commit-trigger")
+    else
+      commit_action_link(action, commit, continue_to_path, btn_class: btn_class, has_tooltip: false)
+    end
   end
 
   def cherry_pick_commit_link(commit, continue_to_path, btn_class: nil, has_tooltip: true)

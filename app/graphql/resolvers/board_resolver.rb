@@ -8,7 +8,7 @@ module Resolvers
 
     argument :id, ::Types::GlobalIDType[::Board],
              required: true,
-             description: 'The board\'s ID'
+             description: 'The board\'s ID.'
 
     def resolve(id: nil)
       return unless parent

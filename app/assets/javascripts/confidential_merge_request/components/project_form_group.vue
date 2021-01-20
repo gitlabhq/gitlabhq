@@ -61,7 +61,7 @@ export default {
       }
     },
     normalizeProjectData(data) {
-      return data.map(p => ({
+      return data.map((p) => ({
         id: p.id,
         name: p.name_with_namespace,
         pathWithNamespace: p.path_with_namespace,
@@ -78,7 +78,7 @@ export default {
           this.projects = this.normalizeProjectData(data);
           this.selectProject(this.projects[0]);
         })
-        .catch(e => {
+        .catch((e) => {
           createFlash(__('Error fetching forked projects. Please try again.'));
           throw e;
         });

@@ -53,6 +53,10 @@ module Gitlab
           @stages ||= @ci_config.stages
         end
 
+        def included_templates
+          @included_templates ||= @ci_config.included_templates
+        end
+
         def build_attributes(name)
           job = jobs.fetch(name.to_sym, {})
 

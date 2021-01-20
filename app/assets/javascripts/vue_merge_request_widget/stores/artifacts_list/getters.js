@@ -1,6 +1,6 @@
 import { s__, n__ } from '~/locale';
 
-export const title = state => {
+export const title = (state) => {
   if (state.isLoading) {
     return s__('BuildArtifacts|Loading artifacts');
   }

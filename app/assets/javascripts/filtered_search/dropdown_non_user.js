@@ -30,7 +30,7 @@ export default class DropdownNonUser extends FilteredSearchDropdown {
   }
 
   itemClicked(e) {
-    super.itemClicked(e, selected => {
+    super.itemClicked(e, (selected) => {
       const title = selected.querySelector('.js-data-value').innerText.trim();
       return `${this.symbol}${DropdownUtils.getEscapedText(title)}`;
     });

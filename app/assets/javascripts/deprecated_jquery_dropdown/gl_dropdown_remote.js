@@ -15,7 +15,7 @@ export class GitLabDropdownRemote {
       if (this.options.beforeSend) {
         this.options.beforeSend();
       }
-      return this.dataEndpoint('', data => {
+      return this.dataEndpoint('', (data) => {
         // Fetch the data by calling the data function
         if (this.options.success) {
           this.options.success(data);

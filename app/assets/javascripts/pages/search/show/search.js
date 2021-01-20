@@ -16,16 +16,12 @@ export default class Search {
   }
 
   eventListeners() {
-    $(document)
-      .off('keyup', this.searchInput)
-      .on('keyup', this.searchInput, this.searchKeyUp);
+    $(document).off('keyup', this.searchInput).on('keyup', this.searchInput, this.searchKeyUp);
     $(document)
       .off('click', this.searchClear)
       .on('click', this.searchClear, this.clearSearchField.bind(this));
 
-    $('a.js-search-clear')
-      .off('click', this.clearSearchFilter)
-      .on('click', this.clearSearchFilter);
+    $('a.js-search-clear').off('click', this.clearSearchFilter).on('click', this.clearSearchFilter);
   }
 
   static submitSearch() {
@@ -42,10 +38,7 @@ export default class Search {
   }
 
   clearSearchField() {
-    return $(this.searchInput)
-      .val('')
-      .trigger('keyup')
-      .focus();
+    return $(this.searchInput).val('').trigger('keyup').focus();
   }
 
   // We need to manually follow the link on the anchors

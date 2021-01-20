@@ -100,7 +100,7 @@ include:
   - template: Managed-Cluster-Applications.gitlab-ci.yml
 
 apply:
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.34.1"
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.37.0"
 ```
 
 ### Use the template with a custom environment
@@ -1268,6 +1268,11 @@ record.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21966) in GitLab 12.7.
 
+WARNING:
+The Web Application Firewall is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/271276)
+in GitLab 13.6, and planned for [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/271349)
+in GitLab 14.0.
+
 A Web Application Firewall (WAF) examines traffic being sent or received,
 and can block malicious traffic before it reaches your application. The benefits
 of a WAF are:
@@ -1296,7 +1301,7 @@ To enable WAF, switch its respective toggle to the enabled position when install
 or updating [Ingress application](#ingress).
 
 If this is your first time using the GitLab WAF, we recommend you follow the
-[quick start guide](../../topics/web_application_firewall/quick_start_guide.md).
+[quick start guide](../project/clusters/protect/web_application_firewall/quick_start_guide.md).
 
 There is a small performance overhead by enabling ModSecurity. If this is
 considered significant for your application, you can disable ModSecurity's
@@ -1308,7 +1313,7 @@ rule engine for your deployed application in any of the following ways:
 1. Switch its respective toggle to the disabled position, and then apply changes
    by selecting **Save changes** to reinstall Ingress with the recent changes.
 
-![Disabling WAF](../../topics/web_application_firewall/img/guide_waf_ingress_save_changes_v12_10.png)
+![Disabling WAF](../project/clusters/protect/web_application_firewall/img/guide_waf_ingress_save_changes_v12_10.png)
 
 ##### Logging and blocking modes
 
@@ -1321,7 +1326,7 @@ To help you tune your WAF rules, you can globally set your WAF to either
 To change your WAF's mode:
 
 1. If you haven't already done so,
-   [install ModSecurity](../../topics/web_application_firewall/quick_start_guide.md).
+   [install ModSecurity](../project/clusters/protect/web_application_firewall/quick_start_guide.md).
 1. Navigate to **Operations > Kubernetes**.
 1. In **Applications**, scroll to **Ingress**.
 1. Under **Global default**, select your desired mode.
@@ -1337,12 +1342,12 @@ The **ModSecurity** user interface controls are disabled if the version deployed
 differs from the one available in GitLab. However, actions at the [Ingress](#ingress)
 level, such as uninstalling, can still be performed:
 
-![WAF settings disabled](../../topics/web_application_firewall/img/guide_waf_ingress_disabled_settings_v12_10.png)
+![WAF settings disabled](../project/clusters/protect/web_application_firewall/img/guide_waf_ingress_disabled_settings_v12_10.png)
 
 Update [Ingress](#ingress) to the most recent version to take advantage of bug
 fixes, security fixes, and performance improvements. To update the
 [Ingress application](#ingress), you must first uninstall it, and then re-install
-it as described in [Install ModSecurity](../../topics/web_application_firewall/quick_start_guide.md).
+it as described in [Install ModSecurity](../project/clusters/protect/web_application_firewall/quick_start_guide.md).
 
 ##### Viewing Web Application Firewall traffic
 

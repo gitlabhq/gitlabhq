@@ -81,7 +81,7 @@ describe('Multi-file editor library model', () => {
   });
 
   describe('onChange', () => {
-    it('calls callback on change', done => {
+    it('calls callback on change', (done) => {
       const spy = jest.fn();
       model.onChange(spy);
 

@@ -42,10 +42,10 @@ export default {
       return this.graphData.y_label || '';
     },
     xAxisLabels() {
-      return this.metrics.result.map(res => Object.values(res.metric)[0]);
+      return this.metrics.result.map((res) => Object.values(res.metric)[0]);
     },
     yAxisLabels() {
-      return this.result.values.map(val => {
+      return this.result.values.map((val) => {
         const [yLabel] = val;
 
         return formatDate(new Date(yLabel), {

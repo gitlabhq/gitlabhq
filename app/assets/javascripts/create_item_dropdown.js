@@ -47,7 +47,7 @@ export default class CreateItemDropdown {
         return escape(item.id);
       },
       onFilter: this.toggleCreateNewButton.bind(this),
-      clicked: options => {
+      clicked: (options) => {
         options.e.preventDefault();
         this.onSelect();
       },
@@ -79,7 +79,7 @@ export default class CreateItemDropdown {
     this.getDataOption(term, (data = []) => {
       // Ensure the selected item isn't already in the data to avoid duplicates
       const alreadyHasSelectedItem =
-        this.selectedItem && data.some(item => item.id === this.selectedItem.id);
+        this.selectedItem && data.some((item) => item.id === this.selectedItem.id);
 
       let uniqueData = data;
       if (!alreadyHasSelectedItem) {

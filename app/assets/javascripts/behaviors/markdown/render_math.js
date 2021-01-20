@@ -35,7 +35,7 @@ const RENDER_FLASH_MSG = sprintf(
 
 // Wait for the browser to reflow the layout. Reflowing SVG takes time.
 // This has to wrap the inner function, otherwise IE/Edge throw "invalid calling object".
-const waitForReflow = fn => {
+const waitForReflow = (fn) => {
   window.requestAnimationFrame(fn);
 };
 
@@ -122,7 +122,7 @@ class SafeMathRenderer {
 
   render() {
     // Replace math blocks with a placeholder so they aren't rendered twice
-    this.elements.forEach(el => {
+    this.elements.forEach((el) => {
       const placeholder = document.createElement('span');
       placeholder.style.display = 'none';
       placeholder.setAttribute('data-math-style', el.getAttribute('data-math-style'));

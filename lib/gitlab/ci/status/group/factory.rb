@@ -8,6 +8,10 @@ module Gitlab
           def self.common_helpers
             Status::Group::Common
           end
+
+          def self.extended_statuses
+            [[Status::SuccessWarning]]
+          end
         end
       end
     end

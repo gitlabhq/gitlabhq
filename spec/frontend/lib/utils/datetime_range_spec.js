@@ -64,7 +64,7 @@ describe('Date time range utils', () => {
       };
 
       Object.entries(rangeTypes).forEach(([type, examples]) => {
-        examples.forEach(example => expect(getRangeType(example)).toEqual(type));
+        examples.forEach((example) => expect(getRangeType(example)).toEqual(type));
       });
     });
   });

@@ -1,0 +1,5 @@
+---
+title: Limit rendering of commit messages
+merge_request: 51485
+author:
+type: performance

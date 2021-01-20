@@ -58,9 +58,9 @@ export default {
     class="code diff-wrap-lines js-syntax-highlight text-file js-diff-inline-view"
   >
     <colgroup>
-      <col style="width: 50px;" />
-      <col style="width: 50px;" />
-      <col style="width: 8px;" />
+      <col style="width: 50px" />
+      <col style="width: 50px" />
+      <col style="width: 8px" />
       <col />
     </colgroup>
     <tbody>

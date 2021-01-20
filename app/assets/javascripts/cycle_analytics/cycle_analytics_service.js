@@ -17,7 +17,7 @@ export default class CycleAnalyticsService {
           'cycle_analytics[project_ids]': projectIds,
         },
       })
-      .then(x => x.data);
+      .then((x) => x.data);
   }
 
   fetchStageData(options) {
@@ -30,6 +30,6 @@ export default class CycleAnalyticsService {
           'cycle_analytics[project_ids]': projectIds,
         },
       })
-      .then(x => x.data);
+      .then((x) => x.data);
   }
 }

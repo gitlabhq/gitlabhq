@@ -46,7 +46,7 @@ export default {
       name="squash"
       class="qa-squash-checkbox js-squash-checkbox gl-mb-0 gl-mr-2"
       :title="tooltipTitle"
-      @change="checked => $emit('input', checked)"
+      @change="(checked) => $emit('input', checked)"
     >
       {{ $options.i18n.checkboxLabel }}
     </gl-form-checkbox>

@@ -1,0 +1,5 @@
+---
+title: Drop tmp_index_for_email_unconfirmation index from the emails table again
+merge_request: 51440
+author:
+type: other

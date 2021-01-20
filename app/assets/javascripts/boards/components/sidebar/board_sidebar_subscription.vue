@@ -15,7 +15,7 @@ export default {
       ),
     },
     updateSubscribedErrorMessage: s__(
-      'IssueBoards|An error occurred while setting notifications status.',
+      'IssueBoards|An error occurred while setting notifications status. Please try again.',
     ),
   },
   components: {

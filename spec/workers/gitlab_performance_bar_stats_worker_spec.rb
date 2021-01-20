@@ -12,7 +12,7 @@ RSpec.describe GitlabPerformanceBarStatsWorker do
     let(:uuid) { 1 }
 
     before do
-      expect(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
+      expect(Gitlab::Redis::Cache).to receive(:with).and_yield(redis)
       expect_to_cancel_exclusive_lease(GitlabPerformanceBarStatsWorker::LEASE_KEY, uuid)
     end
 

@@ -1,4 +1,4 @@
-const canRender = node => ['emph', 'strong'].includes(node.parent?.type);
+const canRender = (node) => ['emph', 'strong'].includes(node.parent?.type);
 const render = () => ({
   type: 'text',
   content: ' ',

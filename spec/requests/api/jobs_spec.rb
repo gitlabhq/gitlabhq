@@ -260,6 +260,36 @@ RSpec.describe API::Jobs do
           end
         end
 
+        context 'when project is public with artifacts that are non public' do
+          let(:job) { create(:ci_build, :artifacts, :non_public_artifacts, pipeline: pipeline) }
+
+          it 'rejects access to artifacts' do
+            project.update_column(:visibility_level,
+                                  Gitlab::VisibilityLevel::PUBLIC)
+            project.update_column(:public_builds, true)
+
+            get_artifact_file(artifact)
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+
+          context 'with the non_public_artifacts feature flag disabled' do
+            before do
+              stub_feature_flags(non_public_artifacts: false)
+            end
+
+            it 'allows access to artifacts' do
+              project.update_column(:visibility_level,
+                                    Gitlab::VisibilityLevel::PUBLIC)
+              project.update_column(:public_builds, true)
+
+              get_artifact_file(artifact)
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
+
         context 'when project is public with builds access disabled' do
           it 'rejects access to artifacts' do
             project.update_column(:visibility_level,
@@ -392,6 +422,33 @@ RSpec.describe API::Jobs do
 
             it 'does not return specific job artifacts' do
               expect(response).to have_gitlab_http_status(:not_found)
+            end
+          end
+        end
+
+        context 'when public project guest and artifacts are non public' do
+          let(:api_user) { guest }
+          let(:job) { create(:ci_build, :artifacts, :non_public_artifacts, pipeline: pipeline) }
+
+          before do
+            project.update_column(:visibility_level,
+              Gitlab::VisibilityLevel::PUBLIC)
+            project.update_column(:public_builds, true)
+            get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+          end
+
+          it 'rejects access and hides existence of artifacts' do
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+
+          context 'with the non_public_artifacts feature flag disabled' do
+            before do
+              stub_feature_flags(non_public_artifacts: false)
+              get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+            end
+
+            it 'allows access to artifacts' do
+              expect(response).to have_gitlab_http_status(:ok)
             end
           end
         end
@@ -580,6 +637,33 @@ RSpec.describe API::Jobs do
           end
         end
 
+        context 'when project is public with non public artifacts' do
+          let(:job) { create(:ci_build, :artifacts, :non_public_artifacts, pipeline: pipeline, user: api_user) }
+          let(:visibility_level) { Gitlab::VisibilityLevel::PUBLIC }
+          let(:public_builds) { true }
+
+          it 'rejects access and hides existence of artifacts', :sidekiq_might_not_need_inline do
+            get_artifact_file(artifact)
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(json_response).to have_key('message')
+            expect(response.headers.to_h)
+              .not_to include('Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+          end
+
+          context 'with the non_public_artifacts feature flag disabled' do
+            before do
+              stub_feature_flags(non_public_artifacts: false)
+            end
+
+            it 'allows access to artifacts', :sidekiq_might_not_need_inline do
+              get_artifact_file(artifact)
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
+
         context 'when project is private' do
           let(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
           let(:public_builds) { true }
@@ -743,32 +827,6 @@ RSpec.describe API::Jobs do
           expect(response).to have_gitlab_http_status(expected_status)
         end
       end
-
-      context 'with restrict_access_to_build_debug_mode feature disabled' do
-        before do
-          stub_feature_flags(restrict_access_to_build_debug_mode: false)
-        end
-
-        where(:public_builds, :user_project_role, :expected_status) do
-          true         | 'developer'     | :ok
-          true         | 'guest'         | :ok
-          false        | 'developer'     | :ok
-          false        | 'guest'         | :forbidden
-        end
-
-        with_them do
-          before do
-            project.update!(public_builds: public_builds)
-            project.add_role(user, user_project_role)
-
-            get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
-          end
-
-          it 'renders trace to authorized users' do
-            expect(response).to have_gitlab_http_status(expected_status)
-          end
-        end
-      end
     end
   end
 
@@ -923,15 +981,32 @@ RSpec.describe API::Jobs do
       post api("/projects/#{project.id}/jobs/#{job.id}/play", api_user)
     end
 
-    context 'on an playable job' do
-      let(:job) { create(:ci_build, :manual, project: project, pipeline: pipeline) }
+    context 'on a playable job' do
+      let_it_be(:job) { create(:ci_bridge, :playable, pipeline: pipeline, downstream: project) }
+
+      before do
+        project.add_developer(user)
+      end
 
       context 'when user is authorized to trigger a manual action' do
-        it 'plays the job' do
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['user']['id']).to eq(user.id)
-          expect(json_response['id']).to eq(job.id)
-          expect(job.reload).to be_pending
+        context 'that is a bridge' do
+          it 'plays the job' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['user']['id']).to eq(user.id)
+            expect(json_response['id']).to eq(job.id)
+            expect(job.reload).to be_pending
+          end
+        end
+
+        context 'that is a build' do
+          let_it_be(:job) { create(:ci_build, :manual, project: project, pipeline: pipeline) }
+
+          it 'plays the job' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['user']['id']).to eq(user.id)
+            expect(json_response['id']).to eq(job.id)
+            expect(job.reload).to be_pending
+          end
         end
       end
 

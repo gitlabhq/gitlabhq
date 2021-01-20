@@ -19,7 +19,9 @@ class ApplicationExperiment < Gitlab::Experiment
   private
 
   def resolve_variant_name
-    variant_names.first if Feature.enabled?(name, self, type: :experiment)
+    return variant_names.first if Feature.enabled?(name, self, type: :experiment)
+
+    nil # Returning nil vs. :control is important for not caching and rollouts.
   end
 
   # Cache is an implementation on top of Gitlab::Redis::SharedState that also
@@ -61,7 +63,7 @@ class ApplicationExperiment < Gitlab::Experiment
     end
 
     def hkey(key)
-      key.split(':') # this assumes the default strategy in gitlab-experiment
+      key.to_s.split(':') # this assumes the default strategy in gitlab-experiment
     end
 
     def read_entry(key, **options)

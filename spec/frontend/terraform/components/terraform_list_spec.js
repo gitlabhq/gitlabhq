@@ -1,6 +1,6 @@
 import { GlAlert, GlBadge, GlKeysetPagination, GlLoadingIcon, GlTab } from '@gitlab/ui';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import createMockApollo from 'jest/helpers/mock_apollo_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import VueApollo from 'vue-apollo';
 import EmptyState from '~/terraform/components/empty_state.vue';
 import StatesTable from '~/terraform/components/states_table.vue';

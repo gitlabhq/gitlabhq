@@ -272,6 +272,72 @@ RSpec.describe Projects::PipelinesController do
     end
   end
 
+  describe 'GET #index' do
+    subject(:request) { get :index, params: { namespace_id: project.namespace, project_id: project } }
+
+    context 'experiment not active' do
+      it 'does not push tracking_data to gon' do
+        request
+
+        expect(Gon.tracking_data).to be_nil
+      end
+
+      it 'does not record experiment_user' do
+        expect { request }.not_to change(ExperimentUser, :count)
+      end
+    end
+
+    context 'when experiment active' do
+      before do
+        stub_experiment(pipelines_empty_state: true)
+        stub_experiment_for_subject(pipelines_empty_state: true)
+      end
+
+      it 'pushes tracking_data to Gon' do
+        request
+
+        expect(Gon.experiments["pipelinesEmptyState"]).to eq(true)
+        expect(Gon.tracking_data).to match(
+          {
+            category: 'Growth::Activation::Experiment::PipelinesEmptyState',
+            action: 'view',
+            label: anything,
+            property: 'experimental_group',
+            value: anything
+          }
+        )
+      end
+
+      context 'no pipelines created an no CI set up' do
+        before do
+          stub_application_setting(auto_devops_enabled: false)
+        end
+
+        it 'records experiment_user' do
+          expect { request }.to change(ExperimentUser, :count).by(1)
+        end
+      end
+
+      context 'CI set up' do
+        it 'does not record experiment_user' do
+          expect { request }.not_to change(ExperimentUser, :count)
+        end
+      end
+
+      context 'pipelines created' do
+        let!(:pipeline) { create(:ci_pipeline, project: project) }
+
+        before do
+          stub_application_setting(auto_devops_enabled: false)
+        end
+
+        it 'does not record experiment_user' do
+          expect { request }.not_to change(ExperimentUser, :count)
+        end
+      end
+    end
+  end
+
   describe 'GET show.json' do
     let(:pipeline) { create(:ci_pipeline, project: project) }
 

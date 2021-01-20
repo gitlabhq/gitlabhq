@@ -82,7 +82,7 @@ export default () => {
     return $jsBroadcastMessagePreview.css(selectedColorStyle);
   };
 
-  const setSuggestedColor = e => {
+  const setSuggestedColor = (e) => {
     const color = $(e.currentTarget).data('color');
     $broadcastMessageColor
       .val(color)

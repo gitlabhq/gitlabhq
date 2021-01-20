@@ -43,7 +43,7 @@ export default {
       return this.actions.length > 1;
     },
     selectedAction() {
-      return this.actions.find(x => x.key === this.selectedKey) || this.actions[0];
+      return this.actions.find((x) => x.key === this.selectedKey) || this.actions[0];
     },
   },
   methods: {

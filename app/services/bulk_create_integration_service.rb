@@ -38,10 +38,6 @@ class BulkCreateIntegrationService
     if integration.external_issue_tracker?
       Project.where(id: batch.select(:id)).update_all(has_external_issue_tracker: true)
     end
-
-    if integration.external_wiki?
-      Project.where(id: batch.select(:id)).update_all(has_external_wiki: true)
-    end
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     requestsWithWarnings() {
-      return this.requests.filter(request => request.hasWarnings);
+      return this.requests.filter((request) => request.hasWarnings);
     },
     warningMessage() {
       return n__(

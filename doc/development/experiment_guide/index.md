@@ -145,7 +145,7 @@ addressed.
 
 To determine whether the experiment is a success or not, we must implement tracking events
 to acquire data for analyzing. We can send events to Snowplow via either the backend or frontend.
-Read the [product analytics guide](https://about.gitlab.com/handbook/product/product-analytics-guide/) for more details.
+Read the [product intelligence guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/) for more details.
 
 #### Track backend events
 
@@ -281,13 +281,19 @@ Note that this data is completely separate from the [events tracking data](#impl
 
 #### Add context
 
-You can add arbitrary context data in a hash which gets stored as part of the experiment user record.
+You can add arbitrary context data in a hash which gets stored as part of the experiment user record. New calls to the `record_experiment_user` with newer contexts get merged deeply into the existing context.
+
 This data can then be used by data analytics dashboards.
 
 ```ruby
 before_action do
-  record_experiment_user(:signup_flow, foo: 42)
+  record_experiment_user(:signup_flow, foo: 42, bar: { a: 22})
+  # context is { "foo" => 42, "bar" => { "a" => 22 }}
 end
+
+# Additional contexts for newer record calls are merged deeply
+record_experiment_user(:signup_flow, foo: 40, bar: { b: 2 }, thor: 3)
+# context becomes { "foo" => 40, "bar" => { "a" => 22, "b" => 2 }, "thor" => 3}
 ```
 
 ### Record experiment conversion event
@@ -335,6 +341,27 @@ to the URL:
 
 ```shell
 https://gitlab.com/<EXPERIMENT_ENTRY_URL>?force_experiment=<EXPERIMENT_KEY>
+```
+
+### A cookie-based approach to force an experiment
+
+It's possible to force the current user to be in the experiment group for `<EXPERIMENT_KEY>`
+during the browser session by using your browser's developer tools:
+
+```javascript
+document.cookie = "force_experiment=<EXPERIMENT_KEY>; path=/";
+```
+
+Use a comma to list more than one experiment to be forced:
+
+```javascript
+document.cookie = "force_experiment=<EXPERIMENT_KEY>,<ANOTHER_EXPERIMENT_KEY>; path=/";
+```
+
+Clear the experiments by unsetting the `force_experiment` cookie:
+
+```javascript
+document.cookie = "force_experiment=; path=/";
 ```
 
 ### Testing and test helpers

@@ -60,19 +60,35 @@ RSpec.describe 'getting Alert Management Alert Assignees' do
     expect(second_assignees).to be_empty
   end
 
-  it 'avoids N+1 queries' do
-    base_count = ActiveRecord::QueryRecorder.new do
-      post_graphql(query, current_user: current_user)
+  describe 'performance' do
+    let(:first_n) { var('Int') }
+    let(:params) { { first: first_n } }
+    let(:limited_query) { with_signature([first_n], query) }
+
+    before do
+      create(:alert_management_alert, project: project, assignees: [current_user])
     end
 
-    # An N+1 would mean a new alert would increase the query count
-    third_alert = create(:alert_management_alert, project: project, assignees: [current_user])
+    it 'can limit results' do
+      post_graphql(limited_query, current_user: current_user, variables: first_n.with(1))
 
-    expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(base_count)
+      expect(alerts.size).to eq 1
+      expect(alerts).not_to include(a_hash_including('iid' => first_alert.iid.to_s))
+    end
 
-    third_assignees = assignees[third_alert.iid.to_s]
+    it 'can include all results' do
+      post_graphql(limited_query, current_user: current_user)
 
-    expect(third_assignees.length).to eq(1)
-    expect(third_assignees.first).to include('username' => current_user.username)
+      expect(alerts.size).to be > 1
+      expect(alerts).to include(a_hash_including('iid' => first_alert.iid.to_s))
+    end
+
+    it 'avoids N+1 queries' do
+      base_count = ActiveRecord::QueryRecorder.new do
+        post_graphql(limited_query, current_user: current_user, variables: first_n.with(1))
+      end
+
+      expect { post_graphql(limited_query, current_user: current_user) }.not_to exceed_query_limit(base_count)
+    end
   end
 end

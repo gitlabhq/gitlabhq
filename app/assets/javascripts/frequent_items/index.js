@@ -18,7 +18,7 @@ const frequentItemDropdowns = [
 ];
 
 export default function initFrequentItemDropdowns() {
-  frequentItemDropdowns.forEach(dropdown => {
+  frequentItemDropdowns.forEach((dropdown) => {
     const { namespace, key } = dropdown;
     const el = document.getElementById(`js-${namespace}-dropdown`);
     const navEl = document.getElementById(`nav-${namespace}-dropdown`);

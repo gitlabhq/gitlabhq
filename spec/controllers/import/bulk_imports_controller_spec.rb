@@ -63,15 +63,33 @@ RSpec.describe Import::BulkImportsController do
             )
           end
 
+          let(:client_params) do
+            {
+              top_level_only: true,
+              min_access_level: Gitlab::Access::MAINTAINER
+            }
+          end
+
           before do
             allow(controller).to receive(:client).and_return(client)
-            allow(client).to receive(:get).with('groups', top_level_only: true).and_return(client_response)
+            allow(client).to receive(:get).with('groups', client_params).and_return(client_response)
           end
 
           it 'returns serialized group data' do
             get :status, format: :json
 
             expect(json_response).to eq({ importable_data: client_response.parsed_response }.as_json)
+          end
+
+          context 'when filtering' do
+            it 'returns filtered result' do
+              filter = 'test'
+              search_params = client_params.merge(search: filter)
+
+              expect(client).to receive(:get).with('groups', search_params).and_return(client_response)
+
+              get :status, format: :json, params: { filter: filter }
+            end
           end
         end
 
@@ -128,6 +146,22 @@ RSpec.describe Import::BulkImportsController do
             expect(session[:gitlab_url]).to be_nil
             expect(session[:gitlab_access_token]).to be_nil
           end
+        end
+      end
+
+      describe 'GET realtime_changes' do
+        let_it_be(:bulk_import) { create(:bulk_import, :created, user: user) }
+
+        it 'returns bulk imports created by current user' do
+          get :realtime_changes
+
+          expect(json_response).to eq([{ 'id' => bulk_import.id, 'status_name' => bulk_import.status_name.to_s }])
+        end
+
+        it 'sets a Poll-Interval header' do
+          get :realtime_changes
+
+          expect(response.headers['Poll-Interval']).to eq(Import::BulkImportsController::POLLING_INTERVAL.to_s)
         end
       end
 

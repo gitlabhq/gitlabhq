@@ -17,7 +17,7 @@ export default {
     urls: {
       type: Array,
       required: true,
-      validator: urls => urls.length > 0,
+      validator: (urls) => urls.length > 0,
     },
   },
   data() {

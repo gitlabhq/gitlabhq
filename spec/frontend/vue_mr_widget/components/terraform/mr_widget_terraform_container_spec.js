@@ -15,7 +15,7 @@ describe('MrWidgetTerraformConainer', () => {
   const propsData = { endpoint: '/path/to/terraform/report.json' };
 
   const findHeader = () => wrapper.find('[data-testid="terraform-header-text"]');
-  const findPlans = () => wrapper.findAll(TerraformPlan).wrappers.map(x => x.props('plan'));
+  const findPlans = () => wrapper.findAll(TerraformPlan).wrappers.map((x) => x.props('plan'));
 
   const mockPollingApi = (response, body, header) => {
     mock.onGet(propsData.endpoint).reply(response, body, header);

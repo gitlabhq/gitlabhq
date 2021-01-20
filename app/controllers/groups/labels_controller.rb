@@ -2,7 +2,6 @@
 
 class Groups::LabelsController < Groups::ApplicationController
   include ToggleSubscriptionAction
-  include ShowInheritedLabelsChecker
 
   before_action :label, only: [:edit, :update, :destroy]
   before_action :authorize_admin_labels!, only: [:new, :create, :edit, :update, :destroy]
@@ -112,7 +111,7 @@ class Groups::LabelsController < Groups::ApplicationController
         current_user,
         group_id: @group.id,
         only_group_labels: options[:only_group_labels],
-        include_ancestor_groups: show_inherited_labels?(params[:include_ancestor_groups]),
+        include_ancestor_groups: true,
         sort: sort,
         subscribed: options[:subscribed],
         include_descendant_groups: options[:include_descendant_groups],

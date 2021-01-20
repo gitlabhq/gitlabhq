@@ -75,7 +75,7 @@ function UsersSelect(currentUser, els, options = {}) {
       selectedId = selectedIdDefault;
     }
 
-    const assignYourself = function() {
+    const assignYourself = function () {
       const unassignedSelected = $dropdown
         .closest('.selectbox')
         .find(`input[name='${$dropdown.data('fieldName')}'][value=0]`);
@@ -108,17 +108,17 @@ function UsersSelect(currentUser, els, options = {}) {
       $block[0].addEventListener('assignYourself', assignYourself);
     }
 
-    const getSelectedUserInputs = function() {
+    const getSelectedUserInputs = function () {
       return $selectbox.find(`input[name="${$dropdown.data('fieldName')}"]`);
     };
 
-    const getSelected = function() {
+    const getSelected = function () {
       return getSelectedUserInputs()
         .map((index, input) => parseInt(input.value, 10))
         .get();
     };
 
-    const checkMaxSelect = function() {
+    const checkMaxSelect = function () {
       const maxSelect = $dropdown.data('maxSelect');
       if (maxSelect) {
         const selected = getSelected();
@@ -144,15 +144,15 @@ function UsersSelect(currentUser, els, options = {}) {
       }
     };
 
-    const getMultiSelectDropdownTitle = function(selectedUser, isSelected) {
-      const selectedUsers = getSelected().filter(u => u !== 0);
+    const getMultiSelectDropdownTitle = function (selectedUser, isSelected) {
+      const selectedUsers = getSelected().filter((u) => u !== 0);
 
       const firstUser = getSelectedUserInputs()
         .map((index, input) => ({
           name: input.dataset.meta,
           value: parseInt(input.value, 10),
         }))
-        .filter(u => u.id !== 0)
+        .filter((u) => u.id !== 0)
         .get(0);
 
       if (selectedUsers.length === 0) {
@@ -160,7 +160,7 @@ function UsersSelect(currentUser, els, options = {}) {
       } else if (selectedUsers.length === 1) {
         return firstUser.name;
       } else if (isSelected) {
-        const otherSelected = selectedUsers.filter(s => s !== selectedUser.id);
+        const otherSelected = selectedUsers.filter((s) => s !== selectedUser.id);
         return sprintf(s__('UsersSelect|%{name} + %{length} more'), {
           name: selectedUser.name,
           length: otherSelected.length,
@@ -172,7 +172,7 @@ function UsersSelect(currentUser, els, options = {}) {
       });
     };
 
-    $assignToMeLink.on('click', e => {
+    $assignToMeLink.on('click', (e) => {
       e.preventDefault();
       $(e.currentTarget).hide();
 
@@ -196,12 +196,12 @@ function UsersSelect(currentUser, els, options = {}) {
       }
     });
 
-    $block.on('click', '.js-assign-yourself', e => {
+    $block.on('click', '.js-assign-yourself', (e) => {
       e.preventDefault();
       return assignTo(userSelect.currentUser.id);
     });
 
-    assignTo = function(selected) {
+    assignTo = function (selected) {
       const data = {};
       data[abilityName] = {};
       data[abilityName].assignee_id = selected != null ? selected : null;
@@ -250,7 +250,7 @@ function UsersSelect(currentUser, els, options = {}) {
     return initDeprecatedJQueryDropdown($dropdown, {
       showMenuAbove,
       data(term, callback) {
-        return userSelect.users(term, options, users => {
+        return userSelect.users(term, options, (users) => {
           // GitLabDropdownFilter returns this.instance
           // GitLabDropdownRemote returns this.options.instance
           const deprecatedJQueryDropdown = this.instance || this.options.instance;
@@ -266,14 +266,14 @@ function UsersSelect(currentUser, els, options = {}) {
 
           // Potential duplicate entries when dealing with issue board
           // because issue board is also managed by vue
-          const selectedUsers = uniqBy(selectedInputs, a => a.value)
-            .filter(input => {
+          const selectedUsers = uniqBy(selectedInputs, (a) => a.value)
+            .filter((input) => {
               const userId = parseInt(input.value, 10);
-              const inUsersArray = users.find(u => u.id === userId);
+              const inUsersArray = users.find((u) => u.id === userId);
 
               return !inUsersArray && userId !== 0;
             })
-            .map(input => {
+            .map((input) => {
               const userId = parseInt(input.value, 10);
               const { avatarUrl, avatar_url, name, username, canMerge } = input.dataset;
               return {
@@ -334,7 +334,7 @@ function UsersSelect(currentUser, els, options = {}) {
           }
 
           if ($dropdown.hasClass('js-multiselect')) {
-            const selected = getSelected().filter(i => i !== 0);
+            const selected = getSelected().filter((i) => i !== 0);
 
             if (selected.length > 0) {
               if ($dropdown.data('dropdownHeader')) {
@@ -346,12 +346,12 @@ function UsersSelect(currentUser, els, options = {}) {
               }
 
               const selectedUsers = users
-                .filter(u => selected.indexOf(u.id) !== -1)
+                .filter((u) => selected.indexOf(u.id) !== -1)
                 .sort((a, b) => a.name > b.name);
 
-              users = users.filter(u => selected.indexOf(u.id) === -1);
+              users = users.filter((u) => selected.indexOf(u.id) === -1);
 
-              selectedUsers.forEach(selectedUser => {
+              selectedUsers.forEach((selectedUser) => {
                 showDivider += 1;
                 users.splice(showDivider, 0, selectedUser);
               });
@@ -477,7 +477,7 @@ function UsersSelect(currentUser, els, options = {}) {
             }
           }
 
-          if (getSelected().find(u => u === gon.current_user_id)) {
+          if (getSelected().find((u) => u === gon.current_user_id)) {
             $assignToMeLink.hide();
           } else {
             $assignToMeLink.show();
@@ -544,7 +544,7 @@ function UsersSelect(currentUser, els, options = {}) {
         }
 
         if (selected.length > 0) {
-          getSelected().forEach(selectedId => highlightSelected(selectedId));
+          getSelected().forEach((selectedId) => highlightSelected(selectedId));
         } else if ($dropdown.hasClass('js-issue-board-sidebar')) {
           highlightSelected(0);
         } else {
@@ -559,7 +559,7 @@ function UsersSelect(currentUser, els, options = {}) {
         let selected = false;
 
         if (this.multiSelect) {
-          selected = getSelected().find(u => user.id === u);
+          selected = getSelected().find((u) => user.id === u);
 
           const { fieldName } = this;
           const field = $dropdown
@@ -613,7 +613,7 @@ function UsersSelect(currentUser, els, options = {}) {
                 multiple: $(select).hasClass('multiselect'),
                 minimumInputLength: 0,
                 query(query) {
-                  return userSelect.users(query.term, options, users => {
+                  return userSelect.users(query.term, options, (users) => {
                     let name;
                     const data = {
                       results: users,
@@ -694,7 +694,7 @@ function UsersSelect(currentUser, els, options = {}) {
   }
 }
 
-UsersSelect.prototype.initSelection = function(element, callback) {
+UsersSelect.prototype.initSelection = function (element, callback) {
   const id = $(element).val();
   if (id === '0') {
     const nullUser = {
@@ -706,7 +706,7 @@ UsersSelect.prototype.initSelection = function(element, callback) {
   }
 };
 
-UsersSelect.prototype.formatResult = function(user) {
+UsersSelect.prototype.formatResult = function (user) {
   let avatar = gon.default_avatar_url;
   if (user.avatar_url) {
     avatar = user.avatar_url;
@@ -728,11 +728,11 @@ UsersSelect.prototype.formatResult = function(user) {
   `;
 };
 
-UsersSelect.prototype.formatSelection = function(user) {
+UsersSelect.prototype.formatSelection = function (user) {
   return escape(user.name);
 };
 
-UsersSelect.prototype.user = function(user_id, callback) {
+UsersSelect.prototype.user = function (user_id, callback) {
   if (!/^\d+$/.test(user_id)) {
     return false;
   }
@@ -746,7 +746,7 @@ UsersSelect.prototype.user = function(user_id, callback) {
 
 // Return users list. Filtered by query
 // Only active users retrieved
-UsersSelect.prototype.users = function(query, options, callback) {
+UsersSelect.prototype.users = function (query, options, callback) {
   const url = this.buildUrl(this.usersPath);
   const params = {
     search: query,
@@ -755,8 +755,8 @@ UsersSelect.prototype.users = function(query, options, callback) {
   };
 
   const isMergeRequest = options.issuableType === 'merge_request';
-  const isEditMergeRequest = !options.issuableType && (options.iid && options.targetBranch);
-  const isNewMergeRequest = !options.issuableType && (!options.iid && options.targetBranch);
+  const isEditMergeRequest = !options.issuableType && options.iid && options.targetBranch;
+  const isNewMergeRequest = !options.issuableType && !options.iid && options.targetBranch;
 
   if (isMergeRequest || isEditMergeRequest || isNewMergeRequest) {
     params.merge_request_iid = options.iid || null;
@@ -772,14 +772,14 @@ UsersSelect.prototype.users = function(query, options, callback) {
   });
 };
 
-UsersSelect.prototype.buildUrl = function(url) {
+UsersSelect.prototype.buildUrl = function (url) {
   if (gon.relative_url_root != null) {
     url = gon.relative_url_root.replace(/\/$/, '') + url;
   }
   return url;
 };
 
-UsersSelect.prototype.renderRow = function(
+UsersSelect.prototype.renderRow = function (
   issuableType,
   user,
   selected,
@@ -815,7 +815,7 @@ UsersSelect.prototype.renderRow = function(
   `;
 };
 
-UsersSelect.prototype.renderRowAvatar = function(issuableType, user, img) {
+UsersSelect.prototype.renderRowAvatar = function (issuableType, user, img) {
   if (user.beforeDivider) {
     return img;
   }
@@ -831,22 +831,22 @@ UsersSelect.prototype.renderRowAvatar = function(issuableType, user, img) {
   </span>`;
 };
 
-UsersSelect.prototype.renderApprovalRules = function(elsClassName, approvalRules = []) {
-  if (!gon.features?.reviewerApprovalRules || !elsClassName?.includes('reviewer')) {
+UsersSelect.prototype.renderApprovalRules = function (elsClassName, approvalRules = []) {
+  const count = approvalRules.length;
+
+  if (!gon.features?.reviewerApprovalRules || !elsClassName?.includes('reviewer') || !count) {
     return '';
   }
 
-  const count = approvalRules.length;
   const [rule] = approvalRules;
   const countText = sprintf(__('(+%{count}&nbsp;rules)'), { count });
   const renderApprovalRulesCount = count > 1 ? `<span class="ml-1">${countText}</span>` : '';
+  const ruleName = rule.rule_type === 'code_owner' ? __('Code Owner') : rule.name;
 
-  return count
-    ? `<div class="gl-display-flex gl-font-sm">
-        <span class="gl-text-truncate" title="${rule.name}">${rule.name}</span>
-        ${renderApprovalRulesCount}
-      </div>`
-    : '';
+  return `<div class="gl-display-flex gl-font-sm">
+    <span class="gl-text-truncate" title="${ruleName}">${ruleName}</span>
+    ${renderApprovalRulesCount}
+  </div>`;
 };
 
 export default UsersSelect;

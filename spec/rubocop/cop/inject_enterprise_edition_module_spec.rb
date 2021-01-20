@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../rubocop/cop/inject_enterprise_edition_module'
 
-RSpec.describe RuboCop::Cop::InjectEnterpriseEditionModule, type: :rubocop do
+RSpec.describe RuboCop::Cop::InjectEnterpriseEditionModule do
   include CopHelper
 
   subject(:cop) { described_class.new }

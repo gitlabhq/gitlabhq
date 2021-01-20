@@ -1,6 +1,6 @@
 import $ from 'jquery';
+import waitForPromises from 'helpers/wait_for_promises';
 import setupToggleButtons from '~/toggle_buttons';
-import waitForPromises from './helpers/wait_for_promises';
 
 function generateMarkup(isChecked = true) {
   return `

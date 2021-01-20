@@ -36,7 +36,9 @@ export default {
       projectPath,
       dismissEndpoint,
       showSuggestPopover,
+      defaultSuggestionCommitMessage,
       viewDiffsFileByFile,
+      mrReviews,
     } = options;
     Object.assign(state, {
       endpoint,
@@ -46,7 +48,9 @@ export default {
       projectPath,
       dismissEndpoint,
       showSuggestPopover,
+      defaultSuggestionCommitMessage,
       viewDiffsFileByFile,
+      mrReviews,
     });
   },
 
@@ -103,11 +107,11 @@ export default {
   },
 
   [types.TOGGLE_LINE_HAS_FORM](state, { lineCode, fileHash, hasForm }) {
-    const diffFile = state.diffFiles.find(f => f.file_hash === fileHash);
+    const diffFile = state.diffFiles.find((f) => f.file_hash === fileHash);
 
     if (!diffFile) return;
 
-    diffFile[INLINE_DIFF_LINES_KEY].find(l => l.line_code === lineCode).hasForm = hasForm;
+    diffFile[INLINE_DIFF_LINES_KEY].find((l) => l.line_code === lineCode).hasForm = hasForm;
   },
 
   [types.ADD_CONTEXT_LINES](state, options) {
@@ -123,7 +127,7 @@ export default {
       bottom,
       isExpandDown,
       nextLineNumbers,
-    ).map(line => {
+    ).map((line) => {
       const lineCode =
         line.type === 'match'
           ? `${fileHash}_${line.meta_data.old_pos}_${line.meta_data.new_pos}_match`
@@ -147,8 +151,8 @@ export default {
 
   [types.ADD_COLLAPSED_DIFFS](state, { file, data }) {
     const files = prepareDiffData({ diff: data });
-    const [newFileData] = files.filter(f => f.file_hash === file.file_hash);
-    const selectedFile = state.diffFiles.find(f => f.file_hash === file.file_hash);
+    const [newFileData] = files.filter((f) => f.file_hash === file.file_hash);
+    const selectedFile = state.diffFiles.find((f) => f.file_hash === file.file_hash);
     Object.assign(selectedFile, { ...newFileData });
   },
 
@@ -157,9 +161,9 @@ export default {
 
     const discussionLineCodes = [discussion.line_code, ...(discussion.line_codes || [])];
     const fileHash = discussion.diff_file.file_hash;
-    const lineCheck = line =>
+    const lineCheck = (line) =>
       discussionLineCodes.some(
-        discussionLineCode =>
+        (discussionLineCode) =>
           line.line_code === discussionLineCode &&
           isDiscussionApplicableToLine({
             discussion,
@@ -177,26 +181,26 @@ export default {
         : [],
     });
 
-    const setDiscussionsExpanded = line => {
+    const setDiscussionsExpanded = (line) => {
       const isLineNoteTargeted =
         line.discussions &&
         line.discussions.some(
-          disc => disc.notes && disc.notes.find(note => hash === `note_${note.id}`),
+          (disc) => disc.notes && disc.notes.find((note) => hash === `note_${note.id}`),
         );
 
       return {
         ...line,
         discussionsExpanded:
           line.discussions && line.discussions.length
-            ? line.discussions.some(disc => !disc.resolved) || isLineNoteTargeted
+            ? line.discussions.some((disc) => !disc.resolved) || isLineNoteTargeted
             : false,
       };
     };
 
-    state.diffFiles.forEach(file => {
+    state.diffFiles.forEach((file) => {
       if (file.file_hash === fileHash) {
         if (file[INLINE_DIFF_LINES_KEY].length) {
-          file[INLINE_DIFF_LINES_KEY].forEach(line => {
+          file[INLINE_DIFF_LINES_KEY].forEach((line) => {
             Object.assign(
               line,
               setDiscussionsExpanded(lineCheck(line) ? mapDiscussions(line) : line),
@@ -206,7 +210,7 @@ export default {
 
         if (!file[INLINE_DIFF_LINES_KEY].length) {
           const newDiscussions = (file.discussions || [])
-            .filter(d => d.id !== discussion.id)
+            .filter((d) => d.id !== discussion.id)
             .concat(discussion);
 
           Object.assign(file, {
@@ -218,26 +222,26 @@ export default {
   },
 
   [types.REMOVE_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, lineCode }) {
-    const selectedFile = state.diffFiles.find(f => f.file_hash === fileHash);
+    const selectedFile = state.diffFiles.find((f) => f.file_hash === fileHash);
     if (selectedFile) {
-      updateLineInFile(selectedFile, lineCode, line =>
+      updateLineInFile(selectedFile, lineCode, (line) =>
         Object.assign(line, {
-          discussions: line.discussions.filter(discussion => discussion.notes.length),
+          discussions: line.discussions.filter((discussion) => discussion.notes.length),
         }),
       );
 
       if (selectedFile.discussions && selectedFile.discussions.length) {
         selectedFile.discussions = selectedFile.discussions.filter(
-          discussion => discussion.notes.length,
+          (discussion) => discussion.notes.length,
         );
       }
     }
   },
 
   [types.TOGGLE_LINE_DISCUSSIONS](state, { fileHash, lineCode, expanded }) {
-    const selectedFile = state.diffFiles.find(f => f.file_hash === fileHash);
+    const selectedFile = state.diffFiles.find((f) => f.file_hash === fileHash);
 
-    updateLineInFile(selectedFile, lineCode, line => {
+    updateLineInFile(selectedFile, lineCode, (line) => {
       Object.assign(line, { discussionsExpanded: expanded });
     });
   },
@@ -260,7 +264,7 @@ export default {
   [types.UPDATE_DIFF_FILE_COMMENT_FORM](state, formData) {
     const { fileHash } = formData;
 
-    state.commentForms = state.commentForms.map(form => {
+    state.commentForms = state.commentForms.map((form) => {
       if (form.fileHash === fileHash) {
         return {
           ...formData,
@@ -271,7 +275,7 @@ export default {
     });
   },
   [types.CLOSE_DIFF_FILE_COMMENT_FORM](state, fileHash) {
-    state.commentForms = state.commentForms.filter(form => form.fileHash !== fileHash);
+    state.commentForms = state.commentForms.filter((form) => form.fileHash !== fileHash);
   },
   [types.SET_HIGHLIGHTED_ROW](state, lineCode) {
     state.highlightedRow = lineCode;
@@ -311,7 +315,7 @@ export default {
     state,
     { filePath, collapsed, trigger = DIFF_FILE_AUTOMATIC_COLLAPSE },
   ) {
-    const file = state.diffFiles.find(f => f.file_path === filePath);
+    const file = state.diffFiles.find((f) => f.file_path === filePath);
 
     if (file && file.viewer) {
       if (trigger === DIFF_FILE_MANUAL_COLLAPSE) {
@@ -328,17 +332,17 @@ export default {
     }
   },
   [types.SET_CURRENT_VIEW_DIFF_FILE_LINES](state, { filePath, lines }) {
-    const file = state.diffFiles.find(f => f.file_path === filePath);
+    const file = state.diffFiles.find((f) => f.file_path === filePath);
 
     file[INLINE_DIFF_LINES_KEY] = lines;
   },
   [types.ADD_CURRENT_VIEW_DIFF_FILE_LINES](state, { filePath, line }) {
-    const file = state.diffFiles.find(f => f.file_path === filePath);
+    const file = state.diffFiles.find((f) => f.file_path === filePath);
 
     file[INLINE_DIFF_LINES_KEY].push(line);
   },
   [types.TOGGLE_DIFF_FILE_RENDERING_MORE](state, filePath) {
-    const file = state.diffFiles.find(f => f.file_path === filePath);
+    const file = state.diffFiles.find((f) => f.file_path === filePath);
 
     file.renderingLines = !file.renderingLines;
   },
@@ -352,5 +356,8 @@ export default {
   },
   [types.SET_FILE_BY_FILE](state, fileByFile) {
     state.viewDiffsFileByFile = fileByFile;
+  },
+  [types.SET_MR_FILE_REVIEWS](state, newReviews) {
+    state.mrReviews = newReviews;
   },
 };

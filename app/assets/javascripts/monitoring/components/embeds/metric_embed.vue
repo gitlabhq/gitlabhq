@@ -101,7 +101,7 @@ export default {
       },
     }),
     chartHasData(chart) {
-      return chart.metrics.some(metric => this.metricsWithData.includes(metric.metricId));
+      return chart.metrics.some((metric) => this.metricsWithData.includes(metric.metricId));
     },
     onSidebarMutation() {
       setTimeout(() => {

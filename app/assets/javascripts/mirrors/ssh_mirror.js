@@ -29,10 +29,10 @@ export default class SSHMirror {
     this.handleRepositoryUrlInput(true);
 
     this.$repositoryUrl.on('keyup', () => this.handleRepositoryUrlInput());
-    this.$knownHosts.on('keyup', e => this.handleSSHKnownHostsInput(e));
-    this.$dropdownAuthType.on('change', e => this.handleAuthTypeChange(e));
-    this.$btnDetectHostKeys.on('click', e => this.handleDetectHostKeys(e));
-    this.$btnSSHHostsShowAdvanced.on('click', e => this.handleSSHHostsAdvanced(e));
+    this.$knownHosts.on('keyup', (e) => this.handleSSHKnownHostsInput(e));
+    this.$dropdownAuthType.on('change', (e) => this.handleAuthTypeChange(e));
+    this.$btnDetectHostKeys.on('click', (e) => this.handleDetectHostKeys(e));
+    this.$btnSSHHostsShowAdvanced.on('click', (e) => this.handleSSHHostsAdvanced(e));
   }
 
   /**
@@ -100,7 +100,7 @@ export default class SSHMirror {
         })
         .catch(stop);
     })
-      .then(res => {
+      .then((res) => {
         $btnLoadSpinner.addClass('d-none');
         // Once data is received, we show verification info along with Host keys and fingerprints
         this.$hostKeysInformation
@@ -160,7 +160,7 @@ export default class SSHMirror {
   showSSHInformation(sshHostKeys) {
     const $fingerprintsList = this.$hostKeysInformation.find('.js-fingerprints-list');
     let fingerprints = '';
-    sshHostKeys.fingerprints.forEach(fingerprint => {
+    sshHostKeys.fingerprints.forEach((fingerprint) => {
       const escFingerprints = escape(fingerprint.fingerprint);
       fingerprints += `<code>${escFingerprints}</code>`;
     });

@@ -41,7 +41,7 @@ export default {
       type: String,
       required: false,
       default: ISSUABLE_TYPES.INCIDENT,
-      validator: value => {
+      validator: (value) => {
         // currently severity is supported only for incidents, but this list might be extended
         return [ISSUABLE_TYPES.INCIDENT].includes(value);
       },
@@ -67,7 +67,7 @@ export default {
       return this.isDropdownShowing ? 'show' : 'gl-display-none';
     },
     selectedItem() {
-      return this.severitiesList.find(severity => severity.value === this.severity);
+      return this.severitiesList.find((severity) => severity.value === this.severity);
     },
   },
   mounted() {
@@ -106,7 +106,7 @@ export default {
             projectPath: this.projectPath,
           },
         })
-        .then(resp => {
+        .then((resp) => {
           const {
             data: {
               issueSetSeverity: {

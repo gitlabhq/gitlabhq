@@ -9,6 +9,7 @@ import initManualOrdering from '~/manual_ordering';
 const ISSUE_BULK_UPDATE_PREFIX = 'issue_';
 
 IssuableFilteredSearchTokenKeys.addExtraTokensForIssues();
+IssuableFilteredSearchTokenKeys.removeTokensForKeys('release');
 issuableInitBulkUpdateSidebar.init(ISSUE_BULK_UPDATE_PREFIX);
 
 initIssuablesList();

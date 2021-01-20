@@ -6,17 +6,17 @@ const CODEOWNERS_REGEX = /Push.*protected branches.*CODEOWNERS/;
 const BRANCH_CHANGED_REGEX = /changed.*since.*start.*edit/;
 const BRANCH_ALREADY_EXISTS = /branch.*already.*exists/;
 
-const createNewBranchAndCommit = store =>
+const createNewBranchAndCommit = (store) =>
   store
     .dispatch('commit/updateCommitAction', consts.COMMIT_TO_NEW_BRANCH)
     .then(() => store.dispatch('commit/commitChanges'));
 
-export const createUnexpectedCommitError = message => ({
+export const createUnexpectedCommitError = (message) => ({
   title: __('Unexpected error'),
   messageHTML: escape(message) || __('Could not commit. An unexpected error occurred.'),
 });
 
-export const createCodeownersCommitError = message => ({
+export const createCodeownersCommitError = (message) => ({
   title: __('CODEOWNERS rule violation'),
   messageHTML: escape(message),
   primaryAction: {
@@ -25,7 +25,7 @@ export const createCodeownersCommitError = message => ({
   },
 });
 
-export const createBranchChangedCommitError = message => ({
+export const createBranchChangedCommitError = (message) => ({
   title: __('Branch changed'),
   messageHTML: `${escape(message)}<br/><br/>${__('Would you like to create a new branch?')}`,
   primaryAction: {
@@ -34,19 +34,19 @@ export const createBranchChangedCommitError = message => ({
   },
 });
 
-export const branchAlreadyExistsCommitError = message => ({
+export const branchAlreadyExistsCommitError = (message) => ({
   title: __('Branch already exists'),
   messageHTML: `${escape(message)}<br/><br/>${__(
     'Would you like to try auto-generating a branch name?',
   )}`,
   primaryAction: {
     text: __('Create new branch'),
-    callback: store =>
+    callback: (store) =>
       store.dispatch('commit/addSuffixToBranchName').then(() => createNewBranchAndCommit(store)),
   },
 });
 
-export const parseCommitError = e => {
+export const parseCommitError = (e) => {
   const { message } = e?.response?.data || {};
 
   if (!message) {

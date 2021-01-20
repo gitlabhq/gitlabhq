@@ -17,7 +17,7 @@ export function fetchBranches({ commit, state }, search = '') {
   commit(types.REQUEST_BRANCHES);
 
   return Api.branches(projectEndpoint, search)
-    .then(response => {
+    .then((response) => {
       commit(types.RECEIVE_BRANCHES_SUCCESS, response.data);
       return response;
     })
@@ -34,7 +34,7 @@ export const fetchMilestones = ({ commit, state }, search_title = '') => {
 
   return axios
     .get(milestonesEndpoint, { params: { search_title } })
-    .then(response => {
+    .then((response) => {
       commit(types.RECEIVE_MILESTONES_SUCCESS, response.data);
       return response;
     })
@@ -50,7 +50,7 @@ export const fetchLabels = ({ commit, state }, search = '') => {
 
   return axios
     .get(state.labelsEndpoint, { params: { search } })
-    .then(response => {
+    .then((response) => {
       commit(types.RECEIVE_LABELS_SUCCESS, response.data);
       return response;
     })
@@ -67,13 +67,13 @@ function fetchUser(options = {}) {
 
   let fetchUserPromise;
   if (projectEndpoint) {
-    fetchUserPromise = Api.projectUsers(projectEndpoint, query).then(data => ({ data }));
+    fetchUserPromise = Api.projectUsers(projectEndpoint, query).then((data) => ({ data }));
   } else {
     fetchUserPromise = Api.groupMembers(groupEndpoint, { query });
   }
 
   return fetchUserPromise
-    .then(response => {
+    .then((response) => {
       commit(`RECEIVE_${action}_SUCCESS`, response.data);
       return response;
     })

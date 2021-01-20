@@ -13,11 +13,11 @@ module Resolvers
 
     argument :id, Types::GlobalIDType[List],
              required: false,
-             description: 'Find a list by its global ID'
+             description: 'Find a list by its global ID.'
 
     argument :issue_filters, Types::Boards::BoardIssueInputType,
              required: false,
-             description: 'Filters applied when getting issue metadata in the board list'
+             description: 'Filters applied when getting issue metadata in the board list.'
 
     alias_method :board, :object
 

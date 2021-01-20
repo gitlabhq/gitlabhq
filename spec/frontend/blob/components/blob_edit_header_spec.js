@@ -15,7 +15,7 @@ describe('Blob Header Editing', () => {
     });
   };
   const findDeleteButton = () =>
-    wrapper.findAll(GlButton).wrappers.find(x => x.text() === 'Delete file');
+    wrapper.findAll(GlButton).wrappers.find((x) => x.text() === 'Delete file');
 
   beforeEach(() => {
     createComponent();

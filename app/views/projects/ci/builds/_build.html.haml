@@ -43,16 +43,16 @@
     .label-container
       - if job.tags.any?
         - job.tags.each do |tag|
-          %span.badge.badge-primary
+          %span.badge.badge-pill.gl-badge.sm.badge-primary
             = tag
       - if job.try(:trigger_request)
-        %span.badge.badge-info= _('triggered')
+        %span.badge.badge-pill.gl-badge.sm.badge-info= _('triggered')
       - if job.try(:allow_failure) && !job.success?
-        %span.badge.badge-warning= _('allowed to fail')
+        %span.badge.badge-pill.gl-badge.sm.badge-warning= _('allowed to fail')
       - if job.schedulable?
-        %span.badge.badge-info= s_('DelayedJobs|delayed')
+        %span.badge.badge-pill.gl-badge.sm.badge-info= s_('DelayedJobs|delayed')
       - elsif job.action?
-        %span.badge.badge-info= _('manual')
+        %span.badge.badge-pill.gl-badge.sm.badge-info= _('manual')
 
   - if pipeline_link
     %td
@@ -98,7 +98,7 @@
 
   %td
     .gl-display-flex
-      - if can?(current_user, :read_build, job) && job.artifacts?
+      - if can?(current_user, :read_job_artifacts, job) && job.artifacts?
         = link_to download_project_job_artifacts_path(job.project, job), rel: 'nofollow', download: '', title: _('Download artifacts'), class: 'btn btn-build gl-button btn-icon btn-svg' do
           = sprite_icon('download')
       - if can?(current_user, :update_build, job)

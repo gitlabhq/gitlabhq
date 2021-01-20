@@ -25,12 +25,13 @@ export default {
       class="mr-commit-dropdown"
     >
       <gl-dropdown-item
-        v-for="commit in commits"
-        :key="commit.short_id"
+        v-for="(commit, index) in commits"
+        :key="index"
         class="text-nowrap text-truncate"
         @click="$emit('input', commit.message)"
       >
-        <span class="monospace mr-2">{{ commit.short_id }}</span> {{ commit.title }}
+        <span class="monospace mr-2">{{ commit.shortId || commit.short_id }}</span>
+        {{ commit.title }}
       </gl-dropdown-item>
     </gl-dropdown>
   </div>

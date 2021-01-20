@@ -1,0 +1,5 @@
+---
+title: Add migration to swap partitioned audit_events
+merge_request: 47581
+author:
+type: added

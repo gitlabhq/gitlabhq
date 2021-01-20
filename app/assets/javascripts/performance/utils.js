@@ -3,7 +3,7 @@ export const performanceMarkAndMeasure = ({ mark, measures = [] } = {}) => {
     if (mark && !performance.getEntriesByName(mark).length) {
       performance.mark(mark);
     }
-    measures.forEach(measure => {
+    measures.forEach((measure) => {
       performance.measure(measure.name, measure.start, measure.end);
     });
   });

@@ -33,7 +33,7 @@ describe('Sidebar mediator', () => {
   it('saves assignees', () => {
     mock.onPut(mediatorMockData.endpoint).reply(200, {});
 
-    return mediator.saveAssignees('issue[assignee_ids]').then(resp => {
+    return mediator.saveAssignees('issue[assignee_ids]').then((resp) => {
       expect(resp.status).toEqual(200);
     });
   });

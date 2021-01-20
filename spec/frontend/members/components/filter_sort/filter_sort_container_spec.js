@@ -10,7 +10,7 @@ localVue.use(Vuex);
 describe('FilterSortContainer', () => {
   let wrapper;
 
-  const createComponent = state => {
+  const createComponent = (state) => {
     const store = new Vuex.Store({
       state: {
         filteredSearchBar: {

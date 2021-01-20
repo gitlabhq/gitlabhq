@@ -10,11 +10,6 @@ export default {
     GlLoadingIcon,
   },
   props: {
-    canaryDeploymentFeatureId: {
-      type: String,
-      required: false,
-      default: null,
-    },
     isLoading: {
       type: Boolean,
       required: true,
@@ -46,11 +41,6 @@ export default {
       required: false,
       default: '',
     },
-    showCanaryDeploymentCallout: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     userCalloutsPath: {
       type: String,
       required: false,
@@ -75,8 +65,6 @@ export default {
       <environment-table
         :environments="environments"
         :can-read-environment="canReadEnvironment"
-        :canary-deployment-feature-id="canaryDeploymentFeatureId"
-        :show-canary-deployment-callout="showCanaryDeploymentCallout"
         :user-callouts-path="userCalloutsPath"
         :lock-promotion-svg-path="lockPromotionSvgPath"
         :help-canary-deployments-path="helpCanaryDeploymentsPath"

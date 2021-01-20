@@ -42,6 +42,8 @@ RSpec.describe 'Creating a todo for the alert' do
 
   context 'todo already exists' do
     before do
+      stub_feature_flags(multiple_todos: false)
+
       create(:todo, :pending, project: project, user: user, target: alert)
     end
 

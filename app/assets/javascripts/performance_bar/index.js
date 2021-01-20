@@ -10,7 +10,10 @@ import initPerformanceBarLog from './performance_bar_log';
 
 Vue.use(Translate);
 
-const initPerformanceBar = el => {
+const initPerformanceBar = (el) => {
+  if (!el) {
+    return undefined;
+  }
   const performanceBarData = el.dataset;
 
   return new Vue({
@@ -55,7 +58,7 @@ const initPerformanceBar = el => {
         this.store.addRequest(requestId, requestUrl);
 
         PerformanceBarService.fetchRequestDetails(this.peekUrl, requestId)
-          .then(res => {
+          .then((res) => {
             this.store.addRequestDetails(requestId, res.data);
 
             if (this.requestId === requestId) this.collectFrontendPerformanceMetrics();
@@ -84,7 +87,7 @@ const initPerformanceBar = el => {
 
           if ('PerformanceObserver' in window) {
             // We start observing for more incoming timings
-            const observer = new PerformanceObserver(list => {
+            const observer = new PerformanceObserver((list) => {
               newEntries = newEntries.concat(list.getEntries().map(this.transformResourceEntry));
               this.updateFrontendPerformanceMetrics(durationString, newEntries);
             });
@@ -126,25 +129,7 @@ const initPerformanceBar = el => {
   });
 };
 
-let loadedPeekBar = false;
-function loadBar() {
-  const jsPeek = document.querySelector('#js-peek');
-  if (!loadedPeekBar && jsPeek) {
-    loadedPeekBar = true;
-    initPerformanceBar(jsPeek);
-  }
-}
-
-// If js-peek is not loaded when this script is executed, this call will do nothing
-// If this is the case, then it will loadBar on DOMContentLoaded. We would prefer it
-// to be initialized before the DOMContetLoaded event in order to pick up all the
-// requests sent from the page.
-loadBar();
-
-document.addEventListener('DOMContentLoaded', () => {
-  loadBar();
-});
-
+initPerformanceBar(document.querySelector('#js-peek'));
 initPerformanceBarLog();
 
 export default initPerformanceBar;

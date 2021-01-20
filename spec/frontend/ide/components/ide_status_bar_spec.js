@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import _ from 'lodash';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
-import { TEST_HOST } from '../../helpers/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
 import { createStore } from '~/ide/stores';
 import IdeStatusBar from '~/ide/components/ide_status_bar.vue';
 import { rightSidebarViews } from '~/ide/constants';
@@ -73,7 +73,7 @@ describe('ideStatusBar', () => {
     });
 
     describe('pipeline status', () => {
-      it('opens right sidebar on clicking icon', done => {
+      it('opens right sidebar on clicking icon', (done) => {
         jest.spyOn(vm, 'openRightPane').mockImplementation(() => {});
         Vue.set(vm.$store.state.pipelines, 'latestPipeline', {
           details: {

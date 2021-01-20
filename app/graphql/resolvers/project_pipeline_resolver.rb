@@ -8,7 +8,7 @@ module Resolvers
 
     argument :iid, GraphQL::ID_TYPE,
              required: true,
-             description: 'IID of the Pipeline, e.g., "1"'
+             description: 'IID of the Pipeline, e.g., "1".'
 
     def resolve(iid:)
       BatchLoader::GraphQL.for(iid).batch(key: project) do |iids, loader, args|

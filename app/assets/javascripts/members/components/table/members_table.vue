@@ -34,7 +34,16 @@ export default {
   computed: {
     ...mapState(['members', 'tableFields', 'tableAttrs', 'currentUserId', 'sourceId']),
     filteredFields() {
-      return FIELDS.filter(field => this.tableFields.includes(field.key) && this.showField(field));
+      return FIELDS.filter(
+        (field) => this.tableFields.includes(field.key) && this.showField(field),
+      ).map((field) => {
+        const tdClassFunction = this[field.tdClassFunction];
+
+        return {
+          ...field,
+          ...(tdClassFunction && { tdClass: tdClassFunction }),
+        };
+      });
     },
     userIsLoggedIn() {
       return this.currentUserId !== null;
@@ -44,6 +53,14 @@ export default {
     initUserPopovers(this.$el.querySelectorAll('.js-user-link'));
   },
   methods: {
+    hasActionButtons(member) {
+      return (
+        canRemove(member, this.sourceId) ||
+        canResend(member) ||
+        canUpdate(member, this.currentUserId, this.sourceId) ||
+        canOverride(member)
+      );
+    },
     showField(field) {
       if (!Object.prototype.hasOwnProperty.call(field, 'showFunction')) {
         return true;
@@ -56,14 +73,20 @@ export default {
         return false;
       }
 
-      return this.members.some(member => {
-        return (
-          canRemove(member, this.sourceId) ||
-          canResend(member) ||
-          canUpdate(member, this.currentUserId, this.sourceId) ||
-          canOverride(member)
-        );
-      });
+      return this.members.some((member) => this.hasActionButtons(member));
+    },
+    tdClassActions(value, key, member) {
+      if (this.hasActionButtons(member)) {
+        return 'col-actions';
+      }
+
+      return ['col-actions', 'gl-display-none!', 'gl-display-lg-table-cell!'];
+    },
+    tbodyTrAttr(member) {
+      return {
+        ...this.tableAttrs.tr,
+        ...(member?.id && { 'data-testid': `members-table-row-${member.id}` }),
+      };
     },
   },
 };
@@ -83,7 +106,7 @@ export default {
       thead-class="border-bottom"
       :empty-text="__('No members found')"
       show-empty
-      :tbody-tr-attr="tableAttrs.tr"
+      :tbody-tr-attr="tbodyTrAttr"
     >
       <template #cell(account)="{ item: member }">
         <members-table-cell #default="{ memberType, isCurrentUser }" :member="member">

@@ -7,7 +7,7 @@ require 'rubocop/rspec/support'
 
 require_relative '../../../rubocop/cop/sidekiq_options_queue'
 
-RSpec.describe RuboCop::Cop::SidekiqOptionsQueue, type: :rubocop do
+RSpec.describe RuboCop::Cop::SidekiqOptionsQueue do
   include CopHelper
 
   subject(:cop) { described_class.new }

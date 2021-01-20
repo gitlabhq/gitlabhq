@@ -34,7 +34,7 @@ export default {
   },
   showBlobInteractionZones({ state }, path) {
     if (state.data && state.data[path]) {
-      Object.values(state.data[path]).forEach(d => addInteractionClass(path, d));
+      Object.values(state.data[path]).forEach((d) => addInteractionClass(path, d));
     }
   },
   showDefinition({ commit, state }, { target: el }) {

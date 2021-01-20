@@ -34,38 +34,38 @@ RSpec.describe Groups::GroupMembersHelper do
   end
 
   describe '#members_data_json' do
-    shared_examples 'group_members.json' do
+    shared_examples 'members.json' do
       it 'matches json schema' do
         json = helper.members_data_json(group, present_members([group_member]))
 
-        expect(json).to match_schema('group_members')
+        expect(json).to match_schema('members')
       end
     end
 
     context 'for a group member' do
       let(:group_member) { create(:group_member, group: group, created_by: current_user) }
 
-      it_behaves_like 'group_members.json'
+      it_behaves_like 'members.json'
 
       context 'with user status set' do
         let(:user) { create(:user) }
         let!(:status) { create(:user_status, user: user) }
         let(:group_member) { create(:group_member, group: group, user: user, created_by: current_user) }
 
-        it_behaves_like 'group_members.json'
+        it_behaves_like 'members.json'
       end
     end
 
     context 'for an invited group member' do
       let(:group_member) { create(:group_member, :invited, group: group, created_by: current_user) }
 
-      it_behaves_like 'group_members.json'
+      it_behaves_like 'members.json'
     end
 
     context 'for an access request' do
       let(:group_member) { create(:group_member, :access_request, group: group, created_by: current_user) }
 
-      it_behaves_like 'group_members.json'
+      it_behaves_like 'members.json'
     end
   end
 

@@ -100,6 +100,7 @@ module API
       end
       expose :only_allow_merge_if_pipeline_succeeds
       expose :allow_merge_on_skipped_pipeline
+      expose :restrict_user_defined_variables
       expose :request_access_enabled
       expose :only_allow_merge_if_all_discussions_are_resolved
       expose :remove_source_branch_after_merge

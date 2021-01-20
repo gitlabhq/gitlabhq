@@ -82,9 +82,7 @@ describe('IDE merge requests list', () => {
     return wrapper.vm
       .$nextTick()
       .then(() => {
-        findSearchTypeButtons()
-          .at(0)
-          .trigger('click');
+        findSearchTypeButtons().at(0).trigger('click');
         return wrapper.vm.$nextTick();
       })
       .then(() => {
@@ -153,8 +151,8 @@ describe('IDE merge requests list', () => {
 
       it('shows search types', () => {
         const buttons = findSearchTypeButtons();
-        expect(buttons.wrappers.map(x => x.text().trim())).toEqual(
-          wrapper.vm.$options.searchTypes.map(x => x.label),
+        expect(buttons.wrappers.map((x) => x.text().trim())).toEqual(
+          wrapper.vm.$options.searchTypes.map((x) => x.label),
         );
       });
 
@@ -168,9 +166,7 @@ describe('IDE merge requests list', () => {
 
       describe('with search type', () => {
         beforeEach(() => {
-          findSearchTypeButtons()
-            .at(0)
-            .trigger('click');
+          findSearchTypeButtons().at(0).trigger('click');
 
           return wrapper.vm
             .$nextTick()

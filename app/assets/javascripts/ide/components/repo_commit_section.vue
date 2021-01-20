@@ -41,12 +41,12 @@ export default {
         file,
         keyPrefix: file.staged ? stageKeys.staged : stageKeys.unstaged,
       })
-        .then(changeViewer => {
+        .then((changeViewer) => {
           if (changeViewer) {
             this.updateViewer('diff');
           }
         })
-        .catch(e => {
+        .catch((e) => {
           throw e;
         });
     },

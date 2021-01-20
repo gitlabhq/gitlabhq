@@ -21,15 +21,17 @@ describe('Diffs image diff overlay component', () => {
 
     wrapper = shallowMount(ImageDiffOverlay, {
       store,
+      parentComponent: {
+        data() {
+          return dimensions;
+        },
+      },
       propsData: {
         discussions: [...imageDiffDiscussions],
         fileHash: 'ABC',
         renderedWidth: 200,
         renderedHeight: 200,
         ...props,
-      },
-      methods: {
-        getImageDimensions: jest.fn().mockReturnValue(dimensions),
       },
     });
   }
@@ -49,18 +51,8 @@ describe('Diffs image diff overlay component', () => {
     createComponent();
     const imageBadges = getAllImageBadges();
 
-    expect(
-      imageBadges
-        .at(0)
-        .text()
-        .trim(),
-    ).toBe('1');
-    expect(
-      imageBadges
-        .at(1)
-        .text()
-        .trim(),
-    ).toBe('2');
+    expect(imageBadges.at(0).text().trim()).toBe('1');
+    expect(imageBadges.at(1).text().trim()).toBe('2');
   });
 
   it('renders icon when showCommentIcon is true', () => {
@@ -124,7 +116,7 @@ describe('Diffs image diff overlay component', () => {
   describe('comment form', () => {
     const getCommentIndicator = () => wrapper.find('.comment-indicator');
     beforeEach(() => {
-      createComponent({ canComment: true }, store => {
+      createComponent({ canComment: true }, (store) => {
         store.state.diffs.commentForms.push({
           fileHash: 'ABC',
           x: 20,

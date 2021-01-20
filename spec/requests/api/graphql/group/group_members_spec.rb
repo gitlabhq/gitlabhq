@@ -10,15 +10,13 @@ RSpec.describe 'getting group members information' do
   let_it_be(:user_1) { create(:user, username: 'user') }
   let_it_be(:user_2) { create(:user, username: 'test') }
 
-  let(:member_data) { graphql_data['group']['groupMembers']['edges'] }
-
   before_all do
     [user_1, user_2].each { |user| parent_group.add_guest(user) }
   end
 
   context 'when the request is correct' do
     it_behaves_like 'a working graphql query' do
-      before_all do
+      before do
         fetch_members
       end
     end
@@ -80,12 +78,10 @@ RSpec.describe 'getting group members information' do
   end
 
   context 'when unauthenticated' do
-    it 'returns nothing' do
+    it 'returns visible members' do
       fetch_members(current_user: nil)
 
-      expect(graphql_errors).to be_nil
-      expect(response).to have_gitlab_http_status(:success)
-      expect(member_data).to be_empty
+      expect_array_response(user_1, user_2)
     end
   end
 
@@ -112,8 +108,8 @@ RSpec.describe 'getting group members information' do
 
   def expect_array_response(*items)
     expect(response).to have_gitlab_http_status(:success)
-    expect(member_data).to be_an Array
-    expect(member_data.map { |node| node["node"]["user"]["id"] })
-      .to match_array(items.map { |u| global_id_of(u) })
+    member_gids = graphql_data_at(:group, :group_members, :edges, :node, :user, :id)
+
+    expect(member_gids).to match_array(items.map { |u| global_id_of(u) })
   end
 end

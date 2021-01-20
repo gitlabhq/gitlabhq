@@ -51,7 +51,7 @@ else {
 
 // print useful messages for nodemon events
 nodemon
-  .on('start', function() {
+  .on('start', function () {
     console.log(`Starting webpack webserver on http://${DEV_SERVER_HOST}:${DEV_SERVER_PORT}`);
     if (STATIC_MODE) {
       console.log('You are starting webpack in compile-once mode');
@@ -59,10 +59,10 @@ nodemon
       console.log('If you change them often, you might want to unset DEV_SERVER_STATIC');
     }
   })
-  .on('quit', function() {
+  .on('quit', function () {
     console.log('Shutting down webpack process');
     process.exit();
   })
-  .on('restart', function(files) {
+  .on('restart', function (files) {
     console.log('Restarting webpack process due to: ', files);
   });

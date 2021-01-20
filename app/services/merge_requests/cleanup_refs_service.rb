@@ -36,6 +36,8 @@ module MergeRequests
       return error('Failed to update schedule.') unless update_schedule
 
       success
+    rescue Gitlab::Git::Repository::GitError, Gitlab::Git::CommandError => e
+      error(e.message)
     end
 
     private

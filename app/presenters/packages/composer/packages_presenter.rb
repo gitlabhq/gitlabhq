@@ -20,33 +20,17 @@ module Packages
       end
 
       def package_versions(packages = @packages)
-        { 'packages' => { packages.first.name => package_versions_map(packages) } }
+        package_versions_index(packages).as_json
       end
 
       private
 
-      def package_versions_map(packages)
-        packages.each_with_object({}) do |package, map|
-          map[package.version] = package_metadata(package)
-        end
+      def package_versions_sha(packages = @packages)
+        package_versions_index(packages).sha
       end
 
-      def package_metadata(package)
-        json = package.composer_metadatum.composer_json
-
-        json.merge('dist' => package_dist(package), 'uid' => package.id, 'version' => package.version)
-      end
-
-      def package_dist(package)
-        sha = package.composer_metadatum.target_sha
-        archive_api_path = api_v4_projects_packages_composer_archives_package_name_path({ id: package.project_id, package_name: package.name, format: '.zip' }, true)
-
-        {
-          'type' => 'zip',
-          'url' => expose_url(archive_api_path) + "?sha=#{sha}",
-          'reference' => sha,
-          'shasum' => ''
-        }
+      def package_versions_index(packages)
+        ::Gitlab::Composer::VersionIndex.new(packages)
       end
 
       def providers_map
@@ -57,10 +41,6 @@ module Packages
         end
 
         map
-      end
-
-      def package_versions_sha(packages)
-        Digest::SHA256.hexdigest(package_versions(packages).to_json)
       end
 
       def provider_sha

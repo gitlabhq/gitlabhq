@@ -8,11 +8,11 @@ import {
   findByText,
 } from '@testing-library/dom';
 
-const isFolderRowOpen = row => row.matches('.folder.is-open');
+const isFolderRowOpen = (row) => row.matches('.folder.is-open');
 
 const getLeftSidebar = () => screen.getByTestId('left-sidebar');
 
-export const switchLeftSidebarTab = name => {
+export const switchLeftSidebarTab = (name) => {
   const sidebar = getLeftSidebar();
 
   const button = getByLabelText(sidebar, name);
@@ -23,7 +23,7 @@ export const switchLeftSidebarTab = name => {
 export const getStatusBar = () => document.querySelector('.ide-status-bar');
 
 export const waitForMonacoEditor = () =>
-  new Promise(resolve => window.monaco.editor.onDidCreateEditor(resolve));
+  new Promise((resolve) => window.monaco.editor.onDidCreateEditor(resolve));
 
 export const findMonacoEditor = () =>
   screen.findAllByLabelText(/Editor content;/).then(([x]) => x.closest('.monaco-editor'));
@@ -31,7 +31,7 @@ export const findMonacoEditor = () =>
 export const findMonacoDiffEditor = () =>
   screen.findAllByLabelText(/Editor content;/).then(([x]) => x.closest('.monaco-diff-editor'));
 
-export const findAndSetEditorValue = async value => {
+export const findAndSetEditorValue = async (value) => {
   const editor = await findMonacoEditor();
   const uri = editor.getAttribute('data-uri');
 
@@ -45,9 +45,9 @@ export const getEditorValue = async () => {
   return window.monaco.editor.getModel(uri).getValue();
 };
 
-const findTreeBody = () => screen.findByTestId('ide-tree-body', {}, { timeout: 5000 });
+const findTreeBody = () => screen.findByTestId('ide-tree-body');
 
-const findRootActions = () => screen.findByTestId('ide-root-actions', {}, { timeout: 7000 });
+const findRootActions = () => screen.findByTestId('ide-root-actions');
 
 const findFileRowContainer = (row = null) =>
   row ? Promise.resolve(row.parentElement) : findTreeBody();
@@ -56,10 +56,12 @@ const findFileChild = async (row, name, index = 0) => {
   const container = await findFileRowContainer(row);
   const children = await findAllByText(container, name, { selector: '.file-row-name' });
 
-  return children.map(x => x.closest('.file-row')).find(x => x.dataset.level === index.toString());
+  return children
+    .map((x) => x.closest('.file-row'))
+    .find((x) => x.dataset.level === index.toString());
 };
 
-const openFileRow = row => {
+const openFileRow = (row) => {
   if (!row || isFolderRowOpen(row)) {
     return;
   }
@@ -101,7 +103,7 @@ const fillFileNameModal = async (value, submitText = 'Create file') => {
   createButton.click();
 };
 
-const findAndClickRootAction = async name => {
+const findAndClickRootAction = async (name) => {
   const container = await findRootActions();
   const button = getByLabelText(container, name);
 
@@ -112,20 +114,17 @@ export const clickPreviewMarkdown = () => {
   screen.getByText('Preview Markdown').click();
 };
 
-export const openFile = async path => {
+export const openFile = async (path) => {
   const row = await findAndTraverseToPath(path);
 
   openFileRow(row);
 };
 
-export const waitForTabToOpen = fileName =>
+export const waitForTabToOpen = (fileName) =>
   findByText(document.querySelector('.multi-file-edit-pane'), fileName);
 
 export const createFile = async (path, content) => {
-  const parentPath = path
-    .split('/')
-    .slice(0, -1)
-    .join('/');
+  const parentPath = path.split('/').slice(0, -1).join('/');
 
   const parentRow = await findAndTraverseToPath(parentPath);
 
@@ -139,11 +138,16 @@ export const createFile = async (path, content) => {
   await findAndSetEditorValue(content);
 };
 
-export const getFilesList = () => {
-  return screen.getAllByTestId('file-row-name-container').map(e => e.textContent.trim());
+export const updateFile = async (path, content) => {
+  await openFile(path);
+  await findAndSetEditorValue(content);
 };
 
-export const deleteFile = async path => {
+export const getFilesList = () => {
+  return screen.getAllByTestId('file-row-name-container').map((e) => e.textContent.trim());
+};
+
+export const deleteFile = async (path) => {
   const row = await findAndTraverseToPath(path);
   clickFileRowAction(row, 'Delete');
 };
@@ -155,7 +159,7 @@ export const renameFile = async (path, newPath) => {
   await fillFileNameModal(newPath, 'Rename file');
 };
 
-export const closeFile = async path => {
+export const closeFile = async (path) => {
   const button = await screen.getByLabelText(`Close ${path}`, {
     selector: '.multi-file-tabs button',
   });
@@ -163,11 +167,33 @@ export const closeFile = async path => {
   button.click();
 };
 
-export const commit = async () => {
+/**
+ * Fill out and submit the commit form in the Web IDE
+ *
+ * @param {Object} options - Used to fill out the commit form in the IDE
+ * @param {Boolean} options.newBranch - Flag for the "Create a new branch" radio.
+ * @param {Boolean} options.newMR - Flag for the "Start a new merge request" checkbox.
+ * @param {String} options.newBranchName - Value to put in the new branch name input field. The Web IDE supports leaving this field blank.
+ */
+export const commit = async ({ newBranch = false, newMR = false, newBranchName = '' } = {}) => {
   switchLeftSidebarTab('Commit');
   screen.getByTestId('begin-commit-button').click();
 
-  await screen.findByLabelText(/Commit to .+ branch/).then(x => x.click());
+  if (!newBranch) {
+    const option = await screen.findByLabelText(/Commit to .+ branch/);
+    option.click();
+  } else {
+    const option = await screen.findByLabelText('Create a new branch');
+    option.click();
+
+    const branchNameInput = await screen.findByTestId('ide-new-branch-name');
+    fireEvent.input(branchNameInput, { target: { value: newBranchName } });
+
+    const mrCheck = await screen.findByLabelText('Start a new merge request');
+    if (Boolean(mrCheck.checked) !== newMR) {
+      mrCheck.click();
+    }
+  }
 
   screen.getByText('Commit').click();
 };

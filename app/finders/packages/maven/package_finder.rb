@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Packages
   module Maven
     class PackageFinder
@@ -27,17 +28,22 @@ module Packages
         elsif group
           packages_for_multiple_projects
         else
-          packages
+          ::Packages::Package.none
         end
       end
 
       def packages_with_path
-        base.only_maven_packages_with_path(path)
+        matching_packages = base.only_maven_packages_with_path(path)
+        matching_packages = matching_packages.order_by_package_file if versionless_package?(matching_packages)
+
+        matching_packages
       end
 
-      # Produces a query that returns all packages.
-      def packages
-        ::Packages::Package.all
+      def versionless_package?(matching_packages)
+        return if matching_packages.empty?
+
+        # if one matching package is versionless, they all are.
+        matching_packages.first&.version.nil?
       end
 
       # Produces a query that retrieves packages from a single project.

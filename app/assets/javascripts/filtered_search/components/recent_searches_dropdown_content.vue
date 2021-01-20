@@ -28,16 +28,16 @@ export default {
      * fix by ignoring non-string recents while in Epic page.
      */
     compatibleItems() {
-      return this.items.filter(item => typeof item === 'string');
+      return this.items.filter((item) => typeof item === 'string');
     },
     processedItems() {
-      return this.compatibleItems.map(item => {
+      return this.compatibleItems.map((item) => {
         const { tokens, searchToken } = FilteredSearchTokenizer.processTokens(
           item,
           this.allowedKeys,
         );
 
-        const resultantTokens = tokens.map(token => ({
+        const resultantTokens = tokens.map((token) => ({
           prefix: `${token.key}:`,
           operator: token.operator,
           suffix: `${token.symbol}${token.value}`,

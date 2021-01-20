@@ -1,6 +1,5 @@
 <script>
 import { GlDropdown, GlDropdownForm, GlFormTextarea, GlButton } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
 
 export default {
   components: { GlDropdown, GlDropdownForm, GlFormTextarea, GlButton },
@@ -10,7 +9,7 @@ export default {
       required: false,
       default: false,
     },
-    fileName: {
+    defaultCommitMessage: {
       type: String,
       required: true,
     },
@@ -18,18 +17,11 @@ export default {
   data() {
     return {
       message: null,
-      buttonText: __('Apply suggestion'),
-      headerText: __('Apply suggestion commit message'),
     };
-  },
-  computed: {
-    placeholderText() {
-      return sprintf(__('Apply suggestion on %{fileName}'), { fileName: this.fileName });
-    },
   },
   methods: {
     onApply() {
-      this.$emit('apply', this.message || this.placeholderText);
+      this.$emit('apply', this.message);
     },
   },
 };
@@ -37,18 +29,26 @@ export default {
 
 <template>
   <gl-dropdown
-    :text="buttonText"
-    :header-text="headerText"
+    :text="__('Apply suggestion')"
     :disabled="disabled"
     boundary="window"
     right
-    menu-class="gl-w-full! gl-pb-0!"
+    menu-class="gl-w-full!"
+    @shown="$refs.commitMessage.$el.focus()"
   >
-    <gl-dropdown-form class="gl-m-3!">
-      <gl-form-textarea v-model="message" :placeholder="placeholderText" />
+    <gl-dropdown-form class="gl-px-4! gl-m-0!">
+      <label for="commit-message">{{ __('Commit message') }}</label>
+      <gl-form-textarea
+        id="commit-message"
+        ref="commitMessage"
+        v-model="message"
+        :placeholder="defaultCommitMessage"
+        submit-on-enter
+        @submit="onApply"
+      />
       <gl-button
-        class="gl-w-quarter! gl-mt-3 gl-text-center! float-right"
-        category="secondary"
+        class="gl-w-auto! gl-mt-3 gl-text-center! gl-hover-text-white! gl-transition-medium! float-right"
+        category="primary"
         variant="success"
         @click="onApply"
       >

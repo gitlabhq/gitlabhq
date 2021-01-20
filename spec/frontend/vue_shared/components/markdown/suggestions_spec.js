@@ -44,13 +44,14 @@ const MOCK_DATA = {
   `,
   isApplied: false,
   helpPagePath: 'path_to_docs',
+  defaultCommitMessage: 'Apply suggestion',
 };
 
 describe('Suggestion component', () => {
   let vm;
   let diffTable;
 
-  beforeEach(done => {
+  beforeEach((done) => {
     const Component = Vue.extend(SuggestionsComponent);
 
     vm = new Component({
@@ -86,7 +87,7 @@ describe('Suggestion component', () => {
     });
 
     it('generates a diff table that contains contents the suggested lines', () => {
-      MOCK_DATA.suggestions[0].diff_lines.forEach(line => {
+      MOCK_DATA.suggestions[0].diff_lines.forEach((line) => {
         const text = line.text.substring(1);
 
         expect(diffTable.innerHTML.includes(text)).toBe(true);

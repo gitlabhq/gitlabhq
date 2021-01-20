@@ -39,7 +39,7 @@ describe('Boards - Getters', () => {
   });
 
   describe('getIssueById', () => {
-    const state = { issues: { '1': 'issue' } };
+    const state = { issues: { 1: 'issue' } };
 
     it.each`
       id     | expected
@@ -56,7 +56,7 @@ describe('Boards - Getters', () => {
       ${'1'} | ${'issue'}
       ${''}  | ${{}}
     `('returns $expected when $id is passed to state', ({ id, expected }) => {
-      const state = { issues: { '1': 'issue' }, activeId: id };
+      const state = { issues: { 1: 'issue' }, activeId: id };
 
       expect(getters.activeIssue(state)).toEqual(expected);
     });
@@ -84,7 +84,7 @@ describe('Boards - Getters', () => {
       issues,
     };
     it('returns issues for a given listId', () => {
-      const getIssueById = issueId => [mockIssue, mockIssue2].find(({ id }) => id === issueId);
+      const getIssueById = (issueId) => [mockIssue, mockIssue2].find(({ id }) => id === issueId);
 
       expect(getters.getIssuesByList(boardsState, { getIssueById })('gid://gitlab/List/2')).toEqual(
         mockIssues,

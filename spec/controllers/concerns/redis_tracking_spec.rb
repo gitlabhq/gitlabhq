@@ -42,7 +42,7 @@ RSpec.describe RedisTracking do
 
   def expect_tracking
     expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
-      .with(instance_of(String), 'g_compliance_approval_rules')
+      .with('g_compliance_approval_rules', values: instance_of(String))
   end
 
   def expect_no_tracking

@@ -50,7 +50,7 @@ describe('BadgeForm component', () => {
     });
   });
 
-  const sharedSubmitTests = submitAction => {
+  const sharedSubmitTests = (submitAction) => {
     const nameSelector = '#badge-name';
     const imageUrlSelector = '#badge-image-url';
     const findImageUrlElement = () => vm.$el.querySelector(imageUrlSelector);
@@ -65,7 +65,7 @@ describe('BadgeForm component', () => {
       const submitButton = vm.$el.querySelector('button[type="submit"]');
       submitButton.click();
     };
-    const expectInvalidInput = inputElementSelector => {
+    const expectInvalidInput = (inputElementSelector) => {
       const inputElement = vm.$el.querySelector(inputElementSelector);
 
       expect(inputElement.checkValidity()).toBe(false);
@@ -74,7 +74,7 @@ describe('BadgeForm component', () => {
       expect(feedbackElement).toBeVisible();
     };
 
-    beforeEach(done => {
+    beforeEach((done) => {
       jest.spyOn(vm, submitAction).mockReturnValue(Promise.resolve());
       store.replaceState({
         ...store.state,

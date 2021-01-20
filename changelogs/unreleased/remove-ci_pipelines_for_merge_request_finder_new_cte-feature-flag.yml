@@ -1,0 +1,5 @@
+---
+title: Improve the database query performance on the pipeline loading in merge requests
+merge_request: 50818
+author:
+type: performance

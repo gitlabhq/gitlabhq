@@ -6,7 +6,7 @@ import missingPrometheusComponent from '~/serverless/components/missing_promethe
 describe('missingPrometheusComponent', () => {
   let wrapper;
 
-  const createComponent = missingData => {
+  const createComponent = (missingData) => {
     const store = createStore({ clustersPath: '/clusters', helpPath: '/help' });
 
     wrapper = shallowMount(missingPrometheusComponent, { store, propsData: { missingData } });

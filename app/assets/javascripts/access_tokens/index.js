@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import ExpiresAtField from './components/expires_at_field.vue';
 
-const getInputAttrs = el => {
+const getInputAttrs = (el) => {
   const input = el.querySelector('input');
 
   return {

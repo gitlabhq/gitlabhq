@@ -21,6 +21,6 @@ export default () => {
         graphqlMilestoneStats: Boolean(gon.features?.graphqlMilestoneStats),
       },
     }),
-    render: h => h(ReleaseListApp),
+    render: (h) => h(ReleaseListApp),
   });
 };

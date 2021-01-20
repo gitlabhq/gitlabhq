@@ -66,6 +66,12 @@ This content has been moved to a [new location](replication_and_failover.md#conf
 
 1. At this point, your instance should connect to the database through PgBouncer. If you are having issues, see the [Troubleshooting](#troubleshooting) section
 
+## Backups
+
+Do not backup or restore GitLab through a PgBouncer connection: this will cause a GitLab outage.
+
+[Read more about this and how to reconfigure backups](../../raketasks/backup_restore.md#backup-and-restore-for-installations-using-pgbouncer).
+
 ## Enable Monitoring
 
 > [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3786) in GitLab 12.0.
@@ -150,7 +156,10 @@ ote_pid | tls
 
 ## Procedure for bypassing PgBouncer
 
-Some database changes have to be done directly, and not through PgBouncer. This includes database restores and GitLab upgrades (because of the database migrations).
+Some database changes have to be done directly, and not through PgBouncer.
+
+Read more about the affected tasks: [database restores](../../raketasks/backup_restore.md#backup-and-restore-for-installations-using-pgbouncer)
+and [GitLab upgrades](https://docs.gitlab.com/omnibus/update/README.html#use-postgresql-ha).
 
 1. To find the primary node, run the following on a database node:
 

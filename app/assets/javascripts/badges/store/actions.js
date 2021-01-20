@@ -2,7 +2,7 @@ import axios from '~/lib/utils/axios_utils';
 import types from './mutation_types';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
-export const transformBackendBadge = badge => ({
+export const transformBackendBadge = (badge) => ({
   ...convertObjectPropsToCamelCase(badge, true),
   isDeleting: false,
 });
@@ -27,11 +27,11 @@ export default {
         image_url: newBadge.imageUrl,
         link_url: newBadge.linkUrl,
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch('receiveNewBadgeError');
         throw error;
       })
-      .then(res => {
+      .then((res) => {
         dispatch('receiveNewBadge', transformBackendBadge(res.data));
       });
   },
@@ -50,7 +50,7 @@ export default {
     const endpoint = `${state.apiEndpointUrl}/${badgeId}`;
     return axios
       .delete(endpoint)
-      .catch(error => {
+      .catch((error) => {
         dispatch('receiveDeleteBadgeError', badgeId);
         throw error;
       })
@@ -78,11 +78,11 @@ export default {
     const endpoint = state.apiEndpointUrl;
     return axios
       .get(endpoint)
-      .catch(error => {
+      .catch((error) => {
         dispatch('receiveLoadBadgesError');
         throw error;
       })
-      .then(res => {
+      .then((res) => {
         dispatch('receiveLoadBadges', res.data.map(transformBackendBadge));
       });
   },
@@ -113,11 +113,11 @@ export default {
     const renderEndpoint = `${state.apiEndpointUrl}/render?${parameters}`;
     return axios
       .get(renderEndpoint)
-      .catch(error => {
+      .catch((error) => {
         dispatch('receiveRenderedBadgeError');
         throw error;
       })
-      .then(res => {
+      .then((res) => {
         dispatch('receiveRenderedBadge', transformBackendBadge(res.data));
       });
   },
@@ -142,11 +142,11 @@ export default {
         image_url: badge.imageUrl,
         link_url: badge.linkUrl,
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch('receiveUpdatedBadgeError');
         throw error;
       })
-      .then(res => {
+      .then((res) => {
         dispatch('receiveUpdatedBadge', transformBackendBadge(res.data));
       });
   },

@@ -87,6 +87,24 @@ module Gitlab
       },
       invite_members_empty_project_version_a: {
         tracking_category: 'Growth::Expansion::Experiment::InviteMembersEmptyProjectVersionA'
+      },
+      trial_during_signup: {
+        tracking_category: 'Growth::Conversion::Experiment::TrialDuringSignup'
+      },
+      ci_syntax_templates: {
+        tracking_category: 'Growth::Activation::Experiment::CiSyntaxTemplates'
+      },
+      pipelines_empty_state: {
+        tracking_category: 'Growth::Activation::Experiment::PipelinesEmptyState'
+      },
+      invite_members_new_dropdown: {
+        tracking_category: 'Growth::Expansion::Experiment::InviteMembersNewDropdown'
+      },
+      show_trial_status_in_sidebar: {
+        tracking_category: 'Growth::Conversion::Experiment::ShowTrialStatusInSidebar'
+      },
+      trial_onboarding_issues: {
+        tracking_category: 'Growth::Conversion::Experiment::TrialOnboardingIssues'
       }
     }.freeze
 

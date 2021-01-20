@@ -65,16 +65,28 @@ RSpec.describe 'getting Alert Management Alert Notes' do
     expect(second_notes_result).to be_empty
   end
 
-  it 'avoids N+1 queries' do
-    base_count = ActiveRecord::QueryRecorder.new do
-      post_graphql(query, current_user: current_user)
+  describe 'performance' do
+    let(:first_n) { var('Int') }
+    let(:params) { { first: first_n } }
+
+    before do
+      # An N+1 would mean a new alert would increase the query count
+      create(:alert_management_alert, project: project)
     end
 
-    # An N+1 would mean a new alert would increase the query count
-    create(:alert_management_alert, project: project)
+    it 'avoids N+1 queries' do
+      q = with_signature([first_n], query)
 
-    expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(base_count)
-    expect(alerts_result.length).to eq(3)
+      base_count = ActiveRecord::QueryRecorder.new do
+        post_graphql(q, current_user: current_user, variables: first_n.with(1))
+        expect(alerts_result.length).to eq(1)
+      end
+
+      expect do
+        post_graphql(q, current_user: current_user, variables: first_n.with(3))
+        expect(alerts_result.length).to eq(3)
+      end.not_to exceed_query_limit(base_count)
+    end
   end
 
   context 'for non-system notes' do

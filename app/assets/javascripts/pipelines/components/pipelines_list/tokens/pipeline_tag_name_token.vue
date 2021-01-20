@@ -34,10 +34,10 @@ export default {
     fetchTags(searchTerm) {
       Api.tags(this.config.projectId, searchTerm)
         .then(({ data }) => {
-          this.tags = data.map(tag => tag.name);
+          this.tags = data.map((tag) => tag.name);
           this.loading = false;
         })
-        .catch(err => {
+        .catch((err) => {
           createFlash(FETCH_TAG_ERROR_MESSAGE);
           this.loading = false;
           throw err;

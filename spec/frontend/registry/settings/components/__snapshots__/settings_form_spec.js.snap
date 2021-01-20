@@ -32,7 +32,7 @@ exports[`Settings Form Keep N matches snapshot 1`] = `
 exports[`Settings Form Keep Regex matches snapshot 1`] = `
 <expiration-input-stub
   data-testid="keep-regex-input"
-  description="Tags with names that match this regex pattern are kept. %{linkStart}More information%{linkEnd}"
+  description="Tags with names that match this regex pattern are kept. %{linkStart}View regex examples.%{linkEnd}"
   error=""
   label="Keep tags matching:"
   name="keep-regex"
@@ -54,7 +54,7 @@ exports[`Settings Form OlderThan matches snapshot 1`] = `
 exports[`Settings Form Remove regex matches snapshot 1`] = `
 <expiration-input-stub
   data-testid="remove-regex-input"
-  description="Tags with names that match this regex pattern are removed. %{linkStart}More information%{linkEnd}"
+  description="Tags with names that match this regex pattern are removed. %{linkStart}View regex examples.%{linkEnd}"
   error=""
   label="Remove tags matching:"
   name="remove-regex"

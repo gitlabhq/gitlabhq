@@ -26,7 +26,7 @@ describe('snippets/components/embed_dropdown', () => {
     const sections = [];
     let current = {};
 
-    wrapper.findAll('[data-testid="header"],[data-testid="input"]').wrappers.forEach(x => {
+    wrapper.findAll('[data-testid="header"],[data-testid="input"]').wrappers.forEach((x) => {
       const type = x.attributes('data-testid');
 
       if (type === 'header') {

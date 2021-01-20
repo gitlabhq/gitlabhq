@@ -3,6 +3,39 @@
 require 'spec_helper'
 
 RSpec.describe CommitsHelper do
+  describe '#revert_commit_link' do
+    context 'when current_user exists' do
+      before do
+        allow(helper).to receive(:current_user).and_return(double('User'))
+        allow(helper).to receive(:can_collaborate_with_project?).and_return(true)
+      end
+
+      it 'renders a div for Vue' do
+        result = helper.revert_commit_link('_commit_', '_path_', pajamas: true)
+
+        expect(result).to include('js-revert-commit-trigger')
+      end
+
+      it 'does not render a div for Vue' do
+        result = helper.revert_commit_link('_commit_', '_path_')
+
+        expect(result).not_to include('js-revert-commit-trigger')
+      end
+    end
+
+    context 'when current_user does not exist' do
+      before do
+        allow(helper).to receive(:current_user).and_return(nil)
+      end
+
+      it 'does not render anything' do
+        result = helper.revert_commit_link(double('Commit'), '_path_')
+
+        expect(result).to be_nil
+      end
+    end
+  end
+
   describe 'commit_author_link' do
     it 'escapes the author email' do
       commit = double(

@@ -21,7 +21,7 @@ import { VARIABLE_TYPES } from '../constants';
  * @param {String|Object} simpleTextVar
  * @returns {Object}
  */
-const textSimpleVariableParser = simpleTextVar => ({
+const textSimpleVariableParser = (simpleTextVar) => ({
   type: VARIABLE_TYPES.text,
   label: null,
   value: simpleTextVar,
@@ -34,7 +34,7 @@ const textSimpleVariableParser = simpleTextVar => ({
  * @param {Object} advTextVar
  * @returns {Object}
  */
-const textAdvancedVariableParser = advTextVar => ({
+const textAdvancedVariableParser = (advTextVar) => ({
   type: VARIABLE_TYPES.text,
   label: advTextVar.label,
   value: advTextVar.options.default_value,
@@ -62,9 +62,9 @@ const normalizeVariableValues = ({ default: defaultOpt = false, text, value = nu
  * @param {Object} advVariable advanced custom variable
  * @returns {Object}
  */
-const customAdvancedVariableParser = advVariable => {
+const customAdvancedVariableParser = (advVariable) => {
   const values = (advVariable?.options?.values ?? []).map(normalizeVariableValues);
-  const defaultValue = values.find(opt => opt.default === true) || values[0];
+  const defaultValue = values.find((opt) => opt.default === true) || values[0];
   return {
     type: VARIABLE_TYPES.custom,
     label: advVariable.label,
@@ -82,7 +82,7 @@ const customAdvancedVariableParser = advVariable => {
  * @param {String} opt option from simple custom variable
  * @returns {Object}
  */
-export const parseSimpleCustomValues = opt => ({ text: opt, value: opt });
+export const parseSimpleCustomValues = (opt) => ({ text: opt, value: opt });
 
 /**
  * Custom simple variables are rendered as dropdown elements in the dashboard
@@ -96,7 +96,7 @@ export const parseSimpleCustomValues = opt => ({ text: opt, value: opt });
  * @param {Array} customVariable array of options
  * @returns {Object}
  */
-const customSimpleVariableParser = simpleVar => {
+const customSimpleVariableParser = (simpleVar) => {
   const values = (simpleVar || []).map(parseSimpleCustomValues);
   return {
     type: VARIABLE_TYPES.custom,
@@ -126,7 +126,7 @@ const metricLabelValuesVariableParser = ({ label, options = {} }) => ({
  * @param {Array|Object} customVar Array if simple, object if advanced
  * @returns {Boolean} true if simple, false if advanced
  */
-const isSimpleCustomVariable = customVar => Array.isArray(customVar);
+const isSimpleCustomVariable = (customVar) => Array.isArray(customVar);
 
 /**
  * This method returns a parser based on the type of the variable.
@@ -137,7 +137,7 @@ const isSimpleCustomVariable = customVar => Array.isArray(customVar);
  * @param {Array|Object} variable
  * @return {Function} parser method
  */
-const getVariableParser = variable => {
+const getVariableParser = (variable) => {
   if (isString(variable)) {
     return textSimpleVariableParser;
   } else if (isSimpleCustomVariable(variable)) {
@@ -200,7 +200,7 @@ export const parseTemplatingVariables = (ymlVariables = {}) =>
  */
 export const mergeURLVariables = (parsedYmlVariables = []) => {
   const varsFromURL = templatingVariablesFromUrl();
-  parsedYmlVariables.forEach(variable => {
+  parsedYmlVariables.forEach((variable) => {
     const { name } = variable;
     if (Object.prototype.hasOwnProperty.call(varsFromURL, name)) {
       Object.assign(variable, { value: varsFromURL[name] });

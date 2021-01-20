@@ -66,4 +66,8 @@ module StubFeatureFlags
   def skip_feature_flags_yaml_validation
     allow(Feature::Definition).to receive(:valid_usage!)
   end
+
+  def skip_default_enabled_yaml_check
+    allow(Feature::Definition).to receive(:default_enabled?).and_return(false)
+  end
 end

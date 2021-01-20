@@ -13,8 +13,8 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures do
     end
 
     context 'user logged in' do
-      let_it_be(:project) { create(:project) }
-      let_it_be(:project2) { create(:project) }
+      let_it_be(:project) { create(:project, name: 'Project 1') }
+      let_it_be(:project2) { create(:project, name: 'Project Two') }
       let(:projects) { [project, project2] }
 
       before_all do
@@ -36,10 +36,7 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures do
         end
       end
 
-      it 'orders the projects by last activity by default' do
-        project.update!(last_repository_updated_at: 3.days.ago, last_activity_at: 3.days.ago)
-        project2.update!(last_repository_updated_at: 10.days.ago, last_activity_at: 10.days.ago)
-
+      it 'orders the projects by name by default' do
         get :index
 
         expect(assigns(:projects)).to eq(projects)

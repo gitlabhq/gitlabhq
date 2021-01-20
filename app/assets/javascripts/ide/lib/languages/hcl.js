@@ -11,7 +11,11 @@ const conf = {
     lineComment: '//',
     blockComment: ['/*', '*/'],
   },
-  brackets: [['{', '}'], ['[', ']'], ['(', ')']],
+  brackets: [
+    ['{', '}'],
+    ['[', ']'],
+    ['(', ')'],
+  ],
   autoClosingPairs: [
     { open: '{', close: '}' },
     { open: '[', close: ']' },
@@ -140,7 +144,7 @@ const language = {
     ],
     heredocBody: [
       [
-        /^([\w\-]+)$/,
+        /([\w\-]+)$/,
         {
           cases: {
             '$1==$S2': [
@@ -161,7 +165,11 @@ const language = {
       [/\/\/.*$/, 'comment'],
       [/#.*$/, 'comment'],
     ],
-    comment: [[/[^\/*]+/, 'comment'], [/\*\//, 'comment', '@pop'], [/[\/*]/, 'comment']],
+    comment: [
+      [/[^\/*]+/, 'comment'],
+      [/\*\//, 'comment', '@pop'],
+      [/[\/*]/, 'comment'],
+    ],
     string: [
       [/\$\{/, { token: 'delimiter', next: '@stringExpression' }],
       [/[^\\"\$]+/, 'string'],

@@ -5,7 +5,7 @@ import App from './components/app.vue';
 
 Vue.use(VueApollo);
 
-export default function() {
+export default function () {
   const el = document.getElementById('js-suggestions');
   const issueTitle = document.getElementById('issue_title');
   const { projectPath } = el.dataset;

@@ -40,10 +40,10 @@ const mark = (source, groups) => {
   const hash = {};
 
   Object.entries(groups).forEach(([groupKey, group]) => {
-    group.forEach(pattern => {
+    group.forEach((pattern) => {
       const matches = text.match(pattern);
       if (matches) {
-        matches.forEach(match => {
+        matches.forEach((match) => {
           const key = `${markPrefix}-${groupKey}-${id}`;
           text = text.replace(match, key);
           hash[key] = match;
@@ -67,12 +67,12 @@ const unmark = (text, hash) => {
   return source;
 };
 
-const unwrap = source => {
+const unwrap = (source) => {
   let text = source;
   const matches = text.match(reTemplated);
 
   if (matches) {
-    matches.forEach(match => {
+    matches.forEach((match) => {
       const initial = match.replace(`${wrapPrefix}`, '').replace(`${wrapPostfix}`, '');
       text = text.replace(match, initial);
     });
@@ -81,7 +81,7 @@ const unwrap = source => {
   return text;
 };
 
-const wrap = source => {
+const wrap = (source) => {
   const { text, hash } = mark(unwrap(source), patternGroups);
   return unmark(text, hash);
 };

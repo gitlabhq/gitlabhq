@@ -43,7 +43,7 @@ export default {
     },
     activeMilestone() {
       return this.milestones.find(
-        milestone => milestone.title.toLowerCase() === stripQuotes(this.currentValue),
+        (milestone) => milestone.title.toLowerCase() === stripQuotes(this.currentValue),
       );
     },
   },

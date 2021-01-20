@@ -19,7 +19,7 @@ export default class InlineDiff extends Mark {
         { tag: 'span.idiff.addition', attrs: { addition: true } },
         { tag: 'span.idiff.deletion', attrs: { addition: false } },
       ],
-      toDOM: node => [
+      toDOM: (node) => [
         'span',
         { class: `idiff left right ${node.attrs.addition ? 'addition' : 'deletion'}` },
         0,

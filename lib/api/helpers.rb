@@ -220,6 +220,10 @@ module API
       user_project.builds.find(id.to_i)
     end
 
+    def find_job!(id)
+      user_project.processables.find(id.to_i)
+    end
+
     def authenticate!
       unauthorized! unless current_user
     end
@@ -273,6 +277,10 @@ module API
 
     def authorize_read_build_trace!(build)
       authorize! :read_build_trace, build
+    end
+
+    def authorize_read_job_artifacts!(build)
+      authorize! :read_job_artifacts, build
     end
 
     def authorize_destroy_artifacts!
@@ -364,7 +372,7 @@ module API
 
     def forbidden!(reason = nil)
       message = ['403 Forbidden']
-      message << " - #{reason}" if reason
+      message << "- #{reason}" if reason
       render_api_error!(message.join(' '), 403)
     end
 
@@ -513,7 +521,7 @@ module API
       case headers['X-Sendfile-Type']
       when 'X-Sendfile'
         header['X-Sendfile'] = path
-        body
+        body '' # to avoid an error from API::APIGuard::ResponseCoercerMiddleware
       else
         sendfile path
       end
@@ -529,7 +537,7 @@ module API
       else
         header(*Gitlab::Workhorse.send_url(file.url))
         status :ok
-        body ""
+        body '' # to avoid an error from API::APIGuard::ResponseCoercerMiddleware
       end
     end
 
@@ -562,7 +570,7 @@ module API
 
       return unless Feature.enabled?(feature_flag, default_enabled: true)
 
-      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(values, event_name)
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values: values)
     rescue => error
       Gitlab::AppLogger.warn("Redis tracking event failed for event: #{event_name}, message: #{error.message}")
     end

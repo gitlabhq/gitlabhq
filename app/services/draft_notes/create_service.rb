@@ -31,6 +31,10 @@ module DraftNotes
         merge_request.diffs.clear_cache
       end
 
+      if draft_note.persisted?
+        merge_request_activity_counter.track_create_review_note_action(user: current_user)
+      end
+
       draft_note
     end
 

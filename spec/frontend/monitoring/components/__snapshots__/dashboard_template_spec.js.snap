@@ -37,6 +37,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
         class="flex-grow-1"
         data-qa-selector="environments_dropdown"
         headertext=""
+        hideheaderborder="true"
         id="monitor-environments-dropdown"
         menu-class="monitor-environment-dropdown-menu"
         size="medium"

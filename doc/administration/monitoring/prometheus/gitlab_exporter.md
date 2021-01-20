@@ -30,3 +30,27 @@ To enable the GitLab exporter in an Omnibus GitLab instance:
 
 Prometheus automatically begins collecting performance data from
 the GitLab exporter exposed at `localhost:9168`.
+
+## Use a different Rack server
+
+>- Introduced in [Omnibus GitLab 13.8](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4896).
+>- WEBrick is now the default Rack server instead of Puma.
+
+By default, the GitLab exporter runs on [WEBrick](https://github.com/ruby/webrick), a single-threaded Ruby web server.
+You can choose a different Rack server that better matches your performance needs.
+For instance, in multi-node setups that contain a large number of Prometheus scrapers
+but only a few monitoring nodes, you may decide to run a multi-threaded server such as Puma instead.
+
+To change the Rack server to Puma:
+
+1. Edit `/etc/gitlab/gitlab.rb`.
+1. Add, or find and uncomment, the following line, and set it to `puma`:
+
+   ```ruby
+   gitlab_exporter['server_name'] = 'puma'
+   ```
+
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
+   for the changes to take effect.
+
+The supported Rack servers are `webrick` and `puma`.

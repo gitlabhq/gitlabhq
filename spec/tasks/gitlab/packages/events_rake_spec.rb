@@ -38,8 +38,8 @@ RSpec.describe 'gitlab:packages:events namespace rake task' do
     end
   end
 
-  describe 'generate_guest' do
-    let(:task) { 'generate_guest' }
+  describe 'generate_counts' do
+    let(:task) { 'generate_counts' }
 
     Packages::Event::EVENT_SCOPES.keys.each do |event_scope|
       it "includes `#{event_scope}` scope" do

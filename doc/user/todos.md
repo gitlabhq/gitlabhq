@@ -72,7 +72,7 @@ prevent data loss, in the case where a user's access is accidentally revoked.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7926) in GitLab 9.0.
 
-If you're mentioned at the start of a line, the to-do item you receive is 
+If you're mentioned at the start of a line, the to-do item you receive is
 listed as *directly addressed*. For example, in the following comment:
 
 ```markdown

@@ -14,7 +14,7 @@ const deleteIntegrationFromStore = (store, query, { httpIntegrationDestroy }, va
     variables,
   });
 
-  const data = produce(sourceData, draftData => {
+  const data = produce(sourceData, (draftData) => {
     // eslint-disable-next-line no-param-reassign
     draftData.project.alertManagementIntegrations.nodes = draftData.project.alertManagementIntegrations.nodes.filter(
       ({ id }) => id !== integration.id,
@@ -45,7 +45,7 @@ const addIntegrationToStore = (
     variables,
   });
 
-  const data = produce(sourceData, draftData => {
+  const data = produce(sourceData, (draftData) => {
     // eslint-disable-next-line no-param-reassign
     draftData.project.alertManagementIntegrations.nodes = [
       integration,

@@ -9,9 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"gitlab.com/gitlab-org/labkit/log"
-
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab-workhorse/internal/log"
 )
 
 // Error is a custom error for pretty Sentry 'issues'
@@ -42,11 +40,7 @@ func (t *roundTripper) RoundTrip(r *http.Request) (*http.Response, error) {
 	// instead of 500s we catch the RoundTrip error here and inject a
 	// 502 response.
 	fields := log.Fields{"duration_ms": int64(time.Since(start).Seconds() * 1000)}
-	helper.LogErrorWithFields(
-		r,
-		&sentryError{fmt.Errorf("badgateway: failed to receive response: %v", err)},
-		fields,
-	)
+	log.WithRequest(r).WithFields(fields).WithError(&sentryError{fmt.Errorf("badgateway: failed to receive response: %v", err)}).Error()
 
 	injectedResponse := &http.Response{
 		StatusCode: http.StatusBadGateway,

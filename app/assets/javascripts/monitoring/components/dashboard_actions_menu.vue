@@ -1,7 +1,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
 import {
-  GlDeprecatedButton,
+  GlButton,
   GlDropdown,
   GlDropdownDivider,
   GlDropdownItem,
@@ -22,7 +22,7 @@ import { getAddMetricTrackingOptions } from '../utils';
 
 export default {
   components: {
-    GlDeprecatedButton,
+    GlButton,
     GlDropdown,
     GlDropdownDivider,
     GlDropdownItem,
@@ -178,10 +178,10 @@ export default {
           />
         </form>
         <div slot="modal-footer">
-          <gl-deprecated-button @click="hideAddMetricModal">
+          <gl-button @click="hideAddMetricModal">
             {{ __('Cancel') }}
-          </gl-deprecated-button>
-          <gl-deprecated-button
+          </gl-button>
+          <gl-button
             v-track-event="getAddMetricTrackingOptions()"
             data-testid="add-metric-modal-submit-button"
             :disabled="!customMetricsFormIsValid"
@@ -189,7 +189,7 @@ export default {
             @click="submitCustomMetricsForm"
           >
             {{ __('Save changes') }}
-          </gl-deprecated-button>
+          </gl-button>
         </div>
       </gl-modal>
     </template>

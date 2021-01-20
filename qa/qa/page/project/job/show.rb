@@ -12,7 +12,7 @@ module QA
           end
 
           view 'app/assets/javascripts/jobs/components/stages_dropdown.vue' do
-            element :pipeline_path
+            element :pipeline_path, required: true
           end
 
           view 'app/assets/javascripts/jobs/components/sidebar.vue' do

@@ -28,20 +28,20 @@ For a demonstration, see [Pages access controls](https://www.youtube.com/watch?v
    with GitLab Pages, depending on your project's visibility:
 
    - If your project is private:
-     - **Only project members**: Only project members will be able to browse the website.
-     - **Everyone**: Everyone, both logged into and logged out of GitLab, will be able to browse the website, no matter their project membership.
+     - **Only project members**: Only project members are able to browse the website.
+     - **Everyone**: Everyone, both logged into and logged out of GitLab, is able to browse the website, no matter their project membership.
    - If your project is internal:
-     - **Only project members**: Only project members will be able to browse the website.
-     - **Everyone with access**: Everyone logged into GitLab will be able to browse the website, no matter their project membership.
-     - **Everyone**: Everyone, both logged into and logged out of GitLab, will be able to browse the website, no matter their project membership.
+     - **Only project members**: Only project members are able to browse the website.
+     - **Everyone with access**: Everyone logged into GitLab is able to browse the website, no matter their project membership.
+     - **Everyone**: Everyone, both logged into and logged out of GitLab, is able to browse the website, no matter their project membership.
    - If your project is public:
-     - **Only project members**: Only project members will be able to browse the website.
-     - **Everyone with access**: Everyone, both logged into and logged out of GitLab, will be able to browse the website, no matter their project membership.
+     - **Only project members**: Only project members are able to browse the website.
+     - **Everyone with access**: Everyone, both logged into and logged out of GitLab, is able to browse the website, no matter their project membership.
 
 1. Click **Save changes**.
 
 The next time someone tries to access your website and the access control is
-enabled, they will be presented with a page to sign into GitLab and verify they
+enabled, they're presented with a page to sign into GitLab and verify they
 can access the website.
 
 ## Terminating a Pages session

@@ -20,7 +20,7 @@ module Mutations
                description: copy_field_description(Types::MergeRequestType, :description)
 
       def resolve(args)
-        merge_request = authorized_find!(args.slice(:project_path, :iid))
+        merge_request = authorized_find!(**args.slice(:project_path, :iid))
         attributes = args.slice(:title, :description, :target_branch).compact
 
         ::MergeRequests::UpdateService

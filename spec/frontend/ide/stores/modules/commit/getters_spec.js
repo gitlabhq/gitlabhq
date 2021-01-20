@@ -103,7 +103,7 @@ describe('IDE commit module getters', () => {
       expect(getters.preBuiltCommitMessage(state, null, rootState)).toBe('test commit message');
     });
 
-    ['changedFiles', 'stagedFiles'].forEach(key => {
+    ['changedFiles', 'stagedFiles'].forEach((key) => {
       it('returns commitMessage with updated file', () => {
         rootState[key].push({
           path: 'test-file',

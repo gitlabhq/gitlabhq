@@ -8,6 +8,6 @@ export default function initProjectPermissionsSettings() {
 
   return new Vue({
     el: mountPoint,
-    render: createElement => createElement(settingsPanel, { props: { ...componentProps } }),
+    render: (createElement) => createElement(settingsPanel, { props: { ...componentProps } }),
   });
 }

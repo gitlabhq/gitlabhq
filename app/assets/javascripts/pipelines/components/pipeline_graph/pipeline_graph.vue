@@ -1,12 +1,10 @@
 <script>
-import { isEmpty } from 'lodash';
 import { GlAlert } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { generateLinksData } from '../graph_shared/drawing_utils';
 import JobPill from './job_pill.vue';
 import StagePill from './stage_pill.vue';
-import { generateLinksData } from './drawing_utils';
 import { parseData } from '../parsing_utils';
-import { unwrapArrayOfJobs } from '../unwrapping_utils';
 import { DRAW_FAILURE, DEFAULT, INVALID_CI_CONFIG, EMPTY_PIPELINE_DATA } from '../../constants';
 import { createJobsHash, generateJobNeedsDict } from '../../utils';
 import { CI_CONFIG_STATUS_INVALID } from '~/pipeline_editor/constants';
@@ -23,8 +21,6 @@ export default {
   errorTexts: {
     [DRAW_FAILURE]: __('Could not draw the lines for job relationships'),
     [DEFAULT]: __('An unknown error occurred.'),
-  },
-  warningTexts: {
     [EMPTY_PIPELINE_DATA]: __(
       'The visualization will appear in this tab when the CI/CD configuration file is populated with valid syntax.',
     ),
@@ -47,20 +43,23 @@ export default {
     };
   },
   computed: {
+    hideGraph() {
+      // We won't even try to render the graph with these condition
+      // because it would cause additional errors down the line for the user
+      // which is confusing.
+      return this.isPipelineDataEmpty || this.isInvalidCiConfig;
+    },
+    pipelineStages() {
+      return this.pipelineData?.stages || [];
+    },
     isPipelineDataEmpty() {
-      return !this.isInvalidCiConfig && isEmpty(this.pipelineData?.stages);
+      return !this.isInvalidCiConfig && this.pipelineStages.length === 0;
     },
     isInvalidCiConfig() {
       return this.pipelineData?.status === CI_CONFIG_STATUS_INVALID;
     },
-    showAlert() {
-      return this.hasError || this.hasWarning;
-    },
     hasError() {
       return this.failureType;
-    },
-    hasWarning() {
-      return this.warning;
     },
     hasHighlightedJob() {
       return Boolean(this.highlightedJob);
@@ -73,26 +72,32 @@ export default {
       return this.warning;
     },
     failure() {
-      const text = this.$options.errorTexts[this.failureType] || this.$options.errorTexts[DEFAULT];
-
-      return { text, variant: 'danger', dismissible: true };
-    },
-    warning() {
-      if (this.isPipelineDataEmpty) {
-        return {
-          text: this.$options.warningTexts[EMPTY_PIPELINE_DATA],
-          variant: 'tip',
-          dismissible: false,
-        };
-      } else if (this.isInvalidCiConfig) {
-        return {
-          text: this.$options.warningTexts[INVALID_CI_CONFIG],
-          variant: 'danger',
-          dismissible: false,
-        };
+      switch (this.failureType) {
+        case DRAW_FAILURE:
+          return {
+            text: this.$options.errorTexts[DRAW_FAILURE],
+            variant: 'danger',
+            dismissible: true,
+          };
+        case EMPTY_PIPELINE_DATA:
+          return {
+            text: this.$options.errorTexts[EMPTY_PIPELINE_DATA],
+            variant: 'tip',
+            dismissible: false,
+          };
+        case INVALID_CI_CONFIG:
+          return {
+            text: this.$options.errorTexts[INVALID_CI_CONFIG],
+            variant: 'danger',
+            dismissible: false,
+          };
+        default:
+          return {
+            text: this.$options.errorTexts[DEFAULT],
+            variant: 'danger',
+            dismissible: true,
+          };
       }
-
-      return null;
     },
     viewBox() {
       return [0, 0, this.width, this.height];
@@ -100,40 +105,45 @@ export default {
     highlightedJobs() {
       // If you are hovering on a job, then the jobs we want to highlight are:
       // The job you are currently hovering + all of its needs.
-      return this.hasHighlightedJob
-        ? [this.highlightedJob, ...this.needsObject[this.highlightedJob]]
-        : [];
+      return [this.highlightedJob, ...this.needsObject[this.highlightedJob]];
     },
     highlightedLinks() {
       // If you are hovering on a job, then the links we want to highlight are:
       // All the links whose `source` and `target` are highlighted jobs.
       if (this.hasHighlightedJob) {
-        const filteredLinks = this.links.filter(link => {
+        const filteredLinks = this.links.filter((link) => {
           return (
             this.highlightedJobs.includes(link.source) && this.highlightedJobs.includes(link.target)
           );
         });
 
-        return filteredLinks.map(link => link.ref);
+        return filteredLinks.map((link) => link.ref);
       }
 
       return [];
     },
   },
-  mounted() {
-    if (!this.isPipelineDataEmpty && !this.isInvalidCiConfig) {
-      // This guarantee that all sub-elements are rendered
-      // https://v3.vuejs.org/api/options-lifecycle-hooks.html#mounted
-      this.$nextTick(() => {
-        this.getGraphDimensions();
-        this.prepareLinkData();
-      });
-    }
+  watch: {
+    pipelineData: {
+      immediate: true,
+      handler() {
+        if (this.isPipelineDataEmpty) {
+          this.reportFailure(EMPTY_PIPELINE_DATA);
+        } else if (this.isInvalidCiConfig) {
+          this.reportFailure(INVALID_CI_CONFIG);
+        } else {
+          this.$nextTick(() => {
+            this.computeGraphDimensions();
+            this.prepareLinkData();
+          });
+        }
+      },
+    },
   },
   methods: {
     prepareLinkData() {
       try {
-        const arrayOfJobs = unwrapArrayOfJobs(this.pipelineData);
+        const arrayOfJobs = this.pipelineStages.flatMap(({ groups }) => groups);
         const parsedData = parseData(arrayOfJobs);
         this.links = generateLinksData(parsedData, this.$options.CONTAINER_ID);
       } catch {
@@ -141,7 +151,7 @@ export default {
       }
     },
     getStageBackgroundClasses(index) {
-      const { length } = this.pipelineData.stages;
+      const { length } = this.pipelineStages;
       // It's possible for a graph to have only one stage, in which
       // case we concatenate both the left and right rounding classes
       if (length === 1) {
@@ -162,7 +172,7 @@ export default {
       // The first time we hover, we create the object where
       // we store all the data to properly highlight the needs.
       if (!this.needsObject) {
-        const jobs = createJobsHash(this.pipelineData);
+        const jobs = createJobsHash(this.pipelineStages);
         this.needsObject = generateJobNeedsDict(jobs) ?? {};
       }
 
@@ -171,7 +181,7 @@ export default {
     removeHighlightNeeds() {
       this.highlightedJob = null;
     },
-    getGraphDimensions() {
+    computeGraphDimensions() {
       this.width = `${this.$refs[this.$options.CONTAINER_REF].scrollWidth}`;
       this.height = `${this.$refs[this.$options.CONTAINER_REF].scrollHeight}`;
     },
@@ -199,7 +209,7 @@ export default {
 <template>
   <div>
     <gl-alert
-      v-if="showAlert"
+      v-if="hasError"
       :variant="alert.variant"
       :dismissible="alert.dismissible"
       @dismiss="alert.dismissible ? resetFailure : null"
@@ -207,7 +217,7 @@ export default {
       {{ alert.text }}
     </gl-alert>
     <div
-      v-if="!hasWarning"
+      v-if="!hideGraph"
       :id="$options.CONTAINER_ID"
       :ref="$options.CONTAINER_REF"
       class="gl-display-flex gl-bg-gray-50 gl-px-4 gl-overflow-auto gl-relative gl-py-7"
@@ -227,7 +237,7 @@ export default {
         </template>
       </svg>
       <div
-        v-for="(stage, index) in pipelineData.stages"
+        v-for="(stage, index) in pipelineStages"
         :key="`${stage.name}-${index}`"
         class="gl-flex-direction-column"
       >

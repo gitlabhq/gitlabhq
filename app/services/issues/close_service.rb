@@ -31,7 +31,7 @@ module Issues
 
         closed_via = _("commit %{commit_id}") % { commit_id: closed_via.id } if closed_via.is_a?(Commit)
 
-        notification_service.async.close_issue(issue, current_user, closed_via: closed_via) if notifications
+        notification_service.async.close_issue(issue, current_user, { closed_via: closed_via }) if notifications
         todo_service.close_issue(issue, current_user)
         resolve_alert(issue)
         execute_hooks(issue, 'close')
@@ -39,7 +39,10 @@ module Issues
         issue.update_project_counter_caches
         track_incident_action(current_user, issue, :incident_closed)
 
-        store_first_mentioned_in_commit_at(issue, closed_via) if closed_via.is_a?(MergeRequest)
+        if closed_via.is_a?(MergeRequest)
+          store_first_mentioned_in_commit_at(issue, closed_via)
+          OnboardingProgressService.new(project.namespace).execute(action: :issue_auto_closed)
+        end
 
         delete_milestone_closed_issue_counter_cache(issue.milestone)
       end

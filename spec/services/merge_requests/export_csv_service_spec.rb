@@ -27,11 +27,11 @@ RSpec.describe MergeRequests::ExportCsvService do
         let_it_be(:merge_request) { create(:merge_request, assignees: create_list(:user, 2)) }
 
         it 'contains the names of assignees' do
-          expect(csv['Assignees']).to eq(merge_request.assignees.map(&:name).join(', '))
+          expect(csv['Assignees'].split(', ')).to match_array(merge_request.assignees.map(&:name))
         end
 
         it 'contains the usernames of assignees' do
-          expect(csv['Assignee Usernames']).to eq(merge_request.assignees.map(&:username).join(', '))
+          expect(csv['Assignee Usernames'].split(', ')).to match_array(merge_request.assignees.map(&:username))
         end
       end
 

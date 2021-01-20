@@ -11,9 +11,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Every API call to epic must be authenticated.
 
-If a user is not a member of a group and the group is private, a `GET` request on that group will result to a `404` status code.
+If a user is not a member of a private group, a `GET` request on that group results in a `404` status code.
 
-If epics feature is not available a `403` status code will be returned.
+If epics feature is not available a `403` status code is returned.
 
 ## Epic issues API
 
@@ -23,9 +23,10 @@ The [epic issues API](epic_issues.md) allows you to interact with issues associa
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6448) in GitLab 11.3.
 
-Since start date and due date can be dynamically sourced from related issue milestones, when user has edit permission,
-additional fields will be shown. These include two boolean fields `start_date_is_fixed` and `due_date_is_fixed`,
-and four date fields `start_date_fixed`, `start_date_from_inherited_source`, `due_date_fixed` and `due_date_from_inherited_source`.
+Because start date and due date can be dynamically sourced from related issue milestones,
+additional fields are shown when user has edit permission. These include two boolean
+fields `start_date_is_fixed` and `due_date_is_fixed`, and four date fields `start_date_fixed`,
+`start_date_from_inherited_source`, `due_date_fixed` and `due_date_from_inherited_source`.
 
 - `end_date` has been deprecated in favor of `due_date`.
 - `start_date_from_milestones` has been deprecated in favor of `start_date_from_inherited_source`
@@ -40,7 +41,7 @@ Read more on [pagination](README.md#pagination).
 
 WARNING:
 > `reference` attribute in response is deprecated in favour of `references`.
-> Introduced [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)
+> Introduced in [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)
 
 NOTE:
 > `references.relative` is relative to the group that the epic is being requested. When epic is fetched from its origin group
@@ -62,7 +63,7 @@ GET /groups/:id/epics?state=opened
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user               |
 | `author_id`         | integer          | no         | Return epics created by the given user `id`                                                                                 |
 | `labels`            | string           | no         | Return epics matching a comma separated list of labels names. Label names from the epic group or a parent group can be used |
-| `with_labels_details` | boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413)|
+| `with_labels_details` | boolean        | no         | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Available in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) and later |
 | `order_by`          | string           | no         | Return epics ordered by `created_at` or `updated_at` fields. Default is `created_at`                                        |
 | `sort`              | string           | no         | Return epics sorted in `asc` or `desc` order. Default is `desc`                                                             |
 | `search`            | string           | no         | Search epics against their `title` and `description`                                                                        |
@@ -73,7 +74,7 @@ GET /groups/:id/epics?state=opened
 | `updated_before`    | datetime         | no         | Return epics updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `include_ancestor_groups` | boolean    | no         | Include epics from the requested group's ancestors. Default is `false`                                                      |
 | `include_descendant_groups` | boolean  | no         | Include epics from the requested group's descendants. Default is `true`                                                     |
-| `my_reaction_emoji` | string           | no         | Return epics reacted by the authenticated user by the given emoji. `None` returns epics not given a reaction. `Any` returns epics given at least one reaction. Introduced in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31479)|
+| `my_reaction_emoji` | string           | no         | Return epics reacted by the authenticated user by the given emoji. `None` returns epics not given a reaction. `Any` returns epics given at least one reaction. Available in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31479) and later |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics"
@@ -267,12 +268,12 @@ POST /groups/:id/epics
 | `labels`            | string           | no         | The comma separated list of labels |
 | `description`       | string           | no         | The description of the epic. Limited to 1,048,576 characters.  |
 | `confidential`      | boolean          | no         | Whether the epic should be confidential |
-| `created_at`        | string           | no         | When the epic was created. Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` . Requires administrator or project/group owner privileges ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255309) in GitLab 13.5) |
-| `start_date_is_fixed` | boolean        | no         | Whether start date should be sourced from `start_date_fixed` or from milestones (since 11.3) |
-| `start_date_fixed`  | string           | no         | The fixed start date of an epic (since 11.3) |
-| `due_date_is_fixed` | boolean          | no         | Whether due date should be sourced from `due_date_fixed` or from milestones (since 11.3) |
-| `due_date_fixed`    | string           | no         | The fixed due date of an epic (since 11.3) |
-| `parent_id`         | integer/string   | no         | The ID of a parent epic (since 11.11) |
+| `created_at`        | string           | no         | When the epic was created. Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` . Requires administrator or project/group owner privileges ([available](https://gitlab.com/gitlab-org/gitlab/-/issues/255309) in GitLab 13.5 and later) |
+| `start_date_is_fixed` | boolean        | no         | Whether start date should be sourced from `start_date_fixed` or from milestones (in GitLab 11.3 and later) |
+| `start_date_fixed`  | string           | no         | The fixed start date of an epic (in GitLab 11.3 and later) |
+| `due_date_is_fixed` | boolean          | no         | Whether due date should be sourced from `due_date_fixed` or from milestones (in GitLab 11.3 and later) |
+| `due_date_fixed`    | string           | no         | The fixed due date of an epic (in GitLab 11.3 and later) |
+| `parent_id`         | integer/string   | no         | The ID of a parent epic (in GitLab 11.11 and later) |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics?title=Epic&description=Epic%20description"
@@ -352,12 +353,12 @@ PUT /groups/:id/epics/:epic_iid
 | `labels`            | string           | no         | Comma-separated label names for an issue. Set to an empty string to unassign all labels. |
 | `add_labels`        | string           | no         | Comma-separated label names to add to an issue. |
 | `remove_labels`     | string           | no         | Comma-separated label names to remove from an issue. |
-| `updated_at`        | string           | no         | When the epic was updated. Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` . Requires administrator or project/group owner privileges ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255309) in GitLab 13.5) |
-| `start_date_is_fixed` | boolean        | no         | Whether start date should be sourced from `start_date_fixed` or from milestones (since 11.3) |
-| `start_date_fixed`  | string           | no         | The fixed start date of an epic (since 11.3) |
-| `due_date_is_fixed` | boolean          | no         | Whether due date should be sourced from `due_date_fixed` or from milestones (since 11.3) |
-| `due_date_fixed`    | string           | no         | The fixed due date of an epic (since 11.3) |
-| `state_event`       | string           | no         | State event for an epic. Set `close` to close the epic and `reopen` to reopen it (since 11.4) |
+| `updated_at`        | string           | no         | When the epic was updated. Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` . Requires administrator or project/group owner privileges ([available](https://gitlab.com/gitlab-org/gitlab/-/issues/255309) in GitLab 13.5 and later) |
+| `start_date_is_fixed` | boolean        | no         | Whether start date should be sourced from `start_date_fixed` or from milestones (in GitLab 11.3 and later) |
+| `start_date_fixed`  | string           | no         | The fixed start date of an epic (in GitLab 11.3 and later) |
+| `due_date_is_fixed` | boolean          | no         | Whether due date should be sourced from `due_date_fixed` or from milestones (in GitLab 11.3 and later) |
+| `due_date_fixed`    | string           | no         | The fixed due date of an epic (in GitLab 11.3 and later) |
+| `state_event`       | string           | no         | State event for an epic. Set `close` to close the epic and `reopen` to reopen it (in GitLab 11.4 and later) |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics/5?title=New%20Title"

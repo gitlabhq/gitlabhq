@@ -34,10 +34,6 @@ Forking a project is, in most cases, a two-step process.
 The fork is created. The permissions you have in the namespace are the permissions you will have in the fork.
 
 WARNING:
-In GitLab 12.6 and later, when project owners [reduce a project's visibility](../../../public_access/public_access.md#reducing-visibility),
-it **removes the relationship** between a project and all its forks.
-
-WARNING:
 When a public project with the repository feature set to "Members
 only" is forked, the repository will be public in the fork. The owner
 of the fork will need to manually change the visibility. This is being

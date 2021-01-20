@@ -225,24 +225,6 @@ RSpec.describe Ci::PipelinesForMergeRequestFinder do
                     branch_pipeline_2,
                     branch_pipeline])
         end
-
-        context 'when ci_pipelines_for_merge_request_finder_new_cte feature flag is disabled' do
-          before do
-            stub_feature_flags(ci_pipelines_for_merge_request_finder_new_cte: false)
-          end
-
-          it 'returns only related merge request pipelines' do
-            expect(subject.all)
-              .to eq([detached_merge_request_pipeline,
-                      branch_pipeline_2,
-                      branch_pipeline])
-
-            expect(described_class.new(merge_request_2, nil).all)
-              .to eq([detached_merge_request_pipeline_2,
-                      branch_pipeline_2,
-                      branch_pipeline])
-          end
-        end
       end
 
       context 'when detached merge request pipeline is run on head ref of the merge request' do

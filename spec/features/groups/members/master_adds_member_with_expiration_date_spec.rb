@@ -11,6 +11,7 @@ RSpec.describe 'Groups > Members > Owner adds member with expiration date', :js 
   let(:new_member) { create(:user, name: 'Mary Jane') }
 
   before do
+    stub_feature_flags(invite_members_group_modal: false)
     group.add_owner(user1)
     sign_in(user1)
   end

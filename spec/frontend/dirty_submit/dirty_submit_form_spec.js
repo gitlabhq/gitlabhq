@@ -2,7 +2,7 @@ import { range as rge, throttle } from 'lodash';
 import DirtySubmitForm from '~/dirty_submit/dirty_submit_form';
 import { getInputValue, setInputValue, createForm } from './helper';
 
-jest.mock('lodash/throttle', () => jest.fn(fn => fn));
+jest.mock('lodash/throttle', () => jest.fn((fn) => fn));
 const lodash = jest.requireActual('lodash');
 
 function expectToToggleDisableOnDirtyUpdate(submit, input) {
@@ -66,7 +66,7 @@ describe('DirtySubmitForm', () => {
       const { form, input } = createForm();
       const updateDirtyInputSpy = jest.spyOn(new DirtySubmitForm(form), 'updateDirtyInput');
 
-      rge(10).forEach(i => {
+      rge(10).forEach((i) => {
         setInputValue(input, `change ${i}`, false);
       });
 
@@ -78,13 +78,13 @@ describe('DirtySubmitForm', () => {
     it('does not throttle updates when rapid changes are made to different form elements', () => {
       const form = document.createElement('form');
       const range = rge(10);
-      range.forEach(i => {
+      range.forEach((i) => {
         form.innerHTML += `<input type="text" name="input-${i}" class="js-input-${i}"/>`;
       });
 
       const updateDirtyInputSpy = jest.spyOn(new DirtySubmitForm(form), 'updateDirtyInput');
 
-      range.forEach(i => {
+      range.forEach((i) => {
         const input = form.querySelector(`.js-input-${i}`);
         setInputValue(input, `change`, false);
       });

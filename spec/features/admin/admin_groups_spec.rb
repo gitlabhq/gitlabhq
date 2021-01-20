@@ -175,6 +175,7 @@ RSpec.describe 'Admin Groups' do
 
   describe 'add admin himself to a group' do
     before do
+      stub_feature_flags(invite_members_group_modal: false)
       group.add_user(:user, Gitlab::Access::OWNER)
     end
 

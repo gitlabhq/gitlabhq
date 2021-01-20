@@ -50,7 +50,7 @@ these steps to move the logs to a new location without losing any data.
    Jobs in progress are not affected, based on how [data flow](#data-flow) works.
 
    ```ruby
-   sidekiq['experimental_queue_selector'] = true
+   sidekiq['queue_selector'] = true
    sidekiq['queue_groups'] = [
      "feature_category!=continuous_integration"
    ]
@@ -185,7 +185,7 @@ Feature.enable(:ci_enable_live_trace)
 ```
 
 NOTE:
-The transition period is handled gracefully. Upcoming logs are 
+The transition period is handled gracefully. Upcoming logs are
 generated with the incremental architecture, and on-going logs stay with the
 legacy architecture, which means that on-going logs aren't forcibly
 re-generated with the incremental architecture.

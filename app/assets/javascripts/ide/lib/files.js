@@ -1,6 +1,6 @@
 import { decorateData, sortTree } from '../stores/utils';
 
-export const splitParent = path => {
+export const splitParent = (path) => {
   const idx = path.lastIndexOf('/');
 
   return {
@@ -11,8 +11,20 @@ export const splitParent = path => {
 
 /**
  * Create file objects from a list of file paths.
+ *
+ * @param {Array} options.data Array of blob paths to parse and create a file tree from.
+ * @param {Boolean} options.tempFile Web IDE flag for whether this is a "new" file or not.
+ * @param {String} options.content Content to initialize the new blob with.
+ * @param {String} options.rawPath Raw path used for the new blob.
+ * @param {Object} options.blobData Extra values to initialize each blob with.
  */
-export const decorateFiles = ({ data, tempFile = false, content = '', rawPath = '' }) => {
+export const decorateFiles = ({
+  data,
+  tempFile = false,
+  content = '',
+  rawPath = '',
+  blobData = {},
+}) => {
   const treeList = [];
   const entries = {};
 
@@ -20,7 +32,7 @@ export const decorateFiles = ({ data, tempFile = false, content = '', rawPath = 
   let file;
   let parentPath;
 
-  const insertParent = path => {
+  const insertParent = (path) => {
     if (!path) {
       return null;
     } else if (entries[path]) {
@@ -55,7 +67,7 @@ export const decorateFiles = ({ data, tempFile = false, content = '', rawPath = 
     return tree;
   };
 
-  data.forEach(path => {
+  data.forEach((path) => {
     const { parent, name } = splitParent(path);
 
     const fileFolder = parent && insertParent(parent);
@@ -73,6 +85,7 @@ export const decorateFiles = ({ data, tempFile = false, content = '', rawPath = 
         content,
         rawPath,
         parentPath,
+        ...blobData,
       });
 
       Object.assign(entries, {

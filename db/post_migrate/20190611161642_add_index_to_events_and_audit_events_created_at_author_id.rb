@@ -7,9 +7,9 @@ class AddIndexToEventsAndAuditEventsCreatedAtAuthorId < ActiveRecord::Migration[
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  INDEX_NAME = 'analytics_index_%s_on_created_at_and_author_id'.freeze
-  EVENTS_INDEX_NAME = (INDEX_NAME % 'events').freeze
-  AUDIT_EVENTS_INDEX_NAME = (INDEX_NAME % 'audit_events').freeze
+  INDEX_NAME = 'analytics_index_%s_on_created_at_and_author_id'
+  EVENTS_INDEX_NAME = (INDEX_NAME % 'events')
+  AUDIT_EVENTS_INDEX_NAME = (INDEX_NAME % 'audit_events')
 
   disable_ddl_transaction!
 

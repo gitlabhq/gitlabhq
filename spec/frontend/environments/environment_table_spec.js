@@ -1,10 +1,11 @@
 import { mount } from '@vue/test-utils';
 import EnvironmentTable from '~/environments/components/environments_table.vue';
-import { folder } from './mock_data';
+import eventHub from '~/environments/event_hub';
+import DeployBoard from '~/environments/components/deploy_board.vue';
+import CanaryUpdateModal from '~/environments/components/canary_update_modal.vue';
+import { folder, deployBoardMockData } from './mock_data';
 
 const eeOnlyProps = {
-  canaryDeploymentFeatureId: 'canary_deployment',
-  showCanaryDeploymentCallout: true,
   userCalloutsPath: '/callouts',
   lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
   helpCanaryDeploymentsPath: 'help/canary-deployments',
@@ -37,8 +38,125 @@ describe('Environment table', () => {
     wrapper.destroy();
   });
 
-  it('Should render a table', () => {
+  it('Should render a table', async () => {
+    const mockItem = {
+      name: 'review',
+      folderName: 'review',
+      size: 3,
+      isFolder: true,
+      environment_path: 'url',
+    };
+
+    await factory({
+      propsData: {
+        environments: [mockItem],
+        canReadEnvironment: true,
+        userCalloutsPath: '/callouts',
+        lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
+        helpCanaryDeploymentsPath: 'help/canary-deployments',
+      },
+    });
+
     expect(wrapper.classes()).toContain('ci-table');
+  });
+
+  it('should render deploy board container when data is provided', async () => {
+    const mockItem = {
+      name: 'review',
+      size: 1,
+      environment_path: 'url',
+      logs_path: 'url',
+      id: 1,
+      hasDeployBoard: true,
+      deployBoardData: deployBoardMockData,
+      isDeployBoardVisible: true,
+      isLoadingDeployBoard: false,
+      isEmptyDeployBoard: false,
+    };
+
+    await factory({
+      propsData: {
+        environments: [mockItem],
+        canCreateDeployment: false,
+        canReadEnvironment: true,
+        userCalloutsPath: '/callouts',
+        lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
+        helpCanaryDeploymentsPath: 'help/canary-deployments',
+      },
+    });
+
+    expect(wrapper.find('.js-deploy-board-row').exists()).toBe(true);
+    expect(wrapper.find('.deploy-board-icon').exists()).toBe(true);
+  });
+
+  it('should toggle deploy board visibility when arrow is clicked', (done) => {
+    const mockItem = {
+      name: 'review',
+      size: 1,
+      environment_path: 'url',
+      id: 1,
+      hasDeployBoard: true,
+      deployBoardData: {
+        instances: [{ status: 'ready', tooltip: 'foo' }],
+        abort_url: 'url',
+        rollback_url: 'url',
+        completion: 100,
+        is_completed: true,
+        canary_ingress: { canary_weight: 60 },
+      },
+      isDeployBoardVisible: false,
+    };
+
+    eventHub.$on('toggleDeployBoard', (env) => {
+      expect(env.id).toEqual(mockItem.id);
+      done();
+    });
+
+    factory({
+      propsData: {
+        environments: [mockItem],
+        canReadEnvironment: true,
+        userCalloutsPath: '/callouts',
+        lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
+        helpCanaryDeploymentsPath: 'help/canary-deployments',
+      },
+    });
+
+    wrapper.find('.deploy-board-icon').trigger('click');
+  });
+
+  it('should set the enviornment to change and weight when a change canary weight event is recevied', async () => {
+    const mockItem = {
+      name: 'review',
+      size: 1,
+      environment_path: 'url',
+      logs_path: 'url',
+      id: 1,
+      hasDeployBoard: true,
+      deployBoardData: deployBoardMockData,
+      isDeployBoardVisible: true,
+      isLoadingDeployBoard: false,
+      isEmptyDeployBoard: false,
+    };
+
+    await factory({
+      propsData: {
+        environments: [mockItem],
+        canCreateDeployment: false,
+        canReadEnvironment: true,
+        userCalloutsPath: '/callouts',
+        lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
+        helpCanaryDeploymentsPath: 'help/canary-deployments',
+      },
+    });
+
+    wrapper.find(DeployBoard).vm.$emit('changeCanaryWeight', 40);
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find(CanaryUpdateModal).props()).toMatchObject({
+      weight: 40,
+      environment: mockItem,
+    });
   });
 
   describe('sortEnvironments', () => {
@@ -266,7 +384,7 @@ describe('Environment table', () => {
         },
       });
 
-      expect(wrapper.vm.sortedEnvironments.map(env => env.name)).toEqual([
+      expect(wrapper.vm.sortedEnvironments.map((env) => env.name)).toEqual([
         review.name,
         staging.name,
         production.name,

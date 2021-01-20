@@ -39,7 +39,7 @@ describe('MembersTable', () => {
     });
   };
 
-  const createComponent = state => {
+  const createComponent = (state) => {
     wrapper = mount(MembersTable, {
       localVue,
       store: createStore(state),
@@ -63,6 +63,10 @@ describe('MembersTable', () => {
     createWrapper(getByTestIdHelper(wrapper.element, id, options));
 
   const findTable = () => wrapper.find(GlTable);
+  const findTableCellByMemberId = (tableCellLabel, memberId) =>
+    getByTestId(`members-table-row-${memberId}`).find(
+      `[data-label="${tableCellLabel}"][role="cell"]`,
+    );
 
   afterEach(() => {
     wrapper.destroy();
@@ -100,10 +104,7 @@ describe('MembersTable', () => {
 
       if (expectedComponent) {
         expect(
-          wrapper
-            .find(`[data-label="${label}"][role="cell"]`)
-            .find(expectedComponent)
-            .exists(),
+          wrapper.find(`[data-label="${label}"][role="cell"]`).find(expectedComponent).exists(),
         ).toBe(true);
       }
     });
@@ -117,10 +118,7 @@ describe('MembersTable', () => {
         expect(actionField.exists()).toBe(true);
         expect(actionField.classes('gl-sr-only')).toBe(true);
         expect(
-          wrapper
-            .find(`[data-label="Actions"][role="cell"]`)
-            .find(MemberActionButtons)
-            .exists(),
+          wrapper.find(`[data-label="Actions"][role="cell"]`).find(MemberActionButtons).exists(),
         ).toBe(true);
       });
 
@@ -137,16 +135,30 @@ describe('MembersTable', () => {
         canRemove: true,
       };
 
+      const memberNoPermissions = {
+        ...memberMock,
+        id: 2,
+      };
+
       describe.each`
         permission     | members
-        ${'canUpdate'} | ${[memberCanUpdate]}
-        ${'canRemove'} | ${[memberCanRemove]}
-        ${'canResend'} | ${[invite]}
+        ${'canUpdate'} | ${[memberNoPermissions, memberCanUpdate]}
+        ${'canRemove'} | ${[memberNoPermissions, memberCanRemove]}
+        ${'canResend'} | ${[memberNoPermissions, invite]}
       `('when one of the members has $permission permissions', ({ members }) => {
         it('renders the "Actions" field', () => {
           createComponent({ members, tableFields: ['actions'] });
 
           expect(getByTestId('col-actions').exists()).toBe(true);
+
+          expect(findTableCellByMemberId('Actions', members[0].id).classes()).toStrictEqual([
+            'col-actions',
+            'gl-display-none!',
+            'gl-display-lg-table-cell!',
+          ]);
+          expect(findTableCellByMemberId('Actions', members[1].id).classes()).toStrictEqual([
+            'col-actions',
+          ]);
         });
       });
 
@@ -177,12 +189,9 @@ describe('MembersTable', () => {
     it('renders badge in "Max role" field', () => {
       createComponent({ members: [memberMock], tableFields: ['maxRole'] });
 
-      expect(
-        wrapper
-          .find(`[data-label="Max role"][role="cell"]`)
-          .find(GlBadge)
-          .text(),
-      ).toBe(memberMock.accessLevel.stringValue);
+      expect(wrapper.find(`[data-label="Max role"][role="cell"]`).find(GlBadge).text()).toBe(
+        memberMock.accessLevel.stringValue,
+      );
     });
   });
 
@@ -203,10 +212,6 @@ describe('MembersTable', () => {
   it('adds QA selector to table row', () => {
     createComponent();
 
-    expect(
-      findTable()
-        .find('tbody tr')
-        .attributes('data-qa-selector'),
-    ).toBe('member_row');
+    expect(findTable().find('tbody tr').attributes('data-qa-selector')).toBe('member_row');
   });
 });

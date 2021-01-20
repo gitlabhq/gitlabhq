@@ -40,7 +40,10 @@ module Gitlab
           #       "issues"."id" > 500
           #
           def conditions
-            attr_values = order_list.map { |field| decoded_cursor[field.attribute_name] }
+            attr_values = order_list.map do |field|
+              name = field.try(:attribute_name) || field
+              decoded_cursor[name]
+            end
 
             if order_list.count == 1 && attr_values.first.nil?
               raise Gitlab::Graphql::Errors::ArgumentError.new('Before/after cursor invalid: `nil` was provided as only sortable value')

@@ -53,7 +53,7 @@ export default class DropdownEmoji extends FilteredSearchDropdown {
   }
 
   itemClicked(e) {
-    super.itemClicked(e, selected => {
+    super.itemClicked(e, (selected) => {
       const name = selected.querySelector('.js-data-value').innerText.trim();
       return DropdownUtils.getEscapedText(name);
     });
@@ -69,7 +69,7 @@ export default class DropdownEmoji extends FilteredSearchDropdown {
 
     // Replace empty gl-emoji tag to real content
     const dropdownItems = [...this.dropdown.querySelectorAll('.filter-dropdown-item')];
-    dropdownItems.forEach(dropdownItem => {
+    dropdownItems.forEach((dropdownItem) => {
       const valueElement = dropdownItem.querySelector('.js-data-value');
       if (valueElement !== null) {
         const name = valueElement.innerText;

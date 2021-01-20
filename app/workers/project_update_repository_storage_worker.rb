@@ -1,25 +1,23 @@
 # frozen_string_literal: true
 
-class ProjectUpdateRepositoryStorageWorker
-  include ApplicationWorker
+class ProjectUpdateRepositoryStorageWorker # rubocop:disable Scalability/IdempotentWorker
+  extend ::Gitlab::Utils::Override
+  include UpdateRepositoryStorageWorker
 
-  idempotent!
-  feature_category :gitaly
-  urgency :throttled
+  private
 
-  def perform(project_id, new_repository_storage_key, repository_storage_move_id = nil)
-    repository_storage_move =
-      if repository_storage_move_id
-        ProjectRepositoryStorageMove.find(repository_storage_move_id)
-      else
-        # maintain compatibility with workers queued before release
-        project = Project.find(project_id)
-        project.repository_storage_moves.create!(
-          source_storage_name: project.repository_storage,
-          destination_storage_name: new_repository_storage_key
-        )
-      end
+  override :find_repository_storage_move
+  def find_repository_storage_move(repository_storage_move_id)
+    ProjectRepositoryStorageMove.find(repository_storage_move_id)
+  end
 
+  override :find_container
+  def find_container(container_id)
+    Project.find(container_id)
+  end
+
+  override :update_repository_storage
+  def update_repository_storage(repository_storage_move)
     ::Projects::UpdateRepositoryStorageService.new(repository_storage_move).execute
   end
 end

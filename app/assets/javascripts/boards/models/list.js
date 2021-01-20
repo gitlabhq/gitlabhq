@@ -35,7 +35,7 @@ class List {
   constructor(obj) {
     this.id = obj.id;
     this.position = obj.position;
-    this.title = (obj.list_type || obj.listType) === 'backlog' ? __('Open') : obj.title;
+    this.title = obj.title;
     this.type = obj.list_type || obj.listType;
 
     const typeInfo = this.getTypeInfo(this.type);
@@ -134,7 +134,7 @@ class List {
   updateMultipleIssues(issues, listFrom, moveBeforeId, moveAfterId) {
     boardsStore
       .moveMultipleIssues({
-        ids: issues.map(issue => issue.id),
+        ids: issues.map((issue) => issue.id),
         fromListId: listFrom.id,
         toListId: this.id,
         moveBeforeId,

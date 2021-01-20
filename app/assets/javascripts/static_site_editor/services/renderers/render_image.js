@@ -4,16 +4,16 @@ const canRender = ({ type }) => type === 'image';
 
 let metadata;
 
-const getCachedContent = basePath => metadata.imageRepository.get(basePath);
+const getCachedContent = (basePath) => metadata.imageRepository.get(basePath);
 
-const isRelativeToCurrentDirectory = basePath => !basePath.startsWith('/');
+const isRelativeToCurrentDirectory = (basePath) => !basePath.startsWith('/');
 
-const extractSourceDirectory = url => {
+const extractSourceDirectory = (url) => {
   const sourceDir = /^(.+)\/([^/]+)$/.exec(url); // Extracts the base path and fileName from an image path
   return sourceDir || [null, null, url]; // If no source directory was extracted it means only a fileName was specified (e.g. url='file.png')
 };
 
-const parseCurrentDirectory = basePath => {
+const parseCurrentDirectory = (basePath) => {
   const baseUrl = decodeURIComponent(metadata.baseUrl);
   const sourceDirectory = extractSourceDirectory(baseUrl)[1];
   const currentDirectory = sourceDirectory.split(`/-/sse/${metadata.branch}`)[1];
@@ -23,7 +23,7 @@ const parseCurrentDirectory = basePath => {
 
 // For more context around this logic, please see the following comment:
 // https://gitlab.com/gitlab-org/gitlab/-/issues/241166#note_409413500
-const generateSourceDirectory = basePath => {
+const generateSourceDirectory = (basePath) => {
   let sourceDir = '';
   let defaultSourceDir = '';
 

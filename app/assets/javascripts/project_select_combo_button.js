@@ -17,9 +17,9 @@ export default class ProjectSelectComboButton {
   bindEvents() {
     this.projectSelectInput
       .siblings('.new-project-item-select-button')
-      .on('click', e => this.openDropdown(e));
+      .on('click', (e) => this.openDropdown(e));
 
-    this.newItemBtn.on('click', e => {
+    this.newItemBtn.on('click', (e) => {
       if (!this.getProjectFromLocalStorage()) {
         e.preventDefault();
         this.openDropdown(e);
@@ -50,9 +50,7 @@ export default class ProjectSelectComboButton {
         // eslint-disable-next-line promise/no-nesting
         loadCSSFile(gon.select2_css_path)
           .then(() => {
-            $(event.currentTarget)
-              .siblings('.project-item-select')
-              .select2('open');
+            $(event.currentTarget).siblings('.project-item-select').select2('open');
           })
           .catch(() => {});
       })
@@ -104,14 +102,8 @@ export default class ProjectSelectComboButton {
     const defaultTextPrefix = this.resourceLabel;
 
     // the trailing slice call depluralizes each of these strings (e.g. new-issues -> new-issue)
-    const localStorageItemType = `new-${this.resourceType
-      .split('_')
-      .join('-')
-      .slice(0, -1)}`;
-    const presetTextSuffix = this.resourceType
-      .split('_')
-      .join(' ')
-      .slice(0, -1);
+    const localStorageItemType = `new-${this.resourceType.split('_').join('-').slice(0, -1)}`;
+    const presetTextSuffix = this.resourceType.split('_').join(' ').slice(0, -1);
 
     return {
       localStorageItemType, // new-issue / new-merge-request

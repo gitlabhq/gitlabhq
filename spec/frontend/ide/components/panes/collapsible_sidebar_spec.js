@@ -15,7 +15,7 @@ describe('ide/components/panes/collapsible_sidebar.vue', () => {
   const width = 350;
   const fakeComponentName = 'fake-component';
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     wrapper = shallowMount(CollapsibleSidebar, {
       localVue,
       store,
@@ -47,7 +47,7 @@ describe('ide/components/panes/collapsible_sidebar.vue', () => {
 
     beforeEach(() => {
       const FakeComponent = localVue.component(fakeComponentName, {
-        render: () => {},
+        render: () => null,
       });
 
       fakeView = {

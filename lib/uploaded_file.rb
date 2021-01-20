@@ -42,10 +42,7 @@ class UploadedFile
     @remote_id = remote_id
   end
 
-  # TODO this function is meant to replace .from_params when the feature flag
-  # upload_middleware_jwt_params_handler is removed
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/233895#roll-out-steps
-  def self.from_params_without_field(params, upload_paths)
+  def self.from_params(params, upload_paths)
     path = params['path']
     remote_id = params['remote_id']
     return if path.blank? && remote_id.blank?
@@ -69,33 +66,6 @@ class UploadedFile
       remote_id: remote_id,
       size: params['size']
     )
-  end
-
-  # Deprecated. Don't use it.
-  # .from_params_without_field will replace this one
-  # See .from_params_without_field and
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/233895#roll-out-steps
-  def self.from_params(params, field, upload_paths, path_override = nil)
-    path = path_override || params["#{field}.path"]
-    remote_id = params["#{field}.remote_id"]
-    return if path.blank? && remote_id.blank?
-
-    if remote_id.present? # don't use file_path if remote_id is set
-      file_path = nil
-    elsif path.present?
-      file_path = File.realpath(path)
-
-      unless self.allowed_path?(file_path, Array(upload_paths).compact)
-        raise InvalidPathError, "insecure path used '#{file_path}'"
-      end
-    end
-
-    UploadedFile.new(file_path,
-      filename: params["#{field}.name"],
-      content_type: params["#{field}.type"] || 'application/octet-stream',
-      sha256: params["#{field}.sha256"],
-      remote_id: remote_id,
-      size: params["#{field}.size"])
   end
 
   def self.allowed_path?(file_path, paths)

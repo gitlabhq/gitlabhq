@@ -18,6 +18,14 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [timeagoMixin],
+  inject: {
+    projectPath: {
+      default: '',
+    },
+    issueIid: {
+      default: '',
+    },
+  },
   props: {
     id: {
       type: String,
@@ -58,14 +66,6 @@ export default {
       },
     };
   },
-  inject: {
-    projectPath: {
-      default: '',
-    },
-    issueIid: {
-      default: '',
-    },
-  },
   apollo: {
     permissions: {
       query: permissionsQuery,
@@ -75,7 +75,7 @@ export default {
           iid: this.issueIid,
         };
       },
-      update: data => data.project.issue.userPermissions,
+      update: (data) => data.project.issue.userPermissions,
     },
   },
   computed: {

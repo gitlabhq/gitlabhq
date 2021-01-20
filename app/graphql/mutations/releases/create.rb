@@ -8,23 +8,23 @@ module Mutations
       field :release,
             Types::ReleaseType,
             null: true,
-            description: 'The release after mutation'
+            description: 'The release after mutation.'
 
       argument :tag_name, GraphQL::STRING_TYPE,
                required: true, as: :tag,
-               description: 'Name of the tag to associate with the release'
+               description: 'Name of the tag to associate with the release.'
 
       argument :ref, GraphQL::STRING_TYPE,
                required: false,
-               description: 'The commit SHA or branch name to use if creating a new tag'
+               description: 'The commit SHA or branch name to use if creating a new tag.'
 
       argument :name, GraphQL::STRING_TYPE,
                required: false,
-               description: 'Name of the release'
+               description: 'Name of the release.'
 
       argument :description, GraphQL::STRING_TYPE,
                required: false,
-               description: 'Description (also known as "release notes") of the release'
+               description: 'Description (also known as "release notes") of the release.'
 
       argument :released_at, Types::TimeType,
                required: false,
@@ -36,7 +36,7 @@ module Mutations
 
       argument :assets, Types::ReleaseAssetsInputType,
                required: false,
-               description: 'Assets associated to the release'
+               description: 'Assets associated to the release.'
 
       authorize :create_release
 

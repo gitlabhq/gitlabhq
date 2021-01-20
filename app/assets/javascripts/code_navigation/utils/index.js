@@ -1,7 +1,7 @@
 export const cachedData = new Map();
 
 export const getCurrentHoverElement = () => cachedData.get('current');
-export const setCurrentHoverElement = el => cachedData.set('current', el);
+export const setCurrentHoverElement = (el) => cachedData.set('current', el);
 
 export const addInteractionClass = (path, d) => {
   const lineNumber = d.start_line + 1;
@@ -10,7 +10,7 @@ export const addInteractionClass = (path, d) => {
     .querySelectorAll(`.blob-content #LC${lineNumber}, .line_content:not(.old) #LC${lineNumber}`);
   if (!lines?.length) return;
 
-  lines.forEach(line => {
+  lines.forEach((line) => {
     let charCount = 0;
     const el = [...line.childNodes].find(({ textContent }) => {
       if (charCount === d.start_char) return true;

@@ -42,6 +42,12 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
 
           it { is_expected.to contain_exactly(resolved_alert, ignored_alert) }
         end
+
+        context 'skips domain if iid is given' do
+          let(:params) { { iid: resolved_alert.iid, domain: 'threat_monitoring' } }
+
+          it { is_expected.to contain_exactly(resolved_alert) }
+        end
       end
 
       context 'empty params' do

@@ -13,7 +13,7 @@ describe('CreatedAt', () => {
 
   let wrapper;
 
-  const createComponent = propsData => {
+  const createComponent = (propsData) => {
     wrapper = mount(CreatedAt, {
       propsData: {
         date,

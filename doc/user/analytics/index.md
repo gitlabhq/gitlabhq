@@ -33,7 +33,7 @@ The following analytics features are available at the group level:
 
 The following analytics features are available at the project level:
 
-- [CI/CD](../../ci/pipelines/index.md#pipeline-success-and-duration-charts). **(STARTER)**
+- [CI/CD](ci_cd_analytics.md). **(CORE)**
 - [Code Review](code_review_analytics.md). **(STARTER)**
 - [Insights](../project/insights/index.md). **(ULTIMATE)**
 - [Issue](../group/issues_analytics/index.md). **(PREMIUM)**

@@ -33,7 +33,7 @@ export default {
           projectPath: this.projectPath,
         };
       },
-      update: data => data.project?.containerExpirationPolicy,
+      update: (data) => data.project?.containerExpirationPolicy,
       result({ data }) {
         this.workingCopy = { ...get(data, 'project.containerExpirationPolicy', {}) };
       },

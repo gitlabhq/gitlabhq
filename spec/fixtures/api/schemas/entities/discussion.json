@@ -48,6 +48,7 @@
           "resolved": { "type": "boolean" },
           "resolvable": { "type": "boolean" },
           "resolved_by": { "type": ["string", "null"] },
+          "resolved_at": { "type": ["date", "null"] },
           "note": { "type": "string" },
           "note_html": { "type": "string"  },
           "current_user": { "type": "object" },

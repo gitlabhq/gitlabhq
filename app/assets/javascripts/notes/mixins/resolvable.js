@@ -15,7 +15,7 @@ export default {
 
         if (notes) {
           // Decide resolved state using store. Only valid for discussions.
-          return notes.filter(note => !note.system).every(note => note.resolved);
+          return notes.filter((note) => !note.system).every((note) => note.resolved);
         }
 
         return resolved;

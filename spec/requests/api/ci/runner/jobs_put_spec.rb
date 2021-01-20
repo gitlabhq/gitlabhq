@@ -78,6 +78,33 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           end
         end
 
+        context 'when an exit_code is provided' do
+          context 'when the exit_codes are acceptable' do
+            before do
+              job.options[:allow_failure_criteria] = { exit_codes: [1] }
+              job.save!
+            end
+
+            it 'accepts an exit code' do
+              update_job(state: 'failed', exit_code: 1)
+
+              expect(job.reload).to be_failed
+              expect(job.allow_failure).to be_truthy
+              expect(job).to be_unknown_failure
+            end
+          end
+
+          context 'when the exit_codes are not defined' do
+            it 'ignore the exit code' do
+              update_job(state: 'failed', exit_code: 1)
+
+              expect(job.reload).to be_failed
+              expect(job.allow_failure).to be_falsy
+              expect(job).to be_unknown_failure
+            end
+          end
+        end
+
         context 'when failure_reason is script_failure' do
           before do
             update_job(state: 'failed', failure_reason: 'script_failure')

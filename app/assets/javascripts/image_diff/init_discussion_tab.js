@@ -7,7 +7,7 @@ export default () => {
   const renderCommentBadge = true;
 
   const diffFileEls = document.querySelectorAll('.timeline-content .diff-file.js-image-file');
-  [...diffFileEls].forEach(diffFileEl =>
+  [...diffFileEls].forEach((diffFileEl) =>
     initImageDiffHelper.initImageDiff(diffFileEl, canCreateNote, renderCommentBadge),
   );
 };

@@ -1,0 +1,5 @@
+---
+filenames:
+  - ee/app/assets/javascripts/on_demand_scans/graphql/dast_scan_create.mutation.graphql
+  - ee/app/assets/javascripts/oncall_schedules/graphql/mutations/update_oncall_schedule_rotation.mutation.graphql
+  - ee/app/assets/javascripts/oncall_schedules/graphql/mutations/destroy_oncall_rotation.mutation.graphql

@@ -34,7 +34,7 @@ export default class U2FRegister {
 
   start() {
     return importU2FLibrary()
-      .then(utils => {
+      .then((utils) => {
         this.u2fUtils = utils;
         this.renderSetup();
       })
@@ -46,7 +46,7 @@ export default class U2FRegister {
       this.appId,
       this.registerRequests,
       this.signRequests,
-      response => {
+      (response) => {
         if (response.errorCode) {
           const error = new U2FError(response.errorCode, 'register');
           return this.renderError(error);

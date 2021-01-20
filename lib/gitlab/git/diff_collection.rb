@@ -13,7 +13,7 @@ module Gitlab
 
       def self.default_limits(project: nil)
         if Feature.enabled?(:increased_diff_limits, project)
-          { max_files: 200, max_lines: 7500 }
+          { max_files: 300, max_lines: 10000 }
         else
           { max_files: 100, max_lines: 5000 }
         end

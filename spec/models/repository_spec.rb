@@ -123,7 +123,7 @@ RSpec.describe Repository do
           options = { message: 'test tag message\n',
                       tagger: { name: 'John Smith', email: 'john@gmail.com' } }
 
-          rugged_repo(repository).tags.create(annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', options)
+          rugged_repo(repository).tags.create(annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', **options)
 
           double_first = double(committed_date: Time.current - 1.second)
           double_last = double(committed_date: Time.current)
@@ -2025,6 +2025,22 @@ RSpec.describe Repository do
       expect(repository).not_to receive(:expire_branches_cache)
 
       repository.after_remove_branch(expire_cache: false)
+    end
+  end
+
+  describe '#lookup' do
+    before do
+      allow(repository.raw_repository).to receive(:lookup).and_return('interesting_blob')
+    end
+
+    it 'uses the lookup cache' do
+      2.times.each { repository.lookup('sha1') }
+
+      expect(repository.raw_repository).to have_received(:lookup).once
+    end
+
+    it 'returns the correct value' do
+      expect(repository.lookup('sha1')).to eq('interesting_blob')
     end
   end
 

@@ -27,7 +27,7 @@ export const createFeatureFlag = ({ state, dispatch }, params) => {
       dispatch('receiveCreateFeatureFlagSuccess');
       visitUrl(state.path);
     })
-    .catch(error => dispatch('receiveCreateFeatureFlagError', error.response.data));
+    .catch((error) => dispatch('receiveCreateFeatureFlagError', error.response.data));
 };
 
 export const requestCreateFeatureFlag = ({ commit }) => commit(types.REQUEST_CREATE_FEATURE_FLAG);

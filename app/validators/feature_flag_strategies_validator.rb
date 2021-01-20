@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class FeatureFlagStrategiesValidator < ActiveModel::EachValidator
-  STRATEGY_DEFAULT = 'default'.freeze
-  STRATEGY_GRADUALROLLOUTUSERID = 'gradualRolloutUserId'.freeze
-  STRATEGY_USERWITHID = 'userWithId'.freeze
+  STRATEGY_DEFAULT = 'default'
+  STRATEGY_GRADUALROLLOUTUSERID = 'gradualRolloutUserId'
+  STRATEGY_USERWITHID = 'userWithId'
   # Order key names alphabetically
   STRATEGIES = {
     STRATEGY_DEFAULT => [].freeze,

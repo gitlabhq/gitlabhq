@@ -45,7 +45,8 @@
 
     a {
       font-family: $monospace-font;
-      display: block;
+      display: flex;
+      justify-content: flex-end;
       font-size: $code-font-size !important;
       white-space: nowrap;
 

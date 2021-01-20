@@ -95,7 +95,7 @@ RSpec.describe PrometheusService, :use_clean_rails_memory_store_caching, :snowpl
           service.api_url = 'http://localhost:9090'
 
           stub_application_setting(self_monitoring_project_id: project.id)
-          stub_config(prometheus: { enable: true, listen_address: 'localhost:9090' })
+          stub_config(prometheus: { enable: true, server_address: 'localhost:9090' })
         end
 
         it 'allows self-monitoring project to connect to internal Prometheus' do
@@ -242,7 +242,7 @@ RSpec.describe PrometheusService, :use_clean_rails_memory_store_caching, :snowpl
 
           stub_config(prometheus: {
             enable: true,
-            listen_address: api_url
+            server_address: api_url
           })
         end
 

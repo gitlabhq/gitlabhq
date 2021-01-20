@@ -10,10 +10,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 _Read this document for a brief overview of SSL/TLS certificates in
 the scope of GitLab Pages, for beginners in web development._
 
-Every GitLab Pages project on GitLab.com will be available under
+Every GitLab Pages project on GitLab.com is available under
 HTTPS for the default Pages domain (`*.gitlab.io`). Once you set
 up your Pages project with your custom (sub)domain, if you want
-it secured by HTTPS, you will have to issue a certificate for that
+it secured by HTTPS, you must issue a certificate for that
 (sub)domain and install it on your project.
 
 NOTE:
@@ -41,9 +41,6 @@ the connection between the **client** (you, me, your visitors)
 and the **server** (where you site lives), through a keychain of
 authentications and validations.
 
-How about taking Josh's advice and protecting our sites too? We will be
-well supported, and we'll contribute to a safer internet.
-
 ## Organizations supporting HTTPS
 
 There is a huge movement in favor of securing all the web. W3C fully
@@ -62,8 +59,8 @@ GitLab Pages accepts certificates provided in the [PEM](https://knowledge.digice
 for public websites for security reasons and to ensure that browsers trust your site's certificate.
 
 There are various kinds of certificates, each one
-with a certain security level. A static personal website will
-not require the same security level as an online banking web app,
+with a certain security level. A static personal website doesn't
+require the same security level as an online banking web app,
 for instance.
 
 There are some certificate authorities that

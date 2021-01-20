@@ -14,7 +14,7 @@ and users can update it directly through Git.
 
 Nevertheless, existing GitLab Snippets have to be migrated to this new functionality.
 For each snippet, a new repository is created and the snippet content is committed
-to the repository inside a file whose name is the file name used in the snippet
+to the repository inside a file whose name is the filename used in the snippet
 as well.
 
 GitLab performs this migration through a [Background Migration](../development/background_migrations.md)

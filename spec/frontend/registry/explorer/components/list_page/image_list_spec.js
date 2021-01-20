@@ -11,11 +11,12 @@ describe('Image List', () => {
   const findRow = () => wrapper.findAll(ImageListRow);
   const findPagination = () => wrapper.find(GlKeysetPagination);
 
-  const mountComponent = (pageInfo = defaultPageInfo) => {
+  const mountComponent = (props) => {
     wrapper = shallowMount(Component, {
       propsData: {
         images: imagesListResponse,
-        pageInfo,
+        pageInfo: defaultPageInfo,
+        ...props,
       },
     });
   };
@@ -35,10 +36,13 @@ describe('Image List', () => {
     it('when delete event is emitted on the row it emits up a delete event', () => {
       mountComponent();
 
-      findRow()
-        .at(0)
-        .vm.$emit('delete', 'foo');
+      findRow().at(0).vm.$emit('delete', 'foo');
       expect(wrapper.emitted('delete')).toEqual([['foo']]);
+    });
+
+    it('passes down the metadataLoading prop', () => {
+      mountComponent({ metadataLoading: true });
+      expect(findRow().at(0).props('metadataLoading')).toBe(true);
     });
   });
 
@@ -57,7 +61,7 @@ describe('Image List', () => {
     `(
       'when hasNextPage is $hasNextPage and hasPreviousPage is $hasPreviousPage: is $isVisible that the component is visible',
       ({ hasNextPage, hasPreviousPage, isVisible }) => {
-        mountComponent({ hasNextPage, hasPreviousPage });
+        mountComponent({ pageInfo: { ...defaultPageInfo, hasNextPage, hasPreviousPage } });
 
         expect(findPagination().exists()).toBe(isVisible);
         expect(findPagination().props('hasPreviousPage')).toBe(hasPreviousPage);
@@ -66,7 +70,7 @@ describe('Image List', () => {
     );
 
     it('emits "prev-page" when the user clicks the back page button', () => {
-      mountComponent({ hasPreviousPage: true });
+      mountComponent();
 
       findPagination().vm.$emit('prev');
 
@@ -74,7 +78,7 @@ describe('Image List', () => {
     });
 
     it('emits "next-page" when the user clicks the forward page button', () => {
-      mountComponent({ hasNextPage: true });
+      mountComponent();
 
       findPagination().vm.$emit('next');
 

@@ -8,11 +8,11 @@ module ResolvesSnippets
 
     argument :ids, [::Types::GlobalIDType[::Snippet]],
              required: false,
-             description: 'Array of global snippet ids, e.g., "gid://gitlab/ProjectSnippet/1"'
+             description: 'Array of global snippet ids, e.g., "gid://gitlab/ProjectSnippet/1".'
 
     argument :visibility, Types::Snippets::VisibilityScopesEnum,
              required: false,
-             description: 'The visibility of the snippet'
+             description: 'The visibility of the snippet.'
   end
 
   def resolve(**args)

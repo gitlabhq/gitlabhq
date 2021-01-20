@@ -1,0 +1,5 @@
+---
+title: Add namespace settings to allow or disallow duplicate Maven packages
+merge_request: 50104
+author:
+type: added

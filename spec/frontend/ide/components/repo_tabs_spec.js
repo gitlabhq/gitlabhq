@@ -30,7 +30,7 @@ describe('RepoTabs', () => {
     wrapper.destroy();
   });
 
-  it('renders a list of tabs', done => {
+  it('renders a list of tabs', (done) => {
     store.state.openFiles[0].active = true;
 
     wrapper.vm.$nextTick(() => {

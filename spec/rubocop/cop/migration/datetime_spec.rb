@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 require 'rubocop'
 require_relative '../../../../rubocop/cop/migration/datetime'
 
-RSpec.describe RuboCop::Cop::Migration::Datetime, type: :rubocop do
+RSpec.describe RuboCop::Cop::Migration::Datetime do
   include CopHelper
 
   subject(:cop) { described_class.new }

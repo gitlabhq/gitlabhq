@@ -10,14 +10,14 @@ describe('SlotSwitch', () => {
 
   let wrapper;
 
-  const createComponent = propsData => {
+  const createComponent = (propsData) => {
     wrapper = shallowMount(SlotSwitch, {
       propsData,
       slots,
     });
   };
 
-  const getChildrenHtml = () => wrapper.findAll('* *').wrappers.map(c => c.html());
+  const getChildrenHtml = () => wrapper.findAll('* *').wrappers.map((c) => c.html());
 
   afterEach(() => {
     if (wrapper) {

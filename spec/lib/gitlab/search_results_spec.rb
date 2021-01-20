@@ -342,17 +342,36 @@ RSpec.describe Gitlab::SearchResults do
       expect(results.limited_issues_count).to eq 4
     end
 
-    it 'lists all issues for admin' do
-      results = described_class.new(admin, query, limit_projects)
-      issues = results.objects('issues')
+    context 'with admin user' do
+      context 'when admin mode enabled', :enable_admin_mode do
+        it 'lists all issues' do
+          results = described_class.new(admin, query, limit_projects)
+          issues = results.objects('issues')
 
-      expect(issues).to include issue
-      expect(issues).to include security_issue_1
-      expect(issues).to include security_issue_2
-      expect(issues).to include security_issue_3
-      expect(issues).to include security_issue_4
-      expect(issues).not_to include security_issue_5
-      expect(results.limited_issues_count).to eq 5
+          expect(issues).to include issue
+          expect(issues).to include security_issue_1
+          expect(issues).to include security_issue_2
+          expect(issues).to include security_issue_3
+          expect(issues).to include security_issue_4
+          expect(issues).not_to include security_issue_5
+          expect(results.limited_issues_count).to eq 5
+        end
+      end
+
+      context 'when admin mode disabled' do
+        it 'does not list confidential issues' do
+          results = described_class.new(admin, query, limit_projects)
+          issues = results.objects('issues')
+
+          expect(issues).to include issue
+          expect(issues).not_to include security_issue_1
+          expect(issues).not_to include security_issue_2
+          expect(issues).not_to include security_issue_3
+          expect(issues).not_to include security_issue_4
+          expect(issues).not_to include security_issue_5
+          expect(results.limited_issues_count).to eq 1
+        end
+      end
     end
   end
 

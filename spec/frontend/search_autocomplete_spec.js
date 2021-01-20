@@ -32,7 +32,7 @@ describe('Search autocomplete dropdown', () => {
 
   // Add required attributes to body before starting the test.
   // section would be dashboard|group|project
-  const addBodyAttributes = section => {
+  const addBodyAttributes = (section) => {
     if (section == null) {
       section = 'dashboard';
     }
@@ -213,10 +213,10 @@ describe('Search autocomplete dropdown', () => {
     });
 
     function triggerAutocomplete() {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         const dropdown = widget.searchInput.data('deprecatedJQueryDropdown');
         const filterCallback = dropdown.filter.options.callback;
-        dropdown.filter.options.callback = jest.fn(data => {
+        dropdown.filter.options.callback = jest.fn((data) => {
           filterCallback(data);
 
           resolve();
@@ -227,7 +227,7 @@ describe('Search autocomplete dropdown', () => {
       });
     }
 
-    it('suggest Projects', done => {
+    it('suggest Projects', (done) => {
       // eslint-disable-next-line promise/catch-or-return
       triggerAutocomplete().finally(() => {
         const list = widget.wrap.find('.dropdown-menu').find('ul');
@@ -242,7 +242,7 @@ describe('Search autocomplete dropdown', () => {
       jest.runOnlyPendingTimers();
     });
 
-    it('suggest Groups', done => {
+    it('suggest Groups', (done) => {
       // eslint-disable-next-line promise/catch-or-return
       triggerAutocomplete().finally(() => {
         const list = widget.wrap.find('.dropdown-menu').find('ul');

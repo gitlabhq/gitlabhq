@@ -7,7 +7,6 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   include Analytics::UniqueVisitsHelper
   include GracefulTimeoutHandling
 
-  before_action :whitelist_query_limiting, only: [:show]
   before_action :authorize_read_cycle_analytics!
 
   track_unique_visits :show, target_id: 'p_analytics_valuestream'
@@ -37,9 +36,5 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
       stats: @cycle_analytics.stats,
       permissions: @cycle_analytics.permissions(user: current_user)
     }
-  end
-
-  def whitelist_query_limiting
-    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42671')
   end
 end

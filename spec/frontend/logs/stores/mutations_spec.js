@@ -23,7 +23,7 @@ describe('Logs Store Mutations', () => {
   });
 
   it('ensures mutation types are correctly named', () => {
-    Object.keys(types).forEach(k => {
+    Object.keys(types).forEach((k) => {
       expect(k).toEqual(types[k]);
     });
   });

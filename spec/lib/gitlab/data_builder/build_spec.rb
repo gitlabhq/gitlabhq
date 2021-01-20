@@ -26,6 +26,7 @@ RSpec.describe Gitlab::DataBuilder::Build do
     it {
       expect(data[:user]).to eq(
         {
+            id: user.id,
             name: user.name,
             username: user.username,
             avatar_url: user.avatar_url(only_path: false),

@@ -21,7 +21,7 @@ export default () => {
 
   if (pipelineTableViewEl) {
     // Update MR and Commits tabs
-    pipelineTableViewEl.addEventListener('update-pipelines-count', event => {
+    pipelineTableViewEl.addEventListener('update-pipelines-count', (event) => {
       if (
         event.detail.pipelines &&
         event.detail.pipelines.count &&

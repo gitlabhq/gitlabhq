@@ -191,16 +191,6 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
             expect { receiver.execute }.to raise_error(Gitlab::Email::ProjectNotFound)
           end
         end
-
-        context 'when service_desk_custom_address feature is disabled' do
-          before do
-            stub_feature_flags(service_desk_custom_address: false)
-          end
-
-          it 'bounces the email' do
-            expect { receiver.execute }.to raise_error(Gitlab::Email::ProjectNotFound)
-          end
-        end
       end
     end
 

@@ -17,7 +17,7 @@ describe('DateTimePicker', () => {
   const applyButtonElement = () => wrapper.find('button.btn-success').element;
   const findQuickRangeItems = () => wrapper.findAll('.dropdown-item');
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     wrapper = mount(DateTimePicker, {
       propsData: {
         ...props,
@@ -235,7 +235,7 @@ describe('DateTimePicker', () => {
 
     it('unchecks quick range when text is input is clicked', () => {
       const findActiveItems = () =>
-        findQuickRangeItems().filter(w => w.classes().includes('active'));
+        findQuickRangeItems().filter((w) => w.classes().includes('active'));
 
       expect(findActiveItems().length).toBe(1);
 

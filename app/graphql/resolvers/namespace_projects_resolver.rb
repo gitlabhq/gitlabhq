@@ -5,17 +5,17 @@ module Resolvers
     argument :include_subgroups, GraphQL::BOOLEAN_TYPE,
              required: false,
              default_value: false,
-             description: 'Include also subgroup projects'
+             description: 'Include also subgroup projects.'
 
     argument :search, GraphQL::STRING_TYPE,
             required: false,
             default_value: nil,
-            description: 'Search project with most similar names or paths'
+            description: 'Search project with most similar names or paths.'
 
     argument :sort, Types::Projects::NamespaceProjectSortEnum,
             required: false,
             default_value: nil,
-            description: 'Sort projects by this criteria'
+            description: 'Sort projects by this criteria.'
 
     type Types::ProjectType, null: true
 

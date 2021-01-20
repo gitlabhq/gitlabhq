@@ -594,7 +594,35 @@ WARNING:
 Variables with multi-line values are not supported due to
 limitations with the Auto DevOps scripting environment.
 
-### Override a variable by manually running a pipeline
+### When you can override variables
+
+You can override the value of a variable when:
+
+1. [Manually running](#override-a-variable-by-manually-running-a-pipeline) pipelines in the UI.
+1. Manually creating pipelines [via API](../../api/pipelines.md#create-a-new-pipeline).
+1. Manually playing a job via the UI.
+1. Using [push options](../../user/project/push_options.md#push-options-for-gitlab-cicd).
+1. Manually triggering pipelines with [the API](../triggers/README.md#making-use-of-trigger-variables).
+1. Passing variables to a [downstream pipeline](../multi_project_pipelines.md#passing-variables-to-a-downstream-pipeline).
+
+These pipeline variables declared in these events take [priority over other variables](#priority-of-environment-variables).
+
+#### Restrict who can override variables
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/295234) in GitLab 13.8.
+
+To allow only users with Maintainer role to set these variables, you can use
+[the API](../../api/projects.md#edit-project) to enable the project setting `restrict_user_defined_variables`.
+When a user without Maintainer role tries to run a pipeline with overridden
+variables, an `Insufficient permissions to set pipeline variables` error occurs.
+
+The setting is `disabled` by default.
+
+If you [store your CI configurations in a different repository](../../ci/pipelines/settings.md#custom-ci-configuration-path),
+use this setting for strict control over all aspects of the environment
+the pipeline runs in.
+
+#### Override a variable by manually running a pipeline
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44059) in GitLab 10.8.
 
@@ -785,7 +813,9 @@ Feature.enable(:ci_if_parenthesis_enabled)
 
 ### Storing regular expressions in variables
 
-It is possible to store a regular expression in a variable, to be used for pattern matching:
+It is possible to store a regular expression in a variable, to be used for pattern matching.
+The following example tests whether `$RELEASE` contains either the
+string `staging0` or the string `staging1`:
 
 ```yaml
 variables:
@@ -847,13 +877,7 @@ before making them visible again.
 ### Restricted access to debug logging
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213159) in GitLab 13.7.
-> - It's [deployed behind a feature flag](../../user/feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-restricted-access-to-debug-logging). **(CORE ONLY)**
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292661) in GitLab 13.8.
 
 With restricted access to debug logging, only users with
 [developer or higher permissions](../../user/permissions.md#project-members-permissions)
@@ -866,25 +890,6 @@ WARNING:
 If you add `CI_DEBUG_TRACE` as a local variable to your runners, debug logs are visible
 to all users with access to job logs. The permission levels are not checked by Runner,
 so you should make use of the variable in GitLab only.
-
-#### Enable or disable Restricted access to debug logging **(CORE ONLY)**
-
-Restricted Access to Debug logging is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:restrict_access_to_build_debug_mode)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:restrict_access_to_build_debug_mode)
-```
 
 ### Enable Debug logging
 

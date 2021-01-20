@@ -1,5 +1,4 @@
 import {
-  unwrapArrayOfJobs,
   unwrapGroups,
   unwrapNodesWithName,
   unwrapStagesWithNeeds,
@@ -89,35 +88,12 @@ const completeMock = [
   {
     ...basicStageInfo,
     groups: {
-      nodes: groupsArray.map(group => ({ ...group, jobs: { nodes: jobArrayWithNeeds } })),
+      nodes: groupsArray.map((group) => ({ ...group, jobs: { nodes: jobArrayWithNeeds } })),
     },
   },
 ];
 
 describe('Shared pipeline unwrapping utils', () => {
-  describe('unwrapArrayOfJobs', () => {
-    it('returns an empty array if the input is an empty undefined', () => {
-      expect(unwrapArrayOfJobs(undefined)).toEqual([]);
-    });
-
-    it('returns an empty array if the input is an empty array', () => {
-      expect(unwrapArrayOfJobs([])).toEqual([]);
-    });
-
-    it('returns a flatten array of each job with their data and stage name', () => {
-      expect(
-        unwrapArrayOfJobs([
-          { name: 'build', groups: [{ name: 'job_a_1' }, { name: 'job_a_2' }] },
-          { name: 'test', groups: [{ name: 'job_b' }] },
-        ]),
-      ).toMatchObject([
-        { category: 'build', name: 'job_a_1' },
-        { category: 'build', name: 'job_a_2' },
-        { category: 'test', name: 'job_b' },
-      ]);
-    });
-  });
-
   describe('unwrapGroups', () => {
     it('takes stages without nodes and returns the unwrapped groups', () => {
       expect(unwrapGroups(stagesAndGroups)[0].groups).toEqual(groupsArray);

@@ -10,7 +10,7 @@ describe('Recent Searches Dropdown Content', () => {
   const findDropdownItems = () => wrapper.findAll({ ref: 'dropdownItem' });
   const findDropdownNote = () => wrapper.find({ ref: 'dropdownNote' });
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     wrapper = shallowMount(RecentSearchesDropdownContent, {
       propsData: {
         allowedKeys: IssuableFilteredSearchTokenKeys.getKeys(),
@@ -84,18 +84,11 @@ describe('Recent Searches Dropdown Content', () => {
     });
 
     it('expect second dropdown to have 2 tokens', () => {
-      expect(
-        findDropdownItems()
-          .at(1)
-          .findAll('.js-dropdown-token'),
-      ).toHaveLength(2);
+      expect(findDropdownItems().at(1).findAll('.js-dropdown-token')).toHaveLength(2);
     });
 
     it('emits recentSearchesItemSelected on dropdown item click', () => {
-      findDropdownItems()
-        .at(0)
-        .find('.js-dropdown-button')
-        .trigger('click');
+      findDropdownItems().at(0).find('.js-dropdown-button').trigger('click');
 
       expect(onRecentSearchesItemSelectedSpy).toHaveBeenCalledWith('foo');
     });

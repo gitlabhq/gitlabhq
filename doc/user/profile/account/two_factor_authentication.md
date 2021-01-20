@@ -245,7 +245,7 @@ Search for `security.webauth.u2f` and double click on it to toggle to `true`.
 
 To set up 2FA with a U2F device:
 
-1. Log in to your GitLab account.
+1. Sign in to your GitLab account.
 1. Go to your [**Profile settings**](../index.md#profile-settings).
 1. Go to **Account**.
 1. Click **Enable Two-Factor Authentication**.
@@ -298,11 +298,11 @@ NOTE:
 Recovery codes are not generated for U2F / WebAuthn devices.
 
 WARNING:
-Each code can be used only once to log in to your account.
+Each code can be used only once to sign in to your account.
 
 Immediately after successfully enabling two-factor authentication, you're
 prompted to download a set of generated recovery codes. Should you ever lose access
-to your one-time password authenticator, you can use one of these recovery codes to log in to
+to your one-time password authenticator, you can use one of these recovery codes to sign in to
 your account. We suggest copying and printing them, or downloading them using
 the **Download codes** button for storage in a safe place. If you choose to
 download them, the file is called `gitlab-recovery-codes.txt`.
@@ -314,47 +314,50 @@ If you lose the recovery codes or just want to generate new ones, you can do so
 from the [two-factor authentication account settings page](#regenerate-2fa-recovery-codes) or
 [using SSH](#generate-new-recovery-codes-using-ssh).
 
-## Logging in with 2FA Enabled
+## Signing in with 2FA Enabled
 
-Logging in with 2FA enabled is only slightly different than a normal login.
+Signing in with 2FA enabled is only slightly different than the normal sign-in process.
 Enter your username and password credentials as you normally would, and you're
 presented with a second prompt, depending on which type of 2FA you've enabled.
 
-### Log in via a one-time password
+### Sign in by using a one-time password
 
 When asked, enter the pin from your one time password authenticator's application or a
-recovery code to log in.
+recovery code to sign in.
 
-### Log in via U2F device
+### Sign in by using a U2F device
 
-To log in via a U2F device:
+To sign in by using a U2F device:
 
 1. Click **Login via U2F Device**.
 1. A light begins blinking on your device. Activate it by touching/pressing
    its button.
 
 A message displays, indicating that your device responded to the authentication
-request, and you're automatically logged in.
+request, and you're automatically signed in.
 
-### Log in via WebAuthn device
+### Sign in by using a WebAuthn device
 
 In supported browsers you should be automatically prompted to activate your WebAuthn device
 (e.g. by touching/pressing its button) after entering your credentials.
 
 A message displays, indicating that your device responded to the authentication
-request and you're automatically logged in.
+request and you're automatically signed in.
 
 ## Disabling 2FA
 
 If you ever need to disable 2FA:
 
-1. Log in to your GitLab account.
+1. Sign in to your GitLab account.
 1. Go to your [**Profile settings**](../index.md#profile-settings).
 1. Go to **Account**.
 1. Click **Disable**, under **Two-Factor Authentication**.
 
 This clears all your two-factor authentication registrations, including mobile
 applications and U2F / WebAuthn devices.
+
+Support for disabling 2FA is limited, depending on your subscription level. For more information, see the
+[Account Recovery](https://about.gitlab.com/support/#account-recovery) section of our website.
 
 ## Personal access tokens
 
@@ -393,8 +396,12 @@ a new set of recovery codes with SSH:
 1. Run:
 
    ```shell
-   ssh git@gitlab.example.com 2fa_recovery_codes
+   ssh git@gitlab.com 2fa_recovery_codes
    ```
+
+   NOTE:
+   On self-managed instances, replace **`gitlab.com`** in the command above
+   with the GitLab server hostname (`gitlab.example.com`).
 
 1. You are prompted to confirm that you want to generate new codes.
    Continuing this process invalidates previously saved codes:
@@ -465,9 +472,9 @@ Sign in and re-enable two-factor authentication as soon as possible.
 
   For example, if a user is trying to access a GitLab instance from `first.host.xyz` and `second.host.xyz`:
 
-  - The user logs in via `first.host.xyz` and registers their U2F key.
-  - The user logs out and attempts to log in via `first.host.xyz` - U2F authentication succeeds.
-  - The user logs out and attempts to log in via `second.host.xyz` - U2F authentication fails, because
+  - The user signs in by using `first.host.xyz` and registers their U2F key.
+  - The user signs out and attempts to sign in by using `first.host.xyz` - U2F authentication succeeds.
+  - The user signs out and attempts to sign in by using `second.host.xyz` - U2F authentication fails, because
     the U2F key has only been registered on `first.host.xyz`.
 
 - To enforce 2FA at the system or group levels see [Enforce Two-factor Authentication](../../../security/two_factor_authentication.md).

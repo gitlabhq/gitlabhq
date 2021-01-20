@@ -98,7 +98,7 @@ describe('IDE store terminal session controls actions', () => {
       );
     });
 
-    [STOPPING, STOPPED, 'unexpected'].forEach(status => {
+    [STOPPING, STOPPED, 'unexpected'].forEach((status) => {
       it(`kills session if status is ${status}`, () => {
         return testAction(
           actions.receiveSessionStatusSuccess,

@@ -20,7 +20,9 @@ RSpec.describe Issues::ExportCsvService do
     end
 
     it 'renders with a target filesize' do
-      expect(subject.csv_builder).to receive(:render).with(described_class::TARGET_FILESIZE)
+      expect_next_instance_of(CsvBuilder) do |csv_builder|
+        expect(csv_builder).to receive(:render).with(described_class::TARGET_FILESIZE).once
+      end
 
       subject.email(user)
     end

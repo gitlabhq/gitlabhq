@@ -3,8 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe API::GenericPackages do
+  include HttpBasicAuthHelpers
+
   let_it_be(:personal_access_token) { create(:personal_access_token) }
   let_it_be(:project, reload: true) { create(:project) }
+  let_it_be(:deploy_token_rw) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
+  let_it_be(:project_deploy_token_rw) { create(:project_deploy_token, deploy_token: deploy_token_rw, project: project) }
+  let_it_be(:deploy_token_ro) { create(:deploy_token, read_package_registry: true, write_package_registry: false) }
+  let_it_be(:project_deploy_token_ro) { create(:project_deploy_token, deploy_token: deploy_token_ro, project: project) }
+  let_it_be(:deploy_token_wo) { create(:deploy_token, read_package_registry: false, write_package_registry: true) }
+  let_it_be(:project_deploy_token_wo) { create(:project_deploy_token, deploy_token: deploy_token_wo, project: project) }
   let(:workhorse_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
   let(:workhorse_header) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => workhorse_token } }
   let(:user) { personal_access_token.user }
@@ -22,6 +30,23 @@ RSpec.describe API::GenericPackages do
       personal_access_token_header('wrong token')
     when :invalid_job_token
       job_token_header('wrong token')
+    when :user_basic_auth
+      user_basic_auth_header(user)
+    when :invalid_user_basic_auth
+      basic_auth_header('invalid user', 'invalid password')
+    end
+  end
+
+  def deploy_token_auth_header
+    case authenticate_with
+    when :deploy_token_rw
+      deploy_token_header(deploy_token_rw.token)
+    when :deploy_token_ro
+      deploy_token_header(deploy_token_ro.token)
+    when :deploy_token_wo
+      deploy_token_header(deploy_token_wo.token)
+    when :invalid_deploy_token
+      deploy_token_header('wrong token')
     end
   end
 
@@ -31,6 +56,10 @@ RSpec.describe API::GenericPackages do
 
   def job_token_header(value = nil)
     { Gitlab::Auth::AuthFinders::JOB_TOKEN_HEADER => value || ci_build.token }
+  end
+
+  def deploy_token_header(value)
+    { Gitlab::Auth::AuthFinders::DEPLOY_TOKEN_HEADER => value }
   end
 
   shared_examples 'secure endpoint' do
@@ -54,19 +83,35 @@ RSpec.describe API::GenericPackages do
         'PUBLIC'  | :guest     | true  | :personal_access_token         | :forbidden
         'PUBLIC'  | :developer | true  | :invalid_personal_access_token | :unauthorized
         'PUBLIC'  | :guest     | true  | :invalid_personal_access_token | :unauthorized
+        'PUBLIC'  | :developer | true  | :user_basic_auth               | :success
+        'PUBLIC'  | :guest     | true  | :user_basic_auth               | :forbidden
+        'PUBLIC'  | :developer | true  | :invalid_user_basic_auth       | :unauthorized
+        'PUBLIC'  | :guest     | true  | :invalid_user_basic_auth       | :unauthorized
         'PUBLIC'  | :developer | false | :personal_access_token         | :forbidden
         'PUBLIC'  | :guest     | false | :personal_access_token         | :forbidden
         'PUBLIC'  | :developer | false | :invalid_personal_access_token | :unauthorized
         'PUBLIC'  | :guest     | false | :invalid_personal_access_token | :unauthorized
+        'PUBLIC'  | :developer | false | :user_basic_auth               | :forbidden
+        'PUBLIC'  | :guest     | false | :user_basic_auth               | :forbidden
+        'PUBLIC'  | :developer | false | :invalid_user_basic_auth       | :unauthorized
+        'PUBLIC'  | :guest     | false | :invalid_user_basic_auth       | :unauthorized
         'PUBLIC'  | :anonymous | false | :none                          | :unauthorized
         'PRIVATE' | :developer | true  | :personal_access_token         | :success
         'PRIVATE' | :guest     | true  | :personal_access_token         | :forbidden
         'PRIVATE' | :developer | true  | :invalid_personal_access_token | :unauthorized
         'PRIVATE' | :guest     | true  | :invalid_personal_access_token | :unauthorized
+        'PRIVATE' | :developer | true  | :user_basic_auth               | :success
+        'PRIVATE' | :guest     | true  | :user_basic_auth               | :forbidden
+        'PRIVATE' | :developer | true  | :invalid_user_basic_auth       | :unauthorized
+        'PRIVATE' | :guest     | true  | :invalid_user_basic_auth       | :unauthorized
         'PRIVATE' | :developer | false | :personal_access_token         | :not_found
         'PRIVATE' | :guest     | false | :personal_access_token         | :not_found
         'PRIVATE' | :developer | false | :invalid_personal_access_token | :unauthorized
         'PRIVATE' | :guest     | false | :invalid_personal_access_token | :unauthorized
+        'PRIVATE' | :developer | false | :user_basic_auth               | :not_found
+        'PRIVATE' | :guest     | false | :user_basic_auth               | :not_found
+        'PRIVATE' | :developer | false | :invalid_user_basic_auth       | :unauthorized
+        'PRIVATE' | :guest     | false | :invalid_user_basic_auth       | :unauthorized
         'PRIVATE' | :anonymous | false | :none                          | :unauthorized
         'PUBLIC'  | :developer | true  | :job_token                     | :success
         'PUBLIC'  | :developer | true  | :invalid_job_token             | :unauthorized
@@ -86,6 +131,21 @@ RSpec.describe API::GenericPackages do
 
         it "responds with #{params[:expected_status]}" do
           authorize_upload_file(workhorse_header.merge(auth_header))
+
+          expect(response).to have_gitlab_http_status(expected_status)
+        end
+      end
+
+      where(:authenticate_with, :expected_status) do
+        :deploy_token_rw      | :success
+        :deploy_token_wo      | :success
+        :deploy_token_ro      | :forbidden
+        :invalid_deploy_token | :unauthorized
+      end
+
+      with_them do
+        it "responds with #{params[:expected_status]}" do
+          authorize_upload_file(workhorse_header.merge(deploy_token_auth_header))
 
           expect(response).to have_gitlab_http_status(expected_status)
         end
@@ -138,20 +198,34 @@ RSpec.describe API::GenericPackages do
 
       where(:project_visibility, :user_role, :member?, :authenticate_with, :expected_status) do
         'PUBLIC'  | :guest     | true  | :personal_access_token         | :forbidden
+        'PUBLIC'  | :guest     | true  | :user_basic_auth               | :forbidden
         'PUBLIC'  | :developer | true  | :invalid_personal_access_token | :unauthorized
         'PUBLIC'  | :guest     | true  | :invalid_personal_access_token | :unauthorized
+        'PUBLIC'  | :developer | true  | :invalid_user_basic_auth       | :unauthorized
+        'PUBLIC'  | :guest     | true  | :invalid_user_basic_auth       | :unauthorized
         'PUBLIC'  | :developer | false | :personal_access_token         | :forbidden
         'PUBLIC'  | :guest     | false | :personal_access_token         | :forbidden
+        'PUBLIC'  | :developer | false | :user_basic_auth               | :forbidden
+        'PUBLIC'  | :guest     | false | :user_basic_auth               | :forbidden
         'PUBLIC'  | :developer | false | :invalid_personal_access_token | :unauthorized
         'PUBLIC'  | :guest     | false | :invalid_personal_access_token | :unauthorized
+        'PUBLIC'  | :developer | false | :invalid_user_basic_auth       | :unauthorized
+        'PUBLIC'  | :guest     | false | :invalid_user_basic_auth       | :unauthorized
         'PUBLIC'  | :anonymous | false | :none                          | :unauthorized
         'PRIVATE' | :guest     | true  | :personal_access_token         | :forbidden
+        'PRIVATE' | :guest     | true  | :user_basic_auth               | :forbidden
         'PRIVATE' | :developer | true  | :invalid_personal_access_token | :unauthorized
         'PRIVATE' | :guest     | true  | :invalid_personal_access_token | :unauthorized
+        'PRIVATE' | :developer | true  | :invalid_user_basic_auth       | :unauthorized
+        'PRIVATE' | :guest     | true  | :invalid_user_basic_auth       | :unauthorized
         'PRIVATE' | :developer | false | :personal_access_token         | :not_found
         'PRIVATE' | :guest     | false | :personal_access_token         | :not_found
+        'PRIVATE' | :developer | false | :user_basic_auth               | :not_found
+        'PRIVATE' | :guest     | false | :user_basic_auth               | :not_found
         'PRIVATE' | :developer | false | :invalid_personal_access_token | :unauthorized
         'PRIVATE' | :guest     | false | :invalid_personal_access_token | :unauthorized
+        'PRIVATE' | :developer | false | :invalid_user_basic_auth       | :unauthorized
+        'PRIVATE' | :guest     | false | :invalid_user_basic_auth       | :unauthorized
         'PRIVATE' | :anonymous | false | :none                          | :unauthorized
         'PUBLIC'  | :developer | true  | :invalid_job_token             | :unauthorized
         'PUBLIC'  | :developer | false | :job_token                     | :forbidden
@@ -175,6 +249,21 @@ RSpec.describe API::GenericPackages do
           expect(response).to have_gitlab_http_status(expected_status)
         end
       end
+
+      where(:authenticate_with, :expected_status) do
+        :deploy_token_ro      | :forbidden
+        :invalid_deploy_token | :unauthorized
+      end
+
+      with_them do
+        it "responds with #{params[:expected_status]}" do
+          headers = workhorse_header.merge(deploy_token_auth_header)
+
+          upload_file(params, headers)
+
+          expect(response).to have_gitlab_http_status(expected_status)
+        end
+      end
     end
 
     context 'when user can upload packages and has valid credentials' do
@@ -182,43 +271,58 @@ RSpec.describe API::GenericPackages do
         project.add_developer(user)
       end
 
-      it 'creates package and package file when valid personal access token is used' do
-        headers = workhorse_header.merge(personal_access_token_header)
+      shared_examples 'creates a package and package file' do
+        it 'creates a package and package file' do
+          headers = workhorse_header.merge(auth_header)
 
-        expect { upload_file(params, headers) }
-          .to change { project.packages.generic.count }.by(1)
-          .and change { Packages::PackageFile.count }.by(1)
+          expect { upload_file(params, headers) }
+            .to change { project.packages.generic.count }.by(1)
+            .and change { Packages::PackageFile.count }.by(1)
 
-        aggregate_failures do
-          expect(response).to have_gitlab_http_status(:created)
+          aggregate_failures do
+            expect(response).to have_gitlab_http_status(:created)
 
-          package = project.packages.generic.last
-          expect(package.name).to eq('mypackage')
-          expect(package.version).to eq('0.0.1')
-          expect(package.original_build_info).to be_nil
+            package = project.packages.generic.last
+            expect(package.name).to eq('mypackage')
+            expect(package.version).to eq('0.0.1')
 
-          package_file = package.package_files.last
-          expect(package_file.file_name).to eq('myfile.tar.gz')
+            if should_set_build_info
+              expect(package.original_build_info.pipeline).to eq(ci_build.pipeline)
+            else
+              expect(package.original_build_info).to be_nil
+            end
+
+            package_file = package.package_files.last
+            expect(package_file.file_name).to eq('myfile.tar.gz')
+          end
         end
       end
 
-      it 'creates package, package file, and package build info when valid job token is used' do
-        headers = workhorse_header.merge(job_token_header)
+      context 'when valid personal access token is used' do
+        it_behaves_like 'creates a package and package file' do
+          let(:auth_header) { personal_access_token_header }
+          let(:should_set_build_info) { false }
+        end
+      end
 
-        expect { upload_file(params, headers) }
-          .to change { project.packages.generic.count }.by(1)
-          .and change { Packages::PackageFile.count }.by(1)
+      context 'when valid basic auth is used' do
+        it_behaves_like 'creates a package and package file' do
+          let(:auth_header) { user_basic_auth_header(user) }
+          let(:should_set_build_info) { false }
+        end
+      end
 
-        aggregate_failures do
-          expect(response).to have_gitlab_http_status(:created)
+      context 'when valid deploy token is used' do
+        it_behaves_like 'creates a package and package file' do
+          let(:auth_header) { deploy_token_header(deploy_token_wo.token) }
+          let(:should_set_build_info) { false }
+        end
+      end
 
-          package = project.packages.generic.last
-          expect(package.name).to eq('mypackage')
-          expect(package.version).to eq('0.0.1')
-          expect(package.original_build_info.pipeline).to eq(ci_build.pipeline)
-
-          package_file = package.package_files.last
-          expect(package_file.file_name).to eq('myfile.tar.gz')
+      context 'when valid job token is used' do
+        it_behaves_like 'creates a package and package file' do
+          let(:auth_header) { job_token_header }
+          let(:should_set_build_info) { true }
         end
       end
 
@@ -309,21 +413,37 @@ RSpec.describe API::GenericPackages do
       where(:project_visibility, :user_role, :member?, :authenticate_with, :expected_status) do
         'PUBLIC'  | :developer | true  | :personal_access_token         | :success
         'PUBLIC'  | :guest     | true  | :personal_access_token         | :success
+        'PUBLIC'  | :developer | true  | :user_basic_auth               | :success
+        'PUBLIC'  | :guest     | true  | :user_basic_auth               | :success
         'PUBLIC'  | :developer | true  | :invalid_personal_access_token | :unauthorized
         'PUBLIC'  | :guest     | true  | :invalid_personal_access_token | :unauthorized
+        'PUBLIC'  | :developer | true  | :invalid_user_basic_auth       | :unauthorized
+        'PUBLIC'  | :guest     | true  | :invalid_user_basic_auth       | :unauthorized
         'PUBLIC'  | :developer | false | :personal_access_token         | :success
         'PUBLIC'  | :guest     | false | :personal_access_token         | :success
+        'PUBLIC'  | :developer | false | :user_basic_auth               | :success
+        'PUBLIC'  | :guest     | false | :user_basic_auth               | :success
         'PUBLIC'  | :developer | false | :invalid_personal_access_token | :unauthorized
         'PUBLIC'  | :guest     | false | :invalid_personal_access_token | :unauthorized
+        'PUBLIC'  | :developer | false | :invalid_user_basic_auth       | :unauthorized
+        'PUBLIC'  | :guest     | false | :invalid_user_basic_auth       | :unauthorized
         'PUBLIC'  | :anonymous | false | :none                          | :unauthorized
         'PRIVATE' | :developer | true  | :personal_access_token         | :success
         'PRIVATE' | :guest     | true  | :personal_access_token         | :forbidden
+        'PRIVATE' | :developer | true  | :user_basic_auth               | :success
+        'PRIVATE' | :guest     | true  | :user_basic_auth               | :forbidden
         'PRIVATE' | :developer | true  | :invalid_personal_access_token | :unauthorized
         'PRIVATE' | :guest     | true  | :invalid_personal_access_token | :unauthorized
+        'PRIVATE' | :developer | true  | :invalid_user_basic_auth       | :unauthorized
+        'PRIVATE' | :guest     | true  | :invalid_user_basic_auth       | :unauthorized
         'PRIVATE' | :developer | false | :personal_access_token         | :not_found
         'PRIVATE' | :guest     | false | :personal_access_token         | :not_found
+        'PRIVATE' | :developer | false | :user_basic_auth               | :not_found
+        'PRIVATE' | :guest     | false | :user_basic_auth               | :not_found
         'PRIVATE' | :developer | false | :invalid_personal_access_token | :unauthorized
         'PRIVATE' | :guest     | false | :invalid_personal_access_token | :unauthorized
+        'PRIVATE' | :developer | false | :invalid_user_basic_auth       | :unauthorized
+        'PRIVATE' | :guest     | false | :invalid_user_basic_auth       | :unauthorized
         'PRIVATE' | :anonymous | false | :none                          | :unauthorized
         'PUBLIC'  | :developer | true  | :job_token                     | :success
         'PUBLIC'  | :developer | true  | :invalid_job_token             | :unauthorized
@@ -343,6 +463,21 @@ RSpec.describe API::GenericPackages do
 
         it "responds with #{params[:expected_status]}" do
           download_file(auth_header)
+
+          expect(response).to have_gitlab_http_status(expected_status)
+        end
+      end
+
+      where(:authenticate_with, :expected_status) do
+        :deploy_token_rw      | :success
+        :deploy_token_wo      | :success
+        :deploy_token_ro      | :success
+        :invalid_deploy_token | :unauthorized
+      end
+
+      with_them do
+        it "responds with #{params[:expected_status]}" do
+          download_file(deploy_token_auth_header)
 
           expect(response).to have_gitlab_http_status(expected_status)
         end

@@ -79,10 +79,7 @@ describe('self monitor component', () => {
         wrapper = shallowMount(SelfMonitor, { store });
 
         expect(
-          wrapper
-            .find({ ref: 'selfMonitoringFormText' })
-            .find('a')
-            .attributes('href'),
+          wrapper.find({ ref: 'selfMonitoringFormText' }).find('a').attributes('href'),
         ).toEqual(`${TEST_HOST}/instance-administrators-random/gitlab-self-monitoring`);
       });
     });

@@ -1,4 +1,5 @@
 <script>
+import produce from 'immer';
 import { flattenDeep, isNumber } from 'lodash';
 import { GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import { roundOffFloat } from '~/lib/utils/common_utils';
@@ -61,7 +62,7 @@ export default {
   },
   computed: {
     series() {
-      return this.graphData.metrics.map(metric => {
+      return this.graphData.metrics.map((metric) => {
         const values = metric.result && metric.result[0] ? metric.result[0].values : [];
         return {
           label: metric.label,
@@ -77,18 +78,20 @@ export default {
      * This offset is the lowest value.
      */
     yOffset() {
-      const values = flattenDeep(this.series.map(ser => ser.data.map(([, y]) => y)));
+      const values = flattenDeep(this.series.map((ser) => ser.data.map(([, y]) => y)));
       const min = values.length ? Math.floor(Math.min(...values)) : 0;
       return min < 0 ? -min : 0;
     },
     metricData() {
       const originalMetricQuery = this.graphData.metrics[0];
 
-      const metricQuery = { ...originalMetricQuery };
-      metricQuery.result[0].values = metricQuery.result[0].values.map(([x, y]) => [
-        x,
-        y + this.yOffset,
-      ]);
+      const metricQuery = produce(originalMetricQuery, (draftQuery) => {
+        // eslint-disable-next-line no-param-reassign
+        draftQuery.result[0].values = draftQuery.result[0].values.map(([x, y]) => [
+          x,
+          y + this.yOffset,
+        ]);
+      });
       return {
         ...this.graphData,
         type: panelTypes.LINE_CHART,
@@ -109,7 +112,7 @@ export default {
         },
         showSymbol: true,
         itemStyle: {
-          color: params => {
+          color: (params) => {
             if (this.isDatapointAnomaly(params.dataIndex)) {
               return colorValues.anomalySymbol;
             }
@@ -128,7 +131,7 @@ export default {
 
       const yAxisWithOffset = {
         axisLabel: {
-          formatter: num => roundOffFloat(num - this.yOffset, 3).toString(),
+          formatter: (num) => roundOffFloat(num - this.yOffset, 3).toString(),
         },
       };
 
@@ -153,7 +156,7 @@ export default {
         boundarySeries.push(
           this.makeBoundarySeries({
             name: this.formatLegendLabel(upperSeries),
-            data: calcOffsetY(upperSeries.data, i => -this.yValue(LOWER, i)),
+            data: calcOffsetY(upperSeries.data, (i) => -this.yValue(LOWER, i)),
             areaStyle: {
               color: AREA_COLOR,
               opacity: AREA_OPACITY,

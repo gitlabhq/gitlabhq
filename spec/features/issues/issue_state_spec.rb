@@ -13,10 +13,13 @@ RSpec.describe 'issue state', :js do
 
   shared_examples 'issue closed' do |selector|
     it 'can close an issue' do
+      wait_for_requests
+
       expect(find('.status-box')).to have_content 'Open'
 
       within selector do
         click_button 'Close issue'
+        wait_for_requests
       end
 
       expect(find('.status-box')).to have_content 'Closed'
@@ -25,17 +28,20 @@ RSpec.describe 'issue state', :js do
 
   shared_examples 'issue reopened' do |selector|
     it 'can reopen an issue' do
+      wait_for_requests
+
       expect(find('.status-box')).to have_content 'Closed'
 
       within selector do
         click_button 'Reopen issue'
+        wait_for_requests
       end
 
       expect(find('.status-box')).to have_content 'Open'
     end
   end
 
-  describe 'when open' do
+  describe 'when open', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/297348' do
     context 'when clicking the top `Close issue` button', :aggregate_failures do
       let(:open_issue) { create(:issue, project: project) }
 
@@ -57,7 +63,7 @@ RSpec.describe 'issue state', :js do
     end
   end
 
-  describe 'when closed' do
+  describe 'when closed', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/297201' do
     context 'when clicking the top `Reopen issue` button', :aggregate_failures do
       let(:closed_issue) { create(:issue, project: project, state: 'closed') }
 

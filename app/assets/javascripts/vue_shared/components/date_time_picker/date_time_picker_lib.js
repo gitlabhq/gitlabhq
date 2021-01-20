@@ -25,7 +25,7 @@ export const defaultTimeRanges = [
   },
 ];
 
-export const defaultTimeRange = defaultTimeRanges.find(tr => tr.default);
+export const defaultTimeRange = defaultTimeRanges.find((tr) => tr.default);
 
 export const dateFormats = {
   /**
@@ -49,7 +49,7 @@ export const dateFormats = {
  * @param {string} value - Value as typed by the user
  * @returns true if the value can be parsed as a valid date, false otherwise
  */
-export const isValidInputString = value => {
+export const isValidInputString = (value) => {
   try {
     // dateformat throws error that can be caught.
     // This is better than using `new Date()`

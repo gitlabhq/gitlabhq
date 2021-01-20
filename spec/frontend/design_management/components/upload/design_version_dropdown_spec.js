@@ -6,7 +6,7 @@ import mockAllVersions from './mock_data/all_versions';
 const LATEST_VERSION_ID = 3;
 const PREVIOUS_VERSION_ID = 2;
 
-const designRouteFactory = versionId => ({
+const designRouteFactory = (versionId) => ({
   path: `/designs?version=${versionId}`,
   query: {
     version: `${versionId}`,
@@ -42,7 +42,7 @@ describe('Design management design version dropdown component', () => {
     wrapper.destroy();
   });
 
-  const findVersionLink = index => wrapper.findAll(GlDropdownItem).at(index);
+  const findVersionLink = (index) => wrapper.findAll(GlDropdownItem).at(index);
 
   it('renders design version dropdown button', () => {
     createComponent();

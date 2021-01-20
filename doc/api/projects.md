@@ -160,6 +160,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "allow_merge_on_skipped_pipeline": false,
+    "restrict_user_defined_variables": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -253,6 +254,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "allow_merge_on_skipped_pipeline": false,
+    "restrict_user_defined_variables": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -297,7 +299,7 @@ When the user is authenticated and `simple` is not set this returns something li
 
 NOTE:
 For users of GitLab [Silver, Premium, or higher](https://about.gitlab.com/pricing/),
-the `marked_for_deletion_at` attribute has been deprecated, and will be removed
+the `marked_for_deletion_at` attribute has been deprecated, and is removed
 in API v5 in favor of the `marked_for_deletion_on` attribute.
 
 Users of GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/)
@@ -418,6 +420,7 @@ GET /users/:user_id/projects
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "allow_merge_on_skipped_pipeline": false,
+    "restrict_user_defined_variables": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -511,6 +514,7 @@ GET /users/:user_id/projects
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "allow_merge_on_skipped_pipeline": false,
+    "restrict_user_defined_variables": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -640,6 +644,7 @@ Example response:
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "allow_merge_on_skipped_pipeline": false,
+    "restrict_user_defined_variables": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -726,6 +731,7 @@ Example response:
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "allow_merge_on_skipped_pipeline": false,
+    "restrict_user_defined_variables": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -881,6 +887,7 @@ GET /projects/:id
   "repository_storage": "default",
   "only_allow_merge_if_pipeline_succeeds": false,
   "allow_merge_on_skipped_pipeline": false,
+  "restrict_user_defined_variables": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "remove_source_branch_after_merge": false,
   "printing_merge_requests_link_enabled": true,
@@ -1057,7 +1064,7 @@ POST /projects
 | `build_timeout`                                             | integer | **{dotted-circle}** No | The maximum amount of time in minutes that a job is able run (in seconds). |
 | `builds_access_level`                                       | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `ci_config_path`                                            | string  | **{dotted-circle}** No | The path to CI configuration file. |
-| `container_expiration_policy_attributes`                    | hash    | **{dotted-circle}** No | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (string), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). |
+| `container_expiration_policy_attributes`                    | hash    | **{dotted-circle}** No | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). |
 | `container_registry_enabled`                                | boolean | **{dotted-circle}** No | Enable container registry for this project. |
 | `default_branch`                                            | string  | **{dotted-circle}** No | `master` by default. |
 | `description`                                               | string  | **{dotted-circle}** No | Short project description. |
@@ -1206,7 +1213,7 @@ PUT /projects/:id
 | `ci_config_path`                                            | string         | **{dotted-circle}** No | The path to CI configuration file. |
 | `ci_default_git_depth`                                      | integer        | **{dotted-circle}** No | Default number of revisions for [shallow cloning](../ci/pipelines/settings.md#git-shallow-clone). |
 | `ci_forward_deployment_enabled`                             | boolean        | **{dotted-circle}** No | When a new deployment job starts, [skip older deployment jobs](../ci/pipelines/settings.md#skip-outdated-deployment-jobs) that are still pending |
-| `container_expiration_policy_attributes`                    | hash           | **{dotted-circle}** No | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (string), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). |
+| `container_expiration_policy_attributes`                    | hash           | **{dotted-circle}** No | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). |
 | `container_registry_enabled`                                | boolean        | **{dotted-circle}** No | Enable container registry for this project. |
 | `default_branch`                                            | string         | **{dotted-circle}** No | `master` by default. |
 | `description`                                               | string         | **{dotted-circle}** No | Short project description. |
@@ -1234,6 +1241,7 @@ PUT /projects/:id
 | `packages_enabled`                                          | boolean        | **{dotted-circle}** No | Enable or disable packages repository feature. |
 | `pages_access_level`                                        | string         | **{dotted-circle}** No | One of `disabled`, `private`, `enabled`, or `public`. |
 | `requirements_access_level`                                 | string         | **{dotted-circle}** No | One of `disabled`, `private`, `enabled` or `public` |
+| `restrict_user_defined_variables`                           | boolean        | **{dotted-circle}** No | Allow only maintainers to pass user-defined variables when triggering a pipeline. For example when the pipeline is triggered in the UI, with the API, or by a trigger token. |
 | `path`                                                      | string         | **{dotted-circle}** No | Custom repository name for the project. By default generated based on name. |
 | `public_builds`                                             | boolean        | **{dotted-circle}** No | If `true`, jobs can be viewed by non-project members. |
 | `remove_source_branch_after_merge`                          | boolean        | **{dotted-circle}** No | Enable `Delete source branch` option by default for all new merge requests. |
@@ -1356,6 +1364,7 @@ Example responses:
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "allow_merge_on_skipped_pipeline": false,
+    "restrict_user_defined_variables": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -1449,6 +1458,7 @@ Example response:
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
   "allow_merge_on_skipped_pipeline": false,
+  "restrict_user_defined_variables": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
@@ -1540,6 +1550,7 @@ Example response:
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
   "allow_merge_on_skipped_pipeline": false,
+  "restrict_user_defined_variables": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
@@ -1725,6 +1736,7 @@ Example response:
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
   "allow_merge_on_skipped_pipeline": false,
+  "restrict_user_defined_variables": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
@@ -1837,6 +1849,7 @@ Example response:
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
   "allow_merge_on_skipped_pipeline": false,
+  "restrict_user_defined_variables": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
@@ -2184,7 +2197,7 @@ POST /projects/:id/housekeeping
 
 ## Push Rules **(STARTER)**
 
-### Get project push rules
+### Get project push rules **(STARTER)**
 
 Get the [push rules](../push_rules/push_rules.md#enabling-push-rules) of a
 project.
@@ -2230,7 +2243,7 @@ parameters:
 }
 ```
 
-### Add project push rule
+### Add project push rule **(STARTER)**
 
 Adds a push rule to a specified project.
 
@@ -2238,22 +2251,22 @@ Adds a push rule to a specified project.
 POST /projects/:id/push_rule
 ```
 
-| Attribute                                     | Type           | Required               | Description |
-|-----------------------------------------------|----------------|------------------------|-------------|
-| `author_email_regex` **(STARTER)**            | string         | **{dotted-circle}** No | All commit author emails must match this, for example `@my-company.com$`. |
-| `branch_name_regex` **(STARTER)**             | string         | **{dotted-circle}** No | All branch names must match this, for example `(feature|hotfix)\/*`. |
-| `commit_committer_check` **(PREMIUM)**        | boolean        | **{dotted-circle}** No | Users can only push commits to this repository that were committed with one of their own verified emails. |
-| `commit_message_negative_regex` **(STARTER)** | string         | **{dotted-circle}** No | No commit message is allowed to match this, for example `ssh\:\/\/`. |
-| `commit_message_regex` **(STARTER)**          | string         | **{dotted-circle}** No | All commit messages must match this, for example `Fixed \d+\..*`. |
-| `deny_delete_tag` **(STARTER)**               | boolean        | **{dotted-circle}** No | Deny deleting a tag. |
-| `file_name_regex` **(STARTER)**               | string         | **{dotted-circle}** No | All committed filenames must **not** match this, for example `(jar|exe)$`. |
-| `id`                                          | integer/string | **{check-circle}** Yes | The ID of the project or NAMESPACE/PROJECT_NAME. |
-| `max_file_size` **(STARTER)**                 | integer        | **{dotted-circle}** No | Maximum file size (MB). |
-| `member_check` **(STARTER)**                  | boolean        | **{dotted-circle}** No | Restrict commits by author (email) to existing GitLab users. |
-| `prevent_secrets` **(STARTER)**               | boolean        | **{dotted-circle}** No | GitLab will reject any files that are likely to contain secrets. |
-| `reject_unsigned_commits` **(PREMIUM)**       | boolean        | **{dotted-circle}** No | Reject commit when it's not signed through GPG. |
+| Attribute                               | Type           | Required               | Description |
+|-----------------------------------------|----------------|------------------------|-------------|
+| `author_email_regex`                    | string         | **{dotted-circle}** No | All commit author emails must match this, for example `@my-company.com$`. |
+| `branch_name_regex`                     | string         | **{dotted-circle}** No | All branch names must match this, for example `(feature|hotfix)\/*`. |
+| `commit_committer_check` **(PREMIUM)**  | boolean        | **{dotted-circle}** No | Users can only push commits to this repository that were committed with one of their own verified emails. |
+| `commit_message_negative_regex`         | string         | **{dotted-circle}** No | No commit message is allowed to match this, for example `ssh\:\/\/`. |
+| `commit_message_regex`                  | string         | **{dotted-circle}** No | All commit messages must match this, for example `Fixed \d+\..*`. |
+| `deny_delete_tag`                       | boolean        | **{dotted-circle}** No | Deny deleting a tag. |
+| `file_name_regex`                       | string         | **{dotted-circle}** No | All committed filenames must **not** match this, for example `(jar|exe)$`. |
+| `id`                                    | integer/string | **{check-circle}** Yes | The ID of the project or NAMESPACE/PROJECT_NAME. |
+| `max_file_size`                         | integer        | **{dotted-circle}** No | Maximum file size (MB). |
+| `member_check`                          | boolean        | **{dotted-circle}** No | Restrict commits by author (email) to existing GitLab users. |
+| `prevent_secrets`                       | boolean        | **{dotted-circle}** No | GitLab rejects any files that are likely to contain secrets. |
+| `reject_unsigned_commits` **(PREMIUM)** | boolean        | **{dotted-circle}** No | Reject commit when it's not signed through GPG. |
 
-### Edit project push rule
+### Edit project push rule **(STARTER)**
 
 Edits a push rule for a specified project.
 
@@ -2261,20 +2274,20 @@ Edits a push rule for a specified project.
 PUT /projects/:id/push_rule
 ```
 
-| Attribute                                     | Type           | Required               | Description |
-|-----------------------------------------------|----------------|------------------------|-------------|
-| `author_email_regex` **(STARTER)**            | string         | **{dotted-circle}** No | All commit author emails must match this, for example `@my-company.com$`. |
-| `branch_name_regex` **(STARTER)**             | string         | **{dotted-circle}** No | All branch names must match this, for example `(feature|hotfix)\/*`. |
-| `commit_committer_check` **(PREMIUM)**        | boolean        | **{dotted-circle}** No | Users can only push commits to this repository that were committed with one of their own verified emails. |
-| `commit_message_negative_regex` **(STARTER)** | string         | **{dotted-circle}** No | No commit message is allowed to match this, for example `ssh\:\/\/`. |
-| `commit_message_regex` **(STARTER)**          | string         | **{dotted-circle}** No | All commit messages must match this, for example `Fixed \d+\..*`. |
-| `deny_delete_tag` **(STARTER)**               | boolean        | **{dotted-circle}** No | Deny deleting a tag. |
-| `file_name_regex` **(STARTER)**               | string         | **{dotted-circle}** No | All committed filenames must **not** match this, for example `(jar|exe)$`. |
-| `id`                                          | integer/string | **{check-circle}** Yes | The ID of the project or NAMESPACE/PROJECT_NAME. |
-| `max_file_size` **(STARTER)**                 | integer        | **{dotted-circle}** No | Maximum file size (MB). |
-| `member_check` **(STARTER)**                  | boolean        | **{dotted-circle}** No | Restrict commits by author (email) to existing GitLab users. |
-| `prevent_secrets` **(STARTER)**               | boolean        | **{dotted-circle}** No | GitLab will reject any files that are likely to contain secrets. |
-| `reject_unsigned_commits` **(PREMIUM)**       | boolean        | **{dotted-circle}** No | Reject commits when they are not GPG signed. |
+| Attribute                               | Type           | Required               | Description |
+|-----------------------------------------|----------------|------------------------|-------------|
+| `author_email_regex`                    | string         | **{dotted-circle}** No | All commit author emails must match this, for example `@my-company.com$`. |
+| `branch_name_regex`                     | string         | **{dotted-circle}** No | All branch names must match this, for example `(feature|hotfix)\/*`. |
+| `commit_committer_check` **(PREMIUM)**  | boolean        | **{dotted-circle}** No | Users can only push commits to this repository that were committed with one of their own verified emails. |
+| `commit_message_negative_regex`         | string         | **{dotted-circle}** No | No commit message is allowed to match this, for example `ssh\:\/\/`. |
+| `commit_message_regex`                  | string         | **{dotted-circle}** No | All commit messages must match this, for example `Fixed \d+\..*`. |
+| `deny_delete_tag`                       | boolean        | **{dotted-circle}** No | Deny deleting a tag. |
+| `file_name_regex`                       | string         | **{dotted-circle}** No | All committed filenames must **not** match this, for example `(jar|exe)$`. |
+| `id`                                    | integer/string | **{check-circle}** Yes | The ID of the project or NAMESPACE/PROJECT_NAME. |
+| `max_file_size`                         | integer        | **{dotted-circle}** No | Maximum file size (MB). |
+| `member_check`                          | boolean        | **{dotted-circle}** No | Restrict commits by author (email) to existing GitLab users. |
+| `prevent_secrets`                       | boolean        | **{dotted-circle}** No | GitLab rejects any files that are likely to contain secrets. |
+| `reject_unsigned_commits` **(PREMIUM)** | boolean        | **{dotted-circle}** No | Reject commits when they are not GPG signed. |
 
 ### Delete project push rule
 
@@ -2397,6 +2410,7 @@ Example response:
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
   "allow_merge_on_skipped_pipeline": null,
+  "restrict_user_defined_variables": false,
   "request_access_enabled": true,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "remove_source_branch_after_merge": true,

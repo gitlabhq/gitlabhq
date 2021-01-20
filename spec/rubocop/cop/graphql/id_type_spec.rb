@@ -5,7 +5,7 @@ require 'rubocop'
 
 require_relative '../../../../rubocop/cop/graphql/id_type'
 
-RSpec.describe RuboCop::Cop::Graphql::IDType, type: :rubocop do
+RSpec.describe RuboCop::Cop::Graphql::IDType do
   include CopHelper
 
   subject(:cop) { described_class.new }

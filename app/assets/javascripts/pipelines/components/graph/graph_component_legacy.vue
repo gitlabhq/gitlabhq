@@ -5,6 +5,7 @@ import StageColumnComponentLegacy from './stage_column_component_legacy.vue';
 import LinkedPipelinesColumnLegacy from './linked_pipelines_column_legacy.vue';
 import GraphBundleMixin from '../../mixins/graph_pipeline_bundle_mixin';
 import { UPSTREAM, DOWNSTREAM, MAIN } from './constants';
+import { reportToSentry } from './utils';
 
 export default {
   name: 'PipelineGraphLegacy',
@@ -78,11 +79,11 @@ export default {
       return (
         this.pipeline.triggered_by &&
         Array.isArray(this.pipeline.triggered_by) &&
-        this.pipeline.triggered_by.find(el => el.isExpanded)
+        this.pipeline.triggered_by.find((el) => el.isExpanded)
       );
     },
     expandedDownstream() {
-      return this.pipeline.triggered && this.pipeline.triggered.find(el => el.isExpanded);
+      return this.pipeline.triggered && this.pipeline.triggered.find((el) => el.isExpanded);
     },
     pipelineTypeUpstream() {
       return this.type !== this.$options.downstream && this.expandedUpstream;
@@ -93,6 +94,9 @@ export default {
     pipelineProjectId() {
       return this.pipeline.project.id;
     },
+  },
+  errorCaptured(err, _vm, info) {
+    reportToSentry(this.$options.name, `error: ${err}, info: ${info}`);
   },
   methods: {
     capitalizeStageName(name) {

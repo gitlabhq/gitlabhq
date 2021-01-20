@@ -5,7 +5,6 @@ import axios from '~/lib/utils/axios_utils';
 import MergeRequestTabs from '~/merge_request_tabs';
 import '~/commit/pipelines/pipelines_bundle';
 import '~/lib/utils/common_utils';
-import 'vendor/jquery.scrollTo';
 
 jest.mock('~/lib/utils/webpack', () => ({
   resetServiceWorkersPublicPath: jest.fn(),
@@ -14,7 +13,7 @@ jest.mock('~/lib/utils/webpack', () => ({
 describe('MergeRequestTabs', () => {
   const testContext = {};
   const stubLocation = {};
-  const setLocation = stubs => {
+  const setLocation = (stubs) => {
     const defaults = {
       pathname: '',
       search: '',
@@ -265,7 +264,7 @@ describe('MergeRequestTabs', () => {
     beforeEach(() => {
       jest.spyOn(mainContent, 'getBoundingClientRect').mockReturnValue({ top: 10 });
       jest.spyOn(tabContent, 'getBoundingClientRect').mockReturnValue({ top: 100 });
-      jest.spyOn(document, 'querySelector').mockImplementation(selector => {
+      jest.spyOn(document, 'querySelector').mockImplementation((selector) => {
         return selector === '.content-wrapper' ? mainContent : tabContent;
       });
       testContext.class.currentAction = 'commits';

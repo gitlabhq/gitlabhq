@@ -46,7 +46,7 @@ describe('IDE file templates bar component', () => {
   });
 
   describe('template dropdown', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       vm.$store.state.fileTemplates.templates = [
         {
           name: 'test',
@@ -67,10 +67,7 @@ describe('IDE file templates bar component', () => {
     it('calls fetchTemplate on click', () => {
       jest.spyOn(vm, 'fetchTemplate').mockImplementation();
 
-      vm.$el
-        .querySelectorAll('.dropdown-content')[1]
-        .querySelector('button')
-        .click();
+      vm.$el.querySelectorAll('.dropdown-content')[1].querySelector('button').click();
 
       expect(vm.fetchTemplate).toHaveBeenCalledWith({
         name: 'test',
@@ -78,7 +75,7 @@ describe('IDE file templates bar component', () => {
     });
   });
 
-  it('shows undo button if updateSuccess is true', done => {
+  it('shows undo button if updateSuccess is true', (done) => {
     vm.$store.state.fileTemplates.updateSuccess = true;
 
     vm.$nextTick(() => {
@@ -96,7 +93,7 @@ describe('IDE file templates bar component', () => {
     expect(vm.undoFileTemplate).toHaveBeenCalled();
   });
 
-  it('calls setSelectedTemplateType if activeFile name matches a template', done => {
+  it('calls setSelectedTemplateType if activeFile name matches a template', (done) => {
     const fileName = '.gitlab-ci.yml';
 
     jest.spyOn(vm, 'setSelectedTemplateType').mockImplementation(() => {});

@@ -9,7 +9,7 @@ module Mutations
         argument :id,
                 Types::GlobalIDType[::Terraform::State],
                 required: true,
-                description: 'Global ID of the Terraform state'
+                description: 'Global ID of the Terraform state.'
 
         private
 

@@ -41,7 +41,7 @@ export default {
   computed: {
     groups() {
       return this.$options.groups
-        .map(group => ({
+        .map((group) => ({
           name: group,
           issues: this[`${group}Issues`],
           heading: this[`${group}Heading`],

@@ -6,16 +6,16 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { flow, reverse, sortBy } from 'lodash/fp';
 import { s__ } from '~/locale';
 import EnvironmentItem from './environment_item.vue';
+import DeployBoard from './deploy_board.vue';
+import CanaryUpdateModal from './canary_update_modal.vue';
 
 export default {
   components: {
     EnvironmentItem,
     GlLoadingIcon,
-    DeployBoard: () => import('ee_component/environments/components/deploy_board_component.vue'),
-    CanaryDeploymentCallout: () =>
-      import('ee_component/environments/components/canary_deployment_callout.vue'),
+    DeployBoard,
     EnvironmentAlert: () => import('ee_component/environments/components/environment_alert.vue'),
-    CanaryUpdateModal: () => import('ee_component/environments/components/canary_update_modal.vue'),
+    CanaryUpdateModal,
   },
   props: {
     environments: {
@@ -33,11 +33,6 @@ export default {
       required: false,
       default: false,
     },
-    canaryDeploymentFeatureId: {
-      type: String,
-      required: false,
-      default: '',
-    },
     helpCanaryDeploymentsPath: {
       type: String,
       required: false,
@@ -47,11 +42,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    },
-    showCanaryDeploymentCallout: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     userCalloutsPath: {
       type: String,
@@ -67,7 +57,7 @@ export default {
   },
   computed: {
     sortedEnvironments() {
-      return this.sortEnvironments(this.environments).map(env =>
+      return this.sortEnvironments(this.environments).map((env) =>
         this.shouldRenderFolderContent(env)
           ? { ...env, children: this.sortEnvironments(env.children) }
           : env,
@@ -121,9 +111,6 @@ export default {
     shouldRenderFolderContent(env) {
       return env.isFolder && env.isOpen && env.children && env.children.length > 0;
     },
-    shouldShowCanaryCallout(env) {
-      return env.showCanaryCallout && this.showCanaryDeploymentCallout;
-    },
     shouldRenderAlert(env) {
       return env?.has_opened_alert;
     },
@@ -144,11 +131,11 @@ export default {
        * 5. Put folders first.
        */
       return flow(
-        sortBy(env => (env.isFolder ? env.folderName : env.name)),
+        sortBy((env) => (env.isFolder ? env.folderName : env.name)),
         reverse,
-        sortBy(env => (env.last_deployment ? env.last_deployment.created_at : '0000')),
+        sortBy((env) => (env.last_deployment ? env.last_deployment.created_at : '0000')),
         reverse,
-        sortBy(env => (env.isFolder ? -1 : 1)),
+        sortBy((env) => (env.isFolder ? -1 : 1)),
       )(environments);
     },
     changeCanaryWeight(model, weight) {
@@ -240,17 +227,6 @@ export default {
             </div>
           </div>
         </template>
-      </template>
-
-      <template v-if="shouldShowCanaryCallout(model)">
-        <canary-deployment-callout
-          :key="`canary-promo-${i}`"
-          :canary-deployment-feature-id="canaryDeploymentFeatureId"
-          :user-callouts-path="userCalloutsPath"
-          :lock-promotion-svg-path="lockPromotionSvgPath"
-          :help-canary-deployments-path="helpCanaryDeploymentsPath"
-          :data-js-canary-promo-key="i"
-        />
       </template>
     </template>
   </div>

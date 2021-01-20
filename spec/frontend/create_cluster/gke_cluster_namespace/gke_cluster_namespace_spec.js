@@ -2,8 +2,8 @@ import initGkeNamespace from '~/create_cluster/gke_cluster_namespace';
 
 describe('GKE cluster namespace', () => {
   const changeEvent = new Event('change');
-  const isHidden = el => el.classList.contains('hidden');
-  const hasDisabledInput = el => el.querySelector('input').disabled;
+  const isHidden = (el) => el.classList.contains('hidden');
+  const hasDisabledInput = (el) => el.querySelector('input').disabled;
 
   let glManagedCheckbox;
   let selfManaged;

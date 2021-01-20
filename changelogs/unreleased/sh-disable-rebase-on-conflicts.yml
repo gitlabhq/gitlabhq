@@ -1,0 +1,5 @@
+---
+title: Prevent rebase from being run in quick action when there are conflicts
+merge_request: 51243
+author:
+type: fixed

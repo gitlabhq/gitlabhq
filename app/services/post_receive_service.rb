@@ -94,7 +94,7 @@ class PostReceiveService
   end
 
   def record_onboarding_progress
-    NamespaceOnboardingAction.create_action(project.namespace, :git_write)
+    OnboardingProgressService.new(project.namespace).execute(action: :git_write)
   end
 end
 

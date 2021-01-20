@@ -1,8 +1,0 @@
----
-name: diff_check_with_paths_changed_rpc
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46116
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/288827
-milestone: '13.7'
-type: development
-group: group::code review
-default_enabled: true

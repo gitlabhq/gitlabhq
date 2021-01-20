@@ -16,7 +16,7 @@ describe('RecentSearchesRoot', () => {
         },
       };
 
-      Vue.mockImplementation(options => {
+      Vue.mockImplementation((options) => {
         ({ data, template } = options);
       });
 

@@ -1,8 +1,9 @@
+import { cloneDeep } from 'lodash';
 import Vuex from 'vuex';
 import eventHub from '~/ide/eventhub';
 import { createStoreOptions } from '~/ide/stores';
 import { setupFileEditorsSync } from '~/ide/stores/modules/editor/setup';
-import { createTriggerRenamePayload } from '../../../helpers';
+import { createTriggerRenamePayload, createTriggerUpdatePayload } from '../../../helpers';
 
 describe('~/ide/stores/modules/editor/setup', () => {
   let store;
@@ -31,6 +32,14 @@ describe('~/ide/stores/modules/editor/setup', () => {
     expect(store.state.editor.fileEditors).toEqual({
       foo: {},
     });
+  });
+
+  it('when files update is emitted, does nothing', () => {
+    const origState = cloneDeep(store.state);
+
+    eventHub.$emit('ide.files.change', createTriggerUpdatePayload('foo'));
+
+    expect(store.state).toEqual(origState);
   });
 
   it('when files rename is emitted, renames fileEditor', () => {

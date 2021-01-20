@@ -9,13 +9,9 @@ const CACHE_PATHS = [
   './yarn.lock',
 ];
 
-const resolvePath = file => path.resolve(__dirname, '../..', file);
-const readFile = file => fs.readFileSync(file);
-const fileHash = buffer =>
-  crypto
-    .createHash('md5')
-    .update(buffer)
-    .digest('hex');
+const resolvePath = (file) => path.resolve(__dirname, '../..', file);
+const readFile = (file) => fs.readFileSync(file);
+const fileHash = (buffer) => crypto.createHash('md5').update(buffer).digest('hex');
 
 module.exports = () => {
   const fileBuffers = CACHE_PATHS.map(resolvePath).map(readFile);

@@ -55,7 +55,7 @@ RSpec.describe 'User closes/reopens a merge request', :js do
     end
   end
 
-  describe 'when closed' do
+  describe 'when closed', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/297500' do
     context 'when clicking the top `Reopen merge request` link', :aggregate_failures do
       let(:closed_merge_request) { create(:merge_request, source_project: project, target_project: project, state: 'closed') }
 

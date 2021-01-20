@@ -91,12 +91,13 @@ module ApplicationSettingImplementation
         housekeeping_gc_period: 200,
         housekeeping_incremental_repack_period: 10,
         import_sources: Settings.gitlab['import_sources'],
+        invisible_captcha_enabled: false,
         issues_create_limit: 300,
         local_markdown_version: 0,
         login_recaptcha_protection_enabled: false,
         max_artifacts_size: Settings.artifacts['max_size'],
         max_attachment_size: Settings.gitlab['max_attachment_size'],
-        max_import_size: 50,
+        max_import_size: 0,
         minimum_password_length: DEFAULT_MINIMUM_PASSWORD_LENGTH,
         mirror_available: true,
         notify_on_unknown_sign_in: true,
@@ -172,7 +173,8 @@ module ApplicationSettingImplementation
         container_registry_delete_tags_service_timeout: 250,
         container_registry_expiration_policies_worker_capacity: 0,
         kroki_enabled: false,
-        kroki_url: nil
+        kroki_url: nil,
+        rate_limiting_response_text: nil
       }
     end
 

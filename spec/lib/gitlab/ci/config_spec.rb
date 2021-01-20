@@ -82,6 +82,30 @@ RSpec.describe Gitlab::Ci::Config do
     end
   end
 
+  describe '#included_templates' do
+    let(:yml) do
+      <<-EOS
+        include:
+          - template: Jobs/Deploy.gitlab-ci.yml
+          - template: Jobs/Build.gitlab-ci.yml
+          - remote: https://example.com/gitlab-ci.yml
+      EOS
+    end
+
+    before do
+      stub_request(:get, 'https://example.com/gitlab-ci.yml').to_return(status: 200, body: <<-EOS)
+        test:
+          script: [ 'echo hello world' ]
+      EOS
+    end
+
+    subject(:included_templates) do
+      config.included_templates
+    end
+
+    it { is_expected.to contain_exactly('Jobs/Deploy.gitlab-ci.yml', 'Jobs/Build.gitlab-ci.yml') }
+  end
+
   context 'when using extendable hash' do
     let(:yml) do
       <<-EOS

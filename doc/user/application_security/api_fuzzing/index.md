@@ -157,6 +157,7 @@ You can use various tools to generate HAR files:
 - [Insomnia Core](https://insomnia.rest/): API client
 - [Chrome](https://www.google.com/chrome/): Browser
 - [Firefox](https://www.mozilla.org/en-US/firefox/): Browser
+- [GitLab HAR Recorder](https://gitlab.com/gitlab-org/security-products/har-recorder): Command line
 
 WARNING:
 HAR files may contain sensitive information such as authentication tokens, API keys, and session

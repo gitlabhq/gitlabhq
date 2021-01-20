@@ -1,7 +1,7 @@
 import { computeDiff } from './diff';
 
 // eslint-disable-next-line no-restricted-globals
-self.addEventListener('message', e => {
+self.addEventListener('message', (e) => {
   const { data } = e;
 
   // eslint-disable-next-line no-restricted-globals

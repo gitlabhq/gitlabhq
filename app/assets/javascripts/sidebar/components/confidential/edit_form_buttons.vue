@@ -48,7 +48,7 @@ export default {
         .then(() => {
           eventHub.$emit('updateIssuableConfidentiality', confidential);
         })
-        .catch(err => {
+        .catch((err) => {
           Flash(
             err || __('Something went wrong trying to change the confidentiality of this issue'),
           );

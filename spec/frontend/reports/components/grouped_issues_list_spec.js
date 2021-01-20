@@ -13,7 +13,7 @@ describe('Grouped Issues List', () => {
     });
   };
 
-  const findHeading = groupName => wrapper.find(`[data-testid="${groupName}Heading"`);
+  const findHeading = (groupName) => wrapper.find(`[data-testid="${groupName}Heading"`);
 
   afterEach(() => {
     wrapper.destroy();
@@ -37,7 +37,7 @@ describe('Grouped Issues List', () => {
   describe('without data', () => {
     beforeEach(createComponent);
 
-    it.each(['unresolved', 'resolved'])('does not a render a header for %s issues', issueName => {
+    it.each(['unresolved', 'resolved'])('does not a render a header for %s issues', (issueName) => {
       expect(findHeading(issueName).exists()).toBe(false);
     });
 
@@ -59,7 +59,7 @@ describe('Grouped Issues List', () => {
       expect(findHeading(groupName).text()).toBe(givenHeading);
     });
 
-    it.each(['resolved', 'unresolved'])('renders all %s issues', issueName => {
+    it.each(['resolved', 'unresolved'])('renders all %s issues', (issueName) => {
       const issues = [{ name: 'foo' }, { name: 'bar' }];
 
       createComponent({

@@ -9,7 +9,7 @@ export default function renderMetrics(elements) {
 
   const wrapperList = [];
 
-  elements.forEach(element => {
+  elements.forEach((element) => {
     let wrapper;
     const { previousElementSibling } = element;
     const isFirstElementInGroup = !previousElementSibling?.urls;
@@ -33,7 +33,7 @@ export default function renderMetrics(elements) {
   ).then(({ default: EmbedGroup }) => {
     const EmbedGroupComponent = Vue.extend(EmbedGroup);
 
-    wrapperList.forEach(wrapper => {
+    wrapperList.forEach((wrapper) => {
       // eslint-disable-next-line no-new
       new EmbedGroupComponent({
         el: wrapper,

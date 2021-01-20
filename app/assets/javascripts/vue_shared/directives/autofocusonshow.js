@@ -11,8 +11,8 @@ export default {
   inserted(el) {
     if ('IntersectionObserver' in window) {
       // Element visibility is dynamic, so we attach observer
-      el.visibilityObserver = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
+      el.visibilityObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
           // Combining `intersectionRatio > 0` and
           // element's `offsetParent` presence will
           // deteremine if element is truely visible

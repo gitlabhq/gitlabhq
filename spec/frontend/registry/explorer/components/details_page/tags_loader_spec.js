@@ -32,11 +32,7 @@ describe('TagsLoader component', () => {
 
   it('has the correct props', () => {
     mountComponent();
-    expect(
-      findGlSkeletonLoaders()
-        .at(0)
-        .props(),
-    ).toMatchObject({
+    expect(findGlSkeletonLoaders().at(0).props()).toMatchObject({
       width: component.loader.width,
       height: component.loader.height,
     });

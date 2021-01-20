@@ -45,15 +45,16 @@ describe('IDE extra file row component', () => {
       expect(vm.folderChangesTooltip).toBe(undefined);
     });
 
-    [{ input: 1, output: '1 changed file' }, { input: 2, output: '2 changed files' }].forEach(
-      ({ input, output }) => {
-        it('returns changed files count if changes count is not 0', () => {
-          changesCount = input;
+    [
+      { input: 1, output: '1 changed file' },
+      { input: 2, output: '2 changed files' },
+    ].forEach(({ input, output }) => {
+      it('returns changed files count if changes count is not 0', () => {
+        changesCount = input;
 
-          expect(vm.folderChangesTooltip).toBe(output);
-        });
-      },
-    );
+        expect(vm.folderChangesTooltip).toBe(output);
+      });
+    });
   });
 
   describe('show tree changes count', () => {
@@ -69,7 +70,7 @@ describe('IDE extra file row component', () => {
       expect(vm.$el.querySelector('.ide-tree-changes')).toBe(null);
     });
 
-    it('does not show when tree is open', done => {
+    it('does not show when tree is open', (done) => {
       vm.file.type = 'tree';
       vm.file.opened = true;
       changesCount = 1;
@@ -81,7 +82,7 @@ describe('IDE extra file row component', () => {
       });
     });
 
-    it('shows for trees with changes', done => {
+    it('shows for trees with changes', (done) => {
       vm.file.type = 'tree';
       vm.file.opened = false;
       changesCount = 1;
@@ -99,7 +100,7 @@ describe('IDE extra file row component', () => {
       expect(vm.$el.querySelector('.file-changed-icon')).toBe(null);
     });
 
-    it('shows when file is changed', done => {
+    it('shows when file is changed', (done) => {
       vm.file.changed = true;
 
       vm.$nextTick(() => {
@@ -109,7 +110,7 @@ describe('IDE extra file row component', () => {
       });
     });
 
-    it('shows when file is staged', done => {
+    it('shows when file is staged', (done) => {
       vm.file.staged = true;
 
       vm.$nextTick(() => {
@@ -119,7 +120,7 @@ describe('IDE extra file row component', () => {
       });
     });
 
-    it('shows when file is a tempFile', done => {
+    it('shows when file is a tempFile', (done) => {
       vm.file.tempFile = true;
 
       vm.$nextTick(() => {
@@ -129,7 +130,7 @@ describe('IDE extra file row component', () => {
       });
     });
 
-    it('shows when file is renamed', done => {
+    it('shows when file is renamed', (done) => {
       vm.file.prevPath = 'original-file';
 
       vm.$nextTick(() => {
@@ -139,7 +140,7 @@ describe('IDE extra file row component', () => {
       });
     });
 
-    it('hides when file is renamed', done => {
+    it('hides when file is renamed', (done) => {
       vm.file.prevPath = 'original-file';
       vm.file.type = 'tree';
 
@@ -156,7 +157,7 @@ describe('IDE extra file row component', () => {
       expect(vm.$el.querySelector('[data-testid="git-merge-icon"]')).toBe(null);
     });
 
-    it('shows when a merge request change', done => {
+    it('shows when a merge request change', (done) => {
       vm.file.mrChange = true;
 
       vm.$nextTick(() => {

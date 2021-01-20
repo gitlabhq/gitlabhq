@@ -29,7 +29,7 @@ describe('ConfirmModal', () => {
   beforeEach(() => {
     const buttonContainer = document.createElement('div');
 
-    buttons.forEach(x => {
+    buttons.forEach((x) => {
       const button = document.createElement('button');
       button.setAttribute('class', 'js-confirm-modal-button');
       button.setAttribute('data-path', x.path);
@@ -50,7 +50,7 @@ describe('ConfirmModal', () => {
   const findModal = () => document.querySelector('.gl-modal');
   const findModalOkButton = (modal, variant) =>
     modal.querySelector(`.modal-footer .btn-${variant}`);
-  const findModalCancelButton = modal => modal.querySelector('.modal-footer .btn-secondary');
+  const findModalCancelButton = (modal) => modal.querySelector('.modal-footer .btn-secondary');
   const modalIsHidden = () => findModal() === null;
 
   const serializeModal = (modal, buttonIndex) => {
@@ -63,7 +63,7 @@ describe('ConfirmModal', () => {
         title: modal.querySelector('.modal-title').innerHTML,
         message: modal.querySelector('.modal-body div').innerHTML,
         okVariant: [...findModalOkButton(modal, modalAttributes.okVariant).classList]
-          .find(x => x.match('btn-'))
+          .find((x) => x.match('btn-'))
           .replace('btn-', ''),
         okTitle: findModalOkButton(modal, modalAttributes.okVariant).innerHTML,
       },
@@ -78,9 +78,7 @@ describe('ConfirmModal', () => {
   describe('when button clicked', () => {
     beforeEach(() => {
       initConfirmModal();
-      findJsHooks()
-        .item(0)
-        .click();
+      findJsHooks().item(0).click();
     });
 
     it('does not replace JsHook with GlModal', () => {
@@ -116,9 +114,7 @@ describe('ConfirmModal', () => {
   `(`when multiple buttons exist`, ({ index }) => {
     beforeEach(() => {
       initConfirmModal();
-      findJsHooks()
-        .item(index)
-        .click();
+      findJsHooks().item(index).click();
     });
 
     it('correct props are passed to gl-modal', () => {

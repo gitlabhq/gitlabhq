@@ -25,8 +25,8 @@ const submitContentChangesResolver = (
     images,
     mergeRequestMeta,
     formattedMarkdown,
-  }).then(savedContentMeta => {
-    const data = produce(savedContentMeta, draftState => {
+  }).then((savedContentMeta) => {
+    const data = produce(savedContentMeta, (draftState) => {
       return {
         savedContentMeta: {
           __typename: 'SavedContentMeta',

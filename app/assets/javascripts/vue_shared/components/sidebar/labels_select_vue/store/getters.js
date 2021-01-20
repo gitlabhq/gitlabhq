@@ -9,7 +9,7 @@ import { DropdownVariant } from '../constants';
  */
 export const dropdownButtonText = (state, getters) => {
   const selectedLabels = getters.isDropdownVariantSidebar
-    ? state.labels.filter(label => label.set)
+    ? state.labels.filter((label) => label.set)
     : state.selectedLabels;
 
   if (!selectedLabels.length) {
@@ -28,25 +28,25 @@ export const dropdownButtonText = (state, getters) => {
  * selectedLabels array.
  * @param {object} state
  */
-export const selectedLabelsList = state => state.selectedLabels.map(label => label.id);
+export const selectedLabelsList = (state) => state.selectedLabels.map((label) => label.id);
 
 /**
  * Returns boolean representing whether dropdown variant
  * is `sidebar`
  * @param {object} state
  */
-export const isDropdownVariantSidebar = state => state.variant === DropdownVariant.Sidebar;
+export const isDropdownVariantSidebar = (state) => state.variant === DropdownVariant.Sidebar;
 
 /**
  * Returns boolean representing whether dropdown variant
  * is `standalone`
  * @param {object} state
  */
-export const isDropdownVariantStandalone = state => state.variant === DropdownVariant.Standalone;
+export const isDropdownVariantStandalone = (state) => state.variant === DropdownVariant.Standalone;
 
 /**
  * Returns boolean representing whether dropdown variant
  * is `embedded`
  * @param {object} state
  */
-export const isDropdownVariantEmbedded = state => state.variant === DropdownVariant.Embedded;
+export const isDropdownVariantEmbedded = (state) => state.variant === DropdownVariant.Embedded;

@@ -8,8 +8,10 @@ RSpec.describe ExpireBuildArtifactsWorker do
   describe '#perform' do
     it 'executes a service' do
       expect_next_instance_of(Ci::DestroyExpiredJobArtifactsService) do |instance|
-        expect(instance).to receive(:execute)
+        expect(instance).to receive(:execute).and_call_original
       end
+
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:destroyed_job_artifacts_count, 0)
 
       worker.perform
     end

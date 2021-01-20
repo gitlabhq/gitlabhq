@@ -153,13 +153,13 @@ describe('MemoryUsage', () => {
 
     describe('loadMetrics', () => {
       const returnServicePromise = () =>
-        new Promise(resolve => {
+        new Promise((resolve) => {
           resolve({
             data: metricsMockData,
           });
         });
 
-      it('should load metrics data using MRWidgetService', done => {
+      it('should load metrics data using MRWidgetService', (done) => {
         jest.spyOn(MRWidgetService, 'fetchMetrics').mockReturnValue(returnServicePromise(true));
         jest.spyOn(vm, 'computeGraphData').mockImplementation(() => {});
 
@@ -179,7 +179,7 @@ describe('MemoryUsage', () => {
       expect(el.querySelector('.js-usage-info')).toBeDefined();
     });
 
-    it('should show loading metrics message while metrics are being loaded', done => {
+    it('should show loading metrics message while metrics are being loaded', (done) => {
       vm.loadingMetrics = true;
       vm.hasMetrics = false;
       vm.loadFailed = false;
@@ -194,7 +194,7 @@ describe('MemoryUsage', () => {
       });
     });
 
-    it('should show deployment memory usage when metrics are loaded', done => {
+    it('should show deployment memory usage when metrics are loaded', (done) => {
       // ignore BoostrapVue warnings
       jest.spyOn(console, 'warn').mockImplementation();
 
@@ -210,7 +210,7 @@ describe('MemoryUsage', () => {
       });
     });
 
-    it('should show failure message when metrics loading failed', done => {
+    it('should show failure message when metrics loading failed', (done) => {
       vm.loadingMetrics = false;
       vm.hasMetrics = false;
       vm.loadFailed = true;
@@ -223,7 +223,7 @@ describe('MemoryUsage', () => {
       });
     });
 
-    it('should show metrics unavailable message when metrics loading failed', done => {
+    it('should show metrics unavailable message when metrics loading failed', (done) => {
       vm.loadingMetrics = false;
       vm.hasMetrics = false;
       vm.loadFailed = false;

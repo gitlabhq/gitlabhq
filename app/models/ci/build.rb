@@ -27,7 +27,8 @@ module Ci
       upload_multiple_artifacts: -> (build) { build.publishes_artifacts_reports? },
       refspecs: -> (build) { build.merge_request_ref? },
       artifacts_exclude: -> (build) { build.supports_artifacts_exclude? },
-      multi_build_steps: -> (build) { build.multi_build_steps? }
+      multi_build_steps: -> (build) { build.multi_build_steps? },
+      return_exit_code: -> (build) { build.exit_codes_defined? }
     }.freeze
 
     DEFAULT_RETRIES = {
@@ -144,6 +145,12 @@ module Ci
     scope :with_exposed_artifacts, -> do
       joins(:metadata).merge(Ci::BuildMetadata.with_exposed_artifacts)
         .includes(:metadata, :job_artifacts_metadata)
+    end
+
+    scope :with_project_and_metadata, -> do
+      if Feature.enabled?(:non_public_artifacts, type: :development)
+        joins(:metadata).includes(:project, :metadata)
+      end
     end
 
     scope :with_artifacts_not_expired, -> { with_downloadable_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.current) }
@@ -382,12 +389,8 @@ module Ci
       end
 
       after_transition any => [:skipped, :canceled] do |build, transition|
-        if Feature.enabled?(:cd_skipped_deployment_status, build.project)
-          if transition.to_name == :skipped
-            build.deployment&.skip
-          else
-            build.deployment&.cancel
-          end
+        if transition.to_name == :skipped
+          build.deployment&.skip
         else
           build.deployment&.cancel
         end
@@ -741,6 +744,16 @@ module Ci
       artifacts_metadata?
     end
 
+    def artifacts_public?
+      return true unless Feature.enabled?(:non_public_artifacts, type: :development)
+
+      artifacts_public = options.dig(:artifacts, :public)
+
+      return true if artifacts_public.nil? # Default artifacts:public to true
+
+      options.dig(:artifacts, :public)
+    end
+
     def artifacts_metadata_entry(path, **options)
       artifacts_metadata.open do |metadata_stream|
         metadata = Gitlab::Ci::Build::Artifacts::Metadata.new(
@@ -1007,12 +1020,21 @@ module Ci
     end
 
     def debug_mode?
-      return false unless Feature.enabled?(:restrict_access_to_build_debug_mode, default_enabled: true)
-
       # TODO: Have `debug_mode?` check against data on sent back from runner
       # to capture all the ways that variables can be set.
       # See (https://gitlab.com/gitlab-org/gitlab/-/issues/290955)
       variables.any? { |variable| variable[:key] == 'CI_DEBUG_TRACE' && variable[:value].casecmp('true') == 0 }
+    end
+
+    def drop_with_exit_code!(failure_reason, exit_code)
+      transaction do
+        conditionally_allow_failure!(exit_code)
+        drop!(failure_reason)
+      end
+    end
+
+    def exit_codes_defined?
+      options.dig(:allow_failure_criteria, :exit_codes).present?
     end
 
     protected
@@ -1097,6 +1119,22 @@ module Ci
       rescue OpenSSL::PKey::RSAError, Gitlab::Ci::Jwt::NoSigningKeyError => e
         Gitlab::ErrorTracking.track_exception(e)
       end
+    end
+
+    def conditionally_allow_failure!(exit_code)
+      return unless ::Gitlab::Ci::Features.allow_failure_with_exit_codes_enabled?
+      return unless exit_code
+
+      if allowed_to_fail_with_code?(exit_code)
+        update_columns(allow_failure: true)
+      end
+    end
+
+    def allowed_to_fail_with_code?(exit_code)
+      options
+        .dig(:allow_failure_criteria, :exit_codes)
+        .to_a
+        .include?(exit_code)
     end
   end
 end

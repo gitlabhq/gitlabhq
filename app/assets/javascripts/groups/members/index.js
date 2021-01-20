@@ -38,6 +38,6 @@ export const initGroupMembersApp = (
     el,
     components: { App },
     store,
-    render: createElement => createElement('app'),
+    render: (createElement) => createElement('app'),
   });
 };

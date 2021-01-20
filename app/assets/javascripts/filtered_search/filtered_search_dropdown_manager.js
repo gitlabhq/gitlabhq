@@ -23,7 +23,7 @@ export default class FilteredSearchDropdownManager {
     isGroupDecendent,
     filteredSearchTokenKeys,
   }) {
-    const removeTrailingSlash = url => url.replace(/\/$/, '');
+    const removeTrailingSlash = (url) => url.replace(/\/$/, '');
 
     this.container = FilteredSearchContainer.container;
     this.runnerTagsEndpoint = removeTrailingSlash(runnerTagsEndpoint);

@@ -124,7 +124,10 @@ describe('AlertManagementEmptyState', () => {
     it('renders the tabs selection with valid tabs', () => {
       mountComponent({
         props: {
-          statusTabs: [{ status: 'opened', title: 'Open' }, { status: 'closed', title: 'Closed' }],
+          statusTabs: [
+            { status: 'opened', title: 'Open' },
+            { status: 'closed', title: 'Closed' },
+          ],
         },
       });
 
@@ -216,12 +219,7 @@ describe('AlertManagementEmptyState', () => {
         findPagination().vm.$emit('input', 3);
 
         await wrapper.vm.$nextTick();
-        expect(
-          findPagination()
-            .findAll('.page-item')
-            .at(0)
-            .text(),
-        ).toBe('Prev');
+        expect(findPagination().findAll('.page-item').at(0).text()).toBe('Prev');
       });
 
       it('returns prevPage number', async () => {
@@ -244,12 +242,7 @@ describe('AlertManagementEmptyState', () => {
         findPagination().vm.$emit('input', 3);
 
         await wrapper.vm.$nextTick();
-        expect(
-          findPagination()
-            .findAll('.page-item')
-            .at(1)
-            .text(),
-        ).toBe('Next');
+        expect(findPagination().findAll('.page-item').at(1).text()).toBe('Next');
       });
 
       it('returns nextPage number', async () => {

@@ -10,7 +10,7 @@ localVue.use(Vuex);
 describe('~/releases/components/releases_pagination.vue', () => {
   let wrapper;
 
-  const createComponent = useGraphQLEndpoint => {
+  const createComponent = (useGraphQLEndpoint) => {
     const store = new Vuex.Store({
       getters: {
         useGraphQLEndpoint: () => useGraphQLEndpoint,

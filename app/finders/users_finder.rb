@@ -34,6 +34,7 @@ class UsersFinder
     users = User.all.order_id_desc
     users = by_username(users)
     users = by_id(users)
+    users = by_admins(users)
     users = by_search(users)
     users = by_blocked(users)
     users = by_active(users)
@@ -60,6 +61,12 @@ class UsersFinder
     return users unless params[:id]
 
     users.id_in(params[:id])
+  end
+
+  def by_admins(users)
+    return users unless params[:admins] && current_user&.can_read_all_resources?
+
+    users.admins
   end
 
   def by_search(users)

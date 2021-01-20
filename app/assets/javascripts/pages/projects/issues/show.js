@@ -16,7 +16,7 @@ import initInviteMemberModal from '~/invite_member/init_invite_member_modal';
 
 import { IssuableType } from '~/issuable_show/constants';
 
-export default function() {
+export default function () {
   const initialDataEl = document.getElementById('js-issuable-app');
   const { issueType, ...issuableData } = parseIssuableData(initialDataEl);
 
@@ -37,7 +37,7 @@ export default function() {
   initRelatedMergeRequestsApp();
 
   import(/* webpackChunkName: 'design_management' */ '~/design_management')
-    .then(module => module.default())
+    .then((module) => module.default())
     .catch(() => {});
 
   new ZenMode(); // eslint-disable-line no-new

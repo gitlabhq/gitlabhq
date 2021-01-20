@@ -21,7 +21,7 @@ RSpec.describe Banzai::Pipeline::DescriptionPipeline do
     stub_commonmark_sourcepos_disabled
   end
 
-  it 'uses a limited whitelist' do
+  it 'uses a limited allowlist' do
     doc = parse('# Description')
 
     expect(doc.strip).to eq 'Description'

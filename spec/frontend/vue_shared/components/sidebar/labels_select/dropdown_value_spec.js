@@ -71,12 +71,7 @@ describe('DropdownValueComponent', () => {
     it('render slot content inside component when `labels` prop is empty', () => {
       const vmEmptyLabels = createComponent([]);
 
-      expect(
-        vmEmptyLabels
-          .find('.text-secondary')
-          .text()
-          .trim(),
-      ).toBe(mockConfig.emptyValueText);
+      expect(vmEmptyLabels.find('.text-secondary').text().trim()).toBe(mockConfig.emptyValueText);
       vmEmptyLabels.destroy();
     });
 

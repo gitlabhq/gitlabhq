@@ -27,11 +27,8 @@ RSpec.describe BulkImports::Common::Extractors::GraphqlExtractor do
       allow(graphql_client).to receive(:execute).and_return(response)
     end
 
-    it 'returns an enumerator with fetched results' do
-      response = subject.extract(context)
-
-      expect(response).to be_instance_of(Enumerator)
-      expect(response.first).to eq({ foo: :bar })
+    it 'returns original hash' do
+      expect(subject.extract(context)).to eq({ foo: :bar })
     end
   end
 

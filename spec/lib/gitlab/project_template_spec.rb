@@ -11,6 +11,7 @@ RSpec.describe Gitlab::ProjectTemplate do
         hexo sse_middleman gitpod_spring_petclinic nfhugo
         nfjekyll nfplainhtml nfgitbook nfhexo salesforcedx
         serverless_framework jsonnet cluster_management
+        kotlin_native_linux
       ]
 
       expect(described_class.all).to be_an(Array)

@@ -15,7 +15,7 @@ describe('ide/stores/extend', () => {
     store = {};
     el = {};
 
-    [terminalPlugin, terminalSyncPlugin].forEach(x => {
+    [terminalPlugin, terminalSyncPlugin].forEach((x) => {
       const plugin = jest.fn();
 
       x.mockImplementation(() => plugin);
@@ -28,7 +28,7 @@ describe('ide/stores/extend', () => {
     terminalSyncPlugin.mockClear();
   });
 
-  const withGonFeatures = features => {
+  const withGonFeatures = (features) => {
     global.gon = { ...global.gon, features };
   };
 

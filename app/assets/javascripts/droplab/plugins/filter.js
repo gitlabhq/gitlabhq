@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 const Filter = {
-  keydown: function(e) {
+  keydown: function (e) {
     if (this.destroyed) return;
 
     var hiddenCount = 0;
@@ -21,22 +21,22 @@ const Filter = {
     if (config && config.filterFunction && typeof config.filterFunction === 'function') {
       filterFunction = config.filterFunction;
     } else {
-      filterFunction = function(o) {
+      filterFunction = function (o) {
         // cheap string search
         o.droplab_hidden = o[config.template].toLowerCase().indexOf(value) === -1;
         return o;
       };
     }
 
-    dataHiddenCount = data.filter(function(o) {
+    dataHiddenCount = data.filter(function (o) {
       return !o.droplab_hidden;
     }).length;
 
-    matches = data.map(function(o) {
+    matches = data.map(function (o) {
       return filterFunction(o, value);
     });
 
-    hiddenCount = matches.filter(function(o) {
+    hiddenCount = matches.filter(function (o) {
       return !o.droplab_hidden;
     }).length;
 

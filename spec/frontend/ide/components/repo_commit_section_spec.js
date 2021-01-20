@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
+import { keepAlive } from 'helpers/keep_alive_component_helper';
 import { createStore } from '~/ide/stores';
 import { createRouter } from '~/ide/ide_router';
-import { keepAlive } from '../../helpers/keep_alive_component_helper';
 import RepoCommitSection from '~/ide/components/repo_commit_section.vue';
 import EmptyState from '~/ide/components/commit_sidebar/empty_state.vue';
 import { stageKeys } from '~/ide/constants';
@@ -32,7 +32,7 @@ describe('RepoCommitSection', () => {
       },
     };
 
-    const files = [file('file1'), file('file2')].map(f =>
+    const files = [file('file1'), file('file2')].map((f) =>
       Object.assign(f, {
         type: 'blob',
         content: 'orginal content',
@@ -42,7 +42,7 @@ describe('RepoCommitSection', () => {
     store.state.currentBranch = 'master';
     store.state.changedFiles = [];
     store.state.stagedFiles = [{ ...files[0] }, { ...files[1] }];
-    store.state.stagedFiles.forEach(f =>
+    store.state.stagedFiles.forEach((f) =>
       Object.assign(f, {
         changed: true,
         staged: true,
@@ -50,7 +50,7 @@ describe('RepoCommitSection', () => {
       }),
     );
 
-    files.forEach(f => {
+    files.forEach((f) => {
       store.state.entries[f.path] = f;
     });
   }
@@ -77,18 +77,8 @@ describe('RepoCommitSection', () => {
     });
 
     it('renders no changes text', () => {
-      expect(
-        wrapper
-          .find(EmptyState)
-          .text()
-          .trim(),
-      ).toContain('No changes');
-      expect(
-        wrapper
-          .find(EmptyState)
-          .find('img')
-          .attributes('src'),
-      ).toBe(TEST_NO_CHANGES_SVG);
+      expect(wrapper.find(EmptyState).text().trim()).toContain('No changes');
+      expect(wrapper.find(EmptyState).find('img').attributes('src')).toBe(TEST_NO_CHANGES_SVG);
     });
   });
 
@@ -115,9 +105,9 @@ describe('RepoCommitSection', () => {
       const allFiles = store.state.changedFiles.concat(store.state.stagedFiles);
       const changedFileNames = wrapper
         .findAll('.multi-file-commit-list > li')
-        .wrappers.map(x => x.text().trim());
+        .wrappers.map((x) => x.text().trim());
 
-      expect(changedFileNames).toEqual(allFiles.map(x => x.path));
+      expect(changedFileNames).toEqual(allFiles.map((x) => x.path));
     });
 
     it('does not show empty state', () => {
@@ -151,7 +141,7 @@ describe('RepoCommitSection', () => {
     beforeEach(() => {
       setupDefaultState();
 
-      store.state.changedFiles = store.state.stagedFiles.map(x =>
+      store.state.changedFiles = store.state.stagedFiles.map((x) =>
         Object.assign(x, { staged: false }),
       );
       store.state.stagedFiles = [];

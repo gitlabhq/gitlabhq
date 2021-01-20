@@ -36,7 +36,7 @@ RSpec.describe 'User creates release', :js do
     expect(page.find('.ref-selector button')).to have_content(project.default_branch)
   end
 
-  context 'when the "Save release" button is clicked' do
+  context 'when the "Save release" button is clicked', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/297507' do
     let(:tag_name) { 'v1.0' }
     let(:release_title) { 'A most magnificent release' }
     let(:release_notes) { 'Best. Release. **Ever.** :rocket:' }

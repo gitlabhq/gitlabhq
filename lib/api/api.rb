@@ -59,6 +59,7 @@ module API
         project: -> { @project },
         namespace: -> { @group },
         caller_id: route.origin,
+        remote_ip: request.ip,
         feature_category: feature_category
       )
     end
@@ -212,6 +213,7 @@ module API
       mount ::API::GroupPackages
       mount ::API::PackageFiles
       mount ::API::NugetProjectPackages
+      mount ::API::NugetGroupPackages
       mount ::API::PypiPackages
       mount ::API::ComposerPackages
       mount ::API::ConanProjectPackages
@@ -251,6 +253,7 @@ module API
       mount ::API::Services
       mount ::API::Settings
       mount ::API::SidekiqMetrics
+      mount ::API::SnippetRepositoryStorageMoves
       mount ::API::Snippets
       mount ::API::Statistics
       mount ::API::Submodules

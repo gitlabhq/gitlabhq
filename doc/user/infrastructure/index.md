@@ -8,45 +8,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Motivation
 
-The Terraform integration features within GitLab enable your GitOps / Infrastructure-as-Code (IaC)
+The Terraform integration features in GitLab enable your GitOps / Infrastructure-as-Code (IaC)
 workflows to tie into GitLab authentication and authorization. These features focus on
-lowering the barrier to entry for teams to adopt Terraform, collaborate effectively within
+lowering the barrier to entry for teams to adopt Terraform, collaborate effectively in
 GitLab, and support Terraform best practices.
-
-## GitLab Managed Terraform state
-
-[Terraform remote backends](https://www.terraform.io/docs/backends/index.html)
-enable you to store the state file in a remote, shared store. GitLab uses the
-[Terraform HTTP backend](https://www.terraform.io/docs/backends/types/http.html)
-to securely store the state files in local storage (the default) or
-[the remote store of your choice](../../administration/terraform_state.md).
-
-The GitLab managed Terraform state backend can store your Terraform state easily and
-securely, and spares you from setting up additional remote resources like
-Amazon S3 or Google Cloud Storage. Its features include:
-
-- Supporting encryption of the state file both in transit and at rest.
-- Locking and unlocking state.
-- Remote Terraform plan and apply execution.
-
-Read more on setting up and [using GitLab Managed Terraform states](terraform_state.md)
-
-WARNING:
-Like any other job artifact, Terraform plan data is [viewable by anyone with Guest access](../permissions.md) to the repository.
-Neither Terraform nor GitLab encrypts the plan file by default. If your Terraform plan
-includes sensitive data such as passwords, access tokens, or certificates, GitLab strongly
-recommends encrypting plan output or modifying the project visibility settings.
-
-## Terraform integration in Merge Requests
-
-Collaborating around Infrastructure as Code (IaC) changes requires both code changes and expected infrastructure changes to be checked and approved. GitLab provides a solution to help collaboration around Terraform code changes and their expected effects using the Merge Request pages. This way users don't have to build custom tools or rely on 3rd party solutions to streamline their IaC workflows.
-
-Read more on setting up and [using the merge request integrations](mr_integration.md).
 
 ## Quick Start
 
-Use the following `.gitlab-ci.yml` to set up a simple Terraform project integration
-for GitLab versions 13.5 and greater:
+Use the following `.gitlab-ci.yml` to set up a basic Terraform project integration
+for GitLab versions 13.5 and later:
 
 ```yaml
 include:
@@ -68,3 +38,50 @@ This template also includes some opinionated decisions, which you can override:
   `init`, `validate`, `build`, and `deploy`. These stages
   [run the Terraform commands](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform/Base.latest.gitlab-ci.yml)
   `init`, `validate`, `plan`, `plan-json`, and `apply`. The `apply` command only runs on `master`.
+
+## GitLab Managed Terraform state
+
+[Terraform remote backends](https://www.terraform.io/docs/backends/index.html)
+enable you to store the state file in a remote, shared store. GitLab uses the
+[Terraform HTTP backend](https://www.terraform.io/docs/backends/types/http.html)
+to securely store the state files in local storage (the default) or
+[the remote store of your choice](../../administration/terraform_state.md).
+
+The GitLab managed Terraform state backend can store your Terraform state easily and
+securely. It spares you from setting up additional remote resources like
+Amazon S3 or Google Cloud Storage. Its features include:
+
+- Supporting encryption of the state file both in transit and at rest.
+- Locking and unlocking state.
+- Remote Terraform plan and apply execution.
+
+Read more on setting up and [using GitLab Managed Terraform states](terraform_state.md)
+
+WARNING:
+Like any other job artifact, Terraform plan data is [viewable by anyone with Guest access](../permissions.md) to the repository.
+Neither Terraform nor GitLab encrypts the plan file by default. If your Terraform plan
+includes sensitive data such as passwords, access tokens, or certificates, GitLab strongly
+recommends encrypting plan output or modifying the project visibility settings.
+
+## Terraform integration in Merge Requests
+
+Collaborating around Infrastructure as Code (IaC) changes requires both code changes
+and expected infrastructure changes to be checked and approved. GitLab provides a
+solution to help collaboration around Terraform code changes and their expected
+effects using the Merge Request pages. This way users don't have to build custom
+tools or rely on 3rd party solutions to streamline their IaC workflows.
+
+Read more on setting up and [using the merge request integrations](mr_integration.md).
+
+## The GitLab terraform provider
+
+WARNING:
+The GitLab Terraform provider is released separately from GitLab.
+We are working on migrating the GitLab Terraform provider for GitLab.com.
+
+You can use the [GitLab Terraform provider](https://github.com/gitlabhq/terraform-provider-gitlab)
+to manage various aspects of GitLab using Terraform. The provider is an open source project,
+owned by GitLab, where everyone can contribute.
+
+The [documentation of the provider](https://registry.terraform.io/providers/gitlabhq/gitlab/latest/docs)
+is available as part of the official Terraform provider documentations.

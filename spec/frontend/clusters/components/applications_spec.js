@@ -16,7 +16,7 @@ describe('Applications', () => {
     gon.features = gon.features || {};
   });
 
-  const createApp = ({ applications, type, props } = {}, isShallow) => {
+  const createApp = ({ applications, type, propsData } = {}, isShallow) => {
     const mountMethod = isShallow ? shallowMount : mount;
 
     wrapper = mountMethod(Applications, {
@@ -24,13 +24,13 @@ describe('Applications', () => {
       propsData: {
         type,
         applications: { ...APPLICATIONS_MOCK_STATE, ...applications },
-        ...props,
+        ...propsData,
       },
     });
   };
 
-  const createShallowApp = options => createApp(options, true);
-  const findByTestId = id => wrapper.find(`[data-testid="${id}"]`);
+  const createShallowApp = (options) => createApp(options, true);
+  const findByTestId = (id) => wrapper.find(`[data-testid="${id}"]`);
   afterEach(() => {
     wrapper.destroy();
   });
@@ -544,7 +544,7 @@ describe('Applications', () => {
 
   describe('Cilium application', () => {
     it('shows the correct description', () => {
-      createApp({ props: { ciliumHelpPath: 'cilium-help-path' } });
+      createApp({ propsData: { ciliumHelpPath: 'cilium-help-path' } });
       expect(findByTestId('ciliumDescription').element).toMatchSnapshot();
     });
   });

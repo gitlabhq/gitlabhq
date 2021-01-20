@@ -28,7 +28,7 @@ describe('File Tree component', () => {
   const findFileRow = () => wrapper.find(MockFileRow);
   const findChildrenTrees = () => wrapper.findAll(FileTree).wrappers.slice(1);
   const findChildrenTreeProps = () =>
-    findChildrenTrees().map(x => ({
+    findChildrenTrees().map((x) => ({
       ...x.props(),
       ...pick(x.attributes(), Object.keys(TEST_EXTA_ARGS)),
     }));
@@ -61,7 +61,7 @@ describe('File Tree component', () => {
   describe('file tree', () => {
     const createChildren = () => [{ id: 1 }, { id: 2 }];
     const createChildrenExpectation = (props = {}) =>
-      createChildren().map(file => ({
+      createChildren().map((file) => ({
         fileRowComponent: MockFileRow,
         file,
         ...TEST_EXTA_ARGS,

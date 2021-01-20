@@ -74,7 +74,7 @@ export default {
       );
     },
     formattedData() {
-      return this.sortedData.map(value => [dateFormat(value.date, 'mmm dd'), value.coverage]);
+      return this.sortedData.map((value) => [dateFormat(value.date, 'mmm dd'), value.coverage]);
     },
     chartData() {
       return [
@@ -161,9 +161,7 @@ export default {
           <template #coveragePercentage>
             {{ coveragePercentage }}
           </template>
-          <template #percentSymbol>
-            %
-          </template>
+          <template #percentSymbol> % </template>
         </gl-sprintf>
       </template>
     </gl-area-chart>

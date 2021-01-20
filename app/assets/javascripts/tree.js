@@ -8,7 +8,7 @@ export default class TreeView {
     this.initKeyNav();
     // Code browser tree slider
     // Make the entire tree-item row clickable, but not if clicking another link (like a commit message)
-    $('.tree-content-holder .tree-item').on('click', function(e) {
+    $('.tree-content-holder .tree-item').on('click', function (e) {
       const $clickedEl = $(e.target);
       const path = $('.tree-item-file-name a', this).attr('href');
       if (!$clickedEl.is('a') && !$clickedEl.is('.str-truncated')) {
@@ -20,15 +20,13 @@ export default class TreeView {
       }
     });
     // Show the "Loading commit data" for only the first element
-    $('span.log_loading')
-      .first()
-      .removeClass('hide');
+    $('span.log_loading').first().removeClass('hide');
   }
 
   initKeyNav() {
     const li = $('tr.tree-item');
     let liSelected = null;
-    return $('body').keydown(e => {
+    return $('body').keydown((e) => {
       let next, path;
       if ($('input:focus').length > 0 && (e.which === 38 || e.which === 40)) {
         return false;

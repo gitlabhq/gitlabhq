@@ -2,7 +2,7 @@ import Visibility from 'visibilityjs';
 import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import Poll from '~/lib/utils/poll';
-import { setFaviconOverlay, resetFavicon } from '~/lib/utils/common_utils';
+import { setFaviconOverlay, resetFavicon } from '~/lib/utils/favicon';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
 import {
@@ -173,7 +173,7 @@ export const fetchTrace = ({ dispatch, state }) =>
         dispatch('startPollingTrace');
       }
     })
-    .catch(e =>
+    .catch((e) =>
       e.response.status === httpStatusCodes.FORBIDDEN
         ? dispatch('receiveTraceUnauthorizedError')
         : dispatch('receiveTraceError'),
@@ -229,7 +229,7 @@ export const fetchJobsForStage = ({ dispatch }, stage = {}) => {
       },
     })
     .then(({ data }) => {
-      const retriedJobs = data.retried.map(job => ({ ...job, retried: true }));
+      const retriedJobs = data.retried.map((job) => ({ ...job, retried: true }));
       const jobs = data.latest_statuses.concat(retriedJobs);
 
       dispatch('receiveJobsForStageSuccess', jobs);
@@ -244,7 +244,7 @@ export const receiveJobsForStageError = ({ commit }) => {
 };
 
 export const triggerManualJob = ({ state }, variables) => {
-  const parsedVariables = variables.map(variable => {
+  const parsedVariables = variables.map((variable) => {
     const copyVar = { ...variable };
     delete copyVar.id;
     return copyVar;

@@ -70,10 +70,11 @@ module Gitlab
         end.join
       end
 
-      def fetch_remote(remote, ssh_auth:, forced:, no_tags:, timeout:, prune: true)
+      def fetch_remote(remote, ssh_auth:, forced:, no_tags:, timeout:, prune: true, check_tags_changed: false)
         request = Gitaly::FetchRemoteRequest.new(
           repository: @gitaly_repo, remote: remote, force: forced,
-          no_tags: no_tags, timeout: timeout, no_prune: !prune
+          no_tags: no_tags, timeout: timeout, no_prune: !prune,
+          check_tags_changed: check_tags_changed
         )
 
         if ssh_auth&.ssh_mirror_url?

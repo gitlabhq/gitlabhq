@@ -1,4 +1,4 @@
-export const resetStore = store => {
+export const resetStore = (store) => {
   store.replaceState({
     notes: [],
     targetNoteHash: null,

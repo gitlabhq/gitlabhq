@@ -28,13 +28,13 @@ export default {
       if (this.isCurrentUser) {
         return sprintf(
           s__('Members|Are you sure you want to withdraw your access request for "%{source}"'),
-          { source: source.name },
+          { source: source.fullName },
         );
       }
 
       return sprintf(
         s__('Members|Are you sure you want to deny %{usersName}\'s request to join "%{source}"'),
-        { usersName: user.name, source: source.name },
+        { usersName: user.name, source: source.fullName },
       );
     },
   },

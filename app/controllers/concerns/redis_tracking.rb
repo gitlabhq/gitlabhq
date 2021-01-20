@@ -33,7 +33,7 @@ module RedisTracking
     return unless metric_feature_enabled?(feature, feature_default_enabled)
     return unless visitor_id
 
-    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(visitor_id, event_name)
+    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values: visitor_id)
   end
 
   def trackable_request?

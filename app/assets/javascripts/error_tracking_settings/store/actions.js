@@ -63,7 +63,7 @@ export const updateSettings = ({ dispatch, state }) => {
     .then(() => {
       refreshCurrentPage();
     })
-    .catch(err => {
+    .catch((err) => {
       dispatch('receiveSettingsError', err);
     });
 };

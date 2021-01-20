@@ -9,7 +9,7 @@ describe('Toolbar Item', () => {
   const findIcon = () => wrapper.find(GlIcon);
   const findButton = () => wrapper.find('button');
 
-  const buildWrapper = propsData => {
+  const buildWrapper = (propsData) => {
     wrapper = shallowMount(ToolbarItem, {
       propsData,
       directives: {

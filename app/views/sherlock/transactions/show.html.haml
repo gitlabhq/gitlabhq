@@ -18,8 +18,8 @@
 
 .row-content-block
   .float-right
-    = link_to(sherlock_transactions_path, class: 'btn') do
-      = sprite_icon('arrow-left')
+    = link_to(sherlock_transactions_path, class: 'gl-button btn') do
+      = sprite_icon('arrow-left', css_class: 'gl-mr-3')
       = t('sherlock.all_transactions')
   .oneline
     = t('sherlock.transaction')

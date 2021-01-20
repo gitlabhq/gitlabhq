@@ -76,17 +76,6 @@ RSpec.describe MergeRequestWidgetEntity do
       .to eq("/#{resource.project.full_path}/-/merge_requests/#{resource.iid}.diff")
   end
 
-  it 'has blob path data' do
-    allow(resource).to receive_messages(
-      base_pipeline: pipeline,
-      head_pipeline: pipeline
-    )
-
-    expect(subject).to include(:blob_path)
-    expect(subject[:blob_path]).to include(:base_path)
-    expect(subject[:blob_path]).to include(:head_path)
-  end
-
   describe 'codequality report artifacts', :request_store do
     let(:merge_base_pipeline) { create(:ci_pipeline, :with_codequality_report, project: project) }
 

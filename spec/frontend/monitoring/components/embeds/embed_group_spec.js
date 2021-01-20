@@ -76,7 +76,7 @@ describe('Embed Group', () => {
       expect(wrapper.find('.gl-card-body').classes()).not.toContain('d-none');
     });
 
-    it('collapses when clicked', done => {
+    it('collapses when clicked', (done) => {
       metricsWithDataGetter.mockReturnValue([1]);
       mountComponent({ shallow: false, stubs: { MetricEmbed: true } });
 
@@ -134,7 +134,7 @@ describe('Embed Group', () => {
     });
 
     it('passes the correct props to the Embed components', () => {
-      expect(wrapper.findAll(MetricEmbed).wrappers.map(item => item.props())).toEqual(
+      expect(wrapper.findAll(MetricEmbed).wrappers.map((item) => item.props())).toEqual(
         multipleEmbedProps(),
       );
     });

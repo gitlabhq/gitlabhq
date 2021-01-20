@@ -675,16 +675,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
             expect(response).to have_gitlab_http_status(:forbidden)
           end
-
-          context 'with restrict_access_to_build_debug_mode feature disabled' do
-            before do
-              stub_feature_flags(restrict_access_to_build_debug_mode: false)
-            end
-
-            it 'returns response forbidden' do
-              expect(response).to have_gitlab_http_status(:ok)
-            end
-          end
         end
       end
     end
@@ -1139,18 +1129,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
             expect(response).to have_gitlab_http_status(:ok)
           end
-
-          context 'with restrict_access_to_build_debug_mode feature disabled' do
-            before do
-              stub_feature_flags(restrict_access_to_build_debug_mode: false)
-            end
-
-            it 'returns response ok' do
-              response = subject
-
-              expect(response).to have_gitlab_http_status(:ok)
-            end
-          end
         end
 
         context 'without proper permissions for debug logging on a project' do
@@ -1163,18 +1141,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
             response = subject
 
             expect(response).to have_gitlab_http_status(:forbidden)
-          end
-
-          context 'with restrict_access_to_build_debug_mode feature disabled' do
-            before do
-              stub_feature_flags(restrict_access_to_build_debug_mode: false)
-            end
-
-            it 'returns response ok' do
-              response = subject
-
-              expect(response).to have_gitlab_http_status(:ok)
-            end
           end
         end
       end

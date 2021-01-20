@@ -30,7 +30,6 @@ module Ci
     end
 
     def should_track_failures?
-      return false unless Feature.enabled?(:test_failure_history, project)
       return false unless project.default_branch_or_master == pipeline.ref
 
       # We fetch for up to MAX_TRACKABLE_FAILURES + 1 builds. So if ever we get

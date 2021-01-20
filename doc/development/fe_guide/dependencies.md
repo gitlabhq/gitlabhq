@@ -8,12 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Package manager
 
-We use [Yarn](https://yarnpkg.com/) to manage frontend dependencies. There are a few exceptions:
-
-- [FontAwesome](https://fontawesome.com/), installed via the `font-awesome-rails` gem: we are working to replace it with
-  [GitLab SVGs](https://gitlab-org.gitlab.io/gitlab-svgs/) icons library.
-- [ACE](https://ace.c9.io/) editor, installed via the `ace-rails-ap` gem.
-- Other dependencies found under `vendor/assets/`.
+We use [Yarn](https://yarnpkg.com/) to manage frontend dependencies. There are a few exceptions, stored in `vendor/assets/`.
 
 ## Updating dependencies
 

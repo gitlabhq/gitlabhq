@@ -81,17 +81,17 @@ export default class VariableList {
       this.initRow(rowEl);
     });
 
-    this.$container.on('click', '.js-row-remove-button', e => {
+    this.$container.on('click', '.js-row-remove-button', (e) => {
       e.preventDefault();
       this.removeRow($(e.currentTarget).closest('.js-row'));
     });
 
     const inputSelector = Object.keys(this.inputMap)
-      .map(name => this.inputMap[name].selector)
+      .map((name) => this.inputMap[name].selector)
       .join(',');
 
     // Remove any empty rows except the last row
-    this.$container.on('blur', inputSelector, e => {
+    this.$container.on('blur', inputSelector, (e) => {
       const $row = $(e.currentTarget).closest('.js-row');
 
       if ($row.is(':not(:last-child)') && !this.checkIfRowTouched($row)) {
@@ -99,7 +99,7 @@ export default class VariableList {
       }
     });
 
-    this.$container.on('input trigger-change', inputSelector, e => {
+    this.$container.on('input trigger-change', inputSelector, (e) => {
       // Always make sure there is an empty last row
       const $lastRow = this.$container.find('.js-row').last();
 
@@ -149,7 +149,7 @@ export default class VariableList {
     $rowClone.removeAttr('data-is-persisted');
 
     // Reset the inputs to their defaults
-    Object.keys(this.inputMap).forEach(name => {
+    Object.keys(this.inputMap).forEach((name) => {
       const entry = this.inputMap[name];
       $rowClone.find(entry.selector).val(entry.default);
     });
@@ -184,7 +184,7 @@ export default class VariableList {
   }
 
   checkIfRowTouched($row) {
-    return Object.keys(this.inputMap).some(name => {
+    return Object.keys(this.inputMap).some((name) => {
       // Row should not qualify as touched if only switches have been touched
       if (['protected', 'masked'].includes(name)) return false;
 
@@ -223,14 +223,11 @@ export default class VariableList {
   getAllData() {
     // Ignore the last empty row because we don't want to try persist
     // a blank variable and run into validation problems.
-    const validRows = this.$container
-      .find('.js-row')
-      .toArray()
-      .slice(0, -1);
+    const validRows = this.$container.find('.js-row').toArray().slice(0, -1);
 
-    return validRows.map(rowEl => {
+    return validRows.map((rowEl) => {
       const resultant = {};
-      Object.keys(this.inputMap).forEach(name => {
+      Object.keys(this.inputMap).forEach((name) => {
         const entry = this.inputMap[name];
         const $input = $(rowEl).find(entry.selector);
         if ($input.length) {

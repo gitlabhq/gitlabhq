@@ -25,8 +25,8 @@ RSpec.describe Noteable do
 
   let(:active_position2) do
     Gitlab::Diff::Position.new(
-      old_path: "files/ruby/popen.rb",
-      new_path: "files/ruby/popen.rb",
+      old_path: 'files/ruby/popen.rb',
+      new_path: 'files/ruby/popen.rb',
       old_line: 16,
       new_line: 22,
       diff_refs: subject.diff_refs
@@ -35,11 +35,11 @@ RSpec.describe Noteable do
 
   let(:outdated_position) do
     Gitlab::Diff::Position.new(
-      old_path: "files/ruby/popen.rb",
-      new_path: "files/ruby/popen.rb",
+      old_path: 'files/ruby/popen.rb',
+      new_path: 'files/ruby/popen.rb',
       old_line: nil,
       new_line: 9,
-      diff_refs: project.commit("874797c3a73b60d2187ed6e2fcabd289ff75171e").diff_refs
+      diff_refs: project.commit('874797c3a73b60d2187ed6e2fcabd289ff75171e').diff_refs
     )
   end
 
@@ -80,7 +80,7 @@ RSpec.describe Noteable do
   describe '#grouped_diff_discussions' do
     let(:grouped_diff_discussions) { subject.grouped_diff_discussions }
 
-    it "includes active discussions" do
+    it 'includes active discussions' do
       discussions = grouped_diff_discussions.values.flatten
 
       expect(discussions.count).to eq(2)
@@ -91,17 +91,17 @@ RSpec.describe Noteable do
       expect(discussions.last.notes).to eq([active_diff_note3])
     end
 
-    it "doesn't include outdated discussions" do
+    it 'does not include outdated discussions' do
       expect(grouped_diff_discussions.values.flatten.map(&:id)).not_to include(outdated_diff_note1.discussion_id)
     end
 
-    it "groups the discussions by line code" do
+    it 'groups the discussions by line code' do
       expect(grouped_diff_discussions[active_diff_note1.line_code].first.id).to eq(active_diff_note1.discussion_id)
       expect(grouped_diff_discussions[active_diff_note3.line_code].first.id).to eq(active_diff_note3.discussion_id)
     end
   end
 
-  context "discussion status" do
+  context 'discussion status' do
     let(:first_discussion) { build_stubbed(:discussion_note_on_merge_request, noteable: subject, project: project).to_discussion }
     let(:second_discussion) { build_stubbed(:discussion_note_on_merge_request, noteable: subject, project: project).to_discussion }
     let(:third_discussion) { build_stubbed(:discussion_note_on_merge_request, noteable: subject, project: project).to_discussion }
@@ -110,56 +110,56 @@ RSpec.describe Noteable do
       allow(subject).to receive(:resolvable_discussions).and_return([first_discussion, second_discussion, third_discussion])
     end
 
-    describe "#discussions_resolvable?" do
-      context "when all discussions are unresolvable" do
+    describe '#discussions_resolvable?' do
+      context 'when all discussions are unresolvable' do
         before do
           allow(first_discussion).to receive(:resolvable?).and_return(false)
           allow(second_discussion).to receive(:resolvable?).and_return(false)
           allow(third_discussion).to receive(:resolvable?).and_return(false)
         end
 
-        it "returns false" do
+        it 'returns false' do
           expect(subject.discussions_resolvable?).to be false
         end
       end
 
-      context "when some discussions are unresolvable and some discussions are resolvable" do
+      context 'when some discussions are unresolvable and some discussions are resolvable' do
         before do
           allow(first_discussion).to receive(:resolvable?).and_return(true)
           allow(second_discussion).to receive(:resolvable?).and_return(false)
           allow(third_discussion).to receive(:resolvable?).and_return(true)
         end
 
-        it "returns true" do
+        it 'returns true' do
           expect(subject.discussions_resolvable?).to be true
         end
       end
 
-      context "when all discussions are resolvable" do
+      context 'when all discussions are resolvable' do
         before do
           allow(first_discussion).to receive(:resolvable?).and_return(true)
           allow(second_discussion).to receive(:resolvable?).and_return(true)
           allow(third_discussion).to receive(:resolvable?).and_return(true)
         end
 
-        it "returns true" do
+        it 'returns true' do
           expect(subject.discussions_resolvable?).to be true
         end
       end
     end
 
-    describe "#discussions_resolved?" do
-      context "when discussions are not resolvable" do
+    describe '#discussions_resolved?' do
+      context 'when discussions are not resolvable' do
         before do
           allow(subject).to receive(:discussions_resolvable?).and_return(false)
         end
 
-        it "returns false" do
+        it 'returns false' do
           expect(subject.discussions_resolved?).to be false
         end
       end
 
-      context "when discussions are resolvable" do
+      context 'when discussions are resolvable' do
         before do
           allow(subject).to receive(:discussions_resolvable?).and_return(true)
 
@@ -168,31 +168,31 @@ RSpec.describe Noteable do
           allow(third_discussion).to receive(:resolvable?).and_return(true)
         end
 
-        context "when all resolvable discussions are resolved" do
+        context 'when all resolvable discussions are resolved' do
           before do
             allow(first_discussion).to receive(:resolved?).and_return(true)
             allow(third_discussion).to receive(:resolved?).and_return(true)
           end
 
-          it "returns true" do
+          it 'returns true' do
             expect(subject.discussions_resolved?).to be true
           end
         end
 
-        context "when some resolvable discussions are not resolved" do
+        context 'when some resolvable discussions are not resolved' do
           before do
             allow(first_discussion).to receive(:resolved?).and_return(true)
             allow(third_discussion).to receive(:resolved?).and_return(false)
           end
 
-          it "returns false" do
+          it 'returns false' do
             expect(subject.discussions_resolved?).to be false
           end
         end
       end
     end
 
-    describe "#discussions_to_be_resolved" do
+    describe '#discussions_to_be_resolved' do
       before do
         allow(first_discussion).to receive(:to_be_resolved?).and_return(true)
         allow(second_discussion).to receive(:to_be_resolved?).and_return(false)
@@ -245,6 +245,12 @@ RSpec.describe Noteable do
     end
   end
 
+  describe '.email_creatable_types' do
+    it 'exposes the email creatable types' do
+      expect(described_class.email_creatable_types).to include('Issue')
+    end
+  end
+
   describe '#capped_notes_count' do
     context 'notes number < 10' do
       it 'the number of notes is returned' do
@@ -263,13 +269,13 @@ RSpec.describe Noteable do
     end
   end
 
-  describe "#has_any_diff_note_positions?" do
-    let(:source_branch) { "compare-with-merge-head-source" }
-    let(:target_branch) { "compare-with-merge-head-target" }
+  describe '#has_any_diff_note_positions?' do
+    let(:source_branch) { 'compare-with-merge-head-source' }
+    let(:target_branch) { 'compare-with-merge-head-target' }
     let(:merge_request) { create(:merge_request, source_branch: source_branch, target_branch: target_branch) }
 
     let!(:note) do
-      path = "files/markdown/ruby-style-guide.md"
+      path = 'files/markdown/ruby-style-guide.md'
 
       position = Gitlab::Diff::Position.new(
         old_path: path,
@@ -286,20 +292,54 @@ RSpec.describe Noteable do
       Discussions::CaptureDiffNotePositionsService.new(merge_request).execute
     end
 
-    it "returns true when it has diff note positions" do
+    it 'returns true when it has diff note positions' do
       expect(merge_request.has_any_diff_note_positions?).to be(true)
     end
 
-    it "returns false when it has notes but no diff note positions" do
+    it 'returns false when it has notes but no diff note positions' do
       DiffNotePosition.where(note: note).find_each(&:delete)
 
       expect(merge_request.has_any_diff_note_positions?).to be(false)
     end
 
-    it "returns false when it has no notes" do
+    it 'returns false when it has no notes' do
       merge_request.notes.find_each(&:destroy)
 
       expect(merge_request.has_any_diff_note_positions?).to be(false)
+    end
+  end
+
+  describe '#creatable_note_email_address' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:source_branch) { 'compare-with-merge-head-source' }
+
+    let(:issue) { create(:issue, project: project) }
+    let(:snippet) { build(:snippet) }
+
+    context 'incoming email enabled' do
+      before do
+        stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
+      end
+
+      it 'returns the address to create a note' do
+        address = "p+#{project.full_path_slug}-#{project.project_id}-#{user.incoming_email_token}-issue-#{issue.iid}@gl.ab"
+
+        expect(issue.creatable_note_email_address(user)).to eq(address)
+      end
+
+      it 'returns nil for unsupported types' do
+        expect(snippet.creatable_note_email_address(user)).to be_nil
+      end
+    end
+
+    context 'incoming email disabled' do
+      before do
+        stub_incoming_email_setting(enabled: false)
+      end
+
+      it 'returns nil' do
+        expect(issue.creatable_note_email_address(user)).to be_nil
+      end
     end
   end
 end

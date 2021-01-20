@@ -371,9 +371,7 @@ describe('DropdownContentsLabelsView', () => {
       wrapper.vm.$store.state.allowLabelCreate = false;
 
       return wrapper.vm.$nextTick(() => {
-        const createLabelLink = findDropdownFooter()
-          .findAll(GlLink)
-          .at(0);
+        const createLabelLink = findDropdownFooter().findAll(GlLink).at(0);
 
         expect(createLabelLink.text()).not.toBe('Create label');
       });

@@ -54,7 +54,7 @@ export default {
           iid: this.pipelineIid,
         };
       },
-      update: data => data.project.pipeline,
+      update: (data) => data.project.pipeline,
       error() {
         this.reportFailure(LOAD_FAILURE);
       },

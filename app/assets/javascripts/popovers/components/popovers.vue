@@ -7,7 +7,7 @@
 import { GlPopover } from '@gitlab/ui';
 import { sanitize } from '~/lib/dompurify';
 
-const newPopover = element => {
+const newPopover = (element) => {
   const { content, html, placement, title, triggers = 'focus' } = element.dataset;
 
   return {
@@ -30,8 +30,8 @@ export default {
     };
   },
   created() {
-    this.observer = new MutationObserver(mutations => {
-      mutations.forEach(mutation => {
+    this.observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
         mutation.removedNodes.forEach(this.dispose);
       });
     });
@@ -61,7 +61,7 @@ export default {
       if (!target) {
         this.popovers = [];
       } else {
-        const index = this.popovers.findIndex(popover => popover.target === target);
+        const index = this.popovers.findIndex((popover) => popover.target === target);
 
         if (index > -1) {
           this.popovers.splice(index, 1);
@@ -69,7 +69,7 @@ export default {
       }
     },
     popoverExists(element) {
-      return this.popovers.some(popover => popover.target === element);
+      return this.popovers.some((popover) => popover.target === element);
     },
     getSafeHtml(html) {
       return sanitize(html);

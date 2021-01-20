@@ -7,7 +7,7 @@ require 'rubocop/rspec/support'
 
 require_relative '../../../../rubocop/cop/gitlab/finder_with_find_by'
 
-RSpec.describe RuboCop::Cop::Gitlab::FinderWithFindBy, type: :rubocop do
+RSpec.describe RuboCop::Cop::Gitlab::FinderWithFindBy do
   include CopHelper
 
   subject(:cop) { described_class.new }

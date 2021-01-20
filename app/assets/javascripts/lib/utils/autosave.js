@@ -1,6 +1,6 @@
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
-export const clearDraft = autosaveKey => {
+export const clearDraft = (autosaveKey) => {
   try {
     window.localStorage.removeItem(`autosave/${autosaveKey}`);
   } catch (e) {
@@ -9,7 +9,7 @@ export const clearDraft = autosaveKey => {
   }
 };
 
-export const getDraft = autosaveKey => {
+export const getDraft = (autosaveKey) => {
   try {
     return window.localStorage.getItem(`autosave/${autosaveKey}`);
   } catch (e) {

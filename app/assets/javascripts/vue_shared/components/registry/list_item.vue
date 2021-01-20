@@ -39,7 +39,7 @@ export default {
     },
   },
   mounted() {
-    this.detailsSlots = Object.keys(this.$slots).filter(k => k.startsWith('details-'));
+    this.detailsSlots = Object.keys(this.$slots).filter((k) => k.startsWith('details-'));
   },
   methods: {
     toggleDetails() {

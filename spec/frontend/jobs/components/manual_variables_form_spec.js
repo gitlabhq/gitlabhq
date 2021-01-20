@@ -27,7 +27,7 @@ describe('Manual Variables Form', () => {
     factory(requiredProps);
   });
 
-  afterEach(done => {
+  afterEach((done) => {
     // The component has a `nextTick` callback after some events so we need
     // to wait for those to finish before destroying.
     setImmediate(() => {
@@ -54,7 +54,7 @@ describe('Manual Variables Form', () => {
   });
 
   describe('when adding a new variable', () => {
-    it('creates a new variable when user types a new key and resets the form', done => {
+    it('creates a new variable when user types a new key and resets the form', (done) => {
       wrapper.vm
         .$nextTick()
         .then(() => wrapper.find({ ref: 'inputKey' }).setValue('new key'))
@@ -67,7 +67,7 @@ describe('Manual Variables Form', () => {
         .catch(done.fail);
     });
 
-    it('creates a new variable when user types a new value and resets the form', done => {
+    it('creates a new variable when user types a new value and resets the form', (done) => {
       wrapper.vm
         .$nextTick()
         .then(() => wrapper.find({ ref: 'inputSecretValue' }).setValue('new value'))
@@ -82,7 +82,7 @@ describe('Manual Variables Form', () => {
   });
 
   describe('when deleting a variable', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       wrapper.vm.variables = [
         {
           key: 'new key',

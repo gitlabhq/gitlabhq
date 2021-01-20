@@ -14,7 +14,7 @@ const CODEOWNERS_MESSAGE =
 const CHANGED_MESSAGE = 'Things changed since you started editing';
 
 describe('~/ide/lib/errors', () => {
-  const createResponseError = message => ({
+  const createResponseError = (message) => ({
     response: {
       data: {
         message,

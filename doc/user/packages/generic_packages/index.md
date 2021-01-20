@@ -20,16 +20,24 @@ Publish generic files, like release binaries, in your project’s Package Regist
 
 ## Authenticate to the Package Registry
 
-To authenticate to the Package Registry, you need either a [personal access token](../../../api/README.md#personalproject-access-tokens)
-or [CI job token](../../../api/README.md#gitlab-ci-job-token).
+To authenticate to the Package Registry, you need either a [personal access token](../../../api/README.md#personalproject-access-tokens),
+[CI job token](../../../api/README.md#gitlab-ci-job-token), or [deploy token](../../project/deploy_tokens/index.md).
+
+In addition to the standard API authentication mechanisms, the generic package
+API allows authentication with HTTP Basic authentication for use with tools that
+do not support the other available mechanisms. The `user-id` is not checked and
+may be any value, and the `password` must be either a [personal access token](../../../api/README.md#personalproject-access-tokens),
+a [CI job token](../../../api/README.md#gitlab-ci-job-token), or a [deploy token](../../project/deploy_tokens/index.md).
 
 ## Publish a package file
 
 When you publish a package file, if the package does not exist, it is created.
 
+If a package with the same name, version, and filename already exists, it is also created. It does not overwrite the existing package.
+
 Prerequisites:
 
-- You need to [authenticate with the API](../../../api/README.md#authentication).
+- You need to [authenticate with the API](../../../api/README.md#authentication). If authenticating with a deploy token, it must be configured with the `write_package_registry` scope.
 
 ```plaintext
 PUT /projects/:id/packages/generic/:package_name/:package_version/:file_name
@@ -62,11 +70,13 @@ Example response:
 
 ## Download package file
 
-Install a package file.
+Download a package file.
+
+If multiple packages have the same name, version, and filename, then the most recent one is retrieved.
 
 Prerequisites:
 
-- You need to [authenticate with the API](../../../api/README.md#authentication).
+- You need to [authenticate with the API](../../../api/README.md#authentication). If authenticating with a deploy token, it must be configured with the `read_package_registry` and/or `write_package_registry` scope.
 
 ```plaintext
 GET /projects/:id/packages/generic/:package_name/:package_version/:file_name
@@ -86,6 +96,13 @@ Example request that uses a personal access token:
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
+```
+
+Example request that uses HTTP Basic authentication:
+
+```shell
+curl --user "user:<your_access_token>" \
+     https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt
 ```
 
 ## Publish a generic package by using CI/CD

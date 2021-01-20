@@ -41,6 +41,11 @@ export default {
       },
     },
   },
+  provide() {
+    return {
+      blobHash: Math.random().toString().split('.')[1],
+    };
+  },
   props: {
     snippet: {
       type: Object,
@@ -50,13 +55,6 @@ export default {
       type: Object,
       required: true,
     },
-  },
-  provide() {
-    return {
-      blobHash: Math.random()
-        .toString()
-        .split('.')[1],
-    };
   },
   data() {
     return {
@@ -90,7 +88,7 @@ export default {
       const {
         blobs: { nodes: dataBlobs },
       } = data.snippets.nodes[0];
-      const updatedBlobData = dataBlobs.find(blob => blob.path === blobPath);
+      const updatedBlobData = dataBlobs.find((blob) => blob.path === blobPath);
       return updatedBlobData.richData || updatedBlobData.plainData;
     },
   },

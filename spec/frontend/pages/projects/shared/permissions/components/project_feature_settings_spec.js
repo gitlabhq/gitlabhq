@@ -6,13 +6,20 @@ import projectFeatureToggle from '~/vue_shared/components/toggle_button.vue';
 describe('Project Feature Settings', () => {
   const defaultProps = {
     name: 'Test',
-    options: [[1, 1], [2, 2], [3, 3], [4, 4], [5, 5]],
+    options: [
+      [1, 1],
+      [2, 2],
+      [3, 3],
+      [4, 4],
+      [5, 5],
+    ],
     value: 1,
     disabledInput: false,
+    showToggle: true,
   };
   let wrapper;
 
-  const mountComponent = customProps => {
+  const mountComponent = (customProps) => {
     const propsData = { ...defaultProps, ...customProps };
     return shallowMount(projectFeatureSetting, { propsData });
   };
@@ -40,6 +47,14 @@ describe('Project Feature Settings', () => {
   });
 
   describe('Feature toggle', () => {
+    it('should be hidden if "showToggle" is passed false', async () => {
+      wrapper.setProps({ showToggle: false });
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.find(projectFeatureToggle).element).toBeUndefined();
+    });
+
     it('should enable the feature toggle if the value is not 0', () => {
       expect(wrapper.find(projectFeatureToggle).props().value).toBe(true);
     });
@@ -73,10 +88,7 @@ describe('Project Feature Settings', () => {
       wrapper = mount(projectFeatureSetting, { propsData: defaultProps });
 
       expect(wrapper.emitted().change).toBeUndefined();
-      wrapper
-        .find(projectFeatureToggle)
-        .find('button')
-        .trigger('click');
+      wrapper.find(projectFeatureToggle).find('button').trigger('click');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.emitted().change.length).toBe(1);
@@ -110,10 +122,7 @@ describe('Project Feature Settings', () => {
 
     it('should emit the change when a new option is selected', () => {
       expect(wrapper.emitted().change).toBeUndefined();
-      wrapper
-        .findAll('option')
-        .at(1)
-        .trigger('change');
+      wrapper.findAll('option').at(1).trigger('change');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.emitted().change.length).toBe(1);

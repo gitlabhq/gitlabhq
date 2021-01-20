@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'rspec-parameterized'
 require_relative 'danger_spec_helper'
 
 require 'gitlab/danger/base_linter'
@@ -70,19 +71,57 @@ RSpec.describe Gitlab::Danger::BaseLinter do
       end
     end
 
-    context 'when subject is a WIP' do
+    context 'when ignoring length issues for subject having not-ready wording' do
+      using RSpec::Parameterized::TableSyntax
+
       let(:final_message) { 'A B C' }
-      # commit message with prefix will be over max length. commit message without prefix will be of maximum size
-      let(:commit_message) { described_class::WIP_PREFIX + final_message + 'D' * (described_class::MAX_LINE_LENGTH - final_message.size) }
 
-      it 'does not have any problems' do
-        commit_linter.lint_subject
+      context 'when used as prefix' do
+        where(prefix: [
+          'WIP: ',
+          'WIP:',
+          'wIp:',
+          '[WIP] ',
+          '[WIP]',
+          '[draft]',
+          '[draft] ',
+          '(draft)',
+          '(draft) ',
+          'draft - ',
+          'draft: ',
+          'draft:',
+          'DRAFT:'
+        ])
 
-        expect(commit_linter.problems).to be_empty
+        with_them do
+          it 'does not have any problems' do
+            commit_message = prefix + final_message + 'D' * (described_class::MAX_LINE_LENGTH - final_message.size)
+            commit = commit_class.new(commit_message, anything, anything)
+
+            linter = described_class.new(commit).lint_subject
+
+            expect(linter.problems).to be_empty
+          end
+        end
+      end
+
+      context 'when used as suffix' do
+        where(suffix: %w[WIP draft])
+
+        with_them do
+          it 'does not have any problems' do
+            commit_message = final_message + 'D' * (described_class::MAX_LINE_LENGTH - final_message.size) + suffix
+            commit = commit_class.new(commit_message, anything, anything)
+
+            linter = described_class.new(commit).lint_subject
+
+            expect(linter.problems).to be_empty
+          end
+        end
       end
     end
 
-    context 'when subject is too short and too long' do
+    context 'when subject does not have enough words and is too long' do
       let(:commit_message) { 'A ' + 'B' * described_class::MAX_LINE_LENGTH }
 
       it 'adds a problem' do

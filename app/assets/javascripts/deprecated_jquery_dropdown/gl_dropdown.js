@@ -68,7 +68,7 @@ export class GitLabDropdown {
         this.remote = new GitLabDropdownRemote(this.options.data, {
           dataType: this.options.dataType,
           beforeSend: this.toggleLoading.bind(this),
-          success: data => {
+          success: (data) => {
             this.fullData = data;
             this.parseData(this.fullData);
             this.focusTextInput();
@@ -113,7 +113,7 @@ export class GitLabDropdown {
           return $(selector, this.dropdown);
         },
         data: () => this.fullData,
-        callback: data => {
+        callback: (data) => {
           this.parseData(data);
           if (this.filterInput.val() !== '') {
             selector = SELECTABLE_CLASSES;
@@ -123,10 +123,7 @@ export class GitLabDropdown {
             if ($(this.el).is('input')) {
               currentIndex = -1;
             } else {
-              $(selector, this.dropdown)
-                .first()
-                .find('a')
-                .addClass('is-focused');
+              $(selector, this.dropdown).first().find('a').addClass('is-focused');
               currentIndex = 0;
             }
           }
@@ -138,13 +135,13 @@ export class GitLabDropdown {
     this.dropdown.on('hidden.bs.dropdown', this.hidden);
     $(this.el).on('update.label', this.updateLabel);
     this.dropdown.on('click', '.dropdown-menu, .dropdown-menu-close', this.shouldPropagate);
-    this.dropdown.on('keyup', e => {
+    this.dropdown.on('keyup', (e) => {
       // Escape key
       if (e.which === 27) {
         return $('.dropdown-menu-close', this.dropdown).trigger('click');
       }
     });
-    this.dropdown.on('blur', 'a', e => {
+    this.dropdown.on('blur', 'a', (e) => {
       let $dropdownMenu;
       let $relatedTarget;
       if (e.relatedTarget != null) {
@@ -156,7 +153,7 @@ export class GitLabDropdown {
       }
     });
     if (this.dropdown.find('.dropdown-toggle-page').length) {
-      this.dropdown.find('.dropdown-toggle-page, .dropdown-menu-back').on('click', e => {
+      this.dropdown.find('.dropdown-toggle-page, .dropdown-menu-back').on('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
         return this.togglePage();
@@ -167,7 +164,7 @@ export class GitLabDropdown {
       if (this.dropdown.find('.dropdown-toggle-page').length) {
         selector = '.dropdown-page-one .dropdown-content a';
       }
-      this.dropdown.on('click', selector, e => {
+      this.dropdown.on('click', selector, (e) => {
         const $el = $(e.currentTarget);
         const selected = self.rowClicked($el);
         const selectedObj = selected ? selected[0] : null;
@@ -224,7 +221,7 @@ export class GitLabDropdown {
     else if (isObject(data)) {
       html = [];
 
-      Object.keys(data).forEach(name => {
+      Object.keys(data).forEach((name) => {
         groupData = data[name];
         html.push(
           this.renderItem(
@@ -235,7 +232,7 @@ export class GitLabDropdown {
             name,
           ),
         );
-        this.renderData(groupData, name).map(item => html.push(item));
+        this.renderData(groupData, name).map((item) => html.push(item));
       });
     } else {
       // Render each row
@@ -274,7 +271,7 @@ export class GitLabDropdown {
 
   filteredFullData() {
     return this.fullData.filter(
-      r =>
+      (r) =>
         typeof r === 'object' &&
         !Object.prototype.hasOwnProperty.call(r, 'beforeDivider') &&
         !Object.prototype.hasOwnProperty.call(r, 'header'),
@@ -392,7 +389,7 @@ export class GitLabDropdown {
         ...this.options,
         icon: this.icon,
         highlight: this.highlight,
-        highlightText: text => this.highlightTextMatches(text, this.filterInput.val()),
+        highlightText: (text) => this.highlightTextMatches(text, this.filterInput.val()),
         highlightTemplate: this.highlightTemplate.bind(this),
         parent,
       },
@@ -493,10 +490,7 @@ export class GitLabDropdown {
       if (!this.options.multiSelect || el.hasClass('dropdown-clear-active')) {
         this.dropdown.find(`.${ACTIVE_CLASS}`).removeClass(ACTIVE_CLASS);
         if (!isInput) {
-          this.dropdown
-            .parent()
-            .find(`input[name='${fieldName}']`)
-            .remove();
+          this.dropdown.parent().find(`input[name='${fieldName}']`).remove();
         }
       }
       if (field && field.length && value == null) {
@@ -536,16 +530,13 @@ export class GitLabDropdown {
       $(`input[name="${fieldName}"]`).remove();
     }
 
-    const $input = $('<input>')
-      .attr('type', 'hidden')
-      .attr('name', fieldName)
-      .val(value);
+    const $input = $('<input>').attr('type', 'hidden').attr('name', fieldName).val(value);
     if (this.options.inputId != null) {
       $input.attr('id', this.options.inputId);
     }
 
     if (this.options.multiSelect) {
-      Object.keys(selectedObject).forEach(attribute => {
+      Object.keys(selectedObject).forEach((attribute) => {
         $input.attr(`data-${attribute}`, selectedObject[attribute]);
       });
     }
@@ -586,7 +577,7 @@ export class GitLabDropdown {
     if (this.dropdown.find('.dropdown-toggle-page').length) {
       selector = `.dropdown-page-one ${selector}`;
     }
-    return $('body').on('keydown', e => {
+    return $('body').on('keydown', (e) => {
       let $listItems;
       let PREV_INDEX;
       const currentKeyCode = e.which;
@@ -678,9 +669,7 @@ export class GitLabDropdown {
       toggleText = this.options.updateLabel;
     }
 
-    return $(this.el)
-      .find('.dropdown-toggle-text')
-      .text(toggleText);
+    return $(this.el).find('.dropdown-toggle-text').text(toggleText);
   }
 
   // eslint-disable-next-line class-methods-use-this

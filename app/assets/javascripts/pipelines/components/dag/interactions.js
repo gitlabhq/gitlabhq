@@ -13,22 +13,22 @@ export const getLiveLinksAsDict = () => {
   return Object.fromEntries(
     getLiveLinks()
       .data()
-      .map(d => [d.uid, d]),
+      .map((d) => [d.uid, d]),
   );
 };
 export const currentIsLive = (idx, collection) =>
   getCurrent(idx, collection).classed(IS_HIGHLIGHTED);
 
-const backgroundLinks = selection => selection.style('stroke-opacity', highlightOut);
-const backgroundNodes = selection => selection.attr('stroke', '#f2f2f2');
-const foregroundLinks = selection => selection.style('stroke-opacity', highlightIn);
-const foregroundNodes = selection => selection.attr('stroke', d => d.color);
+const backgroundLinks = (selection) => selection.style('stroke-opacity', highlightOut);
+const backgroundNodes = (selection) => selection.attr('stroke', '#f2f2f2');
+const foregroundLinks = (selection) => selection.style('stroke-opacity', highlightIn);
+const foregroundNodes = (selection) => selection.attr('stroke', (d) => d.color);
 const renewLinks = (selection, baseOpacity) => selection.style('stroke-opacity', baseOpacity);
-const renewNodes = selection => selection.attr('stroke', d => d.color);
+const renewNodes = (selection) => selection.attr('stroke', (d) => d.color);
 
-export const getAllLinkAncestors = node => {
+export const getAllLinkAncestors = (node) => {
   if (node.targetLinks) {
-    return node.targetLinks.flatMap(n => {
+    return node.targetLinks.flatMap((n) => {
       return [n, ...getAllLinkAncestors(n.source)];
     });
   }
@@ -36,11 +36,11 @@ export const getAllLinkAncestors = node => {
   return [];
 };
 
-const getAllNodeAncestors = node => {
+const getAllNodeAncestors = (node) => {
   let allNodes = [];
 
   if (node.targetLinks) {
-    allNodes = node.targetLinks.flatMap(n => {
+    allNodes = node.targetLinks.flatMap((n) => {
       return getAllNodeAncestors(n.source);
     });
   }
@@ -74,7 +74,7 @@ const highlightPath = (parentLinks, parentNodes) => {
   });
 
   /* highlight correct nodes */
-  parentNodes.forEach(id => {
+  parentNodes.forEach((id) => {
     foregroundNodes(d3.select(`#${id}`)).classed(IS_HIGHLIGHTED, true);
   });
 };
@@ -86,7 +86,7 @@ const restoreNodes = () => {
     rehighlights their nodes.
   */
 
-  getLiveLinks().each(d => {
+  getLiveLinks().each((d) => {
     foregroundNodes(d3.select(`#${d.source.uid}`)).classed(IS_HIGHLIGHTED, true);
     foregroundNodes(d3.select(`#${d.target.uid}`)).classed(IS_HIGHLIGHTED, true);
   });
@@ -97,7 +97,7 @@ const restorePath = (parentLinks, parentNodes, baseOpacity) => {
     renewLinks(d3.select(`#${uid}`), baseOpacity).classed(IS_HIGHLIGHTED, false);
   });
 
-  parentNodes.forEach(id => {
+  parentNodes.forEach((id) => {
     d3.select(`#${id}`).classed(IS_HIGHLIGHTED, false);
   });
 
@@ -112,7 +112,7 @@ const restorePath = (parentLinks, parentNodes, baseOpacity) => {
   restoreNodes();
 };
 
-export const restoreLinks = baseOpacity => {
+export const restoreLinks = (baseOpacity) => {
   /*
     if there exist live links, reset to highlight out / pale
     otherwise, reset to base

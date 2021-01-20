@@ -35,6 +35,7 @@ module Groups
           @group.add_owner(current_user)
           @group.create_namespace_settings
           Service.create_from_active_default_integrations(@group, :group_id)
+          OnboardingProgress.onboard(@group)
         end
       end
 

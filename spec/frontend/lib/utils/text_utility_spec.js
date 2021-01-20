@@ -300,13 +300,13 @@ describe('text_utility', () => {
     });
 
     it(`should return an empty string for invalid inputs`, () => {
-      [undefined, null, 4, {}, true, new Date()].forEach(input => {
+      [undefined, null, 4, {}, true, new Date()].forEach((input) => {
         expect(textUtils.truncateNamespace(input)).toBe('');
       });
     });
 
     it(`should not alter strings that aren't formatted as namespaces`, () => {
-      ['', ' ', '\t', 'a', 'a \\ b'].forEach(input => {
+      ['', ' ', '\t', 'a', 'a \\ b'].forEach((input) => {
         expect(textUtils.truncateNamespace(input)).toBe(input);
       });
     });

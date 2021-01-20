@@ -24,10 +24,10 @@ export default {
   },
   computed: {
     ...mapState({
-      perPage: state => state.pagination.perPage,
-      totalItems: state => state.pagination.total,
-      page: state => state.pagination.page,
-      isGroupPage: state => state.config.isGroupPage,
+      perPage: (state) => state.pagination.perPage,
+      totalItems: (state) => state.pagination.total,
+      page: (state) => state.pagination.page,
+      isGroupPage: (state) => state.config.isGroupPage,
       isLoading: 'isLoading',
     }),
     ...mapGetters({ list: 'getList' }),

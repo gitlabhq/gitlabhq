@@ -8,7 +8,7 @@ describe('Insert Video Modal', () => {
   const findModal = () => wrapper.find(GlModal);
   const findUrlInput = () => wrapper.find({ ref: 'urlInput' });
 
-  const triggerInsertVideo = url => {
+  const triggerInsertVideo = (url) => {
     const preventDefault = jest.fn();
     findUrlInput().vm.$emit('input', url);
     findModal().vm.$emit('primary', { preventDefault });

@@ -2,12 +2,12 @@ import { isMatch } from 'lodash';
 import { __, s__, sprintf } from '~/locale';
 import { getDisplayName } from '../utils';
 
-export const hasProjects = state => Boolean(state.projects) && state.projects.length > 0;
+export const hasProjects = (state) => Boolean(state.projects) && state.projects.length > 0;
 
 export const isProjectInvalid = (state, getters) =>
   Boolean(state.selectedProject) &&
   getters.hasProjects &&
-  !state.projects.some(project => isMatch(state.selectedProject, project));
+  !state.projects.some((project) => isMatch(state.selectedProject, project));
 
 export const dropdownLabel = (state, getters) => {
   if (state.selectedProject !== null) {
@@ -19,7 +19,7 @@ export const dropdownLabel = (state, getters) => {
   return s__('ErrorTracking|Select project');
 };
 
-export const invalidProjectLabel = state => {
+export const invalidProjectLabel = (state) => {
   if (state.selectedProject) {
     return sprintf(
       __('Project "%{name}" is no longer available. Select another project to continue.'),
@@ -31,7 +31,7 @@ export const invalidProjectLabel = state => {
   return '';
 };
 
-export const projectSelectionLabel = state => {
+export const projectSelectionLabel = (state) => {
   if (state.token) {
     return s__(
       "ErrorTracking|Click 'Connect' to re-establish the connection to Sentry and activate the dropdown.",

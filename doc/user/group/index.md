@@ -215,10 +215,7 @@ To remove a member from a group:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21727) in GitLab 12.6.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/228675) in GitLab 13.7.
-> - Improvements are [deployed behind a feature flag](../feature_flags.md), enabled by default.
-> - Improvements are enabled on GitLab.com.
-> - Improvements are recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable improvements](#enable-or-disable-improvements-to-the-ability-to-filter-and-sort-group-members). **(CORE ONLY)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/289911) in GitLab 13.8.
 
 The following sections illustrate how you can filter and sort members in a group. To view these options,
 navigate to your desired group, go to **Members**, and include the noted search terms.
@@ -268,30 +265,6 @@ You can search for members by name, username, or email.
 You can sort members by **Account**, **Access granted**, **Max role**, or **Last sign-in** in ascending or descending order.
 
 ![Group members sort](img/group_members_sort_13_7.png)
-
-### Enable or disable improvements to the ability to filter and sort group members **(CORE ONLY)**
-
-Group member filtering and sorting improvements are deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable the improvements.
-
-To disable them:
-
-```ruby
-# For the instance
-Feature.disable(:group_members_filtered_search)
-# For a single group
-Feature.disable(:group_members_filtered_search, Group.find(<group id>))
-```
-
-To enable them:
-
-```ruby
-# For the instance
-Feature.enable(:group_members_filtered_search)
-# For a single group
-Feature.enable(:group_members_filtered_search, Group.find(<group id>))
-```
 
 ## Changing the default branch protection of a group
 
@@ -487,7 +460,7 @@ and above.
 There are a few limitations compared to project wikis:
 
 - Git LFS is not supported.
-- Group wikis are not included in global search, group exports, backups, and Geo replication.
+- Group wikis are not included in global search, group exports, and Geo replication.
 - Changes to group wikis don't show up in the group's activity feed.
 - Group wikis [can't be moved](../../api/project_repository_storage_moves.md#limitations) using the project
   repository moves API.
@@ -663,6 +636,12 @@ request to add a new user to a project through API will not be possible.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1985) in [GitLab Ultimate and Gold](https://about.gitlab.com/pricing/) 12.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215410) to [GitLab Premium and Silver](https://about.gitlab.com/pricing/) in 13.1.
+
+NOTE:
+IP Access Restrictions are currently not functioning as expected on GitLab.com. Some users
+may experience blocked Git operations or have difficulties accessing projects. Please
+review the [following bug report](https://gitlab.com/gitlab-org/gitlab/-/issues/271673) for
+more information.
 
 To make sure only people from within your organization can access particular
 resources, you have the option to restrict access to groups and their

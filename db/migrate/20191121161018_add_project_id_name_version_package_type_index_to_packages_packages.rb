@@ -4,7 +4,7 @@ class AddProjectIdNameVersionPackageTypeIndexToPackagesPackages < ActiveRecord::
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  INDEX_NAME = 'idx_packages_packages_on_project_id_name_version_package_type'.freeze
+  INDEX_NAME = 'idx_packages_packages_on_project_id_name_version_package_type'
 
   disable_ddl_transaction!
 

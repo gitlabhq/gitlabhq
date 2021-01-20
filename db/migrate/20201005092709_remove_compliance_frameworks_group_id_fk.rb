@@ -4,7 +4,7 @@ class RemoveComplianceFrameworksGroupIdFk < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  INDEX_NAME = 'index_compliance_management_frameworks_on_group_id_and_name'.freeze
+  INDEX_NAME = 'index_compliance_management_frameworks_on_group_id_and_name'
 
   class TmpComplianceFramework < ActiveRecord::Base
     self.table_name = 'compliance_management_frameworks'

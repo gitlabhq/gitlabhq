@@ -114,7 +114,7 @@ or over the repository size limit, you can [reduce your repository size with Git
 | Setting                       | GitLab.com  | Default       |
 | -----------                   | ----------- | ------------- |
 | [Repository size including LFS](../admin_area/settings/account_and_limit_settings.md) | 10 GB       | Unlimited     |
-| Maximum import size           | 5 GB        | 50 MB         |
+| Maximum import size           | 5 GB        | Unlimited     |
 
 NOTE:
 `git push` and GitLab project imports are limited to 5 GB per request through Cloudflare. Git LFS and imports other than a file upload are not affected by this limit.
@@ -131,6 +131,23 @@ For outgoing connections from CI/CD runners we are not providing static IP addre
 All our runners are deployed into Google Cloud Platform (GCP) - any IP based
 firewall can be configured by looking up all
 [IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#where_can_i_find_product_name_short_ip_ranges).
+
+## Hostname list
+
+To configure allow-lists in local HTTP(S) proxies, or other
+web-blocking software that govern end-user machines,
+pages on GitLab.com will attempt to load content from
+the following hostnames:
+
+- `gitlab.com`
+- `*.gitlab.com`
+- `*.gitlab-static.net`
+- `*.gitlab.io`
+- `*.gitlab.net`
+
+Documentation and Company pages served over `docs.gitlab.com`
+and `about.gitlab.com` will attempt to also load certain page
+content directly from common public CDN hostnames.
 
 ## Webhooks
 
@@ -532,13 +549,10 @@ endpoints](../../user/admin_area/settings/rate_limits_on_raw_endpoints.md).
 
 ### Rate limiting responses
 
-The [`Retry-After`
-header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After)
-indicates when the client should retry.
+For information on rate limiting responses, see:
 
-Rate limits applied by HAProxy (instead of Cloudflare or the
-GitLab application) have `RateLimit-Reset` and `RateLimit-ResetTime`
-headers.
+- [List of headers on responses to blocked requests](../admin_area/settings/user_and_ip_rate_limits.md#response-headers).
+- [Customizable response text](../admin_area/settings/user_and_ip_rate_limits.md#response-text).
 
 ### Protected paths throttle
 
@@ -548,11 +562,7 @@ paths that exceed 10 requests per **minute** per IP address.
 See the source below for which paths are protected. This includes user creation,
 user confirmation, user sign in, and password reset.
 
-This header is included in responses to blocked requests:
-
-```plaintext
-Retry-After: 60
-```
+[User and IP rate limits](../admin_area/settings/user_and_ip_rate_limits.md#response-headers) includes a list of the headers responded to blocked requests.
 
 See [Protected Paths](../admin_area/settings/protected_paths.md) for more details.
 

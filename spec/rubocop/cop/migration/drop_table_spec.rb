@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 require 'rubocop'
 require_relative '../../../../rubocop/cop/migration/drop_table'
 
-RSpec.describe RuboCop::Cop::Migration::DropTable, type: :rubocop do
+RSpec.describe RuboCop::Cop::Migration::DropTable do
   include CopHelper
 
   subject(:cop) { described_class.new }

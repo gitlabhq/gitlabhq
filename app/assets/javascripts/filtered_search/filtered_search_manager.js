@@ -90,14 +90,14 @@ export default class FilteredSearchManager {
     // Fetch recent searches from localStorage
     this.fetchingRecentSearchesPromise = this.recentSearchesService
       .fetch()
-      .catch(error => {
+      .catch((error) => {
         if (error.name === 'RecentSearchesServiceError') return undefined;
         // eslint-disable-next-line no-new
         new Flash(__('An error occurred while parsing recent searches'));
         // Gracefully fail to empty array
         return [];
       })
-      .then(searches => {
+      .then((searches) => {
         if (!searches) {
           return;
         }
@@ -169,7 +169,7 @@ export default class FilteredSearchManager {
     if (this.stateFilters) {
       this.searchStateWrapper = this.searchState.bind(this);
 
-      this.applyToStateFilters(filterEl => {
+      this.applyToStateFilters((filterEl) => {
         filterEl.addEventListener('click', this.searchStateWrapper);
       });
     }
@@ -177,14 +177,14 @@ export default class FilteredSearchManager {
 
   unbindStateEvents() {
     if (this.stateFilters) {
-      this.applyToStateFilters(filterEl => {
+      this.applyToStateFilters((filterEl) => {
         filterEl.removeEventListener('click', this.searchStateWrapper);
       });
     }
   }
 
   applyToStateFilters(callback) {
-    this.stateFilters.querySelectorAll('a[data-state]').forEach(filterEl => {
+    this.stateFilters.querySelectorAll('a[data-state]').forEach((filterEl) => {
       if (this.states.indexOf(filterEl.dataset.state) > -1) {
         callback(filterEl);
       }
@@ -263,7 +263,7 @@ export default class FilteredSearchManager {
     let backspaceCount = 0;
 
     // closure for keeping track of the number of backspace keystrokes
-    return e => {
+    return (e) => {
       // 8 = Backspace Key
       // 46 = Delete Key
       // Handled by respective backspace-combination check functions
@@ -447,7 +447,7 @@ export default class FilteredSearchManager {
 
     const removeElements = [];
 
-    [].forEach.call(this.tokensContainer.children, t => {
+    [].forEach.call(this.tokensContainer.children, (t) => {
       let canClearToken = t.classList.contains('js-visual-token');
 
       if (canClearToken) {
@@ -460,7 +460,7 @@ export default class FilteredSearchManager {
       }
     });
 
-    removeElements.forEach(el => {
+    removeElements.forEach((el) => {
       el.parentElement.removeChild(el);
     });
 
@@ -488,7 +488,7 @@ export default class FilteredSearchManager {
     const { isLastVisualTokenValid } = FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
     if (isLastVisualTokenValid) {
-      tokens.forEach(t => {
+      tokens.forEach((t) => {
         input.value = input.value.replace(`${t.key}:${t.operator}${t.symbol}${t.value}`, '');
 
         FilteredSearchVisualTokens.addFilterVisualToken(
@@ -585,7 +585,7 @@ export default class FilteredSearchManager {
      */
     const notKeyValueRegex = new RegExp(/not\[(\w+)\]\[?\]?=(.*)/);
 
-    return params.map(query => {
+    return params.map((query) => {
       // Check if there are matches for `not` operator
       const matches = query.match(notKeyValueRegex);
       if (matches && matches.length === 3) {
@@ -624,7 +624,7 @@ export default class FilteredSearchManager {
     const usernameParams = this.getUsernameParams();
     let hasFilteredSearch = false;
 
-    params.forEach(p => {
+    params.forEach((p) => {
       const split = p.split('=');
       const keyParam = decodeURIComponent(split[0]);
       const value = split[1];
@@ -746,7 +746,7 @@ export default class FilteredSearchManager {
       paths.push(`state=${currentState}`);
     }
 
-    tokens.forEach(token => {
+    tokens.forEach((token) => {
       const condition = this.filteredSearchTokenKeys.searchByConditionKeyValue(
         token.key,
         token.operator,
@@ -795,7 +795,7 @@ export default class FilteredSearchManager {
     if (searchToken) {
       const sanitized = searchToken
         .split(' ')
-        .map(t => encodeURIComponent(t))
+        .map((t) => encodeURIComponent(t))
         .join('+');
       paths.push(`search=${sanitized}`);
     }
@@ -817,7 +817,7 @@ export default class FilteredSearchManager {
     const usernamesById = {};
     try {
       const attribute = this.filteredSearchInput.getAttribute('data-username-params');
-      JSON.parse(attribute).forEach(user => {
+      JSON.parse(attribute).forEach((user) => {
         usernamesById[user.id] = user.username;
       });
     } catch (e) {

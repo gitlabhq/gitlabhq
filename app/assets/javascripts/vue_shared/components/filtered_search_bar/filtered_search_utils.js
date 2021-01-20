@@ -8,7 +8,7 @@ import { queryToObject } from '~/lib/utils/url_utility';
  *
  * @returns {String} String without any enclosure
  */
-export const stripQuotes = value => value.replace(/^('|")(.*)('|")$/, '$2');
+export const stripQuotes = (value) => value.replace(/^('|")(.*)('|")$/, '$2');
 
 /**
  * This method removes duplicate tokens from tokens array.
@@ -17,7 +17,7 @@ export const stripQuotes = value => value.replace(/^('|")(.*)('|")$/, '$2');
  *
  * @returns {Array} Unique array of tokens
  */
-export const uniqueTokens = tokens => {
+export const uniqueTokens = (tokens) => {
   const knownTokens = [];
   return tokens.reduce((uniques, token) => {
     if (typeof token === 'object' && token.type !== 'filtered-search-term') {
@@ -61,7 +61,7 @@ export function prepareTokens(filters = {}) {
       return memo;
     }
     if (Array.isArray(value)) {
-      return [...memo, ...value.map(filterValue => createToken(key, filterValue))];
+      return [...memo, ...value.map((filterValue) => createToken(key, filterValue))];
     }
 
     return [...memo, createToken(key, value)];
@@ -99,8 +99,8 @@ export function filterToQueryObject(filters = {}) {
     let selected;
     let unselected;
     if (Array.isArray(filter)) {
-      selected = filter.filter(item => item.operator === '=').map(item => item.value);
-      unselected = filter.filter(item => item.operator === '!=').map(item => item.value);
+      selected = filter.filter((item) => item.operator === '=').map((item) => item.value);
+      unselected = filter.filter((item) => item.operator === '!=').map((item) => item.value);
     } else {
       selected = filter?.operator === '=' ? filter.value : null;
       unselected = filter?.operator === '!=' ? filter.value : null;
@@ -155,7 +155,7 @@ export function urlQueryToFilter(query = '') {
       previousValues = memo[filterName];
     }
     if (Array.isArray(value)) {
-      const newAdditions = value.filter(Boolean).map(item => ({ value: item, operator }));
+      const newAdditions = value.filter(Boolean).map((item) => ({ value: item, operator }));
       return { ...memo, [filterName]: [...previousValues, ...newAdditions] };
     }
 

@@ -90,11 +90,11 @@ export default {
     categorisedIssues() {
       if (this.showCategorizedIssues) {
         return Object.values(linkedIssueTypesMap)
-          .map(linkType => ({
+          .map((linkType) => ({
             linkType,
-            issues: this.relatedIssues.filter(issue => issue.linkType === linkType),
+            issues: this.relatedIssues.filter((issue) => issue.linkType === linkType),
           }))
-          .filter(obj => obj.issues.length > 0);
+          .filter((obj) => obj.issues.length > 0);
       }
 
       return [{ issues: this.relatedIssues }];

@@ -88,3 +88,5 @@ module Issues
     end
   end
 end
+
+Issues::CloneService.prepend_if_ee('EE::Issues::CloneService')

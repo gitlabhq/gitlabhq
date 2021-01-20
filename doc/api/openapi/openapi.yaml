@@ -1,8 +1,13 @@
-openapi: "3.0.0"
+openapi: 3.0.0
+tags:
+  - name: version
+    description: Version
+  - name: access_requests
+    description: Access requests for projects and groups
 info:
   description: |
     An OpenAPI definition for the GitLab REST API.
-    Only one API resource/endpoint is currently included.
+    Few API resources or endpoints are currently included.
     The intent is to expand this to match the entire Markdown documentation of the API:
     <https://docs.gitlab.com/ee/api/>. Contributions are welcome.
 
@@ -12,15 +17,46 @@ info:
     so each request is made using your account.
 
     Read more at <https://docs.gitlab.com/ee/development/documentation/restful_api_styleguide.html>.
-  version: "v4"
-  title: "GitLab API"
-  termsOfService: "https://about.gitlab.com/terms/"
+  version: v4
+  title: GitLab API
+  termsOfService: 'https://about.gitlab.com/terms/'
   license:
-    name: "CC BY-SA 4.0"
-    url: "https://gitlab.com/gitlab-org/gitlab/-/blob/master/LICENSE"
+    name: CC BY-SA 4.0
+    url: 'https://gitlab.com/gitlab-org/gitlab/-/blob/master/LICENSE'
 servers:
-  - url: "https://gitlab.com/api/"
+  - url: 'https://gitlab.com/api/'
+security:
+  - ApiKeyAuth: []
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Private-Token
 
 paths:
+  # VERSION
   /v4/version:
-    $ref: "v4/version.yaml"
+    $ref: 'v4/version.yaml'
+
+  # ACCESS REQUESTS (PROJECTS)
+  /v4/projects/{id}/access_requests:
+    $ref: 'v4/access_requests.yaml#/accessRequestsProjects'
+
+  /v4/projects/{id}/access_requests/{user_id}/approve:
+    $ref: 'v4/access_requests.yaml#/accessRequestsProjectsApprove'
+  
+  /v4/projects/{id}/access_requests/{user_id}:
+    $ref: 'v4/access_requests.yaml#/accessRequestsProjectsDeny'
+
+  # ACCESS REQUESTS (GROUPS)
+  /v4/groups/{id}/access_requests:
+    $ref: 'v4/access_requests.yaml#/accessRequestsGroups'
+
+  /v4/groups/{id}/access_requests/{user_id}/approve:
+    $ref: 'v4/access_requests.yaml#/accessRequestsGroupsApprove'
+  
+  /v4/groupss/{id}/access_requests/{user_id}:
+    $ref: 'v4/access_requests.yaml#/accessRequestsGroupsDeny'
+

@@ -67,4 +67,37 @@ RSpec.describe MergeRequestsHelper do
       end
     end
   end
+
+  describe '#user_merge_requests_counts' do
+    let(:user) do
+      double(
+        assigned_open_merge_requests_count: 1,
+        review_requested_open_merge_requests_count: 2
+      )
+    end
+
+    subject { helper.user_merge_requests_counts }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    it "returns assigned, review requested and total merge request counts" do
+      expect(subject).to eq(
+        assigned: user.assigned_open_merge_requests_count,
+        review_requested: user.review_requested_open_merge_requests_count,
+        total: user.assigned_open_merge_requests_count + user.review_requested_open_merge_requests_count
+      )
+    end
+
+    context 'when merge_request_reviewers is disabled' do
+      before do
+        stub_feature_flags(merge_request_reviewers: false)
+      end
+
+      it 'returns review_requested as 0' do
+        expect(subject[:review_requested]).to eq(0)
+      end
+    end
+  end
 end

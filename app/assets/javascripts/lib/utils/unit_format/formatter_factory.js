@@ -106,7 +106,7 @@ export const scaledSIFormatter = (unit = '', prefixOffset = 0) => {
   const multiplicative = ['k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
   const symbols = [...fractional, '', ...multiplicative];
 
-  const units = symbols.slice(fractional.length + prefixOffset).map(prefix => {
+  const units = symbols.slice(fractional.length + prefixOffset).map((prefix) => {
     return `${prefix}${unit}`;
   });
 
@@ -126,7 +126,7 @@ export const scaledBinaryFormatter = (unit = '', prefixOffset = 0) => {
   const multiplicative = ['Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi', 'Yi'];
   const symbols = ['', ...multiplicative];
 
-  const units = symbols.slice(prefixOffset).map(prefix => {
+  const units = symbols.slice(prefixOffset).map((prefix) => {
     return `${prefix}${unit}`;
   });
 

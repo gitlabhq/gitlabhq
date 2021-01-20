@@ -14,19 +14,35 @@ RSpec.describe Pages::ZipDirectoryService do
     described_class.new(@work_dir).execute
   end
 
-  let(:archive) { result.first }
-  let(:entries_count) { result.second }
+  let(:status) { result[:status] }
+  let(:message) { result[:message] }
+  let(:archive) { result[:archive_path] }
+  let(:entries_count) { result[:entries_count] }
 
-  it 'raises error if there is no public directory' do
-    expect { archive }.to raise_error(described_class::InvalidArchiveError)
+  it 'returns error if project pages dir does not exist' do
+    expect(
+      described_class.new("/tmp/not/existing/dir").execute
+    ).to eq(status: :error, message: "Can not find valid public dir in /tmp/not/existing/dir")
   end
 
-  it 'raises error if public directory is a symlink' do
+  it 'returns nils if there is no public directory and does not leave archive' do
+    expect(status).to eq(:error)
+    expect(message).to eq("Can not find valid public dir in #{@work_dir}")
+    expect(archive).to eq(nil)
+    expect(entries_count).to eq(nil)
+
+    expect(File.exist?(File.join(@work_dir, '@migrated.zip'))).to eq(false)
+  end
+
+  it 'returns nils if public directory is a symlink' do
     create_dir('target')
     create_file('./target/index.html', 'hello')
     create_link("public", "./target")
 
-    expect { archive }.to raise_error(described_class::InvalidArchiveError)
+    expect(status).to eq(:error)
+    expect(message).to eq("Can not find valid public dir in #{@work_dir}")
+    expect(archive).to eq(nil)
+    expect(entries_count).to eq(nil)
   end
 
   context 'when there is a public directory' do

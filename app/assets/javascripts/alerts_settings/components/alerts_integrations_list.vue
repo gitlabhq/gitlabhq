@@ -97,8 +97,8 @@ export default {
     };
   },
   mounted() {
-    const callback = entries => {
-      const isVisible = entries.some(entry => entry.isIntersecting);
+    const callback = (entries) => {
+      const isVisible = entries.some((entry) => entry.isIntersecting);
 
       if (isVisible) {
         this.trackPageViews();

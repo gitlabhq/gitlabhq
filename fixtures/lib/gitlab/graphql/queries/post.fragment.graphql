@@ -1,0 +1,8 @@
+# import "./author.fragment.graphql"
+
+fragment PostF on Post {
+  name
+  title
+  content
+  author { ...AuthorF }
+}

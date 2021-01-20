@@ -10,17 +10,17 @@ module Mutations
       argument :id,
                 Types::GlobalIDType[Discussion],
                 required: true,
-                description: 'The global ID of the discussion'
+                description: 'The global ID of the discussion.'
 
       argument :resolve,
                GraphQL::BOOLEAN_TYPE,
                required: true,
-               description: 'Will resolve the discussion when true, and unresolve the discussion when false'
+               description: 'Will resolve the discussion when true, and unresolve the discussion when false.'
 
       field :discussion,
             Types::Notes::DiscussionType,
             null: true,
-            description: 'The discussion after mutation'
+            description: 'The discussion after mutation.'
 
       def resolve(id:, resolve:)
         discussion = authorized_find_discussion!(id: id)

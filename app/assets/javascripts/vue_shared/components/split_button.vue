@@ -2,7 +2,7 @@
 import { isString } from 'lodash';
 import { GlDropdown, GlDropdownDivider, GlDropdownItem } from '@gitlab/ui';
 
-const isValidItem = item =>
+const isValidItem = (item) =>
   isString(item.eventName) && isString(item.title) && isString(item.description);
 
 export default {

@@ -19,8 +19,8 @@ export default {
     GlDropdown,
     CodeInstruction,
   },
-  inject: ['config', 'dockerBuildCommand', 'dockerPushCommand', 'dockerLoginCommand'],
   mixins: [Tracking.mixin({ label: trackingLabel })],
+  inject: ['config', 'dockerBuildCommand', 'dockerPushCommand', 'dockerLoginCommand'],
   trackingLabel,
   i18n: {
     QUICK_START,

@@ -1,7 +1,7 @@
 import Vue from 'vue';
+import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { createStore } from '~/ide/stores';
 import emptyState from '~/ide/components/commit_sidebar/empty_state.vue';
-import { createComponentWithStore } from '../../../helpers/vue_mount_component_helper';
 
 describe('IDE commit panel empty state', () => {
   let vm;

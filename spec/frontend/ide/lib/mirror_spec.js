@@ -72,7 +72,7 @@ describe('ide/lib/mirror', () => {
     });
 
     const waitForConnection = (delay = SERVICE_DELAY) => {
-      const wait = new Promise(resolve => {
+      const wait = new Promise((resolve) => {
         setTimeout(resolve, 10);
       });
 
@@ -82,7 +82,7 @@ describe('ide/lib/mirror', () => {
     };
     const connectPass = () => waitForConnection().then(() => mockWebSocket.onopen());
     const connectFail = () => waitForConnection().then(() => mockWebSocket.onerror());
-    const sendResponse = msg => {
+    const sendResponse = (msg) => {
       mockWebSocket.onmessage(msg);
     };
 

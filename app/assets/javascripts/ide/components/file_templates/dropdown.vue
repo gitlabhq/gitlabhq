@@ -44,7 +44,7 @@ export default {
   computed: {
     ...mapState('fileTemplates', ['templates', 'isLoading']),
     outputData() {
-      return (this.isAsyncData ? this.templates : this.data).filter(t => {
+      return (this.isAsyncData ? this.templates : this.data).filter((t) => {
         if (!this.searchable) return true;
 
         return t.name.toLowerCase().indexOf(this.search.toLowerCase()) >= 0;

@@ -13,6 +13,7 @@ import {
 } from '../../constants/index';
 
 export default {
+  name: 'ListHeader',
   components: {
     TitleArea,
     MetadataItem,
@@ -39,6 +40,11 @@ export default {
       required: false,
     },
     hideExpirationPolicyData: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    metadataLoading: {
       type: Boolean,
       required: false,
       default: false,
@@ -92,7 +98,11 @@ export default {
 </script>
 
 <template>
-  <title-area :title="$options.i18n.CONTAINER_REGISTRY_TITLE" :info-messages="infoMessages">
+  <title-area
+    :title="$options.i18n.CONTAINER_REGISTRY_TITLE"
+    :info-messages="infoMessages"
+    :metadata-loading="metadataLoading"
+  >
     <template #right-actions>
       <slot name="commands"></slot>
     </template>

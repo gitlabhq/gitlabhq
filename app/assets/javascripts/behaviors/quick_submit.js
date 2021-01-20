@@ -30,7 +30,7 @@ function keyCodeIs(e, keyCode) {
   return e.keyCode === keyCode;
 }
 
-$(document).on('keydown.quick_submit', '.js-quick-submit', e => {
+$(document).on('keydown.quick_submit', '.js-quick-submit', (e) => {
   // Enter
   if (!keyCodeIs(e, 13)) {
     return;

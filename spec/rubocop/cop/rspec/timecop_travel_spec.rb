@@ -7,7 +7,7 @@ require 'rubocop/rspec/support'
 
 require_relative '../../../../rubocop/cop/rspec/timecop_travel'
 
-RSpec.describe RuboCop::Cop::RSpec::TimecopTravel, type: :rubocop do
+RSpec.describe RuboCop::Cop::RSpec::TimecopTravel do
   include CopHelper
 
   subject(:cop) { described_class.new }

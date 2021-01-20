@@ -442,7 +442,8 @@ module IssuablesHelper
       fullPath: issuable[:project_full_path],
       iid: issuable[:iid],
       severity: issuable[:severity],
-      timeTrackingLimitToHours: Gitlab::CurrentSettings.time_tracking_limit_to_hours
+      timeTrackingLimitToHours: Gitlab::CurrentSettings.time_tracking_limit_to_hours,
+      createNoteEmail: issuable[:create_note_email]
     }
   end
 

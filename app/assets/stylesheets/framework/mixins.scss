@@ -99,6 +99,10 @@
     line-height: $list-text-height;
     color: $gl-text-color-secondary;
 
+    @include media-breakpoint-down(xs) {
+      padding-top: $gl-padding-6;
+    }
+
     span {
       margin-right: 15px;
     }

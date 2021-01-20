@@ -17,6 +17,7 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
     let_it_be(:group_to_add) { create(:group) }
 
     before do
+      stub_feature_flags(invite_members_group_modal: false)
       group.add_owner(user)
       visit group_group_members_path(group)
     end

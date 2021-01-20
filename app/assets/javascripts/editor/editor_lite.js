@@ -24,7 +24,7 @@ export default class EditorLite {
 
   static setupMonacoTheme() {
     const themeName = window.gon?.user_color_scheme || DEFAULT_THEME;
-    const theme = themes.find(t => t.name === themeName);
+    const theme = themes.find((t) => t.name === themeName);
     if (theme) monacoEditor.defineTheme(themeName, theme.data);
     monacoEditor.setTheme(theme ? themeName : DEFAULT_THEME);
   }
@@ -35,7 +35,7 @@ export default class EditorLite {
     const ext = `.${path.split('.').pop()}`;
     const language = monacoLanguages
       .getLanguages()
-      .find(lang => lang.extensions.indexOf(ext) !== -1);
+      .find((lang) => lang.extensions.indexOf(ext) !== -1);
     const id = language ? language.id : 'plaintext';
     monacoEditor.setModelLanguage(model, id);
   }
@@ -51,7 +51,7 @@ export default class EditorLite {
     const promises = [];
     const extensionsArray = typeof extensions === 'string' ? extensions.split(',') : extensions;
 
-    extensionsArray.forEach(ext => {
+    extensionsArray.forEach((ext) => {
       const prefix = ext.includes('/') ? '' : 'editor/';
       const trimmedExt = ext.replace(/^\//, '').trim();
       EditorLite.pushToImportsArray(promises, `~/${prefix}${trimmedExt}`);
@@ -66,7 +66,7 @@ export default class EditorLite {
     }
     const isClassInstance = source.constructor.prototype !== Object.prototype;
     const sanitizedSource = isClassInstance ? source.constructor.prototype : source;
-    Object.getOwnPropertyNames(sanitizedSource).forEach(prop => {
+    Object.getOwnPropertyNames(sanitizedSource).forEach((prop) => {
       if (prop !== 'constructor') {
         Object.assign(inst, { [prop]: source[prop] });
       }
@@ -110,17 +110,17 @@ export default class EditorLite {
     });
     instance.setModel(model);
     instance.onDidDispose(() => {
-      const index = this.instances.findIndex(inst => inst === instance);
+      const index = this.instances.findIndex((inst) => inst === instance);
       this.instances.splice(index, 1);
       model.dispose();
     });
-    instance.updateModelLanguage = path => EditorLite.updateModelLanguage(path, instance);
-    instance.use = args => this.use(args, instance);
+    instance.updateModelLanguage = (path) => EditorLite.updateModelLanguage(path, instance);
+    instance.use = (args) => this.use(args, instance);
 
     EditorLite.loadExtensions(extensions, instance)
-      .then(modules => {
+      .then((modules) => {
         if (modules) {
-          modules.forEach(module => {
+          modules.forEach((module) => {
             instance.use(module.default);
           });
         }
@@ -128,7 +128,7 @@ export default class EditorLite {
       .then(() => {
         el.dispatchEvent(new Event('editor-ready'));
       })
-      .catch(e => {
+      .catch((e) => {
         throw e;
       });
 
@@ -137,20 +137,20 @@ export default class EditorLite {
   }
 
   dispose() {
-    this.instances.forEach(instance => instance.dispose());
+    this.instances.forEach((instance) => instance.dispose());
   }
 
   use(exts = [], instance = null) {
     const extensions = Array.isArray(exts) ? exts : [exts];
-    const initExtensions = inst => {
-      extensions.forEach(extension => {
+    const initExtensions = (inst) => {
+      extensions.forEach((extension) => {
         EditorLite.mixIntoInstance(extension, inst);
       });
     };
     if (instance) {
       initExtensions(instance);
     } else {
-      this.instances.forEach(inst => {
+      this.instances.forEach((inst) => {
         initExtensions(inst);
       });
     }

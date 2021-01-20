@@ -2,7 +2,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import { GlLoadingIcon } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
-import createMockApollo from 'jest/helpers/mock_apollo_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import ImportTableRow from '~/import_entities/import_groups/components/import_table_row.vue';
 import ImportTable from '~/import_entities/import_groups/components/import_table.vue';
 import setTargetNamespaceMutation from '~/import_entities/import_groups/graphql/mutations/set_target_namespace.mutation.graphql';

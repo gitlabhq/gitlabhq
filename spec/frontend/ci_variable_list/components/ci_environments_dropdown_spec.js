@@ -10,7 +10,7 @@ describe('Ci environments dropdown', () => {
   let wrapper;
   let store;
 
-  const createComponent = term => {
+  const createComponent = (term) => {
     store = new Vuex.Store({
       getters: {
         joinedEnvironments: () => ['dev', 'prod', 'staging'],
@@ -27,8 +27,8 @@ describe('Ci environments dropdown', () => {
   };
 
   const findAllDropdownItems = () => wrapper.findAll(GlDropdownItem);
-  const findDropdownItemByIndex = index => wrapper.findAll(GlDropdownItem).at(index);
-  const findActiveIconByIndex = index => findDropdownItemByIndex(index).find(GlIcon);
+  const findDropdownItemByIndex = (index) => wrapper.findAll(GlDropdownItem).at(index);
+  const findActiveIconByIndex = (index) => findDropdownItemByIndex(index).find(GlIcon);
 
   afterEach(() => {
     wrapper.destroy();
@@ -78,7 +78,7 @@ describe('Ci environments dropdown', () => {
     });
 
     it('should not display create button', () => {
-      const environments = findAllDropdownItems().filter(env => env.text().startsWith('Create'));
+      const environments = findAllDropdownItems().filter((env) => env.text().startsWith('Create'));
       expect(environments).toHaveLength(0);
       expect(findAllDropdownItems()).toHaveLength(1);
     });

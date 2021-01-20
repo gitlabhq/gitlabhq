@@ -17,7 +17,7 @@ describe('Contributors store actions', () => {
       mock = new MockAdapter(axios);
     });
 
-    it('should commit SET_CHART_DATA with received response', done => {
+    it('should commit SET_CHART_DATA with received response', (done) => {
       mock.onGet().reply(200, chartData);
 
       testAction(
@@ -37,7 +37,7 @@ describe('Contributors store actions', () => {
       );
     });
 
-    it('should show flash on API error', done => {
+    it('should show flash on API error', (done) => {
       mock.onGet().reply(400, 'Not Found');
 
       testAction(

@@ -7,7 +7,7 @@ describe('behaviors/load_startup_css', () => {
   const setupListeners = () => {
     document
       .querySelectorAll('link')
-      .forEach(x => x.addEventListener('load', () => loadListener(x)));
+      .forEach((x) => x.addEventListener('load', () => loadListener(x)));
   };
 
   beforeEach(() => {

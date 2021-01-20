@@ -31,17 +31,5 @@ describe('AlertManagementEmptyState', () => {
     it('shows empty state', () => {
       expect(EmptyState().exists()).toBe(true);
     });
-
-    it('show OpsGenie integration state when OpsGenie mcv is true', () => {
-      mountComponent({
-        provide: {
-          alertManagementEnabled: false,
-          userCanEnableAlertManagement: false,
-          opsgenieMvcEnabled: true,
-          opsgenieMvcTargetUrl: 'https://opsgenie-url.com',
-        },
-      });
-      expect(EmptyState().props('title')).toBe('Opsgenie is enabled');
-    });
   });
 });

@@ -481,7 +481,7 @@ describe('DiffsStoreUtils', () => {
       });
 
       it('adds the `.brokenSymlink` property to each diff file', () => {
-        preparedDiff.diff_files.forEach(file => {
+        preparedDiff.diff_files.forEach((file) => {
           expect(file).toEqual(expect.objectContaining({ brokenSymlink: false }));
         });
       });
@@ -492,9 +492,9 @@ describe('DiffsStoreUtils', () => {
           ...splitInlineDiff.diff_files,
           ...splitParallelDiff.diff_files,
           ...completedDiff.diff_files,
-        ].flatMap(file => [...file[INLINE_DIFF_LINES_KEY]]);
+        ].flatMap((file) => [...file[INLINE_DIFF_LINES_KEY]]);
 
-        lines.forEach(line => {
+        lines.forEach((line) => {
           expect(line.commentsDisabled).toBe(false);
         });
       });
@@ -560,7 +560,7 @@ describe('DiffsStoreUtils', () => {
       });
 
       it('adds the `.brokenSymlink` property to each meta diff file', () => {
-        preparedDiffFiles.forEach(file => {
+        preparedDiffFiles.forEach((file) => {
           expect(file).toMatchObject({ brokenSymlink: false });
         });
       });
@@ -1119,22 +1119,87 @@ describe('DiffsStoreUtils', () => {
     });
   });
 
+  describe('isConflictMarker', () => {
+    it.each`
+      type                       | expected
+      ${'conflict_marker_our'}   | ${true}
+      ${'conflict_marker_their'} | ${true}
+      ${'conflict_their'}        | ${false}
+      ${'conflict_our'}          | ${false}
+    `('returns $expected when type is $type', ({ type, expected }) => {
+      expect(utils.isConflictMarker({ type })).toBe(expected);
+    });
+  });
+
+  describe('isConflictOur', () => {
+    it.each`
+      type                       | expected
+      ${'conflict_marker_our'}   | ${false}
+      ${'conflict_marker_their'} | ${false}
+      ${'conflict_their'}        | ${false}
+      ${'conflict_our'}          | ${true}
+    `('returns $expected when type is $type', ({ type, expected }) => {
+      expect(utils.isConflictOur({ type })).toBe(expected);
+    });
+  });
+
+  describe('isConflictTheir', () => {
+    it.each`
+      type                       | expected
+      ${'conflict_marker_our'}   | ${false}
+      ${'conflict_marker_their'} | ${false}
+      ${'conflict_their'}        | ${true}
+      ${'conflict_our'}          | ${false}
+    `('returns $expected when type is $type', ({ type, expected }) => {
+      expect(utils.isConflictTheir({ type })).toBe(expected);
+    });
+  });
+
   describe('parallelizeDiffLines', () => {
     it('converts inline diff lines to parallel diff lines', () => {
       const file = getDiffFileMock();
 
-      expect(utils.parallelizeDiffLines(file[INLINE_DIFF_LINES_KEY])).toEqual(
+      expect(utils.parallelizeDiffLines(file[INLINE_DIFF_LINES_KEY])).toMatchObject(
         file.parallel_diff_lines,
       );
+    });
+
+    it('converts conflicted diffs line', () => {
+      const lines = [
+        { type: 'new' },
+        { type: 'conflict_marker_our' },
+        { type: 'conflict_our' },
+        { type: 'conflict_marker' },
+        { type: 'conflict_their' },
+        { type: 'conflict_marker_their' },
+      ];
+
+      expect(utils.parallelizeDiffLines(lines)).toEqual([
+        {
+          left: null,
+          right: {
+            chunk: 0,
+            type: 'new',
+          },
+        },
+        {
+          left: { chunk: 0, type: 'conflict_marker_our' },
+          right: { chunk: 0, type: 'conflict_marker_their' },
+        },
+        {
+          left: { chunk: 0, type: 'conflict_our' },
+          right: { chunk: 0, type: 'conflict_their' },
+        },
+      ]);
     });
 
     it('converts inline diff lines', () => {
       const file = getDiffFileMock();
       const files = utils.parallelizeDiffLines(file.highlighted_diff_lines, true);
 
-      expect(files[5].left).toEqual(file.parallel_diff_lines[5].left);
+      expect(files[5].left).toMatchObject(file.parallel_diff_lines[5].left);
       expect(files[5].right).toBeNull();
-      expect(files[6].left).toEqual(file.parallel_diff_lines[5].right);
+      expect(files[6].left).toMatchObject(file.parallel_diff_lines[5].right);
       expect(files[6].right).toBeNull();
     });
   });

@@ -4,7 +4,7 @@ describe('Import Gitlab project', () => {
   const pathName = 'my-project';
   const projectName = 'My Project';
 
-  const setTestFixtures = url => {
+  const setTestFixtures = (url) => {
     window.history.pushState({}, null, url);
 
     setFixtures(`

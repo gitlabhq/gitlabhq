@@ -50,6 +50,8 @@ To enable pipelines for merge results:
 - You must not be using
   [fast forward merges](../../../user/project/merge_requests/fast_forward_merge.md) yet.
   To follow progress, see [#58226](https://gitlab.com/gitlab-org/gitlab/-/issues/26996).
+- Your repository must be a GitLab repository, not an
+  [external repository](../../ci_cd_for_external_repos/index.md).
 
 ## Enable pipelines for merged results
 
@@ -58,7 +60,7 @@ To enable pipelines for merged results for your project:
 1. [Configure your CI/CD configuration file](../index.md#configuring-pipelines-for-merge-requests)
    so that the pipeline or individual jobs run for merge requests.
 1. Visit your project's **Settings > General** and expand **Merge requests**.
-1. Check **Enable merged results pipelines.**.
+1. Check **Enable merged results pipelines**.
 1. Click **Save changes**.
 
 WARNING:

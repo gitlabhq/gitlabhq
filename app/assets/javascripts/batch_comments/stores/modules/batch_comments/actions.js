@@ -11,8 +11,8 @@ export const saveDraft = ({ dispatch }, draft) =>
 export const addDraftToDiscussion = ({ commit }, { endpoint, data }) =>
   service
     .addDraftToDiscussion(endpoint, data)
-    .then(res => res.data)
-    .then(res => {
+    .then((res) => res.data)
+    .then((res) => {
       commit(types.ADD_NEW_DRAFT, res);
       return res;
     })
@@ -23,8 +23,8 @@ export const addDraftToDiscussion = ({ commit }, { endpoint, data }) =>
 export const createNewDraft = ({ commit }, { endpoint, data }) =>
   service
     .createNewDraft(endpoint, data)
-    .then(res => res.data)
-    .then(res => {
+    .then((res) => res.data)
+    .then((res) => {
       commit(types.ADD_NEW_DRAFT, res);
       return res;
     })
@@ -43,8 +43,8 @@ export const deleteDraft = ({ commit, getters }, draft) =>
 export const fetchDrafts = ({ commit, getters }) =>
   service
     .fetchDrafts(getters.getNotesData.draftsPath)
-    .then(res => res.data)
-    .then(data => commit(types.SET_BATCH_COMMENTS_DRAFTS, data))
+    .then((res) => res.data)
+    .then((data) => commit(types.SET_BATCH_COMMENTS_DRAFTS, data))
     .catch(() => flash(__('An error occurred while fetching pending comments')));
 
 export const publishSingleDraft = ({ commit, dispatch, getters }, draftId) => {
@@ -86,8 +86,8 @@ export const updateDraft = (
       resolveDiscussion,
       position: JSON.stringify(position),
     })
-    .then(res => res.data)
-    .then(data => commit(types.RECEIVE_DRAFT_UPDATE_SUCCESS, data))
+    .then((res) => res.data)
+    .then((data) => commit(types.RECEIVE_DRAFT_UPDATE_SUCCESS, data))
     .then(callback)
     .catch(() => flash(__('An error occurred while updating the comment')));
 
@@ -116,8 +116,8 @@ export const scrollToDraft = ({ dispatch, rootGetters }, draft) => {
 
 export const expandAllDiscussions = ({ dispatch, state }) =>
   state.drafts
-    .filter(draft => draft.discussion_id)
-    .forEach(draft => {
+    .filter((draft) => draft.discussion_id)
+    .forEach((draft) => {
       dispatch('expandDiscussion', { discussionId: draft.discussion_id }, { root: true });
     });
 

@@ -28,7 +28,6 @@ describe('AlertsSettingsFormNew', () => {
       propsData: {
         loading: false,
         canAddIntegration: true,
-        canManageOpsgenie: true,
         ...props,
       },
       provide: {
@@ -86,11 +85,7 @@ describe('AlertsSettingsFormNew', () => {
 
       await wrapper.vm.$nextTick();
 
-      expect(
-        findFormFields()
-          .at(0)
-          .isVisible(),
-      ).toBe(true);
+      expect(findFormFields().at(0).isVisible()).toBe(true);
     });
 
     it('disables the dropdown and shows help text when multi integrations are not supported', async () => {
@@ -104,11 +99,7 @@ describe('AlertsSettingsFormNew', () => {
       const options = findSelect().findAll('option');
       await options.at(2).setSelected();
 
-      expect(
-        findFormFields()
-          .at(0)
-          .attributes('disabled'),
-      ).toBe('disabled');
+      expect(findFormFields().at(0).attributes('disabled')).toBe('disabled');
     });
   });
 
@@ -119,9 +110,7 @@ describe('AlertsSettingsFormNew', () => {
       const options = findSelect().findAll('option');
       await options.at(1).setSelected();
 
-      await findFormFields()
-        .at(0)
-        .setValue('Test integration');
+      await findFormFields().at(0).setValue('Test integration');
       await findFormToggle().trigger('click');
 
       await wrapper.vm.$nextTick();
@@ -145,12 +134,8 @@ describe('AlertsSettingsFormNew', () => {
       const options = findSelect().findAll('option');
       await options.at(2).setSelected();
 
-      await findFormFields()
-        .at(0)
-        .setValue('Test integration');
-      await findFormFields()
-        .at(1)
-        .setValue('https://test.com');
+      await findFormFields().at(0).setValue('Test integration');
+      await findFormFields().at(1).setValue('https://test.com');
       await findFormToggle().trigger('click');
 
       await wrapper.vm.$nextTick();
@@ -179,9 +164,7 @@ describe('AlertsSettingsFormNew', () => {
         },
       });
 
-      await findFormFields()
-        .at(0)
-        .setValue('Test integration post');
+      await findFormFields().at(0).setValue('Test integration post');
       await findFormToggle().trigger('click');
 
       await wrapper.vm.$nextTick();
@@ -210,12 +193,8 @@ describe('AlertsSettingsFormNew', () => {
         },
       });
 
-      await findFormFields()
-        .at(0)
-        .setValue('Test integration');
-      await findFormFields()
-        .at(1)
-        .setValue('https://test-post.com');
+      await findFormFields().at(0).setValue('Test integration');
+      await findFormFields().at(1).setValue('https://test-post.com');
       await findFormToggle().trigger('click');
 
       await wrapper.vm.$nextTick();
@@ -300,11 +279,7 @@ describe('AlertsSettingsFormNew', () => {
           resetSamplePayloadConfirmed,
         });
         await wrapper.vm.$nextTick();
-        expect(
-          findTestPayloadSection()
-            .find(GlFormTextarea)
-            .attributes('disabled'),
-        ).toBe(disabled);
+        expect(findTestPayloadSection().find(GlFormTextarea).attributes('disabled')).toBe(disabled);
       });
     });
 

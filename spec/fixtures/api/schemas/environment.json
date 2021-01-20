@@ -37,6 +37,12 @@
     "has_opened_alert": { "type": "boolean" },
     "cluster_type": { "type": "types/nullable_string.json" },
     "terminal_path": { "type": "types/nullable_string.json" },
+    "rollout_status": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "rollout_status.json" }
+      ]
+    },
     "last_deployment": {
       "oneOf": [
         { "type": "null" },

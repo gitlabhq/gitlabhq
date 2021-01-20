@@ -30,7 +30,7 @@ Vue.config.warnHandler = (msg, vm, trace) => {
   const currentStack = new Error().stack;
   const isInVueTestUtils = currentStack
     .split('\n')
-    .some(line => line.startsWith('    at VueWrapper.setProps ('));
+    .some((line) => line.startsWith('    at VueWrapper.setProps ('));
   if (isInVueTestUtils) {
     return;
   }
@@ -40,7 +40,7 @@ Vue.config.warnHandler = (msg, vm, trace) => {
 };
 
 let hasVueErrors = false;
-Vue.config.errorHandler = function(err) {
+Vue.config.errorHandler = function (err) {
   hasVueErrors = true;
   fail(err);
 };
@@ -75,7 +75,7 @@ gon.relative_url_root = '';
 
 let hasUnhandledPromiseRejections = false;
 
-window.addEventListener('unhandledrejection', event => {
+window.addEventListener('unhandledrejection', (event) => {
   hasUnhandledPromiseRejections = true;
   console.error('Unhandled promise rejection:');
   console.error(event.reason.stack || event.reason);
@@ -87,11 +87,11 @@ window.addEventListener('unhandledrejection', event => {
 // enough for the socket to continue to communicate.
 // The downside is that it creates a minor performance penalty in the time it takes
 // to run our unit tests.
-beforeEach(done => done());
+beforeEach((done) => done());
 
 let longRunningTestTimeoutHandle;
 
-beforeEach(done => {
+beforeEach((done) => {
   longRunningTestTimeoutHandle = setTimeout(() => {
     done.fail('Test is running too long!');
   }, 4000);
@@ -111,15 +111,15 @@ if (process.env.IS_EE) {
   testContexts.push(require.context('ee_spec', true, /_spec$/));
 }
 
-testContexts.forEach(context => {
-  context.keys().forEach(path => {
+testContexts.forEach((context) => {
+  context.keys().forEach((path) => {
     try {
       context(path);
     } catch (err) {
       console.log(err);
       console.error('[GL SPEC RUNNER ERROR] Unable to load spec: ', path);
-      describe('Test bundle', function() {
-        it(`includes '${path}'`, function() {
+      describe('Test bundle', function () {
+        it(`includes '${path}'`, function () {
           expect(err).toBeNull();
         });
       });
@@ -128,7 +128,7 @@ testContexts.forEach(context => {
 });
 
 describe('test errors', () => {
-  beforeAll(done => {
+  beforeAll((done) => {
     if (hasUnhandledPromiseRejections || hasVueWarnings || hasVueErrors) {
       setTimeout(done, 1000);
     } else {

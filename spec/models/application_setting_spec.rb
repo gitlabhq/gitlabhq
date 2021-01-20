@@ -72,6 +72,7 @@ RSpec.describe ApplicationSetting do
     it { is_expected.not_to allow_value(nil).for(:push_event_activities_limit) }
 
     it { is_expected.to validate_numericality_of(:container_registry_delete_tags_service_timeout).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:container_registry_cleanup_tags_service_max_list_size).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_expiration_policies_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
 
     it { is_expected.to validate_numericality_of(:snippet_size_limit).only_integer.is_greater_than(0) }
@@ -313,7 +314,7 @@ RSpec.describe ApplicationSetting do
 
     it { is_expected.to validate_presence_of(:max_attachment_size) }
 
-    it do
+    specify do
       is_expected.to validate_numericality_of(:max_attachment_size)
         .only_integer
         .is_greater_than(0)
@@ -321,13 +322,13 @@ RSpec.describe ApplicationSetting do
 
     it { is_expected.to validate_presence_of(:max_import_size) }
 
-    it do
+    specify do
       is_expected.to validate_numericality_of(:max_import_size)
         .only_integer
         .is_greater_than_or_equal_to(0)
     end
 
-    it do
+    specify do
       is_expected.to validate_numericality_of(:local_markdown_version)
         .only_integer
         .is_greater_than_or_equal_to(0)
@@ -472,7 +473,7 @@ RSpec.describe ApplicationSetting do
       end
 
       [:gitaly_timeout_default, :gitaly_timeout_medium, :gitaly_timeout_fast].each do |timeout_name|
-        it do
+        specify do
           is_expected.to validate_presence_of(timeout_name)
           is_expected.to validate_numericality_of(timeout_name).only_integer
             .is_greater_than_or_equal_to(0)
@@ -733,6 +734,27 @@ RSpec.describe ApplicationSetting do
         is_expected.to be_invalid
       end
     end
+
+    context 'throttle_* settings' do
+      where(:throttle_setting) do
+        %i[
+          throttle_unauthenticated_requests_per_period
+          throttle_unauthenticated_period_in_seconds
+          throttle_authenticated_api_requests_per_period
+          throttle_authenticated_api_period_in_seconds
+          throttle_authenticated_web_requests_per_period
+          throttle_authenticated_web_period_in_seconds
+        ]
+      end
+
+      with_them do
+        it { is_expected.to allow_value(3).for(throttle_setting) }
+        it { is_expected.not_to allow_value(-3).for(throttle_setting) }
+        it { is_expected.not_to allow_value(0).for(throttle_setting) }
+        it { is_expected.not_to allow_value('three').for(throttle_setting) }
+        it { is_expected.not_to allow_value(nil).for(throttle_setting) }
+      end
+    end
   end
 
   context 'restrict creating duplicates' do
@@ -821,7 +843,7 @@ RSpec.describe ApplicationSetting do
       context 'validations' do
         it { is_expected.to validate_presence_of(:diff_max_patch_bytes) }
 
-        it do
+        specify do
           is_expected.to validate_numericality_of(:diff_max_patch_bytes)
           .only_integer
           .is_greater_than_or_equal_to(Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES)
@@ -850,12 +872,13 @@ RSpec.describe ApplicationSetting do
     end
   end
 
-  describe '#instance_review_permitted?', :request_store do
+  describe '#instance_review_permitted?', :request_store, :use_clean_rails_memory_store_caching do
     subject { setting.instance_review_permitted? }
 
     before do
-      RequestStore.store[:current_license] = nil
-      expect(Rails.cache).to receive(:fetch).and_return(
+      allow(License).to receive(:current).and_return(nil) if Gitlab.ee?
+      allow(Rails.cache).to receive(:fetch).and_call_original
+      expect(Rails.cache).to receive(:fetch).with('limited_users_count', anything).and_return(
         ::ApplicationSetting::INSTANCE_REVIEW_MIN_USERS + users_over_minimum
       )
     end

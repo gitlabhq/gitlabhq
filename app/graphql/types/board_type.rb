@@ -7,6 +7,8 @@ module Types
     accepts ::Board
     authorize :read_board
 
+    present_using BoardPresenter
+
     field :id, type: GraphQL::ID_TYPE, null: false,
           description: 'ID (global ID) of the board'
     field :name, type: GraphQL::STRING_TYPE, null: true,
@@ -24,6 +26,12 @@ module Types
           description: 'Lists of the board',
           resolver: Resolvers::BoardListsResolver,
           extras: [:lookahead]
+
+    field :web_path, GraphQL::STRING_TYPE, null: false,
+          description: 'Web path of the board.'
+
+    field :web_url, GraphQL::STRING_TYPE, null: false,
+          description: 'Web URL of the board.'
   end
 end
 

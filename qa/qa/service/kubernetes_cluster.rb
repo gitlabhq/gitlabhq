@@ -43,6 +43,14 @@ module QA
         cluster_name
       end
 
+      def create_secret(secret, secret_name)
+        shell("kubectl create secret generic #{secret_name} --from-literal=token='#{secret}'")
+      end
+
+      def apply_manifest(manifest)
+        shell('kubectl apply -f -', stdin_data: manifest)
+      end
+
       private
 
       def fetch_api_url

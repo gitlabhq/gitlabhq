@@ -50,9 +50,9 @@ export default {
   },
   computed: {
     ...mapState({
-      matches: state => state.matches,
-      lastQuery: state => state.query,
-      selectedRef: state => state.selectedRef,
+      matches: (state) => state.matches,
+      lastQuery: (state) => state.query,
+      selectedRef: (state) => state.selectedRef,
     }),
     ...mapGetters(['isLoading', 'isQueryPossiblyASha']),
     i18n() {

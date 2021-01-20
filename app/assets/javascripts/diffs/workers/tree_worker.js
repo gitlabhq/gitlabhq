@@ -2,7 +2,7 @@ import { sortTree } from '~/ide/stores/utils';
 import { generateTreeList } from '../store/utils';
 
 // eslint-disable-next-line no-restricted-globals
-self.addEventListener('message', e => {
+self.addEventListener('message', (e) => {
   const { data } = e;
 
   if (data === undefined) {

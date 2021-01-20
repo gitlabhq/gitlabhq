@@ -7,7 +7,7 @@ describe('Alert Handler', () => {
   const DISMISS_CLASS = 'gl-alert-dismiss';
   const DISMISS_LABEL = 'Dismiss';
 
-  const generateHtml = parentClass =>
+  const generateHtml = (parentClass) =>
     `<div class="${parentClass}">
       <button aria-label="${DISMISS_LABEL}">Dismiss</button>
     </div>`;

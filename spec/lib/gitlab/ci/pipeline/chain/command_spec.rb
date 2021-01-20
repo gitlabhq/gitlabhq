@@ -295,4 +295,30 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command do
       it { is_expected.to eq(false) }
     end
   end
+
+  describe '#creates_child_pipeline?' do
+    let(:command) { described_class.new(bridge: bridge) }
+
+    subject { command.creates_child_pipeline? }
+
+    context 'when bridge is present' do
+      context 'when bridge triggers a child pipeline' do
+        let(:bridge) { double(:bridge, triggers_child_pipeline?: true) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when bridge triggers a multi-project pipeline' do
+        let(:bridge) { double(:bridge, triggers_child_pipeline?: false) }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when bridge is not present' do
+      let(:bridge) { nil }
+
+      it { is_expected.to be_falsey }
+    end
+  end
 end

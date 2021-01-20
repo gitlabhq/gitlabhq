@@ -92,7 +92,7 @@ export default {
     },
     sortedUsers() {
       return this.users
-        .map(user => ({ ...user, active: this.isActive(user.username) }))
+        .map((user) => ({ ...user, active: this.isActive(user.username) }))
         .sort((a, b) => (a.active === b.active ? 0 : a.active ? -1 : 1)); // eslint-disable-line no-nested-ternary
     },
     dropdownClass() {
@@ -192,7 +192,7 @@ export default {
 </script>
 
 <template>
-  <div class="block alert-assignees ">
+  <div class="block alert-assignees">
     <div ref="assignees" class="sidebar-collapsed-icon" @click="$emit('toggle-sidebar')">
       <gl-icon name="user" :size="14" />
       <gl-loading-icon v-if="isUpdating" />

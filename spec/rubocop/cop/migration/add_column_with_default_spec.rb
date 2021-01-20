@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 require 'rubocop'
 require_relative '../../../../rubocop/cop/migration/add_column_with_default'
 
-RSpec.describe RuboCop::Cop::Migration::AddColumnWithDefault, type: :rubocop do
+RSpec.describe RuboCop::Cop::Migration::AddColumnWithDefault do
   include CopHelper
 
   let(:cop) { described_class.new }

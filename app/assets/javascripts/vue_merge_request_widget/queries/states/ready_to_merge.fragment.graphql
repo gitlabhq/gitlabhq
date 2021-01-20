@@ -1,0 +1,41 @@
+fragment ReadyToMerge on Project {
+  onlyAllowMergeIfPipelineSucceeds
+  mergeRequestsFfOnlyEnabled
+  squashReadOnly
+  mergeRequest(iid: $iid) {
+    autoMergeEnabled
+    shouldRemoveSourceBranch
+    defaultMergeCommitMessage
+    defaultMergeCommitMessageWithDescription
+    defaultSquashCommitMessage
+    squash
+    squashOnMerge
+    availableAutoMergeStrategies
+    hasCi
+    mergeable
+    mergeWhenPipelineSucceeds
+    commitCount
+    diffHeadSha
+    userPermissions {
+      removeSourceBranch
+    }
+    targetBranch
+    mergeError
+    commitsWithoutMergeCommits {
+      nodes {
+        sha
+        shortId
+        title
+        message
+      }
+    }
+    pipelines(first: 1) {
+      nodes {
+        id
+        status
+        path
+        active
+      }
+    }
+  }
+}

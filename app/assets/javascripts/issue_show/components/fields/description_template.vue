@@ -34,7 +34,7 @@ export default {
   mounted() {
     // Create the editor for the template
     const editor = document.querySelector('.detail-page-description .note-textarea') || {};
-    editor.setValue = val => {
+    editor.setValue = (val) => {
       this.formState.description = val;
     };
     editor.getValue = () => this.formState.description;

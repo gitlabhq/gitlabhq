@@ -1,0 +1,5 @@
+---
+title: Deduplicate labels with identical title and group
+merge_request: 37148
+author:
+type: fixed

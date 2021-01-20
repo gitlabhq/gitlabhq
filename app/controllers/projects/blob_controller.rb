@@ -31,6 +31,9 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :editor_variables, except: [:show, :preview, :diff]
   before_action :validate_diff_params, only: :diff
   before_action :set_last_commit_sha, only: [:edit, :update]
+  before_action only: :new do
+    record_experiment_user(:ci_syntax_templates, namespace_id: @project.namespace_id) if params[:file_name] == @project.ci_config_path_or_default
+  end
 
   track_redis_hll_event :create, :update, name: 'g_edit_by_sfe', feature: :track_editor_edit_actions, feature_default_enabled: true
 

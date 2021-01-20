@@ -15,10 +15,10 @@ describe('Package History', () => {
     packageEntity: { ...mavenPackage },
   };
 
-  const createPipelines = amount =>
+  const createPipelines = (amount) =>
     [...Array(amount)].map((x, index) => ({ ...mockPipelineInfo, id: index + 1 }));
 
-  const mountComponent = props => {
+  const mountComponent = (props) => {
     wrapper = shallowMount(component, {
       propsData: { ...defaultProps, ...props },
       stubs: {
@@ -35,9 +35,9 @@ describe('Package History', () => {
     wrapper = null;
   });
 
-  const findHistoryElement = testId => wrapper.find(`[data-testid="${testId}"]`);
-  const findElementLink = container => container.find(GlLink);
-  const findElementTimeAgo = container => container.find(TimeAgoTooltip);
+  const findHistoryElement = (testId) => wrapper.find(`[data-testid="${testId}"]`);
+  const findElementLink = (container) => container.find(GlLink);
+  const findElementTimeAgo = (container) => container.find(TimeAgoTooltip);
   const findTitle = () => wrapper.find('[data-testid="title"]');
   const findTimeline = () => wrapper.find('[data-testid="timeline"]');
 

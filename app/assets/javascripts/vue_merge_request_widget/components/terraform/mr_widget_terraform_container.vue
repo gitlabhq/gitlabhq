@@ -40,7 +40,7 @@ export default {
       );
     },
     numberOfInvalidPlans() {
-      return Object.values(this.plansObject).filter(plan => plan.tf_report_error).length;
+      return Object.values(this.plansObject).filter((plan) => plan.tf_report_error).length;
     },
     numberOfPlans() {
       return Object.keys(this.plansObject).length;

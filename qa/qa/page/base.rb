@@ -135,8 +135,11 @@ module QA
       def check_element(name)
         retry_until(sleep_interval: 1) do
           find_element(name).set(true)
+          checked = find_element(name).checked?
 
-          find_element(name).checked?
+          QA::Runtime::Logger.debug(checked ? "#{name} was checked" : "#{name} was not checked")
+
+          checked
         end
       end
 
@@ -185,19 +188,31 @@ module QA
       end
 
       def has_element?(name, **kwargs)
+        disabled = kwargs.delete(:disabled)
+        original_kwargs = kwargs.dup
+        wait = kwargs.delete(:wait) || Capybara.default_max_wait_time
+        text = kwargs.delete(:text)
+        klass = kwargs.delete(:class)
+
+        try_find_element = ->(wait) do
+          if disabled.nil?
+            has_css?(element_selector_css(name, kwargs), text: text, wait: wait, class: klass)
+          else
+            find_element(name, original_kwargs).disabled? == disabled
+          end
+        end
+
+        # Check for the element before waiting for requests, just in case unrelated requests are in progress.
+        # This is to avoid waiting unnecessarily after the element we're interested in has already appeared.
+        return true if try_find_element.call(wait)
+
+        # If the element didn't appear, wait for requests and then check again
         wait_for_requests(skip_finished_loading_check: !!kwargs.delete(:skip_finished_loading_check))
 
-        disabled = kwargs.delete(:disabled)
-
-        if disabled.nil?
-          wait = kwargs.delete(:wait) || Capybara.default_max_wait_time
-          text = kwargs.delete(:text)
-          klass = kwargs.delete(:class)
-
-          has_css?(element_selector_css(name, kwargs), text: text, wait: wait, class: klass)
-        else
-          find_element(name, kwargs).disabled? == disabled
-        end
+        # We only wait one second now because we previously waited the full expected duration,
+        # plus however long it took for requests to complete. One second should be enough
+        # for the UI to update after requests complete.
+        try_find_element.call(1)
       end
 
       def has_no_element?(name, **kwargs)
@@ -274,8 +289,11 @@ module QA
         sleep 1
       end
 
-      def within_element(name, text: nil)
-        page.within(element_selector_css(name), text: text) do
+      def within_element(name, **kwargs)
+        wait_for_requests
+        text = kwargs.delete(:text)
+
+        page.within(element_selector_css(name, kwargs), text: text) do
           yield
         end
       end

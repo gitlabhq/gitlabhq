@@ -5,7 +5,7 @@ import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
-const getErrorMessage = data => {
+const getErrorMessage = (data) => {
   const errorKey = Object.keys(data)[0];
 
   return data[errorKey][0];
@@ -42,7 +42,7 @@ export const createRole = ({ dispatch, state: { createRolePath } }, payload) => 
 
       dispatch('createRoleSuccess', awsData);
     })
-    .catch(error => {
+    .catch((error) => {
       let message = error;
       if (error?.response?.data?.message) {
         message = error.response.data.message;

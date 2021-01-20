@@ -34,7 +34,7 @@ describe('Admin statistics app', () => {
     wrapper.destroy();
   });
 
-  const findStats = idx => wrapper.findAll('.js-stats').at(idx);
+  const findStats = (idx) => wrapper.findAll('.js-stats').at(idx);
 
   describe('template', () => {
     describe('when app is loading', () => {

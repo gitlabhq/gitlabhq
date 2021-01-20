@@ -19,7 +19,7 @@ describe('ProjectAvatarDefault component', () => {
     vm.$destroy();
   });
 
-  it('renders identicon if project has no avatar_url', done => {
+  it('renders identicon if project has no avatar_url', (done) => {
     const expectedText = getFirstCharacterCapitalized(projectData.name);
 
     vm.project = {
@@ -38,7 +38,7 @@ describe('ProjectAvatarDefault component', () => {
       .catch(done.fail);
   });
 
-  it('renders avatar image if project has avatar_url', done => {
+  it('renders avatar image if project has avatar_url', (done) => {
     const avatarUrl = `${TEST_HOST}/images/home/nasa.svg`;
 
     vm.project = {

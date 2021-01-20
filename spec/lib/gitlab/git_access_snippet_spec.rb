@@ -29,8 +29,17 @@ RSpec.describe Gitlab::GitAccessSnippet do
     let(:actor) { build(:deploy_key) }
 
     it 'does not allow push and pull access' do
-      expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:authentication_mechanism])
-      expect { pull_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:authentication_mechanism])
+      expect { push_access_check }.to raise_forbidden(:authentication_mechanism)
+      expect { pull_access_check }.to raise_forbidden(:authentication_mechanism)
+    end
+  end
+
+  describe 'when snippet repository is read-only' do
+    it 'does not allow push and allows pull access' do
+      allow(snippet).to receive(:repository_read_only?).and_return(true)
+
+      expect { push_access_check }.to raise_forbidden(:read_only)
+      expect { pull_access_check }.not_to raise_error
     end
   end
 
@@ -58,7 +67,7 @@ RSpec.describe Gitlab::GitAccessSnippet do
       let(:snippet) { nil }
 
       it 'blocks access with "not found"' do
-        expect { pull_access_check }.to raise_snippet_not_found
+        expect { pull_access_check }.to raise_not_found(:snippet_not_found)
       end
     end
 
@@ -66,7 +75,7 @@ RSpec.describe Gitlab::GitAccessSnippet do
       let(:snippet) { build_stubbed(:personal_snippet) }
 
       it 'blocks access with "not found"' do
-        expect { pull_access_check }.to raise_snippet_not_found
+        expect { pull_access_check }.to raise_not_found(:no_repo)
       end
     end
   end
@@ -81,8 +90,8 @@ RSpec.describe Gitlab::GitAccessSnippet do
     it 'blocks access when the user did not accept terms' do
       message = /must accept the Terms of Service in order to perform this action/
 
-      expect { push_access_check }.to raise_forbidden(message)
-      expect { pull_access_check }.to raise_forbidden(message)
+      expect { push_access_check }.to raise_forbidden_with_message(message)
+      expect { pull_access_check }.to raise_forbidden_with_message(message)
     end
 
     it 'allows access when the user accepted the terms' do
@@ -149,8 +158,8 @@ RSpec.describe Gitlab::GitAccessSnippet do
           let(:membership) { membership }
 
           it 'respects accessibility' do
-            expect { push_access_check }.to raise_snippet_not_found
-            expect { pull_access_check }.to raise_snippet_not_found
+            expect { push_access_check }.to raise_not_found(:project_not_found)
+            expect { pull_access_check }.to raise_not_found(:project_not_found)
           end
         end
       end
@@ -172,13 +181,31 @@ RSpec.describe Gitlab::GitAccessSnippet do
         end
       end
 
-      [:guest, :reporter, :maintainer, :author, :admin].each do |membership|
+      [:guest, :reporter, :maintainer, :author].each do |membership|
         context membership.to_s do
           let(:membership) { membership }
 
           it 'cannot perform git pushes' do
             expect { push_access_check }.to raise_error(described_class::ForbiddenError)
             expect { pull_access_check }.not_to raise_error
+          end
+        end
+      end
+
+      context 'admin' do
+        let(:membership) { :admin }
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'cannot perform git pushes' do
+            expect { push_access_check }.to raise_error(described_class::ForbiddenError)
+            expect { pull_access_check }.not_to raise_error
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it 'cannot perform git operations' do
+            expect { push_access_check }.to raise_error(described_class::ForbiddenError)
+            expect { pull_access_check }.to raise_error(described_class::ForbiddenError)
           end
         end
       end
@@ -255,7 +282,7 @@ RSpec.describe Gitlab::GitAccessSnippet do
           allow(check).to receive(:validate!).and_raise(Gitlab::GitAccess::ForbiddenError, 'foo')
         end
 
-        expect { push_access_check }.to raise_forbidden('foo')
+        expect { push_access_check }.to raise_forbidden_with_message('foo')
       end
 
       it 'sets the file count limit from Snippet class' do
@@ -372,17 +399,49 @@ RSpec.describe Gitlab::GitAccessSnippet do
     end
   end
 
+  describe 'HEAD realignment' do
+    let_it_be(:snippet) { create(:project_snippet, :private, :repository, project: project) }
+
+    shared_examples 'HEAD is updated to the snippet default branch' do
+      let(:actor) { snippet.author }
+
+      specify do
+        expect(snippet).to receive(:change_head_to_default_branch).and_call_original
+
+        subject
+      end
+
+      context 'when an error is raised' do
+        let(:actor) { nil }
+
+        it 'does not realign HEAD' do
+          expect(snippet).not_to receive(:change_head_to_default_branch).and_call_original
+
+          expect { subject }.to raise_error(described_class::ForbiddenError)
+        end
+      end
+    end
+
+    it_behaves_like 'HEAD is updated to the snippet default branch' do
+      subject { push_access_check }
+    end
+
+    it_behaves_like 'HEAD is updated to the snippet default branch' do
+      subject { pull_access_check }
+    end
+  end
+
   private
 
-  def raise_snippet_not_found
-    raise_error(Gitlab::GitAccess::NotFoundError, Gitlab::GitAccess::ERROR_MESSAGES[:snippet_not_found])
+  def raise_not_found(message_key)
+    raise_error(described_class::NotFoundError, described_class.error_message(message_key))
   end
 
-  def raise_project_not_found
-    raise_error(Gitlab::GitAccess::NotFoundError, Gitlab::GitAccess::ERROR_MESSAGES[:project_not_found])
+  def raise_forbidden(message_key)
+    raise_error(Gitlab::GitAccess::ForbiddenError, described_class.error_message(message_key))
   end
 
-  def raise_forbidden(message)
+  def raise_forbidden_with_message(message)
     raise_error(Gitlab::GitAccess::ForbiddenError, message)
   end
 end

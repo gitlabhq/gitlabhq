@@ -68,7 +68,7 @@ export const fetchReleasesGraphQl = (
         ...paginationParams,
       },
     })
-    .then(response => {
+    .then((response) => {
       const { data, paginationInfo: graphQlPageInfo } = convertAllReleasesGraphQLResponse(response);
 
       commit(types.RECEIVE_RELEASES_SUCCESS, {

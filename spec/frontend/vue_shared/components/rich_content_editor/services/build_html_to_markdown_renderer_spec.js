@@ -8,9 +8,9 @@ describe('rich_content_editor/services/html_to_markdown_renderer', () => {
 
   beforeEach(() => {
     baseRenderer = {
-      trim: jest.fn(input => `trimmed ${input}`),
-      getSpaceCollapsedText: jest.fn(input => `space collapsed ${input}`),
-      getSpaceControlled: jest.fn(input => `space controlled ${input}`),
+      trim: jest.fn((input) => `trimmed ${input}`),
+      getSpaceCollapsedText: jest.fn((input) => `space collapsed ${input}`),
+      getSpaceControlled: jest.fn((input) => `space controlled ${input}`),
       convert: jest.fn(),
     };
 

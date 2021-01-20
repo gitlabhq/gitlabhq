@@ -265,9 +265,7 @@ export default {
       if (field?.sortKey) {
         sortKey = field.sortKey;
       } else {
-        sortKey = convertToSnakeCase(sortBy)
-          .replace(/_.*/, '')
-          .toUpperCase();
+        sortKey = convertToSnakeCase(sortBy).replace(/_.*/, '').toUpperCase();
       }
 
       this.pagination = initialPaginationState;

@@ -128,7 +128,7 @@ export default {
       this.focusedIndex = 0;
     }
 
-    Mousetrap.bind(['t', 'mod+p'], e => {
+    Mousetrap.bind(['t', 'mod+p'], (e) => {
       if (e.preventDefault) {
         e.preventDefault();
       }

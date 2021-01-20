@@ -3,6 +3,7 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import smooshpack from 'smooshpack';
 import Clientside from '~/ide/components/preview/clientside.vue';
+import eventHub from '~/ide/eventhub';
 
 jest.mock('smooshpack', () => ({
   Manager: jest.fn(),
@@ -67,6 +68,17 @@ describe('IDE clientside preview', () => {
     wrapper = shallowMount(Clientside, {
       store,
       localVue,
+    });
+  };
+
+  const createInitializedComponent = () => {
+    createComponent();
+    wrapper.setData({
+      sandpackReady: true,
+      manager: {
+        listener: jest.fn(),
+        updatePreview: jest.fn(),
+      },
     });
   };
 
@@ -293,17 +305,10 @@ describe('IDE clientside preview', () => {
     });
 
     describe('update', () => {
-      beforeEach(() => {
-        createComponent();
-        wrapper.setData({ sandpackReady: true });
-      });
-
       it('initializes manager if manager is empty', () => {
         createComponent({ getters: { packageJson: dummyPackageJson } });
         wrapper.setData({ sandpackReady: true });
         wrapper.vm.update();
-
-        jest.advanceTimersByTime(250);
 
         return waitForCalls().then(() => {
           expect(smooshpack.Manager).toHaveBeenCalled();
@@ -311,15 +316,22 @@ describe('IDE clientside preview', () => {
       });
 
       it('calls updatePreview', () => {
-        wrapper.setData({
-          manager: {
-            listener: jest.fn(),
-            updatePreview: jest.fn(),
-          },
-        });
+        createInitializedComponent();
+
         wrapper.vm.update();
 
-        jest.advanceTimersByTime(250);
+        expect(wrapper.vm.manager.updatePreview).toHaveBeenCalledWith(wrapper.vm.sandboxOpts);
+      });
+    });
+
+    describe('on ide.files.change event', () => {
+      beforeEach(() => {
+        createInitializedComponent();
+
+        eventHub.$emit('ide.files.change');
+      });
+
+      it('calls updatePreview', () => {
         expect(wrapper.vm.manager.updatePreview).toHaveBeenCalledWith(wrapper.vm.sandboxOpts);
       });
     });
@@ -353,6 +365,20 @@ describe('IDE clientside preview', () => {
       return wrapper.vm.$nextTick(() => {
         expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
       });
+    });
+  });
+
+  describe('when destroyed', () => {
+    let spy;
+
+    beforeEach(() => {
+      createInitializedComponent();
+      spy = wrapper.vm.manager.updatePreview;
+      wrapper.destroy();
+    });
+
+    it('does not call updatePreview', () => {
+      expect(spy).not.toHaveBeenCalled();
     });
   });
 });

@@ -2,7 +2,7 @@ import VueApollo, { ApolloMutation } from 'vue-apollo';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import createMockApollo from 'jest/helpers/mock_apollo_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import GetSnippetQuery from 'shared_queries/snippet/snippet.query.graphql';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import * as urlUtils from '~/lib/utils/url_utility';
@@ -149,9 +149,11 @@ describe('Snippet Edit app', () => {
   const hasDisabledSubmit = () => Boolean(findSubmitButton().attributes('disabled'));
 
   const clickSubmitBtn = () => wrapper.find('[data-testid="snippet-edit-form"]').trigger('submit');
-  const triggerBlobActions = actions => findBlobActions().vm.$emit('actions', actions);
-  const setUploadFilesHtml = paths => {
-    wrapper.vm.$el.innerHTML = paths.map(path => `<input name="files[]" value="${path}">`).join('');
+  const triggerBlobActions = (actions) => findBlobActions().vm.$emit('actions', actions);
+  const setUploadFilesHtml = (paths) => {
+    wrapper.vm.$el.innerHTML = paths
+      .map((path) => `<input name="files[]" value="${path}">`)
+      .join('');
   };
   const getApiData = ({
     id,
@@ -189,7 +191,7 @@ describe('Snippet Edit app', () => {
 
     it.each([[{}], [{ snippetGid: '' }]])(
       'should render all required components with %s',
-      props => {
+      (props) => {
         createComponent(props);
 
         expect(wrapper.find(TitleField).exists()).toBe(true);
@@ -257,7 +259,7 @@ describe('Snippet Edit app', () => {
     describe('default visibility', () => {
       it.each([SNIPPET_VISIBILITY_PRIVATE, SNIPPET_VISIBILITY_INTERNAL, SNIPPET_VISIBILITY_PUBLIC])(
         'marks %s visibility by default',
-        async visibility => {
+        async (visibility) => {
           createComponent({
             props: { snippetGid: '' },
             selectedLevel: visibility,

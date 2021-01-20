@@ -28,7 +28,7 @@ describe('IDE branches mutations', () => {
 
   describe('RECEIVE_BRANCHES_SUCCESS', () => {
     it('sets branches', () => {
-      const expectedBranches = branches.map(branch => ({
+      const expectedBranches = branches.map((branch) => ({
         name: branch.name,
         committedDate: branch.commit.committed_date,
       }));

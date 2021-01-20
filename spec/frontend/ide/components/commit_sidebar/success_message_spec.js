@@ -1,7 +1,7 @@
 import Vue from 'vue';
+import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { createStore } from '~/ide/stores';
 import successMessage from '~/ide/components/commit_sidebar/success_message.vue';
-import { createComponentWithStore } from '../../../helpers/vue_mount_component_helper';
 
 describe('IDE commit panel successful commit state', () => {
   let vm;
@@ -23,7 +23,7 @@ describe('IDE commit panel successful commit state', () => {
     vm.$destroy();
   });
 
-  it('renders last commit message when it exists', done => {
+  it('renders last commit message when it exists', (done) => {
     vm.$store.state.lastCommitMsg = 'testing commit message';
 
     Vue.nextTick(() => {

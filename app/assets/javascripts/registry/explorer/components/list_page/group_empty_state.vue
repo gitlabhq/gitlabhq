@@ -3,12 +3,12 @@ import { GlEmptyState, GlSprintf, GlLink } from '@gitlab/ui';
 
 export default {
   name: 'GroupEmptyState',
-  inject: ['config'],
   components: {
     GlEmptyState,
     GlSprintf,
     GlLink,
   },
+  inject: ['config'],
 };
 </script>
 <template>
@@ -25,7 +25,7 @@ export default {
             )
           "
         >
-          <template #docLink="{content}">
+          <template #docLink="{ content }">
             <gl-link :href="config.helpPagePath" target="_blank">{{ content }}</gl-link>
           </template>
         </gl-sprintf>

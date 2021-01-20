@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Prometheus::Internal do
-  let(:listen_address) { 'localhost:9090' }
+  let(:server_address) { 'localhost:9090' }
 
   let(:prometheus_settings) do
     {
-      enable: true,
-      listen_address: listen_address
+      enabled: true,
+      server_address: server_address
     }
   end
 
@@ -27,25 +27,25 @@ RSpec.describe Gitlab::Prometheus::Internal do
     it_behaves_like 'returns valid uri', 'http://localhost:9090'
 
     context 'with non default prometheus address' do
-      let(:listen_address) { 'https://localhost:9090' }
+      let(:server_address) { 'https://localhost:9090' }
 
       it_behaves_like 'returns valid uri', 'https://localhost:9090'
 
       context 'with :9090 symbol' do
-        let(:listen_address) { :':9090' }
+        let(:server_address) { :':9090' }
 
         it_behaves_like 'returns valid uri', 'http://localhost:9090'
       end
 
       context 'with 0.0.0.0:9090' do
-        let(:listen_address) { '0.0.0.0:9090' }
+        let(:server_address) { '0.0.0.0:9090' }
 
         it_behaves_like 'returns valid uri', 'http://localhost:9090'
       end
     end
 
-    context 'when listen_address is nil' do
-      let(:listen_address) { nil }
+    context 'when server_address is nil' do
+      let(:server_address) { nil }
 
       it 'does not fail' do
         expect(described_class.uri).to be_nil
@@ -53,30 +53,10 @@ RSpec.describe Gitlab::Prometheus::Internal do
     end
 
     context 'when prometheus listen address is blank in gitlab.yml' do
-      let(:listen_address) { '' }
+      let(:server_address) { '' }
 
       it 'does not configure prometheus' do
         expect(described_class.uri).to be_nil
-      end
-    end
-  end
-
-  describe '.server_address' do
-    context 'self.uri returns valid uri' do
-      ['http://localhost:9090', 'https://localhost:9090 '].each do |valid_uri|
-        it 'returns correct server address' do
-          expect(described_class).to receive(:uri).and_return(valid_uri)
-
-          expect(described_class.server_address).to eq('localhost:9090')
-        end
-      end
-    end
-
-    context 'self.uri returns nil' do
-      it 'returns nil' do
-        expect(described_class).to receive(:uri).and_return(nil)
-
-        expect(described_class.server_address).to be_nil
       end
     end
   end
@@ -89,8 +69,8 @@ RSpec.describe Gitlab::Prometheus::Internal do
     context 'when prometheus setting is disabled in gitlab.yml' do
       let(:prometheus_settings) do
         {
-          enable: false,
-          listen_address: listen_address
+          enabled: false,
+          server_address: server_address
         }
       end
 
@@ -110,9 +90,9 @@ RSpec.describe Gitlab::Prometheus::Internal do
     end
   end
 
-  describe '.listen_address' do
+  describe '.server_address' do
     it 'returns correct value' do
-      expect(described_class.listen_address).to eq(listen_address)
+      expect(described_class.server_address).to eq(server_address)
     end
 
     context 'when prometheus setting is not present in gitlab.yml' do
@@ -121,7 +101,7 @@ RSpec.describe Gitlab::Prometheus::Internal do
       end
 
       it 'does not fail' do
-        expect(described_class.listen_address).to be_nil
+        expect(described_class.server_address).to be_nil
       end
     end
   end

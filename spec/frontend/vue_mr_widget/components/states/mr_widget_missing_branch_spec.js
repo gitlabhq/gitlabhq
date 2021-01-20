@@ -25,7 +25,7 @@ describe('MRWidgetMissingBranch', () => {
     wrapper.destroy();
   });
 
-  [true, false].forEach(mergeRequestWidgetGraphql => {
+  [true, false].forEach((mergeRequestWidgetGraphql) => {
     describe(`widget GraphQL feature flag is ${
       mergeRequestWidgetGraphql ? 'enabled' : 'disabled'
     }`, () => {

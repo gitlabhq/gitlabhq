@@ -9,8 +9,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - Introduced in [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26672):
 >   once an action is executed, an alert appears when a quick action is successfully applied.
-> - In [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/16877) and later, you can use
+> - Introduced in [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/16877): you can use
 >   quick actions when updating the description of issues, epics, and merge requests.
+> - Introduced in [GitLab 13.8](https://gitlab.com/gitlab-org/gitlab/-/issues/292393): when you enter
+>   `/` into a description or comment field, all available quick actions are displayed in a scrollable list.
+> - The rebase quick action was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49800) in GitLab 13.8.
 
 Quick actions are textual shortcuts for common actions on issues, epics, merge requests,
 and commits that are usually done by clicking buttons or dropdowns in the GitLab UI.
@@ -31,6 +34,9 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/assign @user`                       | ✓     | ✓             |      | Assign one user.                                                                                                                 |
 | `/assign @user1 @user2`               | ✓     | ✓             |      | Assign multiple users. **(STARTER)**                                                                                             |
 | `/assign me`                          | ✓     | ✓             |      | Assign yourself.                                                                                                                 |
+| `/assign_reviewer @user`              |       | ✓             |      | Assign one user as a reviewer.                                                                                                                 |
+| `/assign_reviewer @user1 @user2`      |       | ✓             |      | Assign multiple users as reviewers. **(STARTER)**                                                                                             |
+| `/assign_reviewer me`                 |       | ✓             |      | Assign yourself as a reviewer.                                                                                                                 |
 | `/award :emoji:`                      | ✓     | ✓             | ✓    | Toggle emoji award.                                                                                                              |
 | `/child_epic <epic>`                  |       |               | ✓    | Add child epic to `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab/-/issues/7330)). **(ULTIMATE)** |
 | `/clear_weight`                       | ✓     |               |      | Clear weight. **(STARTER)**                                                                                                      |
@@ -56,6 +62,8 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/promote`                            | ✓     |               |      | Promote issue to epic. **(PREMIUM)**                                                                                            |
 | `/publish`                            | ✓     |               |      | Publish issue to an associated [Status Page](../../operations/incident_management/status_page.md) ([Introduced in GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30906)) **(ULTIMATE)** |
 | `/reassign @user1 @user2`             | ✓     | ✓             |      | Replace current assignees with those specified. **(STARTER)**                                                                                         |
+| `/rebase`                             |       | ✓             |      | Rebase source branch. This will schedule a background task that attempt to rebase the changes in the source branch on the latest commit of the target branch. If `/rebase` is used, `/merge` will be ignored to avoid a race condition where the source branch is merged or deleted before it is rebased. If there are merge conflicts, GitLab will display a message that a rebase cannot be scheduled. Rebase failures will be displayed with the merge request status. |
+| `/reassign_reviewer @user1 @user2`    |       | ✓             |      | Replace current reviewers with those specified. **(STARTER)**                                                                                         |
 | `/relabel ~label1 ~label2`            | ✓     | ✓             | ✓    | Replace current labels with those specified.                                                                        |
 | `/relate #issue1 #issue2`             | ✓     |               |      | Mark issues as related. **(STARTER)**                                                                                            |
 | `/remove_child_epic <epic>`           |       |               | ✓    | Remove child epic from `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab/-/issues/7330)). **(ULTIMATE)** |
@@ -78,7 +86,9 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/title <new title>`                  | ✓     | ✓             | ✓    | Change title.                                                                                                                  |
 | `/todo`                               | ✓     | ✓             | ✓    | Add a to-do item.                                                                                                                   |
 | `/unassign @user1 @user2`             | ✓     | ✓             |      | Remove specific assignees. **(STARTER)**                                                                                       |
-| `/unassign`                           | ✓     | ✓             |      | Remove all assignees.                                                                                                          |
+| `/unassign`                           |       | ✓             |      | Remove all assignees.                                                                                                          |
+| `/unassign_reviewer @user1 @user2`    |       | ✓             |      | Remove specific reviewers. **(STARTER)**                                                                                       |
+| `/unassign_reviewer`                  |       | ✓             |      | Remove all reviewers.                                                                                                          |
 | `/unlabel ~label1 ~label2` or `/remove_label ~label1 ~label2` | ✓     | ✓             | ✓    | Remove specified labels.                                                                         |
 | `/unlabel` or `/remove_label` | ✓     | ✓             | ✓    | Remove all labels.                                                                          |
 | `/unlock`                             | ✓     | ✓             |      | Unlock the discussions.                                                                                                              |

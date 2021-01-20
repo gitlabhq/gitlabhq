@@ -1,0 +1,66 @@
+{
+  "type": "object",
+  "required": ["name", "description", "value_type", "status", "default_generation", "full_path", "group", "time_frame", "data_source", "distribution", "tier"],
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "value_type": {
+      "type": "string",
+      "enum": ["integer", "string", "number", "boolean"]
+    },
+    "product_category": {
+      "type": ["string", "null"]
+    },
+    "stage": {
+      "type": ["string", "null"]
+    },
+    "status": {
+      "type": ["string"],
+      "enum": ["data_available", "planned", "in_progress", "implmented"]
+    },
+    "default_generation": {
+      "type": "string"
+    },
+    "full_path": {
+      "type": "object"
+    },
+    "milestone": {
+      "type": ["number", "null"]
+    },
+    "milestone_removed": {
+      "type": ["number", "null"]
+    },
+    "introduced_by_url": {
+      "type": ["string", "null"]
+    },
+    "group": {
+      "type": "string"
+    },
+    "time_frame": {
+      "type": "string",
+      "enum": ["7d", "28d", "all", "none"]
+    },
+    "data_source": {
+      "type": "string",
+      "enum": ["database", "redis", "redis_hll", "prometheus", "ruby"]
+    },
+    "distribution": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["ee", "ce"]
+      }
+    },
+    "tier": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["free", "starter", "premium", "ultimate", "bronze", "silver", "gold"]
+      }
+    }
+  }
+}

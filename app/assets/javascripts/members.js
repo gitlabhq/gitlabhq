@@ -12,13 +12,9 @@ export default class Members {
 
   addListeners() {
     // eslint-disable-next-line @gitlab/no-global-event-off
-    $('.js-member-update-control')
-      .off('change')
-      .on('change', this.formSubmit.bind(this));
+    $('.js-member-update-control').off('change').on('change', this.formSubmit.bind(this));
     // eslint-disable-next-line @gitlab/no-global-event-off
-    $('.js-edit-member-form')
-      .off('ajax:success')
-      .on('ajax:success', this.formSuccess.bind(this));
+    $('.js-edit-member-form').off('ajax:success').on('ajax:success', this.formSuccess.bind(this));
     disableButtonIfEmptyField('#user_ids', 'input[name=commit]', 'change');
   }
 
@@ -50,7 +46,7 @@ export default class Members {
           return $el.data('id');
         },
         toggleLabel: (selected, $el) => this.dropdownToggleLabel(selected, $el, $btn),
-        clicked: options => this.dropdownClicked(options),
+        clicked: (options) => this.dropdownClicked(options),
       });
     });
   }

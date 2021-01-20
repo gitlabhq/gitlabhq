@@ -37,9 +37,9 @@ RSpec.shared_context 'Debian repository shared context' do |object_type|
   let(:params) { workhorse_params }
 
   let(:auth_headers) { {} }
+  let(:workhorse_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
   let(:workhorse_headers) do
     if method == :put
-      workhorse_token = JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256')
       { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => workhorse_token }
     else
       {}
@@ -117,12 +117,13 @@ RSpec.shared_examples 'Debian project repository PUT request' do |user_role, add
     and_body = body.nil? ? '' : ' and expected body'
 
     if status == :created
-      it 'creates package files' do
+      it 'creates package files', :aggregate_failures do
         pending "Debian package creation not implemented"
         expect { subject }
             .to change { project.packages.debian.count }.by(1)
 
         expect(response).to have_gitlab_http_status(status)
+        expect(response.media_type).to eq('text/plain')
 
         unless body.nil?
           expect(response.body).to eq(body)
@@ -130,7 +131,59 @@ RSpec.shared_examples 'Debian project repository PUT request' do |user_role, add
       end
       it_behaves_like 'a package tracking event', described_class.name, 'push_package'
     else
-      it "returns #{status}#{and_body}" do
+      it "returns #{status}#{and_body}", :aggregate_failures do
+        subject
+
+        expect(response).to have_gitlab_http_status(status)
+
+        unless body.nil?
+          expect(response.body).to eq(body)
+        end
+      end
+    end
+  end
+end
+
+RSpec.shared_examples 'Debian project repository PUT authorize request' do |user_role, add_member, status, body, is_authorize|
+  context "for user type #{user_role}" do
+    before do
+      project.send("add_#{user_role}", user) if add_member && user_role != :anonymous
+    end
+
+    and_body = body.nil? ? '' : ' and expected body'
+
+    if status == :created
+      it 'authorizes package file upload', :aggregate_failures do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+        expect(json_response['TempPath']).to eq(Packages::PackageFileUploader.workhorse_local_upload_path)
+        expect(json_response['RemoteObject']).to be_nil
+        expect(json_response['MaximumSize']).to be_nil
+      end
+
+      context 'without a valid token' do
+        let(:workhorse_token) { 'invalid' }
+
+        it 'rejects request' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'bypassing gitlab-workhorse' do
+        let(:workhorse_headers) { {} }
+
+        it 'rejects request' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    else
+      it "returns #{status}#{and_body}", :aggregate_failures do
         subject
 
         expect(response).to have_gitlab_http_status(status)
@@ -194,7 +247,7 @@ RSpec.shared_examples 'Debian project repository GET endpoint' do |success_statu
   it_behaves_like 'rejects Debian access with unknown project id'
 end
 
-RSpec.shared_examples 'Debian project repository PUT endpoint' do |success_status, success_body|
+RSpec.shared_examples 'Debian project repository PUT endpoint' do |success_status, success_body, is_authorize = false|
   context 'with valid project' do
     using RSpec::Parameterized::TableSyntax
 
@@ -221,7 +274,13 @@ RSpec.shared_examples 'Debian project repository PUT endpoint' do |success_statu
 
     with_them do
       include_context 'Debian repository project access', params[:project_visibility_level], params[:user_role], params[:user_token], :basic do
-        it_behaves_like 'Debian project repository PUT request', params[:user_role], params[:member], params[:expected_status], params[:expected_body]
+        desired_behavior = if is_authorize
+                             'Debian project repository PUT authorize request'
+                           else
+                             'Debian project repository PUT request'
+                           end
+
+        it_behaves_like desired_behavior, params[:user_role], params[:member], params[:expected_status], params[:expected_body]
       end
     end
   end

@@ -198,6 +198,8 @@ $monokai-gi: #a6e22e;
     }
   }
 
+  @include conflict-colors('monokai');
+
   // highlight line via anchor
   pre .hll {
     background-color: $monokai-hll !important;

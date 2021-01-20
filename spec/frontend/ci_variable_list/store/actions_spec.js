@@ -86,7 +86,7 @@ describe('CI variable list store actions', () => {
   });
 
   describe('deleteVariable', () => {
-    it('dispatch correct actions on successful deleted variable', done => {
+    it('dispatch correct actions on successful deleted variable', (done) => {
       mock.onPatch(state.endpoint).reply(200);
 
       testAction(
@@ -105,7 +105,7 @@ describe('CI variable list store actions', () => {
       );
     });
 
-    it('should show flash error and set error in state on delete failure', done => {
+    it('should show flash error and set error in state on delete failure', (done) => {
       mock.onPatch(state.endpoint).reply(500, '');
 
       testAction(
@@ -129,7 +129,7 @@ describe('CI variable list store actions', () => {
   });
 
   describe('updateVariable', () => {
-    it('dispatch correct actions on successful updated variable', done => {
+    it('dispatch correct actions on successful updated variable', (done) => {
       mock.onPatch(state.endpoint).reply(200);
 
       testAction(
@@ -148,7 +148,7 @@ describe('CI variable list store actions', () => {
       );
     });
 
-    it('should show flash error and set error in state on update failure', done => {
+    it('should show flash error and set error in state on update failure', (done) => {
       mock.onPatch(state.endpoint).reply(500, '');
 
       testAction(
@@ -172,7 +172,7 @@ describe('CI variable list store actions', () => {
   });
 
   describe('addVariable', () => {
-    it('dispatch correct actions on successful added variable', done => {
+    it('dispatch correct actions on successful added variable', (done) => {
       mock.onPatch(state.endpoint).reply(200);
 
       testAction(
@@ -191,7 +191,7 @@ describe('CI variable list store actions', () => {
       );
     });
 
-    it('should show flash error and set error in state on add failure', done => {
+    it('should show flash error and set error in state on add failure', (done) => {
       mock.onPatch(state.endpoint).reply(500, '');
 
       testAction(
@@ -215,7 +215,7 @@ describe('CI variable list store actions', () => {
   });
 
   describe('fetchVariables', () => {
-    it('dispatch correct actions on fetchVariables', done => {
+    it('dispatch correct actions on fetchVariables', (done) => {
       mock.onGet(state.endpoint).reply(200, { variables: mockData.mockVariables });
 
       testAction(
@@ -236,7 +236,7 @@ describe('CI variable list store actions', () => {
       );
     });
 
-    it('should show flash error and set error in state on fetch variables failure', done => {
+    it('should show flash error and set error in state on fetch variables failure', (done) => {
       mock.onGet(state.endpoint).reply(500);
 
       testAction(actions.fetchVariables, {}, state, [], [{ type: 'requestVariables' }], () => {
@@ -247,7 +247,7 @@ describe('CI variable list store actions', () => {
   });
 
   describe('fetchEnvironments', () => {
-    it('dispatch correct actions on fetchEnvironments', done => {
+    it('dispatch correct actions on fetchEnvironments', (done) => {
       Api.environments = jest.fn().mockResolvedValue({ data: mockData.mockEnvironments });
 
       testAction(
@@ -268,7 +268,7 @@ describe('CI variable list store actions', () => {
       );
     });
 
-    it('should show flash error and set error in state on fetch environments failure', done => {
+    it('should show flash error and set error in state on fetch environments failure', (done) => {
       Api.environments = jest.fn().mockRejectedValue();
 
       testAction(

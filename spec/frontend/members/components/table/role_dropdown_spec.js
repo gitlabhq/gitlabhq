@@ -44,7 +44,7 @@ describe('RoleDropdown', () => {
   const getDropdownMenu = () => within(wrapper.element).getByRole('menu');
   const getByTextInDropdownMenu = (text, options = {}) =>
     createWrapper(within(getDropdownMenu()).getByText(text, options));
-  const getDropdownItemByText = text =>
+  const getDropdownItemByText = (text) =>
     createWrapper(
       within(getDropdownMenu())
         .getByText(text, { selector: '[role="menuitem"] p' })
@@ -53,7 +53,7 @@ describe('RoleDropdown', () => {
   const getCheckedDropdownItem = () =>
     wrapper
       .findAll(GlDropdownItem)
-      .wrappers.find(dropdownItemWrapper => dropdownItemWrapper.props('isChecked'));
+      .wrappers.find((dropdownItemWrapper) => dropdownItemWrapper.props('isChecked'));
 
   const findDropdownToggle = () => wrapper.find('button[aria-haspopup="true"]');
   const findDropdown = () => wrapper.find(GlDropdown);
@@ -63,7 +63,7 @@ describe('RoleDropdown', () => {
   });
 
   describe('when dropdown is open', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       createComponent();
 
       findDropdownToggle().trigger('click');
@@ -73,7 +73,7 @@ describe('RoleDropdown', () => {
     });
 
     it('renders all valid roles', () => {
-      Object.keys(member.validRoles).forEach(role => {
+      Object.keys(member.validRoles).forEach((role) => {
         expect(getDropdownItemByText(role).exists()).toBe(true);
       });
     });

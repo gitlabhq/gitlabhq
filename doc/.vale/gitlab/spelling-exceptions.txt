@@ -45,6 +45,7 @@ backtraces
 backtracing
 badging
 Bamboo
+Bazel
 Bitbucket
 blockquote
 blockquoted
@@ -94,6 +95,7 @@ crosslinking
 crosslinks
 Crossplane
 CrowdIn
+CSV
 Dangerfile
 datetime
 Debian

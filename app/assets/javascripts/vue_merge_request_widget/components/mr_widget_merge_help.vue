@@ -30,7 +30,7 @@ export default {
 };
 </script>
 <template>
-  <section class="mr-widget-help font-italic">
+  <section class="gl-py-3 gl-pr-3 gl-pl-5 gl-ml-7 mr-widget-help gl-font-style-italic">
     <template v-if="missingBranch">
       {{ missingBranchInfo }}
     </template>

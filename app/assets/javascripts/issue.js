@@ -23,7 +23,7 @@ export default class Issue {
     }
 
     // Listen to state changes in the Vue app
-    document.addEventListener('issuable_vue_app:change', event => {
+    document.addEventListener('issuable_vue_app:change', (event) => {
       this.updateTopState(event.detail.isClosed, event.detail.data);
     });
   }
@@ -54,11 +54,7 @@ export default class Issue {
       $(document).trigger('issuable:change', isClosed);
 
       let numProjectIssues = Number(
-        projectIssuesCounter
-          .first()
-          .text()
-          .trim()
-          .replace(/[^\d]/, ''),
+        projectIssuesCounter.first().text().trim().replace(/[^\d]/, ''),
       );
       numProjectIssues = isClosed ? numProjectIssues - 1 : numProjectIssues + 1;
       projectIssuesCounter.text(addDelimiter(numProjectIssues));
@@ -84,7 +80,7 @@ export default class Issue {
       alertMovedFromServiceDeskWarning.show();
     }
 
-    alertMovedFromServiceDeskWarning.on('click', '.js-close', e => {
+    alertMovedFromServiceDeskWarning.on('click', '.js-close', (e) => {
       e.preventDefault();
       e.stopImmediatePropagation();
       alertMovedFromServiceDeskWarning.remove();

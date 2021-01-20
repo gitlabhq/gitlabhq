@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
-import { TEST_HOST } from 'jest/helpers/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import Pager from '~/pager';
 import { removeParams } from '~/lib/utils/url_utility';
@@ -89,7 +89,7 @@ describe('pager', () => {
       Pager.init();
     });
 
-    it('shows loader while loading next page', done => {
+    it('shows loader while loading next page', (done) => {
       mockSuccess();
 
       jest.spyOn(Pager.loading, 'show').mockImplementation(() => {});
@@ -102,7 +102,7 @@ describe('pager', () => {
       });
     });
 
-    it('hides loader on success', done => {
+    it('hides loader on success', (done) => {
       mockSuccess();
 
       jest.spyOn(Pager.loading, 'hide').mockImplementation(() => {});
@@ -115,7 +115,7 @@ describe('pager', () => {
       });
     });
 
-    it('hides loader on error', done => {
+    it('hides loader on error', (done) => {
       mockError();
 
       jest.spyOn(Pager.loading, 'hide').mockImplementation(() => {});
@@ -128,7 +128,7 @@ describe('pager', () => {
       });
     });
 
-    it('sends request to url with offset and limit params', done => {
+    it('sends request to url with offset and limit params', (done) => {
       Pager.offset = 100;
       Pager.limit = 20;
       Pager.getOld();
@@ -149,7 +149,7 @@ describe('pager', () => {
       });
     });
 
-    it('disables if return count is less than limit', done => {
+    it('disables if return count is less than limit', (done) => {
       Pager.offset = 0;
       Pager.limit = 20;
 

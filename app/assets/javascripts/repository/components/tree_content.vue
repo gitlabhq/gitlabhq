@@ -113,7 +113,7 @@ export default {
             }
           }
         })
-        .catch(error => {
+        .catch((error) => {
           createFlash(__('An error occurred while fetching folder content.'));
           throw error;
         });

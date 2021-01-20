@@ -33,7 +33,7 @@ describe('GL Style Field Errors', () => {
 
     expect(customErrorElem.length).toBe(1);
 
-    const customErrors = testContext.fieldErrors.state.inputs.filter(input => {
+    const customErrors = testContext.fieldErrors.state.inputs.filter((input) => {
       return input.inputElement.hasClass(customErrorFlag);
     });
 
@@ -41,18 +41,9 @@ describe('GL Style Field Errors', () => {
   });
 
   it('should not show any errors before submit attempt', () => {
-    testContext.$form
-      .find('.email')
-      .val('not-a-valid-email')
-      .keyup();
-    testContext.$form
-      .find('.text-required')
-      .val('')
-      .keyup();
-    testContext.$form
-      .find('.alphanumberic')
-      .val('?---*')
-      .keyup();
+    testContext.$form.find('.email').val('not-a-valid-email').keyup();
+    testContext.$form.find('.text-required').val('').keyup();
+    testContext.$form.find('.alphanumberic').val('?---*').keyup();
 
     const errorsShown = testContext.$form.find('.gl-field-error-outline');
 
@@ -60,18 +51,9 @@ describe('GL Style Field Errors', () => {
   });
 
   it('should show errors when input valid is submitted', () => {
-    testContext.$form
-      .find('.email')
-      .val('not-a-valid-email')
-      .keyup();
-    testContext.$form
-      .find('.text-required')
-      .val('')
-      .keyup();
-    testContext.$form
-      .find('.alphanumberic')
-      .val('?---*')
-      .keyup();
+    testContext.$form.find('.email').val('not-a-valid-email').keyup();
+    testContext.$form.find('.text-required').val('').keyup();
+    testContext.$form.find('.alphanumberic').val('?---*').keyup();
 
     testContext.$form.submit();
 

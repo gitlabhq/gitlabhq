@@ -15,6 +15,9 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     push_frontend_feature_flag(:prometheus_computed_alerts)
     push_frontend_feature_flag(:disable_metric_dashboard_refresh_rate)
   end
+  before_action do
+    push_frontend_feature_flag(:canary_ingress_weight_control, default_enabled: true)
+  end
   before_action :authorize_read_environment!, except: [:metrics, :additional_metrics, :metrics_dashboard, :metrics_redirect]
   before_action :authorize_create_environment!, only: [:new, :create]
   before_action :authorize_stop_environment!, only: [:stop]

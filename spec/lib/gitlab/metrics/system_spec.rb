@@ -96,6 +96,25 @@ RSpec.describe Gitlab::Metrics::System do
         expect(described_class.memory_usage_uss_pss).to eq(uss: 475136, pss: 515072)
       end
     end
+
+    describe '.summary' do
+      it 'contains a selection of the available fields' do
+        stub_const('RUBY_DESCRIPTION', 'ruby-3.0-patch1')
+        mock_existing_proc_file('/proc/self/status', proc_status)
+        mock_existing_proc_file('/proc/self/smaps_rollup', proc_smaps_rollup)
+
+        summary = described_class.summary
+
+        expect(summary[:version]).to eq('ruby-3.0-patch1')
+        expect(summary[:gc_stat].keys).to eq(GC.stat.keys)
+        expect(summary[:memory_rss]).to eq(2527232)
+        expect(summary[:memory_uss]).to eq(475136)
+        expect(summary[:memory_pss]).to eq(515072)
+        expect(summary[:time_cputime]).to be_a(Float)
+        expect(summary[:time_realtime]).to be_a(Float)
+        expect(summary[:time_monotonic]).to be_a(Float)
+      end
+    end
   end
 
   context 'when /proc files do not exist' do
@@ -126,6 +145,21 @@ RSpec.describe Gitlab::Metrics::System do
     describe '.max_open_file_descriptors' do
       it 'returns 0' do
         expect(described_class.max_open_file_descriptors).to eq(0)
+      end
+    end
+
+    describe '.summary' do
+      it 'returns only available fields' do
+        summary = described_class.summary
+
+        expect(summary[:version]).to be_a(String)
+        expect(summary[:gc_stat].keys).to eq(GC.stat.keys)
+        expect(summary[:memory_rss]).to eq(0)
+        expect(summary[:memory_uss]).to eq(0)
+        expect(summary[:memory_pss]).to eq(0)
+        expect(summary[:time_cputime]).to be_a(Float)
+        expect(summary[:time_realtime]).to be_a(Float)
+        expect(summary[:time_monotonic]).to be_a(Float)
       end
     end
   end

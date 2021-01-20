@@ -18,16 +18,16 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({ issue: 'activeIssue', projectPathForActiveIssue: 'projectPathForActiveIssue' }),
+    ...mapGetters(['activeIssue', 'projectPathForActiveIssue']),
     hasDueDate() {
-      return this.issue.dueDate != null;
+      return this.activeIssue.dueDate != null;
     },
     parsedDueDate() {
       if (!this.hasDueDate) {
         return null;
       }
 
-      return parsePikadayDate(this.issue.dueDate);
+      return parsePikadayDate(this.activeIssue.dueDate);
     },
     formattedDueDate() {
       if (!this.hasDueDate) {

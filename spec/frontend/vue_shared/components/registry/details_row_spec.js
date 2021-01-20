@@ -8,7 +8,7 @@ describe('DetailsRow', () => {
   const findIcon = () => wrapper.find(GlIcon);
   const findDefaultSlot = () => wrapper.find('[data-testid="default-slot"]');
 
-  const mountComponent = props => {
+  const mountComponent = (props) => {
     wrapper = shallowMount(component, {
       propsData: {
         icon: 'clock',

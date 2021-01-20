@@ -34,7 +34,7 @@ describe('Area component', () => {
   describe('methods', () => {
     describe('formatTooltipText', () => {
       const mockDate = mockNormalizedMetrics.queries[0].result[0].values[0].time;
-      const generateSeriesData = type => ({
+      const generateSeriesData = (type) => ({
         seriesData: [
           {
             componentSubType: type,
@@ -91,7 +91,7 @@ describe('Area component', () => {
 
         expect(
           data.filter(
-            datum => new Date(datum.time).getTime() > 0 && typeof datum.value === 'number',
+            (datum) => new Date(datum.time).getTime() > 0 && typeof datum.value === 'number',
           ).length,
         ).toBe(data.length);
       });

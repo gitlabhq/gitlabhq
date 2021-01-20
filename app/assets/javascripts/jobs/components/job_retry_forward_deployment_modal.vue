@@ -11,6 +11,11 @@ export default {
   i18n: {
     ...JOB_RETRY_FORWARD_DEPLOYMENT_MODAL,
   },
+  inject: {
+    retryOutdatedJobDocsUrl: {
+      default: '',
+    },
+  },
   props: {
     modalId: {
       type: String,
@@ -19,11 +24,6 @@ export default {
     href: {
       type: String,
       required: true,
-    },
-  },
-  inject: {
-    retryOutdatedJobDocsUrl: {
-      default: '',
     },
   },
   data() {

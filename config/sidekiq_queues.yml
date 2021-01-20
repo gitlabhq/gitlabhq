@@ -50,6 +50,8 @@
   - 1
 - - bulk_import
   - 1
+- - bulk_imports_entity
+  - 1
 - - chaos
   - 2
 - - chat_notification
@@ -121,6 +123,8 @@
 - - epics
   - 2
 - - error_tracking_issue_link
+  - 1
+- - experiments_record_conversion_event
   - 1
 - - expire_build_instance_artifacts
   - 1
@@ -197,6 +201,8 @@
 - - migrate_external_diffs
   - 1
 - - namespaceless_project_destroy
+  - 1
+- - namespaces_onboarding_pipeline_created
   - 1
 - - namespaces_onboarding_user_added
   - 1
@@ -317,6 +323,10 @@
 - - service_desk_email_receiver
   - 1
 - - set_user_status_based_on_user_cap_setting
+  - 1
+- - snippet_schedule_bulk_repository_shard_moves
+  - 1
+- - snippet_update_repository_storage
   - 1
 - - status_page_publish
   - 1

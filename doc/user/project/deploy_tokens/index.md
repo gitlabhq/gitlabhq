@@ -36,7 +36,7 @@ project. Alternatively, you can also create [group-scoped deploy tokens](#group-
 1. Choose the [desired scopes](#limiting-scopes-of-a-deploy-token).
 1. Select **Create deploy token**.
 1. Save the deploy token somewhere safe. After you leave or refresh
-   the page, **you won't be able to access it again**.
+   the page, **you can't access it again**.
 
 ![Personal access tokens page](img/deploy_tokens_ui.png)
 
@@ -89,7 +89,7 @@ Replace `<username>` and `<deploy_token>` with the proper values.
 
 ### Read Container Registry images
 
-To read the container registry images, you'll need to:
+To read the container registry images, you must:
 
 1. Create a Deploy Token with `read_registry` as a scope.
 1. Take note of your `username` and `token`.
@@ -106,7 +106,7 @@ pull images from your Container Registry.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22743) in GitLab 12.10.
 
-To push the container registry images, you'll need to:
+To push the container registry images, you must:
 
 1. Create a Deploy Token with `write_registry` as a scope.
 1. Take note of your `username` and `token`.
@@ -123,7 +123,7 @@ push images to your Container Registry.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) in GitLab 13.0.
 
-To pull packages in the GitLab package registry, you'll need to:
+To pull packages in the GitLab package registry, you must:
 
 1. Create a Deploy Token with `read_package_registry` as a scope.
 1. Take note of your `username` and `token`.
@@ -134,7 +134,7 @@ To pull packages in the GitLab package registry, you'll need to:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) in GitLab 13.0.
 
-To upload packages in the GitLab package registry, you'll need to:
+To upload packages in the GitLab package registry, you must:
 
 1. Create a Deploy Token with `write_package_registry` as a scope.
 1. Take note of your `username` and `token`.
@@ -160,7 +160,7 @@ To use a group deploy token:
 1. Use it the same way you use a project deploy token when
    [cloning a repository](#git-clone-a-repository).
 
-The scopes applied to a group deploy token (such as `read_repository`) will
+The scopes applied to a group deploy token (such as `read_repository`)
 apply consistently when cloning the repository of related projects.
 
 ### GitLab Deploy Token
@@ -168,7 +168,7 @@ apply consistently when cloning the repository of related projects.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18414) in GitLab 10.8.
 
 There's a special case when it comes to Deploy Tokens. If a user creates one
-named `gitlab-deploy-token`, the username and token of the Deploy Token will be
+named `gitlab-deploy-token`, the username and token of the Deploy Token is
 automatically exposed to the CI/CD jobs as environment variables: `CI_DEPLOY_USER`
 and `CI_DEPLOY_PASSWORD`, respectively.
 

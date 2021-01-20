@@ -23,7 +23,7 @@ describe('Issues Filtered Search Token Keys', () => {
     });
 
     it('should return assignee as a string', () => {
-      const assignee = tokenKeys.find(tokenKey => tokenKey.key === 'assignee');
+      const assignee = tokenKeys.find((tokenKey) => tokenKey.key === 'assignee');
 
       expect(assignee.type).toEqual('string');
     });
@@ -32,7 +32,7 @@ describe('Issues Filtered Search Token Keys', () => {
   describe('getKeys', () => {
     it('should return keys', () => {
       const getKeys = IssuableFilteredSearchTokenKeys.getKeys();
-      const keys = IssuableFilteredSearchTokenKeys.get().map(i => i.key);
+      const keys = IssuableFilteredSearchTokenKeys.get().map((i) => i.key);
 
       keys.forEach((key, i) => {
         expect(key).toEqual(getKeys[i]);
@@ -143,6 +143,27 @@ describe('Issues Filtered Search Token Keys', () => {
       );
 
       expect(result).toEqual(conditions[0]);
+    });
+  });
+
+  describe('removeTokensForKeys', () => {
+    let initTokenKeys;
+
+    beforeEach(() => {
+      initTokenKeys = [...IssuableFilteredSearchTokenKeys.get()];
+    });
+
+    it('should remove the tokenKeys corresponding to the given keys', () => {
+      const [firstTokenKey, secondTokenKey, ...restTokens] = initTokenKeys;
+      IssuableFilteredSearchTokenKeys.removeTokensForKeys(firstTokenKey.key, secondTokenKey.key);
+
+      expect(IssuableFilteredSearchTokenKeys.get()).toEqual(restTokens);
+    });
+
+    it('should do nothing when key is not found', () => {
+      IssuableFilteredSearchTokenKeys.removeTokensForKeys('bogus');
+
+      expect(IssuableFilteredSearchTokenKeys.get()).toEqual(initTokenKeys);
     });
   });
 });

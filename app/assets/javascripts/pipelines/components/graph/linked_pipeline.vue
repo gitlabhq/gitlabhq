@@ -1,9 +1,10 @@
 <script>
-import { GlTooltipDirective, GlButton, GlLink, GlLoadingIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlButton, GlLink, GlLoadingIcon, GlBadge } from '@gitlab/ui';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
 import { __, sprintf } from '~/locale';
 import { accessValue } from './accessors';
 import { DOWNSTREAM, REST, UPSTREAM } from './constants';
+import { reportToSentry } from './utils';
 
 export default {
   directives: {
@@ -14,6 +15,7 @@ export default {
     GlButton,
     GlLink,
     GlLoadingIcon,
+    GlBadge,
   },
   inject: {
     dataMethod: {
@@ -114,6 +116,9 @@ export default {
       return this.isUpstream ? 'gl-left-0 gl-border-r-1!' : 'gl-right-0 gl-border-l-1!';
     },
   },
+  errorCaptured(err, _vm, info) {
+    reportToSentry('linked_pipeline', `error: ${err}, info: ${info}`);
+  },
   methods: {
     onClickLinkedPipeline() {
       this.hideTooltips();
@@ -168,7 +173,9 @@ export default {
         </div>
       </div>
       <div class="gl-pt-2">
-        <span class="badge badge-primary" data-testid="downstream-pipeline-label">{{ label }}</span>
+        <gl-badge size="sm" variant="info" data-testid="downstream-pipeline-label">
+          {{ label }}
+        </gl-badge>
       </div>
       <gl-button
         :id="buttonId"

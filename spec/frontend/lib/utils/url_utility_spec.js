@@ -15,7 +15,7 @@ const shas = {
   ],
 };
 
-const setWindowLocation = value => {
+const setWindowLocation = (value) => {
   Object.defineProperty(window, 'location', {
     writable: true,
     value,
@@ -337,7 +337,7 @@ describe('URL utility', () => {
 
   describe('urlContainsSha', () => {
     it('returns true when there is a valid 40-character SHA1 hash in the URL', () => {
-      shas.valid.forEach(sha => {
+      shas.valid.forEach((sha) => {
         expect(
           urlUtils.urlContainsSha({ url: `http://urlstuff/${sha}/moreurlstuff` }),
         ).toBeTruthy();
@@ -345,7 +345,7 @@ describe('URL utility', () => {
     });
 
     it('returns false when there is not a valid 40-character SHA1 hash in the URL', () => {
-      shas.invalid.forEach(str => {
+      shas.invalid.forEach((str) => {
         expect(urlUtils.urlContainsSha({ url: `http://urlstuff/${str}/moreurlstuff` })).toBeFalsy();
       });
     });
@@ -356,8 +356,8 @@ describe('URL utility', () => {
     let invalidUrls = [];
 
     beforeAll(() => {
-      validUrls = shas.valid.map(sha => `http://urlstuff/${sha}/moreurlstuff`);
-      invalidUrls = shas.invalid.map(str => `http://urlstuff/${str}/moreurlstuff`);
+      validUrls = shas.valid.map((sha) => `http://urlstuff/${sha}/moreurlstuff`);
+      invalidUrls = shas.invalid.map((str) => `http://urlstuff/${str}/moreurlstuff`);
     });
 
     it('returns the valid 40-character SHA1 hash from the URL', () => {
@@ -367,7 +367,7 @@ describe('URL utility', () => {
     });
 
     it('returns null from a URL with no valid 40-character SHA1 hash', () => {
-      invalidUrls.forEach(url => {
+      invalidUrls.forEach((url) => {
         expect(urlUtils.getShaFromUrl({ url })).toBeNull();
       });
     });
@@ -589,11 +589,11 @@ describe('URL utility', () => {
     ];
 
     describe('with URL constructor support', () => {
-      it.each(safeUrls)('returns true for %s', url => {
+      it.each(safeUrls)('returns true for %s', (url) => {
         expect(urlUtils.isSafeURL(url)).toBe(true);
       });
 
-      it.each(unsafeUrls)('returns false for %s', url => {
+      it.each(unsafeUrls)('returns false for %s', (url) => {
         expect(urlUtils.isSafeURL(url)).toBe(false);
       });
     });
@@ -807,7 +807,7 @@ describe('URL utility', () => {
 
     it.each([[httpProtocol], [httpsProtocol]])(
       'when no url passed, returns correct protocol for %i from window location',
-      protocol => {
+      (protocol) => {
         setWindowLocation({
           protocol,
         });

@@ -294,6 +294,15 @@ RSpec.describe 'GFM autocomplete', :js do
         user_item = find('.atwho-view li', text: user.username)
         expect(user_item).to have_content(user.username)
       end
+
+      it 'does not limit quick actions autocomplete list to 5' do
+        note = find('#note-body')
+        page.within '.timeline-content-form' do
+          note.native.send_keys('/')
+        end
+
+        expect(page).to have_selector('.atwho-view li', minimum: 6, visible: true)
+      end
     end
 
     context 'assignees' do
@@ -426,35 +435,15 @@ RSpec.describe 'GFM autocomplete', :js do
         visit project_issue_path(project, issue)
         note = find('#note-body')
 
-        start_comment_with_emoji(note)
+        start_comment_with_emoji(note, '.atwho-view li')
 
         start_and_cancel_discussion
 
         note.fill_in(with: '')
-        start_comment_with_emoji(note)
+        start_comment_with_emoji(note, '.atwho-view li')
         note.native.send_keys(:enter)
 
         expect(note.value).to eql('Hello :100: ')
-      end
-
-      def start_comment_with_emoji(note)
-        note.native.send_keys('Hello :10')
-
-        wait_for_requests
-
-        find('.atwho-view li', text: '100')
-      end
-
-      def start_and_cancel_discussion
-        click_button('Reply...')
-
-        fill_in('note_note', with: 'Whoops!')
-
-        page.accept_alert 'Are you sure you want to cancel creating this comment?' do
-          click_button('Cancel')
-        end
-
-        wait_for_requests
       end
     end
 
@@ -599,6 +588,33 @@ RSpec.describe 'GFM autocomplete', :js do
       expect(page).not_to have_selector('.tribute-container', visible: true)
     end
 
+    it 'does not open autocomplete menu when ":" is prefixed by a number and letters' do
+      note = find('#note-body')
+
+      # Number.
+      page.within '.timeline-content-form' do
+        note.native.send_keys('7:')
+      end
+
+      expect(page).not_to have_selector('.tribute-container', visible: true)
+
+      # ASCII letter.
+      page.within '.timeline-content-form' do
+        note.set('')
+        note.native.send_keys('w:')
+      end
+
+      expect(page).not_to have_selector('.tribute-container', visible: true)
+
+      # Non-ASCII letter.
+      page.within '.timeline-content-form' do
+        note.set('')
+        note.native.send_keys('Ё:')
+      end
+
+      expect(page).not_to have_selector('.tribute-container', visible: true)
+    end
+
     it 'selects the first item for assignee dropdowns' do
       page.within '.timeline-content-form' do
         find('#note-body').native.send_keys('@')
@@ -622,6 +638,16 @@ RSpec.describe 'GFM autocomplete', :js do
       wait_for_requests
 
       expect(find('.tribute-container ul', visible: true)).to have_content(user.name)
+    end
+
+    it 'selects the first item for non-assignee dropdowns if a query is entered' do
+      page.within '.timeline-content-form' do
+        find('#note-body').native.send_keys(':1')
+      end
+
+      wait_for_requests
+
+      expect(find('.tribute-container ul', visible: true)).to have_selector('.highlight:first-of-type')
     end
 
     context 'when autocompleting for groups' do
@@ -687,20 +713,34 @@ RSpec.describe 'GFM autocomplete', :js do
         expect_to_wrap(false, user_item, note, user.username)
       end
 
-      it 'triggers autocomplete after selecting a quick action' do
+      it 'does not wrap for emoji values' do
+        note = find('#note-body')
+        page.within '.timeline-content-form' do
+          note.native.send_keys(":cartwheel_")
+        end
+
+        emoji_item = first('.tribute-container li', text: 'cartwheel_tone1', visible: true)
+
+        expect_to_wrap(false, emoji_item, note, 'cartwheel_tone1')
+      end
+
+      it 'does not open autocomplete if there is no space before' do
+        page.within '.timeline-content-form' do
+          find('#note-body').native.send_keys("hello:#{user.username[0..2]}")
+        end
+
+        expect(page).not_to have_selector('.tribute-container')
+      end
+
+      it 'autocompletes for quick actions' do
         note = find('#note-body')
         page.within '.timeline-content-form' do
           note.native.send_keys('/as')
+          wait_for_requests
+          note.native.send_keys(:tab)
         end
 
-        find('.atwho-view li', text: '/assign')
-        note.native.send_keys(:tab)
-        note.native.send_keys(:right)
-
-        wait_for_requests
-
-        user_item = find('.tribute-container ul', text: user.username, visible: true)
-        expect(user_item).to have_content(user.username)
+        expect(note.value).to have_text('/assign')
       end
     end
 
@@ -719,14 +759,13 @@ RSpec.describe 'GFM autocomplete', :js do
 
         note = find('#note-body')
         page.within '.timeline-content-form' do
-          note.native.send_keys('/as')
+          note.native.send_keys('/assign ')
+          # The `/assign` ajax response might replace the one by `@` below causing a failed test
+          # so we need to wait for the `/assign` ajax request to finish first
+          wait_for_requests
+          note.native.send_keys('@')
+          wait_for_requests
         end
-
-        find('.atwho-view li', text: '/assign')
-        note.native.send_keys(:tab)
-        note.native.send_keys(:right)
-
-        wait_for_requests
 
         expect(find('.tribute-container ul', visible: true)).not_to have_content(user.username)
         expect(find('.tribute-container ul', visible: true)).to have_content(unassigned_user.username)
@@ -739,11 +778,13 @@ RSpec.describe 'GFM autocomplete', :js do
         page.within '.timeline-content-form' do
           note.native.send_keys('/assign @user2')
           note.native.send_keys(:enter)
-          note.native.send_keys('/assign @')
-          note.native.send_keys(:right)
+          note.native.send_keys('/assign ')
+          # The `/assign` ajax response might replace the one by `@` below causing a failed test
+          # so we need to wait for the `/assign` ajax request to finish first
+          wait_for_requests
+          note.native.send_keys('@')
+          wait_for_requests
         end
-
-        wait_for_requests
 
         expect(find('.tribute-container ul', visible: true)).not_to have_content(user.username)
         expect(find('.tribute-container ul', visible: true)).to have_content(unassigned_user.username)
@@ -821,6 +862,26 @@ RSpec.describe 'GFM autocomplete', :js do
         wait_for_requests
 
         expect(page).not_to have_selector('.tribute-container')
+      end
+    end
+
+    context 'when other notes are destroyed' do
+      let!(:discussion) { create(:discussion_note_on_issue, noteable: issue, project: issue.project) }
+
+      # This is meant to protect against this issue https://gitlab.com/gitlab-org/gitlab/-/issues/228729
+      it 'keeps autocomplete key listeners' do
+        visit project_issue_path(project, issue)
+        note = find('#note-body')
+
+        start_comment_with_emoji(note, '.tribute-container li')
+
+        start_and_cancel_discussion
+
+        note.fill_in(with: '')
+        start_comment_with_emoji(note, '.tribute-container li')
+        note.native.send_keys(:enter)
+
+        expect(note.value).to eql('Hello :100: ')
       end
     end
 
@@ -912,5 +973,25 @@ RSpec.describe 'GFM autocomplete', :js do
       note.set('')
       note.native.send_keys(text)
     end
+  end
+
+  def start_comment_with_emoji(note, selector)
+    note.native.send_keys('Hello :10')
+
+    wait_for_requests
+
+    find(selector, text: '100')
+  end
+
+  def start_and_cancel_discussion
+    click_button('Reply...')
+
+    fill_in('note_note', with: 'Whoops!')
+
+    page.accept_alert 'Are you sure you want to cancel creating this comment?' do
+      click_button('Cancel')
+    end
+
+    wait_for_requests
   end
 end

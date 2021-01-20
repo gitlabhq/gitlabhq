@@ -39,11 +39,11 @@ export default class WebAuthnAuthenticate {
   authenticate() {
     navigator.credentials
       .get({ publicKey: this.webauthnParams })
-      .then(resp => {
+      .then((resp) => {
         const convertedResponse = convertGetResponse(resp);
         this.renderAuthenticated(JSON.stringify(convertedResponse));
       })
-      .catch(err => {
+      .catch((err) => {
         this.flow.renderError(new WebAuthnError(err, 'authenticate'));
       });
   }

@@ -24,7 +24,7 @@ export function getBoardSortableDefaultOptions(obj) {
     onEnd: sortableEnd,
   };
 
-  Object.keys(obj).forEach(key => {
+  Object.keys(obj).forEach((key) => {
     defaultSortOptions[key] = obj[key];
   });
   return defaultSortOptions;

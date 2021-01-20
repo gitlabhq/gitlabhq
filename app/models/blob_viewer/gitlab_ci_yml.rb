@@ -15,7 +15,9 @@ module BlobViewer
 
       prepare!
 
-      @validation_message = Gitlab::Ci::YamlProcessor.validation_message(blob.data, opts)
+      @validation_message = Gitlab::Ci::Lint
+        .new(project: opts[:project], current_user: opts[:user], sha: opts[:sha])
+        .validate(blob.data).errors.first
     end
 
     def valid?(opts)

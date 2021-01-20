@@ -1,4 +1,4 @@
-import { setHTMLFixture } from './helpers/fixtures';
+import { setHTMLFixture } from 'helpers/fixtures';
 import Tracking, { initUserTracking, initDefaultTrackers } from '~/tracking';
 
 describe('Tracking', () => {

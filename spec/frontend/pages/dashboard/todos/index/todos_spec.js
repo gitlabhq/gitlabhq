@@ -31,10 +31,10 @@ describe('Todos', () => {
   });
 
   describe('goToTodoUrl', () => {
-    it('opens the todo url', done => {
+    it('opens the todo url', (done) => {
       const todoLink = todoItem.dataset.url;
 
-      visitUrl.mockImplementation(url => {
+      visitUrl.mockImplementation((url) => {
         expect(url).toEqual(todoLink);
         done();
       });
@@ -61,7 +61,7 @@ describe('Todos', () => {
       });
 
       it('run native funcionality when avatar is clicked', () => {
-        $('.todos-list a').on('click', e => e.preventDefault());
+        $('.todos-list a').on('click', (e) => e.preventDefault());
         $('.todos-list img').trigger(metakeyEvent);
 
         expect(visitUrl).not.toHaveBeenCalled();
@@ -72,7 +72,7 @@ describe('Todos', () => {
     describe('on done todo click', () => {
       let onToggleSpy;
 
-      beforeEach(done => {
+      beforeEach((done) => {
         const el = document.querySelector('.js-done-todo');
         const path = el.dataset.href;
 

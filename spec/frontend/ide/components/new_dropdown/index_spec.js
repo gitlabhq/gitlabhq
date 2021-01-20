@@ -57,7 +57,7 @@ describe('new dropdown component', () => {
   });
 
   describe('isOpen', () => {
-    it('scrolls dropdown into view', done => {
+    it('scrolls dropdown into view', (done) => {
       jest.spyOn(vm.$refs.dropdownMenu, 'scrollIntoView').mockImplementation(() => {});
 
       vm.isOpen = true;

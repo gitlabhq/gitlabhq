@@ -11,11 +11,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 When adding new columns that will be used to store strings or other textual information:
 
 1. We always use the `text` data type instead of the `string` data type.
-1. `text` columns should always have a limit set by using the `add_text_limit` migration helper.
+1. `text` columns should always have a limit set, either by using the `create_table_with_constraints` helper
+when creating a table, or by using the `add_text_limit` when altering an existing table.
 
-The `text` data type can not be defined with a limit, so `add_text_limit` is enforcing that by
-adding a [check constraint](https://www.postgresql.org/docs/11/ddl-constraints.html) on the
-column and then validating it at a followup step.
+The `text` data type can not be defined with a limit, so `create_table_with_constraints` and `add_text_limit` enforce
+that by adding a [check constraint](https://www.postgresql.org/docs/11/ddl-constraints.html) on the column.
 
 ## Background information
 
@@ -48,20 +48,15 @@ class CreateDbGuides < ActiveRecord::Migration[6.0]
 
   DOWNTIME = false
 
-  disable_ddl_transaction!
-
   def up
-    unless table_exists?(:db_guides)
-      create_table :db_guides do |t|
-        t.bigint :stars, default: 0, null: false
-        t.text :title
-        t.text :notes
-      end
-    end
+    create_table_with_constraints :db_guides do |t|
+      t.bigint :stars, default: 0, null: false
+      t.text :title
+      t.text :notes
 
-    # The following add the constraints and validate them immediately (no data in the table)
-    add_text_limit :db_guides, :title, 128
-    add_text_limit :db_guides, :notes, 1024
+      t.text_limit :title, 128
+      t.text_limit :notes, 1024
+    end
   end
 
   def down
@@ -71,12 +66,8 @@ class CreateDbGuides < ActiveRecord::Migration[6.0]
 end
 ```
 
-Adding a check constraint requires an exclusive lock while the `ALTER TABLE` that adds is running.
-As we don't want the exclusive lock to be held for the duration of a transaction, `add_text_limit`
-must always run in a migration with `disable_ddl_transaction!`.
-
-Also, note that we have to add a check that the table exists so that the migration can be repeated
-in case of a failure.
+Note that the `create_table_with_constraints` helper uses the `with_lock_retries` helper
+internally, so we don't need to manually wrap the method call in the migration.
 
 ## Add a text column to an existing table
 

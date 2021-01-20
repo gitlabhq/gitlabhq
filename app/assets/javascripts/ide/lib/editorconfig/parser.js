@@ -2,7 +2,7 @@ import { parseString } from 'editorconfig/src/lib/ini';
 import minimatch from 'minimatch';
 import { getPathParents } from '../../utils';
 
-const dirname = path => path.replace(/\.editorconfig$/, '');
+const dirname = (path) => path.replace(/\.editorconfig$/, '');
 
 function isRootConfig(config) {
   return config.some(([pattern, rules]) => !pattern && rules?.root === 'true');
@@ -44,11 +44,16 @@ function getRulesWithConfigs(filePath, configFiles = [], rules = {}) {
 
 export function getRulesWithTraversal(filePath, getFileContent) {
   const editorconfigPaths = [
-    ...getPathParents(filePath).map(x => `${x}/.editorconfig`),
+    ...getPathParents(filePath).map((x) => `${x}/.editorconfig`),
     '.editorconfig',
   ];
 
   return Promise.all(
-    editorconfigPaths.map(path => getFileContent(path).then(content => ({ path, content }))),
-  ).then(results => getRulesWithConfigs(filePath, results.filter(x => x.content)));
+    editorconfigPaths.map((path) => getFileContent(path).then((content) => ({ path, content }))),
+  ).then((results) =>
+    getRulesWithConfigs(
+      filePath,
+      results.filter((x) => x.content),
+    ),
+  );
 }

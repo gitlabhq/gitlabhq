@@ -25,7 +25,7 @@ export default {
         s__(
           'Members|Are you sure you want to revoke the invitation for %{inviteEmail} to join "%{source}"',
         ),
-        { inviteEmail: invite.email, source: source.name },
+        { inviteEmail: invite.email, source: source.fullName },
       );
     },
   },

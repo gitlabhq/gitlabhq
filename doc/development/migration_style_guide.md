@@ -516,12 +516,14 @@ class MyMigration < ActiveRecord::Migration[6.0]
 
   disable_ddl_transaction!
 
+  INDEX_NAME = 'index_name'
+
   def up
-    add_concurrent_index :table, :column
+    add_concurrent_index :table, :column, name: INDEX_NAME
   end
 
   def down
-    remove_concurrent_index :table, :column, name: index_name
+    remove_concurrent_index :table, :column, name: INDEX_NAME
   end
 end
 ```

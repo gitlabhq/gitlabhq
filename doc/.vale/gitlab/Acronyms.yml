@@ -58,6 +58,7 @@ exceptions:
   - GPL
   - GUI
   - HAML
+  - HEAD
   - HIPAA
   - HTML
   - HTTP
@@ -90,6 +91,7 @@ exceptions:
   - NGINX
   - NOTE
   - NPM
+  - NTP
   - ONLY
   - OWASP
   - PAT

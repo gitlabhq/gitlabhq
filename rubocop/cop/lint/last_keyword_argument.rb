@@ -16,7 +16,7 @@ module RuboCop
         KEYWORD_DEPRECATION_STR = 'maybe ** should be added to the call'
 
         def on_send(node)
-          arg = node.arguments.last
+          arg = get_last_argument(node)
           return unless arg
 
           return unless known_match?(processed_source.file_path, node.first_line, node.method_name.to_s)
@@ -44,13 +44,22 @@ module RuboCop
 
         private
 
+        def get_last_argument(node)
+          return node.arguments[-2] if node.block_argument?
+
+          node.arguments.last
+        end
+
         def known_match?(file_path, line_number, method_name)
           file_path_from_root = file_path.sub(File.expand_path('../../..', __dir__), '')
+          file_and_line = "#{file_path_from_root}:#{line_number}"
 
           method_name = 'initialize' if method_name == 'new'
 
-          self.class.keyword_warnings.any? do |warning|
-            warning.include?("#{file_path_from_root}:#{line_number}") && warning.include?("called method `#{method_name}'")
+          return unless self.class.keyword_warnings[method_name]
+
+          self.class.keyword_warnings[method_name].any? do |warning|
+            warning.include?(file_and_line)
           end
         end
 
@@ -63,7 +72,16 @@ module RuboCop
             hash.merge!(YAML.safe_load(File.read(file)))
           end
 
-          hash.values.flatten.select { |str| str.include?(KEYWORD_DEPRECATION_STR) }.uniq
+          hash.values.flatten.each_with_object({}) do |str, results|
+            next unless str.include?(KEYWORD_DEPRECATION_STR)
+
+            match_data = str.match(/called method `([^\s]+)'/)
+            next unless match_data
+
+            key = match_data[1]
+            results[key] ||= []
+            results[key] << str
+          end
         end
       end
     end

@@ -92,7 +92,7 @@ There are three lists of Project Deploy Keys:
 
 ![Deploy Keys section](img/deploy_keys_v13_0.png)
 
-After you add a key, it will be enabled for this project by default, and it'll appear
+After you add a key, it's enabled for this project by default and it appears
 in the **Enabled deploy keys** tab.
 
 In the **Privately accessible deploy keys** tab, you can enable a private key which
@@ -111,7 +111,7 @@ and `read-write` access.
 NOTE:
 If you have enabled a privately or publicly accessible or deploy key for your
 project, and if you then update the access level for this key from `read-only` to
-`read-write`, the change will be only for the **current project**.
+`read-write`, the change is only for the **current project**.
 
 ### Public deploy keys
 
@@ -131,7 +131,7 @@ Instance administrators can add public deploy keys:
 
 ![Public Deploy Keys section](img/public_deploy_key_v13_0.png)
 
-After adding a key, it will be available to any shared systems. Project maintainers
+After adding a key, it's available to any shared systems. Project maintainers
 or higher can [authorize a public deploy key](#project-deploy-keys) to start using it with the project.
 
 NOTE:
@@ -155,8 +155,8 @@ until a project maintainer chooses to make use of it.
 
 ### Deploy Key cannot push to a protected branch
 
-If the owner of this deploy key does not have access to a [protected
-branch](../protected_branches.md), then this deploy key won't have access to
+If the owner of this deploy key doesn't have access to a [protected
+branch](../protected_branches.md), then this deploy key doesn't have access to
 the branch either. In addition to this, choosing the **No one** value in
 [the "Allowed to push" section](../protected_branches.md#configuring-protected-branches)
 means that no users **and** no services using deploy keys can push to that selected branch.

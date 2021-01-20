@@ -21,7 +21,7 @@ describe('Participants', () => {
 
   const getCollapsedParticipantsCount = () => wrapper.find('[data-testid="collapsed-count"]');
 
-  const mountComponent = propsData =>
+  const mountComponent = (propsData) =>
     shallowMount(Participants, {
       propsData,
     });

@@ -10,6 +10,7 @@ variables:
   SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
 
   SAST_DEFAULT_ANALYZERS: "bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, sobelow, pmd-apex, kubesec, mobsf"
+  SAST_EXCLUDED_ANALYZERS: ""
   SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
   SAST_ANALYZER_IMAGE_TAG: 2
   SCAN_KUBERNETES_MANIFESTS: "false"
@@ -44,6 +45,8 @@ bandit-sast:
   rules:
     - if: $SAST_DISABLED
       when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /bandit/
+      when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /bandit/
       exists:
@@ -58,6 +61,8 @@ brakeman-sast:
   rules:
     - if: $SAST_DISABLED
       when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /brakeman/
+      when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /brakeman/
       exists:
@@ -71,6 +76,8 @@ eslint-sast:
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/eslint:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /eslint/
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /eslint/
@@ -90,6 +97,8 @@ flawfinder-sast:
   rules:
     - if: $SAST_DISABLED
       when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /flawfinder/
+      when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /flawfinder/
       exists:
@@ -105,6 +114,8 @@ kubesec-sast:
   rules:
     - if: $SAST_DISABLED
       when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /kubesec/
+      when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /kubesec/ &&
           $SCAN_KUBERNETES_MANIFESTS == 'true'
@@ -117,6 +128,8 @@ gosec-sast:
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gosec:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /gosec/
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /gosec/
@@ -135,6 +148,8 @@ mobsf-android-sast:
     MOBSF_API_KEY: key
   rules:
     - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /mobsf/
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /mobsf/ &&
@@ -155,6 +170,8 @@ mobsf-ios-sast:
   rules:
     - if: $SAST_DISABLED
       when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /mobsf/
+      when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /mobsf/ &&
           $SAST_EXPERIMENTAL_FEATURES == 'true'
@@ -170,6 +187,8 @@ nodejs-scan-sast:
   rules:
     - if: $SAST_DISABLED
       when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /nodejs-scan/
+      when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /nodejs-scan/
       exists:
@@ -183,6 +202,8 @@ phpcs-security-audit-sast:
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/phpcs-security-audit:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /phpcs-security-audit/
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /phpcs-security-audit/
@@ -198,6 +219,8 @@ pmd-apex-sast:
   rules:
     - if: $SAST_DISABLED
       when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /pmd-apex/
+      when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /pmd-apex/
       exists:
@@ -211,6 +234,8 @@ security-code-scan-sast:
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/security-code-scan:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /security-code-scan/
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /security-code-scan/
@@ -227,6 +252,8 @@ sobelow-sast:
   rules:
     - if: $SAST_DISABLED
       when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /sobelow/
+      when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /sobelow/
       exists:
@@ -239,6 +266,8 @@ spotbugs-sast:
   variables:
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/spotbugs:$SAST_ANALYZER_IMAGE_TAG"
   rules:
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /spotbugs/
+      when: never
     - if: $SAST_DEFAULT_ANALYZERS =~ /mobsf/ &&
           $SAST_EXPERIMENTAL_FEATURES == 'true'
       exists:

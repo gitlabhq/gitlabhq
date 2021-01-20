@@ -14,7 +14,7 @@ import {
 
 describe('GCP Cluster Dropdown Store Actions', () => {
   describe('setProject', () => {
-    it('should set project', done => {
+    it('should set project', (done) => {
       testAction(
         actions.setProject,
         selectedProjectMock,
@@ -27,7 +27,7 @@ describe('GCP Cluster Dropdown Store Actions', () => {
   });
 
   describe('setZone', () => {
-    it('should set zone', done => {
+    it('should set zone', (done) => {
       testAction(
         actions.setZone,
         selectedZoneMock,
@@ -40,7 +40,7 @@ describe('GCP Cluster Dropdown Store Actions', () => {
   });
 
   describe('setMachineType', () => {
-    it('should set machine type', done => {
+    it('should set machine type', (done) => {
       testAction(
         actions.setMachineType,
         selectedMachineTypeMock,
@@ -53,7 +53,7 @@ describe('GCP Cluster Dropdown Store Actions', () => {
   });
 
   describe('setIsValidatingProjectBilling', () => {
-    it('should set machine type', done => {
+    it('should set machine type', (done) => {
       testAction(
         actions.setIsValidatingProjectBilling,
         true,
@@ -71,10 +71,12 @@ describe('GCP Cluster Dropdown Store Actions', () => {
     beforeAll(() => {
       originalGapi = window.gapi;
       window.gapi = gapi;
+      window.gapiPromise = Promise.resolve(gapi);
     });
 
     afterAll(() => {
       window.gapi = originalGapi;
+      delete window.gapiPromise;
     });
 
     describe('fetchProjects', () => {
@@ -92,7 +94,7 @@ describe('GCP Cluster Dropdown Store Actions', () => {
     });
 
     describe('validateProjectBilling', () => {
-      it('checks project billing status from Google API', done => {
+      it('checks project billing status from Google API', (done) => {
         testAction(
           actions.validateProjectBilling,
           true,

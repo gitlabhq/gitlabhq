@@ -64,16 +64,19 @@ The following languages and dependency managers are supported:
 | [Conan](https://conan.io/) | C, C++ | [`conan.lock`](https://docs.conan.io/en/latest/versioning/lockfiles.html) | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 | [Golang](https://golang.org/) | Go | `go.sum` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 | [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) | Java | `build.gradle`, `build.gradle.kts`, `pom.xml` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
-| [npm](https://www.npmjs.com/), [yarn](https://classic.yarnpkg.com/en/) 1.x | JavaScript | `package-lock.json`, `npm-shrinkwrap.json`, `yarn.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [Retire.js](https://retirejs.github.io/retire.js/) |
+| [npm](https://www.npmjs.com/), [yarn](https://classic.yarnpkg.com/en/) 1.x | JavaScript | `package-lock.json`, `npm-shrinkwrap.json`, `yarn.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
+| [npm](https://www.npmjs.com/), [yarn](https://classic.yarnpkg.com/en/) 1.x | JavaScript | `package.json` | [Retire.js](https://retirejs.github.io/retire.js/) |
 | [NuGet](https://www.nuget.org/) 4.9+ | .NET, C# | [`packages.lock.json`](https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#enabling-lock-file) | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
-| [setuptools](https://setuptools.readthedocs.io/en/latest/), [pip](https://pip.pypa.io/en/stable/), [Pipenv](https://pipenv.pypa.io/en/latest/) | Python | `setup.py`, `requirements.txt`, `requirements.pip`, `requires.txt`, `Pipfile` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
+| [setuptools](https://setuptools.readthedocs.io/en/latest/), [pip](https://pip.pypa.io/en/stable/), [Pipenv](https://pipenv.pypa.io/en/latest/) (*1*) | Python | `setup.py`, `requirements.txt`, `requirements.pip`, `requires.txt`, `Pipfile`, `Pipfile.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 | [sbt](https://www.scala-sbt.org/) 1.2 and below ([Ivy](http://ant.apache.org/ivy/)) | Scala | `build.sbt` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
+
+1. [Pipenv](https://pipenv.pypa.io/en/latest/) projects are scanned when a `Pipfile` is present.
+   Gemnasium scans the exact package versions listed in `Pipfile.lock` when this file is also present.
 
 Plans are underway for supporting the following languages, dependency managers, and dependency files. For details, see the issue link for each.
 
 | Package Managers    | Languages | Supported files | Scan tools | Issue |
 | ------------------- | --------- | --------------- | ---------- | ----- |
-| [Pipenv](https://pipenv.pypa.io/en/latest/) | Python | `Pipfile.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) | [GitLab#11756](https://gitlab.com/gitlab-org/gitlab/-/issues/11756) |
 | [Poetry](https://python-poetry.org/) | Python | `poetry.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) | [GitLab#7006](https://gitlab.com/gitlab-org/gitlab/-/issues/7006) |
 | [sbt](https://www.scala-sbt.org/) 1.3+ ([Coursier](https://get-coursier.io/))| Scala | `build.sbt` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) | [GitLab#271345](https://gitlab.com/gitlab-org/gitlab/-/issues/271345) |
 
@@ -115,7 +118,7 @@ include:
   - template: Dependency-Scanning.gitlab-ci.yml
 
 variables:
-  DS_PYTHON_VERSION: 2
+  SECURE_LOG_LEVEL: error
 ```
 
 Because template is [evaluated before](../../../ci/yaml/README.md#include) the pipeline
@@ -489,7 +492,7 @@ ensure that it can reach your private repository. Here is an example configurati
 ### Referencing local dependencies using a path in JavaScript projects
 
 The [Retire.js](https://gitlab.com/gitlab-org/security-products/analyzers/retire.js) analyzer
-doesn't support dependency references made with [local paths](https://docs.npmjs.com/files/package.json#local-paths)
+doesn't support dependency references made with [local paths](https://docs.npmjs.com/cli/v6/configuring-npm/package-json#local-paths)
 in the `package.json` of JavaScript projects. The dependency scan outputs the following error for
 such references:
 
@@ -504,7 +507,7 @@ As a workaround, remove the [`retire.js`](analyzers.md#selecting-specific-analyz
 
 ### `Error response from daemon: error processing tar file: docker-tar: relocation error`
 
-This error occurs when the Docker version that runs the dependency scanning job is `19.03.00`.
+This error occurs when the Docker version that runs the dependency scanning job is `19.03.0`.
 Consider updating to Docker `19.03.1` or greater. Older versions are not
 affected. Read more in
 [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/13830#note_211354992 "Current SAST container fails").

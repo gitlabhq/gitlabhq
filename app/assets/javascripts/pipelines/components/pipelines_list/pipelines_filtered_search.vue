@@ -33,7 +33,7 @@ export default {
   },
   computed: {
     selectedTypes() {
-      return this.value.map(i => i.type);
+      return this.value.map((i) => i.type);
     },
     tokens() {
       return [

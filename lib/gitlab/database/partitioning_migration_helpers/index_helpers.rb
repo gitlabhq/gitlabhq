@@ -32,7 +32,7 @@ module Gitlab
             return
           end
 
-          partitioned_table.postgres_partitions.each do |partition|
+          partitioned_table.postgres_partitions.order(:name).each do |partition|
             partition_index_name = generated_index_name(partition.identifier, options[:name])
             partition_options = options.merge(name: partition_index_name)
 

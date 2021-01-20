@@ -67,7 +67,7 @@ RSpec.describe Projects::ContainerRepository::Gitlab::DeleteTagsService do
               stub_delete_reference_requests('A' => 200)
             end
 
-            it { is_expected.to eq(status: :error, message: 'timeout while deleting tags', deleted: ['A']) }
+            it { is_expected.to eq(status: :error, message: 'error while deleting tags', deleted: ['A'], exception_class_name: Projects::ContainerRepository::Gitlab::DeleteTagsService::TimeoutError.name) }
 
             it 'tracks the exception' do
               expect(::Gitlab::ErrorTracking)
@@ -87,6 +87,21 @@ RSpec.describe Projects::ContainerRepository::Gitlab::DeleteTagsService do
             let(:timeout) { nil }
 
             it_behaves_like 'deleting tags'
+          end
+        end
+
+        context 'with a network error' do
+          before do
+            expect(service).to receive(:delete_tags).and_raise(::Faraday::TimeoutError)
+          end
+
+          it { is_expected.to eq(status: :error, message: 'error while deleting tags', deleted: [], exception_class_name: ::Faraday::TimeoutError.name) }
+
+          it 'tracks the exception' do
+            expect(::Gitlab::ErrorTracking)
+              .to receive(:track_exception).with(::Faraday::TimeoutError, tags_count: tags.size, container_repository_id: repository.id)
+
+            subject
           end
         end
       end

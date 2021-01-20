@@ -17,7 +17,7 @@ export default {
           atVersion: this.designsVersion,
         };
       },
-      update: data => {
+      update: (data) => {
         const designNodes = propertyOf(data)([
           'project',
           'issue',

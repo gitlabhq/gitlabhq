@@ -16,6 +16,6 @@ export default function initInviteMembersModal() {
   return new Vue({
     el,
     provide: { membersPath },
-    render: createElement => createElement(InviteMemberModal),
+    render: (createElement) => createElement(InviteMemberModal),
   });
 }

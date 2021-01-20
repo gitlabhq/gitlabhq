@@ -45,7 +45,7 @@ describe('diff_discussion_header component', () => {
     const truncatedCommitId = commitId.substr(0, 8);
     let commitElement;
 
-    beforeEach(done => {
+    beforeEach((done) => {
       store.state.diffs = {
         projectPath: 'something',
       };
@@ -72,7 +72,7 @@ describe('diff_discussion_header component', () => {
     });
 
     describe('for diff threads without a commit id', () => {
-      it('should show started a thread on the diff text', done => {
+      it('should show started a thread on the diff text', (done) => {
         Object.assign(wrapper.vm.discussion, {
           for_commit: false,
           commit_id: null,
@@ -85,7 +85,7 @@ describe('diff_discussion_header component', () => {
         });
       });
 
-      it('should show thread on older version text', done => {
+      it('should show thread on older version text', (done) => {
         Object.assign(wrapper.vm.discussion, {
           for_commit: false,
           commit_id: null,
@@ -109,7 +109,7 @@ describe('diff_discussion_header component', () => {
     });
 
     describe('for diff thread with a commit id', () => {
-      it('should display started thread on commit header', done => {
+      it('should display started thread on commit header', (done) => {
         wrapper.vm.discussion.for_commit = false;
 
         wrapper.vm.$nextTick(() => {
@@ -121,7 +121,7 @@ describe('diff_discussion_header component', () => {
         });
       });
 
-      it('should display outdated change on commit header', done => {
+      it('should display outdated change on commit header', (done) => {
         wrapper.vm.discussion.for_commit = false;
         wrapper.vm.discussion.active = false;
 

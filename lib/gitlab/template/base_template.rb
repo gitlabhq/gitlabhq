@@ -23,7 +23,12 @@ module Gitlab
       end
 
       def content
-        @finder.read(@path)
+        blob = @finder.read(@path)
+        [description, blob].compact.join("\n")
+      end
+
+      def description
+        # override with a comment to be placed at the top of the blob.
       end
 
       # Present for compatibility with license templates, which can replace text

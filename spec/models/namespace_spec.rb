@@ -19,7 +19,8 @@ RSpec.describe Namespace do
     it { is_expected.to have_one :aggregation_schedule }
     it { is_expected.to have_one :namespace_settings }
     it { is_expected.to have_many :custom_emoji }
-    it { is_expected.to have_many :namespace_onboarding_actions }
+    it { is_expected.to have_one :package_setting_relation }
+    it { is_expected.to have_one :onboarding_progress }
   end
 
   describe 'validations' do
@@ -1497,6 +1498,26 @@ RSpec.describe Namespace do
         it 'is valid' do
           expect(sub_namespace).to be_valid
         end
+      end
+    end
+  end
+
+  describe '#root?' do
+    subject { namespace.root? }
+
+    context 'when is subgroup' do
+      before do
+        namespace.parent = build(:group)
+      end
+
+      it 'returns false' do
+        is_expected.to eq(false)
+      end
+    end
+
+    context 'when is root' do
+      it 'returns true' do
+        is_expected.to eq(true)
       end
     end
   end

@@ -1,0 +1,5 @@
+---
+title: Fix padding of user admin search bar on mobile
+merge_request: 51170
+author: Kev @KevSlashNull
+type: fixed

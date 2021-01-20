@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { TEST_HOST } from 'jest/helpers/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
 import projectNew from '~/projects/project_new';
 
 describe('New Project', () => {
@@ -38,10 +38,7 @@ describe('New Project', () => {
 
     beforeEach(() => {
       projectNew.bindEvents();
-      $projectPath
-        .val('')
-        .keyup()
-        .val(dummyImportUrl);
+      $projectPath.val('').keyup().val(dummyImportUrl);
     });
 
     it('does not change project path for disabled $projectImportUrl', () => {

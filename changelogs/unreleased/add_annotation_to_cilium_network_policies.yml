@@ -1,0 +1,5 @@
+---
+title: Adds annotations as part of metadata for CiliumNetworkPolicies wrapper
+merge_request: 50586
+author:
+type: changed

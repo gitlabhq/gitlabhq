@@ -1,0 +1,17 @@
+name: uuid
+description: GitLab instance unique identifier
+value_type: string
+product_category: collection
+stage: growth
+status: data_available
+default_generation: generation_1
+full_path:
+  generation_1: uuid
+  generation_2: license.uuid
+milestone: 9.1
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1521
+group: group::product analytics
+time_frame: none
+data_source: database
+distribution: [ee, ce]
+tier: ['free', 'starter', 'premium', 'ultimate', 'bronze', 'silver', 'gold']

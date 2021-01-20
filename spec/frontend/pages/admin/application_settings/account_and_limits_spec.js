@@ -24,7 +24,7 @@ describe('AccountAndLimits', () => {
       expect($userInternalRegex.readOnly).toBeTruthy();
     });
 
-    it('is checked', done => {
+    it('is checked', (done) => {
       if (!$userDefaultExternal.prop('checked')) $userDefaultExternal.click();
 
       expect($userDefaultExternal.prop('checked')).toBeTruthy();

@@ -46,7 +46,7 @@ export const configCheckError = (status, helpUrl) => {
   return UNEXPECTED_ERROR_CONFIG;
 };
 
-export const runnersCheckEmpty = helpUrl =>
+export const runnersCheckEmpty = (helpUrl) =>
   sprintf(
     EMPTY_RUNNERS,
     {

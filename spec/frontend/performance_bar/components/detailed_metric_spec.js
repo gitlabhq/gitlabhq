@@ -7,7 +7,7 @@ import RequestWarning from '~/performance_bar/components/request_warning.vue';
 describe('detailedMetric', () => {
   let wrapper;
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     wrapper = shallowMount(DetailedMetric, {
       propsData: {
         ...props,
@@ -16,9 +16,9 @@ describe('detailedMetric', () => {
   };
 
   const findAllTraceBlocks = () => wrapper.findAll('pre');
-  const findTraceBlockAtIndex = index => findAllTraceBlocks().at(index);
+  const findTraceBlockAtIndex = (index) => findAllTraceBlocks().at(index);
   const findExpandBacktraceBtns = () => wrapper.findAll('[data-testid="backtrace-expand-btn"]');
-  const findExpandedBacktraceBtnAtIndex = index => findExpandBacktraceBtns().at(index);
+  const findExpandedBacktraceBtnAtIndex = (index) => findExpandBacktraceBtns().at(index);
 
   afterEach(() => {
     wrapper.destroy();
@@ -95,7 +95,7 @@ describe('detailedMetric', () => {
 
         expect(wrapper.find('.js-toggle-button')).not.toBeNull();
 
-        wrapper.findAll('.performance-bar-modal td:nth-child(2)').wrappers.forEach(request => {
+        wrapper.findAll('.performance-bar-modal td:nth-child(2)').wrappers.forEach((request) => {
           expect(request.text()).toContain('world');
         });
       });

@@ -14,7 +14,7 @@ export default function initClonePanel() {
       $(`a:contains('${selectedCloneOption}')`, $cloneOptions).addClass('is-active');
     }
 
-    $('a', $cloneOptions).on('click', e => {
+    $('a', $cloneOptions).on('click', (e) => {
       e.preventDefault();
       const $this = $(e.currentTarget);
       const url = $this.attr('href');

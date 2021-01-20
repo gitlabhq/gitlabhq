@@ -41,7 +41,7 @@ describe('Dashboard header', () => {
 
   const findActionsMenu = () => wrapper.find(ActionsMenu);
 
-  const setSearchTerm = searchTerm => {
+  const setSearchTerm = (searchTerm) => {
     store.commit(`monitoringDashboard/${types.SET_ENVIRONMENTS_FILTER}`, searchTerm);
   };
 
@@ -147,13 +147,13 @@ describe('Dashboard header', () => {
 
       it('environments dropdown items can be checked', () => {
         const items = findEnvsDropdownItems();
-        const checkItems = findEnvsDropdownItems().filter(item => item.props('isCheckItem'));
+        const checkItems = findEnvsDropdownItems().filter((item) => item.props('isCheckItem'));
 
         expect(items).toHaveLength(checkItems.length);
       });
 
       it('checks the currently selected environment', () => {
-        const selectedItems = findEnvsDropdownItems().filter(item => item.props('isChecked'));
+        const selectedItems = findEnvsDropdownItems().filter((item) => item.props('isChecked'));
 
         expect(selectedItems).toHaveLength(1);
         expect(selectedItems.at(0).text()).toBe(currentEnvironmentName);
@@ -218,7 +218,7 @@ describe('Dashboard header', () => {
     });
 
     describe('timezone setting', () => {
-      const setupWithTimezone = value => {
+      const setupWithTimezone = (value) => {
         store = createStore({ dashboardTimezone: value });
         createShallowWrapper();
       };
@@ -295,7 +295,7 @@ describe('Dashboard header', () => {
     });
 
     describe('adding metrics prop', () => {
-      it.each(ootbDashboards)('gets passed true if current dashboard is OOTB', dashboardPath => {
+      it.each(ootbDashboards)('gets passed true if current dashboard is OOTB', (dashboardPath) => {
         createShallowWrapper({ customMetricsAvailable: true });
 
         store.state.monitoringDashboard.emptyState = false;
@@ -308,7 +308,7 @@ describe('Dashboard header', () => {
 
       it.each(customDashboards)(
         'gets passed false if current dashboard is custom',
-        dashboardPath => {
+        (dashboardPath) => {
           createShallowWrapper({ customMetricsAvailable: true });
 
           store.state.monitoringDashboard.emptyState = false;

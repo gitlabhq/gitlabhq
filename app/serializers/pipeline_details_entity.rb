@@ -11,6 +11,10 @@ class PipelineDetailsEntity < PipelineEntity
     expose :artifacts do |pipeline, options|
       rel = pipeline.downloadable_artifacts
 
+      if Feature.enabled?(:non_public_artifacts, type: :development)
+        rel = rel.select { |artifact| can?(request.current_user, :read_job_artifacts, artifact.job) }
+      end
+
       BuildArtifactEntity.represent(rel, options)
     end
     expose :manual_actions, using: BuildActionEntity

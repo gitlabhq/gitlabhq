@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "galatic-empire"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "imperial-starfleet"
+  namespace: "galatic-empire"
+data:
+  deathStars: "1"
+  starDestroyers: "5"
+  tieFighters: "25"

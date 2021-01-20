@@ -13,6 +13,8 @@ class Member < ApplicationRecord
   include FromUnion
   include UpdateHighestRole
 
+  AVATAR_SIZE = 40
+
   attr_accessor :raw_invite_token
 
   belongs_to :created_by, class_name: "User"

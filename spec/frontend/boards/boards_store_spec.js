@@ -77,7 +77,7 @@ describe('boardsStore', () => {
 
     beforeEach(() => {
       requestSpy = jest.fn();
-      axiosMock.onPost(endpoints.listsEndpoint).replyOnce(config => requestSpy(config));
+      axiosMock.onPost(endpoints.listsEndpoint).replyOnce((config) => requestSpy(config));
     });
 
     it('makes a request to create a list', () => {
@@ -114,7 +114,7 @@ describe('boardsStore', () => {
 
     beforeEach(() => {
       requestSpy = jest.fn();
-      axiosMock.onPut(`${endpoints.listsEndpoint}/${id}`).replyOnce(config => requestSpy(config));
+      axiosMock.onPut(`${endpoints.listsEndpoint}/${id}`).replyOnce((config) => requestSpy(config));
     });
 
     it('makes a request to update a list position', () => {
@@ -148,7 +148,7 @@ describe('boardsStore', () => {
       requestSpy = jest.fn();
       axiosMock
         .onDelete(`${endpoints.listsEndpoint}/${id}`)
-        .replyOnce(config => requestSpy(config));
+        .replyOnce((config) => requestSpy(config));
     });
 
     it('makes a request to delete a list', () => {
@@ -269,7 +269,7 @@ describe('boardsStore', () => {
       requestSpy = jest.fn();
       axiosMock
         .onPut(`${urlRoot}/-/boards/${boardId}/issues/${id}`)
-        .replyOnce(config => requestSpy(config));
+        .replyOnce((config) => requestSpy(config));
     });
 
     it('makes a request to move an issue between lists', () => {
@@ -308,7 +308,7 @@ describe('boardsStore', () => {
 
     beforeEach(() => {
       requestSpy = jest.fn();
-      axiosMock.onPost(url).replyOnce(config => requestSpy(config));
+      axiosMock.onPost(url).replyOnce((config) => requestSpy(config));
     });
 
     it('makes a request to create a new issue', () => {
@@ -378,7 +378,7 @@ describe('boardsStore', () => {
 
     beforeEach(() => {
       requestSpy = jest.fn();
-      axiosMock.onPost(endpoints.bulkUpdatePath).replyOnce(config => requestSpy(config));
+      axiosMock.onPost(endpoints.bulkUpdatePath).replyOnce((config) => requestSpy(config));
     });
 
     it('makes a request to create a list', () => {
@@ -453,24 +453,6 @@ describe('boardsStore', () => {
       axiosMock.onGet(url).replyOnce(500);
 
       return expect(boardsStore.recentBoards()).rejects.toThrow();
-    });
-  });
-
-  describe('deleteBoard', () => {
-    const id = 'capsized';
-    const url = `${endpoints.boardsEndpoint}/${id}.json`;
-
-    it('makes a request to delete a boards', () => {
-      axiosMock.onDelete(url).replyOnce(200, dummyResponse);
-      const expectedResponse = expect.objectContaining({ data: dummyResponse });
-
-      return expect(boardsStore.deleteBoard({ id })).resolves.toEqual(expectedResponse);
-    });
-
-    it('fails for error response', () => {
-      axiosMock.onDelete(url).replyOnce(500);
-
-      return expect(boardsStore.deleteBoard({ id })).rejects.toThrow();
     });
   });
 
@@ -603,7 +585,7 @@ describe('boardsStore', () => {
 
         expect(boardsStore.state.lists.length).toBe(1);
 
-        boardsStore.removeList(listObj.id, 'label');
+        boardsStore.removeList(listObj.id);
 
         expect(boardsStore.state.lists.length).toBe(0);
       });

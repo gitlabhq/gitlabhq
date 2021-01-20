@@ -1,8 +1,0 @@
----
-name: mr_commit_neighbor_nav
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28596
-rollout_issue_url: 
-milestone: '13.0'
-type: development
-group: group::code review
-default_enabled: true

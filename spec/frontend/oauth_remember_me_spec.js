@@ -2,10 +2,8 @@ import $ from 'jquery';
 import OAuthRememberMe from '~/pages/sessions/new/oauth_remember_me';
 
 describe('OAuthRememberMe', () => {
-  const findFormAction = selector => {
-    return $(`#oauth-container .oauth-login${selector}`)
-      .parent('form')
-      .attr('action');
+  const findFormAction = (selector) => {
+    return $(`#oauth-container .oauth-login${selector}`).parent('form').attr('action');
   };
 
   preloadFixtures('static/oauth_remember_me.html');

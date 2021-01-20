@@ -8,7 +8,7 @@
     - if defined?(@left_sidebar)
       = button_tag class: 'toggle-mobile-nav', type: 'button' do
         %span.sr-only= _("Open sidebar")
-        = sprite_icon('hamburger')
+        = sprite_icon('hamburger', size: 18)
     .breadcrumbs-links.js-title-container{ data: { qa_selector: 'breadcrumb_links_content' } }
       %ul.list-unstyled.breadcrumbs-list.js-breadcrumbs-list
         - unless hide_top_links

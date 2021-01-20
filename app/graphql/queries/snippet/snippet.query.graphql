@@ -59,6 +59,11 @@ query GetSnippetQuery($ids: [SnippetID!]) {
         name
         username
         webUrl
+        status {
+          __typename
+          emoji
+          message
+        }
       }
     }
   }

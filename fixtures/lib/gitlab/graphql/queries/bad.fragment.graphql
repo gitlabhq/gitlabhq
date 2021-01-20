@@ -1,0 +1,4 @@
+fragment BadF on Blog {
+  wibble
+  wobble
+}

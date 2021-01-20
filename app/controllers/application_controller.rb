@@ -103,14 +103,6 @@ class ApplicationController < ActionController::Base
     head :forbidden, retry_after: Gitlab::Auth::UniqueIpsLimiter.config.unique_ips_limit_time_window
   end
 
-  rescue_from GRPC::Unavailable, Gitlab::Git::CommandError do |exception|
-    log_exception(exception)
-
-    headers['Retry-After'] = exception.retry_after if exception.respond_to?(:retry_after)
-
-    render_503
-  end
-
   def redirect_back_or_default(default: root_path, options: {})
     redirect_back(fallback_location: default, **options)
   end
@@ -246,19 +238,6 @@ class ApplicationController < ActionController::Base
     head :unprocessable_entity
   end
 
-  def render_503
-    respond_to do |format|
-      format.html do
-        render(
-          file: Rails.root.join("public", "503"),
-          layout: false,
-          status: :service_unavailable
-        )
-      end
-      format.any { head :service_unavailable }
-    end
-  end
-
   def no_cache_headers
     DEFAULT_GITLAB_NO_CACHE_HEADERS.each do |k, v|
       headers[k] = v
@@ -284,6 +263,14 @@ class ApplicationController < ActionController::Base
       headers['Cache-Control'] = default_cache_control
       headers['Pragma'] = 'no-cache' # HTTP 1.0 compatibility
     end
+  end
+
+  def stream_csv_headers(csv_filename)
+    no_cache_headers
+    stream_headers
+
+    headers['Content-Type'] = 'text/csv; charset=utf-8; header=present'
+    headers['Content-Disposition'] = "attachment; filename=\"#{csv_filename}\""
   end
 
   def default_cache_control
@@ -468,6 +455,7 @@ class ApplicationController < ActionController::Base
       project: -> { @project if @project&.persisted? },
       namespace: -> { @group if @group&.persisted? },
       caller_id: caller_id,
+      remote_ip: request.ip,
       feature_category: feature_category) do
       yield
     ensure

@@ -94,7 +94,7 @@ describe('SidebarSeverity', () => {
       let resolvePromise;
       wrapper.vm.$apollo.mutate = jest.fn(
         () =>
-          new Promise(resolve => {
+          new Promise((resolve) => {
             resolvePromise = resolve;
           }),
       );
@@ -119,21 +119,11 @@ describe('SidebarSeverity', () => {
       });
 
       it('should display only icon with a tooltip', () => {
-        expect(
-          findSeverityToken()
-            .at(0)
-            .attributes('icononly'),
-        ).toBe('true');
-        expect(
-          findSeverityToken()
-            .at(0)
-            .attributes('iconsize'),
-        ).toBe('14');
-        expect(
-          findTooltip()
-            .text()
-            .replace(/\s+/g, ' '),
-        ).toContain(`Severity: ${INCIDENT_SEVERITY[severity].label}`);
+        expect(findSeverityToken().at(0).attributes('icononly')).toBe('true');
+        expect(findSeverityToken().at(0).attributes('iconsize')).toBe('14');
+        expect(findTooltip().text().replace(/\s+/g, ' ')).toContain(
+          `Severity: ${INCIDENT_SEVERITY[severity].label}`,
+        );
       });
 
       it('should expand the dropdown on collapsed icon click', async () => {

@@ -177,6 +177,10 @@ coming from a fork:
 - It's created and runs in the fork (source) project, not the parent (target) project.
 - It uses the fork project's CI/CD configuration and resources.
 
+If a pipeline runs in a fork, the **fork** icon appears for the pipeline in the merge request.
+
+![Pipeline ran in fork](img/pipeline-fork_v13_7.png)
+
 Sometimes parent project members want the pipeline to run in the parent
 project. This could be to ensure that the post-merge pipeline passes in the parent project.
 For example, a fork project could try to use a corrupted runner that doesn't execute

@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46005
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/271568
 milestone: '13.6'
 type: development
-group: group::analytics
-default_enabled: true
+group: group::optimize
+default_enabled: false

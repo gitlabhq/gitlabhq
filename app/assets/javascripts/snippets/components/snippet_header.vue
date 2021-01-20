@@ -69,7 +69,7 @@ export default {
   },
   computed: {
     snippetHasBinary() {
-      return Boolean(this.snippet.blobs.find(blob => blob.binary));
+      return Boolean(this.snippet.blobs.find((blob) => blob.binary));
     },
     authoredMessage() {
       return this.snippet.author
@@ -164,7 +164,7 @@ export default {
           this.closeDeleteModal();
           this.redirectToSnippets();
         })
-        .catch(err => {
+        .catch((err) => {
           this.isDeleting = false;
           this.errorMessage = err.message;
         });
@@ -200,6 +200,13 @@ export default {
               <gl-avatar :size="24" :src="snippet.author.avatarUrl" />
               <span class="bold">{{ snippet.author.name }}</span>
             </a>
+            <gl-emoji
+              v-if="snippet.author.status"
+              v-gl-tooltip
+              class="gl-vertical-align-baseline font-size-inherit gl-mr-1"
+              :title="snippet.author.status.message"
+              :data-name="snippet.author.status.emoji"
+            />
           </template>
         </gl-sprintf>
       </div>

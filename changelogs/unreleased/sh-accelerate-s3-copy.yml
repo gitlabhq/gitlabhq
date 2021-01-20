@@ -1,0 +1,5 @@
+---
+title: Fix large S3 uploads failing to finalize
+merge_request: 50922
+author:
+type: fixed

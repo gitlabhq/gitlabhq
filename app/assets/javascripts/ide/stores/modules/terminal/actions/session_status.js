@@ -58,7 +58,7 @@ export const fetchSessionStatus = ({ dispatch, state }) => {
     .then(({ data }) => {
       dispatch('receiveSessionStatusSuccess', data);
     })
-    .catch(error => {
+    .catch((error) => {
       dispatch('receiveSessionStatusError', error);
     });
 };

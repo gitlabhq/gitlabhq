@@ -1,15 +1,21 @@
 <script>
-// import { sprintf, __ } from '~/locale';
-import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
+import { GlModal, GlLink, GlSprintf } from '@gitlab/ui';
+
 import CodeBlock from '~/vue_shared/components/code_block.vue';
 import { fieldTypes } from '../constants';
 
 export default {
   components: {
-    Modal: DeprecatedModal2,
     CodeBlock,
+    GlModal,
+    GlLink,
+    GlSprintf,
   },
   props: {
+    visible: {
+      type: Boolean,
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -23,39 +29,43 @@ export default {
 };
 </script>
 <template>
-  <modal
-    id="modal-mrwidget-reports"
-    :header-title-text="title"
-    class="modal-security-report-dast modal-hide-footer"
+  <gl-modal
+    :visible="visible"
+    modal-id="modal-mrwidget-reports"
+    :title="title"
+    :hide-footer="true"
+    @hide="$emit('hide')"
   >
-    <slot>
-      <div
-        v-for="(field, key, index) in modalData"
-        v-if="field.value"
-        :key="index"
-        class="row gl-mt-3 gl-mb-3"
-      >
-        <strong class="col-sm-3 text-right"> {{ field.text }}: </strong>
+    <div
+      v-for="(field, key, index) in modalData"
+      v-if="field.value"
+      :key="index"
+      class="row gl-mt-3 gl-mb-3"
+    >
+      <strong class="col-sm-3 text-right"> {{ field.text }}: </strong>
 
-        <div class="col-sm-9 text-secondary">
-          <code-block v-if="field.type === $options.fieldTypes.codeBock" :code="field.value" />
+      <div class="col-sm-9 text-secondary">
+        <code-block v-if="field.type === $options.fieldTypes.codeBock" :code="field.value" />
 
-          <template v-else-if="field.type === $options.fieldTypes.link">
-            <a :href="field.value" target="_blank" rel="noopener noreferrer" class="js-modal-link">
-              {{ field.value }}
-            </a>
-          </template>
+        <gl-link
+          v-else-if="field.type === $options.fieldTypes.link"
+          :href="field.value"
+          target="_blank"
+        >
+          {{ field.value }}
+        </gl-link>
 
-          <template v-else-if="field.type === $options.fieldTypes.seconds">{{
-            sprintf(__('%{value} s'), { value: field.value })
-          }}</template>
+        <gl-sprintf
+          v-else-if="field.type === $options.fieldTypes.seconds"
+          :message="__('%{value} s')"
+        >
+          <template #value>{{ field.value }}</template>
+        </gl-sprintf>
 
-          <template v-else-if="field.type === $options.fieldTypes.text">
-            {{ field.value }}
-          </template>
-        </div>
+        <template v-else-if="field.type === $options.fieldTypes.text">
+          {{ field.value }}
+        </template>
       </div>
-    </slot>
-    <div slot="footer"></div>
-  </modal>
+    </div>
+  </gl-modal>
 </template>

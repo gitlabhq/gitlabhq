@@ -18,7 +18,7 @@ describe('tooltips/components/tooltips.vue', () => {
       ...attributes,
     };
 
-    Object.keys(defaults).forEach(name => {
+    Object.keys(defaults).forEach((name) => {
       target.setAttribute(name, defaults[name]);
     });
 
@@ -49,6 +49,16 @@ describe('tooltips/components/tooltips.vue', () => {
       await wrapper.vm.$nextTick();
 
       expect(wrapper.find(GlTooltip).props('target')).toBe(target);
+    });
+
+    it('does not attach a tooltip to a target with empty title', async () => {
+      target.setAttribute('title', '');
+
+      wrapper.vm.addTooltips([target]);
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.find(GlTooltip).exists()).toBe(false);
     });
 
     it('does not attach a tooltip twice to the same element', async () => {

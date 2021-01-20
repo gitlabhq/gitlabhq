@@ -1,0 +1,8 @@
+mutation issueSetTitle($input: UpdateIssueInput!) {
+  updateIssue(input: $input) {
+    issue {
+      title
+    }
+    errors
+  }
+}

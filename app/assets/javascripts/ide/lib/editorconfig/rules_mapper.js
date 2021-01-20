@@ -1,23 +1,23 @@
 import { isBoolean, isNumber } from 'lodash';
 
-const map = (key, validValues) => value =>
+const map = (key, validValues) => (value) =>
   value in validValues ? { [key]: validValues[value] } : {};
 
-const bool = key => value => (isBoolean(value) ? { [key]: value } : {});
+const bool = (key) => (value) => (isBoolean(value) ? { [key]: value } : {});
 
-const int = (key, isValid) => value =>
+const int = (key, isValid) => (value) =>
   isNumber(value) && isValid(value) ? { [key]: Math.trunc(value) } : {};
 
 const rulesMapper = {
   indent_style: map('insertSpaces', { tab: false, space: true }),
-  indent_size: int('tabSize', n => n > 0),
-  tab_width: int('tabSize', n => n > 0),
+  indent_size: int('tabSize', (n) => n > 0),
+  tab_width: int('tabSize', (n) => n > 0),
   trim_trailing_whitespace: bool('trimTrailingWhitespace'),
   end_of_line: map('endOfLine', { crlf: 1, lf: 0 }),
   insert_final_newline: bool('insertFinalNewline'),
 };
 
-const parseValue = x => {
+const parseValue = (x) => {
   let value = typeof x === 'string' ? x.toLowerCase() : x;
   if (/^[0-9.-]+$/.test(value)) value = Number(value);
   if (value === 'true') value = true;

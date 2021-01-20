@@ -112,10 +112,14 @@ RSpec.describe Issues::CloseService do
     end
 
     context "closed by a merge request", :sidekiq_might_not_need_inline do
-      it 'mentions closure via a merge request' do
+      subject(:close_issue) do
         perform_enqueued_jobs do
           described_class.new(project, user).close_issue(issue, closed_via: closing_merge_request)
         end
+      end
+
+      it 'mentions closure via a merge request' do
+        close_issue
 
         email = ActionMailer::Base.deliveries.last
 
@@ -124,12 +128,15 @@ RSpec.describe Issues::CloseService do
         expect(email.body.parts.map(&:body)).to all(include(closing_merge_request.to_reference))
       end
 
+      it_behaves_like 'records an onboarding progress action', :issue_auto_closed do
+        let(:namespace) { project.namespace }
+      end
+
       context 'when user cannot read merge request' do
         it 'does not mention merge request' do
           project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
-          perform_enqueued_jobs do
-            described_class.new(project, user).close_issue(issue, closed_via: closing_merge_request)
-          end
+
+          close_issue
 
           email = ActionMailer::Base.deliveries.last
           body_text = email.body.parts.map(&:body).join(" ")
@@ -141,13 +148,11 @@ RSpec.describe Issues::CloseService do
       end
 
       context 'updating `metrics.first_mentioned_in_commit_at`' do
-        subject { described_class.new(project, user).close_issue(issue, closed_via: closing_merge_request) }
-
         context 'when `metrics.first_mentioned_in_commit_at` is not set' do
           it 'uses the first commit authored timestamp' do
             expected = closing_merge_request.commits.first.authored_date
 
-            subject
+            close_issue
 
             expect(issue.metrics.first_mentioned_in_commit_at).to eq(expected)
           end
@@ -159,7 +164,7 @@ RSpec.describe Issues::CloseService do
           end
 
           it 'does not update the metrics' do
-            expect { subject }.not_to change { issue.metrics.first_mentioned_in_commit_at }
+            expect { close_issue }.not_to change { issue.metrics.first_mentioned_in_commit_at }
           end
         end
 
@@ -167,7 +172,7 @@ RSpec.describe Issues::CloseService do
           let(:closing_merge_request) { create(:merge_request, :without_diffs, source_project: project) }
 
           it 'does not update the metrics' do
-            subject
+            close_issue
 
             expect(issue.metrics.first_mentioned_in_commit_at).to be_nil
           end
@@ -206,7 +211,7 @@ RSpec.describe Issues::CloseService do
     end
 
     context "valid params" do
-      def close_issue
+      subject(:close_issue) do
         perform_enqueued_jobs do
           described_class.new(project, user).close_issue(issue)
         end
@@ -290,6 +295,8 @@ RSpec.describe Issues::CloseService do
 
         close_issue
       end
+
+      it_behaves_like 'does not record an onboarding progress action'
     end
 
     context 'when issue is not confidential' do

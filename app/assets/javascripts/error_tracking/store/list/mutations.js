@@ -17,7 +17,7 @@ export default {
       return;
     }
     // remove any existing item, then add it to the start of the list
-    const recentSearches = state.recentSearches.filter(s => s !== searchTerm);
+    const recentSearches = state.recentSearches.filter((s) => s !== searchTerm);
     recentSearches.unshift(searchTerm);
     // only keep the last 5
     state.recentSearches = recentSearches.slice(0, 5);
@@ -60,7 +60,7 @@ export default {
     state.endpoint = endpoint;
   },
   [types.REMOVE_IGNORED_RESOLVED_ERRORS](state, error) {
-    state.errors = state.errors.filter(err => err.id !== error);
+    state.errors = state.errors.filter((err) => err.id !== error);
   },
   [types.SET_STATUS_FILTER](state, query) {
     state.statusFilter = query;

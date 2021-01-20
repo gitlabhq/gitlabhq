@@ -112,7 +112,7 @@ export const isOdd = (number = 0) => number % 2;
  * @param {Array} arr An array of numbers
  * @returns {Number} The median of the given array
  */
-export const median = arr => {
+export const median = (arr) => {
   const middle = Math.floor(arr.length / 2);
   const sorted = arr.sort((a, b) => a - b);
   return arr.length % 2 !== 0 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;

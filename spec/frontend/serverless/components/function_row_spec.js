@@ -7,7 +7,7 @@ import { mockServerlessFunction } from '../mock_data';
 describe('functionRowComponent', () => {
   let wrapper;
 
-  const createComponent = func => {
+  const createComponent = (func) => {
     wrapper = shallowMount(functionRowComponent, {
       propsData: { func },
     });

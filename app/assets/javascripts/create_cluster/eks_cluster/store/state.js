@@ -1,6 +1,6 @@
 import { KUBERNETES_VERSIONS } from '../constants';
 
-const kubernetesVersion = KUBERNETES_VERSIONS.find(version => version.default).value;
+const kubernetesVersion = KUBERNETES_VERSIONS.find((version) => version.default).value;
 
 export default () => ({
   createRolePath: null,

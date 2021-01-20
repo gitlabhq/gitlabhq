@@ -5,28 +5,44 @@ require 'spec_helper'
 RSpec.describe OnboardingProgressService do
   describe '#execute' do
     let(:namespace) { create(:namespace, parent: root_namespace) }
+    let(:root_namespace) { nil }
+    let(:action) { :namespace_action }
 
     subject(:execute_service) { described_class.new(namespace).execute(action: :subscription_created) }
 
     context 'when the namespace is a root' do
-      let(:root_namespace) { nil }
+      before do
+        OnboardingProgress.onboard(namespace)
+      end
 
-      it 'records a namespace onboarding progress action for the given namespace' do
-        expect(NamespaceOnboardingAction).to receive(:create_action)
-              .with(namespace, :subscription_created).and_call_original
+      it 'registers a namespace onboarding progress action for the given namespace' do
+        execute_service
 
-        expect { execute_service }.to change(NamespaceOnboardingAction, :count).by(1)
+        expect(OnboardingProgress.completed?(namespace, :subscription_created)).to eq(true)
       end
     end
 
     context 'when the namespace is not the root' do
-      let_it_be(:root_namespace) { build(:namespace) }
+      let(:root_namespace) { build(:namespace) }
 
-      it 'records a namespace onboarding progress action for the root namespace' do
-        expect(NamespaceOnboardingAction).to receive(:create_action)
-              .with(root_namespace, :subscription_created).and_call_original
+      before do
+        OnboardingProgress.onboard(root_namespace)
+      end
 
-        expect { execute_service }.to change(NamespaceOnboardingAction, :count).by(1)
+      it 'registers a namespace onboarding progress action for the root namespace' do
+        execute_service
+
+        expect(OnboardingProgress.completed?(root_namespace, :subscription_created)).to eq(true)
+      end
+    end
+
+    context 'when no namespace is passed' do
+      let(:namespace) { nil }
+
+      it 'does not register a namespace onboarding progress action' do
+        execute_service
+
+        expect(OnboardingProgress.completed?(root_namespace, :subscription_created)).to be(nil)
       end
     end
   end

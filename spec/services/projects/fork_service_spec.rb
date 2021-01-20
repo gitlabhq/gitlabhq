@@ -116,6 +116,24 @@ RSpec.describe Projects::ForkService do
             expect(to_project.fork_network_member.forked_from_project).to eq(from_forked_project)
           end
 
+          context 'when the forked project has higher visibility than the root project' do
+            let(:root_project) { create(:project, :public) }
+
+            it 'successfully creates a fork of the fork with correct visibility' do
+              forked_project = fork_project(root_project, @to_user, using_service: true)
+
+              root_project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+
+              # Forked project visibility is not affected by root project visibility change
+              expect(forked_project).to have_attributes(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
+              fork_of_the_fork = fork_project(forked_project, @to_user, namespace: other_namespace, using_service: true)
+
+              expect(fork_of_the_fork).to be_valid
+              expect(fork_of_the_fork).to have_attributes(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+            end
+          end
+
           it_behaves_like 'forks count cache refresh' do
             let(:from_project) { from_forked_project }
             let(:to_user) { @to_user }

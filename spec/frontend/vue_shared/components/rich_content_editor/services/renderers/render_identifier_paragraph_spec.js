@@ -2,7 +2,7 @@ import renderer from '~/vue_shared/components/rich_content_editor/services/rende
 
 import { buildMockTextNode } from './mock_data';
 
-const buildMockParagraphNode = literal => {
+const buildMockParagraphNode = (literal) => {
   return {
     firstChild: buildMockTextNode(literal),
     type: 'paragraph',

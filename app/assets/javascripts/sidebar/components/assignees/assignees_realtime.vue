@@ -59,7 +59,7 @@ export default {
     handleFetchResult({ data }) {
       const { nodes } = data.project.issue.assignees;
 
-      const assignees = nodes.map(n => ({
+      const assignees = nodes.map((n) => ({
         ...n,
         avatar_url: n.avatarUrl,
         id: getIdFromGraphQLId(n.id),

@@ -65,9 +65,7 @@ export default {
           this.loading = false;
         };
 
-        this.loadIssues()
-          .then(loadingDone)
-          .catch(loadingDone);
+        this.loadIssues().then(loadingDone).catch(loadingDone);
       } else if (!this.showAddIssuesModal) {
         this.issues = [];
         this.selectedIssues = [];
@@ -83,9 +81,7 @@ export default {
             this.filterLoading = false;
           };
 
-          this.loadIssues(true)
-            .then(loadingDone)
-            .catch(loadingDone);
+          this.loadIssues(true).then(loadingDone).catch(loadingDone);
         }
       },
       deep: true,
@@ -104,13 +100,13 @@ export default {
           page: this.page,
           per: this.perPage,
         })
-        .then(res => res.data)
-        .then(data => {
+        .then((res) => res.data)
+        .then((data) => {
           if (clearIssues) {
             this.issues = [];
           }
 
-          data.issues.forEach(issueObj => {
+          data.issues.forEach((issueObj) => {
             const issue = new ListIssue(issueObj);
             const foundSelectedIssue = ModalStore.findSelectedIssue(issue);
             issue.selected = Boolean(foundSelectedIssue);

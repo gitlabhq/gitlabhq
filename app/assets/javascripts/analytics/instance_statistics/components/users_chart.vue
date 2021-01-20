@@ -10,7 +10,7 @@ import { formatDateAsMonth } from '~/lib/utils/datetime_utility';
 import usersQuery from '../graphql/queries/users.query.graphql';
 import { getAverageByMonth } from '../utils';
 
-const sortByDate = data => sortBy(data, item => new Date(item[0]).getTime());
+const sortByDate = (data) => sortBy(data, (item) => new Date(item[0]).getTime());
 
 export default {
   name: 'UsersChart',
@@ -106,7 +106,7 @@ export default {
           .fetchMore({
             variables: { first: this.totalDataPoints, after: this.pageInfo.endCursor },
             updateQuery: (previousResult, { fetchMoreResult }) => {
-              return produce(fetchMoreResult, newUsers => {
+              return produce(fetchMoreResult, (newUsers) => {
                 // eslint-disable-next-line no-param-reassign
                 newUsers.users.nodes = [...previousResult.users.nodes, ...newUsers.users.nodes];
               });

@@ -17,7 +17,7 @@ describe('~/ide/sync_router_and_store', () => {
 
   const getRouterCurrentPath = () => router.currentRoute.fullPath;
   const getStoreCurrentPath = () => store.state.router.fullPath;
-  const updateRouter = async path => {
+  const updateRouter = async (path) => {
     if (getRouterCurrentPath() === path) {
       return;
     }
@@ -25,7 +25,7 @@ describe('~/ide/sync_router_and_store', () => {
     router.push(path);
     await waitForPromises();
   };
-  const updateStore = path => {
+  const updateStore = (path) => {
     store.dispatch('router/push', path);
     return waitForPromises();
   };

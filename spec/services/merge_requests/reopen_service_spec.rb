@@ -17,6 +17,7 @@ RSpec.describe MergeRequests::ReopenService do
 
   describe '#execute' do
     it_behaves_like 'cache counters invalidator'
+    it_behaves_like 'merge request reviewers cache counters invalidator'
 
     context 'valid params' do
       let(:service) { described_class.new(project, user, {}) }
@@ -76,6 +77,14 @@ RSpec.describe MergeRequests::ReopenService do
         .and_return(service)
 
       expect(service).to receive(:reopen)
+
+      described_class.new(project, user, {}).execute(merge_request)
+    end
+
+    it 'calls the merge request activity counter' do
+      expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+        .to receive(:track_reopen_mr_action)
+        .with(user: user)
 
       described_class.new(project, user, {}).execute(merge_request)
     end

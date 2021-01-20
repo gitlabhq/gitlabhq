@@ -4,7 +4,7 @@ import $ from 'jquery';
 import syntaxHighlight from '~/syntax_highlight';
 
 describe('Syntax Highlighter', () => {
-  const stubUserColorScheme = value => {
+  const stubUserColorScheme = (value) => {
     if (window.gon == null) {
       window.gon = {};
     }

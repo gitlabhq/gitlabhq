@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlModal } from '@gitlab/ui';
+import { stubComponent } from 'helpers/stub_component';
 import SharedDeleteButton from '~/projects/components/shared/delete_button.vue';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'test-csrf-token' }));
@@ -17,12 +18,19 @@ describe('Project remove modal', () => {
     formPath: 'some/path',
   };
 
-  const createComponent = (data = {}) => {
+  const createComponent = (data = {}, stubs = {}) => {
     wrapper = shallowMount(SharedDeleteButton, {
       propsData: defaultProps,
       data: () => data,
       stubs: {
-        GlModal,
+        GlModal: stubComponent(GlModal, {
+          template: `
+            <div>
+              <slot name="modal-title"></slot>
+              <slot></slot>
+            </div>`,
+        }),
+        ...stubs,
       },
     });
   };
@@ -52,7 +60,7 @@ describe('Project remove modal', () => {
 
   describe('when the user input does not match the confirmPhrase', () => {
     beforeEach(() => {
-      createComponent({ userInput: 'bar' });
+      createComponent({ userInput: 'bar' }, { GlModal });
     });
 
     it('the confirm button is disabled', () => {
@@ -62,7 +70,7 @@ describe('Project remove modal', () => {
 
   describe('when the user input matches the confirmPhrase', () => {
     beforeEach(() => {
-      createComponent({ userInput: defaultProps.confirmPhrase });
+      createComponent({ userInput: defaultProps.confirmPhrase }, { GlModal });
     });
 
     it('the confirm button is not disabled', () => {

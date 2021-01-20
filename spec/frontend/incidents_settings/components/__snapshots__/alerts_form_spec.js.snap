@@ -50,6 +50,7 @@ exports[`Alert integration settings form default state should match the default 
         category="primary"
         data-qa-selector="incident_templates_dropdown"
         headertext=""
+        hideheaderborder="true"
         id="alert-integration-settings-issue-template"
         size="medium"
         text="selecte_tmpl"

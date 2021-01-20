@@ -566,7 +566,7 @@ describe('getDatesInRange', () => {
   it('applies mapper function if provided fro each item in range', () => {
     const d1 = new Date('2019-01-01');
     const d2 = new Date('2019-01-31');
-    const formatter = date => date.getDate();
+    const formatter = (date) => date.getDate();
 
     const range = datetimeUtility.getDatesInRange(d1, d2, formatter);
 
@@ -606,6 +606,92 @@ describe('secondsToDays', () => {
     expect(datetimeUtility.secondsToDays(90000)).toBe(1);
     expect(datetimeUtility.secondsToDays(270000)).toBe(3);
   });
+});
+
+describe('nDaysAfter', () => {
+  const date = new Date('2019-07-16T00:00:00.000Z');
+
+  it.each`
+    numberOfDays | expectedResult
+    ${1}         | ${new Date('2019-07-17T00:00:00.000Z').valueOf()}
+    ${90}        | ${new Date('2019-10-14T00:00:00.000Z').valueOf()}
+    ${-1}        | ${new Date('2019-07-15T00:00:00.000Z').valueOf()}
+    ${0}         | ${date.valueOf()}
+    ${0.9}       | ${date.valueOf()}
+  `('returns $numberOfDays day(s) after the provided date', ({ numberOfDays, expectedResult }) => {
+    expect(datetimeUtility.nDaysAfter(date, numberOfDays)).toBe(expectedResult);
+  });
+});
+
+describe('nDaysBefore', () => {
+  const date = new Date('2019-07-16T00:00:00.000Z');
+
+  it.each`
+    numberOfDays | expectedResult
+    ${1}         | ${new Date('2019-07-15T00:00:00.000Z').valueOf()}
+    ${90}        | ${new Date('2019-04-17T00:00:00.000Z').valueOf()}
+    ${-1}        | ${new Date('2019-07-17T00:00:00.000Z').valueOf()}
+    ${0}         | ${date.valueOf()}
+    ${0.9}       | ${new Date('2019-07-15T00:00:00.000Z').valueOf()}
+  `('returns $numberOfDays day(s) before the provided date', ({ numberOfDays, expectedResult }) => {
+    expect(datetimeUtility.nDaysBefore(date, numberOfDays)).toBe(expectedResult);
+  });
+});
+
+describe('nMonthsAfter', () => {
+  // February has 28 days
+  const feb2019 = new Date('2019-02-15T00:00:00.000Z');
+  // Except in 2020, it had 29 days
+  const feb2020 = new Date('2020-02-15T00:00:00.000Z');
+  // April has 30 days
+  const apr2020 = new Date('2020-04-15T00:00:00.000Z');
+  // May has 31 days
+  const may2020 = new Date('2020-05-15T00:00:00.000Z');
+
+  it.each`
+    date       | numberOfMonths | expectedResult
+    ${feb2019} | ${1}           | ${new Date('2019-03-15T00:00:00.000Z').valueOf()}
+    ${feb2020} | ${1}           | ${new Date('2020-03-15T00:00:00.000Z').valueOf()}
+    ${apr2020} | ${1}           | ${new Date('2020-05-15T00:00:00.000Z').valueOf()}
+    ${may2020} | ${1}           | ${new Date('2020-06-15T00:00:00.000Z').valueOf()}
+    ${may2020} | ${12}          | ${new Date('2021-05-15T00:00:00.000Z').valueOf()}
+    ${may2020} | ${-1}          | ${new Date('2020-04-15T00:00:00.000Z').valueOf()}
+    ${may2020} | ${0}           | ${may2020.valueOf()}
+    ${may2020} | ${0.9}         | ${may2020.valueOf()}
+  `(
+    'returns $numberOfMonths month(s) after the provided date',
+    ({ date, numberOfMonths, expectedResult }) => {
+      expect(datetimeUtility.nMonthsAfter(date, numberOfMonths)).toBe(expectedResult);
+    },
+  );
+});
+
+describe('nMonthsBefore', () => {
+  // The previous month (February) has 28 days
+  const march2019 = new Date('2019-03-15T00:00:00.000Z');
+  // Except in 2020, it had 29 days
+  const march2020 = new Date('2020-03-15T00:00:00.000Z');
+  // The previous month (April) has 30 days
+  const may2020 = new Date('2020-05-15T00:00:00.000Z');
+  // The previous month (May) has 31 days
+  const june2020 = new Date('2020-06-15T00:00:00.000Z');
+
+  it.each`
+    date         | numberOfMonths | expectedResult
+    ${march2019} | ${1}           | ${new Date('2019-02-15T00:00:00.000Z').valueOf()}
+    ${march2020} | ${1}           | ${new Date('2020-02-15T00:00:00.000Z').valueOf()}
+    ${may2020}   | ${1}           | ${new Date('2020-04-15T00:00:00.000Z').valueOf()}
+    ${june2020}  | ${1}           | ${new Date('2020-05-15T00:00:00.000Z').valueOf()}
+    ${june2020}  | ${12}          | ${new Date('2019-06-15T00:00:00.000Z').valueOf()}
+    ${june2020}  | ${-1}          | ${new Date('2020-07-15T00:00:00.000Z').valueOf()}
+    ${june2020}  | ${0}           | ${june2020.valueOf()}
+    ${june2020}  | ${0.9}         | ${new Date('2020-05-15T00:00:00.000Z').valueOf()}
+  `(
+    'returns $numberOfMonths month(s) before the provided date',
+    ({ date, numberOfMonths, expectedResult }) => {
+      expect(datetimeUtility.nMonthsBefore(date, numberOfMonths)).toBe(expectedResult);
+    },
+  );
 });
 
 describe('approximateDuration', () => {
@@ -729,5 +815,85 @@ describe('datesMatch', () => {
     ${date} | ${new Date('2019-07-17T12:00:00.000Z')} | ${false}
   `('returns $expected for $date1 matches $date2', ({ date1, date2, expected }) => {
     expect(datetimeUtility.datesMatch(date1, date2)).toBe(expected);
+  });
+});
+
+describe('format24HourTimeStringFromInt', () => {
+  const expectedFormattedTimes = [
+    [0, '00:00'],
+    [2, '02:00'],
+    [6, '06:00'],
+    [9, '09:00'],
+    [10, '10:00'],
+    [16, '16:00'],
+    [22, '22:00'],
+    [32, ''],
+    [NaN, ''],
+    ['Invalid Int', ''],
+    [null, ''],
+    [undefined, ''],
+  ];
+
+  expectedFormattedTimes.forEach(([timeInt, expectedTimeStringIn24HourNotation]) => {
+    it(`formats ${timeInt} as ${expectedTimeStringIn24HourNotation}`, () => {
+      expect(datetimeUtility.format24HourTimeStringFromInt(timeInt)).toBe(
+        expectedTimeStringIn24HourNotation,
+      );
+    });
+  });
+});
+
+describe('getOverlappingDaysInPeriods', () => {
+  const start = new Date(2021, 0, 11);
+  const end = new Date(2021, 0, 13);
+
+  describe('when date periods overlap', () => {
+    const givenPeriodLeft = new Date(2021, 0, 11);
+    const givenPeriodRight = new Date(2021, 0, 14);
+
+    it('returns an overlap object that contains the amount of days overlapping, start date of overlap and end date of overlap', () => {
+      expect(
+        datetimeUtility.getOverlappingDaysInPeriods(
+          { start, end },
+          { start: givenPeriodLeft, end: givenPeriodRight },
+        ),
+      ).toEqual({
+        daysOverlap: 2,
+        overlapStartDate: givenPeriodLeft.getTime(),
+        overlapEndDate: end.getTime(),
+      });
+    });
+  });
+
+  describe('when date periods do not overlap', () => {
+    const givenPeriodLeft = new Date(2021, 0, 9);
+    const givenPeriodRight = new Date(2021, 0, 10);
+
+    it('returns an overlap object that contains a 0 value for days overlapping', () => {
+      expect(
+        datetimeUtility.getOverlappingDaysInPeriods(
+          { start, end },
+          { start: givenPeriodLeft, end: givenPeriodRight },
+        ),
+      ).toEqual({ daysOverlap: 0 });
+    });
+  });
+
+  describe('when date periods contain an invalid Date', () => {
+    const startInvalid = new Date(NaN);
+    const endInvalid = new Date(NaN);
+    const error = __('Invalid period');
+
+    it('throws an exception when the left period contains an invalid date', () => {
+      expect(() =>
+        datetimeUtility.getOverlappingDaysInPeriods({ start, end }, { start: startInvalid, end }),
+      ).toThrow(error);
+    });
+
+    it('throws an exception when the right period contains an invalid date', () => {
+      expect(() =>
+        datetimeUtility.getOverlappingDaysInPeriods({ start, end }, { start, end: endInvalid }),
+      ).toThrow(error);
+    });
   });
 });

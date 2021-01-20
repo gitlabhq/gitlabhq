@@ -123,7 +123,7 @@ describe('import_projects store actions', () => {
 
     it('includes page in url query params', async () => {
       let requestedUrl;
-      mock.onGet().reply(config => {
+      mock.onGet().reply((config) => {
         requestedUrl = config.url;
         return [200, payload];
       });

@@ -2,7 +2,7 @@
 import AjaxCache from '../../lib/utils/ajax_cache';
 
 const AjaxFilter = {
-  init: function(hook) {
+  init: function (hook) {
     this.destroyed = false;
     this.hook = hook;
     this.notLoading();
@@ -63,7 +63,7 @@ const AjaxFilter = {
     params[config.searchKey] = searchValue;
     var url = config.endpoint + this.buildParams(params);
     return AjaxCache.retrieve(url)
-      .then(data => {
+      .then((data) => {
         this._loadData(data, config);
         if (config.onLoadingFinished) {
           config.onLoadingFinished(data);
@@ -93,9 +93,9 @@ const AjaxFilter = {
     list.currentIndex = 0;
   },
 
-  buildParams: function(params) {
+  buildParams: function (params) {
     if (!params) return '';
-    var paramsArray = Object.keys(params).map(function(param) {
+    var paramsArray = Object.keys(params).map(function (param) {
       return param + '=' + (params[param] || '');
     });
     return '?' + paramsArray.join('&');

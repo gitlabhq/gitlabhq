@@ -56,5 +56,21 @@ RSpec.describe EachBatch do
 
     it_behaves_like 'each_batch handling', {}
     it_behaves_like 'each_batch handling', { order_hint: :updated_at }
+
+    it 'orders ascending by default' do
+      ids = []
+
+      model.each_batch(of: 1) { |rel| ids.concat(rel.ids) }
+
+      expect(ids).to eq(ids.sort)
+    end
+
+    it 'accepts descending order' do
+      ids = []
+
+      model.each_batch(of: 1, order: :desc) { |rel| ids.concat(rel.ids) }
+
+      expect(ids).to eq(ids.sort.reverse)
+    end
   end
 end

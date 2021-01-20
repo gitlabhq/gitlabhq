@@ -25,7 +25,7 @@ describe('WebIDE', () => {
       tree: [],
       loading: false,
     };
-    Object.keys(state).forEach(key => {
+    Object.keys(state).forEach((key) => {
       store.state[key] = state[key];
     });
 

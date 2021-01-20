@@ -1,0 +1,8 @@
+---
+name: variable_inside_variable
+introduced_by_url:
+rollout_issue_url:
+milestone: '13.7'
+type: development
+group: group::runner
+default_enabled: false

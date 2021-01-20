@@ -3,7 +3,7 @@
 module UsersHelper
   def admin_users_data_attributes(users)
     {
-      users: Admin::UserSerializer.new.represent(users).to_json,
+      users: Admin::UserSerializer.new.represent(users, { current_user: current_user }).to_json,
       paths: admin_users_paths.to_json
     }
   end

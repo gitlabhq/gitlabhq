@@ -1,0 +1,5 @@
+---
+title: Fix coverage not showing for inline diffs
+merge_request: 51652
+author:
+type: fixed

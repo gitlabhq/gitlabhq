@@ -62,15 +62,15 @@ describe('new dropdown upload', () => {
       result: 'base64,8PDw8A==', // ðððð
     };
 
-    const textFile = new File(['plain text'], 'textFile');
-    const binaryFile = new File(['😺'], 'binaryFile');
+    const textFile = new File(['plain text'], 'textFile', { type: 'test/mime-text' });
+    const binaryFile = new File(['😺'], 'binaryFile', { type: 'test/mime-binary' });
 
     beforeEach(() => {
       jest.spyOn(FileReader.prototype, 'readAsText');
     });
 
-    it('calls readAsText and creates file in plain text (without encoding) if the file content is plain text', done => {
-      const waitForCreate = new Promise(resolve => vm.$on('create', resolve));
+    it('calls readAsText and creates file in plain text (without encoding) if the file content is plain text', (done) => {
+      const waitForCreate = new Promise((resolve) => vm.$on('create', resolve));
 
       vm.createFile(textTarget, textFile);
 
@@ -83,6 +83,7 @@ describe('new dropdown upload', () => {
             type: 'blob',
             content: 'plain text',
             rawPath: '',
+            mimeType: 'test/mime-text',
           });
         })
         .then(done)
@@ -99,6 +100,7 @@ describe('new dropdown upload', () => {
         type: 'blob',
         content: 'ðððð',
         rawPath: 'blob:https://gitlab.com/048c7ac1-98de-4a37-ab1b-0206d0ea7e1b',
+        mimeType: 'test/mime-binary',
       });
     });
   });

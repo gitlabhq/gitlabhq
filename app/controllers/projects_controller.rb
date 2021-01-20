@@ -94,7 +94,7 @@ class ProjectsController < Projects::ApplicationController
           redirect_to(edit_project_path(@project, anchor: 'js-general-project-settings'))
         end
       else
-        flash.now[:alert] = result[:message]
+        flash[:alert] = result[:message]
         @project.reset
 
         format.html { render_edit }
@@ -197,13 +197,13 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def housekeeping
-    ::Projects::HousekeepingService.new(@project, :gc).execute
+    ::Repositories::HousekeepingService.new(@project, :gc).execute
 
     redirect_to(
       project_path(@project),
       notice: _("Housekeeping successfully started")
     )
-  rescue ::Projects::HousekeepingService::LeaseTaken => ex
+  rescue ::Repositories::HousekeepingService::LeaseTaken => ex
     redirect_to(
       edit_project_path(@project, anchor: 'js-project-advanced-settings'),
       alert: ex.to_s

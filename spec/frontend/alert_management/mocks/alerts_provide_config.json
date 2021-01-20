@@ -7,7 +7,5 @@
     "populatingAlertsHelpUrl": "/link",
     "emptyAlertSvgPath": "/link",
     "alertManagementEnabled": false,
-    "userCanEnableAlertManagement": false,
-    "opsgenieMvcTargetUrl": "/link",
-    "opsgenieMvcEnabled": false
+    "userCanEnableAlertManagement": false
 }

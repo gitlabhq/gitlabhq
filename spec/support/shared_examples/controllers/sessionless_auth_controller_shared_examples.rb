@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# This controller shared examples will be migrated to
+# spec/support/shared_examples/requests/sessionless_auth_request_shared_examples.rb
+# See also https://gitlab.com/groups/gitlab-org/-/epics/5076
+
 RSpec.shared_examples 'authenticates sessionless user' do |path, format, params|
   params ||= {}
 

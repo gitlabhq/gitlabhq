@@ -66,12 +66,12 @@ export default class BranchGraph {
   collectParents() {
     const ref = this.commits;
     const results = [];
-    ref.forEach(c => {
+    ref.forEach((c) => {
       this.mtime = Math.max(this.mtime, c.time);
       this.mspace = Math.max(this.mspace, c.space);
       const ref1 = c.parents;
       const results1 = [];
-      ref1.forEach(p => {
+      ref1.forEach((p) => {
         this.parents[p[0]] = true;
         results1.push((this.mspace = Math.max(this.mspace, p[1])));
       });
@@ -243,11 +243,11 @@ export default class BranchGraph {
       })
       .click(() => window.open(options.commit_url.replace('%s', commit.id), '_blank'))
       .hover(
-        function() {
+        function () {
           this.tooltip = r.commitTooltip(x + 5, y, commit);
           return top.push(this.tooltip.insertBefore(this));
         },
-        function() {
+        function () {
           return this.tooltip && this.tooltip.remove() && delete this.tooltip;
         },
       );

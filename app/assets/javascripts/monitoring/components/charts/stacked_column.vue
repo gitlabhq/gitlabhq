@@ -68,7 +68,7 @@ export default {
           if (!result || result.length === 0) {
             return [];
           }
-          return { name, data: result[0].values.map(val => val[1]) };
+          return { name, data: result[0].values.map((val) => val[1]) };
         })
         .slice(0, 1);
     },
@@ -89,7 +89,7 @@ export default {
       if (!result || result.length === 0) {
         return [];
       }
-      return result[0].values.map(val => val[0]);
+      return result[0].values.map((val) => val[0]);
     },
     dataZoomConfig() {
       const handleIcon = this.svgs['scroll-handle'];
@@ -106,7 +106,7 @@ export default {
       };
     },
     seriesNames() {
-      return this.graphData.metrics.map(metric => metric.label);
+      return this.graphData.metrics.map((metric) => metric.label);
     },
   },
   created() {
@@ -115,12 +115,12 @@ export default {
   methods: {
     setSvg(name) {
       getSvgIconPathContent(name)
-        .then(path => {
+        .then((path) => {
           if (path) {
             this.$set(this.svgs, name, `path://${path}`);
           }
         })
-        .catch(e => {
+        .catch((e) => {
           // eslint-disable-next-line no-console, @gitlab/require-i18n-strings
           console.error('SVG could not be rendered correctly: ', e);
         });

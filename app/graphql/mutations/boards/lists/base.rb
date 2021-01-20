@@ -8,12 +8,12 @@ module Mutations
 
         argument :board_id, ::Types::GlobalIDType[::Board],
                  required: true,
-                 description: 'Global ID of the issue board to mutate'
+                 description: 'Global ID of the issue board to mutate.'
 
         field :list,
               Types::BoardListType,
               null: true,
-              description: 'List of the issue board'
+              description: 'List of the issue board.'
 
         authorize :admin_list
 

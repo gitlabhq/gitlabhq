@@ -4,6 +4,7 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
 <gl-dropdown-stub
   category="primary"
   headertext=""
+  hideheaderborder="true"
   right="true"
   size="medium"
   text="Clone"

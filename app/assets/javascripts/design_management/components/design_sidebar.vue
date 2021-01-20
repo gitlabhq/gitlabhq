@@ -21,6 +21,14 @@ export default {
     DesignTodoButton,
   },
   mixins: [glFeatureFlagsMixin()],
+  inject: {
+    projectPath: {
+      default: '',
+    },
+    issueIid: {
+      default: '',
+    },
+  },
   props: {
     design: {
       type: Object,
@@ -41,14 +49,6 @@ export default {
       discussionWithOpenForm: '',
     };
   },
-  inject: {
-    projectPath: {
-      default: '',
-    },
-    issueIid: {
-      default: '',
-    },
-  },
   computed: {
     discussions() {
       return extractDiscussions(this.design.discussions);
@@ -63,10 +63,10 @@ export default {
       return extractParticipants(this.issue.participants.nodes);
     },
     resolvedDiscussions() {
-      return this.discussions.filter(discussion => discussion.resolved);
+      return this.discussions.filter((discussion) => discussion.resolved);
     },
     unresolvedDiscussions() {
-      return this.discussions.filter(discussion => !discussion.resolved);
+      return this.discussions.filter((discussion) => !discussion.resolved);
     },
     resolvedCommentsToggleIcon() {
       return this.resolvedDiscussionsExpanded ? 'chevron-down' : 'chevron-right';

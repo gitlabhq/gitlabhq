@@ -357,7 +357,7 @@ describe('Notes Store mutations', () => {
 
       mutations.SET_EXPAND_DISCUSSIONS(state, { discussionIds, expanded: true });
 
-      state.discussions.forEach(discussion => {
+      state.discussions.forEach((discussion) => {
         expect(discussion.expanded).toEqual(true);
       });
     });
@@ -371,7 +371,7 @@ describe('Notes Store mutations', () => {
 
       mutations.SET_EXPAND_DISCUSSIONS(state, { discussionIds, expanded: false });
 
-      state.discussions.forEach(discussion => {
+      state.discussions.forEach((discussion) => {
         expect(discussion.expanded).toEqual(false);
       });
     });
@@ -698,7 +698,7 @@ describe('Notes Store mutations', () => {
   });
 
   describe('SET_APPLYING_BATCH_STATE', () => {
-    const buildDiscussions = suggestionsInfo => {
+    const buildDiscussions = (suggestionsInfo) => {
       const suggestions = suggestionsInfo.map(({ suggestionId }) => ({ id: suggestionId }));
 
       const notes = suggestionsInfo.map(({ noteId }, index) => ({
@@ -738,7 +738,7 @@ describe('Notes Store mutations', () => {
       const expectedSuggestions = [updatedSuggestion, suggestions[1]];
 
       const actualSuggestions = state.discussions
-        .map(discussion => discussion.notes.map(n => n.suggestions))
+        .map((discussion) => discussion.notes.map((n) => n.suggestions))
         .flat(2);
 
       expect(actualSuggestions).toEqual(expectedSuggestions);

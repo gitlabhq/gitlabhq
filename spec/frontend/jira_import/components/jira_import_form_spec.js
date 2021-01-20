@@ -37,7 +37,7 @@ describe('JiraImportForm', () => {
 
   const getUserDropdown = () => getTable().find(GlDropdown);
 
-  const getHeader = name => getByRole(wrapper.element, 'columnheader', { name });
+  const getHeader = (name) => getByRole(wrapper.element, 'columnheader', { name });
 
   const findLoadMoreUsersButton = () => wrapper.find('[data-testid="load-more-users-button"]');
 

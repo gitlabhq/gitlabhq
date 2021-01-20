@@ -1,6 +1,6 @@
 import { graphqlQuery } from '../graphql';
 
-export default server => {
+export default (server) => {
   server.post('/api/graphql', (schema, request) => {
     const batches = JSON.parse(request.requestBody);
 

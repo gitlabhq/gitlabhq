@@ -1,0 +1,15 @@
+name: deployments
+description: Total deployments count for recent 28 days
+value_type: integer
+stage: release
+status: data_available
+default_generation: generation_1
+full_path:
+  generation_1: counts_monthy.deployments
+milestone: 13.2
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35493
+group: 'group::ops release'
+time_frame: 28d
+data_source: database
+distribution: [ee, ce]
+tier: ['free', 'starter', 'premium', 'ultimate', 'bronze', 'silver', 'gold']

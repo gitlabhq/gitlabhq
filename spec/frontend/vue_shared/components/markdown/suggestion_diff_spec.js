@@ -42,6 +42,7 @@ const MOCK_DATA = {
     is_applying_batch: true,
   },
   helpPagePath: 'path_to_docs',
+  defaultCommitMessage: 'Apply suggestion',
   batchSuggestionsInfo: [{ suggestionId }],
 };
 

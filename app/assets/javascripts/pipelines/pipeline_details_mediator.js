@@ -55,7 +55,7 @@ export default class pipelinesMediator {
 
     return this.service
       .getPipeline()
-      .then(response => this.successCallback(response))
+      .then((response) => this.successCallback(response))
       .catch(() => this.errorCallback())
       .finally(() =>
         this.poll.restart(

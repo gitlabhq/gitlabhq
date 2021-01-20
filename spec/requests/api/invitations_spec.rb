@@ -30,6 +30,10 @@ RSpec.describe API::Invitations do
     api("/#{source.model_name.plural}/#{source.id}/invitations", user)
   end
 
+  def invite_member_by_email(source, source_type, email, created_by)
+    create(:"#{source_type}_member", invite_token: '123', invite_email: email, source: source, user: nil, created_by: created_by)
+  end
+
   shared_examples 'POST /:source_type/:id/invitations' do |source_type|
     context "with :source_type == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
@@ -280,10 +284,6 @@ RSpec.describe API::Invitations do
         expect(json_response.first['created_by_name']).to eq(developer.name)
         expect(json_response.first['user_name']).to eq(nil)
       end
-
-      def invite_member_by_email(source, source_type, email, created_by)
-        create(:"#{source_type}_member", invite_token: '123', invite_email: email, source: source, user: nil, created_by: created_by)
-      end
     end
   end
 
@@ -295,6 +295,82 @@ RSpec.describe API::Invitations do
 
   describe 'GET /groups/:id/invitations' do
     it_behaves_like 'GET /:source_type/:id/invitations', 'group' do
+      let(:source) { group }
+    end
+  end
+
+  shared_examples 'DELETE /:source_type/:id/invitations/:email' do |source_type|
+    def invite_api(source, user, email)
+      api("/#{source.model_name.plural}/#{source.id}/invitations/#{email}", user)
+    end
+
+    context "with :source_type == #{source_type.pluralize}" do
+      let!(:invite) { invite_member_by_email(source, source_type, developer.email, developer) }
+
+      it_behaves_like 'a 404 response when source is private' do
+        let(:route) { delete api("/#{source_type.pluralize}/#{source.id}/invitations/#{invite.invite_email}", stranger) }
+      end
+
+      context 'when authenticated as a non-member or member with insufficient rights' do
+        %i[access_requester stranger].each do |type|
+          context "as a #{type}" do
+            it 'returns 403' do
+              user = public_send(type)
+
+              delete invite_api(source, user, invite.invite_email)
+
+              expect(response).to have_gitlab_http_status(:forbidden)
+            end
+          end
+        end
+      end
+
+      context 'when authenticated as a member and deleting themself' do
+        it 'does not delete the member' do
+          expect do
+            delete invite_api(source, developer, invite.invite_email)
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end.not_to change { source.members.count }
+        end
+      end
+
+      context 'when authenticated as a maintainer/owner' do
+        it 'deletes the member and returns 204 with no content' do
+          expect do
+            delete invite_api(source, maintainer, invite.invite_email)
+
+            expect(response).to have_gitlab_http_status(:no_content)
+          end.to change { source.members.count }.by(-1)
+        end
+      end
+
+      it 'returns 404 if member does not exist' do
+        delete invite_api(source, maintainer, non_existing_record_id)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns 422 for a valid request if the resource was not destroyed' do
+        allow_next_instance_of(::Members::DestroyService) do |instance|
+          allow(instance).to receive(:execute).with(invite).and_return(invite)
+        end
+
+        delete invite_api(source, maintainer, invite.invite_email)
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
+    end
+  end
+
+  describe 'DELETE /projects/:id/inviations/:email' do
+    it_behaves_like 'DELETE /:source_type/:id/invitations/:email', 'project' do
+      let(:source) { project }
+    end
+  end
+
+  describe 'DELETE /groups/:id/inviations/:email' do
+    it_behaves_like 'DELETE /:source_type/:id/invitations/:email', 'group' do
       let(:source) { group }
     end
   end

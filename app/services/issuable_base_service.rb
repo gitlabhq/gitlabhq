@@ -158,7 +158,9 @@ class IssuableBaseService < BaseService
 
       after_create(issuable)
       execute_hooks(issuable)
-      invalidate_cache_counts(issuable, users: issuable.assignees)
+
+      users_to_invalidate = issuable.allows_reviewers? ? issuable.assignees | issuable.reviewers : issuable.assignees
+      invalidate_cache_counts(issuable, users: users_to_invalidate)
       issuable.update_project_counter_caches
     end
 

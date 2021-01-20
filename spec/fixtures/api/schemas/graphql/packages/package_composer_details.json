@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "allOf": [{ "$ref": "./package_details.json" }],
+  "properties": {
+    "target_sha": {
+      "type": "string"
+    },
+    "composer_json": {
+      "type": "object"
+    }
+  }
+}

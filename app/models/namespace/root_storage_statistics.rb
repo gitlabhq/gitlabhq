@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Namespace::RootStorageStatistics < ApplicationRecord
-  SNIPPETS_SIZE_STAT_NAME = 'snippets_size'.freeze
+  SNIPPETS_SIZE_STAT_NAME = 'snippets_size'
   STATISTICS_ATTRIBUTES = %W(
     storage_size
     repository_size

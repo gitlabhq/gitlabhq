@@ -4084,6 +4084,7 @@ RSpec.describe User do
       cache_mock = double
 
       expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count'])
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'review_requested_open_merge_requests_count'])
 
       allow(Rails).to receive(:cache).and_return(cache_mock)
 
@@ -4160,6 +4161,20 @@ RSpec.describe User do
       create(:merge_request, source_project: archived_project, author: user, assignees: [user])
 
       expect(user.assigned_open_merge_requests_count(force: true)).to eq 1
+    end
+  end
+
+  describe '#review_requested_open_merge_requests_count' do
+    it 'returns number of open merge requests from non-archived projects' do
+      user    = create(:user)
+      project = create(:project, :public)
+      archived_project = create(:project, :public, :archived)
+
+      create(:merge_request, source_project: project, author: user, reviewers: [user])
+      create(:merge_request, :closed, source_project: project, author: user, reviewers: [user])
+      create(:merge_request, source_project: archived_project, author: user, reviewers: [user])
+
+      expect(user.review_requested_open_merge_requests_count(force: true)).to eq 1
     end
   end
 
@@ -4265,7 +4280,7 @@ RSpec.describe User do
             it 'adds the namespace errors to the user' do
               user.update(username: new_username)
 
-              expect(user.errors.full_messages.first).to eq('Username has already been taken')
+              expect(user.errors.full_messages.first).to eq('A user, alias, or group already exists with that username.')
             end
           end
         end
@@ -5074,9 +5089,10 @@ RSpec.describe User do
   end
 
   describe '#hook_attrs' do
-    it 'includes name, username, avatar_url, and email' do
+    it 'includes id, name, username, avatar_url, and email' do
       user = create(:user)
       user_attributes = {
+        id: user.id,
         name: user.name,
         username: user.username,
         avatar_url: user.avatar_url(only_path: false),

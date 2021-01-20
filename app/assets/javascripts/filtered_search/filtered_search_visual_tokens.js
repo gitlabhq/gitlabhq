@@ -8,7 +8,7 @@ export default class FilteredSearchVisualTokens {
   static getOperatorToken(value) {
     let token = null;
 
-    FilteredSearchVisualTokens.permissibleOperatorValues.forEach(operatorToken => {
+    FilteredSearchVisualTokens.permissibleOperatorValues.forEach((operatorToken) => {
       if (value.startsWith(operatorToken)) {
         token = operatorToken;
       }
@@ -20,7 +20,7 @@ export default class FilteredSearchVisualTokens {
   static getValueToken(value) {
     let newValue = value;
 
-    FilteredSearchVisualTokens.permissibleOperatorValues.forEach(operatorToken => {
+    FilteredSearchVisualTokens.permissibleOperatorValues.forEach((operatorToken) => {
       if (value.startsWith(operatorToken)) {
         newValue = value.slice(operatorToken.length);
       }
@@ -48,7 +48,7 @@ export default class FilteredSearchVisualTokens {
     const otherTokens = FilteredSearchContainer.container.querySelectorAll(
       '.js-visual-token .selectable.selected',
     );
-    [].forEach.call(otherTokens, t => t.classList.remove('selected'));
+    [].forEach.call(otherTokens, (t) => t.classList.remove('selected'));
   }
 
   static selectToken(tokenButton, forceSelection = false) {
@@ -193,7 +193,8 @@ export default class FilteredSearchVisualTokens {
       });
     } else if (
       !isLastVisualTokenValid &&
-      (lastVisualToken && !lastVisualToken.querySelector('.operator'))
+      lastVisualToken &&
+      !lastVisualToken.querySelector('.operator')
     ) {
       const tokensContainer = FilteredSearchContainer.container.querySelector('.tokens-container');
       tokensContainer.removeChild(lastVisualToken);

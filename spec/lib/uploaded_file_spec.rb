@@ -27,12 +27,12 @@ RSpec.describe UploadedFile do
       end
 
       it 'handles a blank path' do
-        params['file.path'] = ''
+        params['path'] = ''
 
         # Not a real file, so can't determine size itself
-        params['file.size'] = 1.byte
+        params['size'] = 1.byte
 
-        expect { described_class.from_params(params, :file, upload_path) }
+        expect { described_class.from_params(params, upload_path) }
           .not_to raise_error
       end
     end
@@ -50,7 +50,7 @@ RSpec.describe UploadedFile do
       end
     end
 
-    describe '.from_params_without_field' do
+    describe '.from_params' do
       let(:upload_path) { nil }
 
       after do
@@ -58,7 +58,7 @@ RSpec.describe UploadedFile do
       end
 
       subject do
-        described_class.from_params_without_field(params, [upload_path, Dir.tmpdir])
+        described_class.from_params(params, [upload_path, Dir.tmpdir])
       end
 
       context 'when valid file is specified' do
@@ -165,190 +165,6 @@ RSpec.describe UploadedFile do
           end
 
           it 'raises an error' do
-            expect { subject }.to raise_error(UploadedFile::InvalidPathError, /insecure path used/)
-          end
-        end
-      end
-    end
-
-    describe '.from_params' do
-      let(:upload_path) { nil }
-      let(:file_path_override) { nil }
-
-      after do
-        FileUtils.rm_r(upload_path) if upload_path
-      end
-
-      subject do
-        described_class.from_params(params, :file, [upload_path, Dir.tmpdir], file_path_override)
-      end
-
-      RSpec.shared_context 'filepath override' do
-        let(:temp_file_override) { Tempfile.new(%w[override override], temp_dir) }
-        let(:file_path_override) { temp_file_override.path }
-
-        before do
-          FileUtils.touch(temp_file_override)
-        end
-
-        after do
-          FileUtils.rm_f(temp_file_override)
-        end
-      end
-
-      context 'when valid file is specified' do
-        context 'only local path is specified' do
-          let(:params) do
-            { 'file.path' => temp_file.path }
-          end
-
-          it { is_expected.not_to be_nil }
-
-          it "generates filename from path" do
-            expect(subject.original_filename).to eq(::File.basename(temp_file.path))
-          end
-        end
-
-        context 'all parameters are specified' do
-          context 'with a filepath' do
-            let(:params) do
-              { 'file.path' => temp_file.path,
-                'file.name' => 'dir/my file&.txt',
-                'file.type' => 'my/type',
-                'file.sha256' => 'sha256' }
-            end
-
-            it_behaves_like 'using the file path',
-                            filename: 'my_file_.txt',
-                            content_type: 'my/type',
-                            sha256: 'sha256',
-                            path_suffix: 'test'
-          end
-
-          context 'with a filepath override' do
-            include_context 'filepath override'
-
-            let(:params) do
-              { 'file.path' => temp_file.path,
-                'file.name' => 'dir/my file&.txt',
-                'file.type' => 'my/type',
-                'file.sha256' => 'sha256' }
-            end
-
-            it_behaves_like 'using the file path',
-                            filename: 'my_file_.txt',
-                            content_type: 'my/type',
-                            sha256: 'sha256',
-                            path_suffix: 'override'
-          end
-
-          context 'with a remote id' do
-            let(:params) do
-              {
-                'file.name' => 'dir/my file&.txt',
-                'file.sha256' => 'sha256',
-                'file.remote_url' => 'http://localhost/file',
-                'file.remote_id' => '1234567890',
-                'file.etag' => 'etag1234567890',
-                'file.size' => '123456'
-              }
-            end
-
-            it_behaves_like 'using the remote id',
-                            filename: 'my_file_.txt',
-                            content_type: 'application/octet-stream',
-                            sha256: 'sha256',
-                            size: 123456,
-                            remote_id: '1234567890'
-          end
-
-          context 'with a path and a remote id' do
-            let(:params) do
-              {
-                'file.path' => temp_file.path,
-                'file.name' => 'dir/my file&.txt',
-                'file.sha256' => 'sha256',
-                'file.remote_url' => 'http://localhost/file',
-                'file.remote_id' => '1234567890',
-                'file.etag' => 'etag1234567890',
-                'file.size' => '123456'
-              }
-            end
-
-            it_behaves_like 'using the remote id',
-                            filename: 'my_file_.txt',
-                            content_type: 'application/octet-stream',
-                            sha256: 'sha256',
-                            size: 123456,
-                            remote_id: '1234567890'
-          end
-
-          context 'with a path override and a remote id' do
-            include_context 'filepath override'
-
-            let(:params) do
-              {
-                'file.name' => 'dir/my file&.txt',
-                'file.sha256' => 'sha256',
-                'file.remote_url' => 'http://localhost/file',
-                'file.remote_id' => '1234567890',
-                'file.etag' => 'etag1234567890',
-                'file.size' => '123456'
-              }
-            end
-
-            it_behaves_like 'using the remote id',
-                            filename: 'my_file_.txt',
-                            content_type: 'application/octet-stream',
-                            sha256: 'sha256',
-                            size: 123456,
-                            remote_id: '1234567890'
-          end
-        end
-      end
-
-      context 'when no params are specified' do
-        let(:params) do
-          {}
-        end
-
-        it "does not return an object" do
-          is_expected.to be_nil
-        end
-      end
-
-      context 'when verifying allowed paths' do
-        let(:params) do
-          { 'file.path' => temp_file.path }
-        end
-
-        context 'when file is stored in system temporary folder' do
-          let(:temp_dir) { Dir.tmpdir }
-
-          it "succeeds" do
-            is_expected.not_to be_nil
-          end
-        end
-
-        context 'when file is stored in user provided upload path' do
-          let(:upload_path) { Dir.mktmpdir }
-          let(:temp_dir) { upload_path }
-
-          it "succeeds" do
-            is_expected.not_to be_nil
-          end
-        end
-
-        context 'when file is stored outside of user provided upload path' do
-          let!(:generated_dir) { Dir.mktmpdir }
-          let!(:temp_dir) { Dir.mktmpdir }
-
-          before do
-            # We overwrite default temporary path
-            allow(Dir).to receive(:tmpdir).and_return(generated_dir)
-          end
-
-          it "raises an error" do
             expect { subject }.to raise_error(UploadedFile::InvalidPathError, /insecure path used/)
           end
         end

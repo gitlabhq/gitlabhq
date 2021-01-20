@@ -129,7 +129,7 @@ The pipeline starts when the commit is committed.
 
 - To validate your `.gitlab-ci.yml` file, use the
   [CI Lint tool](../lint.md), which is available in every project.
-- You can also use [CI/CD configuration visualization](../yaml/visualization.md) to
+- You can also use [CI/CD configuration visualization](../pipeline_editor/index.md#visualize-ci-configuration) to
   view a graphical representation of your `.gitlab-ci.yml` file.
 - For the complete `.gitlab-ci.yml` syntax, see
   [the `.gitlab-ci.yml` reference topic](../yaml/README.md).

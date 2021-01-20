@@ -43,7 +43,7 @@ export default {
       if (this.moreTagsDisplay) {
         return this.tags
           .slice(this.tagDisplayLimit)
-          .map(x => x.name)
+          .map((x) => x.name)
           .join(', ');
       }
 

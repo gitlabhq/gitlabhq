@@ -12,14 +12,13 @@ module API
       end
       post '/lint' do
         result = Gitlab::Ci::YamlProcessor.new(params[:content], user: current_user).execute
-        error = result.errors.first
 
         status 200
 
-        response = if error.blank?
+        response = if result.errors.empty?
                      { status: 'valid', errors: [], warnings: result.warnings }
                    else
-                     { status: 'invalid', errors: [error], warnings: result.warnings }
+                     { status: 'invalid', errors: result.errors, warnings: result.warnings }
                    end
 
         response.tap do |response|

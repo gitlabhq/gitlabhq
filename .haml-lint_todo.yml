@@ -364,7 +364,6 @@ linters:
       - 'ee/app/views/shared/issuable/_board_create_list_dropdown.html.haml'
       - 'ee/app/views/shared/issuable/_filter_weight.html.haml'
       - 'ee/app/views/shared/members/ee/_ldap_tag.html.haml'
-      - 'ee/app/views/shared/members/ee/_override_member_buttons.html.haml'
       - 'ee/app/views/shared/members/ee/_sso_badge.html.haml'
       - 'ee/app/views/shared/milestones/_burndown.html.haml'
       - 'ee/app/views/shared/milestones/_weight.html.haml'

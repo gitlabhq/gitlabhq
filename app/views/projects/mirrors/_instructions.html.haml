@@ -3,12 +3,12 @@
     %li
       = html_escape(_('The repository must be accessible over %{code_open}http://%{code_close},
       %{code_open}https://%{code_close}, %{code_open}ssh://%{code_close} or %{code_open}git://%{code_close}.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-    %li= html_escape(_('When using the %{code_open}http://%{code_close} or %{code_open}https://%{code_close} protocols, please provide the exact URL to the repository. HTTP redirects will not be followed.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+    %li= html_escape(_('When using the %{code_open}http://%{code_close} or %{code_open}https://%{code_close} protocols, provide the exact URL to the repository. HTTP redirects will not be followed.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
     %li= html_escape(_('Include the username in the URL if required: %{code_open}https://username@gitlab.company.com/group/project.git%{code_close}.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
     %li
       - minutes = Gitlab.config.gitlab_shell.git_timeout / 60
       = _("The update action will time out after %{number_of_minutes} minutes. For big repositories, use a clone/push combination.") % { number_of_minutes: minutes }
     %li= mirror_lfs_sync_message
     %li
-      = _('This user will be the author of all events in the activity feed that are the result of an update,
+      = _('In case of pull mirroring, your user will be the author of all events in the activity feed that are the result of an update,
       like new branches being created or new commits being pushed to existing branches.')

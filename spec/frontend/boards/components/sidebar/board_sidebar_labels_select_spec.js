@@ -10,8 +10,8 @@ import createFlash from '~/flash';
 
 jest.mock('~/flash');
 
-const TEST_LABELS_PAYLOAD = TEST_LABELS.map(label => ({ ...label, set: true }));
-const TEST_LABELS_TITLES = TEST_LABELS.map(label => label.title);
+const TEST_LABELS_PAYLOAD = TEST_LABELS.map((label) => ({ ...label, set: true }));
+const TEST_LABELS_TITLES = TEST_LABELS.map((label) => label.title);
 
 describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
   let wrapper;
@@ -37,14 +37,15 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
         labelsFilterBasePath: TEST_HOST,
       },
       stubs: {
-        'board-editable-item': BoardEditableItem,
-        'labels-select': '<div></div>',
+        BoardEditableItem,
+        LabelsSelect: true,
       },
     });
   };
 
   const findLabelsSelect = () => wrapper.find({ ref: 'labelsSelect' });
-  const findLabelsTitles = () => wrapper.findAll(GlLabel).wrappers.map(item => item.props('title'));
+  const findLabelsTitles = () =>
+    wrapper.findAll(GlLabel).wrappers.map((item) => item.props('title'));
   const findCollapsed = () => wrapper.find('[data-testid="collapsed-content"]');
 
   it('renders "None" when no labels are selected', () => {
@@ -76,7 +77,7 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
 
     it('commits change to the server', () => {
       expect(wrapper.vm.setActiveIssueLabels).toHaveBeenCalledWith({
-        addLabelIds: TEST_LABELS.map(label => label.id),
+        addLabelIds: TEST_LABELS.map((label) => label.id),
         projectPath: 'gitlab-org/test-subgroup/gitlab-test',
         removeLabelIds: [],
       });
@@ -84,7 +85,10 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
   });
 
   describe('when labels are updated over existing labels', () => {
-    const testLabelsPayload = [{ id: 5, set: true }, { id: 7, set: true }];
+    const testLabelsPayload = [
+      { id: 5, set: true },
+      { id: 7, set: true },
+    ];
     const expectedLabels = [{ id: 5 }, { id: 7 }];
 
     beforeEach(async () => {

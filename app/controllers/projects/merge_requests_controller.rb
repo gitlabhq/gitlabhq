@@ -28,22 +28,21 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
   before_action only: [:show] do
-    push_frontend_feature_flag(:widget_visibility_polling, @project, default_enabled: true)
-    push_frontend_feature_flag(:mr_commit_neighbor_nav, @project, default_enabled: true)
     push_frontend_feature_flag(:multiline_comments, @project, default_enabled: true)
     push_frontend_feature_flag(:file_identifier_hash)
     push_frontend_feature_flag(:batch_suggestions, @project, default_enabled: true)
     push_frontend_feature_flag(:approvals_commented_by, @project, default_enabled: true)
-    push_frontend_feature_flag(:hide_jump_to_next_unresolved_in_threads, default_enabled: true)
     push_frontend_feature_flag(:merge_request_widget_graphql, @project)
-    push_frontend_feature_flag(:unified_diff_components, @project)
+    push_frontend_feature_flag(:drag_comment_selection, @project, default_enabled: true)
+    push_frontend_feature_flag(:unified_diff_components, @project, default_enabled: true)
     push_frontend_feature_flag(:default_merge_ref_for_diffs, @project)
     push_frontend_feature_flag(:core_security_mr_widget, @project, default_enabled: true)
     push_frontend_feature_flag(:core_security_mr_widget_counts, @project)
     push_frontend_feature_flag(:core_security_mr_widget_downloads, @project, default_enabled: true)
     push_frontend_feature_flag(:remove_resolve_note, @project, default_enabled: true)
-    push_frontend_feature_flag(:test_failure_history, @project)
     push_frontend_feature_flag(:diffs_gradual_load, @project, default_enabled: true)
+    push_frontend_feature_flag(:codequality_mr_diff, @project)
+    push_frontend_feature_flag(:suggestions_custom_commit, @project)
 
     record_experiment_user(:invite_members_version_a)
     record_experiment_user(:invite_members_version_b)
@@ -53,7 +52,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:vue_issuable_sidebar, @project.group)
     push_frontend_feature_flag(:merge_request_reviewers, @project, default_enabled: true)
     push_frontend_feature_flag(:mr_collapsed_approval_rules, @project)
-    push_frontend_feature_flag(:reviewer_approval_rules, @project)
+    push_frontend_feature_flag(:reviewer_approval_rules, @project, default_enabled: :yaml)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :discussions]
@@ -69,8 +68,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
                      :toggle_award_emoji, :toggle_subscription, :update
                    ]
 
-  feature_category :code_testing, [:test_reports, :coverage_reports, :terraform_reports]
+  feature_category :code_testing, [:test_reports, :coverage_reports]
   feature_category :accessibility_testing, [:accessibility_reports]
+  feature_category :infrastructure_as_code, [:terraform_reports]
 
   def index
     @merge_requests = @issuables

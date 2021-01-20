@@ -224,6 +224,12 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Cobertura do
         it_behaves_like 'ignoring sources, project_path, and worktree_paths'
       end
 
+      context 'when there is an empty <sources>' do
+        let(:sources_xml) { '<sources />' }
+
+        it_behaves_like 'ignoring sources, project_path, and worktree_paths'
+      end
+
       context 'when there is a <sources>' do
         context 'and has a single source with a pattern for Go projects' do
           let(:project_path) { 'local/go' } # Make sure we're not making false positives

@@ -7,7 +7,7 @@ import setNewNameMutation from '../graphql/mutations/set_new_name.mutation.graph
 import importGroupMutation from '../graphql/mutations/import_group.mutation.graphql';
 import ImportTableRow from './import_table_row.vue';
 
-const mapApolloMutations = mutations =>
+const mapApolloMutations = (mutations) =>
   Object.fromEntries(
     Object.entries(mutations).map(([key, mutation]) => [
       key,

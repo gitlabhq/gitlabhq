@@ -67,6 +67,6 @@ export const stickyMonitor = (el, stickyTop, insertPlaceholder = true) => {
  * - If the current environment supports `position: sticky`, do nothing.
  * - Can receive an iterable element list (NodeList, jQuery collection, etc.) or single HTMLElement.
  */
-export const polyfillSticky = el => {
+export const polyfillSticky = (el) => {
   StickyFill.add(el);
 };

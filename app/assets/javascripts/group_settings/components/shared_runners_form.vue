@@ -82,7 +82,7 @@ export default {
         .then(() => {
           this.isLoading = false;
         })
-        .catch(error => {
+        .catch((error) => {
           const message = [
             error.response?.data?.error || __('An error occurred while updating configuration.'),
             ERROR_MESSAGE,

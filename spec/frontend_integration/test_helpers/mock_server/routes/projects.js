@@ -1,6 +1,6 @@
 import { withKeys } from 'test_helpers/utils/obj';
 
-export default server => {
+export default (server) => {
   server.get('/api/v4/projects/:id', (schema, request) => {
     const { id } = request.params;
 

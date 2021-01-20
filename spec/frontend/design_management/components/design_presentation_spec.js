@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import DesignPresentation from '~/design_management/components/design_presentation.vue';
 import DesignOverlay from '~/design_management/components/design_overlay.vue';
@@ -100,12 +101,12 @@ describe('Design management design presentation component', () => {
           clientY: endCoords.clientY,
         });
 
-        return wrapper.vm.$nextTick();
+        return nextTick();
       })
       .then(() => {
         if (mouseup) {
           addCommentOverlay.trigger(event.mouseup);
-          return wrapper.vm.$nextTick();
+          return nextTick();
         }
 
         return undefined;
@@ -125,7 +126,7 @@ describe('Design management design presentation component', () => {
       mockOverlayData,
     );
 
-    return wrapper.vm.$nextTick().then(() => {
+    return nextTick().then(() => {
       expect(wrapper.element).toMatchSnapshot();
     });
   });
@@ -133,7 +134,7 @@ describe('Design management design presentation component', () => {
   it('renders empty state when no image provided', () => {
     createComponent();
 
-    return wrapper.vm.$nextTick().then(() => {
+    return nextTick().then(() => {
       expect(wrapper.element).toMatchSnapshot();
     });
   });
@@ -149,7 +150,7 @@ describe('Design management design presentation component', () => {
 
     wrapper.vm.openCommentForm({ x: 1, y: 1 });
 
-    return wrapper.vm.$nextTick().then(() => {
+    return nextTick().then(() => {
       expect(wrapper.emitted('openCommentForm')).toEqual([
         [{ ...mockOverlayData.overlayDimensions, x: 1, y: 1 }],
       ]);
@@ -166,7 +167,7 @@ describe('Design management design presentation component', () => {
         mockOverlayData,
       );
 
-      return wrapper.vm.$nextTick().then(() => {
+      return nextTick().then(() => {
         expect(wrapper.vm.currentCommentForm).toBeNull();
         expect(wrapper.element).toMatchSnapshot();
       });
@@ -182,7 +183,7 @@ describe('Design management design presentation component', () => {
         mockOverlayData,
       );
 
-      return wrapper.vm.$nextTick().then(() => {
+      return nextTick().then(() => {
         expect(wrapper.vm.currentCommentForm).toBeNull();
         expect(wrapper.element).toMatchSnapshot();
       });
@@ -206,7 +207,7 @@ describe('Design management design presentation component', () => {
         },
       );
 
-      return wrapper.vm.$nextTick().then(() => {
+      return nextTick().then(() => {
         expect(wrapper.vm.currentCommentForm).toEqual({
           x: 1,
           y: 1,
@@ -379,7 +380,7 @@ describe('Design management design presentation component', () => {
   });
 
   describe('onImageResize', () => {
-    it('sets zoom focal point on initial load', () => {
+    beforeEach(() => {
       createComponent(
         {
           image: 'test.jpg',
@@ -388,22 +389,21 @@ describe('Design management design presentation component', () => {
         mockOverlayData,
       );
 
-      wrapper.setMethods({
-        shiftZoomFocalPoint: jest.fn(),
-        scaleZoomFocalPoint: jest.fn(),
-        scrollToFocalPoint: jest.fn(),
-      });
-
+      jest.spyOn(wrapper.vm, 'shiftZoomFocalPoint');
+      jest.spyOn(wrapper.vm, 'scaleZoomFocalPoint');
+      jest.spyOn(wrapper.vm, 'scrollToFocalPoint');
       wrapper.vm.onImageResize({ width: 10, height: 10 });
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.shiftZoomFocalPoint).toHaveBeenCalled();
-        expect(wrapper.vm.initialLoad).toBe(false);
-      });
+      return nextTick();
+    });
+
+    it('sets zoom focal point on initial load', () => {
+      expect(wrapper.vm.shiftZoomFocalPoint).toHaveBeenCalled();
+      expect(wrapper.vm.initialLoad).toBe(false);
     });
 
     it('calls scaleZoomFocalPoint and scrollToFocalPoint after initial load', () => {
       wrapper.vm.onImageResize({ width: 10, height: 10 });
-      return wrapper.vm.$nextTick().then(() => {
+      return nextTick().then(() => {
         expect(wrapper.vm.scaleZoomFocalPoint).toHaveBeenCalled();
         expect(wrapper.vm.scrollToFocalPoint).toHaveBeenCalled();
       });
@@ -506,7 +506,7 @@ describe('Design management design presentation component', () => {
         .$nextTick()
         .then(() => {
           addCommentOverlay.trigger('mouseup');
-          return wrapper.vm.$nextTick();
+          return nextTick();
         })
         .then(() => {
           expect(wrapper.emitted('openCommentForm')).toBeDefined();

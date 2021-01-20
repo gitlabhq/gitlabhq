@@ -54,7 +54,7 @@ RSpec.shared_examples 'access restricted confidential issues' do
     end
   end
 
-  context 'when the user is a developper' do
+  context 'when the user is a developer' do
     let(:user) do
       create(:user) { |user| project.add_developer(user) }
     end
@@ -70,10 +70,19 @@ RSpec.shared_examples 'access restricted confidential issues' do
   context 'when the user is admin', :request_store do
     let(:user) { create(:user, admin: true) }
 
-    it 'lists all project issues' do
-      expect(objects).to contain_exactly(issue,
-                                         security_issue_1,
-                                         security_issue_2)
+    context 'when admin mode is enabled', :enable_admin_mode do
+      it 'lists all project issues' do
+        expect(objects).to contain_exactly(issue,
+                                           security_issue_1,
+                                           security_issue_2)
+      end
+    end
+
+    context 'when admin mode is disabled' do
+      it 'does not list project confidential issues' do
+        expect(objects).to contain_exactly(issue)
+        expect(results.limited_issues_count).to eq 1
+      end
     end
   end
 end

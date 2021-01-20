@@ -79,11 +79,11 @@ to configure alerts for this integration.
 ## Customize the alert payload outside of GitLab
 
 For all integration types, you can customize the payload by sending the following
-parameters. All fields other than `title` are optional:
+parameters. All fields are optional. If the incoming alert does not contain a value for the `Title` field, a default value of `New: Incident` will be applied.
 
 | Property                  | Type            | Description |
 | ------------------------- | --------------- | ----------- |
-| `title`                   | String          | The title of the incident. Required. |
+| `title`                   | String          | The title of the incident. |
 | `description`             | String          | A high-level summary of the problem. |
 | `start_time`              | DateTime        | The time of the incident. If none is provided, a timestamp of the issue is used. |
 | `end_time`                | DateTime        | For existing alerts only. When provided, the alert is resolved and the associated incident is closed. |
@@ -170,13 +170,14 @@ If the existing alert is already `resolved`, GitLab creates a new alert instead.
 
 ## Link to your Opsgenie Alerts
 
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+
 WARNING:
 We are building deeper integration with Opsgenie and other alerting tools through
-[HTTP endpoint integrations](#single-http-endpoint) so you can see alerts within
+[HTTP endpoint integrations](#single-http-endpoint) so you can see alerts in
 the GitLab interface. As a result, the previous direct link to Opsgenie Alerts from
-the GitLab alerts list is scheduled for deprecation following the 13.7 release on December 22, 2020.
-
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+the GitLab alerts list is deprecated in
+GitLab versions [13.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/273657).
 
 You can monitor alerts using a GitLab integration with [Opsgenie](https://www.atlassian.com/software/opsgenie).
 

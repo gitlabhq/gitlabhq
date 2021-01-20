@@ -57,7 +57,7 @@ describe('Dashboard Panel', () => {
   const findTitle = () => wrapper.find({ ref: 'graphTitle' });
   const findCtxMenu = () => wrapper.find({ ref: 'contextualMenu' });
   const findMenuItems = () => wrapper.findAll(GlDropdownItem);
-  const findMenuItemByText = text => findMenuItems().filter(i => i.text() === text);
+  const findMenuItemByText = (text) => findMenuItems().filter((i) => i.text() === text);
   const findAlertsWidget = () => wrapper.find(AlertWidget);
 
   const createWrapper = (props, { mountFn = shallowMount, ...options } = {}) => {
@@ -82,7 +82,7 @@ describe('Dashboard Panel', () => {
     });
   };
 
-  const setMetricsSavedToDb = val =>
+  const setMetricsSavedToDb = (val) =>
     monitoringDashboard.getters.metricsSavedToDb.mockReturnValue(val);
 
   beforeEach(() => {
@@ -214,7 +214,7 @@ describe('Dashboard Panel', () => {
     });
 
     describe('Supports different panel types', () => {
-      const dataWithType = type => {
+      const dataWithType = (type) => {
         return {
           ...graphData,
           type,
@@ -777,11 +777,7 @@ describe('Dashboard Panel', () => {
         await wrapper.vm.$nextTick();
 
         expect(findRunbookLinks().length).toBe(1);
-        expect(
-          findRunbookLinks()
-            .at(0)
-            .attributes('href'),
-        ).toBe(invalidUrl);
+        expect(findRunbookLinks().at(0).attributes('href')).toBe(invalidUrl);
       });
     });
   });

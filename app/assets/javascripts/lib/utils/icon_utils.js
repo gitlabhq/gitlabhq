@@ -9,7 +9,7 @@ const getSvgDom = memoize(() =>
   axios
     .get(gon.sprite_icons)
     .then(({ data: svgs }) => new DOMParser().parseFromString(svgs, 'text/xml'))
-    .catch(e => {
+    .catch((e) => {
       getSvgDom.cache.clear();
 
       throw e;
@@ -34,9 +34,9 @@ export const clearSvgIconPathContentCache = () => {
  * @param {String} name - Icon name
  * @returns A promise that resolves to the svg path
  */
-export const getSvgIconPathContent = name =>
+export const getSvgIconPathContent = (name) =>
   getSvgDom()
-    .then(doc => {
+    .then((doc) => {
       return doc.querySelector(`#${name} path`).getAttribute('d');
     })
     .catch(() => null);

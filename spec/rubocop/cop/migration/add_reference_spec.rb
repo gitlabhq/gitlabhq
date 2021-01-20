@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 require 'rubocop'
 require_relative '../../../../rubocop/cop/migration/add_reference'
 
-RSpec.describe RuboCop::Cop::Migration::AddReference, type: :rubocop do
+RSpec.describe RuboCop::Cop::Migration::AddReference do
   include CopHelper
 
   let(:cop) { described_class.new }

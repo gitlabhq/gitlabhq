@@ -10,7 +10,7 @@ module Mutations
       argument :id,
                ::Types::GlobalIDType[::Note],
                required: true,
-               description: 'The global ID of the note to destroy'
+               description: 'The global ID of the note to destroy.'
 
       def resolve(id:)
         note = authorized_find!(id: id)

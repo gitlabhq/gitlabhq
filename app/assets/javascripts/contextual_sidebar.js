@@ -43,7 +43,10 @@ export default class ContextualSidebar {
       $(document).trigger('content.resize');
     });
 
-    $(window).on('resize', debounce(() => this.render(), 100));
+    $(window).on(
+      'resize',
+      debounce(() => this.render(), 100),
+    );
   }
 
   // See documentation: https://design.gitlab.com/regions/navigation#contextual-navigation

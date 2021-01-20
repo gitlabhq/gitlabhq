@@ -121,7 +121,7 @@ describe('IssuableShowRoot', () => {
 
       it.each(['keydown-title', 'keydown-description'])(
         'component emits `%s` event with event object and issuableMeta params via issuable-body',
-        eventName => {
+        (eventName) => {
           const eventObj = {
             preventDefault: jest.fn(),
             stopPropagation: jest.fn(),

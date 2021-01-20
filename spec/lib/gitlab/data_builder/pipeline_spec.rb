@@ -41,6 +41,7 @@ RSpec.describe Gitlab::DataBuilder::Pipeline do
       expect(project_data).to eq(project.hook_attrs(backward: false))
       expect(data[:merge_request]).to be_nil
       expect(data[:user]).to eq({
+        id: user.id,
         name: user.name,
         username: user.username,
         avatar_url: user.avatar_url(only_path: false),

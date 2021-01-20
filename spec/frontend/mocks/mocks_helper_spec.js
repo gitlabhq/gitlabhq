@@ -47,13 +47,13 @@ describe('mocks_helper.js', () => {
 
     const readdirSpy = readdir.sync;
     expect(readdirSpy).toHaveBeenCalled();
-    readdirSpy.mock.calls.forEach(call => {
+    readdirSpy.mock.calls.forEach((call) => {
       expect(call[1].deep).toBeLessThan(100);
     });
   });
 
   it('sets up mocks for CE (the ~/ prefix)', () => {
-    fs.existsSync.mockImplementation(root => root.endsWith('ce'));
+    fs.existsSync.mockImplementation((root) => root.endsWith('ce'));
     readdir.sync.mockReturnValue(['root.js', 'lib/utils/util.js']);
     setupManualMocks();
 
@@ -72,7 +72,7 @@ describe('mocks_helper.js', () => {
     };
 
     fs.existsSync.mockReturnValue(true);
-    readdir.sync.mockImplementation(root => files[root]);
+    readdir.sync.mockImplementation((root) => files[root]);
     setupManualMocks();
 
     expect(readdir.sync).toHaveBeenCalledTimes(1);
@@ -84,7 +84,7 @@ describe('mocks_helper.js', () => {
   });
 
   it('fails when given a virtual mock', () => {
-    fs.existsSync.mockImplementation(p => p.endsWith('ce'));
+    fs.existsSync.mockImplementation((p) => p.endsWith('ce'));
     readdir.sync.mockReturnValue(['virtual', 'shouldntBeImported']);
     setMock.mockImplementation(() => {
       throw new Error('Could not locate module');
@@ -106,7 +106,7 @@ describe('mocks_helper.js', () => {
       });
     });
 
-    it('survives jest.isolateModules()', done => {
+    it('survives jest.isolateModules()', (done) => {
       jest.isolateModules(() => {
         const axios2 = require('~/lib/utils/axios_utils').default;
         expect(axios2.isMock).toBe(true);

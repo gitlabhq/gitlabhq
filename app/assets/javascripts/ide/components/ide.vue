@@ -73,7 +73,7 @@ export default {
     },
   },
   mounted() {
-    window.onbeforeunload = e => this.onBeforeUnload(e);
+    window.onbeforeunload = (e) => this.onBeforeUnload(e);
 
     if (this.themeName)
       document.querySelector('.navbar-gitlab').classList.add(`theme-${this.themeName}`);

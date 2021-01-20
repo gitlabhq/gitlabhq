@@ -27,20 +27,14 @@ describe('CreateItemDropdown', () => {
 
   function createItemAndClearInput(text) {
     // Filter for the new item
-    $wrapperEl
-      .find('.dropdown-input-field')
-      .val(text)
-      .trigger('input');
+    $wrapperEl.find('.dropdown-input-field').val(text).trigger('input');
 
     // Create the new item
     const $createButton = $wrapperEl.find('.js-dropdown-create-new-item');
     $createButton.click();
 
     // Clear out the filter
-    $wrapperEl
-      .find('.dropdown-input-field')
-      .val('')
-      .trigger('input');
+    $wrapperEl.find('.dropdown-input-field').val('').trigger('input');
   }
 
   beforeEach(() => {
@@ -91,10 +85,7 @@ describe('CreateItemDropdown', () => {
       $('.js-dropdown-menu-toggle').click();
 
       // Filter for the new item
-      $wrapperEl
-        .find('.dropdown-input-field')
-        .val(NEW_ITEM_TEXT)
-        .trigger('input');
+      $wrapperEl.find('.dropdown-input-field').val(NEW_ITEM_TEXT).trigger('input');
     });
 
     it('create new item button should include the filter text', () => {
@@ -171,7 +162,7 @@ describe('CreateItemDropdown', () => {
         getData: (term, callback) => {
           callback(DROPDOWN_ITEM_DATA);
         },
-        createNewItemFromValue: newValue => ({
+        createNewItemFromValue: (newValue) => ({
           title: `${newValue}-title`,
           id: `${newValue}-id`,
           text: `${newValue}-text`,

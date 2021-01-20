@@ -19,12 +19,11 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	"gitlab.com/gitlab-org/labkit/correlation"
-	"gitlab.com/gitlab-org/labkit/log"
-	"gitlab.com/gitlab-org/labkit/mask"
 	"gitlab.com/gitlab-org/labkit/tracing"
 
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab-workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/senddata"
 )
 
@@ -203,7 +202,7 @@ func (r *Resizer) Inject(w http.ResponseWriter, req *http.Request, paramsData st
 	if err != nil {
 		// Something failed, but we can still write out the original image, so don't return early.
 		// We need to log this separately since the subsequent steps might add other failures.
-		helper.LogErrorWithFields(req, err, *logFields(start, params, &outcome))
+		log.WithRequest(req).WithFields(logFields(start, params, &outcome)).WithError(err).Error()
 	}
 	defer helper.CleanUpProcessGroup(resizeCmd)
 
@@ -410,13 +409,13 @@ func (o *resizeOutcome) error(err error) {
 	o.err = err
 }
 
-func logFields(startTime time.Time, params *resizeParams, outcome *resizeOutcome) *log.Fields {
+func logFields(startTime time.Time, params *resizeParams, outcome *resizeOutcome) log.Fields {
 	var targetWidth, contentType string
 	if params != nil {
 		targetWidth = fmt.Sprint(params.Width)
 		contentType = fmt.Sprint(params.ContentType)
 	}
-	return &log.Fields{
+	return log.Fields{
 		"subsystem":                      logSystem,
 		"written_bytes":                  outcome.bytesWritten,
 		"duration_s":                     time.Since(startTime).Seconds(),
@@ -428,22 +427,17 @@ func logFields(startTime time.Time, params *resizeParams, outcome *resizeOutcome
 }
 
 func handleOutcome(w http.ResponseWriter, req *http.Request, startTime time.Time, params *resizeParams, outcome *resizeOutcome) {
-	logger := log.ContextLogger(req.Context())
-	fields := *logFields(startTime, params, outcome)
+	fields := logFields(startTime, params, outcome)
+	log := log.WithRequest(req).WithFields(fields)
 
 	switch outcome.status {
 	case statusRequestFailure:
 		if outcome.bytesWritten <= 0 {
 			helper.Fail500WithFields(w, req, outcome.err, fields)
 		} else {
-			helper.LogErrorWithFields(req, outcome.err, fields)
+			log.WithError(outcome.err).Error(outcome.status)
 		}
 	default:
-		logger.WithFields(fields).WithFields(
-			log.Fields{
-				"method": req.Method,
-				"uri":    mask.URL(req.RequestURI),
-			},
-		).Printf(outcome.status)
+		log.Info(outcome.status)
 	}
 }

@@ -3,7 +3,7 @@ import { throttle } from 'lodash';
 import DirtyDiffWorker from './diff_worker';
 import Disposable from '../common/disposable';
 
-export const getDiffChangeType = change => {
+export const getDiffChangeType = (change) => {
   if (change.modified) {
     return 'modified';
   } else if (change.added) {
@@ -15,7 +15,7 @@ export const getDiffChangeType = change => {
   return '';
 };
 
-export const getDecorator = change => ({
+export const getDecorator = (change) => ({
   range: new Range(change.lineNumber, 1, change.endLineNumber, 1),
   options: {
     isWholeLine: true,
@@ -71,7 +71,7 @@ export default class DirtyDiffController {
   }
 
   decorate({ data }) {
-    const decorations = data.changes.map(change => getDecorator(change));
+    const decorations = data.changes.map((change) => getDecorator(change));
     const model = this.modelManager.getModel(data.path);
     this.decorationsController.addDecorations(model, 'dirtyDiff', decorations);
   }

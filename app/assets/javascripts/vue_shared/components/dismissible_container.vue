@@ -22,7 +22,7 @@ export default {
         .post(this.path, {
           feature_name: this.featureId,
         })
-        .catch(e => {
+        .catch((e) => {
           // eslint-disable-next-line @gitlab/require-i18n-strings, no-console
           console.error('Failed to dismiss message.', e);
         });

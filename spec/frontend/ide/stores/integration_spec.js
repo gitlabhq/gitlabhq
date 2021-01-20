@@ -84,7 +84,7 @@ describe('IDE store integration', () => {
         store.dispatch('commit/updateFilesAfterCommit', { data: {} });
 
         expect(store.state.entries[TEST_PATH]).toEqual(expected);
-        expect(store.state.entries[TEST_PATH_DIR].tree.find(x => x.path === TEST_PATH)).toEqual(
+        expect(store.state.entries[TEST_PATH_DIR].tree.find((x) => x.path === TEST_PATH)).toEqual(
           expected,
         );
       });

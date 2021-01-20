@@ -10,11 +10,14 @@ describe('Custom variable component', () => {
     label: 'Select environment',
     value: 'Production',
     options: {
-      values: [{ text: 'Production', value: 'prod' }, { text: 'Canary', value: 'canary' }],
+      values: [
+        { text: 'Production', value: 'prod' },
+        { text: 'Canary', value: 'canary' },
+      ],
     },
   };
 
-  const createShallowWrapper = props => {
+  const createShallowWrapper = (props) => {
     wrapper = shallowMount(DropdownField, {
       propsData: {
         ...defaultProps,
@@ -54,9 +57,7 @@ describe('Custom variable component', () => {
     createShallowWrapper();
     jest.spyOn(wrapper.vm, '$emit');
 
-    findDropdownItems()
-      .at(1)
-      .vm.$emit('click');
+    findDropdownItems().at(1).vm.$emit('click');
 
     return wrapper.vm.$nextTick(() => {
       expect(wrapper.vm.$emit).toHaveBeenCalledWith('input', 'canary');

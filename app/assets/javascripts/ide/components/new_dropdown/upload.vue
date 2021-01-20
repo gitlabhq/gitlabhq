@@ -25,23 +25,24 @@ export default {
   },
   methods: {
     createFile(target, file) {
-      const { name } = file;
+      const { name, type: mimeType } = file;
       const encodedContent = target.result.split('base64,')[1];
       const rawContent = encodedContent ? atob(encodedContent) : '';
-      const isText = isTextFile({ content: rawContent, mimeType: file.type, name });
+      const isText = isTextFile({ content: rawContent, mimeType, name });
 
-      const emitCreateEvent = content =>
+      const emitCreateEvent = (content) =>
         this.$emit('create', {
           name: `${this.path ? `${this.path}/` : ''}${name}`,
           type: 'blob',
           content,
           rawPath: !isText ? URL.createObjectURL(file) : '',
+          mimeType,
         });
 
       if (isText) {
         const reader = new FileReader();
 
-        reader.addEventListener('load', e => emitCreateEvent(e.target.result), { once: true });
+        reader.addEventListener('load', (e) => emitCreateEvent(e.target.result), { once: true });
         reader.readAsText(file);
       } else {
         emitCreateEvent(rawContent);
@@ -50,11 +51,11 @@ export default {
     readFile(file) {
       const reader = new FileReader();
 
-      reader.addEventListener('load', e => this.createFile(e.target, file), { once: true });
+      reader.addEventListener('load', (e) => this.createFile(e.target, file), { once: true });
       reader.readAsDataURL(file);
     },
     openFile() {
-      Array.from(this.$refs.fileUpload.files).forEach(file => this.readFile(file));
+      Array.from(this.$refs.fileUpload.files).forEach((file) => this.readFile(file));
     },
     startFileUpload() {
       this.$refs.fileUpload.click();
@@ -80,6 +81,7 @@ export default {
       type="file"
       class="hidden"
       multiple
+      data-qa-selector="file_upload_field"
       @change="openFile"
     />
   </div>

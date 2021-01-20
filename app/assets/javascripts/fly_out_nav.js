@@ -12,7 +12,7 @@ let sidebar;
 
 export const mousePos = [];
 
-export const setSidebar = el => {
+export const setSidebar = (el) => {
   sidebar = el;
 };
 export const getOpenMenu = () => currentOpenMenu;
@@ -32,7 +32,7 @@ const setHeaderHeight = () => {
 export const isSidebarCollapsed = () =>
   sidebar && sidebar.classList.contains(SIDEBAR_COLLAPSED_CLASS);
 
-export const canShowActiveSubItems = el => {
+export const canShowActiveSubItems = (el) => {
   if (el.classList.contains('active') && !isSidebarCollapsed()) {
     return false;
   }
@@ -71,7 +71,7 @@ export const calculateTop = (boundingRect, outerHeight) => {
     : boundingRect.top;
 };
 
-export const hideMenu = el => {
+export const hideMenu = (el) => {
   if (!el) return;
 
   const parentEl = el.parentNode;
@@ -112,7 +112,7 @@ export const moveSubItemsToPosition = (el, subItems) => {
   }
 };
 
-export const showSubLevelItems = el => {
+export const showSubLevelItems = (el) => {
   const subItems = el.querySelector('.sidebar-sub-level-items');
   const isIconOnly = subItems && subItems.classList.contains('is-fly-out-only');
 
@@ -139,7 +139,7 @@ export const mouseEnterTopItems = (el, timeout = getHideSubItemsInterval()) => {
   }, timeout);
 };
 
-export const mouseLeaveTopItem = el => {
+export const mouseLeaveTopItem = (el) => {
   const subItems = el.querySelector('.sidebar-sub-level-items');
 
   if (
@@ -152,7 +152,7 @@ export const mouseLeaveTopItem = el => {
   el.classList.remove(IS_OVER_CLASS);
 };
 
-export const documentMouseMove = e => {
+export const documentMouseMove = (e) => {
   mousePos.push({
     x: e.clientX,
     y: e.clientY,
@@ -161,7 +161,7 @@ export const documentMouseMove = e => {
   if (mousePos.length > 6) mousePos.shift();
 };
 
-export const subItemsMouseLeave = relatedTarget => {
+export const subItemsMouseLeave = (relatedTarget) => {
   clearTimeout(timeoutId);
 
   if (relatedTarget && !relatedTarget.closest(`.${IS_OVER_CLASS}`)) {
@@ -189,15 +189,15 @@ export default () => {
 
   requestIdleCallback(setHeaderHeight);
 
-  items.forEach(el => {
+  items.forEach((el) => {
     const subItems = el.querySelector('.sidebar-sub-level-items');
 
     if (subItems) {
-      subItems.addEventListener('mouseleave', e => subItemsMouseLeave(e.relatedTarget));
+      subItems.addEventListener('mouseleave', (e) => subItemsMouseLeave(e.relatedTarget));
     }
 
-    el.addEventListener('mouseenter', e => mouseEnterTopItems(e.currentTarget));
-    el.addEventListener('mouseleave', e => mouseLeaveTopItem(e.currentTarget));
+    el.addEventListener('mouseenter', (e) => mouseEnterTopItems(e.currentTarget));
+    el.addEventListener('mouseleave', (e) => mouseLeaveTopItem(e.currentTarget));
   });
 
   document.addEventListener('mousemove', documentMouseMove);

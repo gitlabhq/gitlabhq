@@ -38,32 +38,116 @@ RSpec.describe Gitlab::Utils::UsageData do
   end
 
   describe '#estimate_batch_distinct_count' do
+    let(:error_rate) { Gitlab::Database::PostgresHll::BatchDistinctCounter::ERROR_RATE } # HyperLogLog is a probabilistic algorithm, which provides estimated data, with given error margin
     let(:relation) { double(:relation) }
 
+    before do
+      allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
+    end
+
     it 'delegates counting to counter class instance' do
+      buckets = instance_double(Gitlab::Database::PostgresHll::Buckets)
+
       expect_next_instance_of(Gitlab::Database::PostgresHll::BatchDistinctCounter, relation, 'column') do |instance|
-        expect(instance).to receive(:estimate_distinct_count)
+        expect(instance).to receive(:execute)
                               .with(batch_size: nil, start: nil, finish: nil)
-                              .and_return(5)
+                              .and_return(buckets)
       end
+      expect(buckets).to receive(:estimated_distinct_count).and_return(5)
 
       expect(described_class.estimate_batch_distinct_count(relation, 'column')).to eq(5)
     end
 
-    it 'returns default fallback value when counting fails due to database error' do
-      stub_const("Gitlab::Utils::UsageData::FALLBACK", 15)
-      allow(Gitlab::Database::PostgresHll::BatchDistinctCounter).to receive(:new).and_raise(ActiveRecord::StatementInvalid.new(''))
+    context 'quasi integration test for different counting parameters' do
+      # HyperLogLog http://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf algorithm
+      # used in estimate_batch_distinct_count produce probabilistic
+      # estimations of unique values present in dataset, because of that its results
+      # are always off by some small factor from real value. However for given
+      # dataset it provide consistent and deterministic result. In the following context
+      # analyzed sets consist of values:
+      # build_needs set: ['1', '2', '3', '4', '5']
+      # ci_build set ['a', 'b']
+      # with them, current implementation is expected to consistently report
+      # 5.217656147118495 and 2.0809220082170614 values
+      # This test suite is expected to assure, that HyperLogLog implementation
+      # behaves consistently between changes made to other parts of codebase.
+      # In case of fine tuning or changes to HyperLogLog algorithm implementation
+      # one should run in depth analysis of accuracy with supplementary rake tasks
+      # currently under implementation at https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51118
+      # and adjust used values in this context accordingly.
+      let_it_be(:build) { create(:ci_build, name: 'a') }
+      let_it_be(:another_build) { create(:ci_build, name: 'b') }
 
-      expect(described_class.estimate_batch_distinct_count(relation)).to eq(15)
+      let(:model) { Ci::BuildNeed }
+      let(:column) { :name }
+      let(:build_needs_estimated_cardinality) { 5.217656147118495 }
+      let(:ci_builds_estimated_cardinality) { 2.0809220082170614 }
+
+      context 'different counting parameters' do
+        before_all do
+          1.upto(3) { |i| create(:ci_build_need, name: i, build: build) }
+          4.upto(5) { |i| create(:ci_build_need, name: i, build: another_build) }
+        end
+
+        it 'counts with symbol passed in column argument' do
+          expect(described_class.estimate_batch_distinct_count(model, column)).to eq(build_needs_estimated_cardinality)
+        end
+
+        it 'counts with string passed in column argument' do
+          expect(described_class.estimate_batch_distinct_count(model, column.to_s)).to eq(build_needs_estimated_cardinality)
+        end
+
+        it 'counts with table.column passed in column argument' do
+          expect(described_class.estimate_batch_distinct_count(model, "#{model.table_name}.#{column}")).to eq(build_needs_estimated_cardinality)
+        end
+
+        it 'counts with Arel passed in column argument' do
+          expect(described_class.estimate_batch_distinct_count(model, model.arel_table[column])).to eq(build_needs_estimated_cardinality)
+        end
+
+        it 'counts over joined relations' do
+          expect(described_class.estimate_batch_distinct_count(model.joins(:build), "ci_builds.name")).to eq(ci_builds_estimated_cardinality)
+        end
+
+        it 'counts with :column field with batch_size of 50K' do
+          expect(described_class.estimate_batch_distinct_count(model, column, batch_size: 50_000)).to eq(build_needs_estimated_cardinality)
+        end
+
+        it 'counts with different number of batches and aggregates total result' do
+          stub_const('Gitlab::Database::PostgresHll::BatchDistinctCounter::MIN_REQUIRED_BATCH_SIZE', 0)
+
+          [1, 2, 4, 5, 6].each { |i| expect(described_class.estimate_batch_distinct_count(model, column, batch_size: i)).to eq(build_needs_estimated_cardinality) }
+        end
+
+        it 'counts with a start and finish' do
+          expect(described_class.estimate_batch_distinct_count(model, column, start: model.minimum(:id), finish: model.maximum(:id))).to eq(build_needs_estimated_cardinality)
+        end
+      end
     end
 
-    it 'logs error and returns DISTRIBUTED_HLL_FALLBACK value when counting raises any error', :aggregate_failures do
-      error = StandardError.new('')
-      stub_const("Gitlab::Utils::UsageData::DISTRIBUTED_HLL_FALLBACK", 15)
-      allow(Gitlab::Database::PostgresHll::BatchDistinctCounter).to receive(:new).and_raise(error)
+    describe 'error handling' do
+      before do
+        stub_const("Gitlab::Utils::UsageData::FALLBACK", 3)
+        stub_const("Gitlab::Utils::UsageData::DISTRIBUTED_HLL_FALLBACK", 4)
+      end
 
-      expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(error)
-      expect(described_class.estimate_batch_distinct_count(relation)).to eq(15)
+      it 'returns fallback if counter raises WRONG_CONFIGURATION_ERROR' do
+        expect(described_class.estimate_batch_distinct_count(relation, 'id', start: 1, finish: 0)).to eq 3
+      end
+
+      it 'returns default fallback value when counting fails due to database error' do
+        allow(Gitlab::Database::PostgresHll::BatchDistinctCounter).to receive(:new).and_raise(ActiveRecord::StatementInvalid.new(''))
+
+        expect(described_class.estimate_batch_distinct_count(relation)).to eq(3)
+      end
+
+      it 'logs error and returns DISTRIBUTED_HLL_FALLBACK value when counting raises any error', :aggregate_failures do
+        error = StandardError.new('')
+        allow(Gitlab::Database::PostgresHll::BatchDistinctCounter).to receive(:new).and_raise(error)
+
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(error)
+        expect(described_class.estimate_batch_distinct_count(relation)).to eq(4)
+      end
     end
   end
 
@@ -193,7 +277,7 @@ RSpec.describe Gitlab::Utils::UsageData do
     context 'when Prometheus server address is available from settings' do
       before do
         expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(true)
-        expect(Gitlab::Prometheus::Internal).to receive(:server_address).and_return('prom:9090')
+        expect(Gitlab::Prometheus::Internal).to receive(:uri).and_return('http://prom:9090')
       end
 
       it_behaves_like 'try to query Prometheus with given address'
@@ -256,7 +340,7 @@ RSpec.describe Gitlab::Utils::UsageData do
       end
 
       it 'tracks redis hll event' do
-        expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).with(value, event_name)
+        expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).with(event_name, values: value)
 
         described_class.track_usage_event(event_name, value)
       end

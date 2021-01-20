@@ -26,7 +26,10 @@ describe('LabelsSelect Getters', () => {
     });
 
     it('returns first label title and remaining labels count when state.labels has more than 1 label', () => {
-      const labels = [{ id: 1, title: 'Foo', set: true }, { id: 2, title: 'Bar', set: true }];
+      const labels = [
+        { id: 1, title: 'Foo', set: true },
+        { id: 2, title: 'Bar', set: true },
+      ];
 
       expect(getters.dropdownButtonText({ labels }, { isDropdownVariantSidebar: true })).toBe(
         'Foo +1 more',

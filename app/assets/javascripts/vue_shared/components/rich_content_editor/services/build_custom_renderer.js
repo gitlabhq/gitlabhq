@@ -17,12 +17,12 @@ const listItemRenderers = [renderListItem];
 const softbreakRenderers = [renderSoftbreak];
 
 const executeRenderer = (renderers, node, context) => {
-  const availableRenderer = renderers.find(renderer => renderer.canRender(node, context));
+  const availableRenderer = renderers.find((renderer) => renderer.canRender(node, context));
 
   return availableRenderer ? availableRenderer.render(node, context) : context.origin();
 };
 
-const buildCustomHTMLRenderer = customRenderers => {
+const buildCustomHTMLRenderer = (customRenderers) => {
   const renderersByType = {
     ...customRenderers,
     htmlBlock: union(htmlBlockRenderers, customRenderers?.htmlBlock),
@@ -34,7 +34,7 @@ const buildCustomHTMLRenderer = customRenderers => {
     softbreak: union(softbreakRenderers, customRenderers?.softbreak),
   };
 
-  return mapValues(renderersByType, renderers => {
+  return mapValues(renderersByType, (renderers) => {
     return (node, context) => executeRenderer(renderers, node, context);
   });
 };

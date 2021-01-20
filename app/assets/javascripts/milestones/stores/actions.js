@@ -41,10 +41,10 @@ export const fetchProjectMilestones = ({ commit, state }) => {
   commit(types.REQUEST_START);
 
   Api.projectMilestones(state.projectId)
-    .then(response => {
+    .then((response) => {
       commit(types.RECEIVE_PROJECT_MILESTONES_SUCCESS, response);
     })
-    .catch(error => {
+    .catch((error) => {
       commit(types.RECEIVE_PROJECT_MILESTONES_ERROR, error);
     })
     .finally(() => {
@@ -56,10 +56,10 @@ export const fetchGroupMilestones = ({ commit, state }) => {
   commit(types.REQUEST_START);
 
   Api.groupMilestones(state.groupId)
-    .then(response => {
+    .then((response) => {
       commit(types.RECEIVE_GROUP_MILESTONES_SUCCESS, response);
     })
-    .catch(error => {
+    .catch((error) => {
       commit(types.RECEIVE_GROUP_MILESTONES_ERROR, error);
     })
     .finally(() => {
@@ -76,10 +76,10 @@ export const searchProjectMilestones = ({ commit, state }) => {
   commit(types.REQUEST_START);
 
   Api.projectSearch(state.projectId, options)
-    .then(response => {
+    .then((response) => {
       commit(types.RECEIVE_PROJECT_MILESTONES_SUCCESS, response);
     })
-    .catch(error => {
+    .catch((error) => {
       commit(types.RECEIVE_PROJECT_MILESTONES_ERROR, error);
     })
     .finally(() => {
@@ -95,10 +95,10 @@ export const searchGroupMilestones = ({ commit, state }) => {
   commit(types.REQUEST_START);
 
   Api.groupMilestones(state.groupId, options)
-    .then(response => {
+    .then((response) => {
       commit(types.RECEIVE_GROUP_MILESTONES_SUCCESS, response);
     })
-    .catch(error => {
+    .catch((error) => {
       commit(types.RECEIVE_GROUP_MILESTONES_ERROR, error);
     })
     .finally(() => {

@@ -103,7 +103,6 @@ export default {
       id="service-desk-checkbox"
       :value="isEnabled"
       class="d-inline-block align-middle mr-1"
-      label="Service desk"
       label-position="left"
       @change="onCheckboxToggle"
     />
@@ -113,7 +112,7 @@ export default {
     <div v-if="isEnabled" class="row mt-3">
       <div class="col-md-9 mb-0">
         <strong id="incoming-email-describer" class="d-block mb-1">
-          {{ __('Forward external support email address to') }}
+          {{ __('Email address to use for Support Desk') }}
         </strong>
         <template v-if="email">
           <div class="input-group">
@@ -137,7 +136,7 @@ export default {
             </div>
           </div>
           <span v-if="hasCustomEmail" class="form-text text-muted">
-            <gl-sprintf :message="__('Emails sent to %{email} will still be supported')">
+            <gl-sprintf :message="__('Emails sent to %{email} are also supported.')">
               <template #email>
                 <code>{{ incomingEmail }}</code>
               </template>
@@ -156,9 +155,7 @@ export default {
           <input id="service-desk-project-suffix" v-model.trim="projectKey" class="form-control" />
           <span class="form-text text-muted">
             {{
-              __(
-                'Project name suffix is a user-defined string which will be appended to the project path, and will form the Service Desk email address.',
-              )
+              __('A string appended to the project path to form the Service Desk email address.')
             }}
           </span>
         </template>
@@ -176,7 +173,7 @@ export default {
         </label>
         <input id="service-desk-email-from-name" v-model.trim="outgoingName" class="form-control" />
         <span class="form-text text-muted">
-          {{ __('Emails sent from Service Desk will have this name') }}
+          {{ __('Emails sent from Service Desk have this name.') }}
         </span>
         <div class="gl-display-flex gl-justify-content-end">
           <gl-button

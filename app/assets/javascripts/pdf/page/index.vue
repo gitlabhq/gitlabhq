@@ -39,7 +39,7 @@ export default {
       .promise.then(() => {
         this.rendering = false;
       })
-      .catch(error => {
+      .catch((error) => {
         this.$emit('pdflaberror', error);
       });
   },

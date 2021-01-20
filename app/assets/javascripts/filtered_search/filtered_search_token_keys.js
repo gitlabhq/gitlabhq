@@ -14,7 +14,7 @@ export default class FilteredSearchTokenKeys {
   }
 
   getKeys() {
-    return this.tokenKeys.map(i => i.key);
+    return this.tokenKeys.map((i) => i.key);
   }
 
   getAlternatives() {
@@ -36,16 +36,16 @@ export default class FilteredSearchTokenKeys {
   }
 
   searchByKey(key) {
-    return this.tokenKeys.find(tokenKey => tokenKey.key === key) || null;
+    return this.tokenKeys.find((tokenKey) => tokenKey.key === key) || null;
   }
 
   searchBySymbol(symbol) {
-    return this.tokenKeys.find(tokenKey => tokenKey.symbol === symbol) || null;
+    return this.tokenKeys.find((tokenKey) => tokenKey.symbol === symbol) || null;
   }
 
   searchByKeyParam(keyParam) {
     return (
-      this.tokenKeysWithAlternative.find(tokenKey => {
+      this.tokenKeysWithAlternative.find((tokenKey) => {
         let tokenKeyParam = tokenKey.key;
 
         // Replace hyphen with underscore to compare keyParam with tokenKeyParam
@@ -62,13 +62,13 @@ export default class FilteredSearchTokenKeys {
   }
 
   searchByConditionUrl(url) {
-    return this.conditions.find(condition => condition.url === url) || null;
+    return this.conditions.find((condition) => condition.url === url) || null;
   }
 
   searchByConditionKeyValue(key, operator, value) {
     return (
       this.conditions.find(
-        condition =>
+        (condition) =>
           condition.tokenKey === key &&
           condition.operator === operator &&
           condition.value.toLowerCase() === value.toLowerCase(),
@@ -92,5 +92,14 @@ export default class FilteredSearchTokenKeys {
 
     this.tokenKeys.push(confidentialToken);
     this.tokenKeysWithAlternative.push(confidentialToken);
+  }
+
+  removeTokensForKeys(...keys) {
+    const keysSet = new Set(keys);
+
+    this.tokenKeys = this.tokenKeys.filter(({ key }) => !keysSet.has(key));
+    this.tokenKeysWithAlternative = this.tokenKeysWithAlternative.filter(
+      ({ key }) => !keysSet.has(key),
+    );
   }
 }

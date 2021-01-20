@@ -74,7 +74,7 @@ describe('Description component', () => {
     let modal;
     const recaptchaChild = vm.$children.find(
       // eslint-disable-next-line no-underscore-dangle
-      child => child.$options._componentTag === 'recaptcha-modal',
+      (child) => child.$options._componentTag === 'recaptcha-modal',
     );
 
     recaptchaChild.scriptSrc = '//scriptsrc';

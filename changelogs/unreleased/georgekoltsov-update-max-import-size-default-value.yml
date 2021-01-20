@@ -1,0 +1,5 @@
+---
+title: Update default value of applications_settings.max_import_size to 0
+merge_request: 51229
+author:
+type: other

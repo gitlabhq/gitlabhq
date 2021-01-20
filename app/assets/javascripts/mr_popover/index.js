@@ -42,7 +42,7 @@ const handleMRPopoverMount = ({ apolloProvider, projectPath, mrTitle, iid }) => 
   }, 200); // 200ms delay so not every mouseover triggers Popover + API Call
 };
 
-export default elements => {
+export default (elements) => {
   const mrLinks = elements || [...document.querySelectorAll('.gfm-merge_request')];
   if (mrLinks.length > 0) {
     Vue.use(VueApollo);
@@ -52,7 +52,7 @@ export default elements => {
     });
     const listenerAddedAttr = 'data-mr-listener-added';
 
-    mrLinks.forEach(el => {
+    mrLinks.forEach((el) => {
       const { projectPath, mrTitle, iid } = el.dataset;
 
       if (!el.getAttribute(listenerAddedAttr) && projectPath && mrTitle && iid) {

@@ -2711,40 +2711,6 @@ module Gitlab
         end
       end
 
-      describe "#validation_message" do
-        subject { Gitlab::Ci::YamlProcessor.validation_message(content) }
-
-        context "when the YAML could not be parsed" do
-          let(:content) { YAML.dump("invalid: yaml: test") }
-
-          it { is_expected.to eq "Invalid configuration format" }
-        end
-
-        context "when the tags parameter is invalid" do
-          let(:content) { YAML.dump({ rspec: { script: "test", tags: "mysql" } }) }
-
-          it { is_expected.to eq "jobs:rspec:tags config should be an array of strings" }
-        end
-
-        context "when YAML content is empty" do
-          let(:content) { '' }
-
-          it { is_expected.to eq "Please provide content of .gitlab-ci.yml" }
-        end
-
-        context 'when the YAML contains an unknown alias' do
-          let(:content) { 'steps: *bad_alias' }
-
-          it { is_expected.to eq "Unknown alias: bad_alias" }
-        end
-
-        context "when the YAML is valid" do
-          let(:content) { File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')) }
-
-          it { is_expected.to be_nil }
-        end
-      end
-
       describe '#execute' do
         subject { Gitlab::Ci::YamlProcessor.new(content).execute }
 

@@ -18,7 +18,8 @@ module Ci
         gzip: 3
       }, _suffix: true
 
-      scope :expired, -> (limit) { where('expire_at < ?', Time.current).limit(limit) }
+      scope :expired_before, -> (timestamp) { where(arel_table[:expire_at].lt(timestamp)) }
+      scope :expired, -> (limit) { expired_before(Time.current).limit(limit) }
     end
 
     def each_blob(&blk)

@@ -1,0 +1,4 @@
+fragment AuthorF on Author {
+  name
+  handle
+}

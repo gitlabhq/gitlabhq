@@ -44,7 +44,7 @@ RSpec.describe Resolvers::UserNotesCountResolver do
       context 'when a user does not have permission to view notes' do
         subject { batch_sync { resolve_user_notes_count(private_issue) } }
 
-        it 'returns no notes' do
+        it 'raises an error' do
           expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
         end
       end
@@ -80,7 +80,7 @@ RSpec.describe Resolvers::UserNotesCountResolver do
       context 'when a user does not have permission to view notes' do
         subject { batch_sync { resolve_user_notes_count(private_merge_request) } }
 
-        it 'returns no notes' do
+        it 'raises an error' do
           expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
         end
       end

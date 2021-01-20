@@ -3,7 +3,7 @@ import PerformanceBarStore from '~/performance_bar/stores/performance_bar_store'
 describe('PerformanceBarStore', () => {
   describe('truncateUrl', () => {
     let store;
-    const findUrl = id => store.findRequest(id).truncatedUrl;
+    const findUrl = (id) => store.findRequest(id).truncatedUrl;
 
     beforeEach(() => {
       store = new PerformanceBarStore();

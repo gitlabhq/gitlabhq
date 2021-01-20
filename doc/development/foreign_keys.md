@@ -105,6 +105,8 @@ create_table :user_configs, id: false do |t|
 end
 ```
 
+Setting `default: nil` will ensure a primary key sequence is not created, and since the primary key
+will automatically get an index, we set `index: false` to avoid creating a duplicate.
 You will also need to add the new primary key to the model:
 
 ```ruby

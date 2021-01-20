@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 require 'rubocop'
 require_relative '../../../rubocop/cop/avoid_route_redirect_leading_slash'
 
-RSpec.describe RuboCop::Cop::AvoidRouteRedirectLeadingSlash, type: :rubocop do
+RSpec.describe RuboCop::Cop::AvoidRouteRedirectLeadingSlash do
   include CopHelper
 
   subject(:cop) { described_class.new }

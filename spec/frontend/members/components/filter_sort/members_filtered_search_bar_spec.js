@@ -10,7 +10,7 @@ localVue.use(Vuex);
 describe('MembersFilteredSearchBar', () => {
   let wrapper;
 
-  const createComponent = state => {
+  const createComponent = (state) => {
     const store = new Vuex.Store({
       state: {
         sourceId: 1,
@@ -86,7 +86,10 @@ describe('MembersFilteredSearchBar', () => {
             token: GlFilteredSearchToken,
             unique: true,
             operators: [{ value: '=', description: 'is' }],
-            options: [{ value: 'exclude', title: 'Direct' }, { value: 'only', title: 'Inherited' }],
+            options: [
+              { value: 'exclude', title: 'Direct' },
+              { value: 'only', title: 'Inherited' },
+            ],
           },
         ]);
       });

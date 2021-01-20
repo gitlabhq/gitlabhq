@@ -270,7 +270,7 @@ This problem disappears as soon as we upgrade to Rails 6 and use the Zeitwerk au
 ### Further reading
 
 - Rails Guides: [Autoloading and Reloading Constants (Classic Mode)](https://guides.rubyonrails.org/autoloading_and_reloading_constants_classic_mode.html)
-- Ruby Constant lookup: [Everything you ever wanted to know about constant lookup in Ruby](http://cirw.in/blog/constant-lookup)
+- Ruby Constant lookup: [Everything you ever wanted to know about constant lookup in Ruby](https://cirw.in/blog/constant-lookup)
 - Rails 6 and Zeitwerk autoloader: [Understanding Zeitwerk in Rails 6](https://medium.com/cedarcode/understanding-zeitwerk-in-rails-6-f168a9f09a1f)
 
 ## Storing assets that do not require pre-compiling

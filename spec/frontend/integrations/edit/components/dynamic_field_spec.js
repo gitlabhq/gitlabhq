@@ -37,153 +37,142 @@ describe('DynamicField', () => {
   const findGlFormTextarea = () => wrapper.find(GlFormTextarea);
 
   describe('template', () => {
-    describe.each([[true, 'disabled', 'readonly'], [false, undefined, undefined]])(
-      'dynamic field, when isInheriting = `%p`',
-      (isInheriting, disabled, readonly) => {
-        describe('type is checkbox', () => {
-          beforeEach(() => {
-            createComponent(
-              {
-                type: 'checkbox',
-              },
-              isInheriting,
-            );
-          });
-
-          it(`renders GlFormCheckbox, which ${isInheriting ? 'is' : 'is not'} disabled`, () => {
-            expect(findGlFormCheckbox().exists()).toBe(true);
-            expect(
-              findGlFormCheckbox()
-                .find('[type=checkbox]')
-                .attributes('disabled'),
-            ).toBe(disabled);
-          });
-
-          it('does not render other types of input', () => {
-            expect(findGlFormSelect().exists()).toBe(false);
-            expect(findGlFormTextarea().exists()).toBe(false);
-            expect(findGlFormInput().exists()).toBe(false);
-          });
+    describe.each([
+      [true, 'disabled', 'readonly'],
+      [false, undefined, undefined],
+    ])('dynamic field, when isInheriting = `%p`', (isInheriting, disabled, readonly) => {
+      describe('type is checkbox', () => {
+        beforeEach(() => {
+          createComponent(
+            {
+              type: 'checkbox',
+            },
+            isInheriting,
+          );
         });
 
-        describe('type is select', () => {
-          beforeEach(() => {
-            createComponent(
-              {
-                type: 'select',
-                choices: [['all', 'All details'], ['standard', 'Standard']],
-              },
-              isInheriting,
-            );
-          });
-
-          it(`renders GlFormSelect, which ${isInheriting ? 'is' : 'is not'} disabled`, () => {
-            expect(findGlFormSelect().exists()).toBe(true);
-            expect(findGlFormSelect().findAll('option')).toHaveLength(2);
-            expect(
-              findGlFormSelect()
-                .find('select')
-                .attributes('disabled'),
-            ).toBe(disabled);
-          });
-
-          it('does not render other types of input', () => {
-            expect(findGlFormCheckbox().exists()).toBe(false);
-            expect(findGlFormTextarea().exists()).toBe(false);
-            expect(findGlFormInput().exists()).toBe(false);
-          });
+        it(`renders GlFormCheckbox, which ${isInheriting ? 'is' : 'is not'} disabled`, () => {
+          expect(findGlFormCheckbox().exists()).toBe(true);
+          expect(findGlFormCheckbox().find('[type=checkbox]').attributes('disabled')).toBe(
+            disabled,
+          );
         });
 
-        describe('type is textarea', () => {
-          beforeEach(() => {
-            createComponent(
-              {
-                type: 'textarea',
-              },
-              isInheriting,
-            );
-          });
+        it('does not render other types of input', () => {
+          expect(findGlFormSelect().exists()).toBe(false);
+          expect(findGlFormTextarea().exists()).toBe(false);
+          expect(findGlFormInput().exists()).toBe(false);
+        });
+      });
 
-          it(`renders GlFormTextarea, which ${isInheriting ? 'is' : 'is not'} readonly`, () => {
-            expect(findGlFormTextarea().exists()).toBe(true);
-            expect(
-              findGlFormTextarea()
-                .find('textarea')
-                .attributes('readonly'),
-            ).toBe(readonly);
-          });
-
-          it('does not render other types of input', () => {
-            expect(findGlFormCheckbox().exists()).toBe(false);
-            expect(findGlFormSelect().exists()).toBe(false);
-            expect(findGlFormInput().exists()).toBe(false);
-          });
+      describe('type is select', () => {
+        beforeEach(() => {
+          createComponent(
+            {
+              type: 'select',
+              choices: [
+                ['all', 'All details'],
+                ['standard', 'Standard'],
+              ],
+            },
+            isInheriting,
+          );
         });
 
-        describe('type is password', () => {
-          beforeEach(() => {
-            createComponent(
-              {
-                type: 'password',
-              },
-              isInheriting,
-            );
-          });
-
-          it(`renders GlFormInput, which ${isInheriting ? 'is' : 'is not'} readonly`, () => {
-            expect(findGlFormInput().exists()).toBe(true);
-            expect(findGlFormInput().attributes('type')).toBe('password');
-            expect(findGlFormInput().attributes('readonly')).toBe(readonly);
-          });
-
-          it('does not render other types of input', () => {
-            expect(findGlFormCheckbox().exists()).toBe(false);
-            expect(findGlFormSelect().exists()).toBe(false);
-            expect(findGlFormTextarea().exists()).toBe(false);
-          });
+        it(`renders GlFormSelect, which ${isInheriting ? 'is' : 'is not'} disabled`, () => {
+          expect(findGlFormSelect().exists()).toBe(true);
+          expect(findGlFormSelect().findAll('option')).toHaveLength(2);
+          expect(findGlFormSelect().find('select').attributes('disabled')).toBe(disabled);
         });
 
-        describe('type is text', () => {
-          beforeEach(() => {
-            createComponent(
-              {
-                type: 'text',
-                required: true,
-              },
-              isInheriting,
-            );
-          });
+        it('does not render other types of input', () => {
+          expect(findGlFormCheckbox().exists()).toBe(false);
+          expect(findGlFormTextarea().exists()).toBe(false);
+          expect(findGlFormInput().exists()).toBe(false);
+        });
+      });
 
-          it(`renders GlFormInput, which ${isInheriting ? 'is' : 'is not'} readonly`, () => {
-            expect(findGlFormInput().exists()).toBe(true);
-            expect(findGlFormInput().attributes()).toMatchObject({
+      describe('type is textarea', () => {
+        beforeEach(() => {
+          createComponent(
+            {
+              type: 'textarea',
+            },
+            isInheriting,
+          );
+        });
+
+        it(`renders GlFormTextarea, which ${isInheriting ? 'is' : 'is not'} readonly`, () => {
+          expect(findGlFormTextarea().exists()).toBe(true);
+          expect(findGlFormTextarea().find('textarea').attributes('readonly')).toBe(readonly);
+        });
+
+        it('does not render other types of input', () => {
+          expect(findGlFormCheckbox().exists()).toBe(false);
+          expect(findGlFormSelect().exists()).toBe(false);
+          expect(findGlFormInput().exists()).toBe(false);
+        });
+      });
+
+      describe('type is password', () => {
+        beforeEach(() => {
+          createComponent(
+            {
+              type: 'password',
+            },
+            isInheriting,
+          );
+        });
+
+        it(`renders GlFormInput, which ${isInheriting ? 'is' : 'is not'} readonly`, () => {
+          expect(findGlFormInput().exists()).toBe(true);
+          expect(findGlFormInput().attributes('type')).toBe('password');
+          expect(findGlFormInput().attributes('readonly')).toBe(readonly);
+        });
+
+        it('does not render other types of input', () => {
+          expect(findGlFormCheckbox().exists()).toBe(false);
+          expect(findGlFormSelect().exists()).toBe(false);
+          expect(findGlFormTextarea().exists()).toBe(false);
+        });
+      });
+
+      describe('type is text', () => {
+        beforeEach(() => {
+          createComponent(
+            {
               type: 'text',
-              id: 'service_project_url',
-              name: 'service[project_url]',
-              placeholder: defaultProps.placeholder,
-              required: 'required',
-            });
-            expect(findGlFormInput().attributes('readonly')).toBe(readonly);
-          });
-
-          it('does not render other types of input', () => {
-            expect(findGlFormCheckbox().exists()).toBe(false);
-            expect(findGlFormSelect().exists()).toBe(false);
-            expect(findGlFormTextarea().exists()).toBe(false);
-          });
+              required: true,
+            },
+            isInheriting,
+          );
         });
-      },
-    );
+
+        it(`renders GlFormInput, which ${isInheriting ? 'is' : 'is not'} readonly`, () => {
+          expect(findGlFormInput().exists()).toBe(true);
+          expect(findGlFormInput().attributes()).toMatchObject({
+            type: 'text',
+            id: 'service_project_url',
+            name: 'service[project_url]',
+            placeholder: defaultProps.placeholder,
+            required: 'required',
+          });
+          expect(findGlFormInput().attributes('readonly')).toBe(readonly);
+        });
+
+        it('does not render other types of input', () => {
+          expect(findGlFormCheckbox().exists()).toBe(false);
+          expect(findGlFormSelect().exists()).toBe(false);
+          expect(findGlFormTextarea().exists()).toBe(false);
+        });
+      });
+    });
 
     describe('help text', () => {
       it('renders description with help text', () => {
         createComponent();
 
-        expect(
-          findGlFormGroup()
-            .find('small')
-            .text(),
-        ).toBe(defaultProps.help);
+        expect(findGlFormGroup().find('small').text()).toBe(defaultProps.help);
       });
 
       it('renders description with help text as HTML', () => {
@@ -193,11 +182,7 @@ describe('DynamicField', () => {
           help: helpHTML,
         });
 
-        expect(
-          findGlFormGroup()
-            .find('small')
-            .html(),
-        ).toContain(helpHTML);
+        expect(findGlFormGroup().find('small').html()).toContain(helpHTML);
       });
     });
 
@@ -205,11 +190,7 @@ describe('DynamicField', () => {
       it('renders label with title', () => {
         createComponent();
 
-        expect(
-          findGlFormGroup()
-            .find('label')
-            .text(),
-        ).toBe(defaultProps.title);
+        expect(findGlFormGroup().find('label').text()).toBe(defaultProps.title);
       });
 
       describe('for password field with some value (hidden by backend)', () => {
@@ -219,11 +200,7 @@ describe('DynamicField', () => {
             value: 'true',
           });
 
-          expect(
-            findGlFormGroup()
-              .find('label')
-              .text(),
-          ).toBe(`Enter new ${defaultProps.title}`);
+          expect(findGlFormGroup().find('label').text()).toBe(`Enter new ${defaultProps.title}`);
         });
       });
     });

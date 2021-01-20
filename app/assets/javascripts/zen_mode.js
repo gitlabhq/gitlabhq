@@ -1,4 +1,4 @@
-/* eslint-disable consistent-return, class-methods-use-this */
+/* eslint-disable consistent-return */
 
 // Zen Mode (full screen) textarea
 //
@@ -6,10 +6,10 @@
 /*= provides zen_mode:leave */
 
 import $ from 'jquery';
-import 'vendor/jquery.scrollTo';
 import Dropzone from 'dropzone';
 import Mousetrap from 'mousetrap';
 import 'mousetrap/plugins/pause/mousetrap-pause';
+import { scrollToElement } from '~/lib/utils/common_utils';
 
 Dropzone.autoDiscover = false;
 
@@ -39,25 +39,21 @@ export default class ZenMode {
   constructor() {
     this.active_backdrop = null;
     this.active_textarea = null;
-    $(document).on('click', '.js-zen-enter', e => {
+    $(document).on('click', '.js-zen-enter', (e) => {
       e.preventDefault();
       return $(e.currentTarget).trigger('zen_mode:enter');
     });
-    $(document).on('click', '.js-zen-leave', e => {
+    $(document).on('click', '.js-zen-leave', (e) => {
       e.preventDefault();
       return $(e.currentTarget).trigger('zen_mode:leave');
     });
-    $(document).on('zen_mode:enter', e => {
-      this.enter(
-        $(e.target)
-          .closest('.md-area')
-          .find('.zen-backdrop'),
-      );
+    $(document).on('zen_mode:enter', (e) => {
+      this.enter($(e.target).closest('.md-area').find('.zen-backdrop'));
     });
     $(document).on('zen_mode:leave', () => {
       this.exit();
     });
-    $(document).on('keydown', e => {
+    $(document).on('keydown', (e) => {
       // Esc
       if (e.keyCode === 27) {
         e.preventDefault();
@@ -80,7 +76,7 @@ export default class ZenMode {
     if (this.active_textarea) {
       Mousetrap.unpause();
       this.active_textarea.closest('.zen-backdrop').removeClass('fullscreen');
-      this.scrollTo(this.active_textarea);
+      scrollToElement(this.active_textarea, { duration: 0, offset: -100 });
       this.active_textarea = null;
       this.active_backdrop = null;
 
@@ -89,11 +85,5 @@ export default class ZenMode {
         Dropzone.forElement('.div-dropzone').enable();
       }
     }
-  }
-
-  scrollTo(zenArea) {
-    return $.scrollTo(zenArea, 0, {
-      offset: -150,
-    });
   }
 }

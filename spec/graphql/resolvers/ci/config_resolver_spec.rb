@@ -7,16 +7,26 @@ RSpec.describe Resolvers::Ci::ConfigResolver do
 
   describe '#resolve' do
     before do
-      yaml_processor_double = instance_double(::Gitlab::Ci::YamlProcessor)
-      allow(yaml_processor_double).to receive(:execute).and_return(fake_result)
+      ci_lint_double = instance_double(::Gitlab::Ci::Lint)
+      allow(ci_lint_double).to receive(:validate).and_return(fake_result)
 
-      allow(::Gitlab::Ci::YamlProcessor).to receive(:new).and_return(yaml_processor_double)
+      allow(::Gitlab::Ci::Lint).to receive(:new).and_return(ci_lint_double)
+    end
+
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }
+
+    subject(:response) do
+      resolve(described_class,
+              args: { project_path: project.full_path, content: content },
+              ctx:  { current_user: user })
     end
 
     context 'with a valid .gitlab-ci.yml' do
       let(:fake_result) do
-        ::Gitlab::Ci::YamlProcessor::Result.new(
-          ci_config: ::Gitlab::Ci::Config.new(content),
+        ::Gitlab::Ci::Lint::Result.new(
+          merged_yaml: content,
+          jobs: [],
           errors: [],
           warnings: []
         )
@@ -27,8 +37,6 @@ RSpec.describe Resolvers::Ci::ConfigResolver do
       end
 
       it 'lints the ci config file' do
-        response = resolve(described_class, args: { content: content }, ctx: {})
-
         expect(response[:status]).to eq(:valid)
         expect(response[:errors]).to be_empty
       end
@@ -38,16 +46,15 @@ RSpec.describe Resolvers::Ci::ConfigResolver do
       let(:content) { 'invalid' }
 
       let(:fake_result) do
-        Gitlab::Ci::YamlProcessor::Result.new(
-          ci_config: nil,
+        Gitlab::Ci::Lint::Result.new(
+          jobs: [],
+          merged_yaml: content,
           errors: ['Invalid configuration format'],
           warnings: []
         )
       end
 
       it 'responds with errors about invalid syntax' do
-        response = resolve(described_class, args: { content: content }, ctx: {})
-
         expect(response[:status]).to eq(:invalid)
         expect(response[:errors]).to eq(['Invalid configuration format'])
       end

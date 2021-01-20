@@ -58,7 +58,7 @@ export default {
   },
   computed: {
     discussionStartingNotes() {
-      return this.discussions.map(discussion => ({
+      return this.discussions.map((discussion) => ({
         ...discussion.notes[0],
         index: discussion.index,
       }));

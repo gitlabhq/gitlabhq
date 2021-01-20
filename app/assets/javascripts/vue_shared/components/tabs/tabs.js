@@ -17,8 +17,8 @@ export default {
   },
   methods: {
     updateTabs() {
-      this.tabs = this.$children.filter(child => child.isTab);
-      this.currentIndex = this.tabs.findIndex(tab => tab.localActive);
+      this.tabs = this.$children.filter((child) => child.isTab);
+      this.currentIndex = this.tabs.findIndex((tab) => tab.localActive);
     },
     setTab(e, index) {
       if (this.stopPropagation) {
@@ -48,7 +48,7 @@ export default {
                 href: '#',
               },
               on: {
-                click: e => this.setTab(e, i),
+                click: (e) => this.setTab(e, i),
               },
             },
             tab.$slots.title || tab.title,

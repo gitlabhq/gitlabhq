@@ -33,7 +33,7 @@ Capybara.register_server :puma_via_workhorse do |app, port, host, **options|
   socket_path = file.path
   file.close! # We just want the filename
 
-  TestEnv.with_workhorse(TestEnv.workhorse_dir, host, port, socket_path) do
+  TestEnv.with_workhorse(host, port, socket_path) do
     Capybara.servers[:puma].call(app, nil, socket_path, **options)
   end
 end

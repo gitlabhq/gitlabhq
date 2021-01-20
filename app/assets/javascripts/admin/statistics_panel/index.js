@@ -2,7 +2,7 @@ import Vue from 'vue';
 import StatisticsPanelApp from './components/app.vue';
 import createStore from './store';
 
-export default function(el) {
+export default function (el) {
   if (!el) {
     return false;
   }

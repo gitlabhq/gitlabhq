@@ -66,7 +66,7 @@ class GroupPolicy < BasePolicy
   with_scope :subject
   condition(:has_project_with_service_desk_enabled) { @subject.has_project_with_service_desk_enabled? }
 
-  rule { design_management_enabled }.policy do
+  rule { can?(:read_group) & design_management_enabled }.policy do
     enable :read_design_activity
   end
 
@@ -116,17 +116,20 @@ class GroupPolicy < BasePolicy
     enable :delete_metrics_dashboard_annotation
     enable :update_metrics_dashboard_annotation
     enable :create_custom_emoji
+    enable :create_package_settings
   end
 
   rule { reporter }.policy do
     enable :reporter_access
     enable :read_container_image
+    enable :admin_board
     enable :admin_label
     enable :admin_list
     enable :admin_issue
     enable :read_metrics_dashboard_annotation
     enable :read_prometheus
     enable :read_package
+    enable :read_package_settings
   end
 
   rule { maintainer }.policy do

@@ -5,7 +5,7 @@ import dropdownCreateLabelComponent from '~/vue_shared/components/sidebar/labels
 
 import { mockSuggestedColors } from './mock_data';
 
-const createComponent = headerTitle => {
+const createComponent = (headerTitle) => {
   const Component = Vue.extend(dropdownCreateLabelComponent);
 
   return mountComponent(Component, {

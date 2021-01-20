@@ -4,7 +4,7 @@ module.exports = {
   ...baseConfig('spec/frontend'),
 };
 
-const karmaTestFile = process.argv.find(arg => arg.includes('spec/javascripts/'));
+const karmaTestFile = process.argv.find((arg) => arg.includes('spec/javascripts/'));
 if (karmaTestFile) {
   console.error(`
 Files in spec/javascripts/ and ee/spec/javascripts need to be run with Karma.

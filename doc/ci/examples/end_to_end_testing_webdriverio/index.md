@@ -2,8 +2,14 @@
 stage: Verify
 group: Testing
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+author: Vincent Tunru
+author_gitlab: Vinnl
 type: tutorial
+date: 2019-02-18
+description: 'Confidence checking your entire app every time a new feature is added can quickly become repetitive. Learn how to automate it with GitLab CI/CD.'
 ---
+
+<!-- vale off -->
 
 # End-to-end testing with GitLab CI/CD and WebdriverIO
 

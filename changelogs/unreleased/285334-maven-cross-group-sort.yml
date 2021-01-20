@@ -1,0 +1,6 @@
+---
+title: Maven will return the most recent maven-metadata.xml file if there are multiple
+  matches accross different projects
+merge_request: 50700
+author:
+type: fixed

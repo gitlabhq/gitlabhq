@@ -1,8 +1,0 @@
----
-name: lfs_chunked_encoding
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48269
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/285581
-milestone: '13.6'
-type: development
-group:
-default_enabled: true

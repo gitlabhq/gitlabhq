@@ -25,7 +25,7 @@ export default {
     },
     suggestedColors() {
       const colorsMap = gon.suggested_label_colors;
-      return Object.keys(colorsMap).map(color => ({ [color]: colorsMap[color] }));
+      return Object.keys(colorsMap).map((color) => ({ [color]: colorsMap[color] }));
     },
   },
   methods: {

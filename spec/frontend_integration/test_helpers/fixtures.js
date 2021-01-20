@@ -10,9 +10,9 @@ const createFactoryWithDefault = (fn, defaultValue) => () => {
 };
 
 const factory = {
-  json: fn => createFactoryWithDefault(fn, { error: 'fixture not found' }),
-  text: fn => createFactoryWithDefault(fn, 'Hello world\nHow are you today?\n'),
-  binary: fn => createFactoryWithDefault(fn, ''),
+  json: (fn) => createFactoryWithDefault(fn, { error: 'fixture not found' }),
+  text: (fn) => createFactoryWithDefault(fn, 'Hello world\nHow are you today?\n'),
+  binary: (fn) => createFactoryWithDefault(fn, ''),
 };
 
 export const getProject = factory.json(() => require('test_fixtures/api/projects/get.json'));

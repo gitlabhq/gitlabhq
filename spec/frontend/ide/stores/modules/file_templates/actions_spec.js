@@ -20,7 +20,7 @@ describe('IDE file templates actions', () => {
   });
 
   describe('requestTemplateTypes', () => {
-    it('commits REQUEST_TEMPLATE_TYPES', done => {
+    it('commits REQUEST_TEMPLATE_TYPES', (done) => {
       testAction(
         actions.requestTemplateTypes,
         null,
@@ -33,7 +33,7 @@ describe('IDE file templates actions', () => {
   });
 
   describe('receiveTemplateTypesError', () => {
-    it('commits RECEIVE_TEMPLATE_TYPES_ERROR and dispatches setErrorMessage', done => {
+    it('commits RECEIVE_TEMPLATE_TYPES_ERROR and dispatches setErrorMessage', (done) => {
       testAction(
         actions.receiveTemplateTypesError,
         null,
@@ -55,7 +55,7 @@ describe('IDE file templates actions', () => {
   });
 
   describe('receiveTemplateTypesSuccess', () => {
-    it('commits RECEIVE_TEMPLATE_TYPES_SUCCESS', done => {
+    it('commits RECEIVE_TEMPLATE_TYPES_SUCCESS', (done) => {
       testAction(
         actions.receiveTemplateTypesSuccess,
         'test',
@@ -81,7 +81,7 @@ describe('IDE file templates actions', () => {
         });
       });
 
-      it('rejects if selectedTemplateType is empty', done => {
+      it('rejects if selectedTemplateType is empty', (done) => {
         const dispatch = jest.fn().mockName('dispatch');
 
         actions
@@ -94,7 +94,7 @@ describe('IDE file templates actions', () => {
           });
       });
 
-      it('dispatches actions', done => {
+      it('dispatches actions', (done) => {
         state.selectedTemplateType = { key: 'licenses' };
 
         testAction(
@@ -121,7 +121,7 @@ describe('IDE file templates actions', () => {
         mock.onGet(/api\/(.*)\/templates\/licenses/).replyOnce(500);
       });
 
-      it('dispatches actions', done => {
+      it('dispatches actions', (done) => {
         state.selectedTemplateType = { key: 'licenses' };
 
         testAction(
@@ -184,7 +184,7 @@ describe('IDE file templates actions', () => {
   });
 
   describe('receiveTemplateError', () => {
-    it('dispatches setErrorMessage', done => {
+    it('dispatches setErrorMessage', (done) => {
       testAction(
         actions.receiveTemplateError,
         'test',
@@ -217,7 +217,7 @@ describe('IDE file templates actions', () => {
           .replyOnce(200, { content: 'testing content' });
       });
 
-      it('dispatches setFileTemplate if template already has content', done => {
+      it('dispatches setFileTemplate if template already has content', (done) => {
         const template = { content: 'already has content' };
 
         testAction(
@@ -230,7 +230,7 @@ describe('IDE file templates actions', () => {
         );
       });
 
-      it('dispatches success', done => {
+      it('dispatches success', (done) => {
         const template = { key: 'mit' };
 
         state.selectedTemplateType = { key: 'licenses' };
@@ -245,7 +245,7 @@ describe('IDE file templates actions', () => {
         );
       });
 
-      it('dispatches success and uses name key for API call', done => {
+      it('dispatches success and uses name key for API call', (done) => {
         const template = { name: 'testing' };
 
         state.selectedTemplateType = { key: 'licenses' };
@@ -266,7 +266,7 @@ describe('IDE file templates actions', () => {
         mock.onGet(/api\/(.*)\/templates\/licenses\/mit/).replyOnce(500);
       });
 
-      it('dispatches error', done => {
+      it('dispatches error', (done) => {
         const template = { name: 'testing' };
 
         state.selectedTemplateType = { key: 'licenses' };

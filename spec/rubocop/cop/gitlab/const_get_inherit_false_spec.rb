@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/gitlab/const_get_inherit_false'
 
-RSpec.describe RuboCop::Cop::Gitlab::ConstGetInheritFalse, type: :rubocop do
+RSpec.describe RuboCop::Cop::Gitlab::ConstGetInheritFalse do
   include CopHelper
 
   subject(:cop) { described_class.new }

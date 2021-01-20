@@ -68,35 +68,10 @@ execution time and the error output.
 ### Number of recent failures
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241759) in GitLab 13.7.
-> - It's [deployed behind a feature flag](../user/feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-the-number-of-recent-failures). **(CORE ONLY)**
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/268249) in GitLab 13.8.
 
 If a test failed in the project's default branch in the last 14 days, a message like
 `Failed {n} time(s) in {default_branch} in the last 14 days` is displayed for that test.
-
-#### Enable or disable the number of recent failures **(CORE ONLY)**
-
-Displaying the number of failures in the last 14 days is under development and not
-ready for production use. It is deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:test_failure_history)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:test_failure_history)
-```
 
 ## How to set it up
 

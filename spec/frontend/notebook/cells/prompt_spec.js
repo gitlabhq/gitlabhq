@@ -7,7 +7,7 @@ describe('Prompt component', () => {
   let vm;
 
   describe('input', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       vm = new Component({
         propsData: {
           type: 'In',
@@ -31,7 +31,7 @@ describe('Prompt component', () => {
   });
 
   describe('output', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       vm = new Component({
         propsData: {
           type: 'Out',

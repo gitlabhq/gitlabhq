@@ -147,6 +147,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: cronjob:ci_pipeline_artifacts_expire_artifacts
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:ci_platform_metrics_update_cron
   :feature_category: :continuous_integration
   :has_external_dependencies:
@@ -188,7 +196,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:gitlab_usage_ping
-  :feature_category: :collection
+  :feature_category: :usage_ping
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -881,9 +889,25 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: jira_connect:jira_connect_sync_builds
+  :feature_category: :integrations
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: jira_connect:jira_connect_sync_deployments
+  :feature_category: :integrations
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: jira_connect:jira_connect_sync_feature_flags
   :feature_category: :integrations
   :has_external_dependencies: true
   :urgency: :low
@@ -897,7 +921,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: jira_connect:jira_connect_sync_project
   :feature_category: :integrations
@@ -1070,7 +1094,15 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_background:ci_daily_build_group_report_results
-  :feature_category: :continuous_integration
+  :feature_category: :code_testing
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: pipeline_background:ci_pipeline_artifacts_coverage_report
+  :feature_category: :code_testing
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1078,14 +1110,6 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_background:ci_pipeline_success_unlock_artifacts
-  :feature_category: :continuous_integration
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: pipeline_background:ci_pipelines_create_artifact
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -1418,6 +1442,14 @@
   :tags: []
 - :name: bulk_import
   :feature_category: :importers
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
+- :name: bulk_imports_entity
+  :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -1576,6 +1608,14 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
+  :tags: []
+- :name: experiments_record_conversion_event
+  :feature_category: :users
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: expire_build_instance_artifacts
   :feature_category: :continuous_integration
@@ -1786,6 +1826,14 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
+  :tags: []
+- :name: namespaces_onboarding_pipeline_created
+  :feature_category: :subgroups
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: namespaces_onboarding_user_added
   :feature_category: :users
@@ -2094,6 +2142,22 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
+  :tags: []
+- :name: snippet_schedule_bulk_repository_shard_moves
+  :feature_category: :gitaly
+  :has_external_dependencies:
+  :urgency: :throttled
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: snippet_update_repository_storage
+  :feature_category: :gitaly
+  :has_external_dependencies:
+  :urgency: :throttled
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: system_hook_push
   :feature_category: :source_code_management

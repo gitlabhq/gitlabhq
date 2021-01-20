@@ -102,6 +102,7 @@ RSpec.describe API::API do
         Labkit::Context.current.to_h.tap do |log_context|
           expect(log_context).to match('correlation_id' => an_instance_of(String),
                                        'meta.caller_id' => '/api/:version/projects/:id/issues',
+                                       'meta.remote_ip' => an_instance_of(String),
                                        'meta.project' => project.full_path,
                                        'meta.root_namespace' => project.namespace.full_path,
                                        'meta.user' => user.username,
@@ -117,6 +118,7 @@ RSpec.describe API::API do
         Labkit::Context.current.to_h.tap do |log_context|
           expect(log_context).to match('correlation_id' => an_instance_of(String),
                                        'meta.caller_id' => '/api/:version/users',
+                                       'meta.remote_ip' => an_instance_of(String),
                                        'meta.feature_category' => 'users')
         end
       end

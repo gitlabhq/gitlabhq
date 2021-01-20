@@ -62,7 +62,7 @@ describe('DiffFileHeader component', () => {
       diffHasDiscussionsResultMock,
       diffHasExpandedDiscussionsResultMock,
       ...Object.values(mockStoreConfig.modules.diffs.actions),
-    ].forEach(mock => mock.mockReset());
+    ].forEach((mock) => mock.mockReset());
 
     wrapper.destroy();
   });
@@ -80,7 +80,7 @@ describe('DiffFileHeader component', () => {
   const findCollapseIcon = () => wrapper.find({ ref: 'collapseIcon' });
   const findEditButton = () => wrapper.find({ ref: 'editButton' });
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     mockStoreConfig = cloneDeep(defaultMockStoreConfig);
     const store = new Vuex.Store(mockStoreConfig);
 
@@ -219,7 +219,7 @@ describe('DiffFileHeader component', () => {
   });
 
   describe('for any file', () => {
-    const otherModes = Object.keys(diffViewerModes).filter(m => m !== 'mode_changed');
+    const otherModes = Object.keys(diffViewerModes).filter((m) => m !== 'mode_changed');
 
     it('for mode_changed file mode displays mode changes', () => {
       createComponent({
@@ -236,20 +236,23 @@ describe('DiffFileHeader component', () => {
       expect(findModeChangedLine().text()).toMatch(/old-mode.+new-mode/);
     });
 
-    it.each(otherModes.map(m => [m]))('for %s file mode does not display mode changes', mode => {
-      createComponent({
-        diffFile: {
-          ...diffFile,
-          a_mode: 'old-mode',
-          b_mode: 'new-mode',
-          viewer: {
-            ...diffFile.viewer,
-            name: diffViewerModes[mode],
+    it.each(otherModes.map((m) => [m]))(
+      'for %s file mode does not display mode changes',
+      (mode) => {
+        createComponent({
+          diffFile: {
+            ...diffFile,
+            a_mode: 'old-mode',
+            b_mode: 'new-mode',
+            viewer: {
+              ...diffFile.viewer,
+              name: diffViewerModes[mode],
+            },
           },
-        },
-      });
-      expect(findModeChangedLine().exists()).toBeFalsy();
-    });
+        });
+        expect(findModeChangedLine().exists()).toBeFalsy();
+      },
+    );
 
     it('displays the LFS label for files stored in LFS', () => {
       createComponent({

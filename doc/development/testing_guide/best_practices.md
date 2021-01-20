@@ -842,6 +842,41 @@ Example:
 expect(response).to have_gitlab_http_status(:ok)
 ```
 
+#### `match_schema` and `match_response_schema`
+
+The `match_schema` matcher allows validating that the subject matches a
+[JSON schema](https://json-schema.org/). The item inside `expect` can be
+a JSON string or a JSON-compatible data structure.
+
+`match_response_schema` is a convenience matcher for using with a
+response object. from a [request
+spec](testing_levels.md#integration-tests).
+
+Examples:
+
+```ruby
+# Matches against spec/fixtures/api/schemas/prometheus/additional_metrics_query_result.json
+expect(data).to match_schema('prometheus/additional_metrics_query_result')
+
+# Matches against ee/spec/fixtures/api/schemas/board.json
+expect(data).to match_schema('board', dir: 'ee')
+
+# Matches against a schema made up of Ruby data structures
+expect(data).to match_schema(Atlassian::Schemata.build_info)
+```
+
+#### `be_valid_json`
+
+`be_valid_json` allows validating that a string parses as JSON and gives
+a non-empty result. To combine it with the schema matching above, use
+`and`:
+
+```ruby
+expect(json_string).to be_valid_json
+
+expect(json_string).to be_valid_json.and match_schema(schema)
+```
+
 ### Testing query performance
 
 Testing query performance allows us to:

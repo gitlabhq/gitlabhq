@@ -131,6 +131,15 @@ RSpec.describe WebHookService do
       end
     end
 
+    context 'when url is not encoded' do
+      let(:project_hook) { create(:project_hook, url: 'http://server.com/my path/') }
+
+      it 'handles exceptions' do
+        expect(service_instance.execute).to eq(status: :error, message: 'bad URI(is not URI?): "http://server.com/my path/"')
+        expect { service_instance.execute }.not_to raise_error
+      end
+    end
+
     context 'when request body size is too big' do
       it 'does not perform the request' do
         stub_const("#{described_class}::REQUEST_BODY_SIZE_LIMIT", 10.bytes)

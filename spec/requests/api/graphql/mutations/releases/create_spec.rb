@@ -116,11 +116,9 @@ RSpec.describe 'Creation of a new release' do
     context 'when all available mutation arguments are provided' do
       it_behaves_like 'no errors'
 
-      # rubocop: disable CodeReuse/ActiveRecord
       it 'returns the new release data' do
         create_release
 
-        release = mutation_response[:release]
         expected_direct_asset_url = Gitlab::Routing.url_helpers.project_release_url(project, Release.find_by(tag: tag_name)) << "/downloads#{asset_link[:directAssetPath]}"
 
         expected_attributes = {
@@ -139,21 +137,17 @@ RSpec.describe 'Creation of a new release' do
                 directAssetUrl: expected_direct_asset_url
               }]
             }
+          },
+          milestones: {
+            nodes: [
+              { title: '12.3' },
+              { title: '12.4' }
+            ]
           }
-        }
+        }.with_indifferent_access
 
-        expect(release).to include(expected_attributes)
-
-        # Right now the milestones are returned in a non-deterministic order.
-        # This `milestones` test should be moved up into the expect(release)
-        # above (and `.to include` updated to `.to eq`) once
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/259012 is addressed.
-        expect(release['milestones']['nodes']).to match_array([
-          { 'title' => '12.4' },
-          { 'title' => '12.3' }
-        ])
+        expect(mutation_response[:release]).to eq(expected_attributes)
       end
-      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     context 'when only the required mutation arguments are provided' do

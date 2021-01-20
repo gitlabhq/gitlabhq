@@ -127,7 +127,7 @@ export default {
       });
     },
     updateCurrentServerSideSettings(settings) {
-      Object.keys(settings).forEach(key => {
+      Object.keys(settings).forEach((key) => {
         if (this.currentServerSideSettings[key] === null) {
           this.currentServerSideSettings[key] = this[key];
         }

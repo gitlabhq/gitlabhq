@@ -3,6 +3,7 @@ import { mount, shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import AlertDetails from '~/alert_management/components/alert_details.vue';
 import AlertSummaryRow from '~/alert_management/components/alert_summary_row.vue';
 import {
@@ -201,6 +202,11 @@ describe('AlertDetails', () => {
 
       it('calls `$apollo.mutate` with `createIssueQuery`', () => {
         const issueIid = '10';
+        mountComponent({
+          mountMethod: mount,
+          data: { alert: { ...mockAlert } },
+        });
+
         jest
           .spyOn(wrapper.vm.$apollo, 'mutate')
           .mockResolvedValue({ data: { createAlertIssue: { issue: { iid: issueIid } } } });
@@ -215,7 +221,7 @@ describe('AlertDetails', () => {
         });
       });
 
-      it('shows error alert when incident creation fails ', () => {
+      it('shows error alert when incident creation fails ', async () => {
         const errorMsg = 'Something went wrong';
         mountComponent({
           mountMethod: mount,
@@ -225,9 +231,8 @@ describe('AlertDetails', () => {
         jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValue(errorMsg);
         findCreateIncidentBtn().trigger('click');
 
-        setImmediate(() => {
-          expect(findIncidentCreationAlert().text()).toBe(errorMsg);
-        });
+        await waitForPromises();
+        expect(findIncidentCreationAlert().text()).toBe(errorMsg);
       });
     });
 

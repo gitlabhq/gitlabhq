@@ -42,7 +42,7 @@ In forms we should use the `for` attribute in the label statement:
 
 ## Testing
 
-1. On MacOS you can use [VoiceOver](http://www.apple.com/accessibility/vision/) by pressing `cmd+F5`.
+1. On MacOS you can use [VoiceOver](https://www.apple.com/accessibility/vision/) by pressing `cmd+F5`.
 1. On Windows you can use [Narrator](https://www.microsoft.com/en-us/accessibility/windows) by pressing Windows logo key + Control + Enter.
 
 ## Online resources

@@ -91,12 +91,7 @@ describe('PrometheusMetrics', () => {
       );
 
       expect($metricsListLi.length).toEqual(metrics.length);
-      expect(
-        $metricsListLi
-          .first()
-          .find('.badge')
-          .text(),
-      ).toEqual(`${metrics[0].active_metrics}`);
+      expect($metricsListLi.first().find('.badge').text()).toEqual(`${metrics[0].active_metrics}`);
     });
 
     it('should show missing environment variables list', () => {
@@ -138,7 +133,7 @@ describe('PrometheusMetrics', () => {
       mock.restore();
     });
 
-    it('should show loader animation while response is being loaded and hide it when request is complete', done => {
+    it('should show loader animation while response is being loaded and hide it when request is complete', (done) => {
       mockSuccess();
 
       prometheusMetrics.loadActiveMetrics();
@@ -152,7 +147,7 @@ describe('PrometheusMetrics', () => {
       });
     });
 
-    it('should show empty state if response failed to load', done => {
+    it('should show empty state if response failed to load', (done) => {
       mockError();
 
       prometheusMetrics.loadActiveMetrics();
@@ -164,7 +159,7 @@ describe('PrometheusMetrics', () => {
       });
     });
 
-    it('should populate metrics list once response is loaded', done => {
+    it('should populate metrics list once response is loaded', (done) => {
       jest.spyOn(prometheusMetrics, 'populateActiveMetrics').mockImplementation();
       mockSuccess();
 

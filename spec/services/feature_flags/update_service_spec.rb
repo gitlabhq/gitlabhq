@@ -26,6 +26,24 @@ RSpec.describe FeatureFlags::UpdateService do
       expect(subject[:status]).to eq(:success)
     end
 
+    context 'the feature flag is disabled' do
+      before do
+        stub_feature_flags(jira_sync_feature_flags: false)
+      end
+
+      it 'does not sync the feature flag to Jira' do
+        expect(::JiraConnect::SyncFeatureFlagsWorker).not_to receive(:perform_async)
+
+        subject
+      end
+    end
+
+    it 'syncs the feature flag to Jira' do
+      expect(::JiraConnect::SyncFeatureFlagsWorker).to receive(:perform_async).with(Integer, Integer)
+
+      subject
+    end
+
     it 'creates audit event with correct message' do
       name_was = feature_flag.name
 
@@ -51,6 +69,12 @@ RSpec.describe FeatureFlags::UpdateService do
 
       it 'does not create audit event' do
         expect { subject }.not_to change { AuditEvent.count }
+      end
+
+      it 'does not sync the feature flag to Jira' do
+        expect(::JiraConnect::SyncFeatureFlagsWorker).not_to receive(:perform_async)
+
+        subject
       end
     end
 

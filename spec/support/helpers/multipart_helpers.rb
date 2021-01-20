@@ -13,29 +13,23 @@ module MultipartHelpers
     )
   end
 
-  # This function assumes a `mode` variable to be set
-  def upload_parameters_for(filepath: nil, key: nil, filename: 'filename', remote_id: 'remote_id')
+  def upload_parameters_for(filepath: nil, key: nil, mode: nil, filename: 'filename', remote_id: 'remote_id')
     result = {
-      "#{key}.name" => filename,
-      "#{key}.type" => "application/octet-stream",
-      "#{key}.sha256" => "1234567890"
+      "name" => filename,
+      "type" => "application/octet-stream",
+      "sha256" => "1234567890"
     }
 
     case mode
     when :local
-      result["#{key}.path"] = filepath
+      result["path"] = filepath
     when :remote
-      result["#{key}.remote_id"] = remote_id
-      result["#{key}.size"] = 3.megabytes
+      result["remote_id"] = remote_id
+      result["size"] = 3.megabytes
     else
       raise ArgumentError, "can't handle #{mode} mode"
     end
 
-    return result if ::Feature.disabled?(:upload_middleware_jwt_params_handler, default_enabled: true)
-
-    # the HandlerForJWTParams expects a jwt token with the upload parameters
-    # *without* the "#{key}." prefix
-    result.deep_transform_keys! { |k| k.remove("#{key}.") }
     {
       "#{key}.gitlab-workhorse-upload" => jwt_token(data: { 'upload' => result })
     }

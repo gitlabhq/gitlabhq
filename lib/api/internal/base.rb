@@ -16,6 +16,7 @@ module API
           user: -> { actor&.user },
           project: -> { project },
           caller_id: route.origin,
+          remote_ip: request.ip,
           feature_category: feature_category
         )
       end

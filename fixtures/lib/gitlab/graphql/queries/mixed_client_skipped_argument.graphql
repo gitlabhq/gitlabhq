@@ -1,0 +1,11 @@
+query($slug: String!, $foo: String) {
+  thingy(someArg: $foo) @client {
+    x
+    y
+    z
+  }
+  post(slug: $slug) {
+    title
+    otherThing @client
+  }
+}

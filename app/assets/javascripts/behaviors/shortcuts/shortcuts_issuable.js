@@ -39,7 +39,7 @@ export default class ShortcutsIssuable extends Shortcuts {
     // ... Or come from a message
     if (!foundMessage) {
       if (documentFragment.originalNodes) {
-        documentFragment.originalNodes.forEach(e => {
+        documentFragment.originalNodes.forEach((e) => {
           let node = e;
           do {
             // Text nodes don't define the `matches` method
@@ -62,7 +62,7 @@ export default class ShortcutsIssuable extends Shortcuts {
     const blockquoteEl = document.createElement('blockquote');
     blockquoteEl.appendChild(el);
     CopyAsGFM.nodeToGFM(blockquoteEl)
-      .then(text => {
+      .then((text) => {
         if (text.trim() === '') {
           return false;
         }

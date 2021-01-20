@@ -29,7 +29,7 @@ export function getAverageByMonth(items = [], options = {}) {
     return { ...memo, [month]: { sum: count, recordCount: 1 } };
   }, {});
 
-  return Object.keys(itemsMap).map(month => {
+  return Object.keys(itemsMap).map((month) => {
     const { sum, recordCount } = itemsMap[month];
     const avg = sum / recordCount;
     if (shouldRound) {

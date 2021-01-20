@@ -49,10 +49,10 @@ export const keybindingGroups = [
   // For each keybinding object, add a `customKeys` property populated with the
   // user's custom keybindings (if the command has been customized).
   // `customKeys` will be `undefined` if the command hasn't been customized.
-  .map(group => {
+  .map((group) => {
     return {
       ...group,
-      keybindings: group.keybindings.map(binding => ({
+      keybindings: group.keybindings.map((binding) => ({
         ...binding,
         customKeys: customizations[binding.command],
       })),
@@ -66,7 +66,7 @@ export const keybindingGroups = [
  * @example
  * { "globalShortcuts.togglePerformanceBar": ["p e r f"] }
  */
-const commandToKeys = flatten(keybindingGroups.map(group => group.keybindings)).reduce(
+const commandToKeys = flatten(keybindingGroups.map((group) => group.keybindings)).reduce(
   (acc, binding) => {
     acc[binding.command] = binding.customKeys || binding.defaultKeys;
     return acc;
@@ -87,7 +87,7 @@ const commandToKeys = flatten(keybindingGroups.map(group => group.keybindings)).
  *
  * Mousetrap.bind(keysFor(TOGGLE_PERFORMANCE_BAR), handler);
  */
-export const keysFor = command => {
+export const keysFor = (command) => {
   if (shouldDisableShortcuts()) {
     return [];
   }

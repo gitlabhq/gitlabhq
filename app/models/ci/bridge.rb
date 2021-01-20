@@ -7,7 +7,6 @@ module Ci
     include Importable
     include AfterCommitQueue
     include Ci::HasRef
-    extend ::Gitlab::Utils::Override
 
     InvalidBridgeTypeError = Class.new(StandardError)
     InvalidTransitionError = Class.new(StandardError)
@@ -200,13 +199,6 @@ module Ci
       end
     end
 
-    override :dependency_variables
-    def dependency_variables
-      return [] unless ::Feature.enabled?(:ci_bridge_dependency_variables, project, default_enabled: true)
-
-      super
-    end
-
     def target_revision_ref
       downstream_pipeline_params.dig(:target_revision, :ref)
     end
@@ -218,7 +210,8 @@ module Ci
         project: downstream_project,
         source: :pipeline,
         target_revision: {
-          ref: target_ref || downstream_project.default_branch
+          ref: target_ref || downstream_project.default_branch,
+          variables_attributes: downstream_variables
         },
         execute_params: {
           ignore_skip_ci: true,
@@ -238,7 +231,8 @@ module Ci
           checkout_sha: parent_pipeline.sha,
           before: parent_pipeline.before_sha,
           source_sha: parent_pipeline.source_sha,
-          target_sha: parent_pipeline.target_sha
+          target_sha: parent_pipeline.target_sha,
+          variables_attributes: downstream_variables
         },
         execute_params: {
           ignore_skip_ci: true,

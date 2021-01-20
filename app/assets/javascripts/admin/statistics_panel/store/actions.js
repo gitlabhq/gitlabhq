@@ -13,7 +13,7 @@ export const fetchStatistics = ({ dispatch }) => {
     .then(({ data }) => {
       dispatch('receiveStatisticsSuccess', convertObjectPropsToCamelCase(data, { deep: true }));
     })
-    .catch(error => dispatch('receiveStatisticsError', error));
+    .catch((error) => dispatch('receiveStatisticsError', error));
 };
 
 export const receiveStatisticsSuccess = ({ commit }, statistics) =>

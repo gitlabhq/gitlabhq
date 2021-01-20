@@ -38,8 +38,8 @@ describe('ErrorDetails', () => {
   let mocks;
   const externalUrl = 'https://sentry.io/organizations/test-sentry-nk/issues/1/?project=1';
 
-  const findInput = name => {
-    const inputs = wrapper.findAll(GlFormInput).filter(c => c.attributes('name') === name);
+  const findInput = (name) => {
+    const inputs = wrapper.findAll(GlFormInput).filter((c) => c.attributes('name') === name);
     return inputs.length ? inputs.at(0) : inputs;
   };
 
@@ -245,7 +245,7 @@ describe('ErrorDetails', () => {
 
       it.each(Object.keys(severityLevel))(
         'should set correct severity level variant for %s badge',
-        level => {
+        (level) => {
           wrapper.setData({
             error: {
               tags: { level: severityLevel[level] },

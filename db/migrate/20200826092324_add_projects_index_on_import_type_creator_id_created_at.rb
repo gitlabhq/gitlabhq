@@ -4,7 +4,7 @@ class AddProjectsIndexOnImportTypeCreatorIdCreatedAt < ActiveRecord::Migration[6
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  INDEX_NAME = 'index_imported_projects_on_import_type_creator_id_created_at'.freeze
+  INDEX_NAME = 'index_imported_projects_on_import_type_creator_id_created_at'
 
   disable_ddl_transaction!
 

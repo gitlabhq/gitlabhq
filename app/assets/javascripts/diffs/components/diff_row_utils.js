@@ -15,27 +15,27 @@ export const isHighlighted = (state, line, isCommented) => {
   return lineCode ? lineCode === state.diffs.highlightedRow : false;
 };
 
-export const isContextLine = type => type === CONTEXT_LINE_TYPE;
+export const isContextLine = (type) => type === CONTEXT_LINE_TYPE;
 
-export const isMatchLine = type => type === MATCH_LINE_TYPE;
+export const isMatchLine = (type) => type === MATCH_LINE_TYPE;
 
-export const isMetaLine = type =>
+export const isMetaLine = (type) =>
   [OLD_NO_NEW_LINE_TYPE, NEW_NO_NEW_LINE_TYPE, EMPTY_CELL_TYPE].includes(type);
 
 export const shouldRenderCommentButton = (isLoggedIn, isCommentButtonRendered) => {
   return isCommentButtonRendered && isLoggedIn;
 };
 
-export const hasDiscussions = line => line?.discussions?.length > 0;
+export const hasDiscussions = (line) => line?.discussions?.length > 0;
 
-export const lineHref = line => `#${line?.line_code || ''}`;
+export const lineHref = (line) => `#${line?.line_code || ''}`;
 
-export const lineCode = line => {
+export const lineCode = (line) => {
   if (!line) return undefined;
   return line.line_code || line.left?.line_code || line.right?.line_code;
 };
 
-export const classNameMapCell = (line, hll, isLoggedIn, isHover) => {
+export const classNameMapCell = ({ line, hll, isLoggedIn, isHover }) => {
   if (!line) return [];
   const { type } = line;
 
@@ -44,15 +44,19 @@ export const classNameMapCell = (line, hll, isLoggedIn, isHover) => {
     {
       hll,
       [LINE_HOVER_CLASS_NAME]: isLoggedIn && isHover && !isContextLine(type) && !isMetaLine(type),
+      old_line: line.type === 'old',
+      new_line: line.type === 'new',
     },
   ];
 };
 
-export const addCommentTooltip = line => {
+export const addCommentTooltip = (line) => {
   let tooltip;
   if (!line) return tooltip;
 
-  tooltip = __('Add a comment to this line');
+  tooltip = gon.drag_comment_selection
+    ? __('Add a comment to this line or drag for multiple lines')
+    : __('Add a comment to this line');
   const brokenSymlinks = line.commentsDisabled;
 
   if (brokenSymlinks) {
@@ -84,7 +88,7 @@ export const shouldShowCommentButton = (hover, context, meta, discussions) => {
   return hover && !context && !meta && !discussions;
 };
 
-export const mapParallel = content => line => {
+export const mapParallel = (content) => (line) => {
   let { left, right } = line;
 
   // Dicussions/Comments
@@ -137,7 +141,7 @@ export const mapParallel = content => line => {
 };
 
 // TODO: Delete this function when unifiedDiffComponents FF is removed
-export const mapInline = content => line => {
+export const mapInline = (content) => (line) => {
   // Discussions/Comments
   const renderCommentRow = line.hasForm || (line.discussions?.length && line.discussionsExpanded);
 

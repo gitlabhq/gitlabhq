@@ -25,4 +25,8 @@ RSpec.configure do |config|
   config.include FastRailsRoot
 
   config.include RuboCop::RSpec::ExpectOffense, type: :rubocop
+
+  config.define_derived_metadata(file_path: %r{spec/rubocop}) do |metadata|
+    metadata[:type] = :rubocop
+  end
 end

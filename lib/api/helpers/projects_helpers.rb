@@ -87,6 +87,7 @@ module API
 
       params :optional_update_params_ce do
         optional :ci_forward_deployment_enabled, type: Boolean, desc: 'Skip older deployment jobs that are still pending'
+        optional :restrict_user_defined_variables, type: Boolean, desc: 'Restrict use of user-defined variables when triggering a pipeline'
       end
 
       params :optional_update_params_ee do
@@ -99,7 +100,7 @@ module API
 
       params :optional_container_expiration_policy_params do
         optional :cadence, type: String, desc: 'Container expiration policy cadence for recurring job'
-        optional :keep_n, type: String, desc: 'Container expiration policy number of images to keep'
+        optional :keep_n, type: Integer, desc: 'Container expiration policy number of images to keep'
         optional :older_than, type: String, desc: 'Container expiration policy remove images older than value'
         optional :name_regex, type: String, desc: 'Container expiration policy regex for image removal'
         optional :name_regex_keep, type: String, desc: 'Container expiration policy regex for image retention'
@@ -141,6 +142,7 @@ module API
           :repository_access_level,
           :request_access_enabled,
           :resolve_outdated_diff_discussions,
+          :restrict_user_defined_variables,
           :shared_runners_enabled,
           :snippets_access_level,
           :tag_list,

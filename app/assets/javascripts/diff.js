@@ -24,9 +24,7 @@ export default class Diff {
     if (!tab || (tab && tab.dataset && tab.dataset.isLocked !== ''))
       FilesCommentButton.init($diffFile);
 
-    const firstFile = $('.files')
-      .first()
-      .get(0);
+    const firstFile = $('.files').first().get(0);
     const canCreateNote = firstFile && firstFile.hasAttribute('data-can-create-note');
     $diffFile.each((index, file) => initImageDiffHelper.initImageDiff(file, canCreateNote));
 
@@ -119,7 +117,7 @@ export default class Diff {
 
     table.removeClass('left-side-selected right-side-selected');
 
-    const lineClass = ['left-side', 'right-side'].filter(name => line.hasClass(name))[0];
+    const lineClass = ['left-side', 'right-side'].filter((name) => line.hasClass(name))[0];
     if (lineClass) {
       table.addClass(`${lineClass}-selected`);
     }
@@ -134,7 +132,7 @@ export default class Diff {
     if (children.length !== 2) {
       return [0, 0];
     }
-    return children.map(elm => parseInt($(elm).data('linenumber'), 10) || 0);
+    return children.map((elm) => parseInt($(elm).data('linenumber'), 10) || 0);
   }
   // eslint-disable-next-line class-methods-use-this
   highlightSelectedLine() {

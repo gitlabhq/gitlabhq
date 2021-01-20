@@ -7,7 +7,7 @@ require 'rubocop/rspec/support'
 
 require_relative '../../../../rubocop/cop/usage_data/large_table'
 
-RSpec.describe RuboCop::Cop::UsageData::LargeTable, type: :rubocop do
+RSpec.describe RuboCop::Cop::UsageData::LargeTable do
   include CopHelper
 
   let(:large_tables) { %i[Rails Time] }

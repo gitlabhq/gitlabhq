@@ -16,7 +16,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
       project: context_project,
       sha: '12345',
       user: context_user,
-      parent_pipeline: parent_pipeline
+      parent_pipeline: parent_pipeline,
+      variables: project.predefined_variables.to_runner_variables
     }
   end
 
@@ -165,7 +166,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
         user: user,
         project: project,
         sha: project.commit('master').id,
-        parent_pipeline: parent_pipeline)
+        parent_pipeline: parent_pipeline,
+        variables: project.predefined_variables.to_runner_variables)
     end
   end
 

@@ -6,7 +6,7 @@ import { __ } from '~/locale';
 
 let stackTracePoll;
 
-const stopPolling = poll => {
+const stopPolling = (poll) => {
   if (poll) poll.stop();
 };
 

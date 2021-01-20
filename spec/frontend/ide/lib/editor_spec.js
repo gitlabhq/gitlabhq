@@ -15,7 +15,7 @@ describe('Multi-file editor library', () => {
   let holder;
   let store;
 
-  const setNodeOffsetWidth = val => {
+  const setNodeOffsetWidth = (val) => {
     Object.defineProperty(instance.instance.getDomNode(), 'offsetWidth', {
       get() {
         return val;

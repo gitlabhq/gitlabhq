@@ -57,9 +57,7 @@ describe('JiraTriggerFields', () => {
       // browsers don't include unchecked boxes in form submissions.
       it('includes comment settings as false even if unchecked', () => {
         expect(
-          findCommentSettings()
-            .find('input[name="service[comment_on_event_enabled]"]')
-            .exists(),
+          findCommentSettings().find('input[name="service[comment_on_event_enabled]"]').exists(),
         ).toBe(true);
       });
 
@@ -106,11 +104,11 @@ describe('JiraTriggerFields', () => {
         true,
       );
 
-      wrapper.findAll('[type=checkbox]').wrappers.forEach(checkbox => {
+      wrapper.findAll('[type=checkbox]').wrappers.forEach((checkbox) => {
         expect(checkbox.attributes('disabled')).toBe('disabled');
       });
 
-      wrapper.findAll('[type=radio]').wrappers.forEach(radio => {
+      wrapper.findAll('[type=radio]').wrappers.forEach((radio) => {
         expect(radio.attributes('disabled')).toBe('disabled');
       });
     });

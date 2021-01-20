@@ -37,17 +37,11 @@ describe('diffs/components/commit_item', () => {
   const getPrevCommitNavElement = () =>
     getCommitNavButtonsElement().find('.btn-group > *:first-child');
 
-  const mountComponent = (propsData, featureFlags = {}) => {
+  const mountComponent = (propsData) => {
     wrapper = mount(Component, {
       propsData: {
         commit,
         ...propsData,
-      },
-      provide: {
-        glFeatures: {
-          mrCommitNeighborNav: true,
-          ...featureFlags,
-        },
       },
       stubs: {
         CommitPipelineStatus: true,
@@ -222,12 +216,6 @@ describe('diffs/components/commit_item', () => {
         commit: { ...mrCommit, prev_commit_id: null },
       });
       expect(getCommitNavButtonsElement().exists()).toEqual(true);
-    });
-
-    it('does not render the commit navigation buttons if the `mrCommitNeighborNav` feature flag is disabled', () => {
-      mountComponent({ commit: mrCommit }, { mrCommitNeighborNav: false });
-
-      expect(getCommitNavButtonsElement().exists()).toEqual(false);
     });
 
     describe('prev commit', () => {

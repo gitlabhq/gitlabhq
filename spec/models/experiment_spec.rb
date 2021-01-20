@@ -164,7 +164,7 @@ RSpec.describe Experiment do
     context 'when an experiment_user already exists for the given user' do
       before do
         # Create an existing experiment_user for this experiment and the :control group
-        experiment.record_user_and_group(user, :control, context)
+        experiment.record_user_and_group(user, :control)
       end
 
       it 'does not create a new experiment_user record' do
@@ -173,15 +173,65 @@ RSpec.describe Experiment do
 
       context 'but the group_type and context has changed' do
         let(:group) { :experimental }
-        let(:context) { { b: 37 } }
 
         it 'updates the existing experiment_user record with group_type' do
           expect { record_user_and_group }.to change { ExperimentUser.last.group_type }
         end
+      end
+    end
 
-        it 'updates the existing experiment_user record with context' do
+    context 'when a context already exists' do
+      let_it_be(:context) { { a: 42, 'b' => 34, 'c': { c1: 100, c2: 'c2', e: :e }, d: [1, 3] } }
+      let_it_be(:initial_expected_context) { { 'a' => 42, 'b' => 34, 'c' => { 'c1' => 100, 'c2' => 'c2', 'e' => 'e' }, 'd' => [1, 3] } }
+
+      before do
+        record_user_and_group
+        experiment.record_user_and_group(user, :control, {})
+      end
+
+      it 'has an initial context with stringified keys' do
+        expect(ExperimentUser.last.context).to eq(initial_expected_context)
+      end
+
+      context 'when updated' do
+        before do
           record_user_and_group
-          expect(ExperimentUser.last.context).to eq({ 'b' => 37 })
+          experiment.record_user_and_group(user, :control, new_context)
+        end
+
+        context 'with an empty context' do
+          let_it_be(:new_context) { {} }
+
+          it 'keeps the initial context' do
+            expect(ExperimentUser.last.context).to eq(initial_expected_context)
+          end
+        end
+
+        context 'with string keys' do
+          let_it_be(:new_context) { { f: :some_symbol } }
+
+          it 'adds new symbols stringified' do
+            expected_context = initial_expected_context.merge('f' => 'some_symbol')
+            expect(ExperimentUser.last.context).to eq(expected_context)
+          end
+        end
+
+        context 'with atomic values or array values' do
+          let_it_be(:new_context) { { b: 97, d: [99] } }
+
+          it 'overrides the values' do
+            expected_context = { 'a' => 42, 'b' => 97, 'c' => { 'c1' => 100, 'c2' => 'c2', 'e' => 'e' }, 'd' => [99] }
+            expect(ExperimentUser.last.context).to eq(expected_context)
+          end
+        end
+
+        context 'with nested hashes' do
+          let_it_be(:new_context) { { c: { g: 107 } } }
+
+          it 'inserts nested additional values in the same keys' do
+            expected_context = initial_expected_context.deep_merge('c' => { 'g' => 107 })
+            expect(ExperimentUser.last.context).to eq(expected_context)
+          end
         end
       end
     end

@@ -23,7 +23,7 @@ describe('ServiceDeskService', () => {
     it('makes a request to set service desk', () => {
       axiosMock.onPut(endpoint).replyOnce(httpStatusCodes.OK, dummyResponse);
 
-      return service.toggleServiceDesk(true).then(response => {
+      return service.toggleServiceDesk(true).then((response) => {
         expect(response.data).toEqual(dummyResponse);
       });
     });
@@ -31,7 +31,7 @@ describe('ServiceDeskService', () => {
     it('fails on error response', () => {
       axiosMock.onPut(endpoint).networkError();
 
-      return service.toggleServiceDesk(true).catch(error => {
+      return service.toggleServiceDesk(true).catch((error) => {
         expect(error.message).toBe(errorMessage);
       });
     });
@@ -63,7 +63,7 @@ describe('ServiceDeskService', () => {
           },
           true,
         )
-        .then(response => {
+        .then((response) => {
           expect(response.data).toEqual(dummyResponse);
         });
     });
@@ -79,7 +79,7 @@ describe('ServiceDeskService', () => {
           },
           true,
         )
-        .catch(error => {
+        .catch((error) => {
           expect(error.message).toBe(errorMessage);
         });
     });

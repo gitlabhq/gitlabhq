@@ -13,7 +13,7 @@ export default {
     project: {
       type: Object,
       required: true,
-      validator: p =>
+      validator: (p) =>
         (Number.isFinite(p.id) || isString(p.id)) &&
         isString(p.name) &&
         (isString(p.name_with_namespace) || isString(p.nameWithNamespace)),

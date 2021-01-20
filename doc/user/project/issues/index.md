@@ -22,8 +22,8 @@ their implementation between:
 They can also be used for a variety of other purposes, customized to your
 needs and workflow.
 
-Issues are always associated with a specific project, but if you have multiple projects in a group,
-you can also view all the issues collectively at the group level.
+Issues are always associated with a specific project. If you have multiple projects in a group,
+you can view all of the issues collectively at the group level.
 
 **Common use cases include:**
 
@@ -91,9 +91,13 @@ must be set.
 
 ## Viewing and managing issues
 
-While you can view and manage the full details of an issue on the [issue page](#issue-page),
-you can also work with multiple issues at a time using the [Issues List](#issues-list),
-[Issue Boards](#issue-boards), Issue references, and [Epics](#epics). **(PREMIUM)**
+While you can view and manage details of an issue on the [issue page](#issue-page),
+you can also work with multiple issues at a time using:
+
+- [Issues List](#issues-list).
+- [Issue Boards](#issue-boards).
+- Issue references.
+- [Epics](#epics) **(PREMIUM)**.
 
 Key actions for issues include:
 
@@ -117,14 +121,17 @@ and modify them if you have the necessary [permissions](../../permissions.md).
 Assignees in the sidebar are updated in real time. This feature is **disabled by default**.
 To enable, you need to enable [ActionCable in-app mode](https://docs.gitlab.com/omnibus/settings/actioncable.html).
 
-### Issues list
+### Issues List
 
-![Project issues list view](img/project_issues_list_view.png)
+![Project Issues List view](img/project_issues_list_view.png)
 
-On the Issues List, you can view all issues in the current project, or from multiple
-projects when opening the Issues List from the higher-level group context. Filter the
-issue list with a [search query](../../search/index.md#filtering-issue-and-merge-request-lists),
-including specific metadata, such as label(s), assignees(s), status, and more. From this
+On the Issues List, you can:
+
+- View all issues in a project when opening the Issues List from a project context.
+- View all issues in a groups's projects when opening the Issues List from a group context.
+
+You can filter the Issues List with a [search query](../../search/index.md#filtering-issue-and-merge-request-lists),
+including specific metadata, such as labels, assignees, status, and more. From this
 view, you can also make certain changes [in bulk](../bulk_editing.md) to the displayed issues.
 
 For more information, see the [Issue Data and Actions](issue_data_and_actions.md) page
@@ -140,21 +147,21 @@ You can sort a list of issues in several ways, for example by issue creation dat
 labels or their assignees**(PREMIUM)**. They offer the flexibility to manage issues using
 highly customizable workflows.
 
-You can reorder issues within a column. If you drag an issue card to another column, its
-associated label or assignee will change to match that of the new column. The entire
+You can reorder issues in the column. If you drag an issue card to another column, its
+associated label or assignee is changed to match that of the new column. The entire
 board can also be filtered to only include issues from a certain milestone or an overarching
 label.
 
 ### Design Management
 
 With [Design Management](design_management.md), you can upload design
-assets to issues and view them all together to easily share and
-collaborate with your team.
+assets to issues and view them all together for sharing and
+collaboration with your team.
 
 ### Epics **(PREMIUM)**
 
 [Epics](../../group/epics/index.md) let you manage your portfolio of projects more
-efficiently and with less effort by tracking groups of issues that share a theme, across
+efficiently and with less effort. Epics track groups of issues that share a theme, across
 projects and milestones.
 
 ### Related issues
@@ -179,10 +186,10 @@ message in the Activity stream about the reference, with a link to the other iss
 To prevent duplication of issues for the same topic, GitLab searches for similar issues
 when new issues are being created.
 
-When typing in the title in the **New Issue** page, GitLab searches titles and descriptions
-across all issues the user has access to in the current project. Up to five similar issues,
-sorted by most recently updated, are displayed below the title box. Note that this feature
-requires [GraphQL](../../../api/graphql/index.md) to be enabled.
+As you type in the title field of the **New Issue** page, GitLab searches titles and descriptions
+across all issues to in the current project. Only issues you have access to are returned.
+Up to five similar issues, sorted by most recently updated, are displayed below the title box.
+[GraphQL](../../../api/graphql/index.md) must be enabled to use this feature.
 
 ![Similar issues](img/similar_issues.png)
 
@@ -193,8 +200,8 @@ requires [GraphQL](../../../api/graphql/index.md) to be enabled.
 > - Issue health status visible in issue lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45141) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.6.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/213567) in GitLab 13.7.
 
-To help you track the status of your issues, you can assign a status to each issue to flag work
-that's progressing as planned or needs attention to keep on schedule:
+To help you track issue statuses, you can assign a status to each issue.
+This marks issues as progressing as planned or needs attention to keep on schedule:
 
 - **On track** (green)
 - **Needs attention** (amber)

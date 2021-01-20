@@ -37,16 +37,11 @@ module Projects
       raise InvalidStateError, 'missing pages artifacts' unless build.artifacts?
       raise InvalidStateError, 'build SHA is outdated for this ref' unless latest?
 
-      # Create temporary directory in which we will extract the artifacts
-      make_secure_tmp_dir(tmp_path) do |archive_path|
-        extract_archive!(archive_path)
+      build.artifacts_file.use_file do |artifacts_path|
+        deploy_to_legacy_storage(artifacts_path)
 
-        # Check if we did extract public directory
-        archive_public_path = File.join(archive_path, PUBLIC_DIR)
-        raise InvalidStateError, 'pages miss the public folder' unless Dir.exist?(archive_public_path)
-        raise InvalidStateError, 'build SHA is outdated for this ref' unless latest?
+        create_pages_deployment(artifacts_path, build)
 
-        deploy_page!(archive_public_path)
         success
       end
     rescue InvalidStateError => e
@@ -84,15 +79,29 @@ module Projects
       )
     end
 
-    def extract_archive!(temp_path)
+    def deploy_to_legacy_storage(artifacts_path)
+      # Create temporary directory in which we will extract the artifacts
+      make_secure_tmp_dir(tmp_path) do |tmp_path|
+        extract_archive!(artifacts_path, tmp_path)
+
+        # Check if we did extract public directory
+        archive_public_path = File.join(tmp_path, PUBLIC_DIR)
+        raise InvalidStateError, 'pages miss the public folder' unless Dir.exist?(archive_public_path)
+        raise InvalidStateError, 'build SHA is outdated for this ref' unless latest?
+
+        deploy_page!(archive_public_path)
+      end
+    end
+
+    def extract_archive!(artifacts_path, temp_path)
       if artifacts.ends_with?('.zip')
-        extract_zip_archive!(temp_path)
+        extract_zip_archive!(artifacts_path, temp_path)
       else
         raise InvalidStateError, 'unsupported artifacts format'
       end
     end
 
-    def extract_zip_archive!(temp_path)
+    def extract_zip_archive!(artifacts_path, temp_path)
       raise InvalidStateError, 'missing artifacts metadata' unless build.artifacts_metadata?
 
       # Calculate page size after extract
@@ -102,11 +111,8 @@ module Projects
         raise InvalidStateError, "artifacts for pages are too large: #{public_entry.total_size}"
       end
 
-      build.artifacts_file.use_file do |artifacts_path|
-        SafeZip::Extract.new(artifacts_path)
-          .extract(directories: [PUBLIC_DIR], to: temp_path)
-        create_pages_deployment(artifacts_path, build)
-      end
+      SafeZip::Extract.new(artifacts_path)
+        .extract(directories: [PUBLIC_DIR], to: temp_path)
     rescue SafeZip::Extract::Error => e
       raise FailedToExtractError, e.message
     end
@@ -150,6 +156,9 @@ module Projects
         deployment = project.pages_deployments.create!(file: file,
                                                        file_count: entries_count,
                                                        file_sha256: sha256)
+
+        raise InvalidStateError, 'build SHA is outdated for this ref' unless latest?
+
         project.update_pages_deployment!(deployment)
       end
 

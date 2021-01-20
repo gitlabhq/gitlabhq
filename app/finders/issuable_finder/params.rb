@@ -108,16 +108,8 @@ class IssuableFinder
       project_id.present?
     end
 
-    def group
-      strong_memoize(:group) do
-        if params[:group_id].is_a?(Group)
-          params[:group_id]
-        elsif params[:group_id].present?
-          Group.find(params[:group_id])
-        else
-          nil
-        end
-      end
+    def group?
+      group_id.present?
     end
 
     def related_groups
@@ -143,8 +135,23 @@ class IssuableFinder
       end
     end
 
+    def group
+      strong_memoize(:group) do
+        next nil unless group?
+
+        group = group_id.is_a?(Group) ? group_id : Group.find(group_id)
+        group = nil unless Ability.allowed?(current_user, :read_group, group)
+
+        group
+      end
+    end
+
     def project_id
       params[:project_id]
+    end
+
+    def group_id
+      params[:group_id]
     end
 
     def projects
@@ -216,14 +223,14 @@ class IssuableFinder
       strong_memoize(:milestones) do
         if milestones?
           if project?
-            group_id = project.group&.id
+            project_group_id = project.group&.id
             project_id = project.id
           end
 
-          group_id = group.id if group
+          project_group_id = group.id if group
 
           search_params =
-            { title: params[:milestone_title], project_ids: project_id, group_ids: group_id }
+            { title: params[:milestone_title], project_ids: project_id, group_ids: project_group_id }
 
           MilestonesFinder.new(search_params).execute # rubocop: disable CodeReuse/Finder
         else

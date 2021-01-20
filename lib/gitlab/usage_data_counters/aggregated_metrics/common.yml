@@ -8,6 +8,9 @@
 #                Corresponding feature flag should have `default_enabled` attribute set to `false`.
 #                This attribute is OPTIONAL and can be omitted, when `feature_flag` is missing no feature flag will be checked.
 ---
+- name: compliance_features_track_unique_visits_union
+  operator: OR
+  events: ['g_compliance_audit_events', 'g_compliance_dashboard', 'i_compliance_audit_events', 'a_compliance_audit_events_api', 'i_compliance_credential_inventory']
 - name: product_analytics_test_metrics_union
   operator: OR
   events: ['i_search_total', 'i_search_advanced', 'i_search_paid']
@@ -22,7 +25,6 @@
     'incident_management_alert_todo',
     'incident_management_alert_create_incident'
   ]
-  feature_flag: usage_data_incident_management_alerts_total_unique_counts
 - name: incident_management_incidents_total_unique_counts
   operator: OR
   events: [
@@ -38,4 +40,3 @@
     'incident_management_incident_unrelate',
     'incident_management_incident_change_confidential'
   ]
-  feature_flag: usage_data_incident_management_incidents_total_unique_counts

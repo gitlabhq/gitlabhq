@@ -1,0 +1,3 @@
+fragment ThingyF on Thingy {
+  x y z
+}

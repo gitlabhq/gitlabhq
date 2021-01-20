@@ -6,7 +6,7 @@ import Component from '~/sidebar/components/reviewers/reviewer_title.vue';
 describe('ReviewerTitle component', () => {
   let wrapper;
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     return shallowMount(Component, {
       propsData: {
         numberOfReviewers: 0,
@@ -38,27 +38,6 @@ describe('ReviewerTitle component', () => {
       });
 
       expect(wrapper.vm.$el.innerText.trim()).toEqual('2 Reviewers');
-    });
-  });
-
-  describe('gutter toggle', () => {
-    it('does not show toggle by default', () => {
-      wrapper = createComponent({
-        numberOfReviewers: 2,
-        editable: false,
-      });
-
-      expect(wrapper.vm.$el.querySelector('.gutter-toggle')).toBeNull();
-    });
-
-    it('shows toggle when showToggle is true', () => {
-      wrapper = createComponent({
-        numberOfReviewers: 2,
-        editable: false,
-        showToggle: true,
-      });
-
-      expect(wrapper.vm.$el.querySelector('.gutter-toggle')).toEqual(expect.any(Object));
     });
   });
 

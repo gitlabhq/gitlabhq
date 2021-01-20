@@ -32,7 +32,7 @@ describe('UUIDs Util', () => {
       const ids = uuids({ count: 11 });
 
       expect(ids.length).toEqual(11);
-      expect(ids.every(id => UUIDV4.test(id))).toEqual(true);
+      expect(ids.every((id) => UUIDV4.test(id))).toEqual(true);
     });
 
     it.each`

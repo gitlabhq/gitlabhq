@@ -60,15 +60,15 @@ export default class MRWidgetService {
   }
 
   fetchApprovals() {
-    return axios.get(this.apiApprovalsPath).then(res => res.data);
+    return axios.get(this.apiApprovalsPath).then((res) => res.data);
   }
 
   approveMergeRequest() {
-    return axios.post(this.apiApprovePath).then(res => res.data);
+    return axios.post(this.apiApprovePath).then((res) => res.data);
   }
 
   unapproveMergeRequest() {
-    return axios.post(this.apiUnapprovePath).then(res => res.data);
+    return axios.post(this.apiUnapprovePath).then((res) => res.data);
   }
 
   static executeInlineAction(url) {

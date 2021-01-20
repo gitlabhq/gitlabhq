@@ -8,13 +8,13 @@ describe('highlight', () => {
   });
 
   it(`should return an empty string in the case of invalid inputs`, () => {
-    [null, undefined].forEach(input => {
+    [null, undefined].forEach((input) => {
       expect(highlight(input, 'match')).toBe('');
     });
   });
 
   it(`should return the original value if match is null, undefined, or ''`, () => {
-    [null, undefined].forEach(match => {
+    [null, undefined].forEach((match) => {
       expect(highlight('gitlab', match)).toBe('gitlab');
     });
   });

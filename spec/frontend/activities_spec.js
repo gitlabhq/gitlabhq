@@ -44,23 +44,19 @@ describe('Activities', () => {
   });
 
   for (let i = 0; i < filters.length; i += 1) {
-    (i => {
+    ((i) => {
       describe(`when selecting ${getEventName(i)}`, () => {
         beforeEach(() => {
           $(getSelector(i)).click();
         });
 
         for (let x = 0; x < filters.length; x += 1) {
-          (x => {
+          ((x) => {
             const shouldHighlight = i === x;
             const testName = shouldHighlight ? 'should highlight' : 'should not highlight';
 
             it(`${testName} ${getEventName(x)}`, () => {
-              expect(
-                $(getSelector(x))
-                  .parent()
-                  .hasClass('active'),
-              ).toEqual(shouldHighlight);
+              expect($(getSelector(x)).parent().hasClass('active')).toEqual(shouldHighlight);
             });
           })(x);
         }

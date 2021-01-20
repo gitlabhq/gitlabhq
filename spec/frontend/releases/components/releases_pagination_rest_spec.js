@@ -17,7 +17,7 @@ describe('~/releases/components/releases_pagination_rest.vue', () => {
 
   const projectId = 19;
 
-  const createComponent = pageInfo => {
+  const createComponent = (pageInfo) => {
     listModule = createListModule({ projectId });
 
     listModule.state.restPageInfo = pageInfo;

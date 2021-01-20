@@ -1,4 +1,4 @@
-import { GlAvatar, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlAvatar, GlSprintf, GlLink, GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import component from '~/vue_shared/components/registry/title_area.vue';
 
@@ -9,12 +9,13 @@ describe('title area', () => {
 
   const findSubHeaderSlot = () => wrapper.find('[data-testid="sub-header"]');
   const findRightActionsSlot = () => wrapper.find('[data-testid="right-actions"]');
-  const findMetadataSlot = name => wrapper.find(`[data-testid="${name}"]`);
+  const findMetadataSlot = (name) => wrapper.find(`[data-testid="${name}"]`);
   const findTitle = () => wrapper.find('[data-testid="title"]');
   const findAvatar = () => wrapper.find(GlAvatar);
   const findInfoMessages = () => wrapper.findAll('[data-testid="info-message"]');
   const findDynamicSlot = () => wrapper.find(`[data-testid="${DYNAMIC_SLOT}`);
   const findSlotOrderElements = () => wrapper.findAll('[slot-test]');
+  const findSkeletonLoader = () => wrapper.find(GlSkeletonLoader);
 
   const mountComponent = ({ propsData = { title: 'foo' }, slots } = {}) => {
     wrapper = shallowMount(component, {
@@ -96,9 +97,32 @@ describe('title area', () => {
       mountComponent({ slots: slotMocks });
 
       await wrapper.vm.$nextTick();
-      slotNames.forEach(name => {
+      slotNames.forEach((name) => {
         expect(findMetadataSlot(name).exists()).toBe(true);
       });
+    });
+
+    it('is/are hidden when metadata-loading is true', async () => {
+      mountComponent({ slots: slotMocks, propsData: { title: 'foo', metadataLoading: true } });
+
+      await wrapper.vm.$nextTick();
+      slotNames.forEach((name) => {
+        expect(findMetadataSlot(name).exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('metadata skeleton loader', () => {
+    it('is hidden when metadata loading is false', () => {
+      mountComponent();
+
+      expect(findSkeletonLoader().exists()).toBe(false);
+    });
+
+    it('is shown when metadata loading is true', () => {
+      mountComponent({ propsData: { metadataLoading: true } });
+
+      expect(findSkeletonLoader().exists()).toBe(true);
     });
   });
 
@@ -142,16 +166,8 @@ describe('title area', () => {
 
       await wrapper.vm.$nextTick();
 
-      expect(
-        findSlotOrderElements()
-          .at(0)
-          .attributes('data-testid'),
-      ).toBe(DYNAMIC_SLOT);
-      expect(
-        findSlotOrderElements()
-          .at(1)
-          .attributes('data-testid'),
-      ).toBe('metadata-foo');
+      expect(findSlotOrderElements().at(0).attributes('data-testid')).toBe(DYNAMIC_SLOT);
+      expect(findSlotOrderElements().at(1).attributes('data-testid')).toBe('metadata-foo');
     });
   });
 

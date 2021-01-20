@@ -32,8 +32,8 @@ const filesWithChanges = ({ stagedFiles = [], changedFiles = [], entries = {} })
   // We need to clean "move" actions, because we can only support 100% similarity moves at the moment.
   // This is because the previous file's content might not be loaded.
   Object.values(changes)
-    .filter(change => change.action === commitActionTypes.move)
-    .forEach(change => {
+    .filter((change) => change.action === commitActionTypes.move)
+    .forEach((change) => {
       const prev = changes[change.file.prevPath];
 
       if (!prev) {
@@ -51,14 +51,14 @@ const filesWithChanges = ({ stagedFiles = [], changedFiles = [], entries = {} })
 
   // Next, we need to add deleted directories by looking at the parents
   Object.values(changes)
-    .filter(change => change.action === commitActionTypes.delete && change.file.parentPath)
+    .filter((change) => change.action === commitActionTypes.delete && change.file.parentPath)
     .forEach(({ file }) => {
       // Do nothing if we've already visited this directory.
       if (changes[file.parentPath]) {
         return;
       }
 
-      getDeletedParents(entries, file).forEach(parent => {
+      getDeletedParents(entries, file).forEach((parent) => {
         changes[parent.path] = { action: commitActionTypes.delete, file: parent };
       });
     });
@@ -66,13 +66,15 @@ const filesWithChanges = ({ stagedFiles = [], changedFiles = [], entries = {} })
   return Object.values(changes);
 };
 
-const createDiff = state => {
+const createDiff = (state) => {
   const changes = filesWithChanges(state);
 
-  const toDelete = changes.filter(x => x.action === commitActionTypes.delete).map(x => x.file.path);
+  const toDelete = changes
+    .filter((x) => x.action === commitActionTypes.delete)
+    .map((x) => x.file.path);
 
   const patch = changes
-    .filter(x => x.action !== commitActionTypes.delete)
+    .filter((x) => x.action !== commitActionTypes.delete)
     .map(({ file, action }) => createFileDiff(file, action))
     .join('');
 

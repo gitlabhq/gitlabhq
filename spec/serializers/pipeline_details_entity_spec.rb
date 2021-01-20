@@ -183,5 +183,7 @@ RSpec.describe PipelineDetailsEntity do
         expect(source_jobs[child_pipeline.id][:name]).to eq('child')
       end
     end
+
+    it_behaves_like 'public artifacts'
   end
 end

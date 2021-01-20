@@ -1,12 +1,14 @@
 # Changelog for gitlab-workhorse
 
-## v8.58.2
+## v8.59.0
 
-### Security
-- Allow DELETE HTTP method
+### Fixed
+- Image scaling: strip out iCCP chunks in PNG files
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/673
+
+### Other
+- Extract logging concerns into a separate module
   https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/
-
-## v8.58.1
 
 ### Security
 - Reject unknown http methods

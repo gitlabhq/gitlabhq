@@ -121,6 +121,9 @@ module Types
     field :moved_to, Types::IssueType, null: true,
           description: 'Updated Issue after it got moved to another project'
 
+    field :create_note_email, GraphQL::STRING_TYPE, null: true,
+          description: 'User specific email address for the issue'
+
     def author
       Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find
     end
@@ -139,6 +142,10 @@ module Types
 
     def discussion_locked
       !!object.discussion_locked
+    end
+
+    def create_note_email
+      object.creatable_note_email_address(context[:current_user])
     end
   end
 end

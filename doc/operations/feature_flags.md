@@ -226,9 +226,9 @@ To remove users from a user list:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8240) in GitLab 12.2.
 > - [Made read-only](https://gitlab.com/gitlab-org/gitlab/-/issues/220228) in GitLab 13.4.
 
-In GitLab 13.0 and earlier, the **Rollout strategy** setting affects which users will experience
-the feature as enabled. Choose the percentage of users that the feature will be enabled
-for. The rollout strategy will have no effect if the environment spec is disabled.
+In GitLab 13.0 and earlier, the **Rollout strategy** setting affects which users experience
+the feature as enabled. Choose the percentage of users that the feature is enabled
+for. The rollout strategy has no effect if the environment spec is disabled.
 
 It can be set to:
 
@@ -282,7 +282,7 @@ To get the access credentials that your application needs to communicate with Gi
      could be `production` or similar. This value is used for the environment spec evaluation.
 
 Note that the meaning of these fields might change over time. For example, we're not sure if
-**Instance ID** will be single token or multiple tokens, assigned to the **Environment**. Also,
+**Instance ID** is a single token or multiple tokens, assigned to the **Environment**. Also,
 **Application name** could describe the application version instead of the running environment.
 
 ### Choose a client library

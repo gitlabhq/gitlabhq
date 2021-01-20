@@ -10,6 +10,9 @@ Incidents are critical entities in incident management workflows. They represent
 a service disruption or outage that needs to be restored urgently. GitLab provides
 tools for the triage, response, and remediation of incidents.
 
+Users with at least Guest [permissions](../../user/permissions.md) can access
+incidents [on public projects](../../user/permissions.md#project-members-permissions).
+
 ## Incident Creation
 
 You can create an incident manually or automatically.
@@ -126,7 +129,7 @@ For a live example of the incident list in action, visit this
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230847) in GitLab 13.4.
 
-Users with at least Reporter [permissions](../../user/permissions.md) can view
+Users with at least Guest [permissions](../../user/permissions.md) can view
 the Incident Details page. Navigate to **Operations > Incidents** in your project's
 sidebar, and select an incident from the list.
 
@@ -159,6 +162,19 @@ Beneath the highlight bar, GitLab displays a summary that includes the following
 
 Comments are displayed in threads, but can be displayed chronologically
 [in a timeline view](#timeline-view).
+
+### Metrics
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235994) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.8.
+
+In many cases, incidents are associated to metrics. You can upload screenshots of metric
+charts in the **Metrics** tab:
+
+![Incident Metrics tab](img/incident_metrics_tab_v13_8.png)
+
+When you upload an image, you can associate it with a URL to the original graph. Users can access the original graph by clicking the image:
+
+![Metric image URL dialog](img/metric_image_url_dialog_v13_8.png)
 
 ### Alert details
 

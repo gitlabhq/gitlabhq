@@ -47,11 +47,7 @@ describe('NpmInstallation', () => {
 
   describe('installation commands', () => {
     it('renders the correct npm command', () => {
-      expect(
-        findCodeInstructions()
-          .at(0)
-          .props(),
-      ).toMatchObject({
+      expect(findCodeInstructions().at(0).props()).toMatchObject({
         instruction: 'npm i @Test/package',
         multiline: false,
         trackingAction: TrackingActions.COPY_NPM_INSTALL_COMMAND,
@@ -59,11 +55,7 @@ describe('NpmInstallation', () => {
     });
 
     it('renders the correct yarn command', () => {
-      expect(
-        findCodeInstructions()
-          .at(1)
-          .props(),
-      ).toMatchObject({
+      expect(findCodeInstructions().at(1).props()).toMatchObject({
         instruction: 'yarn add @Test/package',
         multiline: false,
         trackingAction: TrackingActions.COPY_YARN_INSTALL_COMMAND,
@@ -73,11 +65,7 @@ describe('NpmInstallation', () => {
 
   describe('setup commands', () => {
     it('renders the correct npm command', () => {
-      expect(
-        findCodeInstructions()
-          .at(2)
-          .props(),
-      ).toMatchObject({
+      expect(findCodeInstructions().at(2).props()).toMatchObject({
         instruction: 'echo @Test:registry=undefined/ >> .npmrc',
         multiline: false,
         trackingAction: TrackingActions.COPY_NPM_SETUP_COMMAND,
@@ -85,11 +73,7 @@ describe('NpmInstallation', () => {
     });
 
     it('renders the correct yarn command', () => {
-      expect(
-        findCodeInstructions()
-          .at(3)
-          .props(),
-      ).toMatchObject({
+      expect(findCodeInstructions().at(3).props()).toMatchObject({
         instruction: 'echo \\"@Test:registry\\" \\"undefined/\\" >> .yarnrc',
         multiline: false,
         trackingAction: TrackingActions.COPY_YARN_SETUP_COMMAND,

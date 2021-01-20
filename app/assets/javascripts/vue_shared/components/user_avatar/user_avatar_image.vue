@@ -104,7 +104,7 @@ export default {
       :target="() => $refs.userAvatarImage"
       :placement="tooltipPlacement"
       boundary="window"
-      class="js-user-avatar-image-toolip"
+      class="js-user-avatar-image-tooltip"
     >
       <slot> {{ tooltipText }} </slot>
     </gl-tooltip>

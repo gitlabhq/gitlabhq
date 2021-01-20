@@ -12,7 +12,7 @@ module Mutations
       argument :project_path,
                GraphQL::ID_TYPE,
                required: true,
-               description: 'The project path where the container expiration policy is located'
+               description: 'The project path where the container expiration policy is located.'
 
       argument :enabled,
                GraphQL::BOOLEAN_TYPE,
@@ -47,7 +47,7 @@ module Mutations
       field :container_expiration_policy,
             Types::ContainerExpirationPolicyType,
             null: true,
-            description: 'The container expiration policy after mutation'
+            description: 'The container expiration policy after mutation.'
 
       def resolve(project_path:, **args)
         project = authorized_find!(full_path: project_path)

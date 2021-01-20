@@ -1,5 +1,5 @@
 export function normalizeData(data, path, extra = () => {}) {
-  return data.map(d => ({
+  return data.map((d) => ({
     sha: d.commit.id,
     message: d.commit.message,
     titleHtml: d.commit_title_html,

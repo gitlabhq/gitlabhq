@@ -411,6 +411,48 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
+  describe '.by_squash_commit_sha' do
+    subject { described_class.by_squash_commit_sha(sha) }
+
+    let(:sha) { '123abc' }
+    let(:merge_request) { create(:merge_request, :merged, squash_commit_sha: sha) }
+
+    it 'returns merge requests that match the given squash commit' do
+      is_expected.to eq([merge_request])
+    end
+  end
+
+  describe '.by_related_commit_sha' do
+    subject { described_class.by_related_commit_sha(sha) }
+
+    context 'when commit is a squash commit' do
+      let!(:merge_request) { create(:merge_request, :merged, squash_commit_sha: sha) }
+      let(:sha) { '123abc' }
+
+      it { is_expected.to eq([merge_request]) }
+    end
+
+    context 'when commit is a part of the merge request' do
+      let!(:merge_request) { create(:merge_request, :with_diffs) }
+      let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+
+      it { is_expected.to eq([merge_request]) }
+    end
+
+    context 'when commit is a merge commit' do
+      let!(:merge_request) { create(:merge_request, :merged, merge_commit_sha: sha) }
+      let(:sha) { '123abc' }
+
+      it { is_expected.to eq([merge_request]) }
+    end
+
+    context 'when commit is not found' do
+      let(:sha) { '0000' }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
   describe '.by_cherry_pick_sha' do
     it 'returns merge requests that match the given merge commit' do
       note = create(:track_mr_picking_note, commit_id: '456abc')
@@ -3551,112 +3593,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
     context 'when the merge request is opened' do
       it 'returns false' do
         expect(subject.reopenable?).to be_falsey
-      end
-    end
-  end
-
-  describe '#mergeable_with_quick_action?' do
-    def create_pipeline(status)
-      pipeline = create(:ci_pipeline,
-        project: project,
-        ref:     merge_request.source_branch,
-        sha:     merge_request.diff_head_sha,
-        status:  status,
-        head_pipeline_of: merge_request)
-
-      pipeline
-    end
-
-    let_it_be(:project) { create(:project, :public, :repository, only_allow_merge_if_pipeline_succeeds: true) }
-
-    let(:developer)     { create(:user) }
-    let(:user)          { create(:user) }
-    let(:merge_request) { create(:merge_request, source_project: project) }
-    let(:mr_sha)        { merge_request.diff_head_sha }
-
-    before do
-      project.add_developer(developer)
-    end
-
-    context 'when autocomplete_precheck is set to true' do
-      it 'is mergeable by developer' do
-        expect(merge_request.mergeable_with_quick_action?(developer, autocomplete_precheck: true)).to be_truthy
-      end
-
-      it 'is not mergeable by normal user' do
-        expect(merge_request.mergeable_with_quick_action?(user, autocomplete_precheck: true)).to be_falsey
-      end
-    end
-
-    context 'when autocomplete_precheck is set to false' do
-      it 'is mergeable by developer' do
-        expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_truthy
-      end
-
-      it 'is not mergeable by normal user' do
-        expect(merge_request.mergeable_with_quick_action?(user, last_diff_sha: mr_sha)).to be_falsey
-      end
-
-      context 'closed MR' do
-        before do
-          merge_request.update_attribute(:state_id, described_class.available_states[:closed])
-        end
-
-        it 'is not mergeable' do
-          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_falsey
-        end
-      end
-
-      context 'MR with WIP' do
-        before do
-          merge_request.update_attribute(:title, 'WIP: some MR')
-        end
-
-        it 'is not mergeable' do
-          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_falsey
-        end
-      end
-
-      context 'sha differs from the MR diff_head_sha' do
-        it 'is not mergeable' do
-          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: 'some other sha')).to be_falsey
-        end
-      end
-
-      context 'sha is not provided' do
-        it 'is not mergeable' do
-          expect(merge_request.mergeable_with_quick_action?(developer)).to be_falsey
-        end
-      end
-
-      context 'with pipeline ok' do
-        before do
-          create_pipeline(:success)
-        end
-
-        it 'is mergeable' do
-          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_truthy
-        end
-      end
-
-      context 'with failing pipeline' do
-        before do
-          create_pipeline(:failed)
-        end
-
-        it 'is not mergeable' do
-          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_falsey
-        end
-      end
-
-      context 'with running pipeline' do
-        before do
-          create_pipeline(:running)
-        end
-
-        it 'is mergeable' do
-          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_truthy
-        end
       end
     end
   end

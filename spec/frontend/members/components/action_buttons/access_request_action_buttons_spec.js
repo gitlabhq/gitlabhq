@@ -49,7 +49,7 @@ describe('AccessRequestActionButtons', () => {
     describe('when member is the current user', () => {
       it('sets `message` prop correctly', () => {
         expect(findRemoveMemberButton().props('message')).toBe(
-          `Are you sure you want to withdraw your access request for "${member.source.name}"`,
+          `Are you sure you want to withdraw your access request for "${member.source.fullName}"`,
         );
       });
     });
@@ -64,7 +64,7 @@ describe('AccessRequestActionButtons', () => {
         });
 
         expect(findRemoveMemberButton().props('message')).toBe(
-          `Are you sure you want to deny ${member.user.name}'s request to join "${member.source.name}"`,
+          `Are you sure you want to deny ${member.user.name}'s request to join "${member.source.fullName}"`,
         );
       });
     });

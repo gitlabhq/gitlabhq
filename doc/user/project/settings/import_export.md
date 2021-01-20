@@ -179,7 +179,7 @@ If use of the `Internal` visibility level
 all imported projects are given the visibility of `Private`.
 
 NOTE:
-The maximum import file size can be set by the Administrator, default is 50MB.
+The maximum import file size can be set by the Administrator, default is `0` (unlimited).
 As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings) or the [Admin Area UI](../../admin_area/settings/account_and_limit_settings.md).
 
 ### Project import status

@@ -42,7 +42,7 @@ export default {
      */
     podOptions() {
       if (this.pods.options.length) {
-        return this.pods.options.map(podName => ({ value: podName, title: podName }));
+        return this.pods.options.map((podName) => ({ value: podName, title: podName }));
       }
       return null;
     },

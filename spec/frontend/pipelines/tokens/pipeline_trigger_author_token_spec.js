@@ -26,7 +26,7 @@ describe('Pipeline Trigger Author Token', () => {
     },
   };
 
-  const createComponent = data => {
+  const createComponent = (data) => {
     wrapper = shallowMount(PipelineTriggerAuthorToken, {
       propsData: {
         ...defaultProps,

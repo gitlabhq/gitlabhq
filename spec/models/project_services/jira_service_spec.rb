@@ -5,12 +5,21 @@ require 'spec_helper'
 RSpec.describe JiraService do
   include AssetsHelpers
 
+  let_it_be(:project) { create(:project, :repository) }
   let(:url) { 'http://jira.example.com' }
   let(:api_url) { 'http://api-jira.example.com' }
   let(:username) { 'jira-username' }
   let(:password) { 'jira-password' }
   let(:transition_id) { 'test27' }
   let(:server_info_results) { { 'deploymentType' => 'Cloud' } }
+  let(:jira_service) do
+    described_class.new(
+      project: project,
+      url: url,
+      username: username,
+      password: password
+    )
+  end
 
   before do
     WebMock.stub_request(:get, /serverInfo/).to_return(body: server_info_results.to_json )
@@ -19,7 +28,7 @@ RSpec.describe JiraService do
   describe '#options' do
     let(:options) do
       {
-        project: create(:project),
+        project: project,
         active: true,
         username: 'username',
         password: 'test',
@@ -108,7 +117,7 @@ RSpec.describe JiraService do
   describe '#create' do
     let(:params) do
       {
-        project: create(:project),
+        project: project,
         url: url, api_url: api_url,
         username: username, password: password,
         jira_issue_transition_id: transition_id
@@ -434,10 +443,23 @@ RSpec.describe JiraService do
     end
   end
 
+  describe '#find_issue' do
+    let(:issue_key) { 'JIRA-123' }
+    let(:issue_url) { "#{url}/rest/api/2/issue/#{issue_key}" }
+
+    before do
+      stub_request(:get, issue_url).with(basic_auth: [username, password])
+    end
+
+    it 'call the Jira API to get the issue' do
+      jira_service.find_issue(issue_key)
+
+      expect(WebMock).to have_requested(:get, issue_url)
+    end
+  end
+
   describe '#close_issue' do
     let(:custom_base_url) { 'http://custom_url' }
-    let(:user)    { create(:user) }
-    let(:project) { create(:project, :repository) }
 
     shared_examples 'close_issue' do
       before do
@@ -445,7 +467,6 @@ RSpec.describe JiraService do
         allow(@jira_service).to receive_messages(
           project_id: project.id,
           project: project,
-          service_hook: true,
           url: 'http://jira.example.com',
           username: 'gitlab_jira_username',
           password: 'gitlab_jira_password',
@@ -657,17 +678,7 @@ RSpec.describe JiraService do
   end
 
   describe '#create_cross_reference_note' do
-    let_it_be(:user)    { build_stubbed(:user) }
-    let_it_be(:project) { create(:project, :repository) }
-    let(:jira_service) do
-      described_class.new(
-        project: project,
-        url: url,
-        username: username,
-        password: password
-      )
-    end
-
+    let_it_be(:user) { build_stubbed(:user) }
     let(:jira_issue) { ExternalIssue.new('JIRA-123', project) }
 
     subject { jira_service.create_cross_reference_note(jira_issue, resource, user) }
@@ -732,15 +743,6 @@ RSpec.describe JiraService do
 
   describe '#test' do
     let(:server_info_results) { { 'url' => 'http://url', 'deploymentType' => 'Cloud' } }
-    let_it_be(:project) { create(:project, :repository) }
-    let(:jira_service) do
-      described_class.new(
-        url: url,
-        project: project,
-        username: username,
-        password: password
-      )
-    end
 
     def server_info
       jira_service.test(nil)
@@ -790,7 +792,6 @@ RSpec.describe JiraService do
         }
         allow(Gitlab.config).to receive(:issues_tracker).and_return(settings)
 
-        project = create(:project)
         service = project.create_jira_service(active: true)
 
         expect(service.url).to eq('http://jira.sample/projects/project_a')

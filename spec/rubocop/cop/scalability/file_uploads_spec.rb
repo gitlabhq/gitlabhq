@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 require 'rubocop'
 require_relative '../../../../rubocop/cop/scalability/file_uploads'
 
-RSpec.describe RuboCop::Cop::Scalability::FileUploads, type: :rubocop do
+RSpec.describe RuboCop::Cop::Scalability::FileUploads do
   include CopHelper
 
   subject(:cop) { described_class.new }

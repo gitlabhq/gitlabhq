@@ -104,6 +104,16 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
     presenter(merge_request).api_unapprove_path
   end
 
+  expose :blob_path do
+    expose :head_path, if: -> (mr, _) { mr.source_branch_sha } do |merge_request|
+      project_blob_path(merge_request.project, merge_request.source_branch_sha)
+    end
+
+    expose :base_path, if: -> (mr, _) { mr.diff_base_sha } do |merge_request|
+      project_blob_path(merge_request.project, merge_request.diff_base_sha)
+    end
+  end
+
   private
 
   delegate :current_user, to: :request

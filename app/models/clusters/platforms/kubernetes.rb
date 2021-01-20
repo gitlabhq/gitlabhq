@@ -247,7 +247,7 @@ module Clusters
       def prevent_modification
         return if provided_by_user?
 
-        if api_url_changed? || token_changed? || ca_pem_changed?
+        if api_url_changed? || attribute_changed?(:token) || ca_pem_changed?
           errors.add(:base, _('Cannot modify managed Kubernetes cluster'))
           return false
         end

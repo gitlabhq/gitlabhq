@@ -72,7 +72,12 @@ export default {
       return this.fileLineCoverage(this.filePath, this.line.new_line);
     },
     classNameMapCell() {
-      return classNameMapCell(this.line, this.isHighlighted, this.isLoggedIn, this.isHover);
+      return classNameMapCell({
+        line: this.line,
+        hll: this.isHighlighted,
+        isLoggedIn: this.isLoggedIn,
+        isHover: this.isHover,
+      });
     },
     addCommentTooltip() {
       return addCommentTooltip(this.line);

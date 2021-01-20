@@ -20,12 +20,12 @@ export default {
     state: {
       default: null,
       required: true,
-      validator: prop => typeof prop === 'boolean' || prop === null,
+      validator: (prop) => typeof prop === 'boolean' || prop === null,
     },
     value: {
       default: null,
       required: false,
-      validator: prop => typeof prop === 'string' || prop === null,
+      validator: (prop) => typeof prop === 'string' || prop === null,
     },
     label: {
       type: String,

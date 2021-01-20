@@ -9,7 +9,7 @@ describe('MarkdownViewer', () => {
   let wrapper;
   let mock;
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     wrapper = mount(MarkdownViewer, {
       propsData: {
         ...props,

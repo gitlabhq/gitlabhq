@@ -110,7 +110,7 @@ export default {
   },
   methods: {
     findRelatedIssueById(id) {
-      return this.state.relatedIssues.find(issue => issue.id === id);
+      return this.state.relatedIssues.find((issue) => issue.id === id);
     },
     onRelatedIssueRemoveRequest(idToRemove) {
       const issueToRemove = this.findRelatedIssueById(idToRemove);
@@ -120,7 +120,7 @@ export default {
           .then(({ data }) => {
             this.store.setRelatedIssues(data.issuables);
           })
-          .catch(res => {
+          .catch((res) => {
             if (res && res.status !== 404) {
               Flash(relatedIssuesRemoveErrorMap[this.issuableType]);
             }
@@ -219,7 +219,7 @@ export default {
       this.processAllReferences(newValue);
     },
     processAllReferences(value = '') {
-      const rawReferences = value.split(/\s+/).filter(reference => reference.trim().length > 0);
+      const rawReferences = value.split(/\s+/).filter((reference) => reference.trim().length > 0);
 
       this.store.addPendingReferences(rawReferences);
       this.inputValue = '';

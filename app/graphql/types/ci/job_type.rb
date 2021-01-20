@@ -2,16 +2,16 @@
 
 module Types
   module Ci
-    # rubocop: disable Graphql/AuthorizeTypes
     class JobType < BaseObject
       graphql_name 'CiJob'
+      authorize :read_commit_status
 
       field :pipeline, Types::Ci::PipelineType, null: true,
             description: 'Pipeline the job belongs to'
       field :name, GraphQL::STRING_TYPE, null: true,
             description: 'Name of the job'
-      field :needs, JobType.connection_type, null: true,
-            description: 'Builds that must complete before the jobs run'
+      field :needs, BuildNeedType.connection_type, null: true,
+            description: 'References to builds that must complete before the jobs run'
       field :detailed_status, Types::Ci::DetailedStatusType, null: true,
             description: 'Detailed status of the job'
       field :scheduled_at, Types::TimeType, null: true,

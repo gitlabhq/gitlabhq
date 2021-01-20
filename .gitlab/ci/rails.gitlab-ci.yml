@@ -10,7 +10,6 @@
   # Only install knapsack after bundle install! Otherwise oddly some native
   # gems could not be found under some circumstance. No idea why, hours wasted.
   - run_timed_command "gem install knapsack --no-document"
-  - run_timed_command "scripts/gitaly-test-build"
   - run_timed_command "scripts/gitaly-test-spawn"
   - source ./scripts/rspec_helpers.sh
 
@@ -150,20 +149,35 @@ setup-test-env:
   script:
     - run_timed_command "bundle exec ruby -I. -e 'require \"config/environment\"; TestEnv.init'"
     - run_timed_command "scripts/gitaly-test-build"  # Do not use 'bundle exec' here
-    - rm tmp/tests/gitaly/.ruby-bundle  # This file prevents gems from being installed even if vendor/gitaly-ruby is missing
   artifacts:
     expire_in: 7d
     paths:
       - config/secrets.yml
-      - tmp/tests/gitaly
-      - tmp/tests/gitlab-elasticsearch-indexer
-      - tmp/tests/gitlab-shell
-      - tmp/tests/gitlab-test-fork
-      - tmp/tests/gitlab-test-fork_bare
-      - tmp/tests/gitlab-test
-      - tmp/tests/gitlab-workhorse
-      - tmp/tests/repositories
-      - tmp/tests/second_storage
+      - tmp/tests/gitaly/config.toml
+      - tmp/tests/gitaly/gitaly
+      - tmp/tests/gitaly/gitaly2.config.toml
+      - tmp/tests/gitaly/gitaly-git2go
+      - tmp/tests/gitaly/gitaly-hooks
+      - tmp/tests/gitaly/gitaly-lfs-smudge
+      - tmp/tests/gitaly/gitaly-ssh
+      - tmp/tests/gitaly/internal/
+      - tmp/tests/gitaly/internal_sockets/
+      - tmp/tests/gitaly/Makefile
+      - tmp/tests/gitaly/praefect
+      - tmp/tests/gitaly/praefect.config.toml
+      - tmp/tests/gitaly/ruby/
+      - tmp/tests/gitlab-elasticsearch-indexer/bin/gitlab-elasticsearch-indexer
+      - tmp/tests/gitlab-shell/
+      - tmp/tests/gitlab-test-fork/
+      - tmp/tests/gitlab-test-fork_bare/
+      - tmp/tests/gitlab-test/
+      - tmp/tests/gitlab-workhorse/gitlab-zip-metadata
+      - tmp/tests/gitlab-workhorse/gitlab-zip-cat
+      - tmp/tests/gitlab-workhorse/gitlab-workhorse
+      - tmp/tests/gitlab-workhorse/gitlab-resize-image
+      - tmp/tests/gitlab-workhorse/config.toml
+      - tmp/tests/repositories/
+      - tmp/tests/second_storage/
     when: always
 
 update-rails-cache:
@@ -286,6 +300,16 @@ rspec system pg11 minimal:
     - .minimal-rspec-tests
     - .rails:rules:ee-and-foss-system:minimal
 
+# Dedicated job to test DB library code against PG12.
+# Note that these are already tested against PG11 in the `rspec unit pg11` / `rspec-ee unit pg11` jobs.
+rspec db-library-code pg12:
+  extends:
+    - .rspec-base-pg12
+    - .rails:rules:ee-and-foss-db-library-code
+  script:
+    - *base-script
+    - rspec_simple_job "-- spec/lib/gitlab/database/ spec/support/helpers/database/ ee/spec/lib/gitlab/database/ ee/spec/lib/ee/gitlab/database_spec.rb"
+
 rspec fast_spec_helper:
   extends:
     - .rspec-base-pg11
@@ -310,6 +334,14 @@ db:check-schema:
     - .rails:rules:ee-mr-and-master-only
   script:
     - source scripts/schema_changed.sh
+
+db:check-migrations:
+  extends:
+    - .db-job-base
+    - .rails:rules:ee-and-foss-mr-with-migration
+  script:
+    - scripts/validate_migration_schema
+  allow_failure: true
 
 db:migrate-from-v12.10.0:
   extends: .db-job-base
@@ -375,6 +407,38 @@ db:backup_and_restore:
     - bundle exec rake gitlab:backup:restore
   rules:
     - changes: ["lib/backup/**/*"]
+
+rspec:deprecations:
+  extends:
+    - .default-retry
+    - .default-before_script
+    - .static-analysis-cache
+    - .rails:rules:deprecations
+  stage: post-test
+  allow_failure: true
+  # We cannot use needs since it would mean needing 84 jobs (since most are parallelized)
+  # so we use `dependencies` here.
+  dependencies:
+    - rspec migration pg11
+    - rspec unit pg11
+    - rspec integration pg11
+    - rspec system pg11
+    - rspec-ee migration pg11
+    - rspec-ee unit pg11
+    - rspec-ee integration pg11
+    - rspec-ee system pg11
+    - rspec-ee unit pg11 geo
+    - rspec-ee integration pg11 geo
+    - rspec-ee system pg11 geo
+  variables:
+    SETUP_DB: "false"
+  script:
+    - run_timed_command "bundle exec rubocop --only Lint/LastKeywordArgument --parallel"
+  artifacts:
+    expire_in: 31d
+    when: always
+    paths:
+      - deprecations/
 
 rspec:coverage:
   extends:
@@ -549,33 +613,36 @@ rspec-ee unit pg11 geo:
     - .rails:rules:ee-only-unit
     - .rspec-ee-unit-geo-parallel
 
-rspec-ee unit pg11 geo minimal:
-  extends:
-    - rspec-ee unit pg11 geo
-    - .minimal-rspec-tests
-    - .rails:rules:ee-only-unit:minimal
+# FIXME: Temporarily disable geo minimal rspec jobs https://gitlab.com/gitlab-org/gitlab/-/issues/294212
+#rspec-ee unit pg11 geo minimal:
+#  extends:
+#    - rspec-ee unit pg11 geo
+#    - .minimal-rspec-tests
+#    - .rails:rules:ee-only-unit:minimal
 
 rspec-ee integration pg11 geo:
   extends:
     - .rspec-ee-base-geo-pg11
     - .rails:rules:ee-only-integration
 
-rspec-ee integration pg11 geo minimal:
-  extends:
-    - rspec-ee integration pg11 geo
-    - .minimal-rspec-tests
-    - .rails:rules:ee-only-integration:minimal
+# FIXME: Temporarily disable geo minimal rspec jobs https://gitlab.com/gitlab-org/gitlab/-/issues/294212
+#rspec-ee integration pg11 geo minimal:
+#  extends:
+#    - rspec-ee integration pg11 geo
+#    - .minimal-rspec-tests
+#    - .rails:rules:ee-only-integration:minimal
 
 rspec-ee system pg11 geo:
   extends:
     - .rspec-ee-base-geo-pg11
     - .rails:rules:ee-only-system
 
-rspec-ee system pg11 geo minimal:
-  extends:
-    - rspec-ee system pg11 geo
-    - .minimal-rspec-tests
-    - .rails:rules:ee-only-system:minimal
+# FIXME: Temporarily disable geo minimal rspec jobs https://gitlab.com/gitlab-org/gitlab/-/issues/294212
+#rspec-ee system pg11 geo minimal:
+#  extends:
+#    - rspec-ee system pg11 geo
+#    - .minimal-rspec-tests
+#    - .rails:rules:ee-only-system:minimal
 
 db:rollback geo:
   extends:

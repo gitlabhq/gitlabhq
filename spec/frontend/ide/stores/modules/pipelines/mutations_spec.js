@@ -137,7 +137,7 @@ describe('IDE pipelines mutations', () => {
       mutations[types.RECEIVE_JOBS_SUCCESS](mockedState, { id: mockedState.stages[0].id, data });
       expect(mockedState.stages[0].jobs.length).toBe(jobs.length);
       expect(mockedState.stages[0].jobs).toEqual(
-        jobs.map(job => ({
+        jobs.map((job) => ({
           id: job.id,
           name: job.name,
           status: job.status,

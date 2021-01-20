@@ -54,6 +54,52 @@ RSpec.describe 'Users' do
         )
       end
     end
+
+    context 'when admins is true' do
+      let_it_be(:admin) { create(:user, :admin) }
+      let_it_be(:another_admin) { create(:user, :admin) }
+
+      let(:query) { graphql_query_for(:users, { admins: true }, 'nodes { id }') }
+
+      context 'current user is not an admin' do
+        let(:post_query) { post_graphql(query, current_user: current_user) }
+
+        it_behaves_like 'a working users query'
+
+        it 'includes all non-admin users', :aggregate_failures do
+          post_graphql(query)
+
+          expect(graphql_data.dig('users', 'nodes')).to include(
+            { "id" => user1.to_global_id.to_s },
+            { "id" => user2.to_global_id.to_s },
+            { "id" => user3.to_global_id.to_s },
+            { "id" => current_user.to_global_id.to_s },
+            { "id" => admin.to_global_id.to_s },
+            { "id" => another_admin.to_global_id.to_s }
+          )
+        end
+      end
+
+      context 'when current user is an admin' do
+        it_behaves_like 'a working users query'
+
+        it 'includes only admins', :aggregate_failures do
+          post_graphql(query, current_user: admin)
+
+          expect(graphql_data.dig('users', 'nodes')).to include(
+            { "id" => another_admin.to_global_id.to_s },
+            { "id" => admin.to_global_id.to_s }
+          )
+
+          expect(graphql_data.dig('users', 'nodes')).not_to include(
+            { "id" => user1.to_global_id.to_s },
+            { "id" => user2.to_global_id.to_s },
+            { "id" => user3.to_global_id.to_s },
+            { "id" => current_user.to_global_id.to_s }
+          )
+        end
+      end
+    end
   end
 
   describe 'sorting and pagination' do

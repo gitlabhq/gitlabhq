@@ -43,6 +43,13 @@ RSpec.describe DraftNotes::PublishService do
       expect(result[:status]).to eq(:success)
     end
 
+    it 'does not track the publish event' do
+      expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+        .not_to receive(:track_publish_review_action)
+
+      publish(draft: drafts.first)
+    end
+
     context 'commit_id is set' do
       let(:commit_id) { commit.id }
 
@@ -74,6 +81,13 @@ RSpec.describe DraftNotes::PublishService do
         expect { publish }.not_to change { DraftNote.count }
       end
 
+      it 'does not track the publish event' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .not_to receive(:track_publish_review_action)
+
+        publish
+      end
+
       it 'returns an error' do
         result = publish
 
@@ -101,6 +115,14 @@ RSpec.describe DraftNotes::PublishService do
       expect_next_instance_of(NotificationService) do |notification_service|
         expect(notification_service).to receive_message_chain(:async, :new_review).with(kind_of(Review))
       end
+
+      publish
+    end
+
+    it 'tracks the publish event' do
+      expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+        .to receive(:track_publish_review_action)
+        .with(user: user)
 
       publish
     end

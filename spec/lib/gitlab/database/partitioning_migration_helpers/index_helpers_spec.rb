@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers do
-  include TableSchemaHelpers
+  include Database::TableSchemaHelpers
 
   let(:migration) do
     ActiveRecord::Migration.new.extend(described_class)

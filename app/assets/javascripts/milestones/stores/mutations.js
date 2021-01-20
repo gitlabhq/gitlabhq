@@ -22,7 +22,7 @@ export default {
   },
   [types.REMOVE_SELECTED_MILESTONE](state, selectedMilestone) {
     const filteredMilestones = state.selectedMilestones.filter(
-      milestone => milestone !== selectedMilestone,
+      (milestone) => milestone !== selectedMilestone,
     );
     Vue.set(state, 'selectedMilestones', filteredMilestones);
   },

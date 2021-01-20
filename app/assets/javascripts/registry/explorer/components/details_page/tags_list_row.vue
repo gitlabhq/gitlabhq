@@ -140,9 +140,7 @@ export default {
     <template #left-secondary>
       <span data-testid="size">
         {{ formattedSize }}
-        <template v-if="formattedSize && layers"
-          >&middot;</template
-        >
+        <template v-if="formattedSize && layers">&middot;</template>
         {{ layers }}
       </span>
     </template>

@@ -3,14 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineTriggerService do
-  let(:project) { create(:project, :repository) }
+  include AfterNextHelpers
+
+  let_it_be(:project) { create(:project, :repository) }
 
   before do
     stub_ci_pipeline_to_return_yaml_file
   end
 
   describe '#execute' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
     let(:result) { described_class.new(project, user, params).execute }
 
     before do
@@ -29,8 +31,8 @@ RSpec.describe Ci::PipelineTriggerService do
         end
       end
 
-      context 'when params have an existsed trigger token' do
-        context 'when params have an existsed ref' do
+      context 'when params have an existing trigger token' do
+        context 'when params have an existing ref' do
           let(:params) { { token: trigger.token, ref: 'master', variables: nil } }
 
           it 'triggers a pipeline' do
@@ -45,9 +47,7 @@ RSpec.describe Ci::PipelineTriggerService do
 
           context 'when commit message has [ci skip]' do
             before do
-              allow_next_instance_of(Ci::Pipeline) do |instance|
-                allow(instance).to receive(:git_commit_message) { '[ci skip]' }
-              end
+              allow_next(Ci::Pipeline).to receive(:git_commit_message) { '[ci skip]' }
             end
 
             it 'ignores [ci skip] and create as general' do

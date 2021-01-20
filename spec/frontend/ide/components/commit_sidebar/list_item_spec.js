@@ -41,7 +41,7 @@ describe('Multi-file editor commit sidebar list item', () => {
     expect(findPathText()).toContain(f.path);
   });
 
-  it('correctly renders renamed entries', done => {
+  it('correctly renders renamed entries', (done) => {
     Vue.set(vm.file, 'prevName', 'Old name');
 
     vm.$nextTick()
@@ -52,7 +52,7 @@ describe('Multi-file editor commit sidebar list item', () => {
       .catch(done.fail);
   });
 
-  it('correctly renders entry, the name of which did not change after rename (as within a folder)', done => {
+  it('correctly renders entry, the name of which did not change after rename (as within a folder)', (done) => {
     Vue.set(vm.file, 'prevName', f.name);
 
     vm.$nextTick()
@@ -63,7 +63,7 @@ describe('Multi-file editor commit sidebar list item', () => {
       .catch(done.fail);
   });
 
-  it('opens a closed file in the editor when clicking the file path', done => {
+  it('opens a closed file in the editor when clicking the file path', (done) => {
     jest.spyOn(vm, 'openPendingTab');
     jest.spyOn(router, 'push').mockImplementation(() => {});
 
@@ -77,7 +77,7 @@ describe('Multi-file editor commit sidebar list item', () => {
     });
   });
 
-  it('calls updateViewer with diff when clicking file', done => {
+  it('calls updateViewer with diff when clicking file', (done) => {
     jest.spyOn(vm, 'openFileInEditor');
     jest.spyOn(vm, 'updateViewer');
     jest.spyOn(router, 'push').mockImplementation(() => {});
@@ -134,7 +134,7 @@ describe('Multi-file editor commit sidebar list item', () => {
       expect(vm.$el.querySelector('.is-active')).toBe(null);
     });
 
-    it('adds active class when keys match', done => {
+    it('adds active class when keys match', (done) => {
       vm.keyPrefix = 'staged';
 
       vm.$nextTick(() => {

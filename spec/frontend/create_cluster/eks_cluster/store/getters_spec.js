@@ -6,7 +6,7 @@ describe('EKS Cluster Store Getters', () => {
       expect(subnetValid({ selectedSubnet: [1, 2] })).toBe(true);
     });
 
-    it.each([[[], [1]]])('returns false if there are 1 or less selected subnets', subnets => {
+    it.each([[[], [1]]])('returns false if there are 1 or less selected subnets', (subnets) => {
       expect(subnetValid({ selectedSubnet: subnets })).toBe(false);
     });
   });

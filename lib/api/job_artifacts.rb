@@ -32,6 +32,7 @@ module API
         authorize_download_artifacts!
 
         latest_build = user_project.latest_successful_build_for_ref!(params[:job], params[:ref_name])
+        authorize_read_job_artifacts!(latest_build)
 
         present_carrierwave_file!(latest_build.artifacts_file)
       end
@@ -50,6 +51,7 @@ module API
         authorize_download_artifacts!
 
         build = user_project.latest_successful_build_for_ref!(params[:job], params[:ref_name])
+        authorize_read_job_artifacts!(build)
 
         path = Gitlab::Ci::Build::Artifacts::Path
                  .new(params[:artifact_path])
@@ -70,6 +72,7 @@ module API
         authorize_download_artifacts!
 
         build = find_build!(params[:job_id])
+        authorize_read_job_artifacts!(build)
 
         present_carrierwave_file!(build.artifacts_file)
       end
@@ -82,9 +85,11 @@ module API
         requires :artifact_path, type: String, desc: 'Artifact path'
       end
       get ':id/jobs/:job_id/artifacts/*artifact_path', format: false do
-        authorize_read_builds!
+        authorize_download_artifacts!
 
         build = find_build!(params[:job_id])
+        authorize_read_job_artifacts!(build)
+
         not_found! unless build.artifacts?
 
         path = Gitlab::Ci::Build::Artifacts::Path

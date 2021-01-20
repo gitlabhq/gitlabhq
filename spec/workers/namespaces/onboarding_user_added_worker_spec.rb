@@ -7,10 +7,16 @@ RSpec.describe Namespaces::OnboardingUserAddedWorker, '#perform' do
 
   let_it_be(:group) { create(:group) }
 
-  it 'records the event' do
+  before do
+    OnboardingProgress.onboard(group)
+  end
+
+  it 'registers an onboarding progress action' do
     expect_next(OnboardingProgressService, group)
       .to receive(:execute).with(action: :user_added).and_call_original
 
-    expect { subject.perform(group.id) }.to change(NamespaceOnboardingAction, :count).by(1)
+    subject.perform(group.id)
+
+    expect(OnboardingProgress.completed?(group, :user_added)).to be(true)
   end
 end

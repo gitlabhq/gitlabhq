@@ -560,7 +560,6 @@ Or:
 By default, a GitLab serverless deployment is served over `http`. To serve
 over `https`, you must manually obtain and install TLS certificates.
 
-12345678901234567890123456789012345678901234567890123456789012345678901234567890
 The simplest way to accomplish this is to use Certbot to
 [manually obtain Let's Encrypt certificates](https://knative.dev/docs/serving/using-a-tls-cert/#using-certbot-to-manually-obtain-let-s-encrypt-certificates).
 Certbot is a free, open source software tool for automatically using Let’s Encrypt

@@ -8,7 +8,7 @@ import hasSubmittedChangesResolver from './resolvers/has_submitted_changes';
 
 Vue.use(VueApollo);
 
-const createApolloProvider = appData => {
+const createApolloProvider = (appData) => {
   const defaultClient = createDefaultClient(
     {
       Project: {
@@ -26,7 +26,7 @@ const createApolloProvider = appData => {
   );
 
   // eslint-disable-next-line @gitlab/require-i18n-strings
-  const mounts = appData.mounts.map(mount => ({ __typename: 'Mount', ...mount }));
+  const mounts = appData.mounts.map((mount) => ({ __typename: 'Mount', ...mount }));
 
   defaultClient.cache.writeData({
     data: {

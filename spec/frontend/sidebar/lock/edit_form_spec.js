@@ -7,7 +7,7 @@ describe('Edit Form Dropdown', () => {
   let issuableType; // Either ISSUABLE_TYPE_ISSUE or ISSUABLE_TYPE_MR
   let issuableDisplayName;
 
-  const setIssuableType = pageType => {
+  const setIssuableType = (pageType) => {
     issuableType = pageType;
     issuableDisplayName = issuableType.replace(/_/g, ' ');
   };

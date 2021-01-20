@@ -26,7 +26,7 @@ describe('ide/components/terminal_sync/terminal_sync_status', () => {
           namespaced: true,
           state: moduleState,
           mutations: {
-            [START_LOADING]: state => {
+            [START_LOADING]: (state) => {
               state.isLoading = true;
             },
           },

@@ -31,7 +31,7 @@ class User < ApplicationRecord
 
   INSTANCE_ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT = 10
 
-  BLOCKED_PENDING_APPROVAL_STATE = 'blocked_pending_approval'.freeze
+  BLOCKED_PENDING_APPROVAL_STATE = 'blocked_pending_approval'
 
   add_authentication_token_field :incoming_email_token, token_generator: -> { SecureRandom.hex.to_i(16).to_s(36) }
   add_authentication_token_field :feed_token
@@ -1358,6 +1358,7 @@ class User < ApplicationRecord
 
   def hook_attrs
     {
+      id: id,
       name: name,
       username: username,
       avatar_url: avatar_url(only_path: false),
@@ -1377,7 +1378,14 @@ class User < ApplicationRecord
 
   def set_username_errors
     namespace_path_errors = self.errors.delete(:"namespace.path")
-    self.errors[:username].concat(namespace_path_errors) if namespace_path_errors
+
+    return unless namespace_path_errors&.any?
+
+    if namespace_path_errors.include?('has already been taken') && !User.exists?(username: username)
+      self.errors.add(:base, :username_exists_as_a_different_namespace)
+    else
+      self.errors[:username].concat(namespace_path_errors)
+    end
   end
 
   def username_changed_hook
@@ -1564,6 +1572,12 @@ class User < ApplicationRecord
     end
   end
 
+  def review_requested_open_merge_requests_count(force: false)
+    Rails.cache.fetch(['users', id, 'review_requested_open_merge_requests_count'], force: force, expires_in: 20.minutes) do
+      MergeRequestsFinder.new(self, reviewer_id: id, state: 'opened', non_archived: true).execute.count
+    end
+  end
+
   def assigned_open_issues_count(force: false)
     Rails.cache.fetch(['users', id, 'assigned_open_issues_count'], force: force, expires_in: 20.minutes) do
       IssuesFinder.new(self, assignee_id: self.id, state: 'opened', non_archived: true).execute.count
@@ -1607,6 +1621,7 @@ class User < ApplicationRecord
 
   def invalidate_merge_request_cache_counts
     Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count'])
+    Rails.cache.delete(['users', id, 'review_requested_open_merge_requests_count'])
   end
 
   def invalidate_todos_done_count

@@ -31,7 +31,7 @@ export default {
     },
   },
   mounted() {
-    this.listener = listen(e => {
+    this.listener = listen((e) => {
       switch (e.type) {
         case 'urlchange':
           this.onUrlChange(e);

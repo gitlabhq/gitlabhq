@@ -145,6 +145,8 @@ git push --set-upstream git@gitlab.example.com:namespace/nonexistent-project.git
 git push --set-upstream https://gitlab.example.com/namespace/nonexistent-project.git master
 ```
 
+You can pass the flag `--tags` to the `git push` command to export existing repository tags.
+
 Once the push finishes successfully, a remote message indicates
 the command to set the remote and the URL to the new project:
 

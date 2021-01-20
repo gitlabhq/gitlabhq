@@ -1,10 +1,10 @@
 <script>
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
+import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import { __ } from '~/locale';
 import { DEFAULT, LOAD_FAILURE } from '../../constants';
-import getPipelineDetails from '../../graphql/queries/get_pipeline_details.query.graphql';
 import PipelineGraph from './graph_component.vue';
-import { unwrapPipelineData, toggleQueryPollingByVisibility } from './utils';
+import { unwrapPipelineData, toggleQueryPollingByVisibility, reportToSentry } from './utils';
 
 export default {
   name: 'PipelineGraphWrapper',
@@ -76,6 +76,9 @@ export default {
   mounted() {
     toggleQueryPollingByVisibility(this.$apollo.queries.pipeline);
   },
+  errorCaptured(err, _vm, info) {
+    reportToSentry(this.$options.name, `error: ${err}, info: ${info}`);
+  },
   methods: {
     hideAlert() {
       this.showAlert = false;
@@ -86,6 +89,7 @@ export default {
     reportFailure(type) {
       this.showAlert = true;
       this.failureType = type;
+      reportToSentry(this.$options.name, this.failureType);
     },
   },
 };

@@ -32,7 +32,7 @@ sass.render(
         // This suppresses a postcss warning
         from: undefined,
       })
-      .then(result => {
+      .then((result) => {
         const selectorGroups = {};
         utils.createPropertiesHashmap(result.root, result, null, null, selectorGroups, true);
 
@@ -42,7 +42,7 @@ sass.render(
           prettierOptions,
         );
 
-        fs.writeFile(hashMapPath, prettyHashmap, function(err) {
+        fs.writeFile(hashMapPath, prettyHashmap, function (err) {
           if (err) {
             return console.log(err);
           }

@@ -11,7 +11,35 @@ RSpec.describe 'Groups > Members > Manage members' do
   let(:group) { create(:group) }
 
   before do
+    stub_feature_flags(invite_members_group_modal: false)
     sign_in(user1)
+  end
+
+  shared_examples 'includes the correct Invite Members link' do |should_include, should_not_include|
+    it 'includes either the form or the modal trigger' do
+      group.add_owner(user1)
+
+      visit group_group_members_path(group)
+
+      expect(page).to have_selector(should_include)
+      expect(page).not_to have_selector(should_not_include)
+    end
+  end
+
+  context 'when Invite Members modal is enabled' do
+    before do
+      stub_feature_flags(invite_members_group_modal: true)
+    end
+
+    it_behaves_like 'includes the correct Invite Members link', '.js-invite-members-trigger', '.invite-users-form'
+  end
+
+  context 'when Invite Members modal is disabled' do
+    before do
+      stub_feature_flags(invite_members_group_modal: false)
+    end
+
+    it_behaves_like 'includes the correct Invite Members link', '.invite-users-form', '.js-invite-members-trigger'
   end
 
   it 'update user to owner level', :js do

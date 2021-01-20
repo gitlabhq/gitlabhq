@@ -1,5 +1,4 @@
 import { sortBy } from 'lodash';
-import axios from '~/lib/utils/axios_utils';
 import { ListType } from './constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
@@ -42,14 +41,14 @@ export function formatListIssues(listIssues) {
 
   const listData = listIssues.nodes.reduce((map, list) => {
     listIssuesCount = list.issues.count;
-    let sortedIssues = list.issues.edges.map(issueNode => ({
+    let sortedIssues = list.issues.edges.map((issueNode) => ({
       ...issueNode.node,
     }));
     sortedIssues = sortBy(sortedIssues, 'relativePosition');
 
     return {
       ...map,
-      [list.id]: sortedIssues.map(i => {
+      [list.id]: sortedIssues.map((i) => {
         const id = getIdFromGraphQLId(i.id);
 
         const listIssue = {
@@ -83,47 +82,62 @@ export function fullBoardId(boardId) {
   return `gid://gitlab/Board/${boardId}`;
 }
 
+export function fullIterationId(id) {
+  return `gid://gitlab/Iteration/${id}`;
+}
+
+export function fullUserId(id) {
+  return `gid://gitlab/User/${id}`;
+}
+
+export function fullMilestoneId(id) {
+  return `gid://gitlab/Milestone/${id}`;
+}
+
 export function fullLabelId(label) {
-  if (label.project_id !== null) {
+  if (label.project_id && label.project_id !== null) {
     return `gid://gitlab/ProjectLabel/${label.id}`;
   }
   return `gid://gitlab/GroupLabel/${label.id}`;
+}
+
+export function formatIssueInput(issueInput, boardConfig) {
+  const { labelIds = [], assigneeIds = [] } = issueInput;
+  const { labels, assigneeId, milestoneId } = boardConfig;
+
+  return {
+    milestoneId: milestoneId ? fullMilestoneId(milestoneId) : null,
+    ...issueInput,
+    labelIds: [...labelIds, ...(labels?.map((l) => fullLabelId(l)) || [])],
+    assigneeIds: [...assigneeIds, ...(assigneeId ? [fullUserId(assigneeId)] : [])],
+  };
 }
 
 export function moveIssueListHelper(issue, fromList, toList) {
   const updatedIssue = issue;
   if (
     toList.listType === ListType.label &&
-    !updatedIssue.labels.find(label => label.id === toList.label.id)
+    !updatedIssue.labels.find((label) => label.id === toList.label.id)
   ) {
     updatedIssue.labels.push(toList.label);
   }
   if (fromList?.label && fromList.listType === ListType.label) {
-    updatedIssue.labels = updatedIssue.labels.filter(label => fromList.label.id !== label.id);
+    updatedIssue.labels = updatedIssue.labels.filter((label) => fromList.label.id !== label.id);
   }
 
   if (
     toList.listType === ListType.assignee &&
-    !updatedIssue.assignees.find(assignee => assignee.id === toList.assignee.id)
+    !updatedIssue.assignees.find((assignee) => assignee.id === toList.assignee.id)
   ) {
     updatedIssue.assignees.push(toList.assignee);
   }
   if (fromList?.assignee && fromList.listType === ListType.assignee) {
     updatedIssue.assignees = updatedIssue.assignees.filter(
-      assignee => assignee.id !== fromList.assignee.id,
+      (assignee) => assignee.id !== fromList.assignee.id,
     );
   }
 
   return updatedIssue;
-}
-
-export function getBoardsPath(endpoint, board) {
-  const path = `${endpoint}${board.id ? `/${board.id}` : ''}.json`;
-
-  if (board.id) {
-    return axios.put(path, { board });
-  }
-  return axios.post(path, { board });
 }
 
 export function isListDraggable(list) {
@@ -141,6 +155,6 @@ export default {
   formatListIssues,
   fullBoardId,
   fullLabelId,
-  getBoardsPath,
+  fullIterationId,
   isListDraggable,
 };

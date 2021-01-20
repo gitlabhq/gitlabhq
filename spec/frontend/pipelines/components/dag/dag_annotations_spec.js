@@ -66,11 +66,7 @@ describe('The DAG annotations', () => {
       expect(getAllTextBlocks().length).toBe(Object.keys(multiNote).length);
 
       Object.values(multiNote).forEach((item, idx) => {
-        expect(
-          getAllTextBlocks()
-            .at(idx)
-            .text(),
-        ).toBe(`${item.source.name} → ${item.target.name}`);
+        expect(getAllTextBlocks().at(idx).text()).toBe(`${item.source.name} → ${item.target.name}`);
       });
     });
 

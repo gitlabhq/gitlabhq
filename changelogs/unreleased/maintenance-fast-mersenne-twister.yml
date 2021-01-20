@@ -1,0 +1,5 @@
+---
+title: Switch to 2x faster PRNG
+merge_request: 50811
+author:
+type: performance

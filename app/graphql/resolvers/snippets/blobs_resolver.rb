@@ -13,7 +13,7 @@ module Resolvers
 
       argument :paths, [GraphQL::STRING_TYPE],
                required: false,
-               description: 'Paths of the blobs'
+               description: 'Paths of the blobs.'
 
       def resolve(**args)
         authorize!(snippet)

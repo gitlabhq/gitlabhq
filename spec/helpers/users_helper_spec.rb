@@ -337,10 +337,14 @@ RSpec.describe UsersHelper do
   describe '#admin_users_data_attributes' do
     subject(:data) { helper.admin_users_data_attributes([user]) }
 
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
     it 'users matches the serialized json' do
       entity = double
       expect_next_instance_of(Admin::UserSerializer) do |instance|
-        expect(instance).to receive(:represent).with([user]).and_return(entity)
+        expect(instance).to receive(:represent).with([user], current_user: user).and_return(entity)
       end
       expect(entity).to receive(:to_json).and_return("{\"username\":\"admin\"}")
       expect(data[:users]).to eq "{\"username\":\"admin\"}"

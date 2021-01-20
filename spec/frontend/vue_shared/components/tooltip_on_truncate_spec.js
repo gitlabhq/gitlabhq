@@ -18,7 +18,7 @@ describe('TooltipOnTruncate component', () => {
 
   const createComponent = ({ propsData, ...options } = {}) => {
     wrapper = shallowMount(TooltipOnTruncate, {
-      attachToDocument: true,
+      attachTo: document.body,
       propsData: {
         ...propsData,
       },
@@ -44,7 +44,7 @@ describe('TooltipOnTruncate component', () => {
       },
       {
         propsData: { ...propsData },
-        attachToDocument: true,
+        attachTo: document.body,
         ...options,
       },
     );
@@ -139,7 +139,7 @@ describe('TooltipOnTruncate component', () => {
       createComponent({
         propsData: {
           title: DUMMY_TEXT,
-          truncateTarget: el => el.childNodes[1],
+          truncateTarget: (el) => el.childNodes[1],
         },
         slots: {
           default: [createChildElement(), createChildElement()],

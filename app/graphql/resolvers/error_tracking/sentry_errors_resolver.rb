@@ -7,12 +7,12 @@ module Resolvers
       extension Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension
 
       argument :search_term, ::GraphQL::STRING_TYPE,
-              description: 'Search query for the Sentry error details',
+              description: 'Search query for the Sentry error details.',
               required: false
 
       # TODO: convert to Enum
       argument :sort, ::GraphQL::STRING_TYPE,
-              description: 'Attribute to sort on. Options are frequency, first_seen, last_seen. last_seen is default',
+              description: 'Attribute to sort on. Options are frequency, first_seen, last_seen. last_seen is default.',
               required: false
 
       delegate :project, to: :object

@@ -1,0 +1,5 @@
+---
+title: Drop group_id column from compliance_management_frameworks table
+merge_request: 50829
+author:
+type: removed

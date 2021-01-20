@@ -10,7 +10,7 @@ export const isValidDesignFile = ({ type }) =>
  * @param {Array} discussions
  */
 
-export const extractDiscussions = discussions =>
+export const extractDiscussions = (discussions) =>
   discussions.nodes.map((discussion, index) => ({
     ...discussion,
     index: index + 1,
@@ -24,27 +24,27 @@ export const extractDiscussions = discussions =>
  */
 
 export const extractCurrentDiscussion = (discussions, id) =>
-  discussions.nodes.find(discussion => discussion.id === id);
+  discussions.nodes.find((discussion) => discussion.id === id);
 
-export const findVersionId = id => (id.match('::Version/(.+$)') || [])[1];
+export const findVersionId = (id) => (id.match('::Version/(.+$)') || [])[1];
 
-export const findNoteId = id => (id.match('DiffNote/(.+$)') || [])[1];
+export const findNoteId = (id) => (id.match('DiffNote/(.+$)') || [])[1];
 
-export const findIssueId = id => (id.match('Issue/(.+$)') || [])[1];
+export const findIssueId = (id) => (id.match('Issue/(.+$)') || [])[1];
 
-export const findDesignId = id => (id.match('Design/(.+$)') || [])[1];
+export const findDesignId = (id) => (id.match('Design/(.+$)') || [])[1];
 
-export const extractDesigns = data => data.project.issue.designCollection.designs.nodes;
+export const extractDesigns = (data) => data.project.issue.designCollection.designs.nodes;
 
-export const extractDesign = data => (extractDesigns(data) || [])[0];
+export const extractDesign = (data) => (extractDesigns(data) || [])[0];
 
-export const toDiffNoteGid = noteId => `gid://gitlab/DiffNote/${noteId}`;
+export const toDiffNoteGid = (noteId) => `gid://gitlab/DiffNote/${noteId}`;
 
 /**
  * Return the note ID from a URL hash parameter
  * @param {String} urlHash URL hash, including `#` prefix
  */
-export const extractDesignNoteId = urlHash => {
+export const extractDesignNoteId = (urlHash) => {
   const [, noteId] = urlHash.match('#note_([0-9]+$)') || [];
   return noteId || null;
 };
@@ -53,8 +53,8 @@ export const extractDesignNoteId = urlHash => {
  * Generates optimistic response for a design upload mutation
  * @param {Array<File>} files
  */
-export const designUploadOptimisticResponse = files => {
-  const designs = files.map(file => ({
+export const designUploadOptimisticResponse = (files) => {
+  const designs = files.map((file) => ({
     // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26
     // eslint-disable-next-line @gitlab/require-i18n-strings
     __typename: 'Design',
@@ -128,7 +128,7 @@ export const repositionImageDiffNoteOptimisticResponse = (note, { position }) =>
  * Generates optimistic response for a design upload mutation
  * @param {Array} designs
  */
-export const moveDesignOptimisticResponse = designs => ({
+export const moveDesignOptimisticResponse = (designs) => ({
   // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26
   // eslint-disable-next-line @gitlab/require-i18n-strings
   __typename: 'Mutation',
@@ -145,13 +145,13 @@ export const moveDesignOptimisticResponse = designs => ({
   },
 });
 
-const normalizeAuthor = author => ({
+const normalizeAuthor = (author) => ({
   ...author,
   web_url: author.webUrl,
   avatar_url: author.avatarUrl,
 });
 
-export const extractParticipants = users => users.map(node => normalizeAuthor(node));
+export const extractParticipants = (users) => users.map((node) => normalizeAuthor(node));
 
 export const getPageLayoutElement = () => document.querySelector('.layout-page');
 
@@ -160,14 +160,14 @@ export const getPageLayoutElement = () => document.querySelector('.layout-page')
  * Example of todoDeletePath: /delete/1234
  * @param {String} todoDeletePath delete_path from REST API response
  */
-export const extractTodoIdFromDeletePath = todoDeletePath =>
+export const extractTodoIdFromDeletePath = (todoDeletePath) =>
   (todoDeletePath.match('todos/([0-9]+$)') || [])[1];
 
-const createTodoGid = todoId => {
+const createTodoGid = (todoId) => {
   return `gid://gitlab/Todo/${todoId}`;
 };
 
-export const createPendingTodo = todoId => {
+export const createPendingTodo = (todoId) => {
   return {
     __typename: 'Todo', // eslint-disable-line @gitlab/require-i18n-strings
     id: createTodoGid(todoId),

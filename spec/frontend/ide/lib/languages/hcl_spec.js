@@ -284,6 +284,42 @@ describe('tokenization for .tf files', () => {
         ],
       ],
     ],
+    [
+      `  foo = <<-EOF
+  bar
+  EOF`,
+      [
+        [
+          { language: 'hcl', offset: 0, type: '' },
+          { language: 'hcl', offset: 2, type: 'variable.hcl' },
+          { language: 'hcl', offset: 5, type: '' },
+          { language: 'hcl', offset: 6, type: 'operator.hcl' },
+          { language: 'hcl', offset: 7, type: '' },
+          { language: 'hcl', offset: 8, type: 'string.heredoc.delimiter.hcl' },
+        ],
+        [{ language: 'hcl', offset: 0, type: 'string.heredoc.hcl' }],
+        [
+          { language: 'hcl', offset: 0, type: 'string.heredoc.hcl' },
+          { language: 'hcl', offset: 2, type: 'string.heredoc.delimiter.hcl' },
+        ],
+      ],
+    ],
+    [
+      `foo = <<-EOF
+bar
+EOF`,
+      [
+        [
+          { language: 'hcl', offset: 0, type: 'variable.hcl' },
+          { language: 'hcl', offset: 3, type: '' },
+          { language: 'hcl', offset: 4, type: 'operator.hcl' },
+          { language: 'hcl', offset: 5, type: '' },
+          { language: 'hcl', offset: 6, type: 'string.heredoc.delimiter.hcl' },
+        ],
+        [{ language: 'hcl', offset: 0, type: 'string.heredoc.hcl' }],
+        [{ language: 'hcl', offset: 0, type: 'string.heredoc.delimiter.hcl' }],
+      ],
+    ],
   ])('%s', (string, tokens) => {
     expect(editor.tokenize(string, 'hcl')).toEqual(tokens);
   });

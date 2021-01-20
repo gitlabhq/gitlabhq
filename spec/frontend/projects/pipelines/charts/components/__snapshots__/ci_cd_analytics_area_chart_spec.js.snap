@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CiCdAnalyticsAreaChart matches the snapshot 1`] = `
+<div
+  class="gl-mt-3"
+>
+  <p>
+    Some title
+  </p>
+   
+  <div>
+    <glareachart-stub
+      annotations=""
+      data="[object Object],[object Object]"
+      height="300"
+      legendaveragetext="Avg"
+      legendcurrenttext="Current"
+      legendlayout="inline"
+      legendmaxtext="Max"
+      legendmintext="Min"
+      option="[object Object]"
+      thresholds=""
+      width="0"
+    />
+  </div>
+</div>
+`;

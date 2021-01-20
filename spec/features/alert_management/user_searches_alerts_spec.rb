@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe 'User searches Alert Management alerts', :js do
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user) }
-  let_it_be(:alerts_service) { create(:alerts_service, project: project) }
   let_it_be(:alert) { create(:alert_management_alert, project: project, status: 'triggered') }
 
   before_all do

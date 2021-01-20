@@ -78,8 +78,8 @@ export const updateFilesAfterCommit = ({ commit, dispatch, rootState, rootGetter
     { root: true },
   );
 
-  rootState.stagedFiles.forEach(file => {
-    const changedFile = rootState.changedFiles.find(f => f.path === file.path);
+  rootState.stagedFiles.forEach((file) => {
+    const changedFile = rootState.changedFiles.find((f) => f.path === file.path);
 
     commit(
       rootTypes.UPDATE_FILE_AFTER_COMMIT,
@@ -133,7 +133,7 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
 
       return service.commit(rootState.currentProjectId, payload);
     })
-    .catch(e => {
+    .catch((e) => {
       commit(types.UPDATE_LOADING, false);
       commit(types.SET_ERROR, parseCommitError(e));
 
@@ -193,37 +193,36 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
               },
               { root: true },
             )
-              .then(changeViewer => {
+              .then((changeViewer) => {
                 if (changeViewer) {
                   dispatch('updateViewer', 'diff', { root: true });
                 }
               })
-              .catch(e => {
+              .catch((e) => {
                 throw e;
               });
           } else {
             dispatch('updateActivityBarView', leftSidebarViews.edit.name, { root: true });
             dispatch('updateViewer', 'editor', { root: true });
-
-            if (rootGetters.activeFile) {
-              dispatch(
-                'router/push',
-                `/project/${rootState.currentProjectId}/blob/${branchName}/-/${rootGetters.activeFile.path}`,
-                { root: true },
-              );
-            }
           }
         })
         .then(() => dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH))
-        .then(() =>
-          dispatch(
+        .then(() => {
+          if (newBranch) {
+            const path = rootGetters.activeFile ? rootGetters.activeFile.path : '';
+
+            return dispatch(
+              'router/push',
+              `/project/${rootState.currentProjectId}/blob/${branchName}/-/${path}`,
+              { root: true },
+            );
+          }
+
+          return dispatch(
             'refreshLastCommitData',
-            {
-              projectId: rootState.currentProjectId,
-              branchId: rootState.currentBranchId,
-            },
+            { projectId: rootState.currentProjectId, branchId: branchName },
             { root: true },
-          ),
-        );
+          );
+        });
     });
 };

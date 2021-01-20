@@ -1,7 +1,7 @@
 import { serializeForm, serializeFormObject, isEmptyValue } from '~/lib/utils/forms';
 
 describe('lib/utils/forms', () => {
-  const createDummyForm = inputs => {
+  const createDummyForm = (inputs) => {
     const form = document.createElement('form');
 
     form.innerHTML = inputs
@@ -9,7 +9,7 @@ describe('lib/utils/forms', () => {
         let str = ``;
         if (type === 'select') {
           str = `<select name="${name}">`;
-          value.forEach(v => {
+          value.forEach((v) => {
             if (v.length > 0) {
               str += `<option value="${v}"></option> `;
             }
@@ -81,8 +81,8 @@ describe('lib/utils/forms', () => {
 
       jest
         .spyOn(FormData.prototype, 'getAll')
-        .mockImplementation(name =>
-          formData.map(elem => (elem.name === name ? elem.value : undefined)),
+        .mockImplementation((name) =>
+          formData.map((elem) => (elem.name === name ? elem.value : undefined)),
         );
 
       const data = serializeForm(form);

@@ -175,7 +175,7 @@ instances](#indexing-large-instances) below.
 
 To enable Advanced Search, you need to have admin access to GitLab:
 
-1. Navigate to **Admin Area** (wrench icon), then **Settings > General**
+1. Navigate to **Admin Area**, then **Settings > General**
    and expand the **Advanced Search** section.
 
    NOTE:
@@ -204,6 +204,12 @@ To enable Advanced Search, you need to have admin access to GitLab:
 1. After the indexing has completed, enable **Search with Elasticsearch enabled** in
    **Admin Area > Settings > General > Advanced Search** and click **Save
    changes**.
+
+NOTE:
+When your Elasticsearch cluster is down while Elasticsearch is enabled,
+you might have problems updating documents such as issues because your
+instance queues a job to index the change, but cannot find a valid
+Elasticsearch cluster.
 
 ### Advanced Search configuration
 
@@ -259,7 +265,7 @@ You can improve the language support for Chinese and Japanese languages by utili
 To enable language(s) support:
 
 1. Install the desired plugin(s), please refer to [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/7.9/installation.html) for plugins installation instructions. The plugin(s) must be installed on every node in the cluster, and each node must be restarted after installation. For a list of plugins, see the table later in this section.
-1. Navigate to the **Admin Area** (wrench icon), then **Settings > General**..
+1. Navigate to the **Admin Area**, then **Settings > General**..
 1. Expand the **Advanced Search** section and locate **Custom analyzers: language support**.
 1. Enable plugin(s) support for **Indexing**.
 1. Click **Save changes** for the changes to take effect.
@@ -279,11 +285,11 @@ For guidance on what to install, see the following Elasticsearch language plugin
 
 To disable the Elasticsearch integration:
 
-1. Navigate to the **Admin Area** (wrench icon), then **Settings > General**.
+1. Navigate to the **Admin Area**, then **Settings > General**.
 1. Expand the **Advanced Search** section and uncheck **Elasticsearch indexing**
    and **Search with Elasticsearch enabled**.
 1. Click **Save changes** for the changes to take effect.
-1. (Optional) Delete the existing index:
+1. (Optional) Delete the existing indexes:
 
    ```shell
    # Omnibus installations
@@ -311,9 +317,10 @@ used by the GitLab Advanced Search integration.
 
 In the **Admin Area > Settings > General > Advanced Search** section, select the
 **Pause Elasticsearch Indexing** setting, and then save your change.
-
 With this, all updates that should happen on your Elasticsearch index will be
 buffered and caught up once unpaused.
+
+The indexing will also be automatically paused when the [**Trigger cluster reindexing**](#trigger-the-reindex-via-the-advanced-search-administration) button is used, and unpaused when the reindexing completes or aborts.
 
 ### Setup
 
@@ -346,7 +353,8 @@ To reclaim the `gitlab-production` index name, you need to first create a `secon
 
 To create a secondary index, run the following Rake task. The `SKIP_ALIAS`
 environment variable will disable the automatic creation of the Elasticsearch
-alias, which would conflict with the existing index under `$PRIMARY_INDEX`:
+alias, which would conflict with the existing index under `$PRIMARY_INDEX`, and will
+not create a separate Issue index:
 
 ```shell
 # Omnibus installation
@@ -506,6 +514,15 @@ This should return something similar to:
 
 In order to debug issues with the migrations you can check the [`elasticsearch.log` file](../administration/logs.md#elasticsearchlog).
 
+### Retry a halted migration
+
+Some migrations are built with a retry limit. If the migration cannot finish within the retry limit,
+it will be halted and a notification will be displayed in the Advanced Search integration settings.
+It is recommended to check the [`elasticsearch.log` file](../administration/logs.md#elasticsearchlog) to
+debug why the migration was halted and make any changes before retrying the migration. Once you believe you've 
+fixed the cause of the failure, click "Retry migration", and the migration will be scheduled to be retried 
+in the background.
+
 ## GitLab Advanced Search Rake tasks
 
 Rake tasks are available to:
@@ -522,8 +539,8 @@ The following are some available Rake tasks:
 | [`sudo gitlab-rake gitlab:elastic:index_projects`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Iterates over all projects and queues Sidekiq jobs to index them in the background.                                                                                                       |
 | [`sudo gitlab-rake gitlab:elastic:index_projects_status`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Determines the overall status of the indexing. It is done by counting the total number of indexed projects, dividing by a count of the total number of projects, then multiplying by 100. |
 | [`sudo gitlab-rake gitlab:elastic:clear_index_status`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)               | Deletes all instances of IndexStatus for all projects. Note that this command will result in a complete wipe of the index, and it should be used with caution.                                                                                              |
-| [`sudo gitlab-rake gitlab:elastic:create_empty_index[<TARGET_NAME>]`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake) | Generates an empty index and assigns an alias for it on the Elasticsearch side only if it doesn't already exist.                                                                                                      |
-| [`sudo gitlab-rake gitlab:elastic:delete_index[<TARGET_NAME>]`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)       | Removes the GitLab index and alias (if exists) on the Elasticsearch instance.                                                                                                                                   |
+| [`sudo gitlab-rake gitlab:elastic:create_empty_index[<TARGET_NAME>]`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake) | Generates empty indexes (the default index and a separate issues index) and assigns an alias for each on the Elasticsearch side only if it doesn't already exist.                                                                                                      |
+| [`sudo gitlab-rake gitlab:elastic:delete_index[<TARGET_NAME>]`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)       | Removes the GitLab indexes and aliases (if they exist) on the Elasticsearch instance.                                                                                                                                   |
 | [`sudo gitlab-rake gitlab:elastic:recreate_index[<TARGET_NAME>]`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)     | Wrapper task for `gitlab:elastic:delete_index[<TARGET_NAME>]` and `gitlab:elastic:create_empty_index[<TARGET_NAME>]`.                                                                       |
 | [`sudo gitlab-rake gitlab:elastic:index_snippets`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Performs an Elasticsearch import that indexes the snippets data.                                                                                                                          |
 | [`sudo gitlab-rake gitlab:elastic:projects_not_indexed`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)             | Displays which projects are not indexed.                                                                                                                                                  |
@@ -979,3 +996,11 @@ results and assuming that basic search is supported in that scope. This "basic
 search" will behave as though you don't have Advanced Search enabled at all for
 your instance and search using other data sources (ie. PostgreSQL data and Git
 data).
+
+### Data recovery: Elasticsearch is a secondary data store only
+
+The use of Elasticsearch in GitLab is only ever as a secondary data store.
+This means that all of the data stored in Elasticsearch can always be derived
+again from other data sources, specifically PostgreSQL and Gitaly. Therefore, if
+the Elasticsearch data store is ever corrupted for whatever reason, you can
+simply reindex everything from scratch.

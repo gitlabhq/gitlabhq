@@ -12,11 +12,11 @@ module Resolvers
       argument :active,
                GraphQL::BOOLEAN_TYPE,
                required: false,
-               description: 'Indicates if the service is active'
+               description: 'Indicates if the service is active.'
       argument :type,
                Types::Projects::ServiceTypeEnum,
                required: false,
-               description: 'Class name of the service'
+               description: 'Class name of the service.'
 
       alias_method :project, :object
 

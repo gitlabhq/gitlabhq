@@ -25,22 +25,49 @@ describe('CI Lint Results', () => {
   };
 
   const findTable = () => wrapper.find(GlTable);
-  const findByTestId = selector => () => wrapper.find(`[data-testid="ci-lint-${selector}"]`);
-  const findAllByTestId = selector => () => wrapper.findAll(`[data-testid="ci-lint-${selector}"]`);
+  const findByTestId = (selector) => () => wrapper.find(`[data-testid="ci-lint-${selector}"]`);
+  const findAllByTestId = (selector) => () =>
+    wrapper.findAll(`[data-testid="ci-lint-${selector}"]`);
   const findLinkToDoc = () => wrapper.find(GlLink);
   const findErrors = findByTestId('errors');
   const findWarnings = findByTestId('warnings');
   const findStatus = findByTestId('status');
   const findOnlyExcept = findByTestId('only-except');
   const findLintParameters = findAllByTestId('parameter');
+  const findLintValues = findAllByTestId('value');
   const findBeforeScripts = findAllByTestId('before-script');
   const findScripts = findAllByTestId('script');
   const findAfterScripts = findAllByTestId('after-script');
-  const filterEmptyScripts = property => mockJobs.filter(job => job[property].length !== 0);
+  const filterEmptyScripts = (property) => mockJobs.filter((job) => job[property].length !== 0);
 
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
+  });
+
+  describe('Empty results', () => {
+    it('renders with no jobs, errors or warnings defined', () => {
+      createComponent({ jobs: undefined, errors: undefined, warnings: undefined }, shallowMount);
+      expect(findTable().exists()).toBe(true);
+    });
+
+    it('renders when job has no properties defined', () => {
+      // job with no attributes such as `tagList` or `environment`
+      const job = {
+        stage: 'Stage Name',
+        name: 'test job',
+      };
+      createComponent({ jobs: [job] }, mount);
+
+      const param = findLintParameters().at(0);
+      const value = findLintValues().at(0);
+
+      expect(param.text()).toBe(`${job.stage} Job - ${job.name}`);
+
+      // This test should be updated once properties of each job are shown
+      // See https://gitlab.com/gitlab-org/gitlab/-/issues/291031
+      expect(value.text()).toBe('');
+    });
   });
 
   describe('Invalid results', () => {

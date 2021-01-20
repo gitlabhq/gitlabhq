@@ -15,13 +15,6 @@ RSpec.describe Projects::UpdateService do
     let(:admin) { create(:admin) }
 
     context 'when changing visibility level' do
-      def expect_to_call_unlink_fork_service
-        service = Projects::UnlinkForkService.new(project, user)
-
-        expect(Projects::UnlinkForkService).to receive(:new).with(project, user).and_return(service)
-        expect(service).to receive(:execute).and_call_original
-      end
-
       context 'when visibility_level changes to INTERNAL' do
         it 'updates the project to internal' do
           expect(TodosDestroyer::ProjectPrivateWorker).not_to receive(:perform_in)
@@ -30,18 +23,6 @@ RSpec.describe Projects::UpdateService do
 
           expect(result).to eq({ status: :success })
           expect(project).to be_internal
-        end
-
-        context 'and project is PUBLIC' do
-          before do
-            project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-          end
-
-          it 'unlinks project from fork network' do
-            expect_to_call_unlink_fork_service
-
-            update_project(project, user, visibility_level: Gitlab::VisibilityLevel::INTERNAL)
-          end
         end
       end
 
@@ -77,30 +58,6 @@ RSpec.describe Projects::UpdateService do
 
           expect(result).to eq({ status: :success })
           expect(project).to be_private
-        end
-
-        context 'and project is PUBLIC' do
-          before do
-            project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-          end
-
-          it 'unlinks project from fork network' do
-            expect_to_call_unlink_fork_service
-
-            update_project(project, user, visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-          end
-        end
-
-        context 'and project is INTERNAL' do
-          before do
-            project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
-          end
-
-          it 'unlinks project from fork network' do
-            expect_to_call_unlink_fork_service
-
-            update_project(project, user, visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-          end
         end
       end
 

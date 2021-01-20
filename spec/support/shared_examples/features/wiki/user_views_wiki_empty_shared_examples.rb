@@ -53,7 +53,7 @@ RSpec.shared_examples 'User views empty wiki' do
       if writable
         element.click_link 'Create your first page'
 
-        expect(page).to have_button('Create page')
+        expect(page).to have_button('Create page', disabled: true)
       else
         expect(element).not_to have_link('Create your first page')
       end

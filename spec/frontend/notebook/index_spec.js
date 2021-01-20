@@ -14,7 +14,7 @@ describe('Notebook component', () => {
   });
 
   describe('without JSON', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       vm = new Component({
         propsData: {
           notebook: {},
@@ -33,7 +33,7 @@ describe('Notebook component', () => {
   });
 
   describe('with JSON', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       vm = new Component({
         propsData: {
           notebook: json,
@@ -65,7 +65,7 @@ describe('Notebook component', () => {
   });
 
   describe('with worksheets', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       vm = new Component({
         propsData: {
           notebook: jsonWithWorksheet,

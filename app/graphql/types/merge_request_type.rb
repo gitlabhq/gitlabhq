@@ -96,6 +96,8 @@ module Types
           description: 'Default merge commit message of the merge request'
     field :default_merge_commit_message_with_description, GraphQL::STRING_TYPE, null: true,
           description: 'Default merge commit message of the merge request with description'
+    field :default_squash_commit_message, GraphQL::STRING_TYPE, null: true, calls_gitaly: true,
+          description: 'Default squash commit message of the merge request'
     field :merge_ongoing, GraphQL::BOOLEAN_TYPE, method: :merge_ongoing?, null: false,
           description: 'Indicates if a merge is currently occurring'
     field :source_branch_exists, GraphQL::BOOLEAN_TYPE,
@@ -126,10 +128,12 @@ module Types
           description: 'The milestone of the merge request'
     field :assignees, Types::UserType.connection_type, null: true, complexity: 5,
           description: 'Assignees of the merge request'
+    field :reviewers, Types::UserType.connection_type, null: true, complexity: 5,
+          description: 'Users from whom a review has been requested.'
     field :author, Types::UserType, null: true,
           description: 'User who created this merge request'
-    field :participants, Types::UserType.connection_type, null: true, complexity: 5,
-          description: 'Participants in the merge request'
+    field :participants, Types::UserType.connection_type, null: true, complexity: 15,
+          description: 'Participants in the merge request. This includes the author, assignees, reviewers, and users mentioned in notes.'
     field :subscribed, GraphQL::BOOLEAN_TYPE, method: :subscribed?, null: false, complexity: 5,
           description: 'Indicates if the currently logged in user is subscribed to this merge request'
     field :labels, Types::LabelType.connection_type, null: true, complexity: 5,
@@ -159,6 +163,8 @@ module Types
           description: 'Users who approved the merge request'
     field :squash_on_merge, GraphQL::BOOLEAN_TYPE, null: false, method: :squash_on_merge?,
           description: 'Indicates if squash on merge is enabled'
+    field :squash, GraphQL::BOOLEAN_TYPE, null: false,
+          description: 'Indicates if squash on merge is enabled'
     field :available_auto_merge_strategies, [GraphQL::STRING_TYPE], null: true, calls_gitaly: true,
           description: 'Array of available auto merge strategies'
     field :has_ci, GraphQL::BOOLEAN_TYPE, null: false, method: :has_ci?,
@@ -169,6 +175,10 @@ module Types
           calls_gitaly: true, description: 'Merge request commits excluding merge commits'
     field :security_auto_fix, GraphQL::BOOLEAN_TYPE, null: true,
           description: 'Indicates if the merge request is created by @GitLab-Security-Bot.'
+    field :auto_merge_strategy, GraphQL::STRING_TYPE, null: true,
+          description: 'Selected auto merge strategy'
+    field :merge_user, Types::UserType, null: true,
+          description: 'User who merged this merge request'
 
     def approved_by
       object.approved_by_users
@@ -234,6 +244,10 @@ module Types
 
     def security_auto_fix
       object.author == User.security_bot
+    end
+
+    def reviewers
+      object.reviewers if object.allows_reviewers?
     end
   end
 end

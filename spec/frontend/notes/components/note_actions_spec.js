@@ -65,23 +65,11 @@ describe('noteActions', () => {
     });
 
     it('should render noteable author badge', () => {
-      expect(
-        wrapper
-          .findAll('.note-role')
-          .at(0)
-          .text()
-          .trim(),
-      ).toEqual('Author');
+      expect(wrapper.findAll('.note-role').at(0).text().trim()).toEqual('Author');
     });
 
     it('should render access level badge', () => {
-      expect(
-        wrapper
-          .findAll('.note-role')
-          .at(1)
-          .text()
-          .trim(),
-      ).toEqual(props.accessLevel);
+      expect(wrapper.findAll('.note-role').at(1).text().trim()).toEqual(props.accessLevel);
     });
 
     it('should render contributor badge', () => {
@@ -91,13 +79,7 @@ describe('noteActions', () => {
       });
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(
-          wrapper
-            .findAll('.note-role')
-            .at(1)
-            .text()
-            .trim(),
-        ).toBe('Contributor');
+        expect(wrapper.findAll('.note-role').at(1).text().trim()).toBe('Contributor');
       });
     });
 
@@ -119,7 +101,7 @@ describe('noteActions', () => {
         expect(wrapper.find('.js-btn-copy-note-link').exists()).toBe(true);
       });
 
-      it('should not show copy link action when `noteUrl` prop is empty', done => {
+      it('should not show copy link action when `noteUrl` prop is empty', (done) => {
         wrapper.setProps({
           ...props,
           author: {
@@ -145,7 +127,7 @@ describe('noteActions', () => {
         expect(wrapper.find('.js-note-delete').exists()).toBe(true);
       });
 
-      it('closes tooltip when dropdown opens', done => {
+      it('closes tooltip when dropdown opens', (done) => {
         wrapper.find('.more-actions-toggle').trigger('click');
 
         const rootWrapper = createWrapper(wrapper.vm.$root);

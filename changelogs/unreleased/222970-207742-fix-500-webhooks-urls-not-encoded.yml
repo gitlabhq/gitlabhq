@@ -1,0 +1,5 @@
+---
+title: Fix 500 errors entering a webhook URL not encoded
+merge_request: 51109
+author:
+type: fixed

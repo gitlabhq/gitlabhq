@@ -76,11 +76,11 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
       it 'finds all milestones associated to a release' do
         post_query
 
-        expected = release.milestones.map do |milestone|
+        expected = release.milestones.order_by_dates_and_title.map do |milestone|
           { 'id' => global_id_of(milestone), 'title' => milestone.title }
         end
 
-        expect(data).to match_array(expected)
+        expect(data).to eq(expected)
       end
     end
 
@@ -426,5 +426,34 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
         })
       end
     end
+  end
+
+  describe 'milestone order' do
+    let(:path) { path_prefix }
+    let(:current_user) { stranger }
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be_with_reload(:release) { create(:release, project: project) }
+
+    let(:release_fields) do
+      query_graphql_field(%{
+        milestones {
+          nodes {
+            title
+          }
+        }
+      })
+    end
+
+    let(:actual_milestone_title_order) do
+      post_query
+
+      data.dig('milestones', 'nodes').map { |m| m['title'] }
+    end
+
+    before do
+      release.update!(milestones: [milestone_2, milestone_1])
+    end
+
+    it_behaves_like 'correct release milestone order'
   end
 end

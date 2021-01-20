@@ -2,4 +2,4 @@
   .nothing-here-block
     %h5= _('Enter at least three characters to search')
 - else
-  = render 'shared/projects/list', projects: projects, user: current_user, explore_page: true, pipeline_status: Feature.enabled?(:dashboard_pipeline_status, default_enabled: true)
+  = render 'shared/projects/list', projects: projects, user: current_user, explore_page: true, pipeline_status: Feature.enabled?(:explore_pipeline_status, type: :ops)

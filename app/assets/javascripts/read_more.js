@@ -22,7 +22,7 @@ export default function initReadMore(triggerSelector = '.js-read-more-trigger') 
 
   if (!triggerEls) return;
 
-  triggerEls.forEach(triggerEl => {
+  triggerEls.forEach((triggerEl) => {
     const targetEl = triggerEl.previousElementSibling;
 
     if (!targetEl) {
@@ -31,7 +31,7 @@ export default function initReadMore(triggerSelector = '.js-read-more-trigger') 
 
     triggerEl.addEventListener(
       'click',
-      e => {
+      (e) => {
         targetEl.classList.add('is-expanded');
         e.target.remove();
       },

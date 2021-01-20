@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import { TEST_HOST } from 'jest/helpers/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
 import { showTreeEntry, getFiles, setDirectoryData } from '~/ide/stores/actions/tree';
 import * as types from '~/ide/stores/mutation_types';
 import axios from '~/lib/utils/axios_utils';
@@ -57,25 +57,14 @@ describe('Multi-file store tree actions', () => {
       });
 
       it('calls service getFiles', () => {
-        return (
-          store
-            .dispatch('getFiles', basicCallParameters)
-            // getFiles actions calls lodash.defer
-            .then(() => jest.runOnlyPendingTimers())
-            .then(() => {
-              expect(service.getFiles).toHaveBeenCalledWith('foo/abcproject', '12345678');
-            })
-        );
+        return store.dispatch('getFiles', basicCallParameters).then(() => {
+          expect(service.getFiles).toHaveBeenCalledWith('foo/abcproject', '12345678');
+        });
       });
 
-      it('adds data into tree', done => {
+      it('adds data into tree', (done) => {
         store
           .dispatch('getFiles', basicCallParameters)
-          .then(() => {
-            // The populating of the tree is deferred for performance reasons.
-            // See this merge request for details: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/25700
-            jest.advanceTimersByTime(1);
-          })
           .then(() => {
             projectTree = store.state.trees['abcproject/master'];
 
@@ -93,7 +82,7 @@ describe('Multi-file store tree actions', () => {
     });
 
     describe('error', () => {
-      it('dispatches error action', done => {
+      it('dispatches error action', (done) => {
         const dispatch = jest.fn();
 
         store.state.projects = {
@@ -148,7 +137,7 @@ describe('Multi-file store tree actions', () => {
       store.state.entries[tree.path] = tree;
     });
 
-    it('toggles the tree open', done => {
+    it('toggles the tree open', (done) => {
       store
         .dispatch('toggleTreeOpen', tree.path)
         .then(() => {
@@ -174,7 +163,7 @@ describe('Multi-file store tree actions', () => {
       Object.assign(store.state.entries, createEntriesFromPaths(paths));
     });
 
-    it('opens the parents', done => {
+    it('opens the parents', (done) => {
       testAction(
         showTreeEntry,
         'grandparent/parent/child.txt',
@@ -187,7 +176,7 @@ describe('Multi-file store tree actions', () => {
   });
 
   describe('setDirectoryData', () => {
-    it('sets tree correctly if there are no opened files yet', done => {
+    it('sets tree correctly if there are no opened files yet', (done) => {
       const treeFile = file({ name: 'README.md' });
       store.state.trees['abcproject/master'] = {};
 

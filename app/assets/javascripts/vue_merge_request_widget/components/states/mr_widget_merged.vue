@@ -83,8 +83,8 @@ export default {
 
       this.service
         .removeSourceBranch()
-        .then(res => res.data)
-        .then(data => {
+        .then((res) => res.data)
+        .then((data) => {
           // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26
           // eslint-disable-next-line @gitlab/require-i18n-strings
           if (data.message === 'Branch was deleted') {

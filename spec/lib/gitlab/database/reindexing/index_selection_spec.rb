@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Reindexing::IndexSelection do
-  include DatabaseHelpers
+  include Database::DatabaseHelpers
 
   subject { described_class.new(Gitlab::Database::PostgresIndex.all).to_a }
 

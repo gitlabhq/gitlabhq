@@ -38,7 +38,7 @@ export default {
       return this.member.user;
     },
     badges() {
-      return generateBadges(this.member, this.isCurrentUser).filter(badge => badge.show);
+      return generateBadges(this.member, this.isCurrentUser).filter((badge) => badge.show);
     },
     statusEmoji() {
       return this.user?.status?.emoji;

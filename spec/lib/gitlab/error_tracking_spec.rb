@@ -236,7 +236,7 @@ RSpec.describe Gitlab::ErrorTracking do
 
     context 'the exception implements :sentry_extra_data' do
       let(:extra_info) { { event: 'explosion', size: :massive } }
-      let(:exception) { double(message: 'bang!', sentry_extra_data: extra_info, backtrace: caller) }
+      let(:exception) { double(message: 'bang!', sentry_extra_data: extra_info, backtrace: caller, cause: nil) }
 
       it 'includes the extra data from the exception in the tracking information' do
         track_exception
@@ -247,7 +247,7 @@ RSpec.describe Gitlab::ErrorTracking do
     end
 
     context 'the exception implements :sentry_extra_data, which returns nil' do
-      let(:exception) { double(message: 'bang!', sentry_extra_data: nil, backtrace: caller) }
+      let(:exception) { double(message: 'bang!', sentry_extra_data: nil, backtrace: caller, cause: nil) }
       let(:extra) { { issue_url: issue_url } }
 
       it 'just includes the other extra info' do
@@ -287,10 +287,23 @@ RSpec.describe Gitlab::ErrorTracking do
       let(:exception) { ActiveRecord::StatementInvalid.new(sql: 'SELECT "users".* FROM "users" WHERE "users"."id" = 1 AND "users"."foo" = $1') }
 
       it 'injects the normalized sql query into extra' do
-        track_exception
+        allow(Raven.client.transport).to receive(:send_event) do |event|
+          expect(event.extra).to include(sql: 'SELECT "users".* FROM "users" WHERE "users"."id" = $2 AND "users"."foo" = $1')
+        end
 
-        expect(Raven).to have_received(:capture_exception)
-          .with(exception, a_hash_including(extra: a_hash_including(sql: 'SELECT "users".* FROM "users" WHERE "users"."id" = $2 AND "users"."foo" = $1')))
+        track_exception
+      end
+    end
+
+    context 'when the `ActiveRecord::StatementInvalid` is wrapped in another exception' do
+      let(:exception) { RuntimeError.new(cause: ActiveRecord::StatementInvalid.new(sql: 'SELECT "users".* FROM "users" WHERE "users"."id" = 1 AND "users"."foo" = $1')) }
+
+      it 'injects the normalized sql query into extra' do
+        allow(Raven.client.transport).to receive(:send_event) do |event|
+          expect(event.extra).to include(sql: 'SELECT "users".* FROM "users" WHERE "users"."id" = $2 AND "users"."foo" = $1')
+        end
+
+        track_exception
       end
     end
   end

@@ -29,11 +29,11 @@ export default class PipelineStore {
     }
 
     if (pipelineCopy.triggered && pipelineCopy.triggered.length) {
-      pipelineCopy.triggered.forEach(el => {
+      pipelineCopy.triggered.forEach((el) => {
         const oldPipeline =
           this.state.pipeline &&
           this.state.pipeline.triggered &&
-          this.state.pipeline.triggered.find(element => element.id === el.id);
+          this.state.pipeline.triggered.find((element) => element.id === el.id);
 
         this.parseTriggeredPipelines(oldPipeline, el);
       });
@@ -67,8 +67,8 @@ export default class PipelineStore {
       }
 
       if (newPipeline.triggered_by?.length > 0) {
-        newPipeline.triggered_by.forEach(el => {
-          const oldTriggeredBy = oldPipeline.triggered_by?.find(element => element.id === el.id);
+        newPipeline.triggered_by.forEach((el) => {
+          const oldTriggeredBy = oldPipeline.triggered_by?.find((element) => element.id === el.id);
           this.parseTriggeredPipelines(oldTriggeredBy, el);
         });
       }
@@ -88,9 +88,9 @@ export default class PipelineStore {
     Vue.set(newPipeline, 'isLoading', false);
 
     if (newPipeline.triggered && newPipeline.triggered.length > 0) {
-      newPipeline.triggered.forEach(el => {
+      newPipeline.triggered.forEach((el) => {
         const oldTriggered =
-          oldPipeline.triggered && oldPipeline.triggered.find(element => element.id === el.id);
+          oldPipeline.triggered && oldPipeline.triggered.find((element) => element.id === el.id);
         this.parseTriggeredPipelines(oldTriggered, el);
       });
     }
@@ -102,7 +102,7 @@ export default class PipelineStore {
    * @param {Object} pipeline
    */
   resetTriggeredByPipeline(parentPipeline, pipeline) {
-    parentPipeline.triggered_by.forEach(el => this.closePipeline(el));
+    parentPipeline.triggered_by.forEach((el) => this.closePipeline(el));
 
     if (pipeline.triggered_by && pipeline.triggered_by) {
       this.resetTriggeredByPipeline(pipeline, pipeline.triggered_by);
@@ -129,7 +129,7 @@ export default class PipelineStore {
     this.closePipeline(pipeline);
 
     if (pipeline.triggered_by && pipeline.triggered_by.length) {
-      pipeline.triggered_by.forEach(triggeredBy => this.closeTriggeredByPipeline(triggeredBy));
+      pipeline.triggered_by.forEach((triggeredBy) => this.closeTriggeredByPipeline(triggeredBy));
     }
   }
 
@@ -139,10 +139,10 @@ export default class PipelineStore {
    * @param {Object} pipeline
    */
   resetTriggeredPipelines(parentPipeline, pipeline) {
-    parentPipeline.triggered.forEach(el => this.closePipeline(el));
+    parentPipeline.triggered.forEach((el) => this.closePipeline(el));
 
     if (pipeline.triggered && pipeline.triggered.length) {
-      pipeline.triggered.forEach(el => this.resetTriggeredPipelines(pipeline, el));
+      pipeline.triggered.forEach((el) => this.resetTriggeredPipelines(pipeline, el));
     }
   }
 
@@ -165,7 +165,7 @@ export default class PipelineStore {
     this.closePipeline(pipeline);
 
     if (pipeline.triggered && pipeline.triggered.length) {
-      pipeline.triggered.forEach(triggered => this.closeTriggeredPipeline(triggered));
+      pipeline.triggered.forEach((triggered) => this.closeTriggeredPipeline(triggered));
     }
   }
 
@@ -198,6 +198,9 @@ export default class PipelineStore {
   }
 
   removeExpandedPipelineToRequestData(id) {
-    this.state.expandedPipelines.splice(this.state.expandedPipelines.findIndex(el => el === id), 1);
+    this.state.expandedPipelines.splice(
+      this.state.expandedPipelines.findIndex((el) => el === id),
+      1,
+    );
   }
 }

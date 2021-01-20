@@ -34,7 +34,7 @@ describe('ProviderRepoTableRow', () => {
   }
 
   const findImportButton = () => {
-    const buttons = wrapper.findAll('button').filter(node => node.text() === 'Import');
+    const buttons = wrapper.findAll('button').filter((node) => node.text() === 'Import');
 
     return buttons.length ? buttons.at(0) : buttons;
   };

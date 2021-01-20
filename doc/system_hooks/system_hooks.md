@@ -535,9 +535,11 @@ X-Gitlab-Event: System Hook
 {
   "object_kind": "merge_request",
   "user": {
+    "id": 1,
     "name": "Administrator",
     "username": "root",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon"
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+    "email": "admin@example.com"
   },
   "project": {
     "name": "Example",

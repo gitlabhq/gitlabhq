@@ -116,6 +116,21 @@ namespace :gitlab do
       helper.projects_list('projects using Hashed Storage', Project.with_storage_feature(:repository))
     end
 
+    desc 'Gitlab | Storage | Prune projects using Hashed Storage. Remove all hashed directories that do not have a project associated'
+    task prune_hashed_projects: [:environment, :gitlab_environment] do
+      if Rails.env.production?
+        abort('This destructive action may only be run in development')
+      end
+
+      helper = Gitlab::HashedStorage::RakeHelper
+      name = 'projects using Hashed Storage'
+      relation = Project.with_storage_feature(:repository)
+      root = Gitlab.config.repositories.storages['default'].legacy_disk_path
+      dry_run = !ENV['FORCE'].present?
+
+      helper.prune(name, relation, dry_run: dry_run, root: root)
+    end
+
     desc 'Gitlab | Storage | Summary of project attachments using Legacy Storage'
     task legacy_attachments: :environment do
       helper = Gitlab::HashedStorage::RakeHelper

@@ -11,3 +11,9 @@ export function getImportStatus(project) {
 export function isProjectImportable(project) {
   return !isIncompatible(project) && getImportStatus(project) === STATUSES.NONE;
 }
+
+export function isImporting(repo) {
+  return [STATUSES.SCHEDULING, STATUSES.SCHEDULED, STATUSES.STARTED].includes(
+    repo.importedProject?.importStatus,
+  );
+}

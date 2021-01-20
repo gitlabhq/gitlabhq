@@ -37,6 +37,11 @@ module Types
           description: 'Projects within this namespace',
           resolver: ::Resolvers::NamespaceProjectsResolver
 
+    field :package_settings,
+          Types::Namespace::PackageSettingsType,
+          null: true,
+          description: 'The package settings for the namespace'
+
     def root_storage_statistics
       Gitlab::Graphql::Loaders::BatchRootStorageStatisticsLoader.new(object.id).find
     end

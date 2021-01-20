@@ -1,0 +1,5 @@
+---
+title: Add ability for admins to create PAT for other users via API
+merge_request: 49222
+author:
+type: added

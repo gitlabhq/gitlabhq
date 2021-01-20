@@ -1,25 +1,140 @@
-export const mockProjectPath = 'user1/project1';
+import { CI_CONFIG_STATUS_VALID } from '~/pipeline_editor/constants';
+import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
+
+export const mockProjectNamespace = 'user1';
+export const mockProjectPath = 'project1';
+export const mockProjectFullPath = `${mockProjectNamespace}/${mockProjectPath}`;
 export const mockDefaultBranch = 'master';
 export const mockNewMergeRequestPath = '/-/merge_requests/new';
-export const mockCommitId = 'aabbccdd';
+export const mockCommitSha = 'aabbccdd';
+export const mockCommitNextSha = 'eeffgghh';
+export const mockLintHelpPagePath = '/-/lint-help';
+export const mockYmlHelpPagePath = '/-/yml-help';
 export const mockCommitMessage = 'My commit message';
 
 export const mockCiConfigPath = '.gitlab-ci.yml';
 export const mockCiYml = `
-job1:
+stages:
+  - test
+  - build
+
+job_test_1:
   stage: test
-  script: 
-    - echo 'test'
+  script:
+    - echo "test 1"
+
+job_test_2:
+  stage: test
+  script:
+    - echo "test 2"
+
+job_build:
+  stage: build
+  script:
+    - echo "build"
+  needs: ["job_test_2"]
 `;
 
+const mockJobFields = {
+  beforeScript: [],
+  afterScript: [],
+  environment: null,
+  allowFailure: false,
+  tags: [],
+  when: 'on_success',
+  only: { refs: ['branches', 'tags'], __typename: 'CiJobLimitType' },
+  except: null,
+  needs: { nodes: [], __typename: 'CiConfigNeedConnection' },
+  __typename: 'CiConfigJob',
+};
+
+// Mock result of the graphql query at:
+// app/assets/javascripts/pipeline_editor/graphql/queries/ci_config.graphql
 export const mockCiConfigQueryResponse = {
   data: {
     ciConfig: {
       errors: [],
-      stages: [],
-      status: '',
+      status: CI_CONFIG_STATUS_VALID,
+      stages: {
+        __typename: 'CiConfigStageConnection',
+        nodes: [
+          {
+            name: 'test',
+            groups: {
+              nodes: [
+                {
+                  name: 'job_test_1',
+                  size: 1,
+                  jobs: {
+                    nodes: [
+                      {
+                        name: 'job_test_1',
+                        script: ['echo "test 1"'],
+                        ...mockJobFields,
+                      },
+                    ],
+                    __typename: 'CiConfigJobConnection',
+                  },
+                  __typename: 'CiConfigGroup',
+                },
+                {
+                  name: 'job_test_2',
+                  size: 1,
+                  jobs: {
+                    nodes: [
+                      {
+                        name: 'job_test_2',
+                        script: ['echo "test 2"'],
+                        ...mockJobFields,
+                      },
+                    ],
+                    __typename: 'CiConfigJobConnection',
+                  },
+                  __typename: 'CiConfigGroup',
+                },
+              ],
+              __typename: 'CiConfigGroupConnection',
+            },
+            __typename: 'CiConfigStage',
+          },
+          {
+            name: 'build',
+            groups: {
+              nodes: [
+                {
+                  name: 'job_build',
+                  size: 1,
+                  jobs: {
+                    nodes: [
+                      {
+                        name: 'job_build',
+                        script: ['echo "build"'],
+                        ...mockJobFields,
+                      },
+                    ],
+                    __typename: 'CiConfigJobConnection',
+                  },
+                  __typename: 'CiConfigGroup',
+                },
+              ],
+              __typename: 'CiConfigGroupConnection',
+            },
+            __typename: 'CiConfigStage',
+          },
+        ],
+      },
+      __typename: 'CiConfig',
     },
   },
+};
+
+export const mergeUnwrappedCiConfig = (mergedConfig) => {
+  const { ciConfig } = mockCiConfigQueryResponse.data;
+  return {
+    ...ciConfig,
+    stages: unwrapStagesWithNeeds(ciConfig.stages.nodes),
+    ...mergedConfig,
+  };
 };
 
 export const mockLintResponse = {

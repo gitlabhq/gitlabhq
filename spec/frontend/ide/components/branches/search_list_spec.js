@@ -71,7 +71,7 @@ describe('IDE branches search list', () => {
     it('renders check next to active branch', () => {
       const activeBranch = 'regular';
       createComponent({ branches }, activeBranch);
-      const items = wrapper.findAll(Item).filter(w => w.props('isActive'));
+      const items = wrapper.findAll(Item).filter((w) => w.props('isActive'));
 
       expect(items.length).toBe(1);
       expect(items.at(0).props('item').name).toBe(activeBranch);

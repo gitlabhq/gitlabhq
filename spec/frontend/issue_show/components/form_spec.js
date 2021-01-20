@@ -26,7 +26,7 @@ describe('Inline edit form component', () => {
     vm.$destroy();
   });
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     const Component = Vue.extend(formComponent);
 
     vm = mountComponent(Component, {

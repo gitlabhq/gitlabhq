@@ -18,7 +18,7 @@ module.exports = function ensureSingleLine(str) {
   if (str.includes('\n') || str.includes('\r')) {
     return str
       .split(SPLIT_REGEX)
-      .filter(s => s !== '')
+      .filter((s) => s !== '')
       .join(' ');
   }
   return str;

@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlDropdown, GlButton } from '@gitlab/ui';
+import { GlDropdown, GlDropdownDivider, GlButton } from '@gitlab/ui';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ActionsButton from '~/vue_shared/components/actions_button.vue';
 
@@ -40,7 +40,7 @@ describe('Actions button component', () => {
     wrapper.destroy();
   });
 
-  const getTooltip = child => {
+  const getTooltip = (child) => {
     const directiveBinding = getBinding(child.element, 'gl-tooltip');
 
     return directiveBinding.value;
@@ -52,8 +52,8 @@ describe('Actions button component', () => {
   const parseDropdownItems = () =>
     findDropdown()
       .findAll('gl-dropdown-item-stub,gl-dropdown-divider-stub')
-      .wrappers.map(x => {
-        if (x.is('gl-dropdown-divider-stub')) {
+      .wrappers.map((x) => {
+        if (x.is(GlDropdownDivider)) {
           return { type: 'divider' };
         }
 

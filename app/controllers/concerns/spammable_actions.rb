@@ -32,10 +32,6 @@ module SpammableActions
     elsif render_recaptcha?
       ensure_spam_config_loaded!
 
-      if params[:recaptcha_verification]
-        flash[:alert] = _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
-      end
-
       respond_to do |format|
         format.html do
           render :verify
@@ -56,14 +52,31 @@ module SpammableActions
   def spammable_params
     default_params = { request: request }
 
-    recaptcha_check = params[:recaptcha_verification] &&
+    recaptcha_check = recaptcha_response &&
       ensure_spam_config_loaded! &&
-      verify_recaptcha
+      verify_recaptcha(response: recaptcha_response)
 
     return default_params unless recaptcha_check
 
     { recaptcha_verified: true,
       spam_log_id: params[:spam_log_id] }.merge(default_params)
+  end
+
+  def recaptcha_response
+    # NOTE: This field name comes from `Recaptcha::ClientHelper#recaptcha_tags` in the recaptcha
+    # gem, which is called from the HAML `_recaptcha_form.html.haml` form.
+    #
+    # It is used in the `Recaptcha::Verify#verify_recaptcha` if the `response` option is not
+    # passed explicitly.
+    #
+    # Instead of relying on this behavior, we are extracting and passing it explicitly. This will
+    # make it consistent with the newer, modern reCAPTCHA verification process as it will be
+    # implemented via the GraphQL API and in Vue components via the native reCAPTCHA Javascript API,
+    # which requires that the recaptcha response param be obtained and passed explicitly.
+    #
+    # After this newer GraphQL/JS API process is fully supported by the backend, we can remove this
+    # (and other) HAML-specific support.
+    params['g-recaptcha-response']
   end
 
   def spammable

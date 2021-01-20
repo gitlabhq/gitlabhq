@@ -1,0 +1,7 @@
+query {
+  blog(title: "A history of GraphQL") {
+    title
+    createdAt
+    categories { name }
+  }
+}

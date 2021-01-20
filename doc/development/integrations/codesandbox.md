@@ -1,7 +1,7 @@
 # Set up local Codesandbox development environment
 
-This guide walks through setting up a local [Codesandbox repository](https://github.com/codesandbox/codesandbox-client) and integrating it with a local GitLab instance. Codesandbox 
-is used to power the Web IDE's [Live Preview feature](../../user/project/web_ide/index.md#live-preview). Having a local Codesandbox setup is useful for debugging upstream issues or 
+This guide walks through setting up a local [Codesandbox repository](https://github.com/codesandbox/codesandbox-client) and integrating it with a local GitLab instance. Codesandbox
+is used to power the Web IDE's [Live Preview feature](../../user/project/web_ide/index.md#live-preview). Having a local Codesandbox setup is useful for debugging upstream issues or
 creating upstream contributions like [this one](https://github.com/codesandbox/codesandbox-client/pull/5137).
 
 ## Initial setup
@@ -59,7 +59,7 @@ to use a locally-built module. To build and use a local `smooshpack` module:
    yarn run start
    ```
 
-   Now, in the GitLab project, you can run `yarn link "smooshpack"`. `yarn` looks 
+   Now, in the GitLab project, you can run `yarn link "smooshpack"`. `yarn` looks
    for `smooshpack` **on disk** as opposed to the one hosted remotely.
 
 1. In the `gitlab` project directory, run:
@@ -110,7 +110,7 @@ npx http-server --proxy http://localhost:3000 -S -C $PATH_TO_CERT_PEM -K $PATH_T
 
 ### Update `bundler_url` setting in GitLab
 
-We need to update our `application_setting_implementation.rb` to point to the server that hosts the 
+We need to update our `application_setting_implementation.rb` to point to the server that hosts the
 Codesandbox `sandpack` assets. For instance, if these assets are hosted by a server at `https://sandpack.local:8044`:
 
 ```patch
@@ -125,7 +125,7 @@ index 6eed627b502..1824669e881 100644
 -    'https://sandbox-prod.gitlab-static.net'
 +    'https://sandpack.local:8044'
    end
- 
+
    private
 
 ```

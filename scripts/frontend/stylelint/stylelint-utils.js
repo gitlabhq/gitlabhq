@@ -9,7 +9,7 @@ module.exports.createPropertiesHashmap = (
   selectorGroups,
   addSelectors,
 ) => {
-  ruleRoot.walkRules(rule => {
+  ruleRoot.walkRules((rule) => {
     const selector = rule.selector.replace(/(?:\r\n|\r|\n)/g, ' ');
 
     if (
@@ -25,7 +25,7 @@ module.exports.createPropertiesHashmap = (
       )
     ) {
       let cssArray = [];
-      rule.nodes.forEach(function(property) {
+      rule.nodes.forEach(function (property) {
         const { prop, value } = property;
         if (property && value) {
           const propval = `${prop}${value}${property.important ? '!important' : ''}`;

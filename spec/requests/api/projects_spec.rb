@@ -1583,6 +1583,7 @@ RSpec.describe API::Projects do
         expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
         expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
         expect(json_response['allow_merge_on_skipped_pipeline']).to eq(project.allow_merge_on_skipped_pipeline)
+        expect(json_response['restrict_user_defined_variables']).to eq(project.restrict_user_defined_variables?)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response['operations_access_level']).to be_present
       end
@@ -1654,6 +1655,7 @@ RSpec.describe API::Projects do
         expect(json_response['shared_with_groups'][0]).to have_key('expires_at')
         expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
         expect(json_response['allow_merge_on_skipped_pipeline']).to eq(project.allow_merge_on_skipped_pipeline)
+        expect(json_response['restrict_user_defined_variables']).to eq(project.restrict_user_defined_variables?)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response['ci_default_git_depth']).to eq(project.ci_default_git_depth)
         expect(json_response['ci_forward_deployment_enabled']).to eq(project.ci_forward_deployment_enabled)
@@ -2597,6 +2599,18 @@ RSpec.describe API::Projects do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
+      it 'updates restrict_user_defined_variables', :aggregate_failures do
+        project_param = { restrict_user_defined_variables: true }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        project_param.each_pair do |k, v|
+          expect(json_response[k.to_s]).to eq(v)
+        end
+      end
+
       it 'updates avatar' do
         project_param = {
           avatar: fixture_file_upload('spec/fixtures/banana_sample.gif',
@@ -2710,6 +2724,22 @@ RSpec.describe API::Projects do
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']['container_expiration_policy.name_regex_keep']).to contain_exactly('not valid RE2 syntax: missing ]: [')
+      end
+
+      it "doesn't update container_expiration_policy with invalid keep_n" do
+        project_param = {
+          container_expiration_policy_attributes: {
+            cadence: '1month',
+            enabled: true,
+            keep_n: 'not_int',
+            name_regex_keep: 'foo.*'
+          }
+        }
+
+        put api("/projects/#{project3.id}", user4), params: project_param
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('container_expiration_policy_attributes[keep_n] is invalid')
       end
     end
 
@@ -3364,10 +3394,10 @@ RSpec.describe API::Projects do
   end
 
   describe 'POST /projects/:id/housekeeping' do
-    let(:housekeeping) { Projects::HousekeepingService.new(project) }
+    let(:housekeeping) { Repositories::HousekeepingService.new(project) }
 
     before do
-      allow(Projects::HousekeepingService).to receive(:new).with(project, :gc).and_return(housekeeping)
+      allow(Repositories::HousekeepingService).to receive(:new).with(project, :gc).and_return(housekeeping)
     end
 
     context 'when authenticated as owner' do
@@ -3381,12 +3411,12 @@ RSpec.describe API::Projects do
 
       context 'when housekeeping lease is taken' do
         it 'returns conflict' do
-          expect(housekeeping).to receive(:execute).once.and_raise(Projects::HousekeepingService::LeaseTaken)
+          expect(housekeeping).to receive(:execute).once.and_raise(Repositories::HousekeepingService::LeaseTaken)
 
           post api("/projects/#{project.id}/housekeeping", user)
 
           expect(response).to have_gitlab_http_status(:conflict)
-          expect(json_response['message']).to match(/Somebody already triggered housekeeping for this project/)
+          expect(json_response['message']).to match(/Somebody already triggered housekeeping for this resource/)
         end
       end
     end

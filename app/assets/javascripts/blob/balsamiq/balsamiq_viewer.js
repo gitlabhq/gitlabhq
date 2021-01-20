@@ -28,7 +28,7 @@ class BalsamiqViewer {
       .then(({ data }) => {
         this.renderFile(data);
       })
-      .catch(e => {
+      .catch((e) => {
         throw new Error(e);
       });
   }
@@ -39,7 +39,7 @@ class BalsamiqViewer {
     this.initDatabase(fileBuffer);
 
     const previews = this.getPreviews();
-    previews.forEach(preview => {
+    previews.forEach((preview) => {
       const renderedPreview = this.renderPreview(preview);
 
       container.appendChild(renderedPreview);

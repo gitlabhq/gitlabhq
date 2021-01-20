@@ -1,0 +1,5 @@
+---
+title: Fix branch name overflows in profile activity section
+merge_request: 50975
+author: Kev @KevSlashNull
+type: fixed

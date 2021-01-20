@@ -18,7 +18,7 @@ export const getTimeDifferenceMinutes = (noteBeggining, noteEnd) => {
  * @param {Object} note
  * @returns {Boolean}
  */
-export const isDescriptionSystemNote = note => note.system && note.note === DESCRIPTION_TYPE;
+export const isDescriptionSystemNote = (note) => note.system && note.note === DESCRIPTION_TYPE;
 
 /**
  * Collapses the system notes of a description type, e.g. Changed the description, n minutes ago
@@ -29,7 +29,7 @@ export const isDescriptionSystemNote = note => note.system && note.note === DESC
  * @param {Array} notes
  * @returns {Array}
  */
-export const collapseSystemNotes = notes => {
+export const collapseSystemNotes = (notes) => {
   let lastDescriptionSystemNote = null;
   let lastDescriptionSystemNoteIndex = -1;
 

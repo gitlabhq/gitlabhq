@@ -6,6 +6,7 @@ module Banzai
       def self.filters
         FilterArray[
           Filter::NormalizeSourceFilter,
+          Filter::TruncateSourceFilter,
           Filter::FrontMatterFilter,
           Filter::BlockquoteFenceFilter,
         ]

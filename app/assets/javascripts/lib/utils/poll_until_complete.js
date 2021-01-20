@@ -29,7 +29,7 @@ export default (url, config = {}) =>
       },
       data: { url, config },
       method: 'axiosGet',
-      successCallback: response => {
+      successCallback: (response) => {
         if (response.status === httpStatusCodes.OK) {
           resolve(response);
           eTagPoll.stop();

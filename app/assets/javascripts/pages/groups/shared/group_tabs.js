@@ -20,7 +20,7 @@ export default class GroupTabs extends UserTabs {
   bindEvents() {
     this.$parentEl
       .off('shown.bs.tab', '.nav-links a[data-toggle="tab"]')
-      .on('shown.bs.tab', '.nav-links a[data-toggle="tab"]', event => this.tabShown(event));
+      .on('shown.bs.tab', '.nav-links a[data-toggle="tab"]', (event) => this.tabShown(event));
   }
 
   tabShown(event) {
@@ -117,7 +117,7 @@ export default class GroupTabs extends UserTabs {
 
   cleanFilterState() {
     const values = Object.values(this.loaded);
-    const loadedTabs = values.filter(e => e === true);
+    const loadedTabs = values.filter((e) => e === true);
 
     if (!loadedTabs.length) {
       return;

@@ -28,7 +28,7 @@ export const addFreezePeriod = ({ state, dispatch, commit }) => {
       commit(types.RESET_MODAL);
       dispatch('fetchFreezePeriods');
     })
-    .catch(error => {
+    .catch((error) => {
       createFlash(__('Error: Unable to create deploy freeze'));
       dispatch('receiveAddFreezePeriodError', error);
     });

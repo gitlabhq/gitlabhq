@@ -11,7 +11,7 @@ const createTranslatedTextForFiles = (files, text) => {
   });
 };
 
-export const discardDraftButtonDisabled = state =>
+export const discardDraftButtonDisabled = (state) =>
   state.commitMessage === '' || state.submitCommitLoading;
 
 // Note: If changing the structure of the placeholder branch name, please also
@@ -37,18 +37,18 @@ export const preBuiltCommitMessage = (state, _, rootState) => {
   if (state.commitMessage) return state.commitMessage;
 
   const files = rootState.stagedFiles.length ? rootState.stagedFiles : rootState.changedFiles;
-  const modifiedFiles = files.filter(f => !f.deleted);
-  const deletedFiles = files.filter(f => f.deleted);
+  const modifiedFiles = files.filter((f) => !f.deleted);
+  const deletedFiles = files.filter((f) => f.deleted);
 
   return [
     createTranslatedTextForFiles(modifiedFiles, __('Update')),
     createTranslatedTextForFiles(deletedFiles, __('Deleted')),
   ]
-    .filter(t => t)
+    .filter((t) => t)
     .join('\n');
 };
 
-export const isCreatingNewBranch = state => state.commitAction === consts.COMMIT_TO_NEW_BRANCH;
+export const isCreatingNewBranch = (state) => state.commitAction === consts.COMMIT_TO_NEW_BRANCH;
 
 export const shouldHideNewMrOption = (_state, getters, _rootState, rootGetters) =>
   !getters.isCreatingNewBranch &&

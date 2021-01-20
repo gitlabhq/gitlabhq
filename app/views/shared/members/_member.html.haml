@@ -127,8 +127,5 @@
                 = _("Delete")
               - unless force_mobile_view
                 = sprite_icon('remove', css_class: 'd-none d-sm-block gl-icon')
-        = render_if_exists 'shared/members/ee/override_member_buttons', group: group, member: member, user: user, action: :edit, can_override: member.can_override?
       - else
         %span.member-access-text.user-access-role= member.human_access
-
-= render_if_exists 'shared/members/ee/override_member_buttons', group: group, member: member, user: user, action: :confirm, can_override: member.can_override?

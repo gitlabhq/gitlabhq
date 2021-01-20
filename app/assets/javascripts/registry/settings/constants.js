@@ -23,7 +23,7 @@ export const KEEP_INFO_TEXT = s__(
 export const KEEP_N_LABEL = s__('ContainerRegistry|Keep the most recent:');
 export const NAME_REGEX_KEEP_LABEL = s__('ContainerRegistry|Keep tags matching:');
 export const NAME_REGEX_KEEP_DESCRIPTION = s__(
-  'ContainerRegistry|Tags with names that match this regex pattern are kept. %{linkStart}More information%{linkEnd}',
+  'ContainerRegistry|Tags with names that match this regex pattern are kept. %{linkStart}View regex examples.%{linkEnd}',
 );
 
 export const REMOVE_HEADER_TEXT = s__('ContainerRegistry|Remove these tags');
@@ -34,7 +34,7 @@ export const EXPIRATION_SCHEDULE_LABEL = s__('ContainerRegistry|Remove tags olde
 export const NAME_REGEX_LABEL = s__('ContainerRegistry|Remove tags matching:');
 export const NAME_REGEX_PLACEHOLDER = '.*';
 export const NAME_REGEX_DESCRIPTION = s__(
-  'ContainerRegistry|Tags with names that match this regex pattern are removed. %{linkStart}More information%{linkEnd}',
+  'ContainerRegistry|Tags with names that match this regex pattern are removed. %{linkStart}View regex examples.%{linkEnd}',
 );
 
 export const ENABLED_TOGGLE_DESCRIPTION = s__(

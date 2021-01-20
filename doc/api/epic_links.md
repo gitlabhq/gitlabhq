@@ -76,7 +76,7 @@ Example response:
 Creates an association between two epics, designating one as the parent epic and the other as the child epic. A parent epic can have multiple child epics. If the new child epic already belonged to another epic, it is unassigned from that previous parent.
 
 ```plaintext
-POST /groups/:id/epics/:epic_iid/epics
+POST /groups/:id/epics/:epic_iid/epics/:child_epic_id
 ```
 
 | Attribute       | Type           | Required | Description                                                                                                        |

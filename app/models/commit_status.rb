@@ -80,9 +80,9 @@ class CommitStatus < ApplicationRecord
     merge(or_conditions)
   end
 
-  # We use `Enums::CommitStatus.failure_reasons` here so that EE can more easily
+  # We use `Enums::Ci::CommitStatus.failure_reasons` here so that EE can more easily
   # extend this `Hash` with new values.
-  enum_with_nil failure_reason: Enums::CommitStatus.failure_reasons
+  enum_with_nil failure_reason: Enums::Ci::CommitStatus.failure_reasons
 
   ##
   # We still create some CommitStatuses outside of CreatePipelineService.
@@ -159,6 +159,12 @@ class CommitStatus < ApplicationRecord
       commit_status.failure_reason = CommitStatus.failure_reasons[failure_reason]
     end
 
+    before_transition [:skipped, :manual] => :created do |commit_status, transition|
+      transition.args.first.try do |user|
+        commit_status.user = user
+      end
+    end
+
     after_transition do |commit_status, transition|
       next if transition.loopback?
       next if commit_status.processed?
@@ -203,7 +209,7 @@ class CommitStatus < ApplicationRecord
 
   def group_name
     # 'rspec:linux: 1/10' => 'rspec:linux'
-    common_name = name.to_s.gsub(%r{\d+[\s:\/\\]+\d+\s*}, '')
+    common_name = name.to_s.gsub(%r{\b\d+[\s:\/\\]+\d+\s*}, '')
 
     # 'rspec:linux: [aws, max memory]' => 'rspec:linux', 'rspec:linux: [aws]' => 'rspec:linux'
     common_name.gsub!(%r{: \[.*\]\s*\z}, '')

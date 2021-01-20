@@ -27,7 +27,7 @@ describe('Cluster dropdown store mutations', () => {
     ${RECEIVE_ITEMS_SUCCESS} | ${'items'}             | ${{ items }}    | ${items}      | ${'items payload'}
     ${RECEIVE_ITEMS_ERROR}   | ${'isLoadingItems'}    | ${{ error }}    | ${false}      | ${false}
     ${RECEIVE_ITEMS_ERROR}   | ${'error'}             | ${{ error }}    | ${error}      | ${'received error object'}
-  `(`$mutation sets $mutatedProperty to $expectedValueDescription`, data => {
+  `(`$mutation sets $mutatedProperty to $expectedValueDescription`, (data) => {
     const { mutation, mutatedProperty, payload, expectedValue } = data;
 
     mutations[mutation](state, payload);

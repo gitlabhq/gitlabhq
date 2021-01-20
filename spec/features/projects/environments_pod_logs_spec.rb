@@ -17,6 +17,8 @@ RSpec.describe 'Environment > Pod Logs', :js, :kubeclient do
 
     stub_kubeclient_pods(environment.deployment_namespace)
     stub_kubeclient_logs(pod_name, environment.deployment_namespace, container: 'container-0')
+    stub_kubeclient_deployments(environment.deployment_namespace)
+    stub_kubeclient_ingresses(environment.deployment_namespace)
     stub_kubeclient_nodes_and_nodes_metrics(cluster.platform.api_url)
 
     sign_in(project.owner)

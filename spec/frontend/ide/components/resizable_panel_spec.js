@@ -38,7 +38,7 @@ describe('~/ide/components/resizable_panel', () => {
   };
   const findResizer = () => wrapper.find(PanelResizer);
   const findInlineStyle = () => wrapper.element.style.cssText;
-  const createInlineStyle = width => `width: ${width}px;`;
+  const createInlineStyle = (width) => `width: ${width}px;`;
 
   describe.each`
     props                                    | showResizer | resizerSide   | expectedStyle

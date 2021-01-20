@@ -18,49 +18,49 @@ describe('RecentSearchesService', () => {
       jest.spyOn(RecentSearchesService, 'isAvailable').mockReturnValue(true);
     });
 
-    it('should default to empty array', done => {
+    it('should default to empty array', (done) => {
       const fetchItemsPromise = service.fetch();
 
       fetchItemsPromise
-        .then(items => {
+        .then((items) => {
           expect(items).toEqual([]);
         })
         .then(done)
         .catch(done.fail);
     });
 
-    it('should reject when unable to parse', done => {
+    it('should reject when unable to parse', (done) => {
       jest.spyOn(localStorage, 'getItem').mockReturnValue('fail');
       const fetchItemsPromise = service.fetch();
 
       fetchItemsPromise
         .then(done.fail)
-        .catch(error => {
+        .catch((error) => {
           expect(error).toEqual(expect.any(SyntaxError));
         })
         .then(done)
         .catch(done.fail);
     });
 
-    it('should reject when service is unavailable', done => {
+    it('should reject when service is unavailable', (done) => {
       RecentSearchesService.isAvailable.mockReturnValue(false);
 
       service
         .fetch()
         .then(done.fail)
-        .catch(error => {
+        .catch((error) => {
           expect(error).toEqual(expect.any(Error));
         })
         .then(done)
         .catch(done.fail);
     });
 
-    it('should return items from localStorage', done => {
+    it('should return items from localStorage', (done) => {
       jest.spyOn(localStorage, 'getItem').mockReturnValue('["foo", "bar"]');
       const fetchItemsPromise = service.fetch();
 
       fetchItemsPromise
-        .then(items => {
+        .then((items) => {
           expect(items).toEqual(['foo', 'bar']);
         })
         .then(done)
@@ -74,11 +74,11 @@ describe('RecentSearchesService', () => {
         jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {});
       });
 
-      it('should not call .getItem', done => {
+      it('should not call .getItem', (done) => {
         RecentSearchesService.prototype
           .fetch()
           .then(done.fail)
-          .catch(err => {
+          .catch((err) => {
             expect(err).toEqual(new RecentSearchesServiceError());
             expect(localStorage.getItem).not.toHaveBeenCalled();
           })

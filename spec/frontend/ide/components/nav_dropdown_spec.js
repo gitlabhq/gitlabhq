@@ -39,7 +39,7 @@ describe('IDE NavDropdown', () => {
     });
   };
 
-  const findIcon = name => wrapper.find(`[data-testid="${name}-icon"]`);
+  const findIcon = (name) => wrapper.find(`[data-testid="${name}-icon"]`);
   const findMRIcon = () => findIcon('merge-request');
   const findNavForm = () => wrapper.find('.ide-nav-form');
   const showDropdown = () => {
@@ -58,7 +58,7 @@ describe('IDE NavDropdown', () => {
       expect(findNavForm().exists()).toBe(false);
     });
 
-    it('renders nav form when show.bs.dropdown', done => {
+    it('renders nav form when show.bs.dropdown', (done) => {
       showDropdown();
 
       wrapper.vm
@@ -70,7 +70,7 @@ describe('IDE NavDropdown', () => {
         .catch(done.fail);
     });
 
-    it('destroys nav form when closed', done => {
+    it('destroys nav form when closed', (done) => {
       showDropdown();
       hideDropdown();
 

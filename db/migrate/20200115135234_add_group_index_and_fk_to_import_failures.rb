@@ -4,7 +4,7 @@ class AddGroupIndexAndFkToImportFailures < ActiveRecord::Migration[5.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  GROUP_INDEX = 'index_import_failures_on_group_id_not_null'.freeze
+  GROUP_INDEX = 'index_import_failures_on_group_id_not_null'
 
   disable_ddl_transaction!
 

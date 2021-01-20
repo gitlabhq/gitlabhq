@@ -1,7 +1,7 @@
 ---
 # Warning: gitlab.Admin
 #
-# You should not use "admin", but "Admin Area" is OK.
+# Checks for "admin" and recommends using the full word instead. "Admin Area" is OK.
 #
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: substitution

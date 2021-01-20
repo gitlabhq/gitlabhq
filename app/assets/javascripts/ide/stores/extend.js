@@ -8,7 +8,7 @@ const plugins = () => [
 
 export default (store, el) => {
   // plugins is actually an array of plugin factories, so we have to create first then call
-  plugins().forEach(plugin => plugin(el)(store));
+  plugins().forEach((plugin) => plugin(el)(store));
 
   return store;
 };

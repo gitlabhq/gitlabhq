@@ -6,7 +6,7 @@ import * as actions from './actions';
 
 Vue.use(Vuex);
 
-export const createStore = initialState =>
+export const createStore = (initialState) =>
   new Vuex.Store({
     actions,
     mutations,

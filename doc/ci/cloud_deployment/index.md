@@ -11,10 +11,9 @@ Interacting with a major cloud provider may have become a much needed task that'
 part of your delivery process. With GitLab you can
 [deploy your application anywhere](https://about.gitlab.com/stages-devops-lifecycle/deploy-targets/).
 
-For some specific deployment targets, GitLab makes this process less painful by providing Docker images
-that come with the needed libraries and tools pre-installed.
-By referencing them in your CI/CD pipeline, you'll be able to interact with your chosen
-cloud provider more easily.
+For some specific deployment targets, GitLab makes this process less painful by providing Docker
+images with the needed libraries and tools pre-installed. By referencing them in your
+CI/CD pipeline, you can interact with your chosen cloud provider more easily.
 
 ## AWS
 
@@ -36,7 +35,7 @@ Some credentials are required to be able to run `aws` commands:
 1. Select your newly created user to access its details. Navigate to **Security credentials > Create a new access key**.
 
    NOTE:
-   A new **Access key ID** and **Secret access key** pair will be generated. Please take a note of them right away.
+   A new **Access key ID** and **Secret access key** are generated. Please take a note of them right away.
 
 1. In your GitLab project, go to **Settings > CI / CD**. Set the following as
    [environment variables](../variables/README.md#gitlab-cicd-environment-variables)
@@ -170,14 +169,14 @@ After you have these prerequisites ready, follow these steps:
 
 1. Commit and push your updated `.gitlab-ci.yml` to your project's repository, and you're done!
 
-   Your application Docker image will be rebuilt and pushed to the GitLab registry.
+   Your application Docker image is rebuilt and pushed to the GitLab registry.
    If your image is located in a private registry, make sure your task definition is
    [configured with a `repositoryCredentials` attribute](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/private-auth.html).
 
-   Then the targeted task definition will be updated with the location of the new
-   Docker image, and a new revision will be created in ECS as result.
+   Then the targeted task definition is updated with the location of the new
+   Docker image, and a new revision is created in ECS as result.
 
-   Finally, your AWS ECS service will be updated with the new revision of the
+   Finally, your AWS ECS service is updated with the new revision of the
    task definition, making the cluster pull the newest version of your
    application.
 
@@ -190,7 +189,7 @@ and [`Jobs/Deploy/ECS.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blo
 used along with the main template. They may move or change unexpectedly causing your
 pipeline to fail if you didn't include the main template. Also, the job names within
 these templates may change. Do not override these jobs names in your own pipeline,
-as the override will stop working when the name changes.
+as the override stops working when the name changes.
 
 Alternatively, if you don't wish to use the `AWS/Deploy-ECS.gitlab-ci.yml` template
 to deploy to AWS ECS, you can always use our

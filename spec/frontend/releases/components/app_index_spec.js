@@ -13,7 +13,7 @@ import ReleasesPagination from '~/releases/components/releases_pagination.vue';
 
 jest.mock('~/lib/utils/common_utils', () => ({
   ...jest.requireActual('~/lib/utils/common_utils'),
-  getParameterByName: jest.fn().mockImplementation(paramName => {
+  getParameterByName: jest.fn().mockImplementation((paramName) => {
     return `${paramName}_param_value`;
   }),
 }));
@@ -28,7 +28,7 @@ describe('Releases App ', () => {
   let wrapper;
   let fetchReleaseSpy;
 
-  const paginatedReleases = rge(21).map(index => ({
+  const paginatedReleases = rge(21).map((index) => ({
     ...convertObjectPropsToCamelCase(release, { deep: true }),
     tagName: `${index}.00`,
   }));
@@ -98,10 +98,10 @@ describe('Releases App ', () => {
     });
 
     it('renders loading icon', () => {
-      expect(wrapper.contains('.js-loading')).toBe(true);
-      expect(wrapper.contains('.js-empty-state')).toBe(false);
-      expect(wrapper.contains('.js-success-state')).toBe(false);
-      expect(wrapper.contains(ReleasesPagination)).toBe(false);
+      expect(wrapper.find('.js-loading').exists()).toBe(true);
+      expect(wrapper.find('.js-empty-state').exists()).toBe(false);
+      expect(wrapper.find('.js-success-state').exists()).toBe(false);
+      expect(wrapper.find(ReleasesPagination).exists()).toBe(false);
     });
   });
 
@@ -115,10 +115,10 @@ describe('Releases App ', () => {
     });
 
     it('renders success state', () => {
-      expect(wrapper.contains('.js-loading')).toBe(false);
-      expect(wrapper.contains('.js-empty-state')).toBe(false);
-      expect(wrapper.contains('.js-success-state')).toBe(true);
-      expect(wrapper.contains(ReleasesPagination)).toBe(true);
+      expect(wrapper.find('.js-loading').exists()).toBe(false);
+      expect(wrapper.find('.js-empty-state').exists()).toBe(false);
+      expect(wrapper.find('.js-success-state').exists()).toBe(true);
+      expect(wrapper.find(ReleasesPagination).exists()).toBe(true);
     });
   });
 
@@ -132,10 +132,10 @@ describe('Releases App ', () => {
     });
 
     it('renders success state', () => {
-      expect(wrapper.contains('.js-loading')).toBe(false);
-      expect(wrapper.contains('.js-empty-state')).toBe(false);
-      expect(wrapper.contains('.js-success-state')).toBe(true);
-      expect(wrapper.contains(ReleasesPagination)).toBe(true);
+      expect(wrapper.find('.js-loading').exists()).toBe(false);
+      expect(wrapper.find('.js-empty-state').exists()).toBe(false);
+      expect(wrapper.find('.js-success-state').exists()).toBe(true);
+      expect(wrapper.find(ReleasesPagination).exists()).toBe(true);
     });
   });
 
@@ -147,9 +147,9 @@ describe('Releases App ', () => {
     });
 
     it('renders empty state', () => {
-      expect(wrapper.contains('.js-loading')).toBe(false);
-      expect(wrapper.contains('.js-empty-state')).toBe(true);
-      expect(wrapper.contains('.js-success-state')).toBe(false);
+      expect(wrapper.find('.js-loading').exists()).toBe(false);
+      expect(wrapper.find('.js-empty-state').exists()).toBe(true);
+      expect(wrapper.find('.js-success-state').exists()).toBe(false);
     });
   });
 

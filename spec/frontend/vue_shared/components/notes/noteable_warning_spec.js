@@ -10,7 +10,7 @@ describe('Issue Warning Component', () => {
   const findConfidentialBlock = (w = wrapper) => w.find({ ref: 'confidential' });
   const findLockedAndConfidentialBlock = (w = wrapper) => w.find({ ref: 'lockedAndConfidential' });
 
-  const createComponent = props =>
+  const createComponent = (props) =>
     shallowMount(NoteableWarning, {
       propsData: {
         ...props,

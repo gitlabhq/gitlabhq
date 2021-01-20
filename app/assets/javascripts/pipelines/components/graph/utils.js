@@ -1,5 +1,6 @@
 import Visibility from 'visibilityjs';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import * as Sentry from '~/sentry/wrapper';
 import { unwrapStagesWithNeeds } from '../unwrapping_utils';
 
 const addMulti = (mainPipelineProjectPath, linkedPipeline) => {
@@ -9,7 +10,7 @@ const addMulti = (mainPipelineProjectPath, linkedPipeline) => {
   };
 };
 
-const transformId = linkedPipeline => {
+const transformId = (linkedPipeline) => {
   return { ...linkedPipeline, id: getIdFromGraphQLId(linkedPipeline.id) };
 };
 
@@ -42,7 +43,7 @@ const unwrapPipelineData = (mainPipelineProjectPath, data) => {
 };
 
 const toggleQueryPollingByVisibility = (queryRef, interval = 10000) => {
-  const stopStartQuery = query => {
+  const stopStartQuery = (query) => {
     if (!Visibility.hidden()) {
       query.startPolling(interval);
     } else {
@@ -55,3 +56,10 @@ const toggleQueryPollingByVisibility = (queryRef, interval = 10000) => {
 };
 
 export { unwrapPipelineData, toggleQueryPollingByVisibility };
+
+export const reportToSentry = (component, failureType) => {
+  Sentry.withScope((scope) => {
+    scope.setTag('component', component);
+    Sentry.captureException(failureType);
+  });
+};

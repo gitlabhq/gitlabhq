@@ -14,7 +14,7 @@ class HookInput extends Hook {
   }
 
   addPlugins() {
-    this.plugins.forEach(plugin => plugin.init(this));
+    this.plugins.forEach((plugin) => plugin.init(this));
   }
 
   addEvents() {
@@ -101,7 +101,7 @@ class HookInput extends Hook {
   }
 
   removePlugins() {
-    this.plugins.forEach(plugin => plugin.destroy());
+    this.plugins.forEach((plugin) => plugin.destroy());
   }
 
   destroy() {

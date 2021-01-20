@@ -118,8 +118,8 @@ class NotificationService
   #  * project team members with notification level higher then Participating
   #  * users with custom level checked with "close issue"
   #
-  def close_issue(issue, current_user, closed_via: nil)
-    close_resource_email(issue, current_user, :closed_issue_email, closed_via: closed_via)
+  def close_issue(issue, current_user, params = {})
+    close_resource_email(issue, current_user, :closed_issue_email, closed_via: params[:closed_via])
   end
 
   # When we reassign an issue we should send an email to:
@@ -479,6 +479,12 @@ class NotificationService
     return true unless group_member.notifiable?(:mention)
 
     mailer.member_access_granted_email(group_member.real_source_type, group_member.id).deliver_later
+  end
+
+  def updated_group_member_expiration(group_member)
+    return true unless group_member.notifiable?(:mention)
+
+    mailer.member_expiration_date_updated_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
   def project_was_moved(project, old_path_with_namespace)

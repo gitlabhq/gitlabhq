@@ -46,6 +46,11 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [featureFlagsMixin()],
+  inject: {
+    featureFlagIssuesEndpoint: {
+      default: '',
+    },
+  },
   props: {
     active: {
       type: Boolean,
@@ -86,11 +91,6 @@ export default {
       default: LEGACY_FLAG,
     },
   },
-  inject: {
-    featureFlagIssuesEndpoint: {
-      default: '',
-    },
-  },
   translations: {
     allEnvironmentsText: s__('FeatureFlags|* (All Environments)'),
 
@@ -117,7 +117,7 @@ export default {
       formDescription: this.description,
 
       // operate on a clone to avoid mutating props
-      formScopes: this.scopes.map(s => ({ ...s })),
+      formScopes: this.scopes.map((s) => ({ ...s })),
       formStrategies: cloneDeep(this.strategies),
 
       newScope: '',
@@ -125,13 +125,13 @@ export default {
   },
   computed: {
     filteredScopes() {
-      return this.formScopes.filter(scope => !scope.shouldBeDestroyed);
+      return this.formScopes.filter((scope) => !scope.shouldBeDestroyed);
     },
     filteredStrategies() {
-      return this.formStrategies.filter(s => !s.shouldBeDestroyed);
+      return this.formStrategies.filter((s) => !s.shouldBeDestroyed);
     },
     canUpdateFlag() {
-      return !this.permissionsFlag || (this.formScopes || []).every(scope => scope.canUpdate);
+      return !this.permissionsFlag || (this.formScopes || []).every((scope) => scope.canUpdate);
     },
     permissionsFlag() {
       return this.glFeatures.featureFlagPermissions;
@@ -143,11 +143,7 @@ export default {
       return this.featureFlagIssuesEndpoint.length > 0;
     },
     readOnly() {
-      return (
-        this.glFeatures.featureFlagsLegacyReadOnly &&
-        !this.glFeatures.featureFlagsLegacyReadOnlyOverride &&
-        this.version === LEGACY_FLAG
-      );
+      return this.version === LEGACY_FLAG;
     },
   },
   methods: {
@@ -167,7 +163,7 @@ export default {
       if (isNumber(s.id)) {
         Vue.set(s, 'shouldBeDestroyed', true);
       } else {
-        this.formStrategies = this.formStrategies.filter(strategy => strategy !== s);
+        this.formStrategies = this.formStrategies.filter((strategy) => strategy !== s);
       }
     },
 
@@ -188,7 +184,7 @@ export default {
      */
     removeScope(scope) {
       if (isString(scope.id) && scope.id.startsWith(INTERNAL_ID_PREFIX)) {
-        this.formScopes = this.formScopes.filter(s => s !== scope);
+        this.formScopes = this.formScopes.filter((s) => s !== scope);
       } else {
         Vue.set(scope, 'shouldBeDestroyed', true);
       }
@@ -387,9 +383,9 @@ export default {
                     class="col-12"
                     :value="scope.environmentScope"
                     :disabled="!canUpdateScope(scope) || scope.environmentScope !== ''"
-                    @selectEnvironment="env => (scope.environmentScope = env)"
-                    @createClicked="env => (scope.environmentScope = env)"
-                    @clearInput="env => (scope.environmentScope = '')"
+                    @selectEnvironment="(env) => (scope.environmentScope = env)"
+                    @createClicked="(env) => (scope.environmentScope = env)"
+                    @clearInput="(env) => (scope.environmentScope = '')"
                   />
 
                   <gl-badge v-if="permissionsFlag && scope.protected" variant="success">
@@ -406,7 +402,7 @@ export default {
                   <toggle-button
                     :value="scope.active"
                     :disabled-input="!active || !canUpdateScope(scope)"
-                    @change="status => (scope.active = status)"
+                    @change="(status) => (scope.active = status)"
                   />
                 </div>
               </div>
@@ -524,8 +520,8 @@ export default {
                   <environments-dropdown
                     class="js-new-scope-name col-12"
                     :value="newScope"
-                    @selectEnvironment="env => createNewScope({ environmentScope: env })"
-                    @createClicked="env => createNewScope({ environmentScope: env })"
+                    @selectEnvironment="(env) => createNewScope({ environmentScope: env })"
+                    @createClicked="(env) => createNewScope({ environmentScope: env })"
                   />
                 </div>
               </div>

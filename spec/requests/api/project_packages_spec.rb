@@ -11,12 +11,13 @@ RSpec.describe API::ProjectPackages do
   let!(:another_package) { create(:npm_package) }
   let(:no_package_url) { "/projects/#{project.id}/packages/0" }
   let(:wrong_package_url) { "/projects/#{project.id}/packages/#{another_package.id}" }
+  let(:params) { {} }
 
   describe 'GET /projects/:id/packages' do
     let(:url) { "/projects/#{project.id}/packages" }
     let(:package_schema) { 'public_api/v4/packages/packages' }
 
-    subject { get api(url) }
+    subject { get api(url), params: params }
 
     context 'without the need for a license' do
       context 'project is public' do
@@ -118,6 +119,7 @@ RSpec.describe API::ProjectPackages do
         end
       end
 
+      it_behaves_like 'with versionless packages'
       it_behaves_like 'does not cause n^2 queries'
     end
   end

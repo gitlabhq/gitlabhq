@@ -9,7 +9,6 @@
 ---
 - accessibility_testing
 - advanced_deployments
-- analysis
 - api
 - attack_emulation
 - audit_events
@@ -25,7 +24,6 @@
 - code_quality
 - code_review
 - code_testing
-- collection
 - compliance_management
 - container_host_security
 - container_network_security
@@ -83,6 +81,7 @@
 - pages
 - pipeline_authoring
 - planning_analytics
+- privacy_control_center
 - product_analytics
 - projects
 - provision
@@ -112,6 +111,7 @@
 - time_tracking
 - tracing
 - usability_testing
+- usage_ping
 - users
 - value_stream_management
 - vulnerability_database

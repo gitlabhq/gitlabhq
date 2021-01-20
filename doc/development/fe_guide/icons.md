@@ -18,8 +18,6 @@ We are using SVG Icons in GitLab with a SVG Sprite.
 This means the icons are only loaded once, and are referenced through an ID.
 The sprite SVG is located under `/assets/icons.svg`.
 
-Our goal is to replace one by one all inline SVG Icons (as those currently bloat the HTML) and also all Font Awesome icons.
-
 ### Usage in HAML/Rails
 
 To use a sprite Icon in HAML or Rails we use a specific helper function:
@@ -89,11 +87,6 @@ Please use the following function inside JS to render an icon:
 ## Loading icon
 
 ### Usage in HAML/Rails
-
-WARNING:
-Do not use the `spinner` or `icon('spinner spin')` rails helpers to insert
-loading icons. These helpers rely on the Font Awesome icon library which is
-deprecated.
 
 To insert a loading spinner in HAML or Rails use the `loading_icon` helper:
 

@@ -7,7 +7,7 @@ describe('Issue note attachment', () => {
   const findImage = () => wrapper.find({ ref: 'attachmentImage' });
   const findUrl = () => wrapper.find({ ref: 'attachmentUrl' });
 
-  const createComponent = attachment => {
+  const createComponent = (attachment) => {
     wrapper = shallowMount(NoteAttachment, {
       propsData: {
         attachment,

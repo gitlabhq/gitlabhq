@@ -86,12 +86,12 @@ export default {
           to create one.`)
           "
         >
-          <template #prefixToLink="{content}">
+          <template #prefixToLink="{ content }">
             <strong>
               {{ content }}
             </strong>
           </template>
-          <template #addPipelineLink="{content}">
+          <template #addPipelineLink="{ content }">
             <gl-link
               :href="pipelinePath"
               class="gl-ml-1"

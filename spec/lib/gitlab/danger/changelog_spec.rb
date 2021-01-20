@@ -150,41 +150,80 @@ RSpec.describe Gitlab::Danger::Changelog do
   end
 
   describe '#modified_text' do
-    let(:sanitize_mr_title) { 'Fake Title' }
     let(:mr_json) { { "iid" => 1234, "title" => sanitize_mr_title } }
 
     subject { changelog.modified_text }
 
-    it do
-      expect(subject).to include('CHANGELOG.md was edited')
-      expect(subject).to include('bin/changelog -m 1234 "Fake Title"')
-      expect(subject).to include('bin/changelog --ee -m 1234 "Fake Title"')
+    context "when title is not changed from sanitization", :aggregate_failures do
+      let(:sanitize_mr_title) { 'Fake Title' }
+
+      specify do
+        expect(subject).to include('CHANGELOG.md was edited')
+        expect(subject).to include('bin/changelog -m 1234 "Fake Title"')
+        expect(subject).to include('bin/changelog --ee -m 1234 "Fake Title"')
+      end
+    end
+
+    context "when title needs sanitization", :aggregate_failures do
+      let(:sanitize_mr_title) { 'DRAFT: Fake Title' }
+
+      specify do
+        expect(subject).to include('CHANGELOG.md was edited')
+        expect(subject).to include('bin/changelog -m 1234 "Fake Title"')
+        expect(subject).to include('bin/changelog --ee -m 1234 "Fake Title"')
+      end
     end
   end
 
   describe '#required_text' do
-    let(:sanitize_mr_title) { 'Fake Title' }
     let(:mr_json) { { "iid" => 1234, "title" => sanitize_mr_title } }
 
     subject { changelog.required_text }
 
-    it do
-      expect(subject).to include('CHANGELOG missing')
-      expect(subject).to include('bin/changelog -m 1234 "Fake Title"')
-      expect(subject).not_to include('--ee')
+    context "when title is not changed from sanitization", :aggregate_failures do
+      let(:sanitize_mr_title) { 'Fake Title' }
+
+      specify do
+        expect(subject).to include('CHANGELOG missing')
+        expect(subject).to include('bin/changelog -m 1234 "Fake Title"')
+        expect(subject).not_to include('--ee')
+      end
+    end
+
+    context "when title needs sanitization", :aggregate_failures do
+      let(:sanitize_mr_title) { 'DRAFT: Fake Title' }
+
+      specify do
+        expect(subject).to include('CHANGELOG missing')
+        expect(subject).to include('bin/changelog -m 1234 "Fake Title"')
+        expect(subject).not_to include('--ee')
+      end
     end
   end
 
-  describe 'optional_text' do
-    let(:sanitize_mr_title) { 'Fake Title' }
+  describe '#optional_text' do
     let(:mr_json) { { "iid" => 1234, "title" => sanitize_mr_title } }
 
     subject { changelog.optional_text }
 
-    it do
-      expect(subject).to include('CHANGELOG missing')
-      expect(subject).to include('bin/changelog -m 1234 "Fake Title"')
-      expect(subject).to include('bin/changelog --ee -m 1234 "Fake Title"')
+    context "when title is not changed from sanitization", :aggregate_failures do
+      let(:sanitize_mr_title) { 'Fake Title' }
+
+      specify do
+        expect(subject).to include('CHANGELOG missing')
+        expect(subject).to include('bin/changelog -m 1234 "Fake Title"')
+        expect(subject).to include('bin/changelog --ee -m 1234 "Fake Title"')
+      end
+    end
+
+    context "when title needs sanitization", :aggregate_failures do
+      let(:sanitize_mr_title) { 'DRAFT: Fake Title' }
+
+      specify do
+        expect(subject).to include('CHANGELOG missing')
+        expect(subject).to include('bin/changelog -m 1234 "Fake Title"')
+        expect(subject).to include('bin/changelog --ee -m 1234 "Fake Title"')
+      end
     end
   end
 end

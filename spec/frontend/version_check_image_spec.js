@@ -1,6 +1,6 @@
 import $ from 'jquery';
+import ClassSpecHelper from 'helpers/class_spec_helper';
 import VersionCheckImage from '~/version_check_image';
-import ClassSpecHelper from './helpers/class_spec_helper';
 
 describe('VersionCheckImage', () => {
   let testContext;
@@ -19,7 +19,7 @@ describe('VersionCheckImage', () => {
     it('registers an error event', () => {
       jest.spyOn($.prototype, 'on').mockImplementation(() => {});
       // eslint-disable-next-line func-names
-      jest.spyOn($.prototype, 'off').mockImplementation(function() {
+      jest.spyOn($.prototype, 'off').mockImplementation(function () {
         return this;
       });
 

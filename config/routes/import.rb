@@ -63,6 +63,7 @@ namespace :import do
   resource :bulk_imports, only: [:create] do
     post :configure
     get :status
+    get :realtime_changes
   end
 
   resource :manifest, only: [:create, :new], controller: :manifest do

@@ -97,7 +97,7 @@ export default {
           projectPath: this.targetProjectFullPath,
           iid: String(this.mrIid),
           reportTypes: this.$options.reportTypes.map(
-            reportType => reportTypeToSecurityReportTypeEnum[reportType],
+            (reportType) => reportTypeToSecurityReportTypeEnum[reportType],
           ),
         };
       },
@@ -151,7 +151,7 @@ export default {
   created() {
     if (!this.canShowDownloads) {
       this.checkAvailableSecurityReports(this.$options.reportTypes)
-        .then(availableSecurityReports => {
+        .then((availableSecurityReports) => {
           this.onCheckingAvailableSecurityReports(Array.from(availableSecurityReports));
         })
         .catch(this.showError);

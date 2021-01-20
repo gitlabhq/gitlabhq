@@ -37,7 +37,7 @@ describe('IDE new entry dropdown button component', () => {
     expect(vm.$emit).toHaveBeenCalledWith('click');
   });
 
-  it('hides label if showLabel is false', done => {
+  it('hides label if showLabel is false', (done) => {
     vm.showLabel = false;
 
     vm.$nextTick(() => {
@@ -52,7 +52,7 @@ describe('IDE new entry dropdown button component', () => {
       expect(vm.tooltipTitle).toBe('');
     });
 
-    it('returns label', done => {
+    it('returns label', (done) => {
       vm.showLabel = false;
 
       vm.$nextTick(() => {

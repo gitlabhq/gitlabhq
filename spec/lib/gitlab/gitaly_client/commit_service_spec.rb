@@ -162,11 +162,9 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
         .with(request, kind_of(Hash)).and_return([changed_paths_response])
 
       returned_value = described_class.new(repository).find_changed_paths(commits)
+      mapped_expected_value = changed_paths_response.paths.map { |path| Gitlab::Git::ChangedPath.new(status: path.status, path: path.path) }
 
-      mapped_returned_value = returned_value.map(&:to_h)
-      mapped_expected_value = changed_paths_response.paths.map(&:to_h)
-
-      expect(mapped_returned_value).to eq(mapped_expected_value)
+      expect(returned_value.as_json).to eq(mapped_expected_value.as_json)
     end
   end
 

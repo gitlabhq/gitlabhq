@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     text() {
-      const selectedOpt = this.options.values?.find(opt => opt.value === this.value);
+      const selectedOpt = this.options.values?.find((opt) => opt.value === this.value);
       return selectedOpt?.text || this.value;
     },
   },

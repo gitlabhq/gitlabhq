@@ -1,4 +1,4 @@
-export const clearDomElement = el => {
+export const clearDomElement = (el) => {
   if (!el || !el.firstChild) return;
 
   while (el.firstChild) {

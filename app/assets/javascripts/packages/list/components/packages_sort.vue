@@ -12,12 +12,12 @@ export default {
   },
   computed: {
     ...mapState({
-      isGroupPage: state => state.config.isGroupPage,
-      orderBy: state => state.sorting.orderBy,
-      sort: state => state.sorting.sort,
+      isGroupPage: (state) => state.config.isGroupPage,
+      orderBy: (state) => state.sorting.orderBy,
+      sort: (state) => state.sorting.sort,
     }),
     sortText() {
-      const field = this.sortableFields.find(s => s.orderBy === this.orderBy);
+      const field = this.sortableFields.find((s) => s.orderBy === this.orderBy);
       return field ? field.label : '';
     },
     sortableFields() {

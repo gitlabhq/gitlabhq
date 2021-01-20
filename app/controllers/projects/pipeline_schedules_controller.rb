@@ -17,7 +17,6 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
     @scope = params[:scope]
     @all_schedules = Ci::PipelineSchedulesFinder.new(@project).execute
     @schedules = Ci::PipelineSchedulesFinder.new(@project).execute(scope: params[:scope])
-      .includes(:last_pipeline)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

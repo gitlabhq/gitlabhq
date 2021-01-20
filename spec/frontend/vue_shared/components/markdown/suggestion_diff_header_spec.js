@@ -9,6 +9,7 @@ const DEFAULT_PROPS = {
   isBatched: false,
   isApplyingBatch: false,
   helpPagePath: 'path_to_docs',
+  defaultCommitMessage: 'Apply suggestion',
 };
 
 describe('Suggestion Diff component', () => {
@@ -91,7 +92,7 @@ describe('Suggestion Diff component', () => {
     });
 
     it('emits apply', () => {
-      expect(wrapper.emitted().apply).toEqual([[expect.any(Function)]]);
+      expect(wrapper.emitted().apply).toEqual([[expect.any(Function), undefined]]);
     });
 
     it('does not render apply suggestion and add to batch buttons', () => {

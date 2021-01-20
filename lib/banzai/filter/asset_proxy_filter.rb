@@ -15,7 +15,7 @@ module Banzai
         needs(:asset_proxy, :asset_proxy_secret_key) if asset_proxy_enabled?
       end
 
-      def asset_host_whitelisted?(host)
+      def asset_host_allowed?(host)
         context[:asset_proxy_domain_regexp] ? context[:asset_proxy_domain_regexp].match?(host) : false
       end
 
@@ -44,21 +44,21 @@ module Banzai
           Gitlab.config.asset_proxy['enabled']       = application_settings.asset_proxy_enabled
           Gitlab.config.asset_proxy['url']           = application_settings.asset_proxy_url
           Gitlab.config.asset_proxy['secret_key']    = application_settings.asset_proxy_secret_key
-          Gitlab.config.asset_proxy['whitelist']     = determine_whitelist(application_settings)
-          Gitlab.config.asset_proxy['domain_regexp'] = compile_whitelist(Gitlab.config.asset_proxy.whitelist)
+          Gitlab.config.asset_proxy['allowlist']     = determine_allowlist(application_settings)
+          Gitlab.config.asset_proxy['domain_regexp'] = compile_allowlist(Gitlab.config.asset_proxy.allowlist)
         else
           Gitlab.config.asset_proxy['enabled']       = ::ApplicationSetting.defaults[:asset_proxy_enabled]
         end
       end
 
-      def self.compile_whitelist(domain_list)
+      def self.compile_allowlist(domain_list)
         return if domain_list.empty?
 
         escaped = domain_list.map { |domain| Regexp.escape(domain).gsub('\*', '.*?') }
         Regexp.new("^(#{escaped.join('|')})$", Regexp::IGNORECASE)
       end
 
-      def self.determine_whitelist(application_settings)
+      def self.determine_allowlist(application_settings)
         application_settings.asset_proxy_whitelist.presence || [Gitlab.config.gitlab.host]
       end
     end

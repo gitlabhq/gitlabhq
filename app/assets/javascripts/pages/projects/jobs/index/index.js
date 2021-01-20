@@ -5,7 +5,7 @@ import Tracking from '~/tracking';
 document.addEventListener('DOMContentLoaded', () => {
   const remainingTimeElements = document.querySelectorAll('.js-remaining-time');
   remainingTimeElements.forEach(
-    el =>
+    (el) =>
       new Vue({
         ...GlCountdown,
         el,
@@ -22,5 +22,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
   const buttons = document.querySelectorAll('.js-empty-state-button');
-  buttons.forEach(button => button.addEventListener('click', trackButtonClick));
+  buttons.forEach((button) => button.addEventListener('click', trackButtonClick));
 });

@@ -1,8 +1,0 @@
----
-name: hide_jump_to_next_unresolved_in_threads
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37873
-rollout_issue_url: 
-milestone: '13.3'
-type: development
-group: group::code review
-default_enabled: true

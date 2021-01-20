@@ -158,6 +158,7 @@ The following API resources are available outside of project and group contexts 
 | [Runners](runners.md)                              | `/runners` (also available for projects)                                |
 | [Search](search.md)                                | `/search` (also available for groups and projects)                      |
 | [Settings](settings.md) **(CORE ONLY)**            | `/application/settings`                                                 |
+| [Snippet repository storage moves](snippet_repository_storage_moves.md) **(CORE ONLY)** | `/snippet_repository_storage_moves` |
 | [Statistics](statistics.md)                        | `/application/statistics`                                               |
 | [Sidekiq metrics](sidekiq_metrics.md) **(CORE ONLY)** | `/sidekiq`                                                           |
 | [Suggestions](suggestions.md)                      | `/suggestions`                                                          |

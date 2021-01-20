@@ -420,6 +420,9 @@ Settings.cron_jobs['pipeline_schedule_worker']['job_class'] = 'PipelineScheduleW
 Settings.cron_jobs['expire_build_artifacts_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['expire_build_artifacts_worker']['cron'] ||= '*/7 * * * *'
 Settings.cron_jobs['expire_build_artifacts_worker']['job_class'] = 'ExpireBuildArtifactsWorker'
+Settings.cron_jobs['ci_pipelines_expire_artifacts_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['ci_pipelines_expire_artifacts_worker']['cron'] ||= '*/23 * * * *'
+Settings.cron_jobs['ci_pipelines_expire_artifacts_worker']['job_class'] = 'Ci::PipelineArtifacts::ExpireArtifactsWorker'
 Settings.cron_jobs['ci_schedule_delete_objects_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['ci_schedule_delete_objects_worker']['cron'] ||= '*/16 * * * *'
 Settings.cron_jobs['ci_schedule_delete_objects_worker']['job_class'] = 'Ci::ScheduleDeleteObjectsCronWorker'
@@ -543,7 +546,7 @@ Settings.cron_jobs['manage_evidence_worker']['job_class'] = 'Releases::ManageEvi
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker']['cron'] ||= '0 0 1 * *'
+  Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker']['cron'] ||= '0 4 * * *'
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker']['job_class'] = 'Analytics::DevopsAdoption::CreateAllSnapshotsWorker'
   Settings.cron_jobs['active_user_count_threshold_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['active_user_count_threshold_worker']['cron'] ||= '0 12 * * *'
@@ -850,6 +853,18 @@ Settings.monitoring['web_exporter'] ||= Settingslogic.new({})
 Settings.monitoring.web_exporter['enabled'] ||= false
 Settings.monitoring.web_exporter['address'] ||= 'localhost'
 Settings.monitoring.web_exporter['port'] ||= 8083
+
+#
+# Prometheus settings
+#
+Settings['prometheus'] ||= Settingslogic.new({})
+# TODO: Remove listen_address and enable in GitLab 14.0 and set default value
+# of server_address to be nil and enabled to be false -
+# https://gitlab.com/gitlab-org/gitlab/-/issues/296022
+Settings.prometheus['enable'] ||= false
+Settings.prometheus['listen_address'] ||= nil
+Settings.prometheus['enabled'] = Settings.prometheus['enable'] if Settings.prometheus['enabled'].nil?
+Settings.prometheus['server_address'] ||= Settings.prometheus['listen_address']
 
 #
 # Shutdown settings

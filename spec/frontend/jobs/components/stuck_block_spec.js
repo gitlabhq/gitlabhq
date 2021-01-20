@@ -12,7 +12,7 @@ describe('Stuck Block Job component', () => {
     }
   });
 
-  const createWrapper = props => {
+  const createWrapper = (props) => {
     wrapper = shallowMount(StuckBlock, {
       propsData: {
         ...props,

@@ -51,7 +51,7 @@ module Milestoneable
   # Overridden on EE module
   #
   def supports_milestone?
-    respond_to?(:milestone_id) && !incident?
+    respond_to?(:milestone_id)
   end
 end
 

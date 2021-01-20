@@ -40,22 +40,15 @@ export const i18n = {
   integration: s__('AlertSettings|Integration'),
 };
 
-// TODO: Delete as part of old form removal in 13.6
 export const integrationTypes = [
+  { value: '', text: s__('AlertSettings|Select integration type') },
   { value: 'HTTP', text: s__('AlertSettings|HTTP Endpoint') },
   { value: 'PROMETHEUS', text: s__('AlertSettings|External Prometheus') },
-  { value: 'OPSGENIE', text: s__('AlertSettings|Opsgenie') },
-];
-
-export const integrationTypesNew = [
-  { value: '', text: s__('AlertSettings|Select integration type') },
-  ...integrationTypes,
 ];
 
 export const typeSet = {
   http: 'HTTP',
   prometheus: 'PROMETHEUS',
-  opsgenie: 'OPSGENIE',
 };
 
 export const integrationToDeleteDefault = { id: null, name: '' };
@@ -63,7 +56,6 @@ export const integrationToDeleteDefault = { id: null, name: '' };
 export const JSON_VALIDATE_DELAY = 250;
 
 export const targetPrometheusUrlPlaceholder = 'http://prometheus.example.com/';
-export const targetOpsgenieUrlPlaceholder = 'https://app.opsgenie.com/alert/list/';
 
 export const sectionHash = 'js-alert-management-settings';
 

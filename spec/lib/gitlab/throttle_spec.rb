@@ -30,4 +30,32 @@ RSpec.describe Gitlab::Throttle do
       end
     end
   end
+
+  describe '.rate_limiting_response_text' do
+    subject { described_class.rate_limiting_response_text }
+
+    context 'when the setting is not present' do
+      before do
+        stub_application_setting(rate_limiting_response_text: '')
+      end
+
+      it 'returns the default value with a trailing newline' do
+        expect(subject).to eq(described_class::DEFAULT_RATE_LIMITING_RESPONSE_TEXT + "\n")
+      end
+    end
+
+    context 'when the setting is present' do
+      let(:response_text) do
+        'Rate limit exceeded; see https://docs.gitlab.com/ee/user/gitlab_com/#gitlabcom-specific-rate-limits for more details'
+      end
+
+      before do
+        stub_application_setting(rate_limiting_response_text: response_text)
+      end
+
+      it 'returns the default value with a trailing newline' do
+        expect(subject).to eq(response_text + "\n")
+      end
+    end
+  end
 end

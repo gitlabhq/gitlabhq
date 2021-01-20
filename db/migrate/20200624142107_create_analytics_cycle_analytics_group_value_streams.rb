@@ -13,11 +13,11 @@ class CreateAnalyticsCycleAnalyticsGroupValueStreams < ActiveRecord::Migration[6
       with_lock_retries do
         create_table :analytics_cycle_analytics_group_value_streams do |t|
           t.timestamps_with_timezone
-          t.references(:group, {
+          t.references(:group,
             null: false,
             index: false,
             foreign_key: { to_table: :namespaces, on_delete: :cascade }
-          })
+          )
           t.text :name, null: false
           t.index [:group_id, :name], unique: true, name: INDEX_NAME
         end

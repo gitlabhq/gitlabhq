@@ -1,8 +1,6 @@
 <script>
 /* global Flash */
 
-import $ from 'jquery';
-import 'vendor/jquery.scrollTo';
 import { GlLoadingIcon, GlModal } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { HIDDEN_CLASS } from '~/lib/utils/constants';
@@ -108,7 +106,7 @@ export default {
     fetchGroups({ parentId, page, filterGroupsBy, sortBy, archived, updatePagination }) {
       return this.service
         .getGroups(parentId, page, filterGroupsBy, sortBy, archived)
-        .then(res => {
+        .then((res) => {
           if (updatePagination) {
             this.updatePagination(res.headers);
           }
@@ -116,7 +114,7 @@ export default {
         })
         .catch(() => {
           this.isLoading = false;
-          $.scrollTo(0);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
 
           Flash(COMMON_STR.FAILURE);
         });
@@ -135,7 +133,7 @@ export default {
         sortBy,
         archived,
         updatePagination: true,
-      }).then(res => {
+      }).then((res) => {
         this.isLoading = false;
         this.updateGroups(res, Boolean(filterGroupsBy));
       });
@@ -149,9 +147,9 @@ export default {
         sortBy,
         archived,
         updatePagination: true,
-      }).then(res => {
+      }).then((res) => {
         this.isLoading = false;
-        $.scrollTo(0);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
         const currentPath = mergeUrlParams({ page }, window.location.href);
         window.history.replaceState(
@@ -173,7 +171,7 @@ export default {
           this.fetchGroups({
             parentId: parentGroup.id,
           })
-            .then(res => {
+            .then((res) => {
               this.store.setGroupChildren(parentGroup, res);
             })
             .catch(() => {
@@ -194,12 +192,12 @@ export default {
       this.targetGroup.isBeingRemoved = true;
       this.service
         .leaveGroup(this.targetGroup.leavePath)
-        .then(res => {
-          $.scrollTo(0);
+        .then((res) => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
           this.store.removeGroup(this.targetGroup, this.targetParentGroup);
           this.$toast.show(res.data.notice);
         })
-        .catch(err => {
+        .catch((err) => {
           let message = COMMON_STR.FAILURE;
           if (err.status === 403) {
             message = COMMON_STR.LEAVE_FORBIDDEN;

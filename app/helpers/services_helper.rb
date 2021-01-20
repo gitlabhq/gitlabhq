@@ -76,6 +76,8 @@ module ServicesHelper
   end
 
   def scoped_reset_integration_path(integration, group: nil)
+    return '' unless integration.persisted?
+
     if group.present?
       reset_group_settings_integration_path(group, integration)
     else
@@ -102,7 +104,7 @@ module ServicesHelper
       cancel_path: scoped_integrations_path,
       can_test: integration.can_test?.to_s,
       test_path: scoped_test_integration_path(integration),
-      reset_path: reset_integration?(integration, group: group) ? scoped_reset_integration_path(integration, group: group) : ''
+      reset_path: scoped_reset_integration_path(integration, group: group)
     }
   end
 
@@ -124,10 +126,6 @@ module ServicesHelper
 
   def instance_level_integrations?
     !Gitlab.com?
-  end
-
-  def reset_integration?(integration, group: nil)
-    integration.persisted? && Feature.enabled?(:reset_integrations, group, type: :development)
   end
 
   extend self

@@ -31,9 +31,10 @@ export const dataStructure = () => ({
   mrChange: null,
   deleted: false,
   prevPath: undefined,
+  mimeType: '',
 });
 
-export const decorateData = entity => {
+export const decorateData = (entity) => {
   const {
     id,
     type,
@@ -47,6 +48,7 @@ export const decorateData = entity => {
     rawPath = '',
     file_lock,
     parentPath = '',
+    mimeType = '',
   } = entity;
 
   return Object.assign(dataStructure(), {
@@ -63,10 +65,11 @@ export const decorateData = entity => {
     rawPath,
     file_lock,
     parentPath,
+    mimeType,
   });
 };
 
-export const setPageTitle = title => {
+export const setPageTitle = (title) => {
   document.title = title;
 };
 
@@ -75,7 +78,7 @@ export const setPageTitleForFile = (state, file) => {
   setPageTitle(title);
 };
 
-export const commitActionForFile = file => {
+export const commitActionForFile = (file) => {
   if (file.prevPath) {
     return commitActionTypes.move;
   } else if (file.deleted) {
@@ -87,7 +90,7 @@ export const commitActionForFile = file => {
   return commitActionTypes.update;
 };
 
-export const getCommitFiles = stagedFiles =>
+export const getCommitFiles = (stagedFiles) =>
   stagedFiles.reduce((acc, file) => {
     if (file.type === 'tree') return acc;
 
@@ -106,7 +109,7 @@ export const createCommitPayload = ({
 }) => ({
   branch,
   commit_message: state.commitMessage || getters.preBuiltCommitMessage,
-  actions: getCommitFiles(rootState.stagedFiles).map(f => {
+  actions: getCommitFiles(rootState.stagedFiles).map((f) => {
     const isBlob = isBlobUrl(f.rawPath);
     const content = isBlob ? btoa(f.content) : f.content;
 
@@ -136,9 +139,9 @@ const sortTreesByTypeAndName = (a, b) => {
   return 0;
 };
 
-export const sortTree = sortedTree =>
+export const sortTree = (sortedTree) =>
   sortedTree
-    .map(entity =>
+    .map((entity) =>
       Object.assign(entity, {
         tree: entity.tree.length ? sortTree(entity.tree) : [],
       }),
@@ -148,7 +151,7 @@ export const sortTree = sortedTree =>
 export const filePathMatches = (filePath, path) => filePath.indexOf(`${path}/`) === 0;
 
 export const getChangesCountForFiles = (files, path) =>
-  files.filter(f => filePathMatches(f.path, path)).length;
+  files.filter((f) => filePathMatches(f.path, path)).length;
 
 export const mergeTrees = (fromTree, toTree) => {
   if (!fromTree || !fromTree.length) {
@@ -159,7 +162,7 @@ export const mergeTrees = (fromTree, toTree) => {
     if (!n) {
       return t;
     }
-    const existingTreeNode = t.find(el => el.path === n.path);
+    const existingTreeNode = t.find((el) => el.path === n.path);
 
     if (existingTreeNode && n.tree.length > 0) {
       existingTreeNode.opened = true;
@@ -180,7 +183,7 @@ export const mergeTrees = (fromTree, toTree) => {
 
 export const swapInStateArray = (state, arr, key, entryPath) =>
   Object.assign(state, {
-    [arr]: state[arr].map(f => (f.key === key ? state.entries[entryPath] : f)),
+    [arr]: state[arr].map((f) => (f.key === key ? state.entries[entryPath] : f)),
   });
 
 export const getEntryOrRoot = (state, path) =>
@@ -213,12 +216,12 @@ export const removeFromParentTree = (state, oldKey, parentPath) => {
 };
 
 export const updateFileCollections = (state, key, entryPath) => {
-  ['openFiles', 'changedFiles', 'stagedFiles'].forEach(fileCollection => {
+  ['openFiles', 'changedFiles', 'stagedFiles'].forEach((fileCollection) => {
     swapInStateArray(state, fileCollection, key, entryPath);
   });
 };
 
-export const cleanTrailingSlash = path => path.replace(/\/$/, '');
+export const cleanTrailingSlash = (path) => path.replace(/\/$/, '');
 
 export const pathsAreEqual = (a, b) => {
   const cleanA = a ? cleanTrailingSlash(a) : '';
@@ -251,12 +254,7 @@ export function extractMarkdownImagesFromEntries(mdFile, entries) {
     const imageContent = entries[imagePath]?.content || entries[imagePath]?.raw;
 
     if (!isAbsolute(path) && imageContent) {
-      const ext = path.includes('.')
-        ? path
-            .split('.')
-            .pop()
-            .trim()
-        : 'jpeg';
+      const ext = path.includes('.') ? path.split('.').pop().trim() : 'jpeg';
       const src = `data:image/${ext};base64,${imageContent}`;
       i += 1;
       const key = `{{${prefix}${i}}}`;

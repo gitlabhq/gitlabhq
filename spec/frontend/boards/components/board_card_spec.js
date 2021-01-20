@@ -29,7 +29,7 @@ describe('BoardCard', () => {
   const findUserAvatarLink = () => wrapper.find(userAvatarLink);
 
   // this particular mount component needs to be used after the root beforeEach because it depends on list being initialized
-  const mountComponent = propsData => {
+  const mountComponent = (propsData) => {
     wrapper = mount(BoardCard, {
       stubs: {
         issueCardInner,
@@ -45,6 +45,7 @@ describe('BoardCard', () => {
       provide: {
         groupId: null,
         rootPath: '/',
+        scopedLabelsAvailable: false,
       },
     });
   };
@@ -133,9 +134,7 @@ describe('BoardCard', () => {
 
     it('does not set detail issue if link is clicked', () => {
       mountComponent();
-      findIssueCardInner()
-        .find('a')
-        .trigger('mouseup');
+      findIssueCardInner().find('a').trigger('mouseup');
 
       expect(boardsStore.detail.issue).toEqual({});
     });

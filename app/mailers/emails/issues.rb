@@ -106,6 +106,8 @@ module Emails
       @count = export_status.fetch(:rows_expected)
       @written_count = export_status.fetch(:rows_written)
       @truncated = export_status.fetch(:truncated)
+      @size_limit = ActiveSupport::NumberHelper
+        .number_to_human_size(Issuable::ExportCsv::BaseService::TARGET_FILESIZE)
 
       filename = "#{project.full_path.parameterize}_issues_#{Date.today.iso8601}.csv"
       attachments[filename] = { content: csv_data, mime_type: 'text/csv' }

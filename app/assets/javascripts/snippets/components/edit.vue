@@ -73,7 +73,7 @@ export default {
       return this.actions.length > 0;
     },
     hasValidBlobs() {
-      return this.actions.every(x => x.content);
+      return this.actions.every((x) => x.content);
     },
     updatePrevented() {
       return this.snippet.title === '' || !this.hasValidBlobs || this.isUpdating;
@@ -130,7 +130,7 @@ export default {
     },
     getAttachedFiles() {
       const fileInputs = Array.from(this.$el.querySelectorAll('[name="files[]"]'));
-      return fileInputs.map(node => node.value);
+      return fileInputs.map((node) => node.value);
     },
     createMutation() {
       return {
@@ -166,7 +166,7 @@ export default {
             redirectTo(baseObj.snippet.webUrl);
           }
         })
-        .catch(e => {
+        .catch((e) => {
           this.flashAPIFailure(e);
         });
     },

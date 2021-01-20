@@ -1,0 +1,5 @@
+---
+title: Add access request endpoint to OpenAPI standard
+merge_request: 51000
+author: Jim Cser
+type: changed

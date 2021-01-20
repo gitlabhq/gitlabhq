@@ -1,0 +1,5 @@
+---
+title: Fix table columm shift with table-layout fixed
+merge_request: 51416
+author:
+type: fixed

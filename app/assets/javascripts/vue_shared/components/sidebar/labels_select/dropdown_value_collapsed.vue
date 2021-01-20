@@ -20,7 +20,7 @@ export default {
       const labelsString = this.labels.length
         ? this.labels
             .slice(0, 5)
-            .map(label => label.title)
+            .map((label) => label.title)
             .join(', ')
         : s__('LabelSelect|Labels');
 

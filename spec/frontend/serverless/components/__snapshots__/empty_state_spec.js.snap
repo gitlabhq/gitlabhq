@@ -3,7 +3,7 @@
 exports[`EmptyStateComponent should render content 1`] = `
 "<section class=\\"row empty-state text-center\\">
   <div class=\\"col-12\\">
-    <div class=\\"svg-250 svg-content\\"><img src=\\"/image.svg\\" alt=\\"Getting started with serverless\\" class=\\"gl-max-w-full\\"></div>
+    <div class=\\"svg-250 svg-content\\"><img src=\\"/image.svg\\" alt=\\"\\" class=\\"gl-max-w-full\\"></div>
   </div>
   <div class=\\"col-12\\">
     <div class=\\"text-content gl-mx-auto gl-my-0 gl-p-5\\">

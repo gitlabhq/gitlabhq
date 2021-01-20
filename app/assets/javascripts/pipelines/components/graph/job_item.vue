@@ -6,6 +6,7 @@ import { sprintf } from '~/locale';
 import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 import { accessValue } from './accessors';
 import { REST } from './constants';
+import { reportToSentry } from './utils';
 
 /**
  * Renders the badge for the pipeline graph and the job's dropdown.
@@ -73,6 +74,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    pipelineId: {
+      type: Number,
+      required: false,
+      default: -1,
+    },
   },
   computed: {
     boundary() {
@@ -83,6 +89,9 @@ export default {
     },
     hasDetails() {
       return accessValue(this.dataMethod, 'hasDetails', this.status);
+    },
+    computedJobId() {
+      return this.pipelineId > -1 ? `${this.job.name}-${this.pipelineId}` : '';
     },
     status() {
       return this.job && this.job.status ? this.job.status : {};
@@ -130,6 +139,9 @@ export default {
         : this.cssClassJobName;
     },
   },
+  errorCaptured(err, _vm, info) {
+    reportToSentry('job_item', `error: ${err}, info: ${info}`);
+  },
   methods: {
     hideTooltips() {
       this.$root.$emit('bv::hide::tooltip');
@@ -142,6 +154,7 @@ export default {
 </script>
 <template>
   <div
+    :id="computedJobId"
     class="ci-job-component gl-display-flex gl-align-items-center gl-justify-content-space-between"
     data-qa-selector="job_item_container"
   >
@@ -151,8 +164,7 @@ export default {
       :href="detailsPath"
       :title="tooltipText"
       :class="jobClasses"
-      class="js-pipeline-graph-job-link qa-job-link menu-item gl-text-gray-900 gl-active-text-decoration-none
-      gl-focus-text-decoration-none gl-hover-text-decoration-none"
+      class="js-pipeline-graph-job-link qa-job-link menu-item gl-text-gray-900 gl-active-text-decoration-none gl-focus-text-decoration-none gl-hover-text-decoration-none"
       data-testid="job-with-link"
       @click.stop="hideTooltips"
       @mouseout="hideTooltips"

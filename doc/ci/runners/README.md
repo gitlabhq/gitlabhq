@@ -116,7 +116,7 @@ You can also enable shared runners for individual projects.
 To enable shared runners:
 
 1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
-1. Click **Allow shared runners**.
+1. Select **Enable shared runners for this project**.
 
 #### Disable shared runners
 
@@ -126,7 +126,12 @@ You must have Owner permissions for the project or group.
 To disable shared runners for a project:
 
 1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
-1. In the **Shared runners** area, click **Disable shared runners**.
+1. In the **Shared runners** area, select **Enable shared runners for this project** so the toggle is grayed-out.
+
+Shared runners are automatically disabled for a project:
+
+- If the shared runners setting for the parent group is disabled, and
+- If overriding this setting is not permitted at the project level.
 
 To disable shared runners for a group:
 
@@ -263,6 +268,15 @@ This feature can be used to prevent your shared runner from being overwhelmed
 by a project that has jobs with a long timeout (for example, one week).
 
 When not configured, runners do not override the project timeout.
+
+On GitLab.com, you cannot override the job timeout for shared runners and must use the [project defined timeout](../pipelines/settings.md#timeout).
+
+To set the maximum job timeout:
+
+1. In a project, go to **Settings > CI/CD > Runners**.
+1. Select your specific runner to edit the settings. 
+1. Enter a value under **Maximum job timeout**.
+1. Select **Save changes**.
 
 How this feature works:
 

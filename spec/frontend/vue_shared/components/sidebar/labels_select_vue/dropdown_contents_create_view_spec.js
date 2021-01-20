@@ -24,7 +24,7 @@ const createComponent = (initialState = mockConfig) => {
 
 describe('DropdownContentsCreateView', () => {
   let wrapper;
-  const colors = Object.keys(mockSuggestedColors).map(color => ({
+  const colors = Object.keys(mockSuggestedColors).map((color) => ({
     [color]: mockSuggestedColors[color],
   }));
 
@@ -125,10 +125,7 @@ describe('DropdownContentsCreateView', () => {
     });
 
     it('renders dropdown back button element', () => {
-      const backBtnEl = wrapper
-        .find('.dropdown-title')
-        .findAll(GlButton)
-        .at(0);
+      const backBtnEl = wrapper.find('.dropdown-title').findAll(GlButton).at(0);
 
       expect(backBtnEl.exists()).toBe(true);
       expect(backBtnEl.attributes('aria-label')).toBe('Go back');
@@ -143,10 +140,7 @@ describe('DropdownContentsCreateView', () => {
     });
 
     it('renders dropdown close button element', () => {
-      const closeBtnEl = wrapper
-        .find('.dropdown-title')
-        .findAll(GlButton)
-        .at(1);
+      const closeBtnEl = wrapper.find('.dropdown-title').findAll(GlButton).at(1);
 
       expect(closeBtnEl.exists()).toBe(true);
       expect(closeBtnEl.attributes('aria-label')).toBe('Close');
@@ -190,10 +184,7 @@ describe('DropdownContentsCreateView', () => {
     });
 
     it('renders create button element', () => {
-      const createBtnEl = wrapper
-        .find('.dropdown-actions')
-        .findAll(GlButton)
-        .at(0);
+      const createBtnEl = wrapper.find('.dropdown-actions').findAll(GlButton).at(0);
 
       expect(createBtnEl.exists()).toBe(true);
       expect(createBtnEl.text()).toContain('Create');
@@ -211,10 +202,7 @@ describe('DropdownContentsCreateView', () => {
     });
 
     it('renders cancel button element', () => {
-      const cancelBtnEl = wrapper
-        .find('.dropdown-actions')
-        .findAll(GlButton)
-        .at(1);
+      const cancelBtnEl = wrapper.find('.dropdown-actions').findAll(GlButton).at(1);
 
       expect(cancelBtnEl.exists()).toBe(true);
       expect(cancelBtnEl.text()).toContain('Cancel');

@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     isActiveTab(tab) {
-      return this.isOpen && tab.views.some(view => view.name === this.currentView);
+      return this.isOpen && tab.views.some((view) => view.name === this.currentView);
     },
     buttonClasses(tab) {
       return [

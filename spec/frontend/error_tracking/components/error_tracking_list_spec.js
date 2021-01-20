@@ -19,18 +19,9 @@ describe('ErrorTrackingList', () => {
   const findErrorListTable = () => wrapper.find('table');
   const findErrorListRows = () => wrapper.findAll('tbody tr');
   const dropdownsArray = () => wrapper.findAll(GlDropdown);
-  const findRecentSearchesDropdown = () =>
-    dropdownsArray()
-      .at(0)
-      .find(GlDropdown);
-  const findStatusFilterDropdown = () =>
-    dropdownsArray()
-      .at(1)
-      .find(GlDropdown);
-  const findSortDropdown = () =>
-    dropdownsArray()
-      .at(2)
-      .find(GlDropdown);
+  const findRecentSearchesDropdown = () => dropdownsArray().at(0).find(GlDropdown);
+  const findStatusFilterDropdown = () => dropdownsArray().at(1).find(GlDropdown);
+  const findSortDropdown = () => dropdownsArray().at(2).find(GlDropdown);
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const findPagination = () => wrapper.find(GlPagination);
   const findErrorActions = () => wrapper.find(ErrorTrackingActions);
@@ -156,7 +147,7 @@ describe('ErrorTrackingList', () => {
     });
 
     it('each error in the list should have an action button set', () => {
-      findErrorListRows().wrappers.forEach(row => {
+      findErrorListRows().wrappers.forEach((row) => {
         expect(row.find(ErrorTrackingActions).exists()).toBe(true);
       });
     });
@@ -243,7 +234,6 @@ describe('ErrorTrackingList', () => {
         stubs: {
           GlTable: false,
           GlLink: false,
-          GlDeprecatedButton: false,
         },
       });
     });
@@ -274,7 +264,6 @@ describe('ErrorTrackingList', () => {
         stubs: {
           GlTable: false,
           GlLink: false,
-          GlDeprecatedButton: false,
         },
       });
     });
@@ -454,7 +443,6 @@ describe('ErrorTrackingList', () => {
         stubs: {
           GlTable: false,
           GlLink: false,
-          GlDeprecatedButton: false,
         },
       });
     });

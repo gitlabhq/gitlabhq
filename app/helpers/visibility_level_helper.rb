@@ -26,90 +26,12 @@ module VisibilityLevelHelper
     end
   end
 
-  def project_visibility_level_description(level)
-    case level
-    when Gitlab::VisibilityLevel::PRIVATE
-      _("Project access must be granted explicitly to each user. If this project is part of a group, access will be granted to members of the group.")
-    when Gitlab::VisibilityLevel::INTERNAL
-      _("The project can be accessed by any logged in user except external users.")
-    when Gitlab::VisibilityLevel::PUBLIC
-      _("The project can be accessed without any authentication.")
-    end
-  end
-
-  def group_visibility_level_description(level)
-    case level
-    when Gitlab::VisibilityLevel::PRIVATE
-      _("The group and its projects can only be viewed by members.")
-    when Gitlab::VisibilityLevel::INTERNAL
-      _("The group and any internal projects can be viewed by any logged in user except external users.")
-    when Gitlab::VisibilityLevel::PUBLIC
-      _("The group and any public projects can be viewed without any authentication.")
-    end
-  end
-
-  # Note: these messages closely mirror the form validation strings found in the project
-  # model and any changes or additons to these may also need to be made there.
-  def disallowed_project_visibility_level_description(level, project)
-    level_name = Gitlab::VisibilityLevel.level_name(level).downcase
-    reasons = []
-    instructions = []
-
-    unless project.visibility_level_allowed_as_fork?(level)
-      reasons << "the fork source project has lower visibility"
-    end
-
-    unless project.visibility_level_allowed_by_group?(level)
-      errors = visibility_level_errors_for_group(project.group, level_name)
-
-      reasons << errors[:reason]
-      instructions << errors[:instruction]
-    end
-
-    reasons = reasons.any? ? ' because ' + reasons.to_sentence : ''
-    "This project cannot be #{level_name}#{reasons}.#{instructions.join}".html_safe
-  end
-
-  # Note: these messages closely mirror the form validation strings found in the group
-  # model and any changes or additons to these may also need to be made there.
-  def disallowed_group_visibility_level_description(level, group)
-    level_name = Gitlab::VisibilityLevel.level_name(level).downcase
-    reasons = []
-    instructions = []
-
-    unless group.visibility_level_allowed_by_projects?(level)
-      reasons << "it contains projects with higher visibility"
-    end
-
-    unless group.visibility_level_allowed_by_sub_groups?(level)
-      reasons << "it contains sub-groups with higher visibility"
-    end
-
-    unless group.visibility_level_allowed_by_parent?(level)
-      errors = visibility_level_errors_for_group(group.parent, level_name)
-
-      reasons << errors[:reason]
-      instructions << errors[:instruction]
-    end
-
-    reasons = reasons.any? ? ' because ' + reasons.to_sentence : ''
-    "This group cannot be #{level_name}#{reasons}.#{instructions.join}".html_safe
-  end
-
   def visibility_icon_description(form_model)
     if form_model.respond_to?(:visibility_level_allowed_as_fork?)
       project_visibility_icon_description(form_model.visibility_level)
     elsif form_model.respond_to?(:visibility_level_allowed_by_sub_groups?)
       group_visibility_icon_description(form_model.visibility_level)
     end
-  end
-
-  def group_visibility_icon_description(level)
-    "#{visibility_level_label(level)} - #{group_visibility_level_description(level)}"
-  end
-
-  def project_visibility_icon_description(level)
-    "#{visibility_level_label(level)} - #{project_visibility_level_description(level)}"
   end
 
   def visibility_level_label(level)
@@ -203,11 +125,33 @@ module VisibilityLevelHelper
     current_level
   end
 
-  def visibility_level_errors_for_group(group, level_name)
-    group_name = link_to group.name, group_path(group)
-    change_visibility = link_to 'change the visibility', edit_group_path(group)
+  def project_visibility_level_description(level)
+    case level
+    when Gitlab::VisibilityLevel::PRIVATE
+      _("Project access must be granted explicitly to each user. If this project is part of a group, access will be granted to members of the group.")
+    when Gitlab::VisibilityLevel::INTERNAL
+      _("The project can be accessed by any logged in user except external users.")
+    when Gitlab::VisibilityLevel::PUBLIC
+      _("The project can be accessed without any authentication.")
+    end
+  end
 
-    { reason: "the visibility of #{group_name} is #{group.visibility}",
-      instruction: " To make this group #{level_name}, you must first #{change_visibility} of the parent group." }
+  def group_visibility_level_description(level)
+    case level
+    when Gitlab::VisibilityLevel::PRIVATE
+      _("The group and its projects can only be viewed by members.")
+    when Gitlab::VisibilityLevel::INTERNAL
+      _("The group and any internal projects can be viewed by any logged in user except external users.")
+    when Gitlab::VisibilityLevel::PUBLIC
+      _("The group and any public projects can be viewed without any authentication.")
+    end
+  end
+
+  def project_visibility_icon_description(level)
+    "#{visibility_level_label(level)} - #{project_visibility_level_description(level)}"
+  end
+
+  def group_visibility_icon_description(level)
+    "#{visibility_level_label(level)} - #{group_visibility_level_description(level)}"
   end
 end

@@ -4,6 +4,7 @@ exports[`SplitButton renders actionItems 1`] = `
 <gl-dropdown-stub
   category="primary"
   headertext=""
+  hideheaderborder="true"
   menu-class=""
   size="medium"
   split="true"

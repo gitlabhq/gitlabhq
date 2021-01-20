@@ -13,7 +13,7 @@ export const ASSET_LINK_TYPE = Object.freeze({
 
 export const DEFAULT_ASSET_LINK_TYPE = ASSET_LINK_TYPE.OTHER;
 
-export const PAGE_SIZE = 20;
+export const PAGE_SIZE = 10;
 
 export const ASCENDING_ODER = 'asc';
 export const DESCENDING_ORDER = 'desc';

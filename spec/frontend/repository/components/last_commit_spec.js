@@ -131,6 +131,16 @@ describe('Repository last commit component', () => {
       });
   });
 
+  it('strips the first newline of the description', async () => {
+    factory(createCommitData({ descriptionHtml: '&#x000A;Update ADOPTERS.md' }));
+
+    await vm.vm.$nextTick();
+
+    expect(vm.find('.commit-row-description').html()).toBe(
+      '<pre class="commit-row-description gl-mb-3">Update ADOPTERS.md</pre>',
+    );
+  });
+
   it('renders the signature HTML as returned by the backend', () => {
     factory(createCommitData({ signatureHtml: '<button>Verified</button>' }));
 

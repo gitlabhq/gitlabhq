@@ -1,0 +1,5 @@
+---
+title: Don't allow filtering by release tag on groups.
+merge_request: 50457
+author:
+type: fixed

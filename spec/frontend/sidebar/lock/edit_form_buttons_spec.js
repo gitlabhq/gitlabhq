@@ -15,7 +15,7 @@ describe('EditFormButtons', () => {
   let issuableType;
   let issuableDisplayName;
 
-  const setIssuableType = pageType => {
+  const setIssuableType = (pageType) => {
     issuableType = pageType;
     issuableDisplayName = issuableType.replace(/_/g, ' ');
   };

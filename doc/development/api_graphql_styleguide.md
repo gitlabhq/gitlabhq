@@ -760,7 +760,7 @@ To limit the amount of queries performed, we can use [BatchLoader](graphql_guide
 
 ### Writing resolvers
 
-Our code should aim to be thin declarative wrappers around finders and services. You can
+Our code should aim to be thin declarative wrappers around finders and [services](../development/reusing_abstractions.md#service-classes). You can
 repeat lists of arguments, or extract them to concerns. Composition is preferred over
 inheritance in most cases. Treat resolvers like controllers: resolvers should be a DSL
 that compose other application abstractions.
@@ -1256,6 +1256,10 @@ single mutation when multiple are performed within a single request.
 
 ### The `resolve` method
 
+Similar to [writing resolvers](#writing-resolvers), the `resolve` method of a mutation
+should aim to be a thin declarative wrapper around a
+[service](../development/reusing_abstractions.md#service-classes).
+
 The `resolve` method receives the mutation's arguments as keyword arguments.
 From here, we can call the service that modifies the resource.
 
@@ -1352,6 +1356,7 @@ Key points:
 - Errors may be reported to users either at `$root.errors` (top-level error) or at
   `$root.data.mutationName.errors` (mutation errors). The location depends on what kind of error
   this is, and what information it holds.
+- Mutation fields [must have `null: true`](https://graphql-ruby.org/mutations/mutation_errors#nullable-mutation-payload-fields)
 
 Consider an example mutation `doTheThing` that returns a response with
 two fields: `errors: [String]`, and `thing: ThingType`. The specific nature of

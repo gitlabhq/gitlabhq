@@ -32,7 +32,7 @@ describe('group_settings/components/shared_runners_form', () => {
   const findErrorAlert = () => wrapper.find(GlAlert);
   const findEnabledToggle = () => wrapper.find('[data-testid="enable-runners-toggle"]');
   const findOverrideToggle = () => wrapper.find('[data-testid="override-runners-toggle"]');
-  const changeToggle = toggle => toggle.vm.$emit('change', !toggle.props('value'));
+  const changeToggle = (toggle) => toggle.vm.$emit('change', !toggle.props('value'));
   const getRequestPayload = () => JSON.parse(mock.history.put[0].data);
   const isLoadingIconVisible = () => findLoadingIcon().exists();
 

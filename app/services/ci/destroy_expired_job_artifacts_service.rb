@@ -12,6 +12,10 @@ module Ci
     EXCLUSIVE_LOCK_KEY = 'expired_job_artifacts:destroy:lock'
     LOCK_TIMEOUT = 6.minutes
 
+    def initialize
+      @removed_artifacts_count = 0
+    end
+
     ##
     # Destroy expired job artifacts on GitLab instance
     #
@@ -20,40 +24,22 @@ module Ci
     # which is scheduled every 7 minutes.
     def execute
       in_lock(EXCLUSIVE_LOCK_KEY, ttl: LOCK_TIMEOUT, retries: 1) do
-        loop_until(timeout: LOOP_TIMEOUT, limit: LOOP_LIMIT) do
-          destroy_artifacts_batch
-        end
+        destroy_job_artifacts_with_slow_iteration(Time.current)
       end
+
+      @removed_artifacts_count
     end
 
     private
 
-    def destroy_artifacts_batch
-      destroy_job_artifacts_batch || destroy_pipeline_artifacts_batch
-    end
+    def destroy_job_artifacts_with_slow_iteration(start_at)
+      Ci::JobArtifact.expired_before(start_at).each_batch(of: BATCH_SIZE, column: :expire_at, order: :desc) do |relation, index|
+        artifacts = relation.unlocked.with_destroy_preloads.to_a
 
-    def destroy_job_artifacts_batch
-      artifacts = Ci::JobArtifact
-        .expired(BATCH_SIZE)
-        .unlocked
-        .with_destroy_preloads
-        .to_a
-
-      return false if artifacts.empty?
-
-      parallel_destroy_batch(artifacts)
-      true
-    end
-
-    # TODO: Make sure this can also be parallelized
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/270973
-    def destroy_pipeline_artifacts_batch
-      artifacts = Ci::PipelineArtifact.expired(BATCH_SIZE).to_a
-      return false if artifacts.empty?
-
-      artifacts.each(&:destroy!)
-
-      true
+        parallel_destroy_batch(artifacts) if artifacts.any?
+        break if loop_timeout?(start_at)
+        break if index >= LOOP_LIMIT
+      end
     end
 
     def parallel_destroy_batch(job_artifacts)
@@ -64,20 +50,25 @@ module Ci
       end
 
       # This is executed outside of the transaction because it depends on Redis
-      update_statistics_for(job_artifacts)
-      destroyed_artifacts_counter.increment({}, job_artifacts.size)
+      update_project_statistics_for(job_artifacts)
+      increment_monitoring_statistics(job_artifacts.size)
     end
 
     # This method is implemented in EE and it must do only database work
     def destroy_related_records_for(job_artifacts); end
 
-    def update_statistics_for(job_artifacts)
+    def update_project_statistics_for(job_artifacts)
       artifacts_by_project = job_artifacts.group_by(&:project)
       artifacts_by_project.each do |project, artifacts|
         delta = -artifacts.sum { |artifact| artifact.size.to_i }
         ProjectStatistics.increment_statistic(
           project, Ci::JobArtifact.project_statistics_name, delta)
       end
+    end
+
+    def increment_monitoring_statistics(size)
+      destroyed_artifacts_counter.increment({}, size)
+      @removed_artifacts_count += size
     end
 
     def destroyed_artifacts_counter
@@ -87,6 +78,10 @@ module Ci
 
         ::Gitlab::Metrics.counter(name, comment)
       end
+    end
+
+    def loop_timeout?(start_at)
+      Time.current > start_at + LOOP_TIMEOUT
     end
   end
 end

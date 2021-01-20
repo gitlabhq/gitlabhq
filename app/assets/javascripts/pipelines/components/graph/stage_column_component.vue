@@ -6,6 +6,7 @@ import JobGroupDropdown from './job_group_dropdown.vue';
 import ActionComponent from './action_component.vue';
 import { GRAPHQL } from './constants';
 import { accessValue } from './accessors';
+import { reportToSentry } from './utils';
 
 export default {
   components: {
@@ -15,18 +16,27 @@ export default {
     MainGraphWrapper,
   },
   props: {
-    title: {
-      type: String,
-      required: true,
-    },
     groups: {
       type: Array,
+      required: true,
+    },
+    pipelineId: {
+      type: Number,
+      required: true,
+    },
+    title: {
+      type: String,
       required: true,
     },
     action: {
       type: Object,
       required: false,
       default: () => ({}),
+    },
+    highlightedJobs: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
     jobHovered: {
       type: String,
@@ -54,6 +64,9 @@ export default {
       return !isEmpty(this.action);
     },
   },
+  errorCaptured(err, _vm, info) {
+    reportToSentry('stage_column_component', `error: ${err}, info: ${info}`);
+  },
   methods: {
     getGroupId(group) {
       return accessValue(GRAPHQL, 'groupId', group);
@@ -61,11 +74,18 @@ export default {
     groupId(group) {
       return `ci-badge-${escape(group.name)}`;
     },
+    isFadedOut(jobName) {
+      return (
+        this.jobHovered &&
+        this.highlightedJobs.length > 1 &&
+        !this.highlightedJobs.includes(jobName)
+      );
+    },
   },
 };
 </script>
 <template>
-  <main-graph-wrapper>
+  <main-graph-wrapper class="gl-px-6">
     <template #stages>
       <div
         data-testid="stage-column-title"
@@ -90,16 +110,25 @@ export default {
         :key="getGroupId(group)"
         data-testid="stage-column-group"
         class="gl-relative gl-mb-3 gl-white-space-normal gl-pipeline-job-width"
+        @mouseenter="$emit('jobHover', group.name)"
+        @mouseleave="$emit('jobHover', '')"
       >
         <job-item
           v-if="group.size === 1"
           :job="group.jobs[0]"
           :job-hovered="jobHovered"
           :pipeline-expanded="pipelineExpanded"
+          :pipeline-id="pipelineId"
           css-class-job-name="gl-build-content"
+          :class="{ 'gl-opacity-3': isFadedOut(group.name) }"
           @pipelineActionRequestComplete="$emit('refreshPipelineGraph')"
         />
-        <job-group-dropdown v-else :group="group" />
+        <job-group-dropdown
+          v-else
+          :group="group"
+          :pipeline-id="pipelineId"
+          :class="{ 'gl-opacity-3': isFadedOut(group.name) }"
+        />
       </div>
     </template>
   </main-graph-wrapper>

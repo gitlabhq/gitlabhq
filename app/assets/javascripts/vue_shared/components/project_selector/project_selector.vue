@@ -48,10 +48,14 @@ export default {
   data() {
     return {
       searchQuery: '',
+      hasSearched: false,
     };
   },
   computed: {
     legendText() {
+      if (!this.hasSearched) {
+        return '';
+      }
       const count = this.projectSearchResults.length;
       const total = this.totalResults;
 
@@ -75,6 +79,9 @@ export default {
       return this.selectedProjects.some(({ id }) => project.id === id);
     },
     onInput: debounce(function debouncedOnInput() {
+      if (!this.hasSearched) {
+        this.hasSearched = true;
+      }
       this.$emit('searched', this.searchQuery);
     }, SEARCH_INPUT_TIMEOUT_MS),
   },
@@ -115,7 +122,7 @@ export default {
         </template>
 
         <template #default>
-          {{ legendText }}
+          <span data-testid="legend-text">{{ legendText }}</span>
         </template>
       </gl-infinite-scroll>
       <div v-if="showNoResultsMessage" class="text-muted ml-2 js-no-results-message">

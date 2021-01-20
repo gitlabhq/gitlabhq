@@ -25,7 +25,6 @@ RSpec.describe 'User sees feature flag list', :js do
       create_flag(project, 'mr_train', true).tap do |feature_flag|
         create_scope(feature_flag, 'production', false)
       end
-      stub_feature_flags(feature_flags_legacy_read_only_override: false)
     end
 
     it 'user sees the first flag' do
@@ -77,41 +76,6 @@ RSpec.describe 'User sees feature flag list', :js do
 
       within_feature_flag_row(1) do
         expect_status_toggle_button_to_be_disabled
-      end
-    end
-
-    context 'when legacy feature flags are not read-only' do
-      before do
-        stub_feature_flags(feature_flags_legacy_read_only: false)
-      end
-
-      it 'user updates the status toggle' do
-        visit(project_feature_flags_path(project))
-
-        within_feature_flag_row(1) do
-          status_toggle_button.click
-
-          expect_status_toggle_button_to_be_checked
-        end
-      end
-    end
-
-    context 'when legacy feature flags are read-only but the override is active for a project' do
-      before do
-        stub_feature_flags(
-          feature_flags_legacy_read_only: true,
-          feature_flags_legacy_read_only_override: project
-        )
-      end
-
-      it 'user updates the status toggle' do
-        visit(project_feature_flags_path(project))
-
-        within_feature_flag_row(1) do
-          status_toggle_button.click
-
-          expect_status_toggle_button_to_be_checked
-        end
       end
     end
   end

@@ -155,6 +155,12 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
 
           expect(Todo.where(attributes).count).to eq 1
         end
+
+        it 'invalidates counter cache for reviewers', :use_clean_rails_memory_store_caching do
+          expect { merge_request }
+            .to change { user2.review_requested_open_merge_requests_count }
+            .by(1)
+        end
       end
 
       context 'when head pipelines already exist for merge request source branch', :sidekiq_inline do

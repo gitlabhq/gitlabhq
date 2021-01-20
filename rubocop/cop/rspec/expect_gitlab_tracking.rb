@@ -53,8 +53,6 @@ module RuboCop
           )
         PATTERN
 
-        RESTRICT_ON_SEND = [:expect, :allow].freeze
-
         def on_send(node)
           return unless expect_gitlab_tracking?(node)
 

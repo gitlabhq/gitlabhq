@@ -16,6 +16,7 @@ import {
   GlSearchBoxByType,
   GlSprintf,
   GlLoadingIcon,
+  GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
 import * as Sentry from '~/sentry/wrapper';
 import { s__, __, n__ } from '~/locale';
@@ -34,7 +35,7 @@ export default {
     'Pipeline|Specify variable values to be used in this run. The values specified in %{linkStart}CI/CD settings%{linkEnd} will be used by default.',
   ),
   formElementClasses: 'gl-mr-3 gl-mb-3 gl-flex-basis-quarter gl-flex-shrink-0 gl-flex-grow-0',
-  errorTitle: __('The form contains the following error:'),
+  errorTitle: __('Pipeline cannot be run.'),
   warningTitle: __('The form contains the following warning:'),
   maxWarningsSummary: __('%{total} warnings found: showing first %{warningsDisplayed}'),
   components: {
@@ -53,6 +54,7 @@ export default {
     GlSprintf,
     GlLoadingIcon,
   },
+  directives: { SafeHtml },
   props: {
     pipelinesPath: {
       type: String,
@@ -121,12 +123,12 @@ export default {
       return this.searchTerm.toLowerCase();
     },
     filteredBranches() {
-      return this.branches.filter(branch =>
+      return this.branches.filter((branch) =>
         branch.shortName.toLowerCase().includes(this.lowerCasedSearchTerm),
       );
     },
     filteredTags() {
-      return this.tags.filter(tag =>
+      return this.tags.filter((tag) =>
         tag.shortName.toLowerCase().includes(this.lowerCasedSearchTerm),
       );
     },
@@ -187,7 +189,7 @@ export default {
     setVariable(refValue, type, key, value) {
       const { variables } = this.form[refValue];
 
-      const variable = variables.find(v => v.key === key);
+      const variable = variables.find((v) => v.key === key);
       if (variable) {
         variable.type = type;
         variable.value = value;
@@ -270,11 +272,11 @@ export default {
               stop(data);
             }
           })
-          .catch(error => {
+          .catch((error) => {
             stop(error);
           });
       }, CONFIG_VARIABLES_TIMEOUT)
-        .then(data => {
+        .then((data) => {
           const params = {};
           const descriptions = {};
 
@@ -287,7 +289,7 @@ export default {
 
           return { params, descriptions };
         })
-        .catch(error => {
+        .catch((error) => {
           this.isLoading = false;
 
           Sentry.captureException(error);
@@ -314,7 +316,7 @@ export default {
         .then(({ data }) => {
           redirectTo(`${this.pipelinesPath}/${data.id}`);
         })
-        .catch(err => {
+        .catch((err) => {
           const { errors, warnings, total_warnings: totalWarnings } = err.response.data;
           const [error] = errors;
           this.error = error;
@@ -335,8 +337,9 @@ export default {
       variant="danger"
       class="gl-mb-4"
       data-testid="run-pipeline-error-alert"
-      >{{ error }}</gl-alert
     >
+      <span v-safe-html="error"></span>
+    </gl-alert>
     <gl-alert
       v-if="shouldShowWarning"
       :title="$options.warningTitle"
@@ -365,7 +368,7 @@ export default {
         </p>
       </details>
     </gl-alert>
-    <gl-form-group :label="s__('Pipeline|Run for')">
+    <gl-form-group :label="s__('Pipeline|Run for branch name or tag')">
       <gl-dropdown :text="refShortName" block>
         <gl-search-box-by-type v-model.trim="searchTerm" :placeholder="__('Search refs')" />
         <gl-dropdown-section-header>{{ __('Branches') }}</gl-dropdown-section-header>
@@ -391,12 +394,6 @@ export default {
           {{ tag.shortName }}
         </gl-dropdown-item>
       </gl-dropdown>
-
-      <template #description>
-        <div>
-          {{ s__('Pipeline|Existing branch name or tag') }}
-        </div></template
-      >
     </gl-form-group>
 
     <gl-loading-icon v-if="isLoading" class="gl-mb-5" size="lg" />

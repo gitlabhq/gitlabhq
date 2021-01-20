@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::EnvironmentsController do
   include MetricsDashboardHelpers
+  include KubernetesHelpers
 
   let_it_be(:project) { create(:project) }
   let_it_be(:maintainer) { create(:user, name: 'main-dos').tap { |u| project.add_maintainer(u) } }
@@ -34,6 +35,9 @@ RSpec.describe Projects::EnvironmentsController do
 
     context 'when requesting JSON response for folders' do
       before do
+        allow_any_instance_of(Environment).to receive(:has_terminals?).and_return(true)
+        allow_any_instance_of(Environment).to receive(:rollout_status).and_return(kube_deployment_rollout_status)
+
         create(:environment, project: project,
                              name: 'staging/review-1',
                              state: :available)
@@ -91,9 +95,11 @@ RSpec.describe Projects::EnvironmentsController do
         it 'responds with a payload describing available environments' do
           expect(environments.count).to eq 2
           expect(environments.first['name']).to eq 'production'
+          expect(environments.first['latest']['rollout_status']).to be_present
           expect(environments.second['name']).to eq 'staging'
           expect(environments.second['size']).to eq 2
           expect(environments.second['latest']['name']).to eq 'staging/review-2'
+          expect(environments.second['latest']['rollout_status']).to be_present
         end
 
         it 'contains values describing environment scopes sizes' do

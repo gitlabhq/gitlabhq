@@ -7,6 +7,8 @@ import (
 	"strconv"
 
 	"github.com/disintegration/imaging"
+
+	"gitlab.com/gitlab-org/gitlab-workhorse/cmd/gitlab-resize-image/png"
 )
 
 func main() {
@@ -23,7 +25,12 @@ func _main() error {
 		return fmt.Errorf("GL_RESIZE_IMAGE_WIDTH: %w", err)
 	}
 
-	src, formatName, err := image.Decode(os.Stdin)
+	pngReader, err := png.NewReader(os.Stdin)
+	if err != nil {
+		return fmt.Errorf("construct PNG reader: %w", err)
+	}
+
+	src, formatName, err := image.Decode(pngReader)
 	if err != nil {
 		return fmt.Errorf("decode: %w", err)
 	}

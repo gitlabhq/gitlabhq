@@ -1,8 +1,0 @@
----
-name: new_project_level_vsa_backend
-introduced_by_url:
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/282435
-milestone: '13.7'
-type: development
-group: group::optimize
-default_enabled: true

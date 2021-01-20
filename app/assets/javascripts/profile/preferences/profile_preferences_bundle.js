@@ -18,6 +18,6 @@ export default () => {
     el,
     name: 'ProfilePreferencesApp',
     provide,
-    render: createElement => createElement(ProfilePreferences),
+    render: (createElement) => createElement(ProfilePreferences),
   });
 };

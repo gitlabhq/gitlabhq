@@ -97,3 +97,6 @@ export const packageJsonPath = 'package.json';
 
 export const SIDE_LEFT = 'left';
 export const SIDE_RIGHT = 'right';
+
+// Live Preview feature
+export const LIVE_PREVIEW_DEBOUNCE = 2000;

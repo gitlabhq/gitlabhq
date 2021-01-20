@@ -1,5 +1,6 @@
 import { format } from 'timeago.js';
 import getStateKey from 'ee_else_ce/vue_merge_request_widget/stores/get_state_key';
+import mrEventHub from '~/merge_request/eventhub';
 import { stateKey } from './state_maps';
 import { formatDate } from '../../lib/utils/datetime_utility';
 import { MTWPS_MERGE_STRATEGY, MT_MERGE_STRATEGY, MWPS_MERGE_STRATEGY } from '../constants';
@@ -154,6 +155,10 @@ export default class MergeRequestStore {
     this.canRevertInCurrentMR = currentUser.can_revert_on_current_merge_request || false;
 
     this.setState();
+
+    mrEventHub.$emit('mr.state.updated', {
+      state: this.mergeRequestState,
+    });
   }
 
   setGraphqlData(project) {
@@ -167,7 +172,7 @@ export default class MergeRequestStore {
     this.canBeMerged = mergeRequest.mergeStatus === 'can_be_merged';
     this.canMerge = mergeRequest.userPermissions.canMerge;
     this.ciStatus = pipeline?.status.toLowerCase();
-    this.commitsCount = mergeRequest.commitCount;
+    this.commitsCount = mergeRequest.commitCount || 10;
     this.branchMissing = !mergeRequest.sourceBranchExists || !mergeRequest.targetBranchExists;
     this.hasConflicts = mergeRequest.conflicts;
     this.hasMergeableDiscussionsState = mergeRequest.mergeableDiscussionsState === false;

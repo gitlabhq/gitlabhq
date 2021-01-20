@@ -1,0 +1,5 @@
+---
+title: Check namespace package settings when creating Maven packages
+merge_request: 50691
+author:
+type: changed

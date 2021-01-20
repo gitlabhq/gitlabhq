@@ -316,15 +316,6 @@ To delete a custom value stream:
 
 ![Delete value stream](img/delete_value_stream_v13.4.png "Deleting a custom value stream")
 
-### Disabling custom value streams
-
-Custom value streams are enabled by default. If you have a self-managed instance, an
-administrator can open a Rails console and disable them with the following command:
-
-```ruby
-Feature.disable(:value_stream_analytics_create_multiple_value_streams)
-```
-
 ## Days to completion chart
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21631) in GitLab 12.6.

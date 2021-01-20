@@ -52,7 +52,7 @@ export const annotationsYAxis = {
  * @param {Object} annotation object
  * @returns {Object} markLine object
  */
-export const parseAnnotations = annotations =>
+export const parseAnnotations = (annotations) =>
   annotations.reduce(
     (acc, annotation) => {
       acc.lines.push({
@@ -87,7 +87,7 @@ export const parseAnnotations = annotations =>
  */
 export const generateAnnotationsSeries = ({ deployments = [], annotations = [] } = {}) => {
   // deployment data points
-  const data = deployments.map(deployment => {
+  const data = deployments.map((deployment) => {
     return {
       name: 'deployments',
       value: [deployment.createdAt, annotationsYAxisCoords.pos],

@@ -40,7 +40,7 @@ export default class VisualTokenValue {
 
     return (
       UsersCache.retrieve(username)
-        .then(user => {
+        .then((user) => {
           if (!user) {
             return;
           }
@@ -68,9 +68,9 @@ export default class VisualTokenValue {
     );
 
     return AjaxCache.retrieve(labelsEndpointWithParams)
-      .then(labels => {
+      .then((labels) => {
         const matchingLabel = (labels || []).find(
-          label => `~${DropdownUtils.getEscapedText(label.title)}` === tokenValue,
+          (label) => `~${DropdownUtils.getEscapedText(label.title)}` === tokenValue,
         );
 
         if (!matchingLabel) {
@@ -96,8 +96,8 @@ export default class VisualTokenValue {
     );
 
     return AjaxCache.retrieve(epicsEndpointWithParams)
-      .then(epics => {
-        const matchingEpic = (epics || []).find(epic => epic.id === Number(tokenValue));
+      .then((epics) => {
+        const matchingEpic = (epics || []).find((epic) => epic.id === Number(tokenValue));
 
         if (!matchingEpic) {
           return;

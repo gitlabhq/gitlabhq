@@ -27,7 +27,7 @@ Then leave running while monitoring and performing some testing through web, api
 - [ ] [Inspect logs in ELK](https://log.gitlab.net/app/kibana)
 - [ ] [Check for errors in GitLab Dev Sentry](https://sentry.gitlab.net/gitlab/devgitlaborg/?query=is%3Aunresolved)
 
-## 2. Staging Trial
+## 3. Staging Trial
 
 #### Check Staging Server Versions
 - [ ] GitLab: https://staging.gitlab.com/help

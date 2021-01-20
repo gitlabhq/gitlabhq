@@ -14,5 +14,5 @@ export function toggleHiddenClassBySelector(selector, hidden) {
   if (!selectorCache[selector]) {
     selectorCache[selector] = document.querySelectorAll(selector);
   }
-  selectorCache[selector].forEach(elm => toggleHiddenClass(elm, hidden));
+  selectorCache[selector].forEach((elm) => toggleHiddenClass(elm, hidden));
 }

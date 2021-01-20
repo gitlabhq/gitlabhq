@@ -10,7 +10,10 @@ exports[`Design management list item component when item appears in view after i
 
 exports[`Design management list item component with notes renders item with multiple comments 1`] = `
 <router-link-stub
+  ariacurrentvalue="page"
   class="card gl-cursor-pointer text-plain js-design-list-item design-list-item design-list-item-new"
+  event="click"
+  tag="a"
   to="[object Object]"
 >
   <div
@@ -81,7 +84,10 @@ exports[`Design management list item component with notes renders item with mult
 
 exports[`Design management list item component with notes renders item with single comment 1`] = `
 <router-link-stub
+  ariacurrentvalue="page"
   class="card gl-cursor-pointer text-plain js-design-list-item design-list-item design-list-item-new"
+  event="click"
+  tag="a"
   to="[object Object]"
 >
   <div

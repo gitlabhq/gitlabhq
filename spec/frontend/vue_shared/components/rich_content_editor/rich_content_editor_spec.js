@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { mockEditorApi } from '@toast-ui/vue-editor';
+import { Editor, mockEditorApi } from '@toast-ui/vue-editor';
 import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
 import AddImageModal from '~/vue_shared/components/rich_content_editor/modals/add_image/add_image_modal.vue';
 import InsertVideoModal from '~/vue_shared/components/rich_content_editor/modals/insert_video_modal.vue';
@@ -17,16 +17,17 @@ import {
   insertVideo,
   registerHTMLToMarkdownRenderer,
   getEditorOptions,
+  getMarkdown,
 } from '~/vue_shared/components/rich_content_editor/services/editor_service';
 
 jest.mock('~/vue_shared/components/rich_content_editor/services/editor_service', () => ({
-  ...jest.requireActual('~/vue_shared/components/rich_content_editor/services/editor_service'),
   addCustomEventListener: jest.fn(),
   removeCustomEventListener: jest.fn(),
   addImage: jest.fn(),
   insertVideo: jest.fn(),
   registerHTMLToMarkdownRenderer: jest.fn(),
   getEditorOptions: jest.fn(),
+  getMarkdown: jest.fn(),
 }));
 
 describe('Rich Content Editor', () => {
@@ -38,9 +39,12 @@ describe('Rich Content Editor', () => {
   const findAddImageModal = () => wrapper.find(AddImageModal);
   const findInsertVideoModal = () => wrapper.find(InsertVideoModal);
 
-  const buildWrapper = () => {
+  const buildWrapper = async () => {
     wrapper = shallowMount(RichContentEditor, {
       propsData: { content, imageRoot },
+      stubs: {
+        ToastEditor: Editor,
+      },
     });
   };
 
@@ -89,9 +93,8 @@ describe('Rich Content Editor', () => {
 
     it('emits an input event with the changed content', () => {
       const changedMarkdown = '## Changed Markdown';
-      const getMarkdownMock = jest.fn().mockReturnValueOnce(changedMarkdown);
+      getMarkdown.mockReturnValueOnce(changedMarkdown);
 
-      findEditor().setMethods({ invoke: getMarkdownMock });
       findEditor().vm.$emit('change');
 
       expect(wrapper.emitted().input[0][0]).toBe(changedMarkdown);
@@ -147,6 +150,7 @@ describe('Rich Content Editor', () => {
     });
 
     it('emits load event with the markdown formatted by Toast UI', () => {
+      mockEditorApi.getMarkdown.mockReturnValueOnce(formattedMarkdown);
       expect(mockEditorApi.getMarkdown).toHaveBeenCalled();
       expect(wrapper.emitted('load')[0]).toEqual([{ formattedMarkdown }]);
     });

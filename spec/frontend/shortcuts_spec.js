@@ -85,13 +85,13 @@ describe('Shortcuts', () => {
       });
 
       it('attaches a Mousetrap handler for every markdown shortcut specified with md-shortcuts', () => {
-        const expectedCalls = shortcuts.map(s => [s, expect.any(Function)]);
+        const expectedCalls = shortcuts.map((s) => [s, expect.any(Function)]);
 
         expect(mockMousetrap.bind.mock.calls).toEqual(expectedCalls);
       });
 
       it('attaches a stopCallback that allows each markdown shortcut specified with md-shortcuts', () => {
-        flatten(shortcuts).forEach(s => {
+        flatten(shortcuts).forEach((s) => {
           expect(mockMousetrap.stopCallback(null, null, s)).toBe(false);
         });
       });
@@ -108,7 +108,7 @@ describe('Shortcuts', () => {
         Shortcuts.initMarkdownEditorShortcuts($('.edit-note textarea'));
         Shortcuts.removeMarkdownEditorShortcuts($('.edit-note textarea'));
 
-        const expectedCalls = shortcuts.map(s => [s]);
+        const expectedCalls = shortcuts.map((s) => [s]);
 
         expect(mockMousetrap.unbind.mock.calls).toEqual(expectedCalls);
       });

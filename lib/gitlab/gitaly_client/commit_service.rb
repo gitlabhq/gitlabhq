@@ -225,7 +225,7 @@ module Gitlab
         response = GitalyClient.call(@repository.storage, :diff_service, :find_changed_paths, request, timeout: GitalyClient.medium_timeout)
         response.flat_map do |msg|
           msg.paths.map do |path|
-            OpenStruct.new(
+            Gitlab::Git::ChangedPath.new(
               status: path.status,
               path:  EncodingHelper.encode!(path.path)
             )

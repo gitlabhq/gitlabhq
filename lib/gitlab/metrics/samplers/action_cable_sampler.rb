@@ -4,9 +4,9 @@ module Gitlab
   module Metrics
     module Samplers
       class ActionCableSampler < BaseSampler
-        SAMPLING_INTERVAL_SECONDS = 5
+        DEFAULT_SAMPLING_INTERVAL_SECONDS = 5
 
-        def initialize(interval = SAMPLING_INTERVAL_SECONDS, action_cable: ::ActionCable.server)
+        def initialize(interval = nil, action_cable: ::ActionCable.server)
           super(interval)
           @action_cable = action_cable
         end

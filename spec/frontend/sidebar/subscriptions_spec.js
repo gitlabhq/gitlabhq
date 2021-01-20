@@ -8,7 +8,7 @@ describe('Subscriptions', () => {
 
   const findToggleButton = () => wrapper.find(ToggleButton);
 
-  const mountComponent = propsData =>
+  const mountComponent = (propsData) =>
     shallowMount(Subscriptions, {
       propsData,
     });

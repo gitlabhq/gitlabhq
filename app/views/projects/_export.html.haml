@@ -2,7 +2,7 @@
 
 - project = local_assigns.fetch(:project)
 
-.sub-section
+.sub-section{ data: { qa_selector: 'export_project_content' } }
   %h4= _('Export project')
   %p= _('Export this project with all its related data in order to move your project to a new GitLab instance. Once the export is finished, you can import the file from the "New Project" page.')
 

@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import * as commonUtils from '~/lib/utils/common_utils';
 
 describe('common_utils', () => {
@@ -214,60 +213,90 @@ describe('common_utils', () => {
 
   describe('scrollToElement*', () => {
     let elem;
-    const windowHeight = 1000;
+    const windowHeight = 550;
     const elemTop = 100;
+    const id = 'scroll_test';
 
     beforeEach(() => {
       elem = document.createElement('div');
+      elem.id = id;
+      document.body.appendChild(elem);
       window.innerHeight = windowHeight;
       window.mrTabs = { currentAction: 'show' };
-      jest.spyOn($.fn, 'animate');
-      jest.spyOn($.fn, 'offset').mockReturnValue({ top: elemTop });
+      jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
+      jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: elemTop });
     });
 
     afterEach(() => {
-      $.fn.animate.mockRestore();
-      $.fn.offset.mockRestore();
+      window.scrollTo.mockRestore();
+      Element.prototype.getBoundingClientRect.mockRestore();
+      elem.remove();
     });
 
-    describe('scrollToElement', () => {
+    describe('scrollToElement with HTMLElement', () => {
       it('scrolls to element', () => {
         commonUtils.scrollToElement(elem);
-        expect($.fn.animate).toHaveBeenCalledWith(
-          {
-            scrollTop: elemTop,
-          },
-          expect.any(Number),
-        );
+        expect(window.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop,
+        });
       });
 
       it('scrolls to element with offset', () => {
         const offset = 50;
         commonUtils.scrollToElement(elem, { offset });
-        expect($.fn.animate).toHaveBeenCalledWith(
-          {
-            scrollTop: elemTop + offset,
-          },
-          expect.any(Number),
-        );
+        expect(window.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop + offset,
+        });
+      });
+    });
+
+    describe('scrollToElement with Selector', () => {
+      it('scrolls to element', () => {
+        commonUtils.scrollToElement(`#${id}`);
+        expect(window.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop,
+        });
+      });
+
+      it('scrolls to element with offset', () => {
+        const offset = 50;
+        commonUtils.scrollToElement(`#${id}`, { offset });
+        expect(window.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop + offset,
+        });
       });
     });
 
     describe('scrollToElementWithContext', () => {
-      it('scrolls with context', () => {
-        commonUtils.scrollToElementWithContext();
-        expect($.fn.animate).toHaveBeenCalledWith(
-          {
-            scrollTop: elemTop - windowHeight * 0.1,
-          },
-          expect.any(Number),
-        );
+      // This is what the implementation of scrollToElementWithContext
+      // scrolls to, in case we change tha implementation
+      // it needs to be adjusted
+      const elementTopWithContext = elemTop - windowHeight * 0.1;
+
+      it('with HTMLElement scrolls with context', () => {
+        commonUtils.scrollToElementWithContext(elem);
+        expect(window.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elementTopWithContext,
+        });
+      });
+
+      it('with Selector scrolls with context', () => {
+        commonUtils.scrollToElementWithContext(`#${id}`);
+        expect(window.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elementTopWithContext,
+        });
       });
     });
   });
 
   describe('debounceByAnimationFrame', () => {
-    it('debounces a function to allow a maximum of one call per animation frame', done => {
+    it('debounces a function to allow a maximum of one call per animation frame', (done) => {
       const spy = jest.fn();
       const debouncedSpy = commonUtils.debounceByAnimationFrame(spy);
       window.requestAnimationFrame(() => {
@@ -404,54 +433,54 @@ describe('common_utils', () => {
   describe('backOff', () => {
     beforeEach(() => {
       // shortcut our timeouts otherwise these tests will take a long time to finish
-      jest.spyOn(window, 'setTimeout').mockImplementation(cb => setImmediate(cb, 0));
+      jest.spyOn(window, 'setTimeout').mockImplementation((cb) => setImmediate(cb, 0));
     });
 
-    it('solves the promise from the callback', done => {
+    it('solves the promise from the callback', (done) => {
       const expectedResponseValue = 'Success!';
       commonUtils
         .backOff((next, stop) =>
-          new Promise(resolve => {
+          new Promise((resolve) => {
             resolve(expectedResponseValue);
           })
-            .then(resp => {
+            .then((resp) => {
               stop(resp);
             })
             .catch(done.fail),
         )
-        .then(respBackoff => {
+        .then((respBackoff) => {
           expect(respBackoff).toBe(expectedResponseValue);
           done();
         })
         .catch(done.fail);
     });
 
-    it('catches the rejected promise from the callback ', done => {
+    it('catches the rejected promise from the callback ', (done) => {
       const errorMessage = 'Mistakes were made!';
       commonUtils
         .backOff((next, stop) => {
           new Promise((resolve, reject) => {
             reject(new Error(errorMessage));
           })
-            .then(resp => {
+            .then((resp) => {
               stop(resp);
             })
-            .catch(err => stop(err));
+            .catch((err) => stop(err));
         })
-        .catch(errBackoffResp => {
+        .catch((errBackoffResp) => {
           expect(errBackoffResp instanceof Error).toBe(true);
           expect(errBackoffResp.message).toBe(errorMessage);
           done();
         });
     });
 
-    it('solves the promise correctly after retrying a third time', done => {
+    it('solves the promise correctly after retrying a third time', (done) => {
       let numberOfCalls = 1;
       const expectedResponseValue = 'Success!';
       commonUtils
         .backOff((next, stop) =>
           Promise.resolve(expectedResponseValue)
-            .then(resp => {
+            .then((resp) => {
               if (numberOfCalls < 3) {
                 numberOfCalls += 1;
                 next();
@@ -461,7 +490,7 @@ describe('common_utils', () => {
             })
             .catch(done.fail),
         )
-        .then(respBackoff => {
+        .then((respBackoff) => {
           const timeouts = window.setTimeout.mock.calls.map(([, timeout]) => timeout);
 
           expect(timeouts).toEqual([2000, 4000]);
@@ -471,10 +500,10 @@ describe('common_utils', () => {
         .catch(done.fail);
     });
 
-    it('rejects the backOff promise after timing out', done => {
+    it('rejects the backOff promise after timing out', (done) => {
       commonUtils
-        .backOff(next => next(), 64000)
-        .catch(errBackoffResp => {
+        .backOff((next) => next(), 64000)
+        .catch((errBackoffResp) => {
           const timeouts = window.setTimeout.mock.calls.map(([, timeout]) => timeout);
 
           expect(timeouts).toEqual([2000, 4000, 8000, 16000, 32000, 32000]);
@@ -482,27 +511,6 @@ describe('common_utils', () => {
           expect(errBackoffResp.message).toBe('BACKOFF_TIMEOUT');
           done();
         });
-    });
-  });
-
-  describe('resetFavicon', () => {
-    beforeEach(() => {
-      const favicon = document.createElement('link');
-      favicon.setAttribute('id', 'favicon');
-      favicon.setAttribute('data-original-href', 'default/favicon');
-      document.body.appendChild(favicon);
-    });
-
-    afterEach(() => {
-      document.body.removeChild(document.getElementById('favicon'));
-    });
-
-    it('should reset page favicon to the default icon', () => {
-      const favicon = document.getElementById('favicon');
-      favicon.setAttribute('href', 'new/favicon');
-      commonUtils.resetFavicon();
-
-      expect(document.getElementById('favicon').getAttribute('href')).toEqual('default/favicon');
     });
   });
 
@@ -533,8 +541,8 @@ describe('common_utils', () => {
   });
 
   describe('convertObjectProps*', () => {
-    const mockConversionFunction = prop => `${prop}_converted`;
-    const isEmptyObject = obj =>
+    const mockConversionFunction = (prop) => `${prop}_converted`;
+    const isEmptyObject = (obj) =>
       typeof obj === 'object' && obj !== null && Object.keys(obj).length === 0;
 
     const mockObjects = {

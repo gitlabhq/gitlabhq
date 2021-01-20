@@ -6,6 +6,11 @@ module FeatureFlags
 
     AUDITABLE_ATTRIBUTES = %w(name description active).freeze
 
+    def success(**args)
+      sync_to_jira(args[:feature_flag])
+      super
+    end
+
     protected
 
     def audit_event(feature_flag)
@@ -32,6 +37,16 @@ module FeatureFlags
       return unless audit_event
 
       audit_event.security_event
+    end
+
+    def sync_to_jira(feature_flag)
+      return unless feature_flag.present?
+      return unless Feature.enabled?(:jira_sync_feature_flags, feature_flag.project)
+
+      seq_id = ::Atlassian::JiraConnect::Client.generate_update_sequence_id
+      feature_flag.run_after_commit do
+        ::JiraConnect::SyncFeatureFlagsWorker.perform_async(feature_flag.id, seq_id)
+      end
     end
 
     def created_scope_message(scope)

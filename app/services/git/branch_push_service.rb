@@ -72,10 +72,10 @@ module Git
     end
 
     def perform_housekeeping
-      housekeeping = Projects::HousekeepingService.new(project)
+      housekeeping = Repositories::HousekeepingService.new(project)
       housekeeping.increment!
       housekeeping.execute if housekeeping.needed?
-    rescue Projects::HousekeepingService::LeaseTaken
+    rescue Repositories::HousekeepingService::LeaseTaken
     end
 
     def removing_branch?

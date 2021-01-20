@@ -8,8 +8,8 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
 
     let(:prometheus_settings) do
       {
-        enable: true,
-        listen_address: 'localhost:9090'
+        enabled: true,
+        server_address: 'localhost:9090'
       }
     end
 
@@ -63,13 +63,13 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
         application_setting.update(allow_local_requests_from_web_hooks_and_services: true)
       end
 
-      shared_examples 'has prometheus service' do |listen_address|
+      shared_examples 'has prometheus service' do |server_address|
         it do
           expect(result[:status]).to eq(:success)
 
           prometheus = project.prometheus_service
           expect(prometheus).not_to eq(nil)
-          expect(prometheus.api_url).to eq(listen_address)
+          expect(prometheus.api_url).to eq(server_address)
           expect(prometheus.active).to eq(true)
           expect(prometheus.manual_configuration).to eq(true)
         end
@@ -202,25 +202,25 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
       end
 
       context 'with non default prometheus address' do
-        let(:listen_address) { 'https://localhost:9090' }
+        let(:server_address) { 'https://localhost:9090' }
 
         let(:prometheus_settings) do
           {
-            enable: true,
-            listen_address: listen_address
+            enabled: true,
+            server_address: server_address
           }
         end
 
         it_behaves_like 'has prometheus service', 'https://localhost:9090'
 
         context 'with :9090 symbol' do
-          let(:listen_address) { :':9090' }
+          let(:server_address) { :':9090' }
 
           it_behaves_like 'has prometheus service', 'http://localhost:9090'
         end
 
         context 'with 0.0.0.0:9090' do
-          let(:listen_address) { '0.0.0.0:9090' }
+          let(:server_address) { '0.0.0.0:9090' }
 
           it_behaves_like 'has prometheus service', 'http://localhost:9090'
         end
@@ -251,8 +251,8 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
       context 'when prometheus setting is disabled in gitlab.yml' do
         let(:prometheus_settings) do
           {
-            enable: false,
-            listen_address: 'http://localhost:9090'
+            enabled: false,
+            server_address: 'http://localhost:9090'
           }
         end
 
@@ -262,8 +262,8 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
         end
       end
 
-      context 'when prometheus listen address is blank in gitlab.yml' do
-        let(:prometheus_settings) { { enable: true, listen_address: '' } }
+      context 'when prometheus server address is blank in gitlab.yml' do
+        let(:prometheus_settings) { { enabled: true, server_address: '' } }
 
         it 'does not configure prometheus' do
           expect(result).to include(status: :success)
@@ -296,8 +296,8 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
       context 'when prometheus manual configuration cannot be saved' do
         let(:prometheus_settings) do
           {
-            enable: true,
-            listen_address: 'httpinvalid://localhost:9090'
+            enabled: true,
+            server_address: 'httpinvalid://localhost:9090'
           }
         end
 

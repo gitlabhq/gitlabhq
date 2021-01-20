@@ -18,10 +18,10 @@ export const searchBranches = ({ commit, state }) => {
   commit(types.REQUEST_START);
 
   Api.branches(state.projectId, state.query)
-    .then(response => {
+    .then((response) => {
       commit(types.RECEIVE_BRANCHES_SUCCESS, response);
     })
-    .catch(error => {
+    .catch((error) => {
       commit(types.RECEIVE_BRANCHES_ERROR, error);
     })
     .finally(() => {
@@ -33,10 +33,10 @@ export const searchTags = ({ commit, state }) => {
   commit(types.REQUEST_START);
 
   Api.tags(state.projectId, state.query)
-    .then(response => {
+    .then((response) => {
       commit(types.RECEIVE_TAGS_SUCCESS, response);
     })
-    .catch(error => {
+    .catch((error) => {
       commit(types.RECEIVE_TAGS_ERROR, error);
     })
     .finally(() => {
@@ -50,10 +50,10 @@ export const searchCommits = ({ commit, state, getters }) => {
     commit(types.REQUEST_START);
 
     Api.commit(state.projectId, state.query)
-      .then(response => {
+      .then((response) => {
         commit(types.RECEIVE_COMMITS_SUCCESS, response);
       })
-      .catch(error => {
+      .catch((error) => {
         commit(types.RECEIVE_COMMITS_ERROR, error);
       })
       .finally(() => {

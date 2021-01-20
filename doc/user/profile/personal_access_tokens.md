@@ -112,7 +112,7 @@ token = PersonalAccessToken.find_by_token('token-string-here123')
 token.revoke!
 ```
 
-This can be shorted into a single-line shell command using the
+This can be shortened into a single-line shell command using the
 [Rails runner](../../administration/troubleshooting/debug.md#using-the-rails-runner):
 
 ```shell

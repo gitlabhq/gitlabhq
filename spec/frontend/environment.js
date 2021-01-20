@@ -3,7 +3,7 @@
 const path = require('path');
 const { ErrorWithStack } = require('jest-util');
 const JSDOMEnvironment = require('jest-environment-jsdom');
-const { TEST_HOST } = require('./helpers/test_constants');
+const { TEST_HOST } = require('./__helpers__/test_constants');
 
 const ROOT_PATH = path.resolve(__dirname, '../..');
 
@@ -37,7 +37,7 @@ class CustomEnvironment extends JSDOMEnvironment {
 
     this.rejectedPromises = [];
 
-    this.global.promiseRejectionHandler = error => {
+    this.global.promiseRejectionHandler = (error) => {
       this.rejectedPromises.push(error);
     };
 

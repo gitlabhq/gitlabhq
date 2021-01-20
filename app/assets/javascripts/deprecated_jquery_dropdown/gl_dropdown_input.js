@@ -5,24 +5,21 @@ export class GitLabDropdownInput {
     this.fieldName = this.options.fieldName || 'field-name';
     const $inputContainer = this.input.parent();
     const $clearButton = $inputContainer.find('.js-dropdown-input-clear');
-    $clearButton.on('click', e => {
+    $clearButton.on('click', (e) => {
       // Clear click
       e.preventDefault();
       e.stopPropagation();
-      return this.input
-        .val('')
-        .trigger('input')
-        .focus();
+      return this.input.val('').trigger('input').focus();
     });
 
     this.input
-      .on('keydown', e => {
+      .on('keydown', (e) => {
         const keyCode = e.which;
         if (keyCode === 13 && !options.elIsInput) {
           e.preventDefault();
         }
       })
-      .on('input', e => {
+      .on('input', (e) => {
         let val = e.currentTarget.value || this.options.inputFieldName;
         val = val
           .split(' ')
@@ -31,10 +28,7 @@ export class GitLabDropdownInput {
           .toLowerCase() // replace non alphanumeric
           .replace(/(-)\1+/g, '-'); // replace repeated dashes
         this.cb(this.options.fieldName, val, {}, true);
-        this.input
-          .closest('.dropdown')
-          .find('.dropdown-toggle-text')
-          .text(val);
+        this.input.closest('.dropdown').find('.dropdown-toggle-text').text(val);
       });
   }
 

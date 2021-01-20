@@ -1,65 +1,40 @@
-import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
-import AxiosMockAdapter from 'axios-mock-adapter';
 
-import { TEST_HOST } from 'helpers/test_constants';
 import { listObj } from 'jest/boards/mock_data';
-import Board from '~/boards/components/board_column.vue';
-import List from '~/boards/models/list';
+import BoardColumn from '~/boards/components/board_column.vue';
 import { ListType } from '~/boards/constants';
-import axios from '~/lib/utils/axios_utils';
+import { createStore } from '~/boards/stores';
 
 describe('Board Column Component', () => {
   let wrapper;
-  let axiosMock;
-
-  beforeEach(() => {
-    window.gon = {};
-    axiosMock = new AxiosMockAdapter(axios);
-    axiosMock.onGet(`${TEST_HOST}/lists/1/issues`).reply(200, { issues: [] });
-  });
+  let store;
 
   afterEach(() => {
-    axiosMock.restore();
-
     wrapper.destroy();
-
-    localStorage.clear();
+    wrapper = null;
   });
 
-  const createComponent = ({
-    listType = ListType.backlog,
-    collapsed = false,
-    withLocalStorage = true,
-  } = {}) => {
+  const createComponent = ({ listType = ListType.backlog, collapsed = false } = {}) => {
     const boardId = '1';
 
     const listMock = {
       ...listObj,
-      list_type: listType,
+      listType,
       collapsed,
     };
 
     if (listType === ListType.assignee) {
       delete listMock.label;
-      listMock.user = {};
+      listMock.assignee = {};
     }
 
-    // Making List reactive
-    const list = Vue.observable(new List(listMock));
+    store = createStore();
 
-    if (withLocalStorage) {
-      localStorage.setItem(
-        `boards.${boardId}.${list.type}.${list.id}.expanded`,
-        (!collapsed).toString(),
-      );
-    }
-
-    wrapper = shallowMount(Board, {
+    wrapper = shallowMount(BoardColumn, {
+      store,
       propsData: {
-        boardId,
         disabled: false,
-        list,
+        list: listMock,
       },
       provide: {
         boardId,
@@ -82,7 +57,7 @@ describe('Board Column Component', () => {
     it('has class is-collapsed when list is collapsed', () => {
       createComponent({ collapsed: false });
 
-      expect(wrapper.vm.list.isExpanded).toBe(true);
+      expect(isCollapsed()).toBe(false);
     });
 
     it('does not have class is-collapsed when list is expanded', () => {

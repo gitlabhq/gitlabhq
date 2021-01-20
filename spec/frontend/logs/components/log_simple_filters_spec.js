@@ -18,7 +18,7 @@ describe('LogSimpleFilters', () => {
   const findPodsDropdownItems = () =>
     findPodsDropdown()
       .findAll(GlDropdownItem)
-      .filter(item => !('disabled' in item.attributes()));
+      .filter((item) => !('disabled' in item.attributes()));
 
   const mockPodsLoading = () => {
     state.pods.options = [];

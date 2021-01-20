@@ -1,37 +1,40 @@
-- link = link_to _('Runners API'), help_page_path('api/runners.md')
+- link = link_to _('Runner API'), help_page_path('api/runners.md')
 
-%h3
-  = _('Group Runners')
+%h4
+  = _('Group runners')
 
 .bs-callout.bs-callout-warning
-  = _('GitLab Group Runners can execute code for all the projects in this group.')
-  = _('They can be managed using the %{link}.').html_safe % { link: link }
+  = _('These runners are shared across projects in this group.')
+  %br
+  %br
+  = _('Group runners can be managed with the %{link}.').html_safe % { link: link }
 
   - if @project.group
-    %hr
+    %br
+    %br
     - if @project.group_runners_enabled?
       = link_to toggle_group_runners_project_runners_path(@project), class: 'btn btn-close', method: :post do
-        = _('Disable group Runners')
+        = _('Disable group runners')
     - else
       = link_to toggle_group_runners_project_runners_path(@project), class: 'btn btn-success btn-inverted', method: :post do
-        = _('Enable group Runners')
+        = _('Enable group runners')
     &nbsp;
     = _('for this project')
 
 - if !@project.group
-  = _('This project does not belong to a group and can therefore not make use of group Runners.')
+  = _('This project does not belong to a group and cannot make use of group runners.')
 
 - elsif @group_runners.empty?
-  = _('This group does not provide any group Runners yet.')
+  = _('This group does not have any group runners yet.')
 
   - if can?(current_user, :admin_pipeline, @project.group)
-    - group_link = link_to _('Group CI/CD settings'), group_settings_ci_cd_path(@project.group)
+    - group_link = link_to _("group's CI/CD settings."), group_settings_ci_cd_path(@project.group)
     = _('Group maintainers can register group runners in the %{link}').html_safe % { link: group_link }
   - else
-    = _('Ask your group maintainer to set up a group Runner.')
+    = _('Ask your group maintainer to set up a group runner.')
 
 - else
   %h4.underlined-title
-    = _('Available group Runners: %{runners}').html_safe % { runners: @group_runners.count }
+    = _('Available group runners: %{runners}').html_safe % { runners: @group_runners.count }
   %ul.bordered-list
     = render partial: 'projects/runners/runner', collection: @group_runners, as: :runner

@@ -27,7 +27,7 @@ module Banzai
       TABLE_GRID_CLASSES = %w(grid-all grid-rows grid-cols grid-none).freeze
       TABLE_STRIPES_CLASSES = %w(stripes-all stripes-odd stripes-even stripes-hover stripes-none).freeze
 
-      ELEMENT_CLASSES_WHITELIST = {
+      ELEMENT_CLASSES_ALLOWLIST = {
         span: %w(big small underline overline line-through).freeze,
         div: ALIGNMENT_BUILTINS_CLASSES + ['admonitionblock'].freeze,
         td: ['icon'].freeze,
@@ -38,35 +38,35 @@ module Banzai
         table: TABLE_FRAME_CLASSES + TABLE_GRID_CLASSES + TABLE_STRIPES_CLASSES
       }.freeze
 
-      def customize_whitelist(whitelist)
+      def customize_allowlist(allowlist)
         # Allow marks
-        whitelist[:elements].push('mark')
+        allowlist[:elements].push('mark')
 
         # Allow any classes in `span`, `i`, `div`, `td`, `ul`, `ol` and `a` elements
         # but then remove any unknown classes
-        whitelist[:attributes]['span'] = %w(class)
-        whitelist[:attributes]['div'].push('class')
-        whitelist[:attributes]['td'] = %w(class)
-        whitelist[:attributes]['i'] = %w(class)
-        whitelist[:attributes]['ul'] = %w(class)
-        whitelist[:attributes]['ol'] = %w(class)
-        whitelist[:attributes]['a'].push('class')
-        whitelist[:attributes]['table'] = %w(class)
-        whitelist[:transformers].push(self.class.remove_element_classes)
+        allowlist[:attributes]['span'] = %w(class)
+        allowlist[:attributes]['div'].push('class')
+        allowlist[:attributes]['td'] = %w(class)
+        allowlist[:attributes]['i'] = %w(class)
+        allowlist[:attributes]['ul'] = %w(class)
+        allowlist[:attributes]['ol'] = %w(class)
+        allowlist[:attributes]['a'].push('class')
+        allowlist[:attributes]['table'] = %w(class)
+        allowlist[:transformers].push(self.class.remove_element_classes)
 
         # Allow `id` in anchor and footnote elements
-        whitelist[:attributes]['a'].push('id')
-        whitelist[:attributes]['div'].push('id')
+        allowlist[:attributes]['a'].push('id')
+        allowlist[:attributes]['div'].push('id')
 
         # Allow `id` in heading elements for section anchors
         SECTION_HEADINGS.each do |header|
-          whitelist[:attributes][header] = %w(id)
+          allowlist[:attributes][header] = %w(id)
         end
 
         # Remove ids that are not explicitly allowed
-        whitelist[:transformers].push(self.class.remove_disallowed_ids)
+        allowlist[:transformers].push(self.class.remove_disallowed_ids)
 
-        whitelist
+        allowlist
       end
 
       class << self
@@ -91,11 +91,11 @@ module Banzai
           lambda do |env|
             node = env[:node]
 
-            return unless (classes_whitelist = ELEMENT_CLASSES_WHITELIST[node.name.to_sym])
+            return unless (classes_allowlist = ELEMENT_CLASSES_ALLOWLIST[node.name.to_sym])
             return unless node.has_attribute?('class')
 
             classes = node['class'].strip.split(' ')
-            allowed_classes = (classes & classes_whitelist)
+            allowed_classes = (classes & classes_allowlist)
             if allowed_classes.empty?
               node.remove_attribute('class')
             else

@@ -1,0 +1,9 @@
+#import "./author.fragment.graphql"
+
+query {
+  post(slug: "validating-queries") {
+    title
+    content
+    author { ...AuthorF }
+  }
+}

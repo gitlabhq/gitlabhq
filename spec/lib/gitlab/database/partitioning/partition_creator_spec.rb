@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Partitioning::PartitionCreator do
-  include PartitioningHelpers
+  include Database::PartitioningHelpers
   include ExclusiveLeaseHelpers
 
   describe '.register' do

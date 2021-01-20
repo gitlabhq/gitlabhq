@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
+import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import JobDetail from '~/ide/components/jobs/detail.vue';
 import { createStore } from '~/ide/stores';
-import { createComponentWithStore } from '../../../helpers/vue_mount_component_helper';
 import { jobs } from '../../mock_data';
 
 describe('IDE jobs detail view', () => {
@@ -48,7 +48,7 @@ describe('IDE jobs detail view', () => {
       expect(vm.$el.querySelector('.bash').textContent).toContain('testing');
     });
 
-    it('renders empty message output', done => {
+    it('renders empty message output', (done) => {
       vm.$store.state.pipelines.detailJob.output = '';
 
       vm.$nextTick(() => {
@@ -68,7 +68,7 @@ describe('IDE jobs detail view', () => {
       expect(vm.$el.querySelector('.bash').style.display).toBe('none');
     });
 
-    it('hide loading icon when isLoading is false', done => {
+    it('hide loading icon when isLoading is false', (done) => {
       vm.$store.state.pipelines.detailJob.isLoading = false;
 
       vm.$nextTick(() => {

@@ -3,7 +3,7 @@
 class Projects::UsagePingController < Projects::ApplicationController
   before_action :authenticate_user!
 
-  feature_category :collection
+  feature_category :usage_ping
 
   def web_ide_clientside_preview
     return render_404 unless Gitlab::CurrentSettings.web_ide_clientside_preview_enabled?

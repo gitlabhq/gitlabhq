@@ -32,7 +32,7 @@ describe('IDE router', () => {
     `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/blob`,
     `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/edit`,
     `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}`,
-  ].forEach(route => {
+  ].forEach((route) => {
     it(`finds project path when route is "${route}"`, () => {
       router.push(route);
 

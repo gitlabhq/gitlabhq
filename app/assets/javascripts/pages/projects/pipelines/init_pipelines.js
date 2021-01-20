@@ -6,7 +6,7 @@ export default () => {
   const fullMergeRequestList = document.querySelector('.js-full-mr-list');
 
   if (mergeRequestListToggle) {
-    mergeRequestListToggle.addEventListener('click', e => {
+    mergeRequestListToggle.addEventListener('click', (e) => {
       e.preventDefault();
       truncatedMergeRequestList.classList.toggle('hide');
       fullMergeRequestList.classList.toggle('hide');

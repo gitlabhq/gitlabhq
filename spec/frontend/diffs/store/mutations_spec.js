@@ -105,7 +105,7 @@ describe('DiffsStoreMutations', () => {
   describe('SET_COVERAGE_DATA', () => {
     it('should set coverage data properly', () => {
       const state = { coverageFiles: {} };
-      const coverage = { 'app.js': { '1': 0, '2': 1 } };
+      const coverage = { 'app.js': { 1: 0, 2: 1 } };
 
       mutations[types.SET_COVERAGE_DATA](state, coverage);
 
@@ -904,6 +904,21 @@ describe('DiffsStoreMutations', () => {
       mutations[types.SET_FILE_BY_FILE](state, value);
 
       expect(state.viewDiffsFileByFile).toBe(value);
+    });
+  });
+
+  describe('SET_MR_FILE_REVIEWS', () => {
+    it.each`
+      newReviews          | oldReviews
+      ${{ abc: ['123'] }} | ${{}}
+      ${{ abc: [] }}      | ${{ abc: ['123'] }}
+      ${{}}               | ${{ abc: ['123'] }}
+    `('sets mrReviews to $newReviews', ({ newReviews, oldReviews }) => {
+      const state = { mrReviews: oldReviews };
+
+      mutations[types.SET_MR_FILE_REVIEWS](state, newReviews);
+
+      expect(state.mrReviews).toStrictEqual(newReviews);
     });
   });
 });

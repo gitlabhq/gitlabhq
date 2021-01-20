@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/gitlab/except'
 
-RSpec.describe RuboCop::Cop::Gitlab::Except, type: :rubocop do
+RSpec.describe RuboCop::Cop::Gitlab::Except do
   include CopHelper
 
   subject(:cop) { described_class.new }

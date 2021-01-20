@@ -44,8 +44,8 @@ allows more control over the this feature. The steps in an incremental rollout d
 number of pods that are defined for the deployment, which are configured when the Kubernetes
 cluster is created.
 
-For example, if your application has 10 pods and a 10% rollout job is run, the new instance of the
-application will be deployed to a single pod while the remaining 9 will present the previous instance.
+For example, if your application has 10 pods and a 10% rollout job runs, the new instance of the
+application is deployed to a single pod while the remaining nine are present the previous instance.
 
 First we [define the template as manual](https://gitlab.com/gl-release/incremental-rollout-example/blob/master/.gitlab-ci.yml#L100-103):
 
@@ -65,7 +65,7 @@ rollout 10%:
     ROLLOUT_PERCENTAGE: 10
 ```
 
-When the jobs are built, a **play** button will appear next to the job's name. Click the **play** button
+When the jobs are built, a **play** button appears next to the job's name. Click the **play** button
 to release each stage of pods. You can also rollback by running a lower percentage job. Once 100%
 is reached, you cannot roll back using this method. It is still possible to roll back by redeploying
 the old version using the **Rollback** button on the environment page.
@@ -79,13 +79,13 @@ available, demonstrating manually triggered incremental rollouts.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7545) in GitLab 11.4.
 
-Timed rollouts behave in the same way as manual rollouts, except that each job is defined with a delay
-in minutes before it will deploy. Clicking on the job will reveal the countdown.
+Timed rollouts behave in the same way as manual rollouts, except that each job is defined with a
+delay in minutes before it deploys. Clicking the job reveals the countdown.
 
 ![Timed rollout](img/timed_rollout_v12_7.png)
 
-It is possible to combine this functionality with manual incremental rollouts so that the job will
-countdown and then deploy.
+It is possible to combine this functionality with manual incremental rollouts so that the job
+counts down and then deploys.
 
 First we [define the template as timed](https://gitlab.com/gl-release/timed-rollout-example/blob/master/.gitlab-ci.yml#L86-89):
 

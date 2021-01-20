@@ -1,5 +1,5 @@
+import { getJSONFixture, setHTMLFixture } from 'helpers/fixtures';
 import FilterableList from '~/filterable_list';
-import { getJSONFixture, setHTMLFixture } from './helpers/fixtures';
 
 describe('FilterableList', () => {
   let List;

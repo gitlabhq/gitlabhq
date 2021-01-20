@@ -2,7 +2,7 @@
 
 class BackfillVersionAuthorAndCreatedAt < ActiveRecord::Migration[5.2]
   DOWNTIME = false
-  MIGRATION = 'BackfillVersionDataFromGitaly'.freeze
+  MIGRATION = 'BackfillVersionDataFromGitaly'
   BATCH_SIZE = 500
 
   disable_ddl_transaction!

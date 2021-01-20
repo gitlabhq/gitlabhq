@@ -46,7 +46,7 @@ export default {
           this.isLoading = false;
           this.isSharedRunnerEnabled = !this.isSharedRunnerEnabled;
         })
-        .catch(error => {
+        .catch((error) => {
           this.isLoading = false;
           this.errorMessage = error.response?.data?.error || DEFAULT_ERROR_MESSAGE;
         });

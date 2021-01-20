@@ -10,7 +10,7 @@ module Resolvers
 
       argument :type, Types::Snippets::TypeEnum,
                required: false,
-               description: 'The type of snippet'
+               description: 'The type of snippet.'
 
       private
 

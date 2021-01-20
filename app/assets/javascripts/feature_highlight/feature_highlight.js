@@ -31,7 +31,7 @@ export function setupFeatureHighlightPopover(id, debounceTimeout = 300) {
     .removeAttr('disabled');
 }
 
-const getPriority = e => parseInt(e.dataset.highlightPriority, 10) || 0;
+const getPriority = (e) => parseInt(e.dataset.highlightPriority, 10) || 0;
 
 export function findHighestPriorityFeature() {
   let priorityFeature;

@@ -58,3 +58,18 @@ RSpec.shared_examples 'reviewer_ids filter' do
     end
   end
 end
+
+RSpec.shared_examples 'merge request reviewers cache counters invalidator' do
+  let(:reviewer_1) { create(:user) }
+  let(:reviewer_2) { create(:user) }
+
+  before do
+    merge_request.update!(reviewers: [reviewer_1, reviewer_2])
+  end
+
+  it 'invalidates counter cache for reviewers' do
+    expect(merge_request.reviewers).to all(receive(:invalidate_merge_request_cache_counts))
+
+    described_class.new(project, user, {}).execute(merge_request)
+  end
+end

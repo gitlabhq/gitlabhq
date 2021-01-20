@@ -3,7 +3,7 @@ import mountComponent from 'helpers/vue_mount_component_helper';
 import toggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import { note } from '../mock_data';
 
-const deepCloneObject = obj => JSON.parse(JSON.stringify(obj));
+const deepCloneObject = (obj) => JSON.parse(JSON.stringify(obj));
 
 describe('toggle replies widget for notes', () => {
   let vm;

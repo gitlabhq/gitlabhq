@@ -41,7 +41,7 @@ describe('NoteHeader component', () => {
     },
   };
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     wrapper = shallowMount(NoteHeader, {
       localVue,
       store: new Vuex.Store({
@@ -252,7 +252,7 @@ describe('NoteHeader component', () => {
   });
 
   describe('when author username link is hovered', () => {
-    it('toggles hover specific CSS classes on author name link', done => {
+    it('toggles hover specific CSS classes on author name link', (done) => {
       createComponent({ author });
 
       const authorUsernameLink = wrapper.find({ ref: 'authorUsernameLink' });

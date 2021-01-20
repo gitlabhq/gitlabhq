@@ -1,0 +1,5 @@
+---
+title: Remove margin top for snippets empty state
+merge_request: 51038
+author: Yogi (@yo)
+type: fixed

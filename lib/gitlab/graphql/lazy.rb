@@ -17,6 +17,14 @@ module Gitlab
         self.class.new { yield force }
       end
 
+      def catch(error_class = StandardError, &block)
+        self.class.new do
+          force
+        rescue error_class => e
+          yield e
+        end
+      end
+
       # Force evaluation of a (possibly) lazy value
       def self.force(value)
         case value

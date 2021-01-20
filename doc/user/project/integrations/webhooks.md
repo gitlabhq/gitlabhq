@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Webhooks
 
-Project webhooks allow you to trigger a URL if for example new code is pushed or
+Project webhooks allow you to trigger a percent-encoded URL if, for example, new code is pushed or
 a new issue is created. You can configure webhooks to listen for specific events
 like pushes, issues or merge requests. GitLab sends a POST request with data
 to the webhook URL.
@@ -28,31 +28,14 @@ notify bug tracking systems.
 
 Webhooks can be used to update an external issue tracker, trigger CI jobs,
 update a backup mirror, or even deploy to your production server.
-They are available **per project** for GitLab Community Edition,
-and **per project and per group** for **GitLab Enterprise Edition**.
 
-Navigate to the webhooks page at your project's **Settings > Webhooks**.
+Webhooks are available:
+
+- Per project, at a project's **Settings > Webhooks** menu. **(CORE)**
+- Additionally per group, at a group's **Settings > Webhooks** menu. **(PREMIUM)**
 
 NOTE:
 On GitLab.com, the [maximum number of webhooks and their size](../../../user/gitlab_com/index.md#webhooks) per project, and per group, is limited.
-
-## Version history
-
-Starting from GitLab 8.5:
-
-- the `repository` key is deprecated in favor of the `project` key
-- the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key
-- the `project.http_url` key is deprecated in favor of the `project.git_http_url` key
-
-Starting from GitLab 11.1, the logs of webhooks are automatically removed after
-one month.
-
-Starting from GitLab 11.2:
-
-- The `description` field for issues, merge requests, comments, and wiki pages
-  is rewritten so that simple Markdown image references (like
-  `![](/uploads/...)`) have their target URL changed to an absolute URL. See
-  [image URL rewriting](#image-url-rewriting) for more details.
 
 ## Possible uses for webhooks
 
@@ -91,8 +74,6 @@ be self-signed.
 
 You can turn this off in the webhook settings in your GitLab projects.
 
-![SSL Verification](img/webhooks_ssl.png)
-
 ## Branch filtering
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/20338) in GitLab 11.3.
@@ -114,6 +95,10 @@ When more than 20 commits are pushed at once, the `commits` webhook
 attribute only contains the first 20 for performance reasons. Loading
 detailed commit data is expensive. Note that despite only 20 commits being
 present in the `commits` attribute, the `total_commits_count` attribute contains the actual total.
+
+NOTE:
+If a branch creation push event is generated without new commits being introduced, the
+`commits` attribute in the payload is empty.
 
 Also, if a single push includes changes for more than three (by default, depending on
 [`push_event_hooks_limit` setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls))
@@ -276,6 +261,7 @@ X-Gitlab-Event: Issue Hook
   "object_kind": "issue",
   "event_type": "issue",
   "user": {
+    "id": 1,
     "name": "Administrator",
     "username": "root",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon",
@@ -439,9 +425,11 @@ X-Gitlab-Event: Note Hook
 {
   "object_kind": "note",
   "user": {
+    "id": 1,
     "name": "Administrator",
     "username": "root",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon",
+    "email": "admin@example.com"
   },
   "project_id": 5,
   "project":{
@@ -519,9 +507,11 @@ X-Gitlab-Event: Note Hook
 {
   "object_kind": "note",
   "user": {
+    "id": 1,
     "name": "Administrator",
     "username": "root",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon",
+    "email": "admin@example.com"
   },
   "project_id": 5,
   "project":{
@@ -646,9 +636,11 @@ X-Gitlab-Event: Note Hook
 {
   "object_kind": "note",
   "user": {
+    "id": 1,
     "name": "Administrator",
     "username": "root",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon",
+    "email": "admin@example.com"
   },
   "project_id": 5,
   "project":{
@@ -752,9 +744,11 @@ X-Gitlab-Event: Note Hook
 {
   "object_kind": "note",
   "user": {
+    "id": 1,
     "name": "Administrator",
     "username": "root",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon",
+    "email": "admin@example.com"
   },
   "project_id": 5,
   "project":{
@@ -828,9 +822,11 @@ X-Gitlab-Event: Merge Request Hook
 {
   "object_kind": "merge_request",
   "user": {
+    "id": 1,
     "name": "Administrator",
     "username": "root",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon",
+    "email": "admin@example.com"
   },
   "project": {
     "id": 1,
@@ -989,9 +985,11 @@ X-Gitlab-Event: Wiki Page Hook
 {
   "object_kind": "wiki_page",
   "user": {
+    "id": 1,
     "name": "Administrator",
     "username": "root",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon"
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
+    "email": "admin@example.com"
   },
   "project": {
     "id": 1,
@@ -1080,6 +1078,7 @@ X-Gitlab-Event: Pipeline Hook
       "url": "http://192.168.64.1:3005/gitlab-org/gitlab-test/merge_requests/1"
    },
    "user":{
+      "id": 1,
       "name": "Administrator",
       "username": "root",
       "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon",
@@ -1121,9 +1120,11 @@ X-Gitlab-Event: Pipeline Hook
          "manual": true,
          "allow_failure": false,
          "user":{
+            "id": 1,
             "name": "Administrator",
             "username": "root",
-            "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon"
+            "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon",
+            "email": "admin@example.com"
          },
          "runner": null,
          "artifacts_file":{
@@ -1143,9 +1144,11 @@ X-Gitlab-Event: Pipeline Hook
          "manual": false,
          "allow_failure": false,
          "user":{
+            "id": 1,
             "name": "Administrator",
             "username": "root",
-            "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon"
+            "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon",
+            "email": "admin@example.com"
          },
          "runner": {
             "id":380987,
@@ -1170,9 +1173,11 @@ X-Gitlab-Event: Pipeline Hook
          "manual": false,
          "allow_failure": false,
          "user":{
+            "id": 1,
             "name": "Administrator",
             "username": "root",
-            "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon"
+            "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon",
+            "email": "admin@example.com"
          },
          "runner": {
             "id":380987,
@@ -1197,9 +1202,11 @@ X-Gitlab-Event: Pipeline Hook
          "manual": false,
          "allow_failure": false,
          "user":{
+            "id": 1,
             "name": "Administrator",
             "username": "root",
-            "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon"
+            "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon",
+            "email": "admin@example.com"
          },
          "runner": {
             "id":380987,
@@ -1224,9 +1231,11 @@ X-Gitlab-Event: Pipeline Hook
          "manual": false,
          "allow_failure": false,
          "user":{
+            "id": 1,
             "name": "Administrator",
             "username": "root",
-            "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon"
+            "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon",
+            "email": "admin@example.com"
          },
          "runner": null,
          "artifacts_file":{
@@ -1273,7 +1282,8 @@ X-Gitlab-Event: Job Hook
     "id": 3,
     "name": "User",
     "email": "user@gitlab.com",
-    "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon"
+    "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon",
+    "email": "admin@example.com"
   },
   "commit": {
     "id": 2366,
@@ -1349,6 +1359,7 @@ X-Gitlab-Event: Deployment Hook
   },
   "short_sha": "279484c0",
   "user": {
+    "id": 1,
     "name": "Administrator",
     "username": "root",
     "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
@@ -1362,11 +1373,18 @@ X-Gitlab-Event: Deployment Hook
 
 Note that `deployable_id` is the ID of the CI job.
 
-### Member events
+### Group member events **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/260347) in GitLab 13.7.
 
-Triggered when a user is added as a group member.
+Member events are triggered when:
+
+- A user is added as a group member
+- The access level of a user has changed
+- The expiration date for user access has been updated
+- A user has been removed from the group
+
+#### Add member to group
 
 **Request Header**:
 
@@ -1391,6 +1409,62 @@ X-Gitlab-Event: Member Hook
   "group_plan": null,
   "expires_at": "2020-12-14T00:00:00Z",
   "event_name": "user_add_to_group"
+}
+```
+
+#### Update member access level or expiration date
+
+**Request Header**:
+
+```plaintext
+X-Gitlab-Event: Member Hook
+```
+
+**Request Body**:
+
+```json
+{
+  "created_at": "2020-12-11T04:57:22Z",
+  "updated_at": "2020-12-12T08:48:19Z",
+  "group_name": "webhook-test",
+  "group_path": "webhook-test",
+  "group_id": 100,
+  "user_username": "test_user",
+  "user_name": "Test User",
+  "user_email": "testuser@webhooktest.com",
+  "user_id": 64,
+  "group_access": "Developer",
+  "group_plan": null,
+  "expires_at": "2020-12-20T00:00:00Z",
+  "event_name": "user_update_for_group"
+}
+```
+
+#### Remove member from group
+
+**Request Header**:
+
+```plaintext
+X-Gitlab-Event: Member Hook
+```
+
+**Request Body**:
+
+```json
+{
+  "created_at": "2020-12-11T04:57:22Z",
+  "updated_at": "2020-12-12T08:52:34Z",
+  "group_name": "webhook-test",
+  "group_path": "webhook-test",
+  "group_id": 100,
+  "user_username": "test_user",
+  "user_name": "Test User",
+  "user_email": "testuser@webhooktest.com",
+  "user_id": 64,
+  "group_access": "Guest",
+  "group_plan": null,
+  "expires_at": "2020-12-14T00:00:00Z",
+  "event_name": "user_remove_from_group"
 }
 ```
 
@@ -1428,6 +1502,7 @@ X-Gitlab-Event: Feature Flag Hook
     "http_url":"http://example.com/gitlabhq/gitlab-test.git"
   },
   "user": {
+    "id": 1,
     "name": "Administrator",
     "username": "root",
     "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
@@ -1554,7 +1629,7 @@ Markdown features, like link labels.
 ## Testing webhooks
 
 You can trigger the webhook manually. Sample data from the project is used.
-> For example: for triggering `Push Events` your project should have at least one commit.
+For example, for triggering `Push Events` your project should have at least one commit.
 
 ![Webhook testing](img/webhook_testing.png)
 

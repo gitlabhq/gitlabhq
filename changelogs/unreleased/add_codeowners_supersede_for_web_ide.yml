@@ -1,0 +1,5 @@
+---
+title: Fix codeowners superseding web ide and single file edit
+merge_request: 50608
+author:
+type: fixed

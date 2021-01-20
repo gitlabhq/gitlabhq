@@ -28,7 +28,7 @@ module Gitlab
         end
 
         def self.servers
-          Gitlab.config.ldap['servers']&.values || []
+          Gitlab.config.ldap.servers&.values || []
         end
 
         def self.available_servers
@@ -42,8 +42,17 @@ module Gitlab
         end
 
         def self.providers
-          servers.map { |server| server['provider_name'] }
+          provider_names_from_servers(servers)
         end
+
+        def self.available_providers
+          provider_names_from_servers(available_servers)
+        end
+
+        def self.provider_names_from_servers(servers)
+          servers&.map { |server| server['provider_name'] } || []
+        end
+        private_class_method :provider_names_from_servers
 
         def self.valid_provider?(provider)
           providers.include?(provider)

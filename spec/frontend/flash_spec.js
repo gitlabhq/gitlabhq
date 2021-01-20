@@ -325,7 +325,7 @@ describe('Flash', () => {
       `;
     });
 
-    it('removes global flash on click', done => {
+    it('removes global flash on click', (done) => {
       const flashEl = document.querySelector('.flash');
 
       removeFlashClickListener(flashEl, false);

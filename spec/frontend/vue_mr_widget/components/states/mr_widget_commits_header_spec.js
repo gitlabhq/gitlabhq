@@ -4,7 +4,7 @@ import CommitsHeader from '~/vue_merge_request_widget/components/states/commits_
 describe('Commits header component', () => {
   let wrapper;
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     wrapper = shallowMount(CommitsHeader, {
       propsData: {
         isSquashEnabled: false,
@@ -98,6 +98,8 @@ describe('Commits header component', () => {
     });
 
     it('does has merge commit part of the message', () => {
+      createComponent();
+
       expect(findHeaderWrapper().text()).toContain('1 merge commit');
     });
   });
@@ -108,21 +110,21 @@ describe('Commits header component', () => {
       wrapper.setData({ expanded: true });
     });
 
-    it('toggle has aria-label equal to collapse', done => {
+    it('toggle has aria-label equal to collapse', (done) => {
       wrapper.vm.$nextTick(() => {
         expect(findCommitToggle().attributes('aria-label')).toBe('Collapse');
         done();
       });
     });
 
-    it('has a chevron-down icon', done => {
+    it('has a chevron-down icon', (done) => {
       wrapper.vm.$nextTick(() => {
         expect(findCommitToggle().props('icon')).toBe('chevron-down');
         done();
       });
     });
 
-    it('has a collapse text', done => {
+    it('has a collapse text', (done) => {
       wrapper.vm.$nextTick(() => {
         expect(findHeaderWrapper().text()).toBe('Collapse');
         done();

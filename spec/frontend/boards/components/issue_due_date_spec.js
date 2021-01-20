@@ -10,7 +10,7 @@ const createComponent = (dueDate = new Date(), closed = false) =>
     },
   });
 
-const findTime = wrapper => wrapper.find('time');
+const findTime = (wrapper) => wrapper.find('time');
 
 describe('Issue Due Date component', () => {
   let wrapper;

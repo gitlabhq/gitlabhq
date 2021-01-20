@@ -74,6 +74,7 @@ export default {
       <input
         :placeholder="placeholderBranchName"
         :value="newBranchName"
+        data-testid="ide-new-branch-name"
         type="text"
         class="form-control monospace"
         @input="updateBranchName($event.target.value)"

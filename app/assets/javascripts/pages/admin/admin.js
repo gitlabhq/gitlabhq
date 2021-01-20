@@ -23,7 +23,7 @@ export default function adminInit() {
     }
   });
 
-  $('body').on('click', '.js-toggle-colors-link', e => {
+  $('body').on('click', '.js-toggle-colors-link', (e) => {
     e.preventDefault();
     $('.js-toggle-colors-container').toggleClass('hide');
   });
@@ -33,7 +33,7 @@ export default function adminInit() {
     $(this).tab('show');
   });
 
-  $('.log-bottom').on('click', e => {
+  $('.log-bottom').on('click', (e) => {
     e.preventDefault();
     const $visibleLog = $('.file-content:visible');
 
@@ -52,7 +52,7 @@ export default function adminInit() {
     modal.show();
   });
 
-  $('.change-owner-cancel-link').on('click', e => {
+  $('.change-owner-cancel-link').on('click', (e) => {
     e.preventDefault();
     modal.hide();
     $('.change-owner-link').show();

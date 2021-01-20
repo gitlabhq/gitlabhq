@@ -41,8 +41,8 @@ tests = [
 
   {
     explanation: 'Tooling should map to respective spec',
-    source: 'tooling/lib/tooling/test_file_finder.rb',
-    expected: ['spec/tooling/lib/tooling/test_file_finder_spec.rb']
+    source: 'tooling/lib/tooling/helm3_client.rb',
+    expected: ['spec/tooling/lib/tooling/helm3_client_spec.rb']
   },
 
   {

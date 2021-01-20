@@ -5,7 +5,7 @@ import ScrollButton from '~/ide/components/jobs/detail/scroll_button.vue';
 describe('IDE job log scroll button', () => {
   let wrapper;
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     wrapper = shallowMount(ScrollButton, {
       propsData: {
         direction: 'up',

@@ -428,6 +428,19 @@ eos
       allow(commit).to receive(:safe_message).and_return(message)
       expect(commit.description).to eq(message)
     end
+
+    it 'truncates html representation if more than 1Mib' do
+      # Commit message is over 2MiB
+      huge_commit_message = ['panic', ('panic ' * 350000), 'trailing text'].join("\n")
+
+      allow(commit).to receive(:safe_message).and_return(huge_commit_message)
+
+      commit.refresh_markdown_cache
+      description_html = commit.description_html
+
+      expect(description_html.bytesize).to be < 2.megabytes
+      expect(description_html).not_to include('trailing text')
+    end
   end
 
   describe "delegation" do

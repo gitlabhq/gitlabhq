@@ -35,29 +35,33 @@ RSpec.describe VisibilityLevelHelper do
 
   describe 'visibility_level_description' do
     context 'used with a Project' do
-      it 'delegates projects to #project_visibility_level_description' do
-        expect(visibility_level_description(Gitlab::VisibilityLevel::PRIVATE, project))
-            .to match /project/i
+      let(:descriptions) do
+        [
+          visibility_level_description(Gitlab::VisibilityLevel::PRIVATE, project),
+          visibility_level_description(Gitlab::VisibilityLevel::INTERNAL, project),
+          visibility_level_description(Gitlab::VisibilityLevel::PUBLIC, project)
+        ]
+      end
+
+      it 'returns different project related descriptions depending on visibility level' do
+        expect(descriptions.uniq.size).to eq(descriptions.size)
+        expect(descriptions).to all match /project/i
       end
     end
 
     context 'used with a Group' do
-      it 'delegates groups to #group_visibility_level_description' do
-        expect(visibility_level_description(Gitlab::VisibilityLevel::PRIVATE, group))
-            .to match /group/i
+      let(:descriptions) do
+        [
+          visibility_level_description(Gitlab::VisibilityLevel::PRIVATE, group),
+          visibility_level_description(Gitlab::VisibilityLevel::INTERNAL, group),
+          visibility_level_description(Gitlab::VisibilityLevel::PUBLIC, group)
+        ]
       end
-    end
-  end
 
-  describe "#project_visibility_level_description" do
-    it "describes private projects" do
-      expect(project_visibility_level_description(Gitlab::VisibilityLevel::PRIVATE))
-            .to eq _('Project access must be granted explicitly to each user. If this project is part of a group, access will be granted to members of the group.')
-    end
-
-    it "describes public projects" do
-      expect(project_visibility_level_description(Gitlab::VisibilityLevel::PUBLIC))
-            .to eq _('The project can be accessed without any authentication.')
+      it 'returns different group related descriptions depending on visibility level' do
+        expect(descriptions.uniq.size).to eq(descriptions.size)
+        expect(descriptions).to all match /group/i
+      end
     end
   end
 

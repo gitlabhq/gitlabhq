@@ -27,8 +27,7 @@ module Autocomplete
       # This removes the need for using `return render_404` and similar patterns
       # in controllers that use this finder.
       unless Ability.allowed?(current_user, :read_group, group)
-        raise ActiveRecord::RecordNotFound
-          .new("Could not find a Group with ID #{group_id}")
+        raise ActiveRecord::RecordNotFound, "Could not find a Group with ID #{group_id}"
       end
 
       group

@@ -5,8 +5,10 @@ import {
   normalizeCustomDashboardPath,
 } from './utils';
 
-const metricsIdsInPanel = panel =>
-  panel.metrics.filter(metric => metric.metricId && metric.result).map(metric => metric.metricId);
+const metricsIdsInPanel = (panel) =>
+  panel.metrics
+    .filter((metric) => metric.metricId && metric.result)
+    .map((metric) => metric.metricId);
 
 /**
  * Returns a reference to the currently selected dashboard
@@ -17,8 +19,8 @@ const metricsIdsInPanel = panel =>
 export const selectedDashboard = (state, getters) => {
   const { allDashboards } = state;
   return (
-    allDashboards.find(d => d.path === getters.fullDashboardPath) ||
-    allDashboards.find(d => d.default) ||
+    allDashboards.find((d) => d.path === getters.fullDashboardPath) ||
+    allDashboards.find((d) => d.default) ||
     null
   );
 };
@@ -32,15 +34,15 @@ export const selectedDashboard = (state, getters) => {
  * @returns {Function} A function that returns an array of
  * states in all the metric in the dashboard or group.
  */
-export const getMetricStates = state => groupKey => {
+export const getMetricStates = (state) => (groupKey) => {
   let groups = state.dashboard.panelGroups;
   if (groupKey) {
-    groups = groups.filter(group => group.key === groupKey);
+    groups = groups.filter((group) => group.key === groupKey);
   }
 
   const metricStates = groups.reduce((acc, group) => {
-    group.panels.forEach(panel => {
-      panel.metrics.forEach(metric => {
+    group.panels.forEach((panel) => {
+      panel.metrics.forEach((metric) => {
         if (metric.state) {
           acc.push(metric.state);
         }
@@ -64,15 +66,15 @@ export const getMetricStates = state => groupKey => {
  * metrics in the dashboard that contain results, optionally
  * filtered by group key.
  */
-export const metricsWithData = state => groupKey => {
+export const metricsWithData = (state) => (groupKey) => {
   let groups = state.dashboard.panelGroups;
   if (groupKey) {
-    groups = groups.filter(group => group.key === groupKey);
+    groups = groups.filter((group) => group.key === groupKey);
   }
 
   const res = [];
-  groups.forEach(group => {
-    group.panels.forEach(panel => {
+  groups.forEach((group) => {
+    group.panels.forEach((panel) => {
       res.push(...metricsIdsInPanel(panel));
     });
   });
@@ -89,7 +91,7 @@ export const metricsWithData = state => groupKey => {
  * https://gitlab.com/gitlab-org/gitlab/-/issues/28241
  * https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27447
  */
-export const metricsSavedToDb = state => {
+export const metricsSavedToDb = (state) => {
   const metricIds = [];
   state.dashboard.panelGroups.forEach(({ panels }) => {
     panels.forEach(({ metrics }) => {
@@ -111,8 +113,8 @@ export const metricsSavedToDb = state => {
  * @param {Object} state
  * @returns {Array} List of environments
  */
-export const filteredEnvironments = state =>
-  state.environments.filter(env =>
+export const filteredEnvironments = (state) =>
+  state.environments.filter((env) =>
     env.name.toLowerCase().includes((state.environmentsSearchTerm || '').trim().toLowerCase()),
   );
 
@@ -125,7 +127,7 @@ export const filteredEnvironments = state =>
  * @param {Object} state
  * @returns {Array} modified array of links
  */
-export const linksWithMetadata = state => {
+export const linksWithMetadata = (state) => {
   const metadata = {
     timeRange: state.timeRange,
   };
@@ -152,7 +154,7 @@ export const linksWithMetadata = state => {
  * in the format of {variables[key1]=value1, variables[key2]=value2}
  */
 
-export const getCustomVariablesParams = state =>
+export const getCustomVariablesParams = (state) =>
   state.variables.reduce((acc, variable) => {
     const { name, value } = variable;
     if (value !== null) {
@@ -168,5 +170,5 @@ export const getCustomVariablesParams = state =>
  * @param {Object} state
  * @returns {String} full dashboard path
  */
-export const fullDashboardPath = state =>
+export const fullDashboardPath = (state) =>
   normalizeCustomDashboardPath(state.currentDashboard, state.customDashboardBasePath);

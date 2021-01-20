@@ -26,11 +26,11 @@ export default {
     onSubmit() {
       return axios
         .post(this.url)
-        .then(response => {
+        .then((response) => {
           // follow the rediect to refresh the page
           redirectTo(response.request.responseURL);
         })
-        .catch(error => {
+        .catch((error) => {
           createFlash(s__('AdminArea|Stopping jobs failed'));
           throw error;
         });

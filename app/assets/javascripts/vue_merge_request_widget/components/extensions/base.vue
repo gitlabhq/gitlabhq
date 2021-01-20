@@ -67,11 +67,11 @@ export default {
   },
   mounted() {
     this.fetchCollapsedData(this.$props)
-      .then(data => {
+      .then((data) => {
         this.collapsedData = data;
         this.loadingState = null;
       })
-      .catch(e => {
+      .catch((e) => {
         this.loadingState = LOADING_STATES.collapsedError;
         throw e;
       });
@@ -86,11 +86,11 @@ export default {
       this.loadingState = LOADING_STATES.expandedLoading;
 
       this.fetchFullData(this.$props)
-        .then(data => {
+        .then((data) => {
           this.loadingState = null;
           this.fullData = data;
         })
-        .catch(e => {
+        .catch((e) => {
           this.loadingState = null;
           throw e;
         });

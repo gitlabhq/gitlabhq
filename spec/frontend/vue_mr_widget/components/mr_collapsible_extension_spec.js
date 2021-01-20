@@ -8,7 +8,7 @@ describe('Merge Request Collapsible Extension', () => {
     title: 'View artifacts',
   };
 
-  const mountComponent = props => {
+  const mountComponent = (props) => {
     wrapper = mount(MrCollapsibleSection, {
       propsData: {
         ...props,
@@ -65,18 +65,8 @@ describe('Merge Request Collapsible Extension', () => {
     });
 
     it('renders the buttons disabled', () => {
-      expect(
-        wrapper
-          .findAll('button')
-          .at(0)
-          .attributes('disabled'),
-      ).toEqual('disabled');
-      expect(
-        wrapper
-          .findAll('button')
-          .at(1)
-          .attributes('disabled'),
-      ).toEqual('disabled');
+      expect(wrapper.findAll('button').at(0).attributes('disabled')).toEqual('disabled');
+      expect(wrapper.findAll('button').at(1).attributes('disabled')).toEqual('disabled');
     });
 
     it('renders loading spinner', () => {

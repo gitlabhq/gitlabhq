@@ -11,14 +11,10 @@ module BulkImports
         def extract(context)
           client = graphql_client(context)
 
-          Enumerator.new do |yielder|
-            result = client.execute(
-              client.parse(query.to_s),
-              query.variables(context.entity)
-            )
-
-            yielder << result.original_hash.deep_dup
-          end
+          client.execute(
+            client.parse(query.to_s),
+            query.variables(context.entity)
+          ).original_hash.deep_dup
         end
 
         private

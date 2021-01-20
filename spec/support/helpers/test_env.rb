@@ -203,10 +203,13 @@ module TestEnv
     end
 
     gitaly_pid = Integer(File.read(TMP_TEST_PATH.join('gitaly.pid')))
+    gitaly2_pid = Integer(File.read(TMP_TEST_PATH.join('gitaly2.pid')))
     praefect_pid = Integer(File.read(TMP_TEST_PATH.join('praefect.pid')))
 
-    Kernel.at_exit { stop(gitaly_pid) }
-    Kernel.at_exit { stop(praefect_pid) }
+    Kernel.at_exit do
+      pids = [gitaly_pid, gitaly2_pid, praefect_pid]
+      pids.each { |pid| stop(pid) }
+    end
 
     wait('gitaly')
     wait('praefect')
@@ -284,7 +287,7 @@ module TestEnv
     @workhorse_path ||= File.join('tmp', 'tests', 'gitlab-workhorse')
   end
 
-  def with_workhorse(workhorse_dir, host, port, upstream, &blk)
+  def with_workhorse(host, port, upstream, &blk)
     host = "[#{host}]" if host.include?(':')
     listen_addr = [host, port].join(':')
 

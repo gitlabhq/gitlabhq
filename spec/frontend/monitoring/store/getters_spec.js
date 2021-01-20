@@ -365,7 +365,7 @@ describe('Monitoring store Getters', () => {
 
   describe('selectedDashboard', () => {
     const { selectedDashboard } = getters;
-    const localGetters = localState => ({
+    const localGetters = (localState) => ({
       fullDashboardPath: getters.fullDashboardPath(localState),
     });
 

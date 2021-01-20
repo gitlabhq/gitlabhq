@@ -36,7 +36,7 @@ describe('Configure Feature Flags Modal', () => {
   const findPrimaryAction = () => findGlModal().props('actionPrimary');
   const findProjectNameInput = () => wrapper.find('#project_name_verification');
   const findDangerGlAlert = () =>
-    wrapper.findAll(GlAlert).filter(c => c.props('variant') === 'danger');
+    wrapper.findAll(GlAlert).filter((c) => c.props('variant') === 'danger');
 
   describe('idle', () => {
     afterEach(() => wrapper.destroy());

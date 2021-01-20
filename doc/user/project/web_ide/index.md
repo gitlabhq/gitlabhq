@@ -33,8 +33,8 @@ start seeing results.
 ## Command palette
 
 You can see all available commands for manipulating editor content by pressing
-the <kbd>F1</kbd> key when the editor is in focus. After that,
-you'll see a complete list of available commands for
+the <kbd>F1</kbd> key when the editor is in focus. After that, the editor displays
+a complete list of available commands for
 manipulating editor content. The editor supports commands for multi-cursor
 editing, code block folding, commenting, searching and replacing, navigating
 editor warnings and suggestions, and more.
@@ -47,7 +47,7 @@ the command without having to select it in the command palette.
 
 ## Syntax highlighting
 
-As expected from an IDE, syntax highlighting for many languages within
+As expected from an IDE, syntax highlighting for many languages in
 the Web IDE makes your direct editing even easier.
 
 The Web IDE currently provides:
@@ -78,7 +78,7 @@ All the themes GitLab supports for syntax highlighting are added to the Web IDE'
 You can pick a theme from your [profile preferences](../../profile/preferences.md).
 
 The themes are available only in the Web IDE file editor, except for the [dark theme](https://gitlab.com/gitlab-org/gitlab/-/issues/209808) and
-the [solarized dark theme](https://gitlab.com/gitlab-org/gitlab/-/issues/219228),
+the [Solarized dark theme](https://gitlab.com/gitlab-org/gitlab/-/issues/219228),
 which apply to the entire Web IDE screen.
 
 | Solarized Light Theme                                         | Solarized Dark Theme                                        | Dark Theme                              |
@@ -144,12 +144,13 @@ schemas:
 
 Each schema entry supports two properties:
 
-- `uri`: please provide an absolute URL for the schema definition file here. The schema from this URL
-is loaded when a matching file is open.
-- `match`: a list of matching paths or glob expressions. If a schema matches a particular path pattern,
-it will be applied to that file. Please enclose the pattern in quotes if it begins with an asterisk (`*`),
-it's be applied to that file. If a pattern begins with an asterisk (`*`), enclose it in quotation
-marks. Otherwise, the configuration file is not valid YAML.
+- `uri`: please provide an absolute URL for the schema definition file here.
+  The schema from this URL is loaded when a matching file is open.
+- `match`: a list of matching paths or glob expressions. If a schema matches a
+  particular path pattern, it is applied to that file. Please enclose the pattern
+  in quotes if it begins with an asterisk (`*`), it's be applied to that file.
+  If a pattern begins with an asterisk (`*`), enclose it in quotation marks.
+  Otherwise, the configuration file is not valid YAML.
 
 ## Configure the Web IDE
 
@@ -180,7 +181,7 @@ The Web IDE currently supports the following `.editorconfig` settings:
 After making your changes, click the **Commit** button on the bottom-left to
 review the list of changed files.
 
-Once you have finalized your changes, you can add a commit message, commit the
+After you have finalized your changes, you can add a commit message, commit the
 changes and directly create a merge request. In case you don't have write
 access to the selected branch, you see a warning, but can still create
 a new branch and start a merge request.
@@ -268,7 +269,7 @@ GitLab.com
 
 ![Administrator Live Preview setting](img/admin_live_preview_v13_0.png)
 
-Once you have done that, you can preview projects with a `package.json` file and
+After you have done that, you can preview projects with a `package.json` file and
 a `main` entry point inside the Web IDE. An example `package.json` is shown
 below.
 
@@ -325,7 +326,7 @@ In order to enable the Web IDE terminals you need to create the file
 file is fairly similar to the [CI configuration file](../../../ci/yaml/README.md)
 syntax but with some restrictions:
 
-- No global blocks can be defined (i.e., `before_script` or `after_script`)
+- No global blocks (such as `before_script` or `after_script`) can be defined.
 - Only one job named `terminal` can be added to this file.
 - Only the keywords `image`, `services`, `tags`, `before_script`, `script`, and
   `variables` are allowed to be used to configure the job.
@@ -350,7 +351,7 @@ terminal:
     NODE_ENV: "test"
 ```
 
-Once the terminal has started, the console is displayed and we could access
+After the terminal has started, the console is displayed and we could access
 the project repository files.
 
 **Important**. The terminal job is branch dependent. This means that the
@@ -364,7 +365,7 @@ If there is no configuration file in a branch, an error message is shown.
 If Interactive Terminals are available for the current user, the **Terminal** button is visible in the right sidebar of the Web IDE. Click this button to open
 or close the terminal tab.
 
-Once open, the tab shows the **Start Web Terminal** button. This button may
+After opening, the tab shows the **Start Web Terminal** button. This button may
 be disabled if the environment is not configured correctly. If so, a status
 message describes the issue. Here are some reasons why **Start Web Terminal**
 may be disabled:
@@ -378,7 +379,7 @@ can be closed and reopened and the state of the terminal is not affected.
 
 When the terminal is started and is successfully connected to the runner, then the
 runner's shell prompt appears in the terminal. From here, you can enter
-commands executed within the runner's environment. This is similar
+commands executed in the runner's environment. This is similar
 to running commands in a local terminal or through SSH.
 
 While the terminal is running, it can be stopped by clicking **Stop Terminal**.
@@ -426,7 +427,7 @@ terminal:
   [predefined environment variable](../../../ci/variables/predefined_variables.md)
   for GitLab Runners. This is where your project's repository resides.
 
-Once you have configured the web terminal for file syncing, then when the web
+After you have configured the web terminal for file syncing, then when the web
 terminal is started, a **Terminal** status is visible in the status bar.
 
 ![Web IDE Client Side Evaluation](img/terminal_status.png)
@@ -434,7 +435,7 @@ terminal is started, a **Terminal** status is visible in the status bar.
 Changes made to your files via the Web IDE sync to the running terminal
 when:
 
-- <kbd>Ctrl</kbd> + <kbd>S</kbd> (or <kbd>Cmd</kbd> + <kbd>S</kbd> on Mac)
+- <kbd>Control</kbd> + <kbd>S</kbd> (or <kbd>Command</kbd> + <kbd>S</kbd> on Mac)
   is pressed while editing a file.
 - Anything outside the file editor is clicked after editing a file.
 - A file or folder is created, deleted, or renamed.
@@ -446,7 +447,7 @@ The Web IDE has a few limitations:
 - Interactive Terminals is in a beta phase and continues to be improved in upcoming releases. In the meantime, please note that the user is limited to having only one
   active terminal at a time.
 
-- LFS files can be rendered and displayed but they cannot be updated and committed using the Web IDE. If an LFS file is modified and pushed to the repository, the LFS pointer in the repository will be overwritten with the modified LFS file content.
+- LFS files can be rendered and displayed but they cannot be updated and committed using the Web IDE. If an LFS file is modified and pushed to the repository, the LFS pointer in the repository is overwritten with the modified LFS file content.
 
 ### Troubleshooting
 

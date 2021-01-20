@@ -11,7 +11,7 @@ delete window.translations;
   @param text The text to be translated
   @returns {String} The translated text
 */
-const gettext = text => locale.gettext(ensureSingleLine(text));
+const gettext = (text) => locale.gettext(ensureSingleLine(text));
 
 /**
   Translate the text with a number
@@ -56,7 +56,7 @@ const pgettext = (keyOrContext, key) => {
   @param formatOptions for available options, please see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat
   @returns {Intl.DateTimeFormat}
 */
-const createDateTimeFormat = formatOptions => Intl.DateTimeFormat(languageCode(), formatOptions);
+const createDateTimeFormat = (formatOptions) => Intl.DateTimeFormat(languageCode(), formatOptions);
 
 export { languageCode };
 export { gettext as __ };

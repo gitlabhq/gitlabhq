@@ -31,6 +31,7 @@ RSpec.describe DiffsMetadataEntity do
         :merge_request_diffs, :context_commits,
         :definition_path_prefix, :source_branch_exists,
         :can_merge, :conflict_resolution_path, :has_conflicts,
+        :project_name, :project_path, :user_full_name, :username,
         # Attributes
         :diff_files
       )

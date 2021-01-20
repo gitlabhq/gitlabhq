@@ -1,4 +1,4 @@
-import { TEST_HOST } from 'jest/helpers/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
 import * as commentIndicatorHelper from '~/image_diff/helpers/comment_indicator_helper';
 import * as mockData from '../mock_data';
 

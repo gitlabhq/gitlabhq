@@ -145,7 +145,7 @@ describe('options spec', () => {
       expect(thresholds).toEqual([]);
     });
 
-    it.each(invalidCases)('invalid values for thresholds are filtered out', invalidValue => {
+    it.each(invalidCases)('invalid values for thresholds are filtered out', (invalidValue) => {
       thresholds = getValidThresholds({
         mode: 'absolute',
         range: { min: 0, max: 100 },
@@ -197,7 +197,7 @@ describe('options spec', () => {
 
       it.each(invalidCases)(
         'when min has invalid value, empty result is returned',
-        invalidValue => {
+        (invalidValue) => {
           thresholds = getValidThresholds({
             mode: 'absolute',
             range: { min: invalidValue, max: 100 },
@@ -210,7 +210,7 @@ describe('options spec', () => {
 
       it.each(invalidCases)(
         'when max has invalid value, empty result is returned',
-        invalidValue => {
+        (invalidValue) => {
           thresholds = getValidThresholds({
             mode: 'absolute',
             range: { min: 0, max: invalidValue },
@@ -244,7 +244,7 @@ describe('options spec', () => {
 
       it.each(invalidCases)(
         'if invalid values are passed, empty result is returned',
-        invalidValue => {
+        (invalidValue) => {
           thresholds = getValidThresholds({
             mode: 'absolute',
             range: { min: 0, max: 100 },
@@ -259,7 +259,7 @@ describe('options spec', () => {
     describe('mode', () => {
       it.each(invalidCases)(
         'if invalid values are passed, empty result is returned',
-        invalidValue => {
+        (invalidValue) => {
           thresholds = getValidThresholds({
             mode: invalidValue,
             range: { min: 0, max: 100 },
@@ -305,7 +305,7 @@ describe('options spec', () => {
         const outOfPercentBoundsValues = [-1, 0, 100, 101];
         it.each(outOfPercentBoundsValues)(
           'when values out of 0-100 range are passed, empty result is returned',
-          invalidValue => {
+          (invalidValue) => {
             thresholds = getValidThresholds({
               mode: 'percentage',
               range: { min: 0, max: 1000 },

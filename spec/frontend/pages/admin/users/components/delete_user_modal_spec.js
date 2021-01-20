@@ -11,10 +11,10 @@ describe('User Operation confirmation modal', () => {
   let wrapper;
   let formSubmitSpy;
 
-  const findButton = variant =>
+  const findButton = (variant) =>
     wrapper
       .findAll(GlButton)
-      .filter(w => w.attributes('variant') === variant)
+      .filter((w) => w.attributes('variant') === variant)
       .at(0);
   const findForm = () => wrapper.find('form');
   const findUsernameInput = () => wrapper.find(GlFormInput);
@@ -25,7 +25,7 @@ describe('User Operation confirmation modal', () => {
   const getMethodParam = () => new FormData(findForm().element).get('_method');
   const getFormAction = () => findForm().attributes('action');
 
-  const setUsername = username => {
+  const setUsername = (username) => {
     findUsernameInput().vm.$emit('input', username);
   };
 

@@ -10,7 +10,7 @@ describe('Tab component', () => {
     vm = mountComponent(Component);
   });
 
-  it('sets localActive to equal active', done => {
+  it('sets localActive to equal active', (done) => {
     vm.active = true;
 
     vm.$nextTick(() => {
@@ -20,7 +20,7 @@ describe('Tab component', () => {
     });
   });
 
-  it('sets active class', done => {
+  it('sets active class', (done) => {
     vm.active = true;
 
     vm.$nextTick(() => {

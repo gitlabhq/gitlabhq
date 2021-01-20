@@ -1,4 +1,4 @@
-import Api from '~/api';
+import { getUserCounts } from '~/rest_api';
 
 let channel;
 
@@ -11,7 +11,17 @@ function broadcastCount(newCount) {
 }
 
 function updateUserMergeRequestCounts(newCount) {
-  const mergeRequestsCountEl = document.querySelector('.merge-requests-count');
+  const mergeRequestsCountEl = document.querySelector('.js-assigned-mr-count');
+  mergeRequestsCountEl.textContent = newCount.toLocaleString();
+}
+
+function updateReviewerMergeRequestCounts(newCount) {
+  const mergeRequestsCountEl = document.querySelector('.js-reviewer-mr-count');
+  mergeRequestsCountEl.textContent = newCount.toLocaleString();
+}
+
+function updateMergeRequestCounts(newCount) {
+  const mergeRequestsCountEl = document.querySelector('.js-merge-requests-count');
   mergeRequestsCountEl.textContent = newCount.toLocaleString();
   mergeRequestsCountEl.classList.toggle('hidden', Number(newCount) === 0);
 }
@@ -20,14 +30,18 @@ function updateUserMergeRequestCounts(newCount) {
  * Refresh user counts (and broadcast if open)
  */
 export function refreshUserMergeRequestCounts() {
-  return Api.userCounts()
+  return getUserCounts()
     .then(({ data }) => {
-      const count = data.merge_requests;
+      const assignedMergeRequests = data.assigned_merge_requests;
+      const reviewerMergeRequests = data.review_requested_merge_requests;
+      const fullCount = assignedMergeRequests + reviewerMergeRequests;
 
-      updateUserMergeRequestCounts(count);
-      broadcastCount(count);
+      updateUserMergeRequestCounts(assignedMergeRequests);
+      updateReviewerMergeRequestCounts(reviewerMergeRequests);
+      updateMergeRequestCounts(fullCount);
+      broadcastCount(fullCount);
     })
-    .catch(ex => {
+    .catch((ex) => {
       console.error(ex); // eslint-disable-line no-console
     });
 }
@@ -59,8 +73,8 @@ export function openUserCountsBroadcast() {
     const currentUserId = typeof gon !== 'undefined' && gon && gon.current_user_id;
     if (currentUserId) {
       channel = new BroadcastChannel(`mr_count_channel_${currentUserId}`);
-      channel.onmessage = ev => {
-        updateUserMergeRequestCounts(ev.data);
+      channel.onmessage = (ev) => {
+        updateMergeRequestCounts(ev.data);
       };
     }
   }

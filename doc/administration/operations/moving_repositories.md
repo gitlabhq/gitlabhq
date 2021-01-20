@@ -23,12 +23,14 @@ For more information, see:
 - [Configuring additional storage for Gitaly](../gitaly/index.md#network-architecture). Within this
   example, additional storage called `storage1` and `storage2` is configured.
 - [The API documentation](../../api/project_repository_storage_moves.md) details the endpoints for
-  querying and scheduling repository moves.
+  querying and scheduling project repository moves.
+- [The API documentation](../../api/snippet_repository_storage_moves.md) details the endpoints for
+  querying and scheduling snippet repository moves.
 - [Migrate existing repositories to Gitaly Cluster](../gitaly/praefect.md#migrate-existing-repositories-to-gitaly-cluster).
 
 ### Limitations
 
-Read more in the [API documentation](../../api/project_repository_storage_moves.md#limitations).
+Read more in the [API documentation for projects](../../api/project_repository_storage_moves.md#limitations) and the [API documentation for snippets](../../api/snippet_repository_storage_moves.md#limitations).
 
 ## Migrating to another GitLab instance
 

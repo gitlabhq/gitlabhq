@@ -1,0 +1,5 @@
+---
+title: Limit Group Migration extractors and loaders to 1 per pipeline
+merge_request: 50951
+author:
+type: changed

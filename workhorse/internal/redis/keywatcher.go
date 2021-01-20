@@ -10,9 +10,8 @@ import (
 	"github.com/jpillora/backoff"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
-	"gitlab.com/gitlab-org/labkit/log"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab-workhorse/internal/log"
 )
 
 var (
@@ -64,13 +63,13 @@ func processInner(conn redis.Conn) error {
 			dataStr := string(v.Data)
 			msg := strings.SplitN(dataStr, "=", 2)
 			if len(msg) != 2 {
-				helper.LogError(nil, fmt.Errorf("keywatcher: invalid notification: %q", dataStr))
+				log.WithError(fmt.Errorf("keywatcher: invalid notification: %q", dataStr)).Error()
 				continue
 			}
 			key, value := msg[0], msg[1]
 			notifyChanWatchers(key, value)
 		case error:
-			helper.LogError(nil, fmt.Errorf("keywatcher: pubsub receive: %v", v))
+			log.WithError(fmt.Errorf("keywatcher: pubsub receive: %v", v)).Error()
 			// Intermittent error, return nil so that it doesn't wait before reconnect
 			return nil
 		}
@@ -101,14 +100,14 @@ func Process() {
 	for {
 		conn, err := dialPubSub(workerDialFunc)
 		if err != nil {
-			helper.LogError(nil, fmt.Errorf("keywatcher: %v", err))
+			log.WithError(fmt.Errorf("keywatcher: %v", err)).Error()
 			time.Sleep(redisReconnectTimeout.Duration())
 			continue
 		}
 		redisReconnectTimeout.Reset()
 
 		if err = processInner(conn); err != nil {
-			helper.LogError(nil, fmt.Errorf("keywatcher: process loop: %v", err))
+			log.WithError(fmt.Errorf("keywatcher: process loop: %v", err)).Error()
 		}
 	}
 }

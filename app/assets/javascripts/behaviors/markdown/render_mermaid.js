@@ -29,7 +29,7 @@ let mermaidModule = {};
 
 function importMermaidModule() {
   return import(/* webpackChunkName: 'mermaid' */ 'mermaid')
-    .then(mermaid => {
+    .then((mermaid) => {
       let theme = 'neutral';
       const ideDarkThemes = ['dark', 'solarized-dark', 'monokai'];
 
@@ -59,7 +59,7 @@ function importMermaidModule() {
 
       return mermaid;
     })
-    .catch(err => {
+    .catch((err) => {
       flash(sprintf(__("Can't load mermaid module: %{err}"), { err }));
       // eslint-disable-next-line no-console
       console.error(err);
@@ -77,7 +77,7 @@ function fixElementSource(el) {
 }
 
 function renderMermaidEl(el) {
-  mermaidModule.init(undefined, el, id => {
+  mermaidModule.init(undefined, el, (id) => {
     const source = el.textContent;
     const svg = document.getElementById(id);
 
@@ -170,7 +170,7 @@ function renderMermaids($els) {
         elsProcessingMap.set(el, requestId);
       });
     })
-    .catch(err => {
+    .catch((err) => {
       flash(sprintf(__('Encountered an error while rendering: %{err}'), { err }));
       // eslint-disable-next-line no-console
       console.error(err);

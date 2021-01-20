@@ -1,3 +1,5 @@
+- add_page_specific_style 'page_bundles/ci_status'
+
 = content_for :title do
   %h3.project-title
     Runner ##{@runner.id}
@@ -15,17 +17,17 @@
 
 - if @runner.instance_type?
   .bs-callout.bs-callout-success
-    %h4 This Runner will process jobs from ALL UNASSIGNED projects
+    %h4= _('This runner processes jobs for all unassigned projects.')
     %p
-      If you want Runners to build only specific projects, enable them in the table below.
-      Keep in mind that this is a one way transition.
+      = _('If you want a runner to build only specific projects, restrict the project in the table below. After you restrict a runner to a project, you cannot change it back to a shared runner.')
 - elsif @runner.group_type?
   .bs-callout.bs-callout-success
-    %h4 This runner will process jobs from all projects in its group and subgroups
+    %h4= _('This runner processes jobs for all projects in its group and subgroups.')
 - else
   .bs-callout.bs-callout-info
-    %h4 This Runner will process jobs only from ASSIGNED projects
-    %p You can't make this a shared Runner.
+    %h4= _('This runner processes jobs for assigned projects only.')
+    %p
+      = _('You cannot make this a shared runner.')
 %hr
 
 .gl-mb-6
@@ -33,12 +35,12 @@
 
 .row
   .col-md-6
-    %h4 Restrict projects for this Runner
+    %h4= _('Restrict projects for this runner')
     - if @runner.projects.any?
       %table.table.assigned-projects
         %thead
           %tr
-            %th Assigned projects
+            %th= _('Assigned projects')
         - @runner.runner_projects.each do |runner_project|
           - project = runner_project.project
           - if project
@@ -55,7 +57,7 @@
     %table.table.unassigned-projects
       %thead
         %tr
-          %th Project
+          %th= _('Project')
           %th
 
       %tr
@@ -78,15 +80,15 @@
     = paginate_without_count @projects
 
   .col-md-6
-    %h4 Recent jobs served by this Runner
+    %h4= _('Recent jobs served by this runner')
     %table.table.ci-table.runner-builds
       %thead
         %tr
-          %th Job
-          %th Status
-          %th Project
-          %th Commit
-          %th Finished at
+          %th= _('Job')
+          %th= _('Status')
+          %th= _('Project')
+          %th= _('Commit')
+          %th= _('Finished at')
 
       - @builds.each do |build|
         - project = build.project

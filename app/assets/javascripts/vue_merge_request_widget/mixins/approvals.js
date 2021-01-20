@@ -11,7 +11,7 @@ export default {
       }
     },
     refreshApprovals() {
-      return this.service.fetchApprovals().then(data => {
+      return this.service.fetchApprovals().then((data) => {
         this.mr.setApprovals(data);
       });
     },

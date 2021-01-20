@@ -4,7 +4,7 @@ module Gitlab
   module Metrics
     module Samplers
       class PumaSampler < BaseSampler
-        SAMPLING_INTERVAL_SECONDS = 5
+        DEFAULT_SAMPLING_INTERVAL_SECONDS = 5
 
         def metrics
           @metrics ||= init_metrics

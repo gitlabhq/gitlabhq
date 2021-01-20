@@ -12,5 +12,5 @@ export const getStoreConfig = ({ query }) => ({
   state: createState({ query }),
 });
 
-const createStore = config => new Vuex.Store(getStoreConfig(config));
+const createStore = (config) => new Vuex.Store(getStoreConfig(config));
 export default createStore;

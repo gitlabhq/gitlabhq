@@ -5,7 +5,7 @@ import LimitWarningComponent from '~/cycle_analytics/components/limit_warning_co
 
 Vue.use(Translate);
 
-const createComponent = props =>
+const createComponent = (props) =>
   shallowMount(LimitWarningComponent, {
     propsData: {
       ...props,

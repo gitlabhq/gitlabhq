@@ -2,13 +2,11 @@ package helper
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/require"
 )
 
@@ -141,118 +139,4 @@ func TestFail500WorksWithNils(t *testing.T) {
 
 	require.Equal(t, http.StatusInternalServerError, w.Code)
 	require.Equal(t, "Internal server error\n", body.String())
-}
-
-func TestLogError(t *testing.T) {
-	tests := []struct {
-		name        string
-		method      string
-		uri         string
-		err         error
-		logMatchers []string
-	}{
-		{
-			name: "nil_request",
-			err:  fmt.Errorf("crash"),
-			logMatchers: []string{
-				`level=error msg="unknown error" error=crash`,
-			},
-		},
-		{
-			name: "nil_request_nil_error",
-			err:  nil,
-			logMatchers: []string{
-				`level=error msg="unknown error" error="<nil>"`,
-			},
-		},
-		{
-			name:   "basic_url",
-			method: "GET",
-			uri:    "http://localhost:3000/",
-			err:    fmt.Errorf("error"),
-			logMatchers: []string{
-				`level=error msg=error correlation_id= error=error method=GET uri="http://localhost:3000/"`,
-			},
-		},
-		{
-			name:   "secret_url",
-			method: "GET",
-			uri:    "http://localhost:3000/path?certificate=123&sharedSecret=123&import_url=the_url&my_password_string=password",
-			err:    fmt.Errorf("error"),
-			logMatchers: []string{
-				`level=error msg=error correlation_id= error=error method=GET uri="http://localhost:3000/path\?certificate=\[FILTERED\]&sharedSecret=\[FILTERED\]&import_url=\[FILTERED\]&my_password_string=\[FILTERED\]"`,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			buf := &bytes.Buffer{}
-
-			oldOut := logrus.StandardLogger().Out
-			logrus.StandardLogger().Out = buf
-			defer func() {
-				logrus.StandardLogger().Out = oldOut
-			}()
-
-			var r *http.Request
-			if tt.uri != "" {
-				r = httptest.NewRequest(tt.method, tt.uri, nil)
-			}
-
-			LogError(r, tt.err)
-
-			logString := buf.String()
-			for _, v := range tt.logMatchers {
-				require.Regexp(t, v, logString)
-			}
-		})
-	}
-}
-
-func TestLogErrorWithFields(t *testing.T) {
-	tests := []struct {
-		name       string
-		request    *http.Request
-		err        error
-		fields     map[string]interface{}
-		logMatcher string
-	}{
-		{
-			name:       "nil_request",
-			err:        fmt.Errorf("crash"),
-			fields:     map[string]interface{}{"extra_one": 123},
-			logMatcher: `level=error msg="unknown error" error=crash extra_one=123`,
-		},
-		{
-			name:       "nil_request_nil_error",
-			err:        nil,
-			fields:     map[string]interface{}{"extra_one": 123, "extra_two": "test"},
-			logMatcher: `level=error msg="unknown error" error="<nil>" extra_one=123 extra_two=test`,
-		},
-		{
-			name:       "basic_url",
-			request:    httptest.NewRequest("GET", "http://localhost:3000/", nil),
-			err:        fmt.Errorf("error"),
-			fields:     map[string]interface{}{"extra_one": 123, "extra_two": "test"},
-			logMatcher: `level=error msg=error correlation_id= error=error extra_one=123 extra_two=test method=GET uri="http://localhost:3000/`,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			buf := &bytes.Buffer{}
-
-			oldOut := logrus.StandardLogger().Out
-			logrus.StandardLogger().Out = buf
-			defer func() {
-				logrus.StandardLogger().Out = oldOut
-			}()
-
-			LogErrorWithFields(tt.request, tt.err, tt.fields)
-
-			logString := buf.String()
-			require.Contains(t, logString, tt.logMatcher)
-		})
-	}
 }

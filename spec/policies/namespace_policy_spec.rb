@@ -8,7 +8,7 @@ RSpec.describe NamespacePolicy do
   let(:admin) { create(:admin) }
   let(:namespace) { create(:namespace, owner: owner) }
 
-  let(:owner_permissions) { [:owner_access, :create_projects, :admin_namespace, :read_namespace, :read_statistics, :transfer_projects] }
+  let(:owner_permissions) { [:owner_access, :create_projects, :admin_namespace, :read_namespace, :read_statistics, :transfer_projects, :create_package_settings, :read_package_settings] }
 
   subject { described_class.new(current_user, namespace) }
 

@@ -87,6 +87,7 @@ RSpec.describe 'User comments on a diff', :js do
         expect(page).not_to have_content('Applied')
 
         click_button('Apply suggestion')
+        click_button('Apply')
         wait_for_requests
 
         expect(page).to have_content('Applied')
@@ -338,6 +339,7 @@ RSpec.describe 'User comments on a diff', :js do
         expect(page).not_to have_content('Applied')
 
         click_button('Apply suggestion')
+        click_button('Apply')
         wait_for_requests
 
         expect(page).to have_content('Applied')
@@ -349,6 +351,7 @@ RSpec.describe 'User comments on a diff', :js do
         expect(page).not_to have_content('Unresolve thread')
 
         click_button('Apply suggestion')
+        click_button('Apply')
         wait_for_requests
 
         expect(page).to have_content('Unresolve thread')

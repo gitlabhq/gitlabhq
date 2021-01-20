@@ -103,18 +103,13 @@ module Repositories
     end
 
     def upload_headers
-      headers = {
+      {
         Authorization: authorization_header,
         # git-lfs v2.5.0 sets the Content-Type based on the uploaded file. This
         # ensures that Workhorse can intercept the request.
-        'Content-Type': LFS_TRANSFER_CONTENT_TYPE
+        'Content-Type': LFS_TRANSFER_CONTENT_TYPE,
+        'Transfer-Encoding': 'chunked'
       }
-
-      if Feature.enabled?(:lfs_chunked_encoding, project, default_enabled: true)
-        headers['Transfer-Encoding'] = 'chunked'
-      end
-
-      headers
     end
 
     def lfs_check_batch_operation!

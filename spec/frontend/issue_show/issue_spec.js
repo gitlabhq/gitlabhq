@@ -14,7 +14,7 @@ useMockIntersectionObserver();
 
 jest.mock('~/lib/utils/poll');
 
-const setupHTML = initialData => {
+const setupHTML = (initialData) => {
   document.body.innerHTML = `<div id="js-issuable-app"></div>`;
   document.getElementById('js-issuable-app').dataset.initial = JSON.stringify(initialData);
 };

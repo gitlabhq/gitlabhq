@@ -17,6 +17,20 @@ module Gitlab
       RSS_PATTERN = /VmRSS:\s+(?<value>\d+)/.freeze
       MAX_OPEN_FILES_PATTERN = /Max open files\s*(?<value>\d+)/.freeze
 
+      def self.summary
+        proportional_mem = memory_usage_uss_pss
+        {
+          version: RUBY_DESCRIPTION,
+          gc_stat: GC.stat,
+          memory_rss: memory_usage_rss,
+          memory_uss: proportional_mem[:uss],
+          memory_pss: proportional_mem[:pss],
+          time_cputime: cpu_time,
+          time_realtime: real_time,
+          time_monotonic: monotonic_time
+        }
+      end
+
       # Returns the current process' RSS (resident set size) in bytes.
       def self.memory_usage_rss
         sum_matches(PROC_STATUS_PATH, rss: RSS_PATTERN)[:rss].kilobytes

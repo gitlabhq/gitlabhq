@@ -1,0 +1,34 @@
+fragment PipelineStagesConnection on CiConfigStageConnection {
+  nodes {
+    name
+    groups {
+      nodes {
+        name
+        size
+        jobs {
+          nodes {
+            name
+            script
+            beforeScript
+            afterScript
+            environment
+            allowFailure
+            tags
+            when
+            only {
+              refs
+            }
+            except {
+              refs
+            }
+            needs {
+              nodes {
+                name
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

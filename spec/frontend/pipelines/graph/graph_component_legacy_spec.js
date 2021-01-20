@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { setHTMLFixture } from 'helpers/fixtures';
@@ -18,7 +18,7 @@ describe('graph component', () => {
   const findExpandPipelineBtn = () => wrapper.find('[data-testid="expand-pipeline-button"]');
   const findAllExpandPipelineBtns = () => wrapper.findAll('[data-testid="expand-pipeline-button"]');
   const findStageColumns = () => wrapper.findAll(StageColumnComponentLegacy);
-  const findStageColumnAt = i => findStageColumns().at(i);
+  const findStageColumnAt = (i) => findStageColumns().at(i);
 
   beforeEach(() => {
     mediator = new PipelinesMediator({ endpoint: '' });
@@ -104,11 +104,9 @@ describe('graph component', () => {
       });
 
       it('should include the left-connector class in the build of the second child', () => {
-        expect(
-          findStageColumnAt(1)
-            .find('.build:nth-child(1)')
-            .classes('left-connector'),
-        ).toBe(true);
+        expect(findStageColumnAt(1).find('.build:nth-child(1)').classes('left-connector')).toBe(
+          true,
+        );
       });
 
       it('should include the js-has-linked-pipelines flag', () => {
@@ -119,12 +117,7 @@ describe('graph component', () => {
     describe('computeds and methods', () => {
       describe('capitalizeStageName', () => {
         it('it capitalizes the stage name', () => {
-          expect(
-            wrapper
-              .findAll('.stage-column .stage-name')
-              .at(1)
-              .text(),
-          ).toBe('Prebuild');
+          expect(wrapper.findAll('.stage-column .stage-name').at(1).text()).toBe('Prebuild');
         });
       });
 
@@ -160,21 +153,20 @@ describe('graph component', () => {
 
       describe('triggered by', () => {
         describe('on click', () => {
-          it('should emit `onClickUpstreamPipeline` when triggered by linked pipeline is clicked', () => {
+          it('should emit `onClickUpstreamPipeline` when triggered by linked pipeline is clicked', async () => {
             const btnWrapper = findExpandPipelineBtn();
 
             btnWrapper.trigger('click');
 
-            btnWrapper.vm.$nextTick(() => {
-              expect(wrapper.emitted().onClickUpstreamPipeline).toEqual([
-                store.state.pipeline.triggered_by,
-              ]);
-            });
+            await nextTick();
+            expect(wrapper.emitted().onClickUpstreamPipeline).toEqual([
+              store.state.pipeline.triggered_by,
+            ]);
           });
         });
 
         describe('with expanded pipeline', () => {
-          it('should render expanded pipeline', done => {
+          it('should render expanded pipeline', async () => {
             // expand the pipeline
             store.state.pipeline.triggered_by[0].isExpanded = true;
 
@@ -186,40 +178,46 @@ describe('graph component', () => {
               },
             });
 
-            Vue.nextTick()
-              .then(() => {
-                expect(wrapper.find('.js-upstream-pipeline-12').exists()).toBe(true);
-              })
-              .then(done)
-              .catch(done.fail);
+            await nextTick();
+            expect(wrapper.find('.js-upstream-pipeline-12').exists()).toBe(true);
           });
         });
       });
 
       describe('triggered', () => {
         describe('on click', () => {
-          it('should emit `onClickTriggered`', () => {
-            // We have to mock this method since we do both style change and
-            // emit and event, not mocking returns an error.
-            wrapper.setMethods({
-              handleClickedDownstream: jest.fn(() =>
-                wrapper.vm.$emit('onClickTriggered', ...store.state.pipeline.triggered),
-              ),
+          // We have to mock this property of HTMLElement since component relies on it
+          let offsetParentDescriptor;
+          beforeAll(() => {
+            offsetParentDescriptor = Object.getOwnPropertyDescriptor(
+              HTMLElement.prototype,
+              'offsetParent',
+            );
+            Object.defineProperty(HTMLElement.prototype, 'offsetParent', {
+              get() {
+                return this.parentNode;
+              },
             });
+          });
+          afterAll(() => {
+            Object.defineProperty(HTMLElement.prototype, offsetParentDescriptor);
+          });
 
+          it('should emit `onClickDownstreamPipeline`', async () => {
             const btnWrappers = findAllExpandPipelineBtns();
             const downstreamBtnWrapper = btnWrappers.at(btnWrappers.length - 1);
 
             downstreamBtnWrapper.trigger('click');
 
-            downstreamBtnWrapper.vm.$nextTick(() => {
-              expect(wrapper.emitted().onClickTriggered).toEqual([store.state.pipeline.triggered]);
-            });
+            await nextTick();
+            expect(wrapper.emitted().onClickDownstreamPipeline).toEqual([
+              [store.state.pipeline.triggered[1]],
+            ]);
           });
         });
 
         describe('with expanded pipeline', () => {
-          it('should render expanded pipeline', done => {
+          it('should render expanded pipeline', async () => {
             // expand the pipeline
             store.state.pipeline.triggered[0].isExpanded = true;
 
@@ -231,12 +229,8 @@ describe('graph component', () => {
               },
             });
 
-            Vue.nextTick()
-              .then(() => {
-                expect(wrapper.find('.js-downstream-pipeline-34993051')).not.toBeNull();
-              })
-              .then(done)
-              .catch(done.fail);
+            await nextTick();
+            expect(wrapper.find('.js-downstream-pipeline-34993051')).not.toBeNull();
           });
         });
 

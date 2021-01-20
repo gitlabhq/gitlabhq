@@ -56,15 +56,15 @@ export default {
 
         const unwrappedGroups = stages
           .map(({ name, groups: { nodes: groups } }) => {
-            return groups.map(group => {
+            return groups.map((group) => {
               return { category: name, ...group };
             });
           })
           .flat(2);
 
-        const nodes = unwrappedGroups.map(group => {
+        const nodes = unwrappedGroups.map((group) => {
           const jobs = group.jobs.nodes.map(({ name, needs }) => {
-            return { name, needs: needs.nodes.map(need => need.name) };
+            return { name, needs: needs.nodes.map((need) => need.name) };
           });
 
           return { ...group, jobs };

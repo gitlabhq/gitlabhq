@@ -24,7 +24,7 @@ describe('~/releases/components/releases_pagination_graphql.vue', () => {
 
   const projectPath = 'my/project';
 
-  const createComponent = pageInfo => {
+  const createComponent = (pageInfo) => {
     listModule = createListModule({ projectPath });
 
     listModule.state.graphQlPageInfo = pageInfo;
@@ -72,7 +72,7 @@ describe('~/releases/components/releases_pagination_graphql.vue', () => {
     });
 
     it('does not render anything', () => {
-      expect(wrapper.isEmpty()).toBe(true);
+      expect(wrapper.html()).toBe('');
     });
   });
 

@@ -1,10 +1,10 @@
-/* global gapi */
 import Vue from 'vue';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import GkeProjectIdDropdown from './components/gke_project_id_dropdown.vue';
 import GkeZoneDropdown from './components/gke_zone_dropdown.vue';
 import GkeMachineTypeDropdown from './components/gke_machine_type_dropdown.vue';
 import GkeSubmitButton from './components/gke_submit_button.vue';
+import gapiLoader from './gapi_loader';
 
 import store from './store';
 
@@ -22,7 +22,7 @@ const mountComponent = (entryPoint, component, componentName, extraProps = {}) =
     components: {
       [componentName]: component,
     },
-    render: createElement =>
+    render: (createElement) =>
       createElement(componentName, {
         props: {
           fieldName: hiddenInput.getAttribute('name'),
@@ -63,7 +63,7 @@ const gkeDropdownErrorHandler = () => {
   Flash(CONSTANTS.GCP_API_ERROR);
 };
 
-const initializeGapiClient = () => {
+const initializeGapiClient = (gapi) => () => {
   const el = document.querySelector('.js-gke-cluster-creation');
   if (!el) return false;
 
@@ -86,13 +86,9 @@ const initializeGapiClient = () => {
     .catch(gkeDropdownErrorHandler);
 };
 
-const initGkeDropdowns = () => {
-  if (!gapi) {
-    gkeDropdownErrorHandler();
-    return false;
-  }
-
-  return gapi.load('client', initializeGapiClient);
-};
+const initGkeDropdowns = () =>
+  gapiLoader()
+    .then((gapi) => gapi.load('client', initializeGapiClient(gapi)))
+    .catch(gkeDropdownErrorHandler);
 
 export default initGkeDropdowns;

@@ -11,7 +11,7 @@ function refreshCount(el) {
   return axios
     .get(url)
     .then(({ data }) => showCount(el, data.count))
-    .catch(e => {
+    .catch((e) => {
       // eslint-disable-next-line no-console
       console.error(`Failed to fetch search count from '${url}'.`, e);
     });

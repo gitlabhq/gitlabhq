@@ -8,7 +8,7 @@ export const receiveBranchesError = ({ commit, dispatch }, { search }) => {
     'setErrorMessage',
     {
       text: __('Error loading branches.'),
-      action: payload =>
+      action: (payload) =>
         dispatch('fetchBranches', payload).then(() =>
           dispatch('setErrorMessage', null, { root: true }),
         ),

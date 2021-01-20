@@ -48,6 +48,11 @@ Cop/StaticTranslationDefinition:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
+InternalAffairs/DeprecateCopHelper:
+  Enabled: true
+  Include:
+    - spec/rubocop/**/*.rb
+
 Lint/LastKeywordArgument:
   Enabled: true
   Safe: false
@@ -320,6 +325,14 @@ RSpec/TimecopTravel:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
     - 'qa/spec/**/*.rb'
+
+RSpec/WebMockEnable:
+  Enabled: true
+  Include:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+  Exclude:
+    - 'spec/support/webmock.rb'
 
 Naming/PredicateName:
   Enabled: true

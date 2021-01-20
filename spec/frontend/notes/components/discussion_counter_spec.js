@@ -95,7 +95,7 @@ describe('DiscussionCounter component', () => {
 
   describe('toggle all threads button', () => {
     let toggleAllButton;
-    const updateStoreWithExpanded = expanded => {
+    const updateStoreWithExpanded = (expanded) => {
       const discussion = { ...discussionMock, expanded };
       store.commit(types.SET_INITIAL_DISCUSSIONS, [discussion]);
       store.dispatch('updateResolvableDiscussionsCounts');

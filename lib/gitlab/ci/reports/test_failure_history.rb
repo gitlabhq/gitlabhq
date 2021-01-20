@@ -12,8 +12,6 @@ module Gitlab
         end
 
         def load!
-          return unless Feature.enabled?(:test_failure_history, project)
-
           recent_failures_count.each do |key_hash, count|
             failed_test_cases[key_hash].set_recent_failures(count, project.default_branch_or_master)
           end

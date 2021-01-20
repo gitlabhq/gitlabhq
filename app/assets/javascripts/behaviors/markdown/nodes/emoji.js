@@ -20,14 +20,14 @@ export default class Emoji extends Node {
       parseDOM: [
         {
           tag: 'gl-emoji',
-          getAttrs: el => ({
+          getAttrs: (el) => ({
             name: el.dataset.name,
             title: el.getAttribute('title'),
             moji: el.textContent,
           }),
         },
       ],
-      toDOM: node => [
+      toDOM: (node) => [
         'gl-emoji',
         { 'data-name': node.attrs.name, title: node.attrs.title },
         node.attrs.moji,

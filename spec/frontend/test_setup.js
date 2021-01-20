@@ -4,14 +4,17 @@ import 'jquery';
 import * as jqueryMatchers from 'custom-jquery-matchers';
 import { config as testUtilsConfig } from '@vue/test-utils';
 import Translate from '~/vue_shared/translate';
-import { initializeTestTimeout } from './helpers/timeout';
-import { getJSONFixture, loadHTMLFixture, setHTMLFixture } from './helpers/fixtures';
+import { initializeTestTimeout } from './__helpers__/timeout';
+import { getJSONFixture, loadHTMLFixture, setHTMLFixture } from './__helpers__/fixtures';
 import { setupManualMocks } from './mocks/mocks_helper';
 import customMatchers from './matchers';
 
-import './helpers/dom_shims';
-import './helpers/jquery';
+import './__helpers__/dom_shims';
+import './__helpers__/jquery';
 import '~/commons/bootstrap';
+
+// This module has some fairly decent visual test coverage in it's own repository.
+jest.mock('@gitlab/favicon-overlay');
 
 process.on('unhandledRejection', global.promiseRejectionHandler);
 
@@ -25,7 +28,7 @@ afterEach(() =>
   }),
 );
 
-initializeTestTimeout(process.env.CI ? 6000 : 5000);
+initializeTestTimeout(process.env.CI ? 6000 : 500);
 
 Vue.config.devtools = false;
 Vue.config.productionTip = false;
@@ -58,8 +61,18 @@ Object.entries(jqueryMatchers).forEach(([matcherName, matcherFactory]) => {
 
 expect.extend(customMatchers);
 
-// Tech debt issue TBD
-testUtilsConfig.logModifiedComponents = false;
+testUtilsConfig.deprecationWarningHandler = (method, message) => {
+  const ALLOWED_DEPRECATED_METHODS = [
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/295679
+    'finding components with `find` or `get`',
+
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/295680
+    'finding components with `findAll`',
+  ];
+  if (!ALLOWED_DEPRECATED_METHODS.includes(method)) {
+    global.console.error(message);
+  }
+};
 
 Object.assign(global, {
   requestIdleCallback(cb) {

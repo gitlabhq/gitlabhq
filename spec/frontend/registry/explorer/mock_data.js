@@ -8,7 +8,6 @@ export const imagesListResponse = [
     location: '0.0.0.0:5000/gitlab-org/gitlab-test/rails-12009',
     canDelete: true,
     createdAt: '2020-11-03T13:29:21Z',
-    tagsCount: 18,
     expirationPolicyStartedAt: null,
   },
   {
@@ -20,7 +19,6 @@ export const imagesListResponse = [
     location: '0.0.0.0:5000/gitlab-org/gitlab-test/rails-20572',
     canDelete: true,
     createdAt: '2020-09-21T06:57:43Z',
-    tagsCount: 1,
     expirationPolicyStartedAt: null,
   },
 ];
@@ -117,8 +115,13 @@ export const containerRepositoryMock = {
   updatedAt: '2020-11-03T13:29:21Z',
   tagsCount: 13,
   expirationPolicyStartedAt: null,
+  expirationPolicyCleanupStatus: 'UNSCHEDULED',
   project: {
     visibility: 'public',
+    containerExpirationPolicy: {
+      enabled: false,
+      nextRunAt: '2020-11-27T08:59:27Z',
+    },
     __typename: 'Project',
   },
 };
@@ -158,7 +161,7 @@ export const tagsMock = [
   },
 ];
 
-export const graphQLImageDetailsMock = override => ({
+export const graphQLImageDetailsMock = (override) => ({
   data: {
     containerRepository: {
       ...containerRepositoryMock,
@@ -208,4 +211,27 @@ export const dockerCommands = {
   dockerBuildCommand: 'foofoo',
   dockerPushCommand: 'barbar',
   dockerLoginCommand: 'bazbaz',
+};
+
+export const graphQLProjectImageRepositoriesDetailsMock = {
+  data: {
+    project: {
+      containerRepositories: {
+        nodes: [
+          {
+            id: 'gid://gitlab/ContainerRepository/26',
+            tagsCount: 4,
+            __typename: 'ContainerRepository',
+          },
+          {
+            id: 'gid://gitlab/ContainerRepository/11',
+            tagsCount: 1,
+            __typename: 'ContainerRepository',
+          },
+        ],
+        __typename: 'ContainerRepositoryConnection',
+      },
+      __typename: 'Project',
+    },
+  },
 };

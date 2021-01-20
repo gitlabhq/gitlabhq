@@ -21,7 +21,7 @@ export const generateBadges = (member, isCurrentUser) => [
   },
 ];
 
-export const isGroup = member => {
+export const isGroup = (member) => {
   return Boolean(member.sharedWithGroup);
 };
 
@@ -37,7 +37,7 @@ export const canRemove = (member, sourceId) => {
   return isDirectMember(member, sourceId) && member.canRemove;
 };
 
-export const canResend = member => {
+export const canResend = (member) => {
   return Boolean(member.invite?.canResend);
 };
 
@@ -47,11 +47,11 @@ export const canUpdate = (member, currentUserId, sourceId) => {
   );
 };
 
-export const parseSortParam = sortableFields => {
+export const parseSortParam = (sortableFields) => {
   const sortParam = getParameterByName('sort');
 
-  const sortedField = FIELDS.filter(field => sortableFields.includes(field.key)).find(
-    field => field.sort?.asc === sortParam || field.sort?.desc === sortParam,
+  const sortedField = FIELDS.filter((field) => sortableFields.includes(field.key)).find(
+    (field) => field.sort?.asc === sortParam || field.sort?.desc === sortParam,
   );
 
   if (!sortedField) {
@@ -70,7 +70,7 @@ export const buildSortHref = ({
   filteredSearchBarTokens,
   filteredSearchBarSearchParam,
 }) => {
-  const sortDefinition = FIELDS.find(field => field.key === sortBy)?.sort;
+  const sortDefinition = FIELDS.find((field) => field.key === sortBy)?.sort;
 
   if (!sortDefinition) {
     return '';

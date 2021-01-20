@@ -14,7 +14,7 @@ RSpec.describe Projects::AfterImportService do
 
   describe '#execute' do
     before do
-      allow(Projects::HousekeepingService)
+      allow(Repositories::HousekeepingService)
         .to receive(:new).with(project).and_return(housekeeping_service)
 
       allow(housekeeping_service)
@@ -73,10 +73,10 @@ RSpec.describe Projects::AfterImportService do
     end
 
     context 'when housekeeping service lease is taken' do
-      let(:exception) { Projects::HousekeepingService::LeaseTaken.new }
+      let(:exception) { Repositories::HousekeepingService::LeaseTaken.new }
 
       it 'logs the error message' do
-        allow_next_instance_of(Projects::HousekeepingService) do |instance|
+        allow_next_instance_of(Repositories::HousekeepingService) do |instance|
           expect(instance).to receive(:execute).and_raise(exception)
         end
 

@@ -21,6 +21,8 @@ RSpec.describe 'Projects > Snippets > User deletes a snippet', :js do
     click_button('Delete snippet')
     wait_for_requests
 
-    expect(page).not_to have_content(snippet.title)
+    # This assertion also confirms we did not end up on an error page
+    expect(page).to have_selector('#new_snippet_link')
+    expect(project.snippets.length).to eq(0)
   end
 end

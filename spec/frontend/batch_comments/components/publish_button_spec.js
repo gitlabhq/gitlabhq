@@ -29,7 +29,7 @@ describe('Batch comments publish button component', () => {
     expect(vm.$store.dispatch).toHaveBeenCalledWith('batchComments/publishReview', undefined);
   });
 
-  it('sets loading when isPublishing is true', done => {
+  it('sets loading when isPublishing is true', (done) => {
     vm.$store.state.batchComments.isPublishing = true;
 
     vm.$nextTick(() => {

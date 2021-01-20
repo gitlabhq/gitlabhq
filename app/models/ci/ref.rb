@@ -33,6 +33,9 @@ module Ci
       state :still_failing, value: 5
 
       after_transition any => [:fixed, :success] do |ci_ref|
+        # Do not try to unlock if no artifacts are locked
+        next unless ci_ref.artifacts_locked?
+
         ci_ref.run_after_commit do
           Ci::PipelineSuccessUnlockArtifactsWorker.perform_async(ci_ref.last_finished_pipeline_id)
         end
@@ -52,6 +55,10 @@ module Ci
 
     def last_finished_pipeline_id
       Ci::Pipeline.last_finished_for_ref_id(self.id)&.id
+    end
+
+    def artifacts_locked?
+      self.pipelines.where(locked: :artifacts_locked).exists?
     end
 
     def update_status_by!(pipeline)

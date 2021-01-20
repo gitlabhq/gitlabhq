@@ -3,7 +3,7 @@
 class ScheduleMergeRequestAssigneesMigrationProgressCheck < ActiveRecord::Migration[5.0]
   include Gitlab::Database::MigrationHelpers
 
-  MIGRATION = 'MergeRequestAssigneesMigrationProgressCheck'.freeze
+  MIGRATION = 'MergeRequestAssigneesMigrationProgressCheck'
 
   DOWNTIME = false
 

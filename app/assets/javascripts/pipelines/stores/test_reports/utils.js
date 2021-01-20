@@ -25,7 +25,7 @@ export const formattedTime = (seconds = 0) => {
   return sprintf(__('%{seconds}s'), { seconds: seconds.toFixed(2) });
 };
 
-export const addIconStatus = testCase => ({
+export const addIconStatus = (testCase) => ({
   ...testCase,
   icon: iconForTestStatus(testCase.status),
   formattedTime: formattedTime(testCase.execution_time),

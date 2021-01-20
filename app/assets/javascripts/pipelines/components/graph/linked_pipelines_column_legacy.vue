@@ -1,6 +1,7 @@
 <script>
 import LinkedPipeline from './linked_pipeline.vue';
 import { UPSTREAM } from './constants';
+import { reportToSentry } from './utils';
 
 export default {
   components: {
@@ -41,6 +42,9 @@ export default {
     isUpstream() {
       return this.type === UPSTREAM;
     },
+  },
+  errorCaptured(err, _vm, info) {
+    reportToSentry('linked_pipelines_column_legacy', `error: ${err}, info: ${info}`);
   },
   methods: {
     onPipelineClick(downstreamNode, pipeline, index) {

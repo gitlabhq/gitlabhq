@@ -17,23 +17,55 @@ RSpec.shared_examples 'User views wiki sidebar' do
       create(:wiki_page, wiki: wiki, title: 'another', content: 'another')
     end
 
-    it 'renders a default sidebar when there is no customized sidebar' do
-      visit wiki_path(wiki)
-
-      expect(page).to have_content('another')
-      expect(page).not_to have_link('View All Pages')
-    end
-
-    context 'when there is a customized sidebar' do
+    context 'when there is no custom sidebar' do
       before do
-        create(:wiki_page, wiki: wiki, title: '_sidebar', content: 'My customized sidebar')
+        visit wiki_path(wiki)
       end
 
-      it 'renders my customized sidebar instead of the default one' do
-        visit wiki_path(wiki)
+      it 'renders a default sidebar' do
+        within('.right-sidebar') do
+          expect(page).to have_content('another')
+          expect(page).not_to have_link('View All Pages')
+        end
+      end
 
-        expect(page).to have_content('My customized sidebar')
-        expect(page).not_to have_content('Another')
+      it 'can create a custom sidebar', :js do
+        click_on 'Edit sidebar'
+        fill_in :wiki_content, with: 'My custom sidebar'
+        click_on 'Create page'
+
+        within('.right-sidebar') do
+          expect(page).to have_content('My custom sidebar')
+          expect(page).not_to have_content('another')
+        end
+      end
+    end
+
+    context 'when there is a custom sidebar' do
+      before do
+        create(:wiki_page, wiki: wiki, title: '_sidebar', content: 'My custom sidebar')
+
+        visit wiki_path(wiki)
+      end
+
+      it 'renders the custom sidebar instead of the default one' do
+        within('.right-sidebar') do
+          expect(page).to have_content('My custom sidebar')
+          expect(page).not_to have_content('another')
+        end
+      end
+
+      it 'can edit the custom sidebar', :js do
+        click_on 'Edit sidebar'
+
+        expect(page).to have_field(:wiki_content, with: 'My custom sidebar')
+
+        fill_in :wiki_content, with: 'My other custom sidebar'
+        click_on 'Save changes'
+
+        within('.right-sidebar') do
+          expect(page).to have_content('My other custom sidebar')
+        end
       end
     end
   end

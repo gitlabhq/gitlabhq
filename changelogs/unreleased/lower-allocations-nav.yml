@@ -1,0 +1,5 @@
+---
+title: Lower allocations when building nav
+merge_request: 51628
+author:
+type: performance

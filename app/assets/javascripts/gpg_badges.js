@@ -28,7 +28,7 @@ export default class GpgBadges {
     return axios
       .get(endpoint, { params })
       .then(({ data }) => {
-        data.signatures.forEach(signature => {
+        data.signatures.forEach((signature) => {
           badges.filter(`[data-commit-sha="${signature.commit_sha}"]`).replaceWith(signature.html);
         });
       })

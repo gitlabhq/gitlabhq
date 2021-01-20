@@ -33,6 +33,7 @@ class Milestone < ApplicationRecord
   scope :order_by_name_asc, -> { order(Arel::Nodes::Ascending.new(arel_table[:title].lower)) }
   scope :reorder_by_due_date_asc, -> { reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC')) }
   scope :with_api_entity_associations, -> { preload(project: [:project_feature, :route, namespace: :route]) }
+  scope :order_by_dates_and_title, -> { order(due_date: :asc, start_date: :asc, title: :asc) }
 
   validates_associated :milestone_releases, message: -> (_, obj) { obj[:value].map(&:errors).map(&:full_messages).join(",") }
 

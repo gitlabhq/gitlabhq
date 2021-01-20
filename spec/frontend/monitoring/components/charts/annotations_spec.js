@@ -36,7 +36,7 @@ describe('annotations spec', () => {
         }),
       );
 
-      annotations.data.forEach(annotation => {
+      annotations.data.forEach((annotation) => {
         expect(annotation).toEqual(expect.any(Object));
       });
 
@@ -58,7 +58,7 @@ describe('annotations spec', () => {
         }),
       );
 
-      annotations.markLine.data.forEach(annotation => {
+      annotations.markLine.data.forEach((annotation) => {
         expect(annotation).toEqual(expect.any(Object));
       });
 
@@ -83,7 +83,7 @@ describe('annotations spec', () => {
         }),
       );
 
-      annotations.markLine.data.forEach(annotation => {
+      annotations.markLine.data.forEach((annotation) => {
         expect(annotation).toEqual(expect.any(Object));
       });
 

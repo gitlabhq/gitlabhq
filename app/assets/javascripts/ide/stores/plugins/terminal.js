@@ -11,7 +11,7 @@ function getPathsFromData(el) {
 }
 
 export default function createTerminalPlugin(el) {
-  return store => {
+  return (store) => {
     store.registerModule('terminal', terminalModule());
 
     store.dispatch('terminal/setPaths', getPathsFromData(el));

@@ -87,21 +87,9 @@ describe('GroupMembersApp', () => {
     });
   });
 
-  describe.each`
-    featureFlagValue | exists
-    ${true}          | ${true}
-    ${false}         | ${false}
-  `(
-    'when `group_members_filtered_search` feature flag is $featureFlagValue',
-    ({ featureFlagValue, exists }) => {
-      it(`${exists ? 'renders' : 'does not render'} FilterSortContainer`, () => {
-        createComponent(
-          {},
-          { provide: { glFeatures: { groupMembersFilteredSearch: featureFlagValue } } },
-        );
+  it('renders `FilterSortContainer`', () => {
+    createComponent();
 
-        expect(findFilterSortContainer().exists()).toBe(exists);
-      });
-    },
-  );
+    expect(findFilterSortContainer().exists()).toBe(true);
+  });
 });

@@ -82,7 +82,7 @@ describe('JobContainerItem', () => {
         );
     });
 
-    it('displays remaining time in tooltip', done => {
+    it('displays remaining time in tooltip', (done) => {
       vm = mountComponent(Component, {
         job: delayedJobFixture,
         isActive: false,

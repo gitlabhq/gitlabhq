@@ -37,7 +37,7 @@ class Commit
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :full_title, pipeline: :single_line
-  cache_markdown_field :description, pipeline: :commit_description
+  cache_markdown_field :description, pipeline: :commit_description, limit: 1.megabyte
 
   class << self
     def decorate(commits, container)
@@ -80,7 +80,7 @@ class Commit
 
     def diff_hard_limit_files(project: nil)
       if Feature.enabled?(:increased_diff_limits, project)
-        2000
+        3000
       else
         1000
       end
@@ -88,7 +88,7 @@ class Commit
 
     def diff_hard_limit_lines(project: nil)
       if Feature.enabled?(:increased_diff_limits, project)
-        75000
+        100000
       else
         50000
       end
@@ -148,7 +148,7 @@ class Commit
     to: :with_pipeline
 
   def with_pipeline
-    @with_pipeline ||= CommitWithPipeline.new(self)
+    @with_pipeline ||= Ci::CommitWithPipeline.new(self)
   end
 
   def id

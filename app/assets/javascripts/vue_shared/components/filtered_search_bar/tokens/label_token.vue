@@ -47,7 +47,7 @@ export default {
     },
     activeLabel() {
       return this.labels.find(
-        label => label.title.toLowerCase() === stripQuotes(this.currentValue),
+        (label) => label.title.toLowerCase() === stripQuotes(this.currentValue),
       );
     },
     containerStyle() {
@@ -74,7 +74,7 @@ export default {
       this.loading = true;
       this.config
         .fetchLabels(searchTerm)
-        .then(res => {
+        .then((res) => {
           // We'd want to avoid doing this check but
           // labels.json and /groups/:id/labels & /projects/:id/labels
           // return response differently.

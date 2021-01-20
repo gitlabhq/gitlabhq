@@ -24,7 +24,7 @@ export const updateGrafanaIntegration = ({ state, dispatch }) =>
       },
     })
     .then(() => dispatch('receiveGrafanaIntegrationUpdateSuccess'))
-    .catch(error => dispatch('receiveGrafanaIntegrationUpdateError', error));
+    .catch((error) => dispatch('receiveGrafanaIntegrationUpdateError', error));
 
 export const receiveGrafanaIntegrationUpdateSuccess = () => {
   /**

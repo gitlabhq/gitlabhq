@@ -1,0 +1,5 @@
+---
+title: Replace user controller spec with its request spec
+merge_request: 50435
+author: Takuya Noguchi
+type: other

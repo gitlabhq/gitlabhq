@@ -9,22 +9,22 @@ module Mutations
 
       argument :id, ::Types::GlobalIDType[::Snippet],
                required: true,
-               description: 'The global ID of the snippet to update'
+               description: 'The global ID of the snippet to update.'
 
       argument :title, GraphQL::STRING_TYPE,
                required: false,
-               description: 'Title of the snippet'
+               description: 'Title of the snippet.'
 
       argument :description, GraphQL::STRING_TYPE,
                required: false,
-               description: 'Description of the snippet'
+               description: 'Description of the snippet.'
 
       argument :visibility_level, Types::VisibilityLevelsEnum,
-               description: 'The visibility level of the snippet',
+               description: 'The visibility level of the snippet.',
                required: false
 
       argument :blob_actions, [Types::Snippets::BlobActionInputType],
-               description: 'Actions to perform over the snippet repository and blobs',
+               description: 'Actions to perform over the snippet repository and blobs.',
                required: false
 
       def resolve(id:, **args)

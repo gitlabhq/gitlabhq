@@ -520,14 +520,29 @@ RSpec.describe API::Labels do
       expect(json_response['color']).to eq(label1.color)
     end
 
-    it 'returns 200 if group label already exists' do
-      create(:group_label, title: label1.name, group: group)
+    context 'if group label already exists' do
+      let!(:group_label) { create(:group_label, title: label1.name, group: group) }
 
-      expect { put api("/projects/#{project.id}/labels/promote", user), params: { name: label1.name } }
-        .to change(project.labels, :count).by(-1)
-        .and change(group.labels, :count).by(0)
+      it 'returns a status of 200' do
+        put api("/projects/#{project.id}/labels/promote", user), params: { name: label1.name }
 
-      expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'does not change the group label count' do
+        expect { put api("/projects/#{project.id}/labels/promote", user), params: { name: label1.name } }
+            .not_to change(group.labels, :count)
+      end
+
+      it 'does not change the group label max (reuses the same ID)' do
+        expect { put api("/projects/#{project.id}/labels/promote", user), params: { name: label1.name } }
+            .not_to change(group.labels, :max)
+      end
+
+      it 'changes the project label count' do
+        expect { put api("/projects/#{project.id}/labels/promote", user), params: { name: label1.name } }
+            .to change(project.labels, :count).by(-1)
+      end
     end
 
     it 'returns 403 if guest promotes label' do

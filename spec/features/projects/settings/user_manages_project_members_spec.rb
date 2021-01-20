@@ -57,7 +57,7 @@ RSpec.describe 'Projects > Settings > User manages project members' do
     end
   end
 
-  it 'shows all members of project shared group' do
+  it 'shows all members of project shared group', :js do
     group.add_owner(user)
     group.add_developer(user_dmitriy)
 
@@ -67,7 +67,9 @@ RSpec.describe 'Projects > Settings > User manages project members' do
 
     visit(project_project_members_path(project))
 
-    page.within('.project-members-groups') do
+    click_link 'Groups'
+
+    page.within('[data-testid="project-member-groups"]') do
       expect(page).to have_content('OpenSource')
       expect(first('.group_member')).to have_content('Maintainer')
     end

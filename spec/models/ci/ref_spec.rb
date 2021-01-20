@@ -16,33 +16,47 @@ RSpec.describe Ci::Ref do
         stub_const('Ci::PipelineSuccessUnlockArtifactsWorker', unlock_artifacts_worker_spy)
       end
 
-      where(:initial_state, :action, :count) do
-        :unknown | :succeed! | 1
-        :unknown | :do_fail! | 0
-        :success | :succeed! | 1
-        :success | :do_fail! | 0
-        :failed | :succeed! | 1
-        :failed | :do_fail! | 0
-        :fixed | :succeed! | 1
-        :fixed | :do_fail! | 0
-        :broken | :succeed! | 1
-        :broken | :do_fail! | 0
-        :still_failing | :succeed | 1
-        :still_failing | :do_fail | 0
+      context 'pipline is locked' do
+        let!(:pipeline) { create(:ci_pipeline, ci_ref_id: ci_ref.id, locked: :artifacts_locked) }
+
+        where(:initial_state, :action, :count) do
+          :unknown | :succeed! | 1
+          :unknown | :do_fail! | 0
+          :success | :succeed! | 1
+          :success | :do_fail! | 0
+          :failed | :succeed! | 1
+          :failed | :do_fail! | 0
+          :fixed | :succeed! | 1
+          :fixed | :do_fail! | 0
+          :broken | :succeed! | 1
+          :broken | :do_fail! | 0
+          :still_failing | :succeed | 1
+          :still_failing | :do_fail | 0
+        end
+
+        with_them do
+          context "when transitioning states" do
+            before do
+              status_value = Ci::Ref.state_machines[:status].states[initial_state].value
+              ci_ref.update!(status: status_value)
+            end
+
+            it 'calls unlock artifacts service' do
+              ci_ref.send(action)
+
+              expect(unlock_artifacts_worker_spy).to have_received(:perform_async).exactly(count).times
+            end
+          end
+        end
       end
 
-      with_them do
-        context "when transitioning states" do
-          before do
-            status_value = Ci::Ref.state_machines[:status].states[initial_state].value
-            ci_ref.update!(status: status_value)
-          end
+      context 'pipeline is unlocked' do
+        let!(:pipeline) { create(:ci_pipeline, ci_ref_id: ci_ref.id, locked: :unlocked) }
 
-          it 'calls unlock artifacts service' do
-            ci_ref.send(action)
+        it 'does not call unlock artifacts service' do
+          ci_ref.succeed!
 
-            expect(unlock_artifacts_worker_spy).to have_received(:perform_async).exactly(count).times
-          end
+          expect(unlock_artifacts_worker_spy).not_to have_received(:perform_async)
         end
       end
     end

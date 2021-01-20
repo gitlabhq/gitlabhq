@@ -20,7 +20,7 @@ describe('Editor Service', () => {
   let mockInstance;
   let event;
   let handler;
-  const parseHtml = str => {
+  const parseHtml = (str) => {
     const wrapper = document.createElement('div');
     wrapper.innerHTML = str;
     return wrapper.firstChild;

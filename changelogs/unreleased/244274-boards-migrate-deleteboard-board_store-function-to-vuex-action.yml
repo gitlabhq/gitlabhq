@@ -1,0 +1,5 @@
+---
+title: Migrate `deleteBoard` board_store function to GraphQL mutation
+merge_request: 51069
+author:
+type: changed

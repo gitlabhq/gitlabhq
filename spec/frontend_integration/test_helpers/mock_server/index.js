@@ -26,7 +26,7 @@ export const createMockServerOptions = () => ({
   },
   seeds(schema) {
     schema.db.loadData({
-      files: getRepositoryFiles().map(path => ({ path })),
+      files: getRepositoryFiles().map((path) => ({ path })),
       projects: [getProject(), getEmptyProject()],
       branches: [getBranch()],
       mergeRequests: getMergeRequests(),

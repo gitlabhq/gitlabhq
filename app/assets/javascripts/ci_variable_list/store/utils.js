@@ -1,12 +1,12 @@
 import { cloneDeep } from 'lodash';
 import { displayText, types } from '../constants';
 
-const variableTypeHandler = type =>
+const variableTypeHandler = (type) =>
   type === displayText.variableText ? types.variableType : types.fileType;
 
-export const prepareDataForDisplay = variables => {
+export const prepareDataForDisplay = (variables) => {
   const variablesToDisplay = [];
-  variables.forEach(variable => {
+  variables.forEach((variable) => {
     const variableCopy = variable;
     if (variableCopy.variable_type === types.variableType) {
       variableCopy.variable_type = displayText.variableText;
@@ -42,4 +42,4 @@ export const prepareDataForApi = (variable, destroy = false) => {
   return variableCopy;
 };
 
-export const prepareEnvironments = environments => environments.map(e => e.name);
+export const prepareEnvironments = (environments) => environments.map((e) => e.name);

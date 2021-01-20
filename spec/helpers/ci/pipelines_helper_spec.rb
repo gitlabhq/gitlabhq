@@ -52,4 +52,23 @@ RSpec.describe Ci::PipelinesHelper do
       end
     end
   end
+
+  describe 'has_gitlab_ci?' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject(:has_gitlab_ci?) { helper.has_gitlab_ci?(project) }
+
+    let(:project) { double(:project, has_ci?: has_ci?, builds_enabled?: builds_enabled?) }
+
+    where(:builds_enabled?, :has_ci?, :result) do
+      true                | true    | true
+      true                | false   | false
+      false               | true    | false
+      false               | false   | false
+    end
+
+    with_them do
+      it { expect(has_gitlab_ci?).to eq(result) }
+    end
+  end
 end

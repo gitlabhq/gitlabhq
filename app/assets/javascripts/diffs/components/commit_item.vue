@@ -6,7 +6,7 @@ import { GlButtonGroup, GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui'
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
@@ -39,7 +39,7 @@ import { setUrlParams } from '../../lib/utils/url_utility';
 export default {
   components: {
     UserAvatarLink,
-    ClipboardButton,
+    ModalCopyButton,
     TimeAgoTooltip,
     CommitPipelineStatus,
     GlButtonGroup,
@@ -142,16 +142,13 @@ export default {
             data-testid="commit-sha-short-id"
             v-text="commit.short_id"
           />
-          <clipboard-button
+          <modal-copy-button
             :text="commit.id"
             :title="__('Copy commit SHA')"
             class="input-group-text"
           />
         </gl-button-group>
-        <div
-          v-if="hasNeighborCommits && glFeatures.mrCommitNeighborNav"
-          class="commit-nav-buttons ml-3"
-        >
+        <div v-if="hasNeighborCommits" class="commit-nav-buttons ml-3">
           <gl-button-group>
             <gl-button
               :href="previousCommitUrl"

@@ -18,6 +18,8 @@ import (
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/gitaly"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab-workhorse/internal/log"
+
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/secret"
 )
 
@@ -322,7 +324,7 @@ func passResponseBack(httpResponse *http.Response, w http.ResponseWriter, r *htt
 	}
 	w.WriteHeader(httpResponse.StatusCode)
 	if _, err := io.Copy(w, responseBody); err != nil {
-		helper.LogError(r, err)
+		log.WithRequest(r).WithError(err).Error()
 	}
 }
 

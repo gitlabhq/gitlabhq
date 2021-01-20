@@ -10,7 +10,7 @@ describe('Upload Image Tab', () => {
 
   afterEach(() => wrapper.destroy());
 
-  const triggerInputEvent = size => {
+  const triggerInputEvent = (size) => {
     const file = { size, name: 'file-name.png' };
     const mockEvent = new Event('input');
 

@@ -121,7 +121,7 @@ export default {
         this.actionInProgress = actionName;
 
         MRWidgetService.executeInlineAction(endpoint)
-          .then(resp => {
+          .then((resp) => {
             const redirectUrl = resp?.data?.redirect_url;
             if (redirectUrl) {
               visitUrl(redirectUrl);

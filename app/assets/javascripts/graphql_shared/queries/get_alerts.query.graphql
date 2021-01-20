@@ -1,0 +1,36 @@
+#import "~/graphql_shared/fragments/alert.fragment.graphql"
+
+query getAlerts(
+  $projectPath: ID!
+  $statuses: [AlertManagementStatus!]
+  $sort: AlertManagementAlertSort
+  $firstPageSize: Int
+  $lastPageSize: Int
+  $prevPageCursor: String = ""
+  $nextPageCursor: String = ""
+  $searchTerm: String = ""
+  $assigneeUsername: String = ""
+) {
+  project(fullPath: $projectPath) {
+    alertManagementAlerts(
+      search: $searchTerm
+      assigneeUsername: $assigneeUsername
+      statuses: $statuses
+      sort: $sort
+      first: $firstPageSize
+      last: $lastPageSize
+      after: $nextPageCursor
+      before: $prevPageCursor
+    ) {
+      nodes {
+        ...AlertListItem
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+        hasPreviousPage
+        startCursor
+      }
+    }
+  }
+}

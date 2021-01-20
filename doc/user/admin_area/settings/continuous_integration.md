@@ -174,7 +174,7 @@ but commented out to help encourage others to add to it in the future. -->
 
 WARNING:
 This feature is being re-evaluated in favor of a different
-[compliance solution](https://gitlab.com/gitlab-org/gitlab/-/issues/34830).
+[compliance solution](https://gitlab.com/groups/gitlab-org/-/epics/3156).
 We recommend that users who haven't yet implemented this feature wait for
 the new solution.
 
@@ -186,6 +186,12 @@ sourced from:
 
 - The [instance template repository](instance_template_repository.md).
 - GitLab-supplied configuration.
+
+NOTE:
+When you use a configuration defined in an instance template repository,
+nested [`include:`](../../../ci/yaml/README.md#include) keywords
+(including `include:file`, `include:local`, `include:remote`, and `include:template`)
+[do not work](https://gitlab.com/gitlab-org/gitlab/-/issues/35345).
 
 To set required pipeline configuration:
 

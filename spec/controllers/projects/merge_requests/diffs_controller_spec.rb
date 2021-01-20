@@ -193,6 +193,29 @@ RSpec.describe Projects::MergeRequests::DiffsController do
       end
     end
 
+    context "with the :default_merge_ref_for_diffs flag on" do
+      let(:diffable_merge_ref) { true }
+
+      subject do
+        go(diff_head: true,
+           diff_id: merge_request.merge_request_diff.id,
+           start_sha: merge_request.merge_request_diff.start_commit_sha)
+      end
+
+      it "correctly generates the right diff between versions" do
+        MergeRequests::MergeToRefService.new(project, merge_request.author).execute(merge_request)
+
+        expect_next_instance_of(CompareService) do |service|
+          expect(service).to receive(:execute).with(
+            project,
+            merge_request.merge_request_diff.head_commit_sha,
+            straight: true)
+        end
+
+        subject
+      end
+    end
+
     context 'with diff_head param passed' do
       before do
         allow(merge_request).to receive(:diffable_merge_ref?)
@@ -377,6 +400,57 @@ RSpec.describe Projects::MergeRequests::DiffsController do
         subject
 
         expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'tracks mr_diffs event' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .to receive(:track_mr_diffs_action)
+          .with(merge_request: merge_request)
+
+        subject
+      end
+
+      context 'when DNT is enabled' do
+        before do
+          request.headers['DNT'] = '1'
+        end
+
+        it 'does not track any mr_diffs event' do
+          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+            .not_to receive(:track_mr_diffs_action)
+
+          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+            .not_to receive(:track_mr_diffs_single_file_action)
+
+          subject
+        end
+      end
+
+      context 'when user has view_diffs_file_by_file set to false' do
+        before do
+          user.update!(view_diffs_file_by_file: false)
+        end
+
+        it 'does not track single_file_diffs events' do
+          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+            .not_to receive(:track_mr_diffs_single_file_action)
+
+          subject
+        end
+      end
+
+      context 'when user has view_diffs_file_by_file set to true' do
+        before do
+          user.update!(view_diffs_file_by_file: true)
+        end
+
+        it 'tracks single_file_diffs events' do
+          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+            .to receive(:track_mr_diffs_single_file_action)
+            .with(merge_request: merge_request, user: user)
+
+          subject
+        end
       end
     end
 

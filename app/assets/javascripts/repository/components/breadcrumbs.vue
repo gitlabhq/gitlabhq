@@ -40,7 +40,7 @@ export default {
           projectPath: this.projectPath,
         };
       },
-      update: data => data.project?.userPermissions,
+      update: (data) => data.project?.userPermissions,
       error(error) {
         throw error;
       },
@@ -105,7 +105,7 @@ export default {
     pathLinks() {
       return this.currentPath
         .split('/')
-        .filter(p => p !== '')
+        .filter((p) => p !== '')
         .reduce(
           (acc, name, i) => {
             const path = joinPaths(i > 0 ? acc[i].path : '', escapeFileUrl(name));

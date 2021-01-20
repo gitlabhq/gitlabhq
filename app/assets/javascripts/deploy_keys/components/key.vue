@@ -48,7 +48,7 @@ export default {
 
       if (this.projectId !== null) {
         const indexOfCurrentProject = projects.findIndex(
-          project =>
+          (project) =>
             project &&
             project.project &&
             project.project.id &&

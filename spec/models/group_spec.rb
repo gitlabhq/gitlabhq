@@ -31,6 +31,7 @@ RSpec.describe Group do
     it { is_expected.to have_one(:dependency_proxy_setting) }
     it { is_expected.to have_many(:dependency_proxy_blobs) }
     it { is_expected.to have_many(:dependency_proxy_manifests) }
+    it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::GroupDistribution').dependent(:destroy) }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
@@ -1749,6 +1750,25 @@ RSpec.describe Group do
       end
 
       it { is_expected.to eq(false) }
+    end
+  end
+
+  describe 'with Debian Distributions' do
+    subject { create(:group) }
+
+    let!(:distributions) { create_list(:debian_group_distribution, 2, :with_file, container: subject) }
+
+    it 'removes distribution files on removal' do
+      distribution_file_paths = distributions.map do |distribution|
+        distribution.file.path
+      end
+
+      expect { subject.destroy }
+        .to change {
+          distribution_file_paths.select do |path|
+            File.exist? path
+          end.length
+        }.from(distribution_file_paths.length).to(0)
     end
   end
 end

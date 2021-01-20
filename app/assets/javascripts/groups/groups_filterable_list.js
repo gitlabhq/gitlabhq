@@ -65,10 +65,7 @@ export default class GroupFilterableList extends FilterableList {
 
   setDefaultFilterOption() {
     const defaultOption = $.trim(
-      this.$dropdown
-        .find('.dropdown-menu li.js-filter-sort-order a')
-        .first()
-        .text(),
+      this.$dropdown.find('.dropdown-menu li.js-filter-sort-order a').first().text(),
     );
     this.$dropdown.find('.dropdown-label').text(defaultOption);
   }

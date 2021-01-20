@@ -26,7 +26,7 @@ export default class ReplacedImageDiff extends ImageDiff {
     this.imageEls = {};
 
     const viewTypeNames = Object.getOwnPropertyNames(viewTypes);
-    viewTypeNames.forEach(viewType => {
+    viewTypeNames.forEach((viewType) => {
       this.imageEls[viewType] = this.imageFrameEls[viewType].querySelector('img');
     });
   }
@@ -62,7 +62,7 @@ export default class ReplacedImageDiff extends ImageDiff {
 
     // Clear existing badges on new view
     const existingBadges = this.imageFrameEl.querySelectorAll('.badge');
-    [...existingBadges].map(badge => badge.remove());
+    [...existingBadges].map((badge) => badge.remove());
 
     // Remove existing references to old view image badges
     this.imageBadges = [];

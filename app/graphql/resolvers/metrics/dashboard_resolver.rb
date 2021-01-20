@@ -5,7 +5,7 @@ module Resolvers
     class DashboardResolver < Resolvers::BaseResolver
       argument :path, GraphQL::STRING_TYPE,
                required: true,
-               description: "Path to a file which defines metrics dashboard eg: 'config/prometheus/common_metrics.yml'"
+               description: "Path to a file which defines metrics dashboard eg: 'config/prometheus/common_metrics.yml'."
 
       type Types::Metrics::DashboardType, null: true
 

@@ -1,0 +1,5 @@
+---
+title: Remove unnecessary use of .freeze
+merge_request: 51073
+author: Adam Davies @adamd92
+type: other

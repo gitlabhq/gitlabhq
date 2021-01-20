@@ -1,0 +1,8 @@
+---
+name: s3_multithreaded_uploads
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50922
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/296772
+milestone: '13.8'
+type: development
+group: group::continuous integration
+default_enabled: true

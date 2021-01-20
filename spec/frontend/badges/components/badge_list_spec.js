@@ -48,7 +48,7 @@ describe('BadgeList component', () => {
     expect(rows).toHaveLength(numberOfDummyBadges);
   });
 
-  it('renders a message if no badges exist', done => {
+  it('renders a message if no badges exist', (done) => {
     store.state.badges = [];
 
     Vue.nextTick()
@@ -59,7 +59,7 @@ describe('BadgeList component', () => {
       .catch(done.fail);
   });
 
-  it('shows a loading icon when loading', done => {
+  it('shows a loading icon when loading', (done) => {
     store.state.isLoading = true;
 
     Vue.nextTick()
@@ -73,15 +73,13 @@ describe('BadgeList component', () => {
   });
 
   describe('for group badges', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       store.state.kind = GROUP_BADGE;
 
-      Vue.nextTick()
-        .then(done)
-        .catch(done.fail);
+      Vue.nextTick().then(done).catch(done.fail);
     });
 
-    it('renders a message if no badges exist', done => {
+    it('renders a message if no badges exist', (done) => {
       store.state.badges = [];
 
       Vue.nextTick()

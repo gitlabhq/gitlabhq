@@ -12,7 +12,7 @@ import (
 	"sync"
 
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab-workhorse/internal/log"
 )
 
 const (
@@ -54,7 +54,7 @@ func postRPCHandler(a *api.API, name string, handler func(*HttpResponseWriter, *
 			// no-op. It never reaches net/http because GitHttpResponseWriter calls
 			// WriteHeader on its underlying ResponseWriter at most once.
 			w.WriteHeader(500)
-			helper.LogError(r, fmt.Errorf("%s: %v", name, err))
+			log.WithRequest(r).WithError(fmt.Errorf("%s: %v", name, err)).Error()
 		}
 	})
 }

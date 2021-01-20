@@ -80,8 +80,9 @@
                 = storage_counter(project.statistics.storage_size)
             %span.float-right.light
               %span.monospace= project.full_path + '.git'
-      .card-footer
-        = paginate @projects, param_name: 'projects_page', theme: 'gitlab'
+      - unless @projects.size < Kaminari.config.default_per_page
+        .card-footer
+          = paginate @projects, param_name: 'projects_page', theme: 'gitlab'
 
     - shared_projects = @group.shared_projects.sort_by(&:name)
     - unless shared_projects.empty?
@@ -134,5 +135,6 @@
                            group: @group,
                            show_controls: false,
                            current_user_is_group_owner: current_user_is_group_owner }
-      .card-footer
-        = paginate @members, param_name: 'members_page', theme: 'gitlab'
+      - unless @members.size < Kaminari.config.default_per_page
+        .card-footer
+          = paginate @members, param_name: 'members_page', theme: 'gitlab'

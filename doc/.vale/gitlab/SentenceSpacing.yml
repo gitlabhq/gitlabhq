@@ -1,10 +1,7 @@
 ---
 # Error: gitlab.SentenceSpacing
 #
-# Checks for the following in common content scenarios:
-#
-# - No spaces.
-# - More than one space.
+# Checks for incorrect spacing (no spaces, or more than one space) around punctuation.
 #
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence

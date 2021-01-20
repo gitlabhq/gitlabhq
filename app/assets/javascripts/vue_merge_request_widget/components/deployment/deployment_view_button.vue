@@ -57,7 +57,7 @@ export default {
       return this.deployment.changes && this.deployment.changes.length > 1;
     },
     filteredChanges() {
-      return this.deployment?.changes?.filter(change => change.path.includes(this.searchTerm));
+      return this.deployment?.changes?.filter((change) => change.path.includes(this.searchTerm));
     },
   },
 };

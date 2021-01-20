@@ -1,6 +1,6 @@
 import Vue from 'vue';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import JobItem from '~/ide/components/jobs/item.vue';
-import mountComponent from '../../../helpers/vue_mount_component_helper';
 import { jobs } from '../../mock_data';
 
 describe('IDE jobs item', () => {
@@ -27,7 +27,7 @@ describe('IDE jobs item', () => {
     expect(vm.$el.querySelector('[data-testid="status_success_borderless-icon"]')).not.toBe(null);
   });
 
-  it('does not render view logs button if not started', done => {
+  it('does not render view logs button if not started', (done) => {
     vm.job.started = false;
 
     vm.$nextTick(() => {

@@ -1,7 +1,7 @@
 import CodeQualityComparisonWorker from '../../workers/codequality_comparison_worker';
 
 export const parseCodeclimateMetrics = (issues = [], path = '') => {
-  return issues.map(issue => {
+  return issues.map((issue) => {
     const parsedIssue = {
       ...issue,
       name: issue.description,

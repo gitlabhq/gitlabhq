@@ -6,8 +6,8 @@ RSpec.describe 'Jobs/Test.gitlab-ci.yml' do
   subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('Jobs/Test') }
 
   describe 'the created pipeline' do
-    let_it_be(:user) { create(:admin) }
     let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:user) { project.owner }
 
     let(:default_branch) { 'master' }
     let(:pipeline_ref) { default_branch }

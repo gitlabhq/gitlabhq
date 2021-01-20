@@ -69,7 +69,7 @@ export default {
 
     commitsSearchInput.addEventListener(
       'keyup',
-      debounce(event => this.setSearchParam(event.target.value), 500), // keyup & time is to match effect of "filter by commit message"
+      debounce((event) => this.setSearchParam(event.target.value), 500), // keyup & time is to match effect of "filter by commit message"
     );
   },
   methods: {

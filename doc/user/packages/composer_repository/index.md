@@ -21,6 +21,11 @@ If you do not have a Composer package, create one and check it in to
 a repository. This example shows a GitLab repository, but the repository
 can be any public or private repository.
 
+WARNING:
+If you are using a GitLab repository, the project must have been created from
+a group's namespace, rather than a user's namespace. Composer packages
+[can't be published to projects created from a user's namespace](https://gitlab.com/gitlab-org/gitlab/-/issues/235467).
+
 1. Create a directory called `my-composer-package` and change to that directory:
 
    ```shell
@@ -72,8 +77,8 @@ Prerequisites:
 
 - A package in a GitLab repository. Composer packages should be versioned based on
   the [Composer specification](https://getcomposer.org/doc/04-schema.md#version).
-  If the version is not valid, for example, it has three dots (`1.0.0.0`), an 
-  error (`Validation failed: Version is invalid`) occurs when you publish. 
+  If the version is not valid, for example, it has three dots (`1.0.0.0`), an
+  error (`Validation failed: Version is invalid`) occurs when you publish.
 - A valid `composer.json` file.
 - The Packages feature is enabled in a GitLab repository.
 - The project ID, which is on the project's home page.
@@ -131,6 +136,13 @@ A more detailed Composer CI/CD file is also available as a `.gitlab-ci.yml` temp
 
 WARNING:
 Do not save unless you want to overwrite the existing CI/CD file.
+
+## Publishing packages with the same name or version
+
+When you publish:
+
+- The same package with different data, it overwrites the existing package.
+- The same package with the same data, a `404 Bad request` error occurs.
 
 ## Install a Composer package
 
@@ -260,6 +272,6 @@ Output indicates that the package has been successfully installed.
 
 WARNING:
 Never commit the `auth.json` file to your repository. To install packages from a CI/CD job,
-consider using the [`composer config`](https://getcomposer.org/doc/articles/handling-private-packages-with-satis.md#authentication) tool with your personal access token
+consider using the [`composer config`](https://getcomposer.org/doc/articles/handling-private-packages.md#satis) tool with your personal access token
 stored in a [GitLab CI/CD environment variable](../../../ci/variables/README.md) or in
 [HashiCorp Vault](../../../ci/secrets/index.md).

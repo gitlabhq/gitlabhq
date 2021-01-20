@@ -74,7 +74,7 @@ export default {
 
     this.blobsOrig = blobsById;
     this.blobs = cloneDeep(blobsById);
-    this.blobIds = blobs.map(x => x.id);
+    this.blobIds = blobs.map((x) => x.id);
 
     // Show 1 empty blob if none exist
     if (!this.blobIds.length) {
@@ -108,7 +108,7 @@ export default {
       this.blobIds.push(blob.id);
     },
     deleteBlob(id) {
-      this.blobIds = this.blobIds.filter(x => x !== id);
+      this.blobIds = this.blobIds.filter((x) => x !== id);
       this.$delete(this.blobs, id);
     },
     updateBlob(id, args) {

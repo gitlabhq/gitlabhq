@@ -85,10 +85,7 @@ export default class CommitsList {
 
       // Update commits count in the previous commits header.
       commitsCount += Number(
-        $(processedData)
-          .nextUntil('li.js-commit-header')
-          .first()
-          .find('li.commit').length,
+        $(processedData).nextUntil('li.js-commit-header').first().find('li.commit').length,
       );
 
       $commitsHeadersLast

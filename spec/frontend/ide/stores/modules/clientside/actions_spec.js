@@ -25,7 +25,7 @@ describe('IDE store module clientside actions', () => {
   });
 
   describe('pingUsage', () => {
-    it('posts to usage endpoint', done => {
+    it('posts to usage endpoint', (done) => {
       const usageSpy = jest.fn(() => [200]);
 
       mock.onPost(TEST_USAGE_URL).reply(() => usageSpy());

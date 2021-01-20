@@ -9,7 +9,7 @@ import InviteAvatar from '~/members/components/avatars/invite_avatar.vue';
 describe('MemberList', () => {
   let wrapper;
 
-  const createComponent = propsData => {
+  const createComponent = (propsData) => {
     wrapper = shallowMount(MemberAvatar, {
       propsData: {
         isCurrentUser: false,

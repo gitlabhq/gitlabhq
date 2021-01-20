@@ -57,6 +57,7 @@ module QA
 
           view 'app/assets/javascripts/vue_shared/components/file_row.vue' do
             element :file_name_content
+            element :file_row_container
           end
 
           view 'app/assets/javascripts/ide/components/new_dropdown/index.vue' do
@@ -77,14 +78,54 @@ module QA
             element :ide_commit_message_field
           end
 
+          view 'app/assets/javascripts/vue_shared/components/changed_file_icon.vue' do
+            element :changed_file_icon_content
+          end
+
+          view 'app/assets/javascripts/vue_shared/components/content_viewer/content_viewer.vue' do
+            element :preview_container
+          end
+
+          view 'app/assets/javascripts/vue_shared/components/content_viewer/viewers/download_viewer.vue' do
+            element :download_button
+          end
+
+          view 'app/assets/javascripts/vue_shared/components/content_viewer/viewers/image_viewer.vue' do
+            element :image_viewer_container
+          end
+
+          view 'app/assets/javascripts/ide/components/new_dropdown/upload.vue' do
+            element :file_upload_field
+          end
+
           def has_file?(file_name)
             within_element(:file_list) do
-              page.has_content? file_name
+              has_text?(file_name)
             end
           end
 
           def has_project_path?(project_path)
             has_element?(:project_path_content, project_path: project_path)
+          end
+
+          def has_file_addition_icon?(file_name)
+            within_element(:file_row_container, file_name: file_name) do
+              has_element?(:changed_file_icon_content, title: 'Added')
+            end
+          end
+
+          def has_download_button?(file_name)
+            click_element(:file_row_container, file_name: file_name)
+            within_element(:preview_container) do
+              has_element?(:download_button)
+            end
+          end
+
+          def has_image_viewer?(file_name)
+            click_element(:file_row_container, file_name: file_name)
+            within_element(:preview_container) do
+              has_element?(:image_viewer_container)
+            end
           end
 
           def go_to_project
@@ -210,6 +251,12 @@ module QA
             # wait for the fork to be created
             wait_until(reload: true) do
               has_element?(:file_list)
+            end
+          end
+
+          def upload_file(file_path)
+            within_element(:file_list) do
+              find_element(:file_upload_field, visible: false).send_keys(file_path)
             end
           end
         end

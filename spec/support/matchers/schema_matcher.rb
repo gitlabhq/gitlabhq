@@ -2,6 +2,8 @@
 
 module SchemaPath
   def self.expand(schema, dir = nil)
+    return schema unless schema.is_a?(String)
+
     if Gitlab.ee? && dir.nil?
       ee_path = expand(schema, 'ee')
 
@@ -35,7 +37,13 @@ RSpec::Matchers.define :match_schema do |schema, dir: nil, **options|
   end
 
   failure_message do |response|
-    "didn't match the schema defined by #{SchemaPath.expand(schema, dir)}" \
+    "didn't match the schema defined by #{schema_name(schema, dir)}" \
     " The validation errors were:\n#{@errors.join("\n")}"
+  end
+
+  def schema_name(schema, dir)
+    return 'provided schema' unless schema.is_a?(String)
+
+    SchemaPath.expand(schema, dir)
   end
 end

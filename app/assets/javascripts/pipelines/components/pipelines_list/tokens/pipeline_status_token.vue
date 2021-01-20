@@ -72,7 +72,7 @@ export default {
       ];
     },
     findActiveStatus() {
-      return this.statuses.find(status => status.value === this.value.data);
+      return this.statuses.find((status) => status.value === this.value.data);
     },
   },
 };

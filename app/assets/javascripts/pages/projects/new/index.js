@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   import(
     /* webpackChunkName: 'experiment_new_project_creation' */ '../../../projects/experiment_new_project_creation'
   )
-    .then(m => {
+    .then((m) => {
       const el = document.querySelector('.js-experiment-new-project-creation');
 
       if (!el) {
@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const config = {
         hasErrors: 'hasErrors' in el.dataset,
         isCiCdAvailable: 'isCiCdAvailable' in el.dataset,
+        newProjectGuidelines: el.dataset.newProjectGuidelines,
       };
       m.default(el, config);
     })

@@ -37,7 +37,7 @@ A simple `docker-compose.yml` file would be:
 version: "3"
 services:
   gitlab:
-    image: 'gitlab/gitlab-ce:12.2.5-ce.0'
+    image: 'gitlab/gitlab-ee:12.2.5-ee.0'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
         nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    proxy_cache off; \n    proxy_pass  http://plantuml:8080/; \n}\n"
@@ -90,8 +90,8 @@ the configuration below accordingly.
 ### Making local PlantUML accessible using custom GitLab setup
 
 The PlantUML server runs locally on your server, so it is not accessible
-externally. As such, it is necessary to catch external PlantUML calls and
-redirect them to the local server.
+externally by default. As such, it is necessary to catch external PlantUML
+calls and redirect them to the local server.
 
 The idea is to redirect each call to `https://gitlab.example.com/-/plantuml/`
 to the local PlantUML server `http://plantuml:8080/` or `http://localhost:8080/plantuml/`, depending on your setup.
@@ -111,6 +111,12 @@ To activate the changes, run the following command:
 ```shell
 sudo gitlab-ctl reconfigure
 ```
+
+Note that the redirection through GitLab **must** be configured
+when running [GitLab with TLS](https://docs.gitlab.com/omnibus/settings/ssl.html)
+due to PlantUML's use of the insecure HTTP protocol. Newer browsers such
+as [Google Chrome 86+](https://www.chromestatus.com/feature/4926989725073408)
+do not load insecure HTTP resources on a page served over HTTPS.
 
 ### Security
 

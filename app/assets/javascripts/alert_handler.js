@@ -8,9 +8,9 @@ export default function initAlertHandler() {
   const DISMISS_LABEL = '[aria-label="Dismiss"]';
   const DISMISS_CLASS = '.gl-alert-dismiss';
 
-  DISMISSIBLE_SELECTORS.forEach(selector => {
+  DISMISSIBLE_SELECTORS.forEach((selector) => {
     const elements = document.querySelectorAll(selector);
-    elements.forEach(element => {
+    elements.forEach((element) => {
       const button = element.querySelector(DISMISS_LABEL) || element.querySelector(DISMISS_CLASS);
       if (!button) {
         return;

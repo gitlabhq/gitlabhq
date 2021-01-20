@@ -1,8 +1,0 @@
----
-name: feature_flags_legacy_read_only
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38353
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/240985
-milestone: '13.3'
-type: development
-group: group::progressive delivery
-default_enabled: true

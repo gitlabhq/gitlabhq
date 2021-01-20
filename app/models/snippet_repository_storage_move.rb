@@ -12,7 +12,11 @@ class SnippetRepositoryStorageMove < ApplicationRecord
 
   override :schedule_repository_storage_update_worker
   def schedule_repository_storage_update_worker
-    # TODO https://gitlab.com/gitlab-org/gitlab/-/issues/218991
+    SnippetUpdateRepositoryStorageWorker.perform_async(
+      snippet_id,
+      destination_storage_name,
+      id
+    )
   end
 
   private

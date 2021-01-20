@@ -42,7 +42,7 @@ export default {
       this.loading = true;
       this.alert = null;
       this.duplicateSystemDashboard(this.form)
-        .then(createdDashboard => {
+        .then((createdDashboard) => {
           this.loading = false;
           this.alert = null;
 
@@ -55,7 +55,7 @@ export default {
             this.form.branch === this.defaultBranch ? createdDashboard : this.selectedDashboard;
           this.$emit(events.dashboardDuplicated, dashboard);
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
           this.alert = error;
         });

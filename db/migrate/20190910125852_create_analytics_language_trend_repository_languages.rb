@@ -7,16 +7,15 @@ class CreateAnalyticsLanguageTrendRepositoryLanguages < ActiveRecord::Migration[
   def change
     create_table :analytics_language_trend_repository_languages, id: false do |t|
       t.integer :file_count, null: false, default: 0
-      t.references :programming_language, {
+
+      t.references :programming_language,
         null: false,
         foreign_key: { on_delete: :cascade },
         index: false
-      }
-      t.references :project, {
+      t.references :project,
         null: false,
         foreign_key: { on_delete: :cascade },
         index: { name: INDEX_PREFIX + 'on_project_id' }
-      }
       t.integer :loc, null: false, default: 0
       t.integer :bytes, null: false, default: 0
       # Storing percentage (with 2 decimal places), on 2 bytes.

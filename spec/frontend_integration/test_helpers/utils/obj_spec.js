@@ -3,9 +3,9 @@ import { withKeys, withValues } from './obj';
 describe('frontend_integration/test_helpers/utils/obj', () => {
   describe('withKeys', () => {
     it('picks and maps keys', () => {
-      expect(withKeys({ a: '123', b: 456, c: 'd' }, { b: 'lorem', c: 'ipsum', z: 'zed ' })).toEqual(
-        { lorem: 456, ipsum: 'd' },
-      );
+      expect(
+        withKeys({ a: '123', b: 456, c: 'd' }, { b: 'lorem', c: 'ipsum', z: 'zed ' }),
+      ).toEqual({ lorem: 456, ipsum: 'd' });
     });
   });
 

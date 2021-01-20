@@ -108,7 +108,7 @@ RSpec.describe Ci::CreatePipelineService do
         it_behaves_like 'returns a non persisted pipeline'
 
         it 'returns a pipeline with errors', :aggregate_failures do
-          error_message = "test: needs 'build'"
+          error_message = "'test' job needs 'build' job, but it was not added to the pipeline"
 
           expect(subject.error_messages.map(&:content)).to eq([error_message])
           expect(subject.errors).not_to be_empty

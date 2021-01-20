@@ -9,7 +9,7 @@ export default {
     state.isLoading = true;
   },
   [types.RECEIVE_REPORTS_SUCCESS](state, response) {
-    state.hasError = response.suites.some(suite => suite.status === 'error');
+    state.hasError = response.suites.some((suite) => suite.status === 'error');
 
     state.isLoading = false;
 
@@ -44,13 +44,27 @@ export default {
   [types.SET_ISSUE_MODAL_DATA](state, payload) {
     state.modal.title = payload.issue.name;
 
-    Object.keys(payload.issue).forEach(key => {
+    Object.keys(payload.issue).forEach((key) => {
       if (Object.prototype.hasOwnProperty.call(state.modal.data, key)) {
         state.modal.data[key] = {
           ...state.modal.data[key],
           value: payload.issue[key],
         };
       }
+    });
+
+    state.modal.open = true;
+  },
+  [types.RESET_ISSUE_MODAL_DATA](state) {
+    state.modal.open = false;
+
+    // Resetting modal data
+    state.modal.title = null;
+    Object.keys(state.modal.data).forEach((key) => {
+      state.modal.data[key] = {
+        ...state.modal.data[key],
+        value: null,
+      };
     });
   },
 };

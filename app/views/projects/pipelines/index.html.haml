@@ -17,4 +17,4 @@
   "new-pipeline-path" => can?(current_user, :create_pipeline, @project) && new_project_pipeline_path(@project),
   "ci-lint-path" => can?(current_user, :create_pipeline, @project) && project_ci_lint_path(@project),
   "reset-cache-path" => can?(current_user, :admin_pipeline, @project) && reset_cache_project_settings_ci_cd_path(@project) ,
-  "has-gitlab-ci" => (@project.has_ci? && @project.builds_enabled?).to_s } }
+  "has-gitlab-ci" => has_gitlab_ci?(@project).to_s } }

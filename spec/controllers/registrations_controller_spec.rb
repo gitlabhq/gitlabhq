@@ -6,7 +6,6 @@ RSpec.describe RegistrationsController do
   include TermsHelper
 
   before do
-    stub_feature_flags(invisible_captcha: false)
     stub_application_setting(require_admin_approval_after_user_signup: false)
   end
 
@@ -193,13 +192,8 @@ RSpec.describe RegistrationsController do
 
     context 'when invisible captcha is enabled' do
       before do
-        stub_feature_flags(invisible_captcha: true)
-        InvisibleCaptcha.timestamp_enabled = true
+        stub_application_setting(invisible_captcha_enabled: true)
         InvisibleCaptcha.timestamp_threshold = treshold
-      end
-
-      after do
-        InvisibleCaptcha.timestamp_enabled = false
       end
 
       let(:treshold) { 4 }

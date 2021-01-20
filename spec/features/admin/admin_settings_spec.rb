@@ -17,10 +17,7 @@ RSpec.describe 'Admin updates settings' do
     end
 
     context 'General page' do
-      let(:gitpod_feature_enabled) { true }
-
       before do
-        stub_feature_flags(gitpod: gitpod_feature_enabled)
         visit general_admin_application_settings_path
       end
 
@@ -224,28 +221,16 @@ RSpec.describe 'Admin updates settings' do
       end
 
       context 'Configure Gitpod' do
-        context 'with feature disabled' do
-          let(:gitpod_feature_enabled) { false }
-
-          it 'do not show settings' do
-            expect(page).not_to have_selector('#js-gitpod-settings')
+        it 'changes gitpod settings' do
+          page.within('#js-gitpod-settings') do
+            check 'Enable Gitpod integration'
+            fill_in 'Gitpod URL', with: 'https://gitpod.test/'
+            click_button 'Save changes'
           end
-        end
 
-        context 'with feature enabled' do
-          let(:gitpod_feature_enabled) { true }
-
-          it 'changes gitpod settings' do
-            page.within('#js-gitpod-settings') do
-              check 'Enable Gitpod integration'
-              fill_in 'Gitpod URL', with: 'https://gitpod.test/'
-              click_button 'Save changes'
-            end
-
-            expect(page).to have_content 'Application settings saved successfully'
-            expect(current_settings.gitpod_url).to eq('https://gitpod.test/')
-            expect(current_settings.gitpod_enabled).to be(true)
-          end
+          expect(page).to have_content 'Application settings saved successfully'
+          expect(current_settings.gitpod_url).to eq('https://gitpod.test/')
+          expect(current_settings.gitpod_enabled).to be(true)
         end
       end
     end

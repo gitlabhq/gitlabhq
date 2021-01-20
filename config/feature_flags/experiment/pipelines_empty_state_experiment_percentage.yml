@@ -1,0 +1,8 @@
+---
+name: pipelines_empty_state_experiment_percentage
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47952
+rollout_issue_url: https://gitlab.com/gitlab-org/growth/team-tasks/-/issues/289
+milestone: '13.8'
+type: experiment
+group: group::activation
+default_enabled: false

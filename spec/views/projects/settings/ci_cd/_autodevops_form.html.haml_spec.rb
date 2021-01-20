@@ -13,7 +13,7 @@ RSpec.describe 'projects/settings/ci_cd/_autodevops_form' do
   it 'shows a warning message about Kubernetes cluster' do
     render
 
-    expect(rendered).to have_text('Add a Kubernetes cluster integration with a domain or create an AUTO_DEVOPS_PLATFORM_TARGET CI variable')
+    expect(rendered).to have_text('Add a Kubernetes cluster integration with a domain, or create an AUTO_DEVOPS_PLATFORM_TARGET CI variable.')
   end
 
   context 'when the project has an available kubernetes cluster' do
@@ -28,7 +28,7 @@ RSpec.describe 'projects/settings/ci_cd/_autodevops_form' do
     it 'shows a warning message about base domain' do
       render
 
-      expect(rendered).to have_text('You must add a base domain to your Kubernetes cluster in order for your deployment strategy to work.')
+      expect(rendered).to have_text('Add a base domain to your Kubernetes cluster for your deployment strategy to work.')
     end
   end
 end

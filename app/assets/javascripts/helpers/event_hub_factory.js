@@ -45,7 +45,7 @@ class EventHub {
   $off(type, handler) {
     const handlers = this.$_all.get(type) || [];
 
-    const newHandlers = handler ? handlers.filter(x => x !== handler) : [];
+    const newHandlers = handler ? handlers.filter((x) => x !== handler) : [];
 
     if (newHandlers.length) {
       this.$_all.set(type, newHandlers);
@@ -77,7 +77,7 @@ class EventHub {
   $emit(type, ...args) {
     const handlers = this.$_all.get(type) || [];
 
-    handlers.forEach(handler => {
+    handlers.forEach((handler) => {
       handler(...args);
     });
   }

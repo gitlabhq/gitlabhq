@@ -9,7 +9,7 @@ export const upload = ({ rootState, commit }) => {
     .then(() => {
       commit(types.SET_SUCCESS);
     })
-    .catch(err => {
+    .catch((err) => {
       commit(types.SET_ERROR, err);
     });
 };
@@ -34,7 +34,7 @@ export const start = ({ rootState, commit }) => {
     .then(() => {
       commit(types.SET_SUCCESS);
     })
-    .catch(err => {
+    .catch((err) => {
       commit(types.SET_ERROR, err);
       throw err;
     });

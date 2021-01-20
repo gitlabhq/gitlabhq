@@ -71,7 +71,7 @@ export default {
       :scopes="scopes"
       :strategies="strategies"
       :version="version"
-      @handleSubmit="data => createFeatureFlag(data)"
+      @handleSubmit="(data) => createFeatureFlag(data)"
     />
   </div>
 </template>

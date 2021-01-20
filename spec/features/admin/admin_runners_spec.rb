@@ -23,7 +23,7 @@ RSpec.describe "Admin Runners" do
         create(:ci_build, pipeline: pipeline, runner_id: runner.id)
         visit admin_runners_path
 
-        expect(page).to have_text "Set up a shared Runner manually"
+        expect(page).to have_text "Set up a shared runner manually"
         expect(page).to have_text "Runners currently online: 1"
       end
 
@@ -227,7 +227,7 @@ RSpec.describe "Admin Runners" do
       end
 
       it 'has all necessary texts including no runner message' do
-        expect(page).to have_text "Set up a shared Runner manually"
+        expect(page).to have_text "Set up a shared runner manually"
         expect(page).to have_text "Runners currently online: 0"
         expect(page).to have_text 'No runners found'
       end
@@ -389,7 +389,7 @@ RSpec.describe "Admin Runners" do
       let(:page_token) { find('#registration_token').text }
 
       before do
-        click_button 'Reset runners registration token'
+        click_button 'Reset registration token'
       end
 
       it 'changes registration token' do

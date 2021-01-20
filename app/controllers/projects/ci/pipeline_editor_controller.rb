@@ -3,7 +3,7 @@
 class Projects::Ci::PipelineEditorController < Projects::ApplicationController
   before_action :check_can_collaborate!
   before_action do
-    push_frontend_feature_flag(:ci_config_visualization_tab, @project, default_enabled: false)
+    push_frontend_feature_flag(:ci_config_visualization_tab, @project, default_enabled: :yaml)
   end
 
   feature_category :pipeline_authoring

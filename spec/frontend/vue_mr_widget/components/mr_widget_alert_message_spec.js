@@ -19,7 +19,7 @@ describe('MrWidgetAlertMessage', () => {
   });
 
   describe('when type is not provided', () => {
-    it('should render a red message', done => {
+    it('should render a red message', (done) => {
       wrapper.vm.$nextTick(() => {
         expect(wrapper.classes()).toContain('danger_message');
         expect(wrapper.classes()).not.toContain('warning_message');
@@ -29,7 +29,7 @@ describe('MrWidgetAlertMessage', () => {
   });
 
   describe('when type === "danger"', () => {
-    it('should render a red message', done => {
+    it('should render a red message', (done) => {
       wrapper.setProps({ type: 'danger' });
       wrapper.vm.$nextTick(() => {
         expect(wrapper.classes()).toContain('danger_message');
@@ -40,7 +40,7 @@ describe('MrWidgetAlertMessage', () => {
   });
 
   describe('when type === "warning"', () => {
-    it('should render a red message', done => {
+    it('should render a red message', (done) => {
       wrapper.setProps({ type: 'warning' });
       wrapper.vm.$nextTick(() => {
         expect(wrapper.classes()).toContain('warning_message');
@@ -51,7 +51,7 @@ describe('MrWidgetAlertMessage', () => {
   });
 
   describe('when helpPath is not provided', () => {
-    it('should not render a help icon/link', done => {
+    it('should not render a help icon/link', (done) => {
       wrapper.vm.$nextTick(() => {
         const link = wrapper.find(GlLink);
 
@@ -62,7 +62,7 @@ describe('MrWidgetAlertMessage', () => {
   });
 
   describe('when helpPath is provided', () => {
-    it('should render a help icon/link', done => {
+    it('should render a help icon/link', (done) => {
       wrapper.setProps({ helpPath: '/path/to/help/docs' });
       wrapper.vm.$nextTick(() => {
         const link = wrapper.find(GlLink);

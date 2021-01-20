@@ -43,12 +43,11 @@ import SourceBranchRemovalStatus from './components/source_branch_removal_status
 import TerraformPlan from './components/terraform/mr_widget_terraform_container.vue';
 import GroupedCodequalityReportsApp from '../reports/codequality_report/grouped_codequality_reports_app.vue';
 import GroupedTestReportsApp from '../reports/components/grouped_test_reports_app.vue';
-import { setFaviconOverlay } from '../lib/utils/common_utils';
+import { setFaviconOverlay } from '../lib/utils/favicon';
 import GroupedAccessibilityReportsApp from '../reports/accessibility_report/grouped_accessibility_reports_app.vue';
 import getStateQuery from './queries/get_state.query.graphql';
 
 export default {
-  el: '#js-vue-mr-widget',
   // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
   // eslint-disable-next-line @gitlab/require-i18n-strings
   name: 'MRWidget',
@@ -166,7 +165,8 @@ export default {
       return (
         !this.mr.canRemoveSourceBranch &&
         this.mr.shouldRemoveSourceBranch &&
-        (!this.mr.isNothingToMergeState && !this.mr.isMergedState)
+        !this.mr.isNothingToMergeState &&
+        !this.mr.isMergedState
       );
     },
     shouldRenderCollaborationStatus() {
@@ -190,9 +190,13 @@ export default {
         mergeError = mergeError.slice(0, -1);
       }
 
-      return sprintf(s__('mrWidget|Merge failed: %{mergeError}. Please try again.'), {
-        mergeError,
-      });
+      return sprintf(
+        s__('mrWidget|Merge failed: %{mergeError}. Please try again.'),
+        {
+          mergeError,
+        },
+        false,
+      );
     },
     shouldShowAccessibilityReport() {
       return this.mr.accessibilityReportPath;
@@ -306,8 +310,7 @@ export default {
         callback: this.checkStatus,
         startingInterval: this.startingPollInterval,
         maxInterval: this.startingPollInterval + secondsToMilliseconds(4 * 60),
-        hiddenInterval:
-          window.gon?.features?.widgetVisibilityPolling && secondsToMilliseconds(6 * 60),
+        hiddenInterval: secondsToMilliseconds(6 * 60),
         incrementByFactorOf: 2,
       });
     },
@@ -357,7 +360,7 @@ export default {
     fetchActionsContent() {
       this.service
         .fetchMergeActionsContent()
-        .then(res => {
+        .then((res) => {
           if (res.data) {
             const el = document.createElement('div');
             el.innerHTML = res.data;
@@ -387,26 +390,26 @@ export default {
       this.pollingInterval.stopTimer();
     },
     bindEventHubListeners() {
-      eventHub.$on('MRWidgetUpdateRequested', cb => {
+      eventHub.$on('MRWidgetUpdateRequested', (cb) => {
         this.checkStatus(cb);
       });
 
-      eventHub.$on('MRWidgetRebaseSuccess', cb => {
+      eventHub.$on('MRWidgetRebaseSuccess', (cb) => {
         this.checkStatus(cb, true);
       });
 
       // `params` should be an Array contains a Boolean, like `[true]`
       // Passing parameter as Boolean didn't work.
-      eventHub.$on('SetBranchRemoveFlag', params => {
+      eventHub.$on('SetBranchRemoveFlag', (params) => {
         [this.mr.isRemovingSourceBranch] = params;
       });
 
-      eventHub.$on('FailedToMerge', mergeError => {
+      eventHub.$on('FailedToMerge', (mergeError) => {
         this.mr.state = 'failedToMerge';
         this.mr.mergeError = mergeError;
       });
 
-      eventHub.$on('UpdateWidgetData', data => {
+      eventHub.$on('UpdateWidgetData', (data) => {
         this.mr.setData(data);
       });
 

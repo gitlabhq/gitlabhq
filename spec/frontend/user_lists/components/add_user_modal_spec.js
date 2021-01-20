@@ -4,7 +4,7 @@ import AddUserModal from '~/user_lists/components/add_user_modal.vue';
 describe('Add User Modal', () => {
   let wrapper;
 
-  const click = testId => wrapper.find(`[data-testid="${testId}"]`).trigger('click');
+  const click = (testId) => wrapper.find(`[data-testid="${testId}"]`).trigger('click');
 
   beforeEach(() => {
     wrapper = mount(AddUserModal, {

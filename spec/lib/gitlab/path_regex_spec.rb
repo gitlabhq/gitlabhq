@@ -102,12 +102,18 @@ RSpec.describe Gitlab::PathRegex do
       .concat(files_in_public)
       .concat(Array(API::API.prefix.to_s))
       .concat(sitemap_words)
+      .concat(deprecated_routes)
       .compact
       .uniq
   end
 
   let(:sitemap_words) do
     %w(sitemap sitemap.xml sitemap.xml.gz)
+  end
+
+  let(:deprecated_routes) do
+    # profile was deprecated in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51646
+    %w(profile)
   end
 
   let(:ee_top_level_words) do

@@ -49,7 +49,7 @@ describe('Local Storage Sync', () => {
 
     it.each('foo', 3, true, ['foo', 'bar'], { foo: 'bar' })(
       'saves updated value to localStorage',
-      newValue => {
+      (newValue) => {
         createComponent({
           props: {
             storageKey,

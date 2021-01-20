@@ -44,6 +44,7 @@
         %small.badge.badge-pill= limited_counter_with_delimiter(User.without_projects)
   .nav-controls
     = render_if_exists 'admin/users/admin_email_users'
+    = render_if_exists 'admin/users/admin_export_user_permissions'
     = link_to s_('AdminUsers|New user'), new_admin_user_path, class: 'btn gl-button btn-success btn-search float-right'
 
 .filtered-search-block.row-content-block.border-top-0
@@ -51,7 +52,7 @@
     - if params[:filter].present?
       = hidden_field_tag "filter", h(params[:filter])
     .search-holder
-      .search-field-holder
+      .search-field-holder.gl-mb-4
         = search_field_tag :search_query, params[:search_query], placeholder: s_('AdminUsers|Search by name, email or username'), class: 'form-control search-text-input js-search-input', spellcheck: false, data: { qa_selector: 'user_search_field' }
         - if @sort.present?
           = hidden_field_tag :sort, @sort

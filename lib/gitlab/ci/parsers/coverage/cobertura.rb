@@ -36,7 +36,7 @@ module Gitlab
           end
 
           def parse_node(key, value, coverage_report, context)
-            if key == 'sources' && value['source'].present?
+            if key == 'sources' && value && value['source'].present?
               parse_sources(value['source'], context)
             elsif key == 'package'
               Array.wrap(value).each do |item|

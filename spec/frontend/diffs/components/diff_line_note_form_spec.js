@@ -11,14 +11,16 @@ describe('DiffLineNoteForm', () => {
   let diffLines;
   const getDiffFileMock = () => ({ ...diffFileMockData });
 
-  beforeEach(() => {
+  const createComponent = (args = {}) => {
     diffFile = getDiffFileMock();
     diffLines = diffFile.highlighted_diff_lines;
     const store = createStore();
     store.state.notes.userData.id = 1;
     store.state.notes.noteableData = noteableDataMock;
 
-    wrapper = shallowMount(DiffLineNoteForm, {
+    store.replaceState({ ...store.state, ...args.state });
+
+    return shallowMount(DiffLineNoteForm, {
       store,
       propsData: {
         diffFileHash: diffFile.file_hash,
@@ -27,9 +29,13 @@ describe('DiffLineNoteForm', () => {
         noteTargetLine: diffLines[0],
       },
     });
-  });
+  };
 
   describe('methods', () => {
+    beforeEach(() => {
+      wrapper = createComponent();
+    });
+
     describe('handleCancelCommentForm', () => {
       it('should ask for confirmation when shouldConfirm and isDirty passed as truthy', () => {
         jest.spyOn(window, 'confirm').mockReturnValue(false);
@@ -51,7 +57,7 @@ describe('DiffLineNoteForm', () => {
         expect(window.confirm).not.toHaveBeenCalled();
       });
 
-      it('should call cancelCommentForm with lineCode', done => {
+      it('should call cancelCommentForm with lineCode', (done) => {
         jest.spyOn(window, 'confirm').mockImplementation(() => {});
         jest.spyOn(wrapper.vm, 'cancelCommentForm').mockImplementation(() => {});
         jest.spyOn(wrapper.vm, 'resetAutoSave').mockImplementation(() => {});
@@ -72,7 +78,7 @@ describe('DiffLineNoteForm', () => {
     });
 
     describe('saveNoteForm', () => {
-      it('should call saveNote action with proper params', done => {
+      it('should call saveNote action with proper params', (done) => {
         const saveDiffDiscussionSpy = jest
           .spyOn(wrapper.vm, 'saveDiffDiscussion')
           .mockReturnValue(Promise.resolve());
@@ -114,14 +120,39 @@ describe('DiffLineNoteForm', () => {
   describe('mounted', () => {
     it('should init autosave', () => {
       const key = 'autosave/Note/Issue/98//DiffNote//1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_1';
+      wrapper = createComponent();
 
       expect(wrapper.vm.autosave).toBeDefined();
       expect(wrapper.vm.autosave.key).toEqual(key);
+    });
+
+    it('should set selectedCommentPosition', () => {
+      wrapper = createComponent();
+      let startLineCode = wrapper.vm.commentLineStart.line_code;
+      let lineCode = wrapper.vm.line.line_code;
+
+      expect(startLineCode).toEqual(lineCode);
+      wrapper.destroy();
+
+      const state = {
+        notes: {
+          selectedCommentPosition: {
+            start: {
+              line_code: 'test',
+            },
+          },
+        },
+      };
+      wrapper = createComponent({ state });
+      startLineCode = wrapper.vm.commentLineStart.line_code;
+      lineCode = state.notes.selectedCommentPosition.start.line_code;
+      expect(startLineCode).toEqual(lineCode);
     });
   });
 
   describe('template', () => {
     it('should have note form', () => {
+      wrapper = createComponent();
       expect(wrapper.find(NoteForm).exists()).toBe(true);
     });
   });

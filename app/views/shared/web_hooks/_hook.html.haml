@@ -5,8 +5,8 @@
       %div
         - hook.class.triggers.each_value do |trigger|
           - if hook.public_send(trigger)
-            %span.badge.badge-gray.deploy-project-label= trigger.to_s.titleize
-        %span.badge.badge-gray
+            %span.gl-badge.gl-bg-gray-10.gl-mt-2.rounded.deploy-project-label= trigger.to_s.titleize
+        %span.gl-badge.gl-bg-gray-10.gl-mt-2.rounded
           = _('SSL Verification:')
           = hook.enable_ssl_verification ? _('enabled') : _('disabled')
 

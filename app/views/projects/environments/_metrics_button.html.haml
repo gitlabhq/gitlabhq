@@ -3,5 +3,5 @@
 - return unless can?(current_user, :read_environment, environment)
 
 = link_to environment_metrics_path(environment), title: _('See metrics'), class: 'gl-button btn metrics-button' do
-  = sprite_icon('chart')
+  = sprite_icon('chart', css_class: 'gl-mr-2')
   = _("Monitoring")

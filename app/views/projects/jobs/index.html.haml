@@ -8,10 +8,11 @@
   .nav-controls
     - if can?(current_user, :update_build, @project)
       - if !@repository.gitlab_ci_yml && !experiment_enabled?(:jobs_empty_state)
-        = link_to 'Get started with Pipelines', help_page_path('ci/quick_start/README'), class: 'btn gl-button btn-info js-empty-state-button'
+        = link_to s_('Pipelines|Get started with Pipelines'), help_page_path('ci/quick_start/README'), class: 'btn gl-button btn-info js-empty-state-button'
 
       = link_to project_ci_lint_path(@project), class: 'btn gl-button btn-default' do
-        %span CI lint
+        %span
+          = _('CI Lint')
 
 .content-list.builds-content-list
   = render "table", builds: @builds, project: @project

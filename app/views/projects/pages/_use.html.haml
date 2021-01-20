@@ -3,7 +3,7 @@
     .card-header.bg-info.text-white
       = s_('GitLabPages|Configure pages')
     .card-body
-      %p
+      %p.gl-mb-0
         - link_start = "<a href='#{help_page_path('user/project/pages/index.md')}' target='_blank' rel='noopener noreferrer'>".html_safe
         - link_end = '</a>'.html_safe
         = s_('GitLabPages|Learn how to upload your static site and have it served by GitLab by following the %{link_start}documentation on GitLab Pages%{link_end}.').html_safe % { link_start: link_start,

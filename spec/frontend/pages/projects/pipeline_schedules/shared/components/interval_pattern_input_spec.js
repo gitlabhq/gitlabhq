@@ -26,7 +26,7 @@ describe('Interval Pattern Input Component', () => {
   const findCustomInput = () => wrapper.find('#schedule_cron');
   const findAllLabels = () => wrapper.findAll('label');
   const findSelectedRadio = () =>
-    wrapper.findAll('input[type="radio"]').wrappers.find(x => x.element.checked);
+    wrapper.findAll('input[type="radio"]').wrappers.find((x) => x.element.checked);
   const findSelectedRadioKey = () => findSelectedRadio()?.attributes('data-testid');
   const selectEveryDayRadio = () => findEveryDayRadio().trigger('click');
   const selectEveryWeekRadio = () => findEveryWeekRadio().trigger('click');
@@ -129,7 +129,7 @@ describe('Interval Pattern Input Component', () => {
     });
 
     it('renders each label for radio options properly', () => {
-      const labels = findAllLabels().wrappers.map(el => trimText(el.text()));
+      const labels = findAllLabels().wrappers.map((el) => trimText(el.text()));
 
       expect(labels).toEqual([
         'Every day (at 4:00am)',

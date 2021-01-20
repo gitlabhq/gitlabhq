@@ -51,7 +51,7 @@ describe('ImageDiffViewer', () => {
     wrapper.destroy();
   });
 
-  it('renders image diff for replaced', done => {
+  it('renders image diff for replaced', (done) => {
     createComponent({ ...allProps });
 
     vm.$nextTick(() => {
@@ -78,7 +78,7 @@ describe('ImageDiffViewer', () => {
     });
   });
 
-  it('renders image diff for new', done => {
+  it('renders image diff for new', (done) => {
     createComponent({ ...allProps, diffMode: 'new', oldPath: '' });
 
     setImmediate(() => {
@@ -91,7 +91,7 @@ describe('ImageDiffViewer', () => {
     });
   });
 
-  it('renders image diff for deleted', done => {
+  it('renders image diff for deleted', (done) => {
     createComponent({ ...allProps, diffMode: 'deleted', newPath: '' });
 
     setImmediate(() => {
@@ -104,7 +104,7 @@ describe('ImageDiffViewer', () => {
     });
   });
 
-  it('renders image diff for renamed', done => {
+  it('renders image diff for renamed', (done) => {
     vm = new Vue({
       components: {
         imageDiffViewer,
@@ -139,7 +139,7 @@ describe('ImageDiffViewer', () => {
   });
 
   describe('swipeMode', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       createComponent({ ...requiredProps });
 
       setImmediate(() => {
@@ -147,7 +147,7 @@ describe('ImageDiffViewer', () => {
       });
     });
 
-    it('switches to Swipe Mode', done => {
+    it('switches to Swipe Mode', (done) => {
       vm.$el.querySelector('.view-modes-menu li:nth-child(2)').click();
 
       vm.$nextTick(() => {
@@ -158,7 +158,7 @@ describe('ImageDiffViewer', () => {
   });
 
   describe('onionSkin', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       createComponent({ ...requiredProps });
 
       setImmediate(() => {
@@ -166,7 +166,7 @@ describe('ImageDiffViewer', () => {
       });
     });
 
-    it('switches to Onion Skin Mode', done => {
+    it('switches to Onion Skin Mode', (done) => {
       vm.$el.querySelector('.view-modes-menu li:nth-child(3)').click();
 
       vm.$nextTick(() => {
@@ -177,7 +177,7 @@ describe('ImageDiffViewer', () => {
       });
     });
 
-    it('has working drag handler', done => {
+    it('has working drag handler', (done) => {
       vm.$el.querySelector('.view-modes-menu li:nth-child(3)').click();
 
       vm.$nextTick(() => {

@@ -44,7 +44,7 @@ describe('ItemStats', () => {
 
       expect(findItemStatsValue().exists()).toBe(true);
       expect(findItemStatsValue().props('cssClass')).toBe('project-stars');
-      expect(wrapper.contains('.last-updated')).toBe(true);
+      expect(wrapper.find('.last-updated').exists()).toBe(true);
     });
   });
 });

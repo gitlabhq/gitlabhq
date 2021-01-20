@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Release do
-  let(:user)    { create(:user) }
-  let(:project) { create(:project, :public, :repository) }
-  let(:release) { create(:release, project: project, author: user) }
+  let_it_be(:user)    { create(:user) }
+  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:release) { create(:release, project: project, author: user) }
 
   it { expect(release).to be_valid }
 
@@ -132,8 +132,10 @@ RSpec.describe Release do
   end
 
   describe '#milestone_titles' do
-    let(:release) { create(:release, :with_milestones) }
+    let_it_be(:milestone_1) { create(:milestone, project: project, title: 'Milestone 1') }
+    let_it_be(:milestone_2) { create(:milestone, project: project, title: 'Milestone 2') }
+    let_it_be(:release) { create(:release, project: project, milestones: [milestone_1, milestone_2]) }
 
-    it { expect(release.milestone_titles).to eq(release.milestones.map {|m| m.title }.sort.join(", "))}
+    it { expect(release.milestone_titles).to eq("#{milestone_1.title}, #{milestone_2.title}")}
   end
 end

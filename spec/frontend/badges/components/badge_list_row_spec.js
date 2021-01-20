@@ -73,7 +73,7 @@ describe('BadgeListRow component', () => {
     expect(vm.editBadge).toHaveBeenCalled();
   });
 
-  it('calls updateBadgeInModal and shows modal when clicking then delete button', done => {
+  it('calls updateBadgeInModal and shows modal when clicking then delete button', (done) => {
     jest.spyOn(vm, 'updateBadgeInModal').mockImplementation(() => {});
 
     const deleteButton = vm.$el.querySelector('.table-button-footer button:last-of-type');
@@ -88,12 +88,10 @@ describe('BadgeListRow component', () => {
   });
 
   describe('for a group badge', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       badge.kind = GROUP_BADGE;
 
-      Vue.nextTick()
-        .then(done)
-        .catch(done.fail);
+      Vue.nextTick().then(done).catch(done.fail);
     });
 
     it('renders the badge kind', () => {

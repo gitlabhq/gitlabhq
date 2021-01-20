@@ -65,7 +65,7 @@ describe('Batch comments draft note component', () => {
       );
     });
 
-    it('sets as loading when draft is publishing', done => {
+    it('sets as loading when draft is publishing', (done) => {
       createComponent();
       wrapper.vm.$store.state.batchComments.currentlyPublishingDrafts.push(1);
 
@@ -80,7 +80,7 @@ describe('Batch comments draft note component', () => {
   });
 
   describe('update', () => {
-    it('dispatches updateDraft', done => {
+    it('dispatches updateDraft', (done) => {
       createComponent();
       const note = wrapper.find(NoteableNote);
 
@@ -121,7 +121,7 @@ describe('Batch comments draft note component', () => {
   });
 
   describe('quick actions', () => {
-    it('renders referenced commands', done => {
+    it('renders referenced commands', (done) => {
       createComponent();
       wrapper.setProps({
         draft: {

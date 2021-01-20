@@ -8,7 +8,7 @@ jest.mock('~/search/sidebar');
 describe('initSearchApp', () => {
   let defaultLocation;
 
-  const setUrl = query => {
+  const setUrl = (query) => {
     window.location.href = `https://localhost:3000/search${query}`;
     window.location.search = query;
   };

@@ -38,7 +38,7 @@ export default {
         .query({ query: issuesQuery, variables: { projectPath: targetProjectFullPath } })
         .then(({ data }) => {
           // Return some transformed data to be rendered in the expanded state
-          return data.project.issues.nodes.map(issue => ({
+          return data.project.issues.nodes.map((issue) => ({
             id: issue.id, // Required: The ID of the object
             text: issue.title, // Required: The text to get used on each row
             // Icon to get rendered on the side of each row

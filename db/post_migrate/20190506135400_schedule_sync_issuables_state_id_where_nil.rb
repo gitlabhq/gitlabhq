@@ -20,8 +20,8 @@ class ScheduleSyncIssuablesStateIdWhereNil < ActiveRecord::Migration[5.1]
   #
   BATCH_SIZE = 5000
   DELAY_INTERVAL = 120.seconds.to_i
-  ISSUES_MIGRATION = 'SyncIssuesStateId'.freeze
-  MERGE_REQUESTS_MIGRATION = 'SyncMergeRequestsStateId'.freeze
+  ISSUES_MIGRATION = 'SyncIssuesStateId'
+  MERGE_REQUESTS_MIGRATION = 'SyncMergeRequestsStateId'
 
   disable_ddl_transaction!
 

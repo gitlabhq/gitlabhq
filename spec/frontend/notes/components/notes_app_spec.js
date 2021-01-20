@@ -36,16 +36,16 @@ describe('note_app', () => {
   const getComponentOrder = () => {
     return wrapper
       .findAll('#notes-list,.js-comment-form')
-      .wrappers.map(node => (node.is(CommentForm) ? TYPE_COMMENT_FORM : TYPE_NOTES_LIST));
+      .wrappers.map((node) => (node.is(CommentForm) ? TYPE_COMMENT_FORM : TYPE_NOTES_LIST));
   };
 
   /**
    * waits for fetchNotes() to complete
    */
   const waitForDiscussionsRequest = () =>
-    new Promise(resolve => {
+    new Promise((resolve) => {
       const { vm } = wrapper.find(NotesApp);
-      const unwatch = vm.$watch('isFetching', isFetching => {
+      const unwatch = vm.$watch('isFetching', (isFetching) => {
         if (isFetching) {
           return;
         }
@@ -129,18 +129,15 @@ describe('note_app', () => {
           '/gitlab-org/gitlab-foss/issues/26/discussions.json'
         ][0].notes[0];
 
-      expect(
-        wrapper
-          .find('.main-notes-list .note-header-author-name')
-          .text()
-          .trim(),
-      ).toEqual(note.author.name);
+      expect(wrapper.find('.main-notes-list .note-header-author-name').text().trim()).toEqual(
+        note.author.name,
+      );
 
       expect(wrapper.find('.main-notes-list .note-text').html()).toContain(note.note_html);
     });
 
     it('should render form', () => {
-      expect(wrapper.find('.js-main-target-form').name()).toEqual('form');
+      expect(wrapper.find('.js-main-target-form').element.tagName).toBe('FORM');
       expect(wrapper.find('.js-main-target-form textarea').attributes('placeholder')).toEqual(
         'Write a comment or drag your files here…',
       );
@@ -205,7 +202,7 @@ describe('note_app', () => {
     });
 
     it('should render form', () => {
-      expect(wrapper.find('.js-main-target-form').name()).toEqual('form');
+      expect(wrapper.find('.js-main-target-form').element.tagName).toBe('FORM');
       expect(wrapper.find('.js-main-target-form textarea').attributes('placeholder')).toEqual(
         'Write a comment or drag your files here…',
       );
@@ -272,23 +269,15 @@ describe('note_app', () => {
     it('should render markdown docs url', () => {
       const { markdownDocsPath } = mockData.notesDataMock;
 
-      expect(
-        wrapper
-          .find(`a[href="${markdownDocsPath}"]`)
-          .text()
-          .trim(),
-      ).toEqual('Markdown');
+      expect(wrapper.find(`a[href="${markdownDocsPath}"]`).text().trim()).toEqual('Markdown');
     });
 
     it('should render quick action docs url', () => {
       const { quickActionsDocsPath } = mockData.notesDataMock;
 
-      expect(
-        wrapper
-          .find(`a[href="${quickActionsDocsPath}"]`)
-          .text()
-          .trim(),
-      ).toEqual('quick actions');
+      expect(wrapper.find(`a[href="${quickActionsDocsPath}"]`).text().trim()).toEqual(
+        'quick actions',
+      );
     });
   });
 
@@ -304,12 +293,9 @@ describe('note_app', () => {
       const { markdownDocsPath } = mockData.notesDataMock;
 
       return Vue.nextTick().then(() => {
-        expect(
-          wrapper
-            .find(`.edit-note a[href="${markdownDocsPath}"]`)
-            .text()
-            .trim(),
-        ).toEqual('Markdown is supported');
+        expect(wrapper.find(`.edit-note a[href="${markdownDocsPath}"]`).text().trim()).toEqual(
+          'Markdown is supported',
+        );
       });
     });
 

@@ -39,7 +39,7 @@ export default {
     items: {
       type: Array,
       required: true,
-      validator: items => Array.isArray(items) && items.every(item => item.name),
+      validator: (items) => Array.isArray(items) && items.every((item) => item.name),
     },
 
     /**

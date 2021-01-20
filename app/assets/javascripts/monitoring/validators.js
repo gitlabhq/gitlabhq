@@ -1,6 +1,6 @@
 import { isSafeURL } from '~/lib/utils/url_utility';
 
-const isRunbookUrlValid = runbookUrl => {
+const isRunbookUrlValid = (runbookUrl) => {
   if (!runbookUrl) {
     return true;
   }
@@ -21,7 +21,7 @@ const isRunbookUrlValid = runbookUrl => {
 //   }
 // }
 export function alertsValidator(value) {
-  return Object.keys(value).every(key => {
+  return Object.keys(value).every((key) => {
     const alert = value[key];
     return (
       alert.alert_path &&
@@ -49,7 +49,7 @@ export function alertsValidator(value) {
 // ]
 export function queriesValidator(value) {
   return value.every(
-    query =>
+    (query) =>
       query.metricId && typeof query.metricId === 'string' && typeof query.label === 'string',
   );
 }

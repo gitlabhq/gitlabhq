@@ -2,7 +2,8 @@
 
 = render layout: 'shared/runners/shared_runners_description' do
   - if !isVueifySharedRunnersToggleEnabled
-    %hr
+    %br
+    %br
     - if @project.group&.shared_runners_setting == 'disabled_and_unoverridable'
       %h5.gl-text-red-500
         = _('Shared runners disabled on group level')
@@ -19,8 +20,8 @@
   #toggle-shared-runners-form{ data: toggle_shared_runners_settings_data(@project) }
 
 - if @shared_runners_count == 0
-  = _('This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area.')
+  = _('This GitLab instance does not provide any shared runners yet. Instance administrators can register shared runners in the admin area.')
 - else
-  %h4.underlined-title #{_('Available shared Runners:')} #{@shared_runners_count}
+  %h4.underlined-title #{_('Available shared runners:')} #{@shared_runners_count}
   %ul.bordered-list.available-shared-runners
     = render partial: 'projects/runners/runner', collection: @shared_runners, as: :runner

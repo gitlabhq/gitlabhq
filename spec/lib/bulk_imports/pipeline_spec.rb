@@ -24,9 +24,9 @@ RSpec.describe BulkImports::Pipeline do
 
     describe 'getters' do
       it 'retrieves class attributes' do
-        expect(BulkImports::MyPipeline.extractors).to contain_exactly({ klass: BulkImports::Extractor, options: { foo: :bar } })
+        expect(BulkImports::MyPipeline.get_extractor).to eq({ klass: BulkImports::Extractor, options: { foo: :bar } })
         expect(BulkImports::MyPipeline.transformers).to contain_exactly({ klass: BulkImports::Transformer, options: { foo: :bar } })
-        expect(BulkImports::MyPipeline.loaders).to contain_exactly({ klass: BulkImports::Loader, options: { foo: :bar } })
+        expect(BulkImports::MyPipeline.get_loader).to eq({ klass: BulkImports::Loader, options: { foo: :bar } })
         expect(BulkImports::MyPipeline.abort_on_failure?).to eq(true)
       end
     end
@@ -41,20 +41,14 @@ RSpec.describe BulkImports::Pipeline do
         BulkImports::MyPipeline.loader(klass, options)
         BulkImports::MyPipeline.abort_on_failure!
 
-        expect(BulkImports::MyPipeline.extractors)
-          .to contain_exactly(
-            { klass: BulkImports::Extractor, options: { foo: :bar } },
-            { klass: klass, options: options })
+        expect(BulkImports::MyPipeline.get_extractor).to eq({ klass: klass, options: options })
 
         expect(BulkImports::MyPipeline.transformers)
           .to contain_exactly(
             { klass: BulkImports::Transformer, options: { foo: :bar } },
             { klass: klass, options: options })
 
-        expect(BulkImports::MyPipeline.loaders)
-          .to contain_exactly(
-            { klass: BulkImports::Loader, options: { foo: :bar } },
-            { klass: klass, options: options })
+        expect(BulkImports::MyPipeline.get_loader).to eq({ klass: klass, options: options })
 
         expect(BulkImports::MyPipeline.abort_on_failure?).to eq(true)
       end

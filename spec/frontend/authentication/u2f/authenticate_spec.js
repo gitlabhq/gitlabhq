@@ -38,7 +38,7 @@ describe('U2FAuthenticate', () => {
       window.u2f = oldu2f;
     });
 
-    it('falls back to normal 2fa', done => {
+    it('falls back to normal 2fa', (done) => {
       component
         .start()
         .then(() => {
@@ -50,15 +50,12 @@ describe('U2FAuthenticate', () => {
   });
 
   describe('with u2f available', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       // bypass automatic form submission within renderAuthenticated
       jest.spyOn(component, 'renderAuthenticated').mockReturnValue(true);
       u2fDevice = new MockU2FDevice();
 
-      component
-        .start()
-        .then(done)
-        .catch(done.fail);
+      component.start().then(done).catch(done.fail);
     });
 
     it('allows authenticating via a U2F device', () => {

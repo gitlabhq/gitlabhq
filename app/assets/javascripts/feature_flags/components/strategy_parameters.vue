@@ -30,7 +30,7 @@ export default {
   },
   computed: {
     strategyComponent() {
-      return STRATEGIES[(this.strategy?.name)];
+      return STRATEGIES[this.strategy?.name];
     },
   },
   methods: {

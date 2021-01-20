@@ -89,9 +89,9 @@ This table lists the refspecs injected for each pipeline type:
 
 | Pipeline type                                                      | Refspecs                                                                                       |
 |---------------                                                     |----------------------------------------                                                        |
-| Pipeline for Branches                                              | `+refs/pipelines/<id>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
-| pipeline for Tags                                                  | `+refs/pipelines/<id>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>`            |
-| [Pipeline for Merge Requests](../merge_request_pipelines/index.md) | `+refs/pipelines/<id>:refs/pipelines/<id>`                                                     |
+| Pipeline for Branches                                              | `+<sha>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
+| pipeline for Tags                                                  | `+<sha>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>`            |
+| [Pipeline for Merge Requests](../merge_request_pipelines/index.md) | `+<sha>:refs/pipelines/<id>`                                                     |
 
 The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
 project repository. GitLab generates the special ref `refs/pipelines/<id>` during a
@@ -131,6 +131,10 @@ Pipelines can be manually executed, with predefined or manually-specified [varia
 
 You might do this if the results of a pipeline (for example, a code build) are required outside the normal
 operation of the pipeline.
+
+[In GitLab 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30101),
+all global variables with descriptions defined in the `.gitlab-ci.yml` file are
+displayed in the variable fields.
 
 To execute a pipeline manually:
 
@@ -345,18 +349,7 @@ Stages in pipeline mini graphs are collapsible. Hover your mouse over them and c
 
 ### Pipeline success and duration charts
 
-> - Introduced in GitLab 3.1.1 as Commit Stats, and later renamed to Pipeline Charts.
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/38318) to CI / CD Analytics in GitLab 12.8.
-
-GitLab tracks the history of your pipeline successes and failures, as well as how long each pipeline ran. To view this information, go to **Analytics > CI / CD Analytics**.
-
-View successful pipelines:
-
-![Successful pipelines](img/pipelines_success_chart.png)
-
-View pipeline duration history:
-
-![Pipeline duration](img/pipelines_duration_chart.png)
+Pipeline analytics are available on the [**CI/CD Analytics** page](../../user/analytics/ci_cd_analytics.md#pipeline-success-and-duration-charts).
 
 ### Pipeline badges
 

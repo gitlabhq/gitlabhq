@@ -13,7 +13,7 @@ describe('delete_button', () => {
 
   const findButton = () => wrapper.find(GlButton);
 
-  const mountComponent = props => {
+  const mountComponent = (props) => {
     wrapper = shallowMount(component, {
       propsData: {
         ...defaultProps,

@@ -19,18 +19,15 @@ const mockActionItems = [
 describe('SplitButton', () => {
   let wrapper;
 
-  const createComponent = propsData => {
+  const createComponent = (propsData) => {
     wrapper = shallowMount(SplitButton, {
       propsData,
     });
   };
 
   const findDropdown = () => wrapper.find(GlDropdown);
-  const findDropdownItem = (index = 0) =>
-    findDropdown()
-      .findAll(GlDropdownItem)
-      .at(index);
-  const selectItem = index => {
+  const findDropdownItem = (index = 0) => findDropdown().findAll(GlDropdownItem).at(index);
+  const selectItem = (index) => {
     findDropdownItem(index).vm.$emit('click');
 
     return wrapper.vm.$nextTick();
@@ -87,7 +84,7 @@ describe('SplitButton', () => {
 
     const addChangeEventHandler = () => {
       changeEventHandler = jest.fn();
-      wrapper.vm.$once('change', item => changeEventHandler(item));
+      wrapper.vm.$once('change', (item) => changeEventHandler(item));
     };
 
     it('defaults to first actionItems event', () => {

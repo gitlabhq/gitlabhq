@@ -34,13 +34,13 @@ describe('Icon utils', () => {
       });
 
       it('extracts svg icon path content from sprite icons', () => {
-        return getSvgIconPathContent(mockName).then(path => {
+        return getSvgIconPathContent(mockName).then((path) => {
           expect(path).toBe(mockPath);
         });
       });
 
       it('returns null if icon path content does not exist', () => {
-        return getSvgIconPathContent('missing-icon').then(path => {
+        return getSvgIconPathContent('missing-icon').then((path) => {
           expect(path).toBe(null);
         });
       });
@@ -58,22 +58,22 @@ describe('Icon utils', () => {
       });
 
       it('returns null', () => {
-        return getSvgIconPathContent(mockName).then(path => {
+        return getSvgIconPathContent(mockName).then((path) => {
           expect(path).toBe(null);
         });
       });
 
       it('extracts svg icon path content, after 2 attempts', () => {
         return getSvgIconPathContent(mockName)
-          .then(path1 => {
+          .then((path1) => {
             expect(path1).toBe(null);
             return getSvgIconPathContent(mockName);
           })
-          .then(path2 => {
+          .then((path2) => {
             expect(path2).toBe(null);
             return getSvgIconPathContent(mockName);
           })
-          .then(path3 => {
+          .then((path3) => {
             expect(path3).toBe(mockPath);
           });
       });

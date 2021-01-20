@@ -26,9 +26,9 @@ export default {
       return this.replies[this.replies.length - 1];
     },
     uniqueAuthors() {
-      const authors = this.replies.map(reply => reply.author || {});
+      const authors = this.replies.map((reply) => reply.author || {});
 
-      return uniqBy(authors, author => author.username);
+      return uniqBy(authors, (author) => author.username);
     },
     className() {
       return this.collapsed ? 'collapsed' : 'expanded';

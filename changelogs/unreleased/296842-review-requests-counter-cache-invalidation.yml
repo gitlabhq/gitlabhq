@@ -1,0 +1,5 @@
+---
+title: Invalidate reviews counter cache when MR gets closed/merged/reopened
+merge_request: 51055
+author:
+type: fixed

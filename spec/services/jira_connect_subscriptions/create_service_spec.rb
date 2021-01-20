@@ -49,18 +49,6 @@ RSpec.describe JiraConnectSubscriptions::CreateService do
 
         subject
       end
-
-      context 'when the jira_connect_full_namespace_sync feature flag is disabled' do
-        before do
-          stub_feature_flags(jira_connect_full_namespace_sync: false)
-        end
-
-        specify do
-          expect(JiraConnect::SyncProjectWorker).not_to receive(:bulk_perform_in_with_contexts)
-
-          subject
-        end
-      end
     end
   end
 

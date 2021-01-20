@@ -100,8 +100,8 @@ export default class UserTabs {
   bindEvents() {
     this.$parentEl
       .off('shown.bs.tab', '.nav-links a[data-toggle="tab"]')
-      .on('shown.bs.tab', '.nav-links a[data-toggle="tab"]', event => this.tabShown(event))
-      .on('click', '.gl-pagination a', event => this.changeProjectsPage(event));
+      .on('shown.bs.tab', '.nav-links a[data-toggle="tab"]', (event) => this.tabShown(event))
+      .on('click', '.gl-pagination a', (event) => this.changeProjectsPage(event));
 
     window.addEventListener('resize', () => this.onResize());
   }
@@ -212,17 +212,19 @@ export default class UserTabs {
     const calendarPath = $calendarWrap.data('calendarPath');
 
     AjaxCache.retrieve(calendarPath)
-      .then(data => UserTabs.renderActivityCalendar(data, $calendarWrap))
+      .then((data) => UserTabs.renderActivityCalendar(data, $calendarWrap))
       .catch(() => {
         const cWrap = $calendarWrap[0];
         cWrap.querySelector('.spinner').classList.add('invisible');
         cWrap.querySelector('.user-calendar-error').classList.remove('invisible');
-        cWrap.querySelector('.user-calendar-error .js-retry-load').addEventListener('click', e => {
-          e.preventDefault();
-          cWrap.querySelector('.user-calendar-error').classList.add('invisible');
-          cWrap.querySelector('.spinner').classList.remove('invisible');
-          this.loadActivityCalendar();
-        });
+        cWrap
+          .querySelector('.user-calendar-error .js-retry-load')
+          .addEventListener('click', (e) => {
+            e.preventDefault();
+            cWrap.querySelector('.user-calendar-error').classList.add('invisible');
+            cWrap.querySelector('.spinner').classList.remove('invisible');
+            this.loadActivityCalendar();
+          });
       });
   }
 

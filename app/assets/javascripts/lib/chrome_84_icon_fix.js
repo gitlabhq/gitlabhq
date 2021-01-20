@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const fixSVGs = () => {
     requestIdleCallback(() => {
-      document.querySelectorAll(`use:not([${SKIP_ATTRIBUTE}])`).forEach(use => {
+      document.querySelectorAll(`use:not([${SKIP_ATTRIBUTE}])`).forEach((use) => {
         const href = use?.getAttribute('href') ?? use?.getAttribute('xlink:href') ?? '';
 
         if (href.includes(window.gon.sprite_icons)) {
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     div.classList.add('hidden');
     const result = await fetch(url);
     div.innerHTML = await result.text();
-    div.querySelectorAll('[id]').forEach(node => {
+    div.querySelectorAll('[id]').forEach((node) => {
       node.setAttribute('id', `${prefix}-${node.getAttribute('id')}`);
     });
     document.body.append(div);

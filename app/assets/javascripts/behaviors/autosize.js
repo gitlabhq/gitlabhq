@@ -8,6 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     Autosize(autosizeEls);
     Autosize.update(autosizeEls);
 
-    autosizeEls.forEach(el => el.classList.add('js-autosize-initialized'));
+    autosizeEls.forEach((el) => el.classList.add('js-autosize-initialized'));
   });
 });

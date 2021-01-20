@@ -25,7 +25,7 @@ export default class Reference extends Node {
         {
           tag: 'a.gfm:not([data-link=true])',
           priority: HIGHER_PARSE_RULE_PRIORITY,
-          getAttrs: el => ({
+          getAttrs: (el) => ({
             className: el.className,
             referenceType: el.dataset.referenceType,
             originalText: el.dataset.original,
@@ -34,7 +34,7 @@ export default class Reference extends Node {
           }),
         },
       ],
-      toDOM: node => [
+      toDOM: (node) => [
         'a',
         {
           class: node.attrs.className,

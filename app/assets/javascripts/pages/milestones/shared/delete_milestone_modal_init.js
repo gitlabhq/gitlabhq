@@ -20,7 +20,7 @@ export default () => {
 
   const deleteMilestoneButtons = document.querySelectorAll('.js-delete-milestone-button');
 
-  const onRequestStarted = milestoneUrl => {
+  const onRequestStarted = (milestoneUrl) => {
     const button = document.querySelector(
       `.js-delete-milestone-button[data-milestone-url="${milestoneUrl}"]`,
     );
@@ -44,7 +44,7 @@ export default () => {
     },
     mounted() {
       eventHub.$on('deleteMilestoneModal.props', this.setModalProps);
-      deleteMilestoneButtons.forEach(button => {
+      deleteMilestoneButtons.forEach((button) => {
         button.removeAttribute('disabled');
         button.addEventListener('click', () => {
           this.$root.$emit('bv::show::modal', 'delete-milestone-modal');

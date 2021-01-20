@@ -69,8 +69,12 @@ export default {
           iid: this.issueIid,
         };
       },
-      update: data => data.project.issue.userPermissions,
+      update: (data) => data.project.issue.userPermissions,
     },
+  },
+  beforeRouteUpdate(to, from, next) {
+    this.selectedDesigns = [];
+    next();
   },
   data() {
     return {
@@ -184,15 +188,10 @@ export default {
 
       return this.$apollo
         .mutate(mutationPayload)
-        .then(res => this.onUploadDesignDone(res))
+        .then((res) => this.onUploadDesignDone(res))
         .catch(() => this.onUploadDesignError());
     },
-    afterUploadDesign(
-      store,
-      {
-        data: { designManagementUpload },
-      },
-    ) {
+    afterUploadDesign(store, { data: { designManagementUpload } }) {
       updateStoreAfterUploadDesign(store, designManagementUpload, this.projectQueryBody);
     },
     onUploadDesignDone(res) {
@@ -213,7 +212,7 @@ export default {
       this.trackUploadDesign(res);
     },
     trackUploadDesign(res) {
-      (res?.data?.designManagementUpload?.designs || []).forEach(design => {
+      (res?.data?.designManagementUpload?.designs || []).forEach((design) => {
         if (design.event === 'CREATION') {
           trackDesignCreate();
         } else if (design.event === 'MODIFICATION') {
@@ -227,7 +226,7 @@ export default {
     },
     changeSelectedDesigns(filename) {
       if (this.isDesignSelected(filename)) {
-        this.selectedDesigns = this.selectedDesigns.filter(design => design !== filename);
+        this.selectedDesigns = this.selectedDesigns.filter((design) => design !== filename);
       } else {
         this.selectedDesigns.push(filename);
       }
@@ -236,14 +235,14 @@ export default {
       if (this.hasSelectedDesigns) {
         this.selectedDesigns = [];
       } else {
-        this.selectedDesigns = this.designs.map(design => design.filename);
+        this.selectedDesigns = this.designs.map((design) => design.filename);
       }
     },
     isDesignSelected(filename) {
       return this.selectedDesigns.includes(filename);
     },
     isDesignToBeSaved(filename) {
-      return this.filesToBeSaved.some(file => file.name === filename);
+      return this.filesToBeSaved.some((file) => file.name === filename);
     },
     canSelectDesign(filename) {
       return this.isLatestVersion && this.canCreateDesign && !this.isDesignToBeSaved(filename);
@@ -328,10 +327,6 @@ export default {
     onDesignMove(designs) {
       this.reorderedDesigns = designs;
     },
-  },
-  beforeRouteUpdate(to, from, next) {
-    this.selectedDesigns = [];
-    next();
   },
   dragOptions: {
     animation: 200,

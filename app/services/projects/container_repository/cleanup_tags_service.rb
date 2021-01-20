@@ -8,12 +8,26 @@ module Projects
         return error('invalid regex') unless valid_regex?
 
         tags = container_repository.tags
+        original_size = tags.size
+
         tags = without_latest(tags)
         tags = filter_by_name(tags)
+
+        before_truncate_size = tags.size
+        tags = truncate(tags)
+        after_truncate_size = tags.size
+
         tags = filter_keep_n(tags)
         tags = filter_by_older_than(tags)
 
-        delete_tags(container_repository, tags)
+        delete_tags(container_repository, tags).tap do |result|
+          result[:original_size] = original_size
+          result[:before_truncate_size] = before_truncate_size
+          result[:after_truncate_size] = after_truncate_size
+          result[:before_delete_size] = tags.size
+
+          result[:status] = :error if before_truncate_size != after_truncate_size
+        end
       end
 
       private
@@ -23,12 +37,14 @@ module Projects
 
         tag_names = tags.map(&:name)
 
-        Projects::ContainerRepository::DeleteTagsService
-          .new(container_repository.project,
-               current_user,
-               tags: tag_names,
-               container_expiration_policy: params['container_expiration_policy'])
-          .execute(container_repository)
+        service = Projects::ContainerRepository::DeleteTagsService.new(
+          container_repository.project,
+          current_user,
+          tags: tag_names,
+          container_expiration_policy: params['container_expiration_policy']
+        )
+
+        service.execute(container_repository)
       end
 
       def without_latest(tags)
@@ -54,7 +70,7 @@ module Projects
         return tags unless params['keep_n']
 
         tags = order_by_date(tags)
-        tags.drop(params['keep_n'].to_i)
+        tags.drop(keep_n)
       end
 
       def filter_by_older_than(tags)
@@ -82,6 +98,31 @@ module Projects
       rescue RegexpError => e
         ::Gitlab::ErrorTracking.log_exception(e, project_id: project.id)
         false
+      end
+
+      def truncate(tags)
+        return tags unless throttling_enabled?
+        return tags if max_list_size == 0
+
+        # truncate the list to make sure that after the #filter_keep_n
+        # execution, the resulting list will be max_list_size
+        truncated_size = max_list_size + keep_n
+
+        return tags if tags.size <= truncated_size
+
+        tags.sample(truncated_size)
+      end
+
+      def throttling_enabled?
+        Feature.enabled?(:container_registry_expiration_policies_throttling)
+      end
+
+      def max_list_size
+        ::Gitlab::CurrentSettings.current_application_settings.container_registry_cleanup_tags_service_max_list_size.to_i
+      end
+
+      def keep_n
+        params['keep_n'].to_i
       end
     end
   end

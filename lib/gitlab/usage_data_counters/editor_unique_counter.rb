@@ -53,7 +53,7 @@ module Gitlab
           return unless Feature.enabled?(:track_editor_edit_actions, default_enabled: true)
           return unless author
 
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event(author.id, action, time)
+          Gitlab::UsageDataCounters::HLLRedisCounter.track_event(action, values: author.id, time: time)
         end
 
         def count_unique(actions, date_from, date_to)

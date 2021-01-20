@@ -29,7 +29,7 @@ export default {
       variables() {
         return this.mergeRequestQueryVariables;
       },
-      update: data => data.project.mergeRequest.userPermissions,
+      update: (data) => data.project.mergeRequest.userPermissions,
     },
   },
   props: {
@@ -86,7 +86,7 @@ export default {
               variables: mergeRequestQueryVariables,
             });
 
-            const data = produce(sourceData, draftState => {
+            const data = produce(sourceData, (draftState) => {
               // eslint-disable-next-line no-param-reassign
               draftState.project.mergeRequest.workInProgress = workInProgress;
               // eslint-disable-next-line no-param-reassign
@@ -113,10 +113,18 @@ export default {
             },
           },
         })
-        .then(({ data: { mergeRequestSetWip: { mergeRequest: { title } } } }) => {
-          createFlash(__('The merge request can now be merged.'), 'notice');
-          $('.merge-request .detail-page-description .title').text(title);
-        })
+        .then(
+          ({
+            data: {
+              mergeRequestSetWip: {
+                mergeRequest: { title },
+              },
+            },
+          }) => {
+            createFlash(__('The merge request can now be merged.'), 'notice');
+            $('.merge-request .detail-page-description .title').text(title);
+          },
+        )
         .catch(() => createFlash(__('Something went wrong. Please try again.')))
         .finally(() => {
           this.isMakingRequest = false;
@@ -129,8 +137,8 @@ export default {
         this.isMakingRequest = true;
         this.service
           .removeWIP()
-          .then(res => res.data)
-          .then(data => {
+          .then((res) => res.data)
+          .then((data) => {
             eventHub.$emit('UpdateWidgetData', data);
             MergeRequest.toggleDraftStatus(this.mr.title, true);
           })

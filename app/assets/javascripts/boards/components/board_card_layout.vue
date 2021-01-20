@@ -1,12 +1,17 @@
 <script>
+import { mapActions, mapGetters } from 'vuex';
 import IssueCardInner from './issue_card_inner.vue';
+import IssueCardInnerDeprecated from './issue_card_inner_deprecated.vue';
 import boardsStore from '../stores/boards_store';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { ISSUABLE } from '~/boards/constants';
 
 export default {
-  name: 'BoardsIssueCard',
+  name: 'BoardCardLayout',
   components: {
-    IssueCardInner,
+    IssueCardInner: gon.features?.graphqlBoardLists ? IssueCardInner : IssueCardInnerDeprecated,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     list: {
       type: Object,
@@ -41,11 +46,13 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['isSwimlanesOn']),
     multiSelectVisible() {
-      return this.multiSelect.list.findIndex(issue => issue.id === this.issue.id) > -1;
+      return this.multiSelect.list.findIndex((issue) => issue.id === this.issue.id) > -1;
     },
   },
   methods: {
+    ...mapActions(['setActiveId']),
     mouseDown() {
       this.showDetail = true;
     },
@@ -55,6 +62,11 @@ export default {
     showIssue(e) {
       // Don't do anything if this happened on a no trigger element
       if (e.target.classList.contains('js-no-trigger')) return;
+
+      if (this.glFeatures.graphqlBoardLists || this.isSwimlanesOn) {
+        this.setActiveId({ id: this.issue.id, sidebarType: ISSUABLE });
+        return;
+      }
 
       const isMultiSelect = e.ctrlKey || e.metaKey;
 
@@ -80,7 +92,7 @@ export default {
     :data-issue-iid="issue.iid"
     :data-issue-path="issue.referencePath"
     data-testid="board_card"
-    class="board-card p-3 rounded"
+    class="board-card gl-p-5 gl-rounded-base"
     @mousedown="mouseDown"
     @mousemove="mouseMove"
     @mouseup="showIssue($event)"

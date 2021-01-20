@@ -38,7 +38,7 @@ const templatedLabel = (queryLabel, metricAttributes) => {
  * @example
  * multiMetricLabel('', {__name__: "up", app: "prometheus"}) -> "__name__: up, app: prometheus"
  */
-const multiMetricLabel = metricAttributes => {
+const multiMetricLabel = (metricAttributes) => {
   return Object.entries(metricAttributes)
     .map(([templateVar, label]) => `${templateVar}: ${label}`)
     .join(', ');
@@ -64,7 +64,7 @@ export const getSeriesLabel = (queryLabel, metricAttributes) => {
  * @returns {Array} The formatted values
  */
 export const makeDataSeries = (queryResults, defaultConfig) =>
-  queryResults.map(result => {
+  queryResults.map((result) => {
     return {
       ...defaultConfig,
       data: result.values,

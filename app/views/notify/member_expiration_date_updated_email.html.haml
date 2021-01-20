@@ -1,0 +1,6 @@
+= email_default_heading(say_hi(@member.user))
+
+%p
+  = group_membership_expiration_changed_text(@member, @member_source)
+%p
+  = group_membership_expiration_changed_link(@member, @member_source, format: :html)

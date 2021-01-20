@@ -8,7 +8,7 @@ class AddIndexToIssuesRelativePosition < ActiveRecord::Migration[5.1]
 
   disable_ddl_transaction!
 
-  INDEX_NAME = 'index_issues_on_project_id_and_state_and_rel_position_and_id'.freeze
+  INDEX_NAME = 'index_issues_on_project_id_and_state_and_rel_position_and_id'
 
   def up
     add_concurrent_index :issues, [:project_id, :state, :relative_position, :id], order: { id: :desc }, name: INDEX_NAME

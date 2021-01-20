@@ -12,7 +12,7 @@ import { SNIPPET_MARK_BLOBS_CONTENT, SNIPPET_MEASURE_BLOBS_CONTENT } from '~/per
 
 const createLocalId = () => uniqueId('blob_local_');
 
-export const decorateBlob = blob => ({
+export const decorateBlob = (blob) => ({
   ...blob,
   id: createLocalId(),
   isLoaded: false,
@@ -54,7 +54,7 @@ const diff = ({ content, path }, origBlob) => {
  */
 export const diffAll = (blobs, origBlobs) => {
   const deletedEntries = Object.values(origBlobs)
-    .filter(x => !blobs[x.id])
+    .filter((x) => !blobs[x.id])
     .map(({ path, content }) => ({
       action: SNIPPET_BLOB_ACTION_DELETE,
       previousPath: path,
@@ -63,15 +63,15 @@ export const diffAll = (blobs, origBlobs) => {
     }));
 
   const newEntries = Object.values(blobs)
-    .map(blob => diff(blob, origBlobs[blob.id]))
-    .filter(x => x);
+    .map((blob) => diff(blob, origBlobs[blob.id]))
+    .filter((x) => x);
 
   return [...deletedEntries, ...newEntries];
 };
 
-export const defaultSnippetVisibilityLevels = arr => {
+export const defaultSnippetVisibilityLevels = (arr) => {
   if (Array.isArray(arr)) {
-    return arr.map(l => {
+    return arr.map((l) => {
       const translatedLevel = SNIPPET_LEVELS_MAP[l];
       return {
         value: translatedLevel,

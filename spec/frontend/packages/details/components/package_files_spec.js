@@ -24,7 +24,6 @@ describe('Package Files', () => {
       stubs: {
         ...stubChildren(component),
         GlTable: false,
-        GlLink: '<div><slot></slot></div>',
       },
     });
   };

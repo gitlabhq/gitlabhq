@@ -251,9 +251,12 @@ describe('Diffs Module Getters', () => {
       discussionMock.diff_file.file_hash = diffFileMock.file_hash;
 
       expect(
-        getters.getDiffFileDiscussions(localState, {}, {}, { discussions: [discussionMock] })(
-          diffFileMock,
-        ).length,
+        getters.getDiffFileDiscussions(
+          localState,
+          {},
+          {},
+          { discussions: [discussionMock] },
+        )(diffFileMock).length,
       ).toEqual(1);
     });
 
@@ -345,7 +348,7 @@ describe('Diffs Module Getters', () => {
 
   describe('fileLineCoverage', () => {
     beforeEach(() => {
-      Object.assign(localState.coverageFiles, { files: { 'app.js': { '1': 0, '2': 5 } } });
+      Object.assign(localState.coverageFiles, { files: { 'app.js': { 1: 0, 2: 5 } } });
     });
 
     it('returns empty object when no coverage data is available', () => {
@@ -371,5 +374,27 @@ describe('Diffs Module Getters', () => {
         class: 'coverage',
       });
     });
+  });
+
+  describe('fileReviews', () => {
+    const file1 = { id: '123', file_identifier_hash: 'abc' };
+    const file2 = { id: '098', file_identifier_hash: 'abc' };
+
+    it.each`
+      reviews                           | files             | fileReviews
+      ${{}}                             | ${[file1, file2]} | ${[false, false]}
+      ${{ abc: ['123'] }}               | ${[file1, file2]} | ${[true, false]}
+      ${{ abc: ['098'] }}               | ${[file1, file2]} | ${[false, true]}
+      ${{ def: ['123'] }}               | ${[file1, file2]} | ${[false, false]}
+      ${{ abc: ['123'], def: ['098'] }} | ${[]}             | ${[]}
+    `(
+      'returns $fileReviews based on the diff files in state and the existing reviews $reviews',
+      ({ reviews, files, fileReviews }) => {
+        localState.diffFiles = files;
+        localState.mrReviews = reviews;
+
+        expect(getters.fileReviews(localState)).toStrictEqual(fileReviews);
+      },
+    );
   });
 });

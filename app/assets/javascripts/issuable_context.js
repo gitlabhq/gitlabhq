@@ -31,7 +31,7 @@ export default class IssuableContext {
     });
     $(document)
       .off('click', '.issuable-sidebar .dropdown-content a')
-      .on('click', '.issuable-sidebar .dropdown-content a', e => e.preventDefault());
+      .on('click', '.issuable-sidebar .dropdown-content a', (e) => e.preventDefault());
 
     $(document)
       .off('click', '.edit-link')

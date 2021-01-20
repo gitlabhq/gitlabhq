@@ -81,7 +81,7 @@ describe('CI Badge Link Component', () => {
   });
 
   it('should render each status badge', () => {
-    Object.keys(statuses).map(status => {
+    Object.keys(statuses).map((status) => {
       vm = mountComponent(CIBadge, { status: statuses[status] });
 
       expect(vm.$el.getAttribute('href')).toEqual(statuses[status].details_path);

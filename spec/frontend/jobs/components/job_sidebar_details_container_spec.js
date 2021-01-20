@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import SidebarJobDetailsContainer from '~/jobs/components/sidebar_job_details_container.vue';
 import DetailRow from '~/jobs/components/sidebar_detail_row.vue';
 import createStore from '~/jobs/store';
-import { extendedWrapper } from '../../helpers/vue_test_utils_helper';
 import job from '../mock_data';
 
 describe('Job Sidebar Details Container', () => {
@@ -37,7 +37,7 @@ describe('Job Sidebar Details Container', () => {
     it('should render an empty container', () => {
       createWrapper();
 
-      expect(wrapper.isEmpty()).toBe(true);
+      expect(wrapper.html()).toBe('');
     });
   });
 
@@ -55,7 +55,6 @@ describe('Job Sidebar Details Container', () => {
       await store.dispatch('receiveJobSuccess', { [detail]: job[detail] });
       const detailsRow = findAllDetailsRow();
 
-      expect(wrapper.isEmpty()).toBe(false);
       expect(detailsRow).toHaveLength(1);
       expect(detailsRow.at(0).text()).toBe(value);
     });
@@ -65,7 +64,6 @@ describe('Job Sidebar Details Container', () => {
       await store.dispatch('receiveJobSuccess', { tags });
       const tagsComponent = findJobTags();
 
-      expect(wrapper.isEmpty()).toBe(false);
       expect(tagsComponent.text()).toBe('Tags: tag');
     });
   });
@@ -91,7 +89,7 @@ describe('Job Sidebar Details Container', () => {
       await store.dispatch('receiveJobSuccess', { metadata });
       const detailsRow = findAllDetailsRow();
 
-      expect(wrapper.isEmpty()).toBe(true);
+      expect(wrapper.html()).toBe('');
       expect(detailsRow.exists()).toBe(false);
     });
 
@@ -100,7 +98,6 @@ describe('Job Sidebar Details Container', () => {
       await store.dispatch('receiveJobSuccess', { metadata });
       const detailsRow = findAllDetailsRow();
 
-      expect(wrapper.isEmpty()).toBe(false);
       expect(detailsRow).toHaveLength(1);
       expect(detailsRow.at(0).text()).toBe('Timeout: 1m 40s');
     });

@@ -11,7 +11,7 @@ export const getSnippetMixin = {
           ids: [this.snippetGid],
         };
       },
-      update: data => {
+      update: (data) => {
         const res = data.snippets.nodes[0];
         if (res) {
           res.blobs = res.blobs.nodes;

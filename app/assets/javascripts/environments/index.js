@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import canaryCalloutMixin from './mixins/canary_callout_mixin';
 import environmentsComponent from './components/environments_app.vue';
 import { parseBoolean } from '../lib/utils/common_utils';
 import Translate from '../vue_shared/translate';
@@ -20,7 +19,6 @@ export default () => {
     components: {
       environmentsComponent,
     },
-    mixins: [canaryCalloutMixin],
     apolloProvider,
     provide: {
       projectPath: el.dataset.projectPath,
@@ -46,7 +44,6 @@ export default () => {
           deployBoardsHelpPath: this.deployBoardsHelpPath,
           canCreateEnvironment: this.canCreateEnvironment,
           canReadEnvironment: this.canReadEnvironment,
-          ...this.canaryCalloutProps,
         },
       });
     },

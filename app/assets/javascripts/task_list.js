@@ -35,7 +35,7 @@ export default class TaskList {
       `${this.taskListContainerSelector} .js-task-list-field[data-value]`,
     );
 
-    taskListFields.forEach(taskListField => {
+    taskListFields.forEach((taskListField) => {
       // eslint-disable-next-line no-param-reassign
       taskListField.value = taskListField.dataset.value;
     });

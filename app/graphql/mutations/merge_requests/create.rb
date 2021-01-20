@@ -9,7 +9,7 @@ module Mutations
 
       argument :project_path, GraphQL::ID_TYPE,
                required: true,
-               description: 'Project full path the merge request is associated with'
+               description: 'Project full path the merge request is associated with.'
 
       argument :title, GraphQL::STRING_TYPE,
                required: true,
@@ -34,7 +34,7 @@ module Mutations
       field :merge_request,
             Types::MergeRequestType,
             null: true,
-            description: 'The merge request after mutation'
+            description: 'The merge request after mutation.'
 
       authorize :create_merge_request_from
 

@@ -230,7 +230,7 @@ They're useful to test permissions, redirections, what view is rendered etc.
 
 | Code path | Tests path | Testing engine | Notes |
 | --------- | ---------- | -------------- | ----- |
-| `app/controllers/` | `spec/controllers/` | RSpec | For N+1 tests, use [request specs](../query_recorder.md#use-request-specs-instead-of-controller-specs) |
+| `app/controllers/` | `spec/requests/`, `spec/controllers` | RSpec | Request specs are preferred over legacy controller specs. |
 | `app/mailers/` | `spec/mailers/` | RSpec | |
 | `lib/api/` | `spec/requests/api/` | RSpec | |
 | `app/assets/javascripts/` | `spec/javascripts/`, `spec/frontend/` | Karma & Jest | [More details below](#frontend-integration-tests) |
@@ -310,6 +310,8 @@ graph RL
 
 ### About controller tests
 
+GitLab is [transitioning from controller specs to request specs](https://gitlab.com/groups/gitlab-org/-/epics/5076).
+
 In an ideal world, controllers should be thin. However, when this is not the
 case, it's acceptable to write a system or feature test without JavaScript instead
 of a controller test. Testing a fat controller usually involves a lot of stubbing, such as:
@@ -318,7 +320,7 @@ of a controller test. Testing a fat controller usually involves a lot of stubbin
 controller.instance_variable_set(:@user, user)
 ```
 
-and use methods which are deprecated in Rails 5 ([#23768](https://gitlab.com/gitlab-org/gitlab/-/issues/16260)).
+and use methods [deprecated in Rails 5](https://gitlab.com/gitlab-org/gitlab/-/issues/16260).
 
 ### About Karma
 

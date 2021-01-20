@@ -39,7 +39,7 @@ export default {
           path: this.currentPath.replace(/^\//, ''),
         };
       },
-      update: data => {
+      update: (data) => {
         const pipelines = data.project?.repository?.tree?.lastCommit?.pipelines?.edges;
 
         return {
@@ -80,6 +80,10 @@ export default {
     },
     showCommitId() {
       return this.commit?.sha?.substr(0, 8);
+    },
+    commitDescription() {
+      // Strip the newline at the beginning
+      return this.commit?.descriptionHtml?.replace(/^&#x000A;/, '');
     },
   },
   watch: {
@@ -146,10 +150,10 @@ export default {
             <timeago-tooltip :time="commit.authoredDate" tooltip-placement="bottom" />
           </div>
           <pre
-            v-if="commit.descriptionHtml"
+            v-if="commitDescription"
             :class="{ 'd-block': showDescription }"
             class="commit-row-description gl-mb-3"
-            v-html="commit.descriptionHtml"
+            v-html="commitDescription"
           ></pre>
         </div>
         <div class="commit-actions flex-row">

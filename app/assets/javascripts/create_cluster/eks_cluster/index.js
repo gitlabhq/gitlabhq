@@ -6,7 +6,7 @@ import createStore from './store';
 
 Vue.use(Vuex);
 
-export default el => {
+export default (el) => {
   const {
     gitlabManagedClusterHelpPath,
     namespacePerEnvironmentHelpPath,

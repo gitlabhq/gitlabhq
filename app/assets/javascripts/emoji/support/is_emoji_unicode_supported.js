@@ -33,7 +33,7 @@ const tone5 = 127999; // parseInt('1F3FF', 16)
 function isSkinToneComboEmoji(emojiUnicode) {
   return (
     emojiUnicode.length > 2 &&
-    Array.from(emojiUnicode).some(char => {
+    Array.from(emojiUnicode).some((char) => {
       const cp = char.codePointAt(0);
       return cp >= tone1 && cp <= tone5;
     })
@@ -60,7 +60,7 @@ const personEndCodePoint = 128105; // parseInt('1F469', 16)
 function isPersonZwjEmoji(emojiUnicode) {
   let hasPersonEmoji = false;
   let hasZwj = false;
-  Array.from(emojiUnicode).forEach(character => {
+  Array.from(emojiUnicode).forEach((character) => {
     const cp = character.codePointAt(0);
     if (cp === zwj) {
       hasZwj = true;

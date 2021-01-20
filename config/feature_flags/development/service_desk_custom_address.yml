@@ -1,8 +1,0 @@
----
-name: service_desk_custom_address
-introduced_by_url:
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/284656
-milestone:
-type: development
-group: group::certify
-default_enabled: true

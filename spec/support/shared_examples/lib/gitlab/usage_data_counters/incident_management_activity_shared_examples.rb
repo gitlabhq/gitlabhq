@@ -13,7 +13,7 @@ RSpec.shared_examples 'an incident management tracked event' do |event|
 
       expect(Gitlab::UsageDataCounters::HLLRedisCounter)
         .to receive(:track_event)
-        .with(current_user.id, event.to_s)
+        .with(event.to_s, values: current_user.id)
         .and_call_original
 
       expect { subject }

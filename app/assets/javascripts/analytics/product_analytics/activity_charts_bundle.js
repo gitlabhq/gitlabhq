@@ -8,17 +8,17 @@ export default () => {
     return false;
   }
 
-  return containers.forEach(container => {
+  return containers.forEach((container) => {
     const { chartData } = container.dataset;
     const formattedData = JSON.parse(chartData);
 
     return new Vue({
       el: container,
-      provide: {
-        formattedData,
-      },
       components: {
         ActivityChart,
+      },
+      provide: {
+        formattedData,
       },
       render(createElement) {
         return createElement('activity-chart');

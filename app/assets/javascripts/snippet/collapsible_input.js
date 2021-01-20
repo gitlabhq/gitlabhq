@@ -1,7 +1,7 @@
-const hide = el => el.classList.add('d-none');
-const show = el => el.classList.remove('d-none');
+const hide = (el) => el.classList.add('d-none');
+const show = (el) => el.classList.remove('d-none');
 
-const setupCollapsibleInput = el => {
+const setupCollapsibleInput = (el) => {
   const collapsedEl = el.querySelector('.js-collapsed');
   const expandedEl = el.querySelector('.js-expanded');
   const collapsedInputEl = collapsedEl.querySelector('textarea,input,select');
@@ -21,7 +21,7 @@ const setupCollapsibleInput = el => {
   // NOTE:
   // We add focus listener to all form inputs so that we can collapse
   // when something is focused that's not the expanded input.
-  formEl.addEventListener('focusin', e => {
+  formEl.addEventListener('focusin', (e) => {
     if (e.target === collapsedInputEl) {
       expand();
       expandedInputEl.focus();

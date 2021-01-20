@@ -15,7 +15,7 @@ export default class UserInternalRegexHandler {
   }
 
   addListenerToEmailField() {
-    $('#user_email').on('input', event => {
+    $('#user_email').on('input', (event) => {
       this.setExternalCheckbox(event.currentTarget.value);
     });
   }

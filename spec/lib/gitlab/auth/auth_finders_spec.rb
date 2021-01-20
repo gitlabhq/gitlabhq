@@ -6,7 +6,8 @@ RSpec.describe Gitlab::Auth::AuthFinders do
   include described_class
   include HttpBasicAuthHelpers
 
-  let(:user) { create(:user) }
+  # Create the feed_token and static_object_token for the user
+  let_it_be(:user) { create(:user).tap(&:feed_token).tap(&:static_object_token) }
   let(:env) do
     {
       'rack.input' => ''
@@ -65,7 +66,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
   end
 
   describe '#find_user_from_bearer_token' do
-    let(:job) { create(:ci_build, user: user) }
+    let_it_be_with_reload(:job) { create(:ci_build, user: user) }
 
     subject { find_user_from_bearer_token }
 
@@ -91,7 +92,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
     end
 
     context 'with a personal access token' do
-      let(:pat) { create(:personal_access_token, user: user) }
+      let_it_be(:pat) { create(:personal_access_token, user: user) }
       let(:token) { pat.token }
 
       before do
@@ -148,7 +149,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
         end
 
         it 'returns nil if valid feed_token and disabled' do
-          allow(Gitlab::CurrentSettings).to receive(:disable_feed_token).and_return(true)
+          stub_application_setting(disable_feed_token: true)
           set_param(:feed_token, user.feed_token)
 
           expect(find_user_from_feed_token(:rss)).to be_nil
@@ -166,7 +167,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
       end
 
       context 'when rss_token param is provided' do
-        it 'returns user if valid rssd_token' do
+        it 'returns user if valid rss_token' do
           set_param(:rss_token, user.feed_token)
 
           expect(find_user_from_feed_token(:rss)).to eq user
@@ -347,7 +348,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
   end
 
   describe '#find_user_from_access_token' do
-    let(:personal_access_token) { create(:personal_access_token, user: user) }
+    let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
 
     before do
       set_header('SCRIPT_NAME', 'url.atom')
@@ -386,7 +387,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
       end
 
       context 'when using a non-prefixed access token' do
-        let(:personal_access_token) { create(:personal_access_token, :no_prefix, user: user) }
+        let_it_be(:personal_access_token) { create(:personal_access_token, :no_prefix, user: user) }
 
         it 'returns user' do
           set_header('HTTP_AUTHORIZATION', "Bearer #{personal_access_token.token}")
@@ -398,7 +399,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
   end
 
   describe '#find_user_from_web_access_token' do
-    let(:personal_access_token) { create(:personal_access_token, user: user) }
+    let_it_be_with_reload(:personal_access_token) { create(:personal_access_token, user: user) }
 
     before do
       set_header(described_class::PRIVATE_TOKEN_HEADER, personal_access_token.token)
@@ -449,6 +450,22 @@ RSpec.describe Gitlab::Auth::AuthFinders do
         expect(find_user_from_web_access_token(:api)).to be_nil
       end
 
+      context 'when the token has read_api scope' do
+        before do
+          personal_access_token.update!(scopes: ['read_api'])
+
+          set_header('SCRIPT_NAME', '/api/endpoint')
+        end
+
+        it 'raises InsufficientScopeError by default' do
+          expect { find_user_from_web_access_token(:api) }.to raise_error(Gitlab::Auth::InsufficientScopeError)
+        end
+
+        it 'finds the user when the read_api scope is passed' do
+          expect(find_user_from_web_access_token(:api, scopes: [:api, :read_api])).to eq(user)
+        end
+      end
+
       context 'when relative_url_root is set' do
         before do
           stub_config_setting(relative_url_root: '/relative_root')
@@ -464,7 +481,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
   end
 
   describe '#find_personal_access_token' do
-    let(:personal_access_token) { create(:personal_access_token, user: user) }
+    let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
 
     before do
       set_header('SCRIPT_NAME', 'url.atom')
@@ -534,7 +551,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
     end
 
     context 'access token is valid' do
-      let(:personal_access_token) { create(:personal_access_token, user: user) }
+      let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
       let(:route_authentication_setting) { { basic_auth_personal_access_token: true } }
 
       it 'finds the token from basic auth' do
@@ -555,7 +572,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
     end
 
     context 'route_setting is not set' do
-      let(:personal_access_token) { create(:personal_access_token, user: user) }
+      let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
 
       it 'returns nil' do
         auth_header_with(personal_access_token.token)
@@ -565,7 +582,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
     end
 
     context 'route_setting is not correct' do
-      let(:personal_access_token) { create(:personal_access_token, user: user) }
+      let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
       let(:route_authentication_setting) { { basic_auth_personal_access_token: false } }
 
       it 'returns nil' do
@@ -611,8 +628,9 @@ RSpec.describe Gitlab::Auth::AuthFinders do
 
     context 'with CI username' do
       let(:username) { ::Gitlab::Auth::CI_JOB_USER }
-      let(:user) { create(:user) }
-      let(:build) { create(:ci_build, user: user, status: :running) }
+
+      let_it_be(:user) { create(:user) }
+      let_it_be(:build) { create(:ci_build, user: user, status: :running) }
 
       it 'returns nil without password' do
         set_basic_auth_header(username, nil)
@@ -645,11 +663,11 @@ RSpec.describe Gitlab::Auth::AuthFinders do
   describe '#validate_access_token!' do
     subject { validate_access_token! }
 
-    let(:personal_access_token) { create(:personal_access_token, user: user) }
+    let_it_be_with_reload(:personal_access_token) { create(:personal_access_token, user: user) }
 
     context 'with a job token' do
+      let_it_be(:job) { create(:ci_build, user: user, status: :running) }
       let(:route_authentication_setting) { { job_token_allowed: true } }
-      let(:job) { create(:ci_build, user: user, status: :running) }
 
       before do
         env['HTTP_AUTHORIZATION'] = "Bearer #{job.token}"
@@ -671,7 +689,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
       end
 
       it 'returns Gitlab::Auth::ExpiredError if token expired' do
-        personal_access_token.expires_at = 1.day.ago
+        personal_access_token.update!(expires_at: 1.day.ago)
 
         expect { validate_access_token! }.to raise_error(Gitlab::Auth::ExpiredError)
       end
@@ -688,7 +706,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
     end
 
     context 'with impersonation token' do
-      let(:personal_access_token) { create(:personal_access_token, :impersonation, user: user) }
+      let_it_be(:personal_access_token) { create(:personal_access_token, :impersonation, user: user) }
 
       context 'when impersonation is disabled' do
         before do
@@ -704,7 +722,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
   end
 
   describe '#find_user_from_job_token' do
-    let(:job) { create(:ci_build, user: user, status: :running) }
+    let_it_be(:job) { create(:ci_build, user: user, status: :running) }
     let(:route_authentication_setting) { { job_token_allowed: true } }
 
     subject { find_user_from_job_token }
@@ -866,7 +884,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
   end
 
   describe '#find_runner_from_token' do
-    let(:runner) { create(:ci_runner) }
+    let_it_be(:runner) { create(:ci_runner) }
 
     context 'with API requests' do
       before do

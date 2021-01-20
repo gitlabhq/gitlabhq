@@ -3,7 +3,7 @@ import Vue from 'vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
 import stackedProgressBarComponent from '~/vue_shared/components/stacked_progress_bar.vue';
 
-const createComponent = config => {
+const createComponent = (config) => {
   const Component = Vue.extend(stackedProgressBarComponent);
   const defaultConfig = {
     successLabel: 'Synced',
@@ -29,11 +29,12 @@ describe('StackedProgressBarComponent', () => {
     vm.$destroy();
   });
 
-  const findSuccessBarText = wrapper => wrapper.$el.querySelector('.status-green').innerText.trim();
-  const findNeutralBarText = wrapper =>
+  const findSuccessBarText = (wrapper) =>
+    wrapper.$el.querySelector('.status-green').innerText.trim();
+  const findNeutralBarText = (wrapper) =>
     wrapper.$el.querySelector('.status-neutral').innerText.trim();
-  const findFailureBarText = wrapper => wrapper.$el.querySelector('.status-red').innerText.trim();
-  const findUnavailableBarText = wrapper =>
+  const findFailureBarText = (wrapper) => wrapper.$el.querySelector('.status-red').innerText.trim();
+  const findUnavailableBarText = (wrapper) =>
     wrapper.$el.querySelector('.status-unavailable').innerText.trim();
 
   describe('computed', () => {

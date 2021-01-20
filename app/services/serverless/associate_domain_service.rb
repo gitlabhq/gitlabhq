@@ -2,7 +2,7 @@
 
 module Serverless
   class AssociateDomainService
-    PLACEHOLDER_HOSTNAME = 'example.com'.freeze
+    PLACEHOLDER_HOSTNAME = 'example.com'
 
     def initialize(knative, pages_domain_id:, creator:)
       @knative = knative

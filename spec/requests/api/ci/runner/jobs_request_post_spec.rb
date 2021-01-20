@@ -156,7 +156,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               'sha' => job.sha,
               'before_sha' => job.before_sha,
               'ref_type' => 'branch',
-              'refspecs' => ["+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
+              'refspecs' => ["+#{pipeline.sha}:refs/pipelines/#{pipeline.id}",
                              "+refs/heads/#{job.ref}:refs/remotes/origin/#{job.ref}"],
               'depth' => project.ci_default_git_depth }
           end
@@ -284,7 +284,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
                 expect(response).to have_gitlab_http_status(:created)
                 expect(json_response['git_info']['refspecs'])
-                  .to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
+                  .to contain_exactly("+#{pipeline.sha}:refs/pipelines/#{pipeline.id}",
                                       '+refs/tags/*:refs/tags/*',
                                       '+refs/heads/*:refs/remotes/origin/*')
               end
@@ -346,7 +346,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
                 expect(response).to have_gitlab_http_status(:created)
                 expect(json_response['git_info']['refspecs'])
-                  .to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
+                  .to contain_exactly("+#{pipeline.sha}:refs/pipelines/#{pipeline.id}",
                                       '+refs/tags/*:refs/tags/*',
                                       '+refs/heads/*:refs/remotes/origin/*')
               end

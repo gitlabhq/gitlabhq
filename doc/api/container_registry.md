@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55978) in GitLab 11.8.
 
-This is the API docs of the [GitLab Container Registry](../user/packages/container_registry/index.md).
+This is the API documentation of the [GitLab Container Registry](../user/packages/container_registry/index.md).
 
 ## List registry repositories
 
@@ -312,6 +312,13 @@ These operations are executed asynchronously and can take time to get executed.
 You can run this at most once an hour for a given container repository. This
 action doesn't delete blobs. To delete them and recycle disk space,
 [run the garbage collection](https://docs.gitlab.com/omnibus/maintenance/README.html#removing-unused-layers-not-referenced-by-manifests).
+
+WARNING:
+The number of tags deleted by this API is limited on GitLab.com
+because of the scale of the Container Registry there.
+If your Container Registry has a large number of tags to delete,
+only some of them will be deleted, and you might need to call this API multiple times.
+To schedule tags for automatic deletion, use a [cleanup policy](../user/packages/container_registry/index.md#cleanup-policy) instead.
 
 NOTE:
 In GitLab 12.4 and later, individual tags are deleted.

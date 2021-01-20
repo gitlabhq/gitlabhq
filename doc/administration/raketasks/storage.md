@@ -82,8 +82,8 @@ Support for legacy storage will be removed in GitLab 14.0. If you're on GitLab
 The option to choose between hashed and legacy storage in the admin area has
 been disabled.
 
-This task must be run on any machine that has Rails/Sidekiq configured and will 
-schedule all your existing projects and attachments associated with it to be 
+This task must be run on any machine that has Rails/Sidekiq configured and will
+schedule all your existing projects and attachments associated with it to be
 migrated to the **Hashed** storage type:
 
 - **Omnibus installation**

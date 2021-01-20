@@ -2,6 +2,7 @@
 import { GlButton, GlModal } from '@gitlab/ui';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { s__ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
   name: 'DesignReplyForm',
@@ -60,6 +61,9 @@ export default {
         ? s__('DesignManagement|Comment')
         : s__('DesignManagement|Save comment');
     },
+    markdownDocsPath() {
+      return helpPagePath('user/markdown');
+    },
   },
   mounted() {
     this.focusInput();
@@ -89,7 +93,7 @@ export default {
       :can-attach-file="false"
       :enable-autocomplete="true"
       :textarea-value="value"
-      markdown-docs-path="/help/user/markdown"
+      :markdown-docs-path="markdownDocsPath"
       class="bordered-box"
     >
       <template #textarea>

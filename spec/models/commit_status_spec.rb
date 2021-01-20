@@ -61,6 +61,22 @@ RSpec.describe CommitStatus do
         expect(commit_status.started_at).to be_present
       end
     end
+
+    describe 'transitioning to created from skipped or manual' do
+      let(:commit_status) { create(:commit_status, :skipped) }
+
+      it 'does not update user without parameter' do
+        commit_status.process!
+
+        expect { commit_status.process }.not_to change { commit_status.reload.user }
+      end
+
+      it 'updates user with user parameter' do
+        new_user = create(:user)
+
+        expect { commit_status.process(new_user) }.to change { commit_status.reload.user }.to(new_user)
+      end
+    end
   end
 
   describe '#processed' do
@@ -503,6 +519,9 @@ RSpec.describe CommitStatus do
     subject { commit_status.group_name }
 
     where(:name, :group_name) do
+      'rspec1'                                              | 'rspec1'
+      'rspec1 0 1'                                          | 'rspec1'
+      'rspec1 0/2'                                          | 'rspec1'
       'rspec:windows'                                       | 'rspec:windows'
       'rspec:windows 0'                                     | 'rspec:windows 0'
       'rspec:windows 0 test'                                | 'rspec:windows 0 test'

@@ -17,9 +17,9 @@ describe('RefreshButton', () => {
   const findRefreshBtn = () => wrapper.find(GlButton);
   const findDropdown = () => wrapper.find(GlDropdown);
   const findOptions = () => findDropdown().findAll(GlDropdownItem);
-  const findOptionAt = index => findOptions().at(index);
+  const findOptionAt = (index) => findOptions().at(index);
 
-  const expectFetchDataToHaveBeenCalledTimes = times => {
+  const expectFetchDataToHaveBeenCalledTimes = (times) => {
     const refreshCalls = dispatch.mock.calls.filter(([action, payload]) => {
       return action === 'monitoringDashboard/fetchDashboardData' && payload === undefined;
     });

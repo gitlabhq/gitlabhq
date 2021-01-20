@@ -1,0 +1,5 @@
+---
+title: Update GraphqlExtractor return value to be original hash
+merge_request: 51596
+author:
+type: fixed

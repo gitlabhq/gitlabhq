@@ -58,10 +58,10 @@ describe('vue_shared/components/awards_list', () => {
 
     wrapper = mount(AwardsList, { propsData: props });
   };
-  const matchingEmojiTag = name => expect.stringMatching(`gl-emoji data-name="${name}"`);
+  const matchingEmojiTag = (name) => expect.stringMatching(`gl-emoji data-name="${name}"`);
   const findAwardButtons = () => wrapper.findAll('[data-testid="award-button"]');
   const findAwardsData = () =>
-    findAwardButtons().wrappers.map(x => {
+    findAwardButtons().wrappers.map((x) => {
       return {
         classes: x.classes(),
         title: x.attributes('title'),
@@ -135,9 +135,7 @@ describe('vue_shared/components/awards_list', () => {
     it('with award clicked, it emits award', () => {
       expect(wrapper.emitted().award).toBeUndefined();
 
-      findAwardButtons()
-        .at(2)
-        .vm.$emit('click');
+      findAwardButtons().at(2).vm.$emit('click');
 
       expect(wrapper.emitted().award).toEqual([[EMOJI_SMILE]]);
     });
@@ -162,9 +160,7 @@ describe('vue_shared/components/awards_list', () => {
     it('when clicked, it emits award as number', () => {
       expect(wrapper.emitted().award).toBeUndefined();
 
-      findAwardButtons()
-        .at(0)
-        .vm.$emit('click');
+      findAwardButtons().at(0).vm.$emit('click');
 
       expect(wrapper.emitted().award).toEqual([[Number(EMOJI_100)]]);
     });
@@ -209,7 +205,7 @@ describe('vue_shared/components/awards_list', () => {
       const buttons = findAwardButtons();
 
       expect(buttons.length).toBe(7);
-      expect(buttons.wrappers.every(x => x.classes('disabled'))).toBe(true);
+      expect(buttons.wrappers.every((x) => x.classes('disabled'))).toBe(true);
     });
   });
 

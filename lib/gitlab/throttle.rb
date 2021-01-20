@@ -2,6 +2,8 @@
 
 module Gitlab
   class Throttle
+    DEFAULT_RATE_LIMITING_RESPONSE_TEXT = 'Retry later'
+
     def self.settings
       Gitlab::CurrentSettings.current_application_settings
     end
@@ -45,6 +47,10 @@ module Gitlab
       period_proc = proc { |req| settings.throttle_protected_paths_period_in_seconds.seconds }
 
       { limit: limit_proc, period: period_proc }
+    end
+
+    def self.rate_limiting_response_text
+      (settings.rate_limiting_response_text.presence || DEFAULT_RATE_LIMITING_RESPONSE_TEXT) + "\n"
     end
   end
 end

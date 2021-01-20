@@ -6,12 +6,6 @@ RSpec.describe Ci::BuildReportResultService do
   describe '#execute', :clean_gitlab_redis_shared_state do
     subject(:build_report_result) { described_class.new.execute(build) }
 
-    around do |example|
-      travel_to(DateTime.parse('2020-07-01')) do
-        example.run
-      end
-    end
-
     context 'when build is finished' do
       let(:build) { create(:ci_build, :success, :test_reports) }
 

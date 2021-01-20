@@ -3,7 +3,7 @@ import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 import { trackAlertStatusUpdateOptions } from '~/alert_management/constants';
 import AlertManagementStatus from '~/alert_management/components/alert_status.vue';
-import updateAlertStatusMutation from '~/alert_management/graphql/mutations/update_alert_status.mutation.graphql';
+import updateAlertStatusMutation from '~/graphql_shared/mutations/update_alert_status.mutation.graphql';
 import Tracking from '~/tracking';
 import mockAlerts from '../mocks/alerts.json';
 

@@ -90,7 +90,7 @@ describe('Deployment View App button', () => {
 
     it('renders all the links to the review apps', () => {
       const allUrls = wrapper.findAll('.js-deploy-url-menu-item').wrappers;
-      const expectedUrls = deploymentMockData.changes.map(change => change.external_url);
+      const expectedUrls = deploymentMockData.changes.map((change) => change.external_url);
 
       expectedUrls.forEach((expectedUrl, idx) => {
         const deployUrl = allUrls[idx];

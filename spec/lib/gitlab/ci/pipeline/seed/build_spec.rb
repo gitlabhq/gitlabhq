@@ -966,7 +966,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
 
       it "returns an error" do
         expect(subject.errors).to contain_exactly(
-          "rspec: needs 'build'")
+          "'rspec' job needs 'build' job, but it was not added to the pipeline")
       end
     end
 

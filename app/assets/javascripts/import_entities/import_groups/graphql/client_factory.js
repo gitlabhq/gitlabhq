@@ -23,7 +23,7 @@ export function createResolvers({ endpoints }) {
         } = await client.query({ query: availableNamespacesQuery });
 
         return axios.get(endpoints.status).then(({ data }) => {
-          return data.importable_data.map(group => ({
+          return data.importable_data.map((group) => ({
             __typename: clientTypenames.BulkImportSourceGroup,
             ...group,
             status: STATUSES.NONE,
@@ -37,7 +37,7 @@ export function createResolvers({ endpoints }) {
 
       availableNamespaces: () =>
         axios.get(endpoints.availableNamespaces).then(({ data }) =>
-          data.map(namespace => ({
+          data.map((namespace) => ({
             __typename: clientTypenames.AvailableNamespace,
             ...namespace,
           })),
@@ -45,14 +45,14 @@ export function createResolvers({ endpoints }) {
     },
     Mutation: {
       setTargetNamespace(_, { targetNamespace, sourceGroupId }, { client }) {
-        new SourceGroupsManager({ client }).updateById(sourceGroupId, sourceGroup => {
+        new SourceGroupsManager({ client }).updateById(sourceGroupId, (sourceGroup) => {
           // eslint-disable-next-line no-param-reassign
           sourceGroup.import_target.target_namespace = targetNamespace;
         });
       },
 
       setNewName(_, { newName, sourceGroupId }, { client }) {
-        new SourceGroupsManager({ client }).updateById(sourceGroupId, sourceGroup => {
+        new SourceGroupsManager({ client }).updateById(sourceGroupId, (sourceGroup) => {
           // eslint-disable-next-line no-param-reassign
           sourceGroup.import_target.new_name = newName;
         });

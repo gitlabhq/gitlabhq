@@ -106,10 +106,16 @@ RSpec.describe SnippetsFinder do
         expect(snippets).to contain_exactly(public_personal_snippet)
       end
 
-      it 'returns all snippets for an admin' do
+      it 'returns all snippets for an admin in admin mode', :enable_admin_mode do
         snippets = described_class.new(admin, author: user).execute
 
         expect(snippets).to contain_exactly(private_personal_snippet, internal_personal_snippet, public_personal_snippet)
+      end
+
+      it 'returns all public and internal snippets for an admin without admin mode' do
+        snippets = described_class.new(admin, author: user).execute
+
+        expect(snippets).to contain_exactly(internal_personal_snippet, public_personal_snippet)
       end
 
       context 'when author is not valid' do
@@ -180,10 +186,16 @@ RSpec.describe SnippetsFinder do
         expect(snippets).to contain_exactly(private_project_snippet)
       end
 
-      it 'returns all snippets for an admin' do
+      it 'returns all snippets for an admin in admin mode', :enable_admin_mode do
         snippets = described_class.new(admin, project: project).execute
 
         expect(snippets).to contain_exactly(private_project_snippet, internal_project_snippet, public_project_snippet)
+      end
+
+      it 'returns public and internal snippets for an admin without admin mode' do
+        snippets = described_class.new(admin, project: project).execute
+
+        expect(snippets).to contain_exactly(internal_project_snippet, public_project_snippet)
       end
 
       context 'filter by author' do
@@ -218,7 +230,7 @@ RSpec.describe SnippetsFinder do
     end
 
     context 'filter by snippet type' do
-      context 'when filtering by only_personal snippet' do
+      context 'when filtering by only_personal snippet', :enable_admin_mode do
         it 'returns only personal snippet' do
           snippets = described_class.new(admin, only_personal: true).execute
 
@@ -228,7 +240,7 @@ RSpec.describe SnippetsFinder do
         end
       end
 
-      context 'when filtering by only_project snippet' do
+      context 'when filtering by only_project snippet', :enable_admin_mode do
         it 'returns only project snippet' do
           snippets = described_class.new(admin, only_project: true).execute
 
@@ -239,7 +251,7 @@ RSpec.describe SnippetsFinder do
       end
     end
 
-    context 'filtering by ids' do
+    context 'filtering by ids', :enable_admin_mode do
       it 'returns only personal snippet' do
         snippets = described_class.new(
           admin, ids: [private_personal_snippet.id,
@@ -265,11 +277,19 @@ RSpec.describe SnippetsFinder do
         )
       end
 
-      it 'returns all personal snippets for admins' do
+      it 'returns all personal snippets for admins when in admin mode', :enable_admin_mode do
         snippets = described_class.new(admin, explore: true).execute
 
         expect(snippets).to contain_exactly(
           private_personal_snippet, internal_personal_snippet, public_personal_snippet
+        )
+      end
+
+      it 'also returns internal personal snippets for admins without admin mode' do
+        snippets = described_class.new(admin, explore: true).execute
+
+        expect(snippets).to contain_exactly(
+          internal_personal_snippet, public_personal_snippet
         )
       end
     end
@@ -302,7 +322,7 @@ RSpec.describe SnippetsFinder do
       end
     end
 
-    context 'no sort param is provided' do
+    context 'no sort param is provided', :enable_admin_mode do
       it 'returns snippets sorted by id' do
         snippets = described_class.new(admin).execute
 
@@ -310,7 +330,7 @@ RSpec.describe SnippetsFinder do
       end
     end
 
-    context 'sort param is provided' do
+    context 'sort param is provided', :enable_admin_mode do
       it 'returns snippets sorted by sort param' do
         snippets = described_class.new(admin, sort: 'updated_desc').execute
 

@@ -39,8 +39,8 @@ export default class WebAuthnRegister {
       .create({
         publicKey: this.webauthnOptions,
       })
-      .then(cred => this.renderRegistered(JSON.stringify(convertCreateResponse(cred))))
-      .catch(err => this.flow.renderError(new WebAuthnError(err, 'register')));
+      .then((cred) => this.renderRegistered(JSON.stringify(convertCreateResponse(cred))))
+      .catch((err) => this.flow.renderError(new WebAuthnError(err, 'register')));
   }
 
   renderSetup() {

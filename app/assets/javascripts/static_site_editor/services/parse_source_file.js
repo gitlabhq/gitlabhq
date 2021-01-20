@@ -1,6 +1,6 @@
 import { frontMatterify, stringify } from './front_matterify';
 
-const parseSourceFile = raw => {
+const parseSourceFile = (raw) => {
   let editable;
 
   const syncContent = (newVal, isBody) => {
@@ -20,7 +20,7 @@ const parseSourceFile = raw => {
 
   const matter = () => editable.matter;
 
-  const syncMatter = settings => {
+  const syncMatter = (settings) => {
     editable.matter = settings;
   };
 

@@ -1,21 +1,23 @@
-- link = link_to _("Install GitLab Runner"), 'https://docs.gitlab.com/runner/install/', target: '_blank'
+- link = link_to _("Install GitLab Runner and ensure it's running."), 'https://docs.gitlab.com/runner/install/', target: '_blank'
 .gl-mb-3
-  %h4= _("Set up a %{type} Runner manually") % { type: type }
+  %h5= _("Set up a %{type} runner manually") % { type: type }
 
 %ol
   %li
     = link.html_safe
   %li
-    = _("Specify the following URL during the Runner setup:")
+    = _("Register the runner with this URL:")
+    %br
     %code#coordinator_address= root_url(only_path: false)
     = clipboard_button(target: '#coordinator_address', title: _("Copy URL"), class: "btn-transparent btn-clipboard")
-  %li
-    = _("Use the following registration token during setup:")
+    %br
+    %br
+    = _("And this registration token:")
+    %br
     %code#registration_token= registration_token
     = clipboard_button(target: '#registration_token', title: _("Copy token"), class: "btn-transparent btn-clipboard")
-    .gl-mt-3.gl-mb-3
-      = button_to _("Reset runners registration token"), reset_token_url,
-      method: :put, class: 'gl-button btn btn-default',
-      data: { confirm: _("Are you sure you want to reset registration token?") }
-  %li
-    = _("Start the Runner!")
+
+.gl-mt-3.gl-mb-3
+= button_to _("Reset registration token"), reset_token_url,
+method: :put, class: 'gl-button btn btn-default',
+data: { confirm: _("Are you sure you want to reset the registration token?") }

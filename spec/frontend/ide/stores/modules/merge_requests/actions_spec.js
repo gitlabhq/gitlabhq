@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import testAction from 'helpers/vuex_action_helper';
 import axios from '~/lib/utils/axios_utils';
 import state from '~/ide/stores/modules/merge_requests/state';
 import * as types from '~/ide/stores/modules/merge_requests/mutation_types';
@@ -10,7 +11,6 @@ import {
   resetMergeRequests,
 } from '~/ide/stores/modules/merge_requests/actions';
 import { mergeRequests } from '../../../mock_data';
-import testAction from '../../../../helpers/vuex_action_helper';
 
 describe('IDE merge requests actions', () => {
   let mockedState;
@@ -28,7 +28,7 @@ describe('IDE merge requests actions', () => {
   });
 
   describe('requestMergeRequests', () => {
-    it('should commit request', done => {
+    it('should commit request', (done) => {
       testAction(
         requestMergeRequests,
         null,
@@ -41,7 +41,7 @@ describe('IDE merge requests actions', () => {
   });
 
   describe('receiveMergeRequestsError', () => {
-    it('should commit error', done => {
+    it('should commit error', (done) => {
       testAction(
         receiveMergeRequestsError,
         { type: 'created', search: '' },
@@ -64,7 +64,7 @@ describe('IDE merge requests actions', () => {
   });
 
   describe('receiveMergeRequestsSuccess', () => {
-    it('should commit received data', done => {
+    it('should commit received data', (done) => {
       testAction(
         receiveMergeRequestsSuccess,
         mergeRequests,
@@ -118,7 +118,7 @@ describe('IDE merge requests actions', () => {
         });
       });
 
-      it('dispatches success with received data', done => {
+      it('dispatches success with received data', (done) => {
         testAction(
           fetchMergeRequests,
           { type: 'created' },
@@ -156,7 +156,7 @@ describe('IDE merge requests actions', () => {
         );
       });
 
-      it('dispatches success with received data', done => {
+      it('dispatches success with received data', (done) => {
         testAction(
           fetchMergeRequests,
           { type: null },
@@ -177,7 +177,7 @@ describe('IDE merge requests actions', () => {
         mock.onGet(/\/api\/v4\/merge_requests(.*)$/).replyOnce(500);
       });
 
-      it('dispatches error', done => {
+      it('dispatches error', (done) => {
         testAction(
           fetchMergeRequests,
           { type: 'created', search: '' },
@@ -195,7 +195,7 @@ describe('IDE merge requests actions', () => {
   });
 
   describe('resetMergeRequests', () => {
-    it('commits reset', done => {
+    it('commits reset', (done) => {
       testAction(
         resetMergeRequests,
         null,

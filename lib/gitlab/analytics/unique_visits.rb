@@ -4,7 +4,7 @@ module Gitlab
   module Analytics
     class UniqueVisits
       def track_visit(visitor_id, target_id, time = Time.zone.now)
-        Gitlab::UsageDataCounters::HLLRedisCounter.track_event(visitor_id, target_id, time)
+        Gitlab::UsageDataCounters::HLLRedisCounter.track_event(target_id, values: visitor_id, time: time)
       end
 
       # Returns number of unique visitors for given targets in given time frame

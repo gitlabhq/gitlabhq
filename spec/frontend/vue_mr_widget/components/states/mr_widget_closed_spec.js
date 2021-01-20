@@ -39,10 +39,7 @@ describe('MRWidgetClosed', () => {
 
   it('renders closed by information with author and time', () => {
     expect(
-      vm.$el
-        .querySelector('.js-mr-widget-author')
-        .textContent.trim()
-        .replace(/\s\s+/g, ' '),
+      vm.$el.querySelector('.js-mr-widget-author').textContent.trim().replace(/\s\s+/g, ' '),
     ).toContain('Closed by Administrator less than a minute ago');
   });
 
@@ -54,10 +51,7 @@ describe('MRWidgetClosed', () => {
 
   it('renders information about the changes not being merged', () => {
     expect(
-      vm.$el
-        .querySelector('.mr-info-list')
-        .textContent.trim()
-        .replace(/\s\s+/g, ' '),
+      vm.$el.querySelector('.mr-info-list').textContent.trim().replace(/\s\s+/g, ' '),
     ).toContain('The changes were not merged into so_long_jquery');
   });
 

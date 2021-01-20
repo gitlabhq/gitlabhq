@@ -15,7 +15,7 @@ mutation lintCI($endpoint: String, $content: String, $dry: Boolean) {
       }
       afterScript
       stage
-      tagList
+      tags
       when
     }
   }

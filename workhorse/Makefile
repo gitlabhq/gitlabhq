@@ -22,8 +22,6 @@ export PATH := $(GOBIN):$(PATH)
 export GOPROXY ?= https://proxy.golang.org
 export GO111MODULE=on
 
-LOCAL_GO_FILES = $(shell find . -type f -name '*.go' | grep -v -e /_ -e /testdata/ -e '^\./\.')
-
 define message
 	@echo "### $(1)"
 endef
@@ -40,19 +38,23 @@ $(TARGET_SETUP):
 	mkdir -p "$(TARGET_DIR)"
 	touch "$(TARGET_SETUP)"
 
-gitlab-resize-image: $(TARGET_SETUP) $(shell find cmd/gitlab-resize-image/ -name '*.go')
+.PHONY: gitlab-resize-image
+gitlab-resize-image: $(TARGET_SETUP)
 	$(call message,Building $@)
 	$(GOBUILD) -tags "$(BUILD_TAGS)" -o $(BUILD_DIR)/$@ $(PKG)/cmd/$@
 
-gitlab-zip-cat:	$(TARGET_SETUP) $(shell find cmd/gitlab-zip-cat/ -name '*.go')
+.PHONY: gitlab-zip-cat
+gitlab-zip-cat: $(TARGET_SETUP)
 	$(call message,Building $@)
 	$(GOBUILD) -tags "$(BUILD_TAGS)" -o $(BUILD_DIR)/$@ $(PKG)/cmd/$@
 
-gitlab-zip-metadata:	$(TARGET_SETUP) $(shell find cmd/gitlab-zip-metadata/ -name '*.go')
+.PHONY: gitlab-zip-metadata
+gitlab-zip-metadata: $(TARGET_SETUP)
 	$(call message,Building $@)
 	$(GOBUILD) -tags "$(BUILD_TAGS)" -o $(BUILD_DIR)/$@ $(PKG)/cmd/$@
 
-gitlab-workhorse:	$(TARGET_SETUP) $(shell find . -name '*.go' | grep -v '^\./_')
+.PHONY: gitlab-workhorse
+gitlab-workhorse: $(TARGET_SETUP)
 	$(call message,Building $@)
 	$(GOBUILD) -tags "$(BUILD_TAGS)" -o $(BUILD_DIR)/$@ $(PKG)
 
@@ -142,7 +144,7 @@ detect-assert:
 .PHONY: check-formatting
 check-formatting: $(TARGET_SETUP) install-goimports
 	$(call message,Verify: $@)
-	@_support/validate-formatting.sh $(LOCAL_GO_FILES)
+	@_support/fmt.sh check
 
 # Megacheck will tailor some responses given a minimum Go version, so pass that through the CLI
 # Additionally, megacheck will not return failure exit codes unless explicitly told to via the
@@ -158,7 +160,7 @@ staticcheck: $(TARGET_SETUP)
 .PHONY: fmt
 fmt: $(TARGET_SETUP) install-goimports
 	$(call message,$@)
-	@goimports -w -local $(PKG) -l $(LOCAL_GO_FILES)
+	@_support/fmt.sh
 
 .PHONY:	goimports
 install-goimports:	$(TARGET_SETUP)

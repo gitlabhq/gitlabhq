@@ -44,19 +44,19 @@ Visit the [GitLab Pages group](https://gitlab.com/groups/pages) for a complete l
 
 You can provide your own 403 and 404 error pages by creating the `403.html` and
 `404.html` files respectively in the root directory of the `public/` directory
-that will be included in the artifacts. Usually this is the root directory of
+that are included in the artifacts. Usually this is the root directory of
 your project, but that may differ depending on your static generator
 configuration.
 
 If the case of `404.html`, there are different scenarios. For example:
 
 - If you use project Pages (served under `/projectname/`) and try to access
-  `/projectname/non/existing_file`, GitLab Pages will try to serve first
+  `/projectname/non/existing_file`, GitLab Pages tries to serve first
   `/projectname/404.html`, and then `/404.html`.
 - If you use user/group Pages (served under `/`) and try to access
-  `/non/existing_file` GitLab Pages will try to serve `/404.html`.
+  `/non/existing_file` GitLab Pages tries to serve `/404.html`.
 - If you use a custom domain and try to access `/non/existing_file`, GitLab
-  Pages will try to serve only `/404.html`.
+  Pages tries to serve only `/404.html`.
 
 ## Redirects in GitLab Pages
 
@@ -71,8 +71,8 @@ To restrict access to your website, enable [GitLab Pages Access Control](pages_a
 
 If you ever feel the need to purge your Pages content, you can do so by going
 to your project's settings through the gear icon in the top right, and then
-navigating to **Pages**. Hit the **Remove pages** button and your Pages website
-will be deleted.
+navigating to **Pages**. Click the **Remove pages** button to delete your Pages
+website.
 
 ![Remove pages](img/remove_pages.png)
 
@@ -81,9 +81,9 @@ will be deleted.
 When using Pages under the general domain of a GitLab instance (`*.example.io`),
 you _cannot_ use HTTPS with sub-subdomains. That means that if your
 username or group name contains a dot, for example `foo.bar`, the domain
-`https://foo.bar.example.io` will _not_ work. This is a limitation of the
-[HTTP Over TLS protocol](https://tools.ietf.org/html/rfc2818#section-3.1). HTTP pages will continue to work provided you
-don't redirect HTTP to HTTPS.
+`https://foo.bar.example.io` does _not_ work. This is a limitation of the
+[HTTP Over TLS protocol](https://tools.ietf.org/html/rfc2818#section-3.1).
+HTTP pages continue to work provided you don't redirect HTTP to HTTPS.
 
 GitLab Pages [does **not** support group websites for subgroups](../../group/subgroups/index.md#limitations).
 You can only create the highest-level group website.
@@ -130,11 +130,11 @@ See this document for a [step-by-step guide](getting_started/pages_from_scratch.
 Remember that GitLab Pages are by default branch/tag agnostic and their
 deployment relies solely on what you specify in `.gitlab-ci.yml`. You can limit
 the `pages` job with the [`only` parameter](../../../ci/yaml/README.md#onlyexcept-basic),
-whenever a new commit is pushed to a branch that will be used specifically for
-your pages.
+whenever a new commit is pushed to a branch used specifically for your
+pages.
 
 That way, you can have your project's code in the `master` branch and use an
-orphan branch (let's name it `pages`) that will host your static generator site.
+orphan branch (let's name it `pages`) to host your static generator site.
 
 You can create a new empty branch like this:
 
@@ -142,9 +142,9 @@ You can create a new empty branch like this:
 git checkout --orphan pages
 ```
 
-The first commit made on this new branch will have no parents and it will be
-the root of a new history totally disconnected from all the other branches and
-commits. Push the source files of your static generator in the `pages` branch.
+The first commit made on this new branch has no parents and is the root of a
+new history totally disconnected from all the other branches and commits.
+Push the source files of your static generator in the `pages` branch.
 
 Below is a copy of `.gitlab-ci.yml` where the most significant line is the last
 one, specifying to execute everything in the `pages` branch:
@@ -172,9 +172,9 @@ also includes `.gitlab-ci.yml`.
 Most modern browsers support downloading files in a compressed format. This
 speeds up downloads by reducing the size of files.
 
-Before serving an uncompressed file, Pages will check whether the same file
-exists with a `.br` or `.gz` extension. If it does, and the browser supports receiving
-compressed files, it will serve that version instead of the uncompressed one.
+Before serving an uncompressed file, Pages checks if the same file exists with
+a `.br` or `.gz` extension. If it does, and the browser supports receiving
+compressed files, it serves that version instead of the uncompressed one.
 
 To take advantage of this feature, the artifact you upload to the Pages should
 have this structure:
@@ -236,10 +236,10 @@ public/
 ```
 
 Pages supports reaching each of these files through several different URLs. In
-particular, it will always look for an `index.html` file if the URL only
+particular, it always looks for an `index.html` file if the URL only
 specifies the directory. If the URL references a file that doesn't exist, but
-adding `.html` to the URL leads to a file that *does* exist, it will be served
-instead. Here are some examples of what will happen given the above Pages site:
+adding `.html` to the URL leads to a file that *does* exist, it's served
+instead. Here are some examples of what happens given the above Pages site:
 
 | URL path             | HTTP response | File served |
 | -------------------- | ------------- | ----------- |
@@ -275,7 +275,7 @@ to private, internal or public.
 
 ### Do I need to create a user/group website before creating a project website?
 
-No, you don't. You can create your project first and it will be accessed under
+No, you don't. You can create your project first and access it under
 `http(s)://namespace.example.io/projectname`.
 
 ## Known issues

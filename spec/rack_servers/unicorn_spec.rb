@@ -68,7 +68,7 @@ RSpec.describe 'Unicorn' do
   end
 
   after(:all) do
-    WebMock.disable_net_connect!(allow_localhost: true)
+    webmock_enable!
     Process.kill('TERM', @unicorn_master_pid)
   end
 

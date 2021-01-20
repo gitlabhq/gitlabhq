@@ -11,6 +11,6 @@ export default function initInviteMembersTrigger() {
   return new Vue({
     el,
     provide: { ...el.dataset },
-    render: createElement => createElement(InviteMemberTrigger),
+    render: (createElement) => createElement(InviteMemberTrigger),
   });
 }

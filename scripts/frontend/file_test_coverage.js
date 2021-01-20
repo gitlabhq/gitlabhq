@@ -17,11 +17,11 @@ const sourceDirectories = ['app/assets/javascripts'];
 const testDirectories = ['spec/javascripts', 'spec/frontend'];
 
 if (fs.existsSync('ee')) {
-  sourceDirectories.forEach(dir => {
+  sourceDirectories.forEach((dir) => {
     sourceDirectories.push(`ee/${dir}`);
   });
 
-  testDirectories.forEach(dir => {
+  testDirectories.forEach((dir) => {
     testDirectories.push(`ee/${dir}`);
   });
 }
@@ -29,10 +29,10 @@ if (fs.existsSync('ee')) {
 let numSourceFiles = 0;
 let numTestFiles = 0;
 
-const isVerbose = process.argv.some(arg => arg === '-v');
+const isVerbose = process.argv.some((arg) => arg === '-v');
 
-const countSourceFiles = path =>
-  forEachFileIn(path, fileName => {
+const countSourceFiles = (path) =>
+  forEachFileIn(path, (fileName) => {
     if (fileName.endsWith('.vue') || fileName.endsWith('.js')) {
       if (isVerbose) {
         console.log(`source file: ${fileName}`);
@@ -42,8 +42,8 @@ const countSourceFiles = path =>
     }
   });
 
-const countTestFiles = path =>
-  forEachFileIn(path, fileName => {
+const countTestFiles = (path) =>
+  forEachFileIn(path, (fileName) => {
     if (fileName.endsWith('_spec.js')) {
       if (isVerbose) {
         console.log(`test file: ${fileName}`);
@@ -63,7 +63,7 @@ function forEachFileIn(dirPath, callback) {
       return;
     }
 
-    files.forEach(fileName => {
+    files.forEach((fileName) => {
       const absolutePath = path.join(dirPath, fileName);
       const stats = fs.statSync(absolutePath);
       if (stats.isFile()) {

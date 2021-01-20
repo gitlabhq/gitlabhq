@@ -1,9 +1,9 @@
 <script>
-import getPipelineDetails from '../../graphql/queries/get_pipeline_details.query.graphql';
+import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import LinkedPipeline from './linked_pipeline.vue';
 import { LOAD_FAILURE } from '../../constants';
 import { UPSTREAM } from './constants';
-import { unwrapPipelineData, toggleQueryPollingByVisibility } from './utils';
+import { unwrapPipelineData, toggleQueryPollingByVisibility, reportToSentry } from './utils';
 
 export default {
   components: {
@@ -42,8 +42,8 @@ export default {
   computed: {
     columnClass() {
       const positionValues = {
-        right: 'gl-ml-11',
-        left: 'gl-mr-7',
+        right: 'gl-ml-6',
+        left: 'gl-mr-6',
       };
       return `graph-position-${this.graphPosition} ${positionValues[this.graphPosition]}`;
     },
@@ -80,8 +80,13 @@ export default {
         result() {
           this.loadingPipelineId = null;
         },
-        error() {
+        error(err, _vm, _key, type) {
           this.$emit('error', LOAD_FAILURE);
+
+          reportToSentry(
+            'linked_pipelines_column',
+            `error type: ${LOAD_FAILURE}, error: ${err}, apollo error type: ${type}`,
+          );
         },
       });
 

@@ -73,7 +73,7 @@ to your needs:
 
 ![Use a `.gitlab-ci.yml` template](img/add_file_template_11_10.png)
 
-While building your `.gitlab-ci.yml`, you can use the [CI/CD configuration visualization](yaml/visualization.md) to facilitate your writing experience.
+While building your `.gitlab-ci.yml`, you can use the [CI/CD configuration visualization](pipeline_editor/index.md#visualize-ci-configuration) to facilitate your writing experience.
 
 For a broader overview, see the [CI/CD getting started](quick_start/README.md) guide.
 
@@ -141,8 +141,8 @@ Its feature set is listed on the table below according to DevOps stages.
 | **Release**                                                                                     |                                                                                                                                |
 | [Auto Deploy](../topics/autodevops/stages.md#auto-deploy)                                       | Deploy your application to a production environment in a Kubernetes cluster.                                                   |
 | [Building Docker images](docker/using_docker_build.md)                                          | Maintain Docker-based projects using GitLab CI/CD.                                                                             |
-| [Canary Deployments](../user/project/canary_deployments.md) **(PREMIUM)**                       | Ship features to only a portion of your pods and let a percentage of your user base to visit the temporarily deployed feature. |
-| [Deploy Boards](../user/project/deploy_boards.md) **(PREMIUM)**                                 | Check the current health and status of each CI/CD environment running on Kubernetes.                                           |
+| [Canary Deployments](../user/project/canary_deployments.md)                                     | Ship features to only a portion of your pods and let a percentage of your user base to visit the temporarily deployed feature. |
+| [Deploy Boards](../user/project/deploy_boards.md)                                               | Check the current health and status of each CI/CD environment running on Kubernetes.                                           |
 | [Feature Flags](../operations/feature_flags.md) **(PREMIUM)**                                   | Deploy your features behind Feature Flags.                                                                                     |
 | [GitLab Pages](../user/project/pages/index.md)                                                  | Deploy static websites.                                                                                                        |
 | [GitLab Releases](../user/project/releases/index.md)                                            | Add release notes to Git tags.                                                                                                 |
@@ -221,11 +221,3 @@ been necessary. These are:
 #### 10.0
 
 - No breaking changes.
-
-#### 9.0
-
-- [CI variables renaming for GitLab 9.0](variables/deprecated_variables.md#gitlab-90-renamed-variables). Read about the
-  deprecated CI variables and what you should use for GitLab 9.0+.
-- [New CI job permissions model](../user/project/new_ci_build_permissions_model.md).
-  See what changed in GitLab 8.12 and how that affects your jobs.
-  There's a new way to access your Git submodules and LFS objects in jobs.

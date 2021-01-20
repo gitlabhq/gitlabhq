@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
-import { TEST_HOST } from 'jest/helpers/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
 import { redirectTo } from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
 import deleteMilestoneModal from '~/pages/milestones/shared/components/delete_milestone_modal.vue';
@@ -32,9 +32,9 @@ describe('delete_milestone_modal.vue', () => {
       jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
     });
 
-    it('deletes milestone and redirects to overview page', done => {
+    it('deletes milestone and redirects to overview page', (done) => {
       const responseURL = `${TEST_HOST}/delete_milestone_modal.vue/milestoneOverview`;
-      jest.spyOn(axios, 'delete').mockImplementation(url => {
+      jest.spyOn(axios, 'delete').mockImplementation((url) => {
         expect(url).toBe(props.milestoneUrl);
         expect(eventHub.$emit).toHaveBeenCalledWith(
           'deleteMilestoneModal.requestStarted',
@@ -60,10 +60,10 @@ describe('delete_milestone_modal.vue', () => {
         .catch(done.fail);
     });
 
-    it('displays error if deleting milestone failed', done => {
+    it('displays error if deleting milestone failed', (done) => {
       const dummyError = new Error('deleting milestone failed');
       dummyError.response = { status: 418 };
-      jest.spyOn(axios, 'delete').mockImplementation(url => {
+      jest.spyOn(axios, 'delete').mockImplementation((url) => {
         expect(url).toBe(props.milestoneUrl);
         expect(eventHub.$emit).toHaveBeenCalledWith(
           'deleteMilestoneModal.requestStarted',
@@ -74,7 +74,7 @@ describe('delete_milestone_modal.vue', () => {
       });
 
       vm.onSubmit()
-        .catch(error => {
+        .catch((error) => {
           expect(error).toBe(dummyError);
           expect(redirectTo).not.toHaveBeenCalled();
           expect(eventHub.$emit).toHaveBeenCalledWith('deleteMilestoneModal.requestFinished', {

@@ -45,7 +45,12 @@ Rails.application.routes.draw do
 
   # Sign up
   scope path: '/users/sign_up', module: :registrations, as: :users_sign_up do
-    resource :welcome, only: [:show, :update], controller: 'welcome'
+    resource :welcome, only: [:show, :update], controller: 'welcome' do
+      Gitlab.ee do
+        get :trial_getting_started, on: :collection
+      end
+    end
+
     resource :experience_level, only: [:show, :update]
 
     Gitlab.ee do
@@ -87,7 +92,10 @@ Rails.application.routes.draw do
     # '/-/health' implemented by BasicHealthCheck middleware
     get 'liveness' => 'health#liveness'
     get 'readiness' => 'health#readiness'
-    resources :metrics, only: [:index]
+    controller :metrics do
+      get 'metrics', action: :index
+      get 'metrics/system', action: :system
+    end
     mount Peek::Railtie => '/peek', as: 'peek_routes'
 
     get 'runner_setup/platforms' => 'runner_setup#platforms'
@@ -271,7 +279,8 @@ Rails.application.routes.draw do
   # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/210024
   scope as: 'deprecated' do
     draw :snippets
-    draw :profile
+
+    Gitlab::Routing.redirect_legacy_paths(self, :profile)
   end
 
   Gitlab.ee do

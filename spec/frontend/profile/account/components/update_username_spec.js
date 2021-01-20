@@ -84,7 +84,7 @@ describe('UpdateUsername component', () => {
     it('confirmation modal contains proper header and body', async () => {
       const { modal } = findElements();
 
-      expect(modal.attributes('title')).toBe('Change username?');
+      expect(modal.props('title')).toBe('Change username?');
       expect(modal.text()).toContain(
         `You are going to change the username ${defaultProps.initialUsername} to ${newUsername}`,
       );

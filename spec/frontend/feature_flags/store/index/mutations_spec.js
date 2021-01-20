@@ -50,7 +50,7 @@ describe('Feature flags store Mutations', () => {
     });
 
     it('should set featureFlags with the transformed data', () => {
-      const expected = getRequestData.feature_flags.map(flag => ({
+      const expected = getRequestData.feature_flags.map((flag) => ({
         ...flag,
         scopes: mapToScopesViewModel(flag.scopes || []),
       }));
@@ -183,7 +183,7 @@ describe('Feature flags store Mutations', () => {
 
   describe('UPDATE_FEATURE_FLAG', () => {
     beforeEach(() => {
-      stateCopy.featureFlags = getRequestData.feature_flags.map(flag => ({
+      stateCopy.featureFlags = getRequestData.feature_flags.map((flag) => ({
         ...flag,
         scopes: mapToScopesViewModel(flag.scopes || []),
       }));
@@ -209,7 +209,7 @@ describe('Feature flags store Mutations', () => {
 
   describe('RECEIVE_UPDATE_FEATURE_FLAG_SUCCESS', () => {
     const runUpdate = (stateCount, flagState, featureFlagUpdateParams) => {
-      stateCopy.featureFlags = getRequestData.feature_flags.map(flag => ({
+      stateCopy.featureFlags = getRequestData.feature_flags.map((flag) => ({
         ...flag,
         ...flagState,
         scopes: mapToScopesViewModel(flag.scopes || []),
@@ -237,7 +237,7 @@ describe('Feature flags store Mutations', () => {
 
   describe('RECEIVE_UPDATE_FEATURE_FLAG_ERROR', () => {
     beforeEach(() => {
-      stateCopy.featureFlags = getRequestData.feature_flags.map(flag => ({
+      stateCopy.featureFlags = getRequestData.feature_flags.map((flag) => ({
         ...flag,
         scopes: mapToScopesViewModel(flag.scopes || []),
       }));

@@ -7,7 +7,7 @@ export const member = {
   accessLevel: { integerValue: 50, stringValue: 'Owner' },
   source: {
     id: 178,
-    name: 'Foo Bar',
+    fullName: 'Foo Bar',
     webUrl: 'https://gitlab.com/groups/foo-bar',
   },
   user: {

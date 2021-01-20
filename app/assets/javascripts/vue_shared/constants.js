@@ -54,5 +54,6 @@ export const timeRanges = [
   },
 ];
 
-export const defaultTimeRange = timeRanges.find(tr => tr.default);
-export const getTimeWindow = timeWindowName => timeRanges.find(tr => tr.name === timeWindowName);
+export const defaultTimeRange = timeRanges.find((tr) => tr.default);
+export const getTimeWindow = (timeWindowName) =>
+  timeRanges.find((tr) => tr.name === timeWindowName);

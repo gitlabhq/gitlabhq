@@ -38,7 +38,7 @@ describe('issue_note_body component', () => {
   });
 
   describe('isEditing', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       vm.isEditing = true;
       Vue.nextTick(done);
     });

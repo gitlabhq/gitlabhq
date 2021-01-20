@@ -12,7 +12,7 @@ module Gitlab
       # We are modeling existing kubernetes resource and don't have
       # control over amount of parameters.
       # rubocop:disable Metrics/ParameterLists
-      def initialize(name:, namespace:, selector:, ingress:, resource_version: nil, description: nil, labels: nil, creation_timestamp: nil, egress: nil)
+      def initialize(name:, namespace:, selector:, ingress:, resource_version: nil, description: nil, labels: nil, creation_timestamp: nil, egress: nil, annotations: nil)
         @name = name
         @description = description
         @namespace = namespace
@@ -22,6 +22,7 @@ module Gitlab
         @resource_version = resource_version
         @ingress = ingress
         @egress = egress
+        @annotations = annotations
       end
       # rubocop:enable Metrics/ParameterLists
 
@@ -37,6 +38,7 @@ module Gitlab
           name: metadata[:name],
           description: policy[:description],
           namespace: metadata[:namespace],
+          annotations: metadata[:annotations],
           resource_version: metadata[:resourceVersion],
           labels: metadata[:labels],
           selector: spec[:endpointSelector],
@@ -57,6 +59,7 @@ module Gitlab
           name: metadata[:name],
           description: resource[:description],
           namespace: metadata[:namespace],
+          annotations: metadata[:annotations]&.to_h,
           resource_version: metadata[:resourceVersion],
           labels: metadata[:labels]&.to_h,
           creation_timestamp: metadata[:creationTimestamp],
@@ -80,7 +83,7 @@ module Gitlab
 
       private
 
-      attr_reader :name, :description, :namespace, :labels, :creation_timestamp, :resource_version, :ingress, :egress
+      attr_reader :name, :description, :namespace, :labels, :creation_timestamp, :resource_version, :ingress, :egress, :annotations
 
       def selector
         @selector ||= {}
@@ -90,6 +93,7 @@ module Gitlab
         meta = { name: name, namespace: namespace }
         meta[:labels] = labels if labels
         meta[:resourceVersion] = resource_version if resource_version
+        meta[:annotations] = annotations if annotations
         meta
       end
 

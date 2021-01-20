@@ -1,8 +1,7 @@
 ---
 # Suggestion: gitlab.FutureTense
 #
-# Checks for use of future tense in sentences. Present tense is preferred as
-# much as possible.
+# Checks for use of future tense in sentences. Present tense is strongly preferred.
 #
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence

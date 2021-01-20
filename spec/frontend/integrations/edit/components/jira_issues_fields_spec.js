@@ -12,7 +12,7 @@ describe('JiraIssuesFields', () => {
     editProjectPath: '/edit',
   };
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     wrapper = mount(JiraIssuesFields, {
       propsData: { ...defaultProps, ...props },
     });

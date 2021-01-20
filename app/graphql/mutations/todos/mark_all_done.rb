@@ -11,11 +11,11 @@ module Mutations
             [::Types::GlobalIDType[::Todo]],
             null: false,
             deprecated: { reason: 'Use todos', milestone: '13.2' },
-            description: 'Ids of the updated todos'
+            description: 'Ids of the updated todos.'
 
       field :todos, [::Types::TodoType],
             null: false,
-            description: 'Updated todos'
+            description: 'Updated todos.'
 
       def resolve
         authorize!(current_user)

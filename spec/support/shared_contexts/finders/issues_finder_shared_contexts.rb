@@ -8,13 +8,53 @@ RSpec.shared_context 'IssuesFinder context' do
   let_it_be(:project1, reload: true) { create(:project, group: group) }
   let_it_be(:project2, reload: true) { create(:project) }
   let_it_be(:project3, reload: true) { create(:project, group: subgroup) }
-  let_it_be(:milestone) { create(:milestone, project: project1) }
+  let_it_be(:release) { create(:release, project: project1, tag: 'v1.0.0') }
+  let_it_be(:milestone) { create(:milestone, project: project1, releases: [release]) }
   let_it_be(:label) { create(:label, project: project2) }
   let_it_be(:label2) { create(:label, project: project2) }
-  let_it_be(:issue1, reload: true) { create(:issue, author: user, assignees: [user], project: project1, milestone: milestone, title: 'gitlab', created_at: 1.week.ago, updated_at: 1.week.ago) }
-  let_it_be(:issue2, reload: true) { create(:issue, author: user, assignees: [user], project: project2, description: 'gitlab', created_at: 1.week.from_now, updated_at: 1.week.from_now) }
-  let_it_be(:issue3, reload: true) { create(:issue, author: user2, assignees: [user2], project: project2, title: 'tanuki', description: 'tanuki', created_at: 2.weeks.from_now, updated_at: 2.weeks.from_now) }
+  let_it_be(:issue1, reload: true) do
+    create(:issue,
+           author: user,
+           assignees: [user],
+           project: project1,
+           milestone: milestone,
+           title: 'gitlab',
+           created_at: 1.week.ago,
+           updated_at: 1.week.ago)
+  end
+
+  let_it_be(:issue2, reload: true) do
+    create(:issue,
+           author: user,
+           assignees: [user],
+           project: project2,
+           description: 'gitlab',
+           created_at: 1.week.from_now,
+           updated_at: 1.week.from_now)
+  end
+
+  let_it_be(:issue3, reload: true) do
+    create(:issue,
+           author: user2,
+           assignees: [user2],
+           project: project2,
+           title: 'tanuki',
+           description: 'tanuki',
+           created_at: 2.weeks.from_now,
+           updated_at: 2.weeks.from_now)
+  end
+
   let_it_be(:issue4, reload: true) { create(:issue, project: project3) }
+  let_it_be(:issue5, reload: true) do
+    create(:issue,
+           author: user,
+           assignees: [user],
+           project: project1,
+           title: 'wotnot',
+           created_at: 3.days.ago,
+           updated_at: 3.days.ago)
+  end
+
   let_it_be(:award_emoji1) { create(:award_emoji, name: 'thumbsup', user: user, awardable: issue1) }
   let_it_be(:award_emoji2) { create(:award_emoji, name: 'thumbsup', user: user2, awardable: issue2) }
   let_it_be(:award_emoji3) { create(:award_emoji, name: 'thumbsdown', user: user, awardable: issue3) }

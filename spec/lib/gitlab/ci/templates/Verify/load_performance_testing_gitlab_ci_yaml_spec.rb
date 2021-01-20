@@ -19,8 +19,8 @@ RSpec.describe 'Verify/Load-Performance-Testing.gitlab-ci.yml' do
   end
 
   describe 'the created pipeline' do
-    let(:user) { create(:admin) }
     let(:project) { create(:project, :repository) }
+    let(:user) { project.owner }
 
     let(:default_branch) { 'master' }
     let(:pipeline_ref) { default_branch }

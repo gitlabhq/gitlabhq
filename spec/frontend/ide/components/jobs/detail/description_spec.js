@@ -1,6 +1,6 @@
 import Vue from 'vue';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import Description from '~/ide/components/jobs/detail/description.vue';
-import mountComponent from '../../../../helpers/vue_mount_component_helper';
 import { jobs } from '../../../mock_data';
 
 describe('IDE job description', () => {

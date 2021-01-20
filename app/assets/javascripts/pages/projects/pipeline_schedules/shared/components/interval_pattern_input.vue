@@ -125,7 +125,7 @@ export default {
         :data-testid="option.value"
       >
         <gl-sprintf v-if="option.link" :message="option.text">
-          <template #link="{content}">
+          <template #link="{ content }">
             <gl-link :href="option.link" target="_blank" class="gl-font-sm">
               {{ content }}
             </gl-link>

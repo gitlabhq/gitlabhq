@@ -202,7 +202,7 @@ export default {
 <template>
   <tooltip-on-truncate
     :title="timeWindowText"
-    :truncate-target="elem => elem.querySelector('.gl-dropdown-toggle-text')"
+    :truncate-target="(elem) => elem.querySelector('.gl-dropdown-toggle-text')"
     placement="top"
     class="d-inline-block"
   >

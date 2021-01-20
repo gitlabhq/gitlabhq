@@ -40,21 +40,21 @@ export default {
       const firstListIndex = 1;
       const list = this.modal.selectedList || this.state.lists[firstListIndex];
       const selectedIssues = ModalStore.getSelectedIssues();
-      const issueIds = selectedIssues.map(issue => issue.id);
+      const issueIds = selectedIssues.map((issue) => issue.id);
       const req = this.buildUpdateRequest(list);
 
       // Post the data to the backend
       boardsStore.bulkUpdate(issueIds, req).catch(() => {
         Flash(__('Failed to update issues, please try again.'));
 
-        selectedIssues.forEach(issue => {
+        selectedIssues.forEach((issue) => {
           list.removeIssue(issue);
           list.issuesSize -= 1;
         });
       });
 
       // Add the issues on the frontend
-      selectedIssues.forEach(issue => {
+      selectedIssues.forEach((issue) => {
         list.addIssue(issue);
         list.issuesSize += 1;
       });

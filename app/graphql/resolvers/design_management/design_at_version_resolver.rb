@@ -11,7 +11,7 @@ module Resolvers
 
       argument :id, ::Types::GlobalIDType[::DesignManagement::DesignAtVersion],
                required: true,
-               description: 'The Global ID of the design at this version'
+               description: 'The Global ID of the design at this version.'
 
       def resolve(id:)
         authorized_find!(id: id)

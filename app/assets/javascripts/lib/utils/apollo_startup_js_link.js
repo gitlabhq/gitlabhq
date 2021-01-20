@@ -7,7 +7,7 @@ import { isEqual, pickBy } from 'lodash';
  * @param obj
  * @returns {Dictionary<unknown>}
  */
-const pickDefinedValues = obj => pickBy(obj, x => x !== undefined);
+const pickDefinedValues = (obj) => pickBy(obj, (x) => x !== undefined);
 
 /**
  * Compares two set of variables, order independent
@@ -28,9 +28,9 @@ export class StartupJSLink extends ApolloLink {
   // Extract operationNames from the queries and ensure that we can
   // match operationName => element from result array
   parseStartupCalls(calls) {
-    calls.forEach(call => {
+    calls.forEach((call) => {
       const { query, variables, fetchCall } = call;
-      const operationName = parse(query)?.definitions?.find(x => x.kind === 'OperationDefinition')
+      const operationName = parse(query)?.definitions?.find((x) => x.kind === 'OperationDefinition')
         ?.name?.value;
 
       if (operationName) {
@@ -71,9 +71,9 @@ export class StartupJSLink extends ApolloLink {
       return forward(operation);
     }
 
-    return new Observable(observer => {
+    return new Observable((observer) => {
       fetchCall
-        .then(response => {
+        .then((response) => {
           // Handle HTTP errors
           if (!response.ok) {
             throw new Error('fetchCall failed');
@@ -81,7 +81,7 @@ export class StartupJSLink extends ApolloLink {
           operation.setContext({ response });
           return response.json();
         })
-        .then(result => {
+        .then((result) => {
           if (result && (result.errors || !result.data)) {
             throw new Error('Received GraphQL error');
           }
@@ -92,10 +92,10 @@ export class StartupJSLink extends ApolloLink {
         })
         .catch(() => {
           forward(operation).subscribe({
-            next: result => {
+            next: (result) => {
               observer.next(result);
             },
-            error: error => {
+            error: (error) => {
               observer.error(error);
             },
             complete: observer.complete.bind(observer),

@@ -60,8 +60,8 @@ PUT /application/appearance
 | `favicon`                         | mixed   | no       | Instance favicon in `.ico` or `.png` format
 | `new_project_guidelines`          | string  | no       | Markdown text shown on the new project page
 | `profile_image_guidelines`        | string  | no       | Markdown text shown on the profile page below Public Avatar
-| `header_message`                  | string  | no       | Message within the system header bar
-| `footer_message`                  | string  | no       | Message within the system footer bar
+| `header_message`                  | string  | no       | Message in the system header bar
+| `footer_message`                  | string  | no       | Message in the system footer bar
 | `message_background_color`        | string  | no       | Background color for the system header / footer bar
 | `message_font_color`              | string  | no       | Font color for the system header / footer bar
 | `email_header_and_footer_enabled` | boolean | no       | Add header and footer to all outgoing emails if enabled

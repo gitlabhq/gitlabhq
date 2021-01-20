@@ -211,7 +211,8 @@ The requested scope is invalid, unknown, or malformed.
 
 Potential resolutions:
 
-- Verify the URL includes `scope=api` on the end of the URL.
+- Verify the URL shown in the browser after being redirected from Jira in step 5 of [Jira DVCS Connector Setp](#jira-dvcs-connector-setup) includes `scope=api` within the query string.
+- If `scope=api` is missing from the URL, return to [GitLab account configuration](#gitlab-account-configuration-for-dvcs) and ensure the application you created in step 1 has the `api` box checked under scopes.
 
 ##### Jira error adding account and no repositories listed
 
@@ -272,7 +273,13 @@ The GitLab user only needs access when adding a new namespace. For syncing with 
 
    ![Configure namespace on GitLab Jira App](img/jira_dev_panel_setup_com_3.png)
 
-After a namespace is added, all future commits, branches, and merge requests of all projects under that namespace are synced to Jira. Past data cannot be synced at the moment.
+After a namespace is added:
+
+- All future commits, branches, and merge requests of all projects under that namespace
+  are synced to Jira.
+- From GitLab 13.8, past merge request data is synced to Jira.
+
+Support for syncing past branch and commit data [is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/263240).
 
 For more information, see [Usage](#usage).
 

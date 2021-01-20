@@ -80,9 +80,9 @@ POST /projects/:id/variables
 | `key`               | string  | yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
 | `value`             | string  | yes      | The `value` of a variable |
 | `variable_type`     | string  | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
-| `protected`         | boolean | no       | Whether the variable is protected |
-| `masked`            | boolean | no       | Whether the variable is masked |
-| `environment_scope` | string  | no       | The `environment_scope` of the variable |
+| `protected`         | boolean | no       | Whether the variable is protected. Default: `false` |
+| `masked`            | boolean | no       | Whether the variable is masked. Default: `false` |
+| `environment_scope` | string  | no       | The `environment_scope` of the variable. Default: `*` |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/variables" --form "key=NEW_VARIABLE" --form "value=new value"

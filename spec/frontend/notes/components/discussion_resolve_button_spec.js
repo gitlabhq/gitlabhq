@@ -7,7 +7,7 @@ const buttonTitle = 'Resolve discussion';
 describe('resolveDiscussionButton', () => {
   let wrapper;
 
-  const factory = options => {
+  const factory = (options) => {
     wrapper = shallowMount(resolveDiscussionButton, {
       ...options,
     });

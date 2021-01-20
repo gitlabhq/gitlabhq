@@ -11,7 +11,7 @@ describe('ExpirationToggle', () => {
   const findInput = () => wrapper.find(GlFormInput);
   const findFormGroup = () => wrapper.find(GlFormGroup);
 
-  const mountComponent = propsData => {
+  const mountComponent = (propsData) => {
     wrapper = shallowMount(component, {
       stubs: {
         GlFormGroup,

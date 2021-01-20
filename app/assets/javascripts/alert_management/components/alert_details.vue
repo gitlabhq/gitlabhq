@@ -140,7 +140,7 @@ export default {
     },
     currentTabIndex: {
       get() {
-        return this.$options.tabsConfig.findIndex(tab => tab.id === this.activeTab);
+        return this.$options.tabsConfig.findIndex((tab) => tab.id === this.activeTab);
       },
       set(tabIdx) {
         const tabId = this.$options.tabsConfig[tabIdx].id;
@@ -194,15 +194,21 @@ export default {
             projectPath: this.projectPath,
           },
         })
-        .then(({ data: { createAlertIssue: { errors, issue } } }) => {
-          if (errors?.length) {
-            [this.createIncidentError] = errors;
-            this.incidentCreationInProgress = false;
-          } else if (issue) {
-            visitUrl(this.incidentPath(issue.iid));
-          }
-        })
-        .catch(error => {
+        .then(
+          ({
+            data: {
+              createAlertIssue: { errors, issue },
+            },
+          }) => {
+            if (errors?.length) {
+              [this.createIncidentError] = errors;
+              this.incidentCreationInProgress = false;
+            } else if (issue) {
+              visitUrl(this.incidentPath(issue.iid));
+            }
+          },
+        )
+        .catch((error) => {
           this.createIncidentError = error;
           this.incidentCreationInProgress = false;
         });

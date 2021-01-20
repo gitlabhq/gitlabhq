@@ -11,6 +11,10 @@ module DashboardHelper
     merge_requests_dashboard_path(assignee_username: current_user.username)
   end
 
+  def reviewer_mrs_dashboard_path
+    merge_requests_dashboard_path(reviewer_username: current_user.username)
+  end
+
   def dashboard_nav_links
     @dashboard_nav_links ||= get_dashboard_nav_links
   end

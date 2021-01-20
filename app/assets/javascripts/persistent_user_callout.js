@@ -28,10 +28,10 @@ export default class PersistentUserCallout {
   }
 
   handleCloseButtonCallout(closeButton) {
-    closeButton.addEventListener('click', event => this.dismiss(event));
+    closeButton.addEventListener('click', (event) => this.dismiss(event));
 
     if (this.deferLinks) {
-      this.container.addEventListener('click', event => {
+      this.container.addEventListener('click', (event) => {
         const isDeferredLink = event.target.classList.contains(DEFERRED_LINK_CLASS);
         if (isDeferredLink) {
           const { href, target } = event.target;
@@ -43,7 +43,7 @@ export default class PersistentUserCallout {
   }
 
   handleFollowLinkCallout(followLink) {
-    followLink.addEventListener('click', event => this.registerCalloutWithLink(event));
+    followLink.addEventListener('click', (event) => this.registerCalloutWithLink(event));
   }
 
   dismiss(event, deferredLinkOptions = null) {

@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import Cookies from 'js-cookie';
 import { GlSprintf, GlModal, GlLink } from '@gitlab/ui';
 import { mockTracking, triggerEvent, unmockTracking } from 'helpers/tracking_helper';
+import { stubComponent } from 'helpers/stub_component';
 import pipelineTourSuccess from '~/blob/pipeline_tour_success_modal.vue';
 import modalProps from './pipeline_tour_success_mock_data';
 
@@ -10,13 +11,21 @@ describe('PipelineTourSuccessModal', () => {
   let cookieSpy;
   let trackingSpy;
 
+  const GlEmoji = { template: '<img/>' };
   const createComponent = () => {
     wrapper = shallowMount(pipelineTourSuccess, {
       propsData: modalProps,
       stubs: {
-        GlModal,
+        GlModal: stubComponent(GlModal, {
+          template: `
+            <div>
+              <slot name="modal-title"></slot>
+              <slot></slot>
+              <slot name="modal-footer"></slot>
+            </div>`,
+        }),
         GlSprintf,
-        'gl-emoji': '<img/>',
+        GlEmoji,
       },
     });
   };
@@ -67,7 +76,7 @@ describe('PipelineTourSuccessModal', () => {
   it('has expected structure', () => {
     const modal = wrapper.find(GlModal);
     const sprintf = modal.find(GlSprintf);
-    const emoji = modal.find('img');
+    const emoji = modal.find(GlEmoji);
 
     expect(wrapper.text()).toContain("That's it, well done!");
     expect(sprintf.exists()).toBe(true);

@@ -10,22 +10,15 @@ import eventHub from '../../eventhub';
 import service from '../../services';
 import * as types from '../mutation_types';
 import { setPageTitleForFile } from '../utils';
-import { viewerTypes, stageKeys } from '../../constants';
+import { viewerTypes, stageKeys, commitActionTypes } from '../../constants';
 
 export const closeFile = ({ commit, state, dispatch, getters }, file) => {
   const { path } = file;
-  const indexOfClosedFile = state.openFiles.findIndex(f => f.key === file.key);
+  const indexOfClosedFile = state.openFiles.findIndex((f) => f.key === file.key);
   const fileWasActive = file.active;
 
-  if (file.pending) {
-    commit(types.REMOVE_PENDING_TAB, file);
-  } else {
-    commit(types.TOGGLE_FILE_OPEN, path);
-    commit(types.SET_FILE_ACTIVE, { path, active: false });
-  }
-
-  if (state.openFiles.length > 0 && fileWasActive) {
-    const nextIndexToOpen = indexOfClosedFile === 0 ? 0 : indexOfClosedFile - 1;
+  if (state.openFiles.length > 1 && fileWasActive) {
+    const nextIndexToOpen = indexOfClosedFile === 0 ? 1 : indexOfClosedFile - 1;
     const nextFileToOpen = state.openFiles[nextIndexToOpen];
 
     if (nextFileToOpen.pending) {
@@ -35,12 +28,20 @@ export const closeFile = ({ commit, state, dispatch, getters }, file) => {
         keyPrefix: nextFileToOpen.staged ? 'staged' : 'unstaged',
       });
     } else {
+      dispatch('setFileActive', nextFileToOpen.path);
       dispatch('router/push', getters.getUrlForPath(nextFileToOpen.path), { root: true });
     }
-  } else if (!state.openFiles.length) {
+  } else if (state.openFiles.length === 1) {
     dispatch('router/push', `/project/${state.currentProjectId}/tree/${state.currentBranchId}/`, {
       root: true,
     });
+  }
+
+  if (file.pending) {
+    commit(types.REMOVE_PENDING_TAB, file);
+  } else {
+    commit(types.TOGGLE_FILE_OPEN, path);
+    commit(types.SET_FILE_ACTIVE, { path, active: false });
   }
 
   eventHub.$emit(`editor.update.model.dispose.${file.key}`);
@@ -108,7 +109,7 @@ export const getFileData = (
     .catch(() => {
       dispatch('setErrorMessage', {
         text: __('An error occurred while loading the file.'),
-        action: payload =>
+        action: (payload) =>
           dispatch('getFileData', payload).then(() => dispatch('setErrorMessage', null)),
         actionText: __('Please try again'),
         actionPayload: { path, makeFileActive },
@@ -125,13 +126,13 @@ export const setFileMrChange = ({ commit }, { file, mrChange }) => {
 
 export const getRawFileData = ({ state, commit, dispatch, getters }, { path }) => {
   const file = state.entries[path];
-  const stagedFile = state.stagedFiles.find(f => f.path === path);
+  const stagedFile = state.stagedFiles.find((f) => f.path === path);
 
   const fileDeletedAndReadded = getters.isFileDeletedAndReadded(path);
   commit(types.TOGGLE_LOADING, { entry: file, forceValue: true });
   return service
     .getRawFileData(fileDeletedAndReadded ? stagedFile : file)
-    .then(raw => {
+    .then((raw) => {
       if (!(file.tempFile && !file.prevPath && !fileDeletedAndReadded))
         commit(types.SET_FILE_RAW_DATA, { file, raw, fileDeletedAndReadded });
 
@@ -139,7 +140,7 @@ export const getRawFileData = ({ state, commit, dispatch, getters }, { path }) =
         const baseSha =
           (getters.currentMergeRequest && getters.currentMergeRequest.baseCommitSha) || '';
 
-        return service.getBaseRawFileData(file, state.currentProjectId, baseSha).then(baseRaw => {
+        return service.getBaseRawFileData(file, state.currentProjectId, baseSha).then((baseRaw) => {
           commit(types.SET_FILE_BASE_RAW_DATA, {
             file,
             baseRaw,
@@ -149,10 +150,10 @@ export const getRawFileData = ({ state, commit, dispatch, getters }, { path }) =
       }
       return raw;
     })
-    .catch(e => {
+    .catch((e) => {
       dispatch('setErrorMessage', {
         text: __('An error occurred while loading the file content.'),
-        action: payload =>
+        action: (payload) =>
           dispatch('getRawFileData', payload).then(() => dispatch('setErrorMessage', null)),
         actionText: __('Please try again'),
         actionPayload: { path },
@@ -164,7 +165,7 @@ export const getRawFileData = ({ state, commit, dispatch, getters }, { path }) =
     });
 };
 
-export const changeFileContent = ({ commit, state, getters }, { path, content }) => {
+export const changeFileContent = ({ commit, dispatch, state, getters }, { path, content }) => {
   const file = state.entries[path];
 
   // It's possible for monaco to hit a race condition where it tries to update renamed files.
@@ -178,13 +179,15 @@ export const changeFileContent = ({ commit, state, getters }, { path, content })
     content,
   });
 
-  const indexOfChangedFile = state.changedFiles.findIndex(f => f.path === path);
+  const indexOfChangedFile = state.changedFiles.findIndex((f) => f.path === path);
 
   if (file.changed && indexOfChangedFile === -1) {
     commit(types.STAGE_CHANGE, { path, diffInfo: getters.getDiffInfo(path) });
   } else if (!file.changed && !file.tempFile && indexOfChangedFile !== -1) {
     commit(types.REMOVE_FILE_FROM_CHANGED, path);
   }
+
+  dispatch('triggerFilesChange', { type: commitActionTypes.update, path });
 };
 
 export const restoreOriginalFile = ({ dispatch, state, commit }, path) => {
@@ -225,7 +228,7 @@ export const discardFileChanges = ({ dispatch, state, commit, getters }, path) =
       .then(() => {
         dispatch('router/push', getters.getUrlForPath(file.path), { root: true });
       })
-      .catch(e => {
+      .catch((e) => {
         throw e;
       });
   }
@@ -275,7 +278,7 @@ export const unstageChange = ({ commit, dispatch, getters }, path) => {
 export const openPendingTab = ({ commit, dispatch, getters, state }, { file, keyPrefix }) => {
   if (getters.activeFile && getters.activeFile.key === `${keyPrefix}-${file.key}`) return false;
 
-  state.openFiles.forEach(f => eventHub.$emit(`editor.update.model.dispose.${f.key}`));
+  state.openFiles.forEach((f) => eventHub.$emit(`editor.update.model.dispose.${f.key}`));
 
   commit(types.ADD_PENDING_TAB, { file, keyPrefix });
 

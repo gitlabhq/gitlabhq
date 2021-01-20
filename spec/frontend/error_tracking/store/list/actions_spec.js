@@ -20,7 +20,7 @@ describe('error tracking actions', () => {
   });
 
   describe('startPolling', () => {
-    it('should start polling for data', done => {
+    it('should start polling for data', (done) => {
       const payload = { errors: [{ id: 1 }, { id: 2 }] };
 
       mock.onGet().reply(httpStatusCodes.OK, payload);
@@ -41,14 +41,17 @@ describe('error tracking actions', () => {
       );
     });
 
-    it('should show flash on API error', done => {
+    it('should show flash on API error', (done) => {
       mock.onGet().reply(httpStatusCodes.BAD_REQUEST);
 
       testAction(
         actions.startPolling,
         {},
         {},
-        [{ type: types.SET_LOADING, payload: true }, { type: types.SET_LOADING, payload: false }],
+        [
+          { type: types.SET_LOADING, payload: true },
+          { type: types.SET_LOADING, payload: false },
+        ],
         [],
         () => {
           expect(createFlash).toHaveBeenCalledTimes(1);
@@ -64,7 +67,10 @@ describe('error tracking actions', () => {
         actions.restartPolling,
         {},
         {},
-        [{ type: types.SET_ERRORS, payload: [] }, { type: types.SET_LOADING, payload: true }],
+        [
+          { type: types.SET_ERRORS, payload: [] },
+          { type: types.SET_LOADING, payload: true },
+        ],
         [],
       );
     });
@@ -110,7 +116,10 @@ describe('error tracking actions', () => {
         actions.sortByField,
         field,
         {},
-        [{ type: types.SET_CURSOR, payload: null }, { type: types.SET_SORT_FIELD, payload: field }],
+        [
+          { type: types.SET_CURSOR, payload: null },
+          { type: types.SET_SORT_FIELD, payload: field },
+        ],
         [{ type: 'stopPolling' }, { type: 'startPolling' }],
       );
     });

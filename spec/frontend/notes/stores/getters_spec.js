@@ -72,7 +72,7 @@ describe('Getters Notes Store', () => {
       state.isTimelineEnabled = true;
 
       expect(getters.discussions(state).length).toEqual(discussionMock.notes.length);
-      getters.discussions(state).forEach(discussion => {
+      getters.discussions(state).forEach((discussion) => {
         expect(discussion.individual_note).toBe(true);
         expect(discussion.id).toBe(discussion.notes[0].id);
         expect(discussion.created_at).toBe(discussion.notes[0].created_at);
@@ -298,17 +298,18 @@ describe('Getters Notes Store', () => {
         };
       });
 
-      [{ step: 1, id: '123', expected: '123' }, { step: -1, id: '123', expected: '123' }].forEach(
-        ({ step, id, expected }) => {
-          it(`with step ${step} and match, returns only value`, () => {
-            const params = createDiscussionNeighborParams(id, true, step);
+      [
+        { step: 1, id: '123', expected: '123' },
+        { step: -1, id: '123', expected: '123' },
+      ].forEach(({ step, id, expected }) => {
+        it(`with step ${step} and match, returns only value`, () => {
+          const params = createDiscussionNeighborParams(id, true, step);
 
-            expect(getters.findUnresolvedDiscussionIdNeighbor(state, localGetters)(params)).toBe(
-              expected,
-            );
-          });
-        },
-      );
+          expect(getters.findUnresolvedDiscussionIdNeighbor(state, localGetters)(params)).toBe(
+            expected,
+          );
+        });
+      });
 
       it('with no match, returns only value', () => {
         const params = createDiscussionNeighborParams('bogus', true, 1);

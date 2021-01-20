@@ -99,7 +99,7 @@ export default {
       return this.alertQuery.length ? true : null;
     },
     currentQuery() {
-      return this.relevantQueries.find(query => query.metricId === this.prometheusMetricId) || {};
+      return this.relevantQueries.find((query) => query.metricId === this.prometheusMetricId) || {};
     },
     formDisabled() {
       // We need a prometheusMetricId to determine whether we're
@@ -151,7 +151,7 @@ export default {
   },
   methods: {
     selectQuery(queryId) {
-      const existingAlertPath = findKey(this.alertsToManage, alert => alert.metricId === queryId);
+      const existingAlertPath = findKey(this.alertsToManage, (alert) => alert.metricId === queryId);
       const existingAlert = this.alertsToManage[existingAlertPath];
 
       if (existingAlert) {

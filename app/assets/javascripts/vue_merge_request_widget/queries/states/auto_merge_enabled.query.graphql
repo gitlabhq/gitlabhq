@@ -1,0 +1,10 @@
+#import "./auto_merge_enabled.fragment.graphql"
+
+query autoMergeEnabledQuery($projectPath: ID!, $iid: String!) {
+  project(fullPath: $projectPath) {
+    mergeRequest(iid: $iid) {
+      ...autoMergeEnabled
+      mergeTrainsCount
+    }
+  }
+}

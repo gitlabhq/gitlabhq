@@ -40,7 +40,7 @@ describe('ParallelDiffTableRow', () => {
       vm = wrapper.vm;
     });
 
-    it('does not highlight non empty line content when line does not match highlighted row', done => {
+    it('does not highlight non empty line content when line does not match highlighted row', (done) => {
       vm.$nextTick()
         .then(() => {
           expect(vm.$el.querySelector('.line_content.right-side').classList).not.toContain('hll');
@@ -49,7 +49,7 @@ describe('ParallelDiffTableRow', () => {
         .catch(done.fail);
     });
 
-    it('highlights nonempty line content when line is the highlighted row', done => {
+    it('highlights nonempty line content when line is the highlighted row', (done) => {
       vm.$nextTick()
         .then(() => {
           vm.$store.state.diffs.highlightedRow = rightLine.line_code;
@@ -86,7 +86,7 @@ describe('ParallelDiffTableRow', () => {
       }).$mount();
     });
 
-    it('does not highlight  either line when line does not match highlighted row', done => {
+    it('does not highlight  either line when line does not match highlighted row', (done) => {
       vm.$nextTick()
         .then(() => {
           expect(vm.$el.querySelector('.line_content.right-side').classList).not.toContain('hll');
@@ -96,7 +96,7 @@ describe('ParallelDiffTableRow', () => {
         .catch(done.fail);
     });
 
-    it('adds hll class to lineContent when line is the highlighted row', done => {
+    it('adds hll class to lineContent when line is the highlighted row', (done) => {
       vm.$nextTick()
         .then(() => {
           vm.$store.state.diffs.highlightedRow = rightLine.line_code;
@@ -112,7 +112,7 @@ describe('ParallelDiffTableRow', () => {
     });
 
     describe('sets coverage title and class', () => {
-      it('for lines with coverage', done => {
+      it('for lines with coverage', (done) => {
         vm.$nextTick()
           .then(() => {
             const name = diffFileMockData.file_path;
@@ -132,7 +132,7 @@ describe('ParallelDiffTableRow', () => {
           .catch(done.fail);
       });
 
-      it('for lines without coverage', done => {
+      it('for lines without coverage', (done) => {
         vm.$nextTick()
           .then(() => {
             const name = diffFileMockData.file_path;
@@ -152,7 +152,7 @@ describe('ParallelDiffTableRow', () => {
           .catch(done.fail);
       });
 
-      it('for unknown lines', done => {
+      it('for unknown lines', (done) => {
         vm.$nextTick()
           .then(() => {
             vm.$store.state.diffs.coverageFiles = {};

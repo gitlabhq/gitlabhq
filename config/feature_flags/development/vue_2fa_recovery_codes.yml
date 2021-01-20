@@ -1,8 +1,0 @@
----
-name: vue_2fa_recovery_codes
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49078
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/290113
-milestone: '13.7'
-type: development
-group: group::access
-default_enabled: true

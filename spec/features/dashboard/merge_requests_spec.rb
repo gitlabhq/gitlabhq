@@ -110,6 +110,12 @@ RSpec.describe 'Dashboard Merge Requests' do
       visit merge_requests_dashboard_path(assignee_username: current_user.username)
     end
 
+    it 'includes assigned and reviewers in badge' do
+      expect(find('.merge-requests-count')).to have_content('3')
+      expect(find('.js-assigned-mr-count')).to have_content('2')
+      expect(find('.js-reviewer-mr-count')).to have_content('1')
+    end
+
     it 'shows assigned merge requests' do
       expect(page).to have_content(assigned_merge_request.title)
       expect(page).to have_content(assigned_merge_request_from_fork.title)

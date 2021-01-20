@@ -54,7 +54,9 @@ class WebHookService
       http_status: response.code,
       message: response.to_s
     }
-  rescue SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout, Gitlab::HTTP::BlockedUrlError, Gitlab::HTTP::RedirectionTooDeep, Gitlab::Json::LimitedEncoder::LimitExceeded => e
+  rescue SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH,
+         Net::OpenTimeout, Net::ReadTimeout, Gitlab::HTTP::BlockedUrlError, Gitlab::HTTP::RedirectionTooDeep,
+         Gitlab::Json::LimitedEncoder::LimitExceeded, URI::InvalidURIError => e
     execution_duration = Gitlab::Metrics::System.monotonic_time - start_time
     log_execution(
       trigger: hook_name,

@@ -26,7 +26,7 @@ export const createMovedFile = (path, prevPath, content) =>
     prevPath,
   });
 
-export const createEntries = path =>
+export const createEntries = (path) =>
   path.split('/').reduce((acc, part, idx, parts) => {
     const parentPath = parts.slice(0, idx).join('/');
     const fullPath = parentPath ? `${parentPath}/${part}` : part;

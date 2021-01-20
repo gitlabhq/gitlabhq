@@ -9,21 +9,21 @@ module Mutations
 
       argument :project_path, GraphQL::ID_TYPE,
                required: true,
-               description: 'Project full path the branch is associated with'
+               description: 'Project full path the branch is associated with.'
 
       argument :name, GraphQL::STRING_TYPE,
                required: true,
-               description: 'Name of the branch'
+               description: 'Name of the branch.'
 
       argument :ref,
                GraphQL::STRING_TYPE,
                required: true,
-               description: 'Branch name or commit SHA to create branch from'
+               description: 'Branch name or commit SHA to create branch from.'
 
       field :branch,
             Types::BranchType,
             null: true,
-            description: 'Branch after mutation'
+            description: 'Branch after mutation.'
 
       authorize :push_code
 

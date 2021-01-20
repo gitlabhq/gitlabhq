@@ -63,12 +63,7 @@ describe('Monitoring router', () => {
       });
 
       expect(wrapper.find(DashboardPage).exists()).toBe(true);
-      expect(
-        wrapper
-          .find(DashboardPage)
-          .find(Dashboard)
-          .exists(),
-      ).toBe(true);
+      expect(wrapper.find(DashboardPage).find(Dashboard).exists()).toBe(true);
     });
   });
 
@@ -91,12 +86,7 @@ describe('Monitoring router', () => {
       });
 
       expect(wrapper.find(DashboardPage).exists()).toBe(true);
-      expect(
-        wrapper
-          .find(DashboardPage)
-          .find(Dashboard)
-          .exists(),
-      ).toBe(true);
+      expect(wrapper.find(DashboardPage).find(Dashboard).exists()).toBe(true);
     });
   });
 

@@ -7,7 +7,7 @@ class AddIndexToPackageName < ActiveRecord::Migration[6.0]
 
   disable_ddl_transaction!
 
-  INDEX_NAME = 'package_name_index'.freeze
+  INDEX_NAME = 'package_name_index'
 
   def up
     add_concurrent_index(:packages_packages, :name, name: INDEX_NAME)

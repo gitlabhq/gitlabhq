@@ -3,11 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Projects::ContainerRepository::CleanupTagsService do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :private) }
   let_it_be(:repository) { create(:container_repository, :root, project: project) }
 
   let(:service) { described_class.new(project, user, params) }
+  let(:tags) { %w[latest A Ba Bb C D E] }
 
   before do
     project.add_maintainer(user)
@@ -16,7 +19,8 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
 
     stub_container_registry_tags(
       repository: repository.path,
-      tags: %w(latest A Ba Bb C D E))
+      tags: tags
+    )
 
     stub_tag_digest('latest', 'sha256:configA')
     stub_tag_digest('A', 'sha256:configA')
@@ -30,6 +34,8 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
     stub_digest_config('sha256:configB', 5.days.ago)
     stub_digest_config('sha256:configC', 1.month.ago)
     stub_digest_config('sha256:configD', nil)
+
+    stub_feature_flags(container_registry_expiration_policies_throttling: false)
   end
 
   describe '#execute' do
@@ -42,7 +48,7 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
         expect_any_instance_of(Projects::ContainerRepository::DeleteTagsService)
           .not_to receive(:execute)
 
-        is_expected.to include(status: :success, deleted: [])
+        is_expected.to eq(expected_service_response(before_truncate_size: 0, after_truncate_size: 0, before_delete_size: 0))
       end
     end
 
@@ -51,7 +57,7 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
         it 'does remove all tags except latest' do
           expect_delete(%w(A Ba Bb C D E))
 
-          is_expected.to include(status: :success, deleted: %w(A Ba Bb C D E))
+          is_expected.to eq(expected_service_response(deleted: %w(A Ba Bb C D E)))
         end
       end
 
@@ -78,12 +84,7 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
           subject
         end
 
-        it 'returns an error' do
-          response = subject
-
-          expect(response[:status]).to eq(:error)
-          expect(response[:message]).to eq('invalid regex')
-        end
+        it { is_expected.to eq(status: :error, message: 'invalid regex') }
 
         it 'calls error tracking service' do
           expect(Gitlab::ErrorTracking).to receive(:log_exception).and_call_original
@@ -119,7 +120,7 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
       it 'does remove C and D' do
         expect_delete(%w(C D))
 
-        is_expected.to include(status: :success, deleted: %w(C D))
+        is_expected.to eq(expected_service_response(deleted: %w(C D), before_truncate_size: 2, after_truncate_size: 2, before_delete_size: 2))
       end
 
       context 'with overriding allow regex' do
@@ -131,7 +132,7 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
         it 'does not remove C' do
           expect_delete(%w(D))
 
-          is_expected.to include(status: :success, deleted: %w(D))
+          is_expected.to eq(expected_service_response(deleted: %w(D), before_truncate_size: 1, after_truncate_size: 1, before_delete_size: 1))
         end
       end
 
@@ -144,7 +145,7 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
         it 'does not remove C' do
           expect_delete(%w(D))
 
-          is_expected.to include(status: :success, deleted: %w(D))
+          is_expected.to eq(expected_service_response(deleted: %w(D), before_truncate_size: 1, after_truncate_size: 1, before_delete_size: 1))
         end
       end
     end
@@ -158,7 +159,7 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
       it 'does not remove B*' do
         expect_delete(%w(A C D E))
 
-        is_expected.to include(status: :success, deleted: %w(A C D E))
+        is_expected.to eq(expected_service_response(deleted: %w(A C D E), before_truncate_size: 4, after_truncate_size: 4, before_delete_size: 4))
       end
     end
 
@@ -173,7 +174,7 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
 
         expect(service).to receive(:order_by_date).and_call_original
 
-        is_expected.to include(status: :success, deleted: %w(Bb Ba C))
+        is_expected.to eq(expected_service_response(deleted: %w(Bb Ba C), before_truncate_size: 4, after_truncate_size: 4, before_delete_size: 3))
       end
     end
 
@@ -187,7 +188,7 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
 
         expect(service).not_to receive(:order_by_date)
 
-        is_expected.to include(status: :success, deleted: %w(A Ba Bb C))
+        is_expected.to eq(expected_service_response(deleted: %w(A Ba Bb C), before_truncate_size: 4, after_truncate_size: 4, before_delete_size: 4))
       end
     end
 
@@ -200,7 +201,7 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
       it 'does remove B* and C as they are the oldest' do
         expect_delete(%w(Bb Ba C))
 
-        is_expected.to include(status: :success, deleted: %w(Bb Ba C))
+        is_expected.to eq(expected_service_response(deleted: %w(Bb Ba C), before_delete_size: 3))
       end
     end
 
@@ -213,7 +214,7 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
       it 'does remove B* and C as they are older than 1 day' do
         expect_delete(%w(Ba Bb C))
 
-        is_expected.to include(status: :success, deleted: %w(Ba Bb C))
+        is_expected.to eq(expected_service_response(deleted: %w(Ba Bb C), before_delete_size: 3))
       end
     end
 
@@ -227,7 +228,7 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
       it 'does remove B* and C' do
         expect_delete(%w(Bb Ba C))
 
-        is_expected.to include(status: :success, deleted: %w(Bb Ba C))
+        is_expected.to eq(expected_service_response(deleted: %w(Bb Ba C), before_delete_size: 3))
       end
     end
 
@@ -245,7 +246,7 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
         it 'succeeds without a user' do
           expect_delete(%w(Bb Ba C), container_expiration_policy: true)
 
-          is_expected.to include(status: :success, deleted: %w(Bb Ba C))
+          is_expected.to eq(expected_service_response(deleted: %w(Bb Ba C), before_delete_size: 3))
         end
       end
 
@@ -257,8 +258,71 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
         end
 
         it 'fails' do
-          is_expected.to include(status: :error, message: 'access denied')
+          is_expected.to eq(status: :error, message: 'access denied')
         end
+      end
+    end
+
+    context 'truncating the tags list' do
+      let(:params) do
+        {
+          'name_regex_delete' => '.*',
+          'keep_n' => 1
+        }
+      end
+
+      shared_examples 'returning the response' do |status:, original_size:, before_truncate_size:, after_truncate_size:, before_delete_size:|
+        it 'returns the response' do
+          result = subject
+
+          service_response = expected_service_response(
+            status: status,
+            original_size: original_size,
+            before_truncate_size: before_truncate_size,
+            after_truncate_size: after_truncate_size,
+            before_delete_size: before_delete_size,
+            deleted: nil
+          )
+
+          expect(result).to eq(service_response.compact)
+        end
+      end
+
+      where(:feature_flag_enabled, :max_list_size, :delete_tags_service_status, :expected_status, :expected_truncated) do
+        false | 10 | :success | :success | false
+        false | 10 | :error   | :error   | false
+        false | 3  | :success | :success | false
+        false | 3  | :error   | :error   | false
+        false | 0  | :success | :success | false
+        false | 0  | :error   | :error   | false
+        true  | 10 | :success | :success | false
+        true  | 10 | :error   | :error   | false
+        true  | 3  | :success | :error   | true
+        true  | 3  | :error   | :error   | true
+        true  | 0  | :success | :success | false
+        true  | 0  | :error   | :error   | false
+      end
+
+      with_them do
+        before do
+          stub_feature_flags(container_registry_expiration_policies_throttling: feature_flag_enabled)
+          stub_application_setting(container_registry_cleanup_tags_service_max_list_size: max_list_size)
+          allow_next_instance_of(Projects::ContainerRepository::DeleteTagsService) do |service|
+            expect(service).to receive(:execute).and_return(status: delete_tags_service_status)
+          end
+        end
+
+        original_size = 7
+        keep_n = 1
+
+        it_behaves_like(
+          'returning the response',
+          status: params[:expected_status],
+          original_size: original_size,
+          before_truncate_size: original_size - keep_n,
+          after_truncate_size: params[:expected_truncated] ? params[:max_list_size] + keep_n : original_size - keep_n,
+          before_delete_size: params[:expected_truncated] ? params[:max_list_size] : original_size - keep_n - 1 # one tag is filtered out with older_than filter
+        )
       end
     end
   end
@@ -294,5 +358,17 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
     expect_any_instance_of(Projects::ContainerRepository::DeleteTagsService)
       .to receive(:execute)
       .with(repository) { { status: :success, deleted: tags } }
+  end
+
+  # all those -1 because the default tags on L13 have a "latest" that will be filtered out
+  def expected_service_response(status: :success, deleted: [], original_size: tags.size, before_truncate_size: tags.size - 1, after_truncate_size: tags.size - 1, before_delete_size: tags.size - 1)
+    {
+      status: status,
+      deleted: deleted,
+      original_size: original_size,
+      before_truncate_size: before_truncate_size,
+      after_truncate_size: after_truncate_size,
+      before_delete_size: before_delete_size
+    }.compact
   end
 end

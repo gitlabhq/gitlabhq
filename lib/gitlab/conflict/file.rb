@@ -9,9 +9,13 @@ module Gitlab
 
       CONTEXT_LINES = 3
 
+      CONFLICT_MARKER_OUR = 'conflict_marker_our'
+      CONFLICT_MARKER_THEIR = 'conflict_marker_their'
+      CONFLICT_MARKER_SEPARATOR = 'conflict_marker'
+
       CONFLICT_TYPES = {
-        "old" => "conflict_marker_their",
-        "new" => "conflict_marker_our"
+        "old" => "conflict_their",
+        "new" => "conflict_our"
       }.freeze
 
       attr_reader :merge_request
@@ -59,18 +63,25 @@ module Gitlab
           if section[:conflict]
             lines = []
 
-            initial_type = nil
+            lines << create_separator_line(section[:lines].first, CONFLICT_MARKER_OUR)
+
+            current_type = section[:lines].first.type
             section[:lines].each do |line|
-              if line.type != initial_type
-                lines << create_separator_line(line)
-                initial_type = line.type
+              if line.type != current_type # insert a separator between our changes and theirs
+                lines << create_separator_line(line, CONFLICT_MARKER_SEPARATOR)
+                current_type = line.type
               end
 
               line.type = CONFLICT_TYPES[line.type]
+
+              # Swap the positions around due to conflicts/diffs display inconsistency
+              # https://gitlab.com/gitlab-org/gitlab/-/issues/291989
+              line.old_pos, line.new_pos = line.new_pos, line.old_pos
+
               lines << line
             end
 
-            lines << create_separator_line(lines.last)
+            lines << create_separator_line(lines.last, CONFLICT_MARKER_THEIR)
 
             lines
           else
@@ -156,8 +167,8 @@ module Gitlab
         Gitlab::Diff::Line.new('', 'match', line.index, line.old_pos, line.new_pos)
       end
 
-      def create_separator_line(line)
-        Gitlab::Diff::Line.new('', 'conflict_marker', line.index, nil, nil)
+      def create_separator_line(line, type)
+        Gitlab::Diff::Line.new('', type, line.index, nil, nil)
       end
 
       # Any line beginning with a letter, an underscore, or a dollar can be used in a

@@ -39,13 +39,13 @@ export default {
       }, {});
     },
     extractTimeData() {
-      return this.chartData.requests.map(data => data.time);
+      return this.chartData.requests.map((data) => data.time);
     },
     generateSeries() {
       return {
         name: __('Invocations'),
         type: 'line',
-        data: this.chartData.requests.map(data => [data.time, data.value]),
+        data: this.chartData.requests.map((data) => [data.time, data.value]),
         symbolSize: 0,
       };
     },
@@ -69,7 +69,7 @@ export default {
           name: 'time',
           type: 'time',
           axisLabel: {
-            formatter: date => dateFormat(date, 'h:MM TT'),
+            formatter: (date) => dateFormat(date, 'h:MM TT'),
           },
           data: this.extractTimeData,
           nameTextStyle: {
@@ -90,7 +90,7 @@ export default {
       };
     },
     xAxisLabel() {
-      return this.graphData.queries.map(query => query.label).join(', ');
+      return this.graphData.queries.map((query) => query.label).join(', ');
     },
     yAxisLabel() {
       const [query] = this.graphData.queries;

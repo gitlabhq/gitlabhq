@@ -34,7 +34,7 @@ Also, all templates must be named with the `*.gitlab-ci.yml` suffix.
 ### Backward compatibility
 
 A template might be dynamically included with the `include:template:` keyword. If
-you make a change to an *existing* template, you **must** make sure that it won't break
+you make a change to an *existing* template, you **must** make sure that it doesn't break
 CI/CD in existing projects.
 
 For example, changing a job name in a template could break pipelines in an existing project.
@@ -59,11 +59,19 @@ performance:
 ```
 
 If the job name `performance` in the template is renamed to `browser-performance`,
-user's `.gitlab-ci.yml` will immediately cause a lint error because there
+the user's `.gitlab-ci.yml` immediately causes a lint error because there
 are no such jobs named `performance` in the included template anymore. Therefore,
 users have to fix their `.gitlab-ci.yml` that could annoy their workflow.
 
 Please read [versioning](#versioning) section for introducing breaking change safely.
+
+### Best practices
+
+- Avoid using [global keywords](../../ci/yaml/README.md#global-keywords),
+  such as `image`, `stages` and `variables` at top-level.
+  When a root `.gitlab-ci.yml` [includes](../../ci/yaml/README.md#include)
+  multiple templates, these global keywords could be overridden by the
+  others and cause an unexpected behavior.
 
 ## Versioning
 
@@ -103,7 +111,7 @@ If the `latest` template does not exist yet, you can copy [the stable template](
 
 Users may want to use an older [stable template](#stable-version) that is not bundled
 in the current GitLab package. For example, the stable templates in GitLab v13.0 and
-GitLab v14.0 could be so different that a user will want to continue using the v13.0 template even
+GitLab v14.0 could be so different that a user wants to continue using the v13.0 template even
 after upgrading to GitLab 14.0.
 
 You can add a note in the template or in documentation explaining how to use `include:remote`
@@ -152,7 +160,7 @@ When you add a template into one of those directories, make sure that it correct
 
 ### Write an RSpec test
 
-You should write an RSpec test to make sure that pipeline jobs will be generated correctly:
+You should write an RSpec test to make sure that pipeline jobs are generated correctly:
 
 1. Add a test file at `spec/lib/gitlab/ci/templates/<template-category>/<template-name>_spec.rb`
 1. Test that pipeline jobs are properly created via `Ci::CreatePipelineService`.
@@ -163,10 +171,10 @@ When you introduce a breaking change to [a `latest` template](#latest-version),
 you must:
 
 1. Test the upgrade path from [the stable template](#stable-version).
-1. Verify what kind of errors users will encounter.
+1. Verify what kind of errors users encounter.
 1. Document it as a troubleshooting guide.
 
-This information will be important for users when [a stable template](#stable-version)
+This information is important for users when [a stable template](#stable-version)
 is updated in a major version GitLab release.
 
 ## Security

@@ -17,13 +17,13 @@ describe('IssuableHeaderWarnings', () => {
   const findConfidentialIcon = () => wrapper.find('[data-testid="confidential"]');
   const findLockedIcon = () => wrapper.find('[data-testid="locked"]');
 
-  const renderTestMessage = renders => (renders ? 'renders' : 'does not render');
+  const renderTestMessage = (renders) => (renders ? 'renders' : 'does not render');
 
-  const setLock = locked => {
+  const setLock = (locked) => {
     store.getters.getNoteableData.discussion_locked = locked;
   };
 
-  const setConfidential = confidential => {
+  const setConfidential = (confidential) => {
     store.getters.getNoteableData.confidential = confidential;
   };
 

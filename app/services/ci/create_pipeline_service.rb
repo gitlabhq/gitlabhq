@@ -27,6 +27,7 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::Limit::JobActivity,
                 Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines,
                 Gitlab::Ci::Pipeline::Chain::Metrics,
+                Gitlab::Ci::Pipeline::Chain::TemplateUsage,
                 Gitlab::Ci::Pipeline::Chain::Pipeline::Process].freeze
 
     # Create a new pipeline in the specified project.
@@ -81,7 +82,11 @@ module Ci
         .new(pipeline, command, SEQUENCE)
         .build!
 
-      schedule_head_pipeline_update if pipeline.persisted?
+      if pipeline.persisted?
+        schedule_head_pipeline_update
+        record_conversion_event
+        create_namespace_onboarding_action
+      end
 
       # If pipeline is not persisted, try to recover IID
       pipeline.reset_project_iid unless pipeline.persisted?
@@ -114,6 +119,15 @@ module Ci
       pipeline.all_merge_requests.opened.each do |merge_request|
         UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
       end
+    end
+
+    def record_conversion_event
+      Experiments::RecordConversionEventWorker.perform_async(:ci_syntax_templates, current_user.id)
+      Experiments::RecordConversionEventWorker.perform_async(:pipelines_empty_state, current_user.id)
+    end
+
+    def create_namespace_onboarding_action
+      Namespaces::OnboardingPipelineCreatedWorker.perform_async(project.namespace_id)
     end
 
     def extra_options(content: nil, dry_run: false)

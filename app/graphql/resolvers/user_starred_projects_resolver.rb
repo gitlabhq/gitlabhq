@@ -6,7 +6,7 @@ module Resolvers
 
     argument :search, GraphQL::STRING_TYPE,
               required: false,
-              description: 'Search query'
+              description: 'Search query.'
 
     alias_method :user, :object
 

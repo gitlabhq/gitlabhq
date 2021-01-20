@@ -109,8 +109,8 @@ Example response:
 
 Creates a new deploy key for a project.
 
-If the deploy key already exists in another project, it will be joined to current
-project only if original one is accessible by the same user.
+If the deploy key already exists in another project, it's joined to the current
+project only if the original one is accessible by the same user.
 
 ```plaintext
 POST /projects/:id/deploy_keys
@@ -171,7 +171,7 @@ Example response:
 
 ## Delete deploy key
 
-Removes a deploy key from the project. If the deploy key is used only for this project, it will be deleted from the system.
+Removes a deploy key from the project. If the deploy key is used only for this project, it's deleted from the system.
 
 ```plaintext
 DELETE /projects/:id/deploy_keys/:key_id

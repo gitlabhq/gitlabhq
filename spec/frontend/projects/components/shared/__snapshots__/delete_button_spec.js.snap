@@ -29,24 +29,12 @@ exports[`Project remove modal intialized matches the snapshot 1`] = `
     Delete project
   </gl-button-stub>
    
-  <b-modal-stub
-    canceltitle="Cancel"
-    cancelvariant="secondary"
-    footerclass="gl-bg-gray-10 gl-p-5"
-    headerclosecontent="&times;"
-    headercloselabel="Close"
-    id="delete-project-modal-2"
-    ignoreenforcefocusselector=""
-    lazy="true"
-    modalclass="gl-modal,"
-    oktitle="OK"
-    okvariant="danger"
-    size="sm"
-    title=""
-    titleclass="gl-text-red-500"
-    titletag="h4"
+  <div
+    footer-class="gl-bg-gray-10 gl-p-5"
+    ok-variant="danger"
+    title-class="gl-text-red-500"
   >
-     
+    Delete project. Are you ABSOLUTELY SURE?  
     <div>
        
       <p
@@ -70,49 +58,6 @@ exports[`Project remove modal intialized matches the snapshot 1`] = `
       />
        
     </div>
-     
-    <template />
-     
-    <template>
-      Delete project. Are you ABSOLUTELY SURE?
-    </template>
-     
-    <template />
-     
-    <template />
-     
-    <template />
-     
-    <template>
-      <gl-button-stub
-        buttontextclasses=""
-        category="primary"
-        class="js-modal-action-cancel"
-        icon=""
-        size="medium"
-        variant="default"
-      >
-        
-      Cancel, keep project
-    
-      </gl-button-stub>
-       
-      <!---->
-       
-      <gl-button-stub
-        buttontextclasses=""
-        category="primary"
-        class="js-modal-action-primary"
-        disabled="true"
-        icon=""
-        size="medium"
-        variant="danger"
-      >
-        
-      Yes, delete project
-    
-      </gl-button-stub>
-    </template>
-  </b-modal-stub>
+  </div>
 </form>
 `;

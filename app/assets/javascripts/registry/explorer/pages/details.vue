@@ -22,9 +22,11 @@ import {
   ALERT_DANGER_TAGS,
   GRAPHQL_PAGE_SIZE,
   FETCH_IMAGES_LIST_ERROR_MESSAGE,
+  UNFINISHED_STATUS,
 } from '../constants/index';
 
 export default {
+  name: 'RegistryDetailsPage',
   components: {
     DeleteAlert,
     PartialCleanupAlert,
@@ -35,11 +37,11 @@ export default {
     TagsLoader,
     EmptyTagsState,
   },
-  inject: ['breadCrumbState', 'config'],
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
   },
   mixins: [Tracking.mixin()],
+  inject: ['breadCrumbState', 'config'],
   apollo: {
     image: {
       query: getContainerRepositoryDetailsQuery,
@@ -83,7 +85,10 @@ export default {
       return this.image?.tags?.nodes || [];
     },
     showPartialCleanupWarning() {
-      return this.image?.expirationPolicyStartedAt && !this.dismissPartialCleanupWarning;
+      return (
+        this.image?.expirationPolicyCleanupStatus === UNFINISHED_STATUS &&
+        !this.dismissPartialCleanupWarning
+      );
     },
     tracking() {
       return {
@@ -97,7 +102,7 @@ export default {
   },
   methods: {
     deleteTags(toBeDeleted) {
-      this.itemsToBeDeleted = this.tags.filter(tag => toBeDeleted[tag.name]);
+      this.itemsToBeDeleted = this.tags.filter((tag) => toBeDeleted[tag.name]);
       this.track('click_button');
       this.$refs.deleteModal.show();
     },
@@ -111,7 +116,7 @@ export default {
           mutation: deleteContainerRepositoryTagsMutation,
           variables: {
             id: this.queryVariables.id,
-            tagNames: itemsToBeDeleted.map(i => i.name),
+            tagNames: itemsToBeDeleted.map((i) => i.name),
           },
           awaitRefetchQueries: true,
           refetchQueries: [
@@ -183,7 +188,7 @@ export default {
       @dismiss="dismissPartialCleanupWarning = true"
     />
 
-    <details-header :image="image" />
+    <details-header :image="image" :metadata-loading="isLoading" />
 
     <tags-loader v-if="isLoading" />
     <template v-else>

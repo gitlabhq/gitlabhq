@@ -126,7 +126,7 @@ export default {
       />
       <div
         :class="{ 'd-sm-flex': !group.isChildrenLoading }"
-        class="avatar-container rect-avatar s32 d-none flex-grow-0 flex-shrink-0 "
+        class="avatar-container rect-avatar s32 d-none flex-grow-0 flex-shrink-0"
       >
         <a :href="group.relativePath" class="no-expand">
           <img

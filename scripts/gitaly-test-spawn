@@ -8,6 +8,7 @@ class GitalyTestSpawn
   include GitalyTest
 
   def run
+    install_gitaly_gems if ENV['CI']
     check_gitaly_config!
 
     # # Uncomment line below to see all gitaly logs merged into CI trace

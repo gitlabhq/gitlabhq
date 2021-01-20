@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import AdminUsersApp from './components/app.vue';
 
-export default function(el = document.querySelector('#js-admin-users-app')) {
+export default function (el = document.querySelector('#js-admin-users-app')) {
   if (!el) {
     return false;
   }
@@ -11,7 +11,7 @@ export default function(el = document.querySelector('#js-admin-users-app')) {
 
   return new Vue({
     el,
-    render: createElement =>
+    render: (createElement) =>
       createElement(AdminUsersApp, {
         props: {
           users: convertObjectPropsToCamelCase(JSON.parse(users), { deep: true }),

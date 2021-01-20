@@ -88,9 +88,11 @@ module Types
     mount_mutation Mutations::ContainerExpirationPolicies::Update
     mount_mutation Mutations::ContainerRepositories::Destroy
     mount_mutation Mutations::ContainerRepositories::DestroyTags
-    mount_mutation Mutations::Ci::PipelineCancel
-    mount_mutation Mutations::Ci::PipelineDestroy
-    mount_mutation Mutations::Ci::PipelineRetry
+    mount_mutation Mutations::Ci::Pipeline::Cancel
+    mount_mutation Mutations::Ci::Pipeline::Destroy
+    mount_mutation Mutations::Ci::Pipeline::Retry
+    mount_mutation Mutations::Ci::CiCdSettingsUpdate
+    mount_mutation Mutations::Namespace::PackageSettings::Update
   end
 end
 

@@ -28,7 +28,7 @@ const createComponent = ({ propsData = issuableEditFormProps } = {}) =>
 
 describe('IssuableEditForm', () => {
   let wrapper;
-  const assertEvent = eventSpy => {
+  const assertEvent = (eventSpy) => {
     expect(eventSpy).toHaveBeenNthCalledWith(1, 'update.issuable', expect.any(Function));
     expect(eventSpy).toHaveBeenNthCalledWith(2, 'close.form', expect.any(Function));
   };

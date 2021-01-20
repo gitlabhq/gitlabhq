@@ -43,7 +43,7 @@ describe('DismissibleContainer', () => {
       default: 'default slot',
     };
 
-    it.each(Object.keys(slots))('renders the %s slot', slot => {
+    it.each(Object.keys(slots))('renders the %s slot', (slot) => {
       const slotContent = slots[slot];
       wrapper = shallowMount(dismissibleContainer, {
         propsData,

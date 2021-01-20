@@ -49,7 +49,7 @@ export default class LabelsSelect {
       const fieldName = $dropdown.data('fieldName');
       let initialSelected = $selectbox
         .find(`input[name="${$dropdown.data('fieldName')}"]`)
-        .map(function() {
+        .map(function () {
           return this.value;
         })
         .get();
@@ -64,11 +64,11 @@ export default class LabelsSelect {
         );
       }
 
-      const saveLabelData = function() {
+      const saveLabelData = function () {
         const selected = $dropdown
           .closest('.selectbox')
           .find(`input[name='${fieldName}']`)
-          .map(function() {
+          .map(function () {
             return this.value;
           })
           .get();
@@ -124,15 +124,15 @@ export default class LabelsSelect {
                 const toRemoveIds = Array.from(
                   $form.find(`input[type="hidden"][name="${fieldName}"]`),
                 )
-                  .map(el => el.value)
+                  .map((el) => el.value)
                   .map(Number);
 
-                data.labels.forEach(label => {
+                data.labels.forEach((label) => {
                   const index = toRemoveIds.indexOf(label.id);
                   toRemoveIds.splice(index, 1);
                 });
 
-                toRemoveIds.forEach(id => {
+                toRemoveIds.forEach((id) => {
                   $form
                     .find(`input[type="hidden"][name="${fieldName}"][value="${id}"]`)
                     .last()
@@ -157,7 +157,7 @@ export default class LabelsSelect {
           const labelUrl = $dropdown.attr('data-labels');
           axios
             .get(labelUrl)
-            .then(res => {
+            .then((res) => {
               let { data } = res;
               if ($dropdown.hasClass('js-extra-options')) {
                 const extraData = [];
@@ -210,9 +210,7 @@ export default class LabelsSelect {
             }
           } else {
             if (this.id(label)) {
-              const dropdownValue = this.id(label)
-                .toString()
-                .replace(/'/g, "\\'");
+              const dropdownValue = this.id(label).toString().replace(/'/g, "\\'");
 
               if (
                 $form.find(
@@ -346,10 +344,7 @@ export default class LabelsSelect {
           const isMRIndex = page === 'projects:merge_requests:index';
 
           if ($dropdown.parent().find('.is-active:not(.dropdown-clear-active)').length) {
-            $dropdown
-              .parent()
-              .find('.dropdown-clear-active')
-              .removeClass('is-active');
+            $dropdown.parent().find('.dropdown-clear-active').removeClass('is-active');
           }
 
           if ($dropdown.hasClass('js-issuable-form-dropdown')) {
@@ -395,7 +390,7 @@ export default class LabelsSelect {
               );
             } else {
               let { labels } = boardsStore.detail.issue;
-              labels = labels.filter(selectedLabel => selectedLabel.id !== label.id);
+              labels = labels.filter((selectedLabel) => selectedLabel.id !== label.id);
               boardsStore.detail.issue.labels = labels;
             }
 
@@ -406,12 +401,12 @@ export default class LabelsSelect {
               .update($dropdown.attr('data-issue-update'))
               .then(() => {
                 if (isScopedLabel(label)) {
-                  const prevIds = oldLabels.map(label => label.id);
-                  const newIds = boardsStore.detail.issue.labels.map(label => label.id);
-                  const differentIds = prevIds.filter(x => !newIds.includes(x));
+                  const prevIds = oldLabels.map((label) => label.id);
+                  const newIds = boardsStore.detail.issue.labels.map((label) => label.id);
+                  const differentIds = prevIds.filter((x) => !newIds.includes(x));
                   $dropdown.data('marked', newIds);
                   $dropdownMenu
-                    .find(differentIds.map(id => `[data-label-id="${id}"]`).join(','))
+                    .find(differentIds.map((id) => `[data-label-id="${id}"]`).join(','))
                     .removeClass('is-active');
                 }
               })
@@ -559,7 +554,7 @@ export default class LabelsSelect {
   // eslint-disable-next-line class-methods-use-this
   setOriginalDropdownData($container, $dropdown) {
     const labels = [];
-    $container.find('[name="label_name[]"]').map(function() {
+    $container.find('[name="label_name[]"]').map(function () {
       return labels.push(this.value);
     });
     $dropdown.data('marked', labels);

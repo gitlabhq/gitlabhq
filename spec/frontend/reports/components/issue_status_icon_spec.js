@@ -20,7 +20,7 @@ describe('IssueStatusIcon', () => {
 
   it.each([STATUS_SUCCESS, STATUS_NEUTRAL, STATUS_FAILED])(
     'renders "%s" state correctly',
-    status => {
+    (status) => {
       createComponent({ status });
 
       expect(wrapper.element).toMatchSnapshot();

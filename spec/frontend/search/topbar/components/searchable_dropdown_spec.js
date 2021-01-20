@@ -47,7 +47,7 @@ describe('Global Search Searchable Dropdown', () => {
   const findGlDropdownSearch = () => findGlDropdown().find(GlSearchBoxByType);
   const findDropdownText = () => findGlDropdown().find('.dropdown-toggle-text');
   const findDropdownItems = () => findGlDropdown().findAll(GlDropdownItem);
-  const findDropdownItemsText = () => findDropdownItems().wrappers.map(w => w.text());
+  const findDropdownItemsText = () => findDropdownItems().wrappers.map((w) => w.text());
   const findAnyDropdownItem = () => findDropdownItems().at(0);
   const findFirstGroupDropdownItem = () => findDropdownItems().at(1);
   const findLoader = () => wrapper.find(GlSkeletonLoader);
@@ -94,7 +94,7 @@ describe('Global Search Searchable Dropdown', () => {
         });
 
         it('renders an instance for each namespace', () => {
-          const resultsIncludeAny = ['Any'].concat(MOCK_GROUPS.map(n => n.full_name));
+          const resultsIncludeAny = ['Any'].concat(MOCK_GROUPS.map((n) => n.full_name));
           expect(findDropdownItemsText()).toStrictEqual(resultsIncludeAny);
         });
       });

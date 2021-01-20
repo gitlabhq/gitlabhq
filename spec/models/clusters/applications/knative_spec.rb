@@ -150,7 +150,7 @@ RSpec.describe Clusters::Applications::Knative do
     subject { knative.install_command }
 
     it 'is initialized with latest version' do
-      expect(subject.version).to eq('0.9.0')
+      expect(subject.version).to eq('0.10.0')
     end
 
     it_behaves_like 'a command'
@@ -204,8 +204,8 @@ RSpec.describe Clusters::Applications::Knative do
 
       expect(subject.postdelete).to include(*remove_knative_istio_leftovers_script)
       expect(subject.postdelete.size).to eq(full_delete_commands_size)
-      expect(subject.postdelete[2]).to eq("kubectl api-resources -o name --api-group #{api_groups[0]} | xargs kubectl delete --ignore-not-found crd")
-      expect(subject.postdelete[3]).to eq("kubectl api-resources -o name --api-group #{api_groups[1]} | xargs kubectl delete --ignore-not-found crd")
+      expect(subject.postdelete[2]).to include("kubectl api-resources -o name --api-group #{api_groups[0]} | xargs -r kubectl delete --ignore-not-found crd")
+      expect(subject.postdelete[3]).to include("kubectl api-resources -o name --api-group #{api_groups[1]} | xargs -r kubectl delete --ignore-not-found crd")
     end
   end
 

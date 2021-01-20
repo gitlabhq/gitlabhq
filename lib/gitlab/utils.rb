@@ -174,6 +174,18 @@ module Gitlab
     rescue IPAddr::InvalidAddressError
     end
 
+    # A safe alternative to String#downcase!
+    #
+    # This will make copies of frozen strings but downcase unfrozen
+    # strings in place, reducing allocations.
+    def safe_downcase!(str)
+      if str.frozen?
+        str.downcase
+      else
+        str.downcase! || str
+      end
+    end
+
     # Converts a string to an Addressable::URI object.
     # If the string is not a valid URI, it returns nil.
     # Param uri_string should be a String object.

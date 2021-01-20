@@ -1,5 +1,6 @@
 import { waitForText } from 'helpers/wait_for_text';
 import waitForPromises from 'helpers/wait_for_promises';
+import { setTestTimeout } from 'helpers/timeout';
 import { useOverclockTimers } from 'test_helpers/utils/overclock_timers';
 import { createCommitId } from 'test_helpers/factories/commit_id';
 import * as ideHelper from './helpers/ide_helper';
@@ -12,6 +13,9 @@ describe('WebIDE', () => {
   let container;
 
   beforeEach(() => {
+    // For some reason these tests were timing out in CI.
+    // We will investigate in https://gitlab.com/gitlab-org/gitlab/-/issues/298714
+    setTestTimeout(20000);
     setFixtures('<div class="webide-container"></div>');
     container = document.querySelector('.webide-container');
   });
@@ -55,6 +59,25 @@ describe('WebIDE', () => {
     });
   });
 
+  it('user commits changes to new branch', async () => {
+    vm = startWebIDE(container);
+
+    expect(window.location.pathname).toBe('/-/ide/project/gitlab-test/lorem-ipsum/tree/master/-/');
+
+    await ideHelper.updateFile('README.md', 'Lorem dolar si amit\n');
+    await ideHelper.commit({ newBranch: true, newMR: false, newBranchName: 'test-hello-world' });
+
+    await waitForText('All changes are committed');
+
+    // Wait for IDE to load new commit
+    await waitForText('10000000', document.querySelector('.ide-status-bar'));
+
+    // It's important that the new branch is now in the route
+    expect(window.location.pathname).toBe(
+      '/-/ide/project/gitlab-test/lorem-ipsum/blob/test-hello-world/-/README.md',
+    );
+  });
+
   it('user adds file that starts with +', async () => {
     vm = startWebIDE(container);
 
@@ -66,7 +89,7 @@ describe('WebIDE', () => {
 
     // Assert that +test is the only open tab
     const tabs = Array.from(document.querySelectorAll('.multi-file-tab'));
-    expect(tabs.map(x => x.textContent.trim())).toEqual(['+test']);
+    expect(tabs.map((x) => x.textContent.trim())).toEqual(['+test']);
   });
 
   describe('editor info', () => {

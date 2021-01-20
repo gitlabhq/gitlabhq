@@ -114,49 +114,59 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
             role="menu"
             tabindex="-1"
           >
-            <!---->
-             
             <div
-              class="gl-search-box-by-type"
+              class="gl-new-dropdown-inner"
             >
-              <svg
-                aria-hidden="true"
-                class="gl-search-box-by-type-search-icon gl-icon s16"
-                data-testid="search-icon"
-              >
-                <use
-                  href="#search"
-                />
-              </svg>
-               
-              <input
-                aria-label="Search"
-                class="gl-form-input gl-search-box-by-type-input form-control"
-                placeholder="Search"
-                type="text"
-              />
+              <!---->
                
               <div
-                class="gl-search-box-by-type-right-icons"
+                class="gl-new-dropdown-contents"
               >
-                <!---->
-                 
-                <!---->
-              </div>
-            </div>
-              
-            <li
-              class="gl-new-dropdown-text text-secondary"
-              role="presentation"
-            >
-              <p
-                class="b-dropdown-text"
-              >
-                
+                <div
+                  class="gl-search-box-by-type"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="gl-search-box-by-type-search-icon gl-icon s16"
+                    data-testid="search-icon"
+                  >
+                    <use
+                      href="#search"
+                    />
+                  </svg>
+                   
+                  <input
+                    aria-label="Search"
+                    class="gl-form-input gl-search-box-by-type-input form-control"
+                    placeholder="Search"
+                    type="text"
+                  />
+                   
+                  <div
+                    class="gl-search-box-by-type-right-icons"
+                  >
+                    <!---->
+                     
+                    <!---->
+                  </div>
+                </div>
+                  
+                <li
+                  class="gl-new-dropdown-text text-secondary"
+                  role="presentation"
+                >
+                  <p
+                    class="b-dropdown-text"
+                  >
+                    
             No matches found
           
-              </p>
-            </li>
+                  </p>
+                </li>
+              </div>
+               
+              <!---->
+            </div>
              
           </ul>
         </div>
@@ -229,49 +239,59 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
             role="menu"
             tabindex="-1"
           >
-            <!---->
-             
             <div
-              class="gl-search-box-by-type"
+              class="gl-new-dropdown-inner"
             >
-              <svg
-                aria-hidden="true"
-                class="gl-search-box-by-type-search-icon gl-icon s16"
-                data-testid="search-icon"
-              >
-                <use
-                  href="#search"
-                />
-              </svg>
-               
-              <input
-                aria-label="Search"
-                class="gl-form-input gl-search-box-by-type-input form-control"
-                placeholder="Search"
-                type="text"
-              />
+              <!---->
                
               <div
-                class="gl-search-box-by-type-right-icons"
+                class="gl-new-dropdown-contents"
               >
-                <!---->
-                 
-                <!---->
-              </div>
-            </div>
-              
-            <li
-              class="gl-new-dropdown-text text-secondary"
-              role="presentation"
-            >
-              <p
-                class="b-dropdown-text"
-              >
-                
+                <div
+                  class="gl-search-box-by-type"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="gl-search-box-by-type-search-icon gl-icon s16"
+                    data-testid="search-icon"
+                  >
+                    <use
+                      href="#search"
+                    />
+                  </svg>
+                   
+                  <input
+                    aria-label="Search"
+                    class="gl-form-input gl-search-box-by-type-input form-control"
+                    placeholder="Search"
+                    type="text"
+                  />
+                   
+                  <div
+                    class="gl-search-box-by-type-right-icons"
+                  >
+                    <!---->
+                     
+                    <!---->
+                  </div>
+                </div>
+                  
+                <li
+                  class="gl-new-dropdown-text text-secondary"
+                  role="presentation"
+                >
+                  <p
+                    class="b-dropdown-text"
+                  >
+                    
             No matches found
           
-              </p>
-            </li>
+                  </p>
+                </li>
+              </div>
+               
+              <!---->
+            </div>
              
           </ul>
         </div>

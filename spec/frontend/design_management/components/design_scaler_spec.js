@@ -10,7 +10,7 @@ describe('Design management design scaler component', () => {
   const getResetScaleButton = () => getButtons().at(1);
   const getIncreaseScaleButton = () => getButtons().at(2);
 
-  const setScale = scale => wrapper.vm.setScale(scale);
+  const setScale = (scale) => wrapper.vm.setScale(scale);
 
   const createComponent = () => {
     wrapper = shallowMount(DesignScaler);

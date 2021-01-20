@@ -38,6 +38,8 @@ RSpec.describe Gitlab::Experimentation do
       }
     })
 
+    skip_feature_flags_yaml_validation
+    skip_default_enabled_yaml_check
     Feature.enable_percentage_of_time(:backwards_compatible_test_experiment_experiment_percentage, enabled_percentage)
     Feature.enable_percentage_of_time(:test_experiment_experiment_percentage, enabled_percentage)
     allow(Gitlab).to receive(:com?).and_return(true)

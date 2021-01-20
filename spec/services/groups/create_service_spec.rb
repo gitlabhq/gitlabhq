@@ -63,6 +63,10 @@ RSpec.describe Groups::CreateService, '#execute' do
       end
 
       it { is_expected.to be_persisted }
+
+      it 'adds an onboarding progress record' do
+        expect { subject }.to change(OnboardingProgress, :count).from(0).to(1)
+      end
     end
 
     context 'when user can not create a group' do
@@ -84,6 +88,10 @@ RSpec.describe Groups::CreateService, '#execute' do
       end
 
       it { is_expected.to be_persisted }
+
+      it 'does not add an onboarding progress record' do
+        expect { subject }.not_to change(OnboardingProgress, :count).from(0)
+      end
     end
 
     context 'as guest' do

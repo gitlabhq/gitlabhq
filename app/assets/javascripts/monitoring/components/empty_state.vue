@@ -12,7 +12,7 @@ export default {
     selectedState: {
       type: String,
       required: true,
-      validator: state => Object.values(dashboardEmptyStates).includes(state),
+      validator: (state) => Object.values(dashboardEmptyStates).includes(state),
     },
     documentationPath: {
       type: String,

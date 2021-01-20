@@ -7,16 +7,15 @@
     %button.btn.js-settings-toggle.qa-expand-protected-branches{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
-      Keep stable branches secure and force developers to use merge requests.
+      Keep stable branches secure, and force developers to use merge requests. #{link_to "What are protected branches?", help_page_path("user/project/protected_branches")}
   .settings-content
     %p
-      By default, protected branches are designed to:
+      By default, protected branches protect your code and:
       %ul
-        %li prevent their creation, if not already created, from everybody except Maintainers
-        %li prevent pushes from everybody except Maintainers
-        %li prevent <strong>anyone</strong> from force pushing to the branch
-        %li prevent <strong>anyone</strong> from deleting the branch
-      %p Read more about #{link_to "protected branches", help_page_path("user/project/protected_branches")} and #{link_to "project permissions", help_page_path("user/permissions")}.
+        %li Allow only users with Maintainer #{link_to "permissions", help_page_path("user/permissions")} to create new protected branches.
+        %li Allow only users with Maintainer permissions to push code.
+        %li Prevent <strong>anyone</strong> from force-pushing to the branch.
+        %li Prevent <strong>anyone</strong> from deleting the branch.
 
     - if can? current_user, :admin_project, @project
       = content_for :create_protected_branch

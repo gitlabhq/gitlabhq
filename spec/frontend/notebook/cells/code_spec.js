@@ -11,7 +11,7 @@ describe('Code component', () => {
     json = getJSONFixture('blob/notebook/basic.json');
   });
 
-  const setupComponent = cell => {
+  const setupComponent = (cell) => {
     const comp = new Component({
       propsData: {
         cell,
@@ -22,7 +22,7 @@ describe('Code component', () => {
   };
 
   describe('without output', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       vm = setupComponent(json.cells[0]);
 
       setImmediate(() => {
@@ -36,7 +36,7 @@ describe('Code component', () => {
   });
 
   describe('with output', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       vm = setupComponent(json.cells[2]);
 
       setImmediate(() => {

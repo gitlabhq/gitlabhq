@@ -18,7 +18,7 @@ module TimeFrameArguments
 
     argument :timeframe, Types::TimeframeInputType,
              required: false,
-             description: 'List items overlapping the given timeframe'
+             description: 'List items overlapping the given timeframe.'
   end
 
   # TODO: remove when the start_date and end_date arguments are removed

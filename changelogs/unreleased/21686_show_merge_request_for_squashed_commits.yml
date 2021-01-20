@@ -1,0 +1,5 @@
+---
+title: Extend MergeRequestFinder to search by squash and merge commits
+merge_request: 49968
+author:
+type: added

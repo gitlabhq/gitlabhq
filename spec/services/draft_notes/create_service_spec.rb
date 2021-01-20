@@ -20,6 +20,23 @@ RSpec.describe DraftNotes::CreateService do
     expect(draft.discussion_id).to be_nil
   end
 
+  it 'tracks the start event when the draft is persisted' do
+    expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+      .to receive(:track_create_review_note_action)
+      .with(user: user)
+
+    draft = create_draft(note: 'This is a test')
+    expect(draft).to be_persisted
+  end
+
+  it 'does not track the start event when the draft is not persisted' do
+    expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+      .not_to receive(:track_create_review_note_action)
+
+    draft = create_draft(note: 'Not a reply!', resolve_discussion: true)
+    expect(draft).not_to be_persisted
+  end
+
   it 'cannot resolve when there is nothing to resolve' do
     draft = create_draft(note: 'Not a reply!', resolve_discussion: true)
 

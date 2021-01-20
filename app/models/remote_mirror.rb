@@ -308,7 +308,7 @@ class RemoteMirror < ApplicationRecord
   end
 
   def mirror_url_changed?
-    url_changed? || credentials_changed?
+    url_changed? || attribute_changed?(:credentials)
   end
 
   def saved_change_to_mirror_url?

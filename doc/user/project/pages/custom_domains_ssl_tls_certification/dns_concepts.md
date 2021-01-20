@@ -24,7 +24,7 @@ GitLab Pages site.
 Note that **how to** add DNS records depends on which server your domain
 is hosted on. Every control panel has its own place to do it. If you are
 not an administrator of your domain, and don't have access to your registrar,
-you'll need to ask for the technical support of your hosting service
+you must ask the technical support of your hosting service
 to do it for you.
 
 To help you out, we've gathered some instructions on how to do that
@@ -67,7 +67,7 @@ Example:
 
 - `www` => `CNAME` => `example.com`
 
-This way, visitors visiting `www.example.com` will be redirected to
+This way, visitors visiting `www.example.com` are redirected to
 `example.com`.
 
 ## MX record

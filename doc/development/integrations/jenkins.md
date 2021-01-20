@@ -90,7 +90,7 @@ option because the Jenkins plugin updates the build status on GitLab. In a **Pip
 
 ## Configure your GitLab project
 
-To activate the Jenkins service you must have a Starter subscription or higher.
+To activate the Jenkins service:
 
 1. Go to your project's page, then **Settings > Integrations > Jenkins CI**.
 1. Check the **Active** checkbox and the triggers for **Push** and **Merge request**.

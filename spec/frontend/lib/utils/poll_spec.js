@@ -50,7 +50,7 @@ describe('Poll', () => {
     };
   });
 
-  it('calls the success callback when no header for interval is provided', done => {
+  it('calls the success callback when no header for interval is provided', (done) => {
     mockServiceCall({ status: 200 });
     setup();
 
@@ -62,7 +62,7 @@ describe('Poll', () => {
     });
   });
 
-  it('calls the error callback when the http request returns an error', done => {
+  it('calls the error callback when the http request returns an error', (done) => {
     mockServiceCall({ status: 500 }, true);
     setup();
 
@@ -74,7 +74,7 @@ describe('Poll', () => {
     });
   });
 
-  it('skips the error callback when request is aborted', done => {
+  it('skips the error callback when request is aborted', (done) => {
     mockServiceCall({ status: 0 }, true);
     setup();
 
@@ -87,7 +87,7 @@ describe('Poll', () => {
     });
   });
 
-  it('should call the success callback when the interval header is -1', done => {
+  it('should call the success callback when the interval header is -1', (done) => {
     mockServiceCall({ status: 200, headers: { 'poll-interval': -1 } });
     setup()
       .then(() => {
@@ -100,8 +100,8 @@ describe('Poll', () => {
   });
 
   describe('for 2xx status code', () => {
-    successCodes.forEach(httpCode => {
-      it(`starts polling when http status is ${httpCode} and interval header is provided`, done => {
+    successCodes.forEach((httpCode) => {
+      it(`starts polling when http status is ${httpCode} and interval header is provided`, (done) => {
         mockServiceCall({ status: httpCode, headers: { 'poll-interval': 1 } });
 
         const Polling = new Poll({
@@ -129,7 +129,7 @@ describe('Poll', () => {
   });
 
   describe('with delayed initial request', () => {
-    it('delays the first request', async done => {
+    it('delays the first request', async (done) => {
       mockServiceCall({ status: 200, headers: { 'poll-interval': 1 } });
 
       const Polling = new Poll({
@@ -158,7 +158,7 @@ describe('Poll', () => {
   });
 
   describe('stop', () => {
-    it('stops polling when method is called', done => {
+    it('stops polling when method is called', (done) => {
       mockServiceCall({ status: 200, headers: { 'poll-interval': 1 } });
 
       const Polling = new Poll({
@@ -186,7 +186,7 @@ describe('Poll', () => {
   });
 
   describe('enable', () => {
-    it('should enable polling upon a response', done => {
+    it('should enable polling upon a response', (done) => {
       mockServiceCall({ status: 200 });
       const Polling = new Poll({
         resource: service,
@@ -212,7 +212,7 @@ describe('Poll', () => {
   });
 
   describe('restart', () => {
-    it('should restart polling when its called', done => {
+    it('should restart polling when its called', (done) => {
       mockServiceCall({ status: 200, headers: { 'poll-interval': 1 } });
 
       const Polling = new Poll({

@@ -431,14 +431,6 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
     describe 'merge' do
       it_behaves_like 'correct merge behavior'
-
-      context 'when merge_orchestration_service feature flag is disabled' do
-        before do
-          stub_feature_flags(merge_orchestration_service: false)
-        end
-
-        it_behaves_like 'correct merge behavior'
-      end
     end
 
     context 'todos' do
@@ -528,6 +520,19 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
           should_email(user2)
           should_email(user3)
+        end
+
+        it 'updates open merge request counter for reviewers', :use_clean_rails_memory_store_caching do
+          merge_request.reviewers = [user3]
+
+          # Cache them to ensure the cache gets invalidated on update
+          expect(user2.review_requested_open_merge_requests_count).to eq(0)
+          expect(user3.review_requested_open_merge_requests_count).to eq(1)
+
+          update_merge_request(reviewer_ids: [user2.id])
+
+          expect(user2.review_requested_open_merge_requests_count).to eq(1)
+          expect(user3.review_requested_open_merge_requests_count).to eq(0)
         end
       end
 
@@ -837,20 +842,20 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
       it 'does not allow a maintainer of the target project to set `allow_collaboration`' do
         target_project.add_developer(user)
 
-        update_merge_request(allow_collaboration: true, title: 'Updated title')
+        update_merge_request(allow_collaboration: false, title: 'Updated title')
 
         expect(merge_request.title).to eq('Updated title')
-        expect(merge_request.allow_collaboration).to be_falsy
+        expect(merge_request.allow_collaboration).to be_truthy
       end
 
       it 'is allowed by a user that can push to the source and can update the merge request' do
         merge_request.update!(assignees: [user])
         source_project.add_developer(user)
 
-        update_merge_request(allow_collaboration: true, title: 'Updated title')
+        update_merge_request(allow_collaboration: false, title: 'Updated title')
 
         expect(merge_request.title).to eq('Updated title')
-        expect(merge_request.allow_collaboration).to be_truthy
+        expect(merge_request.allow_collaboration).to be_falsy
       end
     end
 

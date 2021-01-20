@@ -29,7 +29,7 @@ export default {
       return this.discussions.reduce((acc, note) => acc.concat(note.notes), []);
     },
     notesInGutter() {
-      return this.allDiscussions.slice(0, COUNT_OF_AVATARS_IN_GUTTER).map(n => ({
+      return this.allDiscussions.slice(0, COUNT_OF_AVATARS_IN_GUTTER).map((n) => ({
         note: n.note,
         author: n.author,
       }));

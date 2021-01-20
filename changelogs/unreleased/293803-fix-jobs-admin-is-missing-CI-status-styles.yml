@@ -1,0 +1,5 @@
+---
+title: Fix jobs admin is missing CI status styles
+merge_request: 51161
+author: Kev @KevSlashNull
+type: fixed

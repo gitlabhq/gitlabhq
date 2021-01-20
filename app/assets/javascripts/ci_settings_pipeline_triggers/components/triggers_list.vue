@@ -61,7 +61,7 @@ export default {
       class="triggers-list"
       responsive
     >
-      <template #cell(token)="{item}">
+      <template #cell(token)="{ item }">
         {{ item.token }}
         <clipboard-button
           v-if="item.hasTokenExposed"
@@ -82,7 +82,7 @@ export default {
           </gl-badge>
         </div>
       </template>
-      <template #cell(description)="{item}">
+      <template #cell(description)="{ item }">
         <tooltip-on-truncate
           :title="item.description"
           truncate-target="child"
@@ -92,7 +92,7 @@ export default {
           <div class="gl-flex-fill-1 gl-text-truncate">{{ item.description }}</div>
         </tooltip-on-truncate>
       </template>
-      <template #cell(owner)="{item}">
+      <template #cell(owner)="{ item }">
         <span class="trigger-owner sr-only">{{ item.owner.name }}</span>
         <user-avatar-link
           v-if="item.owner"
@@ -102,11 +102,11 @@ export default {
           :img-alt="item.owner.name"
         />
       </template>
-      <template #cell(lastUsed)="{item}">
+      <template #cell(lastUsed)="{ item }">
         <time-ago-tooltip v-if="item.lastUsed" :time="item.lastUsed" />
         <span v-else>{{ __('Never') }}</span>
       </template>
-      <template #cell(actions)="{item}">
+      <template #cell(actions)="{ item }">
         <gl-button
           :title="s__('Pipelines|Edit')"
           icon="pencil"

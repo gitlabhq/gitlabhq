@@ -82,7 +82,7 @@ export default {
 </script>
 
 <template>
-  <div data-testid="image-viewer">
+  <div data-testid="image-viewer" data-qa-selector="image_viewer_container">
     <div :class="innerCssClasses" class="position-relative">
       <img ref="contentImg" :src="path" @load="onImgLoad" />
       <slot
@@ -95,9 +95,7 @@ export default {
       <template v-if="hasFileSize">
         {{ fileSizeReadable }}
       </template>
-      <template v-if="hasFileSize && hasDimensions">
-        |
-      </template>
+      <template v-if="hasFileSize && hasDimensions"> | </template>
       <template v-if="hasDimensions">
         <strong>{{ s__('ImageViewerDimensions|W') }}</strong
         >: {{ width }} | <strong>{{ s__('ImageViewerDimensions|H') }}</strong

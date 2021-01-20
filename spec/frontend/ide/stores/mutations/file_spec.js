@@ -128,7 +128,7 @@ describe('IDE store file mutations', () => {
         localState.changedFiles[0],
         localState.openFiles[0],
         localFile,
-      ].forEach(f => {
+      ].forEach((f) => {
         expect(f).toEqual(
           expect.objectContaining({
             path,
@@ -142,7 +142,7 @@ describe('IDE store file mutations', () => {
   });
 
   describe('SET_FILE_RAW_DATA', () => {
-    const callMutationForFile = f => {
+    const callMutationForFile = (f) => {
       mutations.SET_FILE_RAW_DATA(localState, {
         file: f,
         raw: 'testing',

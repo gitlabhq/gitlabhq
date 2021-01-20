@@ -77,30 +77,6 @@ RSpec.shared_examples Repositories::GitHttpController do
         end
       end
     end
-
-    context 'with exceptions' do
-      before do
-        allow(controller).to receive(:authenticate_user).and_return(true)
-        allow(controller).to receive(:verify_workhorse_api!).and_return(true)
-      end
-
-      it 'returns 503 with GRPC Unavailable' do
-        allow(controller).to receive(:access_check).and_raise(GRPC::Unavailable)
-
-        get :info_refs, params: params
-
-        expect(response).to have_gitlab_http_status(:service_unavailable)
-      end
-
-      it 'returns 503 with timeout error' do
-        allow(controller).to receive(:access_check).and_raise(Gitlab::GitAccess::TimeoutError)
-
-        get :info_refs, params: params
-
-        expect(response).to have_gitlab_http_status(:service_unavailable)
-        expect(response.body).to eq 'Gitlab::GitAccess::TimeoutError'
-      end
-    end
   end
 
   describe 'POST #git_upload_pack' do

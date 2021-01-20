@@ -4,6 +4,7 @@ import { SET_SESSION_STATUS } from '~/ide/stores/modules/terminal/mutation_types
 import { RUNNING, STOPPING } from '~/ide/stores/modules/terminal/constants';
 import { createStore } from '~/ide/stores';
 import eventHub from '~/ide/eventhub';
+import { createTriggerUpdatePayload } from '../../helpers';
 
 jest.mock('~/ide/lib/mirror');
 
@@ -49,6 +50,14 @@ describe('IDE stores/plugins/mirror', () => {
       jest.runAllTimers();
 
       expect(store.dispatch).toHaveBeenCalledWith(ACTION_UPLOAD);
+    });
+
+    it('does nothing when ide.files.change is emitted with "update"', () => {
+      eventHub.$emit(FILES_CHANGE_EVENT, createTriggerUpdatePayload('foo'));
+
+      jest.runAllTimers();
+
+      expect(store.dispatch).not.toHaveBeenCalledWith(ACTION_UPLOAD);
     });
 
     describe('when session stops', () => {

@@ -4,7 +4,7 @@ import Profile from '~/profile/profile';
 
 document.addEventListener('DOMContentLoaded', () => {
   // eslint-disable-next-line func-names
-  $(document).on('input.ssh_key', '#key_key', function() {
+  $(document).on('input.ssh_key', '#key_key', function () {
     const $title = $('#key_title');
     const comment = $(this)
       .val()

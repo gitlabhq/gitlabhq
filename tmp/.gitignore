@@ -1,5 +1,10 @@
 *
-!*/
 !.gitignore
 !.gitkeep
+
+# explicitly list ignored sub directories to speed up performance
+/cache/
+/capybara/
+/letter_opener/
+/rubocop_cache/
 /tests/

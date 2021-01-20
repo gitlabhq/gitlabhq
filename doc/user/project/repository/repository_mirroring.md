@@ -8,19 +8,16 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/repository_mirroring.htm
 # Repository mirroring
 
 Repository mirroring allows for mirroring of repositories to and from external sources. It can be
-used to mirror branches, tags, and commits between repositories.
+used to mirror branches, tags, and commits between repositories. It is useful when you want to use
+a repository outside of GitLab.
 
 A repository mirror at GitLab will be updated automatically. You can also manually trigger an update
 at most once every 5 minutes on GitLab.com with [the limit set by the administrator on self-managed instances](../../../administration/instance_limits.md#pull-mirroring-interval).
 
-## Overview
-
-Repository mirroring is useful when you want to use a repository outside of GitLab.
-
 There are two kinds of repository mirroring supported by GitLab:
 
-- Push: for mirroring a GitLab repository to another location.
-- Pull: for mirroring a repository from another location to GitLab. **(STARTER)**
+- [Push](#pushing-to-a-remote-repository): for mirroring a GitLab repository to another location. **(CORE)**
+- [Pull](#pulling-from-a-remote-repository): for mirroring a repository from another location to GitLab. **(STARTER)**
 
 When the mirror repository is updated, all new branches, tags, and commits will be visible in the
 project's activity feed.
@@ -31,8 +28,7 @@ immediate update, unless:
 - The mirror is already being updated.
 - The [limit for pull mirroring interval seconds](../../../administration/instance_limits.md#pull-mirroring-interval) has not elapsed since its last update.
 
-For security reasons, in [GitLab 12.10 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27166),
-the URL to the original repository is only displayed to users with
+For security reasons, the URL to the original repository is only displayed to users with
 Maintainer or Owner permissions to the mirrored project.
 
 ## Use cases
@@ -62,7 +58,8 @@ For an existing project, you can set up push mirroring as follows:
 1. Navigate to your project's **Settings > Repository** and expand the **Mirroring repositories** section.
 1. Enter a repository URL.
 1. Select **Push** from the **Mirror direction** dropdown.
-1. Select an authentication method from the **Authentication method** dropdown, if necessary.
+1. Select an authentication method from the **Authentication method** dropdown.
+   You can authenticate with either a password or an [SSH key](#ssh-authentication).
 1. Check the **Only mirror protected branches** box, if necessary.
 1. Check the **Keep divergent refs** box, if desired.
 1. Click the **Mirror repository** button to save the configuration.
@@ -88,17 +85,7 @@ section.
 You can also create and modify project push mirrors through the
 [remote mirrors API](../../../api/remote_mirrors.md).
 
-### Push only protected branches **(CORE)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3350) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
-> - [Moved to GitLab Core](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18715) in 10.8.
-
-You can choose to only push your protected branches from GitLab to your remote repository.
-
-To use this option, check the **Only mirror protected branches** box when creating a repository
-mirror.
-
-### Keep divergent refs **(CORE)**
+### Keep divergent refs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208828) in GitLab 13.0.
 
@@ -119,7 +106,7 @@ update.
 NOTE:
 After the mirror is created, this option can currently only be modified via the [API](../../../api/remote_mirrors.md).
 
-## Setting up a push mirror from GitLab to GitHub **(CORE)**
+### Setting up a push mirror from GitLab to GitHub
 
 To set up a mirror from GitLab to GitHub, you need to follow these steps:
 
@@ -132,7 +119,7 @@ The mirrored repository will be listed. For example, `https://*****:*****@github
 
 The repository will push soon. To force a push, click the **Update now** (**{retry}**) button.
 
-## Setting up a push mirror from GitLab to AWS CodeCommit
+### Setting up a push mirror from GitLab to AWS CodeCommit
 
 AWS CodeCommit push mirroring is currently the best way to connect GitLab repositories to AWS CodePipeline, as GitLab is not yet supported as one of their Source Code Management (SCM) providers.
 
@@ -210,7 +197,7 @@ To test mirroring by forcing a push, click the half-circle arrows button (hover 
 If **Last successful update** shows a date, you have configured mirroring correctly.
 If it is not working correctly a red `error` tag appears and shows the error message as hover text.
 
-## Setting up a push mirror to another GitLab instance with 2FA activated
+### Setting up a push mirror to another GitLab instance with 2FA activated
 
 1. On the destination GitLab instance, create a [personal access token](../../profile/personal_access_tokens.md) with `write_repository` scope.
 1. On the source GitLab instance:
@@ -249,8 +236,8 @@ To configure mirror pulling for an existing project:
 ![Repository mirroring pull settings screen - lower part](img/repository_mirroring_pull_settings_lower.png)
 
 Because GitLab is now set to pull changes from the upstream repository, you should not push commits
-directly to the repository on GitLab. Instead, any commits should be pushed to the upstream repository.
-Changes pushed to the upstream repository will be pulled into the GitLab repository, either:
+directly to the repository on GitLab. Instead, any commits should be pushed to the remote repository.
+Changes pushed to the remote repository will be pulled into the GitLab repository, either:
 
 - Automatically within a certain period of time.
 - When a [forced update](#forcing-an-update) is initiated.
@@ -275,10 +262,62 @@ Repository mirrors are updated as Sidekiq becomes available to process them. If 
 - Fails (for example, a branch diverged from upstream), it will be attempted again later. Mirrors can fail
   up to 14 times before they will not be enqueued for update again.
 
-### SSH authentication
+### Overwrite diverged branches **(STARTER)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2551) for Pull mirroring in [GitLab Starter](https://about.gitlab.com/pricing/) 9.5.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22982) for Push mirroring in [GitLab Core](https://about.gitlab.com/pricing/) 11.6
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4559) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.6.
+
+You can choose to always update your local branches with remote versions, even if they have
+diverged from the remote.
+
+WARNING:
+For mirrored branches, enabling this option results in the loss of local changes.
+
+To use this option, check the **Overwrite diverged branches** box when creating a repository mirror.
+
+### Trigger pipelines for mirror updates **(STARTER)**
+
+If this option is enabled, pipelines will be triggered when branches or tags are
+updated from the remote repository. Depending on the activity of the remote
+repository, this may greatly increase the load on your CI runners. Only enable
+this if you know they can handle the load. CI will run using the credentials
+assigned when you set up pull mirroring.
+
+### Hard failure **(STARTER)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3117) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.2.
+
+Once the mirroring process is unsuccessfully retried 14 times in a row, it will get marked as hard
+failed. This will become visible in either the:
+
+- Project's main dashboard.
+- Pull mirror settings page.
+
+When a project is hard failed, it will no longer get picked up for mirroring.
+You can resume the project mirroring again by [forcing an update](#forcing-an-update).
+
+### Trigger an update using the API **(STARTER)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3453) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
+
+Pull mirroring uses polling to detect new branches and commits added upstream, often minutes
+afterwards. If you notify GitLab by [API](../../../api/projects.md#start-the-pull-mirroring-process-for-a-project),
+updates will be pulled immediately.
+
+For more information, see [Start the pull mirroring process for a Project](../../../api/projects.md#start-the-pull-mirroring-process-for-a-project).
+
+## Mirror only protected branches **(STARTER)**
+
+Based on the mirror direction that you choose, you can opt to mirror only the
+[protected branches](../protected_branches.md) from/to your remote repository.
+For pull mirroring, non-protected branches are not mirrored and can diverge.
+
+To use this option, check the **Only mirror protected branches** box when
+creating a repository mirror.
+
+## SSH authentication
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2551) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.5 for Pull mirroring.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22982) in [GitLab Core](https://about.gitlab.com/pricing/) 11.6 for Push mirroring.
 
 SSH authentication is mutual:
 
@@ -367,50 +406,6 @@ NOTE:
 The generated keys are stored in the GitLab database, not in the filesystem. Therefore,
 SSH public key authentication for mirrors cannot be used in a pre-receive hook.
 
-### Overwrite diverged branches **(STARTER)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4559) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.6.
-
-You can choose to always update your local branches with remote versions, even if they have
-diverged from the remote.
-
-WARNING:
-For mirrored branches, enabling this option results in the loss of local changes.
-
-To use this option, check the **Overwrite diverged branches** box when creating a repository mirror.
-
-### Only mirror protected branches **(STARTER)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3326) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
-
-You can choose to pull mirror only the protected branches from your remote repository to GitLab.
-Non-protected branches are not mirrored and can diverge.
-
-To use this option, check the **Only mirror protected branches** box when creating a repository mirror.
-
-### Hard failure **(STARTER)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3117) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.2.
-
-Once the mirroring process is unsuccessfully retried 14 times in a row, it will get marked as hard
-failed. This will become visible in either the:
-
-- Project's main dashboard.
-- Pull mirror settings page.
-
-When a project is hard failed, it will no longer get picked up for mirroring. A user can resume the
-project mirroring again by [Forcing an update](#forcing-an-update).
-
-### Trigger update using API **(STARTER)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3453) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
-
-Pull mirroring uses polling to detect new branches and commits added upstream, often minutes
-afterwards. If you notify GitLab by [API](../../../api/projects.md#start-the-pull-mirroring-process-for-a-project),
-updates will be pulled immediately.
-
-For more information, see [Start the pull mirroring process for a Project](../../../api/projects.md#start-the-pull-mirroring-process-for-a-project).
-
 ## Forcing an update **(CORE)**
 
 While mirrors are scheduled to update automatically, you can always force an update by using the
@@ -429,10 +424,7 @@ bidirectional mirroring, you should prepare for the likely conflicts by deciding
 them and how they will be resolved.
 
 Rewriting any mirrored commit on either remote will cause conflicts and mirroring to fail. This can
-be prevented by:
-
-- [Pulling only protected branches](#only-mirror-protected-branches).
-- [Pushing only protected branches](#push-only-protected-branches).
+be prevented by [mirroring only protected branches](#mirror-only-protected-branches).
 
 You should [protect the branches](../protected_branches.md) you wish to mirror on both
 remotes to prevent conflicts caused by rewriting history.

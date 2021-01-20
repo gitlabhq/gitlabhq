@@ -35,7 +35,7 @@ export default {
       }
 
       return this.allBlobs.reduce((acc, folder) => {
-        const tree = folder.tree.filter(f => f.path.toLowerCase().indexOf(search) >= 0);
+        const tree = folder.tree.filter((f) => f.path.toLowerCase().indexOf(search) >= 0);
 
         if (tree.length) {
           return acc.concat({

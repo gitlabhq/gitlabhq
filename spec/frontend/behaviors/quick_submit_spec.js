@@ -17,7 +17,7 @@ describe('Quick Submit behavior', () => {
       submit: jest.fn(),
     };
 
-    $('form').submit(e => {
+    $('form').submit((e) => {
       // Prevent a form submit from moving us off the testing page
       e.preventDefault();
       // Explicitly call the spie to know this function get's not called

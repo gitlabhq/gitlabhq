@@ -38,8 +38,10 @@ For examples of how you can use a project access token to authenticate with the 
 
 ## Project bot users
 
-For each project access token created, a bot user will also be created and added to the project with
-["Maintainer" level permissions](../../permissions.md#project-members-permissions).
+Project bot users are [GitLab-created service accounts](../../../subscriptions/self_managed/index.md#billable-users) and do not count as licensed seats.
+
+For each project access token created, a bot user is created and added to the project with
+[Maintainer level permissions](../../permissions.md#project-members-permissions).
 
 For the bot:
 
@@ -49,15 +51,15 @@ For the bot:
 
 API calls made with a project access token are associated with the corresponding bot user.
 
-These users will appear in **Members** but can not be modified.
-Furthermore, the bot user can not be added to any other project.
+These bot users are included in a project's **Members** list but cannot be modified. Also, a bot
+user cannot be added to any other project.
 
 - The username is set to `project_{project_id}_bot` for the first access token, such as `project_123_bot`.
 - The username is set to `project_{project_id}_bot{bot_count}` for further access tokens, such as `project_123_bot1`.
 
-When the project access token is [revoked](#revoking-a-project-access-token) the bot user is then deleted and all records are moved to a system-wide user with the username "Ghost User". For more information, see [Associated Records](../../profile/account/delete_account.md#associated-records).
-
-Project bot users are [GitLab-created service accounts](../../../subscriptions/self_managed/index.md#billable-users) and do not count as licensed seats.
+When the project access token is [revoked](#revoking-a-project-access-token) the bot user is deleted
+and all records are moved to a system-wide user with the username "Ghost User". For more
+information, see [Associated Records](../../profile/account/delete_account.md#associated-records).
 
 ## Revoking a project access token
 
@@ -72,7 +74,7 @@ the following table.
 
 | Scope              |  Description |
 | ------------------ |  ----------- |
-| `api`              | Grants complete read/write access to the scoped project API, including the Package Registry](../../packages/package_registry/index.md). |
+| `api`              | Grants complete read/write access to the scoped project API, including the [Package Registry](../../packages/package_registry/index.md). |
 | `read_api`         | Grants read access to the scoped project API, including the [Package Registry](../../packages/package_registry/index.md). |
 | `read_registry`    | Allows read-access (pull) to [container registry](../../packages/container_registry/index.md) images if a project is private and authorization is required. |
 | `write_registry`   | Allows write-access (push) to [container registry](../../packages/container_registry/index.md). |

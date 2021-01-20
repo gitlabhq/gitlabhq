@@ -24,4 +24,12 @@ RSpec.describe Banzai::Pipeline::PreProcessPipeline do
       expect(result[:output]).to include "> blockquote\n"
     end
   end
+
+  it 'truncates the text if requested' do
+    text = (['foo'] * 10).join(' ')
+
+    result = described_class.call(text, limit: 12)
+
+    expect(result[:output]).to eq('foo foo f…')
+  end
 end

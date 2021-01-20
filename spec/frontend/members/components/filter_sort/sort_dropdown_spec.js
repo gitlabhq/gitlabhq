@@ -12,7 +12,7 @@ describe('SortDropdown', () => {
 
   const URL_HOST = 'https://localhost/';
 
-  const createComponent = state => {
+  const createComponent = (state) => {
     const store = new Vuex.Store({
       state: {
         sourceId: 1,
@@ -38,10 +38,10 @@ describe('SortDropdown', () => {
   const findSortDirectionToggle = () =>
     findSortingComponent().find('button[title="Sort direction"]');
   const findDropdownToggle = () => wrapper.find('button[aria-haspopup="true"]');
-  const findDropdownItemByText = text =>
+  const findDropdownItemByText = (text) =>
     wrapper
       .findAll(GlSortingItem)
-      .wrappers.find(dropdownItemWrapper => dropdownItemWrapper.text() === text);
+      .wrappers.find((dropdownItemWrapper) => dropdownItemWrapper.text() === text);
 
   describe('dropdown options', () => {
     beforeEach(() => {
@@ -76,7 +76,7 @@ describe('SortDropdown', () => {
 
       createComponent();
 
-      expectedDropdownItems.forEach(expectedDropdownItem => {
+      expectedDropdownItems.forEach((expectedDropdownItem) => {
         const dropdownItem = findDropdownItemByText(expectedDropdownItem.label);
 
         expect(dropdownItem).not.toBe(null);

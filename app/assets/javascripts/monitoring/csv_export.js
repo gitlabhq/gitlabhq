@@ -66,8 +66,8 @@ const csvMetricHeaders = (axisLabel, metrics) =>
  *
  * @param {Array} metrics - Metrics with results
  */
-const csvMetricValues = metrics =>
-  metrics.flatMap(({ result }) => result.map(res => res.values || []));
+const csvMetricValues = (metrics) =>
+  metrics.flatMap(({ result }) => result.map((res) => res.values || []));
 
 /**
  * Returns headers and rows for csv, sorted by their timestamp.
@@ -99,7 +99,7 @@ const csvData = (metricHeaders, metricValues) => {
 
   const rows = Object.keys(rowsByTimestamp)
     .sort()
-    .map(timestamp => {
+    .map((timestamp) => {
       // force each row to have the same number of entries
       rowsByTimestamp[timestamp].length = metricHeaders.length;
       // add timestamp as the first entry
@@ -111,7 +111,7 @@ const csvData = (metricHeaders, metricValues) => {
   // appearing inside a field must be escaped by preceding it with
   // another double quote."
   // https://tools.ietf.org/html/rfc4180#page-2
-  const headers = metricHeaders.map(header => `"${header.replace(/"/g, '""')}"`);
+  const headers = metricHeaders.map((header) => `"${header.replace(/"/g, '""')}"`);
 
   return {
     headers: ['timestamp', ...headers],
@@ -125,12 +125,12 @@ const csvData = (metricHeaders, metricValues) => {
  * @param {Object} graphData - Panel contents
  * @returns {String}
  */
-export const graphDataToCsv = graphData => {
+export const graphDataToCsv = (graphData) => {
   const delimiter = ',';
   const br = '\r\n';
   const { metrics = [], y_label: axisLabel } = graphData;
 
-  const metricsWithResults = metrics.filter(metric => metric.result);
+  const metricsWithResults = metrics.filter((metric) => metric.result);
   const metricHeaders = csvMetricHeaders(axisLabel, metricsWithResults);
   const metricValues = csvMetricValues(metricsWithResults);
   const { headers, rows } = csvData(metricHeaders, metricValues);
@@ -140,7 +140,7 @@ export const graphDataToCsv = graphData => {
   }
 
   const headerLine = headers.join(delimiter) + br;
-  const lines = rows.map(row => row.join(delimiter));
+  const lines = rows.map((row) => row.join(delimiter));
 
   return headerLine + lines.join(br) + br;
 };

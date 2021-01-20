@@ -131,7 +131,8 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
         known_hosts: '',
         force: false,
         no_tags: false,
-        no_prune: false
+        no_prune: false,
+        check_tags_changed: false
       )
 
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
@@ -139,7 +140,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
         .with(expected_request, kind_of(Hash))
         .and_return(double(value: true))
 
-      client.fetch_remote(remote, ssh_auth: nil, forced: false, no_tags: false, timeout: 1)
+      client.fetch_remote(remote, ssh_auth: nil, forced: false, no_tags: false, timeout: 1, check_tags_changed: false)
     end
 
     context 'SSH auth' do

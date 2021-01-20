@@ -1,0 +1,16 @@
+name: g_project_management_issue_title_changed_weekly
+description: Distinct users count that changed issue title in a group for last recent week
+value_type: integer
+product_category: issue_tracking
+stage: plan
+status: data_available
+default_generation: generation_1
+full_path:
+  generation_1: redis_hll_counters.issues_edit.g_project_management_issue_title_changed_weekly
+milestone: 13.6
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/229918
+group: 'group::project management'
+time_frame: 7d
+data_source: redis_hll
+distribution: [ee, ce]
+tier: ['free', 'starter', 'premium', 'ultimate', 'bronze', 'silver', 'gold']

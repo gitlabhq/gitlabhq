@@ -17,7 +17,7 @@ Regexp notes:
 */
 const identifierInstanceRegex = /((?:\[.+?\]){1}(?:\[\]|\[.+?\])?(?!:))/g;
 
-const isIdentifierInstance = literal => {
+const isIdentifierInstance = (literal) => {
   // Reset lastIndex as global flag in regexp are stateful (https://stackoverflow.com/a/11477448)
   identifierInstanceRegex.lastIndex = 0;
   return identifierInstanceRegex.test(literal);
@@ -25,9 +25,9 @@ const isIdentifierInstance = literal => {
 
 const canRender = ({ literal }) => isIdentifierInstance(literal);
 
-const tokenize = text => {
+const tokenize = (text) => {
   const matches = text.split(identifierInstanceRegex);
-  const tokens = matches.map(match => {
+  const tokens = matches.map((match) => {
     const token = buildTextToken(match);
     return isIdentifierInstance(match) ? buildUneditableInlineTokens(token) : token;
   });

@@ -8,8 +8,6 @@ class UserPreference < ApplicationRecord
   # extra methods that aren't really needed here.
   NOTES_FILTERS = { all_notes: 0, only_comments: 1, only_activity: 2 }.freeze
 
-  ignore_column :feature_filter_type, remove_with: '13.8', remove_after: '2021-01-22'
-
   belongs_to :user
 
   scope :with_user, -> { joins(:user) }

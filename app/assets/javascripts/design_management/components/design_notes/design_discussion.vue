@@ -171,7 +171,7 @@ export default {
             this.$emit('resolve-discussion-error', data.errors[0]);
           }
         })
-        .catch(err => {
+        .catch((err) => {
           this.$emit('resolve-discussion-error', err);
         })
         .finally(() => {

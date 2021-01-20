@@ -4,7 +4,7 @@
   = render 'callout'
 
 - if !usage_ping_enabled
-  #js-devops-empty-state{ data: { is_admin: current_user&.admin.to_s, empty_state_svg_path: image_path('illustrations/convdev/convdev_no_index.svg'), enable_usage_ping_link: metrics_and_profiling_admin_application_settings_path(anchor: 'js-usage-settings'), docs_link: help_page_path('development/product_analytics/usage_ping') } }
+  #js-devops-empty-state{ data: { is_admin: current_user&.admin.to_s, empty_state_svg_path: image_path('illustrations/convdev/convdev_no_index.svg'), enable_usage_ping_link: metrics_and_profiling_admin_application_settings_path(anchor: 'js-usage-settings'), docs_link: help_page_path('development/usage_ping') } }
 - elsif @metric.blank?
   = render 'no_data'
 - else

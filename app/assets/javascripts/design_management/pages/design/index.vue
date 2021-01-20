@@ -57,6 +57,27 @@ export default {
     DesignSidebar,
   },
   mixins: [allVersionsMixin, glFeatureFlagsMixin()],
+  beforeRouteUpdate(to, from, next) {
+    // reset scale when the active design changes
+    this.scale = DEFAULT_SCALE;
+    next();
+  },
+  beforeRouteEnter(to, from, next) {
+    const pageEl = getPageLayoutElement();
+    if (pageEl) {
+      pageEl.classList.add(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
+    }
+
+    next();
+  },
+  beforeRouteLeave(to, from, next) {
+    const pageEl = getPageLayoutElement();
+    if (pageEl) {
+      pageEl.classList.remove(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
+    }
+
+    next();
+  },
   props: {
     id: {
       type: String,
@@ -81,7 +102,7 @@ export default {
       variables() {
         return this.designVariables;
       },
-      update: data => extractDesign(data),
+      update: (data) => extractDesign(data),
       result(res) {
         this.onDesignQueryResult(res);
       },
@@ -139,7 +160,7 @@ export default {
       return Boolean(this.annotationCoordinates);
     },
     resolvedDiscussions() {
-      return this.discussions.filter(discussion => discussion.resolved);
+      return this.discussions.filter((discussion) => discussion.resolved);
     },
   },
   watch: {
@@ -161,18 +182,8 @@ export default {
   beforeDestroy() {
     Mousetrap.unbind('esc', this.closeDesign);
   },
-  beforeRouteUpdate(to, from, next) {
-    // reset scale when the active design changes
-    this.scale = DEFAULT_SCALE;
-    next();
-  },
   methods: {
-    addImageDiffNoteToStore(
-      store,
-      {
-        data: { createImageDiffNote },
-      },
-    ) {
+    addImageDiffNoteToStore(store, { data: { createImageDiffNote } }) {
       updateStoreAfterAddImageDiffNote(
         store,
         createImageDiffNote,
@@ -180,12 +191,7 @@ export default {
         this.designVariables,
       );
     },
-    updateImageDiffNoteInStore(
-      store,
-      {
-        data: { repositionImageDiffNote },
-      },
-    ) {
+    updateImageDiffNoteInStore(store, { data: { repositionImageDiffNote } }) {
       return updateStoreAfterRepositionImageDiffNote(
         store,
         repositionImageDiffNote,
@@ -213,7 +219,7 @@ export default {
         update: this.updateImageDiffNoteInStore,
       };
 
-      return this.$apollo.mutate(mutationPayload).catch(e => this.onUpdateImageDiffNoteError(e));
+      return this.$apollo.mutate(mutationPayload).catch((e) => this.onUpdateImageDiffNoteError(e));
     },
     onDesignQueryResult({ data, loading }) {
       // On the initial load with cache-and-network policy data is undefined while loading is true
@@ -305,22 +311,6 @@ export default {
     toggleResolvedComments() {
       this.resolvedDiscussionsExpanded = !this.resolvedDiscussionsExpanded;
     },
-  },
-  beforeRouteEnter(to, from, next) {
-    const pageEl = getPageLayoutElement();
-    if (pageEl) {
-      pageEl.classList.add(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
-    }
-
-    next();
-  },
-  beforeRouteLeave(to, from, next) {
-    const pageEl = getPageLayoutElement();
-    if (pageEl) {
-      pageEl.classList.remove(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
-    }
-
-    next();
   },
   createImageDiffNoteMutation,
   DESIGNS_ROUTE_NAME,

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > User wants to add a Dockerfile file' do
+RSpec.describe 'Projects > Files > User wants to add a Dockerfile file', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/297400' do
   before do
     project = create(:project, :repository)
     sign_in project.owner

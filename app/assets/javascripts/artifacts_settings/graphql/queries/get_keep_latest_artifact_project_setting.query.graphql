@@ -1,0 +1,7 @@
+query getKeepLatestArtifactProjectSetting($fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    ciCdSettings {
+      keepLatestArtifact
+    }
+  }
+}

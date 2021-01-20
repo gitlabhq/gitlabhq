@@ -1,0 +1,36 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string"
+    },
+    "version": {
+      "type": ["string", "null"]
+    },
+    "package_type": {
+      "type": ["string"],
+      "enum": ["MAVEN", "NPM", "CONAN", "NUGET", "PYPI", "COMPOSER", "GENERIC", "GOLANG", "DEBIAN"]
+    },
+    "tags": {
+      "type": "object"
+    },
+    "project": {
+      "type": "object"
+    },
+    "pipelines": {
+      "type": "object"
+    },
+    "versions": {
+      "type": "object"
+    }
+  }
+}

@@ -19,6 +19,7 @@ cache:
   key: "${TF_ROOT}"
   paths:
     - ${TF_ROOT}/.terraform/
+    - ${TF_ROOT}/.terraform.lock.hcl
 
 .init: &init
   stage: init

@@ -22,7 +22,7 @@ describe('ExpirationInput', () => {
   const findDescription = () => wrapper.find('[data-testid="description"]');
   const findDescriptionLink = () => wrapper.find(GlLink);
 
-  const mountComponent = props => {
+  const mountComponent = (props) => {
     wrapper = shallowMount(component, {
       stubs: {
         GlSprintf,

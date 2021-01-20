@@ -211,28 +211,13 @@ RSpec.describe ProjectsController do
       end
     end
 
-    context 'when the storage is not available', :broken_storage do
-      let_it_be(:project) { create(:project, :broken_storage) }
-
-      before do
-        project.add_developer(user)
-        sign_in(user)
-      end
-
-      it 'renders a 503' do
-        get :show, params: { namespace_id: project.namespace, id: project }
-
-        expect(response).to have_gitlab_http_status(:service_unavailable)
-      end
-    end
-
     context "project with empty repo" do
       let_it_be(:empty_project) { create(:project_empty_repo, :public) }
 
       before do
         sign_in(user)
 
-        allow(controller).to receive(:record_experiment_user).with(:invite_members_empty_project_version_a)
+        allow(controller).to receive(:record_experiment_user)
       end
 
       User.project_views.keys.each do |project_view|
@@ -498,14 +483,14 @@ RSpec.describe ProjectsController do
   describe '#housekeeping' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }
-    let(:housekeeping) { Projects::HousekeepingService.new(project) }
+    let(:housekeeping) { Repositories::HousekeepingService.new(project) }
 
     context 'when authenticated as owner' do
       before do
         group.add_owner(user)
         sign_in(user)
 
-        allow(Projects::HousekeepingService).to receive(:new).with(project, :gc).and_return(housekeeping)
+        allow(Repositories::HousekeepingService).to receive(:new).with(project, :gc).and_return(housekeeping)
       end
 
       it 'forces a full garbage collection' do
@@ -616,7 +601,7 @@ RSpec.describe ProjectsController do
           expect { update_project path: 'renamed_path' }
             .not_to change { project.reload.path }
 
-          expect(controller).to set_flash.now[:alert].to(s_('UpdateProject|Cannot rename project because it contains container registry tags!'))
+          expect(controller).to set_flash[:alert].to(s_('UpdateProject|Cannot rename project because it contains container registry tags!'))
           expect(response).to have_gitlab_http_status(:ok)
         end
       end
@@ -748,7 +733,7 @@ RSpec.describe ProjectsController do
   describe '#transfer', :enable_admin_mode do
     render_views
 
-    let_it_be(:project, reload: true) { create(:project, :repository) }
+    let_it_be(:project, reload: true) { create(:project) }
     let_it_be(:admin) { create(:admin) }
     let_it_be(:new_namespace) { create(:namespace) }
 

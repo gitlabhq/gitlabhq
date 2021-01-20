@@ -33,15 +33,15 @@ import { uniqWith, isEqual } from 'lodash';
     10 -> value (constant)
   */
 
-export const createNodeDict = nodes => {
+export const createNodeDict = (nodes) => {
   return nodes.reduce((acc, node) => {
     const newNode = {
       ...node,
-      needs: node.jobs.map(job => job.needs || []).flat(),
+      needs: node.jobs.map((job) => job.needs || []).flat(),
     };
 
     if (node.size > 1) {
-      node.jobs.forEach(job => {
+      node.jobs.forEach((job) => {
         acc[job.name] = newNode;
       });
     }
@@ -54,13 +54,13 @@ export const createNodeDict = nodes => {
 export const makeLinksFromNodes = (nodes, nodeDict) => {
   const constantLinkValue = 10; // all links are the same weight
   return nodes
-    .map(group => {
-      return group.jobs.map(job => {
+    .map((group) => {
+      return group.jobs.map((job) => {
         if (!job.needs) {
           return [];
         }
 
-        return job.needs.map(needed => {
+        return job.needs.map((needed) => {
           return {
             source: nodeDict[needed]?.name,
             target: group.name,
@@ -74,7 +74,7 @@ export const makeLinksFromNodes = (nodes, nodeDict) => {
 
 export const getAllAncestors = (nodes, nodeDict) => {
   const needs = nodes
-    .map(node => {
+    .map((node) => {
       return nodeDict[node].needs || '';
     })
     .flat()
@@ -102,13 +102,13 @@ export const filterByAncestors = (links, nodeDict) =>
   */
     const targetNode = target;
     const targetNodeNeeds = nodeDict[targetNode].needs;
-    const targetNodeNeedsMinusSource = targetNodeNeeds.filter(need => need !== source);
+    const targetNodeNeedsMinusSource = targetNodeNeeds.filter((need) => need !== source);
 
     const allAncestors = getAllAncestors(targetNodeNeedsMinusSource, nodeDict);
     return !allAncestors.includes(source);
   });
 
-export const parseData = nodes => {
+export const parseData = (nodes) => {
   const nodeDict = createNodeDict(nodes);
   const allLinks = makeLinksFromNodes(nodes, nodeDict);
   const filteredLinks = filterByAncestors(allLinks, nodeDict);
@@ -121,7 +121,7 @@ export const parseData = nodes => {
   The number of nodes in the most populous generation drives the height of the graph.
 */
 
-export const getMaxNodes = nodes => {
+export const getMaxNodes = (nodes) => {
   const counts = nodes.reduce((acc, { layer }) => {
     if (!acc[layer]) {
       acc[layer] = 0;
@@ -141,6 +141,6 @@ export const getMaxNodes = nodes => {
   to find nodes that have no relations.
 */
 
-export const removeOrphanNodes = sankeyfiedNodes => {
-  return sankeyfiedNodes.filter(node => node.sourceLinks.length || node.targetLinks.length);
+export const removeOrphanNodes = (sankeyfiedNodes) => {
+  return sankeyfiedNodes.filter((node) => node.sourceLinks.length || node.targetLinks.length);
 };

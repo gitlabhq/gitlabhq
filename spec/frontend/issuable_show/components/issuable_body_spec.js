@@ -98,10 +98,7 @@ describe('IssuableBody', () => {
 
     it('renders issuable edit info', () => {
       const editedEl = wrapper.find('small');
-      const sanitizedText = editedEl
-        .text()
-        .replace(/\n/g, ' ')
-        .replace(/\s+/g, ' ');
+      const sanitizedText = editedEl.text().replace(/\n/g, ' ').replace(/\s+/g, ' ');
 
       expect(sanitizedText).toContain('Edited');
       expect(sanitizedText).toContain('ago');
@@ -138,7 +135,7 @@ describe('IssuableBody', () => {
 
       it.each(['keydown-title', 'keydown-description'])(
         'component emits `%s` event with event object and issuableMeta params via issuable-edit-form',
-        async eventName => {
+        async (eventName) => {
           const eventObj = {
             preventDefault: jest.fn(),
             stopPropagation: jest.fn(),

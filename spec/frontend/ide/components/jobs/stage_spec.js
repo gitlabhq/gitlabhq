@@ -20,7 +20,7 @@ describe('IDE pipeline stage', () => {
   const findHeader = () => wrapper.find({ ref: 'cardHeader' });
   const findJobList = () => wrapper.find({ ref: 'jobList' });
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     wrapper = shallowMount(Stage, {
       propsData: {
         ...defaultProps,
@@ -60,10 +60,7 @@ describe('IDE pipeline stage', () => {
   it('emits clickViewLog entity with job', () => {
     const [job] = defaultProps.stage.jobs;
     createComponent();
-    wrapper
-      .findAll(Item)
-      .at(0)
-      .vm.$emit('clickViewLog', job);
+    wrapper.findAll(Item).at(0).vm.$emit('clickViewLog', job);
     return wrapper.vm.$nextTick().then(() => {
       expect(wrapper.emitted().clickViewLog[0][0]).toBe(job);
     });

@@ -15,7 +15,7 @@ export default function initRelatedMergeRequests() {
         RelatedMergeRequests,
       },
       store: createStore(),
-      render: createElement =>
+      render: (createElement) =>
         createElement('related-merge-requests', {
           props: { endpoint, projectNamespace, projectPath },
         }),

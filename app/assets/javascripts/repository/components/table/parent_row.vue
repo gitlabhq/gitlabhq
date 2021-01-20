@@ -25,7 +25,7 @@ export default {
       const splitArray = this.path.split('/');
       splitArray.pop();
 
-      return splitArray.map(p => encodeURIComponent(p)).join('/');
+      return splitArray.map((p) => encodeURIComponent(p)).join('/');
     },
     parentRoute() {
       return { path: `/-/tree/${this.commitRef}/${this.parentPath}` };
@@ -48,9 +48,7 @@ export default {
         inline
         class="d-inline-block align-text-bottom"
       />
-      <router-link v-else :to="parentRoute" :aria-label="__('Go to parent')">
-        ..
-      </router-link>
+      <router-link v-else :to="parentRoute" :aria-label="__('Go to parent')"> .. </router-link>
     </td>
   </tr>
 </template>

@@ -19,7 +19,7 @@ describe('IssueMilestoneComponent', () => {
   let wrapper;
   let vm;
 
-  beforeEach(done => {
+  beforeEach((done) => {
     wrapper = createComponent();
 
     ({ vm } = wrapper);

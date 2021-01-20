@@ -30,7 +30,7 @@ class BindInOut {
   static initAll() {
     const ins = document.querySelectorAll('*[data-bind-in]');
 
-    return [].map.call(ins, anIn => BindInOut.init(anIn));
+    return [].map.call(ins, (anIn) => BindInOut.init(anIn));
   }
 
   static init(anIn, anOut) {

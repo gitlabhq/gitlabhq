@@ -60,6 +60,7 @@ exports[`self monitor component When the self monitor project has not been creat
   <gl-modal-stub
     cancel-title="Cancel"
     category="primary"
+    dismisslabel="Close"
     modalclass=""
     modalid="delete-self-monitor-modal"
     ok-title="Delete project"

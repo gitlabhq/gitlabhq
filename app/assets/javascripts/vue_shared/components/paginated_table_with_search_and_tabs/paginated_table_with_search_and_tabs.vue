@@ -203,7 +203,7 @@ export default {
       this.resetPagination();
       const filterParams = { authorUsername: '', assigneeUsername: '', search: '' };
 
-      filters.forEach(filter => {
+      filters.forEach((filter) => {
         if (typeof filter === 'object') {
           switch (filter.type) {
             case 'author_username':

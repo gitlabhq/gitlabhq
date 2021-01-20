@@ -193,7 +193,7 @@ requests.post(url, headers=headers, data=data, files=files)
 ```
 
 NOTE:
-The maximum import file size can be set by the Administrator, default is 50MB.
+The maximum import file size can be set by the Administrator, default is `0` (unlimited)..
 As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](settings.md#change-application-settings) or the [Admin UI](../user/admin_area/settings/account_and_limit_settings.md).
 
 ## Import status

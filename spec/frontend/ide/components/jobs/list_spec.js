@@ -36,7 +36,7 @@ describe('IDE stages list', () => {
     status: { icon: 'status_success' },
   }));
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     wrapper = shallowMount(StageList, {
       propsData: {
         ...defaultProps,
@@ -48,7 +48,7 @@ describe('IDE stages list', () => {
   };
 
   afterEach(() => {
-    Object.values(storeActions).forEach(actionMock => actionMock.mockClear());
+    Object.values(storeActions).forEach((actionMock) => actionMock.mockClear());
   });
 
   afterAll(() => {

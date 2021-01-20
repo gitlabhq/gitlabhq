@@ -6,6 +6,6 @@ import { __ } from '~/locale';
  * @param {String} value
  * @returns {String}
  */
-export const isAny = value => {
+export const isAny = (value) => {
   return value === __('Any') ? '' : value;
 };

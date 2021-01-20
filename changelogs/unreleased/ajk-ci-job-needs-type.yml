@@ -1,0 +1,5 @@
+---
+title: Change type of CiJob.needs
+merge_request: 50192
+author:
+type: fixed

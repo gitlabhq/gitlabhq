@@ -143,12 +143,12 @@ module QA
           super
         end
 
-        def within_element(name, text: nil)
-          log("within element :#{name}")
+        def within_element(name, **kwargs)
+          log("within element :#{name} with args #{kwargs}")
 
           element = super
 
-          log("end within element :#{name}")
+          log("end within element :#{name} with args #{kwargs}")
 
           element
         end

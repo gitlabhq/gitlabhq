@@ -11,11 +11,11 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	"gitlab.com/gitlab-org/labkit/correlation"
-	"gitlab.com/gitlab-org/labkit/log"
 	"gitlab.com/gitlab-org/labkit/mask"
 	"gitlab.com/gitlab-org/labkit/tracing"
 
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab-workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/senddata"
 )
 
@@ -159,7 +159,7 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 
 	if err != nil {
 		sendURLRequestsRequestFailed.Inc()
-		helper.LogError(r, fmt.Errorf("SendURL: Copy response: %v", err))
+		log.WithRequest(r).WithError(fmt.Errorf("SendURL: Copy response: %v", err)).Error()
 		return
 	}
 

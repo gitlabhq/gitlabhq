@@ -49,11 +49,7 @@ describe('NugetInstallation', () => {
 
   describe('installation commands', () => {
     it('renders the correct command', () => {
-      expect(
-        findCodeInstructions()
-          .at(0)
-          .props(),
-      ).toMatchObject({
+      expect(findCodeInstructions().at(0).props()).toMatchObject({
         instruction: nugetInstallationCommandStr,
         trackingAction: TrackingActions.COPY_NUGET_INSTALL_COMMAND,
       });
@@ -62,11 +58,7 @@ describe('NugetInstallation', () => {
 
   describe('setup commands', () => {
     it('renders the correct command', () => {
-      expect(
-        findCodeInstructions()
-          .at(1)
-          .props(),
-      ).toMatchObject({
+      expect(findCodeInstructions().at(1).props()).toMatchObject({
         instruction: nugetSetupCommandStr,
         trackingAction: TrackingActions.COPY_NUGET_SETUP_COMMAND,
       });

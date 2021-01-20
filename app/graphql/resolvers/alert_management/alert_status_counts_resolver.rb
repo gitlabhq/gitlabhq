@@ -11,7 +11,7 @@ module Resolvers
 
       argument :assignee_username, GraphQL::STRING_TYPE,
                 required: false,
-                description: 'Username of a user assigned to the issue'
+                description: 'Username of a user assigned to the issue.'
 
       def resolve(**args)
         ::Gitlab::AlertManagement::AlertStatusCounts.new(context[:current_user], object, args)

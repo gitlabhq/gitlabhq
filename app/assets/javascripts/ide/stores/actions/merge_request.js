@@ -33,7 +33,7 @@ export const getMergeRequestsForBranch = (
         commit(types.SET_CURRENT_MERGE_REQUEST, `${currentMR.iid}`);
       }
     })
-    .catch(e => {
+    .catch((e) => {
       flash(
         __(`Error fetching merge requests for ${branchId}`),
         'alert',
@@ -66,7 +66,7 @@ export const getMergeRequestData = (
         .catch(() => {
           dispatch('setErrorMessage', {
             text: __('An error occurred while loading the merge request.'),
-            action: payload =>
+            action: (payload) =>
               dispatch('getMergeRequestData', payload).then(() =>
                 dispatch('setErrorMessage', null),
               ),
@@ -99,7 +99,7 @@ export const getMergeRequestChanges = (
         .catch(() => {
           dispatch('setErrorMessage', {
             text: __('An error occurred while loading the merge request changes.'),
-            action: payload =>
+            action: (payload) =>
               dispatch('getMergeRequestChanges', payload).then(() =>
                 dispatch('setErrorMessage', null),
               ),
@@ -121,8 +121,8 @@ export const getMergeRequestVersions = (
     if (!state.projects[projectId].mergeRequests[mergeRequestId].versions.length || force) {
       service
         .getProjectMergeRequestVersions(targetProjectId || projectId, mergeRequestId)
-        .then(res => res.data)
-        .then(data => {
+        .then((res) => res.data)
+        .then((data) => {
           commit(types.SET_MERGE_REQUEST_VERSIONS, {
             projectPath: projectId,
             mergeRequestId,
@@ -133,7 +133,7 @@ export const getMergeRequestVersions = (
         .catch(() => {
           dispatch('setErrorMessage', {
             text: __('An error occurred while loading the merge request version data.'),
-            action: payload =>
+            action: (payload) =>
               dispatch('getMergeRequestVersions', payload).then(() =>
                 dispatch('setErrorMessage', null),
               ),
@@ -156,7 +156,7 @@ export const openMergeRequest = (
     targetProjectId,
     mergeRequestId,
   })
-    .then(mr => {
+    .then((mr) => {
       dispatch('setCurrentBranchId', mr.source_branch);
 
       return dispatch('getBranchData', {
@@ -186,7 +186,7 @@ export const openMergeRequest = (
         mergeRequestId,
       }),
     )
-    .then(mrChanges => {
+    .then((mrChanges) => {
       if (mrChanges.changes.length) {
         dispatch('updateActivityBarView', leftSidebarViews.review.name);
       }
@@ -210,7 +210,7 @@ export const openMergeRequest = (
         }
       });
     })
-    .catch(e => {
+    .catch((e) => {
       flash(__('Error while loading the merge request. Please try again.'));
       throw e;
     });

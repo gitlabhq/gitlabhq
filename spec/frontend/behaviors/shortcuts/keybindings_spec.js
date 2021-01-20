@@ -9,7 +9,7 @@ describe('~/behaviors/shortcuts/keybindings.js', () => {
     useLocalStorageSpy();
   });
 
-  const setupCustomizations = async customizationsAsString => {
+  const setupCustomizations = async (customizationsAsString) => {
     localStorage.clear();
 
     if (customizationsAsString) {

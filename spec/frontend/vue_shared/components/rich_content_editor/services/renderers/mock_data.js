@@ -1,12 +1,12 @@
 // Node spec helpers
 
-export const buildMockTextNode = literal => ({ literal, type: 'text' });
+export const buildMockTextNode = (literal) => ({ literal, type: 'text' });
 
 export const normalTextNode = buildMockTextNode('This is just normal text.');
 
 // Token spec helpers
 
-const buildMockUneditableOpenToken = type => {
+const buildMockUneditableOpenToken = (type) => {
   return {
     type: 'openTag',
     tagName: type,
@@ -17,7 +17,7 @@ const buildMockUneditableOpenToken = type => {
   };
 };
 
-const buildMockTextToken = content => {
+const buildMockTextToken = (content) => {
   return {
     type: 'text',
     tagName: null,
@@ -25,7 +25,7 @@ const buildMockTextToken = content => {
   };
 };
 
-const buildMockUneditableCloseToken = type => ({ type: 'closeTag', tagName: type });
+const buildMockUneditableCloseToken = (type) => ({ type: 'closeTag', tagName: type });
 
 export const originToken = buildMockTextToken('{:.no_toc .hidden-md .hidden-lg}');
 const uneditableOpenToken = buildMockUneditableOpenToken('div');

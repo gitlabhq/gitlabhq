@@ -37,6 +37,11 @@ export default {
       type: Object,
       required: true,
     },
+    reviewed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isFirstFile: {
       type: Boolean,
       required: false,
@@ -134,7 +139,7 @@ export default {
       return !this.isCollapsed || this.automaticallyCollapsed;
     },
     showWarning() {
-      return this.isCollapsed && (this.automaticallyCollapsed && !this.viewDiffsFileByFile);
+      return this.isCollapsed && this.automaticallyCollapsed && !this.viewDiffsFileByFile;
     },
     showContent() {
       return !this.isCollapsed && !this.isFileTooLarge;
@@ -205,7 +210,7 @@ export default {
 
       await this.$nextTick();
 
-      eventsForThisFile.forEach(event => {
+      eventsForThisFile.forEach((event) => {
         eventHub.$emit(event);
       });
     },

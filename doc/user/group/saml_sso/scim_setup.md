@@ -232,7 +232,7 @@ It is important that this SCIM `id` and SCIM `externalId` are configured to the 
 
 Group owners can see the list of users and the `externalId` stored for each user in the group SAML SSO Settings page.
 
-A possible alternative is to use the [SCIM API](../../../api/scim.md#get-a-list-of-saml-users) to manually retrieve the `externalId` we have stored for users, also called the `external_uid` or `NameId`.
+A possible alternative is to use the [SCIM API](../../../api/scim.md#get-a-list-of-scim-provisioned-users) to manually retrieve the `externalId` we have stored for users, also called the `external_uid` or `NameId`.
 
 To see how the `external_uid` compares to the value returned as the SAML NameId, you can have the user use a [SAML Tracer](index.md#saml-debugging-tools).
 
@@ -251,7 +251,7 @@ you can address the problem in the following ways:
 
 - You can have users unlink and relink themselves, based on the ["SAML authentication failed: User has already been taken"](index.md#message-saml-authentication-failed-user-has-already-been-taken) section.
 - You can unlink all users simultaneously, by removing all users from the SAML app while provisioning is turned on.
-- It may be possible to use the [SCIM API](../../../api/scim.md#update-a-single-saml-user) to manually correct the `externalId` stored for users to match the SAML `NameId`.
+- It may be possible to use the [SCIM API](../../../api/scim.md#update-a-single-scim-provisioned-user) to manually correct the `externalId` stored for users to match the SAML `NameId`.
   To look up a user, you'll need to know the desired value that matches the `NameId` as well as the current `externalId`.
 
 It is important not to update these to incorrect values, since this will cause users to be unable to sign in. It is also important not to assign a value to the wrong user, as this would cause users to get signed into the wrong account.
@@ -269,7 +269,7 @@ Changing the SAML or SCIM configuration or provider can cause the following prob
 | Problem                                                                      | Solution           |
 |------------------------------------------------------------------------------|--------------------|
 | SAML and SCIM identity mismatch. | First [verify that the user's SAML NameId matches the SCIM externalId](#how-do-i-verify-users-saml-nameid-matches-the-scim-externalid) and then [update or fix the mismatched SCIM externalId and SAML NameId](#update-or-fix-mismatched-scim-externalid-and-saml-nameid). |
-| SCIM identity mismatch between GitLab and the Identify Provider SCIM app. | You can confirm whether you're hitting the error because of your SCIM identity mismatch between your SCIM app and GitLab.com by using [SCIM API](../../../api/scim.md#update-a-single-saml-user) which shows up in the `id` key and compares it with the user `externalId` in the SCIM app. You can use the same [SCIM API](../../../api/scim.md#update-a-single-saml-user) to update the SCIM `id` for the user on GitLab.com. |
+| SCIM identity mismatch between GitLab and the Identify Provider SCIM app. | You can confirm whether you're hitting the error because of your SCIM identity mismatch between your SCIM app and GitLab.com by using [SCIM API](../../../api/scim.md#update-a-single-scim-provisioned-user) which shows up in the `id` key and compares it with the user `externalId` in the SCIM app. You can use the same [SCIM API](../../../api/scim.md#update-a-single-scim-provisioned-user) to update the SCIM `id` for the user on GitLab.com. |
 
 ### Azure
 

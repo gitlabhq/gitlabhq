@@ -11,13 +11,16 @@ RSpec.describe Gitlab::Database::Reindexing do
     let(:coordinator) { instance_double(Gitlab::Database::Reindexing::Coordinator) }
     let(:index_selection) { instance_double(Gitlab::Database::Reindexing::IndexSelection) }
     let(:candidate_indexes) { double }
-    let(:indexes) { double }
+    let(:indexes) { [double, double] }
 
     it 'delegates to Coordinator' do
       expect(Gitlab::Database::Reindexing::IndexSelection).to receive(:new).with(candidate_indexes).and_return(index_selection)
       expect(index_selection).to receive(:take).with(2).and_return(indexes)
-      expect(Gitlab::Database::Reindexing::Coordinator).to receive(:new).with(indexes).and_return(coordinator)
-      expect(coordinator).to receive(:perform)
+
+      indexes.each do |index|
+        expect(Gitlab::Database::Reindexing::Coordinator).to receive(:new).with(index).and_return(coordinator)
+        expect(coordinator).to receive(:perform)
+      end
 
       subject
     end

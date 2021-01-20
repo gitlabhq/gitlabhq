@@ -998,7 +998,9 @@ Example response:
 ]
 ```
 
-### Scope: notes
+### Scope: notes **(STARTER)**
+
+This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=notes&search=maxime"
@@ -1030,7 +1032,9 @@ Example response:
 ]
 ```
 
-### Scope: wiki_blobs
+### Scope: wiki_blobs **(STARTER)**
+
+This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
 Filters are available for this scope:
 
@@ -1074,7 +1078,9 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: commits
+### Scope: commits **(STARTER)**
+
+This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=commits&search=bye"
@@ -1105,7 +1111,9 @@ Example response:
 ]
 ```
 
-### Scope: blobs
+### Scope: blobs **(STARTER)**
+
+This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
 Filters are available for this scope:
 

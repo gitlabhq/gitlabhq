@@ -24,5 +24,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document
     .querySelectorAll('.js-namespace-select')
-    .forEach(dropdown => new NamespaceSelect({ dropdown }));
+    .forEach((dropdown) => new NamespaceSelect({ dropdown }));
 });

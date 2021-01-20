@@ -461,7 +461,7 @@ export default {
                 )
               "
             >
-              <template #code="{content}">
+              <template #code="{ content }">
                 <code>{{ content }}</code>
               </template>
               <template #link="{ content }">

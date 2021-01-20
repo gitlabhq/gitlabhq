@@ -57,7 +57,7 @@ describe('User Lists Show Mutations', () => {
     });
 
     it('adds the new IDs to the state unless empty', () => {
-      newIds.filter(id => id).forEach(id => expect(mockState.userIds).toContain(id));
+      newIds.filter((id) => id).forEach((id) => expect(mockState.userIds).toContain(id));
     });
 
     it('does not add duplicate IDs to the state', () => {
@@ -80,7 +80,9 @@ describe('User Lists Show Mutations', () => {
     });
 
     it('should leave the rest of the IDs alone', () => {
-      userIds.filter(id => id !== removedId).forEach(id => expect(mockState.userIds).toContain(id));
+      userIds
+        .filter((id) => id !== removedId)
+        .forEach((id) => expect(mockState.userIds).toContain(id));
     });
   });
 });

@@ -10,7 +10,7 @@ export default class AlertsService {
   }
 
   getAlerts() {
-    return axios.get(this.alertsEndpoint).then(resp => mapAlert(resp.data));
+    return axios.get(this.alertsEndpoint).then((resp) => mapAlert(resp.data));
   }
 
   createAlert({ prometheus_metric_id, operator, threshold, runbookUrl }) {
@@ -21,23 +21,23 @@ export default class AlertsService {
         threshold,
         runbook_url: runbookUrl,
       })
-      .then(resp => mapAlert(resp.data));
+      .then((resp) => mapAlert(resp.data));
   }
 
   // eslint-disable-next-line class-methods-use-this
   readAlert(alertPath) {
-    return axios.get(alertPath).then(resp => mapAlert(resp.data));
+    return axios.get(alertPath).then((resp) => mapAlert(resp.data));
   }
 
   // eslint-disable-next-line class-methods-use-this
   updateAlert(alertPath, { operator, threshold, runbookUrl }) {
     return axios
       .put(alertPath, { operator, threshold, runbook_url: runbookUrl })
-      .then(resp => mapAlert(resp.data));
+      .then((resp) => mapAlert(resp.data));
   }
 
   // eslint-disable-next-line class-methods-use-this
   deleteAlert(alertPath) {
-    return axios.delete(alertPath).then(resp => resp.data);
+    return axios.delete(alertPath).then((resp) => resp.data);
   }
 }

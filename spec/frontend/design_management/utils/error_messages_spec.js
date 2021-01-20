@@ -3,7 +3,7 @@ import {
   designUploadSkippedWarning,
 } from '~/design_management/utils/error_messages';
 
-const mockFilenames = n =>
+const mockFilenames = (n) =>
   Array(n)
     .fill(0)
     .map((_, i) => ({ filename: `${i + 1}.jpg` }));
@@ -14,7 +14,7 @@ describe('Error message', () => {
     const pluralMsg = 'Could not archive designs. Please try again.';
 
     describe('when [singular=true]', () => {
-      it.each([[undefined], [true]])('uses singular grammar', singularOption => {
+      it.each([[undefined], [true]])('uses singular grammar', (singularOption) => {
         expect(designDeletionError({ singular: singularOption })).toEqual(singularMsg);
       });
     });

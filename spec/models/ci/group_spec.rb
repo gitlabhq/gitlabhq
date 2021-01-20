@@ -54,6 +54,18 @@ RSpec.describe Ci::Group do
           .to be_a(Gitlab::Ci::Status::Failed)
       end
     end
+
+    context 'when one of the commit statuses in the group is allowed to fail' do
+      let(:jobs) do
+        [create(:ci_build, :failed, :allowed_to_fail),
+         create(:ci_build, :success)]
+      end
+
+      it 'fabricates a new detailed status object' do
+        expect(subject.detailed_status(double(:user)))
+          .to be_a(Gitlab::Ci::Status::SuccessWarning)
+      end
+    end
   end
 
   describe '.fabricate' do

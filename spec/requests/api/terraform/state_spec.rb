@@ -21,8 +21,35 @@ RSpec.describe API::Terraform::State do
     stub_terraform_state_object_storage
   end
 
+  shared_examples 'endpoint with unique user tracking' do
+    context 'without authentication' do
+      let(:auth_header) { basic_auth_header('bad', 'token') }
+
+      before do
+        stub_feature_flags(usage_data_p_terraform_state_api_unique_users: false)
+      end
+
+      it 'does not track unique event' do
+        expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
+
+        request
+      end
+    end
+
+    context 'with maintainer permissions' do
+      let(:current_user) { maintainer }
+
+      it_behaves_like 'tracking unique hll events', :usage_data_p_terraform_state_api_unique_users do
+        let(:target_id) { 'p_terraform_state_api_unique_users' }
+        let(:expected_type) { instance_of(Integer) }
+      end
+    end
+  end
+
   describe 'GET /projects/:id/terraform/state/:name' do
     subject(:request) { get api(state_path), headers: auth_header }
+
+    it_behaves_like 'endpoint with unique user tracking'
 
     context 'without authentication' do
       let(:auth_header) { basic_auth_header('bad', 'token') }
@@ -116,6 +143,8 @@ RSpec.describe API::Terraform::State do
     let(:params) { { 'instance': 'example-instance', 'serial': state.latest_version.version + 1 } }
 
     subject(:request) { post api(state_path), headers: auth_header, as: :json, params: params }
+
+    it_behaves_like 'endpoint with unique user tracking'
 
     context 'when terraform state with a given name is already present' do
       context 'with maintainer permissions' do
@@ -219,6 +248,8 @@ RSpec.describe API::Terraform::State do
   describe 'DELETE /projects/:id/terraform/state/:name' do
     subject(:request) { delete api(state_path), headers: auth_header }
 
+    it_behaves_like 'endpoint with unique user tracking'
+
     context 'with maintainer permissions' do
       let(:current_user) { maintainer }
 
@@ -255,6 +286,8 @@ RSpec.describe API::Terraform::State do
     end
 
     subject(:request) { post api("#{state_path}/lock"), headers: auth_header, params: params }
+
+    it_behaves_like 'endpoint with unique user tracking'
 
     it 'locks the terraform state' do
       request
@@ -304,6 +337,10 @@ RSpec.describe API::Terraform::State do
     end
 
     subject(:request) { delete api("#{state_path}/lock"), headers: auth_header, params: params }
+
+    it_behaves_like 'endpoint with unique user tracking' do
+      let(:lock_id) { 'irrelevant to this test, just needs to be present' }
+    end
 
     context 'with the correct lock id' do
       let(:lock_id) { '123-456' }

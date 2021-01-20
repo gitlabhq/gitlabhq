@@ -49,7 +49,7 @@ describe('Gauge Chart component', () => {
 
     it.each(invalidCases)(
       'if min has invalid value, defaults are used for both min and max',
-      invalidValue => {
+      (invalidValue) => {
         createWrapper({ minValue: invalidValue });
 
         expect(findGaugeChart().props('min')).toBe(MIN_DEFAULT);
@@ -59,7 +59,7 @@ describe('Gauge Chart component', () => {
 
     it.each(invalidCases)(
       'if max has invalid value, defaults are used for both min and max',
-      invalidValue => {
+      (invalidValue) => {
         createWrapper({ minValue: invalidValue });
 
         expect(findGaugeChart().props('min')).toBe(MIN_DEFAULT);

@@ -13,12 +13,12 @@ type: reference, howto
 It allows you to store and manage sensitive information such as secret environment variables, encryption keys, and authentication tokens.
 Vault offers Identity-based Access, which means Vault users can authenticate through several of their preferred cloud providers.
 
-In this document, we'll explain how Vault users can authenticate themselves through GitLab by utilizing our OpenID authentication feature.
+This document explains how Vault users can authenticate themselves through GitLab by utilizing our OpenID authentication feature.
 The following assumes you already have Vault installed and running.
 
 1. **Get the OpenID Connect client ID and secret from GitLab:**
 
-   First you'll need to create a GitLab application to obtain an application ID and secret for authenticating into Vault. To do this, sign in to GitLab and follow these steps:
+   First you must create a GitLab application to obtain an application ID and secret for authenticating into Vault. To do this, sign in to GitLab and follow these steps:
 
    1. On GitLab, click your avatar on the top-right corner, and select your user **Settings > Applications**.
    1. Fill out the application **Name** and [**Redirect URI**](https://www.vaultproject.io/docs/auth/jwt#redirect-uris),
@@ -71,7 +71,7 @@ The following assumes you already have Vault installed and running.
 
    Now that Vault has a GitLab application ID and secret, it needs to know the [**Redirect URIs**](https://www.vaultproject.io/docs/auth/jwt#redirect-uris) and scopes given to GitLab during the application creation process. The redirect URIs need to match where your Vault instance is running. The `oidc_scopes` field needs to include the `openid`. Similarly to the previous step, replace `your_application_id` with the generated application ID from GitLab:
 
-   This configuration is saved under the name of the role you are creating. In this case, we are creating a `demo` role. Later, we'll show how you can access this role through the Vault CLI.
+   This configuration is saved under the name of the role you are creating. In this case, we are creating a `demo` role. Later, we show how you can access this role through the Vault CLI.
 
    ```shell
    vault write auth/oidc/role/demo \
@@ -88,11 +88,11 @@ The following assumes you already have Vault installed and running.
 
    1. Go to your Vault UI (example: [http://127.0.0.1:8200/ui/vault/auth?with=oidc](http://127.0.0.1:8200/ui/vault/auth?with=oidc)).
    1. If the `OIDC` method is not currently selected, open the dropdown and select it.
-   1. Click the **Sign in With GitLab** button, which will open a modal window:
+   1. Click the **Sign in With GitLab** button, which opens a modal window:
 
       ![Sign into Vault with GitLab](img/sign_into_vault_with_gitlab_v12_6.png)
 
-   1. Click **Authorize** on the modal to allow Vault to sign in through GitLab. This will redirect you back to your Vault UI as a signed-in user.
+   1. Click **Authorize** on the modal to allow Vault to sign in through GitLab. This redirects you back to your Vault UI as a signed-in user.
 
       ![Authorize Vault to connect with GitLab](img/authorize_vault_with_gitlab_v12_6.png)
 
@@ -116,12 +116,12 @@ The following assumes you already have Vault installed and running.
       another port number that matches the port given to GitLab when listing
       [Redirect URIs](https://www.vaultproject.io/docs/auth/jwt#redirect-uris).
 
-   After running the command, it will present a link in the terminal.
-   Click the link in the terminal and a tab will open in the browser confirming you're signed into Vault via OIDC:
+   After running the command, it presents a link in the terminal.
+   Click the link in the terminal and a browser tab opens that confirms you're signed into Vault via OIDC:
 
    ![Signed into Vault via OIDC](img/signed_into_vault_via_oidc_v12_6.png)
 
-   The terminal will output:
+   The terminal outputs:
 
    ```plaintext
    Success! You are now authenticated. The token information displayed below

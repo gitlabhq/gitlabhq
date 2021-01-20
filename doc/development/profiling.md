@@ -128,7 +128,65 @@ console.
 
 As a follow up to finding `N+1` queries with Bullet, consider writing a [QueryRecoder test](query_recorder.md) to prevent a regression.
 
+## System stats
+
+During or after profiling, you may want to get detailed information about the Ruby virtual machine process,
+such as memory consumption, time spent on CPU, or garbage collector statistics. These are easy to produce individually
+through various tools, but for convenience, a summary endpoint has been added that exports this data as a JSON payload:
+
+```shell
+curl localhost:3000/-/metrics/system | jq
+```
+
+Example output:
+
+```json
+{
+  "version": "ruby 2.7.2p137 (2020-10-01 revision a8323b79eb) [x86_64-linux-gnu]",
+  "gc_stat": {
+    "count": 118,
+    "heap_allocated_pages": 11503,
+    "heap_sorted_length": 11503,
+    "heap_allocatable_pages": 0,
+    "heap_available_slots": 4688580,
+    "heap_live_slots": 3451712,
+    "heap_free_slots": 1236868,
+    "heap_final_slots": 0,
+    "heap_marked_slots": 3451450,
+    "heap_eden_pages": 11503,
+    "heap_tomb_pages": 0,
+    "total_allocated_pages": 11503,
+    "total_freed_pages": 0,
+    "total_allocated_objects": 32679478,
+    "total_freed_objects": 29227766,
+    "malloc_increase_bytes": 84760,
+    "malloc_increase_bytes_limit": 32883343,
+    "minor_gc_count": 88,
+    "major_gc_count": 30,
+    "compact_count": 0,
+    "remembered_wb_unprotected_objects": 114228,
+    "remembered_wb_unprotected_objects_limit": 228456,
+    "old_objects": 3185330,
+    "old_objects_limit": 6370660,
+    "oldmalloc_increase_bytes": 21838024,
+    "oldmalloc_increase_bytes_limit": 119181499
+  },
+  "memory_rss": 1326501888,
+  "memory_uss": 1048563712,
+  "memory_pss": 1139554304,
+  "time_cputime": 82.885264633,
+  "time_realtime": 1610459445.5579069,
+  "time_monotonic": 24001.23145713,
+  "worker_id": "puma_0"
+}
+```
+
+NOTE:
+This endpoint is only available for Rails web workers. Sidekiq workers can not be inspected this way.
+
 ## Settings that impact performance
+
+### Application settings
 
 1. `development` environment by default works with hot-reloading enabled, this makes Rails to check file changes every request, and create a potential contention lock, as hot reload is single threaded.
 1. `development` environment can load code lazily once the request is fired which results in first request to always be slow.
@@ -140,3 +198,34 @@ To disable those features for profiling/benchmarking set the `RAILS_PROFILE` env
 - restart GDK with `gdk restart`
 
 *This environment variable is only applicable for the development mode.*
+
+### GC settings
+
+Ruby's garbage collector (GC) can be tuned via a variety of environment variables that will directly impact application performance.
+
+The following table lists these variables along with their default values.
+
+| Environment variable | Default value |
+|--|--|
+| `RUBY_GC_HEAP_INIT_SLOTS` | `10000` |
+| `RUBY_GC_HEAP_FREE_SLOTS` | `4096` |
+| `RUBY_GC_HEAP_FREE_SLOTS_MIN_RATIO` | `0.20` |
+| `RUBY_GC_HEAP_FREE_SLOTS_GOAL_RATIO` | `0.40` |
+| `RUBY_GC_HEAP_FREE_SLOTS_MAX_RATIO` | `0.65` |
+| `RUBY_GC_HEAP_GROWTH_FACTOR` | `1.8` |
+| `RUBY_GC_HEAP_GROWTH_MAX_SLOTS` | `0 (disable)` |
+| `RUBY_GC_HEAP_OLDOBJECT_LIMIT_FACTOR` | `2.0` |
+| `RUBY_GC_MALLOC_LIMIT(_MIN)` | `(16 * 1024 * 1024 /* 16MB */)` |
+| `RUBY_GC_MALLOC_LIMIT_MAX` | `(32 * 1024 * 1024 /* 32MB */)` |
+| `RUBY_GC_MALLOC_LIMIT_GROWTH_FACTOR` | `1.4` |
+| `RUBY_GC_OLDMALLOC_LIMIT(_MIN)` | `(16 * 1024 * 1024 /* 16MB */)` |
+| `RUBY_GC_OLDMALLOC_LIMIT_MAX` | `(128 * 1024 * 1024 /* 128MB */)` |
+| `RUBY_GC_OLDMALLOC_LIMIT_GROWTH_FACTOR` | `1.2` |
+
+([Source](https://github.com/ruby/ruby/blob/45b29754cfba8435bc4980a87cd0d32c648f8a2e/gc.c#L254-L308))
+
+GitLab may decide to change these settings in order to speed up application performance, lower memory requirements, or both.
+
+You can see how each of these settings affect GC performance, memory use and application start-up time for an idle instance of
+GitLab by runnning the `scripts/perf/gc/collect_gc_stats.rb` script. It will output GC stats and general timing data to standard
+out as CSV.

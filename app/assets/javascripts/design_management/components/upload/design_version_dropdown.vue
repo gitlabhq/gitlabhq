@@ -19,7 +19,7 @@ export default {
       if (!this.queryVersion) return 0;
 
       const idx = this.allVersions.findIndex(
-        version => this.findVersionId(version.id) === this.queryVersion,
+        (version) => this.findVersionId(version.id) === this.queryVersion,
       );
 
       // if the currentVersionId isn't a valid version (i.e. not in allVersions)

@@ -16,7 +16,7 @@ export default {
   },
   computed: {
     selectedVersionName() {
-      return this.versions.find(x => x.selected)?.versionName || '';
+      return this.versions.find((x) => x.selected)?.versionName || '';
     },
   },
 };

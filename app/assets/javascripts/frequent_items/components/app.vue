@@ -77,7 +77,7 @@ export default {
 
       // Check if item already exists in list
       const itemMatchIndex = storedFrequentItems.findIndex(
-        frequentItem => frequentItem.id === item.id,
+        (frequentItem) => frequentItem.id === item.id,
       );
 
       if (itemMatchIndex > -1) {

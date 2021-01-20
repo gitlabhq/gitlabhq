@@ -20,7 +20,7 @@ describe('tooltips/index.js', () => {
       title: 'default title',
     };
 
-    Object.keys(attributes).forEach(name => {
+    Object.keys(attributes).forEach((name) => {
       target.setAttribute(name, attributes[name]);
     });
 
@@ -42,11 +42,11 @@ describe('tooltips/index.js', () => {
   };
 
   beforeEach(() => {
-    window.gon.glTooltipsEnabled = true;
+    window.gon.features = { glTooltips: true };
   });
 
   afterEach(() => {
-    document.body.childNodes.forEach(node => node.remove());
+    document.body.childNodes.forEach((node) => node.remove());
     destroy();
   });
 
@@ -149,7 +149,7 @@ describe('tooltips/index.js', () => {
 
   describe('when glTooltipsEnabled feature flag is disabled', () => {
     beforeEach(() => {
-      window.gon.glTooltipsEnabled = false;
+      window.gon.features.glTooltips = false;
     });
 
     it.each`

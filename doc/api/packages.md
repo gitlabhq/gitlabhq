@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Packages API
 
-This is the API docs of [GitLab Packages](../administration/packages/index.md).
+This is the API documentation of [GitLab Packages](../administration/packages/index.md).
 
 ## List packages
 
@@ -28,6 +28,7 @@ GET /projects/:id/packages
 | `sort`    | string | no | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 | `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, or `golang`. (_Introduced in GitLab 12.9_)
 | `package_name` | string | no | Filter the project packages with a fuzzy search by name. (_Introduced in GitLab 12.9_)
+| `include_versionless` | boolean | no | When set to true, versionless packages are included in the response. (_Introduced in GitLab 13.8_)
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages"
@@ -67,7 +68,7 @@ Example response:
 ]
 ```
 
-By default, the `GET` request returns 20 results, since the API is [paginated](README.md#pagination).
+By default, the `GET` request returns 20 results, because the API is [paginated](README.md#pagination).
 
 ### Within a group
 
@@ -88,6 +89,7 @@ GET /groups/:id/packages
 | `sort`    | string | no | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 | `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, or `golang`. (_Introduced in GitLab 12.9_) |
 | `package_name` | string | no | Filter the project packages with a fuzzy search by name. (_[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30980) in GitLab 13.0_)
+| `include_versionless` | boolean | no | When set to true, versionless packages are included in the response. (_Introduced in GitLab 13.8_)
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/packages?exclude_subgroups=true"
@@ -157,7 +159,7 @@ Example response:
 ]
 ```
 
-By default, the `GET` request returns 20 results, since the API is [paginated](README.md#pagination).
+By default, the `GET` request returns 20 results, because the API is [paginated](README.md#pagination).
 
 The `_links` object contains the following properties:
 
@@ -314,7 +316,7 @@ Example response:
 ]
 ```
 
-By default, the `GET` request returns 20 results, since the API is [paginated](README.md#pagination).
+By default, the `GET` request returns 20 results, because the API is [paginated](README.md#pagination).
 
 ## Delete a project package
 

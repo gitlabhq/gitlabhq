@@ -403,3 +403,85 @@ Geo requires an EE license. To visit the Geo sites in your browser, you need a r
 - You can find the full image address from a pipeline by [following these instructions](https://about.gitlab.com/handbook/engineering/quality/guidelines/tips-and-tricks/#running-gitlab-qa-pipeline-against-a-specific-gitlab-release). You might be prompted to set the `GITLAB_QA_ACCESS_TOKEN` variable if you specify the full image address.
 - You can increase the wait time for replication by setting `GEO_MAX_FILE_REPLICATION_TIME` and `GEO_MAX_DB_REPLICATION_TIME`. The default is 120 seconds.
 - To save time during tests, create a Personal Access Token with API access on the Geo primary node, and pass that value in as `GITLAB_QA_ACCESS_TOKEN` and `GITLAB_QA_ADMIN_ACCESS_TOKEN`.
+
+## LDAP Tests
+
+Tests that are tagged with `:ldap_tls` and `:ldap_no_tls` meta are orchestrated tests where the sign-in happens via LDAP.
+
+These tests spin up a Docker container [(osixia/openldap)](https://hub.docker.com/r/osixia/openldap) running an instance of [OpenLDAP](https://www.openldap.org/).
+The container uses fixtures [checked into the GitLab-QA repo](https://gitlab.com/gitlab-org/gitlab-qa/-/tree/9ffb9ad3be847a9054967d792d6772a74220fb42/fixtures/ldap) to create
+base data such as users and groups including the admin group. The password for [all users](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/9ffb9ad3be847a9054967d792d6772a74220fb42/fixtures/ldap/2_add_users.ldif) including [the `tanuki` user](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/9ffb9ad3be847a9054967d792d6772a74220fb42/fixtures/ldap/tanuki.ldif) is `password`.
+
+A GitLab instance is also created in a Docker container based on our [General LDAP setup](../../../administration/auth/ldap/index.md#general-ldap-setup) documentation.
+
+Tests that are tagged `:ldap_tls` enable TLS on GitLab using the certificate [checked into the GitLab-QA repo](https://gitlab.com/gitlab-org/gitlab-qa/-/tree/9ffb9ad3be847a9054967d792d6772a74220fb42/tls_certificates/gitlab).
+
+The certificate was generated with openssl using this command:
+
+```shell
+openssl req -x509 -newkey rsa:4096 -keyout gitlab.test.key -out gitlab.test.crt -days 3650 -nodes -subj "/C=US/ST=CA/L=San Francisco/O=GitLab/OU=Org/CN=gitlab.test"
+```
+
+The OpenLDAP container also uses its [auto-generated TLS certificates](https://github.com/osixia/docker-openldap#use-auto-generated-certificate).
+
+### Running LDAP tests with TLS enabled
+
+To run the LDAP tests on your local with TLS enabled, follow these steps:
+
+1. Include the following entry in your `/etc/hosts` file:
+
+   `127.0.0.1    gitlab.test`
+
+   You can then run tests against GitLab in a Docker container on `https://gitlab.test`. Please note that the TLS certificate [checked into the GitLab-QA repo](https://gitlab.com/gitlab-org/gitlab-qa/-/tree/9ffb9ad3be847a9054967d792d6772a74220fb42/tls_certificates/gitlab) is configured for this domain.
+1. Run the OpenLDAP container with TLS enabled. Change the path to [`gitlab-qa/fixtures/ldap`](https://gitlab.com/gitlab-org/gitlab-qa/-/tree/9ffb9ad3be847a9054967d792d6772a74220fb42/fixtures/ldap) directory to your local checkout path:
+
+   ```shell
+   docker network create test && docker run --name ldap-server --net test --hostname ldap-server.test --volume /path/to/gitlab-qa/fixtures/ldap:/container/service/slapd/assets/config/bootstrap/ldif/custom:Z --env LDAP_TLS_CRT_FILENAME="ldap-server.test.crt" --env LDAP_TLS_KEY_FILENAME="ldap-server.test.key" --env LDAP_TLS_ENFORCE="true" --env LDAP_TLS_VERIFY_CLIENT="never" osixia/openldap:latest --copy-service
+   ```
+
+1. Run the GitLab container with TLS enabled. Change the path to [`gitlab-qa/tls_certificates/gitlab`](https://gitlab.com/gitlab-org/gitlab-qa/-/tree/9ffb9ad3be847a9054967d792d6772a74220fb42/tls_certificates/gitlab) directory to your local checkout path:
+
+   ```shell
+   sudo docker run \
+      --hostname gitlab.test \
+      --net test \
+      --publish 443:443 --publish 80:80 --publish 22:22 \
+      --name gitlab \
+      --volume /path/to/gitlab-qa/tls_certificates/gitlab:/etc/gitlab/ssl \
+      --env GITLAB_OMNIBUS_CONFIG="gitlab_rails['ldap_enabled'] = true; gitlab_rails['ldap_servers'] = {\"main\"=>{\"label\"=>\"LDAP\", \"host\"=>\"ldap-server.test\", \"port\"=>636, \"uid\"=>\"uid\", \"bind_dn\"=>\"cn=admin,dc=example,dc=org\", \"password\"=>\"admin\", \"encryption\"=>\"simple_tls\", \"verify_certificates\"=>false, \"base\"=>\"dc=example,dc=org\", \"user_filter\"=>\"\", \"group_base\"=>\"ou=Global Groups,dc=example,dc=org\", \"admin_group\"=>\"AdminGroup\", \"external_groups\"=>\"\", \"sync_ssh_keys\"=>false}}; letsencrypt['enable'] = false; external_url 'https://gitlab.test'; gitlab_rails['ldap_sync_worker_cron'] = '* * * * *'; gitlab_rails['ldap_group_sync_worker_cron'] = '* * * * *'; " \
+      gitlab/gitlab-ee:latest
+   ```
+
+1. Run an LDAP test from [`gitlab/qa`](https://gitlab.com/gitlab-org/gitlab/-/tree/d5447ebb5f99d4c72780681ddf4dc25b0738acba/qa) directory:
+
+   ```shell
+   GITLAB_LDAP_USERNAME="tanuki" GITLAB_LDAP_PASSWORD="password" QA_DEBUG=true CHROME_HEADLESS=false bin/qa Test::Instance::All https://gitlab.test qa/specs/features/browser_ui/1_manage/login/log_into_gitlab_via_ldap_spec.rb
+   ```
+
+### Running LDAP tests with TLS disabled
+
+To run the LDAP tests on your local with TLS disabled, follow these steps:
+
+1. Run OpenLDAP container with TLS disabled. Change the path to [`gitlab-qa/fixtures/ldap`](https://gitlab.com/gitlab-org/gitlab-qa/-/tree/9ffb9ad3be847a9054967d792d6772a74220fb42/fixtures/ldap) directory to your local checkout path:
+
+   ```shell
+   docker network create test && docker run --net test --publish 389:389 --publish 636:636 --name ldap-server --hostname ldap-server.test --volume /path/to/gitlab-qa/fixtures/ldap:/container/service/slapd/assets/config/bootstrap/ldif/custom:Z --env LDAP_TLS="false" osixia/openldap:latest --copy-service
+   ```
+
+1. Run the GitLab container:
+
+  ```shell
+  sudo docker run \
+    --hostname localhost \
+    --net test \
+    --publish 443:443 --publish 80:80 --publish 22:22 \
+    --name gitlab \
+    --env GITLAB_OMNIBUS_CONFIG="gitlab_rails['ldap_enabled'] = true; gitlab_rails['ldap_servers'] = {\"main\"=>{\"label\"=>\"LDAP\", \"host\"=>\"ldap-server.test\", \"port\"=>389, \"uid\"=>\"uid\", \"bind_dn\"=>\"cn=admin,dc=example,dc=org\", \"password\"=>\"admin\", \"encryption\"=>\"plain\", \"verify_certificates\"=>false, \"base\"=>\"dc=example,dc=org\", \"user_filter\"=>\"\", \"group_base\"=>\"ou=Global Groups,dc=example,dc=org\", \"admin_group\"=>\"AdminGroup\", \"external_groups\"=>\"\", \"sync_ssh_keys\"=>false}}; gitlab_rails['ldap_sync_worker_cron'] = '* * * * *'; gitlab_rails['ldap_group_sync_worker_cron'] = '* * * * *'; " \
+  gitlab/gitlab-ee:latest
+  ```
+
+1. Run an LDAP test from [`gitlab/qa`](https://gitlab.com/gitlab-org/gitlab/-/tree/d5447ebb5f99d4c72780681ddf4dc25b0738acba/qa) directory:
+
+   ```shell
+   GITLAB_LDAP_USERNAME="tanuki" GITLAB_LDAP_PASSWORD="password" QA_DEBUG=true CHROME_HEADLESS=false bin/qa Test::Instance::All http://localhost qa/specs/features/browser_ui/1_manage/login/log_into_gitlab_via_ldap_spec.rb
+   ```

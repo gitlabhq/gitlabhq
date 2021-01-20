@@ -30,7 +30,10 @@ describe('DAG visualization parsing utilities', () => {
       { source: 'job2', target: 'job4' },
     ];
 
-    const dedupedLinks = [{ source: 'job1', target: 'job2' }, { source: 'job2', target: 'job4' }];
+    const dedupedLinks = [
+      { source: 'job1', target: 'job2' },
+      { source: 'job2', target: 'job4' },
+    ];
 
     const nodeLookup = {
       job1: {

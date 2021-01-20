@@ -1,12 +1,12 @@
 import { mount } from '@vue/test-utils';
+import { trimText } from 'helpers/text_helper';
 import { getTimeago } from '~/lib/utils/datetime_utility';
 import ArtifactsBlock from '~/jobs/components/artifacts_block.vue';
-import { trimText } from '../../helpers/text_helper';
 
 describe('Artifacts block', () => {
   let wrapper;
 
-  const createWrapper = propsData =>
+  const createWrapper = (propsData) =>
     mount(ArtifactsBlock, {
       propsData: {
         helpUrl: 'help-url',

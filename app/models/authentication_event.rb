@@ -3,10 +3,10 @@
 class AuthenticationEvent < ApplicationRecord
   include UsageStatistics
 
-  TWO_FACTOR = 'two-factor'.freeze
-  TWO_FACTOR_U2F = 'two-factor-via-u2f-device'.freeze
-  TWO_FACTOR_WEBAUTHN = 'two-factor-via-webauthn-device'.freeze
-  STANDARD = 'standard'.freeze
+  TWO_FACTOR = 'two-factor'
+  TWO_FACTOR_U2F = 'two-factor-via-u2f-device'
+  TWO_FACTOR_WEBAUTHN = 'two-factor-via-webauthn-device'
+  STANDARD = 'standard'
   STATIC_PROVIDERS = [TWO_FACTOR, TWO_FACTOR_U2F, TWO_FACTOR_WEBAUTHN, STANDARD].freeze
 
   belongs_to :user, optional: true

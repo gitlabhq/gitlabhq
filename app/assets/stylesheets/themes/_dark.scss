@@ -168,6 +168,20 @@ body.gl-dark {
   --black: #{$black};
 
   --svg-status-bg: #{$white};
+
+  .gl-button.gl-button,
+  .gl-button.gl-button.btn-block {
+    &.btn-default,
+    &.btn-dashed,
+    &.btn-info,
+    &.btn-success,
+    &.btn-danger,
+    &.btn-warning {
+      &-tertiary {
+        mix-blend-mode: screen;
+      }
+    }
+  }
 }
 
 $border-white-light: $gray-900;

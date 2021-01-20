@@ -27,7 +27,7 @@ const TEST_ENDPOINT = '/issues';
 const TEST_CREATE_ISSUES_PATH = '/createIssue';
 const TEST_SVG_PATH = '/emptySvg';
 
-const setUrl = query => {
+const setUrl = (query) => {
   window.location.href = `${TEST_LOCATION}${query}`;
   window.location.search = query;
 };
@@ -45,10 +45,10 @@ describe('Issuables list component', () => {
   let wrapper;
   let apiSpy;
 
-  const setupApiMock = cb => {
+  const setupApiMock = (cb) => {
     apiSpy = jest.fn(cb);
 
-    mockAxios.onGet(TEST_ENDPOINT).reply(cfg => apiSpy(cfg));
+    mockAxios.onGet(TEST_ENDPOINT).reply((cfg) => apiSpy(cfg));
   };
 
   const factory = (props = { sortKey: 'priority' }) => {
@@ -238,15 +238,15 @@ describe('Issuables list component', () => {
       wrapper.vm.onSelectIssuable({ issuable: i0, selected: false });
       expect(wrapper.vm.selection).toEqual({});
       wrapper.vm.onSelectIssuable({ issuable: i1, selected: true });
-      expect(wrapper.vm.selection).toEqual({ '1': true });
+      expect(wrapper.vm.selection).toEqual({ 1: true });
       wrapper.vm.onSelectIssuable({ issuable: i0, selected: true });
-      expect(wrapper.vm.selection).toEqual({ '1': true, '0': true });
+      expect(wrapper.vm.selection).toEqual({ 1: true, 0: true });
       wrapper.vm.onSelectIssuable({ issuable: i2, selected: true });
-      expect(wrapper.vm.selection).toEqual({ '1': true, '0': true, '2': true });
+      expect(wrapper.vm.selection).toEqual({ 1: true, 0: true, 2: true });
       wrapper.vm.onSelectIssuable({ issuable: i2, selected: true });
-      expect(wrapper.vm.selection).toEqual({ '1': true, '0': true, '2': true });
+      expect(wrapper.vm.selection).toEqual({ 1: true, 0: true, 2: true });
       wrapper.vm.onSelectIssuable({ issuable: i0, selected: false });
-      expect(wrapper.vm.selection).toEqual({ '1': true, '2': true });
+      expect(wrapper.vm.selection).toEqual({ 1: true, 2: true });
     });
 
     it('broadcasts a message to the bulk edit sidebar when a value is added to selection', () => {

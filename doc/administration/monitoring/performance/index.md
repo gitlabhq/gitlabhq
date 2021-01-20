@@ -61,3 +61,14 @@ half above the interval. For example, for a user defined interval of 15 seconds
 the actual interval can be anywhere between 7.5 and 22.5. The interval is
 re-generated for every sampling run instead of being generated one time and reused
 for the duration of the process' lifetime.
+
+User defined intervals can be specified by means of environment variables.
+The following environment variables are recognized:
+
+- `RUBY_SAMPLER_INTERVAL_SECONDS`
+- `DATABASE_SAMPLER_INTERVAL_SECONDS`
+- `ACTION_CABLE_SAMPLER_INTERVAL_SECONDS`
+- `PUMA_SAMPLER_INTERVAL_SECONDS`
+- `UNICORN_SAMPLER_INTERVAL_SECONDS`
+- `THREADS_SAMPLER_INTERVAL_SECONDS`
+- `GLOBAL_SEARCH_SAMPLER_INTERVAL_SECONDS`

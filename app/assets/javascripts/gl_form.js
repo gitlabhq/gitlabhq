@@ -20,7 +20,7 @@ export default class GLForm {
 
     // Disable autocomplete for keywords which do not have dataSources available
     const dataSources = (gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources) || {};
-    Object.keys(this.enableGFM).forEach(item => {
+    Object.keys(this.enableGFM).forEach((item) => {
       if (item !== 'emojis' && !dataSources[item]) {
         this.enableGFM[item] = false;
       }
@@ -67,6 +67,7 @@ export default class GLForm {
     addMarkdownListeners(this.form);
     this.form.show();
     if (this.isAutosizeable) this.setupAutosize();
+    if (this.textarea.data('autofocus') === true) this.textarea.focus();
   }
 
   setupAutosize() {
@@ -108,14 +109,10 @@ export default class GLForm {
 
   addEventListeners() {
     this.textarea.on('focus', function focusTextArea() {
-      $(this)
-        .closest('.md-area')
-        .addClass('is-focused');
+      $(this).closest('.md-area').addClass('is-focused');
     });
     this.textarea.on('blur', function blurTextArea() {
-      $(this)
-        .closest('.md-area')
-        .removeClass('is-focused');
+      $(this).closest('.md-area').removeClass('is-focused');
     });
   }
 

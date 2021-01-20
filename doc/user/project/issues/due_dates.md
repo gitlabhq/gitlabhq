@@ -11,14 +11,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Please read through the [GitLab Issue Documentation](index.md) for an overview on GitLab Issues.
 
 Due dates can be used in issues to keep track of deadlines and make sure features are
-shipped on time. Users must have at least [Reporter permissions](../../permissions.md)
-to be able to edit them, but they can be seen by everybody with permission to view
-the issue.
+shipped on time. Users need at least [Reporter permissions](../../permissions.md)
+to be able to edit the due date. All users with permission to view
+the issue can view the due date.
 
 ## Setting a due date
 
-When creating or editing an issue, you can click in the **due date** field and a calendar
-will appear to help you choose the date you want. To remove the date, select the date
+When creating an issue, select the **Due date** field to make a calendar
+appear for choosing the date. To remove the date, select the date
 text and delete it. The date is related to the server's timezone, not the timezone of
 the user setting the due date.
 
@@ -37,18 +37,17 @@ The last way to set a due date is by using [quick actions](../quick_actions.md),
 
 ## Making use of due dates
 
-Issues that have a due date can be easily seen in the issue tracker,
-displaying a date next to them. Issues where the date is overdue will have
-the icon and the date colored red. You can sort issues by those that are
-`Due soon` or `Due later` from the dropdown menu on the right.
-
-![Issues with due dates in the issues index page](img/due_dates_issues_index_page.png)
+You can see issues with their due dates in the [issues list](index.md#issues-list).
+Overdue issues have their icon and date colored red.
+To sort issues by their due dates, select **Due date** from the dropdown menu on the right.
+Issues are then sorted from the earliest due date to the latest.
+To display isses with the latest due dates at the top, select **Sort direction** (**{sort-lowest}**).
 
 Due dates also appear in your [to-do list](../../todos.md).
 
 ![Issues with due dates in the to dos](img/due_dates_todos.png)
 
-The day before an open issue is due, an email will be sent to all participants
+The day before an open issue is due, an email is sent to all participants
 of the issue. Like the due date, the "day before the due date" is determined by the
 server's timezone.
 

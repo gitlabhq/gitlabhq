@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 import createStore from './store';
 import App from './components/app.vue';
 
-export default initialData => {
+export default (initialData) => {
   const el = document.getElementById('js-code-navigation');
 
   if (!el) return null;

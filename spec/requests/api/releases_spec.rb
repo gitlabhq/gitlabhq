@@ -16,9 +16,6 @@ RSpec.describe API::Releases do
     project.add_reporter(reporter)
     project.add_guest(guest)
     project.add_developer(developer)
-
-    project.repository.add_tag(maintainer, 'v0.1', commit.id)
-    project.repository.add_tag(maintainer, 'v0.2', commit.id)
   end
 
   describe 'GET /projects/:id/releases' do
@@ -294,6 +291,25 @@ RSpec.describe API::Releases do
         end
       end
 
+      context 'when release is associated to mutiple milestones' do
+        context 'milestones order' do
+          let_it_be(:project) { create(:project, :repository, :public) }
+          let_it_be_with_reload(:release_with_milestones) { create(:release, tag: 'v3.14', project: project) }
+
+          let(:actual_milestone_title_order) do
+            get api("/projects/#{project.id}/releases/#{release_with_milestones.tag}", non_project_member)
+
+            json_response['milestones'].map { |m| m['title'] }
+          end
+
+          before do
+            release_with_milestones.update!(milestones: [milestone_2, milestone_1])
+          end
+
+          it_behaves_like 'correct release milestone order'
+        end
+      end
+
       context 'when release has link asset' do
         let!(:link) do
           create(:release_link,
@@ -459,6 +475,10 @@ RSpec.describe API::Releases do
           ]
         }
       }
+    end
+
+    before do
+      initialize_tags
     end
 
     it 'accepts the request' do
@@ -858,6 +878,10 @@ RSpec.describe API::Releases do
              description: 'Super nice release')
     end
 
+    before do
+      initialize_tags
+    end
+
     it 'accepts the request' do
       put api("/projects/#{project.id}/releases/v0.1", maintainer), params: params
 
@@ -1107,5 +1131,10 @@ RSpec.describe API::Releases do
         end
       end
     end
+  end
+
+  def initialize_tags
+    project.repository.add_tag(maintainer, 'v0.1', commit.id)
+    project.repository.add_tag(maintainer, 'v0.2', commit.id)
   end
 end

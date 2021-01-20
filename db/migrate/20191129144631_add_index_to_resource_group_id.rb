@@ -4,7 +4,7 @@ class AddIndexToResourceGroupId < ActiveRecord::Migration[5.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  INDEX_NAME = 'index_for_resource_group'.freeze
+  INDEX_NAME = 'index_for_resource_group'
 
   disable_ddl_transaction!
 

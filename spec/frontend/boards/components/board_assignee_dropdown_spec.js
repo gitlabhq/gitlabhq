@@ -6,7 +6,7 @@ import {
   GlSearchBoxByType,
   GlLoadingIcon,
 } from '@gitlab/ui';
-import createMockApollo from 'jest/helpers/mock_apollo_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import VueApollo from 'vue-apollo';
 import BoardAssigneeDropdown from '~/boards/components/board_assignee_dropdown.vue';
 import IssuableAssignees from '~/sidebar/components/assignees/issuable_assignees.vue';
@@ -93,8 +93,8 @@ describe('BoardCardAssigneeDropdown', () => {
     await wrapper.vm.$nextTick();
   };
 
-  const findByText = text => {
-    return wrapper.findAll(GlDropdownItem).wrappers.find(node => node.text().indexOf(text) === 0);
+  const findByText = (text) => {
+    return wrapper.findAll(GlDropdownItem).wrappers.find((node) => node.text().indexOf(text) === 0);
   };
 
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
@@ -102,7 +102,7 @@ describe('BoardCardAssigneeDropdown', () => {
   beforeEach(() => {
     store.state.activeId = '1';
     store.state.issues = {
-      '1': {
+      1: {
         iid,
         assignees: [{ username: activeIssueName, name: activeIssueName, id: activeIssueName }],
       },
@@ -145,12 +145,7 @@ describe('BoardCardAssigneeDropdown', () => {
     it('renders gl-avatar-labeled in gl-avatar-link', () => {
       const item = findByText('hello');
 
-      expect(
-        item
-          .find(GlAvatarLink)
-          .find(GlAvatarLabeled)
-          .exists(),
-      ).toBe(true);
+      expect(item.find(GlAvatarLink).find(GlAvatarLabeled).exists()).toBe(true);
     });
   });
 

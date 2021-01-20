@@ -29,6 +29,9 @@ export default () => {
 
   return new Vue({
     el: selector,
+    components: {
+      IncidentsList,
+    },
     provide: {
       projectPath,
       incidentTemplateName,
@@ -43,9 +46,6 @@ export default () => {
       slaFeatureAvailable: parseBoolean(slaFeatureAvailable),
     },
     apolloProvider,
-    components: {
-      IncidentsList,
-    },
     render(createElement) {
       return createElement('incidents-list');
     },

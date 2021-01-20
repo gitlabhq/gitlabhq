@@ -22,13 +22,25 @@ RSpec.describe Gitlab::VisibilityLevel do
   end
 
   describe '.levels_for_user' do
-    it 'returns all levels for an admin' do
-      user = build(:user, :admin)
+    context 'when admin mode is enabled', :enable_admin_mode do
+      it 'returns all levels for an admin' do
+        user = build(:user, :admin)
 
-      expect(described_class.levels_for_user(user))
-        .to eq([Gitlab::VisibilityLevel::PRIVATE,
-                Gitlab::VisibilityLevel::INTERNAL,
-                Gitlab::VisibilityLevel::PUBLIC])
+        expect(described_class.levels_for_user(user))
+          .to eq([Gitlab::VisibilityLevel::PRIVATE,
+                  Gitlab::VisibilityLevel::INTERNAL,
+                  Gitlab::VisibilityLevel::PUBLIC])
+      end
+    end
+
+    context 'when admin mode is disabled' do
+      it 'returns INTERNAL and PUBLIC for an admin' do
+        user = build(:user, :admin)
+
+        expect(described_class.levels_for_user(user))
+            .to eq([Gitlab::VisibilityLevel::INTERNAL,
+                    Gitlab::VisibilityLevel::PUBLIC])
+      end
     end
 
     it 'returns INTERNAL and PUBLIC for internal users' do
@@ -116,30 +128,6 @@ RSpec.describe Gitlab::VisibilityLevel do
         expect(described_class.restricted_level?(Gitlab::VisibilityLevel::PUBLIC)).to eq(expected_status)
         expect(described_class.non_restricted_level?(Gitlab::VisibilityLevel::PUBLIC)).to eq(!expected_status)
         expect(described_class.public_visibility_restricted?).to eq(expected_status)
-      end
-    end
-  end
-
-  describe '#visibility_level_decreased?' do
-    let(:project) { create(:project, :internal) }
-
-    context 'when visibility level decreases' do
-      before do
-        project.update!(visibility_level: described_class::PRIVATE)
-      end
-
-      it 'returns true' do
-        expect(project.visibility_level_decreased?).to be(true)
-      end
-    end
-
-    context 'when visibility level does not decrease' do
-      before do
-        project.update!(visibility_level: described_class::PUBLIC)
-      end
-
-      it 'returns false' do
-        expect(project.visibility_level_decreased?).to be(false)
       end
     end
   end

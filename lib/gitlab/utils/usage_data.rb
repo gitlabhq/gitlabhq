@@ -61,7 +61,10 @@ module Gitlab
       end
 
       def estimate_batch_distinct_count(relation, column = nil, batch_size: nil, start: nil, finish: nil)
-        Gitlab::Database::PostgresHll::BatchDistinctCounter.new(relation, column).estimate_distinct_count(batch_size: batch_size, start: start, finish: finish)
+        Gitlab::Database::PostgresHll::BatchDistinctCounter
+          .new(relation, column)
+          .execute(batch_size: batch_size, start: start, finish: finish)
+          .estimated_distinct_count
       rescue ActiveRecord::StatementInvalid
         FALLBACK
       # catch all rescue should be removed as a part of feature flag rollout issue
@@ -119,7 +122,7 @@ module Gitlab
       def track_usage_event(event_name, values)
         return unless Feature.enabled?(:"usage_data_#{event_name}", default_enabled: true)
 
-        Gitlab::UsageDataCounters::HLLRedisCounter.track_event(values, event_name.to_s)
+        Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name.to_s, values: values)
       end
 
       private
@@ -142,7 +145,8 @@ module Gitlab
 
       def prometheus_server_address
         if Gitlab::Prometheus::Internal.prometheus_enabled?
-          Gitlab::Prometheus::Internal.server_address
+          # Stripping protocol from URI
+          Gitlab::Prometheus::Internal.uri&.strip&.sub(%r{^https?://}, '')
         elsif Gitlab::Consul::Internal.api_url
           Gitlab::Consul::Internal.discover_prometheus_server_address
         end

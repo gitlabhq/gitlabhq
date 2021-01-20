@@ -504,6 +504,26 @@ entry.
 - Update GitLab Workhorse to v8.57.0.
 
 
+## 13.6.5 (2021-01-13)
+
+### Security (1 change)
+
+- Deny implicit flow for confidential apps.
+
+
+## 13.6.4 (2021-01-07)
+
+### Security (7 changes)
+
+- Forbid public cache for private repos.
+- Deny implicit flow for confidential apps.
+- Update NuGet regular expression to protect against ReDoS.
+- Fix regular expression backtracking issue in package name validation.
+- Upgrade GitLab Pages to 1.30.2.
+- Update trusted OAuth applications to set them as confidential.
+- Upgrade Workhorse to 8.54.2.
+
+
 ## 13.6.3 (2020-12-10)
 
 ### Fixed (5 changes)
@@ -1060,6 +1080,26 @@ entry.
 - Update Workhorse version to 8.54.0. !47625
 - Update GitLab Shell to v13.13.0. !47875
 - Change wording on the project remove fork page. !47878
+
+
+## 13.5.7 (2021-01-13)
+
+### Security (1 change)
+
+- Deny implicit flow for confidential apps.
+
+
+## 13.5.6 (2021-01-07)
+
+### Security (7 changes)
+
+- Forbid public cache for private repos.
+- Deny implicit flow for confidential apps.
+- Update NuGet regular expression to protect against ReDoS.
+- Fix regular expression backtracking issue in package name validation.
+- Upgrade GitLab Pages to 1.28.2.
+- Update trusted OAuth applications to set them as confidential.
+- Upgrade Workhorse to 8.51.2.
 
 
 ## 13.5.5 (2020-12-07)

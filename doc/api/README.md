@@ -23,9 +23,9 @@ For a list of the available resources and their endpoints, see
 
 ## SCIM **(SILVER ONLY)**
 
-[GitLab.com Silver and higher](https://about.gitlab.com/pricing/) provides an
-[SCIM API](scim.md) that both implements [the RFC7644 protocol](https://tools.ietf.org/html/rfc7644)
-and provides the `/Users` endpoint. The base URL is: `/api/scim/v2/groups/:group_path/Users/`.
+GitLab provides an [SCIM API](scim.md) that both implements
+[the RFC7644 protocol](https://tools.ietf.org/html/rfc7644) and provides the
+`/Users` endpoint. The base URL is `/api/scim/v2/groups/:group_path/Users/`.
 
 ## Road to GraphQL
 
@@ -186,9 +186,9 @@ curl --header "Authorization: Bearer <your_access_token>" "https://gitlab.exampl
 
 ### Session cookie
 
-When signing in to the main GitLab application, a `_gitlab_session` cookie is
-set. The API uses this cookie for authentication if it's present. Using the
-API to generate a new session cookie isn't supported.
+Signing in to the main GitLab application sets a `_gitlab_session` cookie. The
+API uses this cookie for authentication if it's present. Using the API to
+generate a new session cookie isn't supported.
 
 The primary user of this authentication method is the web frontend of GitLab
 itself, which can, for example, use the API as the authenticated user to get a
@@ -203,8 +203,7 @@ to authenticate with the API:
   - [Composer Repository](../user/packages/composer_repository/index.md)
   - [Conan Repository](../user/packages/conan_repository/index.md)
   - [Container Registry](../user/packages/container_registry/index.md)
-    (`$CI_REGISTRY_PASSWORD` is actually `$CI_JOB_TOKEN`, but this may change in
-    the future)
+    (`$CI_REGISTRY_PASSWORD` is `$CI_JOB_TOKEN`)
   - [Go Proxy](../user/packages/go_proxy/index.md)
   - [Maven Repository](../user/packages/maven_repository/index.md#authenticate-with-a-ci-job-token-in-maven)
   - [NPM Repository](../user/packages/npm_registry/index.md#authenticate-with-a-ci-job-token)
@@ -221,12 +220,12 @@ The token is valid as long as the job is running.
 ### Impersonation tokens
 
 Impersonation tokens are a type of [personal access token](../user/profile/personal_access_tokens.md)
-that can only be created by an administrator for a specific user. They are a great fit
-if you want to build applications or scripts that authenticate with the API as a
-specific user.
+that can be created only by an administrator for a specific user. They can be
+useful if you want to build applications or scripts that authenticate with the
+API as a specific user.
 
-They're an alternative to directly using the user's password or one of their
-personal access tokens, and to using the [Sudo](#sudo) feature, as the user's
+They're an alternative to directly using the user's password (or one of their
+personal access tokens), and to using the [Sudo](#sudo) feature, as the user's
 (or administrator's in the case of Sudo) password or token may not be known, or may
 change over time.
 
@@ -245,13 +244,13 @@ By default, impersonation is enabled. To disable impersonation:
 
 **For Omnibus installations**
 
-1. Edit `/etc/gitlab/gitlab.rb`:
+1. Edit the `/etc/gitlab/gitlab.rb` file:
 
    ```ruby
    gitlab_rails['impersonation_enabled'] = false
    ```
 
-1. Save the file and [reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file, and then [reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
    GitLab for the changes to take effect.
 
 To re-enable impersonation, remove this configuration, and then reconfigure
@@ -259,14 +258,14 @@ GitLab.
 
 **For installations from source**
 
-1. Edit `config/gitlab.yml`:
+1. Edit the `config/gitlab.yml` file:
 
    ```yaml
    gitlab:
      impersonation_enabled: false
    ```
 
-1. Save the file and [restart](../administration/restart_gitlab.md#installations-from-source)
+1. Save the file, and then [restart](../administration/restart_gitlab.md#installations-from-source)
    GitLab for the changes to take effect.
 
 To re-enable impersonation, remove this configuration, and then restart GitLab.
@@ -353,41 +352,41 @@ The following table shows the possible return codes for API requests.
 
 | Return values            | Description |
 |--------------------------|-------------|
-| `200 OK`                 | The `GET`, `PUT` or `DELETE` request was successful, the resource(s) itself is returned as JSON. |
-| `204 No Content`         | The server has successfully fulfilled the request and that there is no additional content to send in the response payload body. |
-| `201 Created`            | The `POST` request was successful and the resource is returned as JSON. |
-| `304 Not Modified`       | Indicates that the resource has not been modified since the last request. |
+| `200 OK`                 | The `GET`, `PUT` or `DELETE` request was successful, and the resource(s) itself is returned as JSON. |
+| `204 No Content`         | The server has successfully fulfilled the request, and there is no additional content to send in the response payload body. |
+| `201 Created`            | The `POST` request was successful, and the resource is returned as JSON. |
+| `304 Not Modified`       | The resource hasn't been modified since the last request. |
 | `400 Bad Request`        | A required attribute of the API request is missing. For example, the title of an issue is not given. |
-| `401 Unauthorized`       | The user is not authenticated, a valid [user token](#authentication) is necessary. |
-| `403 Forbidden`          | The request is not allowed. For example, the user is not allowed to delete a project. |
-| `404 Not Found`          | A resource could not be accessed. For example, an ID for a resource could not be found. |
-| `405 Method Not Allowed` | The request is not supported. |
+| `401 Unauthorized`       | The user isn't authenticated. A valid [user token](#authentication) is necessary. |
+| `403 Forbidden`          | The request isn't allowed. For example, the user isn't allowed to delete a project. |
+| `404 Not Found`          | A resource couldn't be accessed. For example, an ID for a resource couldn't be found. |
+| `405 Method Not Allowed` | The request isn't supported. |
 | `409 Conflict`           | A conflicting resource already exists. For example, creating a project with a name that already exists. |
-| `412`                    | Indicates the request was denied. May happen if the `If-Unmodified-Since` header is provided when trying to delete a resource, which was modified in between. |
-| `422 Unprocessable`      | The entity could not be processed. |
+| `412`                    | The request was denied. This can happen if the `If-Unmodified-Since` header is provided when trying to delete a resource, which was modified in between. |
+| `422 Unprocessable`      | The entity couldn't be processed. |
 | `429 Too Many Requests`  | The user exceeded the [application rate limits](../administration/instance_limits.md#rate-limits). |
-| `500 Server Error`       | While handling the request, something went wrong server-side. |
+| `500 Server Error`       | While handling the request, something went wrong on the server. |
 
 ## Pagination
 
 GitLab supports the following pagination methods:
 
-- Offset-based pagination. This is the default method and available on all endpoints.
+- Offset-based pagination. This is the default method and is available on all endpoints.
 - Keyset-based pagination. Added to selected endpoints but being
   [progressively rolled out](https://gitlab.com/groups/gitlab-org/-/epics/2039).
 
-For large collections, we recommend keyset pagination (when available) instead
-of offset pagination for performance reasons.
+For large collections, for performance reasons we recommend keyset pagination
+(when available) instead of offset pagination.
 
 ### Offset-based pagination
 
 Sometimes, the returned result spans many pages. When listing resources, you can
 pass the following parameters:
 
-| Parameter | Description |
-|-----------|-------------|
-| `page`    | Page number (default: `1`). |
-| `per_page`| Number of items to list per page (default: `20`, max: `100`). |
+| Parameter  | Description |
+|------------|-------------|
+| `page`     | Page number (default: `1`). |
+| `per_page` | Number of items to list per page (default: `20`, max: `100`). |
 
 In the following example, we list 50 [namespaces](namespaces.md) per page:
 
@@ -485,10 +484,10 @@ header was [added in GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/merge_r
 and should be used instead.
 
 The link to the next page contains an additional filter `id_after=42` that
-excludes already-retrieved records. Note the type of filter depends on the
+excludes already-retrieved records. The type of filter depends on the
 `order_by` option used, and we may have more than one additional filter.
 
-When the end of the collection has been reached and there are no additional
+When the end of the collection is reached and there are no additional
 records to retrieve, the `Link` header is absent and the resulting array is
 empty.
 

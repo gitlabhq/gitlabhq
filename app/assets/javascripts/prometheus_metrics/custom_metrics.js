@@ -65,12 +65,12 @@ export default class CustomMetrics extends PrometheusMetrics {
 
   // eslint-disable-next-line class-methods-use-this
   setHidden(els) {
-    els.forEach(el => el.addClass('hidden'));
+    els.forEach((el) => el.addClass('hidden'));
   }
 
   setVisible(...els) {
-    this.setHidden(this.$els.filter(el => !els.includes(el)));
-    els.forEach(el => el.removeClass('hidden'));
+    this.setHidden(this.$els.filter((el) => !els.includes(el)));
+    els.forEach((el) => el.removeClass('hidden'));
   }
 
   showMonitoringCustomMetricsPanelState(stateName) {
@@ -98,14 +98,14 @@ export default class CustomMetrics extends PrometheusMetrics {
   }
 
   populateCustomMetrics() {
-    const capitalizeGroup = metric => ({
+    const capitalizeGroup = (metric) => ({
       ...metric,
       group: capitalizeFirstCharacter(metric.group),
     });
 
     const sortedMetrics = sortBy(this.customMetrics.map(capitalizeGroup), ['group', 'title']);
 
-    sortedMetrics.forEach(metric => {
+    sortedMetrics.forEach((metric) => {
       this.$monitoredCustomMetricsList.append(CustomMetrics.customMetricTemplate(metric));
     });
 
@@ -145,7 +145,7 @@ export default class CustomMetrics extends PrometheusMetrics {
           this.populateCustomMetrics(customMetrics.data.metrics);
         }
       })
-      .catch(customMetricError => {
+      .catch((customMetricError) => {
         this.showFlashMessage(customMetricError);
         this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
       });

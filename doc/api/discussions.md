@@ -687,7 +687,8 @@ GET /projects/:id/merge_requests/:merge_request_iid/discussions
         "noteable_iid": null,
         "resolved": false,
         "resolvable": true,
-        "resolved_by": null
+        "resolved_by": null,
+        "resolved_at": null
       },
       {
         "id": 1129,

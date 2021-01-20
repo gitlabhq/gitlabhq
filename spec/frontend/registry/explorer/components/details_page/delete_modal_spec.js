@@ -13,7 +13,7 @@ describe('Delete Modal', () => {
   const findModal = () => wrapper.find(GlModal);
   const findDescription = () => wrapper.find('[data-testid="description"]');
 
-  const mountComponent = propsData => {
+  const mountComponent = (propsData) => {
     wrapper = shallowMount(component, {
       propsData,
       stubs: {

@@ -4,7 +4,7 @@
  * @param hex string
  * @returns array|null
  */
-export const hexToRgb = hex => {
+export const hexToRgb = (hex) => {
   // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
   const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
   const fullHex = hex.replace(shorthandRegex, (_m, r, g, b) => r + r + g + g + b + b);
@@ -15,7 +15,7 @@ export const hexToRgb = hex => {
     : null;
 };
 
-export const textColorForBackground = backgroundColor => {
+export const textColorForBackground = (backgroundColor) => {
   const [r, g, b] = hexToRgb(backgroundColor);
 
   if (r + g + b > 500) {

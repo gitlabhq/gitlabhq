@@ -68,7 +68,7 @@ export default class Renderer {
   }
 
   loadFile() {
-    this.loader.load(this.container.dataset.endpoint, geo => {
+    this.loader.load(this.container.dataset.endpoint, (geo) => {
       const obj = new MeshObject(geo);
 
       this.objects.push(obj);
@@ -99,7 +99,7 @@ export default class Renderer {
   }
 
   changeObjectMaterials(type) {
-    this.objects.forEach(obj => {
+    this.objects.forEach((obj) => {
       obj.changeMaterial(type);
     });
   }

@@ -1,10 +1,10 @@
 import { noop } from 'lodash';
 import { TEST_HOST } from 'helpers/test_constants';
 import { useMockMutationObserver, useMockIntersectionObserver } from 'helpers/mock_dom_observer';
+import waitForPromises from 'helpers/wait_for_promises';
 import LazyLoader from '~/lazy_loader';
-import waitForPromises from './helpers/wait_for_promises';
 
-const execImmediately = callback => {
+const execImmediately = (callback) => {
   callback();
 };
 
@@ -20,7 +20,7 @@ describe('LazyLoader', () => {
     triggerMutation(document.body, { options: { childList: true, subtree: true } });
   };
 
-  const triggerIntersectionWithRatio = img => {
+  const triggerIntersectionWithRatio = (img) => {
     triggerIntersection(img, { entry: { intersectionRatio: 0.1 } });
   };
 

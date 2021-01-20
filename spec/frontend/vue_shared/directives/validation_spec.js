@@ -36,7 +36,7 @@ describe('validation directive', () => {
       `,
     };
 
-    wrapper = shallowMount(component, { attachToDocument: true });
+    wrapper = shallowMount(component, { attachTo: document.body });
   };
 
   afterEach(() => {
@@ -50,7 +50,7 @@ describe('validation directive', () => {
 
   describe.each([true, false])(
     'with fields untouched and "showValidation" set to "%s"',
-    showValidation => {
+    (showValidation) => {
       beforeEach(() => {
         createComponent({ showValidation });
       });
@@ -78,7 +78,7 @@ describe('validation directive', () => {
   `(
     'with input-attributes set to $inputAttributes',
     ({ inputAttributes, validValue, invalidValue }) => {
-      const setValueAndTriggerValidation = value => {
+      const setValueAndTriggerValidation = (value) => {
         const input = findInput();
         input.setValue(value);
         input.trigger('blur');

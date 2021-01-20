@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/gitlab/rails_logger'
 
-RSpec.describe RuboCop::Cop::Gitlab::RailsLogger, type: :rubocop do
+RSpec.describe RuboCop::Cop::Gitlab::RailsLogger do
   include CopHelper
 
   subject(:cop) { described_class.new }

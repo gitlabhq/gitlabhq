@@ -9,10 +9,9 @@
     = link_to _('Sign in to GitLab'), jira_connect_users_path, target: '_blank', rel: 'noopener noreferrer', class: 'js-jira-connect-sign-in'
 
 .jira-connect-app
-  %h1
-    GitLab for Jira Configuration
-
   - if current_user.blank? && @subscriptions.empty?
+    %h1
+      GitLab for Jira Configuration
     %h2.heading-with-border Sign in to GitLab.com to get started.
 
     .gl-mt-5
@@ -21,17 +20,18 @@
     .gl-mt-5
       %p Note: this integration only works with accounts on GitLab.com (SaaS).
   - else
-    .js-jira-connect-app
+    .js-jira-connect-app{ data: jira_connect_app_data }
 
-    %form#add-subscription-form.subscription-form{ action: jira_connect_subscriptions_path }
-      .ak-field-group
-        %label
-          GitLab namespace
+    - unless new_jira_connect_ui?
+      %form#add-subscription-form.subscription-form{ action: jira_connect_subscriptions_path }
+        .ak-field-group
+          %label
+            GitLab namespace
 
-      .ak-field-group.field-group-input
-        %input#namespace-input.ak-field-text{ type: 'text', required: true, placeholder: 'e.g. "MyCompany" or "MyCompany/GroupName"' }
-        %button.ak-button.ak-button__appearance-primary{ type: 'submit' }
-          Link namespace to Jira
+        .ak-field-group.field-group-input
+          %input#namespace-input.ak-field-text{ type: 'text', required: true, placeholder: 'e.g. "MyCompany" or "MyCompany/GroupName"' }
+          %button.ak-button.ak-button__appearance-primary{ type: 'submit' }
+            Link namespace to Jira
 
     - if @subscriptions.present?
       %table.subscriptions
@@ -49,6 +49,7 @@
     - else
       %h4.empty-subscriptions
         No linked namespaces
+      %p= s_('Integrations|Namespaces are your GitLab groups and subgroups that will be linked to this Jira instance.')
 
   %p.browser-limitations-notice
     %strong Browser limitations:

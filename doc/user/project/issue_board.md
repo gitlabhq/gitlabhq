@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Issue Boards
+# Issue Boards **(CORE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5554) in [GitLab 8.11](https://about.gitlab.com/releases/2016/08/22/gitlab-8-11-released/#issue-board).
 
@@ -233,17 +233,18 @@ advanced functionality is present in [higher tiers only](https://about.gitlab.co
 
 ### Configurable issue boards **(STARTER)**
 
-> [Introduced](https://about.gitlab.com/releases/2017/11/22/gitlab-10-2-released/#issue-boards-configuration) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.2.
+> - [Introduced](https://about.gitlab.com/releases/2017/11/22/gitlab-10-2-released/#issue-boards-configuration) in GitLab 10.2.
+> - Setting current iteration as scope [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196804) in GitLab 13.8.
 
-An issue board can be associated with a GitLab [Milestone](milestones/index.md#milestones),
-[Labels](labels.md), Assignee and Weight
+An issue board can be associated with a [milestone](milestones/index.md#milestones),
+[labels](labels.md), assignee, weight, and current [iteration](../group/iterations/index.md),
 which automatically filter the board issues accordingly.
 This allows you to create unique boards according to your team's need.
 
 ![Create scoped board](img/issue_board_creation_v13_6.png)
 
 You can define the scope of your board when creating it or by clicking the **Edit board** button.
-After a milestone, assignee or weight is assigned to an issue board, you can no longer
+After a milestone, iteration, assignee, or weight is assigned to an issue board, you can no longer
 filter through these in the search bar. In order to do that, you need to remove the desired scope
 (for example, milestone, assignee, or weight) from the issue board.
 
@@ -320,7 +321,8 @@ As in other list types, click the trash icon to remove a list.
 
 ### Group issues in swimlanes **(PREMIUM)**
 
-> Grouping by epic [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3352) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.6.
+> - Grouping by epic [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3352) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.6.
+> - Editing issue titles in the issue sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232745) in GitLab 13.8.
 
 With swimlanes you can visualize issues grouped by epic.
 Your issue board keeps all the other features, but with a different visual organization of issues.
@@ -335,6 +337,19 @@ To group issues by epic in an issue board:
 1. Select **Epic**.
 
 ![Epics Swimlanes](img/epics_swimlanes_v13.6.png)
+
+To edit an issue without leaving this view, select the issue card (not its title), and a sidebar
+appears on the right. There you can see and edit the issue's:
+
+- Title
+- Assignees
+- Epic **PREMIUM**
+- Milestone
+- Time tracking value (view only)
+- Due date
+- Labels
+- Weight
+- Notifications setting
 
 You can also [drag issues](#drag-issues-between-lists) to change their position and epic assignment:
 

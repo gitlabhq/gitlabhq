@@ -34,6 +34,8 @@ module Issuable
     def permitted_attrs(type)
       attrs = %i(state_event milestone_id add_label_ids remove_label_ids subscription_event)
 
+      attrs.push(:sprint_id) if type == 'issue'
+
       if type == 'issue' || type == 'merge_request'
         attrs.push(:assignee_ids)
       else

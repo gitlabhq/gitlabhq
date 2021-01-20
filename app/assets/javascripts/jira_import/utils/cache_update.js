@@ -20,7 +20,7 @@ export const addInProgressImportToStore = (store, jiraImportStart, fullPath) => 
 
   store.writeQuery({
     ...queryDetails,
-    data: produce(sourceData, draftData => {
+    data: produce(sourceData, (draftData) => {
       draftData.project.jiraImportStatus = IMPORT_STATE.SCHEDULED; // eslint-disable-line no-param-reassign
       // eslint-disable-next-line no-param-reassign
       draftData.project.jiraImports.nodes = [

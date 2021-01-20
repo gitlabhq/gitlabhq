@@ -206,14 +206,14 @@ export default {
       const { project_id, iid } = this.getNoteableData;
 
       if (this.isUserAssigned) {
-        assignees = assignees.filter(assignee => assignee.id !== this.author.id);
+        assignees = assignees.filter((assignee) => assignee.id !== this.author.id);
       } else {
         assignees.push({ id: this.author.id });
       }
 
       if (this.targetType === 'issue') {
         Api.updateIssue(project_id, iid, {
-          assignee_ids: assignees.map(assignee => assignee.id),
+          assignee_ids: assignees.map((assignee) => assignee.id),
         })
           .then(() => this.handleAssigneeUpdate(assignees))
           .catch(() => flash(__('Something went wrong while updating assignees')));

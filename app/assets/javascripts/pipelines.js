@@ -1,5 +1,5 @@
 import LinkedTabs from './lib/utils/bootstrap_linked_tabs';
-import { setCiStatusFavicon } from './lib/utils/common_utils';
+import { setCiStatusFavicon } from './lib/utils/favicon_ci';
 
 export default class Pipelines {
   constructor(options = {}) {

@@ -11,15 +11,15 @@ module Resolvers
 
           argument :identifier, Types::Admin::Analytics::InstanceStatistics::MeasurementIdentifierEnum,
                     required: true,
-                    description: 'The type of measurement/statistics to retrieve'
+                    description: 'The type of measurement/statistics to retrieve.'
 
           argument :recorded_after, Types::TimeType,
                     required: false,
-                    description: 'Measurement recorded after this date'
+                    description: 'Measurement recorded after this date.'
 
           argument :recorded_before, Types::TimeType,
                     required: false,
-                    description: 'Measurement recorded before this date'
+                    description: 'Measurement recorded before this date.'
 
           def resolve(identifier:, recorded_before: nil, recorded_after: nil)
             authorize!

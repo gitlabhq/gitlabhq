@@ -55,7 +55,7 @@ export default () => {
   const $boardApp = document.getElementById('board-app');
 
   // check for browser back and trigger a hard reload to circumvent browser caching.
-  window.addEventListener('pageshow', event => {
+  window.addEventListener('pageshow', (event) => {
     const isNavTypeBackForward =
       window.performance && window.performance.navigation.type === NavigationType.TYPE_BACK_FORWARD;
 
@@ -68,8 +68,10 @@ export default () => {
     issueBoardsApp.$destroy(true);
   }
 
-  boardsStore.create();
-  boardsStore.setTimeTrackingLimitToHours($boardApp.dataset.timeTrackingLimitToHours);
+  if (!gon?.features?.graphqlBoardLists) {
+    boardsStore.create();
+    boardsStore.setTimeTrackingLimitToHours($boardApp.dataset.timeTrackingLimitToHours);
+  }
 
   issueBoardsApp = new Vue({
     el: $boardApp,
@@ -117,16 +119,9 @@ export default () => {
       },
     },
     created() {
-      const endpoints = {
-        boardsEndpoint: this.boardsEndpoint,
-        recentBoardsEndpoint: this.recentBoardsEndpoint,
-        listsEndpoint: this.listsEndpoint,
-        bulkUpdatePath: this.bulkUpdatePath,
+      this.setInitialBoardData({
         boardId: $boardApp.dataset.boardId,
         fullPath: $boardApp.dataset.fullPath,
-      };
-      this.setInitialBoardData({
-        ...endpoints,
         boardType: this.parent,
         disabled: this.disabled,
         boardConfig: {
@@ -134,14 +129,23 @@ export default () => {
           milestoneTitle: $boardApp.dataset.boardMilestoneTitle || '',
           iterationId: parseInt($boardApp.dataset.boardIterationId, 10),
           iterationTitle: $boardApp.dataset.boardIterationTitle || '',
+          assigneeId: $boardApp.dataset.boardAssigneeId,
           assigneeUsername: $boardApp.dataset.boardAssigneeUsername,
-          labels: $boardApp.dataset.labels ? JSON.parse($boardApp.dataset.labels || []) : [],
+          labels: $boardApp.dataset.labels ? JSON.parse($boardApp.dataset.labels) : [],
+          labelIds: $boardApp.dataset.labelIds ? JSON.parse($boardApp.dataset.labelIds) : [],
           weight: $boardApp.dataset.boardWeight
             ? parseInt($boardApp.dataset.boardWeight, 10)
             : null,
         },
       });
-      boardsStore.setEndpoints(endpoints);
+      boardsStore.setEndpoints({
+        boardsEndpoint: this.boardsEndpoint,
+        recentBoardsEndpoint: this.recentBoardsEndpoint,
+        listsEndpoint: this.listsEndpoint,
+        bulkUpdatePath: this.bulkUpdatePath,
+        boardId: $boardApp.dataset.boardId,
+        fullPath: $boardApp.dataset.fullPath,
+      });
       boardsStore.rootPath = this.boardsEndpoint;
 
       eventHub.$on('updateTokens', this.updateTokens);
@@ -174,9 +178,9 @@ export default () => {
       initialBoardLoad() {
         boardsStore
           .all()
-          .then(res => res.data)
-          .then(lists => {
-            lists.forEach(list => boardsStore.addList(list));
+          .then((res) => res.data)
+          .then((lists) => {
+            lists.forEach((list) => boardsStore.addList(list));
             this.loading = false;
           })
           .catch(() => {
@@ -194,8 +198,8 @@ export default () => {
           setEpicFetchingState(newIssue, true);
           boardsStore
             .getIssueInfo(sidebarInfoEndpoint)
-            .then(res => res.data)
-            .then(data => {
+            .then((res) => res.data)
+            .then((data) => {
               const {
                 subscribed,
                 totalTimeSpent,
@@ -305,7 +309,7 @@ export default () => {
           if (!this.store) {
             return true;
           }
-          return !this.store.lists.filter(list => !list.preset).length;
+          return !this.store.lists.filter((list) => !list.preset).length;
         },
       },
       methods: {
@@ -335,7 +339,7 @@ export default () => {
   }
 
   mountMultipleBoardsSwitcher({
-    boardsEndpoint: $boardApp.dataset.boardsEndpoint,
-    recentBoardsEndpoint: $boardApp.dataset.recentBoardsEndpoint,
+    fullPath: $boardApp.dataset.fullPath,
+    rootPath: $boardApp.dataset.boardsEndpoint,
   });
 };

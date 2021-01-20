@@ -26,12 +26,12 @@ describe('User Popovers', () => {
     loadFixtures(fixtureTemplate);
 
     const usersCacheSpy = () => Promise.resolve(dummyUser);
-    jest.spyOn(UsersCache, 'retrieveById').mockImplementation(userId => usersCacheSpy(userId));
+    jest.spyOn(UsersCache, 'retrieveById').mockImplementation((userId) => usersCacheSpy(userId));
 
     const userStatusCacheSpy = () => Promise.resolve(dummyUserStatus);
     jest
       .spyOn(UsersCache, 'retrieveStatusById')
-      .mockImplementation(userId => userStatusCacheSpy(userId));
+      .mockImplementation((userId) => userStatusCacheSpy(userId));
 
     popovers = initUserPopovers(document.querySelectorAll(selector));
   });

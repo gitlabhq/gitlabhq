@@ -25,10 +25,11 @@ import {
   tokenValueLabel,
   tokenValueMilestone,
   tokenValueMembership,
+  tokenValueConfidential,
 } from './mock_data';
 
 jest.mock('~/vue_shared/components/filtered_search_bar/filtered_search_utils', () => ({
-  uniqueTokens: jest.fn().mockImplementation(tokens => tokens),
+  uniqueTokens: jest.fn().mockImplementation((tokens) => tokens),
   stripQuotes: jest.requireActual(
     '~/vue_shared/components/filtered_search_bar/filtered_search_utils',
   ).stripQuotes,
@@ -227,12 +228,13 @@ describe('FilteredSearchBarRoot', () => {
     });
 
     describe('removeQuotesEnclosure', () => {
-      const mockFilters = [tokenValueAuthor, tokenValueLabel, 'foo'];
+      const mockFilters = [tokenValueAuthor, tokenValueLabel, tokenValueConfidential, 'foo'];
 
       it('returns filter array with unescaped strings for values which have spaces', () => {
         expect(wrapper.vm.removeQuotesEnclosure(mockFilters)).toEqual([
           tokenValueAuthor,
           tokenValueLabel,
+          tokenValueConfidential,
           'foo',
         ]);
       });

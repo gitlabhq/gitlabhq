@@ -1,14 +1,16 @@
 <script>
 import { debounce } from 'lodash';
-import { GlTokenSelector, GlAvatar, GlAvatarLabeled } from '@gitlab/ui';
+import { GlTokenSelector, GlAvatar, GlAvatarLabeled, GlSprintf } from '@gitlab/ui';
+import { __ } from '~/locale';
 import { USER_SEARCH_DELAY } from '../constants';
-import Api from '~/api';
+import { getUsers } from '~/rest_api';
 
 export default {
   components: {
     GlTokenSelector,
     GlAvatar,
     GlAvatarLabeled,
+    GlSprintf,
   },
   props: {
     placeholder: {
@@ -32,12 +34,10 @@ export default {
     };
   },
   computed: {
-    newUsersToInvite() {
-      return this.selectedTokens
-        .map(obj => {
-          return obj.id;
-        })
-        .join(',');
+    emailIsValid() {
+      const regex = /.+@/;
+
+      return this.query.match(regex) !== null;
     },
     placeholderText() {
       if (this.selectedTokens.length === 0) {
@@ -54,9 +54,9 @@ export default {
       this.retrieveUsers(query);
     },
     retrieveUsers: debounce(function debouncedRetrieveUsers() {
-      return Api.users(this.query, this.$options.queryOptions)
-        .then(response => {
-          this.users = response.data.map(token => ({
+      return getUsers(this.query, this.$options.queryOptions)
+        .then((response) => {
+          this.users = response.data.map((token) => ({
             id: token.id,
             name: token.name,
             username: token.username,
@@ -69,7 +69,7 @@ export default {
         });
     }, USER_SEARCH_DELAY),
     handleInput() {
-      this.$emit('input', this.newUsersToInvite);
+      this.$emit('input', this.selectedTokens);
     },
     handleBlur() {
       this.hideDropdownWithNoItems = false;
@@ -86,6 +86,9 @@ export default {
     },
   },
   queryOptions: { exclude_internal: true, active: true },
+  i18n: {
+    inviteTextMessage: __('Invite "%{email}" by email'),
+  },
 };
 </script>
 
@@ -94,7 +97,7 @@ export default {
     v-model="selectedTokens"
     :dropdown-items="users"
     :loading="loading"
-    :allow-user-defined-tokens="false"
+    :allow-user-defined-tokens="emailIsValid"
     :hide-dropdown-with-no-items="hideDropdownWithNoItems"
     :placeholder="placeholderText"
     :aria-labelledby="ariaLabelledby"
@@ -115,6 +118,14 @@ export default {
         :label="dropdownItem.name"
         :sub-label="dropdownItem.username"
       />
+    </template>
+
+    <template #user-defined-token-content="{ inputText: email }">
+      <gl-sprintf :message="$options.i18n.inviteTextMessage">
+        <template #email>
+          <span>{{ email }}</span>
+        </template>
+      </gl-sprintf>
     </template>
   </gl-token-selector>
 </template>

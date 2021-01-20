@@ -7,9 +7,9 @@ module API
 
     prepend_if_ee('EE::API::BoardsResponses') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
-    before { authenticate! }
-
     feature_category :boards
+
+    before { authenticate! }
 
     helpers do
       def board_parent

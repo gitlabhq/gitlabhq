@@ -18,6 +18,8 @@ RSpec.describe Gitlab::UrlBuilder do
 
     where(:factory, :path_generator) do
       :project           | ->(project)       { "/#{project.full_path}" }
+      :board             | ->(board)         { "/#{board.project.full_path}/-/boards/#{board.id}" }
+      :group_board       | ->(board)         { "/groups/#{board.group.full_path}/-/boards/#{board.id}" }
       :commit            | ->(commit)        { "/#{commit.project.full_path}/-/commit/#{commit.id}" }
       :issue             | ->(issue)         { "/#{issue.project.full_path}/-/issues/#{issue.iid}" }
       :merge_request     | ->(merge_request) { "/#{merge_request.project.full_path}/-/merge_requests/#{merge_request.iid}" }

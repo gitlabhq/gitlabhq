@@ -11,7 +11,7 @@ class GitlabDanger
     karma
     database
     commit_messages
-    product_analytics
+    product_intelligence
     utility_css
     pajamas
     pipeline

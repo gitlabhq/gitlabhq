@@ -123,4 +123,16 @@ RSpec.describe GroupMember do
       end
     end
   end
+
+  context 'when group member expiration date is updated' do
+    let_it_be(:group_member) { create(:group_member) }
+
+    it 'emails the user that their group membership expiry has changed' do
+      expect_next_instance_of(NotificationService) do |notification|
+        allow(notification).to receive(:updated_group_member_expiration).with(group_member)
+      end
+
+      group_member.update!(expires_at: 5.days.from_now)
+    end
+  end
 end

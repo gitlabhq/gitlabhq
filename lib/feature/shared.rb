@@ -53,10 +53,12 @@ class Feature
         description: 'Short lived, used specifically to run A/B/n experiments.',
         optional: true,
         rollout_issue: true,
-        ee_only: true,
+        ee_only: false,
         default_enabled: false,
         example: <<-EOS
           experiment(:my_experiment, project: project, actor: current_user) { ...variant code... }
+          # or
+          Gitlab::Experimentation.in_experiment_group?(:my_experiment, subject: current_user)
         EOS
       }
     }.freeze

@@ -150,13 +150,7 @@ module ProjectsHelper
   end
 
   def can_change_visibility_level?(project, current_user)
-    return false unless can?(current_user, :change_visibility_level, project)
-
-    if project.fork_source
-      project.fork_source.visibility_level > Gitlab::VisibilityLevel::PRIVATE
-    else
-      true
-    end
+    can?(current_user, :change_visibility_level, project)
   end
 
   def can_disable_emails?(project, current_user)

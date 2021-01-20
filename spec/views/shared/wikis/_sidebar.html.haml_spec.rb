@@ -80,4 +80,28 @@ RSpec.describe 'shared/wikis/_sidebar.html.haml' do
       end
     end
   end
+
+  describe 'link to edit the sidebar' do
+    before do
+      allow(view).to receive(:can?).with(anything, :create_wiki, anything).and_return(can_edit)
+
+      render
+    end
+
+    context 'when the user has edit permission' do
+      let(:can_edit) { true }
+
+      it 'renders the link' do
+        expect(rendered).to have_link('Edit sidebar', href: wiki_page_path(wiki, Wiki::SIDEBAR, action: :edit))
+      end
+    end
+
+    context 'when the user does not have edit permission' do
+      let(:can_edit) { false }
+
+      it 'does not render the link' do
+        expect(rendered).not_to have_link('Edit sidebar')
+      end
+    end
+  end
 end

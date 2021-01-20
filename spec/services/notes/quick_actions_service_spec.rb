@@ -153,8 +153,8 @@ RSpec.describe Notes::QuickActionsService do
           expect(execute(note)).to be_empty
         end
 
-        it 'does not assign the milestone' do
-          expect { execute(note) }.not_to change { issue.reload.milestone }
+        it 'assigns the milestone' do
+          expect { execute(note) }.to change { issue.reload.milestone }.from(nil).to(milestone)
         end
       end
 
@@ -195,8 +195,8 @@ RSpec.describe Notes::QuickActionsService do
           expect(execute(note)).to be_empty
         end
 
-        it 'does not remove the milestone' do
-          expect { execute(note) }.not_to change { issue.reload.milestone }
+        it 'removes the milestone' do
+          expect { execute(note) }.to change { issue.reload.milestone }.from(milestone).to(nil)
         end
       end
 

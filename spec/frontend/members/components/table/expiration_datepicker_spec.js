@@ -25,7 +25,7 @@ describe('ExpirationDatepicker', () => {
     actions = {
       updateMemberExpiration: jest.fn(
         () =>
-          new Promise(resolve => {
+          new Promise((resolve) => {
             resolveUpdateMemberExpiration = resolve;
           }),
       ),
@@ -72,11 +72,9 @@ describe('ExpirationDatepicker', () => {
     });
 
     it('sets `minDate` prop as tomorrow', () => {
-      expect(
-        findDatepicker()
-          .props('minDate')
-          .toISOString(),
-      ).toBe(new Date('2020-3-16').toISOString());
+      expect(findDatepicker().props('minDate').toISOString()).toBe(
+        new Date('2020-3-16').toISOString(),
+      );
     });
 
     it('sets `target` prop as `null` so datepicker opens on focus', () => {

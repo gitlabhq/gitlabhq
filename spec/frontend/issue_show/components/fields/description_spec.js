@@ -8,7 +8,7 @@ describe('Description field component', () => {
   let vm;
   let store;
 
-  beforeEach(done => {
+  beforeEach((done) => {
     const Component = Vue.extend(descriptionField);
     const el = document.createElement('div');
     store = new Store({
@@ -38,7 +38,7 @@ describe('Description field component', () => {
     expect(vm.$el.querySelector('.md-area textarea').value).toBe('test');
   });
 
-  it('renders markdown field with a markdown description', done => {
+  it('renders markdown field with a markdown description', (done) => {
     store.formState.description = '**test**';
 
     Vue.nextTick(() => {

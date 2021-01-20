@@ -8,7 +8,7 @@ export const containerExpirationPolicyData = () => ({
   nextRunAt: '2020-11-19T07:37:03.941Z',
 });
 
-export const expirationPolicyPayload = override => ({
+export const expirationPolicyPayload = (override) => ({
   data: {
     project: {
       containerExpirationPolicy: {
