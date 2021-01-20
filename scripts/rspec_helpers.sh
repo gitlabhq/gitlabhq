@@ -75,6 +75,16 @@ function rspec_simple_job() {
   bin/rspec -Ispec -rspec_helper --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml ${rspec_opts}
 }
 
+function rspec_db_library_code() {
+  local db_files="spec/lib/gitlab/database/ spec/support/helpers/database/"
+
+  if [[ -d "ee/" ]]; then
+    db_files="${db_files} ee/spec/lib/gitlab/database/ ee/spec/lib/ee/gitlab/database_spec.rb"
+  fi
+
+  rspec_simple_job "-- ${db_files}"
+}
+
 function rspec_paralellized_job() {
   read -ra job_name <<< "${CI_JOB_NAME}"
   local test_tool="${job_name[0]}"

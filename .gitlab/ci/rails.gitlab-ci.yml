@@ -308,7 +308,7 @@ rspec db-library-code pg12:
     - .rails:rules:ee-and-foss-db-library-code
   script:
     - *base-script
-    - rspec_simple_job "-- spec/lib/gitlab/database/ spec/support/helpers/database/ ee/spec/lib/gitlab/database/ ee/spec/lib/ee/gitlab/database_spec.rb"
+    - rspec_db_library_code
 
 rspec fast_spec_helper:
   extends:
