@@ -22,8 +22,8 @@ describe('GroupsComponent', () => {
   let vm;
 
   beforeEach(() => {
-    Vue.component('group-folder', groupFolderComponent);
-    Vue.component('group-item', groupItemComponent);
+    Vue.component('GroupFolder', groupFolderComponent);
+    Vue.component('GroupItem', groupItemComponent);
 
     vm = createComponent();
 

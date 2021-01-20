@@ -219,8 +219,8 @@ The end result is that:
 - Docker images, including all CodeClimate images, are cached, and not re-fetched for subsequent jobs.
 
 With this configuration, the run time for a second pipeline is much shorter. For example
-this [small change](https://gitlab.com/drewcimino/test-code-quality-template/-/merge_requests/4/diffs?commit_id=1e705607aef7236c1b20bb6f637965f3f3e53a46)
-to an [open merge request](https://gitlab.com/drewcimino/test-code-quality-template/-/merge_requests/4/pipelines)
+this [small change](https://gitlab.com/drew/test-code-quality-template/-/merge_requests/4/diffs?commit_id=1e705607aef7236c1b20bb6f637965f3f3e53a46)
+to an [open merge request](https://gitlab.com/drew/test-code-quality-template/-/merge_requests/4/pipelines)
 running Code Quality analysis ran significantly faster the second time:
 
 ![Code Quality sequential runs without DinD](img/code_quality_host_bound_sequential.png)

@@ -19,7 +19,7 @@ describe('GroupFolderComponent', () => {
   let vm;
 
   beforeEach(() => {
-    Vue.component('group-item', groupItemComponent);
+    Vue.component('GroupItem', groupItemComponent);
 
     vm = createComponent();
     vm.$mount();

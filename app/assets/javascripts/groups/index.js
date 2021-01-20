@@ -33,8 +33,8 @@ export default (containerId = 'js-groups-tree', endpoint, action = '') => {
     dataEl = containerEl.querySelector(CONTENT_LIST_CLASS);
   }
 
-  Vue.component('group-folder', groupFolderComponent);
-  Vue.component('group-item', groupItemComponent);
+  Vue.component('GroupFolder', groupFolderComponent);
+  Vue.component('GroupItem', groupItemComponent);
 
   Vue.use(GlToast);
 
