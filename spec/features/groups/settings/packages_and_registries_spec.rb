@@ -47,6 +47,13 @@ RSpec.describe 'Group Packages & Registries settings' do
       sidebar = find('.nav-sidebar')
       expect(sidebar).to have_link _('Packages & Registries')
     end
+
+    it 'has a Package Registry section', :js do
+      visit_settings_page
+
+      expect(page).to have_content('Package Registry')
+      expect(page).to have_button('Collapse')
+    end
   end
 
   def find_settings_menu

@@ -141,7 +141,7 @@ Lint/BinaryOperatorWithIdenticalOperands:
     - 'ee/spec/lib/ee/gitlab/application_context_spec.rb'
     - 'spec/helpers/visibility_level_helper_spec.rb'
     - 'spec/lib/gitlab/conan_token_spec.rb'
-    - 'spec/lib/gitlab/danger/sidekiq_queues_spec.rb'
+    - 'spec/tooling/danger/sidekiq_queues_spec.rb'
     - 'spec/lib/gitlab/git/conflict/parser_spec.rb'
     - 'spec/lib/gitlab/graphql/lazy_spec.rb'
     - 'spec/models/ci/build_trace_chunk_spec.rb'
@@ -185,8 +185,8 @@ Lint/EmptyFile:
 # Cop supports --auto-correct.
 Lint/IdentityComparison:
   Exclude:
-    - 'spec/lib/gitlab/danger/weightage/maintainers_spec.rb'
-    - 'spec/lib/gitlab/danger/weightage/reviewers_spec.rb'
+    - 'spec/tooling/danger/weightage/maintainers_spec.rb'
+    - 'spec/tooling/danger/weightage/reviewers_spec.rb'
 
 # Offense count: 184
 # Configuration parameters: MaximumRangeSize.
@@ -263,7 +263,7 @@ Metrics/CyclomaticComplexity:
     - 'lib/banzai/filter/abstract_reference_filter.rb'
     - 'lib/declarative_policy/runner.rb'
     - 'lib/gitlab/conflict/file.rb'
-    - 'lib/gitlab/danger/roulette.rb'
+    - 'tooling/danger/roulette.rb'
     - 'lib/gitlab/diff/parser.rb'
     - 'lib/gitlab/rack_attack.rb'
     - 'lib/gitlab/sidekiq_cluster/cli.rb'
@@ -285,7 +285,7 @@ Metrics/PerceivedComplexity:
     - 'lib/banzai/renderer.rb'
     - 'lib/declarative_policy/runner.rb'
     - 'lib/gitlab/conflict/file.rb'
-    - 'lib/gitlab/danger/roulette.rb'
+    - 'tooling/danger/roulette.rb'
     - 'lib/gitlab/rack_attack.rb'
     - 'lib/gitlab/sidekiq_cluster/cli.rb'
     - 'lib/gitlab/utils/merge_hash.rb'
@@ -629,7 +629,7 @@ Rails/IndexBy:
     - 'ee/lib/gitlab/analytics/type_of_work/tasks_by_type.rb'
     - 'ee/lib/gitlab/elastic/document_reference.rb'
     - 'ee/lib/gitlab/group_plans_preloader.rb'
-    - 'lib/gitlab/danger/sidekiq_queues.rb'
+    - 'tooling/danger/sidekiq_queues.rb'
     - 'lib/gitlab/database/count/reltuples_count_strategy.rb'
     - 'lib/gitlab/language_detection.rb'
 

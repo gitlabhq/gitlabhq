@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative 'lib/gitlab_danger'
-require_relative 'lib/gitlab/danger/request_helper'
+require_relative 'tooling/gitlab_danger'
+require_relative 'tooling/danger/request_helper'
 
 danger.import_plugin('danger/plugins/helper.rb')
 danger.import_plugin('danger/plugins/roulette.rb')

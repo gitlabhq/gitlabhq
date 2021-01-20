@@ -13,7 +13,7 @@ module QA
         end.project.visit!
       end
 
-      it 'shows issue suggestions when creating a new issue', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/412' do
+      it 'shows issue suggestions when creating a new issue', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1175' do
         Page::Project::Show.perform(&:go_to_new_issue)
         Page::Project::Issue::New.perform do |new_page|
           new_page.fill_title("issue")

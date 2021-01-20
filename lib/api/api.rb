@@ -123,13 +123,32 @@ module API
 
     format :json
     formatter :json, Gitlab::Json::GrapeFormatter
+    content_type :json, 'application/json'
 
+    # Remove the `text/plain+deprecated` with `api_always_use_application_json` feature flag
     # There is a small chance some users depend on the old behavior.
     # We this change under a feature flag to see if affects GitLab.com users.
-    if Gitlab::Database.cached_table_exists?('features') && Feature.enabled?(:api_json_content_type)
-      content_type :json, 'application/json'
-    else
-      content_type :txt, 'text/plain'
+    # The `+deprecated` is added to distinguish content type
+    # as defined by `API::API` vs ex. `API::Repositories`
+    content_type :txt, 'text/plain+deprecated'
+
+    before do
+      # the feature flag workaround is only for `.txt`
+      api_format = env[Grape::Env::API_FORMAT]
+      next unless api_format == :txt
+
+      # get all defined content-types for the endpoint
+      api_endpoint = env[Grape::Env::API_ENDPOINT]
+      content_types = api_endpoint&.namespace_stackable_with_hash(:content_types).to_h
+
+      # Only overwrite `text/plain+deprecated`
+      if content_types[api_format] == 'text/plain+deprecated'
+        if Feature.enabled?(:api_always_use_application_json)
+          content_type 'application/json'
+        else
+          content_type 'text/plain'
+        end
+      end
     end
 
     # Ensure the namespace is right, otherwise we might load Grape::API::Helpers

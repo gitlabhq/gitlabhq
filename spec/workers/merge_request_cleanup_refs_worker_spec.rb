@@ -17,6 +17,18 @@ RSpec.describe MergeRequestCleanupRefsWorker do
           subject
         end
       end
+
+      context 'when merge_request_refs_cleanup flag is disabled' do
+        before do
+          stub_feature_flags(merge_request_refs_cleanup: false)
+        end
+
+        it 'does not clean up the merge request' do
+          expect(MergeRequests::CleanupRefsService).not_to receive(:new)
+
+          perform_multiple(1)
+        end
+      end
     end
 
     context 'when merge request does not exist' do

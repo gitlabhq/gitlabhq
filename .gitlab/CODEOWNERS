@@ -173,7 +173,7 @@
 /.gitlab/CODEOWNERS @gl-quality/eng-prod
 Dangerfile @gl-quality/eng-prod
 /danger/ @gl-quality/eng-prod
-/lib/gitlab/danger/ @gl-quality/eng-prod
+/tooling/danger/ @gl-quality/eng-prod
 /scripts/ @gl-quality/eng-prod
 /scripts/frontend/ @gl-quality/eng-prod @gitlab-org/maintainers/frontend
 /scripts/review_apps/seed-dast-test-data.sh @dappelt @ngeorge1 @gl-quality/eng-prod

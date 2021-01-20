@@ -6,7 +6,8 @@ export BUNDLE_INSTALL_FLAGS=${BUNDLE_INSTALL_FLAGS:-"--without=production develo
 
 if [ "$USE_BUNDLE_INSTALL" != "false" ]; then
   bundle --version
-  run_timed_command "bundle install --clean ${BUNDLE_INSTALL_FLAGS}"
+  bundle config set clean 'true'
+  run_timed_command "bundle install ${BUNDLE_INSTALL_FLAGS}"
   run_timed_command "bundle check"
   # When we test multiple versions of PG in the same pipeline, we have a single `setup-test-env`
   # job but the `pg` gem needs to be rebuilt since it includes extensions (https://guides.rubygems.org/gems-with-extensions).

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative File.expand_path('../../lib/gitlab/danger/commit_linter', __dir__)
-require_relative File.expand_path('../../lib/gitlab/danger/merge_request_linter', __dir__)
+require_relative File.expand_path('../../tooling/danger/commit_linter', __dir__)
+require_relative File.expand_path('../../tooling/danger/merge_request_linter', __dir__)
 
 COMMIT_MESSAGE_GUIDELINES = "https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#commit-messages-guidelines"
 MORE_INFO = "For more information, take a look at our [Commit message guidelines](#{COMMIT_MESSAGE_GUIDELINES})."
@@ -54,7 +54,7 @@ end
 # https://github.com/jonallured/danger-commit_lint because its output is not
 # very helpful, and it doesn't offer the means of ignoring merge commits.
 def lint_commit(commit)
-  linter = Gitlab::Danger::CommitLinter.new(commit)
+  linter = Tooling::Danger::CommitLinter.new(commit)
 
   # For now we'll ignore merge commits, as getting rid of those is a problem
   # separate from enforcing good commit messages.
@@ -93,7 +93,7 @@ end
 def lint_mr_title(mr_title)
   commit = Struct.new(:message, :sha).new(mr_title)
 
-  Gitlab::Danger::MergeRequestLinter.new(commit).lint
+  Tooling::Danger::MergeRequestLinter.new(commit).lint
 end
 
 def count_non_fixup_commits(commit_linters)

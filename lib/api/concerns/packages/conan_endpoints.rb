@@ -72,6 +72,7 @@ module API
 
           namespace 'users' do
             format :txt
+            content_type :txt, 'text/plain'
 
             desc 'Authenticate user against conan CLI' do
               detail 'This feature was introduced in GitLab 12.2'

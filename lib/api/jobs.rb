@@ -82,7 +82,8 @@ module API
         content_type 'text/plain'
         env['api.format'] = :binary
 
-        trace = build.trace.raw
+        # The trace can be nil bu body method expects a string as an argument.
+        trace = build.trace.raw || ''
         body trace
       end
 

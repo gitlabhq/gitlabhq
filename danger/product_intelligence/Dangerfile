@@ -22,10 +22,13 @@ tracking_files = [
   'app/helpers/tracking_helper.rb',
   'spec/helpers/tracking_helper_spec.rb',
   'app/assets/javascripts/tracking.js',
-  'spec/frontend/tracking_spec.js'
+  'spec/frontend/tracking_spec.js',
+  'generator_templates/usage_metric_definition/metric_definition.yml',
+  'lib/generators/rails/usage_metric_definition_generator.rb',
+  'spec/lib/generators/usage_metric_definition_generator_spec.rb'
 ]
 
-usage_data_changed_files = helper.changed_files(/usage_data/)
+usage_data_changed_files = helper.changed_files(%r{(usage_data)|(config/metrics)|(ee/config/metrics)})
 snowplow_events_changed_files = git.modified_files & tracking_files
 
 changed_files = (usage_data_changed_files + snowplow_events_changed_files)

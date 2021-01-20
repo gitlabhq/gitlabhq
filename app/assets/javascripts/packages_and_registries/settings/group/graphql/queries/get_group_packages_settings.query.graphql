@@ -1,0 +1,8 @@
+query getGroupPackagesSettings($fullPath: ID!) {
+  group(fullPath: $fullPath) {
+    packageSettings {
+      mavenDuplicatesAllowed
+      mavenDuplicateExceptionRegex
+    }
+  }
+}

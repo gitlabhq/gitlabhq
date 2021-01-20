@@ -9,7 +9,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'creates an issue', :reliable, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/432' do
+      it 'creates an issue', :reliable, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1167' do
         issue = Resource::Issue.fabricate_via_browser_ui!
 
         Page::Project::Menu.perform(&:click_issues)

@@ -1,6 +1,6 @@
 desc 'Run local Danger rules'
 task :danger_local do
-  require 'gitlab_danger'
+  require_relative '../../tooling/gitlab_danger'
   require 'gitlab/popen'
 
   puts("#{GitlabDanger.local_warning_message}\n")

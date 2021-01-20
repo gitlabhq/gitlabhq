@@ -20,6 +20,18 @@ RSpec.describe ScheduleMergeRequestCleanupRefsWorker do
       worker.perform
     end
 
+    context 'when merge_request_refs_cleanup flag is disabled' do
+      before do
+        stub_feature_flags(merge_request_refs_cleanup: false)
+      end
+
+      it 'does not schedule any merge request clean ups' do
+        expect(MergeRequestCleanupRefsWorker).not_to receive(:bulk_perform_in)
+
+        worker.perform
+      end
+    end
+
     include_examples 'an idempotent worker' do
       it 'schedules MergeRequestCleanupRefsWorker to be performed by batch' do
         expect(MergeRequestCleanupRefsWorker)

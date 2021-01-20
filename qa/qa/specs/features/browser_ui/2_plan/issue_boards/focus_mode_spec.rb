@@ -13,7 +13,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'focuses on issue board', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/820' do
+      it 'focuses on issue board', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1176' do
         project.visit!
 
         Page::Project::Menu.perform(&:go_to_boards)

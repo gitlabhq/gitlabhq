@@ -32,6 +32,7 @@ module API
       helpers ::API::Helpers::Packages::BasicAuthHelpers
 
       format :txt
+      content_type :txt, 'text/plain'
 
       rescue_from ArgumentError do |e|
         render_api_error!(e.message, 400)
