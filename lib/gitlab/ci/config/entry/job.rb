@@ -186,8 +186,6 @@ module Gitlab
           private
 
           def allow_failure_criteria
-            return unless ::Gitlab::Ci::Features.allow_failure_with_exit_codes_enabled?
-
             if allow_failure_defined? && allow_failure_value.is_a?(Hash)
               allow_failure_value
             end

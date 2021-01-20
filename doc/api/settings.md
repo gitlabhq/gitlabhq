@@ -307,7 +307,7 @@ listed in the descriptions of the relevant settings.
 | `maintenance_mode`                       | boolean          | no                                   | **(PREMIUM)** When instance is in maintenance mode, non-admin users can sign in with read-only access and make read-only API requests |
 | `max_artifacts_size`                     | integer          | no                                   | Maximum artifacts size in MB |
 | `max_attachment_size`                    | integer          | no                                   | Limit attachment size in MB |
-| `max_import_size`                        | integer          | no                                   | Maximum import size in MB. 0 for unlimited. Default = 0 (unlimited) |
+| `max_import_size`                        | integer          | no                                   | Maximum import size in MB. 0 for unlimited. Default = 0 (unlimited) [Modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to 0 in GitLab 13.8. |
 | `max_pages_size`                         | integer          | no                                   | Maximum size of pages repositories in MB |
 | `max_personal_access_token_lifetime`     | integer          | no                                   | **(ULTIMATE ONLY)** Maximum allowable lifetime for personal access tokens in days |
 | `metrics_method_call_threshold`          | integer          | no                                   | A method call is only tracked when it takes longer than the given amount of milliseconds. |

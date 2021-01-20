@@ -513,6 +513,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     context 'finishing pending background migration jobs' do
       let(:source_table_double) { double('table name') }
       let(:raw_arguments) { [1, 50_000, source_table_double, partitioned_table, source_column] }
+      let(:background_job) { double('background job', args: ['background jobs', raw_arguments]) }
 
       before do
         allow(migration).to receive(:table_exists?).with(partitioned_table).and_return(true)
@@ -528,7 +529,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
         expect(Gitlab::BackgroundMigration).to receive(:steal)
           .with(described_class::MIGRATION_CLASS_NAME)
-          .and_yield(raw_arguments)
+          .and_yield(background_job)
 
         expect(source_table_double).to receive(:==).with(source_table.to_s)
 

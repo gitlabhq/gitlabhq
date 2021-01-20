@@ -1,8 +1,0 @@
----
-name: ci_allow_failure_with_exit_codes
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49145
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/292024
-milestone: '13.7'
-type: development
-group: group::pipeline authoring
-default_enabled: true

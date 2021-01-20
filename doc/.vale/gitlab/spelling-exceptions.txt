@@ -233,6 +233,7 @@ Kubecost
 kubectl
 Kubernetes
 Kubesec
+Kustomize
 Laravel
 ldapsearch
 Lefthook

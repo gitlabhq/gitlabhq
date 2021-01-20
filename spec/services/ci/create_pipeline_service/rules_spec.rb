@@ -145,20 +145,6 @@ RSpec.describe Ci::CreatePipelineService do
         expect(find_job('job-2').options.dig(:allow_failure_criteria)).to be_nil
         expect(find_job('job-3').options.dig(:allow_failure_criteria, :exit_codes)).to eq([42])
       end
-
-      context 'with ci_allow_failure_with_exit_codes disabled' do
-        before do
-          stub_feature_flags(ci_allow_failure_with_exit_codes: false)
-        end
-
-        it 'does not persist allow_failure_criteria' do
-          expect(pipeline).to be_persisted
-
-          expect(find_job('job-1').options.key?(:allow_failure_criteria)).to be_falsey
-          expect(find_job('job-2').options.key?(:allow_failure_criteria)).to be_falsey
-          expect(find_job('job-3').options.key?(:allow_failure_criteria)).to be_falsey
-        end
-      end
     end
 
     context 'if:' do

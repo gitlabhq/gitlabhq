@@ -645,9 +645,9 @@ more information.
 
 To make sure only people from within your organization can access particular
 resources, you have the option to restrict access to groups and their
-underlying projects, issues, etc, by IP address. This can help ensure that
+underlying subgroups, projects, issues, and so on, by IP address. This can help ensure that
 particular content doesn't leave the premises, while not blocking off access to
-the entire instance.
+the entire instance. IP access restrictions can only be configured at the group level.
 
 Add one or more allowed IP subnets using CIDR notation to the group settings and anyone
 coming from a different IP address won't be able to access the restricted

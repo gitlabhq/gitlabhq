@@ -63,10 +63,6 @@ module Gitlab
         ::Feature.enabled?(:ci_pipeline_editor_page, project, default_enabled: :yaml)
       end
 
-      def self.allow_failure_with_exit_codes_enabled?
-        ::Feature.enabled?(:ci_allow_failure_with_exit_codes, default_enabled: :yaml)
-      end
-
       def self.rules_variables_enabled?(project)
         ::Feature.enabled?(:ci_rules_variables, project, default_enabled: true)
       end

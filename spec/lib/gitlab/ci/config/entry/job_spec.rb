@@ -763,16 +763,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
         it 'returns allow_failure_criteria' do
           expect(entry.value[:allow_failure_criteria]).to match(exit_codes: [42])
         end
-
-        context 'with ci_allow_failure_with_exit_codes disabled' do
-          before do
-            stub_feature_flags(ci_allow_failure_with_exit_codes: false)
-          end
-
-          it 'does not return allow_failure_criteria' do
-            expect(entry.value.key?(:allow_failure_criteria)).to be_falsey
-          end
-        end
       end
     end
   end

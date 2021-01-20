@@ -164,8 +164,8 @@ module Gitlab
               "this could indicate the previous partitioning migration has been rolled back."
           end
 
-          Gitlab::BackgroundMigration.steal(MIGRATION_CLASS_NAME) do |raw_arguments|
-            JobArguments.from_array(raw_arguments).source_table_name == table_name.to_s
+          Gitlab::BackgroundMigration.steal(MIGRATION_CLASS_NAME) do |background_job|
+            JobArguments.from_array(background_job.args.second).source_table_name == table_name.to_s
           end
 
           primary_key = connection.primary_key(table_name)

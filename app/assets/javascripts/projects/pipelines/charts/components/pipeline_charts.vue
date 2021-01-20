@@ -118,6 +118,7 @@ export default {
     },
     yAxis: {
       name: s__('Pipeline|Pipelines'),
+      minInterval: 1,
     },
   },
   get chartTitles() {

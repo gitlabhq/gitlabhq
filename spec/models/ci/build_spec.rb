@@ -4922,14 +4922,6 @@ RSpec.describe Ci::Build do
 
         it_behaves_like 'drops the build without changing allow_failure'
       end
-
-      context 'when ci_allow_failure_with_exit_codes is disabled' do
-        before do
-          stub_feature_flags(ci_allow_failure_with_exit_codes: false)
-        end
-
-        it_behaves_like 'drops the build without changing allow_failure'
-      end
     end
   end
 

@@ -1122,7 +1122,6 @@ module Ci
     end
 
     def conditionally_allow_failure!(exit_code)
-      return unless ::Gitlab::Ci::Features.allow_failure_with_exit_codes_enabled?
       return unless exit_code
 
       if allowed_to_fail_with_code?(exit_code)

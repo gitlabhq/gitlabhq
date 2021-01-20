@@ -55,7 +55,7 @@ RSpec.describe Gitlab::BackgroundMigration do
             expect(described_class).to receive(:perform)
               .with('Foo', [10, 20])
 
-            described_class.steal('Foo') { |(arg1, arg2)| arg1 == 10 && arg2 == 20 }
+            described_class.steal('Foo') { |job| job.args.second.first == 10 && job.args.second.second == 20 }
           end
 
           it 'does not steal jobs that do not match the predicate' do
