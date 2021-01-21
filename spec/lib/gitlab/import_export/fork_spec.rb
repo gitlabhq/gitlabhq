@@ -12,7 +12,7 @@ RSpec.describe 'forked project import' do
   let(:shared) { project.import_export_shared }
   let(:forked_from_project) { create(:project, :repository) }
   let(:forked_project) { fork_project(project_with_repo, nil, repository: true) }
-  let(:repo_saver) { Gitlab::ImportExport::RepoSaver.new(project: project_with_repo, shared: shared) }
+  let(:repo_saver) { Gitlab::ImportExport::RepoSaver.new(exportable: project_with_repo, shared: shared) }
   let(:bundle_path) { File.join(shared.export_path, Gitlab::ImportExport.project_bundle_filename) }
 
   let(:repo_restorer) do

@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Links Inner component with a large number of needs matches snapshot and has expected path 1`] = `
+"<div class=\\"gl-display-flex gl-relative\\"><svg id=\\"link-svg\\" viewBox=\\"0,0,1019,445\\" width=\\"1019px\\" height=\\"445px\\" class=\\"gl-absolute\\">
+    <path d=\\"M202,118L42,118C72,118,72,138,102,138\\" stroke-width=\\"2\\" class=\\"gl-fill-transparent gl-transition-duration-slow gl-transition-timing-function-ease gl-stroke-gray-200\\"></path>
+    <path d=\\"M202,118L52,118C82,118,82,148,112,148\\" stroke-width=\\"2\\" class=\\"gl-fill-transparent gl-transition-duration-slow gl-transition-timing-function-ease gl-stroke-gray-200\\"></path>
+    <path d=\\"M222,138L62,138C92,138,92,158,122,158\\" stroke-width=\\"2\\" class=\\"gl-fill-transparent gl-transition-duration-slow gl-transition-timing-function-ease gl-stroke-gray-200\\"></path>
+    <path d=\\"M212,128L72,128C102,128,102,168,132,168\\" stroke-width=\\"2\\" class=\\"gl-fill-transparent gl-transition-duration-slow gl-transition-timing-function-ease gl-stroke-gray-200\\"></path>
+    <path d=\\"M232,148L82,148C112,148,112,178,142,178\\" stroke-width=\\"2\\" class=\\"gl-fill-transparent gl-transition-duration-slow gl-transition-timing-function-ease gl-stroke-gray-200\\"></path>
+  </svg> </div>"
+`;
+
+exports[`Links Inner component with a parallel need matches snapshot and has expected path 1`] = `
+"<div class=\\"gl-display-flex gl-relative\\"><svg id=\\"link-svg\\" viewBox=\\"0,0,1019,445\\" width=\\"1019px\\" height=\\"445px\\" class=\\"gl-absolute\\">
+    <path d=\\"M192,108L22,108C52,108,52,118,82,118\\" stroke-width=\\"2\\" class=\\"gl-fill-transparent gl-transition-duration-slow gl-transition-timing-function-ease gl-stroke-gray-200\\"></path>
+  </svg> </div>"
+`;
+
+exports[`Links Inner component with one need matches snapshot and has expected path 1`] = `
+"<div class=\\"gl-display-flex gl-relative\\"><svg id=\\"link-svg\\" viewBox=\\"0,0,1019,445\\" width=\\"1019px\\" height=\\"445px\\" class=\\"gl-absolute\\">
+    <path d=\\"M202,118L42,118C72,118,72,138,102,138\\" stroke-width=\\"2\\" class=\\"gl-fill-transparent gl-transition-duration-slow gl-transition-timing-function-ease gl-stroke-gray-200\\"></path>
+  </svg> </div>"
+`;

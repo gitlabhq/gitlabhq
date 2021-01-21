@@ -21,6 +21,8 @@ UsageData/LargeTable:
     - :Gitaly::Server
     - :Gitlab::UsageData
     - :Gitlab::UsageDataCounters
+    - :Arel::Nodes::NamedFunction
+    - :Arel
     - :License
     - :Rails
     - :Time

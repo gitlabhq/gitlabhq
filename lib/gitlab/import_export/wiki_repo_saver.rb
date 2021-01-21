@@ -3,17 +3,18 @@
 module Gitlab
   module ImportExport
     class WikiRepoSaver < RepoSaver
-      def save
-        wiki = ProjectWiki.new(project)
-        @repository = wiki.repository
+      extend ::Gitlab::Utils::Override
 
-        super
+      override :repository
+      def repository
+        @repository ||= exportable.wiki.repository
       end
 
       private
 
-      def bundle_full_path
-        File.join(shared.export_path, ImportExport.wiki_repo_bundle_filename)
+      override :bundle_filename
+      def bundle_filename
+        ::Gitlab::ImportExport.wiki_repo_bundle_filename
       end
     end
   end

@@ -1,5 +1,0 @@
----
-title: Fix installation of Knative under Helm 3
-merge_request: 49843
-author:
-type: fixed

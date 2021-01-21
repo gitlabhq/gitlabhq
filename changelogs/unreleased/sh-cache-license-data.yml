@@ -1,5 +1,0 @@
----
-title: Cache license data in a process-memory cache
-merge_request: 50318
-author:
-type: performance

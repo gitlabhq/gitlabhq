@@ -1,6 +1,0 @@
----
-title: Add a new Ruby API for specifying allowed authentication mechanisms
-  for REST API endpoints
-merge_request: 38627
-author: Ethan Reesor (@firelizzard)
-type: other

@@ -238,7 +238,7 @@ In GitLab 8.17 and later, GitLab requires the use of Node to compile JavaScript
 assets, and Yarn to manage JavaScript dependencies. The current minimum
 requirements for these are:
 
-- `node` >= v10.13.0. (We recommend node 12.x as it is faster)
+- `node` >= v10.14.2. (We recommend node 14.x as it is faster)
 - `yarn` >= v1.10.0.
 
 In many distros,
@@ -246,8 +246,8 @@ the versions provided by the official package repositories are out of date, so
 we need to install through the following commands:
 
 ```shell
-# install node v12.x
-curl --location "https://deb.nodesource.com/setup_12.x" | sudo bash -
+# install node v14.x
+curl --location "https://deb.nodesource.com/setup_14.x" | sudo bash -
 sudo apt-get install -y nodejs
 
 curl --silent --show-error "https://dl.yarnpkg.com/debian/pubkey.gpg" | sudo apt-key add -

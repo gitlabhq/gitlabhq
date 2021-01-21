@@ -18,6 +18,16 @@ module BulkImports
 
         BulkImports::Importers::GroupImporter.new(entity).execute
       end
+
+    rescue => e
+      extra = {
+        bulk_import_id: entity&.bulk_import&.id,
+        entity_id: entity&.id
+      }
+
+      Gitlab::ErrorTracking.track_exception(e, extra)
+
+      entity&.fail_op
     end
   end
 end

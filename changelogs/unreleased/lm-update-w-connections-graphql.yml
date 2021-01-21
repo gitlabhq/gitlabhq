@@ -1,5 +1,0 @@
----
-title: Update ci config type for GraphQL to use connection_type
-merge_request: 50160
-author:
-type: changed

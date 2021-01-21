@@ -1,5 +1,0 @@
----
-title: Fix multiple errors in custom server hook render improperly
-merge_request: 51001
-author: Kev @KevSlashNull
-type: fixed

@@ -11,14 +11,14 @@ module StatAnchorsHelper
   private
 
   def button_attribute(anchor)
-    "btn-#{anchor.class_modifier || 'missing'}"
+    "btn-#{anchor.class_modifier || 'dashed'}"
   end
 
   def extra_classes(anchor)
     if anchor.is_link
       'stat-link'
     else
-      "btn #{button_attribute(anchor)}"
+      "gl-button btn #{button_attribute(anchor)}"
     end
   end
 end

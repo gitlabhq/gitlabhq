@@ -1,5 +1,11 @@
 # Changelog for gitlab-workhorse
 
+## v8.61.0
+
+### Fixed
+- Revert "Support Git HTTP on toplevel repositories"
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/681
+
 ## v8.60.0
 
 ### Added

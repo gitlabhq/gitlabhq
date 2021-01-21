@@ -694,12 +694,6 @@ func testAuthServer(t *testing.T, url *regexp.Regexp, params url.Values, code in
 	return testhelper.TestServerWithHandler(url, func(w http.ResponseWriter, r *http.Request) {
 		require.NotEmpty(t, r.Header.Get("X-Request-Id"))
 
-		// return a 204 No Content response if we don't receive the JWT header
-		if r.Header.Get(secret.RequestHeader) == "" {
-			w.WriteHeader(204)
-			return
-		}
-
 		w.Header().Set("Content-Type", api.ResponseContentType)
 
 		logEntry := log.WithFields(log.Fields{

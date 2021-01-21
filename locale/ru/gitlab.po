@@ -7189,7 +7189,7 @@ msgstr ""
 msgid "Code Review Analytics displays a table of open merge requests considered to be in code review. There are currently no merge requests in review for this project and/or filters."
 msgstr "Аналитика Рецензирования отображает список открытых запросов на слияние, которые находятся на стадии проверки кода. В настоящее время для данного проекта и/или фильтров отсутствуют рецензируемые запросы на слияние."
 
-msgid "Code coverage statistics for master %{start_date} - %{end_date}"
+msgid "Code coverage statistics for %{ref} %{start_date} - %{end_date}"
 msgstr ""
 
 msgid "Code owner approval is required"

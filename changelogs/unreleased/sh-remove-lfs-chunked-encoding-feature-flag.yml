@@ -1,5 +1,0 @@
----
-title: Remove lfs_chunked_encoding feature flag
-merge_request: 50557
-author:
-type: changed

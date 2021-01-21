@@ -3,7 +3,6 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200217225719_schedule_migrate_security_scans.rb')
 
-# rubocop: disable RSpec/FactoriesInMigrationSpecs
 RSpec.describe ScheduleMigrateSecurityScans, :sidekiq do
   let(:migration) { described_class.new }
   let(:namespaces) { table(:namespaces) }
@@ -13,7 +12,7 @@ RSpec.describe ScheduleMigrateSecurityScans, :sidekiq do
 
   let(:namespace) { namespaces.create!(name: "foo", path: "bar") }
   let(:project) { projects.create!(namespace_id: namespace.id) }
-  let(:build) { builds.create! }
+  let(:job) { builds.create! }
 
   before do
     stub_const("#{described_class.name}::BATCH_SIZE", 1)
@@ -35,8 +34,8 @@ RSpec.describe ScheduleMigrateSecurityScans, :sidekiq do
   end
 
   context 'has security job artifacts' do
-    let!(:job_artifact_1) { job_artifacts.create!(project_id: project.id, job_id: build.id, file_type: 5) }
-    let!(:job_artifact_2) { job_artifacts.create!(project_id: project.id, job_id: build.id, file_type: 8) }
+    let!(:job_artifact_1) { job_artifacts.create!(project_id: project.id, job_id: job.id, file_type: 5) }
+    let!(:job_artifact_2) { job_artifacts.create!(project_id: project.id, job_id: job.id, file_type: 8) }
 
     it 'schedules migration of security scans' do
       Sidekiq::Testing.fake! do
@@ -52,8 +51,8 @@ RSpec.describe ScheduleMigrateSecurityScans, :sidekiq do
   end
 
   context 'has non-security job artifacts' do
-    let!(:job_artifact_1) { job_artifacts.create!(project_id: project.id, job_id: build.id, file_type: 4) }
-    let!(:job_artifact_2) { job_artifacts.create!(project_id: project.id, job_id: build.id, file_type: 9) }
+    let!(:job_artifact_1) { job_artifacts.create!(project_id: project.id, job_id: job.id, file_type: 4) }
+    let!(:job_artifact_2) { job_artifacts.create!(project_id: project.id, job_id: job.id, file_type: 9) }
 
     it 'schedules migration of security scans' do
       Sidekiq::Testing.fake! do

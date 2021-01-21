@@ -69,18 +69,16 @@ export default {
 
     <div v-else-if="isInstalled">
       <div v-if="hasFunctionData">
-        <template>
-          <div class="groups-list-tree-container js-functions-wrapper">
-            <ul class="content-list group-list-tree">
-              <environment-row
-                v-for="(env, index) in getFunctions"
-                :key="index"
-                :env="env"
-                :env-name="index"
-              />
-            </ul>
-          </div>
-        </template>
+        <div class="groups-list-tree-container js-functions-wrapper">
+          <ul class="content-list group-list-tree">
+            <environment-row
+              v-for="(env, index) in getFunctions"
+              :key="index"
+              :env="env"
+              :env-name="index"
+            />
+          </ul>
+        </div>
         <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-3 gl-mb-3 js-functions-loader" />
       </div>
       <div v-else class="empty-state js-empty-state">

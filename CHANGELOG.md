@@ -2,6 +2,363 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.8.0 (2021-01-22)
+
+### Security (4 changes, 1 of them is from the community)
+
+- The NuGet endpoints will no longer ignore an invalid username when a personal access token or deploy token is passed via HTTP Basic authentication. !38627 (Ethan Reesor (@firelizzard))
+- Update WEBrick to v1.6.1. !50720
+- Prevent user-defined variables from being used by non-maintainers. !51682
+- Upgrade Workhorse to 8.58.2.
+
+### Removed (2 changes)
+
+- Drop group_id column from compliance_management_frameworks table. !50829
+- Remove deprecated generic alert integration in favor of HTTP Integrations. !50913
+
+### Fixed (91 changes, 35 of them are from the community)
+
+- Deduplicate labels with identical title and group. !37148
+- Remove diff display preferences and file tree from changes empty state. !43467
+- Upgrade to Grape v1.5.0. !44554
+- Fix database timeout errors when removing expired job artifacts. !47496
+- Return release milestones in predictable order. !47700
+- Fix multiple simultaneous requests for vulnerabilities on pipeline security tab. !48426
+- Remove duplicate service records. !49463
+- Add LaTeX support for Jupyter Notebooks. !49497
+- Fix confusing button text when importing from GitHub. !49684 (Kev @KevSlashNull)
+- Fix identicon text color in dark mode. !49785 (@yo)
+- Fix installation of Knative under Helm 3. !49843
+- Hide inoperable group search Releases filter. !50010
+- Fix visibility level validation for deep nested forks. !50081
+- Change type of CiJob.needs. !50192
+- Handle git errors when cleaning up MR refs. !50250
+- Fix over-eagerly updating Web IDE Live Preview. !50255
+- Persist updated_at value in state change events. !50272
+- Enlarge the timeline toggle button. !50284
+- Hide "Actions" label on group members view if no action buttons exist. !50304
+- Fix bug with snippets in HEAD when default branch is not master. !50366
+- Add project scope to ci clint graphql endpoint. !50418
+- Fix the graphQL type for container repository tags. !50419
+- Allow more actions on group members. !50445
+- Don't allow filtering by release tag on groups. !50457
+- Flash transfer errors in the admin project controller. !50541 (Vincent Fazio)
+- Update cluster-applications to v0.37.0. !50548
+- Fix codeowners superseding web ide and single file edit. !50608
+- Update Terraform Pipline templaes to support 0.14 lockfile cache. !50647 (Aurelian Shuttleworth)
+- Fix issue with the `default_merge_refs` feature flag removing version to version diffs. !50671
+- Fix LDAP override throws 404 when member has Minimal access. !50680
+- Maven will return the most recent maven-metadata.xml file if there are multiple matches accross different projects. !50700
+- Avoid 409 StaleObjectError errors with /rebase. !50719
+- New project guidelines are no longer displayed. !50736 (Roger Meier)
+- Add RateLimit-* headers to RackAttack responses. !50833 (adam-moss)
+- Fix 500 error on repository settings access when repository is empty. !50844 (Diego Louzán)
+- Update toast position on set status. !50886
+- Fix duplicated toggle button showing on right sidebar when signed out. !50892
+- Fix fork icon shrinks if branch name is very long. !50915 (Kev @KevSlashNull)
+- Fix 'copy sha' in 'add previous commits' modal doesn't copy. !50921 (Kev @KevSlashNull)
+- Fix large S3 uploads failing to finalize. !50922
+- Fix webhook badge color in darkmode. !50943 (Yogi (@yo))
+- Remove border radius for sidekiq iframe card. !50955 (Yogi (@yo))
+- Align checkbox in system hooks page in admin. !50958 (Yogi (@yo))
+- Fix import issues button style. !50969 (Yogi (@yo))
+- Fix mobile layout Error Tracking details page. !50970 (Kev @KevSlashNull)
+- Fix cobertura parser when there is an empty sources node. !50971
+- Fix branch name overflows in profile activity section. !50975 (Kev @KevSlashNull)
+- Fix abuse reports contains html and does not show repoter. !50983 (Kev @KevSlashNull)
+- Rename button "CI lint" to "CI Lint" on jobs page. !50987 (Kev @KevSlashNull)
+- Align admin notes label to the left. !50992 (Kev @KevSlashNull)
+- Fix multiple errors in custom server hook render improperly. !51001 (Kev @KevSlashNull)
+- Fix Jira MR status not syncing by making workers idempotent. !51006
+- Show status of snippet author in header. !51030 (Kev @KevSlashNull)
+- Fix slack application helper card. !51034 (Yogi (@yo))
+- Remove margin top for snippets empty state. !51038 (Yogi (@yo))
+- Invalidate reviews counter cache when MR gets closed/merged/reopened. !51055
+- Fix merge request analytics page filtering when multiple labels are given. !51060
+- Fix admin project overview badge alignment. !51066 (Kev @KevSlashNull)
+- Strip newline from commit description on project overview. !51099 (Kev @KevSlashNull)
+- Fix alignment of protected tag and branch labels on mobile. !51100 (Kev @KevSlashNull)
+- Fix 500 errors entering a webhook URL not encoded. !51109
+- Fix long deploy token name overflows revocation modal. !51114 (Kev @KevSlashNull)
+- Use an empty body when sending a file with X-Sendfile. !51115
+- Ensure Rake DB create doesn't fail when LDAP is enabled. !51132
+- Fix runner admin is missing CI status styles. !51158 (Kev @KevSlashNull)
+- Fix jobs admin is missing CI status styles. !51161 (Kev @KevSlashNull)
+- Fix color of hamburger in dark mode. !51168 (Kev @KevSlashNull)
+- Fix padding of user admin search bar on mobile. !51170 (Kev @KevSlashNull)
+- Make todo filter sort input full width on mobile. !51171 (Kev @KevSlashNull)
+- Correctly handle Gitaly being unavailable in more locations. !51222
+- Prevent rebase from being run in quick action when there are conflicts. !51243
+- Fix cut off line number in file blame. !51259
+- Add margin to user chat settings. !51282 (Yogi (@yo))
+- Invalidate reviews counter cache when MR gets created. !51316
+- Forbid snippet pushes when repo is read-only. !51318
+- Fix tertiary button color in dark mode. !51349
+- Fix table columm shift with table-layout fixed. !51416
+- Conditionally show card footer in single group page in admin. !51426 (Yogi (@yo))
+- Fix argument type for background migration. !51475
+- Correct status indicator for jobs groups when failure is allowed. !51478 (Sune Keller (sirlatrom))
+- In WebIDE switch files before closing the active one. !51483
+- Fix behavior of maven_duplicates_allowed setting so new Maven packages can be uploaded. !51524
+- Fix script typo in secret detection template causing the detection to be skipped. !51544 (Vicken Simonian @vicken.papaya)
+- Rename Backlog list to Open in issue boards. !51562
+- Update GraphqlExtractor return value to be original hash. !51596
+- Fixed applied message showing before discussion gets resolved. !51605
+- Generate page-info for connections of preloaded associations. !51642
+- Fix typo in notice displayed when Design Management requires LFS to be enabled. !51644
+- Fix coverage not showing for inline diffs. !51652
+- Fix issues when Web IDE commits to new branch. !51654
+- Remove EE references from FOSS code. !51832
+
+### Deprecated (2 changes)
+
+- Deprecate prometheus.listen_address and prometheus.enable. !50500
+- Refactor(opsgenie): remove Opsgenie integration frontend code from Incident management. !50525
+
+### Changed (75 changes, 9 of them are from the community)
+
+- Increase the complexity score of GraphQL MergeRequest#approved, MergeRequest#approvalsLeft and Repository#exists fields as they can call Gitaly. !47039
+- Move deploy boards to Core. !47147
+- Improve error message when username and namespace conflict. !47537
+- Improve error messages when adding namespaces in Jira Connect App. !48651
+- Update puma & puma_worker_killer to upstream. !48897
+- Replace dropdown-input-fa-color with gray-500. !49213
+- Adds MergeRequest.reviewers to GraphQL API. !49707
+- Reorganize project member management into tabs. !49764
+- Standardize page title styles on all wiki pages. !49777
+- Ensure container_expiration_policy keep_n is an integer. !49805 (Mathieu Parent)
+- When retrying jobs associate subsequent jobs with triggering user. !49833
+- Allow collaboration on merge requests across forks by default. !49904 (Jonston Chan @JonstonChan)
+- Add PostgreSQL trigger to maintain projects.has_external_wiki. !49916
+- Limit the number of container tags to delete when deleting them in bulk. !49961
+- Remove extra space in API 403 Forbidden error message. !50016
+- Enable collect_package_events_redis by default. !50092
+- Remove total_pipeline_duration from project_type. !50093
+- Use Patroni as the default in the replication docs. !50101
+- Fix package event metrics aggregation. !50108
+- Upgrade CodeQuality version in CI template to 0.85.19. !50118
+- Defer tagsCount & add startup.js to container registry. !50147
+- Update ci config type for GraphQL to use connection_type. !50160
+- [RUN-AS-IF-FOSS] Move to `createBoard` mutation instead of REST API call + `updateBoard`. !50171
+- Adjust container registry metadata during loading. !50181
+- Allow group owners and auditors to login to SSO-enforced groups without SSO. !50199
+- Update .net Project Template Archive. !50321
+- Add button to edit custom Wiki sidebar. !50323 (Frank Li)
+- Update Rails Project Template archive. !50325
+- Updated Express Project Template archive. !50326
+- Change clusters.helm_major_version default to 3. !50399
+- More concise pipeline notification emails. !50405
+- Rename coverage report sidekiq queue. !50424
+- Use a dynamic segment not depending on the package id for Debian files. !50433 (Mathieu Parent)
+- Remove lfs_chunked_encoding feature flag. !50557
+- Adds annotations as part of metadata for CiliumNetworkPolicies wrapper. !50586
+- Add manual bridge support to api. !50634
+- Add issue link to due date emails. !50642
+- Updates graphql gitlab-ci.yml linter implementation. !50664
+- Add additional fields to diff_metadata.json endpoint. !50666
+- Check namespace package settings when creating Maven packages. !50691
+- Change onboarding actions table to use one record per namespace. !50711
+- Improve the reliability and observability of the container registry client. !50750
+- Remove inactive integrations indicator in index and show pages. !50753
+- Add tags count and cleanup status to registry details. !50756
+- Update merge request status box without reloading page. !50761
+- Add error handling in the container registry delete tags service. !50763
+- Update the maven package finder. !50774
+- Move Group Migration entities import to individual sidekiq jobs. !50781
+- Prevent locked Terraform states from being deleted. !50798
+- API: Exposes errors in lint endpoint. !50891
+- Indent child form elements in integrations form. !50929
+- Wiki edit: automatically focus on the content field. !50941 (Jacopo Beschi @jacopo-beschi)
+- Limit Group Migration extractors and loaders to 1 per pipeline. !50951
+- Add space and helper to the group members page. !50954 (Yogi (@yo))
+- Add access request endpoint to OpenAPI standard. !51000 (Jim Cser)
+- Use GlBadge for badges in pipeline_url.vue. !51058 (Kev @KevSlashNull)
+- Migrate `deleteBoard` board_store function to GraphQL mutation. !51069
+- Skip secret_detection on tags. !51129
+- Remove pagination from Deployment Frequency API endpoint. !51137
+- Updates regex for group_name to support numbers in job name. !51157
+- Migrate GitLab UI button for Merge Request Approvals settings. !51159 (George Tsiolis)
+- Enable reviewer_approval_rules by default. !51183
+- Remove limit of four features per plan. !51264
+- Disable submit button on wiki if no title and content. !51272
+- Wiki: Add author avatar and link. !51273
+- Update the DAST latest template to run when configured even if the user doesn't have sufficient permission. !51279
+- Resolve Grouping/swimlanes choice should persist after board has been edited. !51317
+- Extract expired pipeline artifacts removal service into it's own background worker. !51323
+- Bump workhorse to 8.59.0. !51329
+- Update Issue Incidents to allow the milestones feature to be used in the sidebar and quick actions. !51456
+- Remove test_failure_history flag. !51464
+- Update pipeline graphs on CI/CD Analytics page to use GraphQL endpoint. !51504
+- Redirect deprecated profile paths to scoped path. !51646
+- Default enable set_user_availability_status. !51668
+- Add visibility mismatch warning to the branch chooser. !51671
+
+### Performance (16 changes)
+
+- Lower /explore page limit. !50233
+- Cache license data in a process-memory cache. !50318
+- Fix N+1 queries with loading group issues with GraphQL. !50328
+- Performance improvements for CI GraphQL resources. !50386
+- Index ci_pipelines on pipeline_schedule_id and id. !50478
+- Fix N+1 when rendering snippets in the dashboard. !50569
+- During group deletion, only enqueue jobs for project_authorizations refresh if the group being deleted has other groups shared with it. !50617
+- Switch to 2x faster PRNG. !50811
+- Improve the database query performance on the pipeline loading in merge requests. !50818
+- Reduce per-page size in release index pages for loading faster. !50934
+- Spread monthly CI minutes reset from 8 to 24 hours. !51084
+- CI: use commit SHA in persistent refspec. !51208
+- Use Puma `nakayoshi_fork`. !51467
+- Limit rendering of commit messages. !51485
+- Remove pipeline status from /explore page. !51621
+- Lower allocations when building nav. !51628
+
+### Added (66 changes, 6 of them are from the community)
+
+- Add ability to get admins via REST and GraphQL API. !46244
+- Add flutter CI/CD template. !46968
+- Add migration to swap partitioned audit_events. !47581
+- Add the NuGet group level API. !48356
+- Instrument viewing merge request diffs file by file. !48470
+- Allow HTTP Basic Auth and deploy token authentication for generic packages. !48540 (Moshe Katz @kohenkatz)
+- Stop unlinking the fork when changing visibility. !49013
+- New user/issue specific email address for creating/forwarding to an issue. !49050
+- Add GraphQL mutation to create on-call rotations. !49206
+- Add ability for admins to create PAT for other users via API. !49222
+- Add snippet repository storage move API endpoints. !49228
+- Add keep latest artifact option for projects. !49256
+- Debian Group and Project Distributions. !49405 (Mathieu Parent)
+- Add table for tracking on-call shifts. !49423
+- Add 5-minute-production-app CI template. !49487
+- UI to opt out of keeping the artifacts from the last job at project level. !49500
+- Debian File Metadata. !49692 (Mathieu Parent)
+- Add epic board list table. !49728
+- Enable OAuth PKCE flow. !49756
+- Add artifacts:public boolean. !49775
+- Add a quick action for /rebase. !49800
+- Populate `finding_uuid` attribute for the existing `vulnerability_feedback` records. !49807
+- Expose hide_backlog_list and hide_closed_list to project and group boards REST API. !49815 (Mathieu Parent)
+- Expose notes resolved_at via API. !49821 (Lee Tickett)
+- Add toggle to disable Operations in settings. !49919
+- Add rake gitlab:git:checksum_projects. !49965
+- Extend MergeRequestFinder to search by squash and merge commits. !49968
+- Add delete metric image REST API endpoint. !50043
+- Add namespace settings to allow or disallow duplicate Maven packages. !50104
+- Add copy email to issue sidebar. !50127
+- Add rake task for migrating legacy pages storage to zip deployments. !50153
+- Project Template for Kotlin native. !50162
+- Track usage for Terraform State API. !50224
+- Add group MR approval settings table. !50256
+- Add DevOps adoption end_time column. !50257
+- Auto-assign merge request author when creating from issue. !50263
+- Added epic board position database index. !50277
+- Include the user id in the webhook payload. !50287
+- Add project config path as a predefined project variable. !50301
+- Send email when group member expiry is updated. !50310
+- Implement variables for pipeline job rules. !50501
+- Add DAST.latest.gitlab-ci.yml. !50539
+- Add `dismissal_reason` column into the `vulnerability_feedback` table. !50632
+- Add setting to enable Invisible Captcha. !50650
+- Add include_versionless param to the Package API. !50669
+- Allow custom response to be set when rate limits are exceeded. !50693
+- Exposed web_path and web_url fields in Board's GraphQL API. !50947
+- Add aggregate/union visit tracking for Compliance features. !50978
+- Display Artifacts Dropdown on MR Pipeline Widget. !50998
+- Add composer details GraphQL type and query. !51059
+- Add skipped status to deployments. !51068
+- Persist 'squash_commit_sha' when squashing. !51074
+- Add confidentiality filtering to the epics REST API and GraphQL endpoints. !51105
+- Add API command to remove pending member invitation. !51134
+- Add configurable Gitpod button within projcet repository page. !51197
+- Allow users to use IssueDeployedToProduction VSA event. !51199
+- Show all quick actions in `/` autocomplete. !51239
+- Debian Group and Project Distribution Architectures. !51265 (Mathieu Parent)
+- Initially sync Merge Requests with Jira when a namespace is added through the GitLab for Jira app. !51341
+- Adding /reviewer and /remove_reviewer aliases and specs. !51384
+- Instrument CI template usage across projects. !51391
+- Control job status using exit codes. !51439
+- Enables the CI Pipeline Editor feature as a way to edit the GitLab CI/CD configuration. !51484
+- Allow resetting group and instance level integrations. !51507
+- Designate optional sections in the codeowners file. !51643
+- Enable CI visualization by default. !51701
+
+### Other (74 changes, 37 of them are from the community)
+
+- Add a new Ruby API for specifying allowed authentication mechanisms for REST API endpoints. !38627 (Ethan Reesor (@firelizzard))
+- Migrate-Bootstrap-dropdown-to-GitLab-UI-GlDropdown-in-app/assets/javascripts/vue_shared/components/pikaday.vue. !41458 (nuwe1)
+- Add Icons to headings in system info on admin panel. !46618 (Yogi (@yo))
+- Backfill artifact expiry date. !47723
+- Convert navigation_tabs.vue to gl-tabs. !47841
+- Fix UI on global breadcrumb on Project/Group Container Registry. !48288 (Takuya Noguchi)
+- Dynamically load gapi on GKE cluster creation pages. !49512
+- Update pipeline alert text to be more readable. !49575
+- Remove users#show.json completely. !49670 (Takuya Noguchi)
+- Visually enhance the difference between code that has and does not have test coverage. !49724
+- Updated UI text to match style guidelines. !49871
+- Update documentation for setting up database replication with Patroni on a Geo secondary node. !49986
+- Disable auto admin mode for lib specs. !50056 (Diego Louzán)
+- Add documentation for new Snippet repository storage move API. !50151
+- Propagate client identity to gitaly. !50161
+- Centered Markdown Preview in Web IDE with a set max width to limit the container size. !50291 (Mehul Sharma)
+- Migrates the alert on the new branch page. !50307
+- Fully disable auto admin mode and migrate remaining specs. !50331 (Diego Louzán)
+- Refactor specs around gpg_keys in users_controller_spec.rb. !50337 (Takuya Noguchi)
+- Refactor specs around ssh_keys in users_controller_spec.rb. !50338 (Takuya Noguchi)
+- Improve badges UI text. !50351
+- Update error message used in boards sidebar subscription. !50352
+- Update GitLab Runner Helm Chart to 0.24.0. !50377
+- Update Auto DevOps UI text to match style guidelines. !50398 (Amy Qualls @aqualls)
+- Updated UI text to match style guidelines. !50403
+- Improve service desk UI text. !50407
+- Replace user controller spec with its request spec. !50435 (Takuya Noguchi)
+- Updated UI text to match style guidelines. !50475 (Amy Qualls @aqualls)
+- Updated UI text to match style guidelines. !50476
+- Updated UI text to make runner lowercase. !50477
+- Change failure message of missing job needs. !50492
+- [Commit Page] Migrate to GlModal for revert commit. !50522
+- Updated link text to match style guidelines. !50555
+- Fix text color for 'no estimate or time spent' message in time tracker component. !50558
+- Migrate runner_setup_controller_spec.rb to request spec. !50600 (Takuya Noguchi)
+- Sampler intervals can now be configured via env vars. !50625
+- Add test to check if /users/User is redirected to /User. !50651 (Takuya Noguchi)
+- Add metrics to creating, closing, reopening and merging merge requests. !50654
+- Update Docker from 19.03.0 to 20.10.1 on CI/CD. !50732 (Takuya Noguchi)
+- Migrate jwks_controller specs to request specs of them. !50767 (Takuya Noguchi @tnir)
+- Update copy on Feature Flags List view to be more descriptive for users. !50813 (Sarah Rosenshine)
+- Add metrics to creating, editing or removing comments on merge requests. !50849
+- Use git packages from buster on build-qa-image. !50867 (Takuya Noguchi @tnir)
+- Upgrade factory_bot_rails to 6.1.0. !50875
+- Update net-ldap gem version. !50888
+- Add version cache field to composer metadata. !50906
+- Drop temporary index on ci_builds. !50961
+- Remove unnecessary use of .freeze. !50963 (Adam Davies @adamd92)
+- Update canary(next) badge style with new GitLab UI. !50965 (Yogi (@yo))
+- Remove tmp_index_for_email_unconfirmation_migration index in the emails table. !50981
+- Improve delete snippet feature spec. !51020 (Lee Tickett @leetickett)
+- Update toggle button in repo general settings. !51036 (Yogi (@yo))
+- Reduce heading font size in validate CI lint page. !51042 (Yogi (@yo))
+- Remove unnecessary use of .freeze. !51073 (Adam Davies @adamd92)
+- Update button style of expand/collapse button on Deploy Tokens page. !51077 (nuwe1)
+- Update button style of Revoke button on Deploy Tokens page. !51079 (nuwe1)
+- Apply GitLab UI button styles to buttons in transactions show.html.haml files. !51096 (nuwe1)
+- Add metrics to creating, editing or removing multiline comments on merge requests. !51098
+- Update default value of applications_settings.max_import_size to 0. !51229
+- Add one welcome email for account provisioned by group. !51271
+- Add `gl-button` to move issue button in issue sidebar. !51285 (Yogi (@yo))
+- Update to new GitLab UI button in members invite page. !51300 (Yogi (@yo))
+- Update grape-path-helpers gem version. !51320
+- Drop tmp_index_for_email_unconfirmation index from the emails table again. !51440
+- Add metrics to starting and publishing a review. !51521
+- Add gl-badge to members list badges. !51546 (Yogi (@yo))
+- Add gl-badge to CI badges. !51547 (Yogi (@yo))
+- Add gl-badge to CI runners. !51548 (Yogi (@yo))
+- Add gl-mt-3 to no schedules nothing-here-block. !51551 (Yogi (@yo))
+- Add gl-button to Add Jaeger URL. !51553 (Yogi (@yo))
+- Add gl-button to dismiss feature highlight button. !51555 (Yogi (@yo))
+- Remove unneeded group label index. !51676
+- Apply GitLab UI button styles to buttons in project wiki. !51780 (Yogi (@yo))
+- Add verbiage + link sast to show it's in core. !51935
+
+
 ## 13.7.4 (2021-01-13)
 
 ### Security (1 change)

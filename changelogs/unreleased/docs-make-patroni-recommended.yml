@@ -1,5 +1,0 @@
----
-title: Use Patroni as the default in the replication docs
-merge_request: 50101
-author:
-type: changed

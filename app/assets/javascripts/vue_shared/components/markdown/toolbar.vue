@@ -60,9 +60,7 @@ export default {
     </div>
     <span v-if="canAttachFile" class="uploading-container">
       <span class="uploading-progress-container hide">
-        <template>
-          <gl-icon name="media" />
-        </template>
+        <gl-icon name="media" />
         <span class="attaching-file-message"></span>
         <!-- eslint-disable-next-line @gitlab/vue-require-i18n-strings -->
         <span class="uploading-progress">0%</span>

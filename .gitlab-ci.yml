@@ -17,7 +17,7 @@ stages:
 # in cases where jobs require Docker-in-Docker, the job
 # definition must be extended with `.use-docker-in-docker`
 default:
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7.2-golang-1.14-git-2.29-lfs-2.9-chrome-87-node-12.18-yarn-1.22-postgresql-11-graphicsmagick-1.3.34"
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7.2-golang-1.14-git-2.29-lfs-2.9-chrome-87-node-14.15-yarn-1.22-postgresql-11-graphicsmagick-1.3.34"
   tags:
     - gitlab-org
   # All jobs are interruptible by default

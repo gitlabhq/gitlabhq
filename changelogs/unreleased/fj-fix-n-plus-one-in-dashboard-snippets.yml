@@ -1,5 +1,0 @@
----
-title: Fix N+1 when rendering snippets in the dashboard
-merge_request: 50569
-author:
-type: performance

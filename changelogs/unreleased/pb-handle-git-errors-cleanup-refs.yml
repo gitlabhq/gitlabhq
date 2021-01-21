@@ -1,5 +1,0 @@
----
-title: Handle git errors when cleaning up MR refs
-merge_request: 50250
-author:
-type: fixed

@@ -9,9 +9,7 @@ exports[`IncidentsSettingTabs should render the component 1`] = `
   <div
     class="settings-header"
   >
-    <h4
-      class="gl-my-3! gl-py-1"
-    >
+    <h4>
       
       Incidents
     

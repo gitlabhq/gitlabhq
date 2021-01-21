@@ -1,5 +1,0 @@
----
-title: Reduce per-page size in release index pages for loading faster
-merge_request: 50934
-author:
-type: performance

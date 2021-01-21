@@ -1,5 +1,0 @@
----
-title: Fix database timeout errors when removing expired job artifacts
-merge_request: 47496
-author:
-type: fixed

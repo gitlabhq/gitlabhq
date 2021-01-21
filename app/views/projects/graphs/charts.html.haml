@@ -22,7 +22,7 @@
           #{@daily_coverage_options[:base_params][:start_date].strftime('%b %d')}
         - end_date = capture do
           #{@daily_coverage_options[:base_params][:end_date].strftime('%b %d')}
-        = (_("Code coverage statistics for master %{start_date} - %{end_date}") % {start_date: start_date, end_date: end_date})
+        = (_("Code coverage statistics for %{ref} %{start_date} - %{end_date}") % { ref: "<strong>#{h @ref}</strong>", start_date: start_date, end_date: end_date }).html_safe
       - download_path = capture do
         #{@daily_coverage_options[:download_path]}
       %a.btn.gl-button.btn-sm{ href: "#{download_path}?#{@daily_coverage_options[:base_params].to_query}" }

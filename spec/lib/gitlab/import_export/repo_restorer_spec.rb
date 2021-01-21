@@ -27,7 +27,7 @@ RSpec.describe Gitlab::ImportExport::RepoRestorer do
   end
 
   describe 'bundle a project Git repo' do
-    let(:bundler) { Gitlab::ImportExport::RepoSaver.new(project: project_with_repo, shared: shared) }
+    let(:bundler) { Gitlab::ImportExport::RepoSaver.new(exportable: project_with_repo, shared: shared) }
     let(:bundle_path) { File.join(shared.export_path, Gitlab::ImportExport.project_bundle_filename) }
 
     subject { described_class.new(path_to_bundle: bundle_path, shared: shared, project: project) }
@@ -62,7 +62,7 @@ RSpec.describe Gitlab::ImportExport::RepoRestorer do
   end
 
   describe 'restore a wiki Git repo' do
-    let(:bundler) { Gitlab::ImportExport::WikiRepoSaver.new(project: project_with_repo, shared: shared) }
+    let(:bundler) { Gitlab::ImportExport::WikiRepoSaver.new(exportable: project_with_repo, shared: shared) }
     let(:bundle_path) { File.join(shared.export_path, Gitlab::ImportExport.wiki_repo_bundle_filename) }
 
     subject { described_class.new(path_to_bundle: bundle_path, shared: shared, project: ProjectWiki.new(project)) }
@@ -83,7 +83,7 @@ RSpec.describe Gitlab::ImportExport::RepoRestorer do
     describe 'no wiki in the bundle' do
       let!(:project_without_wiki) { create(:project) }
 
-      let(:bundler) { Gitlab::ImportExport::WikiRepoSaver.new(project: project_without_wiki, shared: shared) }
+      let(:bundler) { Gitlab::ImportExport::WikiRepoSaver.new(exportable: project_without_wiki, shared: shared) }
 
       it 'does not creates an empty wiki' do
         expect(subject.restore).to be true

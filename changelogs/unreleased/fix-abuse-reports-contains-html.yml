@@ -1,5 +1,0 @@
----
-title: Fix abuse reports contains html and does not show repoter
-merge_request: 50983
-author: Kev @KevSlashNull
-type: fixed

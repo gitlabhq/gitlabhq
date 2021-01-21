@@ -350,7 +350,7 @@ RSpec.describe ProjectPresenter do
           is_link: false,
           label: a_string_including("New file"),
           link: presenter.project_new_blob_path(project, 'master'),
-          class_modifier: 'missing'
+          class_modifier: 'dashed'
         )
       end
 

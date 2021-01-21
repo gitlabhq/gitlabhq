@@ -158,6 +158,7 @@ Rails.application.routes.draw do
         get :db_spin
         get :sleep
         get :kill
+        post :gc
       end
     end
 

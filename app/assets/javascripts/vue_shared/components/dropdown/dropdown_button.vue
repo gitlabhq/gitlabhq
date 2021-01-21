@@ -36,10 +36,8 @@ export default {
     aria-expanded="false"
   >
     <gl-loading-icon v-show="isLoading" :inline="true" />
-    <template>
-      <slot v-if="$slots.default"></slot>
-      <span v-else class="dropdown-toggle-text"> {{ toggleText }} </span>
-    </template>
+    <slot v-if="$slots.default"></slot>
+    <span v-else class="dropdown-toggle-text"> {{ toggleText }} </span>
     <gl-icon
       v-show="!isLoading"
       class="gl-absolute gl-top-3 gl-right-3 gl-text-gray-500"

@@ -173,7 +173,7 @@ Find more information how to apply and renew at
 
 ## GitLab for Open Source subscriptions
 
-All [GitLab for Open Source](https://about.gitlab.com/solutions/open-source/join/)
+All [GitLab for Open Source](https://about.gitlab.com/solutions/open-source/)
 requests, including subscription renewals, must be made by using the application process.
 If you have any questions, send an email to `opensource@gitlab.com` for assistance.
 

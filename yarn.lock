@@ -866,10 +866,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/favicon-overlay/-/favicon-overlay-2.0.0.tgz#2f32d0b6a4d5b8ac44e2927083d9ab478a78c984"
   integrity sha512-GNcORxXJ98LVGzOT9dDYKfbheqH6lNgPDD72lyXRnQIH7CjgGyos8i17aSBPq1f4s3zF3PyedFiAR4YEZbva2Q==
 
-"@gitlab/svgs@1.178.0":
-  version "1.178.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.178.0.tgz#069edb8abb4c7137d48f527592476655f066538b"
-  integrity sha512-m1xe5SPgpi9lSFCHHTkkGeScxkqhi7aD8qApL5F4MqCGeKF9IhELIVoMD1R6vkfjzFJh0BwFREPkuwjnAOMKfA==
+"@gitlab/svgs@1.179.0":
+  version "1.179.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.179.0.tgz#c90032bf5aa611c53d1bfc0cdc0c23d74792b470"
+  integrity sha512-GspNQY1BuAn0VxvJnKA4jssLiqGstodHLxoc70y9ev3kiApMJzn6lHdiV+ecBZ/gD8Xo+8JeqyfxrToVbwuxtQ==
 
 "@gitlab/tributejs@1.0.0":
   version "1.0.0"

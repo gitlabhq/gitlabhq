@@ -1,5 +1,0 @@
----
-title: Enable collect_package_events_redis by default
-merge_request: 50092
-author:
-type: changed

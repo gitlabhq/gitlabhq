@@ -6883,8 +6883,8 @@ msgstr "代码评审"
 msgid "Code Review Analytics displays a table of open merge requests considered to be in code review. There are currently no merge requests in review for this project and/or filters."
 msgstr "代码评审分析显示了一个处于代码评审阶段的开放合并请求列表。 当前没有此项目和/或筛选器的合并请求。"
 
-msgid "Code coverage statistics for master %{start_date} - %{end_date}"
-msgstr "master上%{start_date} - %{end_date}的代码覆盖率统计"
+msgid "Code coverage statistics for %{ref} %{start_date} - %{end_date}"
+msgstr "%{ref}上%{start_date} - %{end_date}的代码覆盖率统计"
 
 msgid "Code owner approval is required"
 msgstr "代码所有者的核准是必需的"

@@ -224,17 +224,15 @@ export default {
       data-testid="graph-container"
     >
       <svg :viewBox="viewBox" :width="width" :height="height" class="gl-absolute">
-        <template>
-          <path
-            v-for="link in links"
-            :key="link.path"
-            :ref="link.ref"
-            :d="link.path"
-            class="gl-fill-transparent gl-transition-duration-slow gl-transition-timing-function-ease"
-            :class="getLinkClasses(link)"
-            :stroke-width="$options.STROKE_WIDTH"
-          />
-        </template>
+        <path
+          v-for="link in links"
+          :key="link.path"
+          :ref="link.ref"
+          :d="link.path"
+          class="gl-fill-transparent gl-transition-duration-slow gl-transition-timing-function-ease"
+          :class="getLinkClasses(link)"
+          :stroke-width="$options.STROKE_WIDTH"
+        />
       </svg>
       <div
         v-for="(stage, index) in pipelineStages"

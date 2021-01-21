@@ -1,6 +1,0 @@
----
-title: The NuGet endpoints will no longer ignore an invalid username when a personal
-  access token or deploy token is passed via HTTP Basic authentication
-merge_request: 38627
-author: Ethan Reesor (@firelizzard)
-type: security

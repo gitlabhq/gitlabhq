@@ -1,6 +1,6 @@
 verify_lockfile:
   stage: test
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7.2-git-2.29-lfs-2.9-node-12.18-yarn-1.22-graphicsmagick-1.3.34
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7.2-git-2.29-lfs-2.9-node-14.15-yarn-1.22-graphicsmagick-1.3.34
   needs: []
   rules:
     - changes:

@@ -1,6 +1,0 @@
----
-title: Extract expired pipeline artifacts removal service into it's own background
-  worker
-merge_request: 51323
-author:
-type: changed

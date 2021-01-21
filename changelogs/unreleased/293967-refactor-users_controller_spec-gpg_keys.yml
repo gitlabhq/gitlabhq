@@ -1,5 +1,0 @@
----
-title: Refactor specs around gpg_keys in users_controller_spec.rb
-merge_request: 50337
-author: Takuya Noguchi
-type: other

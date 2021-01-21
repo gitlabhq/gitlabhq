@@ -1,5 +1,0 @@
----
-title: Fix bug with snippets in HEAD when default branch is not master
-merge_request: 50366
-author:
-type: fixed

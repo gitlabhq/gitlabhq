@@ -1,5 +1,0 @@
----
-title: Add rake task for migrating legacy pages storage to zip deployments
-merge_request: 50153
-author:
-type: added

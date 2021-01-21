@@ -9,7 +9,7 @@ RSpec.describe Gitlab::ImportExport::DesignRepoSaver do
     let!(:project) { create(:project, :design_repo) }
     let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
     let(:shared) { project.import_export_shared }
-    let(:design_bundler) { described_class.new(project: project, shared: shared) }
+    let(:design_bundler) { described_class.new(exportable: project, shared: shared) }
 
     before do
       project.add_maintainer(user)

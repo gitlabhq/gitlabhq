@@ -201,9 +201,7 @@ export default {
             />
             <template v-else>{{ clusterNameOrLink.name }}</template>
           </template>
-          <template #kubernetesNamespace>
-            <template>{{ kubernetesNamespace }}</template>
-          </template>
+          <template #kubernetesNamespace>{{ kubernetesNamespace }}</template>
           <template #deploymentLink>
             <gl-link
               :href="deploymentLink.path"

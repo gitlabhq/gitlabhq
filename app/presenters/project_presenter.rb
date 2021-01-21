@@ -17,7 +17,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   MAX_TOPICS_TO_SHOW = 3
 
   def statistic_icon(icon_name = 'plus-square-o')
-    sprite_icon(icon_name, css_class: 'icon gl-mr-2')
+    sprite_icon(icon_name, css_class: 'icon gl-mr-2 gl-text-gray-500')
   end
 
   def statistics_anchors(show_auto_devops_callout:)
@@ -239,7 +239,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       AnchorData.new(false,
                      statistic_icon + _('New file'),
                      new_file_path,
-                     'missing')
+                     'dashed')
     end
   end
 

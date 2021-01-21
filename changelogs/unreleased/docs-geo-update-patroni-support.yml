@@ -1,6 +1,0 @@
----
-title: Update documentation for setting up database replication with Patroni on a
-  Geo secondary node
-merge_request: 49986
-author:
-type: other

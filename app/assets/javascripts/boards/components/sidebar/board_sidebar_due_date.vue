@@ -88,15 +88,13 @@ export default {
         </gl-button>
       </div>
     </template>
-    <template>
-      <gl-datepicker
-        ref="datePicker"
-        :value="parsedDueDate"
-        show-clear-button
-        @input="setDueDate"
-        @clear="setDueDate(null)"
-      />
-    </template>
+    <gl-datepicker
+      ref="datePicker"
+      :value="parsedDueDate"
+      show-clear-button
+      @input="setDueDate"
+      @clear="setDueDate(null)"
+    />
   </board-editable-item>
 </template>
 <style>

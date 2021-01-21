@@ -1,5 +1,0 @@
----
-title: Invalidate reviews counter cache when MR gets created
-merge_request: 51316
-author:
-type: fixed

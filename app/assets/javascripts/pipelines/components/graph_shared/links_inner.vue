@@ -123,17 +123,15 @@ export default {
       :width="`${containerMeasurements.width}px`"
       :height="`${containerMeasurements.height}px`"
     >
-      <template>
-        <path
-          v-for="link in links"
-          :key="link.path"
-          :ref="link.ref"
-          :d="link.path"
-          class="gl-fill-transparent gl-transition-duration-slow gl-transition-timing-function-ease"
-          :class="getLinkClasses(link)"
-          :stroke-width="$options.STROKE_WIDTH"
-        />
-      </template>
+      <path
+        v-for="link in links"
+        :key="link.path"
+        :ref="link.ref"
+        :d="link.path"
+        class="gl-fill-transparent gl-transition-duration-slow gl-transition-timing-function-ease"
+        :class="getLinkClasses(link)"
+        :stroke-width="$options.STROKE_WIDTH"
+      />
     </svg>
     <slot></slot>
   </div>

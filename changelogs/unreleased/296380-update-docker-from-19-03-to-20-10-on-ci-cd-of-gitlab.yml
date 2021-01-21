@@ -1,5 +1,0 @@
----
-title: Update Docker from 19.03.0 to 20.10.1 on CI/CD
-merge_request: 50732
-author: Takuya Noguchi
-type: other

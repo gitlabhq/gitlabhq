@@ -5,18 +5,21 @@ module Gitlab
     class RepoSaver
       include Gitlab::ImportExport::CommandLineUtil
 
-      attr_reader :project, :repository, :shared
+      attr_reader :exportable, :shared
 
-      def initialize(project:, shared:)
-        @project = project
+      def initialize(exportable:, shared:)
+        @exportable = exportable
         @shared = shared
-        @repository = @project.repository
       end
 
       def save
         return true unless repository_exists? # it's ok to have no repo
 
         bundle_to_disk
+      end
+
+      def repository
+        @repository ||= @exportable.repository
       end
 
       private
@@ -26,7 +29,11 @@ module Gitlab
       end
 
       def bundle_full_path
-        File.join(shared.export_path, ImportExport.project_bundle_filename)
+        File.join(shared.export_path, bundle_filename)
+      end
+
+      def bundle_filename
+        ::Gitlab::ImportExport.project_bundle_filename
       end
 
       def bundle_to_disk

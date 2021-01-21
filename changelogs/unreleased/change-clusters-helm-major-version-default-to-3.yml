@@ -1,5 +1,0 @@
----
-title: Change clusters.helm_major_version default to 3
-merge_request: 50399
-author:
-type: changed
