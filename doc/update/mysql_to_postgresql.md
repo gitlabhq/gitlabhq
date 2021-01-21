@@ -142,7 +142,7 @@ new PostgreSQL one:
    sudo -u gitlab-psql pgloader commands.load
    ```
 
-1. Once the migration finishes, you should see a summary table that looks like
+1. After the migration finishes, you should see a summary table that looks like
    the following:
 
    ```plaintext
@@ -243,7 +243,7 @@ new PostgreSQL one:
    sudo -u postgres pgloader commands.load
    ```
 
-1. Once the migration finishes, you should see a summary table that looks like
+1. After the migration finishes, you should see a summary table that looks like
    the following:
 
    ```plaintext

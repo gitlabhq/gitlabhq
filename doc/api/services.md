@@ -1358,7 +1358,7 @@ Get JetBrains TeamCity CI service settings for a project.
 GET /projects/:id/services/teamcity
 ```
 
-## Jenkins CI **(STARTER)**
+## Jenkins CI
 
 A continuous integration and build server
 

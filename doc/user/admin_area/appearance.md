@@ -20,7 +20,7 @@ used (less than 1MB) and it is automatically resized.
 
 ![Navigation bar header logo screenshot](img/appearance_header_logo_v12_3.png)
 
-Once you select and upload an image, click **Update appearance settings** at the bottom
+After you select and upload an image, click **Update appearance settings** at the bottom
 of the page to activate it in the GitLab instance.
 
 NOTE:

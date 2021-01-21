@@ -63,6 +63,7 @@ module QA
           view 'app/assets/javascripts/ide/components/new_dropdown/index.vue' do
             element :dropdown_button
             element :rename_move_button
+            element :delete_button
           end
 
           view 'app/views/shared/_confirm_fork_modal.html.haml' do
@@ -125,6 +126,13 @@ module QA
             click_element(:file_row_container, file_name: file_name)
             within_element(:preview_container) do
               has_element?(:image_viewer_container)
+            end
+          end
+
+          def has_file_content?(file_name, file_content)
+            click_element(:file_row_container, file_name: file_name)
+            within_element(:editor_container) do
+              has_text?(file_content)
             end
           end
 
@@ -236,7 +244,7 @@ module QA
           end
 
           def rename_file(file_name, new_file_name)
-            click_element(:file_name_content, text: file_name)
+            click_element(:file_name_content, file_name: file_name)
             click_element(:dropdown_button)
             click_element(:rename_move_button, Page::Component::WebIDE::Modal::CreateNewFile)
             fill_element(:file_name_field, new_file_name)
@@ -258,6 +266,12 @@ module QA
             within_element(:file_list) do
               find_element(:file_upload_field, visible: false).send_keys(file_path)
             end
+          end
+
+          def delete_file(file_name)
+            click_element(:file_name_content, file_name: file_name)
+            click_element(:dropdown_button)
+            click_element(:delete_button)
           end
         end
       end

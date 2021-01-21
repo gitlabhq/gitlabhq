@@ -1,13 +1,14 @@
 = form_errors(integration)
 
-- if lookup_context.template_exists?('help', "projects/services/#{integration.to_param}", true)
-  = render "projects/services/#{integration.to_param}/help", subject: integration
-- elsif integration.help.present?
-  .info-well
-    .well-segment
-      = markdown integration.help
-
 .service-settings
   - if @default_integration
     .js-vue-default-integration-settings{ data: integration_form_data(@default_integration, group: @group) }
   .js-vue-integration-settings{ data: integration_form_data(integration, group: @group) }
+    .js-integration-help-html
+      -# All content below will be repositioned in Vue
+      - if lookup_context.template_exists?('help', "projects/services/#{integration.to_param}", true)
+        = render "projects/services/#{integration.to_param}/help", subject: integration
+      - elsif integration.help.present?
+        .info-well
+          .well-segment
+            = markdown integration.help

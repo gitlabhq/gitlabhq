@@ -1,5 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { mockIntegrationProps } from 'jest/integrations/edit/mock_data';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { setHTMLFixture } from 'helpers/fixtures';
 import { createStore } from '~/integrations/edit/store';
 import IntegrationForm from '~/integrations/edit/components/integration_form.vue';
 import OverrideDropdown from '~/integrations/edit/components/override_dropdown.vue';
@@ -15,24 +17,31 @@ import { integrationLevels } from '~/integrations/edit/constants';
 describe('IntegrationForm', () => {
   let wrapper;
 
-  const createComponent = (customStateProps = {}, featureFlags = {}, initialState = {}) => {
-    wrapper = shallowMount(IntegrationForm, {
-      propsData: {},
-      store: createStore({
-        customState: { ...mockIntegrationProps, ...customStateProps },
-        ...initialState,
+  const createComponent = ({
+    customStateProps = {},
+    featureFlags = {},
+    initialState = {},
+    props = {},
+  } = {}) => {
+    wrapper = extendedWrapper(
+      shallowMount(IntegrationForm, {
+        propsData: { ...props },
+        store: createStore({
+          customState: { ...mockIntegrationProps, ...customStateProps },
+          ...initialState,
+        }),
+        stubs: {
+          OverrideDropdown,
+          ActiveCheckbox,
+          ConfirmationModal,
+          JiraTriggerFields,
+          TriggerFields,
+        },
+        provide: {
+          glFeatures: featureFlags,
+        },
       }),
-      stubs: {
-        OverrideDropdown,
-        ActiveCheckbox,
-        ConfirmationModal,
-        JiraTriggerFields,
-        TriggerFields,
-      },
-      provide: {
-        glFeatures: featureFlags,
-      },
-    });
+    );
   };
 
   afterEach(() => {
@@ -63,7 +72,9 @@ describe('IntegrationForm', () => {
     describe('showActive is false', () => {
       it('does not render ActiveCheckbox', () => {
         createComponent({
-          showActive: false,
+          customStateProps: {
+            showActive: false,
+          },
         });
 
         expect(findActiveCheckbox().exists()).toBe(false);
@@ -73,7 +84,9 @@ describe('IntegrationForm', () => {
     describe('integrationLevel is instance', () => {
       it('renders ConfirmationModal', () => {
         createComponent({
-          integrationLevel: integrationLevels.INSTANCE,
+          customStateProps: {
+            integrationLevel: integrationLevels.INSTANCE,
+          },
         });
 
         expect(findConfirmationModal().exists()).toBe(true);
@@ -82,7 +95,9 @@ describe('IntegrationForm', () => {
       describe('resetPath is empty', () => {
         it('does not render ResetConfirmationModal and button', () => {
           createComponent({
-            integrationLevel: integrationLevels.INSTANCE,
+            customStateProps: {
+              integrationLevel: integrationLevels.INSTANCE,
+            },
           });
 
           expect(findResetButton().exists()).toBe(false);
@@ -93,8 +108,10 @@ describe('IntegrationForm', () => {
       describe('resetPath is present', () => {
         it('renders ResetConfirmationModal and button', () => {
           createComponent({
-            integrationLevel: integrationLevels.INSTANCE,
-            resetPath: 'resetPath',
+            customStateProps: {
+              integrationLevel: integrationLevels.INSTANCE,
+              resetPath: 'resetPath',
+            },
           });
 
           expect(findResetButton().exists()).toBe(true);
@@ -106,7 +123,9 @@ describe('IntegrationForm', () => {
     describe('integrationLevel is group', () => {
       it('renders ConfirmationModal', () => {
         createComponent({
-          integrationLevel: integrationLevels.GROUP,
+          customStateProps: {
+            integrationLevel: integrationLevels.GROUP,
+          },
         });
 
         expect(findConfirmationModal().exists()).toBe(true);
@@ -115,7 +134,9 @@ describe('IntegrationForm', () => {
       describe('resetPath is empty', () => {
         it('does not render ResetConfirmationModal and button', () => {
           createComponent({
-            integrationLevel: integrationLevels.GROUP,
+            customStateProps: {
+              integrationLevel: integrationLevels.GROUP,
+            },
           });
 
           expect(findResetButton().exists()).toBe(false);
@@ -126,8 +147,10 @@ describe('IntegrationForm', () => {
       describe('resetPath is present', () => {
         it('renders ResetConfirmationModal and button', () => {
           createComponent({
-            integrationLevel: integrationLevels.GROUP,
-            resetPath: 'resetPath',
+            customStateProps: {
+              integrationLevel: integrationLevels.GROUP,
+              resetPath: 'resetPath',
+            },
           });
 
           expect(findResetButton().exists()).toBe(true);
@@ -139,7 +162,9 @@ describe('IntegrationForm', () => {
     describe('integrationLevel is project', () => {
       it('does not render ConfirmationModal', () => {
         createComponent({
-          integrationLevel: 'project',
+          customStateProps: {
+            integrationLevel: 'project',
+          },
         });
 
         expect(findConfirmationModal().exists()).toBe(false);
@@ -147,8 +172,10 @@ describe('IntegrationForm', () => {
 
       it('does not render ResetConfirmationModal and button', () => {
         createComponent({
-          integrationLevel: 'project',
-          resetPath: 'resetPath',
+          customStateProps: {
+            integrationLevel: 'project',
+            resetPath: 'resetPath',
+          },
         });
 
         expect(findResetButton().exists()).toBe(false);
@@ -158,7 +185,9 @@ describe('IntegrationForm', () => {
 
     describe('type is "slack"', () => {
       beforeEach(() => {
-        createComponent({ type: 'slack' });
+        createComponent({
+          customStateProps: { type: 'slack' },
+        });
       });
 
       it('does not render JiraTriggerFields', () => {
@@ -172,14 +201,19 @@ describe('IntegrationForm', () => {
 
     describe('type is "jira"', () => {
       it('renders JiraTriggerFields', () => {
-        createComponent({ type: 'jira' });
+        createComponent({
+          customStateProps: { type: 'jira' },
+        });
 
         expect(findJiraTriggerFields().exists()).toBe(true);
       });
 
       describe('featureFlag jiraIssuesIntegration is false', () => {
         it('does not render JiraIssuesFields', () => {
-          createComponent({ type: 'jira' }, { jiraIssuesIntegration: false });
+          createComponent({
+            customStateProps: { type: 'jira' },
+            featureFlags: { jiraIssuesIntegration: false },
+          });
 
           expect(findJiraIssuesFields().exists()).toBe(false);
         });
@@ -187,8 +221,10 @@ describe('IntegrationForm', () => {
 
       describe('featureFlag jiraIssuesIntegration is true', () => {
         it('renders JiraIssuesFields', () => {
-          createComponent({ type: 'jira' }, { jiraIssuesIntegration: true });
-
+          createComponent({
+            customStateProps: { type: 'jira' },
+            featureFlags: { jiraIssuesIntegration: true },
+          });
           expect(findJiraIssuesFields().exists()).toBe(true);
         });
       });
@@ -200,8 +236,10 @@ describe('IntegrationForm', () => {
         const type = 'slack';
 
         createComponent({
-          triggerEvents: events,
-          type,
+          customStateProps: {
+            triggerEvents: events,
+            type,
+          },
         });
 
         expect(findTriggerFields().exists()).toBe(true);
@@ -218,7 +256,9 @@ describe('IntegrationForm', () => {
         ];
 
         createComponent({
-          fields,
+          customStateProps: {
+            fields,
+          },
         });
 
         const dynamicFields = wrapper.findAll(DynamicField);
@@ -232,13 +272,11 @@ describe('IntegrationForm', () => {
 
     describe('defaultState state is null', () => {
       it('does not render OverrideDropdown', () => {
-        createComponent(
-          {},
-          {},
-          {
+        createComponent({
+          initialState: {
             defaultState: null,
           },
-        );
+        });
 
         expect(findOverrideDropdown().exists()).toBe(false);
       });
@@ -246,17 +284,42 @@ describe('IntegrationForm', () => {
 
     describe('defaultState state is an object', () => {
       it('renders OverrideDropdown', () => {
-        createComponent(
-          {},
-          {},
-          {
+        createComponent({
+          initialState: {
             defaultState: {
               ...mockIntegrationProps,
             },
           },
-        );
+        });
 
         expect(findOverrideDropdown().exists()).toBe(true);
+      });
+    });
+
+    describe('with `helpHtml` prop', () => {
+      const mockTestId = 'jest-help-html-test';
+
+      setHTMLFixture(`
+        <div data-testid="${mockTestId}">
+          <svg class="gl-icon">
+            <use></use>
+          </svg>
+        </div>
+      `);
+
+      it('renders `helpHtml`', async () => {
+        const mockHelpHtml = document.querySelector(`[data-testid="${mockTestId}"]`);
+
+        createComponent({
+          props: {
+            helpHtml: mockHelpHtml.outerHTML,
+          },
+        });
+
+        const helpHtml = wrapper.findByTestId(mockTestId);
+
+        expect(helpHtml.isVisible()).toBe(true);
+        expect(helpHtml.find('svg').isVisible()).toBe(true);
       });
     });
   });

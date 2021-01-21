@@ -66,6 +66,7 @@ docs-lint links:
     - bundle exec nanoc
     # Check the internal links
     - bundle exec nanoc check internal_links
+    - bundle exec nanoc check internal_anchors
     # Delete the redirect files, rebuild, and check internal links again, to see if we are linking to redirects.
     # Don't delete the documentation/index.md, which is a false positive for the simple grep.
     - grep -rl "redirect_to:" /tmp/gitlab-docs/content/ee/ | grep -v "development/documentation/index.md" | xargs rm -f
@@ -74,7 +75,7 @@ docs-lint links:
     - echo -e "\e[1;96mMake sure all links point to the correct page."
     - bundle exec nanoc check internal_links
     # Check the internal anchor links
-    - bundle exec nanoc check internal_anchors
+
 
 ui-docs-links lint:
   extends:

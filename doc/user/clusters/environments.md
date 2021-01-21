@@ -38,7 +38,7 @@ In order to:
 - Show pod usage correctly, you must
   [enable Deploy Boards](../project/deploy_boards.md#enabling-deploy-boards).
 
-Once you have successful deployments to your group-level or instance-level cluster:
+After you have successful deployments to your group-level or instance-level cluster:
 
 1. Navigate to your group's **Kubernetes** page.
 1. Click on the **Environments** tab.

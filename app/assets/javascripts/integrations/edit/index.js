@@ -80,21 +80,29 @@ export default (el, defaultEl) => {
   }
 
   const props = parseDatasetToProps(el.dataset);
-
   const initialState = {
     defaultState: null,
     customState: props,
   };
-
   if (defaultEl) {
     initialState.defaultState = Object.freeze(parseDatasetToProps(defaultEl.dataset));
   }
+
+  // Here, we capture the "helpHtml", so we can pass it to the Vue component
+  // to position it where ever it wants.
+  // Because this node is a _child_ of `el`, it will be removed when the Vue component is mounted,
+  // so we don't need to manually remove it.
+  const helpHtml = el.querySelector('.js-integration-help-html')?.innerHTML;
 
   return new Vue({
     el,
     store: createStore(initialState),
     render(createElement) {
-      return createElement(IntegrationForm);
+      return createElement(IntegrationForm, {
+        props: {
+          helpHtml,
+        },
+      });
     },
   });
 };

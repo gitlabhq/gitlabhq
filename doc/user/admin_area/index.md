@@ -300,7 +300,9 @@ The Sidekiq dashboard consists of the following elements:
 
 ### Logs
 
-The **Logs** page provides access to the following log files:
+Since GitLab 13.0, **Log** view has been removed from the admin dashboard since the logging does not work in multi-node setups and could cause confusion for administrators by displaying partial information.
+
+For multi-node systems we recommend ingesting the logs into services like Elasticsearch and Splunk.
 
 | Log file                | Contents |
 | :---------------------- | :------- |
@@ -312,7 +314,7 @@ The **Logs** page provides access to the following log files:
 | `integrations_json.log` | Activity between GitLab and integrated systems |
 | `kubernetes.log`        | Kubernetes activity |
 
-The contents of these log files can be useful when troubleshooting a problem. Access is available to GitLab admins, without requiring direct access to the log files.
+The contents of these log files can be useful when troubleshooting a problem. 
 
 For details of these log files and their contents, see [Log system](../../administration/logs.md).
 

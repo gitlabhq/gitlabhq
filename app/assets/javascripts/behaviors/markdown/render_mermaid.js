@@ -140,7 +140,7 @@ function renderMermaids($els) {
                   'Warning: Displaying this diagram might cause performance issues on this page.',
                 )}</div>
                 <div class="gl-alert-actions">
-                  <button class="js-lazy-render-mermaid btn gl-alert-action btn-warning btn-md new-gl-button">Display</button>
+                  <button class="js-lazy-render-mermaid btn gl-alert-action btn-warning btn-md gl-button">Display</button>
                 </div>
               </div>
               <button type="button" class="close" data-dismiss="alert" aria-label="Close">

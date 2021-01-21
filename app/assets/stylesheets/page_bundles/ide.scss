@@ -605,6 +605,17 @@ $ide-commit-header-height: 48px;
       left: -1px;
     }
   }
+
+  .ide-commit-badge {
+    background-color: var(--ide-highlight-accent, $almost-black) !important;
+    color: var(--ide-highlight-background, $white) !important;
+    position: absolute;
+    left: 38px;
+    top: $gl-padding-8;
+    font-size: $gl-font-size-12;
+    padding: 2px $gl-padding-4;
+    font-weight: $gl-font-weight-bold !important;
+  }
 }
 
 .ide-activity-bar {

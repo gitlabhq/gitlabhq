@@ -40,4 +40,8 @@ RSpec.describe 'Slack slash commands', :js do
     value = find_field('url').value
     expect(value).to match("api/v4/projects/#{project.id}/services/slack_slash_commands/trigger")
   end
+
+  it 'shows help content' do
+    expect(page).to have_content('This service allows users to perform common operations on this project by entering slash commands in Slack.')
+  end
 end

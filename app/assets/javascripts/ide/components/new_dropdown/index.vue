@@ -108,6 +108,7 @@ export default {
             class="d-flex"
             icon="remove"
             icon-classes="mr-2"
+            data-qa-selector="delete_button"
             @click="deleteEntry(path)"
           />
         </li>

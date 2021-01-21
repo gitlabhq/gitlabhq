@@ -27,7 +27,7 @@ You can restrict the password authentication for web interface and Git over HTTP
 
 When this feature enabled, all users must use the [two-factor authentication](../../profile/account/two_factor_authentication.md).
 
-Once the two-factor authentication is configured as mandatory, the users are allowed
+After the two-factor authentication is configured as mandatory, users are allowed
 to skip forced configuration of two-factor authentication for the configurable grace
 period in hours.
 

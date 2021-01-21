@@ -8,7 +8,7 @@
     %p
       - link = link_to(s_('AutoDevOps|Auto DevOps documentation'), help_page_path('topics/autodevops/index.md'), target: '_blank', rel: 'noopener noreferrer')
       = s_('AutoDevOps|Learn more in the %{link_to_documentation}').html_safe % { link_to_documentation: link }
-    = link_to s_('AutoDevOps|Enable in settings'), project_settings_ci_cd_path(@project, anchor: 'autodevops-settings'), class: 'btn btn-md new-gl-button js-close-callout'
+    = link_to s_('AutoDevOps|Enable in settings'), project_settings_ci_cd_path(@project, anchor: 'autodevops-settings'), class: 'btn btn-md btn-default gl-button js-close-callout'
 
   %button.gl-banner-close.close.js-close-callout{ type: 'button',
   'aria-label' => s_('AutoDevOps|Dismiss Auto DevOps box') }

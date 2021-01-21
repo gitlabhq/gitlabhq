@@ -370,7 +370,7 @@ From a merge request's **Discussion** tab, or from an epic/issue overview, find 
 
 ![Notes filters dropdown options](img/index_notes_filters.png)
 
-Once you select one of the filters in a given issue or MR, GitLab will save
+After you select one of the filters in a given issue or MR, GitLab will save
 your preference, so that it will persist when you visit the same page again
 from any device you're logged into.
 
@@ -401,7 +401,7 @@ the merge request authored by the user that applied them.
 
    ![Apply suggestions](img/apply_suggestion_v12_7.png)
 
-Once the author applies a Suggestion, it will be marked with the **Applied** label,
+After the author applies a Suggestion, it will be marked with the **Applied** label,
 the thread will be automatically resolved, and GitLab will create a new commit
 and push the suggested change directly into the codebase in the merge request's
 branch. [Developer permission](../permissions.md) is required to do so.
@@ -537,7 +537,7 @@ Clicking on the **Reply to comment** button will bring the reply area into focus
 ![Reply to comment feature](img/reply_to_comment.gif)
 
 Replying to a non-thread comment will convert the non-thread comment to a
-thread once the reply is submitted. This conversion is considered an edit
+thread after the reply is submitted. This conversion is considered an edit
 to the original comment, so a note about when it was last edited will appear underneath it.
 
 This feature only exists for Issues, Merge requests, and Epics. Commits, Snippets and Merge request diff threads are

@@ -945,6 +945,12 @@ RSpec.describe QuickActions::InterpretService do
           it_behaves_like 'assign_reviewer command'
         end
 
+        context 'with the "request_review" alias' do
+          let(:content) { "/request_review @#{developer.username}" }
+
+          it_behaves_like 'assign_reviewer command'
+        end
+
         context 'with no user' do
           let(:content) { '/assign_reviewer' }
 

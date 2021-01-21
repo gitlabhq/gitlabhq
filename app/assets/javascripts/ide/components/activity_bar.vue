@@ -11,7 +11,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   computed: {
-    ...mapState(['currentActivityView']),
+    ...mapState(['currentActivityView', 'stagedFiles']),
   },
   methods: {
     ...mapActions(['updateActivityBarView']),
@@ -81,6 +81,9 @@ export default {
           @click.prevent="changedActivityView($event, $options.leftSidebarViews.commit.name)"
         >
           <gl-icon name="commit" />
+          <div v-if="stagedFiles.length > 0" class="ide-commit-badge badge badge-pill">
+            {{ stagedFiles.length }}
+          </div>
         </button>
       </li>
     </ul>

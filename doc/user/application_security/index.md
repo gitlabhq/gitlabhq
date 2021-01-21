@@ -267,7 +267,7 @@ You can dismiss multiple vulnerabilities at once, providing an optional reason.
 Selecting the checkboxes on the side of each vulnerability in the list selects that individual vulnerability.
 Alternatively, you can select all the vulnerabilities in the list by selecting the checkbox in the table header.
 Deselecting the checkbox in the header deselects all the vulnerabilities in the list.
-Once you have selected some vulnerabilities, a menu appears at the top of the table that allows you to select a dismissal reason.
+After you have selected some vulnerabilities, a menu appears at the top of the table that allows you to select a dismissal reason.
 Pressing the "Dismiss Selected" button dismisses all the selected vulnerabilities at once, with the reason you chose.
 
 ![Multiple vulnerability dismissal](img/multi_select_v12_9.png)
@@ -281,7 +281,7 @@ You can create an issue for a vulnerability by visiting the vulnerability's page
 
 This creates a [confidential issue](../project/issues/confidential_issues.md) in the project the
 vulnerability came from, and pre-populates it with some useful information taken from the vulnerability
-report. Once the issue is created, you are redirected to it so you can edit, assign, or comment on
+report. After the issue is created, you are redirected to it so you can edit, assign, or comment on
 it.
 
 Upon returning to the group security dashboard, the vulnerability now has an associated issue next
