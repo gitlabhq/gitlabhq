@@ -32,6 +32,7 @@ RSpec.describe API::MavenPackages do
   end
 
   let(:version) { '1.0-SNAPSHOT' }
+  let(:param_path) { "#{package_name}/#{version}"}
 
   before do
     project.add_developer(user)
@@ -695,6 +696,14 @@ RSpec.describe API::MavenPackages do
           expect(json_response['message']).to include('Duplicate package is not allowed')
         end
 
+        context 'when uploading to the versionless package which contains metadata about all versions' do
+          let(:version) { nil }
+          let(:param_path) { package_name }
+          let!(:package) { create(:maven_package, project: project, version: version, name: project.full_path) }
+
+          it_behaves_like 'storing the package file'
+        end
+
         context 'when uploading different non-duplicate files to the same package' do
           let!(:package) { create(:maven_package, project: project, name: project.full_path) }
 
@@ -744,7 +753,7 @@ RSpec.describe API::MavenPackages do
     end
 
     def upload_file(params: {}, request_headers: headers, file_extension: 'jar')
-      url = "/projects/#{project.id}/packages/maven/#{package_name}/#{version}/my-app-1.0-20180724.124855-1.#{file_extension}"
+      url = "/projects/#{project.id}/packages/maven/#{param_path}/my-app-1.0-20180724.124855-1.#{file_extension}"
       workhorse_finalize(
         api(url),
         method: :put,

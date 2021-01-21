@@ -198,7 +198,6 @@ module Tooling
         # Files that don't fit into any category are marked with :none
         %r{\A(ee/)?changelogs/} => :none,
         %r{\Alocale/gitlab\.pot\z} => :none,
-        %r{\Adata/whats_new/} => :none,
 
         # GraphQL auto generated doc files and schema
         %r{\Adoc/api/graphql/reference/} => :backend,

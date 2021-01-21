@@ -85,5 +85,5 @@
 
   #js-tab-tests.tab-pane
     #js-pipeline-tests-detail{ data: { summary_endpoint: summary_project_pipeline_tests_path(@project, @pipeline, format: :json),
-      suite_endpoint: project_pipeline_test_path(@project, @pipeline, suite_name: ':suite_name', format: :json) } }
+      suite_endpoint: project_pipeline_test_path(@project, @pipeline, suite_name: 'suite', format: :json) } }
   = render_if_exists "projects/pipelines/tabs_content", pipeline: @pipeline, project: @project

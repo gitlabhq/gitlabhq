@@ -11,12 +11,7 @@ module Packages
                                           .execute
 
         unless Namespace::PackageSetting.duplicates_allowed?(package)
-          files = package&.package_files || []
-          current_maven_files = files.map { |file| extname(file.file_name) }
-
-          if current_maven_files.compact.include?(extname(params[:file_name]))
-            return ServiceResponse.error(message: 'Duplicate package is not allowed')
-          end
+          return ServiceResponse.error(message: 'Duplicate package is not allowed') if target_package_is_duplicate?(package)
         end
 
         unless package
@@ -66,6 +61,17 @@ module Packages
         return if filename.blank?
 
         File.extname(filename)
+      end
+
+      def target_package_is_duplicate?(package)
+        # duplicate metadata files can be uploaded multiple times
+        return false if package.version.nil?
+
+        package
+          .package_files
+          .map { |file| extname(file.file_name) }
+          .compact
+          .include?(extname(params[:file_name]))
       end
     end
   end

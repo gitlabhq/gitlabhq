@@ -557,7 +557,7 @@ GEM
       rainbow
       rubocop (>= 0.50.0)
       sysexits (~> 1.1)
-    hamlit (2.11.0)
+    hamlit (2.14.2)
       temple (>= 0.8.2)
       thor
       tilt
@@ -1388,7 +1388,7 @@ DEPENDENCIES
   gssapi
   guard-rspec
   haml_lint (~> 0.36.0)
-  hamlit (~> 2.11.0)
+  hamlit (~> 2.14.2)
   hangouts-chat (~> 0.0.5)
   hashie
   hashie-forbidden_attributes

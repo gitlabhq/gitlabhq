@@ -156,9 +156,6 @@ RSpec.describe SystemHooksService do
     it { expect(event_name(project_member, :update)).to eq "user_update_for_team" }
     it { expect(event_name(key, :create)).to eq 'key_create' }
     it { expect(event_name(key, :destroy)).to eq 'key_destroy' }
-    it { expect(event_name(group, :create)).to eq 'group_create' }
-    it { expect(event_name(group, :destroy)).to eq 'group_destroy' }
-    it { expect(event_name(group, :rename)).to eq 'group_rename' }
   end
 
   def event_data(*args)
