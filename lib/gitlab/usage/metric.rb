@@ -7,16 +7,16 @@ module Gitlab
 
       InvalidMetricError = Class.new(RuntimeError)
 
-      attr_accessor :default_generation_path, :value
+      attr_accessor :key_path, :value
 
-      validates :default_generation_path, presence: true
+      validates :key_path, presence: true
 
       def definition
-        self.class.definitions[default_generation_path]
+        self.class.definitions[key_path]
       end
 
-      def unflatten_default_path
-        unflatten(default_generation_path.split('.'), value)
+      def unflatten_key_path
+        unflatten(key_path.split('.'), value)
       end
 
       class << self

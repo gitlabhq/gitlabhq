@@ -5,7 +5,6 @@ class WhatsNewController < ApplicationController
 
   skip_before_action :authenticate_user!
 
-  before_action :check_feature_flag
   before_action :check_valid_page_param, :set_pagination_headers, unless: -> { has_version_param? }
 
   feature_category :navigation
@@ -19,10 +18,6 @@ class WhatsNewController < ApplicationController
   end
 
   private
-
-  def check_feature_flag
-    render_404 unless Feature.enabled?(:whats_new_drawer, current_user)
-  end
 
   def check_valid_page_param
     render_404 if current_page < 1

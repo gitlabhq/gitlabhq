@@ -321,6 +321,28 @@ Feature.enabled?(:feature_flag, group)
 Feature.enabled?(:feature_flag, user)
 ```
 
+#### Selectively disable by actor
+
+By default you cannot selectively disable a feature flag by actor.
+
+```shell
+# This will not work how you would expect.
+/chatops run feature set some_feature true
+/chatops run feature set --project=gitlab-org/gitlab some_feature false
+```
+
+However, if you add two feature flags, you can write your conditional statement in such a way that the equivalent selective disable is possible.
+
+```ruby
+Feature.enabled?(:a_feature, project) && Feature.disabled?(:a_feature_override, project)
+```
+
+```shell
+# This will enable a feature flag globally, except for gitlab-org/gitlab
+/chatops run feature set a_feature true
+/chatops run feature set --project=gitlab-org/gitlab a_feature_override true
+```
+
 ### Enable additional objects as actors
 
 To use feature gates based on actors, the model needs to respond to

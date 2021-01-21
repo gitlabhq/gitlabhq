@@ -175,8 +175,7 @@ instances](#indexing-large-instances) below.
 
 To enable Advanced Search, you need to have admin access to GitLab:
 
-1. Navigate to **Admin Area**, then **Settings > General**
-   and expand the **Advanced Search** section.
+1. Navigate to **Admin Area**, then **Settings > Advanced Search**.
 
    NOTE:
    To see the Advanced Search section, you need an active Starter
@@ -186,7 +185,7 @@ To enable Advanced Search, you need to have admin access to GitLab:
    your Elasticsearch cluster. Do not enable **Search with Elasticsearch enabled**
    yet.
 1. Now enable **Elasticsearch indexing** in **Admin Area > Settings >
-   General > Advanced Search** and click **Save changes**. This will create
+   Advanced Search** and click **Save changes**. This will create
    an empty index if one does not already exist.
 1. Click **Index all projects**.
 1. Click **Check progress** in the confirmation message to see the status of
@@ -202,7 +201,7 @@ To enable Advanced Search, you need to have admin access to GitLab:
    ```
 
 1. After the indexing has completed, enable **Search with Elasticsearch enabled** in
-   **Admin Area > Settings > General > Advanced Search** and click **Save
+   **Admin Area > Settings > Advanced Search** and click **Save
    changes**.
 
 NOTE:
@@ -265,8 +264,8 @@ You can improve the language support for Chinese and Japanese languages by utili
 To enable language(s) support:
 
 1. Install the desired plugin(s), please refer to [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/7.9/installation.html) for plugins installation instructions. The plugin(s) must be installed on every node in the cluster, and each node must be restarted after installation. For a list of plugins, see the table later in this section.
-1. Navigate to the **Admin Area**, then **Settings > General**..
-1. Expand the **Advanced Search** section and locate **Custom analyzers: language support**.
+1. Navigate to the **Admin Area**, then **Settings > Advanced Search**..
+1. Locate **Custom analyzers: language support**.
 1. Enable plugin(s) support for **Indexing**.
 1. Click **Save changes** for the changes to take effect.
 1. Trigger [Zero downtime reindexing](#zero-downtime-reindexing) or reindex everything from scratch to create a new index with updated mappings.
@@ -285,9 +284,8 @@ For guidance on what to install, see the following Elasticsearch language plugin
 
 To disable the Elasticsearch integration:
 
-1. Navigate to the **Admin Area**, then **Settings > General**.
-1. Expand the **Advanced Search** section and uncheck **Elasticsearch indexing**
-   and **Search with Elasticsearch enabled**.
+1. Navigate to the **Admin Area**, then **Settings > Advanced Search**.
+1. Uncheck **Elasticsearch indexing** and **Search with Elasticsearch enabled**.
 1. Click **Save changes** for the changes to take effect.
 1. (Optional) Delete the existing indexes:
 
@@ -315,7 +313,7 @@ used by the GitLab Advanced Search integration.
 
 ### Pause the indexing
 
-In the **Admin Area > Settings > General > Advanced Search** section, select the
+In the **Admin Area > Settings > Advanced Search** section, select the
 **Pause Elasticsearch Indexing** setting, and then save your change.
 With this, all updates that should happen on your Elasticsearch index will be
 buffered and caught up once unpaused.
@@ -332,7 +330,7 @@ This process involves several shell commands and curl invocations, so a good
 initial setup will help for later:
 
 ```shell
-# You can find this value under Admin Area > Settings > General > Advanced Search > URL
+# You can find this value under Admin Area > Settings > Advanced Search > URL
 export CLUSTER_URL="http://localhost:9200"
 export PRIMARY_INDEX="gitlab-production"
 export SECONDARY_INDEX="gitlab-production-$(date +%s)"
@@ -433,14 +431,14 @@ To trigger the re-index from `primary` index:
 
 1. Unpause the indexing
 
-    Under **Admin Area > Settings > General > Advanced Search**, uncheck the **Pause Elasticsearch Indexing** setting and save.
+    Under **Admin Area > Settings > Advanced Search**, uncheck the **Pause Elasticsearch Indexing** setting and save.
 
 ### Trigger the reindex via the Advanced Search administration
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34069) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.2.
 > - A scheduled index deletion and the ability to cancel it was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38914) in GitLab Starter 13.3.
 
-Under **Admin Area > Settings > General > Advanced Search > Elasticsearch zero-downtime reindexing**, click on **Trigger cluster reindexing**.
+Under **Admin Area > Settings > Advanced Search > Elasticsearch zero-downtime reindexing**, click on **Trigger cluster reindexing**.
 
 Reindexing can be a lengthy process depending on the size of your Elasticsearch cluster.
 
@@ -463,7 +461,7 @@ Sometimes, you might want to abandon the unfinished reindex job and unpause the 
    bundle exec rake gitlab:elastic:mark_reindex_failed RAILS_ENV=production
    ```
 
-1. Uncheck the "Pause Elasticsearch indexing" checkbox in **Admin Area > Settings > General > Advanced Search**.
+1. Uncheck the "Pause Elasticsearch indexing" checkbox in **Admin Area > Settings > Advanced Search**.
 
 ## Background migrations
 
@@ -823,7 +821,7 @@ There are a couple of ways to achieve that:
   This is always correctly identifying whether the current project/namespace
   being searched is using Elasticsearch.
 
-- From the admin area under **Settings > General > Advanced Search** check that the
+- From the admin area under **Settings > Advanced Search** check that the
   Advanced Search settings are checked.
 
   Those same settings there can be obtained from the Rails console if necessary:

@@ -1,12 +1,9 @@
-name: recorded_at
+key_path: recorded_at
 description: When the Usage Ping computation was started
 value_type: string
 product_category: collection
 stage: growth
 status: data_available
-default_generation: generation_1
-full_path:
-  generation_1: recorded_at
 milestone: 8.10
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/557
 group: group::product analytics

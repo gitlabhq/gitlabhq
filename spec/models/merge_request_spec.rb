@@ -451,6 +451,17 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
       it { is_expected.to be_empty }
     end
+
+    context 'when commit is part of the merge request and a squash commit at the same time' do
+      let!(:merge_request) { create(:merge_request, :with_diffs) }
+      let(:sha) { merge_request.commits.first.id }
+
+      before do
+        merge_request.update!(squash_commit_sha: sha)
+      end
+
+      it { is_expected.to eq([merge_request]) }
+    end
   end
 
   describe '.by_cherry_pick_sha' do

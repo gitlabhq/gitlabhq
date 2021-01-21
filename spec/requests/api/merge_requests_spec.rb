@@ -1736,6 +1736,36 @@ RSpec.describe API::MergeRequests do
       end
     end
 
+    context 'accepts reviewer_ids' do
+      let(:params) do
+        {
+          title: 'Test merge request',
+          source_branch: 'feature_conflict',
+          target_branch: 'master',
+          author_id: user.id,
+          reviewer_ids: [user2.id]
+        }
+      end
+
+      it 'creates a new merge request with a reviewer' do
+        post api("/projects/#{project.id}/merge_requests", user), params: params
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['title']).to eq('Test merge request')
+        expect(json_response['reviewers'].first['name']).to eq(user2.name)
+      end
+
+      it 'creates a new merge request with no reviewer' do
+        params[:reviewer_ids] = []
+
+        post api("/projects/#{project.id}/merge_requests", user), params: params
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['title']).to eq('Test merge request')
+        expect(json_response['reviewers']).to be_empty
+      end
+    end
+
     context 'between branches projects' do
       context 'different labels' do
         let(:params) do
@@ -2080,6 +2110,34 @@ RSpec.describe API::MergeRequests do
   describe 'PUT /projects/:id/merge_reuests/:merge_request_iid' do
     it_behaves_like 'issuable update endpoint' do
       let(:entity) { merge_request }
+    end
+
+    context 'accepts reviewer_ids' do
+      let(:params) do
+        {
+          title: 'Updated merge request',
+          reviewer_ids: [user2.id]
+        }
+      end
+
+      it 'adds a reviewer to the existing merge request' do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['title']).to eq('Updated merge request')
+        expect(json_response['reviewers'].first['name']).to eq(user2.name)
+      end
+
+      it 'removes a reviewer from the existing merge request' do
+        merge_request.reviewers = [user2]
+        params[:reviewer_ids] = []
+
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['title']).to eq('Updated merge request')
+        expect(json_response['reviewers']).to be_empty
+      end
     end
   end
 

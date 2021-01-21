@@ -13,9 +13,8 @@ module Gitlab
         @attributes = opts
       end
 
-      # The key is defined by default_generation and full_path
       def key
-        full_path[default_generation.to_sym]
+        key_path
       end
 
       def to_h

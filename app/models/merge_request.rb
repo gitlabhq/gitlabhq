@@ -270,8 +270,7 @@ class MergeRequest < ApplicationRecord
         by_commit_sha(sha),
         by_squash_commit_sha(sha),
         by_merge_commit_sha(sha)
-      ],
-      remove_duplicates: false
+      ]
     )
   end
   scope :by_cherry_pick_sha, -> (sha) do

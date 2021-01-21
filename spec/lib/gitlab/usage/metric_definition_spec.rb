@@ -5,17 +5,13 @@ require 'spec_helper'
 RSpec.describe Gitlab::Usage::MetricDefinition do
   let(:attributes) do
     {
-      name: 'uuid',
       description: 'GitLab instance unique identifier',
       value_type: 'string',
       product_category: 'collection',
       stage: 'growth',
       status: 'data_available',
       default_generation: 'generation_1',
-      full_path: {
-        generation_1: 'uuid',
-        generation_2: 'license.uuid'
-      },
+      key_path: 'uuid',
       group: 'group::product analytics',
       time_frame: 'none',
       data_source: 'database',
@@ -44,12 +40,11 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
     using RSpec::Parameterized::TableSyntax
 
     where(:attribute, :value) do
-      :name               | nil
       :description        | nil
       :value_type         | nil
       :value_type         | 'test'
       :status             | nil
-      :default_generation | nil
+      :key_path           | nil
       :group              | nil
       :time_frame         | nil
       :time_frame         | '29d'

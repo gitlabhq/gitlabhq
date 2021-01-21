@@ -76,7 +76,7 @@ With the [Customers Portal](https://customers.gitlab.com/) you can:
 - [Change your company details](#change-your-company-details)
 - [Change your payment method](#change-your-payment-method)
 - [Change the linked account](#change-the-linked-account)
-- [Change the associated namespace](#change-the-associated-namespace)
+- [Change the namespace the subscription is linked to](#change-the-linked-namespace)
 - [Change customers portal account password](#change-customers-portal-account-password)
 
 ### Change your personal details
@@ -130,8 +130,7 @@ method as the default:
 
 ### Change the linked account
 
-To change the GitLab.com account associated with your Customers Portal
-account:
+To change the GitLab.com account linked to your Customers Portal account:
 
 1. Log in to the
    [Customers Portal](https://customers.gitlab.com/customers/sign_in).
@@ -142,15 +141,16 @@ account:
 1. Log in to the [GitLab.com](https://gitlab.com) account you want to link to the Customers Portal
    account.
 
-### Change the associated namespace
+### Change the linked namespace
 
-With a linked GitLab.com account:
+To change the namespace linked to a subscription:
 
-1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) with a
+   [linked](#change-the-linked-account) GitLab.com account.
 1. Navigate to the **Manage Purchases** page.
-1. Click **Change linked namespace**.
+1. Select **Change linked namespace**.
 1. Select the desired group from the **This subscription is for** dropdown.
-1. Click **Proceed to checkout**.
+1. Select **Proceed to checkout**.
 
 Subscription charges are calculated based on the total number of users in a group, including its subgroups and nested projects. If the total number of users exceeds the number of seats in your subscription, your account is charged for the additional users.
 

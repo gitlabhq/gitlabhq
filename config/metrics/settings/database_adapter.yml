@@ -1,12 +1,9 @@
-name: adapter
+key_path: database.adapter
 description: This metric only returns a value of PostgreSQL in supported versions of GitLab. It could be removed from the usage ping. Historically MySQL was also supported.
 value_type: string
 product_category: collection
 stage: growth
 status: data_available
-default_generation: generation_1
-full_path:
-  generation_1: database.adapter
 group: group::enablement distribution
 time_frame: none
 data_source: database
