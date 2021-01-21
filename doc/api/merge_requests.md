@@ -1406,7 +1406,7 @@ Parameters:
 | `merge_request_iid`            | integer        | yes      | The internal ID of the merge request.                                                                            |
 | `merge_commit_message`         | string         | no       | Custom merge commit message.                                                                                     |
 | `squash_commit_message`        | string         | no       | Custom squash commit message.                                                                                    |
-| `squash`                       | boolean        | no       | If `true` the commits the commits are squashed into a single commit on merge.                                    |
+| `squash`                       | boolean        | no       | If `true` the commits are squashed into a single commit on merge.                                    |
 | `should_remove_source_branch`  | boolean        | no       | If `true` removes the source branch.                                                                             |
 | `merge_when_pipeline_succeeds` | boolean        | no       | If `true` the MR is merged when the pipeline succeeds.                                                           |
 | `sha`                          | string         | no       | If present, then this SHA must match the HEAD of the source branch, otherwise the merge fails.                   |

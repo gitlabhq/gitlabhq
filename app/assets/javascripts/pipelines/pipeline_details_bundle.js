@@ -136,10 +136,13 @@ export default async function () {
   createTestDetails();
   createDagApp();
 
+  const canShowNewPipelineDetails =
+    gon.features.graphqlPipelineDetails || gon.features.graphqlPipelineDetailsUsers;
+
   const { dataset } = document.querySelector(SELECTORS.PIPELINE_DETAILS);
   let mediator;
 
-  if (!gon.features.graphqlPipelineHeader || !gon.features.graphqlPipelineDetails) {
+  if (!gon.features.graphqlPipelineHeader || !canShowNewPipelineDetails) {
     try {
       const { default: PipelinesMediator } = await import(
         /* webpackChunkName: 'PipelinesMediator' */ './pipeline_details_mediator'
@@ -151,7 +154,7 @@ export default async function () {
     }
   }
 
-  if (gon.features.graphqlPipelineDetails) {
+  if (canShowNewPipelineDetails) {
     try {
       const { createPipelinesDetailApp } = await import(
         /* webpackChunkName: 'createPipelinesDetailApp' */ './pipeline_details_graph'

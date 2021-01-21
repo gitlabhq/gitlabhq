@@ -15,6 +15,7 @@ RSpec.describe 'Pipeline', :js do
     sign_in(user)
     project.add_role(user, role)
     stub_feature_flags(graphql_pipeline_details: false)
+    stub_feature_flags(graphql_pipeline_details_users: false)
   end
 
   shared_context 'pipeline builds' do

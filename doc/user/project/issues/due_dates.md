@@ -41,7 +41,7 @@ You can see issues with their due dates in the [issues list](index.md#issues-lis
 Overdue issues have their icon and date colored red.
 To sort issues by their due dates, select **Due date** from the dropdown menu on the right.
 Issues are then sorted from the earliest due date to the latest.
-To display isses with the latest due dates at the top, select **Sort direction** (**{sort-lowest}**).
+To display issues with the latest due dates at the top, select **Sort direction** (**{sort-lowest}**).
 
 Due dates also appear in your [to-do list](../../todos.md).
 

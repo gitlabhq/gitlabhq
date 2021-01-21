@@ -110,20 +110,16 @@ module CommitsHelper
     end
   end
 
-  def revert_commit_link(commit, continue_to_path, btn_class: nil, pajamas: false)
+  def revert_commit_link
     return unless current_user
 
-    action = 'revert'
-
-    if pajamas && can_collaborate_with_project?(@project)
-      tag(:div, data: { display_text: action.capitalize }, class: "js-revert-commit-trigger")
-    else
-      commit_action_link(action, commit, continue_to_path, btn_class: btn_class, has_tooltip: false)
-    end
+    tag(:div, data: { display_text: 'Revert' }, class: "js-revert-commit-trigger")
   end
 
-  def cherry_pick_commit_link(commit, continue_to_path, btn_class: nil, has_tooltip: true)
-    commit_action_link('cherry-pick', commit, continue_to_path, btn_class: btn_class, has_tooltip: has_tooltip)
+  def cherry_pick_commit_link
+    return unless current_user
+
+    tag(:div, data: { display_text: 'Cherry-pick' }, class: "js-cherry-pick-commit-trigger")
   end
 
   def commit_signature_badge_classes(additional_classes)
@@ -143,7 +139,7 @@ module CommitsHelper
   def commit_person_link(commit, options = {})
     user = commit.public_send(options[:source]) # rubocop:disable GitlabSecurity/PublicSend
 
-    source_name  = clean(commit.public_send(:"#{options[:source]}_name"))  # rubocop:disable GitlabSecurity/PublicSend
+    source_name = clean(commit.public_send(:"#{options[:source]}_name")) # rubocop:disable GitlabSecurity/PublicSend
     source_email = clean(commit.public_send(:"#{options[:source]}_email")) # rubocop:disable GitlabSecurity/PublicSend
 
     person_name = user.try(:name) || source_name
@@ -163,28 +159,6 @@ module CommitsHelper
       mail_to(source_email, text, link_options)
     else
       link_to(text, user_path(user), { class: "commit-#{options[:source]}-link js-user-link", data: { user_id: user.id } })
-    end
-  end
-
-  def commit_action_link(action, commit, continue_to_path, btn_class: nil, has_tooltip: true)
-    return unless current_user
-
-    tooltip = "#{action.capitalize} this #{commit.change_type_title(current_user)} in a new merge request" if has_tooltip
-    btn_class = "btn btn-#{btn_class}" unless btn_class.nil?
-
-    if can_collaborate_with_project?(@project)
-      link_to action.capitalize, "#modal-#{action}-commit", 'data-toggle' => 'modal', 'data-container' => 'body', title: (tooltip if has_tooltip), class: "#{btn_class} #{'has-tooltip' if has_tooltip}"
-    elsif can?(current_user, :fork_project, @project)
-      continue_params = {
-        to: continue_to_path,
-        notice: "#{edit_in_new_fork_notice} Try to #{action} this commit again.",
-        notice_now: edit_in_new_fork_notice_now
-      }
-      fork_path = project_forks_path(@project,
-        namespace_key: current_user.namespace.id,
-        continue: continue_params)
-
-      link_to action.capitalize, fork_path, class: btn_class, method: :post, 'data-toggle' => 'tooltip', 'data-container' => 'body', title: (tooltip if has_tooltip)
     end
   end
 

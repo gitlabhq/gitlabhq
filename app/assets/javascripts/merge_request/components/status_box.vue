@@ -5,12 +5,14 @@ import mrEventHub from '../eventhub';
 
 const CLASSES = {
   opened: 'status-box-open',
+  locked: 'status-box-open',
   closed: 'status-box-mr-closed',
   merged: 'status-box-mr-merged',
 };
 
 const STATUS = {
   opened: [__('Open'), 'issue-open-m'],
+  locked: [__('Open'), 'issue-open-m'],
   closed: [__('Closed'), 'close'],
   merged: [__('Merged'), 'git-merge'],
 };

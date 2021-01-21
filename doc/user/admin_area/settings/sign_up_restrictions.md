@@ -86,7 +86,7 @@ Feature.enable(:admin_new_user_signups_cap)
 ## Soft email confirmation
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47003) in GitLab 12.2.
-> - It's [deployed behind a feature flag](../../..//user/feature_flags.md), disabled by default.
+> - It's [deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
 > - It's enabled on GitLab.com.
 > - It's recommended for production use.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-soft-email-confirmation).

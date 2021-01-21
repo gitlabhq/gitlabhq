@@ -1,0 +1,83 @@
+---
+- title: Pipeline editor
+  body: |
+    GitLab CI/CD provides you with flexible options to support a variety of advanced pipeline use cases. Pipeline syntax can be verbose and sometimes complicated, especially for those who are new to GitLab CI/CD. In this release, we are proud to introduce our first iteration of the Pipeline Editor.
+
+    The editor makes the CI configuration authoring experience much easier for both novice and advanced users alike. The pipeline editor is a single solution that groups all the existing CI authoring features (and future ones) in a single location. The pipeline editor is the best place to go when configuring your pipeline.
+  stage: Verify
+  self-managed: true
+  gitlab-com: true
+  packages: [Core, Starter, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/ci/pipeline_editor/index.html
+  image_url: https://img.youtube.com/vi/MQpSyvMpsHA/hqdefault.jpg
+  published_at: 2021-01-22
+  release: 13.8
+- title: Visualization of pipeline configuration
+  body: |
+    A complex CI configuration can be difficult to understand as a developer, especially when trying to predict how your pipeline might behave (or misbehave). Without a visual aid, it is challenging to form a mental image of the relationships between all of the jobs and determine how they are interconnected. In our first iteration of a pipeline visualization, you can now see a graphic representation of your `.gitlab-ci.yml` configuration to better understand and predict how your pipelines will perform.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  packages: [Core, Starter, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/ci/yaml/visualization.html
+  image_url: https://about.gitlab.com/images/13_8/pipeline_visual_builder.png
+  published_at: 2021-01-22
+  release: 13.8
+- title: Deployment frequency charts
+  packages: [Ultimate]
+  self-managed: true
+  gitlab-com: true
+  image_url: https://about.gitlab.com/images/13_8/deployment_graph.png
+  url: https://docs.gitlab.com/ee/user/analytics/ci_cd_analytics.html#deployment-frequency-charts
+  stage: Release
+  body: |
+    Knowing and monitoring deployment frequency is a starting point for organizations adopting DevOps. We are proud to introduce the deployment frequency charts at the project level so that you and your development teams can monitor the efficiency of deployments over time, find bottlenecks, and make improvements when necessary. This is the first of the DORA metrics that we are making available within GitLab out of the box.
+  published_at: 2021-01-22
+  release: 13.8
+- title: Scope a board to the current iteration
+  body: |
+    Many teams use boards to manage issues during an iteration. In 13.6, we added support for [filtering issues on a board to a specific Iteration](https://gitlab.com/gitlab-org/gitlab/-/issues/118742), but it is cumbersome to remember to apply that filter every time you go to your board. In this release, we've added the ability to scope your board to the currently active iteration.
+  stage: plan
+  self-managed: true
+  gitlab-com: true
+  packages: [Starter, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/project/issue_board.html#configurable-issue-boards
+  image_url: https://about.gitlab.com/images/13_8/scope_board_to_current_iteration.png
+  published_at: 2021-01-22
+  release: 13.8
+- title: Download artifacts directly from the merge request widget
+  body: |
+    We added the ability to download build artifacts directly from the MR widget. This is especially useful for mobile development. An example of this is where users want to test an Android package of a specific build created on a physical device or an emulator. You can now access these artifacts directly from the merge request widget without having to find the artifacts buried in the pipeline view.
+  stage: Release
+  self-managed: true
+  gitlab-com: true
+  packages: [Core, Starter, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/ci/pipelines/job_artifacts.html#downloading-artifacts
+  image_url: https://about.gitlab.com/images/13_8/artifact_mr.png
+  published_at: 2021-01-22
+  release: 13.8
+- title: Rebase quick action for merge requests
+  body: |
+    Rebase is a Git command used to reapply commits on top of a new commit. In practice, this means reapplying commits from a feature branch on top of the latest version of the target branch (e.g. `main`). In this way, it is possible to bring the feature branch up to date and resolve any conflicts without using a merge commit with the benefit of a simpler linear Git history.
+
+    GitLab 13.8 brings the ability to execute the rebase quick action in merge requests, allowing you to quickly invoke the rebase Git utility.
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  packages: [Core, Starter, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/project/quick_actions.html#quick-actions-for-issues-merge-requests-and-epics
+  image_url: https://about.gitlab.com/images/13_8/rebase_comment.png
+  published_at: 2021-01-22
+  release: 13.8
+- title: GitLab Pages is now available for Kubernetes deployments of GitLab
+  body: |
+    GitLab Pages is a popular static-site hosting service built into GitLab, and we are excited to announce that it is now available for GitLab instances running on Kubernetes. Pages was one of the last remaining feature gaps compared to an Omnibus deployment.
+  stage: enablement
+  self-managed: true
+  gitlab-com: false
+  packages: [Core, Starter, Premium, Ultimate]
+  url: https://docs.gitlab.com/charts/charts/gitlab/gitlab-pages/index.html
+  image_url: https://about.gitlab.com/images/home/kubernetes.png
+  published_at: 2021-01-22
+  release: 13.8
+

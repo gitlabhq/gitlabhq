@@ -375,7 +375,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## Require code owner approvals for a single branch
 
-Update the "code owner approval required" option for the given protected branch protected branch.
+Update the "code owner approval required" option for the given protected branch.
 
 ```plaintext
 PATCH /projects/:id/protected_branches/:name

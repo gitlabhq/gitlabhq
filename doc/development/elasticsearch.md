@@ -337,7 +337,7 @@ cluster.routing.allocation.disk.watermark.low: 15gb
 cluster.routing.allocation.disk.watermark.high: 10gb
 ```
 
-Restart Elasticsearch, and the `read_only_allow_delete` will clear on it's own.
+Restart Elasticsearch, and the `read_only_allow_delete` will clear on its own.
 
 _from "Disk-based Shard Allocation | Elasticsearch Reference" [5.6](https://www.elastic.co/guide/en/elasticsearch/reference/5.6/disk-allocator.html#disk-allocator) and [6.x](https://www.elastic.co/guide/en/elasticsearch/reference/6.7/disk-allocator.html)_
 
@@ -351,7 +351,7 @@ simply reindex everything from scratch.
 
 If your Elasticsearch index is incredibly large it may be too time consuming or
 cause too much downtime to reindex from scratch. There aren't any built in
-mechanisms for automatically finding discrepencies and resyncing an
+mechanisms for automatically finding discrepancies and resyncing an
 Elasticsearch index if it gets out of sync but one tool that may be useful is
 looking at the logs for all the updates that occurred in a time range you
 believe may have been missed. This information is very low level and only

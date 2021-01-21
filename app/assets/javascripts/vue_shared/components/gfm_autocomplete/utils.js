@@ -84,7 +84,7 @@ export const tributeConfig = {
         value.type === groupType ? last(value.name.split(' / ')) : `${value.name}${value.username}`,
       menuItemLimit: memberLimit,
       menuItemTemplate: ({ original }) => {
-        const commonClasses = 'gl-avatar gl-avatar-s24 gl-flex-shrink-0';
+        const commonClasses = 'gl-avatar gl-avatar-s32 gl-flex-shrink-0';
         const noAvatarClasses = `${commonClasses} gl-rounded-small
         gl-display-flex gl-align-items-center gl-justify-content-center`;
 
@@ -111,7 +111,7 @@ export const tributeConfig = {
         return `
         <div class="gl-display-flex gl-align-items-center">
           ${avatar}
-          <div class="gl-font-sm gl-line-height-normal gl-ml-3">
+          <div class="gl-line-height-normal gl-ml-4">
             <div>${escape(displayName)}${count}</div>
             <div class="gl-text-gray-700">${escape(parentGroupOrUsername)}</div>
           </div>

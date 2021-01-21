@@ -31,7 +31,7 @@ Jest tests can be found in `/spec/frontend` and `/ee/spec/frontend` in EE.
 ## Karma test suite
 
 While GitLab has switched over to [Jest](https://jestjs.io), Karma tests still exist in our
-application because some of our specs require a browser and can't be easiliy migrated to Jest.
+application because some of our specs require a browser and can't be easily migrated to Jest.
 Those specs intend to eventually drop Karma in favor of either Jest or RSpec. You can track this migration
 in the [related epic](https://gitlab.com/groups/gitlab-org/-/epics/4900).
 

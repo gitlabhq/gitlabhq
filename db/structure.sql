@@ -11457,9 +11457,11 @@ CREATE TABLE compliance_management_frameworks (
     color text NOT NULL,
     namespace_id integer NOT NULL,
     regulated boolean DEFAULT true NOT NULL,
+    pipeline_configuration_full_path text,
     CONSTRAINT check_08cd34b2c2 CHECK ((char_length(color) <= 10)),
     CONSTRAINT check_1617e0b87e CHECK ((char_length(description) <= 255)),
-    CONSTRAINT check_ab00bc2193 CHECK ((char_length(name) <= 255))
+    CONSTRAINT check_ab00bc2193 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_e7a9972435 CHECK ((char_length(pipeline_configuration_full_path) <= 255))
 );
 
 CREATE SEQUENCE compliance_management_frameworks_id_seq

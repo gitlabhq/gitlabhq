@@ -8,11 +8,11 @@ import { trimText } from 'helpers/text_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
   expectedDownloadDropdownProps,
+  securityReportDownloadPathsQueryNoArtifactsResponse,
   securityReportDownloadPathsQueryResponse,
   sastDiffSuccessMock,
   secretScanningDiffSuccessMock,
 } from 'jest/vue_shared/security_reports/mock_data';
-import Api from '~/api';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import {
@@ -60,6 +60,8 @@ describe('Security reports app', () => {
 
   const pendingHandler = () => new Promise(() => {});
   const successHandler = () => Promise.resolve({ data: securityReportDownloadPathsQueryResponse });
+  const successEmptyHandler = () =>
+    Promise.resolve({ data: securityReportDownloadPathsQueryNoArtifactsResponse });
   const failureHandler = () => Promise.resolve({ errors: [{ message: 'some error' }] });
   const createMockApolloProvider = (handler) => {
     localVue.use(VueApollo);
@@ -69,178 +71,85 @@ describe('Security reports app', () => {
     return createMockApollo(requestHandlers);
   };
 
-  const anyParams = expect.any(Object);
-
   const findDownloadDropdown = () => wrapper.find(SecurityReportDownloadDropdown);
-  const findPipelinesTabAnchor = () => wrapper.find('[data-testid="show-pipelines"]');
   const findHelpIconComponent = () => wrapper.find(HelpIcon);
-  const setupMockJobArtifact = (reportType) => {
-    jest
-      .spyOn(Api, 'pipelineJobs')
-      .mockResolvedValue({ data: [{ artifacts: [{ file_type: reportType }] }] });
-  };
-  const expectPipelinesTabAnchor = () => {
-    const mrTabsMock = { tabShown: jest.fn() };
-    window.mrTabs = mrTabsMock;
-    findPipelinesTabAnchor().trigger('click');
-    expect(mrTabsMock.tabShown.mock.calls).toEqual([['pipelines']]);
-  };
 
   afterEach(() => {
     wrapper.destroy();
-    delete window.mrTabs;
   });
 
-  describe.each([false, true])(
-    'given the coreSecurityMrWidgetCounts feature flag is %p',
-    (coreSecurityMrWidgetCounts) => {
-      const createComponentWithFlag = (options) =>
-        createComponent(
-          merge(
-            {
-              provide: {
-                glFeatures: {
-                  coreSecurityMrWidgetCounts,
-                },
-              },
-            },
-            options,
-          ),
-        );
-
-      describe.each(SecurityReportsApp.reportTypes)('given a report type %p', (reportType) => {
-        beforeEach(() => {
-          window.mrTabs = { tabShown: jest.fn() };
-          setupMockJobArtifact(reportType);
-          createComponentWithFlag();
-          return wrapper.vm.$nextTick();
-        });
-
-        it('calls the pipelineJobs API correctly', () => {
-          expect(Api.pipelineJobs).toHaveBeenCalledTimes(1);
-          expect(Api.pipelineJobs).toHaveBeenCalledWith(
-            props.projectId,
-            props.pipelineId,
-            anyParams,
-          );
-        });
-
-        it('renders the expected message', () => {
-          expect(wrapper.text()).toMatchInterpolatedText(
-            SecurityReportsApp.i18n.scansHaveRunWithDownloadGuidance,
-          );
-        });
-
-        describe('clicking the anchor to the pipelines tab', () => {
-          it('calls the mrTabs.tabShown global', () => {
-            expectPipelinesTabAnchor();
-          });
-        });
-
-        it('renders a help link', () => {
-          expect(findHelpIconComponent().props()).toEqual({
-            helpPath: props.securityReportsDocsPath,
-            discoverProjectSecurityPath: props.discoverProjectSecurityPath,
-          });
-        });
+  describe('given the artifacts query is loading', () => {
+    beforeEach(() => {
+      createComponent({
+        apolloProvider: createMockApolloProvider(pendingHandler),
       });
+    });
 
-      describe('given a report type "foo"', () => {
-        beforeEach(() => {
-          setupMockJobArtifact('foo');
-          createComponentWithFlag();
-          return wrapper.vm.$nextTick();
-        });
+    // TODO: Remove this assertion as part of
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/273431
+    it('initially renders nothing', () => {
+      expect(wrapper.html()).toBe('');
+    });
+  });
 
-        it('calls the pipelineJobs API correctly', () => {
-          expect(Api.pipelineJobs).toHaveBeenCalledTimes(1);
-          expect(Api.pipelineJobs).toHaveBeenCalledWith(
-            props.projectId,
-            props.pipelineId,
-            anyParams,
-          );
-        });
-
-        it('renders nothing', () => {
-          expect(wrapper.html()).toBe('');
-        });
+  describe('given the artifacts query loads successfully', () => {
+    beforeEach(() => {
+      createComponent({
+        apolloProvider: createMockApolloProvider(successHandler),
       });
+    });
 
-      describe('security artifacts on last page of multi-page response', () => {
-        const numPages = 3;
+    it('renders the download dropdown', () => {
+      expect(findDownloadDropdown().props()).toEqual(expectedDownloadDropdownProps);
+    });
 
-        beforeEach(() => {
-          jest
-            .spyOn(Api, 'pipelineJobs')
-            .mockImplementation(async (projectId, pipelineId, { page }) => {
-              const requestedPage = parseInt(page, 10);
-              if (requestedPage < numPages) {
-                return {
-                  // Some jobs with no relevant artifacts
-                  data: [{}, {}],
-                  headers: { 'x-next-page': String(requestedPage + 1) },
-                };
-              } else if (requestedPage === numPages) {
-                return {
-                  data: [{ artifacts: [{ file_type: SecurityReportsApp.reportTypes[0] }] }],
-                };
-              }
+    it('renders the expected message', () => {
+      expect(wrapper.text()).toContain(SecurityReportsApp.i18n.scansHaveRun);
+    });
 
-              throw new Error('Test failed due to request of non-existent jobs page');
-            });
-
-          createComponentWithFlag();
-          return wrapper.vm.$nextTick();
-        });
-
-        it('fetches all pages', () => {
-          expect(Api.pipelineJobs).toHaveBeenCalledTimes(numPages);
-        });
-
-        it('renders the expected message', () => {
-          expect(wrapper.text()).toMatchInterpolatedText(
-            SecurityReportsApp.i18n.scansHaveRunWithDownloadGuidance,
-          );
-        });
+    it('renders a help link', () => {
+      expect(findHelpIconComponent().props()).toEqual({
+        helpPath: props.securityReportsDocsPath,
+        discoverProjectSecurityPath: props.discoverProjectSecurityPath,
       });
+    });
+  });
 
-      describe('given an error from the API', () => {
-        let error;
-
-        beforeEach(() => {
-          error = new Error('an error');
-          jest.spyOn(Api, 'pipelineJobs').mockRejectedValue(error);
-          createComponentWithFlag();
-          return wrapper.vm.$nextTick();
-        });
-
-        it('calls the pipelineJobs API correctly', () => {
-          expect(Api.pipelineJobs).toHaveBeenCalledTimes(1);
-          expect(Api.pipelineJobs).toHaveBeenCalledWith(
-            props.projectId,
-            props.pipelineId,
-            anyParams,
-          );
-        });
-
-        it('renders nothing', () => {
-          expect(wrapper.html()).toBe('');
-        });
-
-        it('calls createFlash correctly', () => {
-          expect(createFlash.mock.calls).toEqual([
-            [
-              {
-                message: SecurityReportsApp.i18n.apiError,
-                captureError: true,
-                error,
-              },
-            ],
-          ]);
-        });
+  describe('given the artifacts query loads successfully with no artifacts', () => {
+    beforeEach(() => {
+      createComponent({
+        apolloProvider: createMockApolloProvider(successEmptyHandler),
       });
-    },
-  );
+    });
+
+    // TODO: Remove this assertion as part of
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/273431
+    it('initially renders nothing', () => {
+      expect(wrapper.html()).toBe('');
+    });
+  });
+
+  describe('given the artifacts query fails', () => {
+    beforeEach(() => {
+      createComponent({
+        apolloProvider: createMockApolloProvider(failureHandler),
+      });
+    });
+
+    it('calls createFlash correctly', () => {
+      expect(createFlash).toHaveBeenCalledWith({
+        message: SecurityReportsApp.i18n.apiError,
+        captureError: true,
+        error: expect.any(Error),
+      });
+    });
+
+    // TODO: Remove this assertion as part of
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/273431
+    it('renders nothing', () => {
+      expect(wrapper.html()).toBe('');
+    });
+  });
 
   describe('given the coreSecurityMrWidgetCounts feature flag is enabled', () => {
     let mock;
@@ -253,6 +162,7 @@ describe('Security reports app', () => {
               coreSecurityMrWidgetCounts: true,
             },
           },
+          apolloProvider: createMockApolloProvider(successHandler),
         }),
       );
 
@@ -274,11 +184,7 @@ describe('Security reports app', () => {
       ${REPORT_TYPE_SECRET_DETECTION} | ${'secretScanningComparisonPath'} | ${SECRET_SCANNING_COMPARISON_PATH} | ${secretScanningDiffSuccessMock} | ${SECRET_SCANNING_SUCCESS_MESSAGE}
     `(
       'given a $pathProp and $reportType artifact',
-      ({ reportType, pathProp, path, successResponse, successMessage }) => {
-        beforeEach(() => {
-          setupMockJobArtifact(reportType);
-        });
-
+      ({ pathProp, path, successResponse, successMessage }) => {
         describe('when loading', () => {
           beforeEach(() => {
             mock = new MockAdapter(axios, { delayResponse: 1 });
@@ -294,11 +200,11 @@ describe('Security reports app', () => {
           });
 
           it('should have loading message', () => {
-            expect(wrapper.text()).toBe('Security scanning is loading');
+            expect(wrapper.text()).toContain('Security scanning is loading');
           });
 
-          it('should not render the pipeline tab anchor', () => {
-            expect(findPipelinesTabAnchor().exists()).toBe(false);
+          it('renders the download dropdown', () => {
+            expect(findDownloadDropdown().props()).toEqual(expectedDownloadDropdownProps);
           });
         });
 
@@ -319,8 +225,8 @@ describe('Security reports app', () => {
             expect(trimText(wrapper.text())).toContain(successMessage);
           });
 
-          it('should render the pipeline tab anchor', () => {
-            expectPipelinesTabAnchor();
+          it('renders the download dropdown', () => {
+            expect(findDownloadDropdown().props()).toEqual(expectedDownloadDropdownProps);
           });
         });
 
@@ -341,125 +247,25 @@ describe('Security reports app', () => {
             expect(trimText(wrapper.text())).toContain('Loading resulted in an error');
           });
 
-          it('should render the pipeline tab anchor', () => {
-            expectPipelinesTabAnchor();
+          it('renders the download dropdown', () => {
+            expect(findDownloadDropdown().props()).toEqual(expectedDownloadDropdownProps);
+          });
+        });
+
+        describe('when the comparison endpoint is not provided', () => {
+          beforeEach(() => {
+            mock.onGet(path).replyOnce(500);
+
+            createComponentWithFlagEnabled();
+
+            return waitForPromises();
+          });
+
+          it('renders the basic scansHaveRun  message', () => {
+            expect(wrapper.text()).toContain(SecurityReportsApp.i18n.scansHaveRun);
           });
         });
       },
     );
-  });
-
-  describe('given coreSecurityMrWidgetDownloads feature flag is enabled', () => {
-    const createComponentWithFlagEnabled = (options) =>
-      createComponent(
-        merge(options, {
-          provide: {
-            glFeatures: {
-              coreSecurityMrWidgetDownloads: true,
-            },
-          },
-        }),
-      );
-
-    describe('given the query is loading', () => {
-      beforeEach(() => {
-        createComponentWithFlagEnabled({
-          apolloProvider: createMockApolloProvider(pendingHandler),
-        });
-      });
-
-      // TODO: Remove this assertion as part of
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/273431
-      it('initially renders nothing', () => {
-        expect(wrapper.html()).toBe('');
-      });
-    });
-
-    describe('given the query loads successfully', () => {
-      beforeEach(() => {
-        createComponentWithFlagEnabled({
-          apolloProvider: createMockApolloProvider(successHandler),
-        });
-      });
-
-      it('renders the download dropdown', () => {
-        expect(findDownloadDropdown().props()).toEqual(expectedDownloadDropdownProps);
-      });
-
-      it('renders the expected message', () => {
-        const text = wrapper.text();
-        expect(text).not.toContain(SecurityReportsApp.i18n.scansHaveRunWithDownloadGuidance);
-        expect(text).toContain(SecurityReportsApp.i18n.scansHaveRun);
-      });
-
-      it('should not render the pipeline tab anchor', () => {
-        expect(findPipelinesTabAnchor().exists()).toBe(false);
-      });
-    });
-
-    describe('given the query fails', () => {
-      beforeEach(() => {
-        createComponentWithFlagEnabled({
-          apolloProvider: createMockApolloProvider(failureHandler),
-        });
-      });
-
-      it('calls createFlash correctly', () => {
-        expect(createFlash).toHaveBeenCalledWith({
-          message: SecurityReportsApp.i18n.apiError,
-          captureError: true,
-          error: expect.any(Error),
-        });
-      });
-
-      // TODO: Remove this assertion as part of
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/273431
-      it('renders nothing', () => {
-        expect(wrapper.html()).toBe('');
-      });
-    });
-  });
-
-  describe('given coreSecurityMrWidgetCounts and coreSecurityMrWidgetDownloads feature flags are enabled', () => {
-    let mock;
-
-    beforeEach(() => {
-      mock = new MockAdapter(axios);
-      mock.onGet(SAST_COMPARISON_PATH).replyOnce(200, sastDiffSuccessMock);
-      mock.onGet(SECRET_SCANNING_COMPARISON_PATH).replyOnce(200, secretScanningDiffSuccessMock);
-      createComponent({
-        propsData: {
-          sastComparisonPath: SAST_COMPARISON_PATH,
-          secretScanningComparisonPath: SECRET_SCANNING_COMPARISON_PATH,
-        },
-        provide: {
-          glFeatures: {
-            coreSecurityMrWidgetCounts: true,
-            coreSecurityMrWidgetDownloads: true,
-          },
-        },
-        apolloProvider: createMockApolloProvider(successHandler),
-      });
-
-      return waitForPromises();
-    });
-
-    afterEach(() => {
-      mock.restore();
-    });
-
-    it('renders the download dropdown', () => {
-      expect(findDownloadDropdown().props()).toEqual(expectedDownloadDropdownProps);
-    });
-
-    it('renders the expected counts message', () => {
-      expect(trimText(wrapper.text())).toContain(
-        'Security scanning detected 3 potential vulnerabilities 2 Critical 1 High and 0 Others',
-      );
-    });
-
-    it('should not render the pipeline tab anchor', () => {
-      expect(findPipelinesTabAnchor().exists()).toBe(false);
-    });
   });
 });

@@ -17,9 +17,16 @@ module Pages
     end
 
     def lookup_paths
-      projects.map do |project|
+      paths = projects.map do |project|
         project.pages_lookup_path(trim_prefix: trim_prefix, domain: domain)
-      end.sort_by(&:prefix).reverse
+      end
+
+      # TODO: remove in https://gitlab.com/gitlab-org/gitlab/-/issues/297524
+      # source can only be nil if pages_serve_from_legacy_storage FF is disabled
+      # we can remove this filtering once we remove legacy storage
+      paths = paths.select(&:source)
+
+      paths.sort_by(&:prefix).reverse
     end
 
     private

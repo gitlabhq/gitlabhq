@@ -5269,6 +5269,9 @@ msgstr ""
 msgid "ChangeTypeAction|Cherry-pick"
 msgstr ""
 
+msgid "ChangeTypeAction|Pick into branch"
+msgstr ""
+
 msgid "ChangeTypeAction|Revert"
 msgstr ""
 
@@ -25171,9 +25174,6 @@ msgstr ""
 msgid "SecurityReports|Fuzzing artifacts"
 msgstr ""
 
-msgid "SecurityReports|Go to the %{linkStart}pipelines tab%{linkEnd} to download the security reports"
-msgstr ""
-
 msgid "SecurityReports|Hide dismissed"
 msgstr ""
 
@@ -25235,9 +25235,6 @@ msgid "SecurityReports|Security reports help page link"
 msgstr ""
 
 msgid "SecurityReports|Security scans have run"
-msgstr ""
-
-msgid "SecurityReports|Security scans have run. Go to the %{linkStart}pipelines tab%{linkEnd} to download the security reports"
 msgstr ""
 
 msgid "SecurityReports|Select a project to add by using the project search field above."
@@ -27752,10 +27749,10 @@ msgstr[1] ""
 msgid "Terraform|%{user} updated %{timeAgo}"
 msgstr ""
 
-msgid "Terraform|A Terraform report failed to generate."
+msgid "Terraform|A report failed to generate."
 msgstr ""
 
-msgid "Terraform|A Terraform report was generated in your pipelines."
+msgid "Terraform|A report was generated in your pipelines."
 msgstr ""
 
 msgid "Terraform|Actions"
@@ -27815,10 +27812,10 @@ msgstr ""
 msgid "Terraform|States"
 msgstr ""
 
-msgid "Terraform|The Terraform report %{name} failed to generate."
+msgid "Terraform|The report %{name} failed to generate."
 msgstr ""
 
-msgid "Terraform|The Terraform report %{name} was generated in your pipelines."
+msgid "Terraform|The report %{name} was generated in your pipelines."
 msgstr ""
 
 msgid "Terraform|To remove the State file and its versions, type %{name} to confirm:"
@@ -32550,6 +32547,9 @@ msgid "You have insufficient permissions to create an on-call rotation for this 
 msgstr ""
 
 msgid "You have insufficient permissions to create an on-call schedule for this project"
+msgstr ""
+
+msgid "You have insufficient permissions to remove an on-call rotation from this project"
 msgstr ""
 
 msgid "You have insufficient permissions to remove an on-call schedule from this project"

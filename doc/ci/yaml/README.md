@@ -377,16 +377,10 @@ NOTE:
 Use merging to customize and override included CI/CD configurations with local
 definitions. Local definitions in `.gitlab-ci.yml` override included definitions.
 
-#### Variables with `include`
+#### Variables with `include` **(CORE ONLY)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/284883) in GitLab 13.8.
-> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-includepredefined-project-variables). **(CORE ONLY)**
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/294294) in GitLab 13.9.
 
 You can [use some predefined variables in `include` sections](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
 in your `.gitlab-ci.yml`:
@@ -399,25 +393,6 @@ include:
 
 For an example of how you can include these predefined variables, and their impact on CI jobs,
 see the following [CI variable demo](https://youtu.be/4XR8gw3Pkos).
-
-##### Enable or disable include:predefined-project-variables **(CORE ONLY)**
-
-Use of predefined project variables in `include` section of `.gitlab-ci.yml` is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:variables_in_include_section_ci)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:variables_in_include_section_ci)
-```
 
 #### `include:local`
 
@@ -3097,6 +3072,32 @@ job:
       - path/*xyz/*
 ```
 
+#### `artifacts:public`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49775) in GitLab 13.8
+> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+> - It's enabled on GitLab.com.
+> - It's recommended for production use.
+
+`artifacts:public` is used to determine whether the job artifacts should be
+publicly available.
+
+The default for `artifacts:public` is `true` which means that the artifacts in
+public pipelines are available for download by anonymous and guest users:
+
+```yaml
+artifacts:
+  public: true
+```
+
+To deny read access for anonymous and guest users to artifacts in public
+pipelines, set `artifacts:public` to `false`:
+
+```yaml
+artifacts:
+  public: false
+```
+
 #### `artifacts:exclude`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15122) in GitLab 13.1
@@ -3453,7 +3454,7 @@ job1:
 
 The coverage is shown in the UI if at least one line in the job output matches the regular expression.
 If there is more than one matched line in the job output, the last line is used.
-For the matched line, the first occurence of `\d+(\.\d+)?` is the code coverage.
+For the matched line, the first occurrence of `\d+(\.\d+)?` is the code coverage.
 Leading zeros are removed.
 
 Coverage output from [child pipelines](../parent_child_pipelines.md) is not recorded

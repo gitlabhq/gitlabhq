@@ -46,7 +46,7 @@ all of the arguments that `in_batches` supports. You should always use
 
 One should proceed with extra caution, and possibly avoid iterating over a column that can contain duplicate values.
 When you iterate over an attribute that is not unique, even with the applied max batch size, there is no guarantee that the resulting batches will not surpass it.
-The following snippet demonstrates this situation, whe one attempt to select `Ci::Build` entries for users with `id` between `1` and `10,s000`, database returns `1 215 178`
+The following snippet demonstrates this situation, when one attempt to select `Ci::Build` entries for users with `id` between `1` and `10,s000`, database returns `1 215 178`
 matching rows
 
 ```ruby

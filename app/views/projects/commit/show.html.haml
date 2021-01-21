@@ -18,4 +18,4 @@
     = render "shared/notes/notes_with_form", :autocomplete => true
     - if can_collaborate_with_project?(@project)
       = render "projects/commit/change", type: 'revert', commit: @commit, pajamas: true
-      = render "projects/commit/change", type: 'cherry-pick', commit: @commit, title: @commit.title
+      = render "projects/commit/change", type: 'cherry-pick', commit: @commit, pajamas: true

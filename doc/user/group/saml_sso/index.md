@@ -110,7 +110,8 @@ When [configuring your identify provider](#configuring-your-identity-provider), 
 ### Azure setup notes
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a demo of the Azure SAML setup including SCIM, see [SCIM Provisioning on Azure Using SAML SSO for Groups Demo](https://youtu.be/24-ZxmTeEBU). Please note that the video is outdated in regards to objectID mapping and the [SCIM documentation should be followed](scim_setup.md#azure-configuration-steps).
+For a demo of the Azure SAML setup including SCIM, see [SCIM Provisioning on Azure Using SAML SSO for Groups Demo](https://youtu.be/24-ZxmTeEBU). Please note that the video is outdated in regard to
+objectID mapping and the [SCIM documentation should be followed](scim_setup.md#azure-configuration-steps).
 
 | GitLab Setting | Azure Field |
 |--------------|----------------|
@@ -343,7 +344,7 @@ access.
 |------|-------------|
 | Identity Provider | The service which manages your user identities such as ADFS, Okta, Onelogin, or Ping Identity. |
 | Service Provider | SAML considers GitLab to be a service provider. |
-| Assertion | A piece of information about a user's identity, such as their name or role. Also know as claims or attributes. |
+| Assertion | A piece of information about a user's identity, such as their name or role. Also known as claims or attributes. |
 | SSO | Single Sign On. |
 | Assertion consumer service URL | The callback on GitLab where users are redirected after successfully authenticating with the identity provider. |
 | Issuer | How GitLab identifies itself to the identity provider. Also known as a "Relying party trust identifier". |

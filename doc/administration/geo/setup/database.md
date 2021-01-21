@@ -472,7 +472,7 @@ information, see [High Availability with Omnibus GitLab](../../postgresql/replic
 ## Patroni support
 
 Support for Patroni is intended to replace `repmgr` as a
-[highly availabile PostgreSQL solution](../../postgresql/replication_and_failover.md)
+[highly available PostgreSQL solution](../../postgresql/replication_and_failover.md)
 on the primary node, but it can also be used for PostgreSQL HA on a secondary
 node.
 

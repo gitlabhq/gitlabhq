@@ -17,7 +17,7 @@ You should also reference the [OmniAuth documentation](omniauth.md) for general 
 |------|-------------|
 | Identity Provider (IdP) | The service which manages your user identities such as ADFS, Okta, Onelogin, or Ping Identity. |
 | Service Provider (SP) | SAML considers GitLab to be a service provider. |
-| Assertion | A piece of information about a user's identity, such as their name or role. Also know as claims or attributes. |
+| Assertion | A piece of information about a user's identity, such as their name or role. Also known as claims or attributes. |
 | SSO | Single Sign-On. |
 | Assertion consumer service URL | The callback on GitLab where users will be redirected after successfully authenticating with the identity provider. |
 | Issuer | How GitLab identifies itself to the identity provider. Also known as a "Relying party trust identifier". |

@@ -68,6 +68,7 @@ export default {
       autocomplete="off"
       :debounce="250"
       :placeholder="$options.i18n.searchPlaceholder"
+      data-testid="dropdown-search-box"
       @input="searchTermChanged"
     />
     <gl-dropdown-item
