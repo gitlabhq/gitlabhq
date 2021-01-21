@@ -140,7 +140,7 @@ module Gitlab
         cookies[:force_experiment].to_s.split(',').any? { |experiment| experiment.strip == experiment_key.to_s }
       end
 
-      def tracking_label(subject)
+      def tracking_label(subject = nil)
         return experimentation_subject_id if subject.blank?
 
         if subject.respond_to?(:to_global_id)

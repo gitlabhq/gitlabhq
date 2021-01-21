@@ -22,6 +22,7 @@ module Terraform
 
     scope :versioning_not_enabled, -> { where(versioning_enabled: false) }
     scope :ordered_by_name, -> { order(:name) }
+    scope :with_name, -> (name) { where(name: name) }
 
     validates :project_id, presence: true
     validates :uuid, presence: true, uniqueness: true, length: { is: UUID_LENGTH },

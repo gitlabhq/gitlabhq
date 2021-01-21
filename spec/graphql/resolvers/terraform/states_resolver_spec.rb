@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Resolvers::Terraform::StatesResolver do
   include GraphqlHelpers
 
-  it { expect(described_class.type).to eq(Types::Terraform::StateType) }
+  it { expect(described_class).to have_nullable_graphql_type(Types::Terraform::StateType.connection_type) }
   it { expect(described_class.null).to be_truthy }
 
   describe '#resolve' do
@@ -28,6 +28,24 @@ RSpec.describe Resolvers::Terraform::StatesResolver do
       let(:user) { create(:user) }
 
       it { is_expected.to be_empty }
+    end
+  end
+end
+
+RSpec.describe Resolvers::Terraform::StatesResolver.single do
+  it { expect(described_class).to be < Resolvers::Terraform::StatesResolver }
+
+  describe 'arguments' do
+    subject { described_class.arguments[argument] }
+
+    describe 'name' do
+      let(:argument) { 'name' }
+
+      it do
+        expect(subject).to be_present
+        expect(subject.type.to_s).to eq('String!')
+        expect(subject.description).to be_present
+      end
     end
   end
 end

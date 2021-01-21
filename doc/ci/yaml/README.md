@@ -4450,21 +4450,30 @@ You can use [YAML anchors](#anchors) with [script](#script), [`before_script`](#
 and [`after_script`](#after_script) to use predefined commands in multiple jobs:
 
 ```yaml
-.some-script: &some-script
-  - echo "Execute this script in `before_script` sections"
-
 .some-script-before: &some-script-before
-  - echo "Execute this script in `script` sections"
+  - echo "Execute this script first"
+
+.some-script: &some-script
+  - echo "Execute this script second"
+  - echo "Execute this script too"
 
 .some-script-after: &some-script-after
-  - echo "Execute this script in `after_script` sections"
+  - echo "Execute this script last"
 
-job_name:
+job1:
   before_script:
     - *some-script-before
   script:
     - *some-script
+    - echo "Execute something, for this job only"
   after_script:
+    - *some-script-after
+
+job2:
+  script:
+    - *some-script-before
+    - *some-script
+    - echo "Execute something else, for this job only"
     - *some-script-after
 ```
 

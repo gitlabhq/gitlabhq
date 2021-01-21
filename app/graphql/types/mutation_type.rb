@@ -15,6 +15,7 @@ module Types
     mount_mutation Mutations::AlertManagement::HttpIntegration::Update
     mount_mutation Mutations::AlertManagement::HttpIntegration::ResetToken
     mount_mutation Mutations::AlertManagement::HttpIntegration::Destroy
+    mount_mutation Mutations::Security::CiConfiguration::ConfigureSast
     mount_mutation Mutations::AlertManagement::PrometheusIntegration::Create
     mount_mutation Mutations::AlertManagement::PrometheusIntegration::Update
     mount_mutation Mutations::AlertManagement::PrometheusIntegration::ResetToken

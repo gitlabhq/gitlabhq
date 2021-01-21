@@ -27,7 +27,7 @@ export default {
     handleProjectChange(project) {
       // This determines if we need to update the group filter or not
       const queryParams = {
-        ...(project.namespace_id && { [GROUP_DATA.queryParam]: project.namespace_id }),
+        ...(project.namespace?.id && { [GROUP_DATA.queryParam]: project.namespace.id }),
         [PROJECT_DATA.queryParam]: project.id,
       };
 

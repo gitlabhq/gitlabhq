@@ -71,7 +71,7 @@
     policy: pull
 
 .use-pg11:
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7.2-golang-1.14-git-2.29-lfs-2.9-chrome-85-node-12.18-yarn-1.22-postgresql-11-graphicsmagick-1.3.34"
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7.2-golang-1.14-git-2.29-lfs-2.9-chrome-87-node-12.18-yarn-1.22-postgresql-11-graphicsmagick-1.3.34"
   services:
     - name: postgres:11.6
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
@@ -80,7 +80,7 @@
     POSTGRES_HOST_AUTH_METHOD: trust
 
 .use-pg12:
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7.2-golang-1.14-git-2.29-lfs-2.9-chrome-85-node-12.18-yarn-1.22-postgresql-12-graphicsmagick-1.3.34"
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7.2-golang-1.14-git-2.29-lfs-2.9-chrome-87-node-12.18-yarn-1.22-postgresql-12-graphicsmagick-1.3.34"
   services:
     - name: postgres:12
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
@@ -89,7 +89,7 @@
     POSTGRES_HOST_AUTH_METHOD: trust
 
 .use-pg11-ee:
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7.2-golang-1.14-git-2.29-lfs-2.9-chrome-85-node-12.18-yarn-1.22-postgresql-11-graphicsmagick-1.3.34"
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7.2-golang-1.14-git-2.29-lfs-2.9-chrome-87-node-12.18-yarn-1.22-postgresql-11-graphicsmagick-1.3.34"
   services:
     - name: postgres:11.6
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
@@ -100,7 +100,7 @@
     POSTGRES_HOST_AUTH_METHOD: trust
 
 .use-pg12-ee:
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7.2-golang-1.14-git-2.29-lfs-2.9-chrome-85-node-12.18-yarn-1.22-postgresql-12-graphicsmagick-1.3.34"
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7.2-golang-1.14-git-2.29-lfs-2.9-chrome-87-node-12.18-yarn-1.22-postgresql-12-graphicsmagick-1.3.34"
   services:
     - name: postgres:12
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]

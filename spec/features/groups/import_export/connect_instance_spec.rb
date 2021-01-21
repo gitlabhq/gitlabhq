@@ -37,6 +37,7 @@ RSpec.describe 'Import/Export - Connect to another instance', :js do
       )
 
       expect(page).to have_content 'Import groups from another instance of GitLab'
+      expect(page).to have_content 'Not all related objects are migrated'
 
       fill_in :bulk_import_gitlab_url, with: source_url
       fill_in :bulk_import_gitlab_access_token, with: pat

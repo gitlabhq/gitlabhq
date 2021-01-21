@@ -26,7 +26,7 @@ export const MOCK_GROUPS = [
 
 export const MOCK_PROJECT = {
   name: 'test project',
-  namespace_id: MOCK_GROUP.id,
+  namespace: MOCK_GROUP,
   nameWithNamespace: 'test group test project',
   id: 'test_1',
 };
@@ -34,13 +34,13 @@ export const MOCK_PROJECT = {
 export const MOCK_PROJECTS = [
   {
     name: 'test project',
-    namespace_id: MOCK_GROUP.id,
+    namespace: MOCK_GROUP,
     name_with_namespace: 'test group test project',
     id: 'test_1',
   },
   {
     name: 'test project 2',
-    namespace_id: MOCK_GROUP.id,
+    namespace: MOCK_GROUP,
     name_with_namespace: 'test group test project 2',
     id: 'test_2',
   },

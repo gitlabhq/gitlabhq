@@ -941,6 +941,19 @@ The `shared_runners_setting` attribute determines whether shared runners are ena
 | `disabled_with_override`       | Disables shared runners for all projects and subgroups in this group, but allows subgroups to override this setting. |
 | `disabled_and_unoverridable`   | Disables shared runners for all projects and subgroups in this group, and prevents subgroups from overriding this setting. |
 
+### Upload a group avatar
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) in GitLab 12.9.
+
+To upload an avatar file from your file system, use the `--form` argument. This causes
+curl to post data using the header `Content-Type: multipart/form-data`. The
+`file=` parameter must point to a file on your file system and be preceded by
+`@`. For example:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/22" --form "avatar=@/tmp/example.png"
+```
+
 ## Remove group
 
 Only available to group owners and administrators.

@@ -7,6 +7,10 @@ RSpec.describe InviteMembersHelper do
   let_it_be(:developer) { create(:user, developer_projects: [project]) }
   let(:owner) { project.owner }
 
+  before do
+    helper.extend(Gitlab::Experimentation::ControllerConcern)
+  end
+
   context 'with project' do
     before do
       assign(:project, project)
@@ -202,7 +206,6 @@ RSpec.describe InviteMembersHelper do
 
       before do
         allow(helper).to receive(:experiment_tracking_category_and_group) { '_track_property_' }
-        allow(helper).to receive(:tracking_label)
         allow(helper).to receive(:current_user) { owner }
       end
 

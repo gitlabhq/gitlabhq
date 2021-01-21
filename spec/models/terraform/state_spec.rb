@@ -25,6 +25,15 @@ RSpec.describe Terraform::State do
 
       it { expect(subject.map(&:name)).to eq(names.sort) }
     end
+
+    describe '.with_name' do
+      let_it_be(:matching_name) { create(:terraform_state, name: 'matching-name') }
+      let_it_be(:other_name) { create(:terraform_state, name: 'other-name') }
+
+      subject { described_class.with_name(matching_name.name) }
+
+      it { is_expected.to contain_exactly(matching_name) }
+    end
   end
 
   describe '#destroy' do

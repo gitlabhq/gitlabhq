@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash';
 import * as utils from './utils';
 import * as types from './mutation_types';
 import * as constants from '../constants';
@@ -31,7 +32,8 @@ export default {
         }
       }
 
-      note.base_discussion = undefined; // No point keeping a reference to this
+      // note.base_discussion = undefined; // No point keeping a reference to this
+      delete note.base_discussion;
       discussion.notes = [note];
 
       state.discussions.push(discussion);
@@ -220,6 +222,11 @@ export default {
   [types.UPDATE_NOTE](state, note) {
     const noteObj = utils.findNoteObjectById(state.discussions, note.discussion_id);
 
+    // Disable eslint here so we can delete the property that we no longer need
+    // in the note object
+    // eslint-disable-next-line no-param-reassign
+    delete note.base_discussion;
+
     if (noteObj.individual_note) {
       if (note.type === constants.DISCUSSION_NOTE) {
         noteObj.individual_note = false;
@@ -228,7 +235,10 @@ export default {
       noteObj.notes.splice(0, 1, note);
     } else {
       const comment = utils.findNoteObjectById(noteObj.notes, note.id);
-      noteObj.notes.splice(noteObj.notes.indexOf(comment), 1, note);
+
+      if (!isEqual(comment, note)) {
+        noteObj.notes.splice(noteObj.notes.indexOf(comment), 1, note);
+      }
     }
   },
 

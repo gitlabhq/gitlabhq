@@ -23,31 +23,35 @@ Examples are available in several forms. As a collection of:
 The following table lists examples with step-by-step tutorials that are contained in this section:
 
 | Use case                      | Resource |
-|:------------------------------|:---------|
+|-------------------------------|----------|
 | Browser performance testing   | [Browser Performance Testing with the Sitespeed.io container](../../user/project/merge_requests/browser_performance_testing.md). |
 | Clojure                       | [Test a Clojure application with GitLab CI/CD](test-clojure-application.md). |
 | Deployment with Dpl           | [Using `dpl` as deployment tool](deployment/README.md). |
 | GitLab Pages                  | See the [GitLab Pages](../../user/project/pages/index.md) documentation for a complete example of deploying a static site. |
 | End-to-end testing            | [End-to-end testing with GitLab CI/CD and WebdriverIO](end_to_end_testing_webdriverio/index.md). |
-| Game development              | [DevOps and Game Dev with GitLab CI/CD](devops_and_game_dev_with_gitlab_ci_cd/index.md). |
-| Java with Maven               | [How to deploy Maven projects to Artifactory with GitLab CI/CD](artifactory_and_gitlab/index.md). |
-| Java with Spring Boot         | [Deploy a Spring Boot application to Cloud Foundry with GitLab CI/CD](deploy_spring_boot_to_cloud_foundry/index.md). |
 | Load performance testing      | [Load Performance Testing with the k6 container](../../user/project/merge_requests/load_performance_testing.md). |
 | Multi project pipeline        | [Build, test deploy using multi project pipeline](https://gitlab.com/gitlab-examples/upstream-project). |
 | NPM with semantic-release     | [Publish NPM packages to the GitLab Package Registry using semantic-release](semantic-release.md). |
 | PHP with Laravel, Envoy       | [Test and deploy Laravel applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md). |
 | PHP with NPM, SCP             | [Running Composer and NPM scripts with deployment via SCP in GitLab CI/CD](deployment/composer-npm-deploy.md). |
 | PHP with PHPunit, atoum       | [Testing PHP projects](php.md). |
-| Parallel testing Ruby & JS    | [GitLab CI/CD parallel jobs testing for Ruby & JavaScript projects](https://docs.knapsackpro.com/2019/how-to-run-parallel-jobs-for-rspec-tests-on-gitlab-ci-pipeline-and-speed-up-ruby-javascript-testing). |
 | Python on Heroku              | [Test and deploy a Python application with GitLab CI/CD](test-and-deploy-python-application-to-heroku.md). |
 | Ruby on Heroku                | [Test and deploy a Ruby application with GitLab CI/CD](test-and-deploy-ruby-application-to-heroku.md). |
-| Scala on Heroku               | [Test and deploy a Scala application to Heroku](test-scala-application.md). |
 | Secrets management with Vault | [Authenticating and Reading Secrets With Hashicorp Vault](authenticating-with-hashicorp-vault/index.md). |
 
-### How to contributing examples
+### Contributed examples
 
-Contributions are welcome! You can help your favorite programming
-language users and GitLab by sending a merge request with a guide for that language.
+You can help people that use your favorite programming language by submitting a link
+to a guide for that language. These contributed guides are hosted externally or in
+separate example projects:
+
+| Use case                      | Resource |
+|-------------------------------|----------|
+| Game development              | [DevOps and Game Dev with GitLab CI/CD](https://gitlab.com/gitlab-examples/gitlab-game-demo/). |
+| Java with Maven               | [How to deploy Maven projects to Artifactory with GitLab CI/CD](https://gitlab.com/gitlab-examples/maven/simple-maven-example). |
+| Java with Spring Boot         | [Deploy a Spring Boot application to Cloud Foundry with GitLab CI/CD](https://gitlab.com/gitlab-examples/spring-gitlab-cf-deploy-demo). |
+| Parallel testing Ruby & JS    | [GitLab CI/CD parallel jobs testing for Ruby & JavaScript projects](https://docs.knapsackpro.com/2019/how-to-run-parallel-jobs-for-rspec-tests-on-gitlab-ci-pipeline-and-speed-up-ruby-javascript-testing). |
+| Scala on Heroku               | [Test and deploy a Scala application to Heroku](https://gitlab.com/gitlab-examples/scala-sbt). |
 
 ## CI/CD templates
 

@@ -122,6 +122,60 @@ sequenceDiagram
    the hostname is `version.gitlab.com`, the protocol is `TCP`, and the port number is `443`,
    the required URL is <https://version.gitlab.com/>.
 
+## Usage Ping Metric Life cycle
+
+### 1. New metrics addition
+
+Please follow the [Implementing Usage Ping](#implementing-usage-ping) guide.
+
+### 2. Existing metric change
+
+Because we do not control when customers update their self-managed instances of GitLab,
+we **STRONGLY DISCOURAGE** changes to the logic used to calculate any metric.
+Any such changes lead to inconsistent reports from multiple GitLab instances.
+If there is a problem with an existing metric, it's best to deprecate the existing metric,
+and use it, side by side, with the desired new metric.
+
+Example: 
+Consider following change. Before GitLab 12.6, the `example_metric` was implemented as:
+
+```ruby
+{
+  ...
+  example_metric: distinct_count(Project, :creator_id)
+}
+```
+
+For GitLab 12.6, the metric was changed to filter out archived projects:
+
+```ruby
+{
+  ...
+  example_metric: distinct_count(Project.non_archived, :creator_id)
+}
+```
+
+In this scenario all instances running up to GitLab 12.5 continue to report `example_metric`,
+including all archived projects, while all instances running GitLab 12.6 and higher filters
+out such projects. As Usage Ping data is collected from all reporting instances, the
+resulting dataset includes mixed data, which distorts any following business analysis.
+
+The correct approach is to add a new metric for GitLab 12.6 release with updated logic:
+
+```ruby
+{
+  ...
+  example_metric_without_archived: distinct_count(Project.non_archived, :creator_id)
+}
+```
+
+and update existing business analysis artefacts to use `example_metric_without_archived` instead of `example_metric`
+
+### 3. Metrics deprecation and removal
+
+The process for deprecating and removing metrics is currently under development. For
+more information, see the following [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/284637).
+
 ## Implementing Usage Ping
 
 Usage Ping consists of two kinds of data, counters and observations. Counters track how often a certain event
@@ -446,6 +500,8 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
      Aggregation on a `daily` basis does not pull more fine grained data.
    - `feature_flag`: optional. For details, see our [GitLab internal Feature flags](feature_flags/) documentation.
 
+Use one of the following methods to track events:
+
 1. Track event in controller using `RedisTracking` module with `track_redis_hll_event(*controller_actions, name:, feature:, feature_default_enabled: false)`.
 
    Arguments:
@@ -561,21 +617,6 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
 
    api.trackRedisHllUserEvent('my_already_defined_event_name'),
    ```
-
-1. Track event using base module `Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values:)`.
-
-   Arguments:
-
-   - `event_name`: event name.
-   - `values`: One value or array of values we count. For example: user_id, visitor_id, user_ids.
-
-1. Track event on context level using base module `Gitlab::UsageDataCounters::HLLRedisCounter.track_event_in_context(event_name, values:, context:)`.
-
-   Arguments:
-
-   - `event_name`: event name.
-   - `values`: values we count. For example: user_id, visitor_id.
-   - `context`: context value. Allowed values are `default`, `free`, `bronze`, `silver`, `gold`, `starter`, `premium`, `ultimate`
 
 1. Get event data using `Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names:, start_date:, end_date:, context: '')`.
 

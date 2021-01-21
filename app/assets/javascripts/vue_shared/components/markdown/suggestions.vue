@@ -64,6 +64,11 @@ export default {
   mounted() {
     this.renderSuggestions();
   },
+  beforeDestroy() {
+    if (this.suggestionsWatch) {
+      this.suggestionsWatch();
+    }
+  },
   methods: {
     renderSuggestions() {
       // swaps out suggestion(s) markdown with rich diff components
@@ -106,6 +111,13 @@ export default {
           defaultCommitMessage,
           suggestionsCount,
         },
+      });
+
+      // We're using `$watch` as `suggestionsCount` updates do not
+      // propagate to this component for some unknown reason while
+      // using a traditional prop watcher.
+      this.suggestionsWatch = this.$watch('suggestionsCount', () => {
+        suggestionDiff.suggestionsCount = this.suggestionsCount;
       });
 
       suggestionDiff.$on('apply', ({ suggestionId, callback, message }) => {

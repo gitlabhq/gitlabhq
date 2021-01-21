@@ -56123,8 +56123,35 @@
               "deprecationReason": null
             },
             {
+              "name": "terraformState",
+              "description": "Find a single Terraform state by name.",
+              "args": [
+                {
+                  "name": "name",
+                  "description": "Name of the Terraform state.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "TerraformState",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "terraformStates",
-              "description": "Terraform states associated with the project",
+              "description": "Terraform states associated with the project.",
               "args": [
                 {
                   "name": "after",

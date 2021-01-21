@@ -119,7 +119,7 @@ and modify them if you have the necessary [permissions](../../permissions.md).
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 13.3.
 
 Assignees in the sidebar are updated in real time. This feature is **disabled by default**.
-To enable, you need to enable [ActionCable in-app mode](https://docs.gitlab.com/omnibus/settings/actioncable.html).
+To enable it, you need to enable [ActionCable in-app mode](https://docs.gitlab.com/omnibus/settings/actioncable.html).
 
 ### Issues List
 
@@ -137,7 +137,22 @@ view, you can also make certain changes [in bulk](../bulk_editing.md) to the dis
 For more information, see the [Issue Data and Actions](issue_data_and_actions.md) page
 for a rundown of all the fields and information in an issue.
 
-You can sort a list of issues in several ways, for example by issue creation date, milestone due date. For more information, see the [Sorting and Ordering Issue Lists](sorting_issue_lists.md) page.
+You can sort a list of issues in several ways, for example by issue creation date, milestone due date.
+For more information, see the [Sorting and ordering issue lists](sorting_issue_lists.md) page.
+
+#### Cached issue count
+
+> - [Introduced]([link-to-issue](https://gitlab.com/gitlab-org/gitlab/-/issues/243753)) in GitLab 13.9.
+> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use this feature in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-cached-issue-count) **(CORE ONLY)**
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+In a group, the sidebar displays the total count of open issues and this value is cached if higher
+than 1000. The cached value is rounded to thousands (or millions) and updated every 24 hours.
 
 ### Issue boards
 
@@ -226,3 +241,22 @@ You can then see issue statuses in the [issue list](#issues-list) and the
 - [Issues API](../../../api/issues.md)
 - Configure an [external issue tracker](../../../integration/external-issue-tracker.md)
   such as Jira, Redmine, Bugzilla, or EWM.
+
+## Enable or disable cached issue count **(CORE ONLY)**
+
+Cached issue count in the left sidebar is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:cached_sidebar_open_issues_count)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:cached_sidebar_open_issues_count)
+```

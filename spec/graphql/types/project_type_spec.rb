@@ -318,6 +318,13 @@ RSpec.describe GitlabSchema.types['Project'] do
     it { is_expected.to have_graphql_type(Types::ContainerExpirationPolicyType) }
   end
 
+  describe 'terraform state field' do
+    subject { described_class.fields['terraformState'] }
+
+    it { is_expected.to have_graphql_type(Types::Terraform::StateType) }
+    it { is_expected.to have_graphql_resolver(Resolvers::Terraform::StatesResolver.single) }
+  end
+
   describe 'terraform states field' do
     subject { described_class.fields['terraformStates'] }
 

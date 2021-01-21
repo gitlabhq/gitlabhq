@@ -1,4 +1,4 @@
-- issues_count = group_issues_count(state: 'opened')
+- issues_count = group_open_issues_count(@group)
 - merge_requests_count = group_merge_requests_count(state: 'opened')
 
 .nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), **tracking_attrs('groups_side_navigation', 'render', 'groups_side_navigation') }
@@ -54,14 +54,14 @@
               = sprite_icon('issues')
             %span.nav-item-name
               = _('Issues')
-            %span.badge.badge-pill.count= number_with_delimiter(issues_count)
+            %span.badge.badge-pill.count= issues_count
 
           %ul.sidebar-sub-level-items{ data: { qa_selector: 'group_issues_sidebar_submenu'} }
             = nav_link(path: ['groups#issues', 'labels#index', 'milestones#index', 'iterations#index'], html_options: { class: "fly-out-top-item" } ) do
               = link_to issues_group_path(@group) do
                 %strong.fly-out-top-item-name
                   = _('Issues')
-                %span.badge.badge-pill.count.issue_counter.fly-out-badge= number_with_delimiter(issues_count)
+                %span.badge.badge-pill.count.issue_counter.fly-out-badge= issues_count
 
             %li.divider.fly-out-top-item
             = nav_link(path: 'groups#issues', html_options: { class: 'home' }) do

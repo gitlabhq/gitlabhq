@@ -1,10 +1,9 @@
 - is_current_user = current_user == note.author
 
 - if note_editable || !is_current_user
-  .dropdown.more-actions.note-actions-item
-    = button_tag title: 'More actions', class: 'note-action-button more-actions-toggle has-tooltip btn btn-transparent', data: { toggle: 'dropdown', container: 'body', qa_selector: 'more_actions_dropdown' } do
-      %span.icon
-        = custom_icon('ellipsis_v')
+  %div{ class: "dropdown more-actions note-actions-item gl-ml-0!" }
+    = button_tag title: 'More actions', class: 'note-action-button more-actions-toggle has-tooltip btn gl-button btn-default-tertiary btn-transparent gl-pl-2! gl-pr-0!', data: { toggle: 'dropdown', container: 'body', qa_selector: 'more_actions_dropdown' } do
+      = sprite_icon('ellipsis_v', css_class: 'gl-button-icon gl-icon gl-text-gray-400')
     %ul.dropdown-menu.more-actions-dropdown.dropdown-open-left
       %li
         = clipboard_button(text: noteable_note_url(note), title: _('Copy reference'), button_text: _('Copy link'), class: 'btn-clipboard', hide_tooltip: true, hide_button_icon: true)

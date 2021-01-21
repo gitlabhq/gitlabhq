@@ -19316,7 +19316,17 @@ type Project {
   tagList: String
 
   """
-  Terraform states associated with the project
+  Find a single Terraform state by name.
+  """
+  terraformState(
+    """
+    Name of the Terraform state.
+    """
+    name: String!
+  ): TerraformState
+
+  """
+  Terraform states associated with the project.
   """
   terraformStates(
     """

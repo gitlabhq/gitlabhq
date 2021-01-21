@@ -151,6 +151,7 @@ In these cases, use the following workflow:
 
 ## Backend guides
 
+- [Directory structure](directory_structure.md)
 - [GitLab utilities](utilities.md)
 - [Issuable-like Rails models](issuable-like-models.md)
 - [Logging](logging.md)

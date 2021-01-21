@@ -99,7 +99,7 @@ describe('ProjectFilter', () => {
 
         it('calls setUrlParams with project id, group id, then calls visitUrl', () => {
           expect(setUrlParams).toHaveBeenCalledWith({
-            [GROUP_DATA.queryParam]: MOCK_PROJECT.namespace_id,
+            [GROUP_DATA.queryParam]: MOCK_PROJECT.namespace.id,
             [PROJECT_DATA.queryParam]: MOCK_PROJECT.id,
           });
           expect(visitUrl).toHaveBeenCalled();
