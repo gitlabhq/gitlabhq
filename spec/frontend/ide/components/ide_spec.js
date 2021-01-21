@@ -1,9 +1,10 @@
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { GlAlert } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createStore } from '~/ide/stores';
 import ErrorMessage from '~/ide/components/error_message.vue';
-import ide from '~/ide/components/ide.vue';
+import Ide from '~/ide/components/ide.vue';
 import { file } from '../helpers';
 import { projectData } from '../mock_data';
 
@@ -15,12 +16,12 @@ describe('WebIDE', () => {
 
   let wrapper;
 
-  function createComponent({ projData = emptyProjData, state = {} } = {}) {
+  const createComponent = ({ projData = emptyProjData, state = {} } = {}) => {
     const store = createStore();
 
     store.state.currentProjectId = 'abcproject';
     store.state.currentBranchId = 'master';
-    store.state.projects.abcproject = { ...projData };
+    store.state.projects.abcproject = projData && { ...projData };
     store.state.trees['abcproject/master'] = {
       tree: [],
       loading: false,
@@ -29,11 +30,13 @@ describe('WebIDE', () => {
       store.state[key] = state[key];
     });
 
-    return shallowMount(ide, {
+    wrapper = shallowMount(Ide, {
       store,
       localVue,
     });
-  }
+  };
+
+  const findAlert = () => wrapper.find(GlAlert);
 
   afterEach(() => {
     wrapper.destroy();
@@ -42,7 +45,7 @@ describe('WebIDE', () => {
 
   describe('ide component, empty repo', () => {
     beforeEach(() => {
-      wrapper = createComponent({
+      createComponent({
         projData: {
           empty_repo: true,
         },
@@ -63,7 +66,7 @@ describe('WebIDE', () => {
       `(
         'should error message exists=$exists when errorMessage=$errorMessage',
         async ({ errorMessage, exists }) => {
-          wrapper = createComponent({
+          createComponent({
             state: {
               errorMessage,
             },
@@ -78,12 +81,12 @@ describe('WebIDE', () => {
 
     describe('onBeforeUnload', () => {
       it('returns undefined when no staged files or changed files', () => {
-        wrapper = createComponent();
+        createComponent();
         expect(wrapper.vm.onBeforeUnload()).toBe(undefined);
       });
 
       it('returns warning text when their are changed files', () => {
-        wrapper = createComponent({
+        createComponent({
           state: {
             changedFiles: [file()],
           },
@@ -93,7 +96,7 @@ describe('WebIDE', () => {
       });
 
       it('returns warning text when their are staged files', () => {
-        wrapper = createComponent({
+        createComponent({
           state: {
             stagedFiles: [file()],
           },
@@ -104,7 +107,7 @@ describe('WebIDE', () => {
 
       it('updates event object', () => {
         const event = {};
-        wrapper = createComponent({
+        createComponent({
           state: {
             stagedFiles: [file()],
           },
@@ -118,7 +121,7 @@ describe('WebIDE', () => {
 
     describe('non-existent branch', () => {
       it('does not render "New file" button for non-existent branch when repo is not empty', () => {
-        wrapper = createComponent({
+        createComponent({
           state: {
             projects: {},
           },
@@ -130,7 +133,7 @@ describe('WebIDE', () => {
 
     describe('branch with files', () => {
       beforeEach(() => {
-        wrapper = createComponent({
+        createComponent({
           projData: {
             empty_repo: false,
           },
@@ -141,5 +144,32 @@ describe('WebIDE', () => {
         expect(wrapper.find('[title="New file"]').exists()).toBe(false);
       });
     });
+  });
+
+  it('when user cannot push code, shows alert', () => {
+    createComponent({
+      projData: {
+        userPermissions: {
+          pushCode: false,
+        },
+      },
+    });
+
+    expect(findAlert().props()).toMatchObject({
+      dismissible: false,
+    });
+    expect(findAlert().text()).toBe(Ide.MSG_CANNOT_PUSH_CODE);
+  });
+
+  it.each`
+    desc                           | projData
+    ${'when user can push code'}   | ${{ userPermissions: { pushCode: true } }}
+    ${'when project is not ready'} | ${null}
+  `('$desc, no alert is shown', ({ projData }) => {
+    createComponent({
+      projData,
+    });
+
+    expect(findAlert().exists()).toBe(false);
   });
 });

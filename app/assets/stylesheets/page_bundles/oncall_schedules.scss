@@ -37,12 +37,6 @@
   &.gl-modal .modal-md {
     max-width: 640px;
   }
-
-  // TODO: move to gitlab/ui utilities
-  // https://gitlab.com/gitlab-org/gitlab/-/issues/297502
-  .gl-w-fit-content {
-    width: fit-content;
-  }
 }
 
 //// Copied from roadmaps.scss - adapted for on-call schedules

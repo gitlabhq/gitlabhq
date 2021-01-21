@@ -23,11 +23,11 @@ RSpec.describe Groups::GroupMembersHelper do
     end
   end
 
-  describe '#linked_groups_data_json' do
+  describe '#group_group_links_data_json' do
     include_context 'group_group_link'
 
     it 'matches json schema' do
-      json = helper.linked_groups_data_json(shared_group.shared_with_group_links)
+      json = helper.group_group_links_data_json(shared_group.shared_with_group_links)
 
       expect(json).to match_schema('group_group_links')
     end
@@ -81,13 +81,13 @@ RSpec.describe Groups::GroupMembersHelper do
       expect(helper.group_members_list_data_attributes(group, present_members([group_member]))).to include({
         members: helper.members_data_json(group, present_members([group_member])),
         member_path: '/groups/foo-bar/-/group_members/:id',
-        group_id: group.id,
+        source_id: group.id,
         can_manage_members: 'true'
       })
     end
   end
 
-  describe '#linked_groups_list_data_attributes' do
+  describe '#group_group_links_list_data_attributes' do
     include_context 'group_group_link'
 
     before do
@@ -95,10 +95,10 @@ RSpec.describe Groups::GroupMembersHelper do
     end
 
     it 'returns expected hash' do
-      expect(helper.linked_groups_list_data_attributes(shared_group)).to include({
-        members: helper.linked_groups_data_json(shared_group.shared_with_group_links),
+      expect(helper.group_group_links_list_data_attributes(shared_group)).to include({
+        members: helper.group_group_links_data_json(shared_group.shared_with_group_links),
         member_path: '/groups/foo-bar/-/group_links/:id',
-        group_id: shared_group.id
+        source_id: shared_group.id
       })
     end
   end

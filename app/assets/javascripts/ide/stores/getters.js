@@ -2,6 +2,7 @@ import { getChangesCountForFiles, filePathMatches } from './utils';
 import {
   leftSidebarViews,
   packageJsonPath,
+  DEFAULT_PERMISSIONS,
   PERMISSION_READ_MR,
   PERMISSION_CREATE_MR,
   PERMISSION_PUSH_CODE,
@@ -150,7 +151,7 @@ export const getDiffInfo = (state, getters) => (path) => {
 };
 
 export const findProjectPermissions = (state, getters) => (projectId) =>
-  getters.findProject(projectId)?.userPermissions || {};
+  getters.findProject(projectId)?.userPermissions || DEFAULT_PERMISSIONS;
 
 export const canReadMergeRequests = (state, getters) =>
   Boolean(getters.findProjectPermissions(state.currentProjectId)[PERMISSION_READ_MR]);

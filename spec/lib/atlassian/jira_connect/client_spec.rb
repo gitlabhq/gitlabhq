@@ -18,15 +18,15 @@ RSpec.describe Atlassian::JiraConnect::Client do
     end
   end
 
-  around do |example|
-    freeze_time { example.run }
-  end
-
   describe '.generate_update_sequence_id' do
-    it 'returns monotonic_time converted it to integer' do
-      allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(1.0)
+    it 'returns unix time in microseconds as integer', :aggregate_failures do
+      travel_to(Time.utc(1970, 1, 1, 0, 0, 1)) do
+        expect(described_class.generate_update_sequence_id).to eq(1000)
+      end
 
-      expect(described_class.generate_update_sequence_id).to eq(1)
+      travel_to(Time.utc(1970, 1, 1, 0, 0, 5)) do
+        expect(described_class.generate_update_sequence_id).to eq(5000)
+      end
     end
   end
 

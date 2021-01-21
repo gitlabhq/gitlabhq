@@ -1435,7 +1435,6 @@ RSpec/AnyInstanceOf:
     - 'spec/workers/emails_on_push_worker_spec.rb'
     - 'spec/workers/error_tracking_issue_link_worker_spec.rb'
     - 'spec/workers/expire_pipeline_cache_worker_spec.rb'
-    - 'spec/workers/git_garbage_collect_worker_spec.rb'
     - 'spec/workers/group_export_worker_spec.rb'
     - 'spec/workers/group_import_worker_spec.rb'
     - 'spec/workers/namespaceless_project_destroy_worker_spec.rb'

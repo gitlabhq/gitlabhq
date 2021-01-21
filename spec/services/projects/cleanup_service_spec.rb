@@ -88,7 +88,7 @@ RSpec.describe Projects::CleanupService do
     end
 
     it 'runs garbage collection on the repository' do
-      expect_next_instance_of(GitGarbageCollectWorker) do |worker|
+      expect_next_instance_of(Projects::GitGarbageCollectWorker) do |worker|
         expect(worker).to receive(:perform).with(project.id, :prune, "project_cleanup:gc:#{project.id}")
       end
 

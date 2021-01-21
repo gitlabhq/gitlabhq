@@ -4,7 +4,7 @@ module Atlassian
   module JiraConnect
     class Client < Gitlab::HTTP
       def self.generate_update_sequence_id
-        Gitlab::Metrics::System.monotonic_time.to_i
+        (Time.now.utc.to_f * 1000).round
       end
 
       def initialize(base_uri, shared_secret)

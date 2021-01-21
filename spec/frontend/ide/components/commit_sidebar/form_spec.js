@@ -4,6 +4,7 @@ import { GlModal } from '@gitlab/ui';
 import { projectData } from 'jest/ide/mock_data';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { createStore } from '~/ide/stores';
 import { COMMIT_TO_NEW_BRANCH } from '~/ide/stores/modules/commit/constants';
 import CommitForm from '~/ide/components/commit_sidebar/form.vue';
@@ -23,6 +24,9 @@ describe('IDE commit form', () => {
   const createComponent = () => {
     wrapper = shallowMount(CommitForm, {
       store,
+      directives: {
+        GlTooltip: createMockDirective(),
+      },
       stubs: {
         GlModal: stubComponent(GlModal),
       },
@@ -39,8 +43,21 @@ describe('IDE commit form', () => {
     store.state.currentActivityView = leftSidebarViews.edit.name;
   };
   const findBeginCommitButton = () => wrapper.find('[data-testid="begin-commit-button"]');
+  const findBeginCommitButtonTooltip = () =>
+    wrapper.find('[data-testid="begin-commit-button-tooltip"]');
+  const findBeginCommitButtonData = () => ({
+    disabled: findBeginCommitButton().props('disabled'),
+    tooltip: getBinding(findBeginCommitButtonTooltip().element, 'gl-tooltip').value.title,
+  });
   const findCommitButton = () => wrapper.find('[data-testid="commit-button"]');
+  const findCommitButtonTooltip = () => wrapper.find('[data-testid="commit-button-tooltip"]');
+  const findCommitButtonData = () => ({
+    disabled: findCommitButton().props('disabled'),
+    tooltip: getBinding(findCommitButtonTooltip().element, 'gl-tooltip').value.title,
+  });
+  const clickCommitButton = () => findCommitButton().vm.$emit('click');
   const findForm = () => wrapper.find('form');
+  const submitForm = () => findForm().trigger('submit');
   const findCommitMessageInput = () => wrapper.find(CommitMessageField);
   const setCommitMessageInput = (val) => findCommitMessageInput().vm.$emit('input', val);
   const findDiscardDraftButton = () => wrapper.find('[data-testid="discard-draft"]');
@@ -52,27 +69,40 @@ describe('IDE commit form', () => {
     store.state.currentBranchId = 'master';
     Vue.set(store.state.projects, 'abcproject', {
       ...projectData,
+      userPermissions: { pushCode: true },
     });
   });
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
+  // Notes:
+  // - When there are no changes, there is no commit button so there's nothing to test :)
   describe.each`
-    desc                           | stagedFiles | disabled
-    ${'when there are changes'}    | ${['test']} | ${false}
-    ${'when there are no changes'} | ${[]}       | ${true}
-  `('$desc', ({ stagedFiles, disabled }) => {
+    desc                           | stagedFiles | userPermissions        | viewFn            | buttonFn                     | disabled | tooltip
+    ${'when there are no changes'} | ${[]}       | ${{ pushCode: true }}  | ${goToEditView}   | ${findBeginCommitButtonData} | ${true}  | ${''}
+    ${'when there are changes'}    | ${['test']} | ${{ pushCode: true }}  | ${goToEditView}   | ${findBeginCommitButtonData} | ${false} | ${''}
+    ${'when there are changes'}    | ${['test']} | ${{ pushCode: true }}  | ${goToCommitView} | ${findCommitButtonData}      | ${false} | ${''}
+    ${'when user cannot push'}     | ${['test']} | ${{ pushCode: false }} | ${goToEditView}   | ${findBeginCommitButtonData} | ${true}  | ${CommitForm.MSG_CANNOT_PUSH_CODE}
+    ${'when user cannot push'}     | ${['test']} | ${{ pushCode: false }} | ${goToCommitView} | ${findCommitButtonData}      | ${true}  | ${CommitForm.MSG_CANNOT_PUSH_CODE}
+  `('$desc', ({ stagedFiles, userPermissions, viewFn, buttonFn, disabled, tooltip }) => {
     beforeEach(async () => {
       store.state.stagedFiles = stagedFiles;
+      store.state.projects.abcproject.userPermissions = userPermissions;
 
       createComponent();
     });
 
-    it(`begin button disabled=${disabled}`, async () => {
-      expect(findBeginCommitButton().props('disabled')).toBe(disabled);
+    it(`at view=${viewFn.name}, ${buttonFn.name} has disabled=${disabled} tooltip=${tooltip}`, async () => {
+      viewFn();
+
+      await wrapper.vm.$nextTick();
+
+      expect(buttonFn()).toEqual({
+        disabled,
+        tooltip,
+      });
     });
   });
 
@@ -252,10 +282,19 @@ describe('IDE commit form', () => {
         jest.spyOn(store, 'dispatch').mockResolvedValue();
       });
 
-      it('calls commitChanges', () => {
-        findCommitButton().vm.$emit('click');
+      it.each([clickCommitButton, submitForm])('when %p, commits changes', (fn) => {
+        fn();
 
         expect(store.dispatch).toHaveBeenCalledWith('commit/commitChanges', undefined);
+      });
+
+      it('when cannot push code, submitting does nothing', async () => {
+        store.state.projects.abcproject.userPermissions.pushCode = false;
+        await wrapper.vm.$nextTick();
+
+        submitForm();
+
+        expect(store.dispatch).not.toHaveBeenCalled();
       });
 
       it.each`

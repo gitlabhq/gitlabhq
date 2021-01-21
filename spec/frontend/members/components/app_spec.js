@@ -2,13 +2,13 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { GlAlert } from '@gitlab/ui';
-import App from '~/groups/members/components/app.vue';
+import MembersApp from '~/members/components/app.vue';
 import FilterSortContainer from '~/members/components/filter_sort/filter_sort_container.vue';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { RECEIVE_MEMBER_ROLE_ERROR, HIDE_ERROR } from '~/members/store/mutation_types';
 import mutations from '~/members/store/mutations';
 
-describe('GroupMembersApp', () => {
+describe('MembersApp', () => {
   const localVue = createLocalVue();
   localVue.use(Vuex);
 
@@ -25,7 +25,7 @@ describe('GroupMembersApp', () => {
       mutations,
     });
 
-    wrapper = shallowMount(App, {
+    wrapper = shallowMount(MembersApp, {
       localVue,
       store,
       ...options,

@@ -66,7 +66,7 @@
         = paginate @members, theme: 'gitlab', params: { invited_members_page: nil, search_invited: nil }
       - if @group.shared_with_group_links.any?
         #tab-groups.tab-pane
-          .js-group-linked-list{ data: linked_groups_list_data_attributes(@group) }
+          .js-group-group-links-list{ data: group_group_links_list_data_attributes(@group) }
             .loading
               .spinner.spinner-md
       - if show_invited_members

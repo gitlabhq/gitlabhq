@@ -71,7 +71,7 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
 
       it 'does not enqueue a GC run' do
         expect { subject.execute }
-          .not_to change(GitGarbageCollectWorker.jobs, :count)
+          .not_to change(Projects::GitGarbageCollectWorker.jobs, :count)
       end
     end
 
@@ -84,12 +84,12 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
         stub_application_setting(housekeeping_enabled: false)
 
         expect { subject.execute }
-          .not_to change(GitGarbageCollectWorker.jobs, :count)
+          .not_to change(Projects::GitGarbageCollectWorker.jobs, :count)
       end
 
       it 'enqueues a GC run' do
         expect { subject.execute }
-          .to change(GitGarbageCollectWorker.jobs, :count).by(1)
+          .to change(Projects::GitGarbageCollectWorker.jobs, :count).by(1)
       end
     end
   end

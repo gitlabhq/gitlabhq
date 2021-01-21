@@ -270,6 +270,8 @@
   - 1
 - - project_update_repository_storage
   - 1
+- - projects_git_garbage_collect
+  - 1
 - - prometheus_create_default_alerts
   - 1
 - - propagate_integration

@@ -1,13 +1,13 @@
 <script>
 import { mapState, mapMutations } from 'vuex';
 import { GlAlert } from '@gitlab/ui';
-import MembersTable from '~/members/components/table/members_table.vue';
-import FilterSortContainer from '~/members/components/filter_sort/filter_sort_container.vue';
+import MembersTable from './table/members_table.vue';
+import FilterSortContainer from './filter_sort/filter_sort_container.vue';
+import { HIDE_ERROR } from '../store/mutation_types';
 import { scrollToElement } from '~/lib/utils/common_utils';
-import { HIDE_ERROR } from '~/members/store/mutation_types';
 
 export default {
-  name: 'GroupMembersApp',
+  name: 'MembersApp',
   components: { MembersTable, FilterSortContainer, GlAlert },
   computed: {
     ...mapState(['showError', 'errorMessage']),

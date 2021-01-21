@@ -291,7 +291,7 @@ supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-g
 
 After you write a comment, you can:
 
-- Click **Comment** and to publish your comment.
+- Click **Comment** to publish your comment.
 - Choose **Start thread** from the dropdown list and start a new [thread](../../discussions/index.md#threaded-discussions)
   in that issue's main thread to discuss specific points. This invites other participants
   to reply directly to your thread, keeping related comments grouped together.

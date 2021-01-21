@@ -1,12 +1,16 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
-import { GlModal, GlSafeHtmlDirective, GlButton } from '@gitlab/ui';
-import { n__ } from '~/locale';
+import { GlModal, GlSafeHtmlDirective, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { n__, s__ } from '~/locale';
 import CommitMessageField from './message_field.vue';
 import Actions from './actions.vue';
 import SuccessMessage from './success_message.vue';
 import { leftSidebarViews, MAX_WINDOW_HEIGHT_COMPACT } from '../../constants';
 import { createUnexpectedCommitError } from '../../lib/errors';
+
+const MSG_CANNOT_PUSH_CODE = s__(
+  'WebIDE|You need permission to edit files directly in this project.',
+);
 
 export default {
   components: {
@@ -18,6 +22,7 @@ export default {
   },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
+    GlTooltip: GlTooltipDirective,
   },
   data() {
     return {
@@ -30,8 +35,18 @@ export default {
   computed: {
     ...mapState(['changedFiles', 'stagedFiles', 'currentActivityView', 'lastCommitMsg']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading', 'commitError']),
-    ...mapGetters(['someUncommittedChanges']),
+    ...mapGetters(['someUncommittedChanges', 'canPushCode']),
     ...mapGetters('commit', ['discardDraftButtonDisabled', 'preBuiltCommitMessage']),
+    commitButtonDisabled() {
+      return !this.canPushCode || !this.someUncommittedChanges;
+    },
+    commitButtonTooltip() {
+      if (!this.canPushCode) {
+        return MSG_CANNOT_PUSH_CODE;
+      }
+
+      return '';
+    },
     overviewText() {
       return n__('%d changed file', '%d changed files', this.stagedFiles.length);
     },
@@ -69,6 +84,12 @@ export default {
       'updateCommitAction',
     ]),
     commit() {
+      // Even though the submit button will be disabled, we need to disable the submission
+      // since hitting enter on the branch name text input also submits the form.
+      if (!this.canPushCode) {
+        return false;
+      }
+
       return this.commitChanges();
     },
     handleCompactState() {
@@ -109,6 +130,8 @@ export default {
       this.componentHeight = null;
     },
   },
+  // Expose for tests
+  MSG_CANNOT_PUSH_CODE,
 };
 </script>
 
@@ -130,17 +153,22 @@ export default {
       @after-enter="afterEndTransition"
     >
       <div v-if="isCompact" ref="compactEl" class="commit-form-compact">
-        <gl-button
-          :disabled="!someUncommittedChanges"
-          category="primary"
-          variant="info"
-          block
-          class="qa-begin-commit-button"
-          data-testid="begin-commit-button"
-          @click="beginCommit"
+        <div
+          v-gl-tooltip="{ title: commitButtonTooltip }"
+          data-testid="begin-commit-button-tooltip"
         >
-          {{ __('Commit…') }}
-        </gl-button>
+          <gl-button
+            :disabled="commitButtonDisabled"
+            category="primary"
+            variant="info"
+            block
+            class="qa-begin-commit-button"
+            data-testid="begin-commit-button"
+            @click="beginCommit"
+          >
+            {{ __('Commit…') }}
+          </gl-button>
+        </div>
         <p class="text-center bold">{{ overviewText }}</p>
       </div>
       <form v-else ref="formEl" @submit.prevent.stop="commit">
@@ -153,16 +181,23 @@ export default {
         />
         <div class="clearfix gl-mt-5">
           <actions />
-          <gl-button
-            :loading="submitCommitLoading"
-            class="float-left qa-commit-button"
-            data-testid="commit-button"
-            category="primary"
-            variant="success"
-            @click="commit"
+          <div
+            v-gl-tooltip="{ title: commitButtonTooltip }"
+            class="float-left"
+            data-testid="commit-button-tooltip"
           >
-            {{ __('Commit') }}
-          </gl-button>
+            <gl-button
+              :disabled="commitButtonDisabled"
+              :loading="submitCommitLoading"
+              data-testid="commit-button"
+              class="qa-commit-button"
+              category="primary"
+              variant="success"
+              @click="commit"
+            >
+              {{ __('Commit') }}
+            </gl-button>
+          </div>
           <gl-button
             v-if="!discardDraftButtonDisabled"
             class="float-right"

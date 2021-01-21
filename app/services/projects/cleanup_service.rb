@@ -40,7 +40,7 @@ module Projects
       apply_bfg_object_map!
 
       # Remove older objects that are no longer referenced
-      GitGarbageCollectWorker.new.perform(project.id, :prune, "project_cleanup:gc:#{project.id}")
+      Projects::GitGarbageCollectWorker.new.perform(project.id, :prune, "project_cleanup:gc:#{project.id}")
 
       # The cache may now be inaccurate, and holding onto it could prevent
       # bugs assuming the presence of some object from manifesting for some

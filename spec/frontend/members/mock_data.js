@@ -69,3 +69,5 @@ export const accessRequest = {
 };
 
 export const members = [member];
+
+export const membersJsonString = JSON.stringify(members);

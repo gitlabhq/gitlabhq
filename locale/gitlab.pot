@@ -31713,6 +31713,12 @@ msgstr ""
 msgid "WebIDE|Merge request"
 msgstr ""
 
+msgid "WebIDE|You need permission to edit files directly in this project."
+msgstr ""
+
+msgid "WebIDE|You need permission to edit files directly in this project. Fork this project to make your changes and submit a merge request."
+msgstr ""
+
 msgid "Webhook"
 msgstr ""
 

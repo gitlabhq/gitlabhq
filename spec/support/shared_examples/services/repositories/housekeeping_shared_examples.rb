@@ -9,10 +9,10 @@ RSpec.shared_examples 'housekeeps repository' do
         expect(subject).to receive(:try_obtain_lease).and_return(:the_uuid)
         expect(subject).to receive(:lease_key).and_return(:the_lease_key)
         expect(subject).to receive(:task).and_return(:incremental_repack)
-        expect(GitGarbageCollectWorker).to receive(:perform_async).with(resource.id, :incremental_repack, :the_lease_key, :the_uuid).and_call_original
+        expect(Projects::GitGarbageCollectWorker).to receive(:perform_async).with(resource.id, :incremental_repack, :the_lease_key, :the_uuid).and_call_original
 
         Sidekiq::Testing.fake! do
-          expect { subject.execute }.to change(GitGarbageCollectWorker.jobs, :size).by(1)
+          expect { subject.execute }.to change(Projects::GitGarbageCollectWorker.jobs, :size).by(1)
         end
       end
 
@@ -38,7 +38,7 @@ RSpec.shared_examples 'housekeeps repository' do
         end
 
         it 'does not enqueue a job' do
-          expect(GitGarbageCollectWorker).not_to receive(:perform_async)
+          expect(Projects::GitGarbageCollectWorker).not_to receive(:perform_async)
 
           expect { subject.execute }.to raise_error(Repositories::HousekeepingService::LeaseTaken)
         end
@@ -63,16 +63,16 @@ RSpec.shared_examples 'housekeeps repository' do
           allow(subject).to receive(:lease_key).and_return(:the_lease_key)
 
           # At push 200
-          expect(GitGarbageCollectWorker).to receive(:perform_async).with(resource.id, :gc, :the_lease_key, :the_uuid)
+          expect(Projects::GitGarbageCollectWorker).to receive(:perform_async).with(resource.id, :gc, :the_lease_key, :the_uuid)
             .once
           # At push 50, 100, 150
-          expect(GitGarbageCollectWorker).to receive(:perform_async).with(resource.id, :full_repack, :the_lease_key, :the_uuid)
+          expect(Projects::GitGarbageCollectWorker).to receive(:perform_async).with(resource.id, :full_repack, :the_lease_key, :the_uuid)
             .exactly(3).times
           # At push 10, 20, ... (except those above)
-          expect(GitGarbageCollectWorker).to receive(:perform_async).with(resource.id, :incremental_repack, :the_lease_key, :the_uuid)
+          expect(Projects::GitGarbageCollectWorker).to receive(:perform_async).with(resource.id, :incremental_repack, :the_lease_key, :the_uuid)
             .exactly(16).times
           # At push 6, 12, 18, ... (except those above)
-          expect(GitGarbageCollectWorker).to receive(:perform_async).with(resource.id, :pack_refs, :the_lease_key, :the_uuid)
+          expect(Projects::GitGarbageCollectWorker).to receive(:perform_async).with(resource.id, :pack_refs, :the_lease_key, :the_uuid)
             .exactly(27).times
 
           201.times do
@@ -90,7 +90,7 @@ RSpec.shared_examples 'housekeeps repository' do
         allow(housekeeping).to receive(:try_obtain_lease).and_return(:gc_uuid)
         allow(housekeeping).to receive(:lease_key).and_return(:gc_lease_key)
 
-        expect(GitGarbageCollectWorker).to receive(:perform_async).with(resource.id, :gc, :gc_lease_key, :gc_uuid).twice
+        expect(Projects::GitGarbageCollectWorker).to receive(:perform_async).with(resource.id, :gc, :gc_lease_key, :gc_uuid).twice
 
         2.times do
           housekeeping.execute

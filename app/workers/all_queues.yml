@@ -1999,6 +1999,14 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: projects_git_garbage_collect
+  :feature_category: :gitaly
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: prometheus_create_default_alerts
   :feature_category: :incident_management
   :has_external_dependencies:

@@ -1,15 +1,15 @@
 import { createWrapper } from '@vue/test-utils';
-import { initGroupMembersApp } from '~/groups/members';
-import GroupMembersApp from '~/groups/members/components/app.vue';
-import { membersJsonString, membersParsed } from './mock_data';
+import { initMembersApp } from '~/members/index';
+import MembersApp from '~/members/components/app.vue';
+import { membersJsonString, members } from './mock_data';
 
-describe('initGroupMembersApp', () => {
+describe('initMembersApp', () => {
   let el;
   let vm;
   let wrapper;
 
   const setup = () => {
-    vm = initGroupMembersApp(el, {
+    vm = initMembersApp(el, {
       tableFields: ['account'],
       tableAttrs: { table: { 'data-qa-selector': 'members_list' } },
       tableSortableFields: ['account'],
@@ -22,7 +22,7 @@ describe('initGroupMembersApp', () => {
   beforeEach(() => {
     el = document.createElement('div');
     el.setAttribute('data-members', membersJsonString);
-    el.setAttribute('data-group-id', '234');
+    el.setAttribute('data-source-id', '234');
     el.setAttribute('data-can-manage-members', 'true');
     el.setAttribute('data-member-path', '/groups/foo-bar/-/group_members/:id');
 
@@ -36,10 +36,10 @@ describe('initGroupMembersApp', () => {
     wrapper = null;
   });
 
-  it('renders `GroupMembersApp`', () => {
+  it('renders `MembersApp`', () => {
     setup();
 
-    expect(wrapper.find(GroupMembersApp).exists()).toBe(true);
+    expect(wrapper.find(MembersApp).exists()).toBe(true);
   });
 
   it('sets `currentUserId` in Vuex store', () => {
@@ -57,7 +57,7 @@ describe('initGroupMembersApp', () => {
     });
   });
 
-  it('parses and sets `data-group-id` as `sourceId` in Vuex store', () => {
+  it('parses and sets `data-source-id` as `sourceId` in Vuex store', () => {
     setup();
 
     expect(vm.$store.state.sourceId).toBe(234);
@@ -72,7 +72,7 @@ describe('initGroupMembersApp', () => {
   it('parses and sets `members` in Vuex store', () => {
     setup();
 
-    expect(vm.$store.state.members).toEqual(membersParsed);
+    expect(vm.$store.state.members).toEqual(members);
   });
 
   it('sets `tableFields` in Vuex store', () => {
