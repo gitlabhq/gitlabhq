@@ -1,5 +1,0 @@
----
-title: Fix cut off line number in file blame
-merge_request: 51259
-author:
-type: fixed

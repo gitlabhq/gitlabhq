@@ -1,5 +1,0 @@
----
-title: Add rake gitlab:git:checksum_projects
-merge_request: 49965
-author:
-type: added

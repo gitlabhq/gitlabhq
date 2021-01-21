@@ -1,5 +1,0 @@
----
-title: Fix N+1 queries with loading group issues with GraphQL
-merge_request: 50328
-author:
-type: performance

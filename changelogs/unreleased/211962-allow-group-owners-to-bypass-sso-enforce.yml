@@ -1,5 +1,0 @@
----
-title: Allow group owners and auditors to login to SSO-enforced groups without SSO
-merge_request: 50199
-author:
-type: changed

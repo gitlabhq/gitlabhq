@@ -1,5 +1,0 @@
----
-title: Expose hide_backlog_list and hide_closed_list to project and group boards REST API
-merge_request: 49815
-author: Mathieu Parent
-type: added

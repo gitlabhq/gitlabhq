@@ -1,6 +1,0 @@
----
-title: Initially sync Merge Requests with Jira when a namespace is added through the
-  GitLab for Jira app
-merge_request: 51341
-author:
-type: added

@@ -1,5 +1,0 @@
----
-title: "Allow HTTP Basic Auth and deploy token authentication for generic packages"
-merge_request: 48540
-author: Moshe Katz @kohenkatz
-type: added

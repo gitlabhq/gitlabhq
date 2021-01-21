@@ -1,5 +1,0 @@
----
-title: Enables the CI Pipeline Editor feature as a way to edit the GitLab CI/CD configuration
-merge_request: 51484
-author:
-type: added

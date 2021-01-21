@@ -1,5 +1,0 @@
----
-title: Refactor specs around ssh_keys in users_controller_spec.rb
-merge_request: 50338
-author: Takuya Noguchi
-type: other

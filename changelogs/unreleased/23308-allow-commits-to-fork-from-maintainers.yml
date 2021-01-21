@@ -1,5 +1,0 @@
----
-title: Allow collaboration on merge requests across forks by default
-merge_request: 49904
-author: Jonston Chan @JonstonChan
-type: changed

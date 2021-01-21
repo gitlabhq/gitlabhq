@@ -1,5 +1,0 @@
----
-title: Update the DAST latest template to run when configured even if the user doesn't have sufficient permission
-merge_request: 51279
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: 'CI: use commit SHA in persistent refspec'
-merge_request: 51208
-author:
-type: performance

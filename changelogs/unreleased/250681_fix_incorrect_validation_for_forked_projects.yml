@@ -1,5 +1,0 @@
----
-title: Fix visibility level validation for deep nested forks
-merge_request: 50081
-author:
-type: fixed

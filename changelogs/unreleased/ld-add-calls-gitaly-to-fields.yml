@@ -1,6 +1,0 @@
----
-title: Increase the complexity score of GraphQL MergeRequest#approved, MergeRequest#approvalsLeft
-  and Repository#exists fields as they can call Gitaly
-merge_request: 47039
-author:
-type: changed

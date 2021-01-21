@@ -1,6 +1,0 @@
----
-title: During group deletion, only enqueue jobs for project_authorizations refresh
-  if the group being deleted has other groups shared with it
-merge_request: 50617
-author:
-type: performance

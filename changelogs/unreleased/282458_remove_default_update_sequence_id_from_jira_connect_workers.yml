@@ -1,5 +1,0 @@
----
-title: Fix Jira MR status not syncing by making workers idempotent
-merge_request: 51006
-author:
-type: fixed

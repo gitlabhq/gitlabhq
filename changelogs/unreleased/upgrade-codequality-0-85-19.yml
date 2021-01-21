@@ -1,5 +1,0 @@
----
-title: Upgrade CodeQuality version in CI template to 0.85.19
-merge_request: 50118
-author:
-type: changed

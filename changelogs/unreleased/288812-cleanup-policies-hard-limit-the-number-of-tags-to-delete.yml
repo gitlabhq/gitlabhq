@@ -1,5 +1,0 @@
----
-title: Limit the number of container tags to delete when deleting them in bulk
-merge_request: 49961
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: Forbid snippet pushes when repo is read-only
-merge_request: 51318
-author:
-type: fixed

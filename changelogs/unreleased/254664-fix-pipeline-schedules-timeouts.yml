@@ -1,5 +1,0 @@
----
-title: Index ci_pipelines on pipeline_schedule_id and id
-merge_request: 50478
-author:
-type: performance

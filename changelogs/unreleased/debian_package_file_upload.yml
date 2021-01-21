@@ -1,5 +1,0 @@
----
-title: Use a dynamic segment not depending on the package id for Debian files
-merge_request: 50433
-author: Mathieu Parent
-type: changed

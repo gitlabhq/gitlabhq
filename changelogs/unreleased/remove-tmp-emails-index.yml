@@ -1,5 +1,0 @@
----
-title: Remove tmp_index_for_email_unconfirmation_migration index in the emails table
-merge_request: 50981
-author:
-type: other

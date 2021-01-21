@@ -1,5 +1,0 @@
----
-title: Prevent locked Terraform states from being deleted
-merge_request: 50798
-author:
-type: changed

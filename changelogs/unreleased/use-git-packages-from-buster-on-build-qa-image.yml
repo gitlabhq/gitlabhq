@@ -1,5 +1,0 @@
----
-title: Use git packages from buster on build-qa-image
-merge_request: 50867
-author: Takuya Noguchi @tnir
-type: other

@@ -1,5 +1,0 @@
----
-title: Fix 500 error on repository settings access when repository is empty
-merge_request: 50844
-author: Diego Louzán
-type: fixed

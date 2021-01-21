@@ -1,5 +1,0 @@
----
-title: Fix merge request analytics page filtering when multiple labels are given
-merge_request: 51060
-author:
-type: fixed

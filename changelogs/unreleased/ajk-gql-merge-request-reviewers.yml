@@ -1,5 +1,0 @@
----
-title: Adds MergeRequest.reviewers to GraphQL API
-merge_request: 49707
-author:
-type: changed

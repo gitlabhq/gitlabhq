@@ -1,5 +1,0 @@
----
-title: Ensure container_expiration_policy keep_n is an integer
-merge_request: 49805
-author: Mathieu Parent
-type: changed

@@ -1,5 +1,0 @@
----
-title: Correctly handle Gitaly being unavailable in more locations
-merge_request: 51222
-author:
-type: fixed

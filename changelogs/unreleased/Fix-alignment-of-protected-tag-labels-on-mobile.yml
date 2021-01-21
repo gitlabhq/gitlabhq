@@ -1,5 +1,0 @@
----
-title: Fix alignment of protected tag and branch labels on mobile
-merge_request: 51100
-author: Kev @KevSlashNull
-type: fixed

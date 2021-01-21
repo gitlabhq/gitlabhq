@@ -1,5 +1,0 @@
----
-title: Add PostgreSQL trigger to maintain projects.has_external_wiki
-merge_request: 49916
-author:
-type: changed

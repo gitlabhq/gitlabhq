@@ -1,5 +1,0 @@
----
-title: Avoid 409 StaleObjectError errors with /rebase
-merge_request: 50719
-author:
-type: fixed

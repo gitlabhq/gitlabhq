@@ -1,5 +1,0 @@
----
-title: Add RateLimit-* headers to RackAttack responses
-merge_request: 50833
-author: adam-moss
-type: fixed

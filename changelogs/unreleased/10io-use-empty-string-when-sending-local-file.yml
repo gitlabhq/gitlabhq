@@ -1,5 +1,0 @@
----
-title: Use an empty body when sending a file with X-Sendfile
-merge_request: 51115
-author:
-type: fixed

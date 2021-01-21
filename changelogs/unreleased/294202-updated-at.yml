@@ -1,5 +1,0 @@
----
-title: Persist updated_at value in state change events
-merge_request: 50272
-author:
-type: fixed

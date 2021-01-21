@@ -1,6 +1,0 @@
----
-title: "[RUN-AS-IF-FOSS] Move to `createBoard` mutation instead of REST API call +
-  `updateBoard`"
-merge_request: 50171
-author:
-type: changed

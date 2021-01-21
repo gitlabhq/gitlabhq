@@ -1,5 +1,0 @@
----
-title: Update pipeline graphs on CI/CD Analytics page to use GraphQL endpoint
-merge_request: 51504
-author:
-type: changed

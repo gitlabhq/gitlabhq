@@ -1,5 +1,0 @@
----
-title: Fix duplicated toggle button showing on right sidebar when signed out
-merge_request: 50892
-author:
-type: fixed

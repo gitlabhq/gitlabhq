@@ -1,6 +1,0 @@
----
-title: Fix issue with the `default_merge_refs` feature flag removing version to version
-  diffs
-merge_request: 50671
-author:
-type: fixed

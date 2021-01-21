@@ -1,5 +1,0 @@
----
-title: Updates regex for group_name to support numbers in job name
-merge_request: 51157
-author:
-type: changed
