@@ -51,16 +51,27 @@ export default function initNewListDropdown() {
 
     initDeprecatedJQueryDropdown($dropdownToggle, {
       data(term, callback) {
-        axios
-          .get($dropdownToggle.attr('data-list-labels-path'))
-          .then(({ data }) => callback(data))
-          .catch(() => {
-            $dropdownToggle.data('bs.dropdown').hide();
-            flash(__('Error fetching labels.'));
-          });
+        const reqFailed = () => {
+          $dropdownToggle.data('bs.dropdown').hide();
+          flash(__('Error fetching labels.'));
+        };
+
+        if (store.getters.shouldUseGraphQL) {
+          store
+            .dispatch('fetchLabels')
+            .then((data) => callback(data))
+            .catch(reqFailed);
+        } else {
+          axios
+            .get($dropdownToggle.attr('data-list-labels-path'))
+            .then(({ data }) => callback(data))
+            .catch(reqFailed);
+        }
       },
       renderRow(label) {
-        const active = boardsStore.findListByLabelId(label.id);
+        const active = store.getters.shouldUseGraphQL
+          ? store.getters.getListByLabelId(label.id)
+          : boardsStore.findListByLabelId(label.id);
         const $li = $('<li />');
         const $a = $('<a />', {
           class: active ? `is-active js-board-list-${getIdFromGraphQLId(active.id)}` : '',
@@ -87,7 +98,7 @@ export default function initNewListDropdown() {
         e.preventDefault();
 
         if (shouldCreateListGraphQL(label)) {
-          store.dispatch('createList', { labelId: fullLabelId(label) });
+          store.dispatch('createList', { labelId: label.id });
         } else if (!boardsStore.findListByLabelId(label.id)) {
           boardsStore.new({
             title: label.title,

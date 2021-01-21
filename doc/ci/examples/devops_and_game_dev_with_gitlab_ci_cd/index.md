@@ -1,5 +1,5 @@
 ---
-redirect_to: '../README.md#ci-cd-examples'
+redirect_to: '../README.md#contributed-examples'
 ---
 
 This document was moved to [another location](../README.md#contributed-examples).

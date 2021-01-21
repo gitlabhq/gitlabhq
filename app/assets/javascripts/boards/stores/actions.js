@@ -153,10 +153,10 @@ export default {
         variables,
       })
       .then(({ data }) => {
-        const labels = data[boardType]?.labels;
-        return labels.nodes;
-      })
-      .catch(() => commit(types.RECEIVE_LABELS_FAILURE));
+        const labels = data[boardType]?.labels.nodes;
+        commit(types.RECEIVE_LABELS_SUCCESS, labels);
+        return labels;
+      });
   },
 
   moveList: (

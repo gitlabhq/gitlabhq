@@ -63,8 +63,8 @@ export default {
     state.error = s__('Boards|An error occurred while creating the list. Please try again.');
   },
 
-  [mutationTypes.RECEIVE_LABELS_FAILURE]: (state) => {
-    state.error = s__('Boards|An error occurred while fetching labels. Please reload the page.');
+  [mutationTypes.RECEIVE_LABELS_SUCCESS]: (state, labels) => {
+    state.labels = labels;
   },
 
   [mutationTypes.GENERATE_DEFAULT_LISTS_FAILURE]: (state) => {

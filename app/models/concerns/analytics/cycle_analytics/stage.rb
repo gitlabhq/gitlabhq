@@ -49,6 +49,14 @@ module Analytics
         end
       end
 
+      def start_event_identifier
+        backward_compatible_identifier(:start_event_identifier) || super
+      end
+
+      def end_event_identifier
+        backward_compatible_identifier(:end_event_identifier) || super
+      end
+
       def start_event_label_based?
         start_event_identifier && start_event.label_based?
       end
@@ -127,6 +135,17 @@ module Analytics
           .execute(skip_authorization: true)
           .id_in(label_id)
           .exists?
+      end
+
+      # Temporary, will be removed in 13.10
+      def backward_compatible_identifier(attribute_name)
+        removed_identifier = 6 # References IssueFirstMentionedInCommit removed on https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51975
+        replacement_identifier = :issue_first_mentioned_in_commit
+
+        # ActiveRecord returns nil if the column value is not part of the Enum definition
+        if self[attribute_name].nil? && read_attribute_before_type_cast(attribute_name) == removed_identifier
+          replacement_identifier
+        end
       end
     end
   end

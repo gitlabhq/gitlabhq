@@ -384,7 +384,7 @@ export default {
                       class="btn btn-transparent"
                       @click.prevent="setNoteType('comment')"
                     >
-                      <gl-icon name="check" class="icon" />
+                      <gl-icon name="check" class="icon gl-flex-shrink-0" />
                       <div class="description">
                         <strong>{{ __('Comment') }}</strong>
                         <p>
@@ -400,10 +400,12 @@ export default {
                   <li class="divider droplab-item-ignore"></li>
                   <li :class="{ 'droplab-item-selected': noteType === 'discussion' }">
                     <button
+                      type="button"
+                      class="btn btn-transparent"
                       data-qa-selector="discussion_menu_item"
                       @click.prevent="setNoteType('discussion')"
                     >
-                      <gl-icon name="check" class="icon" />
+                      <gl-icon name="check" class="icon gl-flex-shrink-0" />
                       <div class="description">
                         <strong>{{ __('Start thread') }}</strong>
                         <p>{{ startDiscussionDescription }}</p>

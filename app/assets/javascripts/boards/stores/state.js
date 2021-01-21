@@ -14,6 +14,7 @@ export default () => ({
   issues: {},
   filterParams: {},
   boardConfig: {},
+  labels: [],
   groupProjects: [],
   groupProjectsFlags: {
     isLoading: false,
