@@ -90,9 +90,11 @@ import { __ } from '~/locale';
         this.saved = true;
 
         // This probably be better placed in the data provider
+        /* eslint-disable vue/no-mutating-props */
         this.file.content = this.editor.getValue();
         this.file.resolveEditChanged = this.file.content !== this.originalContent;
         this.file.promptDiscardConfirmation = false;
+        /* eslint-enable vue/no-mutating-props */
       },
       resetEditorContent() {
         if (this.fileLoaded) {

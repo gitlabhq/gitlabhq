@@ -63,6 +63,7 @@ export default {
   watch: {
     filters: {
       handler() {
+        // eslint-disable-next-line vue/no-mutating-props
         this.list.loadingMore = false;
         this.$refs.list.scrollTop = 0;
       },
@@ -75,6 +76,7 @@ export default {
           this.list.issuesSize > this.list.issues.length &&
           this.list.isExpanded
         ) {
+          // eslint-disable-next-line vue/no-mutating-props
           this.list.page += 1;
           this.list.getIssues(false).catch(() => {
             // TODO: handle request error
@@ -283,6 +285,7 @@ export default {
                * issue indexes are far apart, this logic should ever kick in.
                */
               setTimeout(() => {
+                // eslint-disable-next-line vue/no-mutating-props
                 this.list.issues.splice(i, 1);
               }, 0);
             });
@@ -386,10 +389,12 @@ export default {
     loadNextPage() {
       const getIssues = this.list.nextPage();
       const loadingDone = () => {
+        // eslint-disable-next-line vue/no-mutating-props
         this.list.loadingMore = false;
       };
 
       if (getIssues) {
+        // eslint-disable-next-line vue/no-mutating-props
         this.list.loadingMore = true;
         getIssues.then(loadingDone).catch(loadingDone);
       }

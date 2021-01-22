@@ -130,9 +130,11 @@ export default {
     },
     resetStatus() {
       if (this.initialMode !== null) {
+        // eslint-disable-next-line vue/no-mutating-props
         this.ingress.modsecurity_mode = this.initialMode;
       }
       if (this.initialValue !== null) {
+        // eslint-disable-next-line vue/no-mutating-props
         this.ingress.modsecurity_enabled = this.initialValue;
       }
       this.initialValue = null;

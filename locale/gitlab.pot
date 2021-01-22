@@ -20676,6 +20676,9 @@ msgstr ""
 msgid "PerformanceBar|Elasticsearch calls"
 msgstr ""
 
+msgid "PerformanceBar|External Http calls"
+msgstr ""
+
 msgid "PerformanceBar|Frontend resources"
 msgstr ""
 

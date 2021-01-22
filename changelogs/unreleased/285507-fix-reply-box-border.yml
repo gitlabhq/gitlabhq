@@ -1,0 +1,5 @@
+---
+title: Fix reply box border on diffs
+merge_request: 52084
+author:
+type: fixed

@@ -33,6 +33,10 @@ module Tooling
         projects&.has_key?(name)
       end
 
+      def any_capability?(project, category)
+        capabilities(project).any? { |capability| capability.end_with?(category.to_s) }
+      end
+
       def reviewer?(project, category, labels)
         has_capability?(project, category, :reviewer, labels)
       end

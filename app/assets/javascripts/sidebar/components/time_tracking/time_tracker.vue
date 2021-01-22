@@ -48,11 +48,11 @@ export default {
     /*
       In issue list, "time-tracking-collapsed-state" is always rendered even if the sidebar isn't collapsed.
       The actual hiding is controlled with css classes:
-        Hide "time-tracking-collapsed-state" 
+        Hide "time-tracking-collapsed-state"
           if .right-sidebar .right-sidebar-collapsed .sidebar-collapsed-icon
         Show "time-tracking-collapsed-state"
           if .right-sidebar .right-sidebar-expanded .sidebar-collapsed-icon
-      
+
       In Swimlanes sidebar, we do not use collapsed state at all.
     */
     showCollapsed: {
@@ -99,10 +99,12 @@ export default {
     update(data) {
       const { timeEstimate, timeSpent, humanTimeEstimate, humanTimeSpent } = data;
 
+      /* eslint-disable vue/no-mutating-props */
       this.timeEstimate = timeEstimate;
       this.timeSpent = timeSpent;
       this.humanTimeEstimate = humanTimeEstimate;
       this.humanTimeSpent = humanTimeSpent;
+      /* eslint-enable vue/no-mutating-props */
     },
   },
 };

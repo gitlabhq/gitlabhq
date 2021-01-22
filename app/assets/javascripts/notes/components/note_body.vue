@@ -156,6 +156,7 @@ export default {
       @handleFormUpdate="handleFormUpdate"
       @cancelForm="formCancelHandler"
     />
+    <!-- eslint-disable vue/no-mutating-props -->
     <textarea
       v-if="canEdit"
       v-model="note.note"
@@ -163,6 +164,7 @@ export default {
       class="hidden js-task-list-field"
       dir="auto"
     ></textarea>
+    <!-- eslint-enable vue/no-mutating-props -->
     <note-edited-text
       v-if="note.last_edited_at"
       :edited-at="note.last_edited_at"

@@ -349,6 +349,7 @@ export default {
               {{ s__('ClusterIntegration|Issuer Email') }}
             </label>
             <div class="input-group">
+              <!-- eslint-disable vue/no-mutating-props -->
               <input
                 id="cert-manager-issuer-email"
                 v-model="applications.cert_manager.email"
@@ -356,6 +357,7 @@ export default {
                 type="text"
                 class="form-control js-email"
               />
+              <!-- eslint-enable vue/no-mutating-props -->
             </div>
             <p class="form-text text-muted">
               {{
@@ -522,6 +524,7 @@ export default {
               <label for="jupyter-hostname">{{ s__('ClusterIntegration|Jupyter Hostname') }}</label>
 
               <div class="input-group">
+                <!-- eslint-disable vue/no-mutating-props -->
                 <input
                   id="jupyter-hostname"
                   v-model="applications.jupyter.hostname"
@@ -529,6 +532,7 @@ export default {
                   type="text"
                   class="form-control js-hostname"
                 />
+                <!-- eslint-enable vue/no-mutating-props -->
                 <span class="input-group-append">
                   <clipboard-button
                     :text="jupyterHostname"

@@ -1151,10 +1151,15 @@ X-Gitlab-Event: Pipeline Hook
             "email": "admin@example.com"
          },
          "runner": {
-            "id":380987,
-            "description":"shared-runners-manager-6.gitlab.com",
-            "active":true,
-            "is_shared":true
+            "id": 380987,
+            "description": "shared-runners-manager-6.gitlab.com",
+            "active": true,
+            "is_shared": true,
+            "tags": [
+              "linux",
+              "docker",
+              "shared-runner"
+            ]
          },
          "artifacts_file":{
             "filename": null,
@@ -1183,7 +1188,11 @@ X-Gitlab-Event: Pipeline Hook
             "id":380987,
             "description":"shared-runners-manager-6.gitlab.com",
             "active":true,
-            "is_shared":true
+            "is_shared":true,
+            "tags": [
+              "linux",
+              "docker"
+            ]
          },
          "artifacts_file":{
             "filename": null,
@@ -1209,10 +1218,14 @@ X-Gitlab-Event: Pipeline Hook
             "email": "admin@example.com"
          },
          "runner": {
-            "id":380987,
-            "description":"shared-runners-manager-6.gitlab.com",
-            "active":true,
-            "is_shared":true
+            "id": 380987,
+            "description": "shared-runners-manager-6.gitlab.com",
+            "active": true,
+            "is_shared": true, 
+            "tags": [
+              "linux",
+              "docker"
+            ]
          },
          "artifacts_file":{
             "filename": null,
@@ -1308,7 +1321,11 @@ X-Gitlab-Event: Job Hook
     "active": true,
     "is_shared": false,
     "id": 380987,
-    "description": "shared-runners-manager-6.gitlab.com"
+    "description": "shared-runners-manager-6.gitlab.com",
+    "tags": [
+      "linux",
+      "docker"
+    ]
   }
 }
 ```

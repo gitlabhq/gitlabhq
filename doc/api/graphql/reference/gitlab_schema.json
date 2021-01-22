@@ -31575,34 +31575,6 @@
               "defaultValue": null
             },
             {
-              "name": "payloadExample",
-              "description": "The example of an alert payload.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "JsonString",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "payloadAttributeMappings",
-              "description": "The custom mapping of GitLab alert attributes to fields from the payload_example.",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "INPUT_OBJECT",
-                    "name": "AlertManagementPayloadAlertFieldInput",
-                    "ofType": null
-                  }
-                }
-              },
-              "defaultValue": null
-            },
-            {
               "name": "clientMutationId",
               "description": "A unique identifier for the client performing the mutation.",
               "type": {
@@ -31721,6 +31693,34 @@
                 "kind": "SCALAR",
                 "name": "Boolean",
                 "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "payloadExample",
+              "description": "The example of an alert payload.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "JsonString",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "payloadAttributeMappings",
+              "description": "The custom mapping of GitLab alert attributes to fields from the payload_example.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "AlertManagementPayloadAlertFieldInput",
+                    "ofType": null
+                  }
+                }
               },
               "defaultValue": null
             },

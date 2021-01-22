@@ -8,6 +8,7 @@ if Labkit::Tracing.enabled?
 
   # Instrument Redis
   Labkit::Tracing::Redis.instrument
+  Labkit::Tracing::ExternalHttp.instrument
 
   # Instrument Rails
   Labkit::Tracing::Rails::ActiveRecordSubscriber.instrument

@@ -14,7 +14,12 @@ import SidebarSeverity from './components/severity/sidebar_severity.vue';
 import Translate from '../vue_shared/translate';
 import CopyEmailToClipboard from './components/copy_email_to_clipboard.vue';
 import createDefaultClient from '~/lib/graphql';
-import { isInIssuePage, isInIncidentPage, parseBoolean } from '~/lib/utils/common_utils';
+import {
+  isInIssuePage,
+  isInDesignPage,
+  isInIncidentPage,
+  parseBoolean,
+} from '~/lib/utils/common_utils';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 
@@ -49,7 +54,8 @@ function mountAssigneesComponent(mediator) {
           projectPath: fullPath,
           field: el.dataset.field,
           signedIn: el.hasAttribute('data-signed-in'),
-          issuableType: isInIssuePage() || isInIncidentPage() ? 'issue' : 'merge_request',
+          issuableType:
+            isInIssuePage() || isInIncidentPage() || isInDesignPage() ? 'issue' : 'merge_request',
         },
       }),
   });
@@ -78,7 +84,7 @@ function mountReviewersComponent(mediator) {
           issuableIid: String(iid),
           projectPath: fullPath,
           field: el.dataset.field,
-          issuableType: isInIssuePage() ? 'issue' : 'merge_request',
+          issuableType: isInIssuePage() || isInDesignPage() ? 'issue' : 'merge_request',
         },
       }),
   });

@@ -49,6 +49,7 @@ export default {
       :textarea-value="formState.description"
     >
       <template #textarea>
+        <!-- eslint-disable vue/no-mutating-props -->
         <textarea
           id="issue-description"
           ref="textarea"
@@ -62,6 +63,7 @@ export default {
           @keydown.ctrl.enter="updateIssuable"
         >
         </textarea>
+        <!-- eslint-enable vue/no-mutating-props -->
       </template>
     </markdown-field>
   </div>

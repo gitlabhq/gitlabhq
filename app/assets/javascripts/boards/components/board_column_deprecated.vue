@@ -46,6 +46,7 @@ export default {
   watch: {
     filter: {
       handler() {
+        // eslint-disable-next-line vue/no-mutating-props
         this.list.page = 1;
         this.list.getIssues(true).catch(() => {
           // TODO: handle request error

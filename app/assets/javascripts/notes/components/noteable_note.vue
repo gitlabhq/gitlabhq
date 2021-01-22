@@ -289,6 +289,7 @@ export default {
       };
       this.isRequesting = true;
       this.oldContent = this.note.note_html;
+      // eslint-disable-next-line vue/no-mutating-props
       this.note.note_html = escape(noteText);
 
       this.updateNote(data)
@@ -321,6 +322,7 @@ export default {
       }
       this.$refs.noteBody.resetAutoSave();
       if (this.oldContent) {
+        // eslint-disable-next-line vue/no-mutating-props
         this.note.note_html = this.oldContent;
         this.oldContent = null;
       }
@@ -330,6 +332,7 @@ export default {
     recoverNoteContent(noteText) {
       // we need to do this to prevent noteForm inconsistent content warning
       // this is something we intentionally do so we need to recover the content
+      // eslint-disable-next-line vue/no-mutating-props
       this.note.note = noteText;
       const { noteBody } = this.$refs;
       if (noteBody) {

@@ -202,4 +202,8 @@ if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && d
   class ::Redis::Client
     prepend TrackNewRedisConnections
   end
+
+  Labkit::NetHttpPublisher.labkit_prepend!
+  Labkit::ExconPublisher.labkit_prepend!
+  Labkit::HTTPClientPublisher.labkit_prepend!
 end

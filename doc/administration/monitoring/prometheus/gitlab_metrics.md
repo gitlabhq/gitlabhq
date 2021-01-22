@@ -114,6 +114,9 @@ The following metrics are available:
 | `action_cable_pool_tasks_total`                                | Gauge     |                   13.4 | Total number of tasks executed in ActionCable thread pool | `server_mode` |
 | `gitlab_issuable_fast_count_by_state_total`                    | Counter   |                   13.5 | Total number of row count operations on issue/merge request list pages | |
 | `gitlab_issuable_fast_count_by_state_failures_total`           | Counter   |                   13.5 | Number of soft-failed row count operations on issue/merge request list pages | |
+| `gitlab_external_http_total`                                   | Counter   |                   13.8 | Total number of HTTP calls to external systems | `controller`, `action` |
+| `gitlab_external_http_duration_seconds`                        | Counter   |                   13.8 | Duration in seconds spent on each HTTP call to external systems | |
+| `gitlab_external_http_exception_total`                         | Counter   |                   13.8 | Total number of exceptions raised when making external HTTP calls | |
 
 ## Metrics controlled by a feature flag
 

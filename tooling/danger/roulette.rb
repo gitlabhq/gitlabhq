@@ -39,7 +39,7 @@ module Tooling
           case spin.category
           when :qa
             # MR includes QA changes, but also other changes, and author isn't an SET
-            if categories.size > 1 && !team_mr_author&.reviewer?(project, spin.category, [])
+            if categories.size > 1 && !team_mr_author&.any_capability?(project, spin.category)
               spin.optional_role = :maintainer
             end
           when :test

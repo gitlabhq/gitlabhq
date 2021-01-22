@@ -265,7 +265,7 @@ export default {
                 <div
                   v-else-if="showReplies"
                   :class="{ 'is-replying': isReplying }"
-                  class="discussion-reply-holder clearfix"
+                  class="discussion-reply-holder gl-border-t-0! clearfix"
                 >
                   <user-avatar-link
                     v-if="!isReplying && userCanReply"

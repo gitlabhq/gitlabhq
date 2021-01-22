@@ -2,6 +2,7 @@
 
 require_relative '../../../tooling/danger/teammate'
 require 'active_support/testing/time_helpers'
+require 'rspec-parameterized'
 
 RSpec.describe Tooling::Danger::Teammate do
   using RSpec::Parameterized::TableSyntax
@@ -47,6 +48,13 @@ RSpec.describe Tooling::Danger::Teammate do
 
   context 'when having multiple capabilities' do
     let(:capabilities) { ['reviewer backend', 'maintainer frontend', 'trainee_maintainer qa'] }
+
+    it '#any_capability? returns true if the person has any capability for the category in the given project' do
+      expect(subject.any_capability?(project, :backend)).to be_truthy
+      expect(subject.any_capability?(project, :frontend)).to be_truthy
+      expect(subject.any_capability?(project, :qa)).to be_truthy
+      expect(subject.any_capability?(project, :engineering_productivity)).to be_falsey
+    end
 
     it '#reviewer? supports multiple roles per project' do
       expect(subject.reviewer?(project, :backend, labels)).to be_truthy

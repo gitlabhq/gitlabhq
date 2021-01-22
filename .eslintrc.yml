@@ -43,15 +43,6 @@ rules:
   promise/always-return: off
   promise/no-callback-in-promise: off
   "@gitlab/no-global-event-off": error
-
-  # BEGIN eslint-plugin-vue@7 overrides
-  # TODO: Remove these rules as part of
-  # https://gitlab.com/groups/gitlab-org/-/epics/5142. These are setting
-  # various vue lint rules as they were in eslint-plugin-vue@6, or disabling
-  # new ones, to ease migration to v7, so violations of each can be fixed
-  # separately.
-  vue/no-mutating-props: off
-  # END eslint-plugin-vue@7 overrides
 overrides:
   - files:
       - '**/spec/**/*'

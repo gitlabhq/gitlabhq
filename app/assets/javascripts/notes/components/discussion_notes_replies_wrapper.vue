@@ -16,9 +16,14 @@ export default {
   },
   render(h, { props, children }) {
     if (props.isDiffDiscussion) {
-      return h('li', { class: 'discussion-collapsible bordered-box clearfix' }, [
-        h('ul', { class: 'notes' }, children),
-      ]);
+      return h(
+        'li',
+        {
+          class:
+            'discussion-collapsible gl-border-solid gl-border-gray-100 gl-border-1 gl-rounded-base gl-overflow-hidden clearfix',
+        },
+        [h('ul', { class: 'notes' }, children)],
+      );
     }
 
     return children;

@@ -14,7 +14,8 @@ module Gitlab
                  :elasticsearch_calls,
                  :elasticsearch_duration_s,
                  *::Gitlab::Instrumentation::Redis.known_payload_keys,
-                 *::Gitlab::Metrics::Subscribers::ActiveRecord::DB_COUNTERS]
+                 *::Gitlab::Metrics::Subscribers::ActiveRecord::DB_COUNTERS,
+                 *::Gitlab::Metrics::Subscribers::ExternalHttp::KNOWN_PAYLOAD_KEYS]
     end
 
     def add_instrumentation_data(payload)
@@ -24,6 +25,7 @@ module Gitlab
       instrument_elasticsearch(payload)
       instrument_throttle(payload)
       instrument_active_record(payload)
+      instrument_external_http(payload)
     end
 
     def instrument_gitaly(payload)
@@ -57,6 +59,14 @@ module Gitlab
 
       payload[:elasticsearch_calls] = elasticsearch_calls
       payload[:elasticsearch_duration_s] = Gitlab::Instrumentation::ElasticsearchTransport.query_time
+    end
+
+    def instrument_external_http(payload)
+      external_http_count = Gitlab::Metrics::Subscribers::ExternalHttp.request_count
+
+      return if external_http_count == 0
+
+      payload.merge! Gitlab::Metrics::Subscribers::ExternalHttp.payload
     end
 
     def instrument_throttle(payload)

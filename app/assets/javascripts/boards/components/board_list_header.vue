@@ -147,6 +147,7 @@ export default {
       eventHub.$emit(`toggle-issue-form-${this.list.id}`);
     },
     toggleExpanded() {
+      // eslint-disable-next-line vue/no-mutating-props
       this.list.collapsed = !this.list.collapsed;
 
       if (!this.isLoggedIn) {

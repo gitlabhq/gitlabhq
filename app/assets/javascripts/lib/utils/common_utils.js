@@ -45,6 +45,7 @@ export const checkPageAndAction = (page, action) => {
 
 export const isInIncidentPage = () => checkPageAndAction('incidents', 'show');
 export const isInIssuePage = () => checkPageAndAction('issues', 'show');
+export const isInDesignPage = () => checkPageAndAction('issues', 'designs');
 export const isInMRPage = () => checkPageAndAction('merge_requests', 'show');
 export const isInEpicPage = () => checkPageAndAction('epics', 'show');
 

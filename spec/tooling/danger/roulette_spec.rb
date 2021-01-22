@@ -53,7 +53,7 @@ RSpec.describe Tooling::Danger::Roulette do
       'username' => 'software-engineer-in-test',
       'name' => 'Software Engineer in Test',
       'role' => 'Software Engineer in Test, Create:Source Code',
-      'projects' => { 'gitlab' => 'reviewer qa', 'gitlab-qa' => 'maintainer' },
+      'projects' => { 'gitlab' => 'maintainer qa', 'gitlab-qa' => 'maintainer' },
       'available' => true,
       'tz_offset_hours' => 2.0
     )
@@ -176,8 +176,24 @@ RSpec.describe Tooling::Danger::Roulette do
       context 'when change contains QA category' do
         let(:categories) { [:qa] }
 
-        it 'assigns QA reviewer' do
-          expect(spins).to eq([described_class::Spin.new(:qa, software_engineer_in_test, nil, false, false)])
+        it 'assigns QA maintainer' do
+          expect(spins).to eq([described_class::Spin.new(:qa, nil, software_engineer_in_test, false, false)])
+        end
+      end
+
+      context 'when change contains QA category and another category' do
+        let(:categories) { [:backend, :qa] }
+
+        it 'assigns QA maintainer' do
+          expect(spins).to eq([described_class::Spin.new(:backend, engineering_productivity_reviewer, backend_maintainer, false, false), described_class::Spin.new(:qa, nil, software_engineer_in_test, :maintainer, false)])
+        end
+
+        context 'and author is an SET' do
+          let!(:author) { Tooling::Danger::Teammate.new('username' => software_engineer_in_test.username) }
+
+          it 'assigns QA reviewer' do
+            expect(spins).to eq([described_class::Spin.new(:backend, engineering_productivity_reviewer, backend_maintainer, false, false), described_class::Spin.new(:qa, nil, nil, false, false)])
+          end
         end
       end
 

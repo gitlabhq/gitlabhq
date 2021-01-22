@@ -94,9 +94,9 @@ export default {
     data-qa-selector="detailed_metric_content"
   >
     <gl-button v-gl-modal="modalId" class="gl-mr-2" type="button" variant="link">
-      {{ metricDetailsLabel }}
+      <span class="gl-text-blue-300">{{ metricDetailsLabel }}</span>
     </gl-button>
-    <gl-modal :modal-id="modalId" :title="header" size="lg" modal-class="gl-mt-7" scrollable>
+    <gl-modal :modal-id="modalId" :title="header" size="lg" footer-class="d-none" scrollable>
       <table class="table">
         <template v-if="detailsList.length">
           <tr v-for="(item, index) in detailsList" :key="index">
@@ -116,7 +116,7 @@ export default {
                   {{ item[key] }}
                   <gl-button
                     v-if="keyIndex == 0 && item.backtrace"
-                    class="gl-ml-3"
+                    class="btn-sm gl-ml-3"
                     data-testid="backtrace-expand-btn"
                     type="button"
                     :aria-label="__('Toggle backtrace')"
