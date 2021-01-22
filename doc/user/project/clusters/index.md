@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Kubernetes clusters
+# Kubernetes clusters **(CORE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/35954) in GitLab 10.1 for projects.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/34758) in

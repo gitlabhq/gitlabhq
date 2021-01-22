@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Monitoring GitLab
+# Monitoring GitLab **(CORE)**
 
 Explore our features to monitor your GitLab instance:
 

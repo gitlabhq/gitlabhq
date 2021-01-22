@@ -1639,7 +1639,7 @@
         {
           "kind": "SCALAR",
           "name": "AlertManagementHttpIntegrationID",
-          "description": "Identifier of AlertManagement::HttpIntegration",
+          "description": "Identifier of AlertManagement::HttpIntegration.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -2608,7 +2608,7 @@
         {
           "kind": "SCALAR",
           "name": "AnalyticsDevopsAdoptionSegmentID",
-          "description": "Identifier of Analytics::DevopsAdoption::Segment",
+          "description": "Identifier of Analytics::DevopsAdoption::Segment.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -3128,7 +3128,7 @@
         {
           "kind": "SCALAR",
           "name": "AwardableID",
-          "description": "Identifier of Awardable",
+          "description": "Identifier of Awardable.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -5304,7 +5304,7 @@
         {
           "kind": "SCALAR",
           "name": "BoardID",
-          "description": "Identifier of Board",
+          "description": "Identifier of Board.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -6143,7 +6143,7 @@
         {
           "kind": "SCALAR",
           "name": "BoardsEpicBoardID",
-          "description": "Identifier of Boards::EpicBoard",
+          "description": "Identifier of Boards::EpicBoard.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -6153,7 +6153,7 @@
         {
           "kind": "SCALAR",
           "name": "BoardsEpicListID",
-          "description": "Identifier of Boards::EpicList",
+          "description": "Identifier of Boards::EpicList.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -8307,7 +8307,7 @@
         {
           "kind": "SCALAR",
           "name": "CiPipelineID",
-          "description": "Identifier of Ci::Pipeline",
+          "description": "Identifier of Ci::Pipeline.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -9274,7 +9274,7 @@
         {
           "kind": "SCALAR",
           "name": "ClustersAgentID",
-          "description": "Identifier of Clusters::Agent",
+          "description": "Identifier of Clusters::Agent.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -9284,7 +9284,7 @@
         {
           "kind": "SCALAR",
           "name": "ClustersAgentTokenID",
-          "description": "Identifier of Clusters::AgentToken",
+          "description": "Identifier of Clusters::AgentToken.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -9294,7 +9294,7 @@
         {
           "kind": "SCALAR",
           "name": "ClustersClusterID",
-          "description": "Identifier of Clusters::Cluster",
+          "description": "Identifier of Clusters::Cluster.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -10559,7 +10559,7 @@
         {
           "kind": "SCALAR",
           "name": "ComplianceManagementFrameworkID",
-          "description": "Identifier of ComplianceManagement::Framework",
+          "description": "Identifier of ComplianceManagement::Framework.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -11615,7 +11615,7 @@
         {
           "kind": "SCALAR",
           "name": "ContainerRepositoryID",
-          "description": "Identifier of ContainerRepository",
+          "description": "Identifier of ContainerRepository.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -14865,7 +14865,7 @@
         {
           "kind": "SCALAR",
           "name": "CustomEmojiID",
-          "description": "Identifier of CustomEmoji",
+          "description": "Identifier of CustomEmoji.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -15573,7 +15573,7 @@
         {
           "kind": "SCALAR",
           "name": "DastScannerProfileID",
-          "description": "Identifier of DastScannerProfile",
+          "description": "Identifier of DastScannerProfile.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -16230,7 +16230,7 @@
         {
           "kind": "SCALAR",
           "name": "DastSiteProfileID",
-          "description": "Identifier of DastSiteProfile",
+          "description": "Identifier of DastSiteProfile.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -16592,7 +16592,7 @@
         {
           "kind": "SCALAR",
           "name": "DastSiteTokenID",
-          "description": "Identifier of DastSiteToken",
+          "description": "Identifier of DastSiteToken.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -16931,7 +16931,7 @@
         {
           "kind": "SCALAR",
           "name": "DastSiteValidationID",
-          "description": "Identifier of DastSiteValidation",
+          "description": "Identifier of DastSiteValidation.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -19107,7 +19107,7 @@
         {
           "kind": "SCALAR",
           "name": "DesignManagementDesignAtVersionID",
-          "description": "Identifier of DesignManagement::DesignAtVersion",
+          "description": "Identifier of DesignManagement::DesignAtVersion.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -19117,7 +19117,7 @@
         {
           "kind": "SCALAR",
           "name": "DesignManagementDesignID",
-          "description": "Identifier of DesignManagement::Design",
+          "description": "Identifier of DesignManagement::Design.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -19425,7 +19425,7 @@
         {
           "kind": "SCALAR",
           "name": "DesignManagementVersionID",
-          "description": "Identifier of DesignManagement::Version",
+          "description": "Identifier of DesignManagement::Version.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -21214,7 +21214,7 @@
         {
           "kind": "SCALAR",
           "name": "DiffNoteID",
-          "description": "Identifier of DiffNote",
+          "description": "Identifier of DiffNote.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -22063,7 +22063,7 @@
         {
           "kind": "SCALAR",
           "name": "DiscussionID",
-          "description": "Identifier of Discussion",
+          "description": "Identifier of Discussion.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -22713,7 +22713,7 @@
         {
           "kind": "SCALAR",
           "name": "EnvironmentID",
-          "description": "Identifier of Environment",
+          "description": "Identifier of Environment.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -24646,7 +24646,7 @@
         {
           "kind": "SCALAR",
           "name": "EpicID",
-          "description": "Identifier of Epic",
+          "description": "Identifier of Epic.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -26766,7 +26766,7 @@
         {
           "kind": "SCALAR",
           "name": "EpicTreeSortingID",
-          "description": "Identifier of EpicTreeSorting",
+          "description": "Identifier of EpicTreeSorting.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -27614,7 +27614,7 @@
         {
           "kind": "SCALAR",
           "name": "GitlabErrorTrackingDetailedErrorID",
-          "description": "Identifier of Gitlab::ErrorTracking::DetailedError",
+          "description": "Identifier of Gitlab::ErrorTracking::DetailedError.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -30863,7 +30863,7 @@
         {
           "kind": "SCALAR",
           "name": "GroupID",
-          "description": "Identifier of Group",
+          "description": "Identifier of Group.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -31801,7 +31801,7 @@
         {
           "kind": "SCALAR",
           "name": "IncidentManagementOncallParticipantID",
-          "description": "Identifier of IncidentManagement::OncallParticipant",
+          "description": "Identifier of IncidentManagement::OncallParticipant.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -32148,7 +32148,7 @@
         {
           "kind": "SCALAR",
           "name": "IncidentManagementOncallRotationID",
-          "description": "Identifier of IncidentManagement::OncallRotation",
+          "description": "Identifier of IncidentManagement::OncallRotation.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -34379,7 +34379,7 @@
         {
           "kind": "SCALAR",
           "name": "IssueID",
-          "description": "Identifier of Issue",
+          "description": "Identifier of Issue.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -36710,7 +36710,7 @@
         {
           "kind": "SCALAR",
           "name": "IterationID",
-          "description": "Identifier of Iteration",
+          "description": "Identifier of Iteration.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -38294,7 +38294,7 @@
         {
           "kind": "SCALAR",
           "name": "LabelID",
-          "description": "Identifier of Label",
+          "description": "Identifier of Label.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -38304,7 +38304,7 @@
         {
           "kind": "SCALAR",
           "name": "ListID",
-          "description": "Identifier of List",
+          "description": "Identifier of List.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -41103,7 +41103,7 @@
         {
           "kind": "SCALAR",
           "name": "MergeRequestID",
-          "description": "Identifier of MergeRequest",
+          "description": "Identifier of MergeRequest.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -42863,7 +42863,7 @@
         {
           "kind": "SCALAR",
           "name": "MetricsDashboardAnnotationID",
-          "description": "Identifier of Metrics::Dashboard::Annotation",
+          "description": "Identifier of Metrics::Dashboard::Annotation.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -43234,7 +43234,7 @@
         {
           "kind": "SCALAR",
           "name": "MilestoneID",
-          "description": "Identifier of Milestone",
+          "description": "Identifier of Milestone.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -47791,7 +47791,7 @@
         {
           "kind": "SCALAR",
           "name": "NamespaceID",
-          "description": "Identifier of Namespace",
+          "description": "Identifier of Namespace.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -48452,7 +48452,7 @@
         {
           "kind": "SCALAR",
           "name": "NoteID",
-          "description": "Identifier of Note",
+          "description": "Identifier of Note.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -48754,7 +48754,7 @@
         {
           "kind": "SCALAR",
           "name": "NoteableID",
-          "description": "Identifier of Noteable",
+          "description": "Identifier of Noteable.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -51205,7 +51205,7 @@
         {
           "kind": "SCALAR",
           "name": "PackagesPackageID",
-          "description": "Identifier of Packages::Package",
+          "description": "Identifier of Packages::Package.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -57408,7 +57408,7 @@
         {
           "kind": "SCALAR",
           "name": "ProjectID",
-          "description": "Identifier of Project",
+          "description": "Identifier of Project.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -59055,7 +59055,7 @@
         {
           "kind": "SCALAR",
           "name": "PrometheusServiceID",
-          "description": "Identifier of PrometheusService",
+          "description": "Identifier of PrometheusService.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -68919,7 +68919,7 @@
         {
           "kind": "SCALAR",
           "name": "SnippetID",
-          "description": "Identifier of Snippet",
+          "description": "Identifier of Snippet.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -70106,7 +70106,7 @@
         {
           "kind": "SCALAR",
           "name": "TerraformStateID",
-          "description": "Identifier of Terraform::State",
+          "description": "Identifier of Terraform::State.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -71751,7 +71751,7 @@
         {
           "kind": "SCALAR",
           "name": "TodoID",
-          "description": "Identifier of Todo",
+          "description": "Identifier of Todo.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -72191,7 +72191,7 @@
         {
           "kind": "SCALAR",
           "name": "TodoableID",
-          "description": "Identifier of Todoable",
+          "description": "Identifier of Todoable.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -76779,7 +76779,7 @@
         {
           "kind": "SCALAR",
           "name": "UserID",
-          "description": "Identifier of User",
+          "description": "Identifier of User.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -77416,7 +77416,7 @@
         {
           "kind": "SCALAR",
           "name": "VulnerabilitiesExternalIssueLinkID",
-          "description": "Identifier of Vulnerabilities::ExternalIssueLink",
+          "description": "Identifier of Vulnerabilities::ExternalIssueLink.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -80173,7 +80173,7 @@
         {
           "kind": "SCALAR",
           "name": "VulnerabilityID",
-          "description": "Identifier of Vulnerability",
+          "description": "Identifier of Vulnerability.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,

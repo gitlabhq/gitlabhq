@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Working with Prometheus Metrics
+# Working with Prometheus Metrics **(CORE)**
 
 ## Adding to the library
 

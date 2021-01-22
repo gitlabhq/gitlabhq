@@ -118,7 +118,7 @@ export default {
   <div class="gl-display-flex gl-relative">
     <svg
       id="link-svg"
-      class="gl-absolute"
+      class="gl-absolute gl-pointer-events-none"
       :viewBox="viewBox"
       :width="`${containerMeasurements.width}px`"
       :height="`${containerMeasurements.height}px`"

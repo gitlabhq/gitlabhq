@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, howto
 ---
 
-# User-starred metrics dashboards API
+# User-starred metrics dashboards API **(CORE)**
 
 The starred dashboard feature makes navigating to frequently-used dashboards easier
 by displaying favorited dashboards at the top of the select list.

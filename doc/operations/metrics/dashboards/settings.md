@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Dashboard settings
+# Dashboard settings **(CORE)**
 
 You can configure your [Monitoring dashboard](../index.md) to
 display the time zone of your choice, and the links of your choice.

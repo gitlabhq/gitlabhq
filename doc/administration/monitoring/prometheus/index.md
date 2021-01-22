@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Monitoring GitLab with Prometheus
+# Monitoring GitLab with Prometheus **(CORE)**
 
 [Prometheus](https://prometheus.io) is a powerful time-series monitoring service, providing a flexible
 platform for monitoring GitLab and other software products.

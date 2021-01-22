@@ -24,7 +24,7 @@ module BulkImports
           end
         end
 
-        after_run.call(context) if after_run.present?
+        after_run(context) if respond_to?(:after_run)
       rescue MarkedAsFailedError
         log_skip(context)
       end

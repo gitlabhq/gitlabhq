@@ -110,7 +110,6 @@ squashing can itself be considered equivalent to rebasing.
 > - It's enabled on GitLab.com.
 > - It can be enabled per project.
 > - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-squash-commit-options). **(CORE ONLY)**
 
 With Squash Commits Options you can configure the behavior of Squash and Merge for your project.
 To set it up, navigate to your project's **Settings > General** and expand **Merge requests**.
@@ -132,31 +131,6 @@ The Squash and Merge checkbox is displayed when you create a merge request and w
 NOTE:
 If your project is set to **Do not allow** Squash and Merge, the users still have the option to
 squash commits locally through the command line and force-push to their remote branch before merging.
-
-### Enable or disable Squash Commit Options **(CORE ONLY)**
-
-Squash Commit Options is under development but ready for production use. It is
-deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-# Instance-wide
-Feature.enable(:squash_options)
-# or by project
-Feature.enable(:squash_options, Project.find(<project ID>))
-```
-
-To disable it:
-
-```ruby
-# Instance-wide
-Feature.disable(:squash_options)
-# or by project
-Feature.disable(:squash_options, Project.find(<project ID>))
-```
 
 <!-- ## Troubleshooting
 

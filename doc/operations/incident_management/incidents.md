@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Incidents
+# Incidents **(CORE)**
 
 Incidents are critical entities in incident management workflows. They represent
 a service disruption or outage that needs to be restored urgently. GitLab provides
@@ -53,7 +53,7 @@ With Maintainer or higher [permissions](../../user/permissions.md), you can enab
 1. Check the **Create an incident** checkbox.
 1. To customize the incident, select an
    [issue template](../../user/project/description_templates.md#creating-issue-templates).
-1. To send [an email notification](alert_notifications.md#email-notifications) to users
+1. To send [an email notification](paging.md#email-notifications) to users
    with [Developer permissions](../../user/permissions.md), select
    **Send a separate email notification to Developers**. Email notifications are
    also sent to users with **Maintainer** and **Owner** permissions.
@@ -185,7 +185,7 @@ field populated.
 
 ![Incident alert details](img/incident_alert_details_v13_4.png)
 
-### Timeline view
+### Timeline view **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227836) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5.
 
@@ -195,7 +195,7 @@ un-threaded and ordered chronologically, newest to oldest:
 
 ![Timeline view toggle](img/timeline_view_toggle_v13_5.png)
 
-### Service Level Agreement countdown timer
+### Service Level Agreement countdown timer **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241663) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5.
 

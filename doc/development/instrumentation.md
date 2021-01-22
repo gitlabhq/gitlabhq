@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Instrumenting Ruby code
+# Instrumenting Ruby code **(CORE)**
 
 [GitLab Performance Monitoring](../administration/monitoring/performance/index.md) allows instrumenting of both methods and custom
 blocks of Ruby code. Method instrumentation is the primary form of

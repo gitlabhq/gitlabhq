@@ -86,7 +86,7 @@ end
 
 # https://github.com/puma/puma/blob/master/5.0-Upgrade.md#nakayoshi_fork
 if defined?(nakayoshi_fork)
-  nakayoshi_fork unless ENV['DISABLE_PUMA_NAKAYOSHI_FORK'] == 'true'
+  nakayoshi_fork if ENV['ENABLE_PUMA_NAKAYOSHI_FORK'] == 'true'
 end
 
 # Use json formatter
