@@ -221,7 +221,6 @@ RSpec.configure do |config|
       # of older sidebar.
       # See https://gitlab.com/groups/gitlab-org/-/epics/1863
       stub_feature_flags(vue_issuable_sidebar: false)
-      stub_feature_flags(vue_issuable_epic_sidebar: false)
 
       # Merge request widget GraphQL requests are disabled in the tests
       # for now whilst we migrate as much as we can over the GraphQL

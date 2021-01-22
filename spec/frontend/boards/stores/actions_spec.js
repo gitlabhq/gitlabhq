@@ -1222,6 +1222,40 @@ describe('setSelectedProject', () => {
   });
 });
 
+describe('toggleBoardItemMultiSelection', () => {
+  const boardItem = mockIssue;
+
+  it('should commit mutation ADD_BOARD_ITEM_TO_SELECTION if item is not on selection state', () => {
+    testAction(
+      actions.toggleBoardItemMultiSelection,
+      boardItem,
+      { selectedBoardItems: [] },
+      [
+        {
+          type: types.ADD_BOARD_ITEM_TO_SELECTION,
+          payload: boardItem,
+        },
+      ],
+      [],
+    );
+  });
+
+  it('should commit mutation REMOVE_BOARD_ITEM_FROM_SELECTION if item is on selection state', () => {
+    testAction(
+      actions.toggleBoardItemMultiSelection,
+      boardItem,
+      { selectedBoardItems: [mockIssue] },
+      [
+        {
+          type: types.REMOVE_BOARD_ITEM_FROM_SELECTION,
+          payload: boardItem,
+        },
+      ],
+      [],
+    );
+  });
+});
+
 describe('fetchBacklog', () => {
   expectNotImplemented(actions.fetchBacklog);
 });

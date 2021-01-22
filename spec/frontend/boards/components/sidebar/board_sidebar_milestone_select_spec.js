@@ -20,7 +20,7 @@ describe('~/boards/components/sidebar/board_sidebar_milestone_select.vue', () =>
     wrapper = null;
   });
 
-  const createWrapper = ({ milestone = null } = {}) => {
+  const createWrapper = ({ milestone = null, loading = false } = {}) => {
     store = createStore();
     store.state.issues = { [TEST_ISSUE.id]: { ...TEST_ISSUE, milestone } };
     store.state.activeId = TEST_ISSUE.id;
@@ -38,7 +38,7 @@ describe('~/boards/components/sidebar/board_sidebar_milestone_select.vue', () =>
       },
       mocks: {
         $apollo: {
-          loading: false,
+          loading,
         },
       },
     });
@@ -63,12 +63,7 @@ describe('~/boards/components/sidebar/board_sidebar_milestone_select.vue', () =>
   });
 
   it('shows loader while Apollo is loading', async () => {
-    createWrapper({ milestone: TEST_MILESTONE });
-
-    expect(findLoader().exists()).toBe(false);
-
-    wrapper.vm.$apollo.loading = true;
-    await wrapper.vm.$nextTick();
+    createWrapper({ milestone: TEST_MILESTONE, loading: true });
 
     expect(findLoader().exists()).toBe(true);
   });
@@ -76,8 +71,7 @@ describe('~/boards/components/sidebar/board_sidebar_milestone_select.vue', () =>
   it('shows message when error or no milestones found', async () => {
     createWrapper();
 
-    wrapper.setData({ milestones: [] });
-    await wrapper.vm.$nextTick();
+    await wrapper.setData({ milestones: [] });
 
     expect(findNoMilestonesFoundItem().text()).toBe('No milestones found');
   });

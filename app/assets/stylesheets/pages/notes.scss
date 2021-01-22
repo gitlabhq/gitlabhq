@@ -91,28 +91,9 @@ $note-form-margin-left: 72px;
       color: $blue-600;
     }
 
-    &.expanded {
-      span {
-        cursor: pointer;
-      }
-
-      svg {
-        position: relative;
-        top: 3px;
-      }
-    }
-
     &.collapsed {
       color: $gl-text-color-secondary;
       border-radius: 0 0 $border-radius-default $border-radius-default;
-
-      svg {
-        float: left;
-        position: relative;
-        top: $gl-padding-4;
-        margin-right: $gl-padding-8;
-        cursor: pointer;
-      }
 
       img {
         margin: -2px 4px 0 0;

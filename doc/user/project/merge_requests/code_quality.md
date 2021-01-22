@@ -75,7 +75,7 @@ GitLab 11.4 or earlier, you can view the deprecated job definitions in the
 - Using shared runners, the job should be configured For the [Docker-in-Docker workflow](../../../ci/docker/using_docker_build.md#use-the-docker-executor-with-the-docker-image-docker-in-docker).
 - Using private runners, there is an [alternative configuration](#set-up-a-private-runner-for-code-quality-without-docker-in-docker) recommended for running CodeQuality analysis more efficiently.
 
-In either configuration, the runner mmust have enough disk space to handle generated Code Quality files. For example on the [GitLab project](https://gitlab.com/gitlab-org/gitlab) the files are approximately 7 GB.
+In either configuration, the runner must have enough disk space to handle generated Code Quality files. For example on the [GitLab project](https://gitlab.com/gitlab-org/gitlab) the files are approximately 7 GB.
 
 Once you set up GitLab Runner, include the Code Quality template in your CI configuration:
 

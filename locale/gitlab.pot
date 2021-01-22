@@ -8291,10 +8291,19 @@ msgstr ""
 msgid "CreateValueStreamForm|'%{name}' Value Stream created"
 msgstr ""
 
+msgid "CreateValueStreamForm|Add another stage"
+msgstr ""
+
 msgid "CreateValueStreamForm|Add stage"
 msgstr ""
 
 msgid "CreateValueStreamForm|All default stages are currently visible"
+msgstr ""
+
+msgid "CreateValueStreamForm|Create from default template"
+msgstr ""
+
+msgid "CreateValueStreamForm|Create from no template"
 msgstr ""
 
 msgid "CreateValueStreamForm|Default stages"
@@ -8312,16 +8321,13 @@ msgstr ""
 msgid "CreateValueStreamForm|End event: "
 msgstr ""
 
-msgid "CreateValueStreamForm|Enter a name for the stage"
-msgstr ""
-
 msgid "CreateValueStreamForm|Enter stage name"
 msgstr ""
 
-msgid "CreateValueStreamForm|Maximum length %{maxLength} characters"
+msgid "CreateValueStreamForm|Enter value stream name"
 msgstr ""
 
-msgid "CreateValueStreamForm|Name"
+msgid "CreateValueStreamForm|Maximum length %{maxLength} characters"
 msgstr ""
 
 msgid "CreateValueStreamForm|Name is required"
@@ -8331,6 +8337,9 @@ msgid "CreateValueStreamForm|New stage"
 msgstr ""
 
 msgid "CreateValueStreamForm|Please select a start event first"
+msgstr ""
+
+msgid "CreateValueStreamForm|Please select an end event"
 msgstr ""
 
 msgid "CreateValueStreamForm|Recover hidden stage"
@@ -8354,6 +8363,9 @@ msgstr ""
 msgid "CreateValueStreamForm|Stage name already exists"
 msgstr ""
 
+msgid "CreateValueStreamForm|Stage name is required"
+msgstr ""
+
 msgid "CreateValueStreamForm|Start event"
 msgstr ""
 
@@ -8367,6 +8379,9 @@ msgid "CreateValueStreamForm|Start event: "
 msgstr ""
 
 msgid "CreateValueStreamForm|Update stage"
+msgstr ""
+
+msgid "CreateValueStreamForm|Value Stream name"
 msgstr ""
 
 msgid "Created"

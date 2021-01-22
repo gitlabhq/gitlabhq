@@ -15,52 +15,83 @@ settings automatically by default. If your editor/IDE does not automatically sup
 we suggest investigating to see if a plugin exists. For instance here is the
 [plugin for vim](https://github.com/editorconfig/editorconfig-vim).
 
-## Pre-push static analysis
+## Pre-push static analysis with Lefthook
 
-We strongly recommend installing [Lefthook](https://github.com/Arkweid/lefthook) to automatically check
-for static analysis offenses before pushing your changes.
+[Lefthook](https://github.com/Arkweid/lefthook) is a Git hooks manager that allows
+custom logic to be executed prior to Git committing or pushing. GitLab comes with
+Lefthook configuration (`lefthook.yml`), but it must be installed.
 
-To install `lefthook`, run the following in your GitLab source directory:
+We have a `lefthook.yml` checked in but it is ignored until Lefthook is installed.
+
+### Uninstall Overcommit
+
+We were using Overcommit prior to Lefthook, so you may want to uninstall it first with `overcommit --uninstall`.
+
+### Install Lefthook
+
+1. Install the `lefthook` Ruby gem:
+
+   ```shell
+   bundle install
+   ```
+
+1. Install Lefthook managed Git hooks:
+
+   ```shell
+   bundle exec lefthook install
+   ```
+
+1. Test Lefthook is working by running the Lefthook `prepare-commit-msg` Git hook:
+
+   ```shell
+   bundle exec lefthook run prepare-commit-msg
+   ```
+
+This should return a fully qualified path command with no other output.
+
+### Lefthook configuration
+
+The current Lefthook configuration can be found in [`lefthook.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lefthook.yml).
+
+Before you push your changes, Lefthook automatically runs the following checks:
+
+- Danger: Runs a subset of checks that `danger-review` runs on your merge requests.
+- ES lint: Run `yarn eslint` checks (with the [`.eslintrc.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.eslintrc.yml) config) on the modified `*.{js,vue}` files. Tags: `frontend`, `style`.
+- HAML lint: Run `bundle exec haml-lint` checks (with the [`.haml-lint.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.haml-lint.yml) config) on the modified `*.html.haml` files. Tags: `view`, `haml`, `style`.
+- Markdown lint: Run `yarn markdownlint` checks on the modified `*.md` files. Tags: `documentation`, `style`.
+- SCSS lint: Run `bundle exec scss-lint` checks (with the [`.scss-lint.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.scss-lint.yml) config) on the modified `*.scss{,.css}` files. Tags: `stylesheet`, `css`, `style`.
+- RuboCop: Run `bundle exec rubocop` checks (with the [`.rubocop.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.rubocop.yml) config) on the modified `*.rb` files. Tags: `backend`, `style`.
+- Vale: Run `vale` checks (with the [`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.vale.ini) config) on the modified `*.md` files. Tags: `documentation`, `style`.
+
+In addition to the default configuration, you can define a [local configuration](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#local-config).
+
+### Disable Lefthook temporarily
+
+To disable Lefthook temporarily, you can set the `LEFTHOOK` environment variable to `0`. For instance:
 
 ```shell
-# 1. Make sure to uninstall Overcommit first
-overcommit --uninstall
-
-# If using rbenv, at this point you may need to do: rbenv rehash
-
-# 2. Install lefthook...
-
-## With Homebrew (macOS)
-brew install Arkweid/lefthook/lefthook
-
-## Or with Go
-go get github.com/Arkweid/lefthook
-
-## Or with Rubygems
-gem install lefthook
-
-### You may need to run the following if you're using rbenv
-rbenv rehash
-
-# 3. Install the Git hooks
-lefthook install -f
+LEFTHOOK=0 git push ...
 ```
 
-Before you push your changes, Lefthook then automatically run Danger checks, and other checks
-for changed files. This saves you time as you don't have to wait for the same errors to be detected
-by CI/CD.
+### Run Lefthook hooks manually
 
-Lefthook relies on a pre-push hook to prevent commits that violate its ruleset.
-To override this behavior, pass the environment variable `LEFTHOOK=0`. That is,
-`LEFTHOOK=0 git push`.
+To run the `pre-push` Git hook, run:
 
-You can also:
+```shell
+bundle exec lefthook run pre-push
+```
 
-- Define [local configuration](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#local-config).
-- Skip [checks per tag on the fly](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#skip-some-tags-on-the-fly).
-  For example, `LEFTHOOK_EXCLUDE=frontend git push origin`.
-- Run [hooks manually](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#run-githook-group-directly).
-  For example, `lefthook run pre-push`.
+For more information, check out [Lefthook documentation](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#run-githook-group-directly).
+
+### Skip Lefthook checks per tag
+
+To skip some checks based on tags when pushing, you can set the `LEFTHOOK_EXCLUDE` environment variable. For instance:
+
+```shell
+LEFTHOOK_EXCLUDE=frontend,documentation git push ...
+```
+
+For more information, check out [Lefthook documentation](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#skip-some-tags-on-the-fly).
 
 ## Ruby, Rails, RSpec
 

@@ -594,4 +594,27 @@ describe('Board Store Mutations', () => {
       expect(state.selectedProject).toEqual(mockGroupProjects[0]);
     });
   });
+
+  describe('ADD_BOARD_ITEM_TO_SELECTION', () => {
+    it('Should add boardItem to selectedBoardItems state', () => {
+      expect(state.selectedBoardItems).toEqual([]);
+
+      mutations[types.ADD_BOARD_ITEM_TO_SELECTION](state, mockIssue);
+
+      expect(state.selectedBoardItems).toEqual([mockIssue]);
+    });
+  });
+
+  describe('REMOVE_BOARD_ITEM_FROM_SELECTION', () => {
+    it('Should remove boardItem to selectedBoardItems state', () => {
+      state = {
+        ...state,
+        selectedBoardItems: [mockIssue],
+      };
+
+      mutations[types.REMOVE_BOARD_ITEM_FROM_SELECTION](state, mockIssue);
+
+      expect(state.selectedBoardItems).toEqual([]);
+    });
+  });
 });

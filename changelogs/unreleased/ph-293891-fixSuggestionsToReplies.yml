@@ -1,0 +1,5 @@
+---
+title: Fixed sdiff suggestions not working when replying to comments
+merge_request: 52100
+author:
+type: fixed

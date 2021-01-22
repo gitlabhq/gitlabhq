@@ -240,7 +240,7 @@ following desktop browsers:
 
 NOTE:
 For Firefox 47-66, you can enable the FIDO U2F API in
-[about:config](https://support.mozilla.org/en-US/kb/about-config-editor-firefox).
+[`about:config`](https://support.mozilla.org/en-US/kb/about-config-editor-firefox).
 Search for `security.webauth.u2f` and double click on it to toggle to `true`.
 
 To set up 2FA with a U2F device:

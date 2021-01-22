@@ -286,7 +286,7 @@ Configuration for `lefthook` is available in the [`lefthook.yml`](https://gitlab
 file for the [`gitlab`](https://gitlab.com/gitlab-org/gitlab) project.
 
 To set up `lefthook` for documentation linting, see
-[Pre-push static analysis](../contributing/style_guides.md#pre-push-static-analysis).
+[Pre-push static analysis](../contributing/style_guides.md#pre-push-static-analysis-with-lefthook).
 
 ### Show subset of Vale alerts
 

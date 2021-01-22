@@ -189,6 +189,7 @@ heatmaps
 Helm
 Heroku
 Herokuish
+Hexo
 HipChat
 hostname
 hostnames
@@ -204,6 +205,8 @@ inclusivity
 Ingress
 initializer
 initializers
+innersource
+innersourcing
 interdependencies
 interdependency
 interruptible
@@ -432,6 +435,7 @@ sbt
 scatterplot
 scatterplots
 Schemastore
+scrollable
 Sendmail
 Sentry
 serializer
@@ -556,6 +560,7 @@ unpublish
 unpublished
 unpublishes
 unpublishing
+unpushed
 unreferenced
 unregister
 unregistered

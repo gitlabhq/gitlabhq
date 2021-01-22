@@ -26,7 +26,7 @@ and from merge requests.
 
 The file finder allows you to quickly open files in the current branch by
 searching for fragments of the file path. The file finder is launched using the keyboard shortcut
-<kbd>Cmd</kbd>+<kbd>p</kbd>, <kbd>Ctrl</kbd>+<kbd>p</kbd>, or <kbd>t</kbd>
+<kbd>Command</kbd>+<kbd>p</kbd>, <kbd>Control</kbd>+<kbd>p</kbd>, or <kbd>t</kbd>
 (when editor is not in focus). Type the filename or file path fragments to
 start seeing results.
 

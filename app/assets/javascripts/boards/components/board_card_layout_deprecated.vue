@@ -1,13 +1,17 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import IssueCardInner from './issue_card_inner.vue';
+import IssueCardInnerDeprecated from './issue_card_inner_deprecated.vue';
+import boardsStore from '../stores/boards_store';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ISSUABLE } from '~/boards/constants';
 
 export default {
   name: 'BoardCardLayout',
   components: {
-    IssueCardInner,
+    IssueCardInner: gon.features?.graphqlBoardLists ? IssueCardInner : IssueCardInnerDeprecated,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     list: {
       type: Object,
@@ -38,17 +42,17 @@ export default {
   data() {
     return {
       showDetail: false,
+      multiSelect: boardsStore.multiSelect,
     };
   },
   computed: {
-    ...mapState(['selectedBoardItems']),
     ...mapGetters(['isSwimlanesOn']),
     multiSelectVisible() {
-      return this.selectedBoardItems.findIndex((boardItem) => boardItem.id === this.issue.id) > -1;
+      return this.multiSelect.list.findIndex((issue) => issue.id === this.issue.id) > -1;
     },
   },
   methods: {
-    ...mapActions(['setActiveId', 'toggleBoardItemMultiSelection']),
+    ...mapActions(['setActiveId']),
     mouseDown() {
       this.showDetail = true;
     },
@@ -59,16 +63,16 @@ export default {
       // Don't do anything if this happened on a no trigger element
       if (e.target.classList.contains('js-no-trigger')) return;
 
-      const isMultiSelect = e.ctrlKey || e.metaKey;
-
-      if (!isMultiSelect) {
+      if (this.glFeatures.graphqlBoardLists || this.isSwimlanesOn) {
         this.setActiveId({ id: this.issue.id, sidebarType: ISSUABLE });
-      } else {
-        this.toggleBoardItemMultiSelection(this.issue);
+        return;
       }
+
+      const isMultiSelect = e.ctrlKey || e.metaKey;
 
       if (this.showDetail || isMultiSelect) {
         this.showDetail = false;
+        this.$emit('show', { event: e, isMultiSelect });
       }
     },
   },

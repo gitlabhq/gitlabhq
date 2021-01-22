@@ -258,4 +258,16 @@ export default {
   [mutationTypes.SET_SELECTED_PROJECT]: (state, project) => {
     state.selectedProject = project;
   },
+
+  [mutationTypes.ADD_BOARD_ITEM_TO_SELECTION]: (state, boardItem) => {
+    state.selectedBoardItems = [...state.selectedBoardItems, boardItem];
+  },
+
+  [mutationTypes.REMOVE_BOARD_ITEM_FROM_SELECTION]: (state, boardItem) => {
+    Vue.set(
+      state,
+      'selectedBoardItems',
+      state.selectedBoardItems.filter((obj) => obj !== boardItem),
+    );
+  },
 };

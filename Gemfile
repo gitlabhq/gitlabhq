@@ -284,6 +284,7 @@ gem 'gitlab_chronic_duration', '~> 0.10.6.2'
 gem 'rack-proxy', '~> 0.6.0'
 
 gem 'sassc-rails', '~> 2.1.0'
+gem 'autoprefixer-rails', '10.2.0.0'
 gem 'terser', '1.0.2'
 
 gem 'addressable', '~> 2.7'
@@ -336,6 +337,7 @@ end
 group :development do
   gem 'brakeman', '~> 4.2', require: false
   gem 'danger', '~> 8.0.6', require: false
+  gem 'lefthook', '~> 0.7', require: false
 
   gem 'letter_opener_web', '~> 1.3.4'
 

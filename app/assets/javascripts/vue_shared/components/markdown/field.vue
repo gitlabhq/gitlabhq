@@ -110,11 +110,6 @@ export default {
       return this.referencedUsers.length >= referencedUsersThreshold;
     },
     lineContent() {
-      const [firstSuggestion] = this.suggestions;
-      if (firstSuggestion) {
-        return firstSuggestion.from_content;
-      }
-
       if (this.line) {
         const { rich_text: richText, text } = this.line;
 

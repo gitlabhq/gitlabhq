@@ -8,9 +8,8 @@ import {
   GlDropdownDivider,
   GlLoadingIcon,
 } from '@gitlab/ui';
-import { fetchPolicies } from '~/lib/graphql';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
-import groupMilestones from '../../graphql/group_milestones.query.graphql';
+import projectMilestones from '../../graphql/project_milestones.query.graphql';
 import createFlash from '~/flash';
 import { __, s__ } from '~/locale';
 
@@ -34,22 +33,21 @@ export default {
   },
   apollo: {
     milestones: {
-      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
-      query: groupMilestones,
+      query: projectMilestones,
       debounce: 250,
       skip() {
         return !this.edit;
       },
       variables() {
         return {
-          fullPath: this.groupFullPath,
+          fullPath: this.projectPath,
           searchTitle: this.searchTitle,
           state: 'active',
-          includeDescendants: true,
+          includeAncestors: true,
         };
       },
       update(data) {
-        const edges = data?.group?.milestones?.edges ?? [];
+        const edges = data?.project?.milestones?.edges ?? [];
         return edges.map((item) => item.node);
       },
       error() {

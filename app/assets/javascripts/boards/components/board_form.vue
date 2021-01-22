@@ -308,6 +308,7 @@ export default {
       <board-configuration-options
         :hide-backlog-list.sync="board.hide_backlog_list"
         :hide-closed-list.sync="board.hide_closed_list"
+        :readonly="readonly"
       />
 
       <board-scope

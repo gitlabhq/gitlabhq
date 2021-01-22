@@ -23,7 +23,7 @@ of the merge request.
 
 ## Enabling commit edits from upstream members
 
-From [GitLab 13.7 onwards](https://gitlab.com/gitlab-org/gitlab/-/issues/23308),
+In [GitLab 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/23308),
 this setting is enabled by default. It can be changed by users with Developer
 permissions to the source project. Once enabled, upstream members will also be
 able to retry the pipelines and jobs of the merge request:

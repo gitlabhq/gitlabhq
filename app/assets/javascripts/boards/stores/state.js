@@ -15,6 +15,7 @@ export default () => ({
   filterParams: {},
   boardConfig: {},
   labels: [],
+  selectedBoardItems: [],
   groupProjects: [],
   groupProjectsFlags: {
     isLoading: false,

@@ -29,7 +29,7 @@ You can use [GitLab CI/CD](../../../ci/README.md) to build packages.
 For Maven, NuGet, NPM, Conan, and PyPI packages, and Composer dependencies, you can
 authenticate with GitLab by using the `CI_JOB_TOKEN`.
 
-CI/CD templates, which you can use to get started, are in [this repo](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
+CI/CD templates, which you can use to get started, are in [this repository](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
 Learn more about using CI/CD to build:
 

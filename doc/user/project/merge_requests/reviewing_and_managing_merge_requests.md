@@ -89,7 +89,7 @@ From there, when reviewing merge requests' **Changes** tab, you will see only on
 
 ![File-by-file diff navigation](img/file_by_file_v13_2.png)
 
-From [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/233898) onwards, if you want to change
+In [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/233898) and later, if you want to change
 this behavior, you can do so from your **User preferences** (as explained above) or directly in a
 merge request:
 

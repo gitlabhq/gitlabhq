@@ -1,44 +1,31 @@
 import Vue from 'vue';
 import Translate from '~/vue_shared/translate';
-import GroupFilter from './components/group_filter.vue';
-import ProjectFilter from './components/project_filter.vue';
+import GlobalSearchTopbar from './components/app.vue';
 
 Vue.use(Translate);
 
-const mountSearchableDropdown = (store, { id, component }) => {
-  const el = document.getElementById(id);
+export const initTopbar = (store) => {
+  const el = document.getElementById('js-search-topbar');
 
   if (!el) {
     return false;
   }
 
-  let { initialData } = el.dataset;
+  let { groupInitialData, projectInitialData } = el.dataset;
 
-  initialData = JSON.parse(initialData);
+  groupInitialData = JSON.parse(groupInitialData);
+  projectInitialData = JSON.parse(projectInitialData);
 
   return new Vue({
     el,
     store,
     render(createElement) {
-      return createElement(component, {
+      return createElement(GlobalSearchTopbar, {
         props: {
-          initialData,
+          groupInitialData,
+          projectInitialData,
         },
       });
     },
   });
 };
-
-const searchableDropdowns = [
-  {
-    id: 'js-search-group-dropdown',
-    component: GroupFilter,
-  },
-  {
-    id: 'js-search-project-dropdown',
-    component: ProjectFilter,
-  },
-];
-
-export const initTopbar = (store) =>
-  searchableDropdowns.map((dropdown) => mountSearchableDropdown(store, dropdown));

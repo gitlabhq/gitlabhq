@@ -14,6 +14,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    readonly: {
+      type: Boolean,
+      required: true,
+    },
   },
 };
 </script>
@@ -28,12 +32,14 @@ export default {
     </p>
     <gl-form-checkbox
       :checked="!hideBacklogList"
+      :disabled="readonly"
       data-testid="backlog-list-checkbox"
       @change="$emit('update:hideBacklogList', !hideBacklogList)"
       >{{ __('Show the Open list') }}
     </gl-form-checkbox>
     <gl-form-checkbox
       :checked="!hideClosedList"
+      :disabled="readonly"
       data-testid="closed-list-checkbox"
       @change="$emit('update:hideClosedList', !hideClosedList)"
       >{{ __('Show the Closed list') }}
