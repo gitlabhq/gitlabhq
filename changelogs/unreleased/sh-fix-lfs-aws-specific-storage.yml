@@ -1,0 +1,5 @@
+---
+title: Fix LFS not working with S3 specific-storage settings
+merge_request: 52296
+author:
+type: fixed

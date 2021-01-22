@@ -8,7 +8,7 @@
   .project-edit-errors
     = render 'projects/errors'
 
-  .js-experiment-new-project-creation{ data: { is_ci_cd_available: (ci_cd_projects_available? if Gitlab.ee?), has_errors: @project.errors.any? } }
+  .js-experiment-new-project-creation{ data: { is_ci_cd_available: (ci_cd_projects_available? if Gitlab.ee?), has_errors: @project.errors.any?, new_project_guidelines: brand_new_project_guidelines } }
 
   .row{ 'v-cloak': true }
     .col-lg-3.profile-settings-sidebar

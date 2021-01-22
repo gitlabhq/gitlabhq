@@ -53,6 +53,28 @@ describe('Experimental new project creation app', () => {
     });
   });
 
+  describe('display custom new project guideline text', () => {
+    beforeEach(() => {
+      window.location.hash = '#blank_project';
+    });
+
+    it('does not render new project guideline if undefined', () => {
+      createComponent();
+      expect(wrapper.find('div#new-project-guideline').exists()).toBe(false);
+    });
+
+    it('render new project guideline if defined', () => {
+      const guidelineSelector = 'div#new-project-guideline';
+
+      createComponent({
+        newProjectGuidelines: '<h4>Internal Guidelines</h4><p>lorem ipsum</p>',
+      });
+      expect(wrapper.find(guidelineSelector).exists()).toBe(true);
+      expect(wrapper.find(guidelineSelector).html()).toContain('<h4>Internal Guidelines</h4>');
+      expect(wrapper.find(guidelineSelector).html()).toContain('<p>lorem ipsum</p>');
+    });
+  });
+
   it('renders relevant container when hash changes', () => {
     createComponent();
     expect(wrapper.find(WelcomePage).exists()).toBe(true);

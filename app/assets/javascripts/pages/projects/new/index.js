@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const config = {
         hasErrors: 'hasErrors' in el.dataset,
         isCiCdAvailable: 'isCiCdAvailable' in el.dataset,
+        newProjectGuidelines: el.dataset.newProjectGuidelines,
       };
       m.default(el, config);
     })

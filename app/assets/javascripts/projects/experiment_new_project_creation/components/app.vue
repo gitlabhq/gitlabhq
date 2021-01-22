@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { GlBreadcrumb, GlIcon } from '@gitlab/ui';
+import { GlBreadcrumb, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import WelcomePage from './welcome.vue';
 import LegacyContainer from './legacy_container.vue';
 import { __, s__ } from '~/locale';
@@ -57,7 +57,9 @@ export default {
     WelcomePage,
     LegacyContainer,
   },
-
+  directives: {
+    SafeHtml,
+  },
   props: {
     hasErrors: {
       type: Boolean,
@@ -68,6 +70,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    newProjectGuidelines: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
 
@@ -145,6 +152,11 @@ export default {
       <div class="text-center" v-html="activePanel.illustration"></div>
       <h4>{{ activePanel.title }}</h4>
       <p>{{ activePanel.description }}</p>
+      <div
+        v-if="newProjectGuidelines"
+        id="new-project-guideline"
+        v-safe-html="newProjectGuidelines"
+      ></div>
     </div>
     <div class="col-lg-9">
       <gl-breadcrumb v-if="breadcrumbs" :items="breadcrumbs">
