@@ -16,7 +16,7 @@ RSpec.describe 'forked project import' do
   let(:bundle_path) { File.join(shared.export_path, Gitlab::ImportExport.project_bundle_filename) }
 
   let(:repo_restorer) do
-    Gitlab::ImportExport::RepoRestorer.new(path_to_bundle: bundle_path, shared: shared, project: project)
+    Gitlab::ImportExport::RepoRestorer.new(path_to_bundle: bundle_path, shared: shared, importable: project)
   end
 
   let!(:merge_request) do

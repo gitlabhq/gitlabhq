@@ -16,7 +16,7 @@ RSpec.describe Gitlab::ImportExport::DesignRepoRestorer do
     let(:restorer) do
       described_class.new(path_to_bundle: bundle_path,
                           shared: shared,
-                          project: project)
+                          importable: project)
     end
 
     before do

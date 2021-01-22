@@ -14,7 +14,8 @@ module Ci
     EXPIRATION_DATE = 1.week.freeze
 
     DEFAULT_FILE_NAMES = {
-      code_coverage: 'code_coverage.json'
+      code_coverage: 'code_coverage.json',
+      code_quality: 'code_quality.json'
     }.freeze
 
     belongs_to :project, class_name: "Project", inverse_of: :pipeline_artifacts

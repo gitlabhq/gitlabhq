@@ -45,7 +45,7 @@ To install GitLab for this default reference architecture, use the standard
 
 You can also optionally configure GitLab to use an [external PostgreSQL service](../postgresql/external.md)
 or an [external object storage service](../object_storage.md) for added
-performance and reliability at a reduced complexity cost.
+performance and reliability at an increased complexity cost.
 
 ## Configure Advanced Search **(STARTER ONLY)**
 

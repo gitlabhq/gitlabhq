@@ -802,3 +802,12 @@ export const removeCookie = (name) => Cookies.remove(name);
  * @returns {Boolean} on/off
  */
 export const isFeatureFlagEnabled = (flag) => window.gon.features?.[flag];
+
+/**
+ * This method takes in array with snake_case strings
+ * and returns a new array with camelCase strings
+ *
+ * @param {Array[String]} array - Array to be converted
+ * @returns {Array[String]} Converted array
+ */
+export const convertArrayToCamelCase = (array) => array.map((i) => convertToCamelCase(i));

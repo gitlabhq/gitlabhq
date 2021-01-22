@@ -129,7 +129,7 @@ element. Due dates can be changed as many times as needed.
 ### Labels
 
 Categorize issues by giving them [labels](../labels.md). They help to organize workflows,
-and they enable you to work with the [GitLab Issue Board](index.md#issue-boards).
+and they enable you to work with the [GitLab Issue Board](../issue_board.md).
 
 Group Labels, which allow you to use the same labels for all projects in the same
 group, can also be given to issues. They work exactly the same, but are immediately

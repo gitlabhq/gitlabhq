@@ -1109,6 +1109,14 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: pipeline_background:ci_pipeline_artifacts_create_quality_report
+  :feature_category: :code_testing
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: pipeline_background:ci_pipeline_success_unlock_artifacts
   :feature_category: :continuous_integration
   :has_external_dependencies:

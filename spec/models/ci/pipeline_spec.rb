@@ -3522,7 +3522,19 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       context 'when pipeline status is success' do
         let(:pipeline) { create(:ci_pipeline, :success, project: project) }
 
-        it { expect(subject).to be_truthy }
+        it 'can generate a codequality report' do
+          expect(subject).to be_truthy
+        end
+
+        context 'when feature is disabled' do
+          before do
+            stub_feature_flags(codequality_mr_diff: false)
+          end
+
+          it 'can not generate a codequality report' do
+            expect(subject).to be_falsey
+          end
+        end
       end
     end
 

@@ -2,6 +2,8 @@
 import { GlTable } from '@gitlab/ui';
 import { __ } from '~/locale';
 import UserAvatar from './user_avatar.vue';
+import UserActions from './user_actions.vue';
+import UserDate from './user_date.vue';
 
 const DEFAULT_TH_CLASSES =
   'gl-bg-transparent! gl-border-b-solid! gl-border-b-gray-100! gl-p-5! gl-border-b-1!';
@@ -11,6 +13,8 @@ export default {
   components: {
     GlTable,
     UserAvatar,
+    UserActions,
+    UserDate,
   },
   props: {
     users: {
@@ -62,7 +66,19 @@ export default {
       stacked="md"
     >
       <template #cell(name)="{ item: user }">
-        <UserAvatar :user="user" :admin-user-path="paths.adminUser" />
+        <user-avatar :user="user" :admin-user-path="paths.adminUser" />
+      </template>
+
+      <template #cell(createdAt)="{ item: { createdAt } }">
+        <user-date :date="createdAt" />
+      </template>
+
+      <template #cell(lastActivityOn)="{ item: { lastActivityOn } }">
+        <user-date :date="lastActivityOn" show-never />
+      </template>
+
+      <template #cell(settings)="{ item: user }">
+        <user-actions :user="user" :paths="paths" />
       </template>
     </gl-table>
   </div>

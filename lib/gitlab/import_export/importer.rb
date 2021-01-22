@@ -75,19 +75,19 @@ module Gitlab
       def repo_restorer
         Gitlab::ImportExport::RepoRestorer.new(path_to_bundle: repo_path,
                                                shared: shared,
-                                               project: project)
+                                               importable: project)
       end
 
       def wiki_restorer
         Gitlab::ImportExport::RepoRestorer.new(path_to_bundle: wiki_repo_path,
                                                shared: shared,
-                                               project: ProjectWiki.new(project))
+                                               importable: ProjectWiki.new(project))
       end
 
       def design_repo_restorer
         Gitlab::ImportExport::DesignRepoRestorer.new(path_to_bundle: design_repo_path,
                                                      shared: shared,
-                                                     project: project)
+                                                     importable: project)
       end
 
       def uploads_restorer

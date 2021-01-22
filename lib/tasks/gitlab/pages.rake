@@ -6,37 +6,20 @@ namespace :gitlab do
     task migrate_legacy_storage: :gitlab_environment do
       logger = Logger.new(STDOUT)
       logger.info('Starting to migrate legacy pages storage to zip deployments')
-      projects_migrated = 0
-      projects_errored = 0
 
-      ProjectPagesMetadatum.only_on_legacy_storage.each_batch(of: 10) do |batch|
-        batch.preload(project: [:namespace, :route, pages_metadatum: :pages_deployment]).each do |metadatum|
-          project = metadatum.project
+      result = ::Pages::MigrateFromLegacyStorageService.new(logger, migration_threads, batch_size).execute
 
-          result = nil
-          time = Benchmark.realtime do
-            result = ::Pages::MigrateLegacyStorageToDeploymentService.new(project).execute
-          end
+      logger.info("A total of #{result[:migrated] + result[:errored]} projects were processed.")
+      logger.info("- The #{result[:migrated]} projects migrated successfully")
+      logger.info("- The #{result[:errored]} projects failed to be migrated")
+    end
 
-          if result[:status] == :success
-            logger.info("project_id: #{project.id} #{project.pages_path} has been migrated in #{time} seconds")
-            projects_migrated += 1
-          else
-            logger.error("project_id: #{project.id} #{project.pages_path} failed to be migrated in #{time} seconds: #{result[:message]}")
-            projects_errored += 1
-          end
-        rescue => e
-          projects_errored += 1
-          logger.error("#{e.message} project_id: #{project&.id}")
-          Gitlab::ErrorTracking.track_exception(e, project_id: project&.id)
-        end
+    def migration_threads
+      ENV.fetch('PAGES_MIGRATION_THREADS', '3').to_i
+    end
 
-        logger.info("#{projects_migrated} projects are migrated successfully, #{projects_errored} projects failed to be migrated")
-      end
-
-      logger.info("A total of #{projects_migrated + projects_errored} projects were processed.")
-      logger.info("- The #{projects_migrated} projects migrated successfully")
-      logger.info("- The #{projects_errored} projects failed to be migrated")
+    def batch_size
+      ENV.fetch('PAGES_MIGRATION_BATCH_SIZE', '10').to_i
     end
   end
 end

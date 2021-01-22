@@ -6,33 +6,27 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Issues **(CORE)**
 
-Issues are the fundamental medium for collaborating on ideas and planning work in GitLab.
+Issues are the fundamental mechanism in GitLab to collaborate on ideas, solve
+problems, and plan work.
 
-## Overview
+Using issues, you can share and discuss proposals (both before and during their
+implementation) between you and your team, and outside collaborators.
 
-The GitLab issue tracker is an advanced tool for collaboratively developing ideas, solving problems,
-and planning work.
+You can use issues for many purposes, customized to your needs and workflow.
+Common use cases include:
 
-Issues can allow sharing and discussion of proposals before, and during,
-their implementation between:
+- Discussing the implementation of a new idea.
+- Tracking tasks and work status.
+- Accepting feature proposals, questions, support requests, or bug reports.
+- Elaborating on new code implementations.
 
-- You and your team.
-- Outside collaborators.
+For more information about using issues, see the
+[Always start a discussion with an issue](https://about.gitlab.com/blog/2016/03/03/start-with-an-issue/)
+GitLab blog post.
 
-They can also be used for a variety of other purposes, customized to your
-needs and workflow.
-
-Issues are always associated with a specific project. If you have multiple projects in a group,
-you can view all of the issues collectively at the group level.
-
-**Common use cases include:**
-
-- Discussing the implementation of a new idea
-- Tracking tasks and work status
-- Accepting feature proposals, questions, support requests, or bug reports
-- Elaborating on new code implementations
-
-See also [Always start a discussion with an issue](https://about.gitlab.com/blog/2016/03/03/start-with-an-issue/).
+Issues are always associated with a specific project. If you have multiple
+projects in a group, you can view all of the issues collectively at the group
+level.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 To learn how our Strategic Marketing department uses GitLab issues with [labels](../labels.md) and
@@ -41,63 +35,30 @@ To learn how our Strategic Marketing department uses GitLab issues with [labels]
 
 ## Parts of an issue
 
-Issues contain a variety of content and metadata, enabling a large range of flexibility
-in how they are used. Each issue can contain the following attributes, though not all items
-must be set.
+Issues have a flexible content and metadata structure. Here are some of the
+elements you can provide in an issue:
 
-<table class="borderless-table fixed-table">
-<tr>
-    <td>
-        <ul>
-            <li>Content</li>
-            <ul>
-                <li>Title</li>
-                <li>Description and tasks</li>
-                <li>Comments and other activity</li>
-            </ul>
-            <li>People</li>
-            <ul>
-                <li>Author</li>
-                <li>Assignee(s)</li>
-            </ul>
-            <li>State</li>
-            <ul>
-                <li>State (open or closed)</li>
-                <li>Health status (on track, needs attention, or at risk)</li>
-                <li>Confidentiality</li>
-                <li>Tasks (completed vs. outstanding)</li>
-            </ul>
-        </ul>
-    </td>
-    <td>
-        <ul>
-            <li>Planning and tracking</li>
-            <ul>
-                <li>Milestone</li>
-                <li>Due date</li>
-                <li>Weight</li>
-                <li>Time tracking</li>
-                <li>Labels</li>
-                <li>Votes</li>
-                <li>Reaction emoji</li>
-                <li>Linked issues</li>
-                <li>Assigned epic</li>
-                <li>Unique issue number and URL</li>
-            </ul>
-       </ul>
-    </td>
-</tr>
-</table>
+- Title
+- Description and tasks
+- Comments and other activity
+- Author
+- Assignees
+- State (open or closed)
+- Health status (on track, needs attention, or at risk)
+- Confidentiality
+- Tasks (completed vs. outstanding)
+- Milestone
+- Due date
+- Weight
+- Time tracking
+- Labels
+- Votes
+- Reaction emoji
+- Linked issues
+- Assigned epic
+- Unique issue number and URL
 
-## Viewing and managing issues
-
-While you can view and manage details of an issue on the [issue page](#issue-page),
-you can also work with multiple issues at a time using:
-
-- [Issues List](#issues-list).
-- [Issue Boards](#issue-boards).
-- Issue references.
-- [Epics](#epics) **(PREMIUM)**.
+## View and manage issues
 
 Key actions for issues include:
 
@@ -105,7 +66,17 @@ Key actions for issues include:
 - [Moving issues](managing_issues.md#moving-issues)
 - [Closing issues](managing_issues.md#closing-issues)
 - [Deleting issues](managing_issues.md#deleting-issues)
-- [Promoting issues](managing_issues.md#promote-an-issue-to-an-epic) **(PREMIUM)**
+- [Promoting issues](managing_issues.md#promote-an-issue-to-an-epic)
+
+Although you can view and manage details of an issue on the [issue page](#issue-page),
+you can also work with several issues at a time by using these features:
+
+- [Issues List](#issues-list): View a list of issues in a project or group.
+- [Issue Boards](../issue_board.md): Organize issues with a project management
+  workflow for a feature or product release.
+- Issue references
+- [Epics](../../group/epics/index.md): Manage your portfolio of projects by
+  tracking groups of issues with a shared theme.
 
 ### Issue page
 
@@ -125,7 +96,7 @@ To enable it, you need to enable [ActionCable in-app mode](https://docs.gitlab.c
 
 ![Project Issues List view](img/project_issues_list_view.png)
 
-On the Issues List, you can:
+In the Issues List, you can:
 
 - View all issues in a project when opening the Issues List from a project context.
 - View all issues in a groups's projects when opening the Issues List from a group context.
@@ -154,30 +125,11 @@ This feature might not be available to you. Check the **version history** note a
 In a group, the sidebar displays the total count of open issues and this value is cached if higher
 than 1000. The cached value is rounded to thousands (or millions) and updated every 24 hours.
 
-### Issue boards
-
-![Issue board](img/issue_board.png)
-
-[Issue boards](../issue_board.md) are Kanban boards with columns that display issues based on their
-labels or their assignees**(PREMIUM)**. They offer the flexibility to manage issues using
-highly customizable workflows.
-
-You can reorder issues in the column. If you drag an issue card to another column, its
-associated label or assignee is changed to match that of the new column. The entire
-board can also be filtered to only include issues from a certain milestone or an overarching
-label.
-
 ### Design Management
 
 With [Design Management](design_management.md), you can upload design
 assets to issues and view them all together for sharing and
 collaboration with your team.
-
-### Epics **(PREMIUM)**
-
-[Epics](../../group/epics/index.md) let you manage your portfolio of projects more
-efficiently and with less effort. Epics track groups of issues that share a theme, across
-projects and milestones.
 
 ### Related issues
 
