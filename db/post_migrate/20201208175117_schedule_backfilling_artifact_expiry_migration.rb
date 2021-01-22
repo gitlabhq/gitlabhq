@@ -24,12 +24,18 @@ class ScheduleBackfillingArtifactExpiryMigration < ActiveRecord::Migration[6.0]
     # Needs to be removed in a later migration
     add_concurrent_index(:ci_job_artifacts, %i(id created_at), where: INDEX_CONDITION, name: INDEX_NAME)
 
-    queue_background_migration_jobs_by_range_at_intervals(
-      JobArtifact.without_expiry_date.before_switch,
-      ::Gitlab::BackgroundMigration::BackfillArtifactExpiryDate,
-      2.minutes,
-      batch_size: 200_000
-    )
+    # queue_background_migration_jobs_by_range_at_intervals(
+    #   JobArtifact.without_expiry_date.before_switch,
+    #   ::Gitlab::BackgroundMigration::BackfillArtifactExpiryDate,
+    #   2.minutes,
+    #   batch_size: 200_000
+    # )
+    # The scheduling code was using the full class symbol
+    # (`::Gitlab::BackgroundMigration::BackfillArtifactExpiryDate`) instead of a
+    # string with the class name (`BackfillArtifactExpiryDate`) by mistake,
+    # which resulted in an error. It is commented out so it's a no-op to prevent
+    # errors and will be reintroduced with
+    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51822.
   end
 
   def down

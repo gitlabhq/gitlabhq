@@ -11,6 +11,14 @@ Check this document if it includes instructions for the version you are updating
 These steps go together with the [general steps](updating_the_geo_nodes.md#general-update-steps)
 for updating Geo nodes.
 
+## Updating to GitLab 13.8
+
+We've detected an issue with the `FetchRemove` call that is used by Geo secondaries. This causes performance issues as we execute reference transaction hooks for each updated reference. Please hold off upgrading until this is in [the 13.8.1 patch release.](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3002). More details are available [in this issue](https://gitlab.com/gitlab-org/git/-/issues/79).
+
+## Updating to GitLab 13.7
+
+We've detected an issue with the `FetchRemove` call that is used by Geo secondaries. This causes performance issues as we execute reference transaction hooks for each updated reference. Please hold off upgrading until this is in [the 13.7.5 patch release.](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3002). More details are available [in this issue](https://gitlab.com/gitlab-org/git/-/issues/79).
+
 ## Updating to GitLab 13.5
 
 In GitLab 13.5, there is a [regression that prevents viewing a list of container repositories and registries](https://gitlab.com/gitlab-org/gitlab/-/issues/285475) on Geo secondaries. This issue is fixed in GitLab 13.6.1 and later.

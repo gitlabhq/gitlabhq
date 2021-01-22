@@ -11622,6 +11622,16 @@ input HttpIntegrationUpdateInput {
   The name of the integration.
   """
   name: String
+
+  """
+  The custom mapping of GitLab alert attributes to fields from the payload_example.
+  """
+  payloadAttributeMappings: [AlertManagementPayloadAlertFieldInput!]
+
+  """
+  The example of an alert payload.
+  """
+  payloadExample: JsonString
 }
 
 """

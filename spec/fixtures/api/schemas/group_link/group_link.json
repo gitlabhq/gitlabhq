@@ -4,8 +4,6 @@
     "id",
     "created_at",
     "expires_at",
-    "can_update",
-    "can_remove",
     "access_level",
     "valid_roles"
   ],
@@ -13,15 +11,14 @@
     "id": { "type": "integer" },
     "created_at": { "type": "date-time" },
     "expires_at": { "type": ["date-time", "null"] },
-    "can_update": { "type": "boolean" },
-    "can_remove": { "type": "boolean" },
     "access_level": {
       "type": "object",
       "required": ["integer_value", "string_value"],
       "properties": {
         "integer_value": { "type": "integer" },
         "string_value": { "type": "string" }
-      }
+      },
+      "additionalProperties": false
     },
     "valid_roles": { "type": "object" },
     "shared_with_group": {
@@ -34,7 +31,8 @@
         "full_path": { "type": "string" },
         "avatar_url": { "type": ["string", "null"] },
         "web_url": { "type": "string" }
-      }
+      },
+      "additionalProperties": false
     }
   }
 }

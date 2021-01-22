@@ -45,15 +45,13 @@ RSpec.describe SystemHooksService do
 
     it do
       expect(event_data(group, :create)).to include(
-        :event_name, :name, :created_at, :updated_at, :path, :group_id,
-        :owner_name, :owner_email
+        :event_name, :name, :created_at, :updated_at, :path, :group_id
       )
     end
 
     it do
       expect(event_data(group, :destroy)).to include(
-        :event_name, :name, :created_at, :updated_at, :path, :group_id,
-        :owner_name, :owner_email
+        :event_name, :name, :created_at, :updated_at, :path, :group_id
       )
     end
 

@@ -29,7 +29,7 @@ RSpec.describe Groups::GroupMembersHelper do
     it 'matches json schema' do
       json = helper.group_group_links_data_json(shared_group.shared_with_group_links)
 
-      expect(json).to match_schema('group_group_links')
+      expect(json).to match_schema('group_link/group_group_links')
     end
   end
 

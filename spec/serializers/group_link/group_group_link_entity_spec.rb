@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupGroupLinkEntity do
+RSpec.describe GroupLink::GroupGroupLinkEntity do
   include_context 'group_group_link'
 
   let_it_be(:current_user) { create(:user) }
@@ -13,15 +13,15 @@ RSpec.describe GroupGroupLinkEntity do
   end
 
   it 'matches json schema' do
-    expect(entity.to_json).to match_schema('entities/group_group_link')
+    expect(entity.to_json).to match_schema('group_link/group_group_link')
   end
 
-  context 'a user with :admin_group_member permissions' do
+  context 'when current user has `:admin_group_member` permissions' do
     before do
       allow(entity).to receive(:can?).with(current_user, :admin_group_member, shared_group).and_return(true)
     end
 
-    it 'sets `can_update` and `can_remove` to `true`' do
+    it 'exposes `can_update` and `can_remove` as `true`' do
       json = entity.as_json
 
       expect(json[:can_update]).to be true

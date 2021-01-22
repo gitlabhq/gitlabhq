@@ -14,7 +14,7 @@ module Groups::GroupMembersHelper
   end
 
   def group_group_links_data_json(group_links)
-    GroupGroupLinkSerializer.new.represent(group_links, { current_user: current_user }).to_json
+    GroupLink::GroupGroupLinkSerializer.new.represent(group_links, { current_user: current_user }).to_json
   end
 
   def members_data_json(group, members)

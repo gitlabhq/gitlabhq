@@ -9,7 +9,7 @@ module AlertManagement
       def initialize(integration, current_user, params)
         @integration = integration
         @current_user = current_user
-        @params = params
+        @params = params.with_indifferent_access
       end
 
       def execute
@@ -17,7 +17,7 @@ module AlertManagement
 
         params[:token] = nil if params.delete(:regenerate_token)
 
-        if integration.update(params)
+        if integration.update(permitted_params)
           success
         else
           error(integration.errors.full_messages.to_sentence)
@@ -30,6 +30,15 @@ module AlertManagement
 
       def allowed?
         current_user&.can?(:admin_operations, integration)
+      end
+
+      def permitted_params
+        params.slice(*permitted_params_keys)
+      end
+
+      # overriden in EE
+      def permitted_params_keys
+        %i[name active token]
       end
 
       def error(message)
@@ -46,3 +55,5 @@ module AlertManagement
     end
   end
 end
+
+::AlertManagement::HttpIntegrations::UpdateService.prepend_if_ee('::EE::AlertManagement::HttpIntegrations::UpdateService')

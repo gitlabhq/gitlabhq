@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::ProjectMembersHelper do
+  include MembersPresentation
+
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
 
@@ -140,6 +142,60 @@ RSpec.describe Projects::ProjectMembersHelper do
       let(:project2) { create(:project, namespace: user.namespace) }
 
       it { is_expected.to be(false) }
+    end
+  end
+
+  describe 'project members' do
+    let_it_be(:project_members) { create_list(:project_member, 1, project: project) }
+
+    describe '#project_members_data_json' do
+      it 'matches json schema' do
+        expect(helper.project_members_data_json(project, present_members(project_members))).to match_schema('members')
+      end
+    end
+
+    describe '#project_members_list_data_attributes' do
+      let(:allow_admin_project) { true }
+
+      before do
+        allow(helper).to receive(:project_project_member_path).with(project, ':id').and_return('/foo-bar/-/project_members/:id')
+      end
+
+      it 'returns expected hash' do
+        expect(helper.project_members_list_data_attributes(project, present_members(project_members))).to include({
+          members: helper.project_members_data_json(project, present_members(project_members)),
+          member_path: '/foo-bar/-/project_members/:id',
+          source_id: project.id,
+          can_manage_members: true
+        })
+      end
+    end
+  end
+
+  describe 'project group links' do
+    let_it_be(:project_group_links) { create_list(:project_group_link, 1, project: project) }
+    let(:allow_admin_project) { true }
+
+    describe '#project_group_links_data_json' do
+      it 'matches json schema' do
+        expect(helper.project_group_links_data_json(project_group_links)).to match_schema('group_link/project_group_links')
+      end
+    end
+
+    describe '#project_group_links_list_data_attributes' do
+      before do
+        allow(helper).to receive(:project_group_link_path).with(project, ':id').and_return('/foo-bar/-/group_links/:id')
+        allow(helper).to receive(:can?).with(current_user, :admin_project_member, project).and_return(true)
+      end
+
+      it 'returns expected hash' do
+        expect(helper.project_group_links_list_data_attributes(project, project_group_links)).to include({
+          members: helper.project_group_links_data_json(project_group_links),
+          member_path: '/foo-bar/-/group_links/:id',
+          source_id: project.id,
+          can_manage_members: true
+        })
+      end
     end
   end
 end

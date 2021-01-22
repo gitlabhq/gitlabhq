@@ -14,8 +14,6 @@ module Gitlab
       #  :path=>"group1",
       #  :full_path=>"group1",
       #  :group_id=>1,
-      #  :owner_name=>nil,
-      #  :owner_email=>nil,
       #  :old_path=>"old-path",
       #  :old_full_path=>"old-path"
       # }
@@ -32,15 +30,11 @@ module Gitlab
       private
 
       def group_data
-        owner = group.owner
-
         {
           name: group.name,
           path: group.path,
           full_path: group.full_path,
-          group_id: group.id,
-          owner_name: owner.try(:name),
-          owner_email: owner.try(:email)
+          group_id: group.id
         }
       end
 

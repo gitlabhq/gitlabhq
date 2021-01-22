@@ -132,7 +132,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :project_members, except: [:show, :new, :edit], constraints: { id: %r{[a-zA-Z./0-9_\-#%+]+} }, concerns: :access_requestable do
+        resources :project_members, except: [:show, :new, :edit], constraints: { id: %r{[a-zA-Z./0-9_\-#%+:]+} }, concerns: :access_requestable do
           collection do
             delete :leave
 
@@ -219,7 +219,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         resources :starrers, only: [:index]
         resources :forks, only: [:index, :new, :create]
-        resources :group_links, only: [:create, :update, :destroy], constraints: { id: /\d+/ }
+        resources :group_links, only: [:create, :update, :destroy], constraints: { id: /\d+|:id/ }
 
         resource :import, only: [:new, :create, :show]
         resource :avatar, only: [:show, :destroy]

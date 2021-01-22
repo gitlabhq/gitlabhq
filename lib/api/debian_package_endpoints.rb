@@ -51,7 +51,7 @@ module API
       end
 
       namespace 'dists/*distribution', requirements: DISTRIBUTION_REQUIREMENTS do
-        # GET {projects|groups}/:id/-/packages/debian/dists/*distribution/Release.gpg
+        # GET {projects|groups}/:id/packages/debian/dists/*distribution/Release.gpg
         desc 'The Release file signature' do
           detail 'This feature was introduced in GitLab 13.5'
         end
@@ -61,7 +61,7 @@ module API
           not_found!
         end
 
-        # GET {projects|groups}/:id/-/packages/debian/dists/*distribution/Release
+        # GET {projects|groups}/:id/packages/debian/dists/*distribution/Release
         desc 'The unsigned Release file' do
           detail 'This feature was introduced in GitLab 13.5'
         end
@@ -72,7 +72,7 @@ module API
           'TODO Release'
         end
 
-        # GET {projects|groups}/:id/-/packages/debian/dists/*distribution/InRelease
+        # GET {projects|groups}/:id/packages/debian/dists/*distribution/InRelease
         desc 'The signed Release file' do
           detail 'This feature was introduced in GitLab 13.5'
         end
@@ -88,7 +88,7 @@ module API
         end
 
         namespace ':component/binary-:architecture', requirements: COMPONENT_ARCHITECTURE_REQUIREMENTS do
-          # GET {projects|groups}/:id/-/packages/debian/dists/*distribution/:component/binary-:architecture/Packages
+          # GET {projects|groups}/:id/packages/debian/dists/*distribution/:component/binary-:architecture/Packages
           desc 'The binary files index' do
             detail 'This feature was introduced in GitLab 13.5'
           end
@@ -108,7 +108,7 @@ module API
       end
 
       namespace 'pool/:component/:letter/:source_package', requirements: COMPONENT_LETTER_SOURCE_PACKAGE_REQUIREMENTS do
-        # GET {projects|groups}/:id/-/packages/debian/pool/:component/:letter/:source_package/:file_name
+        # GET {projects|groups}/:id/packages/debian/pool/:component/:letter/:source_package/:file_name
         params do
           requires :file_name, type: String, desc: 'The Debian File Name'
         end

@@ -10,7 +10,7 @@ gem 'responders', '~> 3.0'
 gem 'sprockets', '~> 3.7.0'
 
 # Default values for AR models
-gem 'default_value_for', '~> 3.3.0'
+gem 'default_value_for', '~> 3.4.0'
 
 # Supported DBs
 gem 'pg', '~> 1.1'
@@ -374,7 +374,7 @@ group :development, :test do
 
   gem 'scss_lint', '~> 0.59.0', require: false
   gem 'haml_lint', '~> 0.36.0', require: false
-  gem 'bundler-audit', '~> 0.6.1', require: false
+  gem 'bundler-audit', '~> 0.7.0.1', require: false
 
   gem 'benchmark-ips', '~> 2.3.0', require: false
 
