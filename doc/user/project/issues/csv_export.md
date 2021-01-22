@@ -20,7 +20,7 @@ which stores tabular data in plain text.
 > _CSVs are a handy way of getting data from one program to another where one program cannot read the other ones normal output._ [Ref](https://www.quora.com/What-is-a-CSV-file-and-its-uses)
 
 CSV files can be used with any plotter or spreadsheet-based program, such as Microsoft Excel,
-Open Office Calc, or Google Spreadsheets.
+Open Office <!-- vale gitlab.Spelling = NO --> Calc, <!-- vale gitlab.Spelling = NO --> or Google Spreadsheets.
 
 ## Use cases
 

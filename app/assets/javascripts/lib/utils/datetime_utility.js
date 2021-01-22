@@ -4,7 +4,8 @@ import * as timeago from 'timeago.js';
 import dateFormat from 'dateformat';
 import { languageCode, s__, __, n__ } from '../../locale';
 
-const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000;
+const MILLISECONDS_IN_HOUR = 60 * 60 * 1000;
+const MILLISECONDS_IN_DAY = 24 * MILLISECONDS_IN_HOUR;
 
 window.timeago = timeago;
 
@@ -859,17 +860,17 @@ export const format24HourTimeStringFromInt = (time) => {
  *
  * @param {Object} givenPeriodLeft - the first period to compare.
  * @param {Object} givenPeriodRight - the second period to compare.
- * @returns {Object} { overlap: number of days the overlap is present, overlapStartDate: the start date of the overlap in time format, overlapEndDate: the end date of the overlap in time format }
+ * @returns {Object} { daysOverlap: number of days the overlap is present, hoursOverlap: number of hours the overlap is present, overlapStartDate: the start date of the overlap in time format, overlapEndDate: the end date of the overlap in time format }
  * @throws {Error} Uncaught Error: Invalid period
  *
  * @example
- * getOverlappingDaysInPeriods(
+ * getOverlapDateInPeriods(
  *   { start: new Date(2021, 0, 11), end: new Date(2021, 0, 13) },
  *   { start: new Date(2021, 0, 11), end: new Date(2021, 0, 14) }
- * ) => { daysOverlap: 2, overlapStartDate: 1610323200000, overlapEndDate: 1610496000000 }
+ * ) => { daysOverlap: 2, hoursOverlap: 48, overlapStartDate: 1610323200000, overlapEndDate: 1610496000000 }
  *
  */
-export const getOverlappingDaysInPeriods = (givenPeriodLeft = {}, givenPeriodRight = {}) => {
+export const getOverlapDateInPeriods = (givenPeriodLeft = {}, givenPeriodRight = {}) => {
   const leftStartTime = new Date(givenPeriodLeft.start).getTime();
   const leftEndTime = new Date(givenPeriodLeft.end).getTime();
   const rightStartTime = new Date(givenPeriodRight.start).getTime();
@@ -890,6 +891,7 @@ export const getOverlappingDaysInPeriods = (givenPeriodLeft = {}, givenPeriodRig
   const differenceInMs = overlapEndDate - overlapStartDate;
 
   return {
+    hoursOverlap: Math.ceil(differenceInMs / MILLISECONDS_IN_HOUR),
     daysOverlap: Math.ceil(differenceInMs / MILLISECONDS_IN_DAY),
     overlapStartDate,
     overlapEndDate,

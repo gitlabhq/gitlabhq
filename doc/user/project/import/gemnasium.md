@@ -29,7 +29,8 @@ If you want to continue monitoring your dependencies, see the
 ## What happened to my account?
 
 Your account has been automatically closed on May 15th, 2018. If you had a paid
-subscription at that time, your card will be refunded on a pro rata temporis basis.
+subscription at that time, your card will be refunded on a
+<!-- vale gitlab.Spelling = NO --> pro rata temporis <!-- vale gitlab.Spelling = YES --> basis.
 You may contact `gemnasium@gitlab.com` regarding your closed account.
 
 ## Will my account/data be transferred to GitLab Inc.?
@@ -66,15 +67,18 @@ GitHub.com or GitHub Enterprise repository. This will automatically prompt
 GitLab CI/CD to run whenever code is pushed to GitHub and post CI/CD results
 back to both GitLab and GitHub when completed.
 
-1. Create a new project, and select "CI/CD for external repo":
+<!-- vale gitlab.Spelling = NO -->
+
+1. Create a new project, and select **CI/CD for external repo**:
 
    ![Create new Project](img/gemnasium/create_project_v13_5.png)
+   <!-- vale gitlab.Spelling = YES -->
 
-1. Use the "GitHub" button to connect your repositories.
+1. Use the **GitHub** button to connect your repositories.
 
    ![Connect from GitHub](img/gemnasium/connect_github_v13_5.png)
 
-1. Select the project(s) to be set up with GitLab CI/CD and chose "Connect".
+1. Select the project(s) to be set up with GitLab CI/CD and choose **Connect**.
 
    ![Select projects](img/gemnasium/select_project_v13_5.png)
 

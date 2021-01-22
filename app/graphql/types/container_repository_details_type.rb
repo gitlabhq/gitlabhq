@@ -11,7 +11,7 @@ module Types
     field :tags,
           Types::ContainerRepositoryTagType.connection_type,
           null: true,
-          description: 'Tags of the container repository',
+          description: 'Tags of the container repository.',
           max_page_size: 20
 
     def can_delete

@@ -10,7 +10,7 @@ module ResourceAccessTokens
     end
 
     def execute
-      return error("User does not have permission to create #{resource_type} Access Token") unless has_permission_to_create?
+      return error("User does not have permission to create #{resource_type} access token") unless has_permission_to_create?
 
       user = create_user
 
@@ -26,6 +26,7 @@ module ResourceAccessTokens
       token_response = create_personal_access_token(user)
 
       if token_response.success?
+        log_event(token_response.payload[:personal_access_token])
         success(token_response.payload[:personal_access_token])
       else
         delete_failed_user(user)
@@ -105,6 +106,10 @@ module ResourceAccessTokens
       resource.add_user(user, :maintainer, expires_at: params[:expires_at])
     end
 
+    def log_event(token)
+      ::Gitlab::AppLogger.info "PROJECT ACCESS TOKEN CREATION: created_by: #{current_user.username}, project_id: #{resource.id}, token_user: #{token.user.name}, token_id: #{token.id}"
+    end
+
     def error(message)
       ServiceResponse.error(message: message)
     end
@@ -114,3 +119,5 @@ module ResourceAccessTokens
     end
   end
 end
+
+ResourceAccessTokens::CreateService.prepend_if_ee('EE::ResourceAccessTokens::CreateService')

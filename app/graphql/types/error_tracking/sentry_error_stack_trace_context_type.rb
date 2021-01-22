@@ -10,11 +10,11 @@ module Types
       field :line,
             GraphQL::INT_TYPE,
             null: false,
-            description: 'Line number of the context'
+            description: 'Line number of the context.'
       field :code,
             GraphQL::STRING_TYPE,
             null: false,
-            description: 'Code number of the context'
+            description: 'Code number of the context.'
 
       def line
         object[0]

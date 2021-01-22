@@ -85,9 +85,6 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
   }
 
   .timeline-header-item {
-    // container size minus left panel width divided by 2 week timeframes
-    width: calc((100% - #{$details-cell-width}) / 2);
-
     &:last-of-type .item-label {
       @include gl-border-r-0;
     }
@@ -168,9 +165,6 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
 
 .timeline-cell {
   @include gl-relative;
-  // width: $timeline-cell-width;
-  // container size minus left panel width divided by 2 week timeframes
-  width: calc((100% - #{$details-cell-width}) / 2);
   @include gl-bg-transparent;
   border-right: $border-style;
 

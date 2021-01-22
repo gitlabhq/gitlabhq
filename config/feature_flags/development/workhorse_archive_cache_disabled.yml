@@ -1,8 +1,8 @@
 ---
 name: workhorse_archive_cache_disabled
-introduced_by_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/16325
 rollout_issue_url: 
-milestone: 
+milestone: '10.5'
 type: development
-group: 
+group: group::source code
 default_enabled: false

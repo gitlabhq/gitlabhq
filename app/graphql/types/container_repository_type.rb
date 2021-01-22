@@ -19,7 +19,7 @@ module Types
     field :status, Types::ContainerRepositoryStatusEnum, null: true, description: 'Status of the container repository.'
     field :tags_count, GraphQL::INT_TYPE, null: false, description: 'Number of tags associated with this image.'
     field :can_delete, GraphQL::BOOLEAN_TYPE, null: false, description: 'Can the current user delete the container repository.'
-    field :project, Types::ProjectType, null: false, description: 'Project of the container registry'
+    field :project, Types::ProjectType, null: false, description: 'Project of the container registry.'
 
     def can_delete
       Ability.allowed?(current_user, :update_container_image, object)

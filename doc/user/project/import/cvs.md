@@ -62,7 +62,7 @@ Migrating to Git/GitLab will benefit you:
   an open source end-to-end software development platform with built-in version
   control, issue tracking, code review, CI/CD, and more.
 - **Support for many network protocols**. Git supports SSH, HTTP/HTTPS and rsync
-  among others, whereas CVS supports only SSH and its own insecure pserver
+  among others, whereas CVS supports only SSH and its own insecure `pserver`
   protocol with no user authentication.
 
 ## How to migrate
@@ -70,7 +70,7 @@ Migrating to Git/GitLab will benefit you:
 Here's a few links to get you started with the migration:
 
 - [Migrate using the `cvs-fast-export` tool](https://gitlab.com/esr/cvs-fast-export)
-- [Stack Overflow post on importing the CVS repo](https://stackoverflow.com/a/11490134/974710)
+- [Stack Overflow post on importing the CVS repository](https://stackoverflow.com/a/11490134/974710)
 - [Convert a CVS repository to Git](https://www.techrepublic.com/blog/linux-and-open-source/convert-cvs-repositories-to-git/)
 - [Man page of the `git-cvsimport` tool](https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-cvsimport.html)
 - [Migrate using `reposurgeon`](http://www.catb.org/~esr/reposurgeon/repository-editing.html#conversion)

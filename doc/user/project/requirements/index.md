@@ -280,8 +280,10 @@ To export requirements:
 
 ### Exported CSV file format
 
+<!-- vale gitlab.Spelling = NO -->
 You can preview the exported CSV file in a spreadsheet editor, such as Microsoft Excel,
 OpenOffice Calc, or Google Sheets.
+<!-- vale gitlab.Spelling = YES -->
 
 The exported CSV file contains the following columns:
 

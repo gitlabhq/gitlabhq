@@ -65,6 +65,8 @@ burnup
 cacheable
 CentOS
 Certbot
+changeset
+changesets
 chai
 chatbot
 chatbots
@@ -201,6 +203,7 @@ http
 https
 idempotence
 idmapper
+Iglu
 inclusivity
 Ingress
 initializer
@@ -211,6 +214,7 @@ interdependencies
 interdependency
 interruptible
 Irker
+issuables
 Istio
 Jaeger
 jasmine-jquery
@@ -369,10 +373,16 @@ pseudonymizer
 Puma
 Python
 Qualys
+Quicktime
 Rackspace
 Raspbian
 Rdoc
 reachability
+Realplayer
+reauthenticate
+reauthenticated
+reauthenticates
+reauthenticating
 rebase
 rebased
 rebases
@@ -446,6 +456,7 @@ sharding
 shfmt
 Shibboleth
 Sidekiq
+Silverlight
 Sisense
 Sitespeed
 Slack

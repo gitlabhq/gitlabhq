@@ -19,12 +19,12 @@ module Types
       field :open,
             GraphQL::INT_TYPE,
             null: true,
-            description: 'Number of alerts with status TRIGGERED or ACKNOWLEDGED for the project'
+            description: 'Number of alerts with status TRIGGERED or ACKNOWLEDGED for the project.'
 
       field :all,
             GraphQL::INT_TYPE,
             null: true,
-            description: 'Total number of alerts for the project'
+            description: 'Total number of alerts for the project.'
     end
   end
 end

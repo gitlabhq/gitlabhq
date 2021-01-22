@@ -8,7 +8,7 @@ module Types
         graphql_name 'CiConfigNeed'
 
         field :name, GraphQL::STRING_TYPE, null: true,
-              description: 'Name of the need'
+              description: 'Name of the need.'
       end
     end
   end

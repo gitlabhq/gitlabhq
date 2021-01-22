@@ -626,20 +626,6 @@ RSpec.describe 'Pipeline', :js do
         end
       end
     end
-
-    context 'when FF dag_pipeline_tab is disabled' do
-      before do
-        stub_feature_flags(dag_pipeline_tab: false)
-        visit_pipeline
-      end
-
-      it 'does not show DAG link' do
-        expect(page).to have_link('Pipeline')
-        expect(page).to have_link('Jobs')
-        expect(page).not_to have_link('DAG')
-        expect(page).to have_link('Failed Jobs')
-      end
-    end
   end
 
   context 'when user does not have access to read jobs' do

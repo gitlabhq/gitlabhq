@@ -74,7 +74,7 @@ Place this code in the file `src/handler.js`.
 
 In our case, `module.exports.hello` defines the `hello` handler to reference later in the `serverless.yml`.
 
-You can learn more about the AWS Lambda Node.js function handler and all its various options here: <https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html>
+You can learn more about the [AWS Lambda Node.js function handler](https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html) and all its various options in its documentation.
 
 #### Creating a `serverless.yml` file
 

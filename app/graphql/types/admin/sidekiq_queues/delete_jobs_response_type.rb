@@ -12,17 +12,17 @@ module Types
         field :completed,
               GraphQL::BOOLEAN_TYPE,
               null: true,
-              description: 'Whether or not the entire queue was processed in time; if not, retrying the same request is safe'
+              description: 'Whether or not the entire queue was processed in time; if not, retrying the same request is safe.'
 
         field :deleted_jobs,
               GraphQL::INT_TYPE,
               null: true,
-              description: 'The number of matching jobs deleted'
+              description: 'The number of matching jobs deleted.'
 
         field :queue_size,
               GraphQL::INT_TYPE,
               null: true,
-              description: 'The queue size after processing'
+              description: 'The queue size after processing.'
       end
     end
   end

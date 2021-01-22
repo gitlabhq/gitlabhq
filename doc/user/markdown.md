@@ -271,9 +271,13 @@ when rendered within GitLab, may appear different depending on the OS and browse
 Most emoji are natively supported on macOS, Windows, iOS, Android, and fall back on image-based
 emoji where there is no support.
 
+<!-- vale gitlab.Spelling = NO -->
+
 On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/help/emoji/)
 to get full native emoji support. Ubuntu 18.04 (like many modern Linux distributions) has
 this font installed by default.
+
+<!-- vale gitlab.Spelling = YES -->
 
 ### Front matter
 
@@ -1268,6 +1272,8 @@ GFM auto-links almost any URL you put into your text:
 - http://localhost:3000
 ```
 
+<!-- vale gitlab.Spelling = NO -->
+
 - <https://www.google.com>
 - <https://www.google.com>
 - <ftp://ftp.us.debian.org/debian/>
@@ -1275,6 +1281,7 @@ GFM auto-links almost any URL you put into your text:
 - <irc://irc.freenode.net/>
 - <http://localhost:3000>
 
+<!-- vale gitlab.Spelling = YES -->
 ### Lists
 
 Ordered and unordered lists can be created.
@@ -1405,8 +1412,12 @@ The formula for water is H<sub>2</sub>O
 while the equation for the theory of relativity is E = mc<sup>2</sup>.
 ```
 
+<!-- vale gitlab.Spelling = NO -->
+
 The formula for water is H<sub>2</sub>O
 while the equation for the theory of relativity is E = mc<sup>2</sup>.
+
+<!-- vale gitlab.Spelling = YES -->
 
 ### Tables
 

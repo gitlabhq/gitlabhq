@@ -7,12 +7,12 @@ module Types
       graphql_name 'CiStage'
 
       field :name, GraphQL::STRING_TYPE, null: true,
-        description: 'Name of the stage'
+        description: 'Name of the stage.'
       field :groups, Ci::GroupType.connection_type, null: true,
         extras: [:lookahead],
-        description: 'Group of jobs for the stage'
+        description: 'Group of jobs for the stage.'
       field :detailed_status, Types::Ci::DetailedStatusType, null: true,
-            description: 'Detailed status of the stage'
+            description: 'Detailed status of the stage.'
 
       def detailed_status
         object.detailed_status(context[:current_user])

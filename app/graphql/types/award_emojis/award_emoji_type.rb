@@ -13,32 +13,32 @@ module Types
       field :name,
             GraphQL::STRING_TYPE,
             null: false,
-            description: 'The emoji name'
+            description: 'The emoji name.'
 
       field :description,
             GraphQL::STRING_TYPE,
             null: false,
-            description: 'The emoji description'
+            description: 'The emoji description.'
 
       field :unicode,
             GraphQL::STRING_TYPE,
             null: false,
-            description: 'The emoji in unicode'
+            description: 'The emoji in unicode.'
 
       field :emoji,
             GraphQL::STRING_TYPE,
             null: false,
-            description: 'The emoji as an icon'
+            description: 'The emoji as an icon.'
 
       field :unicode_version,
             GraphQL::STRING_TYPE,
             null: false,
-            description: 'The unicode version for this emoji'
+            description: 'The unicode version for this emoji.'
 
       field :user,
             Types::UserType,
             null: false,
-            description: 'The user who awarded the emoji'
+            description: 'The user who awarded the emoji.'
 
       def user
         Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.user_id).find

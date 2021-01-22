@@ -2,7 +2,7 @@
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import LinkedPipeline from './linked_pipeline.vue';
 import { LOAD_FAILURE } from '../../constants';
-import { UPSTREAM } from './constants';
+import { ONE_COL_WIDTH, UPSTREAM } from './constants';
 import { unwrapPipelineData, toggleQueryPollingByVisibility, reportToSentry } from './utils';
 
 export default {
@@ -28,6 +28,7 @@ export default {
     return {
       currentPipeline: null,
       loadingPipelineId: null,
+      minWidth: 0,
       pipelineExpanded: false,
     };
   },
@@ -79,6 +80,7 @@ export default {
         },
         result() {
           this.loadingPipelineId = null;
+          this.$emit('scrollContainer');
         },
         error(err, _vm, _key, type) {
           this.$emit('error', LOAD_FAILURE);
@@ -103,6 +105,7 @@ export default {
       if (this.currentPipeline?.id === pipeline.id) {
         this.pipelineExpanded = false;
         this.currentPipeline = null;
+        this.minWidth = 0;
         return;
       }
 
@@ -116,6 +119,11 @@ export default {
         this will be a no-op, but that doesn't matter.
       */
       this.pipelineExpanded = true;
+
+      /*
+        Min-width is set manually for timing reasons.
+      */
+      this.minWidth = `${ONE_COL_WIDTH}px`;
 
       this.getPipelineData(pipeline);
     },
@@ -158,7 +166,11 @@ export default {
             @pipelineClicked="onPipelineClick(pipeline)"
             @pipelineExpandToggle="onPipelineExpandToggle"
           />
-          <div v-if="isExpanded(pipeline.id)" class="gl-display-inline-block">
+          <div
+            v-if="isExpanded(pipeline.id) && !isUpstream"
+            :style="{ minWidth }"
+            class="gl-display-inline-block"
+          >
             <pipeline-graph
               v-if="currentPipeline"
               :type="type"

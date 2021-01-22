@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35480
 rollout_issue_url: 
 milestone: '13.2'
 type: development
-group: 
+group: group::source code
 default_enabled: true

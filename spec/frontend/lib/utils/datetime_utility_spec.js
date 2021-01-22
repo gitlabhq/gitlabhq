@@ -843,7 +843,7 @@ describe('format24HourTimeStringFromInt', () => {
   });
 });
 
-describe('getOverlappingDaysInPeriods', () => {
+describe('getOverlapDateInPeriods', () => {
   const start = new Date(2021, 0, 11);
   const end = new Date(2021, 0, 13);
 
@@ -851,14 +851,15 @@ describe('getOverlappingDaysInPeriods', () => {
     const givenPeriodLeft = new Date(2021, 0, 11);
     const givenPeriodRight = new Date(2021, 0, 14);
 
-    it('returns an overlap object that contains the amount of days overlapping, start date of overlap and end date of overlap', () => {
+    it('returns an overlap object that contains the amount of days overlapping, the amount of hours overlapping, start date of overlap and end date of overlap', () => {
       expect(
-        datetimeUtility.getOverlappingDaysInPeriods(
+        datetimeUtility.getOverlapDateInPeriods(
           { start, end },
           { start: givenPeriodLeft, end: givenPeriodRight },
         ),
       ).toEqual({
         daysOverlap: 2,
+        hoursOverlap: 48,
         overlapStartDate: givenPeriodLeft.getTime(),
         overlapEndDate: end.getTime(),
       });
@@ -871,7 +872,7 @@ describe('getOverlappingDaysInPeriods', () => {
 
     it('returns an overlap object that contains a 0 value for days overlapping', () => {
       expect(
-        datetimeUtility.getOverlappingDaysInPeriods(
+        datetimeUtility.getOverlapDateInPeriods(
           { start, end },
           { start: givenPeriodLeft, end: givenPeriodRight },
         ),
@@ -886,13 +887,13 @@ describe('getOverlappingDaysInPeriods', () => {
 
     it('throws an exception when the left period contains an invalid date', () => {
       expect(() =>
-        datetimeUtility.getOverlappingDaysInPeriods({ start, end }, { start: startInvalid, end }),
+        datetimeUtility.getOverlapDateInPeriods({ start, end }, { start: startInvalid, end }),
       ).toThrow(error);
     });
 
     it('throws an exception when the right period contains an invalid date', () => {
       expect(() =>
-        datetimeUtility.getOverlappingDaysInPeriods({ start, end }, { start, end: endInvalid }),
+        datetimeUtility.getOverlapDateInPeriods({ start, end }, { start, end: endInvalid }),
       ).toThrow(error);
     });
   });

@@ -21,7 +21,17 @@ module Repositories
     def upload_authorize
       set_workhorse_internal_api_content_type
 
-      authorized = LfsObjectUploader.workhorse_authorize(has_length: true)
+      # We don't actually know whether Workhorse received an LFS upload
+      # request with a Content-Length header or `Transfer-Encoding:
+      # chunked`.  Since we don't know, we need to be pessimistic and
+      # set `has_length` to `false` so that multipart uploads will be
+      # used for AWS. Otherwise, AWS will respond with `501 NOT IMPLEMENTED`
+      # error because a PutObject request with `Transfer-Encoding: chunked`
+      # is not supported.
+      #
+      # This is only an issue with object storage-specific settings, not
+      # with consolidated object storage settings.
+      authorized = LfsObjectUploader.workhorse_authorize(has_length: false, maximum_size: size)
       authorized.merge!(LfsOid: oid, LfsSize: size)
 
       render json: authorized

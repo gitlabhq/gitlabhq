@@ -1,8 +1,8 @@
 ---
 name: lfs_check
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27451
-rollout_issue_url: 
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/233550
 milestone: '11.11'
 type: development
-group: 
+group: group::source code
 default_enabled: true

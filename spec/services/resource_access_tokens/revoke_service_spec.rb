@@ -40,6 +40,14 @@ RSpec.describe ResourceAccessTokens::RevokeService do
 
         expect(User.exists?(resource_bot.id)).to be_falsy
       end
+
+      it 'logs the event' do
+        allow(Gitlab::AppLogger).to receive(:info)
+
+        subject
+
+        expect(Gitlab::AppLogger).to have_received(:info).with("PROJECT ACCESS TOKEN REVOCATION: revoked_by: #{user.username}, project_id: #{resource.id}, token_user: #{resource_bot.name}, token_id: #{access_token.id}")
+      end
     end
 
     shared_examples 'rollback revoke steps' do

@@ -1,8 +1,8 @@
 ---
 name: batch_suggestions
-introduced_by_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34782
 rollout_issue_url: 
-milestone: 
+milestone: '13.1'
 type: development
-group: 
+group: group::code review
 default_enabled: true

@@ -148,7 +148,7 @@ The following table depicts the various user permission levels in a project.
 | Add new team members                              |         |            |             | ✓        | ✓      |
 | Enable/disable branch protection                  |         |            |             | ✓        | ✓      |
 | Push to protected branches                        |         |            |             | ✓        | ✓      |
-| Turn on/off protected branch push for devs        |         |            |             | ✓        | ✓      |
+| Turn on/off protected branch push for developers  |         |            |             | ✓        | ✓      |
 | Enable/disable tag protections                    |         |            |             | ✓        | ✓      |
 | Edit project settings                             |         |            |             | ✓        | ✓      |
 | Edit project badges                               |         |            |             | ✓        | ✓      |

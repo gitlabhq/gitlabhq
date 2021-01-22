@@ -1,15 +1,13 @@
 - return if pipeline_has_errors
-- dag_pipeline_tab_enabled = Feature.enabled?(:dag_pipeline_tab, @project, default_enabled: true)
 
 .tabs-holder
   %ul.pipelines-tabs.nav-links.no-top.no-bottom.mobile-separator.nav.nav-tabs
     %li.js-pipeline-tab-link
       = link_to project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-pipeline', action: 'pipelines', toggle: 'tab' }, class: 'pipeline-tab' do
         = _('Pipeline')
-    - if dag_pipeline_tab_enabled
-      %li.js-dag-tab-link
-        = link_to dag_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-dag', action: 'dag', toggle: 'tab' }, class: 'dag-tab' do
-          = _('Needs')
+    %li.js-dag-tab-link
+      = link_to dag_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-dag', action: 'dag', toggle: 'tab' }, class: 'dag-tab' do
+        = _('Needs')
     %li.js-builds-tab-link
       = link_to builds_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
         = _('Jobs')
@@ -79,9 +77,8 @@
                     %code.bash.js-build-output
                       = build_summary(build)
 
-  - if dag_pipeline_tab_enabled
-    #js-tab-dag.tab-pane
-      #js-pipeline-dag-vue{ data: { pipeline_project_path: @project.full_path, pipeline_iid: @pipeline.iid, empty_svg_path: image_path('illustrations/empty-state/empty-dag-md.svg'), about_dag_doc_path: help_page_path('ci/directed_acyclic_graph/index.md'), dag_doc_path: help_page_path('ci/yaml/README.md', anchor: 'needs')} }
+  #js-tab-dag.tab-pane
+    #js-pipeline-dag-vue{ data: { pipeline_project_path: @project.full_path, pipeline_iid: @pipeline.iid, empty_svg_path: image_path('illustrations/empty-state/empty-dag-md.svg'), about_dag_doc_path: help_page_path('ci/directed_acyclic_graph/index.md'), dag_doc_path: help_page_path('ci/yaml/README.md', anchor: 'needs')} }
 
   #js-tab-tests.tab-pane
     #js-pipeline-tests-detail{ data: { summary_endpoint: summary_project_pipeline_tests_path(@project, @pipeline, format: :json),

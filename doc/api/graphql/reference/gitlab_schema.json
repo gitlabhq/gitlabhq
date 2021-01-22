@@ -16,7 +16,7 @@
           "fields": [
             {
               "name": "integerValue",
-              "description": "Integer representation of access level",
+              "description": "Integer representation of access level.",
               "args": [
 
               ],
@@ -30,7 +30,7 @@
             },
             {
               "name": "stringValue",
-              "description": "String representation of access level",
+              "description": "String representation of access level.",
               "args": [
 
               ],
@@ -119,7 +119,7 @@
             },
             {
               "name": "name",
-              "description": "The emoji name",
+              "description": "The emoji name.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -504,7 +504,7 @@
           "fields": [
             {
               "name": "assignees",
-              "description": "Assignees of the alert",
+              "description": "Assignees of the alert.",
               "args": [
                 {
                   "name": "after",
@@ -557,7 +557,7 @@
             },
             {
               "name": "createdAt",
-              "description": "Timestamp the alert was created",
+              "description": "Timestamp the alert was created.",
               "args": [
 
               ],
@@ -571,7 +571,7 @@
             },
             {
               "name": "description",
-              "description": "Description of the alert",
+              "description": "Description of the alert.",
               "args": [
 
               ],
@@ -585,7 +585,7 @@
             },
             {
               "name": "details",
-              "description": "Alert details",
+              "description": "Alert details.",
               "args": [
 
               ],
@@ -599,7 +599,7 @@
             },
             {
               "name": "detailsUrl",
-              "description": "The URL of the alert detail page",
+              "description": "The URL of the alert detail page.",
               "args": [
 
               ],
@@ -674,7 +674,7 @@
             },
             {
               "name": "endedAt",
-              "description": "Timestamp the alert ended",
+              "description": "Timestamp the alert ended.",
               "args": [
 
               ],
@@ -688,7 +688,7 @@
             },
             {
               "name": "environment",
-              "description": "Environment for the alert",
+              "description": "Environment for the alert.",
               "args": [
 
               ],
@@ -702,7 +702,7 @@
             },
             {
               "name": "eventCount",
-              "description": "Number of events of this alert",
+              "description": "Number of events of this alert.",
               "args": [
 
               ],
@@ -716,7 +716,7 @@
             },
             {
               "name": "hosts",
-              "description": "List of hosts the alert came from",
+              "description": "List of hosts the alert came from.",
               "args": [
 
               ],
@@ -738,7 +738,7 @@
             },
             {
               "name": "iid",
-              "description": "Internal ID of the alert",
+              "description": "Internal ID of the alert.",
               "args": [
 
               ],
@@ -756,7 +756,7 @@
             },
             {
               "name": "issueIid",
-              "description": "Internal ID of the GitLab issue attached to the alert",
+              "description": "Internal ID of the GitLab issue attached to the alert.",
               "args": [
 
               ],
@@ -770,7 +770,7 @@
             },
             {
               "name": "metricsDashboardUrl",
-              "description": "URL for metrics embed for the alert",
+              "description": "URL for metrics embed for the alert.",
               "args": [
 
               ],
@@ -784,7 +784,7 @@
             },
             {
               "name": "monitoringTool",
-              "description": "Monitoring tool the alert came from",
+              "description": "Monitoring tool the alert came from.",
               "args": [
 
               ],
@@ -855,7 +855,7 @@
             },
             {
               "name": "prometheusAlert",
-              "description": "The alert condition for Prometheus",
+              "description": "The alert condition for Prometheus.",
               "args": [
 
               ],
@@ -869,7 +869,7 @@
             },
             {
               "name": "runbook",
-              "description": "Runbook for the alert as defined in alert details",
+              "description": "Runbook for the alert as defined in alert details.",
               "args": [
 
               ],
@@ -883,7 +883,7 @@
             },
             {
               "name": "service",
-              "description": "Service the alert came from",
+              "description": "Service the alert came from.",
               "args": [
 
               ],
@@ -897,7 +897,7 @@
             },
             {
               "name": "severity",
-              "description": "Severity of the alert",
+              "description": "Severity of the alert.",
               "args": [
 
               ],
@@ -911,7 +911,7 @@
             },
             {
               "name": "startedAt",
-              "description": "Timestamp the alert was raised",
+              "description": "Timestamp the alert was raised.",
               "args": [
 
               ],
@@ -925,7 +925,7 @@
             },
             {
               "name": "status",
-              "description": "Status of the alert",
+              "description": "Status of the alert.",
               "args": [
 
               ],
@@ -939,7 +939,7 @@
             },
             {
               "name": "title",
-              "description": "Title of the alert",
+              "description": "Title of the alert.",
               "args": [
 
               ],
@@ -953,7 +953,7 @@
             },
             {
               "name": "todos",
-              "description": "Todos of the current user for the alert",
+              "description": "Todos of the current user for the alert.",
               "args": [
                 {
                   "name": "action",
@@ -1114,7 +1114,7 @@
             },
             {
               "name": "updatedAt",
-              "description": "Timestamp the alert was last updated",
+              "description": "Timestamp the alert was last updated.",
               "args": [
 
               ],
@@ -1414,7 +1414,7 @@
             },
             {
               "name": "all",
-              "description": "Total number of alerts for the project",
+              "description": "Total number of alerts for the project.",
               "args": [
 
               ],
@@ -1442,7 +1442,7 @@
             },
             {
               "name": "open",
-              "description": "Number of alerts with status TRIGGERED or ACKNOWLEDGED for the project",
+              "description": "Number of alerts with status TRIGGERED or ACKNOWLEDGED for the project.",
               "args": [
 
               ],
@@ -1520,7 +1520,7 @@
           "fields": [
             {
               "name": "active",
-              "description": "Whether the endpoint is currently accepting alerts",
+              "description": "Whether the endpoint is currently accepting alerts.",
               "args": [
 
               ],
@@ -1534,7 +1534,7 @@
             },
             {
               "name": "apiUrl",
-              "description": "URL at which Prometheus metrics can be queried to populate the metrics dashboard",
+              "description": "URL at which Prometheus metrics can be queried to populate the metrics dashboard.",
               "args": [
 
               ],
@@ -1548,7 +1548,7 @@
             },
             {
               "name": "id",
-              "description": "ID of the integration",
+              "description": "ID of the integration.",
               "args": [
 
               ],
@@ -1566,7 +1566,7 @@
             },
             {
               "name": "name",
-              "description": "Name of the integration",
+              "description": "Name of the integration.",
               "args": [
 
               ],
@@ -1580,7 +1580,7 @@
             },
             {
               "name": "token",
-              "description": "Token used to authenticate alert notification requests",
+              "description": "Token used to authenticate alert notification requests.",
               "args": [
 
               ],
@@ -1594,7 +1594,7 @@
             },
             {
               "name": "type",
-              "description": "Type of integration",
+              "description": "Type of integration.",
               "args": [
 
               ],
@@ -1612,7 +1612,7 @@
             },
             {
               "name": "url",
-              "description": "Endpoint which accepts alert notifications",
+              "description": "Endpoint which accepts alert notifications.",
               "args": [
 
               ],
@@ -1653,7 +1653,7 @@
           "fields": [
             {
               "name": "active",
-              "description": "Whether the endpoint is currently accepting alerts",
+              "description": "Whether the endpoint is currently accepting alerts.",
               "args": [
 
               ],
@@ -1667,7 +1667,7 @@
             },
             {
               "name": "apiUrl",
-              "description": "URL at which Prometheus metrics can be queried to populate the metrics dashboard",
+              "description": "URL at which Prometheus metrics can be queried to populate the metrics dashboard.",
               "args": [
 
               ],
@@ -1681,7 +1681,7 @@
             },
             {
               "name": "id",
-              "description": "ID of the integration",
+              "description": "ID of the integration.",
               "args": [
 
               ],
@@ -1699,7 +1699,7 @@
             },
             {
               "name": "name",
-              "description": "Name of the integration",
+              "description": "Name of the integration.",
               "args": [
 
               ],
@@ -1713,7 +1713,7 @@
             },
             {
               "name": "token",
-              "description": "Token used to authenticate alert notification requests",
+              "description": "Token used to authenticate alert notification requests.",
               "args": [
 
               ],
@@ -1727,7 +1727,7 @@
             },
             {
               "name": "type",
-              "description": "Type of integration",
+              "description": "Type of integration.",
               "args": [
 
               ],
@@ -1745,7 +1745,7 @@
             },
             {
               "name": "url",
-              "description": "Endpoint which accepts alert notifications",
+              "description": "Endpoint which accepts alert notifications.",
               "args": [
 
               ],
@@ -2087,7 +2087,7 @@
           "fields": [
             {
               "name": "active",
-              "description": "Whether the endpoint is currently accepting alerts",
+              "description": "Whether the endpoint is currently accepting alerts.",
               "args": [
 
               ],
@@ -2101,7 +2101,7 @@
             },
             {
               "name": "apiUrl",
-              "description": "URL at which Prometheus metrics can be queried to populate the metrics dashboard",
+              "description": "URL at which Prometheus metrics can be queried to populate the metrics dashboard.",
               "args": [
 
               ],
@@ -2115,7 +2115,7 @@
             },
             {
               "name": "id",
-              "description": "ID of the integration",
+              "description": "ID of the integration.",
               "args": [
 
               ],
@@ -2133,7 +2133,7 @@
             },
             {
               "name": "name",
-              "description": "Name of the integration",
+              "description": "Name of the integration.",
               "args": [
 
               ],
@@ -2147,7 +2147,7 @@
             },
             {
               "name": "token",
-              "description": "Token used to authenticate alert notification requests",
+              "description": "Token used to authenticate alert notification requests.",
               "args": [
 
               ],
@@ -2161,7 +2161,7 @@
             },
             {
               "name": "type",
-              "description": "Type of integration",
+              "description": "Type of integration.",
               "args": [
 
               ],
@@ -2179,7 +2179,7 @@
             },
             {
               "name": "url",
-              "description": "Endpoint which accepts alert notifications",
+              "description": "Endpoint which accepts alert notifications.",
               "args": [
 
               ],
@@ -2645,7 +2645,7 @@
           "fields": [
             {
               "name": "description",
-              "description": "The emoji description",
+              "description": "The emoji description.",
               "args": [
 
               ],
@@ -2663,7 +2663,7 @@
             },
             {
               "name": "emoji",
-              "description": "The emoji as an icon",
+              "description": "The emoji as an icon.",
               "args": [
 
               ],
@@ -2681,7 +2681,7 @@
             },
             {
               "name": "name",
-              "description": "The emoji name",
+              "description": "The emoji name.",
               "args": [
 
               ],
@@ -2699,7 +2699,7 @@
             },
             {
               "name": "unicode",
-              "description": "The emoji in unicode",
+              "description": "The emoji in unicode.",
               "args": [
 
               ],
@@ -2717,7 +2717,7 @@
             },
             {
               "name": "unicodeVersion",
-              "description": "The unicode version for this emoji",
+              "description": "The unicode version for this emoji.",
               "args": [
 
               ],
@@ -2735,7 +2735,7 @@
             },
             {
               "name": "user",
-              "description": "The user who awarded the emoji",
+              "description": "The user who awarded the emoji.",
               "args": [
 
               ],
@@ -2781,7 +2781,7 @@
             },
             {
               "name": "name",
-              "description": "The emoji name",
+              "description": "The emoji name.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -2897,7 +2897,7 @@
             },
             {
               "name": "name",
-              "description": "The emoji name",
+              "description": "The emoji name.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -3013,7 +3013,7 @@
             },
             {
               "name": "name",
-              "description": "The emoji name",
+              "description": "The emoji name.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -3596,7 +3596,7 @@
             },
             {
               "name": "hideBacklogList",
-              "description": "Whether or not backlog list is hidden",
+              "description": "Whether or not backlog list is hidden.",
               "args": [
 
               ],
@@ -3610,7 +3610,7 @@
             },
             {
               "name": "hideClosedList",
-              "description": "Whether or not closed list is hidden",
+              "description": "Whether or not closed list is hidden.",
               "args": [
 
               ],
@@ -3624,7 +3624,7 @@
             },
             {
               "name": "id",
-              "description": "ID (global ID) of the board",
+              "description": "ID (global ID) of the board.",
               "args": [
 
               ],
@@ -3709,7 +3709,7 @@
             },
             {
               "name": "lists",
-              "description": "Lists of the board",
+              "description": "Lists of the board.",
               "args": [
                 {
                   "name": "id",
@@ -3796,7 +3796,7 @@
             },
             {
               "name": "name",
-              "description": "Name of the board",
+              "description": "Name of the board.",
               "args": [
 
               ],
@@ -4254,7 +4254,7 @@
             },
             {
               "name": "currentUserTodos",
-              "description": "Todos for the current user",
+              "description": "Todos for the current user.",
               "args": [
                 {
                   "name": "after",
@@ -4298,7 +4298,7 @@
                 },
                 {
                   "name": "state",
-                  "description": "State of the todos",
+                  "description": "State of the todos.",
                   "type": {
                     "kind": "ENUM",
                     "name": "TodoStateEnum",
@@ -5319,7 +5319,7 @@
           "inputFields": [
             {
               "name": "labelName",
-              "description": "Filter by label name",
+              "description": "Filter by label name.",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -5333,7 +5333,7 @@
             },
             {
               "name": "milestoneTitle",
-              "description": "Filter by milestone title",
+              "description": "Filter by milestone title.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -5343,7 +5343,7 @@
             },
             {
               "name": "assigneeUsername",
-              "description": "Filter by assignee username",
+              "description": "Filter by assignee username.",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -5357,7 +5357,7 @@
             },
             {
               "name": "authorUsername",
-              "description": "Filter by author username",
+              "description": "Filter by author username.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -5367,7 +5367,7 @@
             },
             {
               "name": "releaseTag",
-              "description": "Filter by release tag",
+              "description": "Filter by release tag.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -5377,7 +5377,7 @@
             },
             {
               "name": "myReactionEmoji",
-              "description": "Filter by reaction emoji",
+              "description": "Filter by reaction emoji.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -5417,7 +5417,7 @@
             },
             {
               "name": "not",
-              "description": "List of negated params. Warning: this argument is experimental and a subject to change in future",
+              "description": "List of negated params. Warning: this argument is experimental and a subject to change in future.",
               "type": {
                 "kind": "INPUT_OBJECT",
                 "name": "NegatedBoardIssueInput",
@@ -5427,7 +5427,7 @@
             },
             {
               "name": "search",
-              "description": "Search query for issue title or description",
+              "description": "Search query for issue title or description.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -5481,7 +5481,7 @@
             },
             {
               "name": "collapsed",
-              "description": "Indicates if list is collapsed for this user",
+              "description": "Indicates if list is collapsed for this user.",
               "args": [
 
               ],
@@ -5495,7 +5495,7 @@
             },
             {
               "name": "id",
-              "description": "ID (global ID) of the list",
+              "description": "ID (global ID) of the list.",
               "args": [
 
               ],
@@ -5513,7 +5513,7 @@
             },
             {
               "name": "issues",
-              "description": "Board issues",
+              "description": "Board issues.",
               "args": [
                 {
                   "name": "filters",
@@ -5576,7 +5576,7 @@
             },
             {
               "name": "issuesCount",
-              "description": "Count of issues in the list",
+              "description": "Count of issues in the list.",
               "args": [
 
               ],
@@ -5604,7 +5604,7 @@
             },
             {
               "name": "label",
-              "description": "Label of the list",
+              "description": "Label of the list.",
               "args": [
 
               ],
@@ -5632,7 +5632,7 @@
             },
             {
               "name": "listType",
-              "description": "Type of the list",
+              "description": "Type of the list.",
               "args": [
 
               ],
@@ -5692,7 +5692,7 @@
             },
             {
               "name": "position",
-              "description": "Position of list within the board",
+              "description": "Position of list within the board.",
               "args": [
 
               ],
@@ -5706,7 +5706,7 @@
             },
             {
               "name": "title",
-              "description": "Title of the list",
+              "description": "Title of the list.",
               "args": [
 
               ],
@@ -6177,7 +6177,7 @@
           "fields": [
             {
               "name": "commit",
-              "description": "Commit for the branch",
+              "description": "Commit for the branch.",
               "args": [
 
               ],
@@ -6191,7 +6191,7 @@
             },
             {
               "name": "name",
-              "description": "Name of the branch",
+              "description": "Name of the branch.",
               "args": [
 
               ],
@@ -6562,7 +6562,7 @@
           "fields": [
             {
               "name": "errors",
-              "description": "Linting errors",
+              "description": "Linting errors.",
               "args": [
 
               ],
@@ -6584,7 +6584,7 @@
             },
             {
               "name": "mergedYaml",
-              "description": "Merged CI config YAML",
+              "description": "Merged CI config YAML.",
               "args": [
 
               ],
@@ -6598,7 +6598,7 @@
             },
             {
               "name": "stages",
-              "description": "Stages of the pipeline",
+              "description": "Stages of the pipeline.",
               "args": [
                 {
                   "name": "after",
@@ -6651,7 +6651,7 @@
             },
             {
               "name": "status",
-              "description": "Status of linting, can be either valid or invalid",
+              "description": "Status of linting, can be either valid or invalid.",
               "args": [
 
               ],
@@ -6678,7 +6678,7 @@
           "fields": [
             {
               "name": "jobs",
-              "description": "Jobs in group",
+              "description": "Jobs in group.",
               "args": [
                 {
                   "name": "after",
@@ -6731,7 +6731,7 @@
             },
             {
               "name": "name",
-              "description": "Name of the job group",
+              "description": "Name of the job group.",
               "args": [
 
               ],
@@ -6745,7 +6745,7 @@
             },
             {
               "name": "size",
-              "description": "Size of the job group",
+              "description": "Size of the job group.",
               "args": [
 
               ],
@@ -7297,7 +7297,7 @@
           "fields": [
             {
               "name": "name",
-              "description": "Name of the need",
+              "description": "Name of the need.",
               "args": [
 
               ],
@@ -7436,7 +7436,7 @@
           "fields": [
             {
               "name": "groups",
-              "description": "Groups of jobs for the stage",
+              "description": "Groups of jobs for the stage.",
               "args": [
                 {
                   "name": "after",
@@ -7489,7 +7489,7 @@
             },
             {
               "name": "name",
-              "description": "Name of the stage",
+              "description": "Name of the stage.",
               "args": [
 
               ],
@@ -7651,7 +7651,7 @@
           "fields": [
             {
               "name": "detailedStatus",
-              "description": "Detailed status of the group",
+              "description": "Detailed status of the group.",
               "args": [
 
               ],
@@ -7665,7 +7665,7 @@
             },
             {
               "name": "jobs",
-              "description": "Jobs in group",
+              "description": "Jobs in group.",
               "args": [
                 {
                   "name": "after",
@@ -7718,7 +7718,7 @@
             },
             {
               "name": "name",
-              "description": "Name of the job group",
+              "description": "Name of the job group.",
               "args": [
 
               ],
@@ -7732,7 +7732,7 @@
             },
             {
               "name": "size",
-              "description": "Size of the group",
+              "description": "Size of the group.",
               "args": [
 
               ],
@@ -7871,7 +7871,7 @@
           "fields": [
             {
               "name": "artifacts",
-              "description": "Artifacts generated by the job",
+              "description": "Artifacts generated by the job.",
               "args": [
                 {
                   "name": "after",
@@ -7924,7 +7924,7 @@
             },
             {
               "name": "detailedStatus",
-              "description": "Detailed status of the job",
+              "description": "Detailed status of the job.",
               "args": [
 
               ],
@@ -7938,7 +7938,7 @@
             },
             {
               "name": "name",
-              "description": "Name of the job",
+              "description": "Name of the job.",
               "args": [
 
               ],
@@ -7952,7 +7952,7 @@
             },
             {
               "name": "needs",
-              "description": "References to builds that must complete before the jobs run",
+              "description": "References to builds that must complete before the jobs run.",
               "args": [
                 {
                   "name": "after",
@@ -8005,7 +8005,7 @@
             },
             {
               "name": "pipeline",
-              "description": "Pipeline the job belongs to",
+              "description": "Pipeline the job belongs to.",
               "args": [
 
               ],
@@ -8019,7 +8019,7 @@
             },
             {
               "name": "scheduledAt",
-              "description": "Schedule for the build",
+              "description": "Schedule for the build.",
               "args": [
 
               ],
@@ -8046,7 +8046,7 @@
           "fields": [
             {
               "name": "downloadPath",
-              "description": "URL for downloading the artifact's file",
+              "description": "URL for downloading the artifact's file.",
               "args": [
 
               ],
@@ -8060,7 +8060,7 @@
             },
             {
               "name": "fileType",
-              "description": "File type of the artifact",
+              "description": "File type of the artifact.",
               "args": [
 
               ],
@@ -8321,7 +8321,7 @@
           "fields": [
             {
               "name": "detailedStatus",
-              "description": "Detailed status of the stage",
+              "description": "Detailed status of the stage.",
               "args": [
 
               ],
@@ -8335,7 +8335,7 @@
             },
             {
               "name": "groups",
-              "description": "Group of jobs for the stage",
+              "description": "Group of jobs for the stage.",
               "args": [
                 {
                   "name": "after",
@@ -8388,7 +8388,7 @@
             },
             {
               "name": "name",
-              "description": "Name of the stage",
+              "description": "Name of the stage.",
               "args": [
 
               ],
@@ -8667,7 +8667,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Total count of collection",
+              "description": "Total count of collection.",
               "args": [
 
               ],
@@ -8944,7 +8944,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Total count of collection",
+              "description": "Total count of collection.",
               "args": [
 
               ],
@@ -9548,7 +9548,7 @@
           "fields": [
             {
               "name": "author",
-              "description": "Author of the commit",
+              "description": "Author of the commit.",
               "args": [
 
               ],
@@ -9562,7 +9562,7 @@
             },
             {
               "name": "authorGravatar",
-              "description": "Commit authors gravatar",
+              "description": "Commit authors gravatar.",
               "args": [
 
               ],
@@ -9576,7 +9576,7 @@
             },
             {
               "name": "authorName",
-              "description": "Commit authors name",
+              "description": "Commit authors name.",
               "args": [
 
               ],
@@ -9590,7 +9590,7 @@
             },
             {
               "name": "authoredDate",
-              "description": "Timestamp of when the commit was authored",
+              "description": "Timestamp of when the commit was authored.",
               "args": [
 
               ],
@@ -9604,7 +9604,7 @@
             },
             {
               "name": "description",
-              "description": "Description of the commit message",
+              "description": "Description of the commit message.",
               "args": [
 
               ],
@@ -9632,7 +9632,7 @@
             },
             {
               "name": "id",
-              "description": "ID (global ID) of the commit",
+              "description": "ID (global ID) of the commit.",
               "args": [
 
               ],
@@ -9650,7 +9650,7 @@
             },
             {
               "name": "message",
-              "description": "Raw commit message",
+              "description": "Raw commit message.",
               "args": [
 
               ],
@@ -9664,7 +9664,7 @@
             },
             {
               "name": "pipelines",
-              "description": "Pipelines of the commit ordered latest first",
+              "description": "Pipelines of the commit ordered latest first.",
               "args": [
                 {
                   "name": "status",
@@ -9747,7 +9747,7 @@
             },
             {
               "name": "sha",
-              "description": "SHA1 ID of the commit",
+              "description": "SHA1 ID of the commit.",
               "args": [
 
               ],
@@ -9765,7 +9765,7 @@
             },
             {
               "name": "shortId",
-              "description": "Short SHA1 ID of the commit",
+              "description": "Short SHA1 ID of the commit.",
               "args": [
 
               ],
@@ -9783,7 +9783,7 @@
             },
             {
               "name": "signatureHtml",
-              "description": "Rendered HTML of the commit signature",
+              "description": "Rendered HTML of the commit signature.",
               "args": [
 
               ],
@@ -9797,7 +9797,7 @@
             },
             {
               "name": "title",
-              "description": "Title of the commit message",
+              "description": "Title of the commit message.",
               "args": [
 
               ],
@@ -9825,7 +9825,7 @@
             },
             {
               "name": "webPath",
-              "description": "Web path of the commit",
+              "description": "Web path of the commit.",
               "args": [
 
               ],
@@ -9843,7 +9843,7 @@
             },
             {
               "name": "webUrl",
-              "description": "Web URL of the commit",
+              "description": "Web URL of the commit.",
               "args": [
 
               ],
@@ -9875,7 +9875,7 @@
           "inputFields": [
             {
               "name": "action",
-              "description": "The action to perform, create, delete, move, update, chmod",
+              "description": "The action to perform, create, delete, move, update, chmod.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -9889,7 +9889,7 @@
             },
             {
               "name": "filePath",
-              "description": "Full path to the file",
+              "description": "Full path to the file.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -9903,7 +9903,7 @@
             },
             {
               "name": "content",
-              "description": "Content of the file",
+              "description": "Content of the file.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -9913,7 +9913,7 @@
             },
             {
               "name": "previousPath",
-              "description": "Original full path to the file being moved",
+              "description": "Original full path to the file being moved.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -9923,7 +9923,7 @@
             },
             {
               "name": "lastCommitId",
-              "description": "Last known file commit ID",
+              "description": "Last known file commit ID.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -9933,7 +9933,7 @@
             },
             {
               "name": "executeFilemode",
-              "description": "Enables/disables the execute flag on the file",
+              "description": "Enables/disables the execute flag on the file.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
@@ -9943,7 +9943,7 @@
             },
             {
               "name": "encoding",
-              "description": "Encoding of the file. Default is text",
+              "description": "Encoding of the file. Default is text.",
               "type": {
                 "kind": "ENUM",
                 "name": "CommitEncoding",
@@ -10110,7 +10110,7 @@
             },
             {
               "name": "message",
-              "description": "Raw commit message",
+              "description": "Raw commit message.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -10707,7 +10707,7 @@
           "fields": [
             {
               "name": "cadence",
-              "description": "This container expiration policy schedule",
+              "description": "This container expiration policy schedule.",
               "args": [
 
               ],
@@ -10725,7 +10725,7 @@
             },
             {
               "name": "createdAt",
-              "description": "Timestamp of when the container expiration policy was created",
+              "description": "Timestamp of when the container expiration policy was created.",
               "args": [
 
               ],
@@ -10743,7 +10743,7 @@
             },
             {
               "name": "enabled",
-              "description": "Indicates whether this container expiration policy is enabled",
+              "description": "Indicates whether this container expiration policy is enabled.",
               "args": [
 
               ],
@@ -10761,7 +10761,7 @@
             },
             {
               "name": "keepN",
-              "description": "Number of tags to retain",
+              "description": "Number of tags to retain.",
               "args": [
 
               ],
@@ -10775,7 +10775,7 @@
             },
             {
               "name": "nameRegex",
-              "description": "Tags with names matching this regex pattern will expire",
+              "description": "Tags with names matching this regex pattern will expire.",
               "args": [
 
               ],
@@ -10789,7 +10789,7 @@
             },
             {
               "name": "nameRegexKeep",
-              "description": "Tags with names matching this regex pattern will be preserved",
+              "description": "Tags with names matching this regex pattern will be preserved.",
               "args": [
 
               ],
@@ -10803,7 +10803,7 @@
             },
             {
               "name": "nextRunAt",
-              "description": "Next time that this container expiration policy will get executed",
+              "description": "Next time that this container expiration policy will get executed.",
               "args": [
 
               ],
@@ -10817,7 +10817,7 @@
             },
             {
               "name": "olderThan",
-              "description": "Tags older that this will expire",
+              "description": "Tags older that this will expire.",
               "args": [
 
               ],
@@ -10831,7 +10831,7 @@
             },
             {
               "name": "updatedAt",
-              "description": "Timestamp of when the container expiration policy was updated",
+              "description": "Timestamp of when the container expiration policy was updated.",
               "args": [
 
               ],
@@ -11121,7 +11121,7 @@
             },
             {
               "name": "project",
-              "description": "Project of the container registry",
+              "description": "Project of the container registry.",
               "args": [
 
               ],
@@ -11440,7 +11440,7 @@
             },
             {
               "name": "project",
-              "description": "Project of the container registry",
+              "description": "Project of the container registry.",
               "args": [
 
               ],
@@ -11472,7 +11472,7 @@
             },
             {
               "name": "tags",
-              "description": "Tags of the container repository",
+              "description": "Tags of the container repository.",
               "args": [
                 {
                   "name": "after",
@@ -12254,7 +12254,7 @@
             },
             {
               "name": "hideBacklogList",
-              "description": "Whether or not backlog list is hidden",
+              "description": "Whether or not backlog list is hidden.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
@@ -12264,7 +12264,7 @@
             },
             {
               "name": "hideClosedList",
-              "description": "Whether or not closed list is hidden",
+              "description": "Whether or not closed list is hidden.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
@@ -14563,7 +14563,7 @@
           "fields": [
             {
               "name": "currentUserTodos",
-              "description": "Todos for the current user",
+              "description": "Todos for the current user.",
               "args": [
                 {
                   "name": "after",
@@ -14607,7 +14607,7 @@
                 },
                 {
                   "name": "state",
-                  "description": "State of the todos",
+                  "description": "State of the todos.",
                   "type": {
                     "kind": "ENUM",
                     "name": "TodoStateEnum",
@@ -14672,7 +14672,7 @@
           "fields": [
             {
               "name": "external",
-              "description": "Whether the emoji is an external link",
+              "description": "Whether the emoji is an external link.",
               "args": [
 
               ],
@@ -14690,7 +14690,7 @@
             },
             {
               "name": "id",
-              "description": "The ID of the emoji",
+              "description": "The ID of the emoji.",
               "args": [
 
               ],
@@ -14708,7 +14708,7 @@
             },
             {
               "name": "name",
-              "description": "The name of the emoji",
+              "description": "The name of the emoji.",
               "args": [
 
               ],
@@ -14726,7 +14726,7 @@
             },
             {
               "name": "url",
-              "description": "The link to file of the emoji",
+              "description": "The link to file of the emoji.",
               "args": [
 
               ],
@@ -17374,7 +17374,7 @@
           "fields": [
             {
               "name": "completed",
-              "description": "Whether or not the entire queue was processed in time; if not, retrying the same request is safe",
+              "description": "Whether or not the entire queue was processed in time; if not, retrying the same request is safe.",
               "args": [
 
               ],
@@ -17388,7 +17388,7 @@
             },
             {
               "name": "deletedJobs",
-              "description": "The number of matching jobs deleted",
+              "description": "The number of matching jobs deleted.",
               "args": [
 
               ],
@@ -17402,7 +17402,7 @@
             },
             {
               "name": "queueSize",
-              "description": "The queue size after processing",
+              "description": "The queue size after processing.",
               "args": [
 
               ],
@@ -17429,7 +17429,7 @@
           "fields": [
             {
               "name": "currentUserTodos",
-              "description": "Todos for the current user",
+              "description": "Todos for the current user.",
               "args": [
                 {
                   "name": "after",
@@ -17473,7 +17473,7 @@
                 },
                 {
                   "name": "state",
-                  "description": "State of the todos",
+                  "description": "State of the todos.",
                   "type": {
                     "kind": "ENUM",
                     "name": "TodoStateEnum",
@@ -17496,7 +17496,7 @@
             },
             {
               "name": "diffRefs",
-              "description": "The diff refs for this design",
+              "description": "The diff refs for this design.",
               "args": [
 
               ],
@@ -17571,7 +17571,7 @@
             },
             {
               "name": "event",
-              "description": "How this design was changed in the current version",
+              "description": "How this design was changed in the current version.",
               "args": [
 
               ],
@@ -17589,7 +17589,7 @@
             },
             {
               "name": "filename",
-              "description": "The filename of the design",
+              "description": "The filename of the design.",
               "args": [
 
               ],
@@ -17607,7 +17607,7 @@
             },
             {
               "name": "fullPath",
-              "description": "The full path to the design file",
+              "description": "The full path to the design file.",
               "args": [
 
               ],
@@ -17625,7 +17625,7 @@
             },
             {
               "name": "id",
-              "description": "The ID of this design",
+              "description": "The ID of this design.",
               "args": [
 
               ],
@@ -17643,7 +17643,7 @@
             },
             {
               "name": "image",
-              "description": "The URL of the full-sized image",
+              "description": "The URL of the full-sized image.",
               "args": [
 
               ],
@@ -17675,7 +17675,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue the design belongs to",
+              "description": "The issue the design belongs to.",
               "args": [
 
               ],
@@ -17750,7 +17750,7 @@
             },
             {
               "name": "notesCount",
-              "description": "The total count of user-created notes for this design",
+              "description": "The total count of user-created notes for this design.",
               "args": [
 
               ],
@@ -17768,7 +17768,7 @@
             },
             {
               "name": "project",
-              "description": "The project the design belongs to",
+              "description": "The project the design belongs to.",
               "args": [
 
               ],
@@ -17786,7 +17786,7 @@
             },
             {
               "name": "versions",
-              "description": "All versions related to this design ordered newest first",
+              "description": "All versions related to this design ordered newest first.",
               "args": [
                 {
                   "name": "earlierOrEqualToSha",
@@ -17890,7 +17890,7 @@
           "fields": [
             {
               "name": "design",
-              "description": "The underlying design",
+              "description": "The underlying design.",
               "args": [
 
               ],
@@ -17908,7 +17908,7 @@
             },
             {
               "name": "diffRefs",
-              "description": "The diff refs for this design",
+              "description": "The diff refs for this design.",
               "args": [
 
               ],
@@ -17926,7 +17926,7 @@
             },
             {
               "name": "event",
-              "description": "How this design was changed in the current version",
+              "description": "How this design was changed in the current version.",
               "args": [
 
               ],
@@ -17944,7 +17944,7 @@
             },
             {
               "name": "filename",
-              "description": "The filename of the design",
+              "description": "The filename of the design.",
               "args": [
 
               ],
@@ -17962,7 +17962,7 @@
             },
             {
               "name": "fullPath",
-              "description": "The full path to the design file",
+              "description": "The full path to the design file.",
               "args": [
 
               ],
@@ -17980,7 +17980,7 @@
             },
             {
               "name": "id",
-              "description": "The ID of this design",
+              "description": "The ID of this design.",
               "args": [
 
               ],
@@ -17998,7 +17998,7 @@
             },
             {
               "name": "image",
-              "description": "The URL of the full-sized image",
+              "description": "The URL of the full-sized image.",
               "args": [
 
               ],
@@ -18030,7 +18030,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue the design belongs to",
+              "description": "The issue the design belongs to.",
               "args": [
 
               ],
@@ -18048,7 +18048,7 @@
             },
             {
               "name": "notesCount",
-              "description": "The total count of user-created notes for this design",
+              "description": "The total count of user-created notes for this design.",
               "args": [
 
               ],
@@ -18066,7 +18066,7 @@
             },
             {
               "name": "project",
-              "description": "The project the design belongs to",
+              "description": "The project the design belongs to.",
               "args": [
 
               ],
@@ -18084,7 +18084,7 @@
             },
             {
               "name": "version",
-              "description": "The version this design-at-versions is pinned to",
+              "description": "The version this design-at-versions is pinned to.",
               "args": [
 
               ],
@@ -18231,7 +18231,7 @@
           "fields": [
             {
               "name": "copyState",
-              "description": "Copy state of the design collection",
+              "description": "Copy state of the design collection.",
               "args": [
 
               ],
@@ -18245,7 +18245,7 @@
             },
             {
               "name": "design",
-              "description": "Find a specific design",
+              "description": "Find a specific design.",
               "args": [
                 {
                   "name": "id",
@@ -18278,7 +18278,7 @@
             },
             {
               "name": "designAtVersion",
-              "description": "Find a design as of a version",
+              "description": "Find a design as of a version.",
               "args": [
                 {
                   "name": "id",
@@ -18305,7 +18305,7 @@
             },
             {
               "name": "designs",
-              "description": "All designs for the design collection",
+              "description": "All designs for the design collection.",
               "args": [
                 {
                   "name": "ids",
@@ -18408,7 +18408,7 @@
             },
             {
               "name": "issue",
-              "description": "Issue associated with the design collection",
+              "description": "Issue associated with the design collection.",
               "args": [
 
               ],
@@ -18426,7 +18426,7 @@
             },
             {
               "name": "project",
-              "description": "Project associated with the design collection",
+              "description": "Project associated with the design collection.",
               "args": [
 
               ],
@@ -18444,7 +18444,7 @@
             },
             {
               "name": "version",
-              "description": "A specific version",
+              "description": "A specific version.",
               "args": [
                 {
                   "name": "sha",
@@ -18477,7 +18477,7 @@
             },
             {
               "name": "versions",
-              "description": "All versions related to all designs, ordered newest first",
+              "description": "All versions related to all designs, ordered newest first.",
               "args": [
                 {
                   "name": "earlierOrEqualToSha",
@@ -18708,7 +18708,7 @@
           "fields": [
             {
               "name": "diffRefs",
-              "description": "The diff refs for this design",
+              "description": "The diff refs for this design.",
               "args": [
 
               ],
@@ -18726,7 +18726,7 @@
             },
             {
               "name": "event",
-              "description": "How this design was changed in the current version",
+              "description": "How this design was changed in the current version.",
               "args": [
 
               ],
@@ -18744,7 +18744,7 @@
             },
             {
               "name": "filename",
-              "description": "The filename of the design",
+              "description": "The filename of the design.",
               "args": [
 
               ],
@@ -18762,7 +18762,7 @@
             },
             {
               "name": "fullPath",
-              "description": "The full path to the design file",
+              "description": "The full path to the design file.",
               "args": [
 
               ],
@@ -18780,7 +18780,7 @@
             },
             {
               "name": "id",
-              "description": "The ID of this design",
+              "description": "The ID of this design.",
               "args": [
 
               ],
@@ -18798,7 +18798,7 @@
             },
             {
               "name": "image",
-              "description": "The URL of the full-sized image",
+              "description": "The URL of the full-sized image.",
               "args": [
 
               ],
@@ -18830,7 +18830,7 @@
             },
             {
               "name": "issue",
-              "description": "The issue the design belongs to",
+              "description": "The issue the design belongs to.",
               "args": [
 
               ],
@@ -18848,7 +18848,7 @@
             },
             {
               "name": "notesCount",
-              "description": "The total count of user-created notes for this design",
+              "description": "The total count of user-created notes for this design.",
               "args": [
 
               ],
@@ -18866,7 +18866,7 @@
             },
             {
               "name": "project",
-              "description": "The project the design belongs to",
+              "description": "The project the design belongs to.",
               "args": [
 
               ],
@@ -18906,7 +18906,7 @@
           "fields": [
             {
               "name": "designAtVersion",
-              "description": "Find a design as of a version",
+              "description": "Find a design as of a version.",
               "args": [
                 {
                   "name": "id",
@@ -18933,7 +18933,7 @@
             },
             {
               "name": "version",
-              "description": "Find a version",
+              "description": "Find a version.",
               "args": [
                 {
                   "name": "id",
@@ -19439,7 +19439,7 @@
           "fields": [
             {
               "name": "designAtVersion",
-              "description": "A particular design as of this version, provided it is visible at this version",
+              "description": "A particular design as of this version, provided it is visible at this version.",
               "args": [
                 {
                   "name": "id",
@@ -19486,7 +19486,7 @@
             },
             {
               "name": "designs",
-              "description": "All designs that were changed in the version",
+              "description": "All designs that were changed in the version.",
               "args": [
                 {
                   "name": "after",
@@ -19543,7 +19543,7 @@
             },
             {
               "name": "designsAtVersion",
-              "description": "All designs that are visible at this version, as of this version",
+              "description": "All designs that are visible at this version, as of this version.",
               "args": [
                 {
                   "name": "ids",
@@ -19636,7 +19636,7 @@
             },
             {
               "name": "id",
-              "description": "ID of the design version",
+              "description": "ID of the design version.",
               "args": [
 
               ],
@@ -19654,7 +19654,7 @@
             },
             {
               "name": "sha",
-              "description": "SHA of the design version",
+              "description": "SHA of the design version.",
               "args": [
 
               ],
@@ -20570,7 +20570,7 @@
           "fields": [
             {
               "name": "action",
-              "description": "Action information for the status. This includes method, button title, icon, path, and title",
+              "description": "Action information for the status. This includes method, button title, icon, path, and title.",
               "args": [
 
               ],
@@ -20584,7 +20584,7 @@
             },
             {
               "name": "detailsPath",
-              "description": "Path of the details for the status",
+              "description": "Path of the details for the status.",
               "args": [
 
               ],
@@ -20598,7 +20598,7 @@
             },
             {
               "name": "favicon",
-              "description": "Favicon of the status",
+              "description": "Favicon of the status.",
               "args": [
 
               ],
@@ -20612,7 +20612,7 @@
             },
             {
               "name": "group",
-              "description": "Group of the status",
+              "description": "Group of the status.",
               "args": [
 
               ],
@@ -20626,7 +20626,7 @@
             },
             {
               "name": "hasDetails",
-              "description": "Indicates if the status has further details",
+              "description": "Indicates if the status has further details.",
               "args": [
 
               ],
@@ -20640,7 +20640,7 @@
             },
             {
               "name": "icon",
-              "description": "Icon of the status",
+              "description": "Icon of the status.",
               "args": [
 
               ],
@@ -20654,7 +20654,7 @@
             },
             {
               "name": "label",
-              "description": "Label of the status",
+              "description": "Label of the status.",
               "args": [
 
               ],
@@ -20668,7 +20668,7 @@
             },
             {
               "name": "text",
-              "description": "Text of the status",
+              "description": "Text of the status.",
               "args": [
 
               ],
@@ -20682,7 +20682,7 @@
             },
             {
               "name": "tooltip",
-              "description": "Tooltip associated with the status",
+              "description": "Tooltip associated with the status.",
               "args": [
 
               ],
@@ -21100,7 +21100,7 @@
           "inputFields": [
             {
               "name": "headSha",
-              "description": "SHA of the HEAD at the time the comment was made",
+              "description": "SHA of the HEAD at the time the comment was made.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -21114,7 +21114,7 @@
             },
             {
               "name": "baseSha",
-              "description": "Merge base of the branch the comment was made on",
+              "description": "Merge base of the branch the comment was made on.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -21124,7 +21124,7 @@
             },
             {
               "name": "startSha",
-              "description": "SHA of the branch being compared against",
+              "description": "SHA of the branch being compared against.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -21229,7 +21229,7 @@
           "inputFields": [
             {
               "name": "oldPath",
-              "description": "The path of the file on the start sha",
+              "description": "The path of the file on the start sha.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -21239,7 +21239,7 @@
             },
             {
               "name": "newPath",
-              "description": "The path of the file on the head sha",
+              "description": "The path of the file on the head sha.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -21439,7 +21439,7 @@
           "inputFields": [
             {
               "name": "headSha",
-              "description": "SHA of the HEAD at the time the comment was made",
+              "description": "SHA of the HEAD at the time the comment was made.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -21453,7 +21453,7 @@
             },
             {
               "name": "baseSha",
-              "description": "Merge base of the branch the comment was made on",
+              "description": "Merge base of the branch the comment was made on.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -21463,7 +21463,7 @@
             },
             {
               "name": "startSha",
-              "description": "SHA of the branch being compared against",
+              "description": "SHA of the branch being compared against.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -21548,7 +21548,7 @@
           "fields": [
             {
               "name": "baseSha",
-              "description": "Merge base of the branch the comment was made on",
+              "description": "Merge base of the branch the comment was made on.",
               "args": [
 
               ],
@@ -21562,7 +21562,7 @@
             },
             {
               "name": "headSha",
-              "description": "SHA of the HEAD at the time the comment was made",
+              "description": "SHA of the HEAD at the time the comment was made.",
               "args": [
 
               ],
@@ -21580,7 +21580,7 @@
             },
             {
               "name": "startSha",
-              "description": "SHA of the branch being compared against",
+              "description": "SHA of the branch being compared against.",
               "args": [
 
               ],
@@ -21611,7 +21611,7 @@
           "fields": [
             {
               "name": "additions",
-              "description": "Number of lines added to this file",
+              "description": "Number of lines added to this file.",
               "args": [
 
               ],
@@ -21629,7 +21629,7 @@
             },
             {
               "name": "deletions",
-              "description": "Number of lines deleted from this file",
+              "description": "Number of lines deleted from this file.",
               "args": [
 
               ],
@@ -21647,7 +21647,7 @@
             },
             {
               "name": "path",
-              "description": "File path, relative to repository root",
+              "description": "File path, relative to repository root.",
               "args": [
 
               ],
@@ -21678,7 +21678,7 @@
           "fields": [
             {
               "name": "additions",
-              "description": "Number of lines added",
+              "description": "Number of lines added.",
               "args": [
 
               ],
@@ -21696,7 +21696,7 @@
             },
             {
               "name": "changes",
-              "description": "Number of lines changed",
+              "description": "Number of lines changed.",
               "args": [
 
               ],
@@ -21714,7 +21714,7 @@
             },
             {
               "name": "deletions",
-              "description": "Number of lines deleted",
+              "description": "Number of lines deleted.",
               "args": [
 
               ],
@@ -21732,7 +21732,7 @@
             },
             {
               "name": "fileCount",
-              "description": "Number of files changed",
+              "description": "Number of files changed.",
               "args": [
 
               ],
@@ -22479,7 +22479,7 @@
           "fields": [
             {
               "name": "id",
-              "description": "ID of the environment",
+              "description": "ID of the environment.",
               "args": [
 
               ],
@@ -22497,7 +22497,7 @@
             },
             {
               "name": "latestOpenedMostSevereAlert",
-              "description": "The most severe open alert for the environment. If multiple alerts have equal severity, the most recent is returned",
+              "description": "The most severe open alert for the environment. If multiple alerts have equal severity, the most recent is returned.",
               "args": [
 
               ],
@@ -22511,7 +22511,7 @@
             },
             {
               "name": "metricsDashboard",
-              "description": "Metrics dashboard schema for the environment",
+              "description": "Metrics dashboard schema for the environment.",
               "args": [
                 {
                   "name": "path",
@@ -22538,7 +22538,7 @@
             },
             {
               "name": "name",
-              "description": "Human-readable name of the environment",
+              "description": "Human-readable name of the environment.",
               "args": [
 
               ],
@@ -22574,7 +22574,7 @@
             },
             {
               "name": "state",
-              "description": "State of the environment, for example: available/stopped",
+              "description": "State of the environment, for example: available/stopped.",
               "args": [
 
               ],
@@ -23098,7 +23098,7 @@
             },
             {
               "name": "currentUserTodos",
-              "description": "Todos for the current user",
+              "description": "Todos for the current user.",
               "args": [
                 {
                   "name": "after",
@@ -23142,7 +23142,7 @@
                 },
                 {
                   "name": "state",
-                  "description": "State of the todos",
+                  "description": "State of the todos.",
                   "type": {
                     "kind": "ENUM",
                     "name": "TodoStateEnum",
@@ -24841,7 +24841,7 @@
             },
             {
               "name": "currentUserTodos",
-              "description": "Todos for the current user",
+              "description": "Todos for the current user.",
               "args": [
                 {
                   "name": "after",
@@ -24885,7 +24885,7 @@
                 },
                 {
                   "name": "state",
-                  "description": "State of the todos",
+                  "description": "State of the todos.",
                   "type": {
                     "kind": "ENUM",
                     "name": "TodoStateEnum",
@@ -25831,7 +25831,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Total count of collection",
+              "description": "Total count of collection.",
               "args": [
 
               ],
@@ -27716,7 +27716,7 @@
           "fields": [
             {
               "name": "createdAt",
-              "description": "Timestamp of the issue's creation",
+              "description": "Timestamp of the issue's creation.",
               "args": [
 
               ],
@@ -27734,7 +27734,7 @@
             },
             {
               "name": "enabled",
-              "description": "Indicates whether Grafana integration is enabled",
+              "description": "Indicates whether Grafana integration is enabled.",
               "args": [
 
               ],
@@ -27752,7 +27752,7 @@
             },
             {
               "name": "grafanaUrl",
-              "description": "URL for the Grafana host for the Grafana integration",
+              "description": "URL for the Grafana host for the Grafana integration.",
               "args": [
 
               ],
@@ -27770,7 +27770,7 @@
             },
             {
               "name": "id",
-              "description": "Internal ID of the Grafana integration",
+              "description": "Internal ID of the Grafana integration.",
               "args": [
 
               ],
@@ -27788,7 +27788,7 @@
             },
             {
               "name": "updatedAt",
-              "description": "Timestamp of the issue's last activity",
+              "description": "Timestamp of the issue's last activity.",
               "args": [
 
               ],
@@ -27847,7 +27847,7 @@
             },
             {
               "name": "autoDevopsEnabled",
-              "description": "Indicates whether Auto DevOps is enabled for all projects within this group",
+              "description": "Indicates whether Auto DevOps is enabled for all projects within this group.",
               "args": [
 
               ],
@@ -27861,7 +27861,7 @@
             },
             {
               "name": "avatarUrl",
-              "description": "Avatar URL of the group",
+              "description": "Avatar URL of the group.",
               "args": [
 
               ],
@@ -27875,7 +27875,7 @@
             },
             {
               "name": "board",
-              "description": "A single board of the group",
+              "description": "A single board of the group.",
               "args": [
                 {
                   "name": "id",
@@ -27902,7 +27902,7 @@
             },
             {
               "name": "boards",
-              "description": "Boards of the group",
+              "description": "Boards of the group.",
               "args": [
                 {
                   "name": "id",
@@ -28095,7 +28095,7 @@
             },
             {
               "name": "containerRepositories",
-              "description": "Container repositories of the group",
+              "description": "Container repositories of the group.",
               "args": [
                 {
                   "name": "name",
@@ -28158,7 +28158,7 @@
             },
             {
               "name": "containerRepositoriesCount",
-              "description": "Number of container repositories in the group",
+              "description": "Number of container repositories in the group.",
               "args": [
 
               ],
@@ -28194,7 +28194,7 @@
             },
             {
               "name": "customEmoji",
-              "description": "Custom emoji within this namespace Available only when feature flag `custom_emoji` is enabled.",
+              "description": "Custom emoji within this namespace. Available only when feature flag `custom_emoji` is enabled.",
               "args": [
                 {
                   "name": "after",
@@ -28275,7 +28275,7 @@
             },
             {
               "name": "emailsDisabled",
-              "description": "Indicates if a group has email notifications disabled",
+              "description": "Indicates if a group has email notifications disabled.",
               "args": [
 
               ],
@@ -28797,7 +28797,7 @@
             },
             {
               "name": "groupMembers",
-              "description": "A membership of a user within this group",
+              "description": "A membership of a user within this group.",
               "args": [
                 {
                   "name": "search",
@@ -28928,7 +28928,7 @@
             },
             {
               "name": "issues",
-              "description": "Issues for projects in this group",
+              "description": "Issues for projects in this group.",
               "args": [
                 {
                   "name": "iid",
@@ -29360,11 +29360,11 @@
             },
             {
               "name": "label",
-              "description": "A label available on this group",
+              "description": "A label available on this group.",
               "args": [
                 {
                   "name": "title",
-                  "description": "Title of the label",
+                  "description": "Title of the label.",
                   "type": {
                     "kind": "NON_NULL",
                     "name": null,
@@ -29387,7 +29387,7 @@
             },
             {
               "name": "labels",
-              "description": "Labels available on this group",
+              "description": "Labels available on this group.",
               "args": [
                 {
                   "name": "after",
@@ -29431,7 +29431,7 @@
                 },
                 {
                   "name": "searchTerm",
-                  "description": "A search term to find labels with",
+                  "description": "A search term to find labels with.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -29464,7 +29464,7 @@
             },
             {
               "name": "mentionsDisabled",
-              "description": "Indicates if a group is disabled from getting mentioned",
+              "description": "Indicates if a group is disabled from getting mentioned.",
               "args": [
 
               ],
@@ -29478,7 +29478,7 @@
             },
             {
               "name": "mergeRequests",
-              "description": "Merge requests for projects in this group",
+              "description": "Merge requests for projects in this group.",
               "args": [
                 {
                   "name": "iids",
@@ -29683,7 +29683,7 @@
             },
             {
               "name": "milestones",
-              "description": "Milestones of the group",
+              "description": "Milestones of the group.",
               "args": [
                 {
                   "name": "startDate",
@@ -29866,7 +29866,7 @@
             },
             {
               "name": "parent",
-              "description": "Parent group",
+              "description": "Parent group.",
               "args": [
 
               ],
@@ -29898,7 +29898,7 @@
             },
             {
               "name": "projectCreationLevel",
-              "description": "The permission level required to create projects in the group",
+              "description": "The permission level required to create projects in the group.",
               "args": [
 
               ],
@@ -30041,7 +30041,7 @@
             },
             {
               "name": "requireTwoFactorAuthentication",
-              "description": "Indicates if all users in this group are required to set up two-factor authentication",
+              "description": "Indicates if all users in this group are required to set up two-factor authentication.",
               "args": [
 
               ],
@@ -30069,7 +30069,7 @@
             },
             {
               "name": "shareWithGroupLock",
-              "description": "Indicates if sharing a project with another group within this group is prevented",
+              "description": "Indicates if sharing a project with another group within this group is prevented.",
               "args": [
 
               ],
@@ -30111,7 +30111,7 @@
             },
             {
               "name": "subgroupCreationLevel",
-              "description": "The permission level required to create subgroups within the group",
+              "description": "The permission level required to create subgroups within the group.",
               "args": [
 
               ],
@@ -30264,7 +30264,7 @@
             },
             {
               "name": "twoFactorGracePeriod",
-              "description": "Time before two-factor authentication is enforced",
+              "description": "Time before two-factor authentication is enforced.",
               "args": [
 
               ],
@@ -30836,7 +30836,7 @@
             },
             {
               "name": "webUrl",
-              "description": "Web URL of the group",
+              "description": "Web URL of the group.",
               "args": [
 
               ],
@@ -30933,7 +30933,7 @@
             },
             {
               "name": "group",
-              "description": "Group that a User is a member of",
+              "description": "Group that a User is a member of.",
               "args": [
 
               ],
@@ -32859,7 +32859,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Object count",
+              "description": "Object count.",
               "args": [
 
               ],
@@ -32877,7 +32877,7 @@
             },
             {
               "name": "identifier",
-              "description": "The type of objects being measured",
+              "description": "The type of objects being measured.",
               "args": [
 
               ],
@@ -32895,7 +32895,7 @@
             },
             {
               "name": "recordedAt",
-              "description": "The time the measurement was recorded",
+              "description": "The time the measurement was recorded.",
               "args": [
 
               ],
@@ -33301,7 +33301,7 @@
             },
             {
               "name": "currentUserTodos",
-              "description": "Todos for the current user",
+              "description": "Todos for the current user.",
               "args": [
                 {
                   "name": "after",
@@ -33345,7 +33345,7 @@
                 },
                 {
                   "name": "state",
-                  "description": "State of the todos",
+                  "description": "State of the todos.",
                   "type": {
                     "kind": "ENUM",
                     "name": "TodoStateEnum",
@@ -34263,7 +34263,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Total count of collection",
+              "description": "Total count of collection.",
               "args": [
 
               ],
@@ -38054,7 +38054,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Total count of collection",
+              "description": "Total count of collection.",
               "args": [
 
               ],
@@ -39125,7 +39125,7 @@
             },
             {
               "name": "currentUserTodos",
-              "description": "Todos for the current user",
+              "description": "Todos for the current user.",
               "args": [
                 {
                   "name": "after",
@@ -39169,7 +39169,7 @@
                 },
                 {
                   "name": "state",
-                  "description": "State of the todos",
+                  "description": "State of the todos.",
                   "type": {
                     "kind": "ENUM",
                     "name": "TodoStateEnum",
@@ -40574,7 +40574,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Total count of collection",
+              "description": "Total count of collection.",
               "args": [
 
               ],
@@ -47959,7 +47959,7 @@
           "inputFields": [
             {
               "name": "labelName",
-              "description": "Filter by label name",
+              "description": "Filter by label name.",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -47973,7 +47973,7 @@
             },
             {
               "name": "milestoneTitle",
-              "description": "Filter by milestone title",
+              "description": "Filter by milestone title.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -47983,7 +47983,7 @@
             },
             {
               "name": "assigneeUsername",
-              "description": "Filter by assignee username",
+              "description": "Filter by assignee username.",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -47997,7 +47997,7 @@
             },
             {
               "name": "authorUsername",
-              "description": "Filter by author username",
+              "description": "Filter by author username.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -48007,7 +48007,7 @@
             },
             {
               "name": "releaseTag",
-              "description": "Filter by release tag",
+              "description": "Filter by release tag.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -48017,7 +48017,7 @@
             },
             {
               "name": "myReactionEmoji",
-              "description": "Filter by reaction emoji",
+              "description": "Filter by reaction emoji.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -51324,7 +51324,7 @@
           "fields": [
             {
               "name": "active",
-              "description": "Indicates if the pipeline is active",
+              "description": "Indicates if the pipeline is active.",
               "args": [
 
               ],
@@ -51342,7 +51342,7 @@
             },
             {
               "name": "beforeSha",
-              "description": "Base SHA of the source branch",
+              "description": "Base SHA of the source branch.",
               "args": [
 
               ],
@@ -51356,7 +51356,7 @@
             },
             {
               "name": "cancelable",
-              "description": "Specifies if a pipeline can be canceled",
+              "description": "Specifies if a pipeline can be canceled.",
               "args": [
 
               ],
@@ -51374,7 +51374,7 @@
             },
             {
               "name": "committedAt",
-              "description": "Timestamp of the pipeline's commit",
+              "description": "Timestamp of the pipeline's commit.",
               "args": [
 
               ],
@@ -51402,7 +51402,7 @@
             },
             {
               "name": "coverage",
-              "description": "Coverage percentage",
+              "description": "Coverage percentage.",
               "args": [
 
               ],
@@ -51416,7 +51416,7 @@
             },
             {
               "name": "createdAt",
-              "description": "Timestamp of the pipeline's creation",
+              "description": "Timestamp of the pipeline's creation.",
               "args": [
 
               ],
@@ -51434,7 +51434,7 @@
             },
             {
               "name": "detailedStatus",
-              "description": "Detailed status of the pipeline",
+              "description": "Detailed status of the pipeline.",
               "args": [
 
               ],
@@ -51452,7 +51452,7 @@
             },
             {
               "name": "downstream",
-              "description": "Pipelines this pipeline will trigger",
+              "description": "Pipelines this pipeline will trigger.",
               "args": [
                 {
                   "name": "after",
@@ -51505,7 +51505,7 @@
             },
             {
               "name": "duration",
-              "description": "Duration of the pipeline in seconds",
+              "description": "Duration of the pipeline in seconds.",
               "args": [
 
               ],
@@ -51519,7 +51519,7 @@
             },
             {
               "name": "finishedAt",
-              "description": "Timestamp of the pipeline's completion",
+              "description": "Timestamp of the pipeline's completion.",
               "args": [
 
               ],
@@ -51533,7 +51533,7 @@
             },
             {
               "name": "id",
-              "description": "ID of the pipeline",
+              "description": "ID of the pipeline.",
               "args": [
 
               ],
@@ -51551,7 +51551,7 @@
             },
             {
               "name": "iid",
-              "description": "Internal ID of the pipeline",
+              "description": "Internal ID of the pipeline.",
               "args": [
 
               ],
@@ -51569,7 +51569,7 @@
             },
             {
               "name": "jobs",
-              "description": "Jobs belonging to the pipeline",
+              "description": "Jobs belonging to the pipeline.",
               "args": [
                 {
                   "name": "securityReportTypes",
@@ -51640,7 +51640,7 @@
             },
             {
               "name": "path",
-              "description": "Relative path to the pipeline's page",
+              "description": "Relative path to the pipeline's page.",
               "args": [
 
               ],
@@ -51654,7 +51654,7 @@
             },
             {
               "name": "project",
-              "description": "Project the pipeline belongs to",
+              "description": "Project the pipeline belongs to.",
               "args": [
 
               ],
@@ -51668,7 +51668,7 @@
             },
             {
               "name": "retryable",
-              "description": "Specifies if a pipeline can be retried",
+              "description": "Specifies if a pipeline can be retried.",
               "args": [
 
               ],
@@ -51700,7 +51700,7 @@
             },
             {
               "name": "sha",
-              "description": "SHA of the pipeline's commit",
+              "description": "SHA of the pipeline's commit.",
               "args": [
 
               ],
@@ -51718,7 +51718,7 @@
             },
             {
               "name": "sourceJob",
-              "description": "Job where pipeline was triggered from",
+              "description": "Job where pipeline was triggered from.",
               "args": [
 
               ],
@@ -51732,7 +51732,7 @@
             },
             {
               "name": "stages",
-              "description": "Stages of the pipeline",
+              "description": "Stages of the pipeline.",
               "args": [
                 {
                   "name": "after",
@@ -51785,7 +51785,7 @@
             },
             {
               "name": "startedAt",
-              "description": "Timestamp when the pipeline was started",
+              "description": "Timestamp when the pipeline was started.",
               "args": [
 
               ],
@@ -51817,7 +51817,7 @@
             },
             {
               "name": "updatedAt",
-              "description": "Timestamp of the pipeline's last activity",
+              "description": "Timestamp of the pipeline's last activity.",
               "args": [
 
               ],
@@ -51835,7 +51835,7 @@
             },
             {
               "name": "upstream",
-              "description": "Pipeline that triggered the pipeline",
+              "description": "Pipeline that triggered the pipeline.",
               "args": [
 
               ],
@@ -51849,7 +51849,7 @@
             },
             {
               "name": "user",
-              "description": "Pipeline user",
+              "description": "Pipeline user.",
               "args": [
 
               ],
@@ -51894,7 +51894,7 @@
           "fields": [
             {
               "name": "monthPipelinesLabels",
-              "description": "Labels for the monthly pipeline count",
+              "description": "Labels for the monthly pipeline count.",
               "args": [
 
               ],
@@ -51916,7 +51916,7 @@
             },
             {
               "name": "monthPipelinesSuccessful",
-              "description": "Total monthly successful pipeline count",
+              "description": "Total monthly successful pipeline count.",
               "args": [
 
               ],
@@ -51938,7 +51938,7 @@
             },
             {
               "name": "monthPipelinesTotals",
-              "description": "Total monthly pipeline count",
+              "description": "Total monthly pipeline count.",
               "args": [
 
               ],
@@ -51960,7 +51960,7 @@
             },
             {
               "name": "pipelineTimesLabels",
-              "description": "Pipeline times labels",
+              "description": "Pipeline times labels.",
               "args": [
 
               ],
@@ -51982,7 +51982,7 @@
             },
             {
               "name": "pipelineTimesValues",
-              "description": "Pipeline times",
+              "description": "Pipeline times.",
               "args": [
 
               ],
@@ -52004,7 +52004,7 @@
             },
             {
               "name": "weekPipelinesLabels",
-              "description": "Labels for the weekly pipeline count",
+              "description": "Labels for the weekly pipeline count.",
               "args": [
 
               ],
@@ -52026,7 +52026,7 @@
             },
             {
               "name": "weekPipelinesSuccessful",
-              "description": "Total weekly successful pipeline count",
+              "description": "Total weekly successful pipeline count.",
               "args": [
 
               ],
@@ -52048,7 +52048,7 @@
             },
             {
               "name": "weekPipelinesTotals",
-              "description": "Total weekly pipeline count",
+              "description": "Total weekly pipeline count.",
               "args": [
 
               ],
@@ -52070,7 +52070,7 @@
             },
             {
               "name": "yearPipelinesLabels",
-              "description": "Labels for the yearly pipeline count",
+              "description": "Labels for the yearly pipeline count.",
               "args": [
 
               ],
@@ -52092,7 +52092,7 @@
             },
             {
               "name": "yearPipelinesSuccessful",
-              "description": "Total yearly successful pipeline count",
+              "description": "Total yearly successful pipeline count.",
               "args": [
 
               ],
@@ -52114,7 +52114,7 @@
             },
             {
               "name": "yearPipelinesTotals",
-              "description": "Total yearly pipeline count",
+              "description": "Total yearly pipeline count.",
               "args": [
 
               ],
@@ -52296,7 +52296,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Total count of collection",
+              "description": "Total count of collection.",
               "args": [
 
               ],
@@ -61422,7 +61422,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Total count of collection",
+              "description": "Total count of collection.",
               "args": [
 
               ],
@@ -61852,7 +61852,7 @@
           "fields": [
             {
               "name": "collectedAt",
-              "description": "Timestamp when the evidence was collected",
+              "description": "Timestamp when the evidence was collected.",
               "args": [
 
               ],
@@ -61866,7 +61866,7 @@
             },
             {
               "name": "filepath",
-              "description": "URL from where the evidence can be downloaded",
+              "description": "URL from where the evidence can be downloaded.",
               "args": [
 
               ],
@@ -61880,7 +61880,7 @@
             },
             {
               "name": "id",
-              "description": "ID of the evidence",
+              "description": "ID of the evidence.",
               "args": [
 
               ],
@@ -61898,7 +61898,7 @@
             },
             {
               "name": "sha",
-              "description": "SHA1 ID of the evidence hash",
+              "description": "SHA1 ID of the evidence hash.",
               "args": [
 
               ],
@@ -62515,7 +62515,7 @@
             },
             {
               "name": "name",
-              "description": "The emoji name",
+              "description": "The emoji name.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -64016,7 +64016,7 @@
           "fields": [
             {
               "name": "downloadLocation",
-              "description": "Download location for the runner for the platform architecture",
+              "description": "Download location for the runner for the platform architecture.",
               "args": [
 
               ],
@@ -64034,7 +64034,7 @@
             },
             {
               "name": "name",
-              "description": "Name of the runner platform architecture",
+              "description": "Name of the runner platform architecture.",
               "args": [
 
               ],
@@ -64177,7 +64177,7 @@
           "fields": [
             {
               "name": "architectures",
-              "description": "Runner architectures supported for the platform",
+              "description": "Runner architectures supported for the platform.",
               "args": [
                 {
                   "name": "after",
@@ -64230,7 +64230,7 @@
             },
             {
               "name": "humanReadableName",
-              "description": "Human readable name of the runner platform",
+              "description": "Human readable name of the runner platform.",
               "args": [
 
               ],
@@ -64248,7 +64248,7 @@
             },
             {
               "name": "name",
-              "description": "Name slug of the runner platform",
+              "description": "Name slug of the runner platform.",
               "args": [
 
               ],
@@ -64391,7 +64391,7 @@
           "fields": [
             {
               "name": "installInstructions",
-              "description": "Instructions for installing the runner on the specified architecture",
+              "description": "Instructions for installing the runner on the specified architecture.",
               "args": [
 
               ],
@@ -64409,7 +64409,7 @@
             },
             {
               "name": "registerInstructions",
-              "description": "Instructions for registering the runner",
+              "description": "Instructions for registering the runner.",
               "args": [
 
               ],
@@ -66032,7 +66032,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Count of occurrences",
+              "description": "Count of occurrences.",
               "args": [
 
               ],
@@ -66050,7 +66050,7 @@
             },
             {
               "name": "culprit",
-              "description": "Culprit of the error",
+              "description": "Culprit of the error.",
               "args": [
 
               ],
@@ -66068,7 +66068,7 @@
             },
             {
               "name": "externalBaseUrl",
-              "description": "External Base URL of the Sentry Instance",
+              "description": "External Base URL of the Sentry Instance.",
               "args": [
 
               ],
@@ -66086,7 +66086,7 @@
             },
             {
               "name": "externalUrl",
-              "description": "External URL of the error",
+              "description": "External URL of the error.",
               "args": [
 
               ],
@@ -66104,7 +66104,7 @@
             },
             {
               "name": "firstReleaseLastCommit",
-              "description": "Commit the error was first seen",
+              "description": "Commit the error was first seen.",
               "args": [
 
               ],
@@ -66118,7 +66118,7 @@
             },
             {
               "name": "firstReleaseShortVersion",
-              "description": "Release short version the error was first seen",
+              "description": "Release short version the error was first seen.",
               "args": [
 
               ],
@@ -66132,7 +66132,7 @@
             },
             {
               "name": "firstReleaseVersion",
-              "description": "Release version the error was first seen",
+              "description": "Release version the error was first seen.",
               "args": [
 
               ],
@@ -66146,7 +66146,7 @@
             },
             {
               "name": "firstSeen",
-              "description": "Timestamp when the error was first seen",
+              "description": "Timestamp when the error was first seen.",
               "args": [
 
               ],
@@ -66164,7 +66164,7 @@
             },
             {
               "name": "frequency",
-              "description": "Last 24hr stats of the error",
+              "description": "Last 24hr stats of the error.",
               "args": [
 
               ],
@@ -66190,7 +66190,7 @@
             },
             {
               "name": "gitlabCommit",
-              "description": "GitLab commit SHA attributed to the Error based on the release version",
+              "description": "GitLab commit SHA attributed to the Error based on the release version.",
               "args": [
 
               ],
@@ -66204,7 +66204,7 @@
             },
             {
               "name": "gitlabCommitPath",
-              "description": "Path to the GitLab page for the GitLab commit attributed to the error",
+              "description": "Path to the GitLab page for the GitLab commit attributed to the error.",
               "args": [
 
               ],
@@ -66218,7 +66218,7 @@
             },
             {
               "name": "gitlabIssuePath",
-              "description": "URL of GitLab Issue",
+              "description": "URL of GitLab Issue.",
               "args": [
 
               ],
@@ -66232,7 +66232,7 @@
             },
             {
               "name": "id",
-              "description": "ID (global ID) of the error",
+              "description": "ID (global ID) of the error.",
               "args": [
 
               ],
@@ -66250,7 +66250,7 @@
             },
             {
               "name": "lastReleaseLastCommit",
-              "description": "Commit the error was last seen",
+              "description": "Commit the error was last seen.",
               "args": [
 
               ],
@@ -66264,7 +66264,7 @@
             },
             {
               "name": "lastReleaseShortVersion",
-              "description": "Release short version the error was last seen",
+              "description": "Release short version the error was last seen.",
               "args": [
 
               ],
@@ -66278,7 +66278,7 @@
             },
             {
               "name": "lastReleaseVersion",
-              "description": "Release version the error was last seen",
+              "description": "Release version the error was last seen.",
               "args": [
 
               ],
@@ -66292,7 +66292,7 @@
             },
             {
               "name": "lastSeen",
-              "description": "Timestamp when the error was last seen",
+              "description": "Timestamp when the error was last seen.",
               "args": [
 
               ],
@@ -66310,7 +66310,7 @@
             },
             {
               "name": "message",
-              "description": "Sentry metadata message of the error",
+              "description": "Sentry metadata message of the error.",
               "args": [
 
               ],
@@ -66324,7 +66324,7 @@
             },
             {
               "name": "sentryId",
-              "description": "ID (Sentry ID) of the error",
+              "description": "ID (Sentry ID) of the error.",
               "args": [
 
               ],
@@ -66342,7 +66342,7 @@
             },
             {
               "name": "sentryProjectId",
-              "description": "ID of the project (Sentry project)",
+              "description": "ID of the project (Sentry project).",
               "args": [
 
               ],
@@ -66360,7 +66360,7 @@
             },
             {
               "name": "sentryProjectName",
-              "description": "Name of the project affected by the error",
+              "description": "Name of the project affected by the error.",
               "args": [
 
               ],
@@ -66378,7 +66378,7 @@
             },
             {
               "name": "sentryProjectSlug",
-              "description": "Slug of the project affected by the error",
+              "description": "Slug of the project affected by the error.",
               "args": [
 
               ],
@@ -66396,7 +66396,7 @@
             },
             {
               "name": "shortId",
-              "description": "Short ID (Sentry ID) of the error",
+              "description": "Short ID (Sentry ID) of the error.",
               "args": [
 
               ],
@@ -66414,7 +66414,7 @@
             },
             {
               "name": "status",
-              "description": "Status of the error",
+              "description": "Status of the error.",
               "args": [
 
               ],
@@ -66432,7 +66432,7 @@
             },
             {
               "name": "tags",
-              "description": "Tags associated with the Sentry Error",
+              "description": "Tags associated with the Sentry Error.",
               "args": [
 
               ],
@@ -66450,7 +66450,7 @@
             },
             {
               "name": "title",
-              "description": "Title of the error",
+              "description": "Title of the error.",
               "args": [
 
               ],
@@ -66468,7 +66468,7 @@
             },
             {
               "name": "type",
-              "description": "Type of the error",
+              "description": "Type of the error.",
               "args": [
 
               ],
@@ -66486,7 +66486,7 @@
             },
             {
               "name": "userCount",
-              "description": "Count of users affected by the error",
+              "description": "Count of users affected by the error.",
               "args": [
 
               ],
@@ -66517,7 +66517,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Count of occurrences",
+              "description": "Count of occurrences.",
               "args": [
 
               ],
@@ -66535,7 +66535,7 @@
             },
             {
               "name": "culprit",
-              "description": "Culprit of the error",
+              "description": "Culprit of the error.",
               "args": [
 
               ],
@@ -66553,7 +66553,7 @@
             },
             {
               "name": "externalUrl",
-              "description": "External URL of the error",
+              "description": "External URL of the error.",
               "args": [
 
               ],
@@ -66571,7 +66571,7 @@
             },
             {
               "name": "firstSeen",
-              "description": "Timestamp when the error was first seen",
+              "description": "Timestamp when the error was first seen.",
               "args": [
 
               ],
@@ -66589,7 +66589,7 @@
             },
             {
               "name": "frequency",
-              "description": "Last 24hr stats of the error",
+              "description": "Last 24hr stats of the error.",
               "args": [
 
               ],
@@ -66615,7 +66615,7 @@
             },
             {
               "name": "id",
-              "description": "ID (global ID) of the error",
+              "description": "ID (global ID) of the error.",
               "args": [
 
               ],
@@ -66633,7 +66633,7 @@
             },
             {
               "name": "lastSeen",
-              "description": "Timestamp when the error was last seen",
+              "description": "Timestamp when the error was last seen.",
               "args": [
 
               ],
@@ -66651,7 +66651,7 @@
             },
             {
               "name": "message",
-              "description": "Sentry metadata message of the error",
+              "description": "Sentry metadata message of the error.",
               "args": [
 
               ],
@@ -66665,7 +66665,7 @@
             },
             {
               "name": "sentryId",
-              "description": "ID (Sentry ID) of the error",
+              "description": "ID (Sentry ID) of the error.",
               "args": [
 
               ],
@@ -66683,7 +66683,7 @@
             },
             {
               "name": "sentryProjectId",
-              "description": "ID of the project (Sentry project)",
+              "description": "ID of the project (Sentry project).",
               "args": [
 
               ],
@@ -66701,7 +66701,7 @@
             },
             {
               "name": "sentryProjectName",
-              "description": "Name of the project affected by the error",
+              "description": "Name of the project affected by the error.",
               "args": [
 
               ],
@@ -66719,7 +66719,7 @@
             },
             {
               "name": "sentryProjectSlug",
-              "description": "Slug of the project affected by the error",
+              "description": "Slug of the project affected by the error.",
               "args": [
 
               ],
@@ -66737,7 +66737,7 @@
             },
             {
               "name": "shortId",
-              "description": "Short ID (Sentry ID) of the error",
+              "description": "Short ID (Sentry ID) of the error.",
               "args": [
 
               ],
@@ -66755,7 +66755,7 @@
             },
             {
               "name": "status",
-              "description": "Status of the error",
+              "description": "Status of the error.",
               "args": [
 
               ],
@@ -66773,7 +66773,7 @@
             },
             {
               "name": "title",
-              "description": "Title of the error",
+              "description": "Title of the error.",
               "args": [
 
               ],
@@ -66791,7 +66791,7 @@
             },
             {
               "name": "type",
-              "description": "Type of the error",
+              "description": "Type of the error.",
               "args": [
 
               ],
@@ -66809,7 +66809,7 @@
             },
             {
               "name": "userCount",
-              "description": "Count of users affected by the error",
+              "description": "Count of users affected by the error.",
               "args": [
 
               ],
@@ -66840,7 +66840,7 @@
           "fields": [
             {
               "name": "detailedError",
-              "description": "Detailed version of a Sentry error on the project",
+              "description": "Detailed version of a Sentry error on the project.",
               "args": [
                 {
                   "name": "id",
@@ -66867,7 +66867,7 @@
             },
             {
               "name": "errorStackTrace",
-              "description": "Stack Trace of Sentry Error",
+              "description": "Stack Trace of Sentry Error.",
               "args": [
                 {
                   "name": "id",
@@ -66894,7 +66894,7 @@
             },
             {
               "name": "errors",
-              "description": "Collection of Sentry Errors",
+              "description": "Collection of Sentry Errors.",
               "args": [
                 {
                   "name": "searchTerm",
@@ -66967,7 +66967,7 @@
             },
             {
               "name": "externalUrl",
-              "description": "External URL for Sentry",
+              "description": "External URL for Sentry.",
               "args": [
 
               ],
@@ -67106,7 +67106,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Count of errors received since the previously recorded time",
+              "description": "Count of errors received since the previously recorded time.",
               "args": [
 
               ],
@@ -67124,7 +67124,7 @@
             },
             {
               "name": "time",
-              "description": "Time the error frequency stats were recorded",
+              "description": "Time the error frequency stats were recorded.",
               "args": [
 
               ],
@@ -67155,7 +67155,7 @@
           "fields": [
             {
               "name": "dateReceived",
-              "description": "Time the stack trace was received by Sentry",
+              "description": "Time the stack trace was received by Sentry.",
               "args": [
 
               ],
@@ -67173,7 +67173,7 @@
             },
             {
               "name": "issueId",
-              "description": "ID of the Sentry error",
+              "description": "ID of the Sentry error.",
               "args": [
 
               ],
@@ -67191,7 +67191,7 @@
             },
             {
               "name": "stackTraceEntries",
-              "description": "Stack trace entries for the Sentry error",
+              "description": "Stack trace entries for the Sentry error.",
               "args": [
 
               ],
@@ -67230,7 +67230,7 @@
           "fields": [
             {
               "name": "code",
-              "description": "Code number of the context",
+              "description": "Code number of the context.",
               "args": [
 
               ],
@@ -67248,7 +67248,7 @@
             },
             {
               "name": "line",
-              "description": "Line number of the context",
+              "description": "Line number of the context.",
               "args": [
 
               ],
@@ -67279,7 +67279,7 @@
           "fields": [
             {
               "name": "col",
-              "description": "Function in which the Sentry error occurred",
+              "description": "Function in which the Sentry error occurred.",
               "args": [
 
               ],
@@ -67293,7 +67293,7 @@
             },
             {
               "name": "fileName",
-              "description": "File in which the Sentry error occurred",
+              "description": "File in which the Sentry error occurred.",
               "args": [
 
               ],
@@ -67307,7 +67307,7 @@
             },
             {
               "name": "function",
-              "description": "Function in which the Sentry error occurred",
+              "description": "Function in which the Sentry error occurred.",
               "args": [
 
               ],
@@ -67321,7 +67321,7 @@
             },
             {
               "name": "line",
-              "description": "Function in which the Sentry error occurred",
+              "description": "Function in which the Sentry error occurred.",
               "args": [
 
               ],
@@ -67335,7 +67335,7 @@
             },
             {
               "name": "traceContext",
-              "description": "Context of the Sentry error",
+              "description": "Context of the Sentry error.",
               "args": [
 
               ],
@@ -67405,7 +67405,7 @@
           "fields": [
             {
               "name": "level",
-              "description": "Severity level of the Sentry Error",
+              "description": "Severity level of the Sentry Error.",
               "args": [
 
               ],
@@ -67419,7 +67419,7 @@
             },
             {
               "name": "logger",
-              "description": "Logger of the Sentry Error",
+              "description": "Logger of the Sentry Error.",
               "args": [
 
               ],
@@ -69386,7 +69386,7 @@
           "fields": [
             {
               "name": "buttonTitle",
-              "description": "Title for the button, for example: Retry this job",
+              "description": "Title for the button, for example: Retry this job.",
               "args": [
 
               ],
@@ -69400,7 +69400,7 @@
             },
             {
               "name": "icon",
-              "description": "Icon used in the action button",
+              "description": "Icon used in the action button.",
               "args": [
 
               ],
@@ -69414,7 +69414,7 @@
             },
             {
               "name": "method",
-              "description": "Method for the action, for example: :post",
+              "description": "Method for the action, for example: :post.",
               "args": [
 
               ],
@@ -69428,7 +69428,7 @@
             },
             {
               "name": "path",
-              "description": "Path for the action",
+              "description": "Path for the action.",
               "args": [
 
               ],
@@ -69442,7 +69442,7 @@
             },
             {
               "name": "title",
-              "description": "Title for the action, for example: Retry",
+              "description": "Title for the action, for example: Retry.",
               "args": [
 
               ],
@@ -69920,7 +69920,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Total count of collection",
+              "description": "Total count of collection.",
               "args": [
 
               ],
@@ -72374,7 +72374,7 @@
             },
             {
               "name": "name",
-              "description": "The emoji name",
+              "description": "The emoji name.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -73288,7 +73288,7 @@
             },
             {
               "name": "hideBacklogList",
-              "description": "Whether or not backlog list is hidden",
+              "description": "Whether or not backlog list is hidden.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
@@ -73298,7 +73298,7 @@
             },
             {
               "name": "hideClosedList",
-              "description": "Whether or not closed list is hidden",
+              "description": "Whether or not closed list is hidden.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
@@ -73738,7 +73738,7 @@
             },
             {
               "name": "enabled",
-              "description": "Indicates whether this container expiration policy is enabled",
+              "description": "Indicates whether this container expiration policy is enabled.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
@@ -73748,7 +73748,7 @@
             },
             {
               "name": "cadence",
-              "description": "This container expiration policy schedule",
+              "description": "This container expiration policy schedule.",
               "type": {
                 "kind": "ENUM",
                 "name": "ContainerExpirationPolicyCadenceEnum",
@@ -73758,7 +73758,7 @@
             },
             {
               "name": "olderThan",
-              "description": "Tags older that this will expire",
+              "description": "Tags older that this will expire.",
               "type": {
                 "kind": "ENUM",
                 "name": "ContainerExpirationPolicyOlderThanEnum",
@@ -73768,7 +73768,7 @@
             },
             {
               "name": "keepN",
-              "description": "Number of tags to retain",
+              "description": "Number of tags to retain.",
               "type": {
                 "kind": "ENUM",
                 "name": "ContainerExpirationPolicyKeepEnum",
@@ -73778,7 +73778,7 @@
             },
             {
               "name": "nameRegex",
-              "description": "Tags with names matching this regex pattern will expire",
+              "description": "Tags with names matching this regex pattern will expire.",
               "type": {
                 "kind": "SCALAR",
                 "name": "UntrustedRegexp",
@@ -73788,7 +73788,7 @@
             },
             {
               "name": "nameRegexKeep",
-              "description": "Tags with names matching this regex pattern will be preserved",
+              "description": "Tags with names matching this regex pattern will be preserved.",
               "type": {
                 "kind": "SCALAR",
                 "name": "UntrustedRegexp",

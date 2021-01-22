@@ -53,6 +53,8 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
     if Gitlab.ee? && Gitlab::Runtime.sidekiq?
       Gitlab::Metrics::Samplers::GlobalSearchSampler.instance.start
     end
+
+    Gitlab::Ci::Parsers.instrument!
   rescue IOError => e
     Gitlab::ErrorTracking.track_exception(e)
     Gitlab::Metrics.error_detected!
@@ -72,6 +74,8 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
     unless Gitlab::Runtime.sidekiq?
       Gitlab::Metrics::RequestsRackMiddleware.initialize_metrics
     end
+
+    Gitlab::Ci::Parsers.instrument!
   rescue IOError => e
     Gitlab::ErrorTracking.track_exception(e)
     Gitlab::Metrics.error_detected!

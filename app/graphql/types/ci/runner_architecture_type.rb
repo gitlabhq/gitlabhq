@@ -7,9 +7,9 @@ module Types
       graphql_name 'RunnerArchitecture'
 
       field :name, GraphQL::STRING_TYPE, null: false,
-        description: 'Name of the runner platform architecture'
+        description: 'Name of the runner platform architecture.'
       field :download_location, GraphQL::STRING_TYPE, null: false,
-        description: 'Download location for the runner for the platform architecture'
+        description: 'Download location for the runner for the platform architecture.'
     end
   end
 end

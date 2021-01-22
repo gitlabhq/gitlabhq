@@ -28,7 +28,8 @@ Before you can enable automatic provisioning of an SSL certificate for your doma
 - Created a [project](../index.md#getting-started) in GitLab
   containing your website's source code.
 - Acquired a domain (`example.com`) and added a [DNS entry](index.md)
-  pointing it to your Pages website.
+  pointing it to your Pages website. The top-level domain (`.com`) must be a
+  [public suffix](https://publicsuffix.org/).
 - [Added your domain to your Pages project](index.md#1-add-a-custom-domain-to-pages)
   and verified your ownership.
 - Verified your website is up and running, accessible through your custom domain.

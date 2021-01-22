@@ -3,12 +3,12 @@ Represents the access level of a relationship between a User and object that it 
 """
 type AccessLevel {
   """
-  Integer representation of access level
+  Integer representation of access level.
   """
   integerValue: Int
 
   """
-  String representation of access level
+  String representation of access level.
   """
   stringValue: AccessLevelEnum
 }
@@ -40,7 +40,7 @@ input AddAwardEmojiInput {
   clientMutationId: String
 
   """
-  The emoji name
+  The emoji name.
   """
   name: String!
 }
@@ -180,7 +180,7 @@ Describes an alert from the project's Alert Management
 """
 type AlertManagementAlert implements Noteable {
   """
-  Assignees of the alert
+  Assignees of the alert.
   """
   assignees(
     """
@@ -205,22 +205,22 @@ type AlertManagementAlert implements Noteable {
   ): UserConnection
 
   """
-  Timestamp the alert was created
+  Timestamp the alert was created.
   """
   createdAt: Time
 
   """
-  Description of the alert
+  Description of the alert.
   """
   description: String
 
   """
-  Alert details
+  Alert details.
   """
   details: JSON
 
   """
-  The URL of the alert detail page
+  The URL of the alert detail page.
   """
   detailsUrl: String!
 
@@ -250,42 +250,42 @@ type AlertManagementAlert implements Noteable {
   ): DiscussionConnection!
 
   """
-  Timestamp the alert ended
+  Timestamp the alert ended.
   """
   endedAt: Time
 
   """
-  Environment for the alert
+  Environment for the alert.
   """
   environment: Environment
 
   """
-  Number of events of this alert
+  Number of events of this alert.
   """
   eventCount: Int
 
   """
-  List of hosts the alert came from
+  List of hosts the alert came from.
   """
   hosts: [String!]
 
   """
-  Internal ID of the alert
+  Internal ID of the alert.
   """
   iid: ID!
 
   """
-  Internal ID of the GitLab issue attached to the alert
+  Internal ID of the GitLab issue attached to the alert.
   """
   issueIid: ID
 
   """
-  URL for metrics embed for the alert
+  URL for metrics embed for the alert.
   """
   metricsDashboardUrl: String
 
   """
-  Monitoring tool the alert came from
+  Monitoring tool the alert came from.
   """
   monitoringTool: String
 
@@ -315,42 +315,42 @@ type AlertManagementAlert implements Noteable {
   ): NoteConnection!
 
   """
-  The alert condition for Prometheus
+  The alert condition for Prometheus.
   """
   prometheusAlert: PrometheusAlert
 
   """
-  Runbook for the alert as defined in alert details
+  Runbook for the alert as defined in alert details.
   """
   runbook: String
 
   """
-  Service the alert came from
+  Service the alert came from.
   """
   service: String
 
   """
-  Severity of the alert
+  Severity of the alert.
   """
   severity: AlertManagementSeverity
 
   """
-  Timestamp the alert was raised
+  Timestamp the alert was raised.
   """
   startedAt: Time
 
   """
-  Status of the alert
+  Status of the alert.
   """
   status: AlertManagementStatus
 
   """
-  Title of the alert
+  Title of the alert.
   """
   title: String
 
   """
-  Todos of the current user for the alert
+  Todos of the current user for the alert.
   """
   todos(
     """
@@ -405,7 +405,7 @@ type AlertManagementAlert implements Noteable {
   ): TodoConnection
 
   """
-  Timestamp the alert was last updated
+  Timestamp the alert was last updated.
   """
   updatedAt: Time
 }
@@ -570,7 +570,7 @@ type AlertManagementAlertStatusCountsType {
   acknowledged: Int
 
   """
-  Total number of alerts for the project
+  Total number of alerts for the project.
   """
   all: Int
 
@@ -580,7 +580,7 @@ type AlertManagementAlertStatusCountsType {
   ignored: Int
 
   """
-  Number of alerts with status TRIGGERED or ACKNOWLEDGED for the project
+  Number of alerts with status TRIGGERED or ACKNOWLEDGED for the project.
   """
   open: Int
 
@@ -615,37 +615,37 @@ An endpoint and credentials used to accept alerts for a project
 """
 type AlertManagementHttpIntegration implements AlertManagementIntegration {
   """
-  Whether the endpoint is currently accepting alerts
+  Whether the endpoint is currently accepting alerts.
   """
   active: Boolean
 
   """
-  URL at which Prometheus metrics can be queried to populate the metrics dashboard
+  URL at which Prometheus metrics can be queried to populate the metrics dashboard.
   """
   apiUrl: String
 
   """
-  ID of the integration
+  ID of the integration.
   """
   id: ID!
 
   """
-  Name of the integration
+  Name of the integration.
   """
   name: String
 
   """
-  Token used to authenticate alert notification requests
+  Token used to authenticate alert notification requests.
   """
   token: String
 
   """
-  Type of integration
+  Type of integration.
   """
   type: AlertManagementIntegrationType!
 
   """
-  Endpoint which accepts alert notifications
+  Endpoint which accepts alert notifications.
   """
   url: String
 }
@@ -657,37 +657,37 @@ scalar AlertManagementHttpIntegrationID
 
 interface AlertManagementIntegration {
   """
-  Whether the endpoint is currently accepting alerts
+  Whether the endpoint is currently accepting alerts.
   """
   active: Boolean
 
   """
-  URL at which Prometheus metrics can be queried to populate the metrics dashboard
+  URL at which Prometheus metrics can be queried to populate the metrics dashboard.
   """
   apiUrl: String
 
   """
-  ID of the integration
+  ID of the integration.
   """
   id: ID!
 
   """
-  Name of the integration
+  Name of the integration.
   """
   name: String
 
   """
-  Token used to authenticate alert notification requests
+  Token used to authenticate alert notification requests.
   """
   token: String
 
   """
-  Type of integration
+  Type of integration.
   """
   type: AlertManagementIntegrationType!
 
   """
-  Endpoint which accepts alert notifications
+  Endpoint which accepts alert notifications.
   """
   url: String
 }
@@ -847,37 +847,37 @@ An endpoint and credentials used to accept Prometheus alerts for a project
 """
 type AlertManagementPrometheusIntegration implements AlertManagementIntegration {
   """
-  Whether the endpoint is currently accepting alerts
+  Whether the endpoint is currently accepting alerts.
   """
   active: Boolean
 
   """
-  URL at which Prometheus metrics can be queried to populate the metrics dashboard
+  URL at which Prometheus metrics can be queried to populate the metrics dashboard.
   """
   apiUrl: String
 
   """
-  ID of the integration
+  ID of the integration.
   """
   id: ID!
 
   """
-  Name of the integration
+  Name of the integration.
   """
   name: String
 
   """
-  Token used to authenticate alert notification requests
+  Token used to authenticate alert notification requests.
   """
   token: String
 
   """
-  Type of integration
+  Type of integration.
   """
   type: AlertManagementIntegrationType!
 
   """
-  Endpoint which accepts alert notifications
+  Endpoint which accepts alert notifications.
   """
   url: String
 }
@@ -1077,32 +1077,32 @@ An emoji awarded by a user
 """
 type AwardEmoji {
   """
-  The emoji description
+  The emoji description.
   """
   description: String!
 
   """
-  The emoji as an icon
+  The emoji as an icon.
   """
   emoji: String!
 
   """
-  The emoji name
+  The emoji name.
   """
   name: String!
 
   """
-  The emoji in unicode
+  The emoji in unicode.
   """
   unicode: String!
 
   """
-  The unicode version for this emoji
+  The unicode version for this emoji.
   """
   unicodeVersion: String!
 
   """
-  The user who awarded the emoji
+  The user who awarded the emoji.
   """
   user: User!
 }
@@ -1122,7 +1122,7 @@ input AwardEmojiAddInput {
   clientMutationId: String
 
   """
-  The emoji name
+  The emoji name.
   """
   name: String!
 }
@@ -1162,7 +1162,7 @@ input AwardEmojiRemoveInput {
   clientMutationId: String
 
   """
-  The emoji name
+  The emoji name.
   """
   name: String!
 }
@@ -1202,7 +1202,7 @@ input AwardEmojiToggleInput {
   clientMutationId: String
 
   """
-  The emoji name
+  The emoji name.
   """
   name: String!
 }
@@ -1391,17 +1391,17 @@ type Board {
   ): BoardEpicConnection
 
   """
-  Whether or not backlog list is hidden
+  Whether or not backlog list is hidden.
   """
   hideBacklogList: Boolean
 
   """
-  Whether or not closed list is hidden
+  Whether or not closed list is hidden.
   """
   hideClosedList: Boolean
 
   """
-  ID (global ID) of the board
+  ID (global ID) of the board.
   """
   id: ID!
 
@@ -1436,7 +1436,7 @@ type Board {
   ): LabelConnection
 
   """
-  Lists of the board
+  Lists of the board.
   """
   lists(
     """
@@ -1476,7 +1476,7 @@ type Board {
   milestone: Milestone
 
   """
-  Name of the board
+  Name of the board.
   """
   name: String
 
@@ -1654,7 +1654,7 @@ type BoardEpic implements CurrentUserTodos & Noteable {
   createdAt: Time
 
   """
-  Todos for the current user
+  Todos for the current user.
   """
   currentUserTodos(
     """
@@ -1678,7 +1678,7 @@ type BoardEpic implements CurrentUserTodos & Noteable {
     last: Int
 
     """
-    State of the todos
+    State of the todos.
     """
     state: TodoStateEnum
   ): TodoConnection!
@@ -2036,12 +2036,12 @@ scalar BoardID
 
 input BoardIssueInput {
   """
-  Filter by assignee username
+  Filter by assignee username.
   """
   assigneeUsername: [String]
 
   """
-  Filter by author username
+  Filter by author username.
   """
   authorUsername: String
 
@@ -2066,32 +2066,32 @@ input BoardIssueInput {
   iterationWildcardId: IterationWildcardId
 
   """
-  Filter by label name
+  Filter by label name.
   """
   labelName: [String]
 
   """
-  Filter by milestone title
+  Filter by milestone title.
   """
   milestoneTitle: String
 
   """
-  Filter by reaction emoji
+  Filter by reaction emoji.
   """
   myReactionEmoji: String
 
   """
-  List of negated params. Warning: this argument is experimental and a subject to change in future
+  List of negated params. Warning: this argument is experimental and a subject to change in future.
   """
   not: NegatedBoardIssueInput
 
   """
-  Filter by release tag
+  Filter by release tag.
   """
   releaseTag: String
 
   """
-  Search query for issue title or description
+  Search query for issue title or description.
   """
   search: String
 
@@ -2111,17 +2111,17 @@ type BoardList {
   assignee: User
 
   """
-  Indicates if list is collapsed for this user
+  Indicates if list is collapsed for this user.
   """
   collapsed: Boolean
 
   """
-  ID (global ID) of the list
+  ID (global ID) of the list.
   """
   id: ID!
 
   """
-  Board issues
+  Board issues.
   """
   issues(
     """
@@ -2151,7 +2151,7 @@ type BoardList {
   ): IssueConnection
 
   """
-  Count of issues in the list
+  Count of issues in the list.
   """
   issuesCount: Int
 
@@ -2161,7 +2161,7 @@ type BoardList {
   iteration: Iteration
 
   """
-  Label of the list
+  Label of the list.
   """
   label: Label
 
@@ -2171,7 +2171,7 @@ type BoardList {
   limitMetric: ListLimitMetric
 
   """
-  Type of the list
+  Type of the list.
   """
   listType: String!
 
@@ -2191,12 +2191,12 @@ type BoardList {
   milestone: Milestone
 
   """
-  Position of list within the board
+  Position of list within the board.
   """
   position: Int
 
   """
-  Title of the list
+  Title of the list.
   """
   title: String!
 
@@ -2363,12 +2363,12 @@ scalar BoardsEpicListID
 
 type Branch {
   """
-  Commit for the branch
+  Commit for the branch.
   """
   commit: Commit
 
   """
-  Name of the branch
+  Name of the branch.
   """
   name: String!
 }
@@ -2482,17 +2482,17 @@ type CiCdSettingsUpdatePayload {
 
 type CiConfig {
   """
-  Linting errors
+  Linting errors.
   """
   errors: [String!]
 
   """
-  Merged CI config YAML
+  Merged CI config YAML.
   """
   mergedYaml: String
 
   """
-  Stages of the pipeline
+  Stages of the pipeline.
   """
   stages(
     """
@@ -2517,14 +2517,14 @@ type CiConfig {
   ): CiConfigStageConnection
 
   """
-  Status of linting, can be either valid or invalid
+  Status of linting, can be either valid or invalid.
   """
   status: CiConfigStatus
 }
 
 type CiConfigGroup {
   """
-  Jobs in group
+  Jobs in group.
   """
   jobs(
     """
@@ -2549,12 +2549,12 @@ type CiConfigGroup {
   ): CiConfigJobConnection
 
   """
-  Name of the job group
+  Name of the job group.
   """
   name: String
 
   """
-  Size of the job group
+  Size of the job group.
   """
   size: Int
 }
@@ -2725,7 +2725,7 @@ type CiConfigJobRestriction {
 
 type CiConfigNeed {
   """
-  Name of the need
+  Name of the need.
   """
   name: String
 }
@@ -2767,7 +2767,7 @@ type CiConfigNeedEdge {
 
 type CiConfigStage {
   """
-  Groups of jobs for the stage
+  Groups of jobs for the stage.
   """
   groups(
     """
@@ -2792,7 +2792,7 @@ type CiConfigStage {
   ): CiConfigGroupConnection
 
   """
-  Name of the stage
+  Name of the stage.
   """
   name: String
 }
@@ -2849,12 +2849,12 @@ enum CiConfigStatus {
 
 type CiGroup {
   """
-  Detailed status of the group
+  Detailed status of the group.
   """
   detailedStatus: DetailedStatus
 
   """
-  Jobs in group
+  Jobs in group.
   """
   jobs(
     """
@@ -2879,12 +2879,12 @@ type CiGroup {
   ): CiJobConnection
 
   """
-  Name of the job group
+  Name of the job group.
   """
   name: String
 
   """
-  Size of the group
+  Size of the group.
   """
   size: Int
 }
@@ -2926,7 +2926,7 @@ type CiGroupEdge {
 
 type CiJob {
   """
-  Artifacts generated by the job
+  Artifacts generated by the job.
   """
   artifacts(
     """
@@ -2951,17 +2951,17 @@ type CiJob {
   ): CiJobArtifactConnection
 
   """
-  Detailed status of the job
+  Detailed status of the job.
   """
   detailedStatus: DetailedStatus
 
   """
-  Name of the job
+  Name of the job.
   """
   name: String
 
   """
-  References to builds that must complete before the jobs run
+  References to builds that must complete before the jobs run.
   """
   needs(
     """
@@ -2986,24 +2986,24 @@ type CiJob {
   ): CiBuildNeedConnection
 
   """
-  Pipeline the job belongs to
+  Pipeline the job belongs to.
   """
   pipeline: Pipeline
 
   """
-  Schedule for the build
+  Schedule for the build.
   """
   scheduledAt: Time
 }
 
 type CiJobArtifact {
   """
-  URL for downloading the artifact's file
+  URL for downloading the artifact's file.
   """
   downloadPath: String
 
   """
-  File type of the artifact
+  File type of the artifact.
   """
   fileType: JobArtifactFileType
 }
@@ -3085,12 +3085,12 @@ scalar CiPipelineID
 
 type CiStage {
   """
-  Detailed status of the stage
+  Detailed status of the stage.
   """
   detailedStatus: DetailedStatus
 
   """
-  Group of jobs for the stage
+  Group of jobs for the stage.
   """
   groups(
     """
@@ -3115,7 +3115,7 @@ type CiStage {
   ): CiGroupConnection
 
   """
-  Name of the stage
+  Name of the stage.
   """
   name: String
 }
@@ -3212,7 +3212,7 @@ The connection type for ClusterAgent.
 """
 type ClusterAgentConnection {
   """
-  Total count of collection
+  Total count of collection.
   """
   count: Int!
 
@@ -3299,7 +3299,7 @@ The connection type for ClusterAgentToken.
 """
 type ClusterAgentTokenConnection {
   """
-  Total count of collection
+  Total count of collection.
   """
   count: Int!
 
@@ -3501,27 +3501,27 @@ type CodeCoverageSummary {
 
 type Commit {
   """
-  Author of the commit
+  Author of the commit.
   """
   author: User
 
   """
-  Commit authors gravatar
+  Commit authors gravatar.
   """
   authorGravatar: String
 
   """
-  Commit authors name
+  Commit authors name.
   """
   authorName: String
 
   """
-  Timestamp of when the commit was authored
+  Timestamp of when the commit was authored.
   """
   authoredDate: Time
 
   """
-  Description of the commit message
+  Description of the commit message.
   """
   description: String
 
@@ -3531,17 +3531,17 @@ type Commit {
   descriptionHtml: String
 
   """
-  ID (global ID) of the commit
+  ID (global ID) of the commit.
   """
   id: ID!
 
   """
-  Raw commit message
+  Raw commit message.
   """
   message: String
 
   """
-  Pipelines of the commit ordered latest first
+  Pipelines of the commit ordered latest first.
   """
   pipelines(
     """
@@ -3581,22 +3581,22 @@ type Commit {
   ): PipelineConnection
 
   """
-  SHA1 ID of the commit
+  SHA1 ID of the commit.
   """
   sha: String!
 
   """
-  Short SHA1 ID of the commit
+  Short SHA1 ID of the commit.
   """
   shortId: String!
 
   """
-  Rendered HTML of the commit signature
+  Rendered HTML of the commit signature.
   """
   signatureHtml: String
 
   """
-  Title of the commit message
+  Title of the commit message.
   """
   title: String
 
@@ -3606,49 +3606,49 @@ type Commit {
   titleHtml: String
 
   """
-  Web path of the commit
+  Web path of the commit.
   """
   webPath: String!
 
   """
-  Web URL of the commit
+  Web URL of the commit.
   """
   webUrl: String!
 }
 
 input CommitAction {
   """
-  The action to perform, create, delete, move, update, chmod
+  The action to perform, create, delete, move, update, chmod.
   """
   action: CommitActionMode!
 
   """
-  Content of the file
+  Content of the file.
   """
   content: String
 
   """
-  Encoding of the file. Default is text
+  Encoding of the file. Default is text.
   """
   encoding: CommitEncoding
 
   """
-  Enables/disables the execute flag on the file
+  Enables/disables the execute flag on the file.
   """
   executeFilemode: Boolean
 
   """
-  Full path to the file
+  Full path to the file.
   """
   filePath: String!
 
   """
-  Last known file commit ID
+  Last known file commit ID.
   """
   lastCommitId: String
 
   """
-  Original full path to the file being moved
+  Original full path to the file being moved.
   """
   previousPath: String
 }
@@ -3723,7 +3723,7 @@ input CommitCreateInput {
   clientMutationId: String
 
   """
-  Raw commit message
+  Raw commit message.
   """
   message: String!
 
@@ -3929,47 +3929,47 @@ A tag expiration policy designed to keep only the images that matter most
 """
 type ContainerExpirationPolicy {
   """
-  This container expiration policy schedule
+  This container expiration policy schedule.
   """
   cadence: ContainerExpirationPolicyCadenceEnum!
 
   """
-  Timestamp of when the container expiration policy was created
+  Timestamp of when the container expiration policy was created.
   """
   createdAt: Time!
 
   """
-  Indicates whether this container expiration policy is enabled
+  Indicates whether this container expiration policy is enabled.
   """
   enabled: Boolean!
 
   """
-  Number of tags to retain
+  Number of tags to retain.
   """
   keepN: ContainerExpirationPolicyKeepEnum
 
   """
-  Tags with names matching this regex pattern will expire
+  Tags with names matching this regex pattern will expire.
   """
   nameRegex: UntrustedRegexp
 
   """
-  Tags with names matching this regex pattern will be preserved
+  Tags with names matching this regex pattern will be preserved.
   """
   nameRegexKeep: UntrustedRegexp
 
   """
-  Next time that this container expiration policy will get executed
+  Next time that this container expiration policy will get executed.
   """
   nextRunAt: Time
 
   """
-  Tags older that this will expire
+  Tags older that this will expire.
   """
   olderThan: ContainerExpirationPolicyOlderThanEnum
 
   """
-  Timestamp of when the container expiration policy was updated
+  Timestamp of when the container expiration policy was updated.
   """
   updatedAt: Time!
 }
@@ -4100,7 +4100,7 @@ type ContainerRepository {
   path: String!
 
   """
-  Project of the container registry
+  Project of the container registry.
   """
   project: Project!
 
@@ -4210,7 +4210,7 @@ type ContainerRepositoryDetails {
   path: String!
 
   """
-  Project of the container registry
+  Project of the container registry.
   """
   project: Project!
 
@@ -4220,7 +4220,7 @@ type ContainerRepositoryDetails {
   status: ContainerRepositoryStatus
 
   """
-  Tags of the container repository
+  Tags of the container repository.
   """
   tags(
     """
@@ -4505,12 +4505,12 @@ input CreateBoardInput {
   groupPath: ID
 
   """
-  Whether or not backlog list is hidden
+  Whether or not backlog list is hidden.
   """
   hideBacklogList: Boolean
 
   """
-  Whether or not closed list is hidden
+  Whether or not closed list is hidden.
   """
   hideClosedList: Boolean
 
@@ -5347,7 +5347,7 @@ type CreateTestCasePayload {
 
 interface CurrentUserTodos {
   """
-  Todos for the current user
+  Todos for the current user.
   """
   currentUserTodos(
     """
@@ -5371,7 +5371,7 @@ interface CurrentUserTodos {
     last: Int
 
     """
-    State of the todos
+    State of the todos.
     """
     state: TodoStateEnum
   ): TodoConnection!
@@ -5382,22 +5382,22 @@ A custom emoji uploaded by user
 """
 type CustomEmoji {
   """
-  Whether the emoji is an external link
+  Whether the emoji is an external link.
   """
   external: Boolean!
 
   """
-  The ID of the emoji
+  The ID of the emoji.
   """
   id: CustomEmojiID!
 
   """
-  The name of the emoji
+  The name of the emoji.
   """
   name: String!
 
   """
-  The link to file of the emoji
+  The link to file of the emoji.
   """
   url: String!
 }
@@ -6394,17 +6394,17 @@ The response from the AdminSidekiqQueuesDeleteJobs mutation
 """
 type DeleteJobsResponse {
   """
-  Whether or not the entire queue was processed in time; if not, retrying the same request is safe
+  Whether or not the entire queue was processed in time; if not, retrying the same request is safe.
   """
   completed: Boolean
 
   """
-  The number of matching jobs deleted
+  The number of matching jobs deleted.
   """
   deletedJobs: Int
 
   """
-  The queue size after processing
+  The queue size after processing.
   """
   queueSize: Int
 }
@@ -6414,7 +6414,7 @@ A single design
 """
 type Design implements CurrentUserTodos & DesignFields & Noteable {
   """
-  Todos for the current user
+  Todos for the current user.
   """
   currentUserTodos(
     """
@@ -6438,13 +6438,13 @@ type Design implements CurrentUserTodos & DesignFields & Noteable {
     last: Int
 
     """
-    State of the todos
+    State of the todos.
     """
     state: TodoStateEnum
   ): TodoConnection!
 
   """
-  The diff refs for this design
+  The diff refs for this design.
   """
   diffRefs: DiffRefs!
 
@@ -6474,27 +6474,27 @@ type Design implements CurrentUserTodos & DesignFields & Noteable {
   ): DiscussionConnection!
 
   """
-  How this design was changed in the current version
+  How this design was changed in the current version.
   """
   event: DesignVersionEvent!
 
   """
-  The filename of the design
+  The filename of the design.
   """
   filename: String!
 
   """
-  The full path to the design file
+  The full path to the design file.
   """
   fullPath: String!
 
   """
-  The ID of this design
+  The ID of this design.
   """
   id: ID!
 
   """
-  The URL of the full-sized image
+  The URL of the full-sized image.
   """
   image: String!
 
@@ -6504,7 +6504,7 @@ type Design implements CurrentUserTodos & DesignFields & Noteable {
   imageV432x230: String
 
   """
-  The issue the design belongs to
+  The issue the design belongs to.
   """
   issue: Issue!
 
@@ -6534,17 +6534,17 @@ type Design implements CurrentUserTodos & DesignFields & Noteable {
   ): NoteConnection!
 
   """
-  The total count of user-created notes for this design
+  The total count of user-created notes for this design.
   """
   notesCount: Int!
 
   """
-  The project the design belongs to
+  The project the design belongs to.
   """
   project: Project!
 
   """
-  All versions related to this design ordered newest first
+  All versions related to this design ordered newest first.
   """
   versions(
     """
@@ -6584,37 +6584,37 @@ A design pinned to a specific version. The image field reflects the design as of
 """
 type DesignAtVersion implements DesignFields {
   """
-  The underlying design
+  The underlying design.
   """
   design: Design!
 
   """
-  The diff refs for this design
+  The diff refs for this design.
   """
   diffRefs: DiffRefs!
 
   """
-  How this design was changed in the current version
+  How this design was changed in the current version.
   """
   event: DesignVersionEvent!
 
   """
-  The filename of the design
+  The filename of the design.
   """
   filename: String!
 
   """
-  The full path to the design file
+  The full path to the design file.
   """
   fullPath: String!
 
   """
-  The ID of this design
+  The ID of this design.
   """
   id: ID!
 
   """
-  The URL of the full-sized image
+  The URL of the full-sized image.
   """
   image: String!
 
@@ -6624,22 +6624,22 @@ type DesignAtVersion implements DesignFields {
   imageV432x230: String
 
   """
-  The issue the design belongs to
+  The issue the design belongs to.
   """
   issue: Issue!
 
   """
-  The total count of user-created notes for this design
+  The total count of user-created notes for this design.
   """
   notesCount: Int!
 
   """
-  The project the design belongs to
+  The project the design belongs to.
   """
   project: Project!
 
   """
-  The version this design-at-versions is pinned to
+  The version this design-at-versions is pinned to.
   """
   version: DesignVersion!
 }
@@ -6684,12 +6684,12 @@ A collection of designs
 """
 type DesignCollection {
   """
-  Copy state of the design collection
+  Copy state of the design collection.
   """
   copyState: DesignCollectionCopyState
 
   """
-  Find a specific design
+  Find a specific design.
   """
   design(
     """
@@ -6704,7 +6704,7 @@ type DesignCollection {
   ): Design
 
   """
-  Find a design as of a version
+  Find a design as of a version.
   """
   designAtVersion(
     """
@@ -6714,7 +6714,7 @@ type DesignCollection {
   ): DesignAtVersion
 
   """
-  All designs for the design collection
+  All designs for the design collection.
   """
   designs(
     """
@@ -6755,17 +6755,17 @@ type DesignCollection {
   ): DesignConnection!
 
   """
-  Issue associated with the design collection
+  Issue associated with the design collection.
   """
   issue: Issue!
 
   """
-  Project associated with the design collection
+  Project associated with the design collection.
   """
   project: Project!
 
   """
-  A specific version
+  A specific version.
   """
   version(
     """
@@ -6780,7 +6780,7 @@ type DesignCollection {
   ): DesignVersion
 
   """
-  All versions related to all designs, ordered newest first
+  All versions related to all designs, ordered newest first.
   """
   versions(
     """
@@ -6872,32 +6872,32 @@ type DesignEdge {
 
 interface DesignFields {
   """
-  The diff refs for this design
+  The diff refs for this design.
   """
   diffRefs: DiffRefs!
 
   """
-  How this design was changed in the current version
+  How this design was changed in the current version.
   """
   event: DesignVersionEvent!
 
   """
-  The filename of the design
+  The filename of the design.
   """
   filename: String!
 
   """
-  The full path to the design file
+  The full path to the design file.
   """
   fullPath: String!
 
   """
-  The ID of this design
+  The ID of this design.
   """
   id: ID!
 
   """
-  The URL of the full-sized image
+  The URL of the full-sized image.
   """
   image: String!
 
@@ -6907,24 +6907,24 @@ interface DesignFields {
   imageV432x230: String
 
   """
-  The issue the design belongs to
+  The issue the design belongs to.
   """
   issue: Issue!
 
   """
-  The total count of user-created notes for this design
+  The total count of user-created notes for this design.
   """
   notesCount: Int!
 
   """
-  The project the design belongs to
+  The project the design belongs to.
   """
   project: Project!
 }
 
 type DesignManagement {
   """
-  Find a design as of a version
+  Find a design as of a version.
   """
   designAtVersion(
     """
@@ -6934,7 +6934,7 @@ type DesignManagement {
   ): DesignAtVersion
 
   """
-  Find a version
+  Find a version.
   """
   version(
     """
@@ -7104,7 +7104,7 @@ A specific version in which designs were added, modified or deleted
 """
 type DesignVersion {
   """
-  A particular design as of this version, provided it is visible at this version
+  A particular design as of this version, provided it is visible at this version.
   """
   designAtVersion(
     """
@@ -7124,7 +7124,7 @@ type DesignVersion {
   ): DesignAtVersion!
 
   """
-  All designs that were changed in the version
+  All designs that were changed in the version.
   """
   designs(
     """
@@ -7149,7 +7149,7 @@ type DesignVersion {
   ): DesignConnection!
 
   """
-  All designs that are visible at this version, as of this version
+  All designs that are visible at this version, as of this version.
   """
   designsAtVersion(
     """
@@ -7184,12 +7184,12 @@ type DesignVersion {
   ): DesignAtVersionConnection!
 
   """
-  ID of the design version
+  ID of the design version.
   """
   id: ID!
 
   """
-  SHA of the design version
+  SHA of the design version.
   """
   sha: ID!
 }
@@ -7501,47 +7501,47 @@ type DestroySnippetPayload {
 
 type DetailedStatus {
   """
-  Action information for the status. This includes method, button title, icon, path, and title
+  Action information for the status. This includes method, button title, icon, path, and title.
   """
   action: StatusAction
 
   """
-  Path of the details for the status
+  Path of the details for the status.
   """
   detailsPath: String
 
   """
-  Favicon of the status
+  Favicon of the status.
   """
   favicon: String
 
   """
-  Group of the status
+  Group of the status.
   """
   group: String
 
   """
-  Indicates if the status has further details
+  Indicates if the status has further details.
   """
   hasDetails: Boolean
 
   """
-  Icon of the status
+  Icon of the status.
   """
   icon: String
 
   """
-  Label of the status
+  Label of the status.
   """
   label: String
 
   """
-  Text of the status
+  Text of the status.
   """
   text: String
 
   """
-  Tooltip associated with the status
+  Tooltip associated with the status.
   """
   tooltip: String
 }
@@ -7663,12 +7663,12 @@ type DevopsAdoptionSnapshot {
 
 input DiffImagePositionInput {
   """
-  Merge base of the branch the comment was made on
+  Merge base of the branch the comment was made on.
   """
   baseSha: String
 
   """
-  SHA of the HEAD at the time the comment was made
+  SHA of the HEAD at the time the comment was made.
   """
   headSha: String!
 
@@ -7684,7 +7684,7 @@ input DiffImagePositionInput {
   paths: DiffPathsInput!
 
   """
-  SHA of the branch being compared against
+  SHA of the branch being compared against.
   """
   startSha: String!
 
@@ -7711,12 +7711,12 @@ scalar DiffNoteID
 
 input DiffPathsInput {
   """
-  The path of the file on the head sha
+  The path of the file on the head sha.
   """
   newPath: String
 
   """
-  The path of the file on the start sha
+  The path of the file on the start sha.
   """
   oldPath: String
 }
@@ -7780,12 +7780,12 @@ type DiffPosition {
 
 input DiffPositionInput {
   """
-  Merge base of the branch the comment was made on
+  Merge base of the branch the comment was made on.
   """
   baseSha: String
 
   """
-  SHA of the HEAD at the time the comment was made
+  SHA of the HEAD at the time the comment was made.
   """
   headSha: String!
 
@@ -7806,7 +7806,7 @@ input DiffPositionInput {
   paths: DiffPathsInput!
 
   """
-  SHA of the branch being compared against
+  SHA of the branch being compared against.
   """
   startSha: String!
 }
@@ -7821,17 +7821,17 @@ enum DiffPositionType {
 
 type DiffRefs {
   """
-  Merge base of the branch the comment was made on
+  Merge base of the branch the comment was made on.
   """
   baseSha: String
 
   """
-  SHA of the HEAD at the time the comment was made
+  SHA of the HEAD at the time the comment was made.
   """
   headSha: String!
 
   """
-  SHA of the branch being compared against
+  SHA of the branch being compared against.
   """
   startSha: String!
 }
@@ -7841,17 +7841,17 @@ Changes to a single file
 """
 type DiffStats {
   """
-  Number of lines added to this file
+  Number of lines added to this file.
   """
   additions: Int!
 
   """
-  Number of lines deleted from this file
+  Number of lines deleted from this file.
   """
   deletions: Int!
 
   """
-  File path, relative to repository root
+  File path, relative to repository root.
   """
   path: String!
 }
@@ -7861,22 +7861,22 @@ Aggregated summary of changes
 """
 type DiffStatsSummary {
   """
-  Number of lines added
+  Number of lines added.
   """
   additions: Int!
 
   """
-  Number of lines changed
+  Number of lines changed.
   """
   changes: Int!
 
   """
-  Number of lines deleted
+  Number of lines deleted.
   """
   deletions: Int!
 
   """
-  Number of files changed
+  Number of files changed.
   """
   fileCount: Int!
 }
@@ -8114,17 +8114,17 @@ Describes where code is deployed for a project
 """
 type Environment {
   """
-  ID of the environment
+  ID of the environment.
   """
   id: ID!
 
   """
-  The most severe open alert for the environment. If multiple alerts have equal severity, the most recent is returned
+  The most severe open alert for the environment. If multiple alerts have equal severity, the most recent is returned.
   """
   latestOpenedMostSevereAlert: AlertManagementAlert
 
   """
-  Metrics dashboard schema for the environment
+  Metrics dashboard schema for the environment.
   """
   metricsDashboard(
     """
@@ -8134,7 +8134,7 @@ type Environment {
   ): MetricsDashboard
 
   """
-  Human-readable name of the environment
+  Human-readable name of the environment.
   """
   name: String!
 
@@ -8144,7 +8144,7 @@ type Environment {
   path: String!
 
   """
-  State of the environment, for example: available/stopped
+  State of the environment, for example: available/stopped.
   """
   state: String!
 }
@@ -8347,7 +8347,7 @@ type Epic implements CurrentUserTodos & Noteable {
   createdAt: Time
 
   """
-  Todos for the current user
+  Todos for the current user.
   """
   currentUserTodos(
     """
@@ -8371,7 +8371,7 @@ type Epic implements CurrentUserTodos & Noteable {
     last: Int
 
     """
-    State of the todos
+    State of the todos.
     """
     state: TodoStateEnum
   ): TodoConnection!
@@ -8977,7 +8977,7 @@ type EpicIssue implements CurrentUserTodos & Noteable {
   createdAt: Time!
 
   """
-  Todos for the current user
+  Todos for the current user.
   """
   currentUserTodos(
     """
@@ -9001,7 +9001,7 @@ type EpicIssue implements CurrentUserTodos & Noteable {
     last: Int
 
     """
-    State of the todos
+    State of the todos.
     """
     state: TodoStateEnum
   ): TodoConnection!
@@ -9327,7 +9327,7 @@ The connection type for EpicIssue.
 """
 type EpicIssueConnection {
   """
-  Total count of collection
+  Total count of collection.
   """
   count: Int!
 
@@ -10020,27 +10020,27 @@ type GitlabSubscriptionActivatePayload {
 
 type GrafanaIntegration {
   """
-  Timestamp of the issue's creation
+  Timestamp of the issue's creation.
   """
   createdAt: Time!
 
   """
-  Indicates whether Grafana integration is enabled
+  Indicates whether Grafana integration is enabled.
   """
   enabled: Boolean!
 
   """
-  URL for the Grafana host for the Grafana integration
+  URL for the Grafana host for the Grafana integration.
   """
   grafanaUrl: String!
 
   """
-  Internal ID of the Grafana integration
+  Internal ID of the Grafana integration.
   """
   id: ID!
 
   """
-  Timestamp of the issue's last activity
+  Timestamp of the issue's last activity.
   """
   updatedAt: Time!
 }
@@ -10057,17 +10057,17 @@ type Group {
   additionalPurchasedStorageSize: Float
 
   """
-  Indicates whether Auto DevOps is enabled for all projects within this group
+  Indicates whether Auto DevOps is enabled for all projects within this group.
   """
   autoDevopsEnabled: Boolean
 
   """
-  Avatar URL of the group
+  Avatar URL of the group.
   """
   avatarUrl: String
 
   """
-  A single board of the group
+  A single board of the group.
   """
   board(
     """
@@ -10077,7 +10077,7 @@ type Group {
   ): Board
 
   """
-  Boards of the group
+  Boards of the group.
   """
   boards(
     """
@@ -10168,7 +10168,7 @@ type Group {
   ): ComplianceFrameworkConnection
 
   """
-  Container repositories of the group
+  Container repositories of the group.
   """
   containerRepositories(
     """
@@ -10198,7 +10198,7 @@ type Group {
   ): ContainerRepositoryConnection
 
   """
-  Number of container repositories in the group
+  Number of container repositories in the group.
   """
   containerRepositoriesCount: Int!
 
@@ -10208,7 +10208,7 @@ type Group {
   containsLockedProjects: Boolean!
 
   """
-  Custom emoji within this namespace Available only when feature flag `custom_emoji` is enabled.
+  Custom emoji within this namespace. Available only when feature flag `custom_emoji` is enabled.
   """
   customEmoji(
     """
@@ -10243,7 +10243,7 @@ type Group {
   descriptionHtml: String
 
   """
-  Indicates if a group has email notifications disabled
+  Indicates if a group has email notifications disabled.
   """
   emailsDisabled: Boolean
 
@@ -10474,7 +10474,7 @@ type Group {
   fullPath: ID!
 
   """
-  A membership of a user within this group
+  A membership of a user within this group.
   """
   groupMembers(
     """
@@ -10524,7 +10524,7 @@ type Group {
   isTemporaryStorageIncreaseEnabled: Boolean!
 
   """
-  Issues for projects in this group
+  Issues for projects in this group.
   """
   issues(
     """
@@ -10722,17 +10722,17 @@ type Group {
   ): IterationConnection
 
   """
-  A label available on this group
+  A label available on this group.
   """
   label(
     """
-    Title of the label
+    Title of the label.
     """
     title: String!
   ): Label
 
   """
-  Labels available on this group
+  Labels available on this group.
   """
   labels(
     """
@@ -10756,7 +10756,7 @@ type Group {
     last: Int
 
     """
-    A search term to find labels with
+    A search term to find labels with.
     """
     searchTerm: String
   ): LabelConnection
@@ -10767,12 +10767,12 @@ type Group {
   lfsEnabled: Boolean
 
   """
-  Indicates if a group is disabled from getting mentioned
+  Indicates if a group is disabled from getting mentioned.
   """
   mentionsDisabled: Boolean
 
   """
-  Merge requests for projects in this group
+  Merge requests for projects in this group.
   """
   mergeRequests(
     """
@@ -10857,7 +10857,7 @@ type Group {
   ): MergeRequestConnection
 
   """
-  Milestones of the group
+  Milestones of the group.
   """
   milestones(
     """
@@ -10940,7 +10940,7 @@ type Group {
   packageSettings: PackageSettings
 
   """
-  Parent group
+  Parent group.
   """
   parent: Group
 
@@ -10950,7 +10950,7 @@ type Group {
   path: String!
 
   """
-  The permission level required to create projects in the group
+  The permission level required to create projects in the group.
   """
   projectCreationLevel: String
 
@@ -11010,7 +11010,7 @@ type Group {
   requestAccessEnabled: Boolean
 
   """
-  Indicates if all users in this group are required to set up two-factor authentication
+  Indicates if all users in this group are required to set up two-factor authentication.
   """
   requireTwoFactorAuthentication: Boolean
 
@@ -11020,7 +11020,7 @@ type Group {
   rootStorageStatistics: RootStorageStatistics
 
   """
-  Indicates if sharing a project with another group within this group is prevented
+  Indicates if sharing a project with another group within this group is prevented.
   """
   shareWithGroupLock: Boolean
 
@@ -11035,7 +11035,7 @@ type Group {
   storageSizeLimit: Float
 
   """
-  The permission level required to create subgroups within the group
+  The permission level required to create subgroups within the group.
   """
   subgroupCreationLevel: String
 
@@ -11100,7 +11100,7 @@ type Group {
   totalRepositorySizeExcess: Float
 
   """
-  Time before two-factor authentication is enforced
+  Time before two-factor authentication is enforced.
   """
   twoFactorGracePeriod: Int
 
@@ -11316,7 +11316,7 @@ type Group {
   ): VulnerabilitySeveritiesCount
 
   """
-  Web URL of the group
+  Web URL of the group.
   """
   webUrl: String!
 }
@@ -11351,7 +11351,7 @@ type GroupMember implements MemberInterface {
   expiresAt: Time
 
   """
-  Group that a User is a member of
+  Group that a User is a member of.
   """
   group: Group
 
@@ -12026,17 +12026,17 @@ Represents a recorded measurement (object count) for the Admins
 """
 type InstanceStatisticsMeasurement {
   """
-  Object count
+  Object count.
   """
   count: Int!
 
   """
-  The type of objects being measured
+  The type of objects being measured.
   """
   identifier: MeasurementIdentifier!
 
   """
-  The time the measurement was recorded
+  The time the measurement was recorded.
   """
   recordedAt: Time
 }
@@ -12183,7 +12183,7 @@ type Issue implements CurrentUserTodos & Noteable {
   createdAt: Time!
 
   """
-  Todos for the current user
+  Todos for the current user.
   """
   currentUserTodos(
     """
@@ -12207,7 +12207,7 @@ type Issue implements CurrentUserTodos & Noteable {
     last: Int
 
     """
-    State of the todos
+    State of the todos.
     """
     state: TodoStateEnum
   ): TodoConnection!
@@ -12523,7 +12523,7 @@ The connection type for Issue.
 """
 type IssueConnection {
   """
-  Total count of collection
+  Total count of collection.
   """
   count: Int!
 
@@ -13861,7 +13861,7 @@ The connection type for Label.
 """
 type LabelConnection {
   """
-  Total count of collection
+  Total count of collection.
   """
   count: Int!
 
@@ -14266,7 +14266,7 @@ type MergeRequest implements CurrentUserTodos & Noteable {
   createdAt: Time!
 
   """
-  Todos for the current user
+  Todos for the current user.
   """
   currentUserTodos(
     """
@@ -14290,7 +14290,7 @@ type MergeRequest implements CurrentUserTodos & Noteable {
     last: Int
 
     """
-    State of the todos
+    State of the todos.
     """
     state: TodoStateEnum
   ): TodoConnection!
@@ -14781,7 +14781,7 @@ The connection type for MergeRequest.
 """
 type MergeRequestConnection {
   """
-  Total count of collection
+  Total count of collection.
   """
   count: Int!
 
@@ -16219,12 +16219,12 @@ enum NamespaceProjectSort {
 
 input NegatedBoardIssueInput {
   """
-  Filter by assignee username
+  Filter by assignee username.
   """
   assigneeUsername: [String]
 
   """
-  Filter by author username
+  Filter by author username.
   """
   authorUsername: String
 
@@ -16239,22 +16239,22 @@ input NegatedBoardIssueInput {
   iterationTitle: String
 
   """
-  Filter by label name
+  Filter by label name.
   """
   labelName: [String]
 
   """
-  Filter by milestone title
+  Filter by milestone title.
   """
   milestoneTitle: String
 
   """
-  Filter by reaction emoji
+  Filter by reaction emoji.
   """
   myReactionEmoji: String
 
   """
-  Filter by release tag
+  Filter by release tag.
   """
   releaseTag: String
 
@@ -17410,22 +17410,22 @@ type PageInfo {
 
 type Pipeline {
   """
-  Indicates if the pipeline is active
+  Indicates if the pipeline is active.
   """
   active: Boolean!
 
   """
-  Base SHA of the source branch
+  Base SHA of the source branch.
   """
   beforeSha: String
 
   """
-  Specifies if a pipeline can be canceled
+  Specifies if a pipeline can be canceled.
   """
   cancelable: Boolean!
 
   """
-  Timestamp of the pipeline's commit
+  Timestamp of the pipeline's commit.
   """
   committedAt: Time
 
@@ -17437,22 +17437,22 @@ type Pipeline {
   configSource: PipelineConfigSourceEnum
 
   """
-  Coverage percentage
+  Coverage percentage.
   """
   coverage: Float
 
   """
-  Timestamp of the pipeline's creation
+  Timestamp of the pipeline's creation.
   """
   createdAt: Time!
 
   """
-  Detailed status of the pipeline
+  Detailed status of the pipeline.
   """
   detailedStatus: DetailedStatus!
 
   """
-  Pipelines this pipeline will trigger
+  Pipelines this pipeline will trigger.
   """
   downstream(
     """
@@ -17477,27 +17477,27 @@ type Pipeline {
   ): PipelineConnection
 
   """
-  Duration of the pipeline in seconds
+  Duration of the pipeline in seconds.
   """
   duration: Int
 
   """
-  Timestamp of the pipeline's completion
+  Timestamp of the pipeline's completion.
   """
   finishedAt: Time
 
   """
-  ID of the pipeline
+  ID of the pipeline.
   """
   id: ID!
 
   """
-  Internal ID of the pipeline
+  Internal ID of the pipeline.
   """
   iid: String!
 
   """
-  Jobs belonging to the pipeline
+  Jobs belonging to the pipeline.
   """
   jobs(
     """
@@ -17527,17 +17527,17 @@ type Pipeline {
   ): CiJobConnection
 
   """
-  Relative path to the pipeline's page
+  Relative path to the pipeline's page.
   """
   path: String
 
   """
-  Project the pipeline belongs to
+  Project the pipeline belongs to.
   """
   project: Project
 
   """
-  Specifies if a pipeline can be retried
+  Specifies if a pipeline can be retried.
   """
   retryable: Boolean!
 
@@ -17547,17 +17547,17 @@ type Pipeline {
   securityReportSummary: SecurityReportSummary
 
   """
-  SHA of the pipeline's commit
+  SHA of the pipeline's commit.
   """
   sha: String!
 
   """
-  Job where pipeline was triggered from
+  Job where pipeline was triggered from.
   """
   sourceJob: CiJob
 
   """
-  Stages of the pipeline
+  Stages of the pipeline.
   """
   stages(
     """
@@ -17582,7 +17582,7 @@ type Pipeline {
   ): CiStageConnection
 
   """
-  Timestamp when the pipeline was started
+  Timestamp when the pipeline was started.
   """
   startedAt: Time
 
@@ -17593,17 +17593,17 @@ type Pipeline {
   status: PipelineStatusEnum!
 
   """
-  Timestamp of the pipeline's last activity
+  Timestamp of the pipeline's last activity.
   """
   updatedAt: Time!
 
   """
-  Pipeline that triggered the pipeline
+  Pipeline that triggered the pipeline.
   """
   upstream: Pipeline
 
   """
-  Pipeline user
+  Pipeline user.
   """
   user: User
 
@@ -17615,57 +17615,57 @@ type Pipeline {
 
 type PipelineAnalytics {
   """
-  Labels for the monthly pipeline count
+  Labels for the monthly pipeline count.
   """
   monthPipelinesLabels: [String!]
 
   """
-  Total monthly successful pipeline count
+  Total monthly successful pipeline count.
   """
   monthPipelinesSuccessful: [Int!]
 
   """
-  Total monthly pipeline count
+  Total monthly pipeline count.
   """
   monthPipelinesTotals: [Int!]
 
   """
-  Pipeline times labels
+  Pipeline times labels.
   """
   pipelineTimesLabels: [String!]
 
   """
-  Pipeline times
+  Pipeline times.
   """
   pipelineTimesValues: [Int!]
 
   """
-  Labels for the weekly pipeline count
+  Labels for the weekly pipeline count.
   """
   weekPipelinesLabels: [String!]
 
   """
-  Total weekly successful pipeline count
+  Total weekly successful pipeline count.
   """
   weekPipelinesSuccessful: [Int!]
 
   """
-  Total weekly pipeline count
+  Total weekly pipeline count.
   """
   weekPipelinesTotals: [Int!]
 
   """
-  Labels for the yearly pipeline count
+  Labels for the yearly pipeline count.
   """
   yearPipelinesLabels: [String!]
 
   """
-  Total yearly successful pipeline count
+  Total yearly successful pipeline count.
   """
   yearPipelinesSuccessful: [Int!]
 
   """
-  Total yearly pipeline count
+  Total yearly pipeline count.
   """
   yearPipelinesTotals: [Int!]
 }
@@ -17716,7 +17716,7 @@ The connection type for Pipeline.
 """
 type PipelineConnection {
   """
-  Total count of collection
+  Total count of collection.
   """
   count: Int!
 
@@ -21250,7 +21250,7 @@ The connection type for Release.
 """
 type ReleaseConnection {
   """
-  Total count of collection
+  Total count of collection.
   """
   count: Int!
 
@@ -21400,22 +21400,22 @@ Evidence for a release
 """
 type ReleaseEvidence {
   """
-  Timestamp when the evidence was collected
+  Timestamp when the evidence was collected.
   """
   collectedAt: Time
 
   """
-  URL from where the evidence can be downloaded
+  URL from where the evidence can be downloaded.
   """
   filepath: String
 
   """
-  ID of the evidence
+  ID of the evidence.
   """
   id: ID!
 
   """
-  SHA1 ID of the evidence hash
+  SHA1 ID of the evidence hash.
   """
   sha: String
 }
@@ -21642,7 +21642,7 @@ input RemoveAwardEmojiInput {
   clientMutationId: String
 
   """
-  The emoji name
+  The emoji name.
   """
   name: String!
 }
@@ -22123,12 +22123,12 @@ type RunDASTScanPayload {
 
 type RunnerArchitecture {
   """
-  Download location for the runner for the platform architecture
+  Download location for the runner for the platform architecture.
   """
   downloadLocation: String!
 
   """
-  Name of the runner platform architecture
+  Name of the runner platform architecture.
   """
   name: String!
 }
@@ -22170,7 +22170,7 @@ type RunnerArchitectureEdge {
 
 type RunnerPlatform {
   """
-  Runner architectures supported for the platform
+  Runner architectures supported for the platform.
   """
   architectures(
     """
@@ -22195,12 +22195,12 @@ type RunnerPlatform {
   ): RunnerArchitectureConnection
 
   """
-  Human readable name of the runner platform
+  Human readable name of the runner platform.
   """
   humanReadableName: String!
 
   """
-  Name slug of the runner platform
+  Name slug of the runner platform.
   """
   name: String!
 }
@@ -22242,12 +22242,12 @@ type RunnerPlatformEdge {
 
 type RunnerSetup {
   """
-  Instructions for installing the runner on the specified architecture
+  Instructions for installing the runner on the specified architecture.
   """
   installInstructions: String!
 
   """
-  Instructions for registering the runner
+  Instructions for registering the runner.
   """
   registerInstructions: String
 }
@@ -22846,142 +22846,142 @@ A Sentry error
 """
 type SentryDetailedError {
   """
-  Count of occurrences
+  Count of occurrences.
   """
   count: Int!
 
   """
-  Culprit of the error
+  Culprit of the error.
   """
   culprit: String!
 
   """
-  External Base URL of the Sentry Instance
+  External Base URL of the Sentry Instance.
   """
   externalBaseUrl: String!
 
   """
-  External URL of the error
+  External URL of the error.
   """
   externalUrl: String!
 
   """
-  Commit the error was first seen
+  Commit the error was first seen.
   """
   firstReleaseLastCommit: String
 
   """
-  Release short version the error was first seen
+  Release short version the error was first seen.
   """
   firstReleaseShortVersion: String
 
   """
-  Release version the error was first seen
+  Release version the error was first seen.
   """
   firstReleaseVersion: String
 
   """
-  Timestamp when the error was first seen
+  Timestamp when the error was first seen.
   """
   firstSeen: Time!
 
   """
-  Last 24hr stats of the error
+  Last 24hr stats of the error.
   """
   frequency: [SentryErrorFrequency!]!
 
   """
-  GitLab commit SHA attributed to the Error based on the release version
+  GitLab commit SHA attributed to the Error based on the release version.
   """
   gitlabCommit: String
 
   """
-  Path to the GitLab page for the GitLab commit attributed to the error
+  Path to the GitLab page for the GitLab commit attributed to the error.
   """
   gitlabCommitPath: String
 
   """
-  URL of GitLab Issue
+  URL of GitLab Issue.
   """
   gitlabIssuePath: String
 
   """
-  ID (global ID) of the error
+  ID (global ID) of the error.
   """
   id: ID!
 
   """
-  Commit the error was last seen
+  Commit the error was last seen.
   """
   lastReleaseLastCommit: String
 
   """
-  Release short version the error was last seen
+  Release short version the error was last seen.
   """
   lastReleaseShortVersion: String
 
   """
-  Release version the error was last seen
+  Release version the error was last seen.
   """
   lastReleaseVersion: String
 
   """
-  Timestamp when the error was last seen
+  Timestamp when the error was last seen.
   """
   lastSeen: Time!
 
   """
-  Sentry metadata message of the error
+  Sentry metadata message of the error.
   """
   message: String
 
   """
-  ID (Sentry ID) of the error
+  ID (Sentry ID) of the error.
   """
   sentryId: String!
 
   """
-  ID of the project (Sentry project)
+  ID of the project (Sentry project).
   """
   sentryProjectId: ID!
 
   """
-  Name of the project affected by the error
+  Name of the project affected by the error.
   """
   sentryProjectName: String!
 
   """
-  Slug of the project affected by the error
+  Slug of the project affected by the error.
   """
   sentryProjectSlug: String!
 
   """
-  Short ID (Sentry ID) of the error
+  Short ID (Sentry ID) of the error.
   """
   shortId: String!
 
   """
-  Status of the error
+  Status of the error.
   """
   status: SentryErrorStatus!
 
   """
-  Tags associated with the Sentry Error
+  Tags associated with the Sentry Error.
   """
   tags: SentryErrorTags!
 
   """
-  Title of the error
+  Title of the error.
   """
   title: String!
 
   """
-  Type of the error
+  Type of the error.
   """
   type: String!
 
   """
-  Count of users affected by the error
+  Count of users affected by the error.
   """
   userCount: Int!
 }
@@ -22991,87 +22991,87 @@ A Sentry error. A simplified version of SentryDetailedError
 """
 type SentryError {
   """
-  Count of occurrences
+  Count of occurrences.
   """
   count: Int!
 
   """
-  Culprit of the error
+  Culprit of the error.
   """
   culprit: String!
 
   """
-  External URL of the error
+  External URL of the error.
   """
   externalUrl: String!
 
   """
-  Timestamp when the error was first seen
+  Timestamp when the error was first seen.
   """
   firstSeen: Time!
 
   """
-  Last 24hr stats of the error
+  Last 24hr stats of the error.
   """
   frequency: [SentryErrorFrequency!]!
 
   """
-  ID (global ID) of the error
+  ID (global ID) of the error.
   """
   id: ID!
 
   """
-  Timestamp when the error was last seen
+  Timestamp when the error was last seen.
   """
   lastSeen: Time!
 
   """
-  Sentry metadata message of the error
+  Sentry metadata message of the error.
   """
   message: String
 
   """
-  ID (Sentry ID) of the error
+  ID (Sentry ID) of the error.
   """
   sentryId: String!
 
   """
-  ID of the project (Sentry project)
+  ID of the project (Sentry project).
   """
   sentryProjectId: ID!
 
   """
-  Name of the project affected by the error
+  Name of the project affected by the error.
   """
   sentryProjectName: String!
 
   """
-  Slug of the project affected by the error
+  Slug of the project affected by the error.
   """
   sentryProjectSlug: String!
 
   """
-  Short ID (Sentry ID) of the error
+  Short ID (Sentry ID) of the error.
   """
   shortId: String!
 
   """
-  Status of the error
+  Status of the error.
   """
   status: SentryErrorStatus!
 
   """
-  Title of the error
+  Title of the error.
   """
   title: String!
 
   """
-  Type of the error
+  Type of the error.
   """
   type: String!
 
   """
-  Count of users affected by the error
+  Count of users affected by the error.
   """
   userCount: Int!
 }
@@ -23081,7 +23081,7 @@ An object containing a collection of Sentry errors, and a detailed error
 """
 type SentryErrorCollection {
   """
-  Detailed version of a Sentry error on the project
+  Detailed version of a Sentry error on the project.
   """
   detailedError(
     """
@@ -23091,7 +23091,7 @@ type SentryErrorCollection {
   ): SentryDetailedError
 
   """
-  Stack Trace of Sentry Error
+  Stack Trace of Sentry Error.
   """
   errorStackTrace(
     """
@@ -23101,7 +23101,7 @@ type SentryErrorCollection {
   ): SentryErrorStackTrace
 
   """
-  Collection of Sentry Errors
+  Collection of Sentry Errors.
   """
   errors(
     """
@@ -23136,7 +23136,7 @@ type SentryErrorCollection {
   ): SentryErrorConnection
 
   """
-  External URL for Sentry
+  External URL for Sentry.
   """
   externalUrl: String
 }
@@ -23178,12 +23178,12 @@ type SentryErrorEdge {
 
 type SentryErrorFrequency {
   """
-  Count of errors received since the previously recorded time
+  Count of errors received since the previously recorded time.
   """
   count: Int!
 
   """
-  Time the error frequency stats were recorded
+  Time the error frequency stats were recorded.
   """
   time: Time!
 }
@@ -23193,17 +23193,17 @@ An object containing a stack trace entry for a Sentry error
 """
 type SentryErrorStackTrace {
   """
-  Time the stack trace was received by Sentry
+  Time the stack trace was received by Sentry.
   """
   dateReceived: String!
 
   """
-  ID of the Sentry error
+  ID of the Sentry error.
   """
   issueId: String!
 
   """
-  Stack trace entries for the Sentry error
+  Stack trace entries for the Sentry error.
   """
   stackTraceEntries: [SentryErrorStackTraceEntry!]!
 }
@@ -23213,12 +23213,12 @@ An object context for a Sentry error stack trace
 """
 type SentryErrorStackTraceContext {
   """
-  Code number of the context
+  Code number of the context.
   """
   code: String!
 
   """
-  Line number of the context
+  Line number of the context.
   """
   line: Int!
 }
@@ -23228,27 +23228,27 @@ An object containing a stack trace entry for a Sentry error
 """
 type SentryErrorStackTraceEntry {
   """
-  Function in which the Sentry error occurred
+  Function in which the Sentry error occurred.
   """
   col: String
 
   """
-  File in which the Sentry error occurred
+  File in which the Sentry error occurred.
   """
   fileName: String
 
   """
-  Function in which the Sentry error occurred
+  Function in which the Sentry error occurred.
   """
   function: String
 
   """
-  Function in which the Sentry error occurred
+  Function in which the Sentry error occurred.
   """
   line: String
 
   """
-  Context of the Sentry error
+  Context of the Sentry error.
   """
   traceContext: [SentryErrorStackTraceContext!]
 }
@@ -23283,12 +23283,12 @@ State of a Sentry error
 """
 type SentryErrorTags {
   """
-  Severity level of the Sentry Error
+  Severity level of the Sentry Error.
   """
   level: String
 
   """
-  Logger of the Sentry Error
+  Logger of the Sentry Error.
   """
   logger: String
 }
@@ -23918,27 +23918,27 @@ enum Sort {
 
 type StatusAction {
   """
-  Title for the button, for example: Retry this job
+  Title for the button, for example: Retry this job.
   """
   buttonTitle: String
 
   """
-  Icon used in the action button
+  Icon used in the action button.
   """
   icon: String
 
   """
-  Method for the action, for example: :post
+  Method for the action, for example: :post.
   """
   method: String
 
   """
-  Path for the action
+  Path for the action.
   """
   path: String
 
   """
-  Title for the action, for example: Retry
+  Title for the action, for example: Retry.
   """
   title: String
 }
@@ -24077,7 +24077,7 @@ The connection type for TerraformState.
 """
 type TerraformStateConnection {
   """
-  Total count of collection
+  Total count of collection.
   """
   count: Int!
 
@@ -24868,7 +24868,7 @@ input ToggleAwardEmojiInput {
   clientMutationId: String
 
   """
-  The emoji name
+  The emoji name.
   """
   name: String!
 }
@@ -25185,12 +25185,12 @@ input UpdateBoardInput {
   clientMutationId: String
 
   """
-  Whether or not backlog list is hidden
+  Whether or not backlog list is hidden.
   """
   hideBacklogList: Boolean
 
   """
-  Whether or not closed list is hidden
+  Whether or not closed list is hidden.
   """
   hideClosedList: Boolean
 
@@ -25340,7 +25340,7 @@ Autogenerated input type of UpdateContainerExpirationPolicy
 """
 input UpdateContainerExpirationPolicyInput {
   """
-  This container expiration policy schedule
+  This container expiration policy schedule.
   """
   cadence: ContainerExpirationPolicyCadenceEnum
 
@@ -25350,27 +25350,27 @@ input UpdateContainerExpirationPolicyInput {
   clientMutationId: String
 
   """
-  Indicates whether this container expiration policy is enabled
+  Indicates whether this container expiration policy is enabled.
   """
   enabled: Boolean
 
   """
-  Number of tags to retain
+  Number of tags to retain.
   """
   keepN: ContainerExpirationPolicyKeepEnum
 
   """
-  Tags with names matching this regex pattern will expire
+  Tags with names matching this regex pattern will expire.
   """
   nameRegex: UntrustedRegexp
 
   """
-  Tags with names matching this regex pattern will be preserved
+  Tags with names matching this regex pattern will be preserved.
   """
   nameRegexKeep: UntrustedRegexp
 
   """
-  Tags older that this will expire
+  Tags older that this will expire.
   """
   olderThan: ContainerExpirationPolicyOlderThanEnum
 

@@ -7585,7 +7585,13 @@ msgstr ""
 msgid "ContainerRegistry|Copy push command"
 msgstr ""
 
+msgid "ContainerRegistry|Delete image repository?"
+msgstr ""
+
 msgid "ContainerRegistry|Delete selected"
+msgstr ""
+
+msgid "ContainerRegistry|Deleting the image repository will delete all images and tags inside. This action cannot be undone."
 msgstr ""
 
 msgid "ContainerRegistry|Deletion disabled due to missing or insufficient permissions."
@@ -7613,6 +7619,12 @@ msgid "ContainerRegistry|If you are not already logged in, you need to authentic
 msgstr ""
 
 msgid "ContainerRegistry|Image Repositories"
+msgstr ""
+
+msgid "ContainerRegistry|Image repository deletion failed"
+msgstr ""
+
+msgid "ContainerRegistry|Image repository will be deleted"
 msgstr ""
 
 msgid "ContainerRegistry|Image tags"
@@ -7707,6 +7719,9 @@ msgstr ""
 msgid "ContainerRegistry|Something went wrong while scheduling %{title} for deletion. Please try again."
 msgstr ""
 
+msgid "ContainerRegistry|Something went wrong while scheduling the image for deletion."
+msgstr ""
+
 msgid "ContainerRegistry|Something went wrong while updating the cleanup policy."
 msgstr ""
 
@@ -7752,7 +7767,13 @@ msgstr ""
 msgid "ContainerRegistry|This image has no active tags"
 msgstr ""
 
+msgid "ContainerRegistry|This image repository has failed to be deleted"
+msgstr ""
+
 msgid "ContainerRegistry|This image repository is scheduled for deletion"
+msgstr ""
+
+msgid "ContainerRegistry|This image repository will be deleted. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|This project's cleanup policy for tags is not enabled."

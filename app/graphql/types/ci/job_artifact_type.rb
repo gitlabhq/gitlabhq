@@ -7,10 +7,10 @@ module Types
       graphql_name 'CiJobArtifact'
 
       field :download_path, GraphQL::STRING_TYPE, null: true,
-            description: "URL for downloading the artifact's file"
+            description: "URL for downloading the artifact's file."
 
       field :file_type, ::Types::Ci::JobArtifactFileTypeEnum, null: true,
-            description: 'File type of the artifact'
+            description: 'File type of the artifact.'
 
       def download_path
         ::Gitlab::Routing.url_helpers.download_project_job_artifacts_path(

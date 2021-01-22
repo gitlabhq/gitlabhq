@@ -4,7 +4,7 @@ module Types
   # rubocop: disable Graphql/AuthorizeTypes
   class CountableConnectionType < GraphQL::Types::Relay::BaseConnection
     field :count, GraphQL::INT_TYPE, null: false,
-          description: 'Total count of collection'
+          description: 'Total count of collection.'
 
     def count
       # rubocop: disable CodeReuse/ActiveRecord

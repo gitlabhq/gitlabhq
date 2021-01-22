@@ -21,6 +21,8 @@ module ResourceAccessTokens
 
       destroy_bot_user
 
+      log_event
+
       success("Access token #{access_token.name} has been revoked and the bot user has been scheduled for deletion.")
     rescue StandardError => error
       log_error("Failed to revoke access token for #{bot_user.name}: #{error.message}")
@@ -57,6 +59,10 @@ module ResourceAccessTokens
       end
     end
 
+    def log_event
+      ::Gitlab::AppLogger.info "PROJECT ACCESS TOKEN REVOCATION: revoked_by: #{current_user.username}, project_id: #{resource.id}, token_user: #{access_token.user.name}, token_id: #{access_token.id}"
+    end
+
     def error(message)
       ServiceResponse.error(message: message)
     end
@@ -66,3 +72,5 @@ module ResourceAccessTokens
     end
   end
 end
+
+ResourceAccessTokens::RevokeService.prepend_if_ee('EE::ResourceAccessTokens::RevokeService')

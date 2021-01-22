@@ -8,10 +8,10 @@ module Types
     field_class Types::BaseField
 
     field :current_user_todos, Types::TodoType.connection_type,
-          description: 'Todos for the current user',
+          description: 'Todos for the current user.',
           null: false do
             argument :state, Types::TodoStateEnum,
-                     description: 'State of the todos',
+                     description: 'State of the todos.',
                      required: false
           end
 
