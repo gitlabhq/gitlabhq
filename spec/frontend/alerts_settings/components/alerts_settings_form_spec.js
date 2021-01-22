@@ -9,6 +9,7 @@ import {
 } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form.vue';
+import MappingBuilder from '~/alerts_settings/components/alert_mapping_builder.vue';
 import { defaultAlertSettingsConfig } from './util';
 import { typeSet } from '~/alerts_settings/constants';
 
@@ -49,6 +50,7 @@ describe('AlertsSettingsFormNew', () => {
   const findFormToggle = () => wrapper.find(GlToggle);
   const findTestPayloadSection = () => wrapper.find(`[id = "test-integration"]`);
   const findMappingBuilderSection = () => wrapper.find(`[id = "mapping-builder"]`);
+  const findMappingBuilder = () => wrapper.findComponent(MappingBuilder);
   const findSubmitButton = () => wrapper.find(`[type = "submit"]`);
   const findMultiSupportText = () =>
     wrapper.find(`[data-testid="multi-integrations-not-supported"]`);
@@ -62,6 +64,16 @@ describe('AlertsSettingsFormNew', () => {
       wrapper = null;
     }
   });
+
+  const selectOptionAtIndex = async (index) => {
+    const options = findSelect().findAll('option');
+    await options.at(index).setSelected();
+  };
+
+  const enableIntegration = (index, value) => {
+    findFormFields().at(index).setValue(value);
+    findFormToggle().trigger('click');
+  };
 
   describe('with default values', () => {
     beforeEach(() => {
@@ -80,10 +92,7 @@ describe('AlertsSettingsFormNew', () => {
     });
 
     it('shows the rest of the form when the dropdown is used', async () => {
-      const options = findSelect().findAll('option');
-      await options.at(1).setSelected();
-
-      await wrapper.vm.$nextTick();
+      await selectOptionAtIndex(1);
 
       expect(findFormFields().at(0).isVisible()).toBe(true);
     });
@@ -96,120 +105,128 @@ describe('AlertsSettingsFormNew', () => {
 
     it('disabled the name input when the selected value is prometheus', async () => {
       createComponent();
-      const options = findSelect().findAll('option');
-      await options.at(2).setSelected();
+      await selectOptionAtIndex(2);
 
       expect(findFormFields().at(0).attributes('disabled')).toBe('disabled');
     });
   });
 
   describe('submitting integration form', () => {
-    it('allows for create-new-integration with the correct form values for HTTP', async () => {
-      createComponent();
+    describe('HTTP', () => {
+      it('create', async () => {
+        createComponent();
 
-      const options = findSelect().findAll('option');
-      await options.at(1).setSelected();
+        const integrationName = 'Test integration';
+        await selectOptionAtIndex(1);
+        enableIntegration(0, integrationName);
 
-      await findFormFields().at(0).setValue('Test integration');
-      await findFormToggle().trigger('click');
+        const submitBtn = findSubmitButton();
+        expect(submitBtn.exists()).toBe(true);
+        expect(submitBtn.text()).toBe('Save integration');
 
-      await wrapper.vm.$nextTick();
+        findForm().trigger('submit');
 
-      expect(findSubmitButton().exists()).toBe(true);
-      expect(findSubmitButton().text()).toBe('Save integration');
-
-      findForm().trigger('submit');
-
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.emitted('create-new-integration')).toBeTruthy();
-      expect(wrapper.emitted('create-new-integration')[0]).toEqual([
-        { type: typeSet.http, variables: { name: 'Test integration', active: true } },
-      ]);
-    });
-
-    it('allows for create-new-integration with the correct form values for PROMETHEUS', async () => {
-      createComponent();
-
-      const options = findSelect().findAll('option');
-      await options.at(2).setSelected();
-
-      await findFormFields().at(0).setValue('Test integration');
-      await findFormFields().at(1).setValue('https://test.com');
-      await findFormToggle().trigger('click');
-
-      await wrapper.vm.$nextTick();
-
-      expect(findSubmitButton().exists()).toBe(true);
-      expect(findSubmitButton().text()).toBe('Save integration');
-
-      findForm().trigger('submit');
-
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.emitted('create-new-integration')).toBeTruthy();
-      expect(wrapper.emitted('create-new-integration')[0]).toEqual([
-        { type: typeSet.prometheus, variables: { apiUrl: 'https://test.com', active: true } },
-      ]);
-    });
-
-    it('allows for update-integration with the correct form values for HTTP', async () => {
-      createComponent({
-        data: {
-          selectedIntegration: typeSet.http,
-          currentIntegration: { id: '1', name: 'Test integration pre' },
-        },
-        props: {
-          loading: false,
-        },
+        expect(wrapper.emitted('create-new-integration')[0]).toEqual([
+          { type: typeSet.http, variables: { name: integrationName, active: true } },
+        ]);
       });
 
-      await findFormFields().at(0).setValue('Test integration post');
-      await findFormToggle().trigger('click');
+      it('create with custom mapping', async () => {
+        createComponent({ multipleHttpIntegrationsCustomMapping: true });
 
-      await wrapper.vm.$nextTick();
+        const integrationName = 'Test integration';
+        await selectOptionAtIndex(1);
 
-      expect(findSubmitButton().exists()).toBe(true);
-      expect(findSubmitButton().text()).toBe('Save integration');
+        enableIntegration(0, integrationName);
 
-      findForm().trigger('submit');
+        const sampleMapping = { field: 'test' };
+        findMappingBuilder().vm.$emit('onMappingUpdate', sampleMapping);
+        findForm().trigger('submit');
 
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.emitted('update-integration')).toBeTruthy();
-      expect(wrapper.emitted('update-integration')[0]).toEqual([
-        { type: typeSet.http, variables: { name: 'Test integration post', active: true } },
-      ]);
-    });
-
-    it('allows for update-integration with the correct form values for PROMETHEUS', async () => {
-      createComponent({
-        data: {
-          selectedIntegration: typeSet.prometheus,
-          currentIntegration: { id: '1', apiUrl: 'https://test-pre.com' },
-        },
-        props: {
-          loading: false,
-        },
+        expect(wrapper.emitted('create-new-integration')[0]).toEqual([
+          {
+            type: typeSet.http,
+            variables: {
+              name: integrationName,
+              active: true,
+              payloadAttributeMappings: sampleMapping,
+              payloadExample: null,
+            },
+          },
+        ]);
       });
 
-      await findFormFields().at(0).setValue('Test integration');
-      await findFormFields().at(1).setValue('https://test-post.com');
-      await findFormToggle().trigger('click');
+      it('update', () => {
+        createComponent({
+          data: {
+            selectedIntegration: typeSet.http,
+            currentIntegration: { id: '1', name: 'Test integration pre' },
+          },
+          props: {
+            loading: false,
+          },
+        });
+        const updatedIntegrationName = 'Test integration post';
+        enableIntegration(0, updatedIntegrationName);
 
-      await wrapper.vm.$nextTick();
+        const submitBtn = findSubmitButton();
+        expect(submitBtn.exists()).toBe(true);
+        expect(submitBtn.text()).toBe('Save integration');
 
-      expect(findSubmitButton().exists()).toBe(true);
-      expect(findSubmitButton().text()).toBe('Save integration');
+        findForm().trigger('submit');
 
-      findForm().trigger('submit');
+        expect(wrapper.emitted('update-integration')[0]).toEqual([
+          { type: typeSet.http, variables: { name: updatedIntegrationName, active: true } },
+        ]);
+      });
+    });
 
-      await wrapper.vm.$nextTick();
+    describe('PROMETHEUS', () => {
+      it('create', async () => {
+        createComponent();
 
-      expect(wrapper.emitted('update-integration')).toBeTruthy();
-      expect(wrapper.emitted('update-integration')[0]).toEqual([
-        { type: typeSet.prometheus, variables: { apiUrl: 'https://test-post.com', active: true } },
-      ]);
+        await selectOptionAtIndex(2);
+
+        const apiUrl = 'https://test.com';
+        enableIntegration(1, apiUrl);
+
+        findFormToggle().trigger('click');
+
+        const submitBtn = findSubmitButton();
+        expect(submitBtn.exists()).toBe(true);
+        expect(submitBtn.text()).toBe('Save integration');
+
+        findForm().trigger('submit');
+
+        expect(wrapper.emitted('create-new-integration')[0]).toEqual([
+          { type: typeSet.prometheus, variables: { apiUrl, active: true } },
+        ]);
+      });
+
+      it('update', () => {
+        createComponent({
+          data: {
+            selectedIntegration: typeSet.prometheus,
+            currentIntegration: { id: '1', apiUrl: 'https://test-pre.com' },
+          },
+          props: {
+            loading: false,
+          },
+        });
+
+        const apiUrl = 'https://test-post.com';
+        enableIntegration(1, apiUrl);
+
+        const submitBtn = findSubmitButton();
+        expect(submitBtn.exists()).toBe(true);
+        expect(submitBtn.text()).toBe('Save integration');
+
+        findForm().trigger('submit');
+
+        expect(wrapper.emitted('update-integration')[0]).toEqual([
+          { type: typeSet.prometheus, variables: { apiUrl, active: true } },
+        ]);
+      });
     });
   });
 
@@ -234,9 +251,10 @@ describe('AlertsSettingsFormNew', () => {
       jest.runAllTimers();
       await wrapper.vm.$nextTick();
 
-      expect(findJsonTestSubmit().exists()).toBe(true);
-      expect(findJsonTestSubmit().text()).toBe('Save and test payload');
-      expect(findJsonTestSubmit().props('disabled')).toBe(true);
+      const jsonTestSubmit = findJsonTestSubmit();
+      expect(jsonTestSubmit.exists()).toBe(true);
+      expect(jsonTestSubmit.text()).toBe('Save and test payload');
+      expect(jsonTestSubmit.props('disabled')).toBe(true);
     });
 
     it('should allow for the form to be automatically saved if the test payload is successfully submitted', async () => {
@@ -341,9 +359,8 @@ describe('AlertsSettingsFormNew', () => {
 
       it(`${visibleMsg} when multipleHttpIntegrationsCustomMapping feature flag ${featureFlagMsg} and integration type is ${integrationType}`, async () => {
         createComponent({ multipleHttpIntegrationsCustomMapping: featureFlag });
-        const options = findSelect().findAll('option');
-        options.at(integrationOption).setSelected();
-        await wrapper.vm.$nextTick();
+        await selectOptionAtIndex(integrationOption);
+
         expect(findMappingBuilderSection().exists()).toBe(visible);
       });
     });

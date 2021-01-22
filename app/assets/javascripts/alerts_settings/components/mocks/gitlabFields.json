@@ -1,112 +1,123 @@
 [
   {
-    "name": "title",
+    "name": "TITLE",
     "label": "Title",
     "type": [
-      "String"
+      "STRING"
     ],
     "compatibleTypes": [
-      "String",
-      "Number",
-      "DateTime"
+      "STRING",
+      "NUMBER",
+      "DATETIME"
     ],
     "numberOfFallbacks": 1
   },
   {
-    "name": "description",
+    "name": "DESCRIPTION",
     "label": "Description",
     "type": [
-      "String"
+      "STRING"
     ],
     "compatibleTypes": [
-      "String",
-      "Number",
-      "DateTime"
+      "STRING",
+      "NUMBER",
+      "DATETIME"
     ]
   },
   {
-    "name": "startTime",
+    "name": "START_TIME",
     "label": "Start time",
     "type": [
-      "DateTime"
+      "DATETIME"
     ],
     "compatibleTypes": [
-      "Number",
-      "DateTime"
+      "NUMBER",
+      "DATETIME"
     ]
   },
   {
-    "name": "service",
+    "name": "END_TIME",
+    "label": "End time",
+    "type": [
+      "DATETIME"
+    ],
+    "compatibleTypes": [
+      "NUMBER",
+      "DATETIME"
+    ]
+  },
+  {
+    "name": "SERVICE",
     "label": "Service",
     "type": [
-      "String"
+      "STRING"
     ],
     "compatibleTypes": [
-      "String",
-      "Number",
-      "DateTime"
+      "STRING",
+      "NUMBER",
+      "DATETIME"
     ]
   },
   {
-    "name": "monitoringTool",
+    "name": "MONITORING_TOOL",
     "label": "Monitoring tool",
     "type": [
-      "String"
+      "STRING"
     ],
     "compatibleTypes": [
-      "String",
-      "Number",
-      "DateTime"
+      "STRING",
+      "NUMBER",
+      "DATETIME"
     ]
   },
   {
-    "name": "hosts",
+    "name": "HOSTS",
     "label": "Hosts",
     "type": [
-      "String",
-      "Array"
+      "STRING",
+      "ARRAY"
     ],
     "compatibleTypes": [
-      "String",
-      "Array",
-      "Number",
-      "DateTime"
+      "STRING",
+      "ARRAY",
+      "NUMBER",
+      "DATETIME"
     ]
   },
   {
-    "name": "severity",
+    "name": "SEVERITY",
     "label": "Severity",
     "type": [
-      "String"
+      "STRING"
     ],
     "compatibleTypes": [
-      "String",
-      "Number",
-      "DateTime"
+      "STRING",
+      "NUMBER",
+      "DATETIME"
     ]
   },
   {
-    "name": "fingerprint",
+    "name": "FINGERPRINT",
     "label": "Fingerprint",
     "type": [
-      "String"
+      "STRING"
     ],
     "compatibleTypes": [
-      "String",
-      "Number",
-      "DateTime"
+      "STRING",
+      "NUMBER",
+      "DATETIME"
     ]
   },
   {
-    "name": "environment",
+    "name": "GITLAB_ENVIRONMENT_NAME",
     "label": "Environment",
     "type": [
-      "String"
+      "STRING"
     ],
     "compatibleTypes": [
-      "String",
-      "Number",
-      "DateTime"
+      "STRING",
+      "NUMBER",
+      "DATETIME"
     ]
   }
 ]

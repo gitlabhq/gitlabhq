@@ -4,95 +4,69 @@
     "payloadAlerFields": {
       "nodes": [
         {
-          "name": "dashboardId",
+          "path": ["dashboardId"],
           "label": "Dashboard Id",
-          "type": [
-            "Number"
-          ]
+          "type": "STRING"
         },
         {
-          "name": "evalMatches",
+          "path": ["evalMatches"],
           "label": "Eval Matches",
-          "type": [
-            "Array"
-          ]
+          "type": "ARRAY"
         },
         {
-          "name": "createdAt",
+          "path": ["createdAt"],
           "label": "Created At",
-          "type": [
-            "DateTime"
-          ]
+          "type": "DATETIME"
         },
         {
-          "name": "imageUrl",
+          "path": ["imageUrl"],
           "label": "Image Url",
-          "type": [
-            "String"
-          ]
+          "type": "STRING"
         },
         {
-          "name": "message",
+          "path": ["message"],
           "label": "Message",
-          "type": [
-            "String"
-          ]
+          "type": "STRING"
         },
         {
-          "name": "orgId",
+          "path": ["orgId"],
           "label": "Org Id",
-          "type": [
-            "Number"
-          ]
+          "type": "STRING"
         },
         {
-          "name": "panelId",
+          "path": ["panelId"],
           "label": "Panel Id",
-          "type": [
-            "String"
-          ]
+          "type": "STRING"
         },
         {
-          "name": "ruleId",
+          "path": ["ruleId"],
           "label": "Rule Id",
-          "type": [
-            "Number"
-          ]
+          "type": "STRING"
         },
         {
-          "name": "ruleName",
+          "path": ["ruleName"],
           "label": "Rule Name",
-          "type": [
-            "String"
-          ]
+          "type": "STRING"
         },
         {
-          "name": "ruleUrl",
+          "path": ["ruleUrl"],
           "label": "Rule Url",
-          "type": [
-            "String"
-          ]
+          "type": "STRING"
         },
         {
-          "name": "state",
+          "path": ["state"],
           "label": "State",
-          "type": [
-            "String"
-          ]
+          "type": "STRING"
         },
         {
-          "name": "title",
+          "path": ["title"],
           "label": "Title",
-          "type": [
-            "String"
-          ]
+          "type": "STRING"
         },
         {
-          "name": "tags",
+          "path": ["tags", "tag"],
           "label": "Tags",
-          "type": [
-            "Object"
-          ]
+          "type": "STRING"
         }
       ]
     }

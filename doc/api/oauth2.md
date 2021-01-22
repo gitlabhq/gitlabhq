@@ -89,7 +89,7 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
    `/oauth/authorize` page with the following query parameters:
 
    ```plaintext
-   https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=code&state=YOUR_UNIQUE_STATE_HASH&scope=REQUESTED_SCOPES&code_challenge=CODE_CHALLENGE&code_challenge_method=S256
+   https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=code&state=STATE&scope=REQUESTED_SCOPES&code_challenge=CODE_CHALLENGE&code_challenge_method=S256
    ```
 
    This page asks the user to approve the request from the app to access their
@@ -100,7 +100,7 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
    The redirect includes the authorization `code`, for example:
 
    ```plaintext
-   https://example.com/oauth/redirect?code=1234567890&state=YOUR_UNIQUE_STATE_HASH
+   https://example.com/oauth/redirect?code=1234567890&state=STATE
    ```
 
 1. With the authorization `code` returned from the previous request (denoted as
@@ -139,29 +139,31 @@ detailed flow description.
 The authorization code flow is essentially the same as
 [authorization code flow with PKCE](#authorization-code-with-proof-key-for-code-exchange-pkce),
 
+Before starting the flow, generate the `STATE`. It is a value that can't be predicted
+used by the client to maintain state between the request and callback. It should also
+be used as a CSRF token.
+
 1. Request authorization code. To do that, you should redirect the user to the
-   `/oauth/authorize` endpoint with the following GET parameters:
+   `/oauth/authorize` page with the following query parameters:
 
    ```plaintext
    https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=code&state=STATE&scope=REQUESTED_SCOPES
    ```
 
-   This will ask the user to approve the applications access to their account
-   based on the scopes specified in `REQUESTED_SCOPES` and then redirect back to
-   the `REDIRECT_URI` you provided. The [scope parameter](https://github.com/doorkeeper-gem/doorkeeper/wiki/Using-Scopes#requesting-particular-scopes)
-   is a space separated list of scopes you want to have access to (e.g. `scope=read_user+profile`
-   would request `read_user` and `profile` scopes). The redirect will
-   include the GET `code` parameter, for example:
+   This page asks the user to approve the request from the app to access their
+   account based on the scopes specified in `REQUESTED_SCOPES`. The user is then
+   redirected back to the specified `REDIRECT_URI`. The [scope parameter](https://github.com/doorkeeper-gem/doorkeeper/wiki/Using-Scopes#requesting-particular-scopes)
+   is a space separated list of scopes associated with the user.
+   For example,`scope=read_user+profile` requests the `read_user` and `profile` scopes.
+   The redirect includes the authorization `code`, for example:
 
    ```plaintext
    https://example.com/oauth/redirect?code=1234567890&state=STATE
    ```
 
-   You should then use `code` to request an access token.
-
-1. After you have the authorization code you can request an `access_token` using the
-   code. You can do that by using any HTTP client. In the following example,
-   we are using Ruby's `rest-client`:
+1. With the authorization `code` returned from the previous request (shown as
+   `RETURNED_CODE` in the following example), you can request an `access_token`, with
+   any HTTP client. The following example uses Ruby's `rest-client`:
 
    ```ruby
    parameters = 'client_id=APP_ID&client_secret=APP_SECRET&code=RETURNED_CODE&grant_type=authorization_code&redirect_uri=REDIRECT_URI'

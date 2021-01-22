@@ -3,6 +3,8 @@ import { shallowMount } from '@vue/test-utils';
 import AlertMappingBuilder, { i18n } from '~/alerts_settings/components/alert_mapping_builder.vue';
 import gitlabFields from '~/alerts_settings/components/mocks/gitlabFields.json';
 import parsedMapping from '~/alerts_settings/components/mocks/parsedMapping.json';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import * as transformationUtils from '~/alerts_settings/utils/mapping_transformations';
 
 describe('AlertMappingBuilder', () => {
   let wrapper;
@@ -10,8 +12,8 @@ describe('AlertMappingBuilder', () => {
   function mountComponent() {
     wrapper = shallowMount(AlertMappingBuilder, {
       propsData: {
-        payloadFields: parsedMapping.samplePayload.payloadAlerFields.nodes,
-        mapping: parsedMapping.storedMapping.nodes,
+        parsedPayload: parsedMapping.samplePayload.payloadAlerFields.nodes,
+        savedMapping: parsedMapping.storedMapping.nodes,
       },
     });
   }
@@ -44,7 +46,8 @@ describe('AlertMappingBuilder', () => {
   it('renders disabled form input for each mapped field', () => {
     gitlabFields.forEach((field, index) => {
       const input = findColumnInRow(index + 1, 0).find(GlFormInput);
-      expect(input.attributes('value')).toBe(`${field.label} (${field.type.join(' or ')})`);
+      const types = field.type.map((t) => capitalizeFirstCharacter(t.toLowerCase())).join(' or ');
+      expect(input.attributes('value')).toBe(`${field.label} (${types})`);
       expect(input.attributes('disabled')).toBe('');
     });
   });
@@ -59,16 +62,14 @@ describe('AlertMappingBuilder', () => {
   it('renders mapping dropdown for each field', () => {
     gitlabFields.forEach(({ compatibleTypes }, index) => {
       const dropdown = findColumnInRow(index + 1, 2).find(GlDropdown);
-      const searchBox = dropdown.find(GlSearchBoxByType);
-      const dropdownItems = dropdown.findAll(GlDropdownItem);
+      const searchBox = dropdown.findComponent(GlSearchBoxByType);
+      const dropdownItems = dropdown.findAllComponents(GlDropdownItem);
       const { nodes } = parsedMapping.samplePayload.payloadAlerFields;
-      const numberOfMappingOptions = nodes.filter(({ type }) =>
-        type.some((t) => compatibleTypes.includes(t)),
-      );
+      const mappingOptions = nodes.filter(({ type }) => compatibleTypes.includes(type));
 
       expect(dropdown.exists()).toBe(true);
       expect(searchBox.exists()).toBe(true);
-      expect(dropdownItems).toHaveLength(numberOfMappingOptions.length);
+      expect(dropdownItems).toHaveLength(mappingOptions.length);
     });
   });
 
@@ -78,16 +79,23 @@ describe('AlertMappingBuilder', () => {
       expect(dropdown.exists()).toBe(Boolean(numberOfFallbacks));
 
       if (numberOfFallbacks) {
-        const searchBox = dropdown.find(GlSearchBoxByType);
-        const dropdownItems = dropdown.findAll(GlDropdownItem);
+        const searchBox = dropdown.findComponent(GlSearchBoxByType);
+        const dropdownItems = dropdown.findAllComponents(GlDropdownItem);
         const { nodes } = parsedMapping.samplePayload.payloadAlerFields;
-        const numberOfMappingOptions = nodes.filter(({ type }) =>
-          type.some((t) => compatibleTypes.includes(t)),
-        );
+        const mappingOptions = nodes.filter(({ type }) => compatibleTypes.includes(type));
 
         expect(searchBox.exists()).toBe(Boolean(numberOfFallbacks));
-        expect(dropdownItems).toHaveLength(numberOfMappingOptions.length);
+        expect(dropdownItems).toHaveLength(mappingOptions.length);
       }
     });
+  });
+
+  it('emits event with selected mapping', () => {
+    const mappingToSave = { fieldName: 'TITLE', mapping: 'PARSED_TITLE' };
+    jest.spyOn(transformationUtils, 'transformForSave').mockReturnValue(mappingToSave);
+    const dropdown = findColumnInRow(1, 2).find(GlDropdown);
+    const option = dropdown.find(GlDropdownItem);
+    option.vm.$emit('click');
+    expect(wrapper.emitted('onMappingUpdate')[0]).toEqual([mappingToSave]);
   });
 });

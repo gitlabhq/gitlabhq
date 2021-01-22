@@ -1,7 +1,21 @@
 #import "../fragments/integration_item.fragment.graphql"
 
-mutation createHttpIntegration($projectPath: ID!, $name: String!, $active: Boolean!) {
-  httpIntegrationCreate(input: { projectPath: $projectPath, name: $name, active: $active }) {
+mutation createHttpIntegration(
+  $projectPath: ID!
+  $name: String!
+  $active: Boolean!
+  $payloadExample: JsonString
+  $payloadAttributeMappings: [AlertManagementPayloadAlertFieldInput!]
+) {
+  httpIntegrationCreate(
+    input: {
+      projectPath: $projectPath
+      name: $name
+      active: $active
+      payloadExample: $payloadExample
+      payloadAttributeMappings: $payloadAttributeMappings
+    }
+  ) {
     errors
     integration {
       ...IntegrationItem

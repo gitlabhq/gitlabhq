@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Version control for personal snippets' do
+    describe 'Version control for personal snippets', quarantine: { only: { pipeline: :master }, issue: 'https://gitlab.com/gitlab-org/gitaly/-/issues/3143', type: :bug } do
       let(:new_file) { 'new_snippet_file' }
       let(:changed_content) { 'changes' }
       let(:commit_message) { 'Changes to snippets' }
