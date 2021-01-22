@@ -13,6 +13,7 @@ describe('ColorPicker', () => {
   };
 
   const setColor = '#000000';
+  const invalidText = 'Please enter a valid hex (#RRGGBB or #RGB) color value';
   const label = () => wrapper.find(GlFormGroup).attributes('label');
   const colorPreview = () => wrapper.find('[data-testid="color-preview"]');
   const colorPicker = () => wrapper.find(GlFormInput);
@@ -55,6 +56,7 @@ describe('ColorPicker', () => {
       expect(colorPreview().attributes('style')).toBe(undefined);
       expect(colorPicker().attributes('value')).toBe(undefined);
       expect(colorInput().props('value')).toBe('');
+      expect(colorPreview().attributes('class')).toContain('gl-inset-border-1-gray-400');
     });
 
     it('has a color set on initialization', () => {
@@ -67,7 +69,7 @@ describe('ColorPicker', () => {
       createComponent();
       await colorInput().setValue(setColor);
 
-      expect(wrapper.emitted().input[0]).toEqual([setColor]);
+      expect(wrapper.emitted().input[0]).toStrictEqual([setColor]);
     });
 
     it('trims spaces from submitted colors', async () => {
@@ -75,23 +77,16 @@ describe('ColorPicker', () => {
       await colorInput().setValue(`    ${setColor}    `);
 
       expect(wrapper.vm.$data.selectedColor).toBe(setColor);
+      expect(colorPreview().attributes('class')).toContain('gl-inset-border-1-gray-400');
+      expect(colorInput().attributes('class')).not.toContain('is-invalid');
     });
 
-    it('shows invalid feedback when an invalid color is used', async () => {
-      createComponent();
-      await colorInput().setValue('abcd');
+    it('shows invalid feedback when the state is marked as invalid', async () => {
+      createComponent(mount, { invalidFeedback: invalidText, state: false });
 
-      expect(invalidFeedback().text()).toBe(
-        'Please enter a valid hex (#RRGGBB or #RGB) color value',
-      );
-      expect(wrapper.emitted().input).toBe(undefined);
-    });
-
-    it('shows an invalid feedback border on the preview when an invalid color is used', async () => {
-      createComponent();
-      await colorInput().setValue('abcd');
-
+      expect(invalidFeedback().text()).toBe(invalidText);
       expect(colorPreview().attributes('class')).toContain('gl-inset-border-1-red-500');
+      expect(colorInput().attributes('class')).toContain('is-invalid');
     });
   });
 

@@ -23,3 +23,23 @@ export const textColorForBackground = (backgroundColor) => {
   }
   return '#FFFFFF';
 };
+
+/**
+ * Check whether a color matches the expected hex format
+ *
+ * This matches any hex (0-9 and A-F) value which is either 3 or 6 characters in length
+ *
+ * An empty string will return `null` which means that this is neither valid nor invalid.
+ * This is useful for forms resetting the validation state
+ *
+ * @param color string = ''
+ *
+ * @returns {null|boolean}
+ */
+export const validateHexColor = (color = '') => {
+  if (!color) {
+    return null;
+  }
+
+  return /^#([0-9A-F]{3}){1,2}$/i.test(color);
+};

@@ -6,6 +6,10 @@ module Terraform
 
     storage_options Gitlab.config.terraform_state
 
+    # TODO: Remove this line
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/232917
+    alias_method :upload, :model
+
     delegate :terraform_state, :project_id, to: :model
 
     # Use Lockbox to encrypt/decrypt the stored file (registers CarrierWave callbacks)

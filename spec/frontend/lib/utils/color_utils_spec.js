@@ -1,4 +1,4 @@
-import { textColorForBackground, hexToRgb } from '~/lib/utils/color_utils';
+import { textColorForBackground, hexToRgb, validateHexColor } from '~/lib/utils/color_utils';
 
 describe('Color utils', () => {
   describe('Converting hex code to rgb', () => {
@@ -30,6 +30,21 @@ describe('Color utils', () => {
     it('supports RGB triplets', () => {
       expect(textColorForBackground('#FFF')).toEqual('#333333');
       expect(textColorForBackground('#000')).toEqual('#FFFFFF');
+    });
+  });
+
+  describe('Validate hex color', () => {
+    it.each`
+      color        | output
+      ${undefined} | ${null}
+      ${null}      | ${null}
+      ${''}        | ${null}
+      ${'ABC123'}  | ${false}
+      ${'#ZZZ'}    | ${false}
+      ${'#FF0'}    | ${true}
+      ${'#FF0000'} | ${true}
+    `('returns $output when $color is given', ({ color, output }) => {
+      expect(validateHexColor(color)).toEqual(output);
     });
   });
 });
