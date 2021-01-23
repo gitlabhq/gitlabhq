@@ -122,7 +122,7 @@ Internet Gateway.
 
 We'll now create a VPC, a virtual networking environment that you'll control:
 
-1. Navigate to <https://console.aws.amazon.com/vpc/home>.
+1. Sign in to [Amazon Web Services](https://console.aws.amazon.com/vpc/home).
 1. Select **Your VPCs** from the left menu and then click **Create VPC**.
    At the "Name tag" enter `gitlab-vpc` and at the "IPv4 CIDR block" enter
    `10.0.0.0/16`. If you don't require dedicated hardware, you can leave
@@ -277,7 +277,7 @@ On the Route 53 dashboard, click **Hosted zones** in the left navigation bar:
     1. Click **Create**.
 1. If you registered your domain through Route 53, you're done. If you used a different domain registrar, you need to update your DNS records with your domain registrar. You'll need to:
    1. Click on **Hosted zones** and select the domain you added above.
-   1. You'll see a list of `NS` records. From your domain registrar's admin panel, add each of these as `NS` records to your domain's DNS records. These steps may vary between domain registrars. If you're stuck, Google **"name of your registrar" add dns records** and you should find a help article specific to your domain registrar.
+   1. You'll see a list of `NS` records. From your domain registrar's admin panel, add each of these as `NS` records to your domain's DNS records. These steps may vary between domain registrars. If you're stuck, Google **"name of your registrar" add DNS records** and you should find a help article specific to your domain registrar.
 
 The steps for doing this vary depending on which registrar you use and is beyond the scope of this guide.
 
@@ -568,7 +568,7 @@ Let's create an EC2 instance where we'll install Gitaly:
 
 1. From the EC2 dashboard, click **Launch instance**.
 1. Choose an AMI. In this example, we'll select the **Ubuntu Server 18.04 LTS (HVM), SSD Volume Type**.
-1. Choose an instance type. We'll pick a **c5.xlarge**.
+1. Choose an instance type. We'll pick a `c5.xlarge`.
 1. Click **Configure Instance Details**.
    1. In the **Network** dropdown, select `gitlab-vpc`, the VPC we created earlier.
    1. In the **Subnet** dropdown, select `gitlab-private-10.0.1.0` from the list of subnets we created earlier.

@@ -10,7 +10,9 @@ This document outlines the style guide for the GitLab [GraphQL API](../api/graph
 
 ## How GitLab implements GraphQL
 
+<!-- vale gitlab.Spelling = NO -->
 We use the [GraphQL Ruby gem](https://graphql-ruby.org/) written by [Robert Mosolgo](https://github.com/rmosolgo/).
+<!-- vale gitlab.Spelling = YES -->
 
 All GraphQL queries are directed to a single endpoint
 ([`app/controllers/graphql_controller.rb#execute`](https://gitlab.com/gitlab-org/gitlab/blob/master/app%2Fcontrollers%2Fgraphql_controller.rb)),

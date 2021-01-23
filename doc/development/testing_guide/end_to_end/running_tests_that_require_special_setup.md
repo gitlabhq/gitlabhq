@@ -408,15 +408,15 @@ Geo requires an EE license. To visit the Geo sites in your browser, you need a r
 
 Tests that are tagged with `:ldap_tls` and `:ldap_no_tls` meta are orchestrated tests where the sign-in happens via LDAP.
 
-These tests spin up a Docker container [(osixia/openldap)](https://hub.docker.com/r/osixia/openldap) running an instance of [OpenLDAP](https://www.openldap.org/).
-The container uses fixtures [checked into the GitLab-QA repo](https://gitlab.com/gitlab-org/gitlab-qa/-/tree/9ffb9ad3be847a9054967d792d6772a74220fb42/fixtures/ldap) to create
+These tests spin up a Docker container [(`osixia/openldap`)](https://hub.docker.com/r/osixia/openldap) running an instance of [OpenLDAP](https://www.openldap.org/).
+The container uses fixtures [checked into the GitLab-QA repository](https://gitlab.com/gitlab-org/gitlab-qa/-/tree/9ffb9ad3be847a9054967d792d6772a74220fb42/fixtures/ldap) to create
 base data such as users and groups including the admin group. The password for [all users](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/9ffb9ad3be847a9054967d792d6772a74220fb42/fixtures/ldap/2_add_users.ldif) including [the `tanuki` user](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/9ffb9ad3be847a9054967d792d6772a74220fb42/fixtures/ldap/tanuki.ldif) is `password`.
 
 A GitLab instance is also created in a Docker container based on our [General LDAP setup](../../../administration/auth/ldap/index.md#general-ldap-setup) documentation.
 
-Tests that are tagged `:ldap_tls` enable TLS on GitLab using the certificate [checked into the GitLab-QA repo](https://gitlab.com/gitlab-org/gitlab-qa/-/tree/9ffb9ad3be847a9054967d792d6772a74220fb42/tls_certificates/gitlab).
+Tests that are tagged `:ldap_tls` enable TLS on GitLab using the certificate [checked into the GitLab-QA repository](https://gitlab.com/gitlab-org/gitlab-qa/-/tree/9ffb9ad3be847a9054967d792d6772a74220fb42/tls_certificates/gitlab).
 
-The certificate was generated with openssl using this command:
+The certificate was generated with OpenSSL using this command:
 
 ```shell
 openssl req -x509 -newkey rsa:4096 -keyout gitlab.test.key -out gitlab.test.crt -days 3650 -nodes -subj "/C=US/ST=CA/L=San Francisco/O=GitLab/OU=Org/CN=gitlab.test"
@@ -432,7 +432,7 @@ To run the LDAP tests on your local with TLS enabled, follow these steps:
 
    `127.0.0.1    gitlab.test`
 
-   You can then run tests against GitLab in a Docker container on `https://gitlab.test`. Please note that the TLS certificate [checked into the GitLab-QA repo](https://gitlab.com/gitlab-org/gitlab-qa/-/tree/9ffb9ad3be847a9054967d792d6772a74220fb42/tls_certificates/gitlab) is configured for this domain.
+   You can then run tests against GitLab in a Docker container on `https://gitlab.test`. Please note that the TLS certificate [checked into the GitLab-QA repository](https://gitlab.com/gitlab-org/gitlab-qa/-/tree/9ffb9ad3be847a9054967d792d6772a74220fb42/tls_certificates/gitlab) is configured for this domain.
 1. Run the OpenLDAP container with TLS enabled. Change the path to [`gitlab-qa/fixtures/ldap`](https://gitlab.com/gitlab-org/gitlab-qa/-/tree/9ffb9ad3be847a9054967d792d6772a74220fb42/fixtures/ldap) directory to your local checkout path:
 
    ```shell

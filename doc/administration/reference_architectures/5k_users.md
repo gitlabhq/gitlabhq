@@ -24,18 +24,18 @@ costly-to-operate environment by using the
 
 | Service                                    | Nodes       | Configuration           | GCP            | AWS         | Azure    |
 |--------------------------------------------|-------------|-------------------------|----------------|-------------|----------|
-| External load balancing node               | 1           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | c5.large    | F2s v2   |
-| Redis                                      | 3           | 2 vCPU, 7.5 GB memory   | n1-standard-2  | m5.large    | D2s v3   |
-| Consul + Sentinel                          | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | c5.large    | F2s v2   |
-| PostgreSQL                                 | 3           | 2 vCPU, 7.5 GB memory   | n1-standard-2  | m5.large    | D2s v3   |
-| PgBouncer                                  | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | c5.large    | F2s v2   |
-| Internal load balancing node               | 1           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | c5.large    | F2s v2   |
-| Gitaly                                     | 2 (minimum) | 8 vCPU, 30 GB memory    | n1-standard-8  | m5.2xlarge  | D8s v3   |
-| Sidekiq                                    | 4           | 2 vCPU, 7.5 GB memory   | n1-standard-2  | m5.large    | D2s v3   |
-| GitLab Rails                               | 3           | 16 vCPU, 14.4 GB memory | n1-highcpu-16  | c5.4xlarge  | F16s v2  |
-| Monitoring node                            | 1           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | c5.large    | F2s v2   |
+| External load balancing node               | 1           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | `c5.large`    | F2s v2   |
+| Redis                                      | 3           | 2 vCPU, 7.5 GB memory   | n1-standard-2  | `m5.large`    | D2s v3   |
+| Consul + Sentinel                          | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | `c5.large`    | F2s v2   |
+| PostgreSQL                                 | 3           | 2 vCPU, 7.5 GB memory   | n1-standard-2  | `m5.large`    | D2s v3   |
+| PgBouncer                                  | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | `c5.large`    | F2s v2   |
+| Internal load balancing node               | 1           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | `c5.large`    | F2s v2   |
+| Gitaly                                     | 2 (minimum) | 8 vCPU, 30 GB memory    | n1-standard-8  | `m5.2xlarge`  | D8s v3   |
+| Sidekiq                                    | 4           | 2 vCPU, 7.5 GB memory   | n1-standard-2  | `m5.large`    | D2s v3   |
+| GitLab Rails                               | 3           | 16 vCPU, 14.4 GB memory | n1-highcpu-16  | `c5.4xlarge`  | F16s v2  |
+| Monitoring node                            | 1           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | `c5.large`    | F2s v2   |
 | Object storage                             | n/a         | n/a                     | n/a            | n/a         | n/a      |
-| NFS server (optional, not recommended)     | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4   | c5.xlarge   | F4s v2   |
+| NFS server (optional, not recommended)     | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4   | `c5.xlarge`   | F4s v2   |
 
 ```mermaid
 stateDiagram-v2
@@ -1620,7 +1620,7 @@ GitLab has been tested on a number of object storage providers:
 - [Google Cloud Storage](https://cloud.google.com/storage)
 - [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces/)
 - [Oracle Cloud Infrastructure](https://docs.cloud.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
-- [Openstack Swift](https://docs.openstack.org/swift/latest/s3_compat.html)
+- [OpenStack Swift](https://docs.openstack.org/swift/latest/s3_compat.html)
 - [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
 - On-premises hardware and appliances from various storage vendors.
 - MinIO. We have [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.

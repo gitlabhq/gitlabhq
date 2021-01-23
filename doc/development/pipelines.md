@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Pipelines for the GitLab project
 
-Pipelines for <https://gitlab.com/gitlab-org/gitlab> and <https://gitlab.com/gitlab-org/gitlab-foss> (as well as the
+Pipelines for [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) and [`gitlab-org/gitlab-foss`](https://gitlab.com/gitlab-org/gitlab-foss) (as well as the
 `dev` instance's mirrors) are configured in the usual
 [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml)
 which itself includes files under
@@ -37,7 +37,7 @@ Pipeline creation is also affected by the following CI variables:
 No pipeline is created in any other cases (for example, when pushing a branch with no
 MR for it).
 
-The source of truth for these workflow rules is defined in <https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml>.
+The source of truth for these workflow rules is defined in [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml).
 
 ### Pipelines for Merge Requests
 
@@ -55,7 +55,7 @@ have a pipelines that include jobs from multiple types (e.g. a combination of do
 
 #### Docs-only MR pipeline
 
-Reference pipeline: <https://gitlab.com/gitlab-org/gitlab/pipelines/135236627>
+[Reference pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/135236627):
 
 ```mermaid
 graph LR
@@ -69,7 +69,7 @@ graph LR
 
 #### Code-only MR pipeline
 
-Reference pipeline: <https://gitlab.com/gitlab-org/gitlab/pipelines/136295694>
+[Reference pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/136295694)
 
 ```mermaid
 graph RL;
@@ -173,7 +173,7 @@ graph RL;
 
 #### Frontend-only MR pipeline
 
-Reference pipeline: <https://gitlab.com/gitlab-org/gitlab/pipelines/134661039>
+[Reference pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/134661039):
 
 ```mermaid
 graph RL;
@@ -304,7 +304,7 @@ graph RL;
 
 #### QA-only MR pipeline
 
-Reference pipeline: <https://gitlab.com/gitlab-org/gitlab/pipelines/134645109>
+[Reference pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/134645109):
 
 ```mermaid
 graph RL;
@@ -584,8 +584,8 @@ runner, or [you can incur network egress charges](https://cloud.google.com/stora
 
 The current stages are:
 
-- `sync`: This stage is used to synchronize changes from <https://gitlab.com/gitlab-org/gitlab> to
-  <https://gitlab.com/gitlab-org/gitlab-foss>.
+- `sync`: This stage is used to synchronize changes from [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) to
+  [`gitlab-org/gitlab-foss`](https://gitlab.com/gitlab-org/gitlab-foss).
 - `prepare`: This stage includes jobs that prepare artifacts that are needed by
   jobs in subsequent stages.
 - `build-images`: This stage includes jobs that prepare Docker images
@@ -614,7 +614,9 @@ that is deployed in stage `review`.
 
 The default image is defined in [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml).
 
+<!-- vale gitlab.Spelling = NO -->
 It includes Ruby, Go, Git, Git LFS, Chrome, Node, Yarn, PostgreSQL, and Graphics Magick.
+<!-- vale gitlab.Spelling = YES -->
 
 The images used in our pipelines are configured in the
 [`gitlab-org/gitlab-build-images`](https://gitlab.com/gitlab-org/gitlab-build-images)
@@ -628,7 +630,7 @@ The current version of the build images can be found in the
 
 In addition to the [predefined variables](../ci/variables/predefined_variables.md),
 each pipeline includes default variables defined in
-<https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml>.
+[`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml).
 
 ### Common job definitions
 
@@ -659,7 +661,7 @@ that are scoped to a single [configuration keyword](../ci/yaml/README.md#job-key
 We're using the [`rules` keyword](../ci/yaml/README.md#rules) extensively.
 
 All `rules` definitions are defined in
-<https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml>,
+[`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml),
 then included in individual jobs via [`extends`](../ci/yaml/README.md#extends).
 
 The `rules` definitions are composed of `if:` conditions and `changes:` patterns,

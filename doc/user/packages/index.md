@@ -35,6 +35,8 @@ You can also use the [API](../../api/packages.md) to administer the Package Regi
 The below table lists formats that are not supported, but are accepting Community contributions for. Consider contributing to GitLab. This [development documentation](../../development/packages.md)
 guides you through the process.
 
+<!-- vale gitlab.Spelling = NO -->
+
 | Format | Status |
 | ------ | ------ |
 | Chef      | [#36889](https://gitlab.com/gitlab-org/gitlab/-/issues/36889) |
@@ -51,6 +53,7 @@ guides you through the process.
 | Terraform | [WIP: Merge Request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18834) |
 | Vagrant   | [#36899](https://gitlab.com/gitlab-org/gitlab/-/issues/36899) |
 
+<!-- vale gitlab.Spelling = YES -->
 ## Container Registry
 
 The GitLab [Container Registry](container_registry/index.md) is a secure and private registry for container images. It's built on open source software and completely integrated within GitLab. Use GitLab CI/CD to create and publish images. Use the GitLab [API](../../api/container_registry.md) to manage the registry across groups and projects.

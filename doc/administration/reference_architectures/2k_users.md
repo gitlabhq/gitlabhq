@@ -18,14 +18,14 @@ For a full list of reference architectures, see
 
 | Service                                  | Nodes  | Configuration           | GCP            | AWS          | Azure   |
 |------------------------------------------|--------|-------------------------|----------------|--------------|---------|
-| Load balancer                            | 1      | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | c5.large     | F2s v2  |
-| PostgreSQL                               | 1      | 2 vCPU, 7.5 GB memory   | n1-standard-2  | m5.large     | D2s v3  |
-| Redis                                    | 1      | 1 vCPU, 3.75 GB memory  | n1-standard-1  | m5.large     | D2s v3  |
-| Gitaly                                   | 1      | 4 vCPU, 15 GB memory    | n1-standard-4  | m5.xlarge    | D4s v3  |
-| GitLab Rails                             | 2      | 8 vCPU, 7.2 GB memory   | n1-highcpu-8   | c5.2xlarge   | F8s v2  |
-| Monitoring node                          | 1      | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | c5.large     | F2s v2  |
+| Load balancer                            | 1      | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | `c5.large`     | F2s v2  |
+| PostgreSQL                               | 1      | 2 vCPU, 7.5 GB memory   | n1-standard-2  | `m5.large`     | D2s v3  |
+| Redis                                    | 1      | 1 vCPU, 3.75 GB memory  | n1-standard-1  | `m5.large`     | D2s v3  |
+| Gitaly                                   | 1      | 4 vCPU, 15 GB memory    | n1-standard-4  | `m5.xlarge`    | D4s v3  |
+| GitLab Rails                             | 2      | 8 vCPU, 7.2 GB memory   | n1-highcpu-8   | `c5.2xlarge`   | F8s v2  |
+| Monitoring node                          | 1      | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | `c5.large`     | F2s v2  |
 | Object storage                           | n/a    | n/a                     | n/a            | n/a          | n/a     |
-| NFS server (optional, not recommended)   | 1      | 4 vCPU, 3.6 GB memory   | n1-highcpu-4   | c5.xlarge    | F4s v2  |
+| NFS server (optional, not recommended)   | 1      | 4 vCPU, 3.6 GB memory   | n1-highcpu-4   | `c5.xlarge`    | F4s v2  |
 
 ```mermaid
 stateDiagram-v2
@@ -789,7 +789,7 @@ running [Prometheus](../monitoring/prometheus/index.md) and
    gitlab_exporter['enable'] = false
    ```
 
-1. Prometheus also needs some scrape configs to pull all the data from the various
+1. Prometheus also needs some scrape configurations to pull all the data from the various
    nodes where we configured exporters. Assuming that your nodes' IPs are:
 
    ```plaintext
@@ -879,7 +879,7 @@ GitLab has been tested on a number of object storage providers:
 - [Google Cloud Storage](https://cloud.google.com/storage)
 - [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces/)
 - [Oracle Cloud Infrastructure](https://docs.cloud.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
-- [Openstack Swift](https://docs.openstack.org/swift/latest/s3_compat.html)
+- [OpenStack Swift](https://docs.openstack.org/swift/latest/s3_compat.html)
 - [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
 - On-premises hardware and appliances from various storage vendors.
 - MinIO. We have [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.

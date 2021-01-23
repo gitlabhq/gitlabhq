@@ -14,7 +14,7 @@ We are using [JSON Schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/co
 
 This process is meant to ensure consistent and valid metrics defined for Usage Ping. All metrics *must*:
 
-- Comply with the definied [JSON schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/schema.json).
+- Comply with the defined [JSON schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/schema.json).
 - Have a unique `key_path` .
 - Have an owner.
 
@@ -22,7 +22,7 @@ All metrics are stored in YAML files:
 
 - [`config/metrics`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/metrics)
 
-Each metric is definied in a separate YAML file consisting of a number of fields:
+Each metric is defined in a separate YAML file consisting of a number of fields:
 
 | Field               | Required | Additional information                                         |
 |---------------------|----------|----------------------------------------------------------------|

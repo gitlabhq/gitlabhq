@@ -3,6 +3,7 @@ Alertmanager
 Algolia
 Alibaba
 allowlist
+allowlisted
 allowlisting
 allowlists
 anonymized
@@ -10,11 +11,13 @@ Ansible
 Anthos
 approvers
 architected
+Arel
 Artifactory
 Asana
 Asciidoctor
 Assembla
 Atlassian
+auditability
 Auth0
 Authentiq
 autocomplete
@@ -52,6 +55,7 @@ blockquoted
 blockquotes
 blockquoting
 boolean
+booleans
 Bootsnap
 browsable
 Bugzilla
@@ -62,7 +66,10 @@ bundler
 bundlers
 burndown
 burnup
+burstable
 cacheable
+callstack
+callstacks
 CentOS
 Certbot
 changeset
@@ -101,6 +108,7 @@ CSV
 Dangerfile
 datetime
 Debian
+Decompressor
 deduplicate
 deduplicated
 deduplicates
@@ -125,6 +133,8 @@ Disqus
 Divio
 Dockerfile
 Dockerfiles
+Dockerize
+Dockerizing
 dogfood
 dogfooding
 dogfoods
@@ -137,6 +147,7 @@ Ecto
 Elasticsearch
 enablement
 enqueued
+enqueues
 enum
 enums
 ETag
@@ -149,6 +160,7 @@ failsafe
 Falco
 fastlane
 favicon
+favorited
 Figma
 Filebeat
 Fio
@@ -158,6 +170,7 @@ Flowdock
 Fluentd
 Forgerock
 Fugit
+fuzzer
 Gantt
 Gemnasium
 Gemojione
@@ -173,6 +186,7 @@ Gitpod
 Gitter
 globals
 Gmail
+Godep
 Gollum
 Google
 goroutine
@@ -186,6 +200,7 @@ Haml
 hardcode
 hardcoded
 hardcodes
+Haswell
 heatmap
 heatmaps
 Helm
@@ -232,6 +247,8 @@ kaniko
 Karma
 Kerberos
 keyset
+keytab
+keytabs
 Kibana
 Kinesis
 Knative
@@ -306,9 +323,12 @@ namespaces
 namespacing
 namespacings
 Nanoc
+negatable
 Netlify
 Nokogiri
 npm
+nullability
+nullable
 Nurtch
 nyc
 OAuth
@@ -332,6 +352,7 @@ Phabricator
 phaser
 phasers
 phpenv
+pipenv
 Pipfile
 Pipfiles
 Piwik
@@ -373,6 +394,7 @@ pseudonymizer
 Puma
 Python
 Qualys
+queryable
 Quicktime
 Rackspace
 Raspbian
@@ -383,6 +405,7 @@ reauthenticate
 reauthenticated
 reauthenticates
 reauthenticating
+rebar
 rebase
 rebased
 rebases
@@ -433,6 +456,7 @@ Rubix
 Rubocop
 Rubular
 ruleset
+rulesets
 runbook
 runbooks
 runit
@@ -501,13 +525,21 @@ substrings
 subtree
 subtrees
 sudo
+swappiness
 swimlane
 swimlanes
+Sysbench
 syslog
 tanuki
 tcpdump
+templated
 Thanos
+throughputs
 Tiller
+timebox
+timeboxed
+timeboxes
+timeboxing
 timecop
 todos
 tokenizer
@@ -527,6 +559,9 @@ Twitter
 TypeScript
 Ubuntu
 unapplied
+unapprove
+unapproved
+unapproving
 unarchive
 unarchived
 unarchives
@@ -563,6 +598,7 @@ unoptimizing
 unprioritized
 unprotect
 unprotected
+unprotecting
 unprotects
 unprovision
 unprovisioned
@@ -603,6 +639,7 @@ uploader
 uploaders
 upvoted
 upvotes
+URIs
 validator
 validators
 vendored
@@ -619,6 +656,8 @@ WebdriverIO
 Webex
 webpack
 webserver
+websocket
+websockets
 whitepaper
 whitepapers
 wireframe
@@ -629,6 +668,7 @@ Wireshark
 Wordpress
 worktree
 worktrees
+Worldline
 Xcode
 Xeon
 YouTrack

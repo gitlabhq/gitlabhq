@@ -105,7 +105,7 @@ These are reason why these changes are needed:
 - we have ambiguous usage of feature flag with different `default_enabled:` and
   different `actors` used
 - we lack a clear indication who owns what feature flag and where to find
-  relevant informations
+  relevant information
 - we do not emphasise the desire to create feature flag rollout issue to
   indicate that feature flag is in fact a ~"technical debt"
 - we don't know exactly what feature flags we have in our codebase

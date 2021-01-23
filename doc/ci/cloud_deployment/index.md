@@ -47,11 +47,11 @@ Some credentials are required to be able to run `aws` commands:
      You might want to check if the AWS service you intend to use is
      [available in the chosen region](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/).
 
-   | Env. variable name      | Value                  |
-   |:------------------------|:-----------------------|
-   | `AWS_ACCESS_KEY_ID`     | Your Access key ID     |
-   | `AWS_SECRET_ACCESS_KEY` | Your Secret access key |
-   | `AWS_DEFAULT_REGION`    | Your region code       |
+   | Environment variable name      | Value                  |
+   |:-------------------------------|:-----------------------|
+   | `AWS_ACCESS_KEY_ID`            | Your Access key ID     |
+   | `AWS_SECRET_ACCESS_KEY`        | Your Secret access key |
+   | `AWS_DEFAULT_REGION`           | Your region code       |
 
 1. You can now use `aws` commands in the `.gitlab-ci.yml` file of this project:
 

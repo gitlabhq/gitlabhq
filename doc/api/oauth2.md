@@ -21,7 +21,7 @@ GitLab currently supports the following authorization flows:
 
 - **Authorization code with [Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636):**
   Most secure. Without PKCE, you'd have to include client secrets on mobile clients,
-  and is recommended for both client and server aoos.
+  and is recommended for both client and server apps.
 - **Authorization code:** Secure and common flow. Recommended option for secure
   server-side apps.
 - **Implicit grant:** Originally designed for user-agent only apps, such as

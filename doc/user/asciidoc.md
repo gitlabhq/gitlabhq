@@ -40,7 +40,7 @@ Notice how line breaks are now preserved.
 
 An indented (literal) paragraph disables text formatting,
 preserves spaces and line breaks, and is displayed in a
-monospaced font:
+fixed-width font:
 
 ```plaintext
  This literal paragraph is indented with one space.

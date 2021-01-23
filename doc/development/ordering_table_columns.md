@@ -63,17 +63,17 @@ bits platform and 8 bytes for a 64 bits platform.
 
 | Type             | Size                                 | Alignment needed |
 |:-----------------|:-------------------------------------|:-----------|
-| smallint         | 2 bytes                              | 1 word     |
-| integer          | 4 bytes                              | 1 word     |
-| bigint           | 8 bytes                              | 8 bytes    |
-| real             | 4 bytes                              | 1 word     |
-| double precision | 8 bytes                              | 8 bytes    |
-| boolean          | 1 byte                               | not needed |
-| text / string    | variable, 1 byte plus the data       | 1 word     |
-| bytea            | variable, 1 or 4 bytes plus the data | 1 word     |
-| timestamp        | 8 bytes                              | 8 bytes    |
-| timestamptz      | 8 bytes                              | 8 bytes    |
-| date             | 4 bytes                              | 1 word     |
+| `smallint`         | 2 bytes                              | 1 word     |
+| `integer`          | 4 bytes                              | 1 word     |
+| `bigint`           | 8 bytes                              | 8 bytes    |
+| `real`             | 4 bytes                              | 1 word     |
+| `double precision` | 8 bytes                              | 8 bytes    |
+| `boolean`          | 1 byte                               | not needed |
+| `text` / `string`    | variable, 1 byte plus the data       | 1 word     |
+| `bytea`            | variable, 1 or 4 bytes plus the data | 1 word     |
+| `timestamp`        | 8 bytes                              | 8 bytes    |
+| `timestamptz`      | 8 bytes                              | 8 bytes    |
+| `date`             | 4 bytes                              | 1 word     |
 
 A "variable" size means the actual size depends on the value being stored. If
 PostgreSQL determines this can be embedded directly into a row it may do so, but

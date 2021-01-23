@@ -519,7 +519,7 @@ increases as the numbers go up. To use a configuration file, add it to your repo
 ### Overrides
 
 API Fuzzing provides a method to add or override headers and cookies for all outbound HTTP requests
-made. You can use this to inject semver headers, authentication, and so on. The
+made. You can use this to inject semantic version headers, authentication, and so on. The
 [authentication section](#authentication) includes examples of using overrides for that purpose.
 
 Overrides uses a JSON document to define the headers and cookies:

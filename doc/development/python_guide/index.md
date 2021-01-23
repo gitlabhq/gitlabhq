@@ -14,8 +14,8 @@ As of GitLab 11.10, we require Python 3.
 ## Installation
 
 There are several ways of installing Python on your system. To be able to use the same version we use in production,
-we suggest you use [pyenv](https://github.com/pyenv/pyenv). It works and behaves similarly to its counterpart in the
-Ruby world: [rbenv](https://github.com/rbenv/rbenv).
+we suggest you use [`pyenv`](https://github.com/pyenv/pyenv). It works and behaves similarly to its counterpart in the
+Ruby world: [`rbenv`](https://github.com/rbenv/rbenv).
 
 ### macOS
 
@@ -35,11 +35,11 @@ curl "https://pyenv.run" | bash
 
 Alternatively, you may find `pyenv` available as a system package via your distribution's package manager.
 
-You can read more about it in: <https://github.com/pyenv/pyenv-installer#prerequisites>.
+You can read more about it in [the `pyenv` prerequisites](https://github.com/pyenv/pyenv-installer#prerequisites).
 
 ### Shell integration
 
-Pyenv installation adds required changes to Bash. If you use a different shell,
+`Pyenv` installation adds required changes to Bash. If you use a different shell,
 check for any additional steps required for it.
 
 For Fish, you can install a plugin for [Fisher](https://github.com/jorgebucaran/fisher):

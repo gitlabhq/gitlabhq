@@ -5,13 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: tutorial
 ---
 
-# Authenticating and Reading Secrets With Hashicorp Vault
+# Authenticating and Reading Secrets With HashiCorp Vault
 
 This tutorial demonstrates how to authenticate, configure, and read secrets with HashiCorp's Vault from GitLab CI/CD.
 
 NOTE:
 [GitLab Premium](https://about.gitlab.com/pricing/) supports read access to a
-Hashicorp Vault, and enables you to
+HashiCorp Vault, and enables you to
 [use Vault secrets in a CI job](../../secrets/index.md#use-vault-secrets-in-a-ci-job).
 To learn more, read [Using external secrets in CI](../../secrets/index.md).
 
@@ -155,11 +155,11 @@ This example uses [bound_claims](https://www.vaultproject.io/api/auth/jwt#bound_
 
 Combined with [protected branches](../../../user/project/protected_branches.md), you can restrict who is able to authenticate and read the secrets.
 
-[token_explicit_max_ttl](https://www.vaultproject.io/api/auth/jwt#token_explicit_max_ttl) specifies that the token issued by Vault, upon successful authentication, has a hard lifetime limit of 60 seconds.
+[`token_explicit_max_ttl`](https://www.vaultproject.io/api/auth/jwt#token_explicit_max_ttl) specifies that the token issued by Vault, upon successful authentication, has a hard lifetime limit of 60 seconds.
 
-[user_claim](https://www.vaultproject.io/api/auth/jwt#user_claim) specifies the name for the Identity alias created by Vault upon a successful login.
+[`user_claim`](https://www.vaultproject.io/api/auth/jwt#user_claim) specifies the name for the Identity alias created by Vault upon a successful login.
 
-[bound_claims_type](https://www.vaultproject.io/api-docs/auth/jwt#bound_claims_type) configures the interpretation of the `bound_claims` values. If set to `glob`, the values are interpreted as globs, with `*` matching any number of characters.
+[`bound_claims_type`](https://www.vaultproject.io/api-docs/auth/jwt#bound_claims_type) configures the interpretation of the `bound_claims` values. If set to `glob`, the values are interpreted as globs, with `*` matching any number of characters.
 
 For the full list of options, see Vault's [Create Role documentation](https://www.vaultproject.io/api/auth/jwt#create-role).
 

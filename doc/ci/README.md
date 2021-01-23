@@ -204,7 +204,7 @@ been necessary. These are:
 
 #### 12.0
 
-- [Use refspec to clone/fetch Git repository](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4069).
+- [Use `refspec` to clone/fetch Git repository](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4069).
 - [Old cache configuration](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4070).
 - [Old metrics server configuration](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4072).
 - [Remove `FF_K8S_USE_ENTRYPOINT_OVER_COMMAND`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4073).

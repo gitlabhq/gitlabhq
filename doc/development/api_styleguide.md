@@ -28,7 +28,7 @@ See the [Documentation Style Guide RESTful API page](documentation/restful_api_s
 ## Methods and parameters description
 
 Every method must be described using the [Grape DSL](https://github.com/ruby-grape/grape#describing-methods)
-(see <https://gitlab.com/gitlab-org/gitlab/blob/master/lib/api/environments.rb>
+(see [`environments.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/api/environments.rb)
 for a good example):
 
 - `desc` for the method summary. You should pass it a block for additional

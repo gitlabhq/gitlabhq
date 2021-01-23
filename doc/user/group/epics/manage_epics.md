@@ -176,7 +176,7 @@ To add a new issue to an epic:
    - Search for the desired issue by entering part of the issue's title, then selecting the desired
      match (introduced in [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/9126)).
 
-   If there are multiple issues to be added, press <kbd>Spacebar</kbd> and repeat this step.
+   If there are multiple issues to be added, press <kbd>Space</kbd> and repeat this step.
 1. Select **Add**.
 
 #### Create an issue from an epic
@@ -278,7 +278,7 @@ To add a child epic to an epic:
    - Search for the desired issue by entering part of the epic's title, then selecting the desired
      match (introduced in [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/9126)).
 
-   If there are multiple epics to be added, press <kbd>Spacebar</kbd> and repeat this step.
+   If there are multiple epics to be added, press <kbd>Space</kbd> and repeat this step.
 1. Select **Add**.
 
 ### Move child epics between epics

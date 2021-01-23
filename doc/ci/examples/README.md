@@ -34,10 +34,10 @@ The following table lists examples with step-by-step tutorials that are containe
 | NPM with semantic-release     | [Publish NPM packages to the GitLab Package Registry using semantic-release](semantic-release.md). |
 | PHP with Laravel, Envoy       | [Test and deploy Laravel applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md). |
 | PHP with NPM, SCP             | [Running Composer and NPM scripts with deployment via SCP in GitLab CI/CD](deployment/composer-npm-deploy.md). |
-| PHP with PHPunit, atoum       | [Testing PHP projects](php.md). |
+| PHP with PHPunit, `atoum`       | [Testing PHP projects](php.md). |
 | Python on Heroku              | [Test and deploy a Python application with GitLab CI/CD](test-and-deploy-python-application-to-heroku.md). |
 | Ruby on Heroku                | [Test and deploy a Ruby application with GitLab CI/CD](test-and-deploy-ruby-application-to-heroku.md). |
-| Secrets management with Vault | [Authenticating and Reading Secrets With Hashicorp Vault](authenticating-with-hashicorp-vault/index.md). |
+| Secrets management with Vault | [Authenticating and Reading Secrets With HashiCorp Vault](authenticating-with-hashicorp-vault/index.md). |
 
 ### Contributed examples
 
@@ -47,7 +47,7 @@ separate example projects:
 
 | Use case                      | Resource |
 |-------------------------------|----------|
-| Game development              | [DevOps and Game Dev with GitLab CI/CD](https://gitlab.com/gitlab-examples/gitlab-game-demo/). |
+| Game development              | [DevOps and Game Development with GitLab CI/CD](https://gitlab.com/gitlab-examples/gitlab-game-demo/). |
 | Java with Maven               | [How to deploy Maven projects to Artifactory with GitLab CI/CD](https://gitlab.com/gitlab-examples/maven/simple-maven-example). |
 | Java with Spring Boot         | [Deploy a Spring Boot application to Cloud Foundry with GitLab CI/CD](https://gitlab.com/gitlab-examples/spring-gitlab-cf-deploy-demo). |
 | Parallel testing Ruby & JS    | [GitLab CI/CD parallel jobs testing for Ruby & JavaScript projects](https://docs.knapsackpro.com/2019/how-to-run-parallel-jobs-for-rspec-tests-on-gitlab-ci-pipeline-and-speed-up-ruby-javascript-testing). |
@@ -99,7 +99,7 @@ choose one of these templates:
 
 If a programming language or framework template is not in this list, you can contribute
 one. To create a template, submit a merge request
-to <https://gitlab.com/gitlab-org/gitlab/tree/master/lib/gitlab/ci/templates>.
+to [the templates list](https://gitlab.com/gitlab-org/gitlab/tree/master/lib/gitlab/ci/templates).
 
 ### Adding templates to your GitLab installation **(PREMIUM ONLY)**
 
@@ -131,7 +131,7 @@ See also the following video overviews:
 
 For some customer experiences with GitLab CI/CD, see:
 
-- [How Verizon Connect reduced datacenter deploys from 30 days to under 8 hours with GitLab](https://about.gitlab.com/blog/2019/02/14/verizon-customer-story/)
+- [How Verizon Connect reduced data center deploys from 30 days to under 8 hours with GitLab](https://about.gitlab.com/blog/2019/02/14/verizon-customer-story/)
 - [How Wag! cut their release process from 40 minutes to just 6](https://about.gitlab.com/blog/2019/01/16/wag-labs-blog-post/)
 - [How Jaguar Land Rover embraced CI to speed up their software lifecycle](https://about.gitlab.com/blog/2018/07/23/chris-hill-devops-enterprise-summit-talk/)
 

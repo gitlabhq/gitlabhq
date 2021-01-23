@@ -109,7 +109,7 @@ existing GitLab account. To do so:
 
 1. Navigate to **Admin Area > Overview > Users > Example User**.
 1. Select the Identities tab.
-1. Select 'Kerberos Spnego' in the 'Provider' dropdown box.
+1. Select 'Kerberos SPNEGO' in the 'Provider' dropdown box.
 1. Make sure the **Identifier** corresponds to the Kerberos username.
 1. Select **Save changes**.
 
@@ -117,7 +117,7 @@ If you're not an administrator:
 
 1. Select your avatar in the upper-right corner, and select **Settings**.
 1. Select Account. In the **Social sign-in** section, select
-   **Connect Kerberos Spnego**.
+   **Connect Kerberos SPNEGO**.
    If you don't see a **Social sign-in** Kerberos option, follow the
    requirements in [Enable single sign-on](#enable-single-sign-on).
 
@@ -291,10 +291,10 @@ remove support for password-based Kerberos sign-ins in a future
 release, so we recommend that you upgrade to ticket-based sign-ins.
 
 Depending on your existing GitLab configuration, the 'Sign in with:
-Kerberos Spnego' button may already be visible on your GitLab sign-in
+Kerberos SPNEGO' button may already be visible on your GitLab sign-in
 page. If not, then add the settings [described above](#configuration).
 
-Once you have verified that the 'Kerberos Spnego' button works
+Once you have verified that the 'Kerberos SPNEGO' button works
 without entering any passwords, you can proceed to disable
 password-based Kerberos sign-ins. To do this you need only need to
 remove the OmniAuth provider named `kerberos` from your `gitlab.yml` /

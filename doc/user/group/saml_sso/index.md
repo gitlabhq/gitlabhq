@@ -281,7 +281,7 @@ If a user is already a member of the group, linking the SAML identity does not c
 
 To rescind access to the group, perform the following steps, in order:
 
-1. Remove the user from the user datastore on the identity provider or the list of users on the specific app.
+1. Remove the user from the user data store on the identity provider or the list of users on the specific app.
 1. Remove the user from the GitLab.com group.
 
 ### Unlinking accounts
@@ -293,7 +293,7 @@ Users can unlink SAML for a group from their profile page. This can be helpful i
 
 WARNING:
 Unlinking an account removes all roles assigned to that user within the group.
-If a user relinks their account, roles need to be reassigned.
+If a user re-links their account, roles need to be reassigned.
 
 For example, to unlink the `MyOrg` account, the following **Disconnect** button is available under **Profile > Accounts**:
 
@@ -342,7 +342,7 @@ access.
 
 | Term | Description |
 |------|-------------|
-| Identity Provider | The service which manages your user identities such as ADFS, Okta, Onelogin, or Ping Identity. |
+| Identity Provider | The service which manages your user identities such as ADFS, Okta, OneLogin, or Ping Identity. |
 | Service Provider | SAML considers GitLab to be a service provider. |
 | Assertion | A piece of information about a user's identity, such as their name or role. Also known as claims or attributes. |
 | SSO | Single Sign On. |
@@ -377,7 +377,7 @@ For convenience, we've included some [example resources](../../../administration
 
 ### Verifying NameID
 
-In troubleshooting the Group SAML setup, any authenticated user can use the API to verify the NameID GitLab already has linked to the user by visiting [https://gitlab.com/api/v4/user](https://gitlab.com/api/v4/user) and checking the `extern_uid` under identities.
+In troubleshooting the Group SAML setup, any authenticated user can use the API to verify the NameID GitLab already has linked to the user by visiting [`https://gitlab.com/api/v4/user`](https://gitlab.com/api/v4/user) and checking the `extern_uid` under identities.
 
 Similarly, group members of a role with the appropriate permissions can make use of the [members API](../../../api/members.md) to view group SAML identity information for members of the group.
 
@@ -388,7 +388,7 @@ This can then be compared to the [NameID](#nameid) being sent by the Identity Pr
 If a user is trying to sign in for the first time and the GitLab single sign-on URL has not [been configured](#configuring-your-identity-provider), they may see a 404.
 As outlined in the [user access section](#linking-saml-to-your-existing-gitlabcom-account), a group Owner will need to provide the URL to users.
 
-### Message: "SAML authentication failed: Extern uid has already been taken"
+### Message: "SAML authentication failed: Extern UID has already been taken"
 
 This error suggests you are signed in as a GitLab user but have already linked your SAML identity to a different GitLab user. Sign out and then try to sign in again using the SSO SAML link, which should log you into GitLab with the linked user account.
 
@@ -409,7 +409,7 @@ Here are possible causes and solutions:
 |------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
 | When a user account with the email address already exists in GitLab, but the user does not have the SAML identity tied to their account. | The user will need to [link their account](#user-access-and-management). |
 
-### Message: "SAML authentication failed: Extern uid has already been taken, User has already been taken"
+### Message: "SAML authentication failed: Extern UID has already been taken, User has already been taken"
 
 Getting both of these errors at the same time suggests the NameID capitalization provided by the Identity Provider didn't exactly match the previous value for that user.
 

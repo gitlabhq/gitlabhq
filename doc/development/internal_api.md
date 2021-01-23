@@ -26,7 +26,7 @@ file, and include the token Base64 encoded in a `secret_token` parameter
 or in the `Gitlab-Shared-Secret` header.
 
 NOTE:
-The internal API used by GitLab Pages, and GitLab Kubernetes Agent Server (kas) uses JSON Web Token (JWT)
+The internal API used by GitLab Pages, and GitLab Kubernetes Agent Server (`kas`) uses JSON Web Token (JWT)
 authentication, which is different from GitLab Shell.
 
 ## Git Authentication
@@ -378,7 +378,7 @@ Example response:
 > - This feature is not deployed on GitLab.com
 > - It's not recommended for production use.
 
-The following endpoints are used by the GitLab Kubernetes Agent Server (kas)
+The following endpoints are used by the GitLab Kubernetes Agent Server (`kas`)
 for various purposes.
 
 These endpoints are all authenticated using JWT. The JWT secret is stored in a file
@@ -390,9 +390,9 @@ The Kubernetes agent is under development and is not recommended for production 
 
 ### Kubernetes agent information
 
-Called from GitLab Kubernetes Agent Server (kas) to retrieve agent
+Called from GitLab Kubernetes Agent Server (`kas`) to retrieve agent
 information for the given agent token. This returns the Gitaly connection
-information for the agent's project in order for kas to fetch and update
+information for the agent's project in order for `kas` to fetch and update
 the agent's configuration.
 
 ```plaintext
@@ -407,9 +407,9 @@ curl --request GET --header "Gitlab-Kas-Api-Request: <JWT token>" --header "Auth
 
 ### Kubernetes agent project information
 
-Called from GitLab Kubernetes Agent Server (kas) to retrieve project
+Called from GitLab Kubernetes Agent Server (`kas`) to retrieve project
 information for the given agent token. This returns the Gitaly
-connection for the requested project. GitLab kas uses this to configure
+connection for the requested project. GitLab `kas` uses this to configure
 the agent to fetch Kubernetes resources from the project repository to
 sync.
 
@@ -432,7 +432,7 @@ curl --request GET --header "Gitlab-Kas-Api-Request: <JWT token>" --header "Auth
 
 ### Kubernetes agent usage metrics
 
-Called from GitLab Kubernetes Agent Server (kas) to increase the usage
+Called from GitLab Kubernetes Agent Server (`kas`) to increase the usage
 metric counters.
 
 | Attribute | Type   | Required | Description |

@@ -13,11 +13,14 @@ type: reference, api
 
 Badges support placeholders that will be replaced in real time in both the link and image URL. The allowed placeholders are:
 
+<!-- vale gitlab.Spelling = NO -->
+
 - **%{project_path}**: will be replaced by the project path.
 - **%{project_id}**: will be replaced by the project ID.
 - **%{default_branch}**: will be replaced by the project default branch.
 - **%{commit_sha}**: will be replaced by the last project's commit SHA.
 
+<!-- vale gitlab.Spelling = YES -->
 ## List all badges of a project
 
 Gets a list of a project's badges and its group badges.

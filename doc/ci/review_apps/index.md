@@ -180,11 +180,11 @@ After you have the route mapping set up, it takes effect in the following locati
 
 - In the diff for a merge request, comparison, or commit.
 
-  !["View on env" button in merge request diff](img/view_on_env_mr.png)
+  ![View on environment button in merge request diff](img/view_on_env_mr.png)
 
 - In the blob file view.
 
-  !["View on env" button in file view](img/view_on_env_blob.png)
+  ![View on environment button in file view](img/view_on_env_blob.png)
 
 ## Visual Reviews **(STARTER)**
 

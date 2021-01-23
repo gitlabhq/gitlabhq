@@ -271,8 +271,8 @@ CircleCI provides [Contexts](https://circleci.com/docs/2.0/contexts/) to securel
 
 There are two GitLab issues open addressing CircleCI Orbs and how GitLab can achieve similar functionality.
 
-- <https://gitlab.com/gitlab-com/Product/-/issues/1151>
-- <https://gitlab.com/gitlab-org/gitlab/-/issues/195173>
+- [issue #1151](https://gitlab.com/gitlab-com/Product/-/issues/1151)
+- [issue #195173](https://gitlab.com/gitlab-org/gitlab/-/issues/195173)
 
 ## Build environments
 

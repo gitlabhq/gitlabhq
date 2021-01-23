@@ -10,7 +10,7 @@ We have developed a number of utilities to help ease development:
 
 ## `MergeHash`
 
-Refer to: <https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/utils/merge_hash.rb>:
+Refer to [`merge_hash.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/utils/merge_hash.rb):
 
 - Deep merges an array of hashes:
 
@@ -111,7 +111,7 @@ Refer to [`override.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gi
 
 ## `StrongMemoize`
 
-Refer to <https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/utils/strong_memoize.rb>:
+Refer to [`strong_memoize.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/utils/strong_memoize.rb):
 
 - Memoize the value even if it is `nil` or `false`.
 

@@ -5,7 +5,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 <!-- markdownlint-disable MD044 -->
+<!-- vale gitlab.Spelling = NO -->
 # The .gitlab-ci.yml file
+<!-- vale gitlab.Spelling = YES -->
 <!-- markdownlint-enable MD044 -->
 
 To use GitLab CI/CD, you need:

@@ -39,7 +39,7 @@ The Dpl provides support for vast number of services, including: Heroku, Cloud F
 To use it simply define provider and any additional parameters required by the provider.
 
 For example if you want to use it to deploy your application to Heroku, you need to specify `heroku` as provider, specify `api-key` and `app`.
-All possible parameters can be found here: <https://github.com/travis-ci/dpl#heroku-api>.
+All possible parameters can be found in the [Heroku API section](https://github.com/travis-ci/dpl#heroku-api).
 
 ```yaml
 staging:
