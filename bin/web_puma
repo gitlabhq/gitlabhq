@@ -25,7 +25,7 @@ get_puma_pid()
 
 start()
 {
-  spawn_puma -d
+  spawn_puma &
 }
 
 start_foreground()
