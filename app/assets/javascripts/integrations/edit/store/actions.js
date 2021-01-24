@@ -26,3 +26,18 @@ export const fetchResetIntegration = ({ dispatch, getters }) => {
     .then(() => dispatch('receiveResetIntegrationSuccess'))
     .catch(() => dispatch('receiveResetIntegrationError'));
 };
+
+export const requestJiraIssueTypes = ({ commit }) => {
+  commit(types.SET_JIRA_ISSUE_TYPES_ERROR_MESSAGE, '');
+  commit(types.SET_IS_LOADING_JIRA_ISSUE_TYPES, true);
+};
+export const receiveJiraIssueTypesSuccess = ({ commit }, issueTypes = []) => {
+  commit(types.SET_IS_LOADING_JIRA_ISSUE_TYPES, false);
+  commit(types.SET_JIRA_ISSUE_TYPES, issueTypes);
+};
+
+export const receiveJiraIssueTypesError = ({ commit }, errorMessage) => {
+  commit(types.SET_IS_LOADING_JIRA_ISSUE_TYPES, false);
+  commit(types.SET_JIRA_ISSUE_TYPES, []);
+  commit(types.SET_JIRA_ISSUE_TYPES_ERROR_MESSAGE, errorMessage);
+};

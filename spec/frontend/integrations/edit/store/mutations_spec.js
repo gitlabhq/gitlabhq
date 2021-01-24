@@ -56,4 +56,30 @@ describe('Integration form store mutations', () => {
       expect(state.isResetting).toBe(false);
     });
   });
+
+  describe(`${types.SET_JIRA_ISSUE_TYPES}`, () => {
+    it('sets jiraIssueTypes', () => {
+      const jiraIssueTypes = ['issue', 'epic'];
+      mutations[types.SET_JIRA_ISSUE_TYPES](state, jiraIssueTypes);
+
+      expect(state.jiraIssueTypes).toBe(jiraIssueTypes);
+    });
+  });
+
+  describe(`${types.SET_IS_LOADING_JIRA_ISSUE_TYPES}`, () => {
+    it.each([true, false])('sets isLoadingJiraIssueTypes to "%s"', (isLoading) => {
+      mutations[types.SET_IS_LOADING_JIRA_ISSUE_TYPES](state, isLoading);
+
+      expect(state.isLoadingJiraIssueTypes).toBe(isLoading);
+    });
+  });
+
+  describe(`${types.SET_JIRA_ISSUE_TYPES_ERROR_MESSAGE}`, () => {
+    it('sets loadingJiraIssueTypesErrorMessage', () => {
+      const errorMessage = 'something went wrong';
+      mutations[types.SET_JIRA_ISSUE_TYPES_ERROR_MESSAGE](state, errorMessage);
+
+      expect(state.loadingJiraIssueTypesErrorMessage).toBe(errorMessage);
+    });
+  });
 });

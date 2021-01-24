@@ -9,6 +9,9 @@ describe('Integration form state factory', () => {
       isTesting: false,
       isResetting: false,
       override: false,
+      isLoadingJiraIssueTypes: false,
+      jiraIssueTypes: [],
+      loadingJiraIssueTypesErrorMessage: '',
     });
   });
 

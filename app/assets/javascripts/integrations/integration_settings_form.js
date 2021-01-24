@@ -33,6 +33,12 @@ export default class IntegrationSettingsForm {
     eventHub.$on('saveIntegration', () => {
       this.saveIntegration();
     });
+    eventHub.$on('getJiraIssueTypes', () => {
+      // eslint-disable-next-line no-jquery/no-serialize
+      this.getJiraIssueTypes(this.$form.serialize());
+    });
+
+    eventHub.$emit('formInitialized');
   }
 
   saveIntegration() {
@@ -80,15 +86,58 @@ export default class IntegrationSettingsForm {
   }
 
   /**
+   * Get a list of Jira issue types for the currently configured project
+   *
+   * @param {string} formData - URL encoded string containing the form data
+   *
+   * @return {Promise}
+   */
+  getJiraIssueTypes(formData) {
+    const {
+      $store: { dispatch },
+    } = this.vue;
+
+    dispatch('requestJiraIssueTypes');
+
+    return this.fetchTestSettings(formData)
+      .then(
+        ({
+          data: {
+            issuetypes,
+            error,
+            message = s__('Integrations|Connection failed. Please check your settings.'),
+          },
+        }) => {
+          if (error || !issuetypes?.length) {
+            eventHub.$emit('validateForm');
+            throw new Error(message);
+          }
+
+          dispatch('receiveJiraIssueTypesSuccess', issuetypes);
+        },
+      )
+      .catch(({ message = __('Something went wrong on our end.') }) => {
+        dispatch('receiveJiraIssueTypesError', message);
+      });
+  }
+
+  /**
+   *  Send request to the test endpoint which checks if the current config is valid
+   */
+  fetchTestSettings(formData) {
+    return axios.put(this.testEndPoint, formData);
+  }
+
+  /**
    * Test Integration config
    */
   testSettings(formData) {
-    return axios
-      .put(this.testEndPoint, formData)
+    return this.fetchTestSettings(formData)
       .then(({ data }) => {
         if (data.error) {
           toast(`${data.message} ${data.service_response}`);
         } else {
+          this.vue.$store.dispatch('receiveJiraIssueTypesSuccess', data.issuetypes);
           toast(s__('Integrations|Connection successful.'));
         }
       })

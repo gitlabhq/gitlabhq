@@ -27,6 +27,7 @@ function parseDatasetToProps(data) {
     cancelPath,
     testPath,
     resetPath,
+    vulnerabilitiesIssuetype,
     ...booleanAttributes
   } = data;
   const {
@@ -38,7 +39,9 @@ function parseDatasetToProps(data) {
     mergeRequestEvents,
     enableComments,
     showJiraIssuesIntegration,
+    showJiraVulnerabilitiesIntegration,
     enableJiraIssues,
+    enableJiraVulnerabilities,
     gitlabIssuesEnabled,
   } = parseBooleanInData(booleanAttributes);
 
@@ -59,7 +62,10 @@ function parseDatasetToProps(data) {
     },
     jiraIssuesProps: {
       showJiraIssuesIntegration,
+      showJiraVulnerabilitiesIntegration,
       initialEnableJiraIssues: enableJiraIssues,
+      initialEnableJiraVulnerabilities: enableJiraVulnerabilities,
+      initialVulnerabilitiesIssuetype: vulnerabilitiesIssuetype,
       initialProjectKey: projectKey,
       gitlabIssuesEnabled,
       upgradePlanPath,
