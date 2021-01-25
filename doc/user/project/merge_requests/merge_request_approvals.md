@@ -164,8 +164,15 @@ To add or edit the default merge request approval rule:
      the rule.
 1. Click **Add approval rule** or **Update approval rule**.
 
-Any merge requests that were created before changing the rules will not be changed.
-They will keep the original approval rules, unless manually [overridden](#editing--overriding-approval-rules-per-merge-request).
+When [approval rule overrides](#prevent-overriding-default-approvals) are allowed,
+changes to these default rules will **not** be applied to existing merge
+requests, except for changes to the [target branch](#scoped-to-protected-branch) of
+the rule.
+
+When approval rule overrides are not allowed, all changes to these default rules
+will be applied to existing merge requests. Any approval rules that had previously been
+manually [overridden](#editing--overriding-approval-rules-per-merge-request) during a
+period when approval rule overrides where allowed, will not be modified.
 
 NOTE:
 If a merge request targets a different project, such as from a fork to the upstream project,
@@ -251,6 +258,11 @@ one of the following is possible:
 - **They have already approved this merge request**: They can remove their approval.
 
   ![Remove approval](img/remove_approval.png)
+
+When [approval rule overrides](#prevent-overriding-default-approvals) are allowed,
+changes to default approval rules will **not** be applied to existing
+merge requests, except for changes to the [target branch](#scoped-to-protected-branch)
+of the rule.
 
 NOTE:
 The merge request author is not allowed to approve their own merge request if

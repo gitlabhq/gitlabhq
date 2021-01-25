@@ -1,0 +1,5 @@
+---
+title: Fix missing setting LDAP servers
+merge_request: 52512
+author:
+type: fixed

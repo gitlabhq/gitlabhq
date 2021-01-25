@@ -634,6 +634,20 @@ For each Patroni instance on the secondary site:
 to `gitlab.rb` where `<slot_name>` is the name of the replication slot for your Geo secondary. This will ensure that Patroni recognizes the replication slot as permanent and will not drop it upon restarting.
 1. If database replication to the secondary was paused before migration, resume replication once Patroni is confirmed working on the primary.
 
+## Migrating a single PostgreSQL node to Patroni
+
+Before the introduction of Patroni, Geo had no Omnibus support for HA setups on the secondary node.
+
+With Patroni it's now possible to support that. In order to migrate the existing PostgreSQL to Patroni:
+
+1. Make sure you have a Consul cluster setup on the secondary (similar to how you set it up on the primary).
+1. [Configure a permanent replication slot](#step-1-configure-patroni-permanent-replication-slot-on-the-primary-site).
+1. [Configure a Standby Cluster](#step-2-configure-a-standby-cluster-on-the-secondary-site)
+   on that single node machine.
+   
+You will end up with a "Standby Cluster" with a single node. That allows you to later on add additional patroni nodes
+by following the same instructions above.
+
 ## Troubleshooting
 
 Read the [troubleshooting document](../replication/troubleshooting.md).

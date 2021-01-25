@@ -161,7 +161,7 @@ Feature.disable(:merge_request_reviewers)
 Feature.disable(:merge_request_reviewers, Project.find(<project id>))
 ```
 
-#### Reviewer approval rules
+#### Approval Rule information for Reviewers **(STARTER)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233736) in GitLab 13.8.
 > - It was [deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
@@ -169,11 +169,15 @@ Feature.disable(:merge_request_reviewers, Project.find(<project id>))
 > - It's enabled on GitLab.com.
 > - It's recommended for production use.
 > - It can be enabled or disabled for a single project.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-reviewer-approval-rules). **(CORE ONLY)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-approval-rule-information-for-reviewers). **(STARTER ONLY)**
 
-When editing the **Reviewers** field in a new or existing merge request, this feature
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+When editing the **Reviewers** field in a new or existing merge request, GitLab
 displays the name of the matching [approval rule](merge_request_approvals.md#approval-rules)
-below the name of each suggested reviewer. [Code Owners](../code_owners.md) are displayed as `Codeowner` without group detail. We intend to iterate on this feature in future releases.
+below the name of each suggested reviewer. [Code Owners](../code_owners.md) are displayed as **Code Owner** without group detail.
+We intend to iterate on this feature in future releases.
 
 This example shows reviewers and approval rules when creating a new merge request:
 
@@ -183,7 +187,7 @@ This example shows reviewers and approval rules in a merge request sidebar:
 
 ![Reviewer approval rules in sidebar](img/reviewer_approval_rules_sidebar_v13_8.png)
 
-##### Enable or disable Reviewer Approval Rules **(CORE ONLY)**
+##### Enable or disable Approval Rule information for Reviewers **(STARTER ONLY)**
 
 Merge Request Reviewers is under development and ready for production use.
 It is deployed behind a feature flag that is **enabled by default**.
