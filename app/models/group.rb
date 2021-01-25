@@ -169,6 +169,15 @@ class Group < Namespace
       where('NOT EXISTS (?)', services)
     end
 
+    # This method can be used only if all groups have the same top-level
+    # group
+    def preset_root_ancestor_for(groups)
+      return groups if groups.size < 2
+
+      root = groups.first.root_ancestor
+      groups.drop(1).each { |group| group.root_ancestor = root }
+    end
+
     private
 
     def public_to_user_arel(user)

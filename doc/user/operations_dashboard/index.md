@@ -22,7 +22,10 @@ have a [Silver](https://about.gitlab.com/pricing/) plan.
 
 To add a project to the dashboard:
 
-1. Click the **Add projects** button in the homescreen of the dashboard.
+1. Ensure your alerts
+   [populate the `gitlab_environment_name` field](../../operations/metrics/alerts.md#external-prometheus-instances).
+   In GitLab 13.9, you can display alerts for the `production` environment only.
+1. Click the **Add projects** button in the home screen of the dashboard.
 1. Search and add one or more projects using the **Search your projects** field.
 1. Click the **Add projects** button.
 

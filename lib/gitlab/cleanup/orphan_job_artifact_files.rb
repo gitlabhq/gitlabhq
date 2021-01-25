@@ -12,10 +12,9 @@ module Gitlab
       VALID_NICENESS_LEVELS = %w{none realtime best-effort idle}.freeze
 
       attr_accessor :batch, :total_found, :total_cleaned
-      attr_reader :limit, :dry_run, :niceness, :logger
+      attr_reader :dry_run, :niceness, :logger
 
-      def initialize(limit: nil, dry_run: true, niceness: nil, logger: nil)
-        @limit = limit
+      def initialize(dry_run: true, niceness: nil, logger: nil)
         @dry_run = dry_run
         @niceness = (niceness || DEFAULT_NICENESS).downcase
         @logger = logger || Gitlab::AppLogger
@@ -31,7 +30,11 @@ module Gitlab
           batch << artifact_file
 
           clean_batch! if batch.full?
-          break if limit_reached?
+
+          if limit_reached?
+            log_info("Exiting due to reaching limit of #{limit}.")
+            break
+          end
         end
 
         clean_batch!
@@ -127,6 +130,10 @@ module Gitlab
 
       def log_error(msg, params = {})
         logger.error(msg)
+      end
+
+      def limit
+        ENV['LIMIT']&.to_i
       end
     end
   end

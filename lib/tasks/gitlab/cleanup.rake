@@ -56,7 +56,7 @@ namespace :gitlab do
     task orphan_job_artifact_files: :gitlab_environment do
       warn_user_is_not_gitlab
 
-      cleaner = Gitlab::Cleanup::OrphanJobArtifactFiles.new(limit: limit, dry_run: dry_run?, niceness: niceness, logger: logger)
+      cleaner = Gitlab::Cleanup::OrphanJobArtifactFiles.new(dry_run: dry_run?, niceness: niceness, logger: logger)
       cleaner.run!
 
       if dry_run?
@@ -78,8 +78,7 @@ namespace :gitlab do
       cleaner = Gitlab::Cleanup::OrphanLfsFileReferences.new(
         project,
         dry_run: dry_run?,
-        logger: logger,
-        limit: limit
+        logger: logger
       )
 
       cleaner.run!
@@ -160,10 +159,6 @@ namespace :gitlab do
 
     def debug?
       ENV['DEBUG'].present?
-    end
-
-    def limit
-      ENV['LIMIT']&.to_i
     end
 
     def niceness

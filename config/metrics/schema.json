@@ -55,6 +55,9 @@
         "type": "string",
         "enum": ["free", "starter", "premium", "ultimate", "bronze", "silver", "gold"]
       }
+    },
+    "skip_validation": {
+      "type": "boolean"
     }
   }
 }

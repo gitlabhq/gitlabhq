@@ -78,6 +78,9 @@ For GitLab to associate your alerts with an [environment](../../ci/environments/
 you must configure a `gitlab_environment_name` label on the alerts you set up in
 Prometheus. The value of this should match the name of your environment in GitLab.
 
+You can display alerts with a `gitlab_environment_name` of `production`
+[on a dashboard](../../user/operations_dashboard/index.md#adding-a-project-to-the-dashboard).
+
 In GitLab versions 13.1 and greater, you can configure your manually configured
 Prometheus server to use the
 [Generic alerts integration](../incident_management/alert_integrations.md).

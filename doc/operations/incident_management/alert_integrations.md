@@ -92,7 +92,7 @@ parameters. All fields are optional. If the incoming alert does not contain a va
 | `hosts`                   | String or Array | One or more hosts, as to where this incident occurred. |
 | `severity`                | String          | The severity of the alert. Must be one of `critical`, `high`, `medium`, `low`, `info`, `unknown`. Default is `critical`. |
 | `fingerprint`             | String or Array | The unique identifier of the alert. This can be used to group occurrences of the same alert. |
-| `gitlab_environment_name` | String          | The name of the associated GitLab [environment](../../ci/environments/index.md). This can be used to associate your alert to your environment. |
+| `gitlab_environment_name` | String          | The name of the associated GitLab [environment](../../ci/environments/index.md). Required to [display alerts on a dashboard](../../user/operations_dashboard/index.md#adding-a-project-to-the-dashboard). |
 
 You can also add custom fields to the alert's payload. The values of extra
 parameters aren't limited to primitive types (such as strings or numbers), but

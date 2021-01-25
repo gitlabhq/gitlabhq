@@ -62,6 +62,22 @@ describe('Boards - Getters', () => {
     });
   });
 
+  describe('groupPathByIssueId', () => {
+    it('returns group path for the active issue', () => {
+      const mockActiveIssue = {
+        referencePath: 'gitlab-org/gitlab-test#1',
+      };
+      expect(getters.groupPathForActiveIssue({}, { activeIssue: mockActiveIssue })).toEqual(
+        'gitlab-org',
+      );
+    });
+
+    it('returns empty string as group path when active issue is an empty object', () => {
+      const mockActiveIssue = {};
+      expect(getters.groupPathForActiveIssue({}, { activeIssue: mockActiveIssue })).toEqual('');
+    });
+  });
+
   describe('projectPathByIssueId', () => {
     it('returns project path for the active issue', () => {
       const mockActiveIssue = {
@@ -72,7 +88,7 @@ describe('Boards - Getters', () => {
       );
     });
 
-    it('returns empty string as project when active issue is an empty object', () => {
+    it('returns empty string as project path when active issue is an empty object', () => {
       const mockActiveIssue = {};
       expect(getters.projectPathForActiveIssue({}, { activeIssue: mockActiveIssue })).toEqual('');
     });

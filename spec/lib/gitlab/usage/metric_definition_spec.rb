@@ -65,6 +65,20 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
 
         described_class.new(path, attributes).validate!
       end
+
+      context 'with skip_validation' do
+        it 'raise exception if skip_validation: false' do
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::Metric::InvalidMetricError))
+
+          described_class.new(path, attributes.merge( { skip_validation: false } )).validate!
+        end
+
+        it 'does not raise exception if has skip_validation: true' do
+          expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+
+          described_class.new(path, attributes.merge( { skip_validation: true } )).validate!
+        end
+      end
     end
   end
 

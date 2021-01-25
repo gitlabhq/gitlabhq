@@ -1492,6 +1492,28 @@ RSpec.describe Group do
     end
   end
 
+  describe '.preset_root_ancestor_for' do
+    let_it_be(:rootgroup, reload: true) { create(:group) }
+    let_it_be(:subgroup, reload: true) { create(:group, parent: rootgroup) }
+    let_it_be(:subgroup2, reload: true) { create(:group, parent: subgroup) }
+
+    it 'does noting for single group' do
+      expect(subgroup).not_to receive(:self_and_ancestors)
+
+      described_class.preset_root_ancestor_for([subgroup])
+    end
+
+    it 'sets the same root_ancestor for multiple groups' do
+      expect(subgroup).not_to receive(:self_and_ancestors)
+      expect(subgroup2).not_to receive(:self_and_ancestors)
+
+      described_class.preset_root_ancestor_for([rootgroup, subgroup, subgroup2])
+
+      expect(subgroup.root_ancestor).to eq(rootgroup)
+      expect(subgroup2.root_ancestor).to eq(rootgroup)
+    end
+  end
+
   def subject_and_reload(*models)
     subject
     models.map(&:reload)

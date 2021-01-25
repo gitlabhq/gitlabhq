@@ -100,6 +100,10 @@ class LabelsFinder < UnionFinder
     strong_memoize(:group_ids) do
       groups = groups_to_include(group)
 
+      # Because we are sure that all groups are in the same hierarchy tree
+      # we can preset root group for all of them to optimize permission checks
+      Group.preset_root_ancestor_for(groups) if Feature.enabled?(:preset_root_ancestor_for_labels, group)
+
       groups_user_can_read_labels(groups).map(&:id)
     end
   end

@@ -1265,7 +1265,7 @@
 - Time series extends axis options correctly. !25399
 - Fix "Edit Release" page. !25469
 - Fix upgrade failure in EE displaying license. !25788
-- Fixed last commit widget when Gravatar is disabled.
+- Fixed last commit widget when Gravatar is disabled. !25800
 
 
 ## 12.8.0

@@ -42,7 +42,8 @@ RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFiles do
   end
 
   it 'stops when limit is reached' do
-    cleanup = described_class.new(limit: 1)
+    stub_env('LIMIT', 1)
+    cleanup = described_class.new
 
     mock_artifacts_found(cleanup, 'tmp/foo/bar/1', 'tmp/foo/bar/2')
 

@@ -58,20 +58,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines do
 
             expect(build_statuses(child_pipeline)).to contain_exactly('canceled')
           end
-
-          context 'when FF ci_auto_cancel_all_pipelines is disabled' do
-            before do
-              stub_feature_flags(ci_auto_cancel_all_pipelines: false)
-            end
-
-            it 'does not cancel interruptible builds of child pipeline' do
-              expect(build_statuses(child_pipeline)).to contain_exactly('running')
-
-              perform
-
-              expect(build_statuses(child_pipeline)).to contain_exactly('running')
-            end
-          end
         end
 
         context 'when the child pipeline has not an interruptible job' do

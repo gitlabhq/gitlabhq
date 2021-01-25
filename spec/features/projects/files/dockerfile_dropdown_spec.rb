@@ -2,14 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > User wants to add a Dockerfile file', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/299405' do
+RSpec.describe 'Projects > Files > User wants to add a Dockerfile file', :js do
+  include Spec::Support::Helpers::Features::EditorLiteSpecHelpers
+
   before do
     project = create(:project, :repository)
     sign_in project.owner
     visit project_new_blob_path(project, 'master', file_name: 'Dockerfile')
   end
 
-  it 'user can pick a Dockerfile file from the dropdown', :js do
+  it 'user can pick a Dockerfile file from the dropdown' do
     expect(page).to have_css('.dockerfile-selector')
 
     find('.js-dockerfile-selector').click
@@ -24,6 +26,6 @@ RSpec.describe 'Projects > Files > User wants to add a Dockerfile file', quarant
     wait_for_requests
 
     expect(page).to have_css('.dockerfile-selector .dropdown-toggle-text', text: 'Apply a template')
-    expect(page).to have_content('COPY ./ /usr/local/apache2/htdocs/')
+    expect(editor_get_value).to have_content('COPY ./ /usr/local/apache2/htdocs/')
   end
 end

@@ -22,8 +22,10 @@ module Gitlab
       end
 
       def validate!
-        self.class.schemer.validate(attributes.stringify_keys).map do |error|
-          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(Metric::InvalidMetricError.new("#{error["details"] || error['data_pointer']} for `#{path}`"))
+        unless skip_validation?
+          self.class.schemer.validate(attributes.stringify_keys).each do |error|
+            Gitlab::ErrorTracking.track_and_raise_for_dev_exception(Metric::InvalidMetricError.new("#{error["details"] || error['data_pointer']} for `#{path}`"))
+          end
         end
       end
 
@@ -77,6 +79,10 @@ module Gitlab
 
       def method_missing(method, *args)
         attributes[method] || super
+      end
+
+      def skip_validation?
+        !!attributes[:skip_validation]
       end
     end
   end
