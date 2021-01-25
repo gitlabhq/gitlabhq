@@ -13,7 +13,7 @@
   %td
     %strong.subheading.d-block.d-sm-none
       = _('Reported by %{reporter}').html_safe % { reporter: reporter ? link_to(reporter.name, reporter) : _('(removed)') }
-    .light.gl-display-none.gl-display-sm-block
+    .light.gl-display-none.gl-sm-display-block
       = link_to(reporter.name, reporter)
     .light.small
       = time_ago_with_tooltip(abuse_report.created_at)

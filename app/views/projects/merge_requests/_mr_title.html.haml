@@ -13,8 +13,8 @@
 .detail-page-header.border-bottom-0.pt-0.pb-0
   .detail-page-header-body
     .issuable-status-box.status-box.js-mr-status-box{ class: status_box_class(@merge_request), data: { state: @merge_request.state } }
-      = sprite_icon(state_icon_name, css_class: 'gl-display-block gl-display-sm-none!')
-      %span.gl-display-none.gl-display-sm-block
+      = sprite_icon(state_icon_name, css_class: 'gl-display-block gl-sm-display-none!')
+      %span.gl-display-none.gl-sm-display-block
         = state_human_name
 
     .issuable-meta
@@ -26,7 +26,7 @@
 
   .detail-page-header-actions.js-issuable-actions
     .clearfix.dropdown
-      %button.gl-button.btn.btn-default.float-left.gl-display-md-none.gl-w-full{ type: "button", data: { toggle: "dropdown" } }
+      %button.gl-button.btn.btn-default.float-left.gl-md-display-none.gl-w-full{ type: "button", data: { toggle: "dropdown" } }
         Options
         = sprite_icon('chevron-down', css_class: 'gl-text-gray-500')
       .dropdown-menu.dropdown-menu-right
@@ -50,4 +50,4 @@
       - if can_update_merge_request && !are_close_and_open_buttons_hidden
         = render 'projects/merge_requests/close_reopen_draft_report_toggle'
       - elsif !@merge_request.merged?
-        = link_to _('Report abuse'), new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request)), class: 'gl-display-none gl-display-md-block gl-button btn btn-warning-secondary float-right gl-ml-3', title: _('Report abuse')
+        = link_to _('Report abuse'), new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request)), class: 'gl-display-none gl-md-display-block gl-button btn btn-warning-secondary float-right gl-ml-3', title: _('Report abuse')

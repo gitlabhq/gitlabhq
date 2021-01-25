@@ -12,13 +12,21 @@ class DatadogService < Service
 
   prop_accessor :datadog_site, :api_url, :api_key, :datadog_service, :datadog_env
 
-  with_options presence: true, if: :activated? do
-    validates :api_key, format: { with: /\A\w+\z/ }
-    validates :datadog_site, format: { with: /\A[\w\.]+\z/ }, unless: :api_url
-    validates :api_url, public_url: true, unless: :datadog_site
+  with_options if: :activated? do
+    validates :api_key, presence: true, format: { with: /\A\w+\z/ }
+    validates :datadog_site, format: { with: /\A[\w\.]+\z/, allow_blank: true }
+    validates :api_url, public_url: { allow_blank: true }
+    validates :datadog_site, presence: true, unless: -> (obj) { obj.api_url.present? }
+    validates :api_url, presence: true, unless: -> (obj) { obj.datadog_site.present? }
   end
 
   after_save :compose_service_hook, if: :activated?
+
+  def initialize_properties
+    super
+
+    self.datadog_site ||= DEFAULT_SITE
+  end
 
   def self.supported_events
     SUPPORTED_EVENTS
@@ -54,27 +62,37 @@ class DatadogService < Service
   def fields
     [
       {
-        type: 'text', name: 'datadog_site',
-        placeholder: DEFAULT_SITE, default: DEFAULT_SITE,
+        type: 'text',
+        name: 'datadog_site',
+        placeholder: DEFAULT_SITE,
         help: 'Choose the Datadog site to send data to. Set to "datadoghq.eu" to send data to the EU site',
         required: false
       },
       {
-        type: 'text', name: 'api_url', title: 'Custom URL',
+        type: 'text',
+        name: 'api_url',
+        title: 'API URL',
         help: '(Advanced) Define the full URL for your Datadog site directly',
         required: false
       },
       {
-        type: 'password', name: 'api_key', title: 'API key',
+        type: 'password',
+        name: 'api_key',
+        title: 'API key',
         help: "<a href=\"#{api_keys_url}\" target=\"_blank\">API key</a> used for authentication with Datadog",
         required: true
       },
       {
-        type: 'text', name: 'datadog_service', title: 'Service', placeholder: 'gitlab-ci',
+        type: 'text',
+        name: 'datadog_service',
+        title: 'Service',
+        placeholder: 'gitlab-ci',
         help: 'Name of this GitLab instance that all data will be tagged with'
       },
       {
-        type: 'text', name: 'datadog_env', title: 'Env',
+        type: 'text',
+        name: 'datadog_env',
+        title: 'Env',
         help: 'The environment tag that traces will be tagged with'
       }
     ]
@@ -90,7 +108,7 @@ class DatadogService < Service
     url = api_url.presence || sprintf(URL_TEMPLATE, datadog_site: datadog_site)
     url = URI.parse(url)
     url.path = File.join(url.path || '/', api_key)
-    query = { service: datadog_service, env: datadog_env }.compact
+    query = { service: datadog_service.presence, env: datadog_env.presence }.compact
     url.query = query.to_query unless query.empty?
     url.to_s
   end

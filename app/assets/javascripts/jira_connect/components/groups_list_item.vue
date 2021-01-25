@@ -19,7 +19,7 @@ export default {
   <li class="gl-border-b-1 gl-border-b-solid gl-border-b-gray-200">
     <div class="gl-display-flex gl-align-items-center gl-py-3">
       <gl-icon name="folder-o" class="gl-mr-3" />
-      <div class="gl-display-none gl-flex-shrink-0 gl-display-sm-flex gl-mr-3">
+      <div class="gl-display-none gl-flex-shrink-0 gl-sm-display-flex gl-mr-3">
         <gl-avatar :size="32" shape="rect" :entity-name="group.name" :src="group.avatar_url" />
       </div>
       <div class="gl-min-w-0 gl-display-flex gl-flex-grow-1 gl-flex-shrink-1 gl-align-items-center">

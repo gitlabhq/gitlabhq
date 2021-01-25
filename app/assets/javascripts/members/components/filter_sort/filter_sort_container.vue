@@ -19,7 +19,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="showContainer" class="gl-bg-gray-10 gl-p-3 gl-display-md-flex">
+  <div v-if="showContainer" class="gl-bg-gray-10 gl-p-3 gl-md-display-flex">
     <members-filtered-search-bar v-if="filteredSearchBar.show" class="gl-p-3 gl-flex-grow-1" />
     <sort-dropdown v-if="showSortDropdown" class="gl-p-3 gl-flex-shrink-0" />
   </div>

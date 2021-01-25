@@ -138,6 +138,13 @@
   }
 }
 
+.social-provider-btn-image {
+  > img {
+    width: 16px;
+    vertical-align: inherit;
+  }
+}
+
 .provider-btn-image {
   display: inline-block;
   padding: 5px 10px;

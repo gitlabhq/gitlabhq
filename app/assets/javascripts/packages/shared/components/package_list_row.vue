@@ -88,7 +88,7 @@ export default {
       <div class="gl-display-flex">
         <span>{{ packageEntity.version }}</span>
 
-        <div v-if="hasPipeline" class="gl-display-none gl-display-sm-flex gl-ml-2">
+        <div v-if="hasPipeline" class="gl-display-none gl-sm-display-flex gl-ml-2">
           <gl-sprintf :message="s__('PackageRegistry|published by %{author}')">
             <template #author>{{ packageEntity.pipeline.user.name }}</template>
           </gl-sprintf>

@@ -193,7 +193,7 @@ export default {
 <template>
   <div class="detail-page-header-actions">
     <gl-dropdown
-      class="gl-display-block gl-display-sm-none!"
+      class="gl-display-block gl-sm-display-none!"
       block
       :text="dropdownText"
       :loading="isToggleStateButtonLoading"
@@ -222,7 +222,7 @@ export default {
 
     <gl-button
       v-if="showToggleIssueStateButton"
-      class="gl-display-none gl-display-sm-inline-flex!"
+      class="gl-display-none gl-sm-display-inline-flex!"
       category="secondary"
       :data-qa-selector="qaSelector"
       :loading="isToggleStateButtonLoading"
@@ -233,7 +233,7 @@ export default {
     </gl-button>
 
     <gl-dropdown
-      class="gl-display-none gl-display-sm-inline-flex!"
+      class="gl-display-none gl-sm-display-inline-flex!"
       toggle-class="gl-border-0! gl-shadow-none!"
       no-caret
       right

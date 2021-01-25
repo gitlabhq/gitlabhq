@@ -317,7 +317,7 @@ class Snippet < ApplicationRecord
   end
 
   def repository_storage
-    snippet_repository&.shard_name || self.class.pick_repository_storage
+    snippet_repository&.shard_name || Repository.pick_storage_shard
   end
 
   # Repositories are created by default with the `master` branch.

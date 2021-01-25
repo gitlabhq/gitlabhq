@@ -1,8 +1,0 @@
----
-name: merge_requests
-introduced_by_url: 
-rollout_issue_url: 
-milestone: 
-type: development
-group: group::code review
-default_enabled: true

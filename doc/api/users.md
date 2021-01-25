@@ -1374,7 +1374,7 @@ Example Responses:
 ```
 
 ```json
-{ "message": "The user you are trying to approve is not pending an approval" }
+{ "message": "The user you are trying to approve is not pending approval" }
 ```
 
 ## Get an impersonation token of a user

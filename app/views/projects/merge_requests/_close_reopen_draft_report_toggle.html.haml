@@ -3,7 +3,7 @@
 - button_class = "btn gl-button #{!@merge_request.closed? && 'js-draft-toggle-button'}"
 - toggle_class = "btn gl-button dropdown-toggle"
 
-.float-left.btn-group.gl-ml-3.gl-display-none.gl-display-md-flex
+.float-left.btn-group.gl-ml-3.gl-display-none.gl-md-display-flex
   = link_to @merge_request.closed? ? reopen_issuable_path(@merge_request) : toggle_draft_merge_request_path(@merge_request), method: :put, class: "#{button_class} #{button_action_class}" do
     - if @merge_request.closed?
       = _('Reopen')

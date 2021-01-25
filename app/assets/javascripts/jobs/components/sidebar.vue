@@ -110,7 +110,7 @@ export default {
           <gl-button
             :aria-label="$options.i18n.toggleSidebar"
             category="tertiary"
-            class="gl-display-md-none gl-ml-2 js-sidebar-build-toggle"
+            class="gl-md-display-none gl-ml-2 js-sidebar-build-toggle"
             icon="chevron-double-lg-right"
             @click="toggleSidebar"
           />

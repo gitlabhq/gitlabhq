@@ -107,7 +107,7 @@ graph RL;
     class 1-6 criticalPath;
   end
 
-  2_1-1["graphql-reference-verify (5 minutes)"];
+  2_1-1["graphql-verify (4 minutes)"];
   click 2_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356715&udv=0"
   2_1-2["memory-static (4.75 minutes)"];
   click 2_1-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356721&udv=0"
@@ -212,7 +212,7 @@ graph RL;
     class 1-6 criticalPath;
   end
 
-  2_1-1["graphql-reference-verify (5 minutes)"];
+  2_1-1["graphql-verify (4 minutes)"];
   click 2_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356715&udv=0"
   2_1-2["memory-static (4.75 minutes)"];
   click 2_1-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356721&udv=0"
@@ -341,7 +341,7 @@ graph RL;
     class 1-5 criticalPath;
   end
 
-  2_1-1["graphql-reference-verify (5 minutes)"];
+  2_1-1["graphql-verify (4 minutes)"];
   click 2_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356715&udv=0"
   subgraph "Needs `setup-test-env`";
     2_1-1 --> 1-6;

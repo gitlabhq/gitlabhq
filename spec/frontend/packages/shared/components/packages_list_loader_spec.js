@@ -30,7 +30,7 @@ describe('PackagesListLoader', () => {
     it('has the correct classes', () => {
       expect(findDesktopShapes().classes()).toEqual([
         'gl-display-none',
-        'gl-display-sm-flex',
+        'gl-sm-display-flex',
         'gl-flex-direction-column',
       ]);
     });
@@ -44,7 +44,7 @@ describe('PackagesListLoader', () => {
     it('has the correct classes', () => {
       expect(findMobileShapes().classes()).toEqual([
         'gl-flex-direction-column',
-        'gl-display-sm-none',
+        'gl-sm-display-none',
       ]);
     });
   });

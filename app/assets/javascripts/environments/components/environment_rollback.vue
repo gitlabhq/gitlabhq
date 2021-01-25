@@ -68,7 +68,7 @@ export default {
   <gl-button
     v-gl-tooltip
     v-gl-modal.confirm-rollback-modal
-    class="gl-display-none gl-display-md-block text-secondary"
+    class="gl-display-none gl-md-display-block text-secondary"
     :loading="isLoading"
     :title="title"
     :icon="isLastDeployment ? 'repeat' : 'redo'"

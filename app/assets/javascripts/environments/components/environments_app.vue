@@ -133,7 +133,7 @@ export default {
     <confirm-rollback-modal :environment="environmentInRollbackModal" />
 
     <div class="gl-w-full">
-      <div class="gl-display-flex gl-flex-direction-column gl-mt-3 gl-display-md-none!">
+      <div class="gl-display-flex gl-flex-direction-column gl-mt-3 gl-md-display-none!">
         <gl-button
           v-if="state.reviewAppDetails.can_setup_review_app"
           v-gl-modal="$options.modal.id"
@@ -167,7 +167,7 @@ export default {
         </gl-tab>
         <template #tabs-end>
           <div
-            class="gl-display-none gl-display-md-flex gl-lg-align-items-center gl-lg-flex-direction-row gl-lg-flex-fill-1 gl-lg-justify-content-end gl-lg-mt-0"
+            class="gl-display-none gl-md-display-flex gl-lg-align-items-center gl-lg-flex-direction-row gl-lg-flex-fill-1 gl-lg-justify-content-end gl-lg-mt-0"
           >
             <gl-button
               v-if="state.reviewAppDetails.can_setup_review_app"

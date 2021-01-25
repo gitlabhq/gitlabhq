@@ -97,7 +97,7 @@ exports[`packages_list_row renders 1`] = `
     </div>
      
     <div
-      class="gl-w-9 gl-display-none gl-display-sm-flex gl-justify-content-end gl-pr-1"
+      class="gl-w-9 gl-display-none gl-sm-display-flex gl-justify-content-end gl-pr-1"
     >
       <gl-button-stub
         aria-label="Remove package"

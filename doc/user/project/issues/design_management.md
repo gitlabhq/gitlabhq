@@ -46,7 +46,7 @@ If the requirements are not met, the **Designs** tab displays a message to the u
 ## Supported files
 
 Files uploaded must have a file extension of either `png`, `jpg`, `jpeg`,
-`gif`, `bmp`, `tiff`, `ico`, or `svg`.
+`gif`, `bmp`, `tiff`, `ico`, `webp`, or `svg`.
 
 Support for [PDF](https://gitlab.com/gitlab-org/gitlab/issues/32811) is planned for a future release.
 

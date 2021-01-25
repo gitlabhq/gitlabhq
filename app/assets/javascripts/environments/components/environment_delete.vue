@@ -59,7 +59,7 @@ export default {
     :loading="isLoading"
     :title="title"
     :aria-label="title"
-    class="gl-display-none gl-display-md-block"
+    class="gl-display-none gl-md-display-block"
     variant="danger"
     category="primary"
     icon="remove"

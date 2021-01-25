@@ -33,7 +33,7 @@ RSpec.describe Users::ApproveService do
           it 'returns error result' do
             expect(subject[:status]).to eq(:error)
             expect(subject[:message])
-              .to match(/The user you are trying to approve is not pending an approval/)
+              .to match(/The user you are trying to approve is not pending approval/)
           end
         end
 

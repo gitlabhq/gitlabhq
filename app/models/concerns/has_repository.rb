@@ -15,15 +15,6 @@ module HasRepository
 
   delegate :base_dir, :disk_path, to: :storage
 
-  class_methods do
-    def pick_repository_storage
-      # We need to ensure application settings are fresh when we pick
-      # a repository storage to use.
-      Gitlab::CurrentSettings.expire_current_application_settings
-      Gitlab::CurrentSettings.pick_repository_storage
-    end
-  end
-
   def valid_repo?
     repository.exists?
   rescue

@@ -80,7 +80,7 @@ export default {
         return 'col-actions';
       }
 
-      return ['col-actions', 'gl-display-none!', 'gl-display-lg-table-cell!'];
+      return ['col-actions', 'gl-display-none!', 'gl-lg-display-table-cell!'];
     },
     tbodyTrAttr(member) {
       return {

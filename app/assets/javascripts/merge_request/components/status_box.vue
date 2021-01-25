@@ -61,10 +61,10 @@ export default {
   <div :class="statusBoxClass" class="issuable-status-box status-box">
     <gl-icon
       :name="statusIconName"
-      class="gl-display-block gl-display-sm-none!"
+      class="gl-display-block gl-sm-display-none!"
       data-testid="status-icon"
     />
-    <span class="gl-display-none gl-display-sm-block">
+    <span class="gl-display-none gl-sm-display-block">
       {{ statusHumanName }}
     </span>
   </div>

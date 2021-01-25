@@ -186,9 +186,9 @@ the GitLab handbook information for the [shared 1Password account](https://about
 ### Find my Review App slug
 
 1. Open the `review-deploy` job.
-1. Look for `Checking for previous deployment of review-*`.
-1. For instance for `Checking for previous deployment of review-qa-raise-e-12chm0`,
-   your Review App slug would be `review-qa-raise-e-12chm0` in this case.
+1. Look for `** Deploying review-*`.
+1. For instance for `** Deploying review-1234-abc-defg... **`,
+   your Review App slug would be `review-1234-abc-defg` in this case.
 
 ### Run a Rails console
 

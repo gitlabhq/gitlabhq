@@ -302,7 +302,7 @@ export default {
     <gl-loading-icon v-if="isBlobContentLoading" size="lg" class="gl-m-3" />
     <div v-else-if="!isBlobContentError" class="gl-mt-4">
       <div class="file-editor gl-mb-3">
-        <div class="info-well gl-display-none gl-display-sm-block">
+        <div class="info-well gl-display-none gl-sm-display-block">
           <validation-segment
             class="well-segment"
             :loading="isCiConfigDataLoading"

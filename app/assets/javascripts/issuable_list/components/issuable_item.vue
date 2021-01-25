@@ -196,7 +196,7 @@ export default {
           <li
             v-if="showDiscussions"
             data-testid="issuable-discussions"
-            class="issuable-comments gl-display-none gl-display-sm-block"
+            class="issuable-comments gl-display-none gl-sm-display-block"
           >
             <gl-link
               v-gl-tooltip:tooltipcontainer.top

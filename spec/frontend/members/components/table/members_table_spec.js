@@ -154,7 +154,7 @@ describe('MembersTable', () => {
           expect(findTableCellByMemberId('Actions', members[0].id).classes()).toStrictEqual([
             'col-actions',
             'gl-display-none!',
-            'gl-display-lg-table-cell!',
+            'gl-lg-display-table-cell!',
           ]);
           expect(findTableCellByMemberId('Actions', members[1].id).classes()).toStrictEqual([
             'col-actions',

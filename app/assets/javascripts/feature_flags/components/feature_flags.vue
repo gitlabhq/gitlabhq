@@ -198,7 +198,7 @@ export default {
       @token="rotateInstanceId()"
     />
     <div :class="topAreaBaseClasses">
-      <div class="gl-display-flex gl-flex-direction-column gl-display-md-none!">
+      <div class="gl-display-flex gl-flex-direction-column gl-md-display-none!">
         <gl-button
           v-if="canUserConfigure"
           v-gl-modal="'configure-feature-flags'"
@@ -285,7 +285,7 @@ export default {
         </feature-flags-tab>
         <template #tabs-end>
           <li
-            class="gl-display-none gl-display-md-flex gl-align-items-center gl-flex-fill-1 gl-justify-content-end"
+            class="gl-display-none gl-md-display-flex gl-align-items-center gl-flex-fill-1 gl-justify-content-end"
           >
             <gl-button
               v-if="canUserConfigure"

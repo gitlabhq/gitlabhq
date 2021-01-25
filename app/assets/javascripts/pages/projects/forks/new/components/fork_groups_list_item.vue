@@ -94,7 +94,7 @@ export default {
       </div>
       <gl-link
         :href="group.relative_path"
-        class="gl-display-none gl-flex-shrink-0 gl-display-sm-flex gl-mr-3"
+        class="gl-display-none gl-flex-shrink-0 gl-sm-display-flex gl-mr-3"
       >
         <gl-avatar :size="32" shape="rect" :entity-name="group.name" :src="group.avatarUrl" />
       </gl-link>
@@ -113,7 +113,7 @@ export default {
             <gl-badge
               v-if="isGroupPendingRemoval"
               variant="warning"
-              class="gl-display-none gl-display-sm-flex gl-mt-3 gl-mr-1"
+              class="gl-display-none gl-sm-display-flex gl-mt-3 gl-mr-1"
               >{{ __('pending removal') }}</gl-badge
             >
             <span v-if="group.permission" class="user-access-role gl-mt-3">

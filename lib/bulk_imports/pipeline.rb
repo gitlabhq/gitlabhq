@@ -22,10 +22,6 @@ module BulkImports
         @loaders ||= instantiate(self.class.get_loader)
       end
 
-      def after_run
-        @after_run ||= self.class.after_run_callback
-      end
-
       def pipeline
         @pipeline ||= self.class.name
       end
@@ -52,10 +48,6 @@ module BulkImports
         class_attributes[:loader] = { klass: klass, options: options }
       end
 
-      def after_run(&block)
-        class_attributes[:after_run] = block
-      end
-
       def get_extractor
         class_attributes[:extractor]
       end
@@ -66,10 +58,6 @@ module BulkImports
 
       def get_loader
         class_attributes[:loader]
-      end
-
-      def after_run_callback
-        class_attributes[:after_run]
       end
 
       def abort_on_failure!

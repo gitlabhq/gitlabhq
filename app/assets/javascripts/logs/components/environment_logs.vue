@@ -176,7 +176,7 @@ export default {
           id="environments-dropdown"
           :text="environments.current || managedApps.current"
           :disabled="environments.isLoading"
-          class="gl-mr-3 gl-mb-3 gl-display-flex gl-display-md-block js-environments-dropdown"
+          class="gl-mr-3 gl-mb-3 gl-display-flex gl-md-display-block js-environments-dropdown"
         >
           <gl-dropdown-section-header>
             {{ s__('Environments|Environments') }}

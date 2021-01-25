@@ -436,12 +436,12 @@ export default {
               category="secondary"
               @click="removeVariable(index)"
             >
-              <gl-icon class="gl-mr-0! gl-display-none gl-display-md-block" name="clear" />
-              <span class="gl-display-md-none">{{ s__('CiVariables|Remove variable') }}</span>
+              <gl-icon class="gl-mr-0! gl-display-none gl-md-display-block" name="clear" />
+              <span class="gl-md-display-none">{{ s__('CiVariables|Remove variable') }}</span>
             </gl-button>
             <gl-button
               v-else
-              class="gl-md-ml-3 gl-mb-3 gl-display-none gl-display-md-block gl-visibility-hidden"
+              class="gl-md-ml-3 gl-mb-3 gl-display-none gl-md-display-block gl-visibility-hidden"
               icon="clear"
             />
           </template>

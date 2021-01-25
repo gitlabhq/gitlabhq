@@ -19,7 +19,7 @@
 # `Content-Type` and `Content-Disposition` to the one we get from the detection.
 module Gitlab
   module FileTypeDetection
-    SAFE_IMAGE_EXT = %w[png jpg jpeg gif bmp tiff ico].freeze
+    SAFE_IMAGE_EXT = %w[png jpg jpeg gif bmp tiff ico webp].freeze
     SAFE_IMAGE_FOR_SCALING_EXT = %w[png jpg jpeg].freeze
 
     PDF_EXT = 'pdf'

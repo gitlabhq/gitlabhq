@@ -41,6 +41,7 @@ toggle the list of the milestone bars.
 > - Filtering roadmaps by milestone is enabled on GitLab.com.
 > - Filtering roadmaps by milestone is recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-filtering-roadmaps-by-milestone). **(PREMIUM ONLY)**
+> - Filtering by epic confidentiality [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218624) in GitLab 13.8.
 
 WARNING:
 Filtering roadmaps by milestone might not be available to you. Check the **version history** note above for details.
@@ -62,12 +63,12 @@ You can sort epics in the Roadmap view by:
 Each option contains a button that toggles the sort order between **ascending** and **descending**.
 The sort option and order persist when browsing Epics, including the [epics list view](../epics/index.md).
 
-You can also filter epics in the Roadmap view by:
+You can also filter epics in the Roadmap view by the epics':
 
 - Author
 - Label
 - Milestone
-- Confidentiality of epics
+- Confidentiality
 
 ![roadmap date range in weeks](img/roadmap_filters_v13_8.png)
 

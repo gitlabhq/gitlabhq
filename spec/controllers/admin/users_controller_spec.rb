@@ -180,7 +180,7 @@ RSpec.describe Admin::UsersController do
       it 'displays the error' do
         subject
 
-        expect(flash[:alert]).to eq('The user you are trying to approve is not pending an approval')
+        expect(flash[:alert]).to eq('The user you are trying to approve is not pending approval')
       end
 
       it 'does not activate the user' do

@@ -3049,4 +3049,51 @@ RSpec.describe Repository do
       end
     end
   end
+
+  describe '.pick_storage_shard', :request_store do
+    before do
+      storages = {
+        'default' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/repositories'),
+        'picked'  => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/repositories')
+      }
+
+      allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
+      stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+      Gitlab::CurrentSettings.current_application_settings
+
+      update_storages({ 'picked' => 0, 'default' => 100 })
+    end
+
+    context 'when expire is false' do
+      it 'does not expire existing repository storage value' do
+        previous_storage = described_class.pick_storage_shard
+        expect(previous_storage).to eq('default')
+        expect(Gitlab::CurrentSettings).not_to receive(:expire_current_application_settings)
+
+        update_storages({ 'picked' => 100, 'default' => 0 })
+
+        new_storage = described_class.pick_storage_shard(expire: false)
+        expect(new_storage).to eq(previous_storage)
+      end
+    end
+
+    context 'when expire is true' do
+      it 'expires existing repository storage value' do
+        previous_storage = described_class.pick_storage_shard
+        expect(previous_storage).to eq('default')
+        expect(Gitlab::CurrentSettings).to receive(:expire_current_application_settings).and_call_original
+
+        update_storages({ 'picked' => 100, 'default' => 0 })
+
+        new_storage = described_class.pick_storage_shard(expire: true)
+        expect(new_storage).to eq('picked')
+      end
+    end
+
+    def update_storages(storage_hash)
+      settings = ApplicationSetting.last
+      settings.repository_storages_weighted = storage_hash
+      settings.save!
+    end
+  end
 end

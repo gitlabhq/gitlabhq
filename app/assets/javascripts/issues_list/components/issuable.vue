@@ -414,7 +414,7 @@ export default {
               v-if="meta.visible"
               :key="meta.key"
               v-gl-tooltip
-              class="gl-display-none gl-display-sm-flex gl-align-items-center gl-ml-3"
+              class="gl-display-none gl-sm-display-flex gl-align-items-center gl-ml-3"
               :class="meta.class"
               :data-testid="meta.dataTestId"
               :title="meta.title"
