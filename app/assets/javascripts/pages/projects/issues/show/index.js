@@ -3,7 +3,5 @@ import initRelatedIssues from '~/related_issues';
 import initShow from '../show';
 
 initShow();
-if (gon.features && !gon.features.vueIssuableSidebar) {
-  initSidebarBundle();
-}
+initSidebarBundle();
 initRelatedIssues();

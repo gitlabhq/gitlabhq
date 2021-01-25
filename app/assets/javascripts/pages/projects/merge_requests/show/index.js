@@ -6,9 +6,7 @@ import initIssuableHeaderWarning from '~/vue_shared/components/issuable/init_iss
 import store from '~/mr_notes/stores';
 
 initShow();
-if (gon.features && !gon.features.vueIssuableSidebar) {
-  initSidebarBundle();
-}
+initSidebarBundle();
 initMrNotes();
 initReviewBar();
 initIssuableHeaderWarning(store);

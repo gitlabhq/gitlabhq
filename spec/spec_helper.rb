@@ -216,12 +216,6 @@ RSpec.configure do |config|
       # (ie. ApplicationSetting#auto_devops_enabled)
       stub_feature_flags(force_autodevops_on_by_default: false)
 
-      # The following can be removed once Vue Issuable Sidebar
-      # is feature-complete and can be made default in place
-      # of older sidebar.
-      # See https://gitlab.com/groups/gitlab-org/-/epics/1863
-      stub_feature_flags(vue_issuable_sidebar: false)
-
       # Merge request widget GraphQL requests are disabled in the tests
       # for now whilst we migrate as much as we can over the GraphQL
       stub_feature_flags(merge_request_widget_graphql: false)
