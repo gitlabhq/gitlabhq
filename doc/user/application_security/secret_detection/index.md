@@ -156,6 +156,19 @@ To override a job definition, (for example, change properties like `variables` o
 declare a job with the same name as the SAST job to override. Place this new job after the template
 inclusion and specify any additional keys under it.
 
+WARNING:
+Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
+is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
+
+#### GIT_DEPTH
+
+The [`GIT_DEPTH` variable](../../../ci/runners/README.md#shallow-cloning) affects Secret Detection.
+The Secret Detection analyzer relies on generating patches between commits to scan content for
+secrets. If you override the default, ensure the value is greater than 1. If the number of commits
+in an MR is greater than the GIT_DEPTH value, Secret Detection will [fail to detect secrets](#error-couldnt-run-the-gitleaks-command-exit-status-2).
+
+#### Custom settings example
+
 In the following example, we include the Secret Detection template and at the same time we
 override the `secret_detection` job with the `SECRET_DETECTION_HISTORIC_SCAN` variable to `true`:
 
@@ -170,10 +183,6 @@ secret_detection:
 
 Because the template is [evaluated before](../../../ci/yaml/README.md#include)
 the pipeline configuration, the last mention of the variable takes precedence.
-
-WARNING:
-Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
-is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
 
 #### Available variables
 
@@ -331,11 +340,15 @@ For information on this, see the [general Application Security troubleshooting s
 
 ### Error: `Couldn't run the gitleaks command: exit status 2`
 
-This error is usually caused by the `GIT_DEPTH` value of 50 that is set for all [projects by default](../../../ci/pipelines/settings.md#git-shallow-clone).
+If a pipeline is triggered from a Merge Request containing 60 commits while the `GIT_DEPTH` variable
+is set to 50 (a [project default](../../../ci/pipelines/settings.md#git-shallow-clone)),
+the Secret Detection job fails as the clone is not deep enough to contain all of the
+relevant commits.
 
-For example, if a pipeline is triggered from a Merge Request containing 60 commits while the `GIT_DEPTH` is set to 50, the Secret Detection job fails as the clone is not deep enough to contain all of the relevant commits.
-
-You can confirm this to be the cause of the error by implementing a [logging level](../../application_security/secret_detection/index.md#logging-level) of `debug`. Once implemented, the logs should look similar to the following example, wherein an "object not found" error can be seen:
+To confirm this as the cause of the error, set the
+[logging level](../../application_security/secret_detection/index.md#logging-level) to `debug`, then
+rerun the pipeline. The logs should look similar to the following example. The text "object not
+found" is a symptom of this error.
 
 ```plaintext
 ERRO[2020-11-18T18:05:52Z] object not found
@@ -343,7 +356,9 @@ ERRO[2020-11-18T18:05:52Z] object not found
 [ERRO] [secrets] [2020-11-18T18:05:52Z] ▶ Gitleaks analysis failed: exit status 2
 ```
 
-If this is the case, we can resolve the issue by setting the [`GIT_DEPTH` variable](../../../ci/runners/README.md#shallow-cloning) to a higher value. In order to apply this only to the Secret Detection job, the following can be added to your `.gitlab-ci.yml`:
+To resolve the issue, set the [`GIT_DEPTH` variable](../../../ci/runners/README.md#shallow-cloning)
+to a higher value. To apply this only to the Secret Detection job, the following can be added to
+your `.gitlab-ci.yml` file:
 
 ```yaml
 secret_detection:

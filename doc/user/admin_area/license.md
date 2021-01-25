@@ -92,7 +92,7 @@ functionality.
 You can review the license details at any time in the **License** section of the
 **Admin Area**.
 
-![License details](img/license_details.png)
+![License details](img/license_details_v13_8.png)
 
 ## Notification before the license expires
 

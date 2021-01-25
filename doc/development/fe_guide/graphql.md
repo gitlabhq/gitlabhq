@@ -338,7 +338,57 @@ export const gqClient = createGqClient(
 );
 ```
 
-### Feature flags in queries
+### Working on GraphQL-based features when frontend and backend are not in sync
+
+Any feature that requires GraphQL queries/mutations to be created or updated should be carefully
+planned. Frontend and backend counterparts should agree on a schema that satisfies both client-side and
+server-side requirements. This enables both departments to start implementing their parts without
+blocking each other.
+
+Ideally, the backend implementation should be done prior to the frontend so that the client can
+immediately start querying the API with minimal back and forth between departments. However, we
+recognize that priorities don't always align. For the sake of iteration and
+delivering work we're committed to, it might be necessary for the frontend to be implemented ahead
+of the backend.
+
+#### Implementing frontend queries and mutations ahead of the backend
+
+In such case, the frontend will define GraphQL schemas or fields that do not correspond to any
+backend resolver yet. This is fine as long as the implementation is properly feature-flagged so it
+does not translate to public-facing errors in the product. However, we do validate client-side
+queries/mutations against the backend GraphQL schema with the `graphql-verify` CI job.
+You must confirm your changes pass the validation if they are to be merged before the
+backend actually supports them. Below are a few suggestions to go about this.
+
+##### Using the `@client` directive
+
+The preferred approach is to use the `@client` directive on any new query, mutation, or field that
+isn't yet supported by the backend. Any entity with the directive is skipped by the
+`graphql-verify` validation job.
+
+Additionally Apollo will attempt to resolve them client-side, which can be used in conjunction with
+[Mocking API response with local Apollo cache](#mocking-api-response-with-local-apollo-cache). This
+provides a convenient way of testing your feature with fake data defined client-side.
+When opening a merge request for your changes, it can be a good idea to provide local resolvers as a
+patch that reviewers can apply in their GDK to easily smoke-test your work.
+
+Make sure to track the removal of the directive in a follow-up issue, or as part of the backend
+implementation plan.
+
+##### Adding an exception to the list of known failures
+
+GraphQL queries/mutations validation can be completely turned off for specific files by adding their
+paths to the
+[`config/known_invalid_graphql_queries.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/known_invalid_graphql_queries.yml)
+file, much like you would disable ESLint for some files via an `.eslintignore` file.
+Bear in mind that any file listed in here will not be validated at all. So if you're only adding
+fields to an existing query, use the `@client` directive approach so that the rest of the query
+is still validated.
+
+Again, make sure that those overrides are as short-lived as possible by tracking their removal in
+the appropriate issue.
+
+#### Feature flags in queries
 
 Sometimes it may be useful to have an entity in the GraphQL query behind a feature flag.
 For example, when working on a feature where the backend has already been merged but the frontend
