@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import EditorLite from '~/vue_shared/components/editor_lite.vue';
 import Editor from '~/editor/editor_lite';
+import { EDITOR_READY_EVENT } from '~/editor/constants';
 
 jest.mock('~/editor/editor_lite');
 
@@ -110,13 +111,13 @@ describe('Editor Lite component', () => {
       expect(wrapper.emitted().input).toEqual([[value]]);
     });
 
-    it('emits editor-ready event when the Editor Lite is ready', async () => {
+    it('emits EDITOR_READY_EVENT event when the Editor Lite is ready', async () => {
       const el = wrapper.find({ ref: 'editor' }).element;
-      expect(wrapper.emitted()['editor-ready']).toBeUndefined();
+      expect(wrapper.emitted()[EDITOR_READY_EVENT]).toBeUndefined();
 
-      await el.dispatchEvent(new Event('editor-ready'));
+      await el.dispatchEvent(new Event(EDITOR_READY_EVENT));
 
-      expect(wrapper.emitted()['editor-ready']).toBeDefined();
+      expect(wrapper.emitted()[EDITOR_READY_EVENT]).toBeDefined();
     });
 
     it('component API `getEditor()` returns the editor instance', () => {

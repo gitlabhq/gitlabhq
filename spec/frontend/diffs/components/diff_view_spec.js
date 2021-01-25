@@ -59,8 +59,8 @@ describe('DiffView', () => {
     ${'parallel'} | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {} }, right: { lineDraft: {} } }} | ${2}
     ${'parallel'} | ${'right'} | ${'.new'} | ${{ left: { lineDraft: {} }, right: { lineDraft: {} } }} | ${2}
     ${'inline'}   | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {} } }}                           | ${1}
-    ${'inline'}   | ${'right'} | ${'.new'} | ${{ right: { lineDraft: {} } }}                          | ${1}
-    ${'inline'}   | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {} }, right: { lineDraft: {} } }} | ${1}
+    ${'inline'}   | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {} } }}                           | ${1}
+    ${'inline'}   | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {} } }}                           | ${1}
   `(
     'renders a $type comment row with comment cell on $side',
     ({ type, container, sides, total }) => {

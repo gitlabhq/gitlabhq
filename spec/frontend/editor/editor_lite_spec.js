@@ -4,7 +4,11 @@ import waitForPromises from 'helpers/wait_for_promises';
 import Editor from '~/editor/editor_lite';
 import { EditorLiteExtension } from '~/editor/extensions/editor_lite_extension_base';
 import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
-import { EDITOR_LITE_INSTANCE_ERROR_NO_EL, URI_PREFIX } from '~/editor/constants';
+import {
+  EDITOR_LITE_INSTANCE_ERROR_NO_EL,
+  URI_PREFIX,
+  EDITOR_READY_EVENT,
+} from '~/editor/constants';
 
 describe('Base editor', () => {
   let editorEl;
@@ -43,16 +47,21 @@ describe('Base editor', () => {
     let instanceSpy;
     let setModel;
     let dispose;
+    let modelsStorage;
 
     beforeEach(() => {
       setModel = jest.fn();
       dispose = jest.fn();
+      modelsStorage = new Map();
       modelSpy = jest.spyOn(monacoEditor, 'createModel').mockImplementation(() => fakeModel);
       instanceSpy = jest.spyOn(monacoEditor, 'create').mockImplementation(() => ({
         setModel,
         dispose,
         onDidDispose: jest.fn(),
       }));
+      jest.spyOn(monacoEditor, 'getModel').mockImplementation((uri) => {
+        return modelsStorage.get(uri.path);
+      });
     });
 
     it('throws an error if no dom element is supplied', () => {
@@ -70,6 +79,18 @@ describe('Base editor', () => {
 
       expect(modelSpy).toHaveBeenCalledWith(blobContent, undefined, createUri(blobPath));
       expect(setModel).toHaveBeenCalledWith(fakeModel);
+    });
+
+    it('does not create a new model if a model for the path already exists', () => {
+      modelSpy = jest
+        .spyOn(monacoEditor, 'createModel')
+        .mockImplementation((content, lang, uri) => modelsStorage.set(uri.path, content));
+      const instanceOptions = { el: editorEl, blobPath, blobContent, blobGlobalId: '' };
+      const a = editor.createInstance(instanceOptions);
+      const b = editor.createInstance(instanceOptions);
+
+      expect(a === b).toBe(false);
+      expect(modelSpy).toHaveBeenCalledTimes(1);
     });
 
     it('initializes the instance on a supplied DOM node', () => {
@@ -446,7 +467,7 @@ describe('Base editor', () => {
         expect(editorExtensionSpy).toHaveBeenCalledWith(expect.any(Array), expectation);
       });
 
-      it('emits editor-ready event after all extensions were applied', async () => {
+      it('emits EDITOR_READY_EVENT event after all extensions were applied', async () => {
         const calls = [];
         const eventSpy = jest.fn().mockImplementation(() => {
           calls.push('event');
@@ -454,7 +475,7 @@ describe('Base editor', () => {
         const useSpy = jest.spyOn(editor, 'use').mockImplementation(() => {
           calls.push('use');
         });
-        editorEl.addEventListener('editor-ready', eventSpy);
+        editorEl.addEventListener(EDITOR_READY_EVENT, eventSpy);
         instance = instanceConstructor('foo, bar');
         await waitForPromises();
         expect(useSpy.mock.calls).toHaveLength(2);

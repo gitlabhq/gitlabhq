@@ -10,7 +10,9 @@ import notesEventHub from '../../notes/event_hub';
 import DiffFileHeader from './diff_file_header.vue';
 import DiffContent from './diff_content.vue';
 import { diffViewerErrors } from '~/ide/constants';
+
 import { collapsedType, isCollapsed } from '../utils/diff_file';
+
 import {
   DIFF_FILE_AUTOMATIC_COLLAPSE,
   DIFF_FILE_MANUAL_COLLAPSE,
@@ -144,6 +146,12 @@ export default {
     showContent() {
       return !this.isCollapsed && !this.isFileTooLarge;
     },
+    showLocalFileReviews() {
+      const loggedIn = Boolean(gon.current_user_id);
+      const featureOn = this.glFeatures.localFileReviews;
+
+      return loggedIn && featureOn;
+    },
   },
   watch: {
     'file.file_hash': {
@@ -180,6 +188,10 @@ export default {
   mounted() {
     if (this.hasDiff) {
       this.postRender();
+    }
+
+    if (this.reviewed && !this.isCollapsed && this.showLocalFileReviews) {
+      this.handleToggle();
     }
   },
   beforeDestroy() {
@@ -273,9 +285,11 @@ export default {
       :can-current-user-fork="canCurrentUserFork"
       :diff-file="file"
       :collapsible="true"
+      :reviewed="reviewed"
       :expanded="!isCollapsed"
       :add-merge-request-buttons="true"
       :view-diffs-file-by-file="viewDiffsFileByFile"
+      :show-local-file-reviews="showLocalFileReviews"
       class="js-file-title file-title gl-border-1 gl-border-solid gl-border-gray-100"
       :class="hasBodyClasses.header"
       @toggleFile="handleToggle"

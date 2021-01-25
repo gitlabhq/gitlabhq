@@ -7,6 +7,7 @@ import {
   mockProjectNamespace,
 } from '../mock_data';
 
+import { EDITOR_READY_EVENT } from '~/editor/constants';
 import TextEditor from '~/pipeline_editor/components/text_editor.vue';
 
 describe('~/pipeline_editor/components/text_editor.vue', () => {
@@ -20,7 +21,7 @@ describe('~/pipeline_editor/components/text_editor.vue', () => {
     template: '<div/>',
     props: ['value', 'fileName'],
     mounted() {
-      this.$emit('editor-ready');
+      this.$emit(EDITOR_READY_EVENT);
     },
     methods: {
       getEditor: () => ({
@@ -44,7 +45,7 @@ describe('~/pipeline_editor/components/text_editor.vue', () => {
         value: mockCiYml,
       },
       listeners: {
-        'editor-ready': editorReadyListener,
+        [EDITOR_READY_EVENT]: editorReadyListener,
       },
       stubs: {
         EditorLite: MockEditorLite,
@@ -86,7 +87,7 @@ describe('~/pipeline_editor/components/text_editor.vue', () => {
   });
 
   it('bubbles up events', () => {
-    findEditor().vm.$emit('editor-ready');
+    findEditor().vm.$emit(EDITOR_READY_EVENT);
 
     expect(editorReadyListener).toHaveBeenCalled();
   });

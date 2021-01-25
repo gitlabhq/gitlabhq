@@ -47,4 +47,5 @@ export default () => ({
   showSuggestPopover: true,
   defaultSuggestionCommitMessage: '',
   mrReviews: {},
+  latestDiff: true,
 });

@@ -1,6 +1,7 @@
 <script>
 import EditorLite from '~/vue_shared/components/editor_lite.vue';
 import { CiSchemaExtension } from '~/editor/extensions/editor_ci_schema_ext';
+import { EDITOR_READY_EVENT } from '~/editor/constants';
 
 export default {
   components: {
@@ -31,6 +32,7 @@ export default {
       });
     },
   },
+  readyEvent: EDITOR_READY_EVENT,
 };
 </script>
 <template>
@@ -39,7 +41,7 @@ export default {
       ref="editor"
       :file-name="ciConfigPath"
       v-bind="$attrs"
-      @editor-ready="onEditorReady"
+      @[$options.readyEvent]="onEditorReady"
       v-on="$listeners"
     />
   </div>

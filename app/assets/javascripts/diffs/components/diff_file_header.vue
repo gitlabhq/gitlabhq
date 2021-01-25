@@ -1,6 +1,6 @@
 <script>
 import { escape } from 'lodash';
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import {
   GlTooltipDirective,
   GlSafeHtmlDirective,
@@ -10,16 +10,23 @@ import {
   GlDropdown,
   GlDropdownItem,
   GlDropdownDivider,
+  GlFormCheckbox,
   GlLoadingIcon,
 } from '@gitlab/ui';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __, s__, sprintf } from '~/locale';
-import { diffViewerModes } from '~/ide/constants';
 import DiffStats from './diff_stats.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
-import { isCollapsed } from '../utils/diff_file';
+
+import { collapsedType, isCollapsed } from '../utils/diff_file';
+import { reviewable } from '../utils/file_reviews';
+
+import { diffViewerModes } from '~/ide/constants';
+import { DIFF_FILE_AUTOMATIC_COLLAPSE } from '../constants';
+
 import { DIFF_FILE_HEADER } from '../i18n';
 
 export default {
@@ -33,12 +40,14 @@ export default {
     GlDropdown,
     GlDropdownItem,
     GlDropdownDivider,
+    GlFormCheckbox,
     GlLoadingIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
     SafeHtml: GlSafeHtmlDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   i18n: {
     ...DIFF_FILE_HEADER,
   },
@@ -76,6 +85,16 @@ export default {
       required: false,
       default: false,
     },
+    showLocalFileReviews: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    reviewed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -83,6 +102,7 @@ export default {
     };
   },
   computed: {
+    ...mapState('diffs', ['latestDiff']),
     ...mapGetters('diffs', ['diffHasExpandedDiscussions', 'diffHasDiscussions']),
     diffContentIDSelector() {
       return `#diff-content-${this.diffFile.file_hash}`;
@@ -170,6 +190,9 @@ export default {
         (this.diffFile.edit_path || this.diffFile.ide_edit_path)
       );
     },
+    isReviewable() {
+      return reviewable(this.diffFile);
+    },
   },
   methods: {
     ...mapActions('diffs', [
@@ -177,6 +200,8 @@ export default {
       'toggleFileDiscussionWrappers',
       'toggleFullDiff',
       'toggleActiveFileByHash',
+      'reviewFile',
+      'setFileCollapsedByUser',
     ]),
     handleToggleFile() {
       this.$emit('toggleFile');
@@ -203,6 +228,26 @@ export default {
     },
     setMoreActionsShown(val) {
       this.moreActionsShown = val;
+    },
+    toggleReview(newReviewedStatus) {
+      const autoCollapsed =
+        this.isCollapsed && collapsedType(this.diffFile) === DIFF_FILE_AUTOMATIC_COLLAPSE;
+      const open = this.expanded;
+      const closed = !open;
+      const reviewed = newReviewedStatus;
+
+      this.reviewFile({ file: this.diffFile, reviewed });
+
+      if (reviewed && autoCollapsed) {
+        this.setFileCollapsedByUser({
+          filePath: this.diffFile.file_path,
+          collapsed: true,
+        });
+      }
+
+      if ((open && reviewed) || (closed && !reviewed)) {
+        this.$emit('toggleFile');
+      }
     },
   },
 };
@@ -291,6 +336,19 @@ export default {
       class="file-actions d-flex align-items-center gl-ml-auto gl-align-self-start"
     >
       <diff-stats :added-lines="diffFile.added_lines" :removed-lines="diffFile.removed_lines" />
+      <gl-form-checkbox
+        v-if="isReviewable && showLocalFileReviews"
+        v-gl-tooltip.hover
+        data-testid="fileReviewCheckbox"
+        class="gl-mb-0"
+        :title="$options.i18n.fileReviewTooltip"
+        :checked="reviewed"
+        @change="toggleReview"
+      >
+        <span class="gl-line-height-20">
+          {{ $options.i18n.fileReviewLabel }}
+        </span>
+      </gl-form-checkbox>
       <gl-button-group class="gl-pt-0!">
         <gl-button
           v-if="diffFile.external_url"

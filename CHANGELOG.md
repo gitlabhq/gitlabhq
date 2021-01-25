@@ -359,6 +359,14 @@ entry.
 - Add verbiage + link sast to show it's in core. !51935
 
 
+## 13.7.5 (2021-01-25)
+
+### Fixed (2 changes, 1 of them is from the community)
+
+- New project guidelines are no longer displayed. !50736 (Roger Meier)
+- Fix LFS not working with S3 specific-storage settings. !52296
+
+
 ## 13.7.4 (2021-01-13)
 
 ### Security (1 change)

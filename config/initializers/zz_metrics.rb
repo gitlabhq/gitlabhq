@@ -154,9 +154,13 @@ if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && d
   # of the ActiveRecord methods. This has to take place _after_ initializing as
   # for some unknown reason calling eager_load! earlier breaks Devise.
   Gitlab::Application.config.after_initialize do
-    Rails.application.eager_load!
+    # We should move all the logic of this file to somewhere else
+    # and require it after `Rails.application.initialize!` in `environment.rb` file.
+    models_path = Rails.root.join('app', 'models').to_s
 
-    models = Rails.root.join('app', 'models').to_s
+    Dir.glob("**/*.rb", base: models_path).sort.each do |file|
+      require_dependency file
+    end
 
     regex = Regexp.union(
       ActiveRecord::Querying.public_instance_methods(false).map(&:to_s)
@@ -172,7 +176,7 @@ if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && d
         else
           loc = method.source_location
 
-          loc && loc[0].start_with?(models) && method.source =~ regex
+          loc && loc[0].start_with?(models_path) && method.source =~ regex
         end
       end
 

@@ -749,12 +749,10 @@ export const setFileByFile = ({ commit }, { fileByFile }) => {
   );
 };
 
-export function reviewFile({ commit, state, getters }, { file, reviewed = true }) {
+export function reviewFile({ commit, state }, { file, reviewed = true }) {
   const { mrPath } = getDerivedMergeRequestInformation({ endpoint: file.load_collapsed_diff_url });
-  const reviews = setReviewsForMergeRequest(
-    mrPath,
-    markFileReview(getters.fileReviews(state), file, reviewed),
-  );
+  const reviews = markFileReview(state.mrReviews, file, reviewed);
 
+  setReviewsForMergeRequest(mrPath, reviews);
   commit(types.SET_MR_FILE_REVIEWS, reviews);
 }
