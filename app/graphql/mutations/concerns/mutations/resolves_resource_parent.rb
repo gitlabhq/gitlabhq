@@ -9,11 +9,11 @@ module Mutations
     included do
       argument :project_path, GraphQL::ID_TYPE,
                required: false,
-               description: 'The project full path the resource is associated with.'
+               description: 'Full path of the project with which the resource is associated.'
 
       argument :group_path, GraphQL::ID_TYPE,
                required: false,
-               description: 'The group full path the resource is associated with.'
+               description: 'Full path of the group with which the resource is associated.'
     end
 
     def ready?(**args)

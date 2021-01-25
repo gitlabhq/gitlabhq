@@ -12224,7 +12224,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project full path the resource is associated with.",
+              "description": "Full path of the project with which the resource is associated.",
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
@@ -12234,7 +12234,7 @@
             },
             {
               "name": "groupPath",
-              "description": "The group full path the resource is associated with.",
+              "description": "Full path of the group with which the resource is associated.",
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
@@ -38140,7 +38140,7 @@
           "inputFields": [
             {
               "name": "projectPath",
-              "description": "The project full path the resource is associated with.",
+              "description": "Full path of the project with which the resource is associated.",
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
@@ -38150,7 +38150,7 @@
             },
             {
               "name": "groupPath",
-              "description": "The group full path the resource is associated with.",
+              "description": "Full path of the group with which the resource is associated.",
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",

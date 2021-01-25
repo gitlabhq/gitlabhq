@@ -4500,7 +4500,7 @@ input CreateBoardInput {
   clientMutationId: String
 
   """
-  The group full path the resource is associated with.
+  Full path of the group with which the resource is associated.
   """
   groupPath: ID
 
@@ -4540,7 +4540,7 @@ input CreateBoardInput {
   name: String
 
   """
-  The project full path the resource is associated with.
+  Full path of the project with which the resource is associated.
   """
   projectPath: ID
 
@@ -13903,12 +13903,12 @@ input LabelCreateInput {
   description: String
 
   """
-  The group full path the resource is associated with.
+  Full path of the group with which the resource is associated.
   """
   groupPath: ID
 
   """
-  The project full path the resource is associated with.
+  Full path of the project with which the resource is associated.
   """
   projectPath: ID
 
