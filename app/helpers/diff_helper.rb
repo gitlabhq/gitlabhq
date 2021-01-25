@@ -254,7 +254,7 @@ module DiffHelper
   end
 
   def code_navigation_path(diffs)
-    Gitlab::CodeNavigationPath.new(merge_request.project, diffs.diff_refs&.head_sha)
+    Gitlab::CodeNavigationPath.new(merge_request.project, merge_request.diff_head_sha)
   end
 
   def conflicts

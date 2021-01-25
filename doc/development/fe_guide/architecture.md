@@ -6,9 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Architecture
 
-When you are developing a new feature that requires architectural design, or if
-you are changing the fundamental design of an existing feature, make sure it is
-discussed with one of the Frontend Architecture Experts.
+When developing a feature that requires architectural design, or changing the fundamental design of an existing feature, discuss it with a Frontend Architecture Expert.
 
 A Frontend Architect is an expert who makes high-level Frontend design decisions
 and decides on technical standards, including coding standards and frameworks.

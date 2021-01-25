@@ -100,7 +100,7 @@ by the examples that follow:
 - `container` (optional): wraps the loading icon in a container, which centers the loading icon using the `text-center` CSS property.
 - `color` (optional): either `orange` (default), `light`, or `dark`.
 - `size` (optional): either `sm` (default), `md`, `lg`, or `xl`.
-- `css_class` (optional): defaults to an empty string, but can be useful for utility classes to fine-tune alignment or spacing.
+- `css_class` (optional): defaults to an empty string, but can be used for utility classes to fine-tune alignment or spacing.
 
 **Example 1:**
 
@@ -164,8 +164,8 @@ export default {
 
 ## SVG Illustrations
 
-Please use from now on for any SVG based illustrations simple `img` tags to show an illustration by simply using either `image_tag` or `image_path` helpers.
-Please use the class `svg-content` around it to ensure nice rendering.
+From now on, use `img` tags to display any SVG based illustrations with either `image_tag` or `image_path` helpers.
+Using the class `svg-content` around it ensures nice rendering.
 
 ### Usage in HAML/Rails
 

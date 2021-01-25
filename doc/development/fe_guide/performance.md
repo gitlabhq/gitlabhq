@@ -230,12 +230,12 @@ To improve the time to first render we are using lazy loading for images. This w
 the actual image source on the `data-src` attribute. After the HTML is rendered and JavaScript is loaded,
 the value of `data-src` is moved to `src` automatically if the image is in the current viewport.
 
-- Prepare images in HTML for lazy loading by renaming the `src` attribute to `data-src` AND adding the class `lazy`.
+- Prepare images in HTML for lazy loading by renaming the `src` attribute to `data-src` and adding the class `lazy`.
 - If you are using the Rails `image_tag` helper, all images are lazy-loaded by default unless `lazy: false` is provided.
 
-If you are asynchronously adding content which contains lazy images then you need to call the function
+When asynchronously adding content which contains lazy images, call the function
 `gl.lazyLoader.searchLazyImages()` which searches for lazy images and loads them if needed.
-But in general it should be handled automatically through a `MutationObserver` in the lazy loading function.
+In general, it should be handled automatically through a `MutationObserver` in the lazy loading function.
 
 ### Animations
 
@@ -243,7 +243,7 @@ Only animate `opacity` & `transform` properties. Other properties (such as `top`
 Layout to be recalculated, which is much more expensive. For details on this, see "Styles that Affect Layout" in
 [High Performance Animations](https://www.html5rocks.com/en/tutorials/speed/high-performance-animations/).
 
-If you _do_ need to change layout (for example, a sidebar that pushes main content over), prefer [FLIP](https://aerotwist.com/blog/flip-your-animations/) to change expensive
+If you _do_ need to change layout (for example, a sidebar that pushes main content over), prefer [FLIP](https://aerotwist.com/blog/flip-your-animations/). FLIP allows you to change expensive
 properties once, and handle the actual animation with transforms.
 
 ## Reducing Asset Footprint
@@ -251,7 +251,7 @@ properties once, and handle the actual animation with transforms.
 ### Universal code
 
 Code that is contained in `main.js` and `commons/index.js` is loaded and
-run on _all_ pages. **DO NOT ADD** anything to these files unless it is truly
+run on _all_ pages. **Do not add** anything to these files unless it is truly
 needed _everywhere_. These bundles include ubiquitous libraries like `vue`,
 `axios`, and `jQuery`, as well as code for the main navigation and sidebar.
 Where possible we should aim to remove modules from these bundles to reduce our
@@ -277,9 +277,9 @@ manually generated webpack bundles. However under this new system you should
 not ever need to manually add an entry point to the `webpack.config.js` file.
 
 NOTE:
-If you are unsure what controller and action corresponds to a given page, you
-can find this out by inspecting `document.body.dataset.page` in your
-browser's developer console while on any page in GitLab.
+When unsure what controller and action corresponds to a page,
+inspect `document.body.dataset.page` in your
+browser's developer console from any page in GitLab.
 
 #### Important Considerations
 
@@ -294,7 +294,7 @@ browser's developer console while on any page in GitLab.
   All GitLab JavaScript files are added with the `defer` attribute.
   According to the [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-defer),
   this implies that "the script is meant to be executed after the document has
-  been parsed, but before firing `DOMContentLoaded`". Since the document is already
+  been parsed, but before firing `DOMContentLoaded`". Because the document is already
   parsed, `DOMContentLoaded` is not needed to bootstrap applications because all
   the DOM nodes are already at our disposal.
 
@@ -366,9 +366,9 @@ browser's developer console while on any page in GitLab.
 
 ### Code Splitting
 
-For any code that does not need to be run immediately upon page load, (for example,
-modals, dropdowns, and other behaviors that can be lazy-loaded), you can split
-your module into asynchronous chunks with dynamic import statements. These
+Code that does not need to be run immediately upon page load (for example,
+modals, dropdowns, and other behaviors that can be lazy-loaded) should be split
+into asynchronous chunks with dynamic import statements. These
 imports return a Promise which is resolved after the script has loaded:
 
 ```javascript
@@ -377,16 +377,16 @@ import(/* webpackChunkName: 'emoji' */ '~/emoji')
   .catch(/* report error */)
 ```
 
-Please try to use `webpackChunkName` when generating these dynamic imports as
+Use `webpackChunkName` when generating dynamic imports as
 it provides a deterministic filename for the chunk which can then be cached
-the browser across GitLab versions.
+in the browser across GitLab versions.
 
 More information is available in [webpack's code splitting documentation](https://webpack.js.org/guides/code-splitting/#dynamic-imports).
 
 ### Minimizing page size
 
-A smaller page size means the page loads faster (especially important on mobile
-and poor connections), the page is parsed more quickly by the browser, and less
+A smaller page size means the page loads faster, especially on mobile
+and poor connections. The page is parsed more quickly by the browser, and less
 data is used for users with capped data plans.
 
 General tips:

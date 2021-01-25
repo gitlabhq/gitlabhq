@@ -22,7 +22,7 @@ All new features built with Vue.js must follow a [Flux architecture](https://fac
 The main goal we are trying to achieve is to have only one data flow and only one data entry.
 In order to achieve this goal we use [vuex](#vuex).
 
-You can also read about this architecture in Vue docs about
+You can also read about this architecture in Vue documentation about
 [state management](https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch)
 and about [one way data flow](https://vuejs.org/v2/guide/components.html#One-Way-Data-Flow).
 
@@ -70,7 +70,7 @@ The advantage of providing data from the DOM to the Vue instance through `props`
 function instead of querying the DOM inside the main Vue component is avoiding the need to create a
 fixture or an HTML element in the unit test, which makes the tests easier.
 
-See the following example, also, please refer to our [Vue style guide](style/vue.md#basic-rules) for
+See the following example. Also, please refer to our [Vue style guide](style/vue.md#basic-rules) for
 additional information on why we explicitly declare the data being passed into the Vue app;
 
 ```javascript
@@ -101,8 +101,8 @@ across the codebase.
 
 #### Accessing the `gl` object
 
-When we need to query the `gl` object for data that doesn't change during the application's life
-cycle, we should do it in the same place where we query the DOM. By following this practice, we can
+We query the `gl` object for data that doesn't change during the application's life
+cycle in the same place we query the DOM. By following this practice, we can
 avoid the need to mock the `gl` object, which makes tests easier. It should be done while
 initializing our Vue instance, and the data should be provided as `props` to the main component:
 
@@ -148,8 +148,8 @@ This approach has a few benefits:
 - Arbitrarily deeply nested components can opt-in and access the flag without
   intermediate components being aware of it (c.f. passing the flag down via
   props).
-- Good testability, since the flag can be provided to `mount`/`shallowMount`
-  from `vue-test-utils` simply as a prop.
+- Good testability, because the flag can be provided to `mount`/`shallowMount`
+  from `vue-test-utils` as a prop.
 
   ```javascript
   import { shallowMount } from '@vue/test-utils';
@@ -207,20 +207,20 @@ Based on the Vue guidance:
 such as `user: new User()`.
 - **Do not** add new JavaScript class implementations.
 - **Do** use [GraphQL](../api_graphql_styleguide.md), [Vuex](vuex.md) or a set of components if
-cannot use simple primitives or objects.
+cannot use primitives or objects.
 - **Do** maintain existing implementations using such approaches.
 - **Do** Migrate components to a pure object model when there are substantial changes to it.
-- **Do** add business logic to helpers or utils, so you can test them separately from your component.
+- **Do** add business logic to helpers or utilities, so you can test them separately from your component.
 
 #### Why
 
 There are additional reasons why having a JavaScript class presents maintainability issues on a huge codebase:
 
-- Once a class is created, it is easy to extend it in a way that can infringe Vue reactivity and best practices.
+- After a class is created, it can be extended in a way that can infringe Vue reactivity and best practices.
 - A class adds a layer of abstraction, which makes the component API and its inner workings less clear.
-- It makes it harder to test. Since the class is instantiated by the component data function, it is
+- It makes it harder to test. Because the class is instantiated by the component data function, it is
 harder to 'manage' component and class separately.
-- Adding OOP to a functional codebase adds yet another way of writing code, reducing consistency and clarity.
+- Adding Object Oriented Principles (OOP) to a functional codebase adds yet another way of writing code, reducing consistency and clarity.
 
 ## Style guide
 
@@ -234,8 +234,8 @@ for guidelines and best practices for testing your Vue components.
 
 Each Vue component has a unique output. This output is always present in the render function.
 
-Although we can test each method of a Vue component individually, our goal must be to test the output
-of the render/template function, which represents the state at all times.
+Although each method of a Vue component can be tested individually, our goal is to test the output
+of the render function, which represents the state at all times.
 
 Here's an example of a well structured unit test for [this Vue component](#appendix---vue-component-subject-under-test):
 
@@ -366,7 +366,7 @@ component under test, with the `computed` property, for example). Remember to us
 
 ### Events
 
-We should test for events emitted in response to an action within our component, this is useful to
+We should test for events emitted in response to an action in our component. This is used to
 verify the correct events are being fired with the correct arguments.
 
 For any DOM events we should use [`trigger`](https://vue-test-utils.vuejs.org/api/wrapper/#trigger)
@@ -416,7 +416,7 @@ You should only apply to be a Vue.js expert when your own merge requests and you
 
 > This section is added temporarily to support the efforts to migrate the codebase from Vue 2.x to Vue 3.x
 
-Currently, we recommend to minimize adding certain features to the codebase to prevent increasing
+We recommend to minimize adding certain features to the codebase to prevent increasing
 the tech debt for the eventual migration:
 
 - filters;

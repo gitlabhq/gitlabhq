@@ -100,6 +100,13 @@ EOT
           expect(diff.diff).to be_empty
           expect(diff).to be_too_large
         end
+
+        it 'logs the event' do
+          expect(Gitlab::Metrics).to receive(:add_event)
+            .with(:patch_hard_limit_bytes_hit)
+
+          diff
+        end
       end
 
       context 'using a collapsable diff that is too large' do

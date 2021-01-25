@@ -3,10 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe DiffsEntity do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
+
   let(:request) { EntityRequest.new(project: project, current_user: user) }
-  let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
   let(:merge_request_diffs) { merge_request.merge_request_diffs }
   let(:options) do
     { request: request, merge_request: merge_request, merge_request_diffs: merge_request_diffs }
@@ -28,6 +29,14 @@ RSpec.describe DiffsEntity do
         :email_patch_path, :plain_diff_path, :diff_files,
         :merge_request_diffs, :definition_path_prefix
       )
+    end
+
+    context 'broken merge request' do
+      let(:merge_request) { create(:merge_request, :invalid, target_project: project, source_project: project) }
+
+      it 'renders without errors' do
+        expect { subject }.not_to raise_error
+      end
     end
 
     context "when a commit_id is passed" do

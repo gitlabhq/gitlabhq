@@ -65,7 +65,7 @@ The editor follows the same public API as [provided by Monaco editor](https://mi
 
 1. Editor's loading state.
 
-Editor Lite comes with the loading state built-in, making spinners and loaders rarely needed in HTML. To benefit the built-in loading state, set the `data-editor-loading` property on the HTML element that is supposed to contain the editor. Editor Lite will show the loader automatically while it's bootstrapping.
+Editor Lite comes with the loading state built-in, making spinners and loaders rarely needed in HTML. To benefit the built-in loading state, set the `data-editor-loading` property on the HTML element that is supposed to contain the editor. Editor Lite shows the loader automatically while it's bootstrapping.
 ![Editor Lite: loading state](img/editor_lite_loading.png)
 
 1. Update syntax highlighting if the filename changes.
@@ -89,7 +89,7 @@ form.addEventListener('submit', () => {
 
 1. Performance
 
-Even though Editor Lite itself is extremely slim, it still depends on Monaco editor. Monaco is not an easily tree-shakeable module. Hence, every time you add Editor Lite to a view, the JavaScript bundle's size significantly increases, affecting your view's loading performance. To avoid that, it is recommended to import the editor on demand on those views where it is not 100% certain that the editor will be used. Or if the editor is a secondary element of the view. Loading Editor Lite on demand is no different from loading any other module:
+Even though Editor Lite itself is extremely slim, it still depends on Monaco editor. Monaco is not an easily tree-shakeable module. Hence, every time you add Editor Lite to a view, the JavaScript bundle's size significantly increases, affecting your view's loading performance. It is recommended to import the editor on demand on those views where it is not 100% certain that the editor is needed. Or if the editor is a secondary element of the view. Loading Editor Lite on demand is no different from loading any other module:
 
 ```javascript
 someActionFunction() {
@@ -109,8 +109,8 @@ which would not depend on any particular group. Even though the Editor Lite's co
 [Create::Editor FE Team](https://about.gitlab.com/handbook/engineering/development/dev/create-editor/),
 the main functional elements — extensions — can be owned by any group. Editor Lite extensions' main idea
 is that the core of the editor remains very slim and stable. At the same time, whatever new functionality
-is needed can be added as an extension to this core, without touching the core itself. It allows any group
-to build and own any new editing functionality without being afraid of it being broken or overridden with
+is needed can be added as an extension to this core, without touching the core itself. Any group is allowed
+to build and own new editing functionality without being afraid of it being broken or overridden with
 the Editor Lite changes.
 
 Structurally, the complete implementation of Editor Lite could be presented as the following diagram:
@@ -145,7 +145,7 @@ Important things to note here:
 
 ### Using an existing extension
 
-Adding an extension to Editor Lite's instance is simple:
+Adding an extension to Editor Lite's instance requires the following steps:
 
 ```javascript
 import EditorLite from '~/editor/editor_lite';
@@ -159,7 +159,7 @@ editor.use(MyExtension);
 
 ### Creating an extension
 
-Let's create our first Editor Lite extension. As aforementioned, extensions are ES6 modules exporting the simple `Object` that is used to extend Editor Lite's functionality. As the most straightforward test, let's create an extension that extends Editor Lite with a new function that, when called, will output editor's content in `alert`.
+Let's create our first Editor Lite extension. Extensions are ES6 modules exporting a basic `Object` that is used to extend Editor Lite's functionality. As a test, let's create an extension that extends Editor Lite with a new function that, when called, outputs editor's content in `alert`.
 
 `~/my_folder/my_fancy_extension.js:`
 

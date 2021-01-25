@@ -244,6 +244,8 @@ module Gitlab
 
       def prune_diff_if_eligible
         if too_large?
+          ::Gitlab::Metrics.add_event(:patch_hard_limit_bytes_hit)
+
           too_large!
         elsif collapsed?
           collapse!
