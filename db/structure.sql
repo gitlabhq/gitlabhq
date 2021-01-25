@@ -14310,6 +14310,7 @@ CREATE TABLE namespace_settings (
     prevent_forking_outside_group boolean DEFAULT false NOT NULL,
     allow_mfa_for_subgroups boolean DEFAULT true NOT NULL,
     default_branch_name text,
+    repository_read_only boolean DEFAULT false NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255))
 );
 

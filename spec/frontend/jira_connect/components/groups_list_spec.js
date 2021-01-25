@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import { fetchGroups } from '~/jira_connect/api';
@@ -28,6 +28,7 @@ describe('GroupsList', () => {
     wrapper = null;
   });
 
+  const findGlAlert = () => wrapper.find(GlAlert);
   const findGlLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const findAllItems = () => wrapper.findAll(GroupsListItem);
   const findFirstItem = () => findAllItems().at(0);
@@ -45,6 +46,18 @@ describe('GroupsList', () => {
     });
   });
 
+  describe('error fetching groups', () => {
+    it('renders error message', async () => {
+      fetchGroups.mockRejectedValue();
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findGlAlert().exists()).toBe(true);
+      expect(findGlAlert().text()).toBe('Failed to load namespaces. Please try again.');
+    });
+  });
+
   describe('no groups returned', () => {
     it('renders empty state', async () => {
       fetchGroups.mockResolvedValue(mockEmptyResponse);
@@ -57,15 +70,28 @@ describe('GroupsList', () => {
   });
 
   describe('with groups returned', () => {
-    it('renders groups list', async () => {
+    beforeEach(async () => {
       fetchGroups.mockResolvedValue({ data: [mockGroup1, mockGroup2] });
       createComponent();
 
       await waitForPromises();
+    });
 
+    it('renders groups list', () => {
       expect(findAllItems().length).toBe(2);
       expect(findFirstItem().props('group')).toBe(mockGroup1);
       expect(findSecondItem().props('group')).toBe(mockGroup2);
+    });
+
+    it('shows error message on $emit from item', async () => {
+      const errorMessage = 'error message';
+
+      findFirstItem().vm.$emit('error', errorMessage);
+
+      await wrapper.vm.$nextTick();
+
+      expect(findGlAlert().exists()).toBe(true);
+      expect(findGlAlert().text()).toContain(errorMessage);
     });
   });
 });

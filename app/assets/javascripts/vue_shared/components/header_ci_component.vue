@@ -148,7 +148,7 @@ export default {
     <gl-button
       v-if="hasSidebarButton"
       class="d-sm-none js-sidebar-build-toggle gl-ml-auto"
-      icon="angle-double-left"
+      icon="chevron-double-lg-left"
       :aria-label="__('Toggle sidebar')"
       @click="onClickSidebarButton"
     />

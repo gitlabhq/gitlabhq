@@ -104,6 +104,7 @@ values extracted from the [`alerts` field in webhook payload](https://prometheus
 
 - Issue author: `GitLab Alert Bot`
 - Issue title: Extracted from the alert payload fields `annotations/title`, `annotations/summary`, or `labels/alertname`.
+- Issue description: Extracted from alert payload field `annotations/description`.
 - Alert `Summary`: A list of properties from the alert's payload.
   - `starts_at`: Alert start time from the payload's `startsAt` field
   - `full_query`: Alert query extracted from the payload's `generatorURL` field

@@ -1,0 +1,6 @@
+- if defined?(text)
+  = button_to text, '#', class: html_class, data: button_data
+- else
+  = button_to '#', class: html_class, data: button_data do
+    %span.sr-only= _('Delete')
+    = sprite_icon('remove')

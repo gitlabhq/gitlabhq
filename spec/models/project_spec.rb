@@ -2999,6 +2999,7 @@ RSpec.describe Project, factory_default: :keep do
   it_behaves_like 'can housekeep repository' do
     let(:resource) { build_stubbed(:project) }
     let(:resource_key) { 'projects' }
+    let(:expected_worker_class) { Projects::GitGarbageCollectWorker }
   end
 
   describe '#deployment_variables' do

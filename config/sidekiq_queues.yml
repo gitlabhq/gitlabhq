@@ -158,6 +158,8 @@
   - 1
 - - group_saml_group_sync
   - 1
+- - group_wikis_git_garbage_collect
+  - 1
 - - hashed_storage
   - 1
 - - import_issues_csv
@@ -361,6 +363,8 @@
 - - web_hook
   - 1
 - - web_hooks_destroy
+  - 1
+- - wikis_git_garbage_collect
   - 1
 - - x509_certificate_revoke
   - 1

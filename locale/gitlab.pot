@@ -15410,6 +15410,9 @@ msgstr ""
 msgid "Integrations|Enable comments"
 msgstr ""
 
+msgid "Integrations|Failed to link namespace. Please try again."
+msgstr ""
+
 msgid "Integrations|Failed to load namespaces. Please try again."
 msgstr ""
 
@@ -16984,6 +16987,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Line changes"
+msgstr ""
+
+msgid "Link"
 msgstr ""
 
 msgid "Link Prometheus monitoring to GitLab."

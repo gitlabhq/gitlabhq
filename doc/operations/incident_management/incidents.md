@@ -225,6 +225,10 @@ There are different actions available to help triage and respond to incidents.
 Assign incidents to users that are actively responding. Select **Edit** in the
 right-hand side bar to select or deselect assignees.
 
+### Associate a milestone
+
+Associate an incident to a milestone by selecting **Edit** next to the milestone feature in the right-hand side bar.
+
 ### Change severity
 
 See [Incident List](#incident-list) for a full description of the severity levels available.

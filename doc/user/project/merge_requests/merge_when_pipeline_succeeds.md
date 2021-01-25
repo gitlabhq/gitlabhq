@@ -42,8 +42,12 @@ complete, the merge is blocked until you resolve all existing threads.
 
 ## Only allow merge requests to be merged if the pipeline succeeds
 
-You can prevent merge requests from being merged if their pipeline did not succeed
-or if there are threads to be resolved. This works for both:
+You can prevent merge requests from being merged if:
+
+- No pipeline ran.
+- The pipeline did not succeed.
+
+This works for both:
 
 - GitLab CI/CD pipelines
 - Pipelines run from an [external CI integration](../integrations/overview.md#integrations-listing)
@@ -58,6 +62,7 @@ CI providers with this feature. To enable it, you must:
 1. Press **Save** for the changes to take effect.
 
 This setting also prevents merge requests from being merged if there is no pipeline.
+You should be careful to configure CI/CD so that pipelines run for every merge request.
 
 ### Limitations
 

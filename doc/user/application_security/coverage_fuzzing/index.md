@@ -44,8 +44,18 @@ provided as part of your GitLab installation.
 To do so, add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
+stages:
+  - fuzz
+
 include:
   - template: Coverage-Fuzzing.gitlab-ci.yml
+
+my_fuzz_target:
+  extends: .fuzz_base
+  script:
+    # Build your fuzz target binary in these steps, then run it with gitlab-cov-fuzz>
+    # See our example repos for how you could do this with any of our supported languages
+    - ./gitlab-cov-fuzz run --regression=$REGRESSION -- <your fuzz target>
 ```
 
 The included template makes available the [hidden job](../../../ci/yaml/README.md#hide-jobs)

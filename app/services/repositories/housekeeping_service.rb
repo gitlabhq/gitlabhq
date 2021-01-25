@@ -45,7 +45,7 @@ module Repositories
     private
 
     def execute_gitlab_shell_gc(lease_uuid)
-      Projects::GitGarbageCollectWorker.perform_async(@resource.id, task, lease_key, lease_uuid)
+      @resource.git_garbage_collect_worker_klass.perform_async(@resource.id, task, lease_key, lease_uuid)
     ensure
       if pushes_since_gc >= gc_period
         Gitlab::Metrics.measure(:reset_pushes_since_gc) do

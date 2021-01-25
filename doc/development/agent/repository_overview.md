@@ -10,6 +10,10 @@ This page describes the subfolders of the Kubernetes Agent repository.
 [Development information](index.md) and
 [end-user documentation](../../user/clusters/agent/index.md) are both available.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a video overview, see
+[GitLab Kubernetes Agent repository overview](https://www.youtube.com/watch?v=j8CyaCWroUY).
+
 ## `build`
 
 Various files for the build process.
@@ -34,6 +38,16 @@ Each of these directories contain application bootstrap code for:
 - Constructing the dependency graph of objects that constitute the program.
 - Running it.
 
+### `cmd/agentk`
+
+- `agentk` initialization logic.
+- Implementation of the agent modules API.
+
+### `cmd/kas`
+
+- `kas` initialization logic.
+- Implementation of the server modules API.
+
 ## `examples`
 
 Git submodules for the example projects.
@@ -41,10 +55,6 @@ Git submodules for the example projects.
 ## `internal`
 
 The main code of both `gitlab-kas` and `agentk`, and various supporting building blocks.
-
-### `internal/agentk`
-
-Main `agentk` logic, including the API implementation for agent modules.
 
 ### `internal/api`
 
@@ -57,12 +67,6 @@ Items to work with [Gitaly](../../administration/gitaly/index.md).
 ### `internal/gitlab`
 
 GitLab REST client.
-
-### `internal/kas`
-
-API implementation for the server modules. It contains nothing else, as all server logic
-is split into server modules. The bootstrapping glue that wires the modules together
-is in `cmd/kas/kasapp`.
 
 ### `internal/module`
 

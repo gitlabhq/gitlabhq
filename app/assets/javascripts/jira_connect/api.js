@@ -1,7 +1,11 @@
 import axios from 'axios';
 
-const getJwt = async () => {
-  return AP.context.getToken();
+export const getJwt = () => {
+  return new Promise((resolve) => {
+    AP.context.getToken((token) => {
+      resolve(token);
+    });
+  });
 };
 
 export const addSubscription = async (addPath, namespace) => {

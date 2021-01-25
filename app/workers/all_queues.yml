@@ -2239,6 +2239,14 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: wikis_git_garbage_collect
+  :feature_category: :gitaly
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: x509_certificate_revoke
   :feature_category: :source_code_management
   :has_external_dependencies:

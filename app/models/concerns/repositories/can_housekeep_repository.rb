@@ -16,6 +16,10 @@ module Repositories
       Gitlab::Redis::SharedState.with { |redis| redis.del(pushes_since_gc_redis_shared_state_key) }
     end
 
+    def git_garbage_collect_worker_klass
+      raise NotImplementedError
+    end
+
     private
 
     def pushes_since_gc_redis_shared_state_key

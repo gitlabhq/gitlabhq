@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Build::Credentials::Registry do
+RSpec.describe Gitlab::Ci::Build::Credentials::Registry::GitlabRegistry do
   let(:build) { create(:ci_build, name: 'spinach', stage: 'test', stage_idx: 0) }
   let(:registry_url) { 'registry.example.com:5005' }
 

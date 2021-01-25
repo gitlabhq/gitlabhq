@@ -30,6 +30,9 @@ module Suggestions
 
       Suggestion.id_in(suggestion_set.suggestions)
         .update_all(commit_id: result[:result], applied: true)
+
+      Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
+        .track_apply_suggestion_action(user: current_user)
     end
 
     def multi_service

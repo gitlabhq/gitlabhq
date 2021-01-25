@@ -1,15 +1,49 @@
 <script>
-import { GlIcon, GlAvatar } from '@gitlab/ui';
+import { GlAvatar, GlButton, GlIcon } from '@gitlab/ui';
+import { s__ } from '~/locale';
+
+import { addSubscription } from '~/jira_connect/api';
 
 export default {
   components: {
-    GlIcon,
     GlAvatar,
+    GlButton,
+    GlIcon,
+  },
+  inject: {
+    subscriptionsPath: {
+      default: '',
+    },
   },
   props: {
     group: {
       type: Object,
       required: true,
+    },
+  },
+  data() {
+    return {
+      isLoading: false,
+    };
+  },
+  methods: {
+    onClick() {
+      this.isLoading = true;
+
+      addSubscription(this.subscriptionsPath, this.group.full_path)
+        .then(() => {
+          AP.navigator.reload();
+        })
+        .catch((error) => {
+          this.$emit(
+            'error',
+            error?.response?.data?.error ||
+              s__('Integrations|Failed to link namespace. Please try again.'),
+          );
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
     },
   },
 };
@@ -36,6 +70,14 @@ export default {
             <p class="gl-mt-2! gl-mb-0 gl-text-gray-600" v-text="group.description"></p>
           </div>
         </div>
+
+        <gl-button
+          category="secondary"
+          variant="success"
+          :loading="isLoading"
+          @click.prevent="onClick"
+          >{{ __('Link') }}</gl-button
+        >
       </div>
     </div>
   </li>

@@ -18,6 +18,8 @@ module Gitlab
       MR_CREATE_MULTILINE_COMMENT_ACTION = 'i_code_review_user_create_multiline_mr_comment'
       MR_EDIT_MULTILINE_COMMENT_ACTION = 'i_code_review_user_edit_multiline_mr_comment'
       MR_REMOVE_MULTILINE_COMMENT_ACTION = 'i_code_review_user_remove_multiline_mr_comment'
+      MR_ADD_SUGGESTION_ACTION = 'i_code_review_user_add_suggestion'
+      MR_APPLY_SUGGESTION_ACTION = 'i_code_review_user_apply_suggestion'
 
       class << self
         def track_mr_diffs_action(merge_request:)
@@ -66,6 +68,14 @@ module Gitlab
 
         def track_publish_review_action(user:)
           track_unique_action_by_user(MR_PUBLISH_REVIEW_ACTION, user)
+        end
+
+        def track_add_suggestion_action(user:)
+          track_unique_action_by_user(MR_ADD_SUGGESTION_ACTION, user)
+        end
+
+        def track_apply_suggestion_action(user:)
+          track_unique_action_by_user(MR_APPLY_SUGGESTION_ACTION, user)
         end
 
         private

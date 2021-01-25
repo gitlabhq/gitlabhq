@@ -20,7 +20,7 @@
     .gl-mt-5
       %p Note: this integration only works with accounts on GitLab.com (SaaS).
   - else
-    .js-jira-connect-app{ data: jira_connect_app_data }
+    .js-jira-connect-app{ data: jira_connect_app_data(@subscriptions) }
 
     - unless new_jira_connect_ui?
       %form#add-subscription-form.subscription-form{ action: jira_connect_subscriptions_path }
@@ -34,7 +34,7 @@
             Link namespace to Jira
 
     - if @subscriptions.present?
-      %table.subscriptions
+      %table.subscriptions.gl-w-full
         %thead
           %tr
             %th Namespace

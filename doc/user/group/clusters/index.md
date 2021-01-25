@@ -43,7 +43,7 @@ to the project, provided the cluster is not disabled.
 
 ## Multiple Kubernetes clusters
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35094) to GitLab Core in 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35094) in GitLab Core 13.2.
 
 You can associate more than one Kubernetes cluster to your group, and maintain different clusters
 for different environments, such as development, staging, and production.
