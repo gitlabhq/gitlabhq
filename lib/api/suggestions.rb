@@ -12,12 +12,13 @@ module API
       end
       params do
         requires :id, type: String, desc: 'The suggestion ID'
+        optional :commit_message, type: String, desc: "A custom commit message to use instead of the default generated message or the project's default message"
       end
       put ':id/apply' do
         suggestion = Suggestion.find_by_id(params[:id])
 
         if suggestion
-          apply_suggestions(suggestion, current_user)
+          apply_suggestions(suggestion, current_user, params[:commit_message])
         else
           render_api_error!(_('Suggestion is not applicable as the suggestion was not found.'), :not_found)
         end
@@ -28,6 +29,7 @@ module API
       end
       params do
         requires :ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: "An array of suggestion ID's"
+        optional :commit_message, type: String, desc: "A custom commit message to use instead of the default generated message or the project's default message"
       end
       put 'batch_apply' do
         ids = params[:ids]
@@ -35,7 +37,7 @@ module API
         suggestions = Suggestion.id_in(ids)
 
         if suggestions.size == ids.length
-          apply_suggestions(suggestions, current_user)
+          apply_suggestions(suggestions, current_user, params[:commit_message])
         else
           render_api_error!(_('Suggestions are not applicable as one or more suggestions were not found.'), :not_found)
         end
@@ -43,10 +45,10 @@ module API
     end
 
     helpers do
-      def apply_suggestions(suggestions, current_user)
+      def apply_suggestions(suggestions, current_user, message)
         authorize_suggestions(*suggestions)
 
-        result = ::Suggestions::ApplyService.new(current_user, *suggestions).execute
+        result = ::Suggestions::ApplyService.new(current_user, *suggestions, message: message).execute
 
         if result[:status] == :success
           present suggestions, with: Entities::Suggestion, current_user: current_user

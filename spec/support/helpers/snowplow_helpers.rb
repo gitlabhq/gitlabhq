@@ -46,7 +46,7 @@ module SnowplowHelpers
   #       }
   #     ]
   #   )
-  def expect_snowplow_event(category:, action:, context: nil, **kwargs)
+  def expect_snowplow_event(category:, action:, context: nil, standard_context: nil, **kwargs)
     if context
       kwargs[:context] = []
       context.each do |c|
@@ -54,6 +54,14 @@ module SnowplowHelpers
           .with(c[:schema], c[:data]).at_least(:once)
         kwargs[:context] << an_instance_of(SnowplowTracker::SelfDescribingJson)
       end
+    end
+
+    if standard_context
+      expect(Gitlab::Tracking::StandardContext)
+        .to have_received(:new)
+        .with(**standard_context)
+
+      kwargs[:standard_context] = an_instance_of(Gitlab::Tracking::StandardContext)
     end
 
     expect(Gitlab::Tracking).to have_received(:event) # rubocop:disable RSpec/ExpectGitlabTracking

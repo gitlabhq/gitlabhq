@@ -319,9 +319,7 @@ class GroupsController < Groups::ApplicationController
 
   private
 
-  def successful_creation_hooks
-    track_experiment_event(:onboarding_issues, 'created_namespace')
-  end
+  def successful_creation_hooks; end
 
   def groups
     if @group.supports_events?

@@ -1059,6 +1059,10 @@ class Repository
     blob_data_at(sha, '.lfsconfig')
   end
 
+  def changelog_config(ref = 'HEAD')
+    blob_data_at(ref, Gitlab::Changelog::Config::FILE_PATH)
+  end
+
   def fetch_ref(source_repository, source_ref:, target_ref:)
     raw_repository.fetch_ref(source_repository.raw_repository, source_ref: source_ref, target_ref: target_ref)
   end

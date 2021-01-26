@@ -15,49 +15,63 @@
     = render_if_exists 'admin/licenses/breakdown'
 
 .admin-dashboard.gl-mt-3
+  .h3.gl-mb-5.gl-mt-0= _('Instance overview')
   .row
-    .col-sm-4
-      .info-well.dark-well.flex-fill
-        .well-segment.well-centered
-          = link_to admin_projects_path do
-            %h3.text-center
-              = s_('AdminArea|Projects: %{number_of_projects}') % { number_of_projects: approximate_count_with_delimiters(@counts, Project) }
-          %hr
-          = link_to(s_('AdminArea|New project'), new_project_path, class: "btn gl-button btn-success gl-w-full")
-    .col-sm-4
-      .info-well.dark-well
-        .well-segment.well-centered.gl-text-center
-          = link_to admin_users_path do
-            %h3.gl-display-inline-block.gl-mb-0
-              = s_('AdminArea|Users: %{number_of_users}') % { number_of_users: approximate_count_with_delimiters(@counts, User) }
-
-          %span.gl-outline-0.gl-ml-2{ href: "#", tabindex: "0", data: { container: "body",
-            toggle: "popover",
-            placement: "top",
-            html: "true",
-            trigger: "focus",
-            content: s_("AdminArea|All users created in the instance, including users who are not %{billable_users_link_start}billable users%{billable_users_link_end}.").html_safe % { billable_users_link_start: billable_users_link_start, billable_users_link_end: '</a>'.html_safe },
-          } }
-            = sprite_icon('question', size: 16, css_class: 'gl-text-gray-700 gl-mb-1')
-
-          %hr
-          .btn-group.d-flex{ role: 'group' }
-            = link_to s_('AdminArea|New user'), new_admin_user_path, class: "btn gl-button btn-success gl-w-full"
-            = link_to s_('AdminArea|Users statistics'), admin_dashboard_stats_path, class: 'btn gl-button btn-info gl-w-full'
-    .col-sm-4
-      .info-well.dark-well
-        .well-segment.well-centered
-          = link_to admin_groups_path do
-            %h3.text-center
-              = s_('AdminArea|Groups: %{number_of_groups}') % { number_of_groups: approximate_count_with_delimiters(@counts, Group) }
-          %hr
-          = link_to s_('AdminArea|New group'), new_admin_group_path, class: "btn gl-button btn-success gl-w-full"
+    .col-md-4.gl-mb-6
+      .gl-card
+        .gl-card-body.d-flex.justify-content-between.align-items-center.gl-p-6
+          %span
+            .d-flex.align-items-center
+              = sprite_icon('project', size: 16, css_class: 'gl-text-gray-700')
+              %h3.gl-m-0.gl-ml-3= approximate_count_with_delimiters(@counts, Project)
+            .gl-mt-3.text-uppercase= s_('AdminArea|Projects')
+          = link_to(s_('AdminArea|New project'), new_project_path, class: "btn gl-button btn-default")
+        .gl-card-footer.gl-bg-transparent
+          .d-flex.align-items-center
+            = link_to(s_('AdminArea|View latest projects'), admin_projects_path)
+            = sprite_icon('angle-right', size: 12, css_class: 'gl-text-gray-700 gl-ml-2')
+    .col-md-4.gl-mb-6
+      .gl-card
+        .gl-card-body.d-flex.justify-content-between.align-items-center.gl-p-6
+          %span
+            .d-flex.align-items-center
+              = sprite_icon('users', size: 16, css_class: 'gl-text-gray-700')
+              %h3.gl-m-0.gl-ml-3= approximate_count_with_delimiters(@counts, User)
+              %span.gl-outline-0.gl-ml-3{ tabindex: "0", data: { container: "body",
+                toggle: "popover",
+                placement: "top",
+                html: "true",
+                trigger: "focus",
+                content: s_("AdminArea|All users created in the instance, including users who are not %{billable_users_link_start}billable users%{billable_users_link_end}.").html_safe % { billable_users_link_start: billable_users_link_start, billable_users_link_end: '</a>'.html_safe },
+              } }
+                = sprite_icon('question', size: 16, css_class: 'gl-text-gray-700')
+            .gl-mt-3.text-uppercase
+              = s_('AdminArea|Users')
+              = link_to(s_('AdminArea|Users statistics'), admin_dashboard_stats_path, class: "text-capitalize gl-ml-2")
+          = link_to(s_('AdminArea|New user'), new_admin_user_path, class: "btn gl-button btn-default")
+        .gl-card-footer.gl-bg-transparent
+          .d-flex.align-items-center
+            = link_to(s_('AdminArea|View latest users'), admin_users_path)
+            = sprite_icon('angle-right', size: 12, css_class: 'gl-text-gray-700 gl-ml-2')
+    .col-md-4.gl-mb-6
+      .gl-card
+        .gl-card-body.d-flex.justify-content-between.align-items-center.gl-p-6
+          %span
+            .d-flex.align-items-center
+              = sprite_icon('group', size: 16, css_class: 'gl-text-gray-700')
+              %h3.gl-m-0.gl-ml-3= approximate_count_with_delimiters(@counts, Group)
+            .gl-mt-3.text-uppercase= s_('AdminArea|Projects')
+          = link_to(s_('AdminArea|New group'), new_admin_group_path, class: "btn gl-button btn-default")
+        .gl-card-footer.gl-bg-transparent
+          .d-flex.align-items-center
+            = link_to(s_('AdminArea|View latest groups'), admin_groups_path)
+            = sprite_icon('angle-right', size: 12, css_class: 'gl-text-gray-700 gl-ml-2')
   .row
-    .col-md-4
+    .col-md-4.gl-mb-6
       #js-admin-statistics-container
-    .col-md-4
-      .info-well
-        .well-segment.admin-well.admin-well-features
+    .col-md-4.gl-mb-6
+      .gl-card
+        .gl-card-body
           %h4= s_('AdminArea|Features')
           = feature_entry(_('Sign up'),
             href: general_admin_application_settings_path(anchor: 'js-signup-settings'),
@@ -94,9 +108,9 @@
           = feature_entry(_('Shared Runners'),
             href: admin_runners_path,
             enabled: Gitlab.config.gitlab_ci.shared_runners_enabled)
-    .col-md-4
-      .info-well
-        .well-segment.admin-well
+    .col-md-4.gl-mb-6
+      .gl-card
+        .gl-card-body
           %h4
             = s_('AdminArea|Components')
             - if Gitlab::CurrentSettings.version_check_enabled
@@ -146,18 +160,18 @@
           %p
             = link_to _("Gitaly Servers"), admin_gitaly_servers_path
   .row
-    .col-md-4
-      .info-well
-        .well-segment.admin-well
+    .col-md-4.gl-mb-6
+      .gl-card
+        .gl-card-body
           %h4= s_('AdminArea|Latest projects')
           - @projects.each do |project|
             %p
               = link_to project.full_name, admin_project_path(project), class: 'str-truncated-60'
               %span.light.float-right
                 #{time_ago_with_tooltip(project.created_at)}
-    .col-md-4
-      .info-well
-        .well-segment.admin-well
+    .col-md-4.gl-mb-6
+      .gl-card
+        .gl-card-body
           %h4= s_('AdminArea|Latest users')
           - @users.each do |user|
             %p
@@ -165,9 +179,9 @@
                 = user.name
               %span.light.float-right
                 #{time_ago_with_tooltip(user.created_at)}
-    .col-md-4
-      .info-well
-        .well-segment.admin-well
+    .col-md-4.gl-mb-6
+      .gl-card
+        .gl-card-body
           %h4= s_('AdminArea|Latest groups')
           - @groups.each do |group|
             %p

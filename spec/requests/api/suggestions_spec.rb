@@ -65,6 +65,19 @@ RSpec.describe API::Suggestions do
       end
     end
 
+    context 'when a custom commit message is included' do
+      it 'renders an ok response and returns json content' do
+        project.add_maintainer(user)
+
+        message = "cool custom commit message!"
+
+        put api(url, user), params: { commit_message: message }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(project.repository.commit.message).to eq(message)
+      end
+    end
+
     context 'when not able to apply patch' do
       let(:url) { "/suggestions/#{unappliable_suggestion.id}/apply" }
 
@@ -113,15 +126,27 @@ RSpec.describe API::Suggestions do
     let(:url) { "/suggestions/batch_apply" }
 
     context 'when successfully applies multiple patches as a batch' do
-      it 'renders an ok response and returns json content' do
+      before do
         project.add_maintainer(user)
+      end
 
+      it 'renders an ok response and returns json content' do
         put api(url, user), params: { ids: [suggestion.id, suggestion2.id] }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to all(include('id', 'from_line', 'to_line',
                                              'appliable', 'applied',
                                              'from_content', 'to_content'))
+      end
+
+      it 'provides a custom commit message' do
+        message = "cool custom commit message!"
+
+        put api(url, user), params: { ids: [suggestion.id, suggestion2.id],
+                                      commit_message: message }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(project.repository.commit.message).to eq(message)
       end
     end
 

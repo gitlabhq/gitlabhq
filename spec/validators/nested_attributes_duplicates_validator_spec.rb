@@ -2,13 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe VariableDuplicatesValidator do
-  let(:validator) { described_class.new(attributes: [:variables], **options) }
+RSpec.describe NestedAttributesDuplicatesValidator do
+  let(:validator) { described_class.new(attributes: [attribute], **options) }
 
   describe '#validate_each' do
     let(:project) { build(:project) }
+    let(:record) { project }
+    let(:attribute) { :variables }
+    let(:value) { project.variables }
 
-    subject { validator.validate_each(project, :variables, project.variables) }
+    subject { validator.validate_each(record, attribute, value) }
 
     context 'with no scope' do
       let(:options) { {} }
@@ -62,6 +65,47 @@ RSpec.describe VariableDuplicatesValidator do
           subject
 
           expect(project.errors).to have_key(:variables)
+        end
+      end
+    end
+
+    context 'with a child attribute' do
+      let(:release) { build(:release) }
+      let(:first_link) { build(:release_link, name: 'test1', url: 'https://www.google1.com', release: release) }
+      let(:second_link) { build(:release_link, name: 'test2', url: 'https://www.google2.com', release: release) }
+      let(:record) { release }
+      let(:attribute) { :links }
+      let(:value) { release.links }
+      let(:options) { { scope: :release, child_attributes: %i[name url] } }
+
+      before do
+        release.links << first_link
+        release.links << second_link
+      end
+
+      it 'does not have any errors' do
+        subject
+
+        expect(release.errors.empty?).to be true
+      end
+
+      context 'when name is duplicated' do
+        let(:second_link) { build(:release_link, name: 'test1', release: release) }
+
+        it 'has a duplicate error' do
+          subject
+
+          expect(release.errors).to have_key(attribute)
+        end
+      end
+
+      context 'when url is duplicated' do
+        let(:second_link) { build(:release_link, url: 'https://www.google1.com', release: release) }
+
+        it 'has a duplicate error' do
+          subject
+
+          expect(release.errors).to have_key(attribute)
         end
       end
     end

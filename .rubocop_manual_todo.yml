@@ -2205,7 +2205,7 @@ Gitlab/NamespacedClass:
     - 'app/validators/system_hook_url_validator.rb'
     - 'app/validators/top_level_group_validator.rb'
     - 'app/validators/untrusted_regexp_validator.rb'
-    - 'app/validators/variable_duplicates_validator.rb'
+    - 'app/validators/nested_attributes_duplicates_validator.rb'
     - 'app/validators/x509_certificate_credentials_validator.rb'
     - 'app/validators/zoom_url_validator.rb'
     - 'app/workers/admin_email_worker.rb'

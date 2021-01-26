@@ -543,6 +543,88 @@ test += " world"
 When adding new Ruby files, please check that you can add the above header,
 as omitting it may lead to style check failures.
 
+## Banzai pipelines and filters
+
+When writing or updating [Banzai filters and pipelines](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/banzai),
+it can be difficult to understand what the performance of the filter is, and what effect it might
+have on the overall pipeline performance.
+
+To perform benchmarks run:
+
+```shell
+bin/rake benchmark:banzai
+```
+
+This command generates output like this:
+
+```plaintext
+--> Benchmarking Full, Wiki, and Plain pipelines
+Calculating -------------------------------------
+       Full pipeline     1.000  i/100ms
+       Wiki pipeline     1.000  i/100ms
+      Plain pipeline     1.000  i/100ms
+-------------------------------------------------
+       Full pipeline      3.357  (±29.8%) i/s -     31.000
+       Wiki pipeline      2.893  (±34.6%) i/s -     25.000  in  10.677014s
+      Plain pipeline     15.447  (±32.4%) i/s -    119.000
+
+Comparison:
+      Plain pipeline:       15.4 i/s
+       Full pipeline:        3.4 i/s - 4.60x slower
+       Wiki pipeline:        2.9 i/s - 5.34x slower
+
+.
+--> Benchmarking FullPipeline filters
+Calculating -------------------------------------
+            Markdown    24.000  i/100ms
+            Plantuml     8.000  i/100ms
+          SpacedLink    22.000  i/100ms
+
+...
+
+            TaskList    49.000  i/100ms
+          InlineDiff     9.000  i/100ms
+        SetDirection   369.000  i/100ms
+-------------------------------------------------
+            Markdown    237.796  (±16.4%) i/s -      2.304k
+            Plantuml     80.415  (±36.1%) i/s -    520.000
+          SpacedLink    168.188  (±10.1%) i/s -      1.672k
+
+...
+
+            TaskList    101.145  (± 6.9%) i/s -      1.029k
+          InlineDiff     52.925  (±15.1%) i/s -    522.000
+        SetDirection      3.728k (±17.2%) i/s -     34.317k in  10.617882s
+
+Comparison:
+          Suggestion:   739616.9 i/s
+               Kroki:   306449.0 i/s - 2.41x slower
+InlineGrafanaMetrics:   156535.6 i/s - 4.72x slower
+        SetDirection:     3728.3 i/s - 198.38x slower
+
+...
+
+       UserReference:        2.1 i/s - 360365.80x slower
+        ExternalLink:        1.6 i/s - 470400.67x slower
+    ProjectReference:        0.7 i/s - 1128756.09x slower
+
+.
+--> Benchmarking PlainMarkdownPipeline filters
+Calculating -------------------------------------
+            Markdown    19.000  i/100ms
+-------------------------------------------------
+            Markdown    241.476  (±15.3%) i/s -      2.356k
+
+```
+
+This can give you an idea how various filters perform, and which ones might be performing the slowest.
+
+The test data has a lot to do with how well a filter performs. If there is nothing in the test data
+that specifically triggers the filter, it might look like it's running incredibly fast.
+Make sure that you have relevant test data for your filter in the
+[`spec/fixtures/markdown.md.erb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/fixtures/markdown.md.erb)
+file.
+
 ## Reading from files and other data sources
 
 Ruby offers several convenience functions that deal with file contents specifically

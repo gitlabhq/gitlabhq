@@ -77,7 +77,20 @@ in the **Authorized applications** section under **Profile Settings > Applicatio
 ![Authorized_applications](img/oauth_provider_authorized_application.png)
 
 The GitLab OAuth applications support scopes, which allow various actions that any given
-application can perform such as `read_user` and `api`. There are many more scopes
-available.
+application can perform. The available scopes are depicted in the following table. 
+
+| Scope              | Description |
+| ------------------ | ----------- |
+| `api`              | Grants complete read/write access to the API, including all groups and projects, the container registry, and the package registry. |
+| `read_user`        | Grants read-only access to the authenticated user's profile through the /user API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under /users. |
+| `read_api`         |  Grants read access to the API, including all groups and projects, the container registry, and the package registry. |
+| `read_repository`  |  Grants read-only access to repositories on private projects using Git-over-HTTP or the Repository Files API. |
+| `write_repository` | Grants read-write access to repositories on private projects using Git-over-HTTP (not using the API). |
+| `read_registry`    |  Grants read-only access to container registry images on private projects. |
+| `write_registry`   | Grants read-only access to container registry images on private projects. |
+| `sudo`             | Grants permission to perform API actions as any user in the system, when authenticated as an admin user. |
+| `openid`           | Grants permission to authenticate with GitLab using [OpenID Connect](openid_connect_provider.md). Also gives read-only access to the user's profile and group memberships. |
+| `profile`          |  Grants read-only access to the user's profile data using [OpenID Connect](openid_connect_provider.md). |
+| `email`            |  Grants read-only access to the user's primary email address using [OpenID Connect](openid_connect_provider.md). |
 
 At any time you can revoke any access by just clicking **Revoke**.

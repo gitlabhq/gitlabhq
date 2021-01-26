@@ -26,8 +26,8 @@ export default {
 </script>
 
 <template>
-  <div class="info-well">
-    <div class="well-segment admin-well admin-well-statistics">
+  <div class="gl-card">
+    <div class="gl-card-body">
       <h4>{{ __('Statistics') }}</h4>
       <gl-loading-icon v-if="isLoading" size="md" class="my-3" />
       <template v-else>

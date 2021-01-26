@@ -32,8 +32,8 @@ RSpec.describe Suggestions::ApplyService do
     create(:suggestion, :content_from_repo, suggestion_args)
   end
 
-  def apply(suggestions)
-    result = apply_service.new(user, *suggestions).execute
+  def apply(suggestions, custom_message = nil)
+    result = apply_service.new(user, *suggestions, message: custom_message).execute
 
     suggestions.map { |suggestion| suggestion.reload }
 
@@ -109,6 +109,16 @@ RSpec.describe Suggestions::ApplyService do
             eq("refactor: Project_1 master test.user")
           )
         end
+      end
+    end
+
+    context 'with a user suggested commit message' do
+      let(:message) { "i'm a custom commit message!" }
+
+      it "uses the user's commit message" do
+        apply(suggestions, message)
+
+        expect(project.repository.commit.message).to(eq(message))
       end
     end
   end

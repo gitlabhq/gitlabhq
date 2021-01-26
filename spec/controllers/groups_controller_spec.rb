@@ -306,66 +306,6 @@ RSpec.describe GroupsController, factory_default: :keep do
         end
       end
     end
-
-    describe 'tracking group creation for onboarding issues experiment' do
-      before do
-        sign_in(user)
-      end
-
-      subject(:create_namespace) { post :create, params: { group: { name: 'new_group', path: 'new_group' } } }
-
-      context 'experiment disabled' do
-        before do
-          stub_experiment(onboarding_issues: false)
-        end
-
-        it 'does not track anything', :snowplow do
-          create_namespace
-
-          expect_no_snowplow_event
-        end
-      end
-
-      context 'experiment enabled' do
-        before do
-          stub_experiment(onboarding_issues: true)
-        end
-
-        context 'and the user is part of the control group' do
-          before do
-            stub_experiment_for_subject(onboarding_issues: false)
-          end
-
-          it 'tracks the event with the "created_namespace" action with the "control_group" property', :snowplow do
-            create_namespace
-
-            expect_snowplow_event(
-              category: 'Growth::Conversion::Experiment::OnboardingIssues',
-              action: 'created_namespace',
-              label: anything,
-              property: 'control_group'
-            )
-          end
-        end
-
-        context 'and the user is part of the experimental group' do
-          before do
-            stub_experiment_for_subject(onboarding_issues: true)
-          end
-
-          it 'tracks the event with the "created_namespace" action with the "experimental_group" property', :snowplow do
-            create_namespace
-
-            expect_snowplow_event(
-              category: 'Growth::Conversion::Experiment::OnboardingIssues',
-              action: 'created_namespace',
-              label: anything,
-              property: 'experimental_group'
-            )
-          end
-        end
-      end
-    end
   end
 
   describe 'GET #index' do

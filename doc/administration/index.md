@@ -80,6 +80,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   emails with S/MIME.
 - [Enabling and disabling features flags](feature_flags.md): how to enable and
   disable GitLab features deployed behind feature flags.
+- [Application settings cache expiry interval](application_settings_cache.md)
 
 #### Customizing GitLab appearance
 

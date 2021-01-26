@@ -1927,9 +1927,6 @@ msgstr ""
 msgid "AdminArea|Features"
 msgstr ""
 
-msgid "AdminArea|Groups: %{number_of_groups}"
-msgstr ""
-
 msgid "AdminArea|Guest"
 msgstr ""
 
@@ -1963,7 +1960,7 @@ msgstr ""
 msgid "AdminArea|Owner"
 msgstr ""
 
-msgid "AdminArea|Projects: %{number_of_projects}"
+msgid "AdminArea|Projects"
 msgstr ""
 
 msgid "AdminArea|Reporter"
@@ -1987,6 +1984,9 @@ msgstr ""
 msgid "AdminArea|User cap"
 msgstr ""
 
+msgid "AdminArea|Users"
+msgstr ""
+
 msgid "AdminArea|Users statistics"
 msgstr ""
 
@@ -1996,7 +1996,13 @@ msgstr ""
 msgid "AdminArea|Users without a Group and Project"
 msgstr ""
 
-msgid "AdminArea|Users: %{number_of_users}"
+msgid "AdminArea|View latest groups"
+msgstr ""
+
+msgid "AdminArea|View latest projects"
+msgstr ""
+
+msgid "AdminArea|View latest users"
 msgstr ""
 
 msgid "AdminArea|You’re about to stop all jobs.This will halt all current jobs that are running."
@@ -4445,7 +4451,7 @@ msgstr ""
 msgid "Bi-weekly code coverage"
 msgstr ""
 
-msgid "Billable Users:"
+msgid "Billable Users"
 msgstr ""
 
 msgid "Billing"
@@ -4466,7 +4472,7 @@ msgstr ""
 msgid "BillingPlans|If you would like to downgrade your plan please contact %{support_link_start}Customer Support%{support_link_end}."
 msgstr ""
 
-msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}, or start a free 30-day trial of GitLab.com Gold."
+msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}, or start a free 30-day trial of GitLab.com Ultimate."
 msgstr ""
 
 msgid "BillingPlans|Learn more about each plan by visiting our %{pricing_page_link}."
@@ -8552,7 +8558,7 @@ msgstr ""
 msgid "CurrentUser|Settings"
 msgstr ""
 
-msgid "CurrentUser|Start a Gold trial"
+msgid "CurrentUser|Start an Ultimate trial"
 msgstr ""
 
 msgid "CurrentUser|Upgrade"
@@ -15281,6 +15287,9 @@ msgstr ""
 msgid "Instance administrators group already exists"
 msgstr ""
 
+msgid "Instance overview"
+msgstr ""
+
 msgid "InstanceStatistics|Could not load the issues and merge requests chart. Please refresh the page to try again."
 msgstr ""
 
@@ -16678,7 +16687,7 @@ msgstr ""
 msgid "Learn GitLab"
 msgstr ""
 
-msgid "Learn GitLab - Gold trial"
+msgid "Learn GitLab - Ultimate trial"
 msgstr ""
 
 msgid "Learn how to %{link_start}contribute to the built-in templates%{link_end}"
@@ -17460,7 +17469,7 @@ msgstr ""
 msgid "Maximum PyPI package file size in bytes"
 msgstr ""
 
-msgid "Maximum Users:"
+msgid "Maximum Users"
 msgstr ""
 
 msgid "Maximum allowable lifetime for personal access token (days)"
@@ -26968,7 +26977,7 @@ msgstr ""
 msgid "Start a %{new_merge_request} with these changes"
 msgstr ""
 
-msgid "Start a Free Gold Trial"
+msgid "Start a Free Ultimate Trial"
 msgstr ""
 
 msgid "Start a new discussion..."
@@ -27010,7 +27019,7 @@ msgstr ""
 msgid "Start thread & reopen %{noteable_name}"
 msgstr ""
 
-msgid "Start your Free Gold Trial"
+msgid "Start your Free Ultimate Trial"
 msgstr ""
 
 msgid "Start your free trial"
@@ -30077,7 +30086,7 @@ msgid_plural "Trials|%{plan} Trial %{en_dash} %{num} days left"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Trials|Create a new group to start your GitLab Gold trial."
+msgid "Trials|Create a new group to start your GitLab Ultimate trial."
 msgstr ""
 
 msgid "Trials|Go back to GitLab"
@@ -30089,7 +30098,7 @@ msgstr ""
 msgid "Trials|Skip Trial (Continue with Free Account)"
 msgstr ""
 
-msgid "Trials|You can always resume this process by selecting your avatar and choosing 'Start a Gold trial'"
+msgid "Trials|You can always resume this process by selecting your avatar and choosing 'Start an Ultimate trial'"
 msgstr ""
 
 msgid "Trials|You can apply your trial to a new group or an existing group."
@@ -30116,7 +30125,7 @@ msgstr ""
 msgid "Trial|Dismiss"
 msgstr ""
 
-msgid "Trial|GitLab Gold trial (optional)"
+msgid "Trial|GitLab Ultimate trial (optional)"
 msgstr ""
 
 msgid "Trial|How many employees will use Gitlab?"
@@ -30131,7 +30140,7 @@ msgstr ""
 msgid "Trial|Telephone number"
 msgstr ""
 
-msgid "Trial|Upgrade to Gold to keep using GitLab with advanced features."
+msgid "Trial|Upgrade to Ultimate to keep using GitLab with advanced features."
 msgstr ""
 
 msgid "Trial|We will activate your trial on your group after you complete this step. After 30 days, you can:"
@@ -31166,13 +31175,10 @@ msgstr ""
 msgid "Users in License"
 msgstr ""
 
-msgid "Users in License:"
-msgstr ""
-
 msgid "Users or groups set as approvers in the project's or merge request's settings."
 msgstr ""
 
-msgid "Users over License:"
+msgid "Users over License"
 msgstr ""
 
 msgid "Users requesting access to"
@@ -32900,7 +32906,7 @@ msgstr ""
 msgid "Your GitLab group"
 msgstr ""
 
-msgid "Your Gitlab Gold trial will last 30 days after which point you can keep your free Gitlab account forever. We just need some additional information to activate your trial."
+msgid "Your Gitlab Ultimate trial will last 30 days after which point you can keep your free Gitlab account forever. We just need some additional information to activate your trial."
 msgstr ""
 
 msgid "Your Groups"

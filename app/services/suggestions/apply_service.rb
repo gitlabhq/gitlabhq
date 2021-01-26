@@ -2,8 +2,9 @@
 
 module Suggestions
   class ApplyService < ::BaseService
-    def initialize(current_user, *suggestions)
+    def initialize(current_user, *suggestions, message: nil)
       @current_user = current_user
+      @message = message
       @suggestion_set = Gitlab::Suggestions::SuggestionSet.new(suggestions)
     end
 
@@ -47,7 +48,7 @@ module Suggestions
     end
 
     def commit_message
-      Gitlab::Suggestions::CommitMessage.new(current_user, suggestion_set).message
+      Gitlab::Suggestions::CommitMessage.new(current_user, suggestion_set, @message).message
     end
   end
 end

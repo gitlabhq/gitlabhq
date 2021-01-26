@@ -72,6 +72,17 @@ RSpec.describe Gitlab::Suggestions::CommitMessage do
       end
     end
 
+    context 'when a custom commit message is specified' do
+      let(:message) { "i'm a project message. a user's custom message takes precedence over me :(" }
+      let(:custom_message) { "hello there! i'm a cool custom commit message." }
+
+      it 'shows the custom commit message' do
+        expect(Gitlab::Suggestions::CommitMessage
+                 .new(user, suggestion_set, custom_message)
+                 .message).to eq(custom_message)
+      end
+    end
+
     context 'is specified and includes all placeholders' do
       let(:message) do
         '*** %{branch_name} %{files_count} %{file_paths} %{project_name} %{project_path} %{user_full_name} %{username} %{suggestions_count} ***'

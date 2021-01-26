@@ -32,8 +32,10 @@ module Pages
     def start_migration_threads
       Array.new(@migration_threads) do
         Thread.new do
-          while batch = @queue.pop
-            process_batch(batch)
+          Rails.application.executor.wrap do
+            while batch = @queue.pop
+              process_batch(batch)
+            end
           end
         end
       end

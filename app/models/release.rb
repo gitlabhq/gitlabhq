@@ -24,6 +24,7 @@ class Release < ApplicationRecord
 
   validates :project, :tag, presence: true
   validates_associated :milestone_releases, message: -> (_, obj) { obj[:value].map(&:errors).map(&:full_messages).join(",") }
+  validates :links, nested_attributes_duplicates: { scope: :release, child_attributes: %i[name url filepath] }
 
   scope :sorted, -> { order(released_at: :desc) }
   scope :preloaded, -> { includes(:evidences, :milestones, project: [:project_feature, :route, { namespace: :route }]) }

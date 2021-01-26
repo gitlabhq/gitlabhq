@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Release do
   let_it_be(:user)    { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:release) { create(:release, project: project, author: user) }
+  let(:release) { create(:release, project: project, author: user) }
 
   it { expect(release).to be_valid }
 
@@ -86,6 +86,61 @@ RSpec.describe Release do
       release = described_class.create(project: project, author: user, released_at: released_at)
 
       expect(release.released_at).to eq(released_at)
+    end
+  end
+
+  describe '#update' do
+    subject { release.update(params) }
+
+    context 'when links do not exist' do
+      context 'when params are specified for creation' do
+        let(:params) do
+          { links_attributes: [{ name: 'test', url: 'https://www.google.com/' }] }
+        end
+
+        it 'creates a link successfuly' do
+          is_expected.to eq(true)
+
+          expect(release.links.count).to eq(1)
+          expect(release.links.first.name).to eq('test')
+          expect(release.links.first.url).to eq('https://www.google.com/')
+        end
+      end
+    end
+
+    context 'when a link exists' do
+      let!(:link1) { create(:release_link, release: release, name: 'test1', url: 'https://www.google1.com/') }
+      let!(:link2) { create(:release_link, release: release, name: 'test2', url: 'https://www.google2.com/') }
+
+      before do
+        release.reload
+      end
+
+      context 'when params are specified for update' do
+        let(:params) do
+          { links_attributes: [{ id: link1.id, name: 'new' }] }
+        end
+
+        it 'updates the link successfully' do
+          is_expected.to eq(true)
+
+          expect(release.links.count).to eq(2)
+          expect(release.links.first.name).to eq('new')
+        end
+      end
+
+      context 'when params are specified for deletion' do
+        let(:params) do
+          { links_attributes: [{ id: link1.id, _destroy: true }] }
+        end
+
+        it 'removes the link successfuly' do
+          is_expected.to eq(true)
+
+          expect(release.links.count).to eq(1)
+          expect(release.links.first.name).to eq(link2.name)
+        end
+      end
     end
   end
 
