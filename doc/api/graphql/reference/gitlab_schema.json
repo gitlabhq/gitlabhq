@@ -30680,7 +30680,7 @@
             },
             {
               "name": "vulnerabilityScanners",
-              "description": "Vulnerability scanners reported on the project vulnerabilties of the group and its subgroups",
+              "description": "Vulnerability scanners reported on the project vulnerabilities of the group and its subgroups",
               "args": [
                 {
                   "name": "after",
@@ -32690,7 +32690,7 @@
             },
             {
               "name": "vulnerabilityScanners",
-              "description": "Vulnerability scanners reported on the vulnerabilties from projects selected in Instance Security Dashboard",
+              "description": "Vulnerability scanners reported on the vulnerabilities from projects selected in Instance Security Dashboard",
               "args": [
                 {
                   "name": "after",
@@ -57062,7 +57062,7 @@
             },
             {
               "name": "vulnerabilityScanners",
-              "description": "Vulnerability scanners reported on the project vulnerabilties",
+              "description": "Vulnerability scanners reported on the project vulnerabilities",
               "args": [
                 {
                   "name": "after",

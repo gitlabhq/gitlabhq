@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import getPipelineCountByStatus from '../graphql/queries/get_pipeline_count_by_status.query.graphql';
 import getProjectPipelineStatistics from '../graphql/queries/get_project_pipeline_statistics.query.graphql';
 import PipelineCharts from './pipeline_charts.vue';
+import { mergeUrlParams, updateHistory, getParameterValues } from '~/lib/utils/url_utility';
 
 import {
   DEFAULT,
@@ -36,6 +37,8 @@ const defaultCountValues = {
   },
 };
 
+const charts = ['pipelines', 'deployments'];
+
 export default {
   components: {
     GlAlert,
@@ -56,7 +59,11 @@ export default {
     },
   },
   data() {
+    const [chart] = getParameterValues('chart') || charts;
+    const tab = charts.indexOf(chart);
     return {
+      chart,
+      selectedTab: tab >= 0 ? tab : 0,
       showFailureAlert: false,
       failureType: null,
       analytics: { ...defaultAnalyticsValues },
@@ -172,6 +179,11 @@ export default {
       this.showFailureAlert = true;
       this.failureType = type;
     },
+    onTabChange(index) {
+      this.selectedTab = index;
+      const path = mergeUrlParams({ chart: charts[index] }, window.location.pathname);
+      updateHistory({ url: path });
+    },
   },
   errorTexts: {
     [LOAD_ANALYTICS_FAILURE]: s__(
@@ -190,7 +202,7 @@ export default {
     <gl-alert v-if="showFailureAlert" :variant="failure.variant" @dismiss="hideAlert">{{
       failure.text
     }}</gl-alert>
-    <gl-tabs v-if="shouldRenderDeploymentFrequencyCharts">
+    <gl-tabs v-if="shouldRenderDeploymentFrequencyCharts" :value="selectedTab" @input="onTabChange">
       <gl-tab :title="__('Pipelines')">
         <pipeline-charts
           :counts="formattedCounts"

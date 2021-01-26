@@ -1,9 +1,13 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import emptyStateSVG from 'icons/_mr_widget_empty_state.svg';
+import { GlButton } from '@gitlab/ui';
 
 export default {
   name: 'MRWidgetNothingToMerge',
+  components: {
+    GlButton,
+  },
   props: {
     mr: {
       type: Object,
@@ -25,11 +29,13 @@ export default {
         <span v-html="emptyStateSVG"></span>
       </div>
       <div class="text col-md-7 order-md-first col-12">
-        <span>{{
-          s__(
-            'mrWidgetNothingToMerge|Merge requests are a place to propose changes you have made to a project and discuss those changes with others.',
-          )
-        }}</span>
+        <p class="highlight">
+          {{
+            s__(
+              'mrWidgetNothingToMerge|Merge requests are a place to propose changes you have made to a project and discuss those changes with others.',
+            )
+          }}
+        </p>
         <p>
           {{
             s__(
@@ -45,9 +51,14 @@ export default {
           }}
         </p>
         <div>
-          <a v-if="mr.newBlobPath" :href="mr.newBlobPath" class="btn btn-inverted btn-success">{{
-            __('Create file')
-          }}</a>
+          <gl-button
+            v-if="mr.newBlobPath"
+            :href="mr.newBlobPath"
+            category="secondary"
+            variant="success"
+          >
+            {{ __('Create file') }}
+          </gl-button>
         </div>
       </div>
     </div>

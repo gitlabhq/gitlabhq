@@ -375,12 +375,13 @@ $mr-widget-min-height: 69px;
       }
 
       .text {
-        span {
-          font-weight: $gl-font-weight-bold;
-        }
-
         p {
           margin-top: $gl-padding;
+        }
+
+        .highlight {
+          margin: 0 0 $gl-padding;
+          font-weight: $gl-font-weight-bold;
         }
       }
     }

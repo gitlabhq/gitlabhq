@@ -11261,7 +11261,7 @@ type Group {
   ): [VulnerableProjectsByGrade!]!
 
   """
-  Vulnerability scanners reported on the project vulnerabilties of the group and its subgroups
+  Vulnerability scanners reported on the project vulnerabilities of the group and its subgroups
   """
   vulnerabilityScanners(
     """
@@ -11966,7 +11966,7 @@ type InstanceSecurityDashboard {
   vulnerabilityGrades: [VulnerableProjectsByGrade!]!
 
   """
-  Vulnerability scanners reported on the vulnerabilties from projects selected in Instance Security Dashboard
+  Vulnerability scanners reported on the vulnerabilities from projects selected in Instance Security Dashboard
   """
   vulnerabilityScanners(
     """
@@ -19650,7 +19650,7 @@ type Project {
   ): VulnerabilitiesCountByDayConnection
 
   """
-  Vulnerability scanners reported on the project vulnerabilties
+  Vulnerability scanners reported on the project vulnerabilities
   """
   vulnerabilityScanners(
     """
