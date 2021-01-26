@@ -120,3 +120,5 @@ class Ci::PipelineEntity < Grape::Entity
     end
   end
 end
+
+Ci::PipelineEntity.prepend_if_ee('EE::Ci::PipelineEntity')

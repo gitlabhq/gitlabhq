@@ -1,4 +1,13 @@
-import { GlAlert, GlButton, GlDropdown, GlFormSelect, GlLabel, GlTable } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlButton,
+  GlDropdown,
+  GlDropdownItem,
+  GlFormSelect,
+  GlLabel,
+  GlSearchBoxByType,
+  GlTable,
+} from '@gitlab/ui';
 import { getByRole } from '@testing-library/dom';
 import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
@@ -6,6 +15,7 @@ import axios from '~/lib/utils/axios_utils';
 import JiraImportForm from '~/jira_import/components/jira_import_form.vue';
 import getJiraUserMappingMutation from '~/jira_import/queries/get_jira_user_mapping.mutation.graphql';
 import initiateJiraImportMutation from '~/jira_import/queries/initiate_jira_import.mutation.graphql';
+import searchProjectMembersQuery from '~/jira_import/queries/search_project_members.query.graphql';
 import {
   imports,
   issuesPath,
@@ -19,6 +29,7 @@ import {
 describe('JiraImportForm', () => {
   let axiosMock;
   let mutateSpy;
+  let querySpy;
   let wrapper;
 
   const currentUsername = 'mrgitlab';
@@ -72,6 +83,7 @@ describe('JiraImportForm', () => {
         $apollo: {
           loading,
           mutate,
+          query: querySpy,
         },
       },
       currentUsername,
@@ -79,19 +91,21 @@ describe('JiraImportForm', () => {
 
   beforeEach(() => {
     axiosMock = new AxiosMockAdapter(axios);
-    mutateSpy = jest.fn(() =>
-      Promise.resolve({
-        data: {
-          jiraImportStart: { errors: [] },
-          jiraImportUsers: { jiraUsers: [], errors: [] },
-        },
-      }),
-    );
+    mutateSpy = jest.fn().mockResolvedValue({
+      data: {
+        jiraImportStart: { errors: [] },
+        jiraImportUsers: { jiraUsers: [], errors: [] },
+      },
+    });
+    querySpy = jest.fn().mockResolvedValue({
+      data: { project: { projectMembers: { nodes: [] } } },
+    });
   });
 
   afterEach(() => {
     axiosMock.restore();
     mutateSpy.mockRestore();
+    querySpy.mockRestore();
     wrapper.destroy();
     wrapper = null;
   });
@@ -232,6 +246,53 @@ describe('JiraImportForm', () => {
 
           expect(getUserDropdown().text()).toContain(gitlabUsername);
         });
+      });
+    });
+  });
+
+  describe('member search', () => {
+    describe('when searching for a member', () => {
+      beforeEach(() => {
+        querySpy = jest.fn().mockResolvedValue({
+          data: {
+            project: {
+              projectMembers: {
+                nodes: [
+                  {
+                    user: {
+                      id: 7,
+                      name: 'Frederic Chopin',
+                      username: 'fchopin',
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        });
+
+        wrapper = mountComponent({ mountFunction: mount });
+
+        wrapper.find(GlSearchBoxByType).vm.$emit('input', 'fred');
+      });
+
+      it('makes a GraphQL call', () => {
+        const queryArgument = {
+          query: searchProjectMembersQuery,
+          variables: {
+            fullPath: projectPath,
+            search: 'fred',
+          },
+        };
+
+        expect(querySpy).toHaveBeenCalledWith(expect.objectContaining(queryArgument));
+      });
+
+      it('updates the user list', () => {
+        expect(getUserDropdown().findAll(GlDropdownItem)).toHaveLength(1);
+        expect(getUserDropdown().find(GlDropdownItem).text()).toContain(
+          'fchopin (Frederic Chopin)',
+        );
       });
     });
   });

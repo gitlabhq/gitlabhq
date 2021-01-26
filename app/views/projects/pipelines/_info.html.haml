@@ -28,6 +28,9 @@
     - if @pipeline.latest?
       %span.js-pipeline-url-latest.badge.badge-pill.gl-badge.sm.badge-success.has-tooltip{ title: _("Latest pipeline for the most recent commit on this branch") }
         latest
+    - if @pipeline.merge_train_pipeline?
+      %span.js-pipeline-url-train.badge.badge-pill.gl-badge.sm.badge-info.has-tooltip{ title: _("This is a merge train pipeline") }
+        train
     - if @pipeline.has_yaml_errors?
       %span.js-pipeline-url-yaml.badge.badge-pill.gl-badge.sm.badge-danger.has-tooltip{ title: @pipeline.yaml_errors }
         yaml invalid
