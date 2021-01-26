@@ -201,39 +201,12 @@ RSpec.describe Gitlab::Ci::Build::Rules do
     end
 
     describe '#build_attributes' do
-      let(:seed_attributes) { {} }
-
       subject(:build_attributes) do
-        result.build_attributes(seed_attributes)
+        result.build_attributes
       end
 
       it 'compacts nil values' do
         is_expected.to eq(options: {}, when: 'on_success')
-      end
-
-      context 'when there are variables in rules' do
-        let(:variables) { { VAR1: 'new var 1', VAR3: 'var 3' } }
-
-        context 'when there are seed variables' do
-          let(:seed_attributes) do
-            { yaml_variables: [{ key: 'VAR1', value: 'var 1', public: true },
-                               { key: 'VAR2', value: 'var 2', public: true }] }
-          end
-
-          it 'returns yaml_variables with override' do
-            is_expected.to include(
-              yaml_variables: [{ key: 'VAR1', value: 'new var 1', public: true },
-                               { key: 'VAR2', value: 'var 2', public: true },
-                               { key: 'VAR3', value: 'var 3', public: true }]
-            )
-          end
-        end
-
-        context 'when there is not seed variables' do
-          it 'does not return yaml_variables' do
-            is_expected.not_to have_key(:yaml_variables)
-          end
-        end
       end
     end
 

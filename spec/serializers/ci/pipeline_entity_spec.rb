@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PipelineEntity do
+RSpec.describe Ci::PipelineEntity do
   include Gitlab::Routing
 
   let_it_be(:project) { create(:project) }

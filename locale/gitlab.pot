@@ -4457,6 +4457,12 @@ msgstr ""
 msgid "BillingPlans|Congratulations, your free trial is activated."
 msgstr ""
 
+msgid "BillingPlans|Current Plan"
+msgstr ""
+
+msgid "BillingPlans|Free upgrade!"
+msgstr ""
+
 msgid "BillingPlans|If you would like to downgrade your plan please contact %{support_link_start}Customer Support%{support_link_end}."
 msgstr ""
 
@@ -4490,6 +4496,9 @@ msgstr ""
 msgid "BillingPlans|billed annually at %{price_per_year}"
 msgstr ""
 
+msgid "BillingPlans|for the remainder of your subscription"
+msgstr ""
+
 msgid "BillingPlans|frequently asked questions"
 msgstr ""
 
@@ -4503,6 +4512,9 @@ msgid "BillingPlan|Contact sales"
 msgstr ""
 
 msgid "BillingPlan|Upgrade"
+msgstr ""
+
+msgid "BillingPlan|Upgrade for free"
 msgstr ""
 
 msgid "Billing|An email address is only visible for users with public emails."
@@ -8508,9 +8520,6 @@ msgid "Current"
 msgstr ""
 
 msgid "Current Branch"
-msgstr ""
-
-msgid "Current Plan"
 msgstr ""
 
 msgid "Current Project"
@@ -28304,6 +28313,9 @@ msgstr ""
 msgid "The maximum file size allowed is %{size}."
 msgstr ""
 
+msgid "The maximum file size is %{size}."
+msgstr ""
+
 msgid "The merge conflicts for this merge request cannot be resolved through GitLab. Please try to resolve them locally."
 msgstr ""
 
@@ -30633,6 +30645,9 @@ msgid "Updates"
 msgstr ""
 
 msgid "Updating"
+msgstr ""
+
+msgid "Upgrade offers available!"
 msgstr ""
 
 msgid "Upgrade your plan"

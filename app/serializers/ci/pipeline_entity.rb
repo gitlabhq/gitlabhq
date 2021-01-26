@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PipelineEntity < Grape::Entity
+class Ci::PipelineEntity < Grape::Entity
   include RequestAwareEntity
   include Gitlab::Utils::StrongMemoize
 

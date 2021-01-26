@@ -99,7 +99,7 @@ create a JSON response according to your needs.
 
 ```ruby
 class PipelineSerializer < BaseSerializer
-  entity PipelineEntity
+  entity Ci::PipelineEntity
 
   def represent_details(resource)
     represent(resource, only: [:details])

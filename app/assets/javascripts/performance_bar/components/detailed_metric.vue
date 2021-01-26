@@ -94,7 +94,7 @@ export default {
     data-qa-selector="detailed_metric_content"
   >
     <gl-button v-gl-modal="modalId" class="gl-mr-2" type="button" variant="link">
-      <span class="gl-text-blue-300">{{ metricDetailsLabel }}</span>
+      <span class="gl-text-blue-300 gl-font-weight-bold">{{ metricDetailsLabel }}</span>
     </gl-button>
     <gl-modal :modal-id="modalId" :title="header" size="lg" footer-class="d-none" scrollable>
       <table class="table">

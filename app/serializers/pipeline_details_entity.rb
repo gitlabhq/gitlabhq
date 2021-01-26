@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PipelineDetailsEntity < PipelineEntity
+class PipelineDetailsEntity < Ci::PipelineEntity
   expose :project, using: ProjectEntity
 
   expose :flags do

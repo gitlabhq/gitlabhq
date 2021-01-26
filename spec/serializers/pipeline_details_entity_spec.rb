@@ -10,8 +10,8 @@ RSpec.describe PipelineDetailsEntity do
     described_class.represent(pipeline, request: request)
   end
 
-  it 'inherrits from PipelineEntity' do
-    expect(described_class).to be < PipelineEntity
+  it 'inherits from PipelineEntity' do
+    expect(described_class).to be < Ci::PipelineEntity
   end
 
   before do
