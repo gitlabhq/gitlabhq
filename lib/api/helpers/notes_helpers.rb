@@ -138,7 +138,7 @@ module API
           parent = noteable_parent(noteable)
           ::Discussions::ResolveService.new(parent, current_user, one_or_more_discussions: discussion).execute
         else
-          discussion.unresolve!
+          ::Discussions::UnresolveService.new(discussion, current_user).execute
         end
 
         present discussion, with: Entities::Discussion

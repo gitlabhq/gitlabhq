@@ -23,6 +23,7 @@ module Gitlab
         deployment_minimum_id
         deployment_maximum_id
         auth_providers
+        recorded_at
       ).freeze
 
     class << self
@@ -75,7 +76,7 @@ module Gitlab
       end
 
       def recorded_at
-        Time.current
+        @recorded_at ||= Time.current
       end
 
       # rubocop: disable Metrics/AbcSize

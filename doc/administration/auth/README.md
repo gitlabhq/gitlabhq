@@ -22,7 +22,8 @@ providers:
 - [Facebook](../../integration/facebook.md)
 - [GitHub](../../integration/github.md)
 - [GitLab.com](../../integration/gitlab.md)
-- [Google](../../integration/google.md)
+- [Google OAuth](../../integration/google.md)
+- [Google Workspace SSO](../../integration/google_workspace_saml.md)
 - [JWT](jwt.md)
 - [Kerberos](../../integration/kerberos.md)
 - [LDAP](ldap/index.md): Includes Active Directory, Apple Open Directory, Open LDAP,

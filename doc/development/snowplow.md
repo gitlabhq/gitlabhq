@@ -382,7 +382,7 @@ Snowplow Micro is a Docker-based solution for testing frontend and backend event
 
 - Read [Introducing Snowplow Micro](https://snowplowanalytics.com/blog/2019/07/17/introducing-snowplow-micro/)
 - Look at the [Snowplow Micro repository](https://github.com/snowplow-incubator/snowplow-micro)
-- Watch our [installation guide recording](https://www.youtube.com/watch?v=OX46fo_A0Ag)
+- Watch our <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [installation guide recording](https://www.youtube.com/watch?v=OX46fo_A0Ag)
 
 1. Ensure Docker is installed and running.
 

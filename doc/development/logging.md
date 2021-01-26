@@ -291,7 +291,7 @@ method or variable shouldn't be evaluated right away)
 - Change `Gitlab::ApplicationContext` to accept these new values
 - Make sure the new attributes are accepted at [`Labkit::Context`](https://gitlab.com/gitlab-org/labkit-ruby/blob/master/lib/labkit/context.rb)
 
-See our [HOWTO: Use Sidekiq metadata logs](https://www.youtube.com/watch?v=_wDllvO_IY0) for further knowledge on
+See our <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [HOWTO: Use Sidekiq metadata logs](https://www.youtube.com/watch?v=_wDllvO_IY0) for further knowledge on
 creating visualizations in Kibana.
 
 The fields of the context are currently only logged for Sidekiq jobs triggered
@@ -311,7 +311,7 @@ class MyExampleWorker
   def perform(*args)
     # Worker performs work
     # ...
-    
+
     # The contents of value will appear in Kibana under `json.extra.my_example_worker.my_key`
     log_extra_metadata_on_done(:my_key, value)
   end

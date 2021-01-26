@@ -20,6 +20,8 @@ module Gitlab
       MR_REMOVE_MULTILINE_COMMENT_ACTION = 'i_code_review_user_remove_multiline_mr_comment'
       MR_ADD_SUGGESTION_ACTION = 'i_code_review_user_add_suggestion'
       MR_APPLY_SUGGESTION_ACTION = 'i_code_review_user_apply_suggestion'
+      MR_RESOLVE_THREAD_ACTION = 'i_code_review_user_resolve_thread'
+      MR_UNRESOLVE_THREAD_ACTION = 'i_code_review_user_unresolve_thread'
 
       class << self
         def track_mr_diffs_action(merge_request:)
@@ -45,6 +47,14 @@ module Gitlab
 
         def track_reopen_mr_action(user:)
           track_unique_action_by_user(MR_REOPEN_ACTION, user)
+        end
+
+        def track_resolve_thread_action(user:)
+          track_unique_action_by_user(MR_RESOLVE_THREAD_ACTION, user)
+        end
+
+        def track_unresolve_thread_action(user:)
+          track_unique_action_by_user(MR_UNRESOLVE_THREAD_ACTION, user)
         end
 
         def track_create_comment_action(note:)

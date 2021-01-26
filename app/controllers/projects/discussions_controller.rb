@@ -18,7 +18,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
   end
 
   def unresolve
-    discussion.unresolve!
+    Discussions::UnresolveService.new(discussion, current_user).execute
 
     render_discussion
   end

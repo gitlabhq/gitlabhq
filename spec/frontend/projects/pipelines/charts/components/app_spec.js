@@ -1,36 +1,18 @@
 import { merge } from 'lodash';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import VueApollo from 'vue-apollo';
+import { shallowMount } from '@vue/test-utils';
 import { GlTabs, GlTab } from '@gitlab/ui';
-import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import { mergeUrlParams, updateHistory, getParameterValues } from '~/lib/utils/url_utility';
 import Component from '~/projects/pipelines/charts/components/app.vue';
 import PipelineCharts from '~/projects/pipelines/charts/components/pipeline_charts.vue';
-import getPipelineCountByStatus from '~/projects/pipelines/charts/graphql/queries/get_pipeline_count_by_status.query.graphql';
-import getProjectPipelineStatistics from '~/projects/pipelines/charts/graphql/queries/get_project_pipeline_statistics.query.graphql';
-import { mockPipelineCount, mockPipelineStatistics } from '../mock_data';
 
 jest.mock('~/lib/utils/url_utility');
-
-const projectPath = 'gitlab-org/gitlab';
-const localVue = createLocalVue();
-localVue.use(VueApollo);
 
 const DeploymentFrequencyChartsStub = { name: 'DeploymentFrequencyCharts', render: () => {} };
 
 describe('ProjectsPipelinesChartsApp', () => {
   let wrapper;
-
-  function createMockApolloProvider() {
-    const requestHandlers = [
-      [getPipelineCountByStatus, jest.fn().mockResolvedValue(mockPipelineCount)],
-      [getProjectPipelineStatistics, jest.fn().mockResolvedValue(mockPipelineStatistics)],
-    ];
-
-    return createMockApollo(requestHandlers);
-  }
 
   function createComponent(mountOptions = {}) {
     wrapper = shallowMount(
@@ -39,11 +21,8 @@ describe('ProjectsPipelinesChartsApp', () => {
         {},
         {
           provide: {
-            projectPath,
             shouldRenderDeploymentFrequencyCharts: false,
           },
-          localVue,
-          apolloProvider: createMockApolloProvider(),
           stubs: {
             DeploymentFrequencyCharts: DeploymentFrequencyChartsStub,
           },
@@ -62,52 +41,15 @@ describe('ProjectsPipelinesChartsApp', () => {
     wrapper = null;
   });
 
-  describe('pipelines charts', () => {
-    it('displays the pipeline charts', () => {
-      const chart = wrapper.find(PipelineCharts);
-      const analytics = mockPipelineStatistics.data.project.pipelineAnalytics;
-
-      const {
-        totalPipelines: total,
-        successfulPipelines: success,
-        failedPipelines: failed,
-      } = mockPipelineCount.data.project;
-
-      expect(chart.exists()).toBe(true);
-      expect(chart.props()).toMatchObject({
-        counts: {
-          failed: failed.count,
-          success: success.count,
-          total: total.count,
-          successRatio: (success.count / (success.count + failed.count)) * 100,
-        },
-        lastWeek: {
-          labels: analytics.weekPipelinesLabels,
-          totals: analytics.weekPipelinesTotals,
-          success: analytics.weekPipelinesSuccessful,
-        },
-        lastMonth: {
-          labels: analytics.monthPipelinesLabels,
-          totals: analytics.monthPipelinesTotals,
-          success: analytics.monthPipelinesSuccessful,
-        },
-        lastYear: {
-          labels: analytics.yearPipelinesLabels,
-          totals: analytics.yearPipelinesTotals,
-          success: analytics.yearPipelinesSuccessful,
-        },
-        timesChart: {
-          labels: analytics.pipelineTimesLabels,
-          values: analytics.pipelineTimesValues,
-        },
-      });
-    });
-  });
-
-  const findDeploymentFrequencyCharts = () => wrapper.find(DeploymentFrequencyChartsStub);
   const findGlTabs = () => wrapper.find(GlTabs);
   const findAllGlTab = () => wrapper.findAll(GlTab);
   const findGlTabAt = (i) => findAllGlTab().at(i);
+  const findDeploymentFrequencyCharts = () => wrapper.find(DeploymentFrequencyChartsStub);
+  const findPipelineCharts = () => wrapper.find(PipelineCharts);
+
+  it('renders the pipeline charts', () => {
+    expect(findPipelineCharts().exists()).toBe(true);
+  });
 
   describe('when shouldRenderDeploymentFrequencyCharts is true', () => {
     beforeEach(() => {

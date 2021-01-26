@@ -1,35 +1,37 @@
-import { shallowMount } from '@vue/test-utils';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import VueApollo from 'vue-apollo';
 import { GlColumnChart } from '@gitlab/ui/dist/charts';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import StatisticsList from '~/projects/pipelines/charts/components/statistics_list.vue';
 import CiCdAnalyticsAreaChart from '~/projects/pipelines/charts/components/ci_cd_analytics_area_chart.vue';
 import PipelineCharts from '~/projects/pipelines/charts/components/pipeline_charts.vue';
-import {
-  counts,
-  timesChartData as timesChart,
-  areaChartData as lastWeek,
-  areaChartData as lastMonth,
-  lastYearChartData as lastYear,
-} from '../mock_data';
+import getPipelineCountByStatus from '~/projects/pipelines/charts/graphql/queries/get_pipeline_count_by_status.query.graphql';
+import getProjectPipelineStatistics from '~/projects/pipelines/charts/graphql/queries/get_project_pipeline_statistics.query.graphql';
+import { mockPipelineCount, mockPipelineStatistics } from '../mock_data';
 
-describe('ProjectsPipelinesChartsApp', () => {
+const projectPath = 'gitlab-org/gitlab';
+const localVue = createLocalVue();
+localVue.use(VueApollo);
+
+describe('~/projects/pipelines/charts/components/pipeline_charts.vue', () => {
   let wrapper;
+
+  function createMockApolloProvider() {
+    const requestHandlers = [
+      [getPipelineCountByStatus, jest.fn().mockResolvedValue(mockPipelineCount)],
+      [getProjectPipelineStatistics, jest.fn().mockResolvedValue(mockPipelineStatistics)],
+    ];
+
+    return createMockApollo(requestHandlers);
+  }
 
   beforeEach(() => {
     wrapper = shallowMount(PipelineCharts, {
-      propsData: {
-        counts,
-        timesChart,
-        lastWeek,
-        lastMonth,
-        lastYear,
-      },
       provide: {
-        projectPath: 'test/project',
-        shouldRenderDeploymentFrequencyCharts: true,
+        projectPath,
       },
-      stubs: {
-        DeploymentFrequencyCharts: true,
-      },
+      localVue,
+      apolloProvider: createMockApolloProvider(),
     });
   });
 
@@ -43,7 +45,12 @@ describe('ProjectsPipelinesChartsApp', () => {
       const list = wrapper.find(StatisticsList);
 
       expect(list.exists()).toBe(true);
-      expect(list.props('counts')).toBe(counts);
+      expect(list.props('counts')).toEqual({
+        total: 34,
+        success: 23,
+        failed: 1,
+        successRatio: (23 / (23 + 1)) * 100,
+      });
     });
 
     it('displays the commit duration chart', () => {

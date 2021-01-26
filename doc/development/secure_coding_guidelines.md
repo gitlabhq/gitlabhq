@@ -288,9 +288,9 @@ XSS issues are commonly classified in three categories, by their delivery method
 
 The injected client-side code is executed on the victim's browser in the context of their current session. This means the attacker could perform any same action the victim would normally be able to do through a browser. The attacker would also have the ability to:
 
-- [log victim keystrokes](https://youtu.be/2VFavqfDS6w?t=1367)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [log victim keystrokes](https://youtu.be/2VFavqfDS6w?t=1367)
 - launch a network scan from the victim's browser
-- potentially [obtain the victim's session tokens](https://youtu.be/2VFavqfDS6w?t=739)
+- potentially <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [obtain the victim's session tokens](https://youtu.be/2VFavqfDS6w?t=739)
 - perform actions that lead to data loss/theft or account takeover
 
 Much of the impact is contingent upon the function of the application and the capabilities of the victim's session. For further impact possibilities, please check out [the beef project](https://beefproject.com/).
@@ -309,14 +309,14 @@ In most situations, a two-step solution can be used: input validation and output
 
 ##### Setting expectations
 
-For any and all input fields, ensure to define expectations on the type/format of input, the contents, [size limits](https://youtu.be/2VFavqfDS6w?t=7582), the context in which it will be output. It's important to work with both security and product teams to determine what is considered acceptable input.
+For any and all input fields, ensure to define expectations on the type/format of input, the contents, <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [size limits](https://youtu.be/2VFavqfDS6w?t=7582), the context in which it will be output. It's important to work with both security and product teams to determine what is considered acceptable input.
 
 ##### Validate input
 
 - Treat all user input as untrusted.
 - Based on the expectations you [defined above](#setting-expectations):
-  - Validate the [input size limits](https://youtu.be/2VFavqfDS6w?t=7582).
-  - Validate the input using an [allowlist approach](https://youtu.be/2VFavqfDS6w?t=7816) to only allow characters through which you are expecting to receive for the field.
+  - Validate the <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [input size limits](https://youtu.be/2VFavqfDS6w?t=7582).
+  - Validate the input using an <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [allowlist approach](https://youtu.be/2VFavqfDS6w?t=7816) to only allow characters through which you are expecting to receive for the field.
     - Input which fails validation should be **rejected**, and not sanitized.
 - When adding redirects or links to a user-controlled URL, ensure that the scheme is HTTP or HTTPS. Allowing other schemes like `javascript://` can lead to XSS and other security issues.
 
@@ -328,8 +328,8 @@ Once you've [determined when and where](#setting-expectations) the user submitte
 
 - Content placed inside HTML elements need to be [HTML entity encoded](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#rule-1---html-escape-before-inserting-untrusted-data-into-html-element-content).
 - Content placed into a JSON response needs to be [JSON encoded](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#rule-31---html-escape-json-values-in-an-html-context-and-read-the-data-with-jsonparse).
-- Content placed inside [HTML URL GET parameters](https://youtu.be/2VFavqfDS6w?t=3494) need to be [URL-encoded](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#rule-5---url-escape-before-inserting-untrusted-data-into-html-url-parameter-values)
-- [Additional contexts may require context-specific encoding](https://youtu.be/2VFavqfDS6w?t=2341).
+- Content placed inside <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [HTML URL GET parameters](https://youtu.be/2VFavqfDS6w?t=3494) need to be [URL-encoded](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#rule-5---url-escape-before-inserting-untrusted-data-into-html-url-parameter-values)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Additional contexts may require context-specific encoding](https://youtu.be/2VFavqfDS6w?t=2341).
 
 ### Additional information
 
@@ -352,10 +352,10 @@ Do also sanitize and validate URL schemes.
 
 References:
 
-- [XSS Defense in Rails](https://youtu.be/2VFavqfDS6w?t=2442)
-- [XSS Defense with HAML](https://youtu.be/2VFavqfDS6w?t=2796)
-- [Validating Untrusted URLs in Ruby](https://youtu.be/2VFavqfDS6w?t=3936)
-- [RoR Model Validators](https://youtu.be/2VFavqfDS6w?t=7636)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [XSS Defense in Rails](https://youtu.be/2VFavqfDS6w?t=2442)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [XSS Defense with HAML](https://youtu.be/2VFavqfDS6w?t=2796)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Validating Untrusted URLs in Ruby](https://youtu.be/2VFavqfDS6w?t=3936)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [RoR Model Validators](https://youtu.be/2VFavqfDS6w?t=7636)
 
 #### XSS mitigation and prevention in JavaScript and Vue
 
@@ -376,7 +376,7 @@ References:
 
 #### Content Security Policy
 
-- [Content Security Policy](https://www.youtube.com/watch?v=2VFavqfDS6w&t=12991s)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Content Security Policy](https://www.youtube.com/watch?v=2VFavqfDS6w&t=12991s)
 - [Use nonce-based Content Security Policy for inline JavaScript](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/65330)
 
 #### Free form input field
@@ -390,26 +390,26 @@ References:
 
 ### Internal Developer Training
 
-- [Introduction to XSS](https://www.youtube.com/watch?v=PXR8PTojHmc&t=7785s)
-- [Reflected XSS](https://youtu.be/2VFavqfDS6w?t=603s)
-- [Persistent XSS](https://youtu.be/2VFavqfDS6w?t=643)
-- [DOM XSS](https://youtu.be/2VFavqfDS6w?t=5871)
-- [XSS in depth](https://www.youtube.com/watch?v=2VFavqfDS6w&t=111s)
-- [XSS Defense](https://youtu.be/2VFavqfDS6w?t=1685)
-- [XSS Defense in Rails](https://youtu.be/2VFavqfDS6w?t=2442)
-- [XSS Defense with HAML](https://youtu.be/2VFavqfDS6w?t=2796)
-- [JavaScript URLs](https://youtu.be/2VFavqfDS6w?t=3274)
-- [URL encoding context](https://youtu.be/2VFavqfDS6w?t=3494)
-- [Validating Untrusted URLs in Ruby](https://youtu.be/2VFavqfDS6w?t=3936)
-- [HTML Sanitization](https://youtu.be/2VFavqfDS6w?t=5075)
-- [DOMPurify](https://youtu.be/2VFavqfDS6w?t=5381)
-- [Safe Client-side JSON Handling](https://youtu.be/2VFavqfDS6w?t=6334)
-- [iframe sandboxing](https://youtu.be/2VFavqfDS6w?t=7043)
-- [Input Validation](https://youtu.be/2VFavqfDS6w?t=7489)
-- [Validate size limits](https://youtu.be/2VFavqfDS6w?t=7582)
-- [RoR model validators](https://youtu.be/2VFavqfDS6w?t=7636)
-- [Allowlist input validation](https://youtu.be/2VFavqfDS6w?t=7816)
-- [Content Security Policy](https://www.youtube.com/watch?v=2VFavqfDS6w&t=12991s)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Introduction to XSS](https://www.youtube.com/watch?v=PXR8PTojHmc&t=7785s)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Reflected XSS](https://youtu.be/2VFavqfDS6w?t=603s)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Persistent XSS](https://youtu.be/2VFavqfDS6w?t=643)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [DOM XSS](https://youtu.be/2VFavqfDS6w?t=5871)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [XSS in depth](https://www.youtube.com/watch?v=2VFavqfDS6w&t=111s)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [XSS Defense](https://youtu.be/2VFavqfDS6w?t=1685)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [XSS Defense in Rails](https://youtu.be/2VFavqfDS6w?t=2442)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [XSS Defense with HAML](https://youtu.be/2VFavqfDS6w?t=2796)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [JavaScript URLs](https://youtu.be/2VFavqfDS6w?t=3274)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [URL encoding context](https://youtu.be/2VFavqfDS6w?t=3494)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Validating Untrusted URLs in Ruby](https://youtu.be/2VFavqfDS6w?t=3936)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [HTML Sanitization](https://youtu.be/2VFavqfDS6w?t=5075)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [DOMPurify](https://youtu.be/2VFavqfDS6w?t=5381)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Safe Client-side JSON Handling](https://youtu.be/2VFavqfDS6w?t=6334)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [iframe sandboxing](https://youtu.be/2VFavqfDS6w?t=7043)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Input Validation](https://youtu.be/2VFavqfDS6w?t=7489)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Validate size limits](https://youtu.be/2VFavqfDS6w?t=7582)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [RoR model validators](https://youtu.be/2VFavqfDS6w?t=7636)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Allowlist input validation](https://youtu.be/2VFavqfDS6w?t=7816)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Content Security Policy](https://www.youtube.com/watch?v=2VFavqfDS6w&t=12991s)
 
 ## Path Traversal guidelines
 

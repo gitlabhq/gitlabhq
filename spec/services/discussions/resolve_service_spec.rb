@@ -24,6 +24,13 @@ RSpec.describe Discussions::ResolveService do
       expect(discussion).to be_resolved
     end
 
+    it 'tracks thread resolve usage data' do
+      expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+        .to receive(:track_resolve_thread_action).with(user: user)
+
+      service.execute
+    end
+
     it 'executes the notification service' do
       expect_next_instance_of(MergeRequests::ResolvedDiscussionNotificationService) do |instance|
         expect(instance).to receive(:execute).with(discussion.noteable)
@@ -97,6 +104,13 @@ RSpec.describe Discussions::ResolveService do
 
       it 'does not execute the notification service' do
         expect(MergeRequests::ResolvedDiscussionNotificationService).not_to receive(:new)
+
+        service.execute
+      end
+
+      it 'does not track thread resolve usage data' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .not_to receive(:track_resolve_thread_action).with(user: user)
 
         service.execute
       end

@@ -39,6 +39,9 @@ module Gitlab
 
       FALLBACK = -1
       DISTRIBUTED_HLL_FALLBACK = -2
+      ALL_TIME_PERIOD_HUMAN_NAME = "all_time"
+      WEEKLY_PERIOD_HUMAN_NAME = "weekly"
+      MONTHLY_PERIOD_HUMAN_NAME = "monthly"
 
       def count(relation, column = nil, batch: true, batch_size: nil, start: nil, finish: nil)
         if batch
@@ -61,10 +64,13 @@ module Gitlab
       end
 
       def estimate_batch_distinct_count(relation, column = nil, batch_size: nil, start: nil, finish: nil)
-        Gitlab::Database::PostgresHll::BatchDistinctCounter
+        buckets = Gitlab::Database::PostgresHll::BatchDistinctCounter
           .new(relation, column)
           .execute(batch_size: batch_size, start: start, finish: finish)
-          .estimated_distinct_count
+
+        yield buckets if block_given?
+
+        buckets.estimated_distinct_count
       rescue ActiveRecord::StatementInvalid
         FALLBACK
       # catch all rescue should be removed as a part of feature flag rollout issue
@@ -72,6 +78,27 @@ module Gitlab
       rescue StandardError => error
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
         DISTRIBUTED_HLL_FALLBACK
+      end
+
+      def save_aggregated_metrics(metric_name:, time_period:, recorded_at_timestamp:, data:)
+        unless data.is_a? ::Gitlab::Database::PostgresHll::Buckets
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(StandardError.new("Unsupported data type: #{data.class}"))
+          return
+        end
+
+        # the longest recorded usage ping generation time for gitlab.com
+        # was below 40 hours, there is added error margin of 20 h
+        usage_ping_generation_period = 80.hours
+
+        # add timestamp at the end of the key to avoid stale keys if
+        # usage ping job is retried
+        redis_key = "#{metric_name}_#{time_period_to_human_name(time_period)}-#{recorded_at_timestamp}"
+
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.set(redis_key, data.to_json, ex: usage_ping_generation_period)
+        end
+      rescue ::Redis::CommandError => e
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
       end
 
       def sum(relation, column, batch_size: nil, start: nil, finish: nil)
@@ -123,6 +150,20 @@ module Gitlab
         return unless Feature.enabled?(:"usage_data_#{event_name}", default_enabled: true)
 
         Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name.to_s, values: values)
+      end
+
+      def time_period_to_human_name(time_period)
+        return ALL_TIME_PERIOD_HUMAN_NAME if time_period.blank?
+
+        date_range = time_period.values[0]
+        start_date = date_range.first.to_date
+        end_date = date_range.last.to_date
+
+        if (end_date - start_date).to_i > 7
+          MONTHLY_PERIOD_HUMAN_NAME
+        else
+          WEEKLY_PERIOD_HUMAN_NAME
+        end
       end
 
       private

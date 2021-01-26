@@ -476,6 +476,16 @@
   category: code_review
   aggregation: weekly
   feature_flag: usage_data_i_code_review_user_reopen_mr
+- name: i_code_review_user_resolve_thread
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+  feature_flag: usage_data_i_code_review_user_resolve_thread
+- name: i_code_review_user_unresolve_thread
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+  feature_flag: usage_data_i_code_review_user_unresolve_thread
 - name: i_code_review_user_merge_mr
   redis_slot: code_review
   category: code_review

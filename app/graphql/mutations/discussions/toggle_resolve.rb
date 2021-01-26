@@ -69,7 +69,7 @@ module Mutations
       end
 
       def unresolve!(discussion)
-        discussion.unresolve!
+        ::Discussions::UnresolveService.new(discussion, current_user).execute
       end
     end
   end

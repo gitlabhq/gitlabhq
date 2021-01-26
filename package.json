@@ -41,7 +41,7 @@
     "@babel/plugin-proposal-private-methods": "^7.10.1",
     "@babel/plugin-syntax-import-meta": "^7.10.1",
     "@babel/preset-env": "^7.10.1",
-    "@gitlab/at.js": "1.5.5",
+    "@gitlab/at.js": "1.5.7",
     "@gitlab/favicon-overlay": "2.0.0",
     "@gitlab/svgs": "1.179.0",
     "@gitlab/tributejs": "1.0.0",
