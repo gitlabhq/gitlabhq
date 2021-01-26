@@ -7,7 +7,7 @@
   stage: Verify
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/ci/pipeline_editor/index.html
   image_url: https://img.youtube.com/vi/MQpSyvMpsHA/hqdefault.jpg
   published_at: 2021-01-22
@@ -18,7 +18,7 @@
   stage: verify
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/ci/yaml/visualization.html
   image_url: https://about.gitlab.com/images/13_8/pipeline_visual_builder.png
   published_at: 2021-01-22
@@ -40,7 +40,7 @@
   stage: plan
   self-managed: true
   gitlab-com: true
-  packages: [Starter, Premium, Ultimate]
+  packages: [Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/project/issue_board.html#configurable-issue-boards
   image_url: https://about.gitlab.com/images/13_8/scope_board_to_current_iteration.png
   published_at: 2021-01-22
@@ -51,7 +51,7 @@
   stage: Release
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/ci/pipelines/job_artifacts.html#downloading-artifacts
   image_url: https://about.gitlab.com/images/13_8/artifact_mr.png
   published_at: 2021-01-22
@@ -64,7 +64,7 @@
   stage: create
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/project/quick_actions.html#quick-actions-for-issues-merge-requests-and-epics
   image_url: https://about.gitlab.com/images/13_8/rebase_comment.png
   published_at: 2021-01-22
@@ -75,7 +75,7 @@
   stage: enablement
   self-managed: true
   gitlab-com: false
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/charts/charts/gitlab/gitlab-pages/index.html
   image_url: https://about.gitlab.com/images/home/kubernetes.png
   published_at: 2021-01-22

@@ -10,7 +10,6 @@ RSpec.describe WhatsNewController do
     context 'with no page param' do
       it 'responds with paginated data and headers' do
         allow(ReleaseHighlight).to receive(:paginated).with(page: 1).and_return(highlights)
-        allow(Gitlab::WhatsNew::ItemPresenter).to receive(:present).with(item).and_return(item)
 
         get whats_new_path, xhr: true
 
@@ -36,7 +35,6 @@ RSpec.describe WhatsNewController do
     context 'with version param' do
       it 'returns items without pagination headers' do
         allow(ReleaseHighlight).to receive(:for_version).with(version: '42').and_return(highlights)
-        allow(Gitlab::WhatsNew::ItemPresenter).to receive(:present).with(item).and_return(item)
 
         get whats_new_path(version: 42), xhr: true
 

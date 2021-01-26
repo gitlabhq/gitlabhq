@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.8.1 (2021-01-26)
+
+### Fixed (3 changes)
+
+- Cancel artifact expiry backfill background jobs. !51821
+- Fix LFS not working with S3 specific-storage settings. !52296
+- Fix missing setting LDAP servers. !52512
+
+
 ## 13.8.0 (2021-01-22)
 
 ### Security (4 changes, 1 of them is from the community)

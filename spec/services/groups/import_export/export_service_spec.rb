@@ -134,7 +134,7 @@ RSpec.describe Groups::ImportExport::ExportService do
           expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
 
           expect(group.import_export_upload).to be_nil
-          expect(Dir.exist?(shared.base_path)).to eq(false)
+          expect(Dir.exist?(shared.archive_path)).to eq(false)
         end
 
         it 'notifies the user about failed group export' do
@@ -159,7 +159,7 @@ RSpec.describe Groups::ImportExport::ExportService do
           expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
 
           expect(group.import_export_upload).to be_nil
-          expect(Dir.exist?(shared.base_path)).to eq(false)
+          expect(Dir.exist?(shared.archive_path)).to eq(false)
         end
 
         it 'notifies logger' do

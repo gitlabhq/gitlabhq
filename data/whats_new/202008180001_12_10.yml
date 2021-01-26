@@ -20,7 +20,7 @@
   stage: Release
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/ci/examples/authenticating-with-hashicorp-vault/index.html
   image_url: https://about.gitlab.com/images/12_10/jwt-vault-1.png
   published_at: 2020-04-22
@@ -48,7 +48,7 @@
   stage: Plan
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/project/import/jira.html
   image_url: https://about.gitlab.com/images/12_10/jira-importer.png
   published_at: 2020-04-22
@@ -61,7 +61,7 @@
   stage: Verify
   self-managed: true
   gitlab-com: false
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/fargate/-/blob/master/docs/README.md
   image_url: https://about.gitlab.com/images/12_9/autoscaling_ci_fargate.png
   published_at: 2020-04-22

@@ -70,7 +70,7 @@ RSpec.describe ReleaseHighlights::Validator do
          ---------------------------------------------------------
          Validation failed for spec/fixtures/whats_new/invalid.yml
          ---------------------------------------------------------
-         * Packages must be one of ["Core", "Starter", "Premium", "Ultimate"] (line 6)
+         * Packages must be one of ["Free", "Premium", "Ultimate"] (line 6)
 
         MESSAGE
       end

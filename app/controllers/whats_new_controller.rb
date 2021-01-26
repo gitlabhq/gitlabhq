@@ -12,7 +12,7 @@ class WhatsNewController < ApplicationController
   def index
     respond_to do |format|
       format.js do
-        render json: highlight_items
+        render json: highlights.items
       end
     end
   end
@@ -35,10 +35,6 @@ class WhatsNewController < ApplicationController
         ReleaseHighlight.paginated(page: current_page)
       end
     end
-  end
-
-  def highlight_items
-    highlights.map {|item| Gitlab::WhatsNew::ItemPresenter.present(item) }
   end
 
   def set_pagination_headers

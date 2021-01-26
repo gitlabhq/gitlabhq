@@ -5,27 +5,37 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Version specific update instructions
+# Version-specific update instructions
 
-Check this document if it includes instructions for the version you are updating.
-These steps go together with the [general steps](updating_the_geo_nodes.md#general-update-steps)
+Review this page for update instructions for your version. These steps
+accompany the [general steps](updating_the_geo_nodes.md#general-update-steps)
 for updating Geo nodes.
 
 ## Updating to GitLab 13.7
 
-We've detected an issue with the `FetchRemove` call that is used by Geo secondaries. This causes performance issues as we execute reference transaction hooks for each updated reference. Please hold off upgrading until this is in [the 13.7.5 patch release.](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3002). More details are available [in this issue](https://gitlab.com/gitlab-org/git/-/issues/79).
+We've detected an issue with the `FetchRemove` call used by Geo secondaries.
+This causes performance issues as we execute reference transaction hooks for
+each updated reference. Delay any upgrade attempts until this is in the
+[13.7.5 patch release.](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3002).
+More details are available [in this issue](https://gitlab.com/gitlab-org/git/-/issues/79).
 
 ## Updating to GitLab 13.5
 
-In GitLab 13.5, there is a [regression that prevents viewing a list of container repositories and registries](https://gitlab.com/gitlab-org/gitlab/-/issues/285475) on Geo secondaries. This issue is fixed in GitLab 13.6.1 and later.
+GitLab 13.5 has a [regression that prevents viewing a list of container repositories and registries](https://gitlab.com/gitlab-org/gitlab/-/issues/285475)
+on Geo secondaries. This issue is fixed in GitLab 13.6.1 and later.
 
 ## Updating to GitLab 13.3
 
-In GitLab 13.3, Geo removed the PostgreSQL [Foreign Data Wrapper](https://www.postgresql.org/docs/11/postgres-fdw.html) dependency for the tracking database.
+In GitLab 13.3, Geo removed the PostgreSQL [Foreign Data Wrapper](https://www.postgresql.org/docs/11/postgres-fdw.html)
+dependency for the tracking database.
 
-The FDW server, user, and the extension will be removed during the upgrade process on each **secondary** node. The GitLab settings related to the FDW in the `/etc/gitlab/gitlab.rb`  have been deprecated and can be safely removed.
+The FDW server, user, and the extension will be removed during the upgrade
+process on each secondary node. The GitLab settings related to the FDW in the
+`/etc/gitlab/gitlab.rb`  have been deprecated and can be safely removed.
 
-There are some scenarios like using an external PostgreSQL instance for the tracking database where the FDW settings must be removed manually. Enter the PostgreSQL console of that instance and remove them:
+There are some scenarios like using an external PostgreSQL instance for the
+tracking database where the FDW settings must be removed manually. Enter the
+PostgreSQL console of that instance and remove them:
 
 ```shell
 DROP SERVER gitlab_secondary CASCADE;
@@ -40,7 +50,10 @@ upgrade to GitLab 13.4 or later.
 
 ## Updating to GitLab 13.2
 
-In GitLab 13.2, promoting a secondary node to a primary while the secondary is paused fails. **Do not pause replication before promoting a secondary.** If the node is paused, please resume before promoting. To avoid this issue, upgrade to GitLab 13.4 or later.
+In GitLab 13.2, promoting a secondary node to a primary while the secondary is
+paused fails. Do not pause replication before promoting a secondary. If the
+node is paused, be sure to resume before promoting. To avoid this issue,
+upgrade to GitLab 13.4 or later.
 
 ## Updating to GitLab 13.0
 
@@ -63,12 +76,13 @@ GitLab 12.9.0 through GitLab 12.9.3 are affected by [a bug that stops
 repository verification](https://gitlab.com/gitlab-org/gitlab/-/issues/213523).
 The issue is fixed in GitLab 12.9.4. Upgrade to GitLab 12.9.4 or later.
 
-By default, GitLab 12.9 will attempt to automatically update the embedded
-PostgreSQL server to 10.12 from 9.6, which requires downtime on secondaries
-while reinitializing streaming replication. For the recommended procedure, see the
+By default, GitLab 12.9 attempts to update the embedded PostgreSQL server
+version from 9.6 to 10.12, which requires downtime on secondaries while
+reinitializing streaming replication. For the recommended procedure, see the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
-This can be temporarily disabled by running the following before updating:
+You can temporarily disable this behavior by running the following before
+updating:
 
 ```shell
 sudo touch /etc/gitlab/disable-postgresql-upgrade
@@ -76,12 +90,13 @@ sudo touch /etc/gitlab/disable-postgresql-upgrade
 
 ## Updating to GitLab 12.8
 
-By default, GitLab 12.8 will attempt to automatically update the embedded
-PostgreSQL server to 10.12 from 9.6, which requires downtime on secondaries
-while reinitializing streaming replication. For the recommended procedure, see
-the [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
+By default, GitLab 12.8 attempts to update the embedded PostgreSQL server
+version from 9.6 to 10.12, which requires downtime on secondaries while
+reinitializing streaming replication. For the recommended procedure, see the
+[Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
-This can be temporarily disabled by running the following before updating:
+You can temporarily disable this behavior by running the following before
+updating:
 
 ```shell
 sudo touch /etc/gitlab/disable-postgresql-upgrade
@@ -91,18 +106,17 @@ sudo touch /etc/gitlab/disable-postgresql-upgrade
 
 WARNING:
 Only upgrade to GitLab 12.7.5 or later. Do not upgrade to versions 12.7.0
-through 12.7.4 because there is [an initialization order
-bug](https://gitlab.com/gitlab-org/gitlab/-/issues/199672) that causes Geo
-**secondaries** to set the incorrect database connection pool size. [The
-fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24021) was
+through 12.7.4 because there is [an initialization order bug](https://gitlab.com/gitlab-org/gitlab/-/issues/199672) that causes Geo secondaries to set the incorrect database connection pool size.
+[The fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24021) was
 shipped in 12.7.5.
 
-By default, GitLab 12.7 will attempt to automatically update the embedded
-PostgreSQL server to 10.9 from 9.6, which requires downtime on secondaries
-while reinitializing streaming replication. For the recommended procedure, see
-the [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
+By default, GitLab 12.7 attempts to update the embedded PostgreSQL server
+version from 9.6 to 10.9, which requires downtime on secondaries while
+reinitializing streaming replication. For the recommended procedure, see the
+[Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
-This can be temporarily disabled by running the following before updating:
+You can temporarily disable this behavior by running the following before
+updating:
 
 ```shell
 sudo touch /etc/gitlab/disable-postgresql-upgrade
@@ -110,12 +124,13 @@ sudo touch /etc/gitlab/disable-postgresql-upgrade
 
 ## Updating to GitLab 12.6
 
-By default, GitLab 12.6 will attempt to automatically update the embedded
-PostgreSQL server to 10.9 from 9.6, which requires downtime on secondaries
-while reinitializing streaming replication. For the recommended procedure, see
-the [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
+By default, GitLab 12.6 attempts to update the embedded PostgreSQL server
+version from 9.6 to 10.9, which requires downtime on secondaries while
+reinitializing streaming replication. For the recommended procedure, see the
+[Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
-This can be temporarily disabled by running the following before updating:
+You can temporarily disable this behavior by running the following before
+updating:
 
 ```shell
 sudo touch /etc/gitlab/disable-postgresql-upgrade
@@ -123,12 +138,13 @@ sudo touch /etc/gitlab/disable-postgresql-upgrade
 
 ## Updating to GitLab 12.5
 
-By default, GitLab 12.5 will attempt to automatically update the embedded
-PostgreSQL server to 10.9 from 9.6, which requires downtime on secondaries
-while reinitializing streaming replication. For the recommended procedure, see
-the [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
+By default, GitLab 12.5 attempts to update the embedded PostgreSQL server
+version from 9.6 to 10.9, which requires downtime on secondaries while
+reinitializing streaming replication. For the recommended procedure, see the
+[Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
-This can be temporarily disabled by running the following before updating:
+You can temporarily disable this behavior by running the following before
+updating:
 
 ```shell
 sudo touch /etc/gitlab/disable-postgresql-upgrade
@@ -136,12 +152,13 @@ sudo touch /etc/gitlab/disable-postgresql-upgrade
 
 ## Updating to GitLab 12.4
 
-By default, GitLab 12.4 will attempt to automatically update the embedded
-PostgreSQL server to 10.9 from 9.6, which requires downtime on secondaries
-while reinitializing streaming replication. For the recommended procedure, see
-the [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
+By default, GitLab 12.4 attempts to update the embedded PostgreSQL server
+version from 9.6 to 10.9, which requires downtime on secondaries while
+reinitializing streaming replication. For the recommended procedure, see the
+[Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
-This can be temporarily disabled by running the following before updating:
+You can temporarily disable this behavior by running the following before
+updating:
 
 ```shell
 sudo touch /etc/gitlab/disable-postgresql-upgrade
@@ -150,9 +167,9 @@ sudo touch /etc/gitlab/disable-postgresql-upgrade
 ## Updating to GitLab 12.3
 
 WARNING:
-If the existing PostgreSQL server version is 9.6.x, it is recommended to
-upgrade to GitLab 12.4 or later. By default, GitLab 12.3 attempts to update the
-embedded PostgreSQL server from 9.6 to 10.9. In certain circumstances, it will
+If the existing PostgreSQL server version is 9.6.x, we recommend upgrading to
+GitLab 12.4 or later. By default, GitLab 12.3 attempts to update the embedded
+PostgreSQL server version from 9.6 to 10.9. In certain circumstances, it can
 fail. For more information, see the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
@@ -164,23 +181,23 @@ For the recommended procedure, see the
 ## Updating to GitLab 12.2
 
 WARNING:
-If the existing PostgreSQL server version is 9.6.x, it is recommended to
-upgrade to GitLab 12.4 or later. By default, GitLab 12.2 attempts to update the
-embedded PostgreSQL server from 9.6 to 10.9. In certain circumstances, it will
+If the existing PostgreSQL server version is 9.6.x, we recommend upgrading to
+GitLab 12.4 or later. By default, GitLab 12.2 attempts to update the embedded
+PostgreSQL server version from 9.6 to 10.9. In certain circumstances, it can
 fail. For more information, see the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
-Additionally, if the PostgreSQL upgrade does not fail, a successful upgrade
+Additionally, if the PostgreSQL upgrade doesn't fail, a successful upgrade
 requires downtime for secondaries while reinitializing streaming replication.
 For the recommended procedure, see the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
 GitLab 12.2 includes the following minor PostgreSQL updates:
 
-- To version `9.6.14` if you run PostgreSQL 9.6.
-- To version `10.9` if you run PostgreSQL 10.
+- To version `9.6.14`, if you run PostgreSQL 9.6.
+- To version `10.9`, if you run PostgreSQL 10.
 
-This update will occur even if major PostgreSQL updates are disabled.
+This update occurs even if major PostgreSQL updates are disabled.
 
 Before [refreshing Foreign Data Wrapper during a Geo upgrade](https://docs.gitlab.com/omnibus/update/README.html#run-post-deployment-migrations-and-checks),
 restart the Geo tracking database:
@@ -189,14 +206,15 @@ restart the Geo tracking database:
 sudo gitlab-ctl restart geo-postgresql
 ```
 
-The restart avoids a version mismatch when PostgreSQL tries to load the FDW extension.
+The restart avoids a version mismatch when PostgreSQL tries to load the FDW
+extension.
 
 ## Updating to GitLab 12.1
 
 WARNING:
-If the existing PostgreSQL server version is 9.6.x, it is recommended to
-upgrade to GitLab 12.4 or later. By default, GitLab 12.1 attempts to update the
-embedded PostgreSQL server from 9.6 to 10.9. In certain circumstances, it will
+If the existing PostgreSQL server version is 9.6.x, we recommend upgrading to
+GitLab 12.4 or later. By default, GitLab 12.1 attempts to update the embedded
+PostgreSQL server version from 9.6 to 10.9. In certain circumstances, it can
 fail. For more information, see the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
@@ -210,419 +228,11 @@ For the recommended procedure, see the
 WARNING:
 This version is affected by a [bug that results in new LFS objects not being
 replicated to Geo secondary nodes](https://gitlab.com/gitlab-org/gitlab/-/issues/32696).
-The issue is fixed in GitLab 12.1; be sure to upgrade to GitLab 12.1 or later.
+The issue is fixed in GitLab 12.1. Be sure to upgrade to GitLab 12.1 or later.
 
 ## Updating to GitLab 11.11
 
 WARNING:
 This version is affected by a [bug that results in new LFS objects not being
 replicated to Geo secondary nodes](https://gitlab.com/gitlab-org/gitlab/-/issues/32696).
-The issue is fixed in GitLab 12.1; be sure to upgrade to GitLab 12.1 or later.
-
-## Updating to GitLab 10.8
-
-Before 10.8, broadcast messages would not propagate without flushing
-the cache on the **secondary** nodes. This has been fixed in 10.8, but
-requires one last cache flush on each **secondary** node:
-
-```shell
-sudo gitlab-rake cache:clear
-```
-
-## Updating to GitLab 10.6
-
-In 10.4, we started to recommend that you define a password for database user (`gitlab`).
-
-We now require this change as we use this password to enable the Foreign Data Wrapper, as a way to optimize
-the Geo Tracking Database. We are also improving security by disabling the use of **trust**
-authentication method.
-
-1. **(primary)** Login to your **primary** node and run:
-
-   ```shell
-   gitlab-ctl pg-password-md5 gitlab
-   # Enter password: <your_password_here>
-   # Confirm password: <your_password_here>
-   # fca0b89a972d69f00eb3ec98a5838484
-   ```
-
-   Copy the generated hash and edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   # Fill with the hash generated by `gitlab-ctl pg-password-md5 gitlab`
-   postgresql['sql_user_password'] = '<md5_hash_of_your_password>'
-
-   # Every node that runs Unicorn or Sidekiq needs to have the database
-   # password specified as below.
-   # This must be present in all application nodes.
-   gitlab_rails['db_password'] = '<your_password_here>'
-   ```
-
-   Still in the configuration file, locate and remove the `trust_auth_cidr_address`:
-
-   ```ruby
-   postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','1.2.3.4/32'] # <- Remove this
-   ```
-
-1. **(primary)** Reconfigure and restart:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   sudo gitlab-ctl restart
-   ```
-
-1. **(secondary)** Login to all **secondary** nodes and edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   # Fill with the hash generated by `gitlab-ctl pg-password-md5 gitlab`
-   postgresql['sql_user_password'] = '<md5_hash_of_your_password>'
-
-   # Every node that runs Unicorn or Sidekiq needs to have the database
-   # password specified as below.
-   # This must be present in all application nodes.
-   gitlab_rails['db_password'] = '<your_password_here>'
-
-   # Enable Foreign Data Wrapper
-   geo_secondary['db_fdw'] = true
-
-   # Secondary address in CIDR format, for example '5.6.7.8/32'
-   postgresql['md5_auth_cidr_addresses'] = ['<secondary_node_ip>/32']
-   ```
-
-   Still in the configuration file, locate and remove the `trust_auth_cidr_address`:
-
-   ```ruby
-   postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','5.6.7.8/32'] # <- Remove this
-   ```
-
-1. **(secondary)** Reconfigure and restart:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   sudo gitlab-ctl restart
-   ```
-
-## Updating to GitLab 10.5
-
-For Geo Disaster Recovery to work with minimum downtime, your **secondary** node
-should use the same set of secrets as the **primary** node. However, setup instructions
-prior to the 10.5 release only synchronized the `db_key_base` secret.
-
-To rectify this error on existing installations, you should **overwrite** the
-contents of `/etc/gitlab/gitlab-secrets.json` on each **secondary** node with the
-contents of `/etc/gitlab/gitlab-secrets.json` on the **primary** node, then run the
-following command on each **secondary** node:
-
-```shell
-sudo gitlab-ctl reconfigure
-```
-
-If you do not perform this step, you may find that two-factor authentication
-[is broken following DR](troubleshooting.md#two-factor-authentication-is-broken-after-a-failover).
-
-To prevent SSH requests to the newly promoted **primary** node from failing
-due to SSH host key mismatch when updating the **primary** node domain's DNS record
-you should perform the step to [Manually replicate **primary** SSH host keys](configuration.md#step-2-manually-replicate-the-primary-nodes-ssh-host-keys) in each
-**secondary** node.
-
-## Updating to GitLab 10.3
-
-### Support for SSH repository synchronization removed
-
-In GitLab 10.2, synchronizing secondaries over SSH was deprecated. In 10.3,
-support is removed entirely. All installations will switch to the HTTP/HTTPS
-cloning method instead. Before updating, ensure that all your Geo nodes are
-configured to use this method and that it works for your installation. In
-particular, ensure that [Git access over HTTP/HTTPS is enabled](configuration.md#step-5-enable-git-access-over-httphttps).
-
-Synchronizing repositories over the public Internet using HTTP is insecure, so
-you should ensure that you have HTTPS configured before updating. Note that
-file synchronization is **also** insecure in these cases!
-
-## Updating to GitLab 10.2
-
-### Secure PostgreSQL replication
-
-Support for TLS-secured PostgreSQL replication has been added. If you are
-currently using PostgreSQL replication across the open internet without an
-external means of securing the connection (e.g., a site-to-site VPN), then you
-should immediately reconfigure your **primary** and **secondary** PostgreSQL instances
-according to the [updated instructions](../setup/database.md).
-
-If you *are* securing the connections externally and wish to continue doing so,
-ensure you include the new option `--sslmode=prefer` in future invocations of
-`gitlab-ctl replicate-geo-database`.
-
-### HTTPS repository sync
-
-Support for replicating repositories and wikis over HTTP/HTTPS has been added.
-Replicating over SSH has been deprecated, and support for this option will be
-removed in a future release.
-
-To switch to HTTP/HTTPS replication, log into the **primary** node as an admin and visit
-**Admin Area > Geo** (`/admin/geo/nodes`). For each **secondary** node listed,
-press the "Edit" button, change the "Repository cloning" setting from
-"SSH (deprecated)" to "HTTP/HTTPS", and press "Save changes". This should take
-effect immediately.
-
-Any new secondaries should be created using HTTP/HTTPS replication - this is the
-default setting.
-
-After you've verified that HTTP/HTTPS replication is working, you should remove
-the now-unused SSH keys from your secondaries, as they may cause problems if the
-**secondary** node if ever promoted to a **primary** node:
-
-1. **(secondary)** Login to **all** your **secondary** nodes and run:
-
-   ```ruby
-   sudo -u git -H rm ~git/.ssh/id_rsa ~git/.ssh/id_rsa.pub
-   ```
-
-### Hashed Storage
-
-WARNING:
-Hashed storage is in **Alpha**. It is considered experimental and not
-production-ready. See [Hashed Storage](../../repository_storage_types.md) for more detail.
-
-If you previously enabled Hashed Storage and migrated all your existing
-projects to Hashed Storage, disabling hashed storage will not migrate projects
-to their previous project based storage path. As such, once enabled and
-migrated we recommend leaving Hashed Storage enabled.
-
-## Updating to GitLab 10.1
-
-WARNING:
-Hashed storage is in **Alpha**. It is considered experimental and not
-production-ready. See [Hashed Storage](../../repository_storage_types.md) for more detail.
-
-[Hashed storage](../../repository_storage_types.md) was introduced in
-GitLab 10.0, and a [migration path](../../raketasks/storage.md) for
-existing repositories was added in GitLab 10.1.
-
-## Updating to GitLab 10.0
-
-In GitLab 10.0 and later, we require all **Geo** systems to [use SSH key lookups via
-the database](../../operations/fast_ssh_key_lookup.md) to avoid having to maintain consistency of the
-`authorized_keys` file for SSH access. Failing to do this will prevent users
-from being able to clone via SSH.
-
-Note that in older versions of Geo, attachments downloaded on the **secondary**
-nodes would be saved to the wrong directory. We recommend that you do the
-following to clean this up.
-
-On the **secondary** Geo nodes, run as root:
-
-```shell
-mv /var/opt/gitlab/gitlab-rails/working /var/opt/gitlab/gitlab-rails/working.old
-mkdir /var/opt/gitlab/gitlab-rails/working
-chmod 700 /var/opt/gitlab/gitlab-rails/working
-chown git:git /var/opt/gitlab/gitlab-rails/working
-```
-
-You may delete `/var/opt/gitlab/gitlab-rails/working.old` any time.
-
-Once this is done, we advise restarting GitLab on the **secondary** nodes for the
-new working directory to be used:
-
-```shell
-sudo gitlab-ctl restart
-```
-
-## Updating from GitLab 9.3 or older
-
-If you started running Geo on GitLab 9.3 or older, we recommend that you
-resync your **secondary** PostgreSQL databases to use replication slots. If you
-started using Geo with GitLab 9.4 or 10.x, no further action should be
-required because replication slots are used by default. However, if you
-started with GitLab 9.3 and updated later, you should still follow the
-instructions below.
-
-When in doubt, it doesn't hurt to do a resync. The easiest way to do this in
-Omnibus is the following:
-
-1. Make sure you have Omnibus GitLab on the **primary** server.
-1. Run `gitlab-ctl reconfigure` and `gitlab-ctl restart postgresql`. This will enable replication slots on the **primary** database.
-1. Check the steps about defining `postgresql['sql_user_password']`, `gitlab_rails['db_password']`.
-1. Make sure `postgresql['max_replication_slots']` matches the number of **secondary** Geo nodes locations.
-1. Install GitLab on the **secondary** server.
-1. Re-run the [database replication process](../setup/database.md#step-3-initiate-the-replication-process).
-
-## Updating to GitLab 9.0
-
-> **IMPORTANT**:
-With GitLab 9.0, the PostgreSQL version is updated to 9.6 and manual steps are
-required to update the **secondary** nodes and keep the Streaming Replication
-working. Downtime is required, so plan ahead.
-
-The following steps apply only if you update from a 8.17 GitLab version to
-9.0+. For previous versions, update to GitLab 8.17 first before attempting to
-update to 9.0+.
-
----
-
-Make sure to follow the steps in the exact order as they appear below and pay
-extra attention in what node (either **primary** or **secondary**) you execute them! Each step
-is prepended with the relevant node for better clarity:
-
-1. **(secondary)** Log in to **all** your **secondary** nodes and stop all services:
-
-   ```ruby
-   sudo gitlab-ctl stop
-   ```
-
-1. **(secondary)** Make a backup of the `recovery.conf` file on **all**
-   **secondary** nodes to preserve PostgreSQL's credentials:
-
-   ```shell
-   sudo cp /var/opt/gitlab/postgresql/data/recovery.conf /var/opt/gitlab/
-   ```
-
-1. **(primary)** Update the **primary** node to GitLab 9.0 following the
-   [regular update docs](../../../update/README.md). At the end of the
-   update, the **primary** node will be running with PostgreSQL 9.6.
-
-1. **(primary)** To prevent a de-synchronization of the repository replication,
-   stop all services except `postgresql` as we will use it to re-initialize the
-   **secondary** node's database:
-
-   ```shell
-   sudo gitlab-ctl stop
-   sudo gitlab-ctl start postgresql
-   ```
-
-1. **(secondary)** Run the following steps on each of the **secondary** nodes:
-
-   1. **(secondary)**  Stop all services:
-
-      ```shell
-      sudo gitlab-ctl stop
-      ```
-
-   1. **(secondary)** Prevent running database migrations:
-
-      ```shell
-      sudo touch /etc/gitlab/skip-auto-migrations
-      ```
-
-   1. **(secondary)** Move the old database to another directory:
-
-      ```shell
-      sudo mv /var/opt/gitlab/postgresql{,.bak}
-      ```
-
-   1. **(secondary)** Update to GitLab 9.0 following the [regular update docs](../../../update/README.md).
-      At the end of the update, the node will be running with PostgreSQL 9.6.
-
-   1. **(secondary)** Make sure all services are up:
-
-      ```shell
-      sudo gitlab-ctl start
-      ```
-
-   1. **(secondary)** Reconfigure GitLab:
-
-      ```shell
-      sudo gitlab-ctl reconfigure
-      ```
-
-   1. **(secondary)** Run the PostgreSQL upgrade command:
-
-      ```shell
-      sudo gitlab-ctl pg-upgrade
-      ```
-
-   1. **(secondary)** See the stored credentials for the database that you will
-      need to re-initialize the replication:
-
-      ```shell
-      sudo grep -s primary_conninfo /var/opt/gitlab/recovery.conf
-      ```
-
-   1. **(secondary)** Save the snippet below in a file, let's say `/tmp/replica.sh`. Modify the
-      embedded paths if necessary:
-
-      ```shell
-      #!/bin/bash
-
-      PORT="5432"
-      USER="gitlab_replicator"
-      echo ---------------------------------------------------------------
-      echo WARNING: Make sure this script is run from the secondary server
-      echo ---------------------------------------------------------------
-      echo
-      echo Enter the IP or FQDN of the primary PostgreSQL server
-      read HOST
-      echo Enter the password for $USER@$HOST
-      read -s PASSWORD
-      echo Enter the required sslmode
-      read SSLMODE
-
-      echo Stopping PostgreSQL and all GitLab services
-      sudo service gitlab stop
-      sudo service postgresql stop
-
-      echo Backing up postgresql.conf
-      sudo -u postgres mv /var/opt/gitlab/postgresql/data/postgresql.conf /var/opt/gitlab/postgresql/
-
-      echo Cleaning up old cluster directory
-      sudo -u postgres rm -rf /var/opt/gitlab/postgresql/data
-
-      echo Starting base backup as the replicator user
-      echo Enter the password for $USER@$HOST
-      sudo -u postgres /opt/gitlab/embedded/bin/pg_basebackup -h $HOST -D /var/opt/gitlab/postgresql/data -U gitlab_replicator -v -x -P
-
-      echo Writing recovery.conf file
-      sudo -u postgres bash -c "cat > /var/opt/gitlab/postgresql/data/recovery.conf <<- _EOF1_
-        standby_mode = 'on'
-        primary_conninfo = 'host=$HOST port=$PORT user=$USER password=$PASSWORD sslmode=$SSLMODE'
-      _EOF1_
-      "
-
-      echo Restoring postgresql.conf
-      sudo -u postgres mv /var/opt/gitlab/postgresql/postgresql.conf /var/opt/gitlab/postgresql/data/
-
-      echo Starting PostgreSQL
-      sudo service postgresql start
-      ```
-
-   1. **(secondary)** Run the recovery script using the credentials from the
-      previous step:
-
-      ```shell
-      sudo bash /tmp/replica.sh
-      ```
-
-   1. **(secondary)** Reconfigure GitLab:
-
-      ```shell
-      sudo gitlab-ctl reconfigure
-      ```
-
-   1. **(secondary)** Start all services:
-
-      ```shell
-      sudo gitlab-ctl start
-      ```
-
-   1. **(secondary)** Repeat the steps for the remaining **secondary** nodes.
-
-1. **(primary)** After all **secondary** nodes are updated, start all services in
-   **primary** node:
-
-   ```shell
-   sudo gitlab-ctl start
-   ```
-
-### Update tracking database on **secondary** node
-
-After updating a **secondary** node, you might need to run migrations on the
-tracking database. The tracking database was added in GitLab 9.1, and is
-required in GitLab 10.0 and later.
-
-1. Run database migrations on tracking database:
-
-   ```shell
-   sudo gitlab-rake geo:db:migrate
-   ```
-
-1. Repeat this step for each **secondary** node.
+The issue is fixed in GitLab 12.1. Be sure to upgrade to GitLab 12.1 or later.

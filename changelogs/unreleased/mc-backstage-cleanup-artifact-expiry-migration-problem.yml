@@ -1,5 +1,0 @@
----
-title: Cancel artifact expiry backfill background jobs.
-merge_request: 51821
-author:
-type: fixed

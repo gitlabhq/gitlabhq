@@ -9,7 +9,7 @@
   stage: Release
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/ci/cloud_deployment/#custom-build-job-for-auto-devops
   image_url: https://img.youtube.com/vi/4B-qSwKnacA/hqdefault.jpg
   published_at: 2020-11-22
@@ -22,7 +22,7 @@
   stage: Verify
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#code-quality-widget
   image_url: https://about.gitlab.com/images/13_6/code_quality_severity.png
   published_at: 2020-11-22
@@ -58,7 +58,7 @@
   stage: Create
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/admin_area/settings/project_integration_management.html
   image_url: https://about.gitlab.com/images/13_6/project-integration-inheriting-settings.png
   published_at: 2020-11-22
@@ -75,7 +75,7 @@
   stage: Plan
   self-managed: true
   gitlab-com: true
-  packages: [Starter, Premium, Ultimate]
+  packages: [Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/project/milestones/burndown_and_burnup_charts.html#burnup-charts
   image_url: https://about.gitlab.com/images/13_6/burnup-chart.png
   published_at: 2020-11-22

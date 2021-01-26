@@ -5,7 +5,7 @@ module ReleaseHighlights
     include ActiveModel::Validations
     include ActiveModel::Validations::Callbacks
 
-    PACKAGES = %w(Core Starter Premium Ultimate).freeze
+    PACKAGES = %w(Free Premium Ultimate).freeze
 
     attr_reader :entry
 

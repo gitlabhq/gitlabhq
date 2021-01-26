@@ -80,7 +80,7 @@ RSpec.describe ReleaseHighlights::Validator::Entry do
 
         subject.valid?
 
-        expect(subject.errors[:packages].first).to include("must be one of", "Core", "Starter", "Premium", "Ultimate")
+        expect(subject.errors[:packages].first).to include("must be one of", "Free", "Premium", "Ultimate")
       end
     end
   end

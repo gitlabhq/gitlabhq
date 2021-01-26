@@ -22,7 +22,7 @@ module Groups
 
         save!
       ensure
-        remove_base_tmp_dir
+        remove_archive_tmp_dir
       end
 
       private
@@ -81,8 +81,8 @@ module Groups
         Gitlab::ImportExport::Saver.new(exportable: @group, shared: @shared)
       end
 
-      def remove_base_tmp_dir
-        FileUtils.rm_rf(shared.base_path) if shared&.base_path
+      def remove_archive_tmp_dir
+        FileUtils.rm_rf(shared.archive_path) if shared&.archive_path
       end
 
       def notify_error!

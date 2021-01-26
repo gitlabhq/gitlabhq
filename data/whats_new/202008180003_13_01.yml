@@ -7,7 +7,7 @@
   stage: Monitor
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/project/operations/alert_management.html
   image_url: https://about.gitlab.com/images/13_1/alert_management.png
   published_at: 2020-06-22
@@ -20,7 +20,7 @@
   stage: Verify
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/project/merge_requests/accessibility_testing.html#accessibility-merge-request-widget
   image_url: https://about.gitlab.com/images/13_1/a11y-merge-request-widget.png
   published_at: 2020-06-22
@@ -31,18 +31,18 @@
   stage: Create
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/project/issues/design_management.html#resolve-design-threads
   image_url: https://about.gitlab.com/images/13_1/resolve-design-comment.gif
   published_at: 2020-06-22
   release: 13.1
-- title: Merge Request Reviews moved to Core
+- title: Merge Request Reviews moved to Free
   body: |
     Originally introduced in GitLab 11.4 as a GitLab Premium feature, Merge Request Reviews allow merge request reviewers to submit multiple comments at once, cutting down on notification noise for the merge request author, and allowing for a more cohesive and streamlined review process.
   stage: Create
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/discussions/index.html#merge-request-reviews
   image_url: https://about.gitlab.com/images/13_1/batch_comments.png
   published_at: 2020-06-22

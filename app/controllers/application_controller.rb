@@ -556,4 +556,4 @@ class ApplicationController < ActionController::Base
   end
 end
 
-ApplicationController.prepend_if_ee('EE::ApplicationController')
+ApplicationController.prepend_ee_mod

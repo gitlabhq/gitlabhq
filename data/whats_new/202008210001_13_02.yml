@@ -7,7 +7,7 @@
   stage: Plan
   self-managed: true
   gitlab-com: true
-  packages: [Starter, Premium, Ultimate]
+  packages: [Premium, Ultimate]
   url: https://www.youtube.com/watch?v=31pNKjenlJY&feature=emb_title
   image_url: https://img.youtube.com/vi/31pNKjenlJY/hqdefault.jpg
   published_at: 2020-07-22
@@ -20,7 +20,7 @@
   stage: Defend
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://www.youtube.com/watch?v=WxBzBz76FxU&feature=youtu.be
   image_url: https://img.youtube.com/vi/WxBzBz76FxU/hqdefault.jpg
   published_at: 2020-07-22
@@ -33,22 +33,22 @@
   stage: Create
   self-managed: false
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/project/issues/design_management.html#gitlab-figma-plugin
   image_url: https://about.gitlab.com/images/13_2/figma-plugin.png
   published_at: 2020-07-22
   release: 13.2
-- title: Cluster health monitoring now available in Core
+- title: Cluster health monitoring now available in Free
   body: |
     To understand system performance, your development team must monitor the health and performance of the underlying infrastructure.
 
-    We want our metrics solution to be available to all GitLab users, so as part of our [2020 gift](https://about.gitlab.com/blog/2019/12/16/observability/), we’ve moved cluster health in the Monitor stage from GitLab Ultimate to GitLab Core.
+    We want our metrics solution to be available to all GitLab users, so as part of our [2020 gift](https://about.gitlab.com/blog/2019/12/16/observability/), we’ve moved cluster health in the Monitor stage from GitLab Ultimate to GitLab Free.
 
     Beginning with GitLab 13.2, all users can connect a cluster and monitor its health in the GitLab user interface.
   stage: Monitor
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/project/clusters/#visualizing-cluster-health
   image_url: https://about.gitlab.com/images/13_2/k8s_cluster_monitoring.png
   published_at: 2020-07-22

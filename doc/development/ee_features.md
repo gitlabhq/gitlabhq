@@ -92,12 +92,36 @@ class User < ActiveRecord::Base
   # ... lots of code here ...
 end
 
-User.prepend_if_ee('EE::User')
+User.prepend_ee_mod
 ```
 
 Do not use methods such as `prepend`, `extend`, and `include`. Instead, use
-`prepend_if_ee`, `extend_if_ee`, or `include_if_ee`. These methods take a
-_String_ containing the full module name as the argument, not the module itself.
+`prepend_ee_mod`, `extend_ee_mod`, or `include_ee_mod`. These methods will try to
+find the relevant EE module by the name of the receiver module, for example;
+
+```ruby
+module Vulnerabilities
+  class Finding
+    #...
+  end
+end
+
+Vulnerabilities::Finding.prepend_ee_mod
+```
+
+will prepend the module named `::EE::Vulnerabilities::Finding`.
+
+If the extending module does not follow this naming convention, you can also provide the module name
+by using `prepend_if_ee`, `extend_if_ee`, or `include_if_ee`. These methods take a
+_String_ containing the full module name as the argument, not the module itself, like so;
+
+```ruby
+class User
+  #...
+end
+
+User.prepend_if_ee('::EE::UserExtension')
+```
 
 Since the module would require an `EE` namespace, the file should also be
 put in an `ee/` sub-directory. For example, we want to extend the user model

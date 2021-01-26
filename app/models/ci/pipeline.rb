@@ -1214,6 +1214,11 @@ module Ci
     end
     # rubocop:enable Rails/FindEach
 
+    # EE-only
+    def merge_train_pipeline?
+      false
+    end
+
     private
 
     def add_message(severity, content)

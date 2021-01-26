@@ -313,4 +313,4 @@ module API
   end
 end
 
-API::API.prepend_if_ee('::EE::API::API')
+API::API.prepend_ee_mod
