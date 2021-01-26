@@ -41,7 +41,7 @@ module Mutations
       authorize :create_release
 
       def resolve(project_path:, assets: nil, **scalars)
-        project = authorized_find!(full_path: project_path)
+        project = authorized_find!(project_path)
 
         params = {
           **scalars,

@@ -3,7 +3,7 @@
 module Mutations
   module Commits
     class Create < BaseMutation
-      include ResolvesProject
+      include FindsProject
 
       graphql_name 'CommitCreate'
 
@@ -37,7 +37,7 @@ module Mutations
       authorize :push_code
 
       def resolve(project_path:, branch:, message:, actions:, **args)
-        project = authorized_find!(full_path: project_path)
+        project = authorized_find!(project_path)
 
         attributes = {
           commit_message: message,
@@ -52,12 +52,6 @@ module Mutations
           commit: (project.repository.commit(result[:result]) if result[:status] == :success),
           errors: Array.wrap(result[:message])
         }
-      end
-
-      private
-
-      def find_object(full_path:)
-        resolve_project(full_path: full_path)
       end
     end
   end

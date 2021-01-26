@@ -81,14 +81,6 @@ window.addEventListener('unhandledrejection', (event) => {
   console.error(event.reason.stack || event.reason);
 });
 
-// HACK: Chrome 59 disconnects if there are too many synchronous tests in a row
-// because it appears to lock up the thread that communicates to Karma's socket
-// This async beforeEach gets called on every spec and releases the JS thread long
-// enough for the socket to continue to communicate.
-// The downside is that it creates a minor performance penalty in the time it takes
-// to run our unit tests.
-beforeEach((done) => done());
-
 let longRunningTestTimeoutHandle;
 
 beforeEach((done) => {

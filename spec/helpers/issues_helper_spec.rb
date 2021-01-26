@@ -254,4 +254,31 @@ RSpec.describe IssuesHelper do
       expect(helper.use_startup_call?).to eq(true)
     end
   end
+
+  describe '#issue_header_actions_data' do
+    let(:current_user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+      allow(helper).to receive(:can?).and_return(true)
+    end
+
+    it 'returns expected result' do
+      expected = {
+        can_create_issue: "true",
+        can_reopen_issue: "true",
+        can_report_spam: "false",
+        can_update_issue: "true",
+        iid: issue.iid,
+        is_issue_author: "false",
+        issue_type: "issue",
+        new_issue_path: new_project_issue_path(project),
+        project_path: project.full_path,
+        report_abuse_path: new_abuse_report_path(user_id: issue.author.id, ref_url: issue_url(issue)),
+        submit_as_spam_path: mark_as_spam_project_issue_path(project, issue)
+      }
+
+      expect(helper.issue_header_actions_data(project, issue, current_user)).to include(expected)
+    end
+  end
 end

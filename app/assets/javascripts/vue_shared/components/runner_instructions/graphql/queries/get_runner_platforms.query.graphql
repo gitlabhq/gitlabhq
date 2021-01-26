@@ -1,0 +1,20 @@
+query getRunnerPlatforms($projectPath: ID!, $groupPath: ID!) {
+  runnerPlatforms {
+    nodes {
+      name
+      humanReadableName
+      architectures {
+        nodes {
+          name
+          downloadLocation
+        }
+      }
+    }
+  }
+  project(fullPath: $projectPath) {
+    id
+  }
+  group(fullPath: $groupPath) {
+    id
+  }
+}

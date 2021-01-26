@@ -21,3 +21,5 @@
 = button_to _("Reset registration token"), reset_token_url,
 method: :put, class: 'gl-button btn btn-default',
 data: { confirm: _("Are you sure you want to reset the registration token?") }
+
+#js-install-runner{ data: { project_path: project_path, group_path: group_path } }

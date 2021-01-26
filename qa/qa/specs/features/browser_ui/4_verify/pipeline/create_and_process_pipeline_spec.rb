@@ -24,7 +24,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'users creates a pipeline which gets processed', :smoke, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/391' do
+      it 'users creates a pipeline which gets processed', :smoke, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1279' do
         Flow::Login.sign_in
 
         Resource::Repository::Commit.fabricate_via_api! do |commit|

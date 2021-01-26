@@ -2,59 +2,14 @@
 
 require 'fast_spec_helper'
 require 'rubocop'
-require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/gitlab/predicate_memoization'
 
 RSpec.describe RuboCop::Cop::Gitlab::PredicateMemoization do
-  include CopHelper
-
   subject(:cop) { described_class.new }
-
-  shared_examples('registering offense') do |options|
-    let(:offending_lines) { options[:offending_lines] }
-
-    it 'registers an offense when a predicate method is memoizing via ivar' do
-      inspect_source(source)
-
-      aggregate_failures do
-        expect(cop.offenses.size).to eq(offending_lines.size)
-        expect(cop.offenses.map(&:line)).to eq(offending_lines)
-      end
-    end
-  end
 
   shared_examples('not registering offense') do
     it 'does not register offenses' do
-      inspect_source(source)
-
-      expect(cop.offenses).to be_empty
-    end
-  end
-
-  context 'when source is a predicate method memoizing via ivar' do
-    it_behaves_like 'registering offense', offending_lines: [3] do
-      let(:source) do
-        <<~RUBY
-          class C
-            def really?
-              @really ||= true
-            end
-          end
-        RUBY
-      end
-    end
-
-    it_behaves_like 'registering offense', offending_lines: [4] do
-      let(:source) do
-        <<~RUBY
-          class C
-            def really?
-              value = true
-              @really ||= value
-            end
-          end
-        RUBY
-      end
+      expect_no_offenses(source)
     end
   end
 
@@ -96,6 +51,41 @@ RSpec.describe RuboCop::Cop::Gitlab::PredicateMemoization do
             end
           end
         RUBY
+      end
+    end
+  end
+
+  context 'when source is a predicate method memoizing via ivar' do
+    let(:msg) { "Avoid using `@value ||= query` [...]" }
+
+    context 'when assigning to boolean' do
+      it 'registers an offense' do
+        node = "@really ||= true"
+
+        expect_offense(<<~CODE, node: node, msg: msg)
+          class C
+            def really?
+              %{node}
+              ^{node} %{msg}
+            end
+          end
+        CODE
+      end
+    end
+
+    context 'when assigning to another variable that is a boolean' do
+      it 'registers an offense' do
+        node = "@really ||= value"
+
+        expect_offense(<<~CODE, node: node, msg: msg)
+          class C
+            def really?
+              value = true
+              %{node}
+              ^{node} %{msg}
+            end
+          end
+        CODE
       end
     end
   end

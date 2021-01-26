@@ -3,6 +3,7 @@ import { GlKeysetPagination, GlResizeObserverDirective } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import createFlash from '~/flash';
 import Tracking from '~/tracking';
+import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import DeleteAlert from '../components/details_page/delete_alert.vue';
 import PartialCleanupAlert from '../components/details_page/partial_cleanup_alert.vue';
@@ -68,7 +69,7 @@ export default {
       isMobile: false,
       mutationLoading: false,
       deleteAlertType: null,
-      dismissPartialCleanupWarning: false,
+      hidePartialCleanupWarning: false,
     };
   },
   computed: {
@@ -86,8 +87,9 @@ export default {
     },
     showPartialCleanupWarning() {
       return (
+        this.config.showUnfinishedTagCleanupCallout &&
         this.image?.expirationPolicyCleanupStatus === UNFINISHED_STATUS &&
-        !this.dismissPartialCleanupWarning
+        !this.hidePartialCleanupWarning
       );
     },
     tracking() {
@@ -168,6 +170,12 @@ export default {
         });
       }
     },
+    dismissPartialCleanupWarning() {
+      this.hidePartialCleanupWarning = true;
+      axios.post(this.config.userCalloutsPath, {
+        feature_name: this.config.userCalloutId,
+      });
+    },
   },
 };
 </script>
@@ -185,7 +193,7 @@ export default {
       v-if="showPartialCleanupWarning"
       :run-cleanup-policies-help-page-path="config.runCleanupPoliciesHelpPagePath"
       :cleanup-policies-help-page-path="config.cleanupPoliciesHelpPagePath"
-      @dismiss="dismissPartialCleanupWarning = true"
+      @dismiss="dismissPartialCleanupWarning"
     />
 
     <details-header :image="image" :metadata-loading="isLoading" />

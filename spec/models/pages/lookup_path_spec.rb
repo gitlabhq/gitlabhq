@@ -125,6 +125,44 @@ RSpec.describe Pages::LookupPath do
         include_examples 'uses disk storage'
       end
     end
+
+    context 'when deployment were created during migration' do
+      before do
+        FileUtils.mkdir_p File.join(project.pages_path, "public")
+        File.open(File.join(project.pages_path, "public/index.html"), "w") do |f|
+          f.write("Hello!")
+        end
+
+        expect(::Pages::MigrateLegacyStorageToDeploymentService.new(project).execute[:status]).to eq(:success)
+
+        project.reload
+      end
+
+      let(:deployment) { project.pages_metadatum.pages_deployment }
+
+      it 'uses deployment from object storage' do
+        freeze_time do
+          expect(source).to(
+            eq({
+                 type: 'zip',
+                 path: deployment.file.url(expire_at: 1.day.from_now),
+                 global_id: "gid://gitlab/PagesDeployment/#{deployment.id}",
+                 sha256: deployment.file_sha256,
+                 file_size: deployment.size,
+                 file_count: deployment.file_count
+               })
+          )
+        end
+      end
+
+      context 'when pages_serve_from_migrated_zip feature flag is disabled' do
+        before do
+          stub_feature_flags(pages_serve_from_migrated_zip: false)
+        end
+
+        include_examples 'uses disk storage'
+      end
+    end
   end
 
   describe '#prefix' do

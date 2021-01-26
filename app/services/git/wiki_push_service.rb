@@ -16,6 +16,7 @@ module Git
       wiki.after_post_receive
 
       process_changes
+      perform_housekeeping if Feature.enabled?(:wiki_housekeeping, wiki.container)
     end
 
     private
@@ -71,6 +72,14 @@ module Git
 
     def default_branch_changes
       @default_branch_changes ||= changes.select { |change| on_default_branch?(change) }
+    end
+
+    def perform_housekeeping
+      housekeeping = Repositories::HousekeepingService.new(wiki)
+      housekeeping.increment!
+      housekeeping.execute if housekeeping.needed?
+    rescue Repositories::HousekeepingService::LeaseTaken
+      # no-op
     end
   end
 end

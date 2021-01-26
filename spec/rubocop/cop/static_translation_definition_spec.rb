@@ -8,78 +8,76 @@ require 'rspec-parameterized'
 require_relative '../../../rubocop/cop/static_translation_definition'
 
 RSpec.describe RuboCop::Cop::StaticTranslationDefinition do
-  include CopHelper
-
   using RSpec::Parameterized::TableSyntax
+
+  let(:msg) do
+    "The text you're translating will be already in the translated form when it's assigned to the constant. " \
+    "When a users changes the locale, these texts won't be translated again. " \
+    "Consider moving the translation logic to a method."
+  end
 
   subject(:cop) { described_class.new }
 
-  shared_examples 'offense' do |code, highlight, line|
+  shared_examples 'offense' do |code|
     it 'registers an offense' do
-      inspect_source(code)
-
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.map(&:line)).to eq([line])
-      expect(cop.highlights).to eq([highlight])
+      expect_offense(code)
     end
   end
 
   shared_examples 'no offense' do |code|
     it 'does not register an offense' do
-      inspect_source(code)
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(code)
     end
   end
 
   describe 'offenses' do
-    where(:code, :highlight, :line) do
+    where(:code) do
       [
-        ['A = _("a")', '_("a")', 1],
-        ['B = s_("b")', 's_("b")', 1],
-        ['C = n_("c")', 'n_("c")', 1],
-        [
-          <<~CODE,
-            class MyClass
-              def self.translations
-                @cache ||= { hello: _("hello") }
-              end
+        <<~CODE,
+          A = _("a")
+              ^^^^^^ #{msg}
+        CODE
+        <<~CODE,
+          B = s_("b")
+              ^^^^^^^ #{msg}
+        CODE
+        <<~CODE,
+          C = n_("c")
+              ^^^^^^^ #{msg}
+        CODE
+        <<~CODE,
+          class MyClass
+            def self.translations
+              @cache ||= { hello: _("hello") }
+                                  ^^^^^^^^^^ #{msg}
             end
-          CODE
-          '_("hello")',
-          3
-        ],
-        [
-          <<~CODE,
-            module MyModule
-              A = {
-                b: {
-                  c: _("a")
-                }
+          end
+        CODE
+        <<~CODE,
+          module MyModule
+            A = {
+              b: {
+                c: _("a")
+                   ^^^^^^ #{msg}
               }
-            end
-          CODE
-          '_("a")',
-          4
-        ],
-        [
-          <<~CODE,
-            class MyClass
-              B = [
-                [
-                  s_("a")
-                ]
+            }
+          end
+        CODE
+        <<~CODE
+          class MyClass
+            B = [
+              [
+                s_("a")
+                ^^^^^^^ #{msg}
               ]
-            end
-          CODE
-          's_("a")',
-          4
-        ]
+            ]
+          end
+        CODE
       ]
     end
 
     with_them do
-      include_examples 'offense', params[:code], params[:highlight], params[:line]
+      include_examples 'offense', params[:code]
     end
   end
 

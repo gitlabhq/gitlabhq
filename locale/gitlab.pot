@@ -24624,19 +24624,34 @@ msgstr ""
 msgid "Runners|Active"
 msgstr ""
 
+msgid "Runners|An error has occurred fetching instructions"
+msgstr ""
+
 msgid "Runners|Architecture"
 msgstr ""
 
 msgid "Runners|Can run untagged jobs"
 msgstr ""
 
+msgid "Runners|Copy instructions"
+msgstr ""
+
 msgid "Runners|Description"
+msgstr ""
+
+msgid "Runners|Download Latest Binary"
+msgstr ""
+
+msgid "Runners|Download and Install Binary"
 msgstr ""
 
 msgid "Runners|Group"
 msgstr ""
 
 msgid "Runners|IP Address"
+msgstr ""
+
+msgid "Runners|Install a Runner"
 msgstr ""
 
 msgid "Runners|Last contact"
@@ -24660,10 +24675,16 @@ msgstr ""
 msgid "Runners|Protected"
 msgstr ""
 
+msgid "Runners|Register Runner"
+msgstr ""
+
 msgid "Runners|Revision"
 msgstr ""
 
 msgid "Runners|Shared"
+msgstr ""
+
+msgid "Runners|Show Runner installation instructions"
 msgstr ""
 
 msgid "Runners|Specific"
@@ -24672,10 +24693,19 @@ msgstr ""
 msgid "Runners|Tags"
 msgstr ""
 
+msgid "Runners|To install Runner in Kubernetes follow the instructions described in the GitLab documentation."
+msgstr ""
+
+msgid "Runners|To install Runner in a container follow the instructions described in the GitLab documentation"
+msgstr ""
+
 msgid "Runners|Value"
 msgstr ""
 
 msgid "Runners|Version"
+msgstr ""
+
+msgid "Runners|View installation instructions"
 msgstr ""
 
 msgid "Runners|You have used %{quotaUsed} out of %{quotaLimit} of your shared Runners pipeline minutes."

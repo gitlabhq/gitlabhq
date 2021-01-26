@@ -257,6 +257,56 @@ RSpec.describe Git::WikiPushService, services: true do
     end
   end
 
+  describe '#perform_housekeeping', :clean_gitlab_redis_shared_state do
+    let(:housekeeping) { Repositories::HousekeepingService.new(wiki) }
+
+    subject { create_service(current_sha).execute }
+
+    before do
+      allow(Repositories::HousekeepingService).to receive(:new).and_return(housekeeping)
+    end
+
+    it 'does not perform housekeeping when not needed' do
+      expect(housekeeping).not_to receive(:execute)
+
+      subject
+    end
+
+    context 'when housekeeping is needed' do
+      before do
+        allow(housekeeping).to receive(:needed?).and_return(true)
+      end
+
+      it 'performs housekeeping' do
+        expect(housekeeping).to receive(:execute)
+
+        subject
+      end
+
+      it 'does not raise an exception' do
+        allow(housekeeping).to receive(:try_obtain_lease).and_return(false)
+
+        expect { subject }.not_to raise_error
+      end
+
+      context 'when feature flag :wiki_housekeeping is disabled' do
+        it 'does not perform housekeeping' do
+          stub_feature_flags(wiki_housekeeping: false)
+
+          expect(housekeeping).not_to receive(:execute)
+
+          subject
+        end
+      end
+    end
+
+    it 'increments the push counter' do
+      expect(housekeeping).to receive(:increment!)
+
+      subject
+    end
+  end
+
   # In order to construct the correct GitPostReceive object that represents the
   # changes we are applying, we need to describe the changes between old-ref and
   # new-ref. Old ref (the base sha) we have to capture before we perform any

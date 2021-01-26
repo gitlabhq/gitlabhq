@@ -117,7 +117,7 @@ module QA
         end
       end
 
-      it 'runs an AutoDevOps pipeline', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/444' do
+      it 'runs an AutoDevOps pipeline', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1277' do
         Flow::Pipeline.visit_latest_pipeline
 
         Page::Project::Pipeline::Show.perform do |pipeline|

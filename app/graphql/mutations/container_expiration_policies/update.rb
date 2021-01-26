@@ -3,7 +3,7 @@
 module Mutations
   module ContainerExpirationPolicies
     class Update < Mutations::BaseMutation
-      include ResolvesProject
+      include FindsProject
 
       graphql_name 'UpdateContainerExpirationPolicy'
 
@@ -50,7 +50,7 @@ module Mutations
             description: 'The container expiration policy after mutation.'
 
       def resolve(project_path:, **args)
-        project = authorized_find!(full_path: project_path)
+        project = authorized_find!(project_path)
 
         result = ::ContainerExpirationPolicies::UpdateService
           .new(container: project, current_user: current_user, params: args)
@@ -60,12 +60,6 @@ module Mutations
           container_expiration_policy: result.payload[:container_expiration_policy],
           errors: result.errors
         }
-      end
-
-      private
-
-      def find_object(full_path:)
-        resolve_project(full_path: full_path)
       end
     end
   end

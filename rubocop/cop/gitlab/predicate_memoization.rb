@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module RuboCop
   module Cop
     module Gitlab
       class PredicateMemoization < RuboCop::Cop::Cop
-        MSG = <<~EOL.freeze
+        MSG = <<~EOL
           Avoid using `@value ||= query` inside predicate methods in order to
           properly memoize `false` or `nil` values.
           https://docs.gitlab.com/ee/development/utilities.html#strongmemoize
@@ -12,7 +14,7 @@ module RuboCop
           return unless predicate_method?(node)
 
           select_offenses(node).each do |offense|
-            add_offense(offense, location: :expression)
+            add_offense(offense)
           end
         end
 

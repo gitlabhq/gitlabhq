@@ -375,7 +375,7 @@ The files defined by `include` are:
 
 NOTE:
 Use merging to customize and override included CI/CD configurations with local
-definitions. Local definitions in `.gitlab-ci.yml` override included definitions.
+configurations. Local configurations in `.gitlab-ci.yml` override included configurations.
 
 #### Variables with `include` **(CORE ONLY)**
 
@@ -2121,7 +2121,7 @@ build_job:
 
 `build_job` downloads the artifacts from the latest successful `build-1` job
 on the `master` branch in the `group/project-name` project. If the project is in the
-same group or namespace, you can omit them from the `project:` key. For example,
+same group or namespace, you can omit them from the `project:` keyword. For example,
 `project: group/project-name` or `project: project-name`.
 
 The user running the pipeline must have at least `reporter` access to the group or project, or the group/project must have public visibility.
@@ -2460,8 +2460,8 @@ by authorized users.
 Use `when: delayed` to execute scripts after a waiting period, or if you want to avoid
 jobs immediately entering the `pending` state.
 
-You can set the period with `start_in` key. The value of `start_in` key is an elapsed time in seconds, unless a unit is
-provided. `start_in` key must be less than or equal to one week. Examples of valid values include:
+You can set the period with `start_in` keyword. The value of `start_in` is an elapsed time in seconds, unless a unit is
+provided. `start_in` must be less than or equal to one week. Examples of valid values include:
 
 - `'5'`
 - `5 seconds`
@@ -2728,7 +2728,7 @@ as Review Apps. You can see an example that uses Review Apps at
 cached between jobs. You can only use paths that are in the local working copy.
 
 If `cache` is defined outside the scope of jobs, it means it's set
-globally and all jobs use that definition.
+globally and all jobs use that configuration.
 
 Caching is shared between pipelines and jobs. Caches are restored before [artifacts](#artifacts).
 
@@ -3677,8 +3677,8 @@ deploystacks:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8997) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Core in 12.8.
 
-Use `trigger` to define a downstream pipeline trigger. When GitLab starts a job created
-with a `trigger` definition, a downstream pipeline is created.
+Use `trigger` to define a downstream pipeline trigger. When GitLab starts a `trigger` job,
+a downstream pipeline is created.
 
 Jobs with `trigger` can only use a [limited set of keywords](../multi_project_pipelines.md#limitations).
 For example, you can't run commands with [`script`](#script), [`before_script`](#before_script),
@@ -3904,7 +3904,7 @@ To avoid these errors, the `resource_group` attribute can be used to ensure that
 the runner doesn't run certain jobs simultaneously. Resource groups behave similar
 to semaphores in other programming languages.
 
-When the `resource_group` key is defined for a job in `.gitlab-ci.yml`,
+When the `resource_group` keyword is defined for a job in `.gitlab-ci.yml`,
 job executions are mutually exclusive across different pipelines for the same project.
 If multiple jobs belonging to the same resource group are enqueued simultaneously,
 only one of the jobs is picked by the runner. The other jobs wait until the
@@ -3936,7 +3936,7 @@ For more information, see [Deployments Safety](../environments/deployment_safety
 
 `release` indicates that the job creates a [Release](../../user/project/releases/index.md).
 
-These methods are supported:
+These keywords are supported:
 
 - [`tag_name`](#releasetag_name)
 - [`description`](#releasedescription)
@@ -4325,26 +4325,26 @@ The following example uses anchors and map merging. It creates two jobs,
 with their own custom `script` defined:
 
 ```yaml
-.job_template: &job_definition  # Hidden key that defines an anchor named 'job_definition'
+.job_template: &job_configuration  # Hidden yaml configuration that defines an anchor named 'job_configuration'
   image: ruby:2.6
   services:
     - postgres
     - redis
 
 test1:
-  <<: *job_definition           # Merge the contents of the 'job_definition' alias
+  <<: *job_configuration           # Merge the contents of the 'job_configuration' alias
   script:
     - test1 project
 
 test2:
-  <<: *job_definition           # Merge the contents of the 'job_definition' alias
+  <<: *job_configuration           # Merge the contents of the 'job_configuration' alias
   script:
     - test2 project
 ```
 
-`&` sets up the name of the anchor (`job_definition`), `<<` means "merge the
+`&` sets up the name of the anchor (`job_configuration`), `<<` means "merge the
 given hash into the current one", and `*` includes the named anchor
-(`job_definition` again). The expanded version of the example above is:
+(`job_configuration` again). The expanded version of the example above is:
 
 ```yaml
 .job_template:
@@ -4375,31 +4375,31 @@ and `test:mysql` share the `script` defined in `.job_template`, but use differen
 `services`, defined in `.postgres_services` and `.mysql_services`:
 
 ```yaml
-.job_template: &job_definition
+.job_template: &job_configuration
   script:
     - test project
   tags:
     - dev
 
 .postgres_services:
-  services: &postgres_definition
+  services: &postgres_configuration
     - postgres
     - ruby
 
 .mysql_services:
-  services: &mysql_definition
+  services: &mysql_configuration
     - mysql
     - ruby
 
 test:postgres:
-  <<: *job_definition
-  services: *postgres_definition
+  <<: *job_configuration
+  services: *postgres_configuration
   tags:
     - postgres
 
 test:mysql:
-  <<: *job_definition
-  services: *mysql_definition
+  <<: *job_configuration
+  services: *mysql_configuration
 ```
 
 The expanded version is:

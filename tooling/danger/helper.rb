@@ -260,12 +260,16 @@ module Tooling
         all_changed_files.grep(regex)
       end
 
-      def has_database_scoped_labels?(current_mr_labels)
-        current_mr_labels.any? { |label| label.start_with?('database::') }
+      def has_database_scoped_labels?(labels)
+        labels.any? { |label| label.start_with?('database::') }
       end
 
       def has_ci_changes?
         changed_files(%r{\A(\.gitlab-ci\.yml|\.gitlab/ci/)}).any?
+      end
+
+      def group_label(labels)
+        labels.find { |label| label.start_with?('group::') }
       end
     end
   end

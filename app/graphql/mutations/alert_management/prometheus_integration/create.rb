@@ -4,7 +4,7 @@ module Mutations
   module AlertManagement
     module PrometheusIntegration
       class Create < PrometheusIntegrationBase
-        include ResolvesProject
+        include FindsProject
 
         graphql_name 'PrometheusIntegrationCreate'
 
@@ -21,7 +21,7 @@ module Mutations
                  description: 'Endpoint at which prometheus can be queried.'
 
         def resolve(args)
-          project = authorized_find!(full_path: args[:project_path])
+          project = authorized_find!(args[:project_path])
 
           return integration_exists if project.prometheus_service
 
@@ -36,10 +36,6 @@ module Mutations
         end
 
         private
-
-        def find_object(full_path:)
-          resolve_project(full_path: full_path)
-        end
 
         def integration_exists
           response(nil, message: _('Multiple Prometheus integrations are not supported'))

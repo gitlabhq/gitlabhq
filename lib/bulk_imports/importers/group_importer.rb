@@ -29,7 +29,8 @@ module BulkImports
       def pipelines
         [
           BulkImports::Groups::Pipelines::GroupPipeline,
-          BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline
+          BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline,
+          BulkImports::Groups::Pipelines::LabelsPipeline
         ]
       end
     end

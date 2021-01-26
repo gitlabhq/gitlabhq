@@ -17,4 +17,7 @@
     is_group_page: "true",
     "group_path": @group.full_path,
     "gid_prefix": container_repository_gid_prefix,
-    character_error: @character_error.to_s } }
+    character_error: @character_error.to_s,
+    user_callouts_path: user_callouts_path,
+    user_callout_id: UserCalloutsHelper::UNFINISHED_TAG_CLEANUP_CALLOUT,
+    show_unfinished_tag_cleanup_callout: show_unfinished_tag_cleanup_callout?.to_s } }

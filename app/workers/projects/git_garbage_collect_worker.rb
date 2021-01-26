@@ -7,6 +7,17 @@ module Projects
 
     private
 
+    # At the moment this was added, the default key was like this.
+    # With the addition of wikis to housekeeping, this will bring a
+    # problem because the wiki for project 1 will have the same
+    # lease key as project 1.
+    #
+    # In the `GitGarbageCollectMethods` we namespaced the resource,
+    # giving us the option to have different resources. Nevertheless,
+    # we kept this override in order for backward compatibility and avoid
+    # starting all projects from scratch.
+    #
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/299903
     override :default_lease_key
     def default_lease_key(task, resource)
       "git_gc:#{task}:#{resource.id}"

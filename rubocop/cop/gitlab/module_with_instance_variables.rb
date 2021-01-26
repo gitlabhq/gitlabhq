@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module RuboCop
   module Cop
     module Gitlab
       class ModuleWithInstanceVariables < RuboCop::Cop::Cop
-        MSG = <<~EOL.freeze
+        MSG = <<~EOL
           Do not use instance variables in a module. Please read this
           for the rationale behind it:
 

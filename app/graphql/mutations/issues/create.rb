@@ -3,7 +3,7 @@
 module Mutations
   module Issues
     class Create < BaseMutation
-      include ResolvesProject
+      include FindsProject
       graphql_name 'CreateIssue'
 
       authorize :create_issue
@@ -70,7 +70,7 @@ module Mutations
       end
 
       def resolve(project_path:, **attributes)
-        project = authorized_find!(full_path: project_path)
+        project = authorized_find!(project_path)
         params = build_create_issue_params(attributes.merge(author_id: current_user.id))
 
         issue = ::Issues::CreateService.new(project, current_user, params).execute
@@ -97,10 +97,6 @@ module Mutations
 
       def mutually_exclusive_label_args
         [:labels, :label_ids]
-      end
-
-      def find_object(full_path:)
-        resolve_project(full_path: full_path)
       end
     end
   end

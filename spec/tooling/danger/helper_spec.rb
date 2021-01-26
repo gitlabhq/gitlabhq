@@ -599,4 +599,14 @@ RSpec.describe Tooling::Danger::Helper do
       end
     end
   end
+
+  describe '#group_label' do
+    it 'returns nil when no group label is present' do
+      expect(helper.group_label(%w[foo bar])).to be_nil
+    end
+
+    it 'returns the group label when a group label is present' do
+      expect(helper.group_label(['foo', 'group::source code', 'bar'])).to eq('group::source code')
+    end
+  end
 end

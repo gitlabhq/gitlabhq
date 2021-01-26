@@ -5,6 +5,7 @@ module Pages
     include Gitlab::Utils::StrongMemoize
 
     LegacyStorageDisabledError = Class.new(::StandardError)
+    MIGRATED_FILE_NAME = "_migrated.zip"
 
     def initialize(project, trim_prefix: nil, domain: nil)
       @project = project
@@ -53,6 +54,8 @@ module Pages
       return unless deployment&.file
 
       return if deployment.file.file_storage? && !Feature.enabled?(:pages_serve_with_zip_file_protocol, project)
+
+      return if deployment.file.filename == MIGRATED_FILE_NAME && !Feature.enabled?(:pages_serve_from_migrated_zip, project)
 
       global_id = ::Gitlab::GlobalId.build(deployment, id: deployment.id).to_s
 

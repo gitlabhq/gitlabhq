@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Tracking from '~/tracking';
+import axios from '~/lib/utils/axios_utils';
 import component from '~/registry/explorer/pages/details.vue';
 import DeleteAlert from '~/registry/explorer/components/details_page/delete_alert.vue';
 import PartialCleanupAlert from '~/registry/explorer/components/details_page/partial_cleanup_alert.vue';
@@ -401,6 +402,9 @@ describe('Details Page', () => {
     const config = {
       runCleanupPoliciesHelpPagePath: 'foo',
       cleanupPoliciesHelpPagePath: 'bar',
+      userCalloutsPath: 'call_out_path',
+      userCalloutId: 'call_out_id',
+      showUnfinishedTagCleanupCallout: true,
     };
 
     describe(`when expirationPolicyCleanupStatus is ${UNFINISHED_STATUS}`, () => {
@@ -413,8 +417,9 @@ describe('Details Page', () => {
           }),
         );
       });
+
       it('exists', async () => {
-        mountComponent({ resolver });
+        mountComponent({ resolver, config });
 
         await waitForApolloRequestRender();
 
@@ -426,11 +431,16 @@ describe('Details Page', () => {
 
         await waitForApolloRequestRender();
 
-        expect(findPartialCleanupAlert().props()).toEqual({ ...config });
+        expect(findPartialCleanupAlert().props()).toEqual({
+          runCleanupPoliciesHelpPagePath: config.runCleanupPoliciesHelpPagePath,
+          cleanupPoliciesHelpPagePath: config.cleanupPoliciesHelpPagePath,
+        });
       });
 
       it('dismiss hides the component', async () => {
-        mountComponent({ resolver });
+        jest.spyOn(axios, 'post').mockReturnValue();
+
+        mountComponent({ resolver, config });
 
         await waitForApolloRequestRender();
 
@@ -440,13 +450,25 @@ describe('Details Page', () => {
 
         await wrapper.vm.$nextTick();
 
+        expect(axios.post).toHaveBeenCalledWith(config.userCalloutsPath, {
+          feature_name: config.userCalloutId,
+        });
+        expect(findPartialCleanupAlert().exists()).toBe(false);
+      });
+
+      it('is hidden if the callout is dismissed', async () => {
+        mountComponent({ resolver });
+
+        await waitForApolloRequestRender();
+
         expect(findPartialCleanupAlert().exists()).toBe(false);
       });
     });
 
     describe(`when expirationPolicyCleanupStatus is not ${UNFINISHED_STATUS}`, () => {
       it('the component is hidden', async () => {
-        mountComponent();
+        mountComponent({ config });
+
         await waitForApolloRequestRender();
 
         expect(findPartialCleanupAlert().exists()).toBe(false);

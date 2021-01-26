@@ -1,15 +1,11 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-
 require 'rubocop'
-require 'rubocop/rspec/support'
 
 require_relative '../../../../rubocop/cop/qa/element_with_pattern'
 
 RSpec.describe RuboCop::Cop::QA::ElementWithPattern do
-  include CopHelper
-
   let(:source_file) { 'qa/page.rb' }
 
   subject(:cop) { described_class.new }

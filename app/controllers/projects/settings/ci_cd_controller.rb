@@ -12,6 +12,7 @@ module Projects
       before_action do
         push_frontend_feature_flag(:ajax_new_deploy_token, @project)
         push_frontend_feature_flag(:vueify_shared_runners_toggle, @project)
+        push_frontend_feature_flag(:runner_instructions, @project, default_enabled: :yaml)
       end
 
       helper_method :highlight_badge

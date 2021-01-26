@@ -1,0 +1,57 @@
+# frozen_string_literal: true
+# rubocop:disable Style/SignalException
+
+SEE_DOC = "See the [feature flag documentation](https://docs.gitlab.com/ee/development/feature_flags/development.html#feature-flag-definition-and-validation)."
+
+SUGGEST_MR_COMMENT = <<~SUGGEST_COMMENT
+```suggestion
+group: "%<group>s"
+```
+
+#{SEE_DOC}
+SUGGEST_COMMENT
+
+def check_feature_flag_yaml(feature_flag)
+  mr_group_label = helper.group_label(gitlab.mr_labels)
+
+  if feature_flag.group.nil?
+    message_for_feature_flag_missing_group!(feature_flag: feature_flag, mr_group_label: mr_group_label)
+  else
+    message_for_feature_flag_with_group!(feature_flag: feature_flag, mr_group_label: mr_group_label)
+  end
+rescue Psych::Exception
+  # YAML could not be parsed, fail the build.
+  fail "#{gitlab.html_link(feature_flag.path)} isn't valid YAML! #{SEE_DOC}"
+rescue StandardError => e
+  warn "There was a problem trying to check the Feature Flag file. Exception: #{e.class.name} - #{e.message}"
+end
+
+def message_for_feature_flag_missing_group!(feature_flag:, mr_group_label:)
+  if mr_group_label.nil?
+    warn "Consider setting `group` in #{gitlab.html_link(feature_flag.path)}. #{SEE_DOC}"
+  else
+    mr_line = feature_flag.raw.lines.find_index("group:\n")
+
+    if mr_line
+      markdown(format(SUGGEST_MR_COMMENT, group: mr_group_label), file: feature_flag.path, line: mr_line.succ)
+    else
+      warn %(Consider setting `group: "#{mr_group_label}"` in #{gitlab.html_link(feature_flag.path)}. #{SEE_DOC})
+    end
+  end
+end
+
+def message_for_feature_flag_with_group!(feature_flag:, mr_group_label:)
+  return if feature_flag.group_match_mr_label?(mr_group_label)
+
+  if mr_group_label.nil?
+    gitlab.api.update_merge_request(gitlab.mr_json['project_id'],
+                                    gitlab.mr_json['iid'],
+                                    add_labels: feature_flag.group)
+  else
+    fail %(`group` is set to ~"#{feature_flag.group}" in #{gitlab.html_link(feature_flag.path)}, which does not match ~"#{mr_group_label}" set on the MR!)
+  end
+end
+
+feature_flag.feature_flag_files.each do |feature_flag|
+  check_feature_flag_yaml(feature_flag)
+end

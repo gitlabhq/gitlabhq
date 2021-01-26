@@ -4,28 +4,29 @@
 class GitlabDanger
   LOCAL_RULES ||= %w[
     changes_size
+    commit_messages
+    database
     documentation
     duplicate_yarn_dependencies
-    prettier
     eslint
     karma
-    database
-    commit_messages
-    product_intelligence
-    utility_css
     pajamas
     pipeline
+    prettier
+    product_intelligence
+    utility_css
   ].freeze
 
   CI_ONLY_RULES ||= %w[
-    metadata
-    changelog
-    specs
-    roulette
     ce_ee_vue_templates
+    changelog
+    ci_templates
+    metadata
+    feature_flag
+    roulette
     sidekiq_queues
     specialization_labels
-    ci_templates
+    specs
   ].freeze
 
   MESSAGE_PREFIX = '==>'.freeze

@@ -4,7 +4,7 @@ module Mutations
   module Security
     module CiConfiguration
       class ConfigureSast < BaseMutation
-        include ResolvesProject
+        include FindsProject
 
         graphql_name 'ConfigureSast'
 
@@ -25,17 +25,13 @@ module Mutations
         authorize :push_code
 
         def resolve(project_path:, configuration:)
-          project = authorized_find!(full_path: project_path)
+          project = authorized_find!(project_path)
 
           result = ::Security::CiConfiguration::SastCreateService.new(project, current_user, configuration).execute
           prepare_response(result)
         end
 
         private
-
-        def find_object(full_path:)
-          resolve_project(full_path: full_path)
-        end
 
         def prepare_response(result)
           {
