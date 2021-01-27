@@ -138,16 +138,26 @@ export default {
         :class="line.commentRowClasses"
         class="diff-grid-comments diff-tr notes_holder"
       >
-        <div v-if="line.left" :class="{ parallel: !inline }" class="diff-td notes-content old">
+        <div
+          v-if="line.left || !inline"
+          :class="{ parallel: !inline }"
+          class="diff-td notes-content old"
+        >
           <diff-comment-cell
+            v-if="line.left && (line.left.renderDiscussion || line.left.hasCommentForm)"
             :line="line.left"
             :diff-file-hash="diffFile.file_hash"
             :help-page-path="helpPagePath"
             line-position="left"
           />
         </div>
-        <div v-if="line.right" :class="{ parallel: !inline }" class="diff-td notes-content new">
+        <div
+          v-if="line.right || !inline"
+          :class="{ parallel: !inline }"
+          class="diff-td notes-content new"
+        >
           <diff-comment-cell
+            v-if="line.right && (line.right.renderDiscussion || line.right.hasCommentForm)"
             :line="line.right"
             :diff-file-hash="diffFile.file_hash"
             :line-index="index"

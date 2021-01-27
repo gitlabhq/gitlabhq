@@ -55,12 +55,12 @@ describe('DiffView', () => {
   });
 
   it.each`
-    type          | side       | container | sides                                                    | total
-    ${'parallel'} | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {} }, right: { lineDraft: {} } }} | ${2}
-    ${'parallel'} | ${'right'} | ${'.new'} | ${{ left: { lineDraft: {} }, right: { lineDraft: {} } }} | ${2}
-    ${'inline'}   | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {} } }}                           | ${1}
-    ${'inline'}   | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {} } }}                           | ${1}
-    ${'inline'}   | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {} } }}                           | ${1}
+    type          | side       | container | sides                                                                                                    | total
+    ${'parallel'} | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {}, renderDiscussion: true }, right: { lineDraft: {}, renderDiscussion: true } }} | ${2}
+    ${'parallel'} | ${'right'} | ${'.new'} | ${{ left: { lineDraft: {}, renderDiscussion: true }, right: { lineDraft: {}, renderDiscussion: true } }} | ${2}
+    ${'inline'}   | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {}, renderDiscussion: true } }}                                                   | ${1}
+    ${'inline'}   | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {}, renderDiscussion: true } }}                                                   | ${1}
+    ${'inline'}   | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {}, renderDiscussion: true } }}                                                   | ${1}
   `(
     'renders a $type comment row with comment cell on $side',
     ({ type, container, sides, total }) => {

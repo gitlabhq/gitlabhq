@@ -33,16 +33,6 @@
   }
 }
 
-.ci-status-icon-preparing {
-  svg {
-    fill: $gray-300;
-  }
-
-  &.add-border {
-    @include borderless-status-icon($gray-300);
-  }
-}
-
 .ci-status-icon-running {
   svg {
     fill: $blue-400;
@@ -64,15 +54,16 @@
   }
 }
 
+.ci-status-icon-preparing,
 .ci-status-icon-created,
 .ci-status-icon-skipped,
 .ci-status-icon-notfound {
   svg {
-    fill: $gray-darkest;
+    fill: var(--gray-400, $gray-400);
   }
 
   &.add-border {
-    @include borderless-status-icon($gray-darkest);
+    @include borderless-status-icon(var(--gray-400, $gray-400));
   }
 }
 

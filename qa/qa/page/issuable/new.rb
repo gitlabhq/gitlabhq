@@ -28,6 +28,10 @@ module QA
           element :assign_to_me_link
         end
 
+        view 'app/views/shared/issuable/form/_template_selector.html.haml' do
+          element :template_dropdown
+        end
+
         def fill_title(title)
           fill_element :issuable_form_title, title
         end
@@ -40,6 +44,13 @@ module QA
           click_element :issuable_milestone_dropdown
           within_element(:issuable_dropdown_menu_milestone) do
             click_on milestone.title
+          end
+        end
+
+        def choose_template(template_name)
+          click_element :template_dropdown
+          within_element(:template_dropdown) do
+            click_on template_name
           end
         end
 
