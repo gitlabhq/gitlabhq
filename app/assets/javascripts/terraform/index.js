@@ -1,7 +1,9 @@
+import { defaultDataIdFromObject } from 'apollo-cache-inmemory';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import TerraformList from './components/terraform_list.vue';
 import createDefaultClient from '~/lib/graphql';
+import resolvers from './graphql/resolvers';
 
 Vue.use(VueApollo);
 
@@ -12,7 +14,13 @@ export default () => {
     return null;
   }
 
-  const defaultClient = createDefaultClient();
+  const defaultClient = createDefaultClient(resolvers, {
+    cacheConfig: {
+      dataIdFromObject: (object) => {
+        return object.id || defaultDataIdFromObject(object);
+      },
+    },
+  });
 
   const { emptyStateImage, projectPath } = el.dataset;
 

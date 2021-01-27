@@ -39,7 +39,7 @@ module QA
             element :boards_list
           end
 
-          view 'app/assets/javascripts/boards/toggle_focus.js' do
+          view 'app/assets/javascripts/boards/components/toggle_focus.vue' do
             element :focus_mode_button
           end
 

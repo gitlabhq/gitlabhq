@@ -323,6 +323,50 @@ RSpec.describe Projects::ForkService do
         end
       end
     end
+
+    describe 'fork with optional attributes' do
+      let(:public_project) { create(:project, :public) }
+
+      it 'sets optional attributes to specified values' do
+        forked_project = fork_project(
+          public_project,
+          nil,
+          namespace: public_project.namespace,
+          path: 'forked',
+          name: 'My Fork',
+          description: 'Description',
+          visibility: 'internal',
+          using_service: true
+        )
+
+        expect(forked_project.path).to eq('forked')
+        expect(forked_project.name).to eq('My Fork')
+        expect(forked_project.description).to eq('Description')
+        expect(forked_project.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
+      end
+
+      it 'sets visibility level to private if an unknown visibility is requested' do
+        forked_project = fork_project(public_project, nil, using_service: true, visibility: 'unknown')
+
+        expect(forked_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it 'sets visibility level to project visibility level if requested visibility is greater' do
+        private_project = create(:project, :private)
+
+        forked_project = fork_project(private_project, nil, using_service: true, visibility: 'public')
+
+        expect(forked_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it 'sets visibility level to target namespace visibility level if requested visibility is greater' do
+        private_group = create(:group, :private)
+
+        forked_project = fork_project(public_project, nil, namespace: private_group, using_service: true, visibility: 'public')
+
+        expect(forked_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+      end
+    end
   end
 
   context 'when a project is already forked' do

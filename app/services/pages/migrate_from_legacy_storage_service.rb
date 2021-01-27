@@ -24,7 +24,9 @@ module Pages
       @queue.close
 
       @logger.info("Waiting for threads to finish...")
-      threads.each(&:join)
+      ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
+        threads.each(&:join)
+      end
 
       { migrated: @migrated, errored: @errored }
     end

@@ -354,13 +354,6 @@
   }
 }
 
-@mixin borderless-status-icon($color) {
-  svg {
-    border: 1px solid $color;
-    border-radius: 50%;
-  }
-}
-
 @mixin emoji-menu-toggle-button {
   line-height: 1;
   padding: 0;

@@ -209,6 +209,13 @@ RSpec.describe Projects::ForksController do
       }
     end
 
+    let(:created_project) do
+      Namespace
+        .find_by_id(params[:namespace_key])
+        .projects
+        .find_by_path(params.fetch(:path, project.path))
+    end
+
     subject do
       post :create, params: params
     end
@@ -258,6 +265,21 @@ RSpec.describe Projects::ForksController do
 
           expect(response).to have_gitlab_http_status(:found)
           expect(response).to redirect_to(namespace_project_import_path(user.namespace, project, continue: continue_params))
+        end
+      end
+
+      context 'custom attributes set' do
+        let(:params) { super().merge(path: 'something_custom', name: 'Something Custom', description: 'Something Custom', visibility: 'private') }
+
+        it 'creates a project with custom values' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(namespace_project_import_path(user.namespace, params[:path]))
+          expect(created_project.path).to eq(params[:path])
+          expect(created_project.name).to eq(params[:name])
+          expect(created_project.description).to eq(params[:description])
+          expect(created_project.visibility).to eq(params[:visibility])
         end
       end
     end

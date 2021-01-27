@@ -118,7 +118,7 @@ describe('Onboarding Issues Popovers', () => {
       describe('when dismissing the popover', () => {
         beforeEach(() => {
           jest.spyOn(Tracking, 'event');
-          document.querySelector('.learn-gitlab.popover .close').click();
+          document.querySelector('.learn-gitlab.popover .js-close-learn-gitlab').click();
         });
 
         it('deletes the cookie', () => {

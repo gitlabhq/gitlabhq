@@ -2203,6 +2203,9 @@ msgstr ""
 msgid "AdminUsers|Cannot unblock LDAP blocked users"
 msgstr ""
 
+msgid "AdminUsers|Cohorts"
+msgstr ""
+
 msgid "AdminUsers|Deactivate"
 msgstr ""
 
@@ -2339,6 +2342,9 @@ msgid "AdminUsers|User will not be able to access git repositories"
 msgstr ""
 
 msgid "AdminUsers|User will not be able to login"
+msgstr ""
+
+msgid "AdminUsers|Users"
 msgstr ""
 
 msgid "AdminUsers|When the user logs back in, their account will reactivate as a fully active account"
@@ -7061,9 +7067,6 @@ msgid "CodeNavigation|No references found"
 msgstr ""
 
 msgid "CodeOwner|Pattern"
-msgstr ""
-
-msgid "Cohorts"
 msgstr ""
 
 msgid "Cohorts|Inactive users"
@@ -27881,6 +27884,9 @@ msgstr ""
 msgid "Terraform|Actions"
 msgstr ""
 
+msgid "Terraform|An error occurred while changing the state file"
+msgstr ""
+
 msgid "Terraform|An error occurred while loading your Terraform States"
 msgstr ""
 
@@ -29935,6 +29941,9 @@ msgid "Toggle dropdown"
 msgstr ""
 
 msgid "Toggle emoji award"
+msgstr ""
+
+msgid "Toggle focus mode"
 msgstr ""
 
 msgid "Toggle navigation"

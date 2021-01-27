@@ -35,16 +35,16 @@ const showPopover = (el, path, footer, options) => {
     boundary: 'window',
     html: true,
     placement: 'top',
-    template: `<div class="popover blue learn-gitlab d-none d-xl-block" role="tooltip">
+    template: `<div class="gl-popover popover blue learn-gitlab d-none d-xl-block" role="tooltip">
                 <div class="arrow"></div>
-                <div class="close cursor-pointer gl-font-base text-white gl-opacity-10 p-2">&#10005</div>
-                <div class="popover-body gl-font-base gl-line-height-20 pb-0 px-3"></div>
-                <div class="bold text-right text-white p-2">${footer}</div>
+                <div class="js-close-learn-gitlab gl-font-weight-bold gl-line-height-normal float-right gl-cursor-pointer gl-font-base gl-text-white gl-opacity-10 gl-p-3">&#10005</div>
+                <div class="popover-body gl-font-base"></div>
+                <div class="gl-font-weight-bold gl-text-right gl-text-white gl-p-3 gl-pt-0">${footer}</div>
                </div>`,
   };
 
   // When one of the popovers is dismissed, remove the cookie.
-  const closeButton = () => document.querySelector('.learn-gitlab.popover .close');
+  const closeButton = () => document.querySelector('.js-close-learn-gitlab');
 
   // We still have to use jQuery, since Bootstrap's Popover is based on jQuery.
   const jQueryEl = $(el);

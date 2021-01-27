@@ -65,10 +65,6 @@
             = link_to admin_dev_ops_report_path, title: _('DevOps Report') do
               %span
                 = _('DevOps Report')
-          = nav_link(controller: :cohorts) do
-            = link_to admin_cohorts_path, title: _('Cohorts') do
-              %span
-                = _('Cohorts')
           - if Feature.enabled?(:instance_statistics, default_enabled: true)
             = nav_link(controller: :instance_statistics) do
               = link_to admin_instance_statistics_path, title: _('Usage Trends') do

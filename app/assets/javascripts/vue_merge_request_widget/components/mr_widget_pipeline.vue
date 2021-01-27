@@ -177,7 +177,7 @@ export default {
     </template>
     <template v-else-if="hasPipeline">
       <a :href="status.details_path" class="align-self-start gl-mr-3">
-        <ci-icon :status="status" :size="24" :borderless="true" class="add-border" />
+        <ci-icon :status="status" :size="24" />
       </a>
       <div class="ci-widget-container d-flex">
         <div class="ci-widget-content">

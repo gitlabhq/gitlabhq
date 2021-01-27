@@ -260,7 +260,8 @@ For GitLab.com, it is set to 10 MB.
 
 ## Export requirements to a CSV file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290813) in GitLab 13.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290813) in GitLab 13.8.
+> - Revised CSV column headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299247) in GitLab 13.9.
 
 You can export GitLab requirements to a
 [CSV file](https://en.wikipedia.org/wiki/Comma-separated_values) sent to your default notification
@@ -285,11 +286,24 @@ You can preview the exported CSV file in a spreadsheet editor, such as Microsoft
 OpenOffice Calc, or Google Sheets.
 <!-- vale gitlab.Spelling = YES -->
 
-The exported CSV file contains the following columns:
+The exported CSV file contains the following headers:
 
-- Requirement ID
-- Title
-- Description
-- Author Username
-- Latest Test Report State
-- Latest Test Report Created At (UTC)
+- In GitLab 13.8:
+
+  - Requirement ID
+  - Title
+  - Description
+  - Author Username
+  - Latest Test Report State
+  - Latest Test Report Created At (UTC)
+
+- In GitLab 13.9 and later:
+
+  - Requirement ID
+  - Title
+  - Description
+  - Author
+  - Author Username
+  - Created At (UTC)
+  - State
+  - State Updated At (UTC)

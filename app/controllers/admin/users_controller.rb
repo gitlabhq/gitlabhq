@@ -2,6 +2,7 @@
 
 class Admin::UsersController < Admin::ApplicationController
   include RoutableActions
+  include Analytics::UniqueVisitsHelper
 
   before_action :user, except: [:index, :new, :create]
   before_action :check_impersonation_availability, only: :impersonate
@@ -15,6 +16,10 @@ class Admin::UsersController < Admin::ApplicationController
     @users = @users.includes(:authorized_projects) # rubocop: disable CodeReuse/ActiveRecord
     @users = @users.sort_by_attribute(@sort = params[:sort])
     @users = @users.page(params[:page])
+
+    @cohorts = load_cohorts
+
+    track_cohorts_visit if params[:tab] == 'cohorts'
   end
 
   def show
@@ -306,6 +311,22 @@ class Admin::UsersController < Admin::ApplicationController
 
   def log_impersonation_event
     Gitlab::AppLogger.info(_("User %{current_user_username} has started impersonating %{username}") % { current_user_username: current_user.username, username: user.username })
+  end
+
+  def load_cohorts
+    if Gitlab::CurrentSettings.usage_ping_enabled
+      cohorts_results = Rails.cache.fetch('cohorts', expires_in: 1.day) do
+        CohortsService.new.execute
+      end
+
+      CohortsSerializer.new.represent(cohorts_results)
+    end
+  end
+
+  def track_cohorts_visit
+    if request.format.html? && request.headers['DNT'] != '1'
+      track_visit('i_analytics_cohorts')
+    end
   end
 end
 

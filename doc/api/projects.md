@@ -1280,6 +1280,8 @@ POST /projects/:id/fork
 | `namespace_path` | string         | **{dotted-circle}** No | The path of the namespace that the project is forked to.                         |
 | `namespace`      | integer/string | **{dotted-circle}** No | _(Deprecated)_ The ID or path of the namespace that the project is forked to.    |
 | `path`           | string         | **{dotted-circle}** No | The path assigned to the resultant project after forking.                        |
+| `description`    | string         | **{dotted-circle}** No | The description assigned to the resultant project after forking.                 |
+| `visibility`     | string         | **{dotted-circle}** No | The [visibility level](#project-visibility-level) assigned to the resultant project after forking. |
 
 ## List Forks of a project
 

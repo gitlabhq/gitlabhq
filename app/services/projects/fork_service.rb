@@ -43,8 +43,8 @@ module Projects
     def new_fork_params
       new_params = {
         forked_from_project:       @project,
-        visibility_level:          allowed_visibility_level,
-        description:               @project.description,
+        visibility_level:          target_visibility_level,
+        description:               target_description,
         name:                      target_name,
         path:                      target_path,
         shared_runners_enabled:    @project.shared_runners_enabled,
@@ -107,6 +107,10 @@ module Projects
       @target_name ||= @params[:name] || @project.name
     end
 
+    def target_description
+      @target_description ||= @params[:description] || @project.description
+    end
+
     def target_namespace
       @target_namespace ||= @params[:namespace] || current_user.namespace
     end
@@ -115,8 +119,9 @@ module Projects
       @skip_disk_validation ||= @params[:skip_disk_validation] || false
     end
 
-    def allowed_visibility_level
+    def target_visibility_level
       target_level = [@project.visibility_level, target_namespace.visibility_level].min
+      target_level = [target_level, Gitlab::VisibilityLevel.level_value(params[:visibility])].min if params.key?(:visibility)
 
       Gitlab::VisibilityLevel.closest_allowed_level(target_level)
     end

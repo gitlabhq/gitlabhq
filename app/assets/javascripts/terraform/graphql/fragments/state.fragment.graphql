@@ -2,6 +2,10 @@
 #import "./state_version.fragment.graphql"
 
 fragment State on TerraformState {
+  _showDetails @client
+  errorMessages @client
+  loadingActions @client
+
   id
   name
   lockedAt

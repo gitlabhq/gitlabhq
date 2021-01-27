@@ -1,8 +1,9 @@
 import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import UsagePingDisabled from './components/usage_ping_disabled.vue';
 import AdminUsersApp from './components/app.vue';
 
-export default function (el = document.querySelector('#js-admin-users-app')) {
+export const initAdminUsersApp = (el = document.querySelector('#js-admin-users-app')) => {
   if (!el) {
     return false;
   }
@@ -19,4 +20,24 @@ export default function (el = document.querySelector('#js-admin-users-app')) {
         },
       }),
   });
-}
+};
+
+export const initCohortsEmptyState = (el = document.querySelector('#js-cohorts-empty-state')) => {
+  if (!el) {
+    return false;
+  }
+
+  const { emptyStateSvgPath, enableUsagePingLink, docsLink } = el.dataset;
+
+  return new Vue({
+    el,
+    provide: {
+      svgPath: emptyStateSvgPath,
+      primaryButtonPath: enableUsagePingLink,
+      docsLink,
+    },
+    render(h) {
+      return h(UsagePingDisabled);
+    },
+  });
+};

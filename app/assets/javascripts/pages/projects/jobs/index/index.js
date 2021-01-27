@@ -7,10 +7,13 @@ document.addEventListener('DOMContentLoaded', () => {
   remainingTimeElements.forEach(
     (el) =>
       new Vue({
-        ...GlCountdown,
         el,
-        propsData: {
-          endDateString: el.dateTime,
+        render(h) {
+          return h(GlCountdown, {
+            props: {
+              endDateString: el.dateTime,
+            },
+          });
         },
       }),
   );

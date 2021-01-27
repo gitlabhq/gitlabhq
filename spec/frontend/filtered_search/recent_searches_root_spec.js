@@ -1,32 +1,51 @@
-import Vue from 'vue';
+import { setHTMLFixture } from 'helpers/fixtures';
 import RecentSearchesRoot from '~/filtered_search/recent_searches_root';
 
-jest.mock('vue');
+const containerId = 'test-container';
+const dropdownElementId = 'test-dropdown-element';
 
 describe('RecentSearchesRoot', () => {
   describe('render', () => {
-    let recentSearchesRoot;
-    let data;
-    let template;
+    let recentSearchesRootMockInstance;
+    let vm;
+    let containerEl;
 
     beforeEach(() => {
-      recentSearchesRoot = {
+      setHTMLFixture(`
+        <div id="${containerId}">
+          <div id="${dropdownElementId}"></div>
+        </div>
+      `);
+
+      containerEl = document.getElementById(containerId);
+
+      recentSearchesRootMockInstance = {
         store: {
-          state: 'state',
+          state: {
+            recentSearches: ['foo', 'bar', 'qux'],
+            isLocalStorageAvailable: true,
+            allowedKeys: ['test'],
+          },
         },
+        wrapperElement: document.getElementById(dropdownElementId),
       };
 
-      Vue.mockImplementation((options) => {
-        ({ data, template } = options);
-      });
+      RecentSearchesRoot.prototype.render.call(recentSearchesRootMockInstance);
+      vm = recentSearchesRootMockInstance.vm;
 
-      RecentSearchesRoot.prototype.render.call(recentSearchesRoot);
+      return vm.$nextTick();
     });
 
-    it('should instantiate Vue', () => {
-      expect(Vue).toHaveBeenCalled();
-      expect(data()).toBe(recentSearchesRoot.store.state);
-      expect(template).toContain(':is-local-storage-available="isLocalStorageAvailable"');
+    afterEach(() => {
+      vm.$destroy();
+    });
+
+    it('should render the recent searches', () => {
+      const { recentSearches } = recentSearchesRootMockInstance.store.state;
+
+      recentSearches.forEach((recentSearch) => {
+        expect(containerEl.textContent).toContain(recentSearch);
+      });
     });
   });
 });

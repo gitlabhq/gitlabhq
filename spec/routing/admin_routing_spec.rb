@@ -141,13 +141,6 @@ RSpec.describe Admin::DevOpsReportController, "routing" do
   end
 end
 
-# admin_cohorts GET    /admin/cohorts(.:format) admin/cohorst#index
-RSpec.describe Admin::CohortsController, "routing" do
-  it "to #index" do
-    expect(get("/admin/cohorts")).to route_to('admin/cohorts#index')
-  end
-end
-
 RSpec.describe Admin::GroupsController, "routing" do
   let(:name) { 'complex.group-namegit' }
 

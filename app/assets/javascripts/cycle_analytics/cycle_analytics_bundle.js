@@ -1,3 +1,7 @@
+// This is a true violation of @gitlab/no-runtime-template-compiler, as it
+// relies on app/views/projects/cycle_analytics/show.html.haml for its
+// template.
+/* eslint-disable @gitlab/no-runtime-template-compiler */
 import $ from 'jquery';
 import Vue from 'vue';
 import Cookies from 'js-cookie';

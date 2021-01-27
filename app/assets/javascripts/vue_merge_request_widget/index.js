@@ -1,3 +1,7 @@
+// This is a false violation of @gitlab/no-runtime-template-compiler, since it
+// creates a new Vue instance by spreading a _valid_ Vue component definition
+// into the Vue constructor.
+/* eslint-disable @gitlab/no-runtime-template-compiler */
 import Vue from 'vue';
 import MrWidgetOptions from 'ee_else_ce/vue_merge_request_widget/mr_widget_options.vue';
 import VueApollo from 'vue-apollo';

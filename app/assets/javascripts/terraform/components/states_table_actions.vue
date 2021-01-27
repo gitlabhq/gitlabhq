@@ -10,6 +10,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import addDataToState from '../graphql/mutations/add_data_to_state.mutation.graphql';
 import lockState from '../graphql/mutations/lock_state.mutation.graphql';
 import unlockState from '../graphql/mutations/unlock_state.mutation.graphql';
 import removeState from '../graphql/mutations/remove_state.mutation.graphql';
@@ -33,13 +34,13 @@ export default {
   },
   data() {
     return {
-      loading: false,
       showRemoveModal: false,
       removeConfirmText: '',
     };
   },
   i18n: {
     downloadJSON: s__('Terraform|Download JSON'),
+    errorUpdate: s__('Terraform|An error occurred while changing the state file'),
     lock: s__('Terraform|Lock'),
     modalBody: s__(
       'Terraform|You are about to remove the State file %{name}. This will permanently delete all the State versions and history. The infrastructure provisioned previously	will remain intact, only the state file with all its versions are to be removed. This action is non-revertible.',
@@ -76,19 +77,37 @@ export default {
       this.removeConfirmText = '';
     },
     lock() {
-      this.stateMutation(lockState);
+      this.stateActionMutation(lockState);
     },
     unlock() {
-      this.stateMutation(unlockState);
+      this.stateActionMutation(unlockState);
+    },
+    updateStateCache(newData) {
+      this.$apollo.mutate({
+        mutation: addDataToState,
+        variables: {
+          terraformState: {
+            ...this.state,
+            ...newData,
+          },
+        },
+      });
     },
     remove() {
       if (!this.disableModalSubmit) {
         this.hideModal();
-        this.stateMutation(removeState);
+        this.stateActionMutation(removeState);
       }
     },
-    stateMutation(mutation) {
-      this.loading = true;
+    stateActionMutation(mutation) {
+      let errorMessages = [];
+
+      this.updateStateCache({
+        _showDetails: false,
+        errorMessages,
+        loadingActions: true,
+      });
+
       this.$apollo
         .mutate({
           mutation,
@@ -99,9 +118,22 @@ export default {
           awaitRefetchQueries: true,
           notifyOnNetworkStatusChange: true,
         })
-        .catch(() => {})
+        .then(({ data }) => {
+          errorMessages =
+            data?.terraformStateDelete?.errors ||
+            data?.terraformStateLock?.errors ||
+            data?.terraformStateUnlock?.errors ||
+            [];
+        })
+        .catch(() => {
+          errorMessages = [this.$options.i18n.errorUpdate];
+        })
         .finally(() => {
-          this.loading = false;
+          this.updateStateCache({
+            _showDetails: Boolean(errorMessages.length),
+            errorMessages,
+            loadingActions: false,
+          });
         });
     },
   },
@@ -114,7 +146,7 @@ export default {
       icon="ellipsis_v"
       right
       :data-testid="`terraform-state-actions-${state.name}`"
-      :disabled="loading"
+      :disabled="state.loadingActions"
       toggle-class="gl-px-3! gl-shadow-none!"
     >
       <template #button-content>

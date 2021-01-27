@@ -1,3 +1,7 @@
+// This is a true violation of @gitlab/no-runtime-template-compiler, as it
+// relies on app/views/admin/application_settings/_gitpod.html.haml for its
+// template.
+/* eslint-disable @gitlab/no-runtime-template-compiler */
 import Vue from 'vue';
 import initUserInternalRegexPlaceholder from '../account_and_limits';
 import IntegrationHelpText from '~/vue_shared/components/integrations_help_text.vue';
