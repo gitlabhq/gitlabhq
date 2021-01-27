@@ -618,7 +618,7 @@ variables, an `Insufficient permissions to set pipeline variables` error occurs.
 
 The setting is `disabled` by default.
 
-If you [store your CI configurations in a different repository](../../ci/pipelines/settings.md#custom-ci-configuration-path),
+If you [store your CI configurations in a different repository](../../ci/pipelines/settings.md#custom-cicd-configuration-path),
 use this setting for strict control over all aspects of the environment
 the pipeline runs in.
 

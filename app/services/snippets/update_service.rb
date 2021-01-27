@@ -7,6 +7,9 @@ module Snippets
     UpdateError = Class.new(StandardError)
 
     def execute(snippet)
+      @request = params.delete(:request)
+      @spam_params = Spam::SpamActionService.filter_spam_params!(params)
+
       return invalid_params_error(snippet) unless valid_params?
 
       if visibility_changed?(snippet) && !visibility_allowed?(snippet, visibility_level)
@@ -14,7 +17,12 @@ module Snippets
       end
 
       update_snippet_attributes(snippet)
-      spam_check(snippet, current_user, action: :update)
+      Spam::SpamActionService.new(
+        spammable: snippet,
+        request: request,
+        user: current_user,
+        action: :update
+      ).execute(spam_params: spam_params)
 
       if save_and_commit(snippet)
         Gitlab::UsageDataCounters::SnippetCounter.count(:update)
@@ -26,6 +34,8 @@ module Snippets
     end
 
     private
+
+    attr_reader :request, :spam_params
 
     def visibility_changed?(snippet)
       visibility_level && visibility_level.to_i != snippet.visibility_level

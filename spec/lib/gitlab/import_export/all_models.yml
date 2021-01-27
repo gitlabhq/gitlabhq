@@ -561,6 +561,7 @@ project:
 - exported_protected_branches
 - incident_management_oncall_schedules
 - debian_distributions
+- merge_request_metrics
 award_emoji:
 - awardable
 - user
@@ -589,6 +590,7 @@ lfs_file_locks:
 project_badges:
 - project
 metrics:
+- target_project
 - merge_request
 - latest_closed_by
 - merged_by

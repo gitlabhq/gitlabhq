@@ -13,7 +13,10 @@ tasks:
       (
         set -e
         cd /workspace/gitlab-development-kit
-        [[ ! -L /workspace/gitlab-development-kit/gitlab ]] && ln -fs /workspace/gitlab /workspace/gitlab-development-kit/gitlab
+        # GitLab FOSS
+        [[ -d /workspace/gitlab-foss ]] && ln -fs /workspace/gitlab-foss /workspace/gitlab-development-kit/gitlab
+        # GitLab
+        [[ -d /workspace/gitlab ]] && ln -fs /workspace/gitlab /workspace/gitlab-development-kit/gitlab
         mv /workspace/gitlab-development-kit/secrets.yml /workspace/gitlab-development-kit/gitlab/config
         # reconfigure GDK
         echo "$(date) – Reconfiguring GDK" | tee -a /workspace/startup.log
@@ -47,9 +50,11 @@ tasks:
         if [ "$GITLAB_RUN_DB_MIGRATIONS" == true ]; then
           make gitlab-db-migrate
         fi
-        cd ../gitlab
+        cd /workspace/gitlab-development-kit/gitlab
+        # Install Lefthook
+        bundle exec lefthook install
         git checkout db/structure.sql
-        cd ../gitlab-development-kit
+        cd /workspace/gitlab-development-kit
         # Waiting for GitLab ...
         gp await-port 3000
         printf "Waiting for GitLab at $(gp url 3000) ..."

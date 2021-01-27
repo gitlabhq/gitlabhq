@@ -156,7 +156,7 @@ Area of your GitLab instance (`.gitlab-ci.yml` if not set):
 1. Input the new path in the **Default CI configuration path** field.
 1. Hit **Save changes** for the changes to take effect.
 
-It is also possible to specify a [custom CI configuration path for a specific project](../../../ci/pipelines/settings.md#custom-ci-configuration-path).
+It is also possible to specify a [custom CI/CD configuration path for a specific project](../../../ci/pipelines/settings.md#custom-cicd-configuration-path).
 
 <!-- ## Troubleshooting
 

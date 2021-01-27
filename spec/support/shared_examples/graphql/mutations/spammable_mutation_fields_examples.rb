@@ -21,10 +21,10 @@ RSpec.shared_examples 'can raise spam flag' do
 
   context 'when the snippet is detected as spam' do
     it 'raises spam flag' do
-      allow_next_instance_of(service) do |instance|
-        allow(instance).to receive(:spam_check) do |snippet, user, _|
-          snippet.spam!
-        end
+      allow_next_instance_of(Spam::SpamActionService) do |instance|
+        allow(instance).to receive(:execute) { true }
+        instance.target.spam!
+        instance.target.unrecoverable_spam_error!
       end
 
       subject

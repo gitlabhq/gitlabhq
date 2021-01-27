@@ -2,8 +2,6 @@
 
 module Snippets
   class BaseService < ::BaseService
-    include SpamCheckMethods
-
     UPDATE_COMMIT_MSG = 'Update snippet'
     INITIAL_COMMIT_MSG = 'Initial commit'
 
@@ -18,8 +16,6 @@ module Snippets
 
       input_actions = Array(@params.delete(:snippet_actions).presence)
       @snippet_actions = SnippetInputActionCollection.new(input_actions, allowed_actions: restricted_files_actions)
-
-      filter_spam_check_params
     end
 
     private

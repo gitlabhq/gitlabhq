@@ -288,6 +288,7 @@ RSpec.describe Ci::Stage, :models do
   context 'when stage has warnings' do
     before do
       create(:ci_build, :failed, :allowed_to_fail, stage_id: stage.id)
+      create(:ci_bridge, :failed, :allowed_to_fail, stage_id: stage.id)
     end
 
     describe '#has_warnings?' do
@@ -310,7 +311,7 @@ RSpec.describe Ci::Stage, :models do
         expect(synced_queries.count).to eq 1
 
         expect(stage.number_of_warnings.inspect).to include 'BatchLoader'
-        expect(stage.number_of_warnings).to eq 1
+        expect(stage.number_of_warnings).to eq 2
       end
     end
   end

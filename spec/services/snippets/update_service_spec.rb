@@ -6,6 +6,7 @@ RSpec.describe Snippets::UpdateService do
   describe '#execute', :aggregate_failures do
     let_it_be(:user) { create(:user) }
     let_it_be(:admin) { create :user, admin: true }
+    let(:action) { :update }
     let(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
     let(:base_opts) do
       {
@@ -738,11 +739,7 @@ RSpec.describe Snippets::UpdateService do
       it_behaves_like 'only file_name is present'
       it_behaves_like 'only content is present'
       it_behaves_like 'invalid params error response'
-      it_behaves_like 'snippets spam check is performed' do
-        before do
-          subject
-        end
-      end
+      it_behaves_like 'checking spam'
 
       context 'when snippet does not have a repository' do
         let!(:snippet) { create(:project_snippet, author: user, project: project) }
@@ -766,11 +763,7 @@ RSpec.describe Snippets::UpdateService do
       it_behaves_like 'only file_name is present'
       it_behaves_like 'only content is present'
       it_behaves_like 'invalid params error response'
-      it_behaves_like 'snippets spam check is performed' do
-        before do
-          subject
-        end
-      end
+      it_behaves_like 'checking spam'
 
       context 'when snippet does not have a repository' do
         let!(:snippet) { create(:personal_snippet, author: user, project: project) }

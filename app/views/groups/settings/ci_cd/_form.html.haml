@@ -4,10 +4,10 @@
       = form_errors(group)
       %fieldset.builds-feature
         .form-group
-          = f.label :max_artifacts_size, _('Maximum artifacts size (MB)'), class: 'label-bold'
+          = f.label :max_artifacts_size, _('Maximum artifacts size'), class: 'label-bold'
           = f.number_field :max_artifacts_size, class: 'form-control'
           %p.form-text.text-muted
-            = _("Set the maximum file size for each job's artifacts")
+            = _("The maximum file size in megabytes for individual job artifacts.")
             = link_to sprite_icon('question-o'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size'), target: '_blank'
 
         = f.submit _('Save changes'), class: "btn btn-success"

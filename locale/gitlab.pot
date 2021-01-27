@@ -1337,9 +1337,6 @@ msgstr ""
 msgid "A rebase is already in progress."
 msgstr ""
 
-msgid "A regular expression that will be used to find the test coverage output in the job log. Leave blank to disable"
-msgstr ""
-
 msgid "A secure token that identifies an external storage request."
 msgstr ""
 
@@ -2913,7 +2910,7 @@ msgstr ""
 msgid "Allow projects within this group to use Git LFS"
 msgstr ""
 
-msgid "Allow public access to pipelines and job details, including output logs and artifacts"
+msgid "Allow public access to pipelines and job details, including output logs and artifacts."
 msgstr ""
 
 msgid "Allow rendering of PlantUML diagrams in Asciidoc documents."
@@ -4187,7 +4184,7 @@ msgstr ""
 msgid "Auto stop successfully canceled."
 msgstr ""
 
-msgid "Auto-cancel redundant, pending pipelines"
+msgid "Auto-cancel redundant pipelines"
 msgstr ""
 
 msgid "Auto-close referenced issues on default branch"
@@ -4436,9 +4433,6 @@ msgstr ""
 msgid "Begin with the selected commit"
 msgstr ""
 
-msgid "Below are examples of regex for existing tools:"
-msgstr ""
-
 msgid "Below are the fingerprints for the current instance SSH host keys."
 msgstr ""
 
@@ -4466,6 +4460,9 @@ msgstr ""
 msgid "BillingPlans|Congratulations, your free trial is activated."
 msgstr ""
 
+msgid "BillingPlans|End of availability for the Bronze Plan"
+msgstr ""
+
 msgid "BillingPlans|Free upgrade!"
 msgstr ""
 
@@ -4491,6 +4488,9 @@ msgid "BillingPlans|This group uses the plan associated with its parent group."
 msgstr ""
 
 msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
+msgstr ""
+
+msgid "BillingPlans|While GitLab is ending availability of the Bronze plan, you can still renew your Bronze subscription one additional time before %{eoa_bronze_plan_end_date}. We are also offering a limited time free upgrade to our Premium Plan (up to 25 users)! Learn more about the changes and offers in our %{announcement_link}."
 msgstr ""
 
 msgid "BillingPlans|Your GitLab.com %{plan} trial will %{strong_open}expire after %{expiration_date}%{strong_close}. You can retain access to the %{plan} features by upgrading below."
@@ -4979,6 +4979,9 @@ msgid "CI/CD"
 msgstr ""
 
 msgid "CI/CD configuration"
+msgstr ""
+
+msgid "CI/CD configuration file"
 msgstr ""
 
 msgid "CI/CD for external repo"
@@ -5635,9 +5638,6 @@ msgstr ""
 msgid "Choose any color. Or you can choose one of the suggested colors below"
 msgstr ""
 
-msgid "Choose between %{code_open}clone%{code_close} or %{code_open}fetch%{code_close} to get the recent application code"
-msgstr ""
-
 msgid "Choose file…"
 msgstr ""
 
@@ -5654,6 +5654,9 @@ msgid "Choose visibility level, enable/disable project features (issues, reposit
 msgstr ""
 
 msgid "Choose what content you want to see on a group’s overview page."
+msgstr ""
+
+msgid "Choose which Git strategy to use when fetching the project."
 msgstr ""
 
 msgid "Choose which repositories you want to connect and run CI/CD pipelines."
@@ -8567,9 +8570,6 @@ msgstr ""
 msgid "Custom Attributes"
 msgstr ""
 
-msgid "Custom CI configuration path"
-msgstr ""
-
 msgid "Custom Git clone URL for HTTP(S)"
 msgstr ""
 
@@ -8642,7 +8642,7 @@ msgstr ""
 msgid "Customize name"
 msgstr ""
 
-msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
+msgid "Customize your pipeline configuration and coverage report."
 msgstr ""
 
 msgid "Customize your pipeline configuration."
@@ -12183,9 +12183,6 @@ msgstr ""
 msgid "Fast-forward merge without a merge commit"
 msgstr ""
 
-msgid "Faster as it re-uses the project workspace (falling back to clone if it doesn't exist)"
-msgstr ""
-
 msgid "Faster releases. Better code. Less pain."
 msgstr ""
 
@@ -12707,13 +12704,16 @@ msgstr ""
 msgid "For additional information, review your group membership: %{link_to} or contact your group owner."
 msgstr ""
 
+msgid "For each job, clone the repository."
+msgstr ""
+
+msgid "For each job, re-use the project workspace. If the workspace doesn't exist, use %{code_open}git clone%{code_close}."
+msgstr ""
+
 msgid "For help setting up the Service Desk for your instance, please contact an administrator."
 msgstr ""
 
 msgid "For individual use, create a separate account under your personal email address, not tied to the Enterprise email domain or group."
-msgstr ""
-
-msgid "For internal projects, any logged in user except external users can view pipelines and access job details (output logs and artifacts)"
 msgstr ""
 
 msgid "For more info, read the documentation."
@@ -12735,12 +12735,6 @@ msgid "For more information, see the documentation on %{deactivating_usage_ping_
 msgstr ""
 
 msgid "For more information, see the documentation on %{link_start}disabling Seat Link%{link_end}."
-msgstr ""
-
-msgid "For private projects, any member (guest or higher) can view pipelines and access job details (output logs and artifacts)"
-msgstr ""
-
-msgid "For public projects, anyone can view pipelines and access job details (output logs and artifacts)"
 msgstr ""
 
 msgid "Forgot your password?"
@@ -13283,7 +13277,7 @@ msgstr ""
 msgid "Git shallow clone"
 msgstr ""
 
-msgid "Git strategy for pipelines"
+msgid "Git strategy"
 msgstr ""
 
 msgid "Git transfer in progress"
@@ -14673,9 +14667,6 @@ msgstr ""
 msgid "If any indexed field exceeds this limit it will be truncated to this number of characters and the rest will not be indexed or searchable. This does not apply to repository and wiki indexing. Setting this to 0 means it is unlimited."
 msgstr ""
 
-msgid "If any job surpasses this timeout threshold, it will be marked as failed. Human readable time input language is accepted like \"1 hour\". Values without specification represent seconds."
-msgstr ""
-
 msgid "If blank, set allowable lifetime to %{instance_level_policy_in_words}, as defined by the instance admin. Once set, existing tokens for users in this group may be revoked."
 msgstr ""
 
@@ -14689,12 +14680,6 @@ msgid "If disabled, a diverged local branch will not be automatically updated wi
 msgstr ""
 
 msgid "If disabled, only admins will be able to configure repository mirroring."
-msgstr ""
-
-msgid "If disabled, the access level will depend on the user's permissions in the project."
-msgstr ""
-
-msgid "If enabled"
 msgstr ""
 
 msgid "If enabled, GitLab will handle Object Storage replication using Geo. %{linkStart}More information%{linkEnd}"
@@ -16274,6 +16259,9 @@ msgstr ""
 msgid "Jobs"
 msgstr ""
 
+msgid "Jobs fail if they run longer than the timeout time. Input value is in seconds by default. Human readable input is also accepted, for example %{code_open}1 hour%{code_close}."
+msgstr ""
+
 msgid "Jobs|Are you sure you want to proceed?"
 msgstr ""
 
@@ -17473,6 +17461,9 @@ msgid "Maximum Users"
 msgstr ""
 
 msgid "Maximum allowable lifetime for personal access token (days)"
+msgstr ""
+
+msgid "Maximum artifacts size"
 msgstr ""
 
 msgid "Maximum artifacts size (MB)"
@@ -19195,7 +19186,7 @@ msgstr ""
 msgid "New password"
 msgstr ""
 
-msgid "New pipelines will cancel older, pending pipelines on the same branch"
+msgid "New pipelines cause older pending pipelines on the same branch to be cancelled."
 msgstr ""
 
 msgid "New project"
@@ -26410,9 +26401,6 @@ msgstr ""
 msgid "SlackService|This service allows users to perform common operations on this project by entering slash commands in Slack."
 msgstr ""
 
-msgid "Slower but makes sure the project workspace is pristine as it clones the repository from scratch for every job"
-msgstr ""
-
 msgid "Smartcard"
 msgstr ""
 
@@ -28352,6 +28340,9 @@ msgstr ""
 msgid "The maximum file size allowed is %{size}."
 msgstr ""
 
+msgid "The maximum file size in megabytes for individual job artifacts."
+msgstr ""
+
 msgid "The maximum file size is %{size}."
 msgstr ""
 
@@ -28370,7 +28361,10 @@ msgstr ""
 msgid "The name \"%{name}\" is already taken in this directory."
 msgstr ""
 
-msgid "The number of changes to be fetched from GitLab when cloning a repository. This can speed up Pipelines execution. Keep empty or set to 0 to disable shallow clone by default and make GitLab CI fetch all branches and tags each time."
+msgid "The name of the CI/CD configuration file. A path relative to the root directory is optional (for example %{code_open}my/path/.myfile.yml%{code_close})."
+msgstr ""
+
+msgid "The number of changes to fetch from GitLab when cloning a repository. Lower values can speed up pipeline execution. Set to %{code_open}0%{code_close} or blank to fetch all branches and tags for each job"
 msgstr ""
 
 msgid "The number of merge requests merged by month."
@@ -28386,9 +28380,6 @@ msgid "The parent epic is confidential and can only contain confidential epics a
 msgstr ""
 
 msgid "The passphrase required to decrypt the private key. This is optional and the value is encrypted at rest."
-msgstr ""
-
-msgid "The path to the CI configuration file. Defaults to %{code_open}.gitlab-ci.yml%{code_close}"
 msgstr ""
 
 msgid "The phase of the development lifecycle."
@@ -28434,6 +28425,9 @@ msgid "The project was successfully imported."
 msgstr ""
 
 msgid "The pseudonymizer data collection is disabled. When enabled, GitLab will run a background job that will produce pseudonymized CSVs of the GitLab database that will be uploaded to your configured object storage directory."
+msgstr ""
+
+msgid "The regular expression used to find test coverage output in the job log. For example, use %{regex} for Simplecov (Ruby). Leave blank to disable."
 msgstr ""
 
 msgid "The remote mirror took to long to complete."
@@ -32031,7 +32025,7 @@ msgstr ""
 msgid "When Kroki is enabled, GitLab sends diagrams to an instance of Kroki to display them as images. You can use the free public cloud instance %{kroki_public_url} or you can %{install_link} on your own infrastructure. Once you've installed Kroki, make sure to update the server URL to point to your instance."
 msgstr ""
 
-msgid "When a deployment job is successful, skip older deployment jobs that are still pending"
+msgid "When a deployment job is successful, skip older deployment jobs that are still pending."
 msgstr ""
 
 msgid "When a runner is locked, it cannot be assigned to other projects"

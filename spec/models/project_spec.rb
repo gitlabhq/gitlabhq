@@ -21,6 +21,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:services) }
     it { is_expected.to have_many(:events) }
     it { is_expected.to have_many(:merge_requests) }
+    it { is_expected.to have_many(:merge_request_metrics).class_name('MergeRequest::Metrics') }
     it { is_expected.to have_many(:issues) }
     it { is_expected.to have_many(:milestones) }
     it { is_expected.to have_many(:iterations) }

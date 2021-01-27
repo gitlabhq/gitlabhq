@@ -4,89 +4,22 @@
       = form_errors(@project)
       %fieldset.builds-feature
         .form-group
-          %h5.gl-mt-0
-            = _("Git strategy for pipelines")
-          %p
-            = html_escape(_("Choose between %{code_open}clone%{code_close} or %{code_open}fetch%{code_close} to get the recent application code")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'git-strategy'), target: '_blank'
-          .form-check
-            = f.radio_button :build_allow_git_fetch, 'false', { class: 'form-check-input' }
-            = f.label :build_allow_git_fetch_false, class: 'form-check-label' do
-              %strong git clone
-              %br
-              %span
-                = _("Slower but makes sure the project workspace is pristine as it clones the repository from scratch for every job")
-          .form-check
-            = f.radio_button :build_allow_git_fetch, 'true', { class: 'form-check-input' }
-            = f.label :build_allow_git_fetch_true, class: 'form-check-label' do
-              %strong git fetch
-              %br
-              %span
-                = _("Faster as it re-uses the project workspace (falling back to clone if it doesn't exist)")
-
-        %hr
-        .form-group
-          = f.fields_for :ci_cd_settings_attributes, @project.ci_cd_settings do |form|
-            = form.label :default_git_depth, _('Git shallow clone'), class: 'label-bold'
-            = form.number_field :default_git_depth, { class: 'form-control', min: 0, max: 1000 }
-            %p.form-text.text-muted
-              = _('The number of changes to be fetched from GitLab when cloning a repository. This can speed up Pipelines execution. Keep empty or set to 0 to disable shallow clone by default and make GitLab CI fetch all branches and tags each time.')
-
-        %hr
-        .form-group
-          = f.label :build_timeout_human_readable, _('Timeout'), class: 'label-bold'
-          = f.text_field :build_timeout_human_readable, class: 'form-control'
-          %p.form-text.text-muted
-            = _('If any job surpasses this timeout threshold, it will be marked as failed. Human readable time input language is accepted like "1 hour". Values without specification represent seconds.')
-            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'timeout'), target: '_blank'
-
-        - if can?(current_user, :update_max_artifacts_size, @project)
-          %hr
-          .form-group
-            = f.label :max_artifacts_size, _('Maximum artifacts size (MB)'), class: 'label-bold'
-            = f.number_field :max_artifacts_size, class: 'form-control'
-            %p.form-text.text-muted
-              = _("Set the maximum file size for each job's artifacts")
-              = link_to sprite_icon('question-o'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size'), target: '_blank'
-
-        %hr
-        .form-group
-          = f.label :ci_config_path, _('Custom CI configuration path'), class: 'label-bold'
-          = f.text_field :ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
-          %p.form-text.text-muted
-            = html_escape(_("The path to the CI configuration file. Defaults to %{code_open}.gitlab-ci.yml%{code_close}")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'custom-ci-configuration-path'), target: '_blank'
-
-        %hr
-        .form-group
           .form-check
             = f.check_box :public_builds, { class: 'form-check-input' }
             = f.label :public_builds, class: 'form-check-label' do
               %strong= _("Public pipelines")
             .form-text.text-muted
-              = _("Allow public access to pipelines and job details, including output logs and artifacts")
+              = _("Allow public access to pipelines and job details, including output logs and artifacts.")
               = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'visibility-of-pipelines'), target: '_blank'
-            .bs-callout.bs-callout-info
-              %p #{_("If enabled")}:
-              %ul
-                %li
-                  = _("For public projects, anyone can view pipelines and access job details (output logs and artifacts)")
-                %li
-                  = _("For internal projects, any logged in user except external users can view pipelines and access job details (output logs and artifacts)")
-                %li
-                  = _("For private projects, any member (guest or higher) can view pipelines and access job details (output logs and artifacts)")
-              %p
-                = _("If disabled, the access level will depend on the user's permissions in the project.")
 
-        %hr
         .form-group
           .form-check
             = f.check_box :auto_cancel_pending_pipelines, { class: 'form-check-input' }, 'enabled', 'disabled'
             = f.label :auto_cancel_pending_pipelines, class: 'form-check-label' do
-              %strong= _("Auto-cancel redundant, pending pipelines")
+              %strong= _("Auto-cancel redundant pipelines")
             .form-text.text-muted
-              = _("New pipelines will cancel older, pending pipelines on the same branch")
-              = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'auto-cancel-pending-pipelines'), target: '_blank'
+              = _("New pipelines cause older pending pipelines on the same branch to be cancelled.")
+              = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'auto-cancel-redundant-pipelines'), target: '_blank'
 
         .form-group
           .form-check
@@ -95,10 +28,62 @@
               = form.label :forward_deployment_enabled, class: 'form-check-label' do
                 %strong= _("Skip outdated deployment jobs")
               .form-text.text-muted
-                = _("When a deployment job is successful, skip older deployment jobs that are still pending")
+                = _("When a deployment job is successful, skip older deployment jobs that are still pending.")
                 = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'skip-outdated-deployment-jobs'), target: '_blank'
 
+        .form-group
+          = f.label :ci_config_path, _('CI/CD configuration file'), class: 'label-bold'
+          = f.text_field :ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
+          %p.form-text.text-muted
+            = html_escape(_("The name of the CI/CD configuration file. A path relative to the root directory is optional (for example %{code_open}my/path/.myfile.yml%{code_close}).")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'custom-cicd-configuration-path'), target: '_blank'
+
         %hr
+        .form-group
+          %h5.gl-mt-0
+            = _("Git strategy")
+          %p
+            = _("Choose which Git strategy to use when fetching the project.")
+            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'git-strategy'), target: '_blank'
+          .form-check
+            = f.radio_button :build_allow_git_fetch, 'false', { class: 'form-check-input' }
+            = f.label :build_allow_git_fetch_false, class: 'form-check-label' do
+              %strong git clone
+              %br
+              %span
+                = _("For each job, clone the repository.")
+          .form-check
+            = f.radio_button :build_allow_git_fetch, 'true', { class: 'form-check-input' }
+            = f.label :build_allow_git_fetch_true, class: 'form-check-label' do
+              %strong git fetch
+              %br
+              %span
+                = html_escape(_("For each job, re-use the project workspace. If the workspace doesn't exist, use %{code_open}git clone%{code_close}.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+
+        .form-group
+          = f.fields_for :ci_cd_settings_attributes, @project.ci_cd_settings do |form|
+            = form.label :default_git_depth, _('Git shallow clone'), class: 'label-bold'
+            = form.number_field :default_git_depth, { class: 'form-control', min: 0, max: 1000 }
+            %p.form-text.text-muted
+              = html_escape(_('The number of changes to fetch from GitLab when cloning a repository. Lower values can speed up pipeline execution. Set to %{code_open}0%{code_close} or blank to fetch all branches and tags for each job')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+              = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'git-shallow-clone'), target: '_blank'
+
+        %hr
+        .form-group
+          = f.label :build_timeout_human_readable, _('Timeout'), class: 'label-bold'
+          = f.text_field :build_timeout_human_readable, class: 'form-control'
+          %p.form-text.text-muted
+            = html_escape(_('Jobs fail if they run longer than the timeout time. Input value is in seconds by default. Human readable input is also accepted, for example %{code_open}1 hour%{code_close}.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'timeout'), target: '_blank'
+
+        - if can?(current_user, :update_max_artifacts_size, @project)
+          .form-group
+            = f.label :max_artifacts_size, _('Maximum artifacts size'), class: 'label-bold'
+            = f.number_field :max_artifacts_size, class: 'form-control'
+            %p.form-text.text-muted
+              = _("The maximum file size in megabytes for individual job artifacts.")
+              = link_to sprite_icon('question-o'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size'), target: '_blank'
+
         .form-group
           = f.label :build_coverage_regex, _("Test coverage parsing"), class: 'label-bold'
           .input-group
@@ -108,44 +93,8 @@
             %span.input-group-append
               .input-group-text /
           %p.form-text.text-muted
-            = _("A regular expression that will be used to find the test coverage output in the job log. Leave blank to disable")
+            = html_escape(_('The regular expression used to find test coverage output in the job log. For example, use %{regex} for Simplecov (Ruby). Leave blank to disable.')) % { regex: '<code>\(\d+.\d+%\)</code>'.html_safe }
             = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'test-coverage-parsing'), target: '_blank'
-          .bs-callout.bs-callout-info
-            %p= _("Below are examples of regex for existing tools:")
-            %ul
-              %li
-                Simplecov (Ruby) -
-                %code \(\d+.\d+\%\) covered
-              %li
-                pytest-cov (Python) -
-                %code ^TOTAL.+?(\d+\%)$
-              %li
-                Scoverage (Scala) -
-                %code Statement coverage[A-Za-z\.*]\s*:\s*([^%]+)
-              %li
-                phpunit --coverage-text --colors=never (PHP) -
-                %code ^\s*Lines:\s*\d+.\d+\%
-              %li
-                gcovr (C/C++) -
-                %code ^TOTAL.*\s+(\d+\%)$
-              %li
-                tap --coverage-report=text-summary (NodeJS) -
-                %code ^Statements\s*:\s*([^%]+)
-              %li
-                nyc npm test (NodeJS) -
-                %code All files[^|]*\|[^|]*\s+([\d\.]+)
-              %li
-                excoveralls (Elixir) -
-                %code \[TOTAL\]\s+(\d+\.\d+)%
-              %li
-                mix test --cover (Elixir) -
-                %code \d+.\d+\%\s+\|\s+Total
-              %li
-                JaCoCo (Java/Kotlin)
-                %code Total.*?([0-9]{1,3})%
-              %li
-                go test -cover (Go)
-                %code coverage: \d+.\d+% of statements
 
         = f.submit _('Save changes'), class: "btn btn-success", data: { qa_selector: 'save_general_pipelines_changes_button' }
 

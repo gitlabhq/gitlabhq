@@ -1281,11 +1281,13 @@ RSpec.describe Projects::IssuesController do
           let!(:last_spam_log) { spam_logs.last }
 
           def post_verified_issue
-            post_new_issue({}, { spam_log_id: last_spam_log.id, 'g-recaptcha-response': true } )
+            post_new_issue({}, { spam_log_id: last_spam_log.id, 'g-recaptcha-response': 'abc123' } )
           end
 
           before do
-            expect(controller).to receive_messages(verify_recaptcha: true)
+            expect_next_instance_of(Captcha::CaptchaVerificationService) do |instance|
+              expect(instance).to receive(:execute) { true }
+            end
           end
 
           it 'accepts an issue after reCAPTCHA is verified' do

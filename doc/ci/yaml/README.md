@@ -3845,7 +3845,7 @@ The trigger token is different than the [`trigger`](#trigger) keyword.
 Use `interruptible` to indicate that a running job should be canceled if made redundant by a newer pipeline run.
 Defaults to `false` (uninterruptible). Jobs that have not started yet (pending) are considered interruptible
 and safe to be cancelled.
-This value is used only if the [automatic cancellation of redundant pipelines feature](../pipelines/settings.md#auto-cancel-pending-pipelines)
+This value is used only if the [automatic cancellation of redundant pipelines feature](../pipelines/settings.md#auto-cancel-redundant-pipelines)
 is enabled.
 
 When enabled, a pipeline is immediately canceled when a new pipeline starts on the same branch if either of the following is true:
