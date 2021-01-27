@@ -177,7 +177,7 @@ The jobs are separated into stages:
   - The `test` job runs unit and integration tests by detecting the language and
     framework ([Auto Test](stages.md#auto-test))
   - The `code_quality` job checks the code quality and is allowed to fail
-    ([Auto Code Quality](stages.md#auto-code-quality)) **(STARTER)**
+    ([Auto Code Quality](stages.md#auto-code-quality))
   - The `container_scanning` job checks the Docker container if it has any
     vulnerabilities and is allowed to fail ([Auto Container Scanning](stages.md#auto-container-scanning))
   - The `dependency_scanning` job checks if the application has any dependencies

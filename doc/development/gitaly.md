@@ -12,9 +12,10 @@ Workhorse and GitLab Shell.
 
 ## Deep Dive
 
-In May 2019, Bob Van Landuyt hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`)
-on the [Gitaly project](https://gitlab.com/gitlab-org/gitaly) and how to contribute to it as a
-Ruby developer, to share his domain specific knowledge with anyone who may work in this part of the
+In May 2019, <!-- vale gitlab.Spelling = NO --> Bob Van Landuyt <!-- vale gitlab.Spelling = YES -->
+hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`)
+on the [Gitaly project](https://gitlab.com/gitlab-org/gitaly). It included how to contribute to it as a
+Ruby developer, and shared domain-specific knowledge with anyone who may work in this part of the
 codebase in the future.
 
 You can find the <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [recording on YouTube](https://www.youtube.com/watch?v=BmlEWFS8ORo), and the slides
@@ -22,7 +23,7 @@ on [Google Slides](https://docs.google.com/presentation/d/1VgRbiYih9ODhcPnL8dS0W
 and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/a4fdb1026278bda5c1c5bb574379cf80/Create_Deep_Dive__Gitaly_for_Create_Ruby_Devs.pdf).
 
 Everything covered in this deep dive was accurate as of GitLab 11.11, and while specific details may
-have changed since then, it should still serve as a good introduction.
+have changed, it should still serve as a good introduction.
 
 ## Beginner's guide
 
@@ -43,7 +44,7 @@ needs direct access to the Git repository *must* be implemented in Gitaly, and
 exposed via an RPC.
 
 It's often easier to develop a new feature in Gitaly if you make the changes to
-GitLab that will use the new feature in a separate merge request, to be merged
+GitLab that intends to use the new feature in a separate merge request, to be merged
 immediately after the Gitaly one. This allows you to test your changes before
 they are merged.
 
@@ -107,9 +108,9 @@ bundle exec rake gitlab:features:disable_rugged
 Most of this code exists in the `lib/gitlab/git/rugged_impl` directory.
 
 NOTE:
-You should NOT need to add or modify code related to
-Rugged unless explicitly discussed with the [Gitaly
-Team](https://gitlab.com/groups/gl-gitaly/group_members). This code does
+You should *not* need to add or modify code related to
+Rugged unless explicitly discussed with the
+[Gitaly Team](https://gitlab.com/groups/gl-gitaly/group_members). This code does
 NOT work on GitLab.com or other GitLab instances that do not use NFS.
 
 ## `TooManyInvocationsError` errors
@@ -129,7 +130,7 @@ Isolate the source of the n+1 problem. This is normally a loop that results in G
 element in an array. If you are unable to isolate the problem, please contact a member
 of the [Gitaly Team](https://gitlab.com/groups/gl-gitaly/group_members) for assistance.
 
-Once the source has been found, wrap it in an `allow_n_plus_1_calls` block, as follows:
+After the source has been found, wrap it in an `allow_n_plus_1_calls` block, as follows:
 
 ```ruby
 # n+1: link to n+1 issue
@@ -139,7 +140,7 @@ Gitlab::GitalyClient.allow_n_plus_1_calls do
 end
 ```
 
-Once the code is wrapped in this block, this code path is excluded from n+1 detection.
+After the code is wrapped in this block, this code path is excluded from n+1 detection.
 
 ## Request counts
 
@@ -164,13 +165,13 @@ end
 Normally, GitLab CE/EE tests use a local clone of Gitaly in
 `tmp/tests/gitaly` pinned at the version specified in
 `GITALY_SERVER_VERSION`. The `GITALY_SERVER_VERSION` file supports also
-branches and SHA to use a custom commit in <https://gitlab.com/gitlab-org/gitaly>.
+branches and SHA to use a custom commit in [the repository](https://gitlab.com/gitlab-org/gitaly).
 
 NOTE:
 With the introduction of auto-deploy for Gitaly, the format of
 `GITALY_SERVER_VERSION` was aligned with Omnibus syntax.
 It no longer supports `=revision`, it evaluates the file content as a Git
-reference (branch or SHA). Only if it matches a semver does it prepend a `v`.
+reference (branch or SHA). Only if it matches a semantic version does it prepend a `v`.
 
 If you want to run tests locally against a modified version of Gitaly you
 can replace `tmp/tests/gitaly` with a symlink. This is much faster
@@ -195,7 +196,7 @@ Note that CI tests do not use your locally modified version of
 Gitaly. To use a custom Gitaly version in CI you need to update
 GITALY_SERVER_VERSION as described at the beginning of this section.
 
-To use a different Gitaly repository, e.g., if your changes are present
+To use a different Gitaly repository, such as if your changes are present
 on a fork, you can specify a `GITALY_REPO_URL` environment variable when
 running tests:
 
@@ -218,7 +219,7 @@ as a [CI environment variable](../ci/variables/README.md#gitlab-cicd-environment
 
 If you are making changes to the RPC client, such as adding a new endpoint or adding a new
 parameter to an existing endpoint, follow the guide for
-[Gitaly proto](https://gitlab.com/gitlab-org/gitaly/blob/master/proto/README.md). After pushing
+[Gitaly protobuf specifications](https://gitlab.com/gitlab-org/gitaly/blob/master/proto/README.md). After pushing
 the branch with the changes (`new-feature-branch`, for example):
 
 1. Change the `gitaly` line in the Rails' `Gemfile` to:
@@ -328,15 +329,15 @@ the integration by using GDK:
    1. Uncomment `prometheus_listen_addr` in the configuration file and run `gdk restart gitaly`.
 
 1. Make sure that the flag is not enabled yet:
-   1. Perform whatever action is required to trigger your changes (project creation,
-      submitting commit, observing history, etc.).
+   1. Perform whatever action is required to trigger your changes, such as project creation,
+      submitting commit, or observing history.
    1. Check that the list of current metrics has the new counter for the feature flag:
 
       ```shell
       curl --silent "http://localhost:9236/metrics" | grep go_find_all_tags
       ```
 
-1. Once you observe the metrics for the new feature flag and it increments, you
+1. After you observe the metrics for the new feature flag and it increments, you
    can enable the new feature:
    1. Navigate to GDK's root directory.
    1. Start a Rails console:
@@ -359,7 +360,7 @@ the integration by using GDK:
       ```
 
    1. Exit the Rails console and perform whatever action is required to trigger
-      your changes (project creation, submitting commit, observing history, etc.).
+      your changes, such as project creation, submitting commit, or observing history.
    1. Verify the feature is on by observing the metrics for it:
 
       ```shell

@@ -381,7 +381,7 @@ only. For example:
 }
 ```
 
-## `audit_json.log` **(STARTER)**
+## `audit_json.log` **(PREMIUM)**
 
 This file lives in `/var/log/gitlab/gitlab-rails/audit_json.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/audit_json.log` for
@@ -779,7 +779,7 @@ It's stored at:
 - `/var/log/gitlab/gitlab-rails/database_load_balancing.log` for Omnibus GitLab packages.
 - `/home/git/gitlab/log/database_load_balancing.log` for installations from source.
 
-## `elasticsearch.log` **(STARTER ONLY)**
+## `elasticsearch.log` **(PREMIUM ONLY)**
 
 > Introduced in GitLab 12.6.
 

@@ -17,6 +17,7 @@ else
   SHELL_CLEAR  = "\e[0m"
 end
 
+LEFTHOOK_GLOBAL_CONFIG_PATH = File.expand_path("../lefthook.yml", __dir__)
 HOOK_PATH = File.expand_path("../.git/hooks/pre-push", __dir__)
 HOOK_DATA = <<~HOOK
   #!/usr/bin/env bash
@@ -24,20 +25,44 @@ HOOK_DATA = <<~HOOK
   set -e
 
   url="$2"
-  harness=`dirname "$0"`/../security_harness
 
-  if [ -e "$harness" ]
+  if [[ "$url" != *"gitlab-org/security/"* ]]
   then
-    if [[ "$url" != *"gitlab-org/security/"* ]]
-    then
-      echo "Pushing to remotes other than gitlab.com/gitlab-org/security has been disabled!"
-      echo "Run scripts/security-harness to disable this check."
-      echo
+    echo "Pushing to remotes other than gitlab.com/gitlab-org/security has been disabled!"
+    echo "Run scripts/security-harness to disable this check."
+    echo
 
-      exit 1
-    fi
+    exit 1
   fi
 HOOK
+
+def hook_exist?
+  File.exist?(HOOK_PATH)
+end
+
+def lefthook_hook_in_place?
+  hook_exist? && File.foreach(HOOK_PATH).grep(/lefthook/i).any?
+end
+
+def lefthook_available?
+  system('bundle exec lefthook run prepare-commit-msg &>/dev/null') # rubocop:disable GitlabSecurity/SystemCommandInjection
+end
+
+def uninstall_lefthook
+  return unless lefthook_available?
+
+  system('bundle exec lefthook uninstall') # rubocop:disable GitlabSecurity/SystemCommandInjection
+  # `bundle exec lefthook uninstall` removes the `lefthook.yml` file so we checkout it again
+  system("git checkout -- #{LEFTHOOK_GLOBAL_CONFIG_PATH}") # rubocop:disable GitlabSecurity/SystemCommandInjection
+  puts "#{SHELL_YELLOW}Lefthook was uninstalled to let the security harness work properly.#{SHELL_CLEAR}"
+end
+
+def install_lefthook
+  return unless lefthook_available?
+
+  system('bundle exec lefthook install') # rubocop:disable GitlabSecurity/SystemCommandInjection
+  puts "#{SHELL_GREEN}Lefthook was re-installed.#{SHELL_CLEAR}"
+end
 
 def write_hook
   FileUtils.mkdir_p(File.dirname(HOOK_PATH))
@@ -45,21 +70,20 @@ def write_hook
     file.write(HOOK_DATA)
   end
   File.chmod(0755, HOOK_PATH)
+  puts "#{SHELL_GREEN}Security harness installed -- you will only be able to push to gitlab.com/gitlab-org/security!#{SHELL_CLEAR}"
 end
 
-# Toggle the harness on or off
-def toggle
-  harness_path = File.expand_path('../.git/security_harness', __dir__)
+def delete_hook
+  FileUtils.rm(HOOK_PATH)
+  puts "#{SHELL_YELLOW}Security harness removed -- you can now push to all remotes.#{SHELL_CLEAR}"
+end
 
-  if File.exist?(harness_path)
-    FileUtils.rm(harness_path)
+def hook_file_sum
+  Digest::SHA256.file(HOOK_PATH).hexdigest
+end
 
-    puts "#{SHELL_YELLOW}Security harness removed -- you can now push to all remotes.#{SHELL_CLEAR}"
-  else
-    FileUtils.touch(harness_path)
-
-    puts "#{SHELL_GREEN}Security harness installed -- you will only be able to push to gitlab.com/gitlab-org/security!#{SHELL_CLEAR}"
-  end
+def hook_data_sum
+  Digest::SHA256.hexdigest(HOOK_DATA)
 end
 
 # If we were to change the script and then check for a pre-existing hook before
@@ -67,33 +91,39 @@ end
 # the old hook. Checking previous version hashes allows us to safely overwrite a
 # script that differs from the current version, as long as it's an old one and
 # not custom.
-def previous_version?(dest_sum)
-  # SHA256 hashes of previous iterations of the script contained in `DATA`
+def upgrade_available?
+  # SHA256 hashes of previous iterations of the script contained in `HOOK_DATA`
   %w[
     010bf0363a911ebab2bd5728d80795ed02388da51815f0b2530d08ae8ac574f0
-  ].include?(dest_sum)
+    d9866fc672f373d631eed9cd8dc9c920fa3d36ff26d956fb96a4082a0931b371
+  ].include?(hook_file_sum)
 end
 
-if !File.exist?(HOOK_PATH)
-  write_hook
-  toggle
-else
-  # Deal with a pre-existing hook
-  source_sum = Digest::SHA256.hexdigest(HOOK_DATA)
-  dest_sum   = Digest::SHA256.file(HOOK_PATH).hexdigest
+def current_version?
+  hook_data_sum == hook_file_sum
+end
 
-  if previous_version?(dest_sum)
+# Uninstall Lefthook if it's in place
+uninstall_lefthook if lefthook_hook_in_place?
+
+if hook_exist?
+  # Deal with a pre-existing hook
+  if upgrade_available?
     # Upgrading from a previous version, update in-place
     write_hook
-    toggle
-  elsif source_sum != dest_sum
+  elsif current_version?
+    # Delete the hook if we're already using the current version
+    delete_hook
+
+    # Re-install Lefthook pre-push hook
+    install_lefthook
+  else
     # Pre-existing hook we didn't create; do nothing
     puts "#{SHELL_RED}#{HOOK_PATH} exists and is different from our hook!"
     puts "Remove it and re-run this script to continue.#{SHELL_CLEAR}"
 
     exit 1
-  else
-    # No hook update needed, just toggle
-    toggle
   end
+else
+  write_hook
 end

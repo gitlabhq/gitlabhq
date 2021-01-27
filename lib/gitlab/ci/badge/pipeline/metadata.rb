@@ -1,28 +1,27 @@
 # frozen_string_literal: true
 
-module Gitlab
+module Gitlab::Ci
   module Badge
-    module Coverage
+    module Pipeline
       ##
-      # Class that describes coverage badge metadata
+      # Class that describes pipeline badge metadata
       #
       class Metadata < Badge::Metadata
         def initialize(badge)
           @project = badge.project
           @ref = badge.ref
-          @job = badge.job
         end
 
         def title
-          'coverage report'
+          'pipeline status'
         end
 
         def image_url
-          coverage_project_badges_url(@project, @ref, format: :svg)
+          pipeline_project_badges_url(@project, @ref, format: :svg)
         end
 
         def link_url
-          project_commits_url(@project, @ref)
+          project_commits_url(@project, id: @ref)
         end
       end
     end

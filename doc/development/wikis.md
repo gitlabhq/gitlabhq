@@ -12,8 +12,8 @@ description: "GitLab's development guidelines for Wikis"
 
 ## Overview
 
-The wiki functionality in GitLab is based on [Gollum 4.x](https://github.com/gollum/gollum/),
-which is used in [Gitaly's](gitaly.md) Ruby service and accessed from the Rails app through Gitaly RPC calls.
+The wiki functionality in GitLab is based on [Gollum 4.x](https://github.com/gollum/gollum/).
+It's used in [Gitaly's](gitaly.md) Ruby service, and accessed from the Rails app through Gitaly RPC calls.
 
 Wikis use Git repositories as storage backend, and can be accessed through:
 
@@ -43,7 +43,7 @@ When rendering wiki pages, we don't use Gollum at all and instead go through a
 [custom Banzai pipeline](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/pipeline/wiki_pipeline.rb).
 This adds some [wiki-specific markup](../user/markdown.md#wiki-specific-markdown), such as Gollum's `[[link]]` syntax.
 
-Since we do not make use of most of Gollum's features, we plan to move away from it entirely at some point.
+Because we do not make use of most of Gollum's features, we plan to move away from it entirely at some point.
 [See this epic](https://gitlab.com/groups/gitlab-org/-/epics/2381) for reference.
 
 ## Model classes

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Badge::Coverage::Report do
+RSpec.describe Gitlab::Ci::Badge::Coverage::Report do
   let_it_be(:project) { create(:project) }
   let_it_be(:success_pipeline) { create(:ci_pipeline, :success, project: project) }
   let_it_be(:running_pipeline) { create(:ci_pipeline, :running, project: project) }

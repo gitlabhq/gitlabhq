@@ -135,7 +135,7 @@ might want to use a [custom buildpack](customize.md#custom-buildpacks).
 
 ## Auto Code Quality
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1984) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1984) in [GitLab](https://about.gitlab.com/pricing/) 9.3.
 > - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) in GitLab 13.2.
 
 Auto Code Quality uses the

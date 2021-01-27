@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Badge::Coverage::Template do
+RSpec.describe Gitlab::Ci::Badge::Coverage::Template do
   let(:badge) { double(entity: 'coverage', status: 90.00, customization: {}) }
   let(:template) { described_class.new(badge) }
 

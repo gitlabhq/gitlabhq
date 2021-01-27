@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Background
 
-**Editor Lite** is a technological product driving [Web Editor](../../user/project/repository/web_editor.md), [Snippets](../../user/snippets.md), [CI Linter](../../ci/lint.md), etc. Editor Lite is the driving technology for any single-file editing experience across the product.
+**Editor Lite** is a technological product driving features like [Web Editor](../../user/project/repository/web_editor.md), [Snippets](../../user/snippets.md), and [CI Linter](../../ci/lint.md). Editor Lite is the driving technology for any single-file editing experience across the product.
 
 Editor Lite is a thin wrapper around [the Monaco editor](https://microsoft.github.io/monaco-editor/index.html) that provides the necessary helpers and abstractions and extends Monaco using extensions.
 

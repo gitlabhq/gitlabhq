@@ -44,8 +44,8 @@ erDiagram
 ### `Project` and `MergeRequest`
 
 `Project` and `MergeRequest` models are defined in `ee/app/models/ee/project.rb`
-and `ee/app/models/ee/merge_request.rb`. They extend the non-EE versions since
-approval rules is an EE only feature. Associations and other related stuff to
+and `ee/app/models/ee/merge_request.rb`. They extend the non-EE versions, because
+approval rules are an EE-only feature. Associations and other related stuff to
 merge request approvals are defined here.
 
 ### `ApprovalState`
@@ -265,8 +265,8 @@ graph LR
   ApprovalWrappedRule --> Approval
 ```
 
-This flow gets initiated by the frontend component. The data returned will
-then be used to display information on the MR widget.
+This flow gets initiated by the frontend component. The data returned is
+used to display information on the MR widget.
 
 ### Approving a merge request
 
@@ -282,5 +282,5 @@ is executed instead.
 
 ## TODO
 
-1. Add information related to other rule types (e.g. `code_owner` and `report_approver`).
+1. Add information related to other rule types, such as `code_owner` and `report_approver`.
 1. Add information about side effects of approving/unapproving merge request.

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Gitlab
+module Gitlab::Ci
   module Badge
     ##
     # Abstract template class for badges

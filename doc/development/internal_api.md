@@ -51,7 +51,7 @@ POST /internal/allowed
 | `key_id`  | string | no       | ID of the SSH-key used to connect to GitLab Shell |
 | `username` | string | no      | Username from the certificate used to connect to GitLab Shell |
 | `project`  | string | no (if `gl_repository` is passed) | Path to the project |
-| `gl_repository`  | string | no (if `project` is passed) | Repository identifier (e.g. `project-7`) |
+| `gl_repository`  | string | no (if `project` is passed) | Repository identifier, such as `project-7` |
 | `protocol` | string | yes     | SSH when called from GitLab Shell, HTTP or SSH when called from Gitaly |
 | `action`   | string | yes     | Git command being run (`git-upload-pack`, `git-receive-pack`, `git-upload-archive`) |
 | `changes`  | string | yes     | `<oldrev> <newrev> <refname>` when called from Gitaly, the magic string `_any` when called from GitLab Shell |
@@ -413,7 +413,7 @@ connection for the requested project. GitLab `kas` uses this to configure
 the agent to fetch Kubernetes resources from the project repository to
 sync.
 
-Only public projects are currently supported. For private projects, the ability for the
+Only public projects are supported. For private projects, the ability for the
 agent to be authorized is [not yet implemented](https://gitlab.com/gitlab-org/gitlab/-/issues/220912).
 
 | Attribute | Type   | Required | Description |
@@ -456,7 +456,7 @@ Cluster.
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
-| `alert` | Hash | yes | Alerts detail. Currently same format as [3rd party alert](../operations/incident_management/alert_integrations.md#customize-the-alert-payload-outside-of-gitlab). |
+| `alert` | Hash | yes | Alerts detail. Same format as [3rd party alert](../operations/incident_management/alert_integrations.md#customize-the-alert-payload-outside-of-gitlab). |
 
 ```plaintext
 POST internal/kubernetes/modules/cilium_alert
