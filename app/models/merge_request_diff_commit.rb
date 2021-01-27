@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class MergeRequestDiffCommit < ApplicationRecord
+  extend SuppressCompositePrimaryKeyWarning
+
   include BulkInsertSafe
   include ShaAttribute
   include CachedCommit

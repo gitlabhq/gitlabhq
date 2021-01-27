@@ -7,7 +7,7 @@ class AddPushRuleIdToGroups < ActiveRecord::Migration[6.0]
 
   def up
     with_lock_retries do
-      add_column :namespaces, :push_rule_id, :bigint
+      add_column :namespaces, :push_rule_id, :bigint # rubocop:disable Migration/AddColumnsToWideTables
     end
   end
 

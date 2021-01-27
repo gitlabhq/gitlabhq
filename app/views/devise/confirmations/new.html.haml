@@ -6,7 +6,7 @@
         = render "devise/shared/error_messages", resource: resource
       .form-group
         = f.label :email
-        = f.email_field :email, class: "form-control", required: true, title: 'Please provide a valid email address.', value: nil
+        = f.email_field :email, class: "form-control gl-form-input", required: true, title: 'Please provide a valid email address.', value: nil
       .clearfix
         = f.submit "Resend", class: 'gl-button btn btn-success'
 

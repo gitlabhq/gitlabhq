@@ -24,7 +24,6 @@ tasks:
         # run DB migrations
         echo "$(date) – Running DB migrations" | tee -a /workspace/startup.log
         make gitlab-db-migrate
-        cd -
         # stop GDK
         echo "$(date) – Stopping GDK" | tee -a /workspace/startup.log
         gdk stop

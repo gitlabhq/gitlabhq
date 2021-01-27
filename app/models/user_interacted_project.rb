@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class UserInteractedProject < ApplicationRecord
+  extend SuppressCompositePrimaryKeyWarning
+
   belongs_to :user
   belongs_to :project
 

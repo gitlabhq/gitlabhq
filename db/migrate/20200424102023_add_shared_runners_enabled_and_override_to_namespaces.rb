@@ -7,8 +7,8 @@ class AddSharedRunnersEnabledAndOverrideToNamespaces < ActiveRecord::Migration[6
 
   def up
     with_lock_retries do
-      add_column :namespaces, :shared_runners_enabled, :boolean, default: true, null: false
-      add_column :namespaces, :allow_descendants_override_disabled_shared_runners, :boolean, default: false, null: false
+      add_column :namespaces, :shared_runners_enabled, :boolean, default: true, null: false # rubocop:disable Migration/AddColumnsToWideTables
+      add_column :namespaces, :allow_descendants_override_disabled_shared_runners, :boolean, default: false, null: false # rubocop:disable Migration/AddColumnsToWideTables
     end
   end
 

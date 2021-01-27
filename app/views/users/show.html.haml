@@ -22,11 +22,12 @@
             data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } }>
             = sprite_icon('error')
         - else
-          = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: link_classes + 'btn gl-button',
+          = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: link_classes + 'btn gl-button btn-default',
             title: s_('UserProfile|Report abuse'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
             = sprite_icon('error')
       - if can?(current_user, :read_user_profile, @user)
-        = link_to user_path(@user, rss_url_options), class: link_classes + 'btn gl-button btn-svg btn-default has-tooltip', title: s_('UserProfile|Subscribe'), 'aria-label': 'Subscribe' do
+        = link_to user_path(@user, rss_url_options), class: link_classes + 'btn gl-button btn-default has-tooltip',
+          title: s_('UserProfile|Subscribe'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
           = sprite_icon('rss', css_class: 'qa-rss-icon')
       - if current_user && current_user.admin?
         = link_to [:admin, @user], class: link_classes + 'btn gl-button btn-default', title: s_('UserProfile|View user in admin area'),

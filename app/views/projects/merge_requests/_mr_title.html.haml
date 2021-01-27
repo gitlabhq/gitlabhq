@@ -45,7 +45,7 @@
             %li= link_to 'Report abuse', new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request))
 
       - if can_update_merge_request
-        = link_to 'Edit', edit_project_merge_request_path(@project, @merge_request), class: "d-none d-md-block btn gl-button btn-grouped js-issuable-edit qa-edit-button"
+        = link_to 'Edit', edit_project_merge_request_path(@project, @merge_request), class: "d-none d-md-block btn gl-button btn-default btn-grouped js-issuable-edit qa-edit-button"
 
       - if can_update_merge_request && !are_close_and_open_buttons_hidden
         = render 'projects/merge_requests/close_reopen_draft_report_toggle'

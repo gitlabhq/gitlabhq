@@ -18938,6 +18938,9 @@ msgstr ""
 msgid "NetworkPolicies|None selected"
 msgstr ""
 
+msgid "NetworkPolicies|Please %{installLinkStart}install%{installLinkEnd} and %{configureLinkStart}configure a Kubernetes Agent for this project%{configureLinkEnd} to enable alerts."
+msgstr ""
+
 msgid "NetworkPolicies|Policies are a specification of how groups of pods are allowed to communicate with each other's network endpoints."
 msgstr ""
 

@@ -16,7 +16,7 @@ class RemoveRepositoryReadOnlyToGroups < ActiveRecord::Migration[6.0]
   def down
     unless column_exists?(:namespaces, :repository_read_only)
       with_lock_retries do
-        add_column :namespaces, :repository_read_only, :boolean, default: false, null: false
+        add_column :namespaces, :repository_read_only, :boolean, default: false, null: false # rubocop:disable Migration/AddColumnsToWideTables
       end
     end
   end

@@ -20,15 +20,15 @@
       - unless @user.password_automatically_set?
         .form-group
           = f.label :current_password, _('Current password'), class: 'label-bold'
-          = f.password_field :current_password, required: true, class: 'form-control', data: { qa_selector: 'current_password_field' }
+          = f.password_field :current_password, required: true, class: 'form-control gl-form-input', data: { qa_selector: 'current_password_field' }
           %p.form-text.text-muted
             = _('You must provide your current password in order to change it.')
       .form-group
         = f.label :password, _('New password'), class: 'label-bold'
-        = f.password_field :password, required: true, class: 'form-control', data: { qa_selector: 'new_password_field' }
+        = f.password_field :password, required: true, class: 'form-control gl-form-input', data: { qa_selector: 'new_password_field' }
       .form-group
         = f.label :password_confirmation, _('Password confirmation'), class: 'label-bold'
-        = f.password_field :password_confirmation, required: true, class: 'form-control', data: { qa_selector: 'confirm_password_field' }
+        = f.password_field :password_confirmation, required: true, class: 'form-control gl-form-input', data: { qa_selector: 'confirm_password_field' }
       .gl-mt-3.gl-mb-3
         = f.submit _('Save password'), class: "gl-button btn btn-success gl-mr-3", data: { qa_selector: 'save_password_button' }
         - unless @user.password_automatically_set?

@@ -7,7 +7,7 @@ class AddDefaultBranchProtectionToNamespaces < ActiveRecord::Migration[6.0]
 
   def up
     with_lock_retries do
-      add_column :namespaces, :default_branch_protection, :integer, limit: 2
+      add_column :namespaces, :default_branch_protection, :integer, limit: 2 # rubocop:disable Migration/AddColumnsToWideTables
     end
   end
 

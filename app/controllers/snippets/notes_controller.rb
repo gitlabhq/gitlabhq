@@ -23,7 +23,7 @@ class Snippets::NotesController < ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def snippet
-    PersonalSnippet.find_by(id: params[:snippet_id])
+    @snippet ||= PersonalSnippet.find_by(id: params[:snippet_id])
   end
   # rubocop: enable CodeReuse/ActiveRecord
   alias_method :noteable, :snippet

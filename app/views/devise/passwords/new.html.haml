@@ -1,4 +1,3 @@
-= render 'devise/shared/tab_single', tab_title: 'Reset Password'
 .login-box
   .login-body
     = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: 'gl-show-field-errors' }) do |f|
@@ -6,9 +5,9 @@
         = render "devise/shared/error_messages", resource: resource
       .form-group
         = f.label :email
-        = f.email_field :email, class: "form-control", required: true, value: params[:user_email], autofocus: true, title: 'Please provide a valid email address.'
+        = f.email_field :email, class: "form-control gl-form-input", required: true, value: params[:user_email], autofocus: true, title: 'Please provide a valid email address.'
       .clearfix
-        = f.submit "Reset password", class: "btn-primary btn"
+        = f.submit "Reset password", class: "gl-button btn-info btn"
 
 .clearfix.prepend-top-20
   = render 'devise/shared/sign_in_link'

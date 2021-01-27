@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class MergeRequestContextCommitDiffFile < ApplicationRecord
+  extend SuppressCompositePrimaryKeyWarning
+
   include Gitlab::EncodingHelper
   include ShaAttribute
   include DiffFile

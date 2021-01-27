@@ -155,20 +155,6 @@ Lint/BinaryOperatorWithIdenticalOperands:
 Lint/ConstantDefinitionInBlock:
   Enabled: false
 
-# Offense count: 9
-# Cop supports --auto-correct.
-Lint/DeprecatedOpenSSLConstant:
-  Exclude:
-    - 'app/services/clusters/kubernetes/configure_istio_ingress_service.rb'
-    - 'ee/lib/gitlab/geo/oauth/logout_state.rb'
-    - 'lib/gitlab/conan_token.rb'
-    - 'lib/gitlab/gitaly_client.rb'
-    - 'lib/gitlab/kubernetes/helm/v2/certificate.rb'
-    - 'spec/lib/gitlab/conan_token_spec.rb'
-    - 'spec/services/pages_domains/obtain_lets_encrypt_certificate_service_spec.rb'
-    - 'spec/support/helpers/smime_helper.rb'
-    - 'spec/support/shared_contexts/requests/api/conan_packages_shared_context.rb'
-
 # Offense count: 1
 Lint/DuplicateRequire:
   Exclude:

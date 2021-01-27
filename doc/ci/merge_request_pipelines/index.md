@@ -166,9 +166,10 @@ Read the [documentation on Pipelines for Merged Results](pipelines_for_merged_re
 
 Read the [documentation on Merge Trains](pipelines_for_merged_results/merge_trains/index.md).
 
-## Run pipelines in the parent project for merge requests from a forked project **(STARTER)**
+## Run pipelines in the parent project for merge requests from a forked project **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217451) in GitLab 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217451) in GitLab 13.3.
+> - [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
 
 By default, external contributors working from forks can't create pipelines in the
 parent project. When a pipeline for merge requests is triggered by a merge request

@@ -3,7 +3,7 @@
 - if !project.empty_repo? && can?(current_user, :download_code, project)
   - archive_prefix = "#{project.path}-#{ref.tr('/', '-')}"
   .project-action-button.dropdown.inline>
-    %button.gl-button.btn.has-tooltip{ title: s_('DownloadSource|Download'), 'data-toggle' => 'dropdown', 'aria-label' => s_('DownloadSource|Download'), 'data-display' => 'static', data: { qa_selector: 'download_source_code_button' } }
+    %button.gl-button.btn.btn-default.has-tooltip{ title: s_('DownloadSource|Download'), 'data-toggle' => 'dropdown', 'aria-label' => s_('DownloadSource|Download'), 'data-display' => 'static', data: { qa_selector: 'download_source_code_button' } }
       = sprite_icon('download')
       %span.sr-only=  _('Select Archive Format')
       = sprite_icon("chevron-down")

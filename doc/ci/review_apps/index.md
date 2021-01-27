@@ -186,12 +186,13 @@ After you have the route mapping set up, it takes effect in the following locati
 
   ![View on environment button in file view](img/view_on_env_blob.png)
 
-## Visual Reviews **(STARTER)**
+## Visual Reviews **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10761) in GitLab Starter 12.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10761) in GitLab 12.0.
+> - [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
 > - It's [deployed behind a feature flag](../../user/feature_flags.md), enabled by default.
 > - It's enabled on GitLab.com.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-visual-reviews). **(STARTER ONLY)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-visual-reviews). **(PREMIUM SELF)**
 
 With Visual Reviews, members of any team (Product, Design, Quality, and so on) can provide feedback comments through a form in your review apps. The comments are added to the merge request that triggered the review app.
 
@@ -288,7 +289,7 @@ can supply the ID by either:​​
 - Dynamically adding the `data-merge-request-id` value during the build of the app.
 - Supplying it manually through the visual review form in the app.
 
-### Enable or disable Visual Reviews **(STARTER ONLY)**
+### Enable or disable Visual Reviews **(PREMIUM SELF)**
 
 Visual Reviews is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)

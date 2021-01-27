@@ -330,7 +330,7 @@ export default {
             v-show="showWarning"
             class="collapsed-file-warning gl-p-7 gl-bg-orange-50 gl-text-center gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
           >
-            <p class="gl-mb-8">
+            <p class="gl-mb-5">
               {{ $options.i18n.autoCollapsed }}
             </p>
             <gl-button

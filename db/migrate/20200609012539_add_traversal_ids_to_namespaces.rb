@@ -7,7 +7,7 @@ class AddTraversalIdsToNamespaces < ActiveRecord::Migration[6.0]
 
   def up
     with_lock_retries do
-      add_column :namespaces, :traversal_ids, :integer, array: true, default: [], null: false
+      add_column :namespaces, :traversal_ids, :integer, array: true, default: [], null: false # rubocop:disable Migration/AddColumnsToWideTables
     end
   end
 

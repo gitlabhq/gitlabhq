@@ -1,0 +1,5 @@
+---
+title: Fix regression with old wiki image uploads
+merge_request: 52656
+author:
+type: fixed

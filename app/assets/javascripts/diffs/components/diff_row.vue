@@ -99,10 +99,10 @@ export default {
       });
     },
     addCommentTooltipLeft() {
-      return utils.addCommentTooltip(this.line.left);
+      return utils.addCommentTooltip(this.line.left, this.glFeatures.dragCommentSelection);
     },
     addCommentTooltipRight() {
-      return utils.addCommentTooltip(this.line.right);
+      return utils.addCommentTooltip(this.line.right, this.glFeatures.dragCommentSelection);
     },
     emptyCellRightClassMap() {
       return { conflict_their: this.line.left?.type === CONFLICT_OUR };

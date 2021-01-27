@@ -60,7 +60,7 @@ module Clusters
         cert.public_key = key.public_key
         cert.subject = name
         cert.issuer = name
-        cert.sign(key, OpenSSL::Digest::SHA256.new)
+        cert.sign(key, OpenSSL::Digest.new('SHA256'))
 
         serverless_domain_cluster.update!(
           key: key.to_pem,

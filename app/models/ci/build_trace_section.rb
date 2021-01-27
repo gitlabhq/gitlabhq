@@ -2,6 +2,7 @@
 
 module Ci
   class BuildTraceSection < ApplicationRecord
+    extend SuppressCompositePrimaryKeyWarning
     extend Gitlab::Ci::Model
 
     belongs_to :build, class_name: 'Ci::Build'

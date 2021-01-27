@@ -102,7 +102,7 @@ export default {
     GlIcon,
     PublishedCell: () => import('ee_component/incidents/components/published_cell.vue'),
     ServiceLevelAgreementCell: () =>
-      import('ee_component/incidents/components/service_level_agreement_cell.vue'),
+      import('ee_component/vue_shared/components/incidents/service_level_agreement.vue'),
     GlEmptyState,
     SeverityToken,
     PaginatedTableWithSearchAndTabs,

@@ -7,7 +7,7 @@ class AddUnlockMembershipToLdapOfGroups < ActiveRecord::Migration[5.2]
 
   def up
     with_lock_retries do
-      add_column(:namespaces, :unlock_membership_to_ldap, :boolean)
+      add_column(:namespaces, :unlock_membership_to_ldap, :boolean) # rubocop:disable Migration/AddColumnsToWideTables
     end
   end
 

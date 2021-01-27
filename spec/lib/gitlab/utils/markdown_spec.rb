@@ -59,8 +59,8 @@ RSpec.describe Gitlab::Utils::Markdown do
         is_expected.to eq 'my-header'
       end
 
-      context 'with only modifier' do
-        let(:string) { 'My Header (STARTER ONLY)' }
+      context 'with self modifier' do
+        let(:string) { 'My Header (PREMIUM SELF)' }
 
         it 'ignores a product suffix' do
           is_expected.to eq 'my-header'
@@ -68,15 +68,15 @@ RSpec.describe Gitlab::Utils::Markdown do
       end
 
       context 'with "*" around a product suffix' do
-        let(:string) { 'My Header **(STARTER)**' }
+        let(:string) { 'My Header **(PREMIUM)**' }
 
         it 'ignores a product suffix' do
           is_expected.to eq 'my-header'
         end
       end
 
-      context 'with "*" around a product suffix and only modifier' do
-        let(:string) { 'My Header **(STARTER ONLY)**' }
+      context 'with "*" around a product suffix and sass modifier' do
+        let(:string) { 'My Header **(PREMIUM SASS)**' }
 
         it 'ignores a product suffix' do
           is_expected.to eq 'my-header'

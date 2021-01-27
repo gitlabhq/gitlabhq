@@ -64,17 +64,17 @@
 .row-content-block{ class: (is_footer ? "footer-block" : "middle-block") }
   .float-right
     - if issuable.new_record?
-      = link_to 'Cancel', polymorphic_path([@project, issuable.class]), class: 'btn btn-cancel'
+      = link_to 'Cancel', polymorphic_path([@project, issuable.class]), class: 'gl-button btn btn-cancel'
     - else
       - if can?(current_user, :"destroy_#{issuable.to_ability_name}", @project)
         = link_to 'Delete', polymorphic_path([@project, issuable], params: { destroy_confirm: true }), data: { confirm: "#{issuable.human_class_name} will be removed! Are you sure?" }, method: :delete, class: 'btn btn-danger btn-grouped'
-      = link_to 'Cancel', polymorphic_path([@project, issuable]), class: 'btn btn-grouped btn-cancel'
+      = link_to 'Cancel', polymorphic_path([@project, issuable]), class: 'gl-button btn btn-grouped btn-cancel'
 
   %span.gl-mr-3
     - if issuable.new_record?
-      = form.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'btn btn-success qa-issuable-create-button'
+      = form.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'gl-button btn btn-success qa-issuable-create-button'
     - else
-      = form.submit 'Save changes', class: 'btn btn-success'
+      = form.submit 'Save changes', class: 'gl-button btn btn-success'
 
   - if !issuable.persisted? && !issuable.project.empty_repo? && (guide_url = issuable.project.present.contribution_guide_path)
     .inline.gl-mt-3

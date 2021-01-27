@@ -86,9 +86,9 @@ be updated for artifacts created before this setting was changed.
 The administrator may need to manually search for and expire previously-created
 artifacts, as described in the [troubleshooting documentation](../../../administration/troubleshooting/gitlab_rails_cheat_sheet.md#remove-artifacts-more-than-a-week-old).
 
-## Shared runners pipeline minutes quota **(STARTER ONLY)**
+## Shared runners pipeline minutes quota **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1078) in GitLab Starter 8.16.
+> [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
 
 If you have enabled shared runners for your GitLab instance, you can limit their
 usage by setting a maximum number of pipeline minutes that a group can use on
@@ -158,18 +158,6 @@ Area of your GitLab instance (`.gitlab-ci.yml` if not set):
 
 It is also possible to specify a [custom CI/CD configuration path for a specific project](../../../ci/pipelines/settings.md#custom-cicd-configuration-path).
 
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
-
 ## Required pipeline configuration **(PREMIUM ONLY)**
 
 WARNING:
@@ -228,3 +216,15 @@ To set the maximum file size:
 1. Find the package type you would like to adjust.
 1. Enter the maximum file size, in bytes.
 1. Click **Save size limits**.
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->
