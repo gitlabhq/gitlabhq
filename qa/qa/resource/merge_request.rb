@@ -86,6 +86,8 @@ module QA
       end
 
       def fabricate_via_api!
+        raise ResourceNotFoundError unless id
+
         resource_web_url(api_get)
       rescue ResourceNotFoundError
         populate_target_and_source_if_required

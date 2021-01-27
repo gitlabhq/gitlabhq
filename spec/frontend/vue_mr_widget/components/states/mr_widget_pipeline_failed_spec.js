@@ -1,19 +1,30 @@
-import Vue from 'vue';
-import { removeBreakLine } from 'helpers/text_helper';
+import { shallowMount } from '@vue/test-utils';
 import PipelineFailed from '~/vue_merge_request_widget/components/states/pipeline_failed.vue';
+import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
 
 describe('PipelineFailed', () => {
-  describe('template', () => {
-    const Component = Vue.extend(PipelineFailed);
-    const vm = new Component({
-      el: document.createElement('div'),
-    });
-    it('should have correct elements', () => {
-      expect(vm.$el.classList.contains('mr-widget-body')).toBeTruthy();
-      expect(vm.$el.querySelector('button').getAttribute('disabled')).toBeTruthy();
-      expect(removeBreakLine(vm.$el.innerText).trim()).toContain(
-        'The pipeline for this merge request failed. Please retry the job or push a new commit to fix the failure',
-      );
-    });
+  let wrapper;
+
+  const createComponent = () => {
+    wrapper = shallowMount(PipelineFailed);
+  };
+
+  const findStatusIcon = () => wrapper.find(statusIcon);
+
+  beforeEach(() => {
+    createComponent();
+  });
+
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
+  });
+
+  it('should render error message with a disabled merge button', () => {
+    expect(wrapper.element).toMatchSnapshot();
+  });
+
+  it('merge button should be disabled', () => {
+    expect(findStatusIcon().props('showDisabledButton')).toBe(true);
   });
 });

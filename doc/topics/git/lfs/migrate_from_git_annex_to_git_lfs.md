@@ -37,9 +37,9 @@ ones that GitLab developed.
 
 ## Migration steps
 
-Since Git Annex files are stored in a sub-directory of the normal repositories
-(`.git/annex/objects`) and LFS files are stored outside of the repositories,
-they are not compatible as they are using a different scheme. Therefore, the
+Git Annex files are stored in a sub-directory of the normal repositories
+(`.git/annex/objects`) and LFS files are stored outside of the repositories.
+The two aren't compatible as they are using a different scheme. Therefore, the
 migration has to be done manually per repository.
 
 There are basically two steps you need to take in order to migrate from Git
@@ -74,17 +74,17 @@ Fire up a terminal, navigate to your Git repository and:
 ### Disabling Git Annex in your repository
 
 Before changing anything, make sure you have a backup of your repository first.
-There are a couple of ways to do that, but you can simply clone it to another
+There are a couple of ways to do that, but you can clone it to another
 local path and maybe push it to GitLab if you want a remote backup as well.
-Here you'll find a guide on
-[how to back up a **git-annex** repository to an external hard drive](https://www.thomas-krenn.com/en/wiki/Git-annex_Repository_on_an_External_Hard_Drive).
+A guide on
+[how to back up a **git-annex** repository to an external hard drive](https://www.thomas-krenn.com/en/wiki/Git-annex_Repository_on_an_External_Hard_Drive) is also available.
 
-Since Annex files are stored as objects with symlinks and cannot be directly
+Because Annex files are stored as objects with symlinks and cannot be directly
 modified, we need to first remove those symlinks.
 
 NOTE:
 Make sure the you read about the [`direct` mode](https://git-annex.branchable.com/direct_mode/) as it contains
-useful information that may fit in your use case. Note that `annex direct` is
+information that may fit in your use case. The `annex direct` command is
 deprecated in Git Annex version 6, so you may need to upgrade your repository
 if the server also has Git Annex 6 installed. Read more in the
 [Git Annex troubleshooting tips](../../../administration/git_annex.md#troubleshooting-tips) section.
@@ -133,7 +133,7 @@ if the server also has Git Annex 6 installed. Read more in the
    Deleted branch git-annex (was 2534d2c).
    ```
 
-   This will `unannex` every file in the repository, leaving the original files.
+   This command runs `unannex` on every file in the repository, leaving the original files.
 
 1. Switch back to `indirect` mode:
 
@@ -161,7 +161,7 @@ if the server also has Git Annex 6 installed. Read more in the
 ---
 
 At this point, you have two options. Either add, commit and push the files
-directly back to GitLab or switch to Git LFS. We will tackle the LFS switch in
+directly back to GitLab or switch to Git LFS. The LFS switch is described in
 the next section.
 
 ### Enabling Git LFS in your repository
@@ -194,7 +194,7 @@ GitLab.com), therefore, you don't need to do anything server-side.
    git lfs track images/         # per directory
    ```
 
-   Once you do that, run `git status` and you'll see `.gitattributes` added
+   After this, run `git status` to see the `.gitattributes` added
    to your repository. It collects all file patterns that you chose to track via
    `git-lfs`.
 
@@ -206,7 +206,7 @@ GitLab.com), therefore, you don't need to do anything server-side.
    git push
    ```
 
-   If your remote is set up with HTTP, you will be asked to enter your login
+   If your remote is set up with HTTP, you are asked to enter your login
    credentials. If you have [2FA enabled](../../../user/profile/account/two_factor_authentication.md), make sure to use a
    [personal access token](../../../user/profile/account/two_factor_authentication.md#personal-access-tokens)
    instead of your password.
@@ -244,5 +244,5 @@ git annex uninit
 - (Blog Post) [Getting Started with Git FLS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
 - (Blog Post) [Announcing LFS Support in GitLab](https://about.gitlab.com/blog/2015/11/23/announcing-git-lfs-support-in-gitlab/)
 - (Blog Post) [GitLab Annex Solves the Problem of Versioning Large Binaries with Git](https://about.gitlab.com/blog/2015/02/17/gitlab-annex-solves-the-problem-of-versioning-large-binaries-with-git/)
-- (GitLab Docs) [Git Annex](../../../administration/git_annex.md)
-- (GitLab Docs) [Git LFS](index.md)
+- [Git Annex](../../../administration/git_annex.md)
+- [Git LFS](index.md)

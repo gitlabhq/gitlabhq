@@ -7,8 +7,8 @@ type: reference
 
 # Useful Git commands
 
-Here are some useful Git commands collected by the GitLab support team. You may not
-need to use often, but they can come in handy when needed.
+The GitLab support team has collected these commands to help you. You may not
+need to use them often.
 
 ## Remotes
 
@@ -182,7 +182,7 @@ Git includes a complete set of [traces for debugging Git commands](https://git-s
 
 ### Rebase your branch onto master
 
-The -i flag stands for 'interactive':
+The `-i` flag stands for 'interactive':
 
 ```shell
 git rebase -i master

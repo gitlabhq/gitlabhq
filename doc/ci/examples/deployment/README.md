@@ -38,7 +38,7 @@ apt-get install ruby-dev
 The Dpl provides support for vast number of services, including: Heroku, Cloud Foundry, AWS/S3, and more.
 To use it simply define provider and any additional parameters required by the provider.
 
-For example if you want to use it to deploy your application to Heroku, you need to specify `heroku` as provider, specify `api-key` and `app`.
+For example if you want to use it to deploy your application to Heroku, you need to specify `heroku` as provider, specify `api_key` and `app`.
 All possible parameters can be found in the [Heroku API section](https://github.com/travis-ci/dpl#heroku-api).
 
 ```yaml
@@ -46,7 +46,7 @@ staging:
   stage: deploy
   script:
     - gem install dpl
-    - dpl --provider=heroku --app=my-app-staging --api-key=$HEROKU_STAGING_API_KEY
+    - dpl --provider=heroku --app=my-app-staging --api_key=$HEROKU_STAGING_API_KEY
 ```
 
 In the above example we use Dpl to deploy `my-app-staging` to Heroku server with API key stored in `HEROKU_STAGING_API_KEY` secure variable.
@@ -67,7 +67,7 @@ staging:
     - apt-get update -yq
     - apt-get install -y ruby-dev
     - gem install dpl
-    - dpl --provider=heroku --app=my-app-staging --api-key=$HEROKU_STAGING_API_KEY
+    - dpl --provider=heroku --app=my-app-staging --api_key=$HEROKU_STAGING_API_KEY
   only:
     - master
 ```
@@ -90,7 +90,7 @@ staging:
   stage: deploy
   script:
     - gem install dpl
-    - dpl --provider=heroku --app=my-app-staging --api-key=$HEROKU_STAGING_API_KEY
+    - dpl --provider=heroku --app=my-app-staging --api_key=$HEROKU_STAGING_API_KEY
   only:
     - master
 
@@ -98,7 +98,7 @@ production:
   stage: deploy
   script:
     - gem install dpl
-    - dpl --provider=heroku --app=my-app-production --api-key=$HEROKU_PRODUCTION_API_KEY
+    - dpl --provider=heroku --app=my-app-production --api_key=$HEROKU_PRODUCTION_API_KEY
   only:
     - tags
 ```

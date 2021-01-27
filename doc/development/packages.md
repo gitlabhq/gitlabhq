@@ -70,7 +70,7 @@ The current state of existing package registries availability is:
 | Maven            | Yes           | Yes         | Yes            |
 | Conan            | Yes           | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/11679) | Yes |
 | NPM              | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36853) | Yes | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36853) |
-| NuGet            | Yes           | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36423) | No |
+| NuGet            | Yes           | Yes         | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36425) |
 | PyPI             | Yes           | No          | No             |
 | Go               | Yes           | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/213900) | No - [open-issue](https://gitlab.com/gitlab-org/gitlab/-/issues/213902) |
 | Composer         | Yes           | Yes         | No             |

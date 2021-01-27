@@ -3,9 +3,9 @@
 require 'active_support/core_ext/hash'
 
 RSpec.describe QA::Specs::Runner do
-  shared_examples 'excludes orchestrated and geo' do
-    it 'excludes the orchestrated and geo tags and includes default args' do
-      expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS])
+  shared_examples 'excludes orchestrated, transient, and geo' do
+    it 'excludes the orchestrated, transient, and geo tags, and includes default args' do
+      expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~transient', '--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS])
 
       subject.perform
     end
@@ -18,13 +18,13 @@ RSpec.describe QA::Specs::Runner do
       QA::Runtime::Scenario.define(:gitlab_address, "http://gitlab.test")
     end
 
-    it_behaves_like 'excludes orchestrated and geo'
+    it_behaves_like 'excludes orchestrated, transient, and geo'
 
     context 'when tty is set' do
       subject { described_class.new.tap { |runner| runner.tty = true } }
 
       it 'sets the `--tty` flag' do
-        expect_rspec_runner_arguments(['--tty', '--tag', '~orchestrated', '--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS])
+        expect_rspec_runner_arguments(['--tty', '--tag', '~orchestrated', '--tag', '~transient', '--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS])
 
         subject.perform
       end
@@ -43,7 +43,7 @@ RSpec.describe QA::Specs::Runner do
     context 'when "--tag smoke" is set as options' do
       subject { described_class.new.tap { |runner| runner.options = %w[--tag smoke] } }
 
-      it 'focuses on the given tag without excluded the orchestrated tag' do
+      it 'focuses on the given tag without excluded tags' do
         expect_rspec_runner_arguments(['--tag', '~geo', '--tag', 'smoke', *described_class::DEFAULT_TEST_PATH_ARGS])
 
         subject.perform
@@ -53,8 +53,8 @@ RSpec.describe QA::Specs::Runner do
     context 'when "qa/specs/features/foo" is set as options' do
       subject { described_class.new.tap { |runner| runner.options = %w[qa/specs/features/foo] } }
 
-      it 'passes the given tests path and excludes the orchestrated and geo tags' do
-        expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~geo', 'qa/specs/features/foo'])
+      it 'passes the given tests path and excludes the orchestrated, transient, and geo tags' do
+        expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~transient', '--tag', '~geo', 'qa/specs/features/foo'])
 
         subject.perform
       end
@@ -63,7 +63,7 @@ RSpec.describe QA::Specs::Runner do
     context 'when "--tag smoke" and "qa/specs/features/foo" are set as options' do
       subject { described_class.new.tap { |runner| runner.options = %w[--tag smoke qa/specs/features/foo] } }
 
-      it 'focuses on the given tag and includes the path without excluding the orchestrated tag' do
+      it 'focuses on the given tag and includes the path without excluding the orchestrated or transient tags' do
         expect_rspec_runner_arguments(['--tag', '~geo', '--tag', 'smoke', 'qa/specs/features/foo'])
 
         subject.perform
@@ -76,7 +76,7 @@ RSpec.describe QA::Specs::Runner do
       end
 
       it 'includes default args and excludes the skip_signup_disabled tag' do
-        expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~geo', '--tag', '~skip_signup_disabled', *described_class::DEFAULT_TEST_PATH_ARGS])
+        expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~transient', '--tag', '~geo', '--tag', '~skip_signup_disabled', *described_class::DEFAULT_TEST_PATH_ARGS])
 
         subject.perform
       end
@@ -88,7 +88,7 @@ RSpec.describe QA::Specs::Runner do
       end
 
       it 'includes default args and excludes the skip_live_env tag' do
-        expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~geo', '--tag', '~skip_live_env', *described_class::DEFAULT_TEST_PATH_ARGS])
+        expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~transient', '--tag', '~geo', '--tag', '~skip_live_env', *described_class::DEFAULT_TEST_PATH_ARGS])
         subject.perform
       end
     end
@@ -121,7 +121,7 @@ RSpec.describe QA::Specs::Runner do
         end
 
         it 'includes default args and excludes all unsupported tags' do
-          expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~geo', *excluded_feature_tags_except(feature), *described_class::DEFAULT_TEST_PATH_ARGS])
+          expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~transient', '--tag', '~geo', *excluded_feature_tags_except(feature), *described_class::DEFAULT_TEST_PATH_ARGS])
 
           subject.perform
         end
@@ -146,11 +146,11 @@ RSpec.describe QA::Specs::Runner do
           end
         end
 
-        it_behaves_like 'excludes orchestrated and geo'
+        it_behaves_like 'excludes orchestrated, transient, and geo'
       end
 
       context 'when features are not specified' do
-        it_behaves_like 'excludes orchestrated and geo'
+        it_behaves_like 'excludes orchestrated, transient, and geo'
       end
     end
 

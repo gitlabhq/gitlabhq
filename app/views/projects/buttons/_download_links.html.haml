@@ -1,4 +1,4 @@
 .btn-group.ml-0.w-100
   - Gitlab::Workhorse::ARCHIVE_FORMATS.each_with_index do |fmt, index|
     - archive_path = project_archive_path(project, id: tree_join(ref, archive_prefix), path: path, format: fmt)
-    = link_to fmt, external_storage_url_or_path(archive_path), rel: 'nofollow', download: '', class: "gl-button btn btn-xs #{"btn-primary" if index == 0}"
+    = link_to fmt, external_storage_url_or_path(archive_path), rel: 'nofollow', download: '', class: "gl-button btn btn-xs #{"btn-confirm" if index == 0}"

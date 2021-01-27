@@ -11,4 +11,4 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide.html
 level: warning
 ignorecase: true
 swap:
-  'admin ?\w*': '(?:Admin Area|[Aa]dminist(ration|rator|er|rative))'
+  'admin ?\w*': '(?:Admin Area|[Aa]dminist(ration|rator|rators|er|rative))'

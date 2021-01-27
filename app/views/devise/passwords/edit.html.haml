@@ -12,7 +12,7 @@
         = f.label 'Confirm new password', for: "user_password_confirmation"
         = f.password_field :password_confirmation, class: "form-control gl-form-input bottom", title: 'This field is required', data: { qa_selector: 'password_confirmation_field' }, required: true
       .clearfix
-        = f.submit "Change your password", class: "gl-button btn btn-info", data: { qa_selector: 'change_password_button' }
+        = f.submit "Change your password", class: "gl-button btn btn-confirm", data: { qa_selector: 'change_password_button' }
 
 .clearfix.prepend-top-20
   %p

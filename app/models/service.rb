@@ -54,11 +54,11 @@ class Service < ApplicationRecord
   validates :project_id, presence: true, unless: -> { template? || instance? || group_id }
   validates :group_id, presence: true, unless: -> { template? || instance? || project_id }
   validates :project_id, :group_id, absence: true, if: -> { template? || instance? }
-  validates :type, uniqueness: { scope: :project_id }, unless: -> { template? || instance? || group_id }, on: :create
-  validates :type, uniqueness: { scope: :group_id }, unless: -> { template? || instance? || project_id }
   validates :type, presence: true
-  validates :template, uniqueness: { scope: :type }, if: -> { template? }
-  validates :instance, uniqueness: { scope: :type }, if: -> { instance? }
+  validates :type, uniqueness: { scope: :template }, if: :template?
+  validates :type, uniqueness: { scope: :instance }, if: :instance?
+  validates :type, uniqueness: { scope: :project_id }, if: :project_id?
+  validates :type, uniqueness: { scope: :group_id }, if: :group_id?
   validate :validate_is_instance_or_template
   validate :validate_belongs_to_project_or_group
 

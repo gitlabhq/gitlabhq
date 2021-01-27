@@ -92,10 +92,10 @@ You can authenticate using:
 #### Authenticate within CI/CD
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280582) in GitLab 13.7.
-> - Automatic runner authentication [added](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27302) in GitLab 13.9
+> - Automatic runner authentication [added](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27302) in GitLab 13.9.
 
-Runners will log into the Dependency Proxy automatically. We can pull through
-the dependency proxy using the `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`
+Runners log in to the Dependency Proxy automatically. To pull through
+the Dependency Proxy, use the `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`
 environment variable:
 
 ```yaml
@@ -103,7 +103,7 @@ environment variable:
 image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/node:latest
 ```
 
-There are other additional predefined environment variables we can also use:
+There are other additional predefined environment variables you can also use:
 
 - `CI_DEPENDENCY_PROXY_USER`: A CI user for logging in to the Dependency Proxy.
 - `CI_DEPENDENCY_PROXY_PASSWORD`: A CI password for logging in to the Dependency Proxy.
@@ -111,9 +111,9 @@ There are other additional predefined environment variables we can also use:
 - `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`: The image prefix for pulling images through the Dependency Proxy.
 
 `CI_DEPENDENCY_PROXY_SERVER` and `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`
-include the server port. So if you explicitly include the Dependency Proxy
-path, the port must be included unless you have logged into the dependency
-proxy manually without including the port:
+include the server port. If you explicitly include the Dependency Proxy
+path, the port must be included, unless you have logged into the Dependency
+Proxy manually without including the port:
 
 ```shell
 docker pull gitlab.example.com:443/my-group/dependency_proxy/containers/alpine:latest

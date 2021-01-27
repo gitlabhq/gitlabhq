@@ -222,6 +222,29 @@ This also applies if the pipeline has not been created yet, or if you are waitin
 for an external CI service. If you don't use pipelines for your project, then you
 should disable **Pipelines must succeed** so you can accept merge requests.
 
+### "The pipeline for this merge request did not complete. Push a new commit to fix the failure or check the troubleshooting documentation to see other possible actions." message
+
+This message is shown if the [merge request pipeline](merge_request_pipelines/index.md),
+[merged results pipeline](merge_request_pipelines/pipelines_for_merged_results/index.md),
+or [merge train pipeline](merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md)
+has failed or been canceled.
+
+If a merge request pipeline or merged result pipeline was canceled or failed, you can:
+
+- Re-run the entire pipeline by clicking **Run pipeline** in the pipeline tab in the merge request.
+- [Retry only the jobs that failed](pipelines/index.md#view-pipelines). If you re-run the entire pipeline, this is not necessary.
+- Push a new commit to fix the failure.
+
+If the merge train pipeline has failed, you can:
+
+- Check the failure and determine if you can use the [`/merge` quick action](../user/project/quick_actions.md) to immediately add the merge request to the train again.
+- Re-run the entire pipeline by clicking **Run pipeline** in the pipeline tab in the merge request, then add the merge request to the train again.
+- Push a commit to fix the failure, then add the merge request to the train again.
+
+If the merge train pipeline was canceled before the merge request was merged, without a failure, you can:
+
+- Add it to the train again.
+
 ## Pipeline warnings
 
 Pipeline configuration warnings are shown when you:

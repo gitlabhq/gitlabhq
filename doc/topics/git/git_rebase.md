@@ -69,7 +69,7 @@ changes by resetting `my-feature-branch` against `my-feature-branch-backup`:
    ```
 
 Note that if you added changes to `my-feature-branch` after creating the backup branch,
-you will lose them when resetting.
+you lose them when resetting.
 
 ### Regular rebase
 
@@ -116,7 +116,7 @@ example, `release-10-3`. You can also replace `origin` with other remote
 repositories, for example, `upstream`. To check what remotes you have linked to your local
 repository, you can run `git remote -v`.
 
-If there are [merge conflicts](#merge-conflicts), Git will prompt you to fix
+If there are [merge conflicts](#merge-conflicts), Git prompts you to fix
 them before continuing the rebase.
 
 To learn more, check Git's documentation on [rebasing](https://git-scm.com/book/en/v2/Git-Branching-Rebasing)
@@ -126,13 +126,13 @@ and [rebasing strategies](https://git-scm.com/book/en/v2/Git-Branching-Rebasing)
 
 You can use interactive rebase to modify commits. For example, amend a commit
 message, squash (join multiple commits into one), edit, or delete
-commits. It is handy for changing past commit messages,
-as well as for organizing the commit history of your branch to keep it clean.
+commits. Use a rebase for changing past commit messages,
+and organizing the commit history of your branch to keep it clean.
 
 NOTE:
 If you want to keep the default branch commit history clean, you don't need to
-manually squash all your commits before merging every merge request;
-with [Squash and Merge](../../user/project/merge_requests/squash_and_merge.md)
+manually squash all your commits before merging every merge request.
+With [Squash and Merge](../../user/project/merge_requests/squash_and_merge.md),
 GitLab does it automatically.
 
 When you want to change anything in recent commits, use interactive
@@ -155,7 +155,8 @@ For example, if you're using [Vim](https://www.vim.org/) as the text editor in
 a macOS's `ZSH` shell, and you want to **squash** all the three commits
 (join them into one):
 
-1. Press <kbd>i</kbd> on your keyboard to switch to Vim's editing mode.
+1. Press <!-- vale gitlab.FirstPerson = NO --> <kbd>i</kbd> <!-- vale gitlab.FirstPerson = YES -->
+   on your keyboard to switch to Vim's editing mode.
 1. Navigate with your keyboard arrows to edit the **second** commit keyword
    from `pick` to `squash` (or `s`). Do the same to the **third** commit.
    The first commit should be left **unchanged** (`pick`) as we want to squash
@@ -163,8 +164,8 @@ a macOS's `ZSH` shell, and you want to **squash** all the three commits
 1. Press <kbd>Escape</kbd> to leave the editing mode.
 1. Type `:wq` to "write" (save) and "quit".
 1. Git outputs the commit message so you have a chance to edit it:
-   - All lines starting with `#` will be ignored and not included in the commit
-   message. Everything else will be included.
+   - All lines starting with `#` are ignored and not included in the commit
+   message. Everything else is included.
    - To leave it as it is, type `:wq`. To edit the commit message: switch to the
    editing mode, edit the commit message, and save it as you just did.
 1. If you haven't pushed your commits to the remote branch before rebasing,
@@ -180,8 +181,8 @@ for a deeper look into interactive rebase.
 ## Force-push
 
 When you perform more complex operations, for example, squash commits, reset or
-rebase your branch, you'll have to _force_ an update to the remote branch,
-since these operations imply rewriting the commit history of the branch.
+rebase your branch, you must _force_ an update to the remote branch.
+These operations imply rewriting the commit history of the branch.
 To force an update, pass the flag `--force` or `-f` to the `push` command. For
 example:
 
@@ -267,6 +268,6 @@ To fix conflicts locally, you can use the following method:
    Up to this point, you can run `git rebase --abort` to stop the process.
    Git aborts the rebase and rolls back the branch to the state you had before
    running `git rebase`.
-   Once you run `git rebase --continue` the rebase **cannot** be aborted.
+   After you run `git rebase --continue` the rebase **cannot** be aborted.
 
 1. [Force-push](#force-push) to your remote branch.

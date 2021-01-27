@@ -411,6 +411,10 @@ module QA
         ENV.fetch('GITLAB_AGENTK_VERSION', 'v13.7.0')
       end
 
+      def transient_trials
+        ENV.fetch('GITLAB_QA_TRANSIENT_TRIALS', 10).to_i
+      end
+
       private
 
       def remote_grid_credentials

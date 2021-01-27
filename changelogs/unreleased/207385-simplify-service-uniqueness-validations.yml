@@ -1,0 +1,5 @@
+---
+title: Clean up uniqueness validations for service type
+merge_request: 52565
+author:
+type: changed

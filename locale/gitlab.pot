@@ -374,10 +374,10 @@ msgstr ""
 msgid "%{board_target} not found"
 msgstr ""
 
-msgid "%{code_open}Masked%{code_close} variables are hidden in job logs (though they must match certain regexp requirements to do so)."
+msgid "%{code_open}Masked:%{code_close} Hidden in job logs. Must match masking requirements."
 msgstr ""
 
-msgid "%{code_open}Protected%{code_close} variables are only exposed to protected branches or tags."
+msgid "%{code_open}Protected:%{code_close} Only exposed to protected branches or tags."
 msgstr ""
 
 msgid "%{commit_author_link} authored %{commit_timeago}"
@@ -11025,13 +11025,10 @@ msgstr ""
 msgid "Environment scope"
 msgstr ""
 
-msgid "Environment variables are applied to environments via the Runner. You can use environment variables for passwords, secret keys, etc. Make variables available to the running application by prepending the variable key with %{code_open}K8S_SECRET_%{code_close}. You can set variables to be:"
+msgid "Environment variables are configured by your administrator to be %{link_start}protected%{link_end} by default."
 msgstr ""
 
-msgid "Environment variables are configured by your administrator to be %{link_start}protected%{link_end} by default"
-msgstr ""
-
-msgid "Environment variables on this GitLab instance are configured to be %{link_start}protected%{link_end} by default"
+msgid "Environment variables on this GitLab instance are configured to be %{link_start}protected%{link_end} by default."
 msgstr ""
 
 msgid "Environment:"
@@ -17223,9 +17220,6 @@ msgstr ""
 msgid "Make sure you save it - you won't be able to access it again."
 msgstr ""
 
-msgid "Make this epic confidential"
-msgstr ""
-
 msgid "Makes this issue confidential."
 msgstr ""
 
@@ -20203,9 +20197,6 @@ msgid "Options"
 msgstr ""
 
 msgid "Or you can choose one of the suggested colors below"
-msgstr ""
-
-msgid "Origin"
 msgstr ""
 
 msgid "Orphaned member"
@@ -28865,7 +28856,7 @@ msgstr ""
 msgid "These runners are specific to this project."
 msgstr ""
 
-msgid "These variables are configured in the parent group settings, and will be active in the current project in addition to the project variables."
+msgid "These variables are inherited from the parent group."
 msgstr ""
 
 msgid "Third Party Advisory Link"
@@ -29037,9 +29028,6 @@ msgid "This environment's canary ingress has been updated recently. Please retry
 msgstr ""
 
 msgid "This epic already has the maximum number of child epics."
-msgstr ""
-
-msgid "This epic and its child elements will only be visible to team members with at minimum Reporter access."
 msgstr ""
 
 msgid "This epic does not exist or you don't have sufficient permission."
@@ -31308,6 +31296,15 @@ msgid "Variable will be masked in job logs."
 msgstr ""
 
 msgid "Variables"
+msgstr ""
+
+msgid "Variables can be:"
+msgstr ""
+
+msgid "Variables store information, like passwords and secret keys, that you can use in job scripts."
+msgstr ""
+
+msgid "Variables store information, like passwords and secret keys, that you can use in job scripts. All projects on the instance can use these variables."
 msgstr ""
 
 msgid "Various container registry settings."
@@ -34179,7 +34176,7 @@ msgstr ""
 msgid "mrWidget|The changes will be merged into"
 msgstr ""
 
-msgid "mrWidget|The pipeline for this merge request failed. Please retry the job or push a new commit to fix the failure"
+msgid "mrWidget|The pipeline for this merge request did not complete. Push a new commit to fix the failure or check the %{linkStart}troubleshooting documentation%{linkEnd} to see other possible actions."
 msgstr ""
 
 msgid "mrWidget|The source branch HEAD has recently changed. Please reload the page and review the changes before merging"

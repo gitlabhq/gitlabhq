@@ -8,7 +8,7 @@
     - if @project&.context_commits_enabled? && can_update_merge_request
       %p
         = _('Push commits to the source branch or add previously merged commits to review them.')
-      %button.btn.btn-primary.add-review-item-modal-trigger{ type: "button", data: { commits_empty: 'true', context_commits_empty: 'true' } }
+      %button.btn.gl-button.btn-confirm.add-review-item-modal-trigger{ type: "button", data: { commits_empty: 'true', context_commits_empty: 'true' } }
         = _('Add previously merged commits')
 - else
   %ol#commits-list.list-unstyled
