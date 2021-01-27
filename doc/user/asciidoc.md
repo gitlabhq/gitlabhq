@@ -186,7 +186,11 @@ Attach a block or paragraph to a list item using a list continuation (which you 
 * [ ] not checked
 ```
 
+<!-- vale gitlab.Spelling = NO -->
+
 #### Callout
+
+<!-- vale gitlab.Spelling = YES -->
 
 ```plaintext
 // enable callout bubbles by adding `:icons: font` to the document header

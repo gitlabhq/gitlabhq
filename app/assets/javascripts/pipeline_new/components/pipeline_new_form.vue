@@ -251,10 +251,6 @@ export default {
       return index < this.variables.length - 1;
     },
     fetchConfigVariables(refValue) {
-      if (!gon?.features?.newPipelineFormPrefilledVars) {
-        return Promise.resolve({ params: {}, descriptions: {} });
-      }
-
       this.isLoading = true;
 
       return backOff((next, stop) => {

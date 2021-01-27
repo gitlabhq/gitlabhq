@@ -38,7 +38,11 @@ For a video introduction of how this works in GitLab, see [GitLab Flow](https://
 
 ## Git flow and its problems
 
+<!-- vale gitlab.Spelling = NO -->
+
 ![Git Flow timeline by Vincent Driessen, used with permission](img/gitlab_flow_gitdashflow.png)
+
+<!-- vale gitlab.Spelling = YES -->
 
 Git flow was one of the first proposals to use Git branches, and it has received a lot of attention.
 It suggests a `master` branch and a separate `develop` branch, as well as supporting branches for features, releases, and hotfixes.

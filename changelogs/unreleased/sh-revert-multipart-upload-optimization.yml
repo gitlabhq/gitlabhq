@@ -1,0 +1,5 @@
+---
+title: Revert multipart URL optimization for AWS S3
+merge_request: 52561
+author:
+type: fixed

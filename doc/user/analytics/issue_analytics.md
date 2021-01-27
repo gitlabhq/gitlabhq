@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196561) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9.
 
 Issue Analytics is a bar graph which illustrates the number of issues created each month.
-The default timespan is 13 months, which includes the current month, and the 12 months
+The default time span is 13 months, which includes the current month, and the 12 months
 prior.
 
 To access the chart, navigate to your project sidebar and select **{chart}** **Analytics > Issue Analytics**.

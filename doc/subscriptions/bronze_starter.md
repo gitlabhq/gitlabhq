@@ -108,6 +108,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Advanced Global Search (Elasticsearch)](../user/search/advanced_global_search.md)
   - [Advanced Search Syntax](../user/search/advanced_search_syntax.md)
 - [Service Desk](../user/project/service_desk.md)
+- [Storage usage statistics](../user/usage_quotas.md#storage-usage-statistics)
 
 The following developer features continue to be available to Starter and
 Bronze-level subscribers:

@@ -395,11 +395,11 @@ must be created. A [security scanner job](#security-scanning-tools) must be enab
 job must be enabled for `License-Check`. When the proper jobs aren't configured, the following
 appears:
 
-![Unconfigured Approval Rules](img/unconfigured_security_approval_rules_and_jobs_v13_4.png)
+![Un-configured Approval Rules](img/unconfigured_security_approval_rules_and_jobs_v13_4.png)
 
 If at least one security scanner is enabled, you can enable the `Vulnerability-Check` approval rule. If a license scanning job is enabled, you can enable the `License-Check` rule.
 
-![Unconfigured Approval Rules with valid pipeline jobs](img/unconfigured_security_approval_rules_and_enabled_jobs_v13_4.png)
+![Un-configured Approval Rules with valid pipeline jobs](img/unconfigured_security_approval_rules_and_enabled_jobs_v13_4.png)
 
 For this approval group, you must set the number of approvals required to greater than zero. You
 must have Maintainer or Owner [permissions](../permissions.md#project-members-permissions)
@@ -446,7 +446,7 @@ environment.
 
 Read how to [operate the Secure scanners in an offline environment](offline_deployments/index.md).
 
-## Using private Maven repos
+## Using private Maven repositories
 
 If you have a private Apache Maven repository that requires login credentials,
 you can use the `MAVEN_CLI_OPTS` environment variable

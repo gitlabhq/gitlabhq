@@ -128,7 +128,7 @@ Set up your project's merge request settings:
 
 ![project's merge request settings](img/merge_requests_settings.png)
 
-### Service Desk **(STARTER)**
+### Service Desk
 
 Enable [Service Desk](../service_desk.md) for your project to offer customer support.
 

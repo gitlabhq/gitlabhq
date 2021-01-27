@@ -162,10 +162,6 @@ RSpec.describe ObjectStorage::DirectUpload do
         it 'enables the Workhorse client' do
           expect(subject[:UseWorkhorseClient]).to be true
         end
-
-        it 'omits the multipart upload URLs' do
-          expect(subject).not_to include(:MultipartUpload)
-        end
       end
 
       context 'when only server side encryption is used' do

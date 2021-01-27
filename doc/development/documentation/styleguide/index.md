@@ -389,7 +389,7 @@ by default.
 Capitalize names of:
 
 - GitLab [product tiers](https://about.gitlab.com/pricing/). For example,
-  GitLab Core and GitLab Ultimate. (Tested in [`BadgeCapitalization.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/BadgeCapitalization.yml).)
+  GitLab Free and GitLab Ultimate. (Tested in [`BadgeCapitalization.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/BadgeCapitalization.yml).)
 - Third-party organizations, software, and products. For example, Prometheus,
   Kubernetes, Git, and The Linux Foundation.
 - Methods or methodologies. For example, Continuous Integration,
@@ -942,7 +942,7 @@ NOTE:
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39717) in
 GitLab 13.4, [product badges](#product-tier-badges) used in headings aren't
 included in the generated anchor links. For example, when you link to
-`## This is an example **(CORE)**`, use the anchor `#this-is-an-example`.
+`## This is an example **(FREE)**`, use the anchor `#this-is-an-example`.
 
 Keep in mind that the GitLab user interface links to many documentation pages
 and anchor links to take the user to the right spot. When you change
@@ -1671,8 +1671,8 @@ the blockquote to use a bulleted list:
 If a feature is moved to another tier:
 
 ```markdown
-> - [Moved](<link-to-issue>) from GitLab Premium to GitLab Starter in 11.8.
-> - [Moved](<link-to-issue>) from GitLab Starter to GitLab Core in 12.0.
+> - [Moved](<link-to-issue>) from GitLab Ultimate to GitLab Premium in 11.8.
+> - [Moved](<link-to-issue>) from GitLab Premium to GitLab Free in 12.0.
 ```
 
 If a feature is deprecated, include a link to a replacement (when available):
@@ -1779,7 +1779,7 @@ To add a tier badge to a heading, add the relevant [tier badge](#available-produ
 after the heading text. For example:
 
 ```markdown
-# Heading title `**(CORE)**`
+# Heading title `**(FREE)**`
 ```
 
 #### Product tier badges on other content
@@ -1787,30 +1787,26 @@ after the heading text. For example:
 In paragraphs, list names, and table cells, an information icon displays when you
 add a tier badge. More verbose information displays when a user points to the icon:
 
-- `**(STARTER)**` displays as **(STARTER)**
-- `**(STARTER ONLY)**` displays as **(STARTER ONLY)**
-- `**(SILVER ONLY)**` displays as **(SILVER ONLY)**
+- `**(FREE)**` displays as **(FREE)**
+- `**(FREE SELF)**` displays as **(FREE SELF)**
+- `**(FREE SAAS)**` displays as **(FREE SAAS)**
 
-The `**(STARTER)**` generates a `span` element to trigger the
-badges and tooltips (`<span class="badge-trigger starter">`). When the keyword
-_only_ is added, the corresponding GitLab.com badge isn't displayed.
+The `**(FREE)**` generates a `span` element to trigger the
+badges and tooltips (`<span class="badge-trigger free">`).
 
 #### Available product tier badges
 
-| Tier in which feature is available                                     | Tier badge           |
-|:-----------------------------------------------------------------------|:----------------------|
-| GitLab Core and GitLab.com Free, and their higher tiers                | `**(CORE)**`          |
-| GitLab Starter and GitLab.com Bronze, and their higher tiers           | `**(STARTER)**`       |
-| GitLab Premium and GitLab.com Silver, and their higher tiers           | `**(PREMIUM)**`       |
-| GitLab Ultimate and GitLab.com Gold                                    | `**(ULTIMATE)**`      |
-| _Only_ GitLab Core and higher tiers (no GitLab.com-based tiers)        | `**(CORE ONLY)**`     |
-| _Only_ GitLab Starter and higher tiers (no GitLab.com-based tiers)     | `**(STARTER ONLY)**`  |
-| _Only_ GitLab Premium and higher tiers (no GitLab.com-based tiers)     | `**(PREMIUM ONLY)**`  |
-| _Only_ GitLab Ultimate (no GitLab.com-based tiers)                     | `**(ULTIMATE ONLY)**` |
-| _Only_ GitLab.com Free and higher tiers (no self-managed instances)    | `**(FREE ONLY)**`     |
-| _Only_ GitLab.com Bronze and higher tiers (no self-managed instances)  | `**(BRONZE ONLY)**`   |
-| _Only_ GitLab.com Silver and higher tiers (no self-managed instances)  | `**(SILVER ONLY)**`   |
-| _Only_ GitLab.com Gold (no self-managed instances)                     | `**(GOLD ONLY)**`     |
+| Tier in which feature is available                                        | Tier badge            |
+|:--------------------------------------------------------------------------|:----------------------|
+| GitLab Free self-managed and SaaS, and higher tiers                       | `**(FREE)**`          |
+| GitLab Premium self-managed and SaaS, and their higher tiers              | `**(PREMIUM)**`       |
+| GitLab Ultimate self-managed and SaaS                                     | `**(ULTIMATE)**`      |
+| _Only_ GitLab Free self-managed and higher tiers (no SaaS-based tiers)    | `**(FREE SELF)**`     |
+| _Only_ GitLab Premium self-managed and higher tiers (no SaaS-based tiers) | `**(PREMIUM SELF)**`  |
+| _Only_ GitLab Ultimate self-managed (no SaaS-based tiers)                 | `**(ULTIMATE SELF)**` |
+| _Only_ GitLab Free SaaS and higher tiers (no self-managed instances)      | `**(FREE SAAS)**`     |
+| _Only_ GitLab Premium SaaS and higher tiers (no self-managed instances)   | `**(PREMIUM SAAS)**`  |
+| _Only_ GitLab Ultimate SaaS (no self-managed instances)                   | `**(ULTIMATE SAAS)**` |
 
 Topics that mention the `gitlab.rb` file are referring to
 self-managed instances of GitLab. To prevent confusion, include the relevant `TIER ONLY`

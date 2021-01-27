@@ -94,7 +94,7 @@ Feature.enable(:admin_new_user_signups_cap)
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
-The soft email confirmation improves the signup experience for new users by allowing
+The soft email confirmation improves the sign-up experience for new users by allowing
 them to sign in without an immediate confirmation when an email confirmation is required.
 GitLab shows the user a reminder to confirm their email address, and the user can't
 create or update pipelines until their email address is confirmed.

@@ -160,7 +160,7 @@ a macOS's `ZSH` shell, and you want to **squash** all the three commits
    from `pick` to `squash` (or `s`). Do the same to the **third** commit.
    The first commit should be left **unchanged** (`pick`) as we want to squash
    the second and third into the first.
-1. Press <kbd>Esc</kbd> to leave the editing mode.
+1. Press <kbd>Escape</kbd> to leave the editing mode.
 1. Type `:wq` to "write" (save) and "quit".
 1. Git outputs the commit message so you have a chance to edit it:
    - All lines starting with `#` will be ignored and not included in the commit

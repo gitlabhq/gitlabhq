@@ -27,12 +27,12 @@ Docker image with the fuzz engine to run your app.
 |----------|----------------|---------|
 | C/C++    | [libFuzzer](https://llvm.org/docs/LibFuzzer.html) | [c-cpp-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/c-cpp-fuzzing-example) |
 | GoLang   | [go-fuzz (libFuzzer support)](https://github.com/dvyukov/go-fuzz) | [go-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example) |
-| Swift    | [libfuzzer](https://github.com/apple/swift/blob/master/docs/libFuzzerIntegration.md) | [swift-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/swift-fuzzing-example) |
+| Swift    | [libFuzzer](https://github.com/apple/swift/blob/master/docs/libFuzzerIntegration.md) | [swift-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/swift-fuzzing-example) |
 | Rust     | [cargo-fuzz (libFuzzer support)](https://github.com/rust-fuzz/cargo-fuzz) | [rust-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/rust-fuzzing-example) |
-| Java     | [javafuzz](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/javafuzz) (recommended) | [javafuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/javafuzz-fuzzing-example) |
+| Java     | [Javafuzz](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/javafuzz) (recommended) | [javafuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/javafuzz-fuzzing-example) |
 | Java     | [JQF](https://github.com/rohanpadhye/JQF) (not preferred) | [jqf-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/java-fuzzing-example) |
-| JavaScript | [jsfuzz](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/jsfuzz)| [jsfuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/jsfuzz-fuzzing-example) |
-| Python | [pythonfuzz](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/pythonfuzz)| [pythonfuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/pythonfuzz-fuzzing-example) |
+| JavaScript | [`jsfuzz`](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/jsfuzz)| [jsfuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/jsfuzz-fuzzing-example) |
+| Python | [`pythonfuzz`](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/pythonfuzz)| [pythonfuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/pythonfuzz-fuzzing-example) |
 
 ## Configuration
 
@@ -107,7 +107,7 @@ There are two types of jobs:
 
 Here's our current suggestion for configuring your fuzz target's timeout:
 
-- Set `COVFUZZ_BRANCH` to the branch where you want to run long-running (async) fuzzing
+- Set `COVFUZZ_BRANCH` to the branch where you want to run long-running (asynchronous) fuzzing
   jobs. This is `master` by default.
 - Use regression or short-running fuzzing jobs for other branches or merge requests.
 
@@ -188,14 +188,14 @@ To use coverage fuzzing in an offline environment, follow these steps:
    `NEW_URL_GITLAB_COV_FUZ` is the URL of the private `gitlab-cov-fuzz` clone that you set up in the
    first step.
 
-### Continuous fuzzing (long-running async fuzzing jobs)
+### Continuous fuzzing (long-running asynchronous fuzzing jobs)
 
 It's also possible to run the fuzzing jobs longer and without blocking your main pipeline. This
 configuration uses the GitLab [parent-child pipelines](../../../ci/parent_child_pipelines.md).
 The full example is available in the [repository](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example/-/tree/continuous_fuzzing#running-go-fuzz-from-ci).
 This example uses Go, but is applicable for any other supported languages.
 
-The suggested workflow in this scenario is to have long-running, async fuzzing jobs on a
+The suggested workflow in this scenario is to have long-running, asynchronous fuzzing jobs on a
 main/development branch, and short, blocking sync fuzzing jobs on all other branches and MRs. This
 is a good way to balance the needs of letting a developer's per-commit pipeline complete quickly,
 and also giving the fuzzer a large amount of time to fully explore and test the app.
@@ -217,7 +217,7 @@ sync_fuzzing:
 
 async_fuzzing:
   variables:
-    COVFUZZ_ADDITIONAL_ARGS: '-max_total_time=3600'  
+    COVFUZZ_ADDITIONAL_ARGS: '-max_total_time=3600'
   trigger:
     include: .covfuzz-ci.yml
   rules:
@@ -252,9 +252,9 @@ vulnerability:
   vulnerability can be Detected, Confirmed, Dismissed, or Resolved.
 - Project: The project in which the vulnerability exists.
 - Crash type: The type of crash or weakness in the code. This typically maps to a [CWE](https://cwe.mitre.org/).
-- Crash state: A normalized version of the stacktrace, containing the last three functions of the
+- Crash state: A normalized version of the stack trace, containing the last three functions of the
   crash (without random addresses).
-- Stacktrace snippet: The last few lines of the stacktrace, which shows details about the crash.
+- Stack trace snippet: The last few lines of the stack trace, which shows details about the crash.
 - Identifier: The vulnerability's identifier. This maps to either a [CVE](https://cve.mitre.org/)
   or [CWE](https://cwe.mitre.org/).
 - Severity: The vulnerability's severity. This can be Critical, High, Medium, Low, Info, or Unknown.

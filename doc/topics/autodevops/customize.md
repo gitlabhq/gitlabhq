@@ -163,7 +163,7 @@ to override the default chart values by setting `HELM_UPGRADE_EXTRA_ARGS` to `--
 You can customize the `helm upgrade` command used in the [auto-deploy-image](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image)
 by passing options to the command with the `HELM_UPGRADE_EXTRA_ARGS` variable.
 For example, set the value of `HELM_UPGRADE_EXTRA_ARGS` to `--no-hooks` to disable
-pre and post upgrade hooks when the command is executed.
+pre-upgrade and post-upgrade hooks when the command is executed.
 
 See [the official documentation](https://helm.sh/docs/helm/helm_upgrade/) for the full
 list of options.

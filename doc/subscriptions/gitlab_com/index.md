@@ -22,7 +22,7 @@ When applied to:
 - A **group**, the group, all subgroups, and all projects under the selected
   group on GitLab.com contains the features of the associated tier. GitLab recommends
   choosing a group plan when managing an organization's projects and users.
-- A **personal userspace**, all projects contain features with the
+- A **personal user space**, all projects contain features with the
   subscription applied, but as it's not a group, group features aren't available.
 
 You can read more about [common misconceptions](https://about.gitlab.com/handbook/marketing/strategic-marketing/enablement/dotcom-subscriptions/#common-misconceptions) regarding a GitLab.com subscription to help avoid issues.

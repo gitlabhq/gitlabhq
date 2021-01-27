@@ -173,26 +173,26 @@ If there was an issue with SSL/TLS, this error message is generated.
   as GitLab is the TLS client.
 - The Jira Development Panel integration requires Jira to connect to GitLab, which
   causes Jira to be the TLS client. If your GitLab server's certificate is not
-  issued by a public certificate authority, the Java truststore on Jira's server
+  issued by a public certificate authority, the Java Truststore on Jira's server
   needs to have the appropriate certificate added to it (such as your organization's
   root certificate).
 
 Refer to Atlassian's documentation and Atlassian Support for assistance setting up Jira correctly:
 
 - [Adding a certificate to the trust store](https://confluence.atlassian.com/kb/how-to-import-a-public-ssl-certificate-into-a-jvm-867025849.html).
-  - Simplest approach is to use [keytool](https://docs.oracle.com/javase/8/docs/technotes/tools/unix/keytool.html).
-  - Add additional roots to Java's default truststore (`cacerts`) to allow Jira to
+  - Simplest approach is to use [`keytool`](https://docs.oracle.com/javase/8/docs/technotes/tools/unix/keytool.html).
+  - Add additional roots to Java's default Truststore (`cacerts`) to allow Jira to
     also trust public certificate authorities.
   - If the integration stops working after upgrading Jira's Java runtime, this
-    might be because the `cacerts` truststore got replaced.
+    might be because the `cacerts` Truststore got replaced.
 
 - [Troubleshooting connectivity up to and including TLS handshaking](https://confluence.atlassian.com/kb/unable-to-connect-to-ssl-services-due-to-pkix-path-building-failed-error-779355358.html),
   using the a java class called `SSLPoke`.
 
-- Download the class from Atlassian's knowledgebase to Jira's server, for example to `/tmp`.
+- Download the class from Atlassian's knowledge base to Jira's server, for example to `/tmp`.
 - Use the same Java runtime as Jira.
 - Pass all networking-related parameters that Jira is called with, such as proxy
-  settings or an alternative root truststore (`-Djavax.net.ssl.trustStore`):
+  settings or an alternative root Truststore (`-Djavax.net.ssl.trustStore`):
 
 ```shell
 ${JAVA_HOME}/bin/java -Djavax.net.ssl.trustStore=/var/atlassian/application-data/jira/cacerts -classpath /tmp SSLPoke gitlab.example.com 443
@@ -211,7 +211,7 @@ The requested scope is invalid, unknown, or malformed.
 
 Potential resolutions:
 
-- Verify the URL shown in the browser after being redirected from Jira in step 5 of [Jira DVCS Connector Setp](#jira-dvcs-connector-setup) includes `scope=api` within the query string.
+- Verify the URL shown in the browser after being redirected from Jira in step 5 of [Jira DVCS Connector Setup](#jira-dvcs-connector-setup) includes `scope=api` within the query string.
 - If `scope=api` is missing from the URL, return to [GitLab account configuration](#gitlab-account-configuration-for-dvcs) and ensure the application you created in step 1 has the `api` box checked under scopes.
 
 ##### Jira error adding account and no repositories listed
@@ -252,7 +252,7 @@ resynchronize the information. To do so:
 
 You can integrate GitLab.com and Jira Cloud using the [GitLab for Jira](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud) app in the Atlassian Marketplace.
 
-This method is recommended when using GitLab.com and Jira Cloud because data is synchronized in realtime, while the DVCS connector updates data only once per hour. If you are not using both of these environments, use the [Jira DVCS Connector](#jira-dvcs-configuration) method.
+This method is recommended when using GitLab.com and Jira Cloud because data is synchronized in real-time, while the DVCS connector updates data only once per hour. If you are not using both of these environments, use the [Jira DVCS Connector](#jira-dvcs-configuration) method.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a walkthrough of the integration with GitLab for Jira, watch [Configure GitLab Jira Integration using Marketplace App](https://youtu.be/SwR-g1s1zTo) on YouTube.

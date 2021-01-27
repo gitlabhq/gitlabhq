@@ -31,7 +31,7 @@ If you need the value of these fields from this endpoint, set the `with_merge_st
 `true` in the query.
 - `references.relative` is relative to the group or project that the merge request is being requested. When the merge request
 is fetched from its project, `relative` format would be the same as `short` format, and when requested across groups or projects, it is expected to be the same as `full` format.
-- If `approvals_before_merge` **(STARTER)** is not provided, it inherits the value from the target project. If provided, the following conditions must hold for it to take effect:
+- If `approvals_before_merge` is not provided, it inherits the value from the target project. If provided, the following conditions must hold for it to take effect:
 
   - The target project's `approvals_before_merge` must be greater than zero. A
     value of zero disables approvals for that project.

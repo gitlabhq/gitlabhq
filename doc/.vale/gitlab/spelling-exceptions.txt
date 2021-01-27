@@ -70,6 +70,7 @@ burstable
 cacheable
 callstack
 callstacks
+Camo
 CentOS
 Certbot
 changeset
@@ -105,6 +106,7 @@ crosslinks
 Crossplane
 CrowdIn
 CSV
+cybersecurity
 Dangerfile
 datetime
 Debian
@@ -129,6 +131,7 @@ dequarantined
 dequarantining
 DevOps
 discoverability
+dismissable
 Disqus
 Divio
 Dockerfile
@@ -233,6 +236,7 @@ issuables
 Istio
 Jaeger
 jasmine-jquery
+Javafuzz
 JavaScript
 Jenkins
 Jenkinsfile
@@ -251,6 +255,7 @@ keytab
 keytabs
 Kibana
 Kinesis
+Klar
 Knative
 Kramdown
 Kroki
@@ -263,6 +268,7 @@ Laravel
 ldapsearch
 Lefthook
 Leiningen
+libFuzzer
 Libravatar
 liveness
 Lograge
@@ -479,6 +485,7 @@ serverless
 sharding
 shfmt
 Shibboleth
+Shopify
 Sidekiq
 Silverlight
 Sisense
@@ -553,7 +560,10 @@ transpile
 transpiles
 transpiling
 Trello
+triaged
+triages
 triaging
+Truststore
 Twilio
 Twitter
 TypeScript
@@ -586,6 +596,8 @@ unindexed
 unlink
 unlinking
 unlinks
+unmappable
+unmapped
 unmergeable
 unmerged
 unmerges
@@ -595,6 +607,7 @@ unoptimize
 unoptimized
 unoptimizes
 unoptimizing
+unpatched
 unprioritized
 unprotect
 unprotected

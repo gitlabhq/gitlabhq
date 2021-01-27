@@ -222,7 +222,7 @@ If you still need to run tests during `mvn install`, add `-DskipTests=false` to
 If you have a private Maven repository which requires login credentials,
 you can use the `MAVEN_CLI_OPTS` environment variable.
 
-Read more on [how to use private Maven repositories](../../application_security/index.md#using-private-maven-repos).
+Read more on [how to use private Maven repositories](../../application_security/index.md#using-private-maven-repositories).
 
 You can also use `MAVEN_CLI_OPTS` to connect to a trusted Maven repository that uses a self-signed
 or internally trusted certificate. For example:
