@@ -928,6 +928,20 @@ For example, if there is a connection timeout:
 error="failed to connect to internal Pages API: Get \"https://gitlab.example.com:3000/api/v4/internal/pages/status\": net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)"
 ```
 
+### Pages cannot communicate with an instance of the GitLab API
+
+If you use the default value for `domain_config_source=auto` and run multiple instances of GitLab
+Pages, you may see intermittent 502 error responses while serving Pages content. You may also see
+the following warning in the Pages logs:
+
+```plaintext
+WARN[0010] Pages cannot communicate with an instance of the GitLab API. Please sync your gitlab-secrets.json file https://gitlab.com/gitlab-org/gitlab-pages/-/issues/535#workaround. error="pages endpoint unauthorized"
+```
+
+This can happen if your `gitlab-secrets.json` file is out of date between GitLab Rails and GitLab
+Pages. Follow steps 8-10 of [Running GitLab Pages on a separate server](#running-gitlab-pages-on-a-separate-server),
+in all of your GitLab Pages instances.
+
 ### 500 error with `securecookie: failed to generate random iv` and `Failed to save the session`
 
 This problem most likely results from an [out-dated operating system](https://docs.gitlab.com/omnibus/package-information/deprecated_os.html).

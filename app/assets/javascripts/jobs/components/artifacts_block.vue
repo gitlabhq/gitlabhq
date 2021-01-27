@@ -1,13 +1,15 @@
 <script>
-import { GlIcon, GlLink } from '@gitlab/ui';
+import { GlButton, GlButtonGroup, GlIcon, GlLink } from '@gitlab/ui';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {
   components: {
-    TimeagoTooltip,
+    GlButton,
+    GlButtonGroup,
     GlIcon,
     GlLink,
+    TimeagoTooltip,
   },
   mixins: [timeagoMixin],
   props: {
@@ -36,7 +38,7 @@ export default {
 </script>
 <template>
   <div class="block">
-    <div class="title font-weight-bold">{{ s__('Job|Job artifacts') }}</div>
+    <div class="title gl-font-weight-bold">{{ s__('Job|Job artifacts') }}</div>
     <p
       v-if="isExpired || willExpire"
       class="build-detail-row"
@@ -61,32 +63,29 @@ export default {
         )
       }}</span>
     </p>
-    <div class="btn-group d-flex gl-mt-3" role="group">
-      <gl-link
+    <gl-button-group class="gl-display-flex gl-mt-3">
+      <gl-button
         v-if="artifact.keep_path"
         :href="artifact.keep_path"
-        class="btn btn-sm btn-default"
         data-method="post"
         data-testid="keep-artifacts"
-        >{{ s__('Job|Keep') }}</gl-link
+        >{{ s__('Job|Keep') }}</gl-button
       >
-      <gl-link
+      <gl-button
         v-if="artifact.download_path"
         :href="artifact.download_path"
-        class="btn btn-sm btn-default"
-        download
         rel="nofollow"
         data-testid="download-artifacts"
-        >{{ s__('Job|Download') }}</gl-link
+        download
+        >{{ s__('Job|Download') }}</gl-button
       >
-      <gl-link
+      <gl-button
         v-if="artifact.browse_path"
         :href="artifact.browse_path"
-        class="btn btn-sm btn-default"
         data-testid="browse-artifacts"
         data-qa-selector="browse_artifacts_button"
-        >{{ s__('Job|Browse') }}</gl-link
+        >{{ s__('Job|Browse') }}</gl-button
       >
-    </div>
+    </gl-button-group>
   </div>
 </template>

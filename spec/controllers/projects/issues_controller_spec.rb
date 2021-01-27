@@ -63,20 +63,53 @@ RSpec.describe Projects::IssuesController do
         end
       end
 
-      describe 'the null hypothesis experiment', :experiment do
-        before do
-          stub_experiments(null_hypothesis: :candidate)
-        end
-
+      describe 'the null hypothesis experiment', :snowplow do
         it 'defines the expected before actions' do
           expect(controller).to use_before_action(:run_null_hypothesis_experiment)
         end
 
-        it 'assigns the candidate experience and tracks the event' do
-          expect(experiment(:null_hypothesis)).to track('index').on_any_instance.for(:candidate)
-            .with_context(project: project)
+        context 'when rolled out to 100%' do
+          it 'assigns the candidate experience and tracks the event' do
+            get :index, params: { namespace_id: project.namespace, project_id: project }
 
-          get :index, params: { namespace_id: project.namespace, project_id: project }
+            expect_snowplow_event(
+              category: 'null_hypothesis',
+              action: 'index',
+              context: [{
+                schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/0-3-0',
+                data: { variant: 'candidate', experiment: 'null_hypothesis', key: anything }
+              }]
+            )
+          end
+        end
+
+        context 'when not rolled out' do
+          before do
+            stub_feature_flags(null_hypothesis: false)
+          end
+
+          it 'assigns the control experience and tracks the event' do
+            get :index, params: { namespace_id: project.namespace, project_id: project }
+
+            expect_snowplow_event(
+              category: 'null_hypothesis',
+              action: 'index',
+              context: [{
+                schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/0-3-0',
+                data: { variant: 'control', experiment: 'null_hypothesis', key: anything }
+              }]
+            )
+          end
+        end
+
+        context 'when gitlab_experiments is disabled' do
+          it 'does not run the experiment at all' do
+            stub_feature_flags(gitlab_experiments: false)
+
+            expect(controller).not_to receive(:run_null_hypothesis_experiment)
+
+            get :index, params: { namespace_id: project.namespace, project_id: project }
+          end
         end
       end
     end

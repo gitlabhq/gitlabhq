@@ -3,13 +3,6 @@
 
 require 'gitlab'
 
-#
-# Configure credentials to be used with gitlab gem
-#
-Gitlab.configure do |config|
-  config.endpoint = 'https://gitlab.com/api/v4'
-end
-
 module Trigger
   def self.ee?
     # Support former project name for `dev`
@@ -34,18 +27,13 @@ module Trigger
       ENV['GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN']
     end
 
-    def initialize
-      # gitlab-bot's token "GitLab multi-project pipeline polling"
-      Gitlab.private_token = self.class.access_token
-    end
-
     def invoke!(post_comment: false, downstream_job_name: nil)
       pipeline_variables = variables
 
       puts "Triggering downstream pipeline on #{downstream_project_path}"
       puts "with variables #{pipeline_variables}"
 
-      pipeline = Gitlab.run_trigger(
+      pipeline = gitlab_client(:downstream).run_trigger(
         downstream_project_path,
         trigger_token,
         ref,
@@ -54,22 +42,33 @@ module Trigger
       puts "Triggered downstream pipeline: #{pipeline.web_url}\n"
       puts "Waiting for downstream pipeline status"
 
-      Trigger::CommitComment.post!(pipeline) if post_comment
+      Trigger::CommitComment.post!(pipeline, gitlab_client(:upstream)) if post_comment
       downstream_job =
         if downstream_job_name
-          Gitlab.pipeline_jobs(downstream_project_path, pipeline.id).auto_paginate.find do |potential_job|
+          gitlab_client(:downstream).pipeline_jobs(downstream_project_path, pipeline.id).auto_paginate.find do |potential_job|
             potential_job.name == downstream_job_name
           end
         end
 
       if downstream_job
-        Trigger::Job.new(downstream_project_path, downstream_job.id)
+        Trigger::Job.new(downstream_project_path, downstream_job.id, gitlab_client(:downstream))
       else
-        Trigger::Pipeline.new(downstream_project_path, pipeline.id)
+        Trigger::Pipeline.new(downstream_project_path, pipeline.id, gitlab_client(:downstream))
       end
     end
 
     private
+
+    # Override to trigger and work with pipeline on different GitLab instance
+    # type: :downstream -> downstream build and pipeline status
+    # type: :upstream -> this project, e.g. for posting comments
+    def gitlab_client(type)
+      # By default, always use the same client
+      @gitlab_client ||= Gitlab.client(
+        endpoint: 'https://gitlab.com/api/v4',
+        private_token: self.class.access_token
+      )
+    end
 
     # Must be overridden
     def downstream_project_path
@@ -305,9 +304,53 @@ module Trigger
     end
   end
 
+  class DatabaseTesting < Base
+    def self.access_token
+      ENV['GITLABCOM_DATABASE_TESTING_ACCESS_TOKEN']
+    end
+
+    private
+
+    def gitlab_client(type)
+      @gitlab_clients ||= {
+        downstream: Gitlab.client(
+          endpoint: 'https://ops.gitlab.net/api/v4',
+          private_token: self.class.access_token
+        ),
+        upstream: Gitlab.client(
+          endpoint: 'https://gitlab.com/api/v4',
+          private_token: Base.access_token
+        )
+      }
+
+      @gitlab_clients[type]
+    end
+
+    def trigger_token
+      ENV['GITLABCOM_DATABASE_TESTING_TRIGGER_TOKEN']
+    end
+
+    def downstream_project_path
+      ENV['GITLABCOM_DATABASE_TESTING_PROJECT_PATH'] || 'gitlab-com/database-team/gitlab-com-database-testing'
+    end
+
+    def extra_variables
+      {
+        # Use CI_MERGE_REQUEST_SOURCE_BRANCH_SHA for omnibus checkouts due to pipeline for merged results
+        # and fallback to CI_COMMIT_SHA for the `detached` pipelines.
+        'GITLAB_COMMIT_SHA' => Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA'],
+        'TRIGGERED_USER_LOGIN' => ENV['GITLAB_USER_LOGIN']
+      }
+    end
+
+    def ref
+      ENV['GITLABCOM_DATABASE_TESTING_TRIGGER_REF'] || 'master'
+    end
+  end
+
   class CommitComment
-    def self.post!(downstream_pipeline)
-      Gitlab.create_commit_comment(
+    def self.post!(downstream_pipeline, gitlab_client)
+      gitlab_client.create_commit_comment(
         ENV['CI_PROJECT_PATH'],
         Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA'],
         "The [`#{ENV['CI_JOB_NAME']}`](#{ENV['CI_JOB_URL']}) job from pipeline #{ENV['CI_PIPELINE_URL']} triggered #{downstream_pipeline.web_url} downstream.")
@@ -329,9 +372,10 @@ module Trigger
       unscoped_class_name.downcase
     end
 
-    def initialize(project, id)
+    def initialize(project, id, gitlab_client)
       @project = project
       @id = id
+      @gitlab_client = gitlab_client
       @start_time = Time.now.to_i
     end
 
@@ -359,7 +403,7 @@ module Trigger
     end
 
     def status
-      Gitlab.public_send(self.class.gitlab_api_method_name, project, id).status.to_sym # rubocop:disable GitlabSecurity/PublicSend
+      gitlab_client.public_send(self.class.gitlab_api_method_name, project, id).status.to_sym # rubocop:disable GitlabSecurity/PublicSend
     rescue Gitlab::Error::Error => error
       puts "Ignoring the following error: #{error}"
       # Ignore GitLab API hiccups. If GitLab is really down, we'll hit the job
@@ -369,7 +413,7 @@ module Trigger
 
     private
 
-    attr_reader :project, :id, :start_time
+    attr_reader :project, :id, :gitlab_client, :start_time
   end
 
   Job = Class.new(Pipeline)
@@ -380,6 +424,8 @@ when 'omnibus'
   Trigger::Omnibus.new.invoke!(post_comment: true, downstream_job_name: 'Trigger:qa-test').wait!
 when 'cng'
   Trigger::CNG.new.invoke!.wait!
+when 'gitlab-com-database-testing'
+  Trigger::DatabaseTesting.new.invoke!
 when 'docs'
   docs_trigger = Trigger::Docs.new
 
@@ -395,5 +441,6 @@ when 'docs'
 else
   puts "Please provide a valid option:
   omnibus - Triggers a pipeline that builds the omnibus-gitlab package
-  cng - Triggers a pipeline that builds images used by the GitLab helm chart"
+  cng - Triggers a pipeline that builds images used by the GitLab helm chart
+  gitlab-com-database-testing - Triggers a pipeline that tests database changes on GitLab.com data"
 end

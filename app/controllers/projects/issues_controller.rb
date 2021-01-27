@@ -59,7 +59,8 @@ class Projects::IssuesController < Projects::ApplicationController
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
 
   before_action :run_null_hypothesis_experiment,
-                only: [:index, :new, :create]
+                only: [:index, :new, :create],
+                if: -> { Feature.enabled?(:gitlab_experiments) }
 
   respond_to :html
 

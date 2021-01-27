@@ -1,0 +1,5 @@
+---
+title: Support batch loading of merge head diffs
+merge_request: 51078
+author:
+type: performance

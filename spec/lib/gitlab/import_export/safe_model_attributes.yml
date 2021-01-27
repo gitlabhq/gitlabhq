@@ -220,6 +220,7 @@ MergeRequestDiff:
 - commits_count
 - files_count
 - sorted
+- diff_type
 MergeRequestDiffCommit:
 - merge_request_diff_id
 - relative_order

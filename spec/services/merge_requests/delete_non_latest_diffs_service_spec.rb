@@ -12,6 +12,8 @@ RSpec.describe MergeRequests::DeleteNonLatestDiffsService, :clean_gitlab_redis_s
       stub_const("#{described_class.name}::BATCH_SIZE", 2)
 
       3.times { merge_request.create_merge_request_diff }
+      merge_request.create_merge_head_diff
+      merge_request.reset
     end
 
     it 'schedules non-latest merge request diffs removal' do

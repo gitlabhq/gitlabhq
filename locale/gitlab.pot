@@ -17550,6 +17550,9 @@ msgstr ""
 msgid "May"
 msgstr ""
 
+msgid "Mean time to merge"
+msgstr ""
+
 msgid "Measured in bytes of code. Excludes generated and vendored code."
 msgstr ""
 
@@ -33592,6 +33595,9 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "days"
+msgstr ""
 
 msgid "default branch"
 msgstr ""

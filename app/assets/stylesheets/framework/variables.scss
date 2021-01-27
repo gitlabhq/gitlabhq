@@ -872,6 +872,27 @@ $add-to-slack-well-max-width: 750px;
 $add-to-slack-logo-size: 100px;
 
 /*
+Security & Compliance Carousel
+*/
+$security-and-compliance-carousel-image-carousel-width: 1000px;
+$security-and-compliance-carousel-image-discover-button-width: 45%;
+$security-and-compliance-carousel-image-discover-buttons-max-width: 280px;
+$security-and-compliance-carousel-image-discover-footer-max-width: 500px;
+$security-and-compliance-carousel-image-discover-feedback-width: 30%;
+$security-and-compliance-carousel-image-discover-text-carousel-max-width: 650px;
+$security-and-compliance-carousel-image-discover-text-carousel-caption-height: 100%;
+$security-and-compliance-carousel-image-discover-text-carousel-caption-max-width: 500px;
+$security-and-compliance-carousel-control-icon-width: 10px;
+$security-and-compliance-carousel-control-position: -5%;
+$security-and-compliance-carousel-inner-width: 90%;
+$security-and-compliance-carousel-indicators-bottom: -20px;
+$security-and-compliance-carousel-indicators-bottom-lg: -15px;
+$security-and-compliance-carousel-indicators-dimension: 6px;
+$security-and-compliance-carousel-indicators-border-radius: 100%;
+$security-and-compliance-carousel-prev-icon-background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23666666' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E");
+$security-and-compliance-carousel-next-icon-background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23666666' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E");
+
+/*
 Popup
 */
 $popup-triangle-size: 15px;

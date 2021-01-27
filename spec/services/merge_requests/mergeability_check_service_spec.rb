@@ -33,6 +33,14 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
       expect(merge_request.merge_status).to eq('can_be_merged')
     end
 
+    it 'reloads merge head diff' do
+      expect_next_instance_of(MergeRequests::ReloadMergeHeadDiffService) do |service|
+        expect(service).to receive(:execute)
+      end
+
+      subject
+    end
+
     it 'update diff discussion positions' do
       expect_next_instance_of(Discussions::CaptureDiffNotePositionsService) do |service|
         expect(service).to receive(:execute)
@@ -142,7 +150,11 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
       end
 
       it 'resets one merge request upon execution' do
-        expect_any_instance_of(MergeRequest).to receive(:reset).once
+        expect_next_instance_of(MergeRequests::ReloadMergeHeadDiffService) do |svc|
+          expect(svc).to receive(:execute).and_return(status: :success)
+        end
+
+        expect_any_instance_of(MergeRequest).to receive(:reset).once.and_call_original
 
         execute_within_threads(amount: 2)
       end
@@ -266,6 +278,14 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
 
       it_behaves_like 'unmergeable merge request'
 
+      it 'reloads merge head diff' do
+        expect_next_instance_of(MergeRequests::ReloadMergeHeadDiffService) do |service|
+          expect(service).to receive(:execute)
+        end
+
+        subject
+      end
+
       it 'returns ServiceResponse.error' do
         result = subject
 
@@ -326,6 +346,12 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
 
         it 'does not recreate the merge-ref' do
           expect(MergeRequests::MergeToRefService).not_to receive(:new)
+
+          subject
+        end
+
+        it 'does not reload merge head diff' do
+          expect(MergeRequests::ReloadMergeHeadDiffService).not_to receive(:new)
 
           subject
         end
