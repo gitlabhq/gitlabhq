@@ -442,10 +442,11 @@ const Api = {
     });
   },
 
-  applySuggestion(id, message) {
+  applySuggestion(id, message = '') {
     const url = Api.buildUrl(Api.applySuggestionPath).replace(':id', encodeURIComponent(id));
+    const params = gon.features?.suggestionsCustomCommit ? { commit_message: message } : false;
 
-    return axios.put(url, { commit_message: message });
+    return axios.put(url, params);
   },
 
   applySuggestionBatch(ids) {

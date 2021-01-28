@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Updating the Geo nodes **(PREMIUM ONLY)**
+# Updating the Geo nodes **(PREMIUM SELF)**
 
 WARNING:
 Read these sections carefully before updating your Geo nodes. Not following

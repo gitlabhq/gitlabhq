@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Working with the bundled PgBouncer service **(PREMIUM ONLY)**
+# Working with the bundled PgBouncer service **(PREMIUM SELF)**
 
 [PgBouncer](http://www.pgbouncer.org/) is used to seamlessly migrate database
 connections between servers in a failover scenario. Additionally, it can be used

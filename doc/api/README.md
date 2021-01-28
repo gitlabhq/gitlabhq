@@ -21,7 +21,7 @@ Contributions are welcome.
 For a list of the available resources and their endpoints, see
 [API resources](api_resources.md).
 
-## SCIM **(SILVER ONLY)**
+## SCIM **(PREMIUM SAAS)**
 
 GitLab provides an [SCIM API](scim.md) that both implements
 [the RFC7644 protocol](https://tools.ietf.org/html/rfc7644) and provides the

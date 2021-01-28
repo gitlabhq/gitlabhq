@@ -40,7 +40,7 @@ toggle the list of the milestone bars.
 > - Filtering roadmaps by milestone is [deployed behind a feature flag](../../feature_flags.md), enabled by default.
 > - Filtering roadmaps by milestone is enabled on GitLab.com.
 > - Filtering roadmaps by milestone is recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-filtering-roadmaps-by-milestone). **(PREMIUM ONLY)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-filtering-roadmaps-by-milestone). **(PREMIUM SELF)**
 > - Filtering by epic confidentiality [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218624) in GitLab 13.8.
 
 WARNING:
@@ -74,7 +74,7 @@ You can also filter epics in the Roadmap view by the epics':
 
 Roadmaps can also be [visualized inside an epic](../epics/index.md#roadmap-in-epics).
 
-### Enable or disable filtering roadmaps by milestone **(PREMIUM ONLY)**
+### Enable or disable filtering roadmaps by milestone **(PREMIUM SELF)**
 
 Filtering roadmaps by milestone is under development but ready for production use.
 It is deployed behind a feature flag that is **enabled by default**.

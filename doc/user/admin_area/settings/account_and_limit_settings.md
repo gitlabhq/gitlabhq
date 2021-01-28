@@ -133,7 +133,7 @@ add the line below to `/etc/gitlab/gitlab.rb` before increasing the max attachme
 nginx['client_max_body_size'] = "200m"
 ```
 
-## Limiting lifetime of personal access tokens **(ULTIMATE ONLY)**
+## Limiting lifetime of personal access tokens **(ULTIMATE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.6.
 
@@ -164,8 +164,42 @@ Once a lifetime for personal access tokens is set, GitLab will:
 - After three hours, revoke old tokens with no expiration date or with a lifetime longer than the
   allowed lifetime. Three hours is given to allow administrators to change the allowed lifetime,
   or remove it, before revocation takes place.
+  
+## Enforcement of SSH key expiration **(ULTIMATE ONLY)**
 
-## Optional enforcement of Personal Access Token expiry **(ULTIMATE ONLY)**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276221) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.9.
+> - It is deployed behind a feature flag, disabled by default.
+> - It is disabled on GitLab.com.
+> - It is not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-enforcement-of-ssh-key-expiration-feature). **(CORE ONLY)**
+
+GitLab administrators can choose to enforce the expiration of SSH keys after their expiration dates.
+If you enable this feature, this disables all _expired_ SSH keys.
+
+To do this:
+
+1. Navigate to **Admin Area > Settings > General**.
+1. Expand the **Account and limit** section.
+1. Select the **Enforce SSH key expiration** checkbox.
+
+### Enable or disable enforcement of SSH key expiration Feature **(CORE ONLY)**
+
+Enforcement of SSH key expiry is deployed behind a feature flag and is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md) can enable it for your instance from the [rails console](../../../administration/feature_flags.md#start-the-gitlab-rails-console).
+
+To enable it:
+
+```ruby
+Feature.enable(:ff_enforce_ssh_key_expiration)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:ff_enforce_ssh_key_expiration)
+```
+
+## Optional enforcement of Personal Access Token expiry **(ULTIMATE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214723) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
 > - It is deployed behind a feature flag, disabled by default.
@@ -198,7 +232,7 @@ To disable it:
 Feature.disable(:enforce_pat_expiration)
 ```
 
-## Disabling user profile name changes **(PREMIUM ONLY)**
+## Disabling user profile name changes **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24605) in GitLab 12.7.
 

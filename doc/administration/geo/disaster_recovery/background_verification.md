@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Automatic background verification **(PREMIUM ONLY)**
+# Automatic background verification **(PREMIUM SELF)**
 
 NOTE:
 Automatic background verification of repositories and wikis was added in

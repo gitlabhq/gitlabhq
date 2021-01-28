@@ -493,7 +493,7 @@ describe('GfmAutoComplete', () => {
           username: 'my-group',
           avatarTag: '<div class="avatar rect-avatar center avatar-inline s26">M</div>',
           title: 'My Group (2)',
-          search: 'my-group My Group',
+          search: 'MyGroup my-group',
           icon: '',
         },
       ]);
@@ -506,7 +506,7 @@ describe('GfmAutoComplete', () => {
           avatarTag:
             '<img src="./group.jpg" alt="my-group" class="avatar rect-avatar avatar-inline center s26"/>',
           title: 'My Group (2)',
-          search: 'my-group My Group',
+          search: 'MyGroup my-group',
           icon: '',
         },
       ]);
@@ -519,7 +519,7 @@ describe('GfmAutoComplete', () => {
           avatarTag:
             '<img src="./group.jpg" alt="my-group" class="avatar rect-avatar avatar-inline center s26"/>',
           title: 'My Group',
-          search: 'my-group My Group',
+          search: 'MyGroup my-group',
           icon:
             '<svg class="s16 vertical-align-middle gl-ml-2"><use xlink:href="undefined#notifications-off" /></svg>',
         },
@@ -537,7 +537,7 @@ describe('GfmAutoComplete', () => {
           avatarTag:
             '<img src="./users.jpg" alt="my-user" class="avatar  avatar-inline center s26"/>',
           title: 'My User',
-          search: 'my-user My User',
+          search: 'MyUser my-user',
           icon: '',
         },
       ]);

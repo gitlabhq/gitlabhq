@@ -106,7 +106,7 @@ Project events can also be accessed via the [Project Audit Events API](../api/au
 
 Project event queries are limited to a maximum of 30 days.
 
-### Instance events **(PREMIUM ONLY)**
+### Instance events **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2336) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.3.
 
@@ -193,7 +193,7 @@ The search filters you can see depends on which audit level you are at.
 
 ![audit events](img/audit_log_v13_6.png)
 
-## Export to CSV **(PREMIUM ONLY)**
+## Export to CSV **(PREMIUM SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1449) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/285441) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.7.

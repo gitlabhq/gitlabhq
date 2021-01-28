@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Geo data types support **(PREMIUM ONLY)**
+# Geo data types support **(PREMIUM SELF)**
 
 A Geo data type is a specific class of data that is required by one or more GitLab features to
 store relevant information.

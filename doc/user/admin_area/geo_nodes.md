@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Geo nodes Admin Area **(PREMIUM ONLY)**
+# Geo nodes Admin Area **(PREMIUM SELF)**
 
 You can configure various settings for GitLab Geo nodes. For more information, see
 [Geo documentation](../../administration/geo/index.md).

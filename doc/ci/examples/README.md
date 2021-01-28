@@ -101,7 +101,7 @@ If a programming language or framework template is not in this list, you can con
 one. To create a template, submit a merge request
 to [the templates list](https://gitlab.com/gitlab-org/gitlab/tree/master/lib/gitlab/ci/templates).
 
-### Adding templates to your GitLab installation **(PREMIUM ONLY)**
+### Adding templates to your GitLab installation **(PREMIUM SELF)**
 
 You can add custom examples and templates to your self-managed GitLab instance.
 Your GitLab administrator can [designate an instance template repository](../../user/admin_area/settings/instance_template_repository.md)

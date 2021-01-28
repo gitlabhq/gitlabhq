@@ -130,7 +130,7 @@ The following API resources are available outside of project and group contexts 
 | [Sidekiq queues administration](admin_sidekiq_queues.md) **(FREE SELF)** | `/admin/sidekiq/queues/:queue_name`               |
 | [Appearance](appearance.md) **(FREE SELF)**        | `/application/appearance`                                               |
 | [Applications](applications.md)                    | `/applications`                                                         |
-| [Audit Events](audit_events.md) **(PREMIUM ONLY)** | `/audit_events`                                                         |
+| [Audit Events](audit_events.md) **(PREMIUM SELF)** | `/audit_events`                                                         |
 | [Avatar](avatar.md)                                | `/avatar`                                                               |
 | [Broadcast messages](broadcast_messages.md)        | `/broadcast_messages`                                                   |
 | [Code snippets](snippets.md)                       | `/snippets`                                                             |
@@ -138,7 +138,7 @@ The following API resources are available outside of project and group contexts 
 | [Deploy keys](deploy_keys.md)                      | `/deploy_keys` (also available for projects)                            |
 | [Events](events.md)                                | `/events`, `/users/:id/events` (also available for projects)            |
 | [Feature flags](features.md)                       | `/features`                                                             |
-| [Geo Nodes](geo_nodes.md) **(PREMIUM ONLY)**       | `/geo_nodes`                                                            |
+| [Geo Nodes](geo_nodes.md) **(PREMIUM SELF)**       | `/geo_nodes`                                                            |
 | [Group Activity Analytics](group_activity_analytics.md) **(STARTER)**  | `/analytics/group_activity/{issues_count | merge_requests_count | new_members_count }`  |
 | [Import repository from GitHub](import.md)         | `/import/github`                                                        |
 | [Instance clusters](instance_clusters.md)          | `/admin/clusters`                                                       |

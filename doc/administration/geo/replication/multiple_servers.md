@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Geo for multiple nodes **(PREMIUM ONLY)**
+# Geo for multiple nodes **(PREMIUM SELF)**
 
 This document describes a minimal reference architecture for running Geo
 in a multi-node configuration. If your multi-node setup differs from the one

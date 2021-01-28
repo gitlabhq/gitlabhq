@@ -416,7 +416,7 @@ To create group links via CN:
 
 <!-- vale gitlab.Spelling = YES -->
 
-### Creating group links via filter **(PREMIUM ONLY)**
+### Creating group links via filter **(PREMIUM SELF)**
 
 To create group links via filter:
 

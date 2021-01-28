@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Auditor users **(PREMIUM ONLY)**
+# Auditor users **(PREMIUM SELF)**
 
 Auditor users are given read-only access to all projects, groups, and other
 resources on the GitLab instance.

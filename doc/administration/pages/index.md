@@ -573,7 +573,7 @@ You can configure the maximum size of the unpacked archive per project in
 **Admin Area > Settings > Preferences > Pages**, in **Maximum size of pages (MB)**.
 The default is 100MB.
 
-### Override maximum pages size per project or group **(PREMIUM ONLY)**
+### Override maximum pages size per project or group **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16610) in GitLab 12.7.
 

@@ -33,8 +33,8 @@ This page gathers all the resources for the topic **Authentication** within GitL
   - [Atlassian Crowd OmniAuth Provider](../../administration/auth/crowd.md)
   - [CAS OmniAuth Provider](../../integration/cas.md)
   - [SAML OmniAuth Provider](../../integration/saml.md)
-  - [SAML for GitLab.com Groups](../../user/group/saml_sso/index.md) **(SILVER ONLY)**
-  - [SCIM user provisioning for GitLab.com Groups](../../user/group/saml_sso/scim_setup.md) **(SILVER ONLY)**
+  - [SAML for GitLab.com Groups](../../user/group/saml_sso/index.md) **(PREMIUM SAAS)**
+  - [SCIM user provisioning for GitLab.com Groups](../../user/group/saml_sso/scim_setup.md) **(PREMIUM SAAS)**
   - [Okta SSO provider](../../administration/auth/okta.md)
   - [Kerberos integration (GitLab EE)](../../integration/kerberos.md) **(STARTER)**
 

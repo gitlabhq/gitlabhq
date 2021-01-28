@@ -14,6 +14,10 @@ function sanitize(str) {
   return str.replace(/<(?:.|\n)*?>/gm, '');
 }
 
+function createMemberSearchString(member) {
+  return `${member.name.replace(/ /g, '')} ${member.username}`;
+}
+
 export function membersBeforeSave(members) {
   return members.map((member) => {
     const GROUP_TYPE = 'Group';
@@ -40,7 +44,7 @@ export function membersBeforeSave(members) {
       username: member.username,
       avatarTag: autoCompleteAvatar.length === 1 ? txtAvatar : imgAvatar,
       title: sanitize(title),
-      search: sanitize(`${member.username} ${member.name}`),
+      search: sanitize(createMemberSearchString(member)),
       icon: avatarIcon,
       availability: member?.availability,
     };
@@ -298,9 +302,7 @@ class GfmAutoComplete {
 
           // Cache assignees list for easier filtering later
           assignees =
-            SidebarMediator.singleton?.store?.assignees?.map(
-              (assignee) => `${assignee.username} ${assignee.name}`,
-            ) || [];
+            SidebarMediator.singleton?.store?.assignees?.map(createMemberSearchString) || [];
 
           const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
           return match && match.length ? match[1] : null;

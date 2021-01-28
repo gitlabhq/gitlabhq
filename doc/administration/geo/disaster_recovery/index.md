@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Disaster Recovery (Geo) **(PREMIUM ONLY)**
+# Disaster Recovery (Geo) **(PREMIUM SELF)**
 
 Geo replicates your database, your Git repositories, and few other assets.
 We will support and replicate more data in the future, that will enable you to

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Geo database replication **(PREMIUM ONLY)**
+# Geo database replication **(PREMIUM SELF)**
 
 NOTE:
 If your GitLab installation uses external (not managed by Omnibus) PostgreSQL

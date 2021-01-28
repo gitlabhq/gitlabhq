@@ -4235,7 +4235,8 @@ There are two types of variables.
 
 - [Custom variables](../variables/README.md#custom-environment-variables):
   You can define their values in the `.gitlab-ci.yml` file, in the GitLab UI,
-  or by using the API.
+  or by using the API. You can also input variables in the GitLab UI when
+  [running a pipeline manually](../pipelines/index.md#run-a-pipeline-manually).
 - [Predefined variables](../variables/predefined_variables.md):
   These values are set by the runner itself.
   One example is `CI_COMMIT_REF_NAME`, which is the branch or tag the project is built for.
@@ -4274,6 +4275,20 @@ All YAML-defined variables are also set to any linked
 [Docker service containers](../docker/using_docker_images.md#what-is-a-service).
 
 You can use [YAML anchors for variables](#yaml-anchors-for-variables).
+
+### Prefill variables in manual pipelines
+
+> [Introduced in](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) GitLab 13.7.
+
+You can use the `value` and `description` keywords to define [variables that are prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
+when [running a pipeline manually](../pipelines/index.md#run-a-pipeline-manually):
+
+```yaml
+variables:
+  DEPLOY_ENVIRONMENT:
+    value: "staging"  # Deploy to staging by default
+    description: "The deployment target. Change this variable to 'canary' or 'production' if needed."
+```
 
 ### Configure runner behavior with variables
 

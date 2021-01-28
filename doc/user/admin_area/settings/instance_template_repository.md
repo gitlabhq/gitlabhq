@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Instance template repository **(PREMIUM ONLY)**
+# Instance template repository **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5986) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
 

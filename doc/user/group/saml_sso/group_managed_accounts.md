@@ -50,7 +50,7 @@ assertions to be able to create a user.
 | First Name      | `first_name`, `firstname`, `firstName` |
 | Last Name       | `last_name`, `lastname`, `lastName` |
 
-## Feature flag **(PREMIUM ONLY)**
+## Feature flag **(PREMIUM SELF)**
 
 The group-managed accounts feature is behind these feature flags: `group_managed_accounts`, `sign_up_on_sso` and `convert_user_to_group_managed_accounts`. The flags are disabled by default.
 To activate the feature, ask a GitLab administrator with Rails console access to run:

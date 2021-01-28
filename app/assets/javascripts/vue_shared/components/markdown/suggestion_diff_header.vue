@@ -88,7 +88,12 @@ export default {
     applySuggestion(message) {
       if (!this.canApply) return;
       this.isApplyingSingle = true;
-      this.$emit('apply', this.applySuggestionCallback, message);
+
+      this.$emit(
+        'apply',
+        this.applySuggestionCallback,
+        gon.features?.suggestionsCustomCommit ? message : undefined,
+      );
     },
     applySuggestionCallback() {
       this.isApplyingSingle = false;

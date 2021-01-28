@@ -158,7 +158,7 @@ Area of your GitLab instance (`.gitlab-ci.yml` if not set):
 
 It is also possible to specify a [custom CI/CD configuration path for a specific project](../../../ci/pipelines/settings.md#custom-cicd-configuration-path).
 
-## Required pipeline configuration **(PREMIUM ONLY)**
+## Required pipeline configuration **(PREMIUM SELF)**
 
 WARNING:
 This feature is being re-evaluated in favor of a different
@@ -192,7 +192,7 @@ To set required pipeline configuration:
 
 ## Package Registry configuration
 
-### NPM Forwarding **(PREMIUM ONLY)**
+### NPM Forwarding **(PREMIUM SELF)**
 
 GitLab administrators can disable the forwarding of NPM requests to [npmjs.com](https://www.npmjs.com/).
 

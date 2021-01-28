@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Kubernetes Agent **(PREMIUM ONLY)**
+# GitLab Kubernetes Agent **(PREMIUM SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223061) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
 > - It's disabled on GitLab.com. Rolling this feature out to GitLab.com is [planned](https://gitlab.com/groups/gitlab-org/-/epics/3834).
@@ -190,7 +190,7 @@ the Agent in subsequent steps. You can create an Agent record either:
 
    For full details, read [Starting a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
 
-- Through GraphQL: **(PREMIUM ONLY)**
+- Through GraphQL: **(PREMIUM SELF)**
 
   ```graphql
   mutation createAgent {

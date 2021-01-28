@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Audit Events API
 
-## Instance Audit Events **(PREMIUM ONLY)**
+## Instance Audit Events **(PREMIUM SELF)**
 
 The Audit Events API allows you to retrieve [instance audit events](../administration/audit_events.md#instance-events).
 

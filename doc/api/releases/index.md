@@ -486,7 +486,7 @@ Example response:
 }
 ```
 
-### Group milestones **(PREMIUM ONLY)**
+### Group milestones **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235391) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5.
 
@@ -495,7 +495,7 @@ array for [Create a release](#create-a-release) and [Update a release](#update-a
 API calls. Only milestones associated with the project's group may be specified, and
 adding milestones for ancestor groups raises an error.
 
-## Collect release evidence **(PREMIUM ONLY)**
+## Collect release evidence **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
 

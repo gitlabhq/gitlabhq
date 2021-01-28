@@ -31,7 +31,7 @@ For more details, see [Protected branches](../../project/protected_branches.md).
 
 To change this setting for a specific group, see [Default branch protection for groups](../../group/index.md#changing-the-default-branch-protection-of-a-group)
 
-### Disable group owners from updating default branch protection **(PREMIUM ONLY)**
+### Disable group owners from updating default branch protection **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211944) in GitLab 13.0.
 
@@ -57,7 +57,7 @@ To change the default project creation protection:
 
 For more details, see [Default project-creation level](../../group/index.md#default-project-creation-level).
 
-## Default project deletion protection **(PREMIUM ONLY)**
+## Default project deletion protection **(PREMIUM SELF)**
 
 By default, a project can be deleted by anyone with the **Owner** role, either at the project or
 group level.
@@ -67,7 +67,7 @@ To ensure only admin users can delete projects:
 1. Check the **Default project deletion protection** checkbox.
 1. Click **Save changes**.
 
-## Default deletion delay **(PREMIUM ONLY)**
+## Default deletion delay **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6.
 

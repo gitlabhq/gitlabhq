@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Tuning Geo **(PREMIUM ONLY)**
+# Tuning Geo **(PREMIUM SELF)**
 
 ## Changing the sync/verification capacity values
 

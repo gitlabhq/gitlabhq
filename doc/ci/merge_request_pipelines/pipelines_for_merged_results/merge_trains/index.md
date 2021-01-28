@@ -210,7 +210,7 @@ Trains, create a new pipeline for merged results when this error occurs:
 See [the related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/35135)
 for more information.
 
-### Merge Trains feature flag **(PREMIUM ONLY)**
+### Merge Trains feature flag **(PREMIUM SELF)**
 
 In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/244831),
 you can [enable or disable merge trains in the project settings](#enable-merge-trains).

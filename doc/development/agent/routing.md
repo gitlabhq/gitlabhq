@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Routing `kas` requests in the Kubernetes Agent **(PREMIUM ONLY)**
+# Routing `kas` requests in the Kubernetes Agent **(PREMIUM SELF)**
 
 This document describes how `kas` routes requests to concrete `agentk` instances.
 GitLab must talk to GitLab Kubernetes Agent Server (`kas`) to:

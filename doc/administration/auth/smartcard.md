@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Smartcard authentication **(PREMIUM ONLY)**
+# Smartcard authentication **(PREMIUM SELF)**
 
 GitLab supports authentication using smartcards.
 

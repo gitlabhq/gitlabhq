@@ -134,7 +134,7 @@ Single GitLab nodes can be updated with only a [few minutes of downtime](https:/
 To avoid this, we recommend to separate GitLab into several application nodes.
 As long as at least one of each component is online and capable of handling the instance's usage load, your team's productivity will not be interrupted during the update.
 
-### Automated database failover **(PREMIUM ONLY)**
+### Automated database failover **(PREMIUM SELF)**
 
 > - Level of complexity: **High**
 > - Required domain knowledge: PgBouncer, Repmgr or Patroni, shared storage, distributed systems
@@ -145,7 +145,7 @@ cluster management and failover policies.
 [PgBouncer in conjunction with Repmgr or Patroni](../postgresql/replication_and_failover.md)
 is recommended.
 
-### Instance level replication with GitLab Geo **(PREMIUM ONLY)**
+### Instance level replication with GitLab Geo **(PREMIUM SELF)**
 
 > - Level of complexity: **Very High**
 > - Required domain knowledge: Storage replication

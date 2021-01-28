@@ -70,7 +70,8 @@ When you need a specific custom environment variable, you can
 or directly [in the `.gitlab-ci.yml` file](#create-a-custom-variable-in-gitlab-ciyml).
 
 The variables are used by the runner any time the pipeline runs.
-You can also [override variable values manually for a specific pipeline](../jobs/index.md#specifying-variables-when-running-manual-jobs).
+You can also [override variable values manually for a specific pipeline](../jobs/index.md#specifying-variables-when-running-manual-jobs),
+or have them [prefilled in manual pipelines](../pipelines/index.md#prefill-variables-in-manual-pipelines).
 
 There are two types of variables: **Variable** and **File**. You cannot set types in
 the `.gitlab-ci.yml` file, but you can set them in the UI and API.
@@ -405,6 +406,10 @@ variables:
 script:
   - 'eval $LS_CMD'  # will execute 'ls -al $TMP_DIR'
 ```
+
+Use the [`value` and `description`](../yaml/README.md#prefill-variables-in-manual-pipelines)
+keywords to define [variables that are prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
+when [running a pipeline manually](../pipelines/index.md#run-a-pipeline-manually):
 
 ## Group-level environment variables
 

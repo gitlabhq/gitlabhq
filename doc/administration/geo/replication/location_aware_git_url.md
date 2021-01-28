@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Location-aware Git remote URL with AWS Route53 **(PREMIUM ONLY)**
+# Location-aware Git remote URL with AWS Route53 **(PREMIUM SELF)**
 
 You can provide GitLab users with a single remote URL that automatically uses
 the Geo node closest to them. This means users don't need to update their Git

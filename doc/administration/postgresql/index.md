@@ -11,7 +11,7 @@ In this section, you'll be guided through configuring a PostgreSQL database to
 be used with GitLab in one of our [reference architectures](../reference_architectures/index.md).
 There are essentially three setups to choose from.
 
-## PostgreSQL replication and failover with Omnibus GitLab **(PREMIUM ONLY)**
+## PostgreSQL replication and failover with Omnibus GitLab **(PREMIUM SELF)**
 
 This setup is for when you have installed GitLab using the
 [Omnibus GitLab **Enterprise Edition** (EE) package](https://about.gitlab.com/install/?version=ee).

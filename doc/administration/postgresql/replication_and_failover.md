@@ -4,7 +4,7 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# PostgreSQL replication and failover with Omnibus GitLab **(PREMIUM ONLY)**
+# PostgreSQL replication and failover with Omnibus GitLab **(PREMIUM SELF)**
 
 This document focuses on configuration supported with [GitLab Premium](https://about.gitlab.com/pricing/), using the Omnibus GitLab package.
 If you're a Community Edition or Starter user, consider using a cloud hosted solution.

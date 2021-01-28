@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Geo with Object storage **(PREMIUM ONLY)**
+# Geo with Object storage **(PREMIUM SELF)**
 
 Geo can be used in combination with Object Storage (AWS S3, or other compatible object storage).
 

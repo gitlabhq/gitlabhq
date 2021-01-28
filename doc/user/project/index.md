@@ -352,7 +352,7 @@ git config --global url."git@gitlab.example.com".insteadOf "https://gitlab.examp
 To quickly access a project from the GitLab UI using the project ID,
 visit the `/projects/:id` URL in your browser or other tool accessing the project.
 
-## Project aliases **(PREMIUM ONLY)**
+## Project aliases **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3264) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.1.
 
@@ -374,7 +374,7 @@ project `https://gitlab.com/gitlab-org/gitlab`), the repository can be cloned
 using the alias (e.g `git clone git@gitlab.com:gitlab.git` instead of
 `git clone git@gitlab.com:gitlab-org/gitlab.git`).
 
-## Project activity analytics overview **(ULTIMATE ONLY)**
+## Project activity analytics overview **(ULTIMATE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/279039) in GitLab [Ultimate](https://about.gitlab.com/pricing/) 13.7 as a [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta).
 

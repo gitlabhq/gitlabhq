@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Disaster recovery for planned failover **(PREMIUM ONLY)**
+# Disaster recovery for planned failover **(PREMIUM SELF)**
 
 The primary use-case of Disaster Recovery is to ensure business continuity in
 the event of unplanned outage, but it can be used in conjunction with a planned

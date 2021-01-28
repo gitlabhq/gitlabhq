@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, concepts
 ---
 
-# Merge request approval rules **(PREMIUM ONLY)**
+# Merge request approval rules **(PREMIUM SELF)**
 
 > Introduced in [GitLab Premium](https://gitlab.com/gitlab-org/gitlab/-/issues/39060) 12.8.
 

@@ -7,7 +7,7 @@ type: howto
 
 <!-- Please update EE::GitLab::GeoGitAccess::GEO_SERVER_DOCS_URL if this file is moved) -->
 
-# Using a Geo Server **(PREMIUM ONLY)**
+# Using a Geo Server **(PREMIUM SELF)**
 
 After you set up the [database replication and configure the Geo nodes](../index.md#setup-instructions), use your closest GitLab node as you would a normal standalone GitLab instance.
 

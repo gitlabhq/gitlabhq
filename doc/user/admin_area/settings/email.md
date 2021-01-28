@@ -13,7 +13,7 @@ You can customize some of the content in emails sent from your GitLab instance.
 
 The logo in the header of some emails can be customized, see the [logo customization section](../appearance.md#navigation-bar).
 
-## Custom additional text **(PREMIUM ONLY)**
+## Custom additional text **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5031) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.7.
 

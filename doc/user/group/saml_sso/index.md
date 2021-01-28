@@ -5,7 +5,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# SAML SSO for GitLab.com groups **(SILVER ONLY)**
+# SAML SSO for GitLab.com groups **(PREMIUM SAAS)**
 
 > Introduced in GitLab 11.0.
 

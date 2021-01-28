@@ -81,9 +81,10 @@
           = s_('Profiles|You must transfer ownership or delete these groups before you can delete your account.')
       - elsif !current_user.can_remove_self?
         %p
-          = s_('Profiles|GitLab is unable to verify your identity automatically.')
+          - reset_link = reset_profile_password_path
+          = s_('Profiles|GitLab is unable to verify your identity automatically. For security purposes, you must set a password by %{openingTag}resetting your password%{closingTag} to delete your account.').html_safe % { openingTag: "<a href='#{reset_link}'>".html_safe, closingTag: '</a>'.html_safe}
         %p
-          = s_('Profiles|Please email %{data_request} to begin the account deletion process.').html_safe % { data_request: mail_to('personal-data-request@gitlab.com') }
+          = s_('Profiles|If after setting a password, the option to delete your account is still not available, please email %{data_request} to begin the account deletion process.').html_safe % { data_request: mail_to('personal-data-request@gitlab.com') }
       - else
         %p
           = s_("Profiles|You don't have access to delete this user.")
