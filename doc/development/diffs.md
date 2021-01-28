@@ -125,7 +125,7 @@ Gitaly only returns `Diff.Collapsed` (RPC) when surpassing collection limits.
 #### Not expandable patches (too large)
 
 The patch not be rendered if it's larger than `ApplicationSettings#diff_max_patch_bytes`.
-Users see a `This source diff could not be displayed because it is too large` message.
+Users see a `Changes are too large to be shown.` message and a button to view only that file in that commit.
 
 ```ruby
 Commit::DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines] = 5000

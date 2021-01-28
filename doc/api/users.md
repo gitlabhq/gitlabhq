@@ -186,7 +186,7 @@ Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) 
 ]
 ```
 
-Users on GitLab [Silver or higher](https://about.gitlab.com/pricing/) also see
+Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see
 the `group_saml` provider option:
 
 ```json
@@ -350,7 +350,7 @@ the `shared_runners_minutes_limit`, and `extra_shared_runners_minutes_limit` par
 }
 ```
 
-Users on GitLab.com [Silver, or higher](https://about.gitlab.com/pricing/) also
+Users on GitLab.com [Premium or higher](https://about.gitlab.com/pricing/) also
 see the `group_saml` option:
 
 ```json

@@ -13,10 +13,10 @@ export default {
 
     Vue.set(member, 'accessLevel', accessLevel);
   },
-  [types.RECEIVE_MEMBER_ROLE_ERROR](state) {
-    state.errorMessage = s__(
-      "Members|An error occurred while updating the member's role, please try again.",
-    );
+  [types.RECEIVE_MEMBER_ROLE_ERROR](state, { error }) {
+    state.errorMessage =
+      error.response?.data?.message ||
+      s__("Members|An error occurred while updating the member's role, please try again.");
     state.showError = true;
   },
   [types.RECEIVE_MEMBER_EXPIRATION_SUCCESS](state, { memberId, expiresAt }) {
@@ -28,10 +28,12 @@ export default {
 
     Vue.set(member, 'expiresAt', expiresAt);
   },
-  [types.RECEIVE_MEMBER_EXPIRATION_ERROR](state) {
-    state.errorMessage = s__(
-      "Members|An error occurred while updating the member's expiration date, please try again.",
-    );
+  [types.RECEIVE_MEMBER_EXPIRATION_ERROR](state, { error }) {
+    state.errorMessage =
+      error.response?.data?.message ||
+      s__(
+        "Members|An error occurred while updating the member's expiration date, please try again.",
+      );
     state.showError = true;
   },
   [types.HIDE_ERROR](state) {

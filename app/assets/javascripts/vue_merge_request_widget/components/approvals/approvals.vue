@@ -9,6 +9,7 @@ import MrWidgetIcon from '../mr_widget_icon.vue';
 import ApprovalsSummary from './approvals_summary.vue';
 import ApprovalsSummaryOptional from './approvals_summary_optional.vue';
 import { FETCH_LOADING, FETCH_ERROR, APPROVE_ERROR, UNAPPROVE_ERROR } from './messages';
+import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 
 export default {
   name: 'MRWidgetApprovals',
@@ -124,7 +125,7 @@ export default {
   methods: {
     approve() {
       if (this.requirePasswordToApprove) {
-        this.$root.$emit('bv::show::modal', this.modalId);
+        this.$root.$emit(BV_SHOW_MODAL, this.modalId);
         return;
       }
 

@@ -471,9 +471,11 @@ describe('DiffFile', () => {
 
       await wrapper.vm.$nextTick();
 
-      expect(wrapper.vm.$el.innerText).toContain(
-        'This source diff could not be displayed because it is too large',
-      );
+      const button = wrapper.find('[data-testid="blob-button"]');
+
+      expect(wrapper.text()).toContain('Changes are too large to be shown.');
+      expect(button.html()).toContain('View file @');
+      expect(button.attributes('href')).toBe('/file/view/path');
     });
   });
 });

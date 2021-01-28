@@ -5827,6 +5827,9 @@ msgstr ""
 msgid "ClassificationLabelUnavailable|is unavailable: %{reason}"
 msgstr ""
 
+msgid "Clean up after running %{link_start}git filter-repo%{link_end} on the repository."
+msgstr ""
+
 msgid "Clean up image tags"
 msgstr ""
 
@@ -15482,6 +15485,9 @@ msgstr ""
 msgid "Integrations|Search Jira issues"
 msgstr ""
 
+msgid "Integrations|Sign in to add namespaces"
+msgstr ""
+
 msgid "Integrations|Standard"
 msgstr ""
 
@@ -16148,6 +16154,9 @@ msgstr ""
 msgid "JiraService|For example, 12, 24"
 msgstr ""
 
+msgid "JiraService|GitLab for Jira Configuration"
+msgstr ""
+
 msgid "JiraService|If different from Web URL"
 msgstr ""
 
@@ -16197,6 +16206,9 @@ msgid "JiraService|Select issue type"
 msgstr ""
 
 msgid "JiraService|Set transition IDs for Jira workflow transitions. %{link_start}Learn more%{link_end}"
+msgstr ""
+
+msgid "JiraService|Sign in to GitLab.com to get started."
 msgstr ""
 
 msgid "JiraService|This feature requires a Premium plan."
@@ -17217,6 +17229,12 @@ msgstr ""
 msgid "MRApprovals|Commented by"
 msgstr ""
 
+msgid "MRDiffFile|Changes are too large to be shown."
+msgstr ""
+
+msgid "MRDiffFile|View file @ %{commitSha}"
+msgstr ""
+
 msgid "MRDiff|Show changes only"
 msgstr ""
 
@@ -17281,6 +17299,9 @@ msgid "Manage two-factor authentication"
 msgstr ""
 
 msgid "Manage your license"
+msgstr ""
+
+msgid "Manage your project's triggers"
 msgstr ""
 
 msgid "Managed Account"
@@ -19510,6 +19531,9 @@ msgstr ""
 msgid "No test coverage"
 msgstr ""
 
+msgid "No triggers exist yet. Use the form above to create one."
+msgstr ""
+
 msgid "No vulnerabilities present"
 msgstr ""
 
@@ -20656,6 +20680,9 @@ msgid "Partial token for reference only"
 msgstr ""
 
 msgid "Participants"
+msgstr ""
+
+msgid "Pass job variables"
 msgstr ""
 
 msgid "Passed"
@@ -28865,6 +28892,9 @@ msgstr ""
 msgid "There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."
 msgstr ""
 
+msgid "These examples show how to trigger this project's pipeline for a branch or tag."
+msgstr ""
+
 msgid "These existing issues have a similar title. It might be better to comment there instead of creating another similar issue."
 msgstr ""
 
@@ -29994,6 +30024,9 @@ msgstr ""
 msgid "Toggles :%{name}: emoji award."
 msgstr ""
 
+msgid "Token"
+msgstr ""
+
 msgid "Token valid until revoked"
 msgstr ""
 
@@ -30240,6 +30273,12 @@ msgid "Trigger was successfully updated."
 msgstr ""
 
 msgid "Triggerer"
+msgstr ""
+
+msgid "Triggers|In each example, replace %{code_start}TOKEN%{code_end} with the trigger token you generated and replace %{code_start}REF_NAME%{code_end} with the branch or tag name."
+msgstr ""
+
+msgid "Triggers|To pass variables to the triggered pipeline, add %{code_start}variables[VARIABLE]=VALUE%{code_end} to the API request."
 msgstr ""
 
 msgid "Troubleshoot and monitor your application with tracing"
@@ -30935,10 +30974,16 @@ msgstr ""
 msgid "Use %{code_start}::%{code_end} to create a %{link_start}scoped label set%{link_end} (eg. %{code_start}priority::1%{code_end})"
 msgstr ""
 
+msgid "Use .gitlab-ci.yml"
+msgstr ""
+
 msgid "Use Service Desk to connect with your users (e.g. to offer customer support) through email right inside GitLab"
 msgstr ""
 
 msgid "Use an one time password authenticator on your mobile device or computer to enable two-factor authentication (2FA)."
+msgstr ""
+
+msgid "Use cURL"
 msgstr ""
 
 msgid "Use custom color #FF0000"
@@ -30957,6 +31002,9 @@ msgid "Use template"
 msgstr ""
 
 msgid "Use this token to validate received payloads"
+msgstr ""
+
+msgid "Use webhook"
 msgstr ""
 
 msgid "Use your global notification setting"
@@ -31899,6 +31947,9 @@ msgstr ""
 msgid "Webhook Settings"
 msgstr ""
 
+msgid "Webhook:"
+msgstr ""
+
 msgid "Webhooks"
 msgstr ""
 
@@ -32457,9 +32508,6 @@ msgid "You are trying to upload something other than an image. Please upload a .
 msgstr ""
 
 msgid "You are using PostgreSQL %{pg_version_current}, but PostgreSQL %{pg_version_minimum} is required for this version of GitLab. Please upgrade your environment to a supported PostgreSQL version, see %{pg_requirements_url} for details."
-msgstr ""
-
-msgid "You can %{linkStart}view the blob%{linkEnd} instead."
 msgstr ""
 
 msgid "You can also create a project from the command line."
@@ -33304,6 +33352,9 @@ msgstr ""
 msgid "by"
 msgstr ""
 
+msgid "cURL:"
+msgstr ""
+
 msgid "can contain only letters of the Base64 alphabet (RFC4648) with the addition of '@', ':' and '.'"
 msgstr ""
 
@@ -33664,8 +33715,10 @@ msgstr ""
 msgid "element is not a hierarchy"
 msgstr ""
 
-msgid "email '%{email}' does not match the allowed domains of %{email_domains}"
-msgstr ""
+msgid "email '%{email}' does not match the allowed domain of %{email_domains}"
+msgid_plural "email '%{email}' does not match the allowed domains: %{email_domains}"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "email '%{email}' is not a verified email."
 msgstr ""

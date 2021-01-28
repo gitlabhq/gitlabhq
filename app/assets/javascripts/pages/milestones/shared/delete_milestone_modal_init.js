@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Translate from '~/vue_shared/translate';
+import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import DeleteMilestoneModal from './components/delete_milestone_modal.vue';
 import eventHub from './event_hub';
 
@@ -47,7 +48,7 @@ export default () => {
       deleteMilestoneButtons.forEach((button) => {
         button.removeAttribute('disabled');
         button.addEventListener('click', () => {
-          this.$root.$emit('bv::show::modal', 'delete-milestone-modal');
+          this.$root.$emit(BV_SHOW_MODAL, 'delete-milestone-modal');
           eventHub.$once('deleteMilestoneModal.requestStarted', onRequestStarted);
 
           this.setModalProps({

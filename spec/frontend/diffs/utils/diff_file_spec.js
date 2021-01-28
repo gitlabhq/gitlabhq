@@ -1,4 +1,4 @@
-import { prepareRawDiffFile } from '~/diffs/utils/diff_file';
+import { prepareRawDiffFile, getShortShaFromFile } from '~/diffs/utils/diff_file';
 
 function getDiffFiles() {
   const loadFull = 'namespace/project/-/merge_requests/12345/diff_for_path?file_identifier=abc';
@@ -141,6 +141,17 @@ describe('diff_file utilities', () => {
       });
 
       expect(preppedFile).not.toHaveProp('id');
+    });
+  });
+
+  describe('getShortShaFromFile', () => {
+    it.each`
+      response      | cs
+      ${'12345678'} | ${'12345678abcdogcat'}
+      ${null}       | ${undefined}
+      ${'hidogcat'} | ${'hidogcatmorethings'}
+    `('returns $response for a file with { content_sha: $cs }', ({ response, cs }) => {
+      expect(getShortShaFromFile({ content_sha: cs })).toBe(response);
     });
   });
 });

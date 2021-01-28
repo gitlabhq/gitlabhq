@@ -135,7 +135,7 @@ describe('Grouped code quality reports app', () => {
     });
 
     it('renders error text', () => {
-      expect(findWidget().text()).toEqual('Failed to load codeclimate report');
+      expect(findWidget().text()).toContain('Failed to load codeclimate report');
     });
 
     it('renders a help icon with more information', () => {

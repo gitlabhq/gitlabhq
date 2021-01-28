@@ -70,7 +70,7 @@ function initJiraConnect() {
   Vue.use(Translate);
   Vue.use(GlFeatureFlagsPlugin);
 
-  const { groupsPath, subscriptionsPath } = el.dataset;
+  const { groupsPath, subscriptionsPath, usersPath } = el.dataset;
 
   return new Vue({
     el,
@@ -78,6 +78,7 @@ function initJiraConnect() {
     provide: {
       groupsPath,
       subscriptionsPath,
+      usersPath,
     },
     render(createElement) {
       return createElement(JiraConnectApp);

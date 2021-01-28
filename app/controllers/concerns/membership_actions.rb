@@ -18,18 +18,26 @@ module MembershipActions
   def update
     update_params = params.require(root_params_key).permit(:access_level, :expires_at)
     member = membershipable.members_and_requesters.find(params[:id])
-    member = Members::UpdateService
+    result = Members::UpdateService
       .new(current_user, update_params)
       .execute(member)
 
-    if member.expires?
-      render json: {
-        expires_in: helpers.distance_of_time_in_words_to_now(member.expires_at),
-        expires_soon: member.expires_soon?,
-        expires_at_formatted: member.expires_at.to_time.in_time_zone.to_s(:medium)
-      }
+    member = result[:member]
+
+    member_data = if member.expires?
+                    {
+                      expires_in: helpers.distance_of_time_in_words_to_now(member.expires_at),
+                      expires_soon: member.expires_soon?,
+                      expires_at_formatted: member.expires_at.to_time.in_time_zone.to_s(:medium)
+                    }
+                  else
+                    {}
+                  end
+
+    if result[:status] == :success
+      render json: member_data
     else
-      render json: {}
+      render json: { message: result[:message] }, status: :unprocessable_entity
     end
   end
 

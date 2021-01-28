@@ -4950,10 +4950,12 @@ State of a GitLab merge request.
 
 ### MilestoneStateEnum
 
+Current state of milestone.
+
 | Value | Description |
 | ----- | ----------- |
-| `active` |  |
-| `closed` |  |
+| `active` | Milestone is currently active |
+| `closed` | Milestone is closed |
 
 ### MoveType
 

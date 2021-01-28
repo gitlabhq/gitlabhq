@@ -32,7 +32,7 @@ describe('Summary row', () => {
 
   it('renders provided summary', () => {
     createComponent();
-    expect(findSummary().text()).toEqual(props.summary);
+    expect(findSummary().text()).toContain(props.summary);
   });
 
   it('renders provided icon', () => {
@@ -48,7 +48,7 @@ describe('Summary row', () => {
       createComponent({ slots: { summary: summarySlotContent } });
 
       expect(wrapper.text()).not.toContain(props.summary);
-      expect(findSummary().text()).toEqual(summarySlotContent);
+      expect(findSummary().text()).toContain(summarySlotContent);
     });
   });
 });

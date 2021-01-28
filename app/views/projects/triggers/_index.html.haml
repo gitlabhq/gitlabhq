@@ -2,7 +2,7 @@
   .col-lg-12
     .card
       .card-header
-        Manage your project's triggers
+        = s_("Manage your project's triggers")
       .card-body
         = render "projects/triggers/form", btn_text: "Add trigger"
         %hr
@@ -14,39 +14,33 @@
               %table.table
                 %thead
                   %th
-                    %strong Token
+                    %strong
+                    = s_("Token")
                   %th
-                    %strong Description
+                    %strong
+                    = s_("Description")
                   %th
-                    %strong Owner
+                    %strong
+                    = s_("Owner")
                   %th
-                    %strong Last used
+                    %strong
+                    = s_("Last used")
                   %th
                 = render partial: 'projects/triggers/trigger', collection: @triggers, as: :trigger
           - else
             %p.settings-message.text-center.gl-mb-3{ data: { testid: 'no_triggers_content' } }
-              No triggers have been created yet. Add one using the form above.
+              = s_("No triggers exist yet. Use the form above to create one.")
 
       .card-footer
 
         %p
-          In the following examples, you can see the exact API call you need to
-          make in order to rebuild a specific
-          %code ref
-          (branch or tag) with a trigger token.
-        %p
-          All you need to do is replace the
-          %code TOKEN
-          and
-          %code REF_NAME
-          with the trigger token and the branch or tag name respectively.
-
-        %h5.gl-mt-3
-          Use cURL
+          = s_("These examples show how to trigger this project's pipeline for a branch or tag.")
 
         %p.light
-          Copy one of the tokens above, set your branch or tag name, and that
-          reference will be rebuilt.
+          = s_("Triggers|In each example, replace %{code_start}TOKEN%{code_end} with the trigger token you generated and replace %{code_start}REF_NAME%{code_end} with the branch or tag name.").html_safe % { code_start: "<code>".html_safe, code_end: "</code>".html_safe }
+
+        %h5.gl-mt-3
+          = s_("Use cURL")
 
         %pre
           :plain
@@ -55,39 +49,26 @@
                  -F ref=REF_NAME \
                  #{builds_trigger_url(@project.id)}
         %h5.gl-mt-3
-          Use .gitlab-ci.yml
-
-        %p.light
-          In the
-          %code .gitlab-ci.yml
-          of another project, include the following snippet.
-          The project will be rebuilt at the end of the pipeline.
+          = s_("Use .gitlab-ci.yml")
 
         %pre
           :plain
-            trigger_build:
-              stage: deploy
-              script:
-                - "curl -X POST -F token=TOKEN -F ref=REF_NAME #{builds_trigger_url(@project.id)}"
+            script:
+              - "curl -X POST -F token=TOKEN -F ref=REF_NAME #{builds_trigger_url(@project.id)}"
         %h5.gl-mt-3
-          Use webhook
-
-        %p.light
-          Add the following webhook to another project for Push and Tag push events.
-          The project will be rebuilt at the corresponding event.
+          = s_("Use webhook")
 
         %pre
           :plain
-             #{builds_trigger_url(@project.id, ref: 'REF_NAME')}?token=TOKEN
+            #{builds_trigger_url(@project.id, ref: 'REF_NAME')}?token=TOKEN
         %h5.gl-mt-3
-          Pass job variables
+          = s_("Pass job variables")
 
         %p.light
-          Add
-          %code variables[VARIABLE]=VALUE
-          to an API request. Variable values can be used to distinguish between triggered pipelines and normal pipelines.
+          = s_("Triggers|To pass variables to the triggered pipeline, add %{code_start}variables[VARIABLE]=VALUE%{code_end} to the API request.").html_safe % { code_start: "<code>".html_safe, code_end: "</code>".html_safe }
 
-          With cURL:
+        %p.light
+          = s_("cURL:")
 
         %pre
           :plain
@@ -97,8 +78,8 @@
                  -F "variables[RUN_NIGHTLY_BUILD]=true" \
                  #{builds_trigger_url(@project.id)}
         %p.light
-          With webhook:
+          = s_("Webhook:")
 
         %pre.gl-mb-0
           :plain
-             #{builds_trigger_url(@project.id, ref: 'REF_NAME')}?token=TOKEN&variables[RUN_NIGHTLY_BUILD]=true
+            #{builds_trigger_url(@project.id, ref: 'REF_NAME')}?token=TOKEN&variables[RUN_NIGHTLY_BUILD]=true

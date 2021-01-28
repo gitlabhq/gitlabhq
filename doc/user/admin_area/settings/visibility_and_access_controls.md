@@ -11,14 +11,14 @@ GitLab allows administrators to enforce specific controls.
 
 To access the visibility and access control options:
 
-1. Log in to GitLab as an admin.
+1. Sign in to GitLab as a user with Administrator [permissions](../../permissions.md).
 1. Go to **Admin Area > Settings > General**.
 1. Expand the **Visibility and access controls** section.
 
 ## Default branch protection
 
 This global option defines the branch protection that applies to every repository's default branch. [Branch protection](../../project/protected_branches.md) specifies which roles can push to branches and which roles can delete
-branches. In this case _Default_ refers to a repository's default branch, which in most cases is _master_.
+branches. In this case _Default_ refers to a repository's default branch, which in most cases is `master`.
 
 This setting applies only to each repositories' default branch. To protect other branches, you must configure branch protection in repository. For details, see [Protected Branches](../../project/protected_branches.md).
 
@@ -62,7 +62,7 @@ For more details, see [Default project-creation level](../../group/index.md#defa
 By default, a project can be deleted by anyone with the **Owner** role, either at the project or
 group level.
 
-To ensure only admin users can delete projects:
+To ensure only Administrator users can delete projects:
 
 1. Check the **Default project deletion protection** checkbox.
 1. Click **Save changes**.
@@ -71,16 +71,16 @@ To ensure only admin users can delete projects:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6.
 
-By default, a project marked for deletion will be permanently removed with immediate effect.
-By default, a group marked for deletion will be permanently removed after 7 days.
+By default, a project marked for deletion is permanently removed with immediate effect.
+By default, a group marked for deletion is permanently removed after seven days.
 
 WARNING:
 The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6 was changed to
 [Immediate deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
 
-Projects within a group (but not a personal namespace) can be deleted after a delayed period, by [configuring in Group Settings](../../group/index.md#enabling-delayed-project-removal).
-
-The default period is 7 days, and can be changed. Setting this period to 0 will enable immediate removal
+Projects in a group (but not a personal namespace) can be deleted after a delayed period, by
+[configuring in Group Settings](../../group/index.md#enabling-delayed-project-removal).
+The default period is seven days, and can be changed. Setting this period to `0` enables immediate removal
 of projects or groups.
 
 To change this period:
@@ -149,13 +149,11 @@ For more details, see [Exporting a project and its data](../../../user/project/s
 
 ## Enabled Git access protocols
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4696) in GitLab 8.10.
-
 With GitLab access restrictions, you can select with which protocols users can communicate with
 GitLab.
 
-Disabling an access protocol does not block access to the server itself via those ports. The ports
-used for the protocol, SSH or HTTP(S), will still be accessible. The GitLab restrictions apply at the
+Disabling an access protocol does not block access to the server itself by using those ports. The ports
+used for the protocol, SSH or HTTP(S), are still accessible. The GitLab restrictions apply at the
 application level.
 
 To specify the enabled Git access protocols:
@@ -170,26 +168,26 @@ When both SSH and HTTP(S) are enabled, users can choose either protocol.
 
 When only one protocol is enabled:
 
-- The project page will only show the allowed protocol's URL, with no option to
+- The project page shows only the allowed protocol's URL, with no option to
   change it.
-- A tooltip will be shown when you hover over the URL's protocol, if an action
-  on the user's part is required, e.g. adding an SSH key, or setting a password.
+- A tooltip is shown when you hover over the URL's protocol, if an action
+  on the user's part is required. For example, adding an SSH key or setting a password.
 
 ![Project URL with SSH only access](img/restricted_url.png)
 
-On top of these UI restrictions, GitLab will deny all Git actions on the protocol
+On top of these UI restrictions, GitLab denies all Git actions on the protocol
 not selected.
 
 WARNING:
-Starting with [GitLab 10.7](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18021),
-HTTP(S) protocol will be allowed for Git clone or fetch requests done by GitLab Runner
-from CI/CD jobs, even if _Only SSH_ was selected.
+GitLab versions [10.7 and later](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18021),
+allow the HTTP(S) protocol for Git clone or fetch requests done by GitLab Runner
+from CI/CD jobs, even if **Only SSH** was selected.
 
 ## Custom Git clone URL for HTTP(S)
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18422) in GitLab 12.4.
 
-You can customize project Git clone URLs for HTTP(S). This will affect the clone
+You can customize project Git clone URLs for HTTP(S), which affects the clone
 panel:
 
 ![Clone panel](img/clone_panel_v12_4.png)
@@ -225,10 +223,9 @@ For more details, see [SSH key restrictions](../../../security/ssh_keys_restrict
 
 ## Allow mirrors to be set up for projects
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3586) in GitLab 10.3.
-
-This option is enabled by default. By disabling it, both [pull and push mirroring](../../project/repository/repository_mirroring.md) will no longer
-work in every repository and can only be re-enabled by an admin on a per-project basis.
+This option is enabled by default. By disabling it, both
+[pull and push mirroring](../../project/repository/repository_mirroring.md) no longer
+work in every repository. They can only be re-enabled by an administrator user on a per-project basis.
 
 ![Mirror settings](img/mirror_settings.png)
 

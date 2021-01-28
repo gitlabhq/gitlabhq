@@ -15718,8 +15718,18 @@ Identifier of Milestone.
 """
 scalar MilestoneID
 
+"""
+Current state of milestone
+"""
 enum MilestoneStateEnum {
+  """
+  Milestone is currently active
+  """
   active
+
+  """
+  Milestone is closed
+  """
   closed
 }
 

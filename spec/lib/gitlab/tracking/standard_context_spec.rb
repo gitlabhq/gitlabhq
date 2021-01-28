@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Tracking::StandardContext do
   let(:snowplow_context) { subject.to_context }
 
   describe '#to_context' do
-    context 'with no arguments' do
+    context 'default fields' do
       context 'environment' do
         shared_examples 'contains environment' do |expected_environment|
           it 'contains environment' do
@@ -36,6 +36,10 @@ RSpec.describe Gitlab::Tracking::StandardContext do
 
           include_examples 'contains environment', 'production'
         end
+      end
+
+      it 'contains source' do
+        expect(snowplow_context.to_json.dig(:data, :source)).to eq(described_class::GITLAB_RAILS_SOURCE)
       end
     end
 

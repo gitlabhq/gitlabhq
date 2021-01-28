@@ -48,7 +48,7 @@ describe('MembersApp', () => {
     it('renders and scrolls to error alert', async () => {
       createComponent({ showError: false, errorMessage: '' });
 
-      store.commit(RECEIVE_MEMBER_ROLE_ERROR);
+      store.commit(RECEIVE_MEMBER_ROLE_ERROR, { error: new Error('Network Error') });
 
       await nextTick();
 

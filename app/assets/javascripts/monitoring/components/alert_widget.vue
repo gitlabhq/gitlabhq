@@ -3,6 +3,7 @@ import { GlBadge, GlLoadingIcon, GlModalDirective, GlIcon, GlTooltip, GlSprintf 
 import { values, get } from 'lodash';
 import { s__ } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import AlertWidgetForm from './alert_widget_form.vue';
 import AlertsService from '../services/alerts_service';
 import { alertsValidator, queriesValidator } from '../validators';
@@ -165,11 +166,11 @@ export default {
       return get(alertQuery, 'result[0].values', []).map((value) => get(value, '[1]', null));
     },
     showModal() {
-      this.$root.$emit('bv::show::modal', this.modalId);
+      this.$root.$emit(BV_SHOW_MODAL, this.modalId);
     },
     hideModal() {
       this.errorMessage = null;
-      this.$root.$emit('bv::hide::modal', this.modalId);
+      this.$root.$emit(BV_HIDE_MODAL, this.modalId);
     },
     handleSetApiAction(apiAction) {
       this.apiAction = apiAction;

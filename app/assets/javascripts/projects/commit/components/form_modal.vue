@@ -3,6 +3,7 @@ import { GlModal, GlForm, GlFormCheckbox, GlSprintf, GlFormGroup } from '@gitlab
 import { mapActions, mapState } from 'vuex';
 import eventHub from '../event_hub';
 import csrf from '~/lib/utils/csrf';
+import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import BranchesDropdown from './branches_dropdown.vue';
 
 export default {
@@ -67,7 +68,7 @@ export default {
   methods: {
     ...mapActions(['clearModal', 'setBranch', 'setSelectedBranch']),
     show() {
-      this.$root.$emit('bv::show::modal', this.modalId);
+      this.$root.$emit(BV_SHOW_MODAL, this.modalId);
     },
     handlePrimary() {
       this.$refs.form.$el.submit();

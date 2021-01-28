@@ -1,6 +1,7 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { GlModal, GlTabs, GlTab, GlSearchBoxByType, GlSprintf } from '@gitlab/ui';
+import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import ReviewTabContainer from '~/add_context_commits_modal/components/review_tab_container.vue';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
@@ -119,7 +120,7 @@ export default {
     openModal() {
       this.searchCommits();
       this.fetchContextCommits();
-      this.$root.$emit('bv::show::modal', 'add-review-item');
+      this.$root.$emit(BV_SHOW_MODAL, 'add-review-item');
     },
     handleTabChange(tabIndex) {
       if (tabIndex === 0) {

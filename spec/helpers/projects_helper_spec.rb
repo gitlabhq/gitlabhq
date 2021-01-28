@@ -657,31 +657,6 @@ RSpec.describe ProjectsHelper do
     end
   end
 
-  describe 'link_to_filter_repo' do
-    subject { helper.link_to_filter_repo }
-
-    it 'generates a hardcoded link to git filter-repo' do
-      result = helper.link_to_filter_repo
-      doc = Nokogiri::HTML.fragment(result)
-
-      expect(doc.children.size).to eq(1)
-
-      link = doc.children.first
-
-      aggregate_failures do
-        expect(result).to be_html_safe
-
-        expect(link.name).to eq('a')
-        expect(link[:target]).to eq('_blank')
-        expect(link[:rel]).to eq('noopener noreferrer')
-        expect(link[:href]).to eq('https://github.com/newren/git-filter-repo')
-        expect(link.inner_html).to eq('git filter-repo')
-
-        expect(result).to be_html_safe
-      end
-    end
-  end
-
   describe '#explore_projects_tab?' do
     subject { helper.explore_projects_tab? }
 

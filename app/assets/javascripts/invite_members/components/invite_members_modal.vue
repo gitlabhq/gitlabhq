@@ -14,6 +14,7 @@ import eventHub from '../event_hub';
 import { s__, __, sprintf } from '~/locale';
 import Api from '~/api';
 import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
+import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 
 export default {
   name: 'InviteMembersModal',
@@ -113,10 +114,10 @@ export default {
       ];
     },
     openModal() {
-      this.$root.$emit('bv::show::modal', this.modalId);
+      this.$root.$emit(BV_SHOW_MODAL, this.modalId);
     },
     closeModal() {
-      this.$root.$emit('bv::hide::modal', this.modalId);
+      this.$root.$emit(BV_HIDE_MODAL, this.modalId);
     },
     sendInvite() {
       this.submitForm();

@@ -10,3 +10,6 @@ export const DATETIME_RANGE_TYPES = {
   open: 'open',
   invalid: 'invalid',
 };
+
+export const BV_SHOW_MODAL = 'bv::show::modal';
+export const BV_HIDE_MODAL = 'bv::hide::modal';

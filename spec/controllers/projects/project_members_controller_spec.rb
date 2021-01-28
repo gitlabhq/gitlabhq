@@ -321,6 +321,18 @@ RSpec.describe Projects::ProjectMembersController do
 
           expect(requester.reload.expires_at).not_to eq(expires_at.to_date)
         end
+
+        it 'returns error status' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        end
+
+        it 'returns error message' do
+          subject
+
+          expect(json_response).to eq({ 'message' => 'Expires at cannot be a date in the past' })
+        end
       end
 
       context 'when set to a date in the future' do

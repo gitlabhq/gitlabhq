@@ -6,7 +6,10 @@
     %button.btn.js-settings-toggle
       = expanded ? _('Collapse') : _('Expand')
     %p
-      = _("Clean up after running %{filter_repo} on the repository." % { filter_repo: link_to_filter_repo }).html_safe
+      - link_url = 'https://github.com/newren/git-filter-repo'
+      - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: link_url }
+      - link_end = '</a>'.html_safe
+      = _("Clean up after running %{link_start}git filter-repo%{link_end} on the repository.").html_safe % { link_start: link_start, link_end: link_end }
       = link_to sprite_icon('question-o'),
           help_page_path('user/project/repository/reducing_the_repo_size_using_git.md'),
           target: '_blank', rel: 'noopener noreferrer'

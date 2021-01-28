@@ -298,7 +298,7 @@ When the user is authenticated and `simple` is not set this returns something li
 ```
 
 NOTE:
-For users of GitLab [Silver, Premium, or higher](https://about.gitlab.com/pricing/),
+For users of GitLab [Premium or higher](https://about.gitlab.com/pricing/),
 the `marked_for_deletion_at` attribute has been deprecated, and is removed
 in API v5 in favor of the `marked_for_deletion_on` attribute.
 
@@ -1877,7 +1877,7 @@ This endpoint:
 - Deletes a project including all associated resources (including issues and
   merge requests).
 - From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on
-  [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers, group
+  [Premium](https://about.gitlab.com/pricing/) or higher tiers, group
   admins can [configure](../user/group/index.md#enabling-delayed-project-removal)
   projects within a group to be deleted after a delayed period. When enabled,
   actual deletion happens after the number of days specified in the
@@ -2231,7 +2231,7 @@ GET /projects/:id/push_rule
 }
 ```
 
-Users of GitLab [Premium, Silver, or higher](https://about.gitlab.com/pricing/)
+Users of GitLab [Premium or higher](https://about.gitlab.com/pricing/)
 can also see the `commit_committer_check` and `reject_unsigned_commits`
 parameters:
 

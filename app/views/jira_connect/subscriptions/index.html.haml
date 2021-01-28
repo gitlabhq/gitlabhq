@@ -3,21 +3,21 @@
 
 .jira-connect-user
   - if current_user
-    - user_link = link_to(current_user.to_reference, user_path(current_user), target: '_blank', rel: 'noopener noreferrer')
+    - user_link = link_to(current_user.to_reference, jira_connect_users_path, target: '_blank', rel: 'noopener noreferrer', class: 'js-jira-connect-sign-in')
     = _('Signed in to GitLab as %{user_link}').html_safe % { user_link: user_link }
   - elsif @subscriptions.present?
     = link_to _('Sign in to GitLab'), jira_connect_users_path, target: '_blank', rel: 'noopener noreferrer', class: 'js-jira-connect-sign-in'
 
 .jira-connect-app
   - if current_user.blank? && @subscriptions.empty?
-    %h1
-      GitLab for Jira Configuration
-    %h2.heading-with-border Sign in to GitLab.com to get started.
+    %h2= s_('JiraService|GitLab for Jira Configuration')
+    %p= s_('JiraService|Sign in to GitLab.com to get started.')
 
-    .gl-mt-5
-      = external_link _('Sign in to GitLab'), jira_connect_users_path, class: 'ak-button ak-button__appearance-primary js-jira-connect-sign-in'
+    .gl-mt-7
+      - sign_in_button_class = new_jira_connect_ui? ? 'btn gl-button btn-confirm' : 'ak-button ak-button__appearance-primary'
+      = external_link _('Sign in to GitLab'), jira_connect_users_path, class: "#{sign_in_button_class} js-jira-connect-sign-in"
 
-    .gl-mt-5
+    .gl-mt-7
       %p Note: this integration only works with accounts on GitLab.com (SaaS).
   - else
     .js-jira-connect-app{ data: jira_connect_app_data(@subscriptions) }
@@ -55,10 +55,8 @@
     %strong Browser limitations:
     Adding a namespace currently works only in browsers that allow cross‑site cookies. Please make sure to use
     %a{ href: 'https://www.mozilla.org/en-US/firefox/', target: '_blank', rel: 'noopener noreferrer' } Firefox
-    or
-    %a{ href: 'https://www.google.com/chrome/index.html', target: '_blank', rel: 'noopener noreferrer' } Google Chrome
     or enable cross‑site cookies in your browser when adding a namespace.
-    %a{ href: 'https://gitlab.com/gitlab-org/gitlab/-/issues/263509', target: '_blank', rel: 'noopener noreferrer' } Learn more
+    = link_to _('Learn more'), 'https://gitlab.com/gitlab-org/gitlab/-/issues/284211', target: '_blank', rel: 'noopener noreferrer'
 
 = webpack_bundle_tag 'performance_bar' if performance_bar_enabled?
 = webpack_bundle_tag 'jira_connect_app'

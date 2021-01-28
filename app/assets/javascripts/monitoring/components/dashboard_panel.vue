@@ -19,6 +19,7 @@ import invalidUrl from '~/lib/utils/invalid_url';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import { relativePathToAbsolute, getBaseURL, visitUrl, isSafeURL } from '~/lib/utils/url_utility';
 import { __, n__ } from '~/locale';
+import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { panelTypes } from '../constants';
 
 import MonitorEmptyChart from './charts/empty_chart.vue';
@@ -318,7 +319,7 @@ export default {
       return isSafeURL(url) ? url : '#';
     },
     showAlertModal() {
-      this.$root.$emit('bv::show::modal', this.alertModalId);
+      this.$root.$emit(BV_SHOW_MODAL, this.alertModalId);
     },
     showAlertModalFromKeyboardShortcut() {
       if (this.isContextualMenuShown) {

@@ -43272,20 +43272,20 @@
         {
           "kind": "ENUM",
           "name": "MilestoneStateEnum",
-          "description": null,
+          "description": "Current state of milestone",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
           "enumValues": [
             {
               "name": "active",
-              "description": null,
+              "description": "Milestone is currently active",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "closed",
-              "description": null,
+              "description": "Milestone is closed",
               "isDeprecated": false,
               "deprecationReason": null
             }

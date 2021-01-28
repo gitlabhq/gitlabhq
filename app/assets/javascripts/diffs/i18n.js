@@ -9,7 +9,8 @@ export const DIFF_FILE_HEADER = {
 };
 
 export const DIFF_FILE = {
-  blobView: __('You can %{linkStart}view the blob%{linkEnd} instead.'),
+  tooLarge: __('MRDiffFile|Changes are too large to be shown.'),
+  blobView: __('MRDiffFile|View file @ %{commitSha}'),
   editInFork: __(
     "You're not allowed to %{tag_start}edit%{tag_end} files in this project directly. Please fork this project, make your changes there, and submit a merge request.",
   ),
