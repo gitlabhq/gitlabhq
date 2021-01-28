@@ -103,6 +103,7 @@ RSpec.describe BulkImports::Pipeline::Runner do
 
           expect(failure).to be_present
           expect(failure.pipeline_class).to eq('BulkImports::MyPipeline')
+          expect(failure.pipeline_step).to eq('extractor')
           expect(failure.exception_class).to eq('StandardError')
           expect(failure.exception_message).to eq('Error!')
         end

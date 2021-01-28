@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2381) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/233149) to [GitLab Core](https://about.gitlab.com/pricing/) in 13.4.
 
-The Jira Development Panel integration allows you to reference Jira issues within GitLab, displaying
+The Jira Development Panel integration allows you to reference Jira issues in GitLab, displaying
 activity in the [Development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/)
 in the issue.
 
@@ -35,7 +35,7 @@ See the [Configuration](#configuration) section for details.
 
 With this integration, you can access related GitLab merge requests, branches, and commits directly from a Jira issue, reflecting your work in GitLab. From the Development panel, you can open a detailed view and take actions including creating a new merge request from a branch. For more information, see [Usage](#usage).
 
-This integration connects all GitLab projects to projects in the Jira instance within either:
+This integration connects all GitLab projects to projects in the Jira instance in either:
 
 - A top-level group. A top-level GitLab group is one that does not have any parent group itself. All
   the projects of that top-level group, as well as projects of the top-level group's subgroups nesting
@@ -211,7 +211,7 @@ The requested scope is invalid, unknown, or malformed.
 
 Potential resolutions:
 
-- Verify the URL shown in the browser after being redirected from Jira in step 5 of [Jira DVCS Connector Setup](#jira-dvcs-connector-setup) includes `scope=api` within the query string.
+- Verify the URL shown in the browser after being redirected from Jira in step 5 of [Jira DVCS Connector Setup](#jira-dvcs-connector-setup) includes `scope=api` in the query string.
 - If `scope=api` is missing from the URL, return to [GitLab account configuration](#gitlab-account-configuration-for-dvcs) and ensure the application you created in step 1 has the `api` box checked under scopes.
 
 ##### Jira error adding account and no repositories listed
@@ -314,6 +314,6 @@ For more information on using Jira Smart Commits to track time against an issue,
 
 ## Limitations
 
-This integration is currently not supported on GitLab instances under a
+This integration is not supported on GitLab instances under a
 [relative URL](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab).
 For example, `http://example.com/gitlab`.

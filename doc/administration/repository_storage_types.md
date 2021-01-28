@@ -38,13 +38,13 @@ been disabled.
 
 Hashed storage is the storage behavior we rolled out with 10.0. Instead
 of coupling project URL and the folder structure where the repository is
-stored on disk, we are coupling a hash, based on the project's ID. This makes
+stored on disk, we couple a hash based on the project's ID. This makes
 the folder structure immutable, and therefore eliminates any requirement to
 synchronize state from URLs to disk structure. This means that renaming a group,
 user, or project costs only the database transaction, and takes effect
 immediately.
 
-The hash also helps to spread the repositories more evenly on the disk, so the
+The hash also helps spread the repositories more evenly on the disk. The
 top-level directory contains fewer folders than the total number of top-level
 namespaces.
 
@@ -136,8 +136,8 @@ when housekeeping is run on the source project.
 ### Hashed storage coverage migration
 
 Files stored in an S3-compatible endpoint do not have the downsides
-mentioned earlier, if they are not prefixed with `#{namespace}/#{project_name}`,
-which is true for CI Cache and LFS Objects.
+mentioned earlier, if they are not prefixed with `#{namespace}/#{project_name}`.
+This is true for CI Cache and LFS Objects.
 
 In the table below, you can find the coverage of the migration to the hashed storage.
 
@@ -194,10 +194,10 @@ reasons, GitLab replicated the same mapping structure from the projects URLs:
 - Project's repository: `#{namespace}/#{project_name}.git`
 - Project's wiki: `#{namespace}/#{project_name}.wiki.git`
 
-This structure made it simple to migrate from existing solutions to GitLab and
-easy for Administrators to find where the repository is stored.
+This structure enables you to migrate from existing solutions to GitLab, and
+for Administrators to find where the repository is stored.
 
-On the other hand this has some drawbacks:
+This approach also has some drawbacks:
 
 Storage location concentrates a huge number of top-level namespaces. The
 impact can be reduced by the introduction of
@@ -211,4 +211,4 @@ is at that same URL today.
 
 Any change in the URL needs to be reflected on disk (when groups / users or
 projects are renamed). This can add a lot of load in big installations,
-especially if using any type of network based filesystem.
+especially if using any type of network based file system.

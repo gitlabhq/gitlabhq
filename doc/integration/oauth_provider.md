@@ -20,15 +20,14 @@ If you want to use:
 ## Introduction to OAuth
 
 [OAuth](https://oauth.net/2/) provides to client applications a 'secure delegated access' to server
-resources on behalf of a resource owner. In fact, OAuth allows an authorization
+resources on behalf of a resource owner. OAuth allows an authorization
 server to issue access tokens to third-party clients with the approval of the
 resource owner, or the end-user.
 
 OAuth is mostly used as a Single Sign-On service (SSO), but you can find a
 lot of different uses for this functionality. For example, you can allow users
-to sign in to your application with their GitLab.com account, or GitLab.com
-can be used for authentication to your GitLab instance
-(see [GitLab OmniAuth](gitlab.md)).
+to sign in to your application with their GitLab.com account. You can also use GitLab.com
+for authentication to your GitLab instance (see [GitLab OmniAuth](gitlab.md)).
 
 The 'GitLab Importer' feature is also using the OAuth protocol to give access
 to repositories without sharing user credentials to your GitLab.com account.
@@ -37,7 +36,7 @@ GitLab supports two ways of adding a new OAuth2 application to an instance. You
 can either add an application as a regular user or add it in the Admin Area.
 What this means is that GitLab can actually have instance-wide and a user-wide
 applications. There is no difference between them except for the different
-permission levels they are set (user/admin). The default callback URL is
+permission levels they are set (user or administrator). The default callback URL is
 `http://your-gitlab.example.com/users/auth/gitlab/callback`
 
 ## Adding an application through the profile
@@ -64,7 +63,7 @@ connects to GitLab.
 To create an application that does not belong to a certain user, you can create
 it from the Admin Area.
 
-![OAuth admin_applications](img/oauth_provider_admin_application.png)
+![OAuth administrator applications](img/oauth_provider_admin_application.png)
 
 You're also able to mark an application as _trusted_ when creating it through the Admin Area. By doing that,
 the user authorization step is automatically skipped for this application.
@@ -77,7 +76,7 @@ in the **Authorized applications** section under **Profile Settings > Applicatio
 ![Authorized_applications](img/oauth_provider_authorized_application.png)
 
 The GitLab OAuth applications support scopes, which allow various actions that any given
-application can perform. The available scopes are depicted in the following table. 
+application can perform. The available scopes are depicted in the following table.
 
 | Scope              | Description |
 | ------------------ | ----------- |
@@ -88,9 +87,9 @@ application can perform. The available scopes are depicted in the following tabl
 | `write_repository` | Grants read-write access to repositories on private projects using Git-over-HTTP (not using the API). |
 | `read_registry`    |  Grants read-only access to container registry images on private projects. |
 | `write_registry`   | Grants read-only access to container registry images on private projects. |
-| `sudo`             | Grants permission to perform API actions as any user in the system, when authenticated as an admin user. |
+| `sudo`             | Grants permission to perform API actions as any user in the system, when authenticated as an administrator user. |
 | `openid`           | Grants permission to authenticate with GitLab using [OpenID Connect](openid_connect_provider.md). Also gives read-only access to the user's profile and group memberships. |
 | `profile`          |  Grants read-only access to the user's profile data using [OpenID Connect](openid_connect_provider.md). |
 | `email`            |  Grants read-only access to the user's primary email address using [OpenID Connect](openid_connect_provider.md). |
 
-At any time you can revoke any access by just clicking **Revoke**.
+At any time you can revoke any access by clicking **Revoke**.

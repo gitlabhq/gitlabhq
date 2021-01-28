@@ -10,17 +10,17 @@ NOTE:
 The preferred approach for integrating a Shibboleth authentication system
 with GitLab 10 or newer is to use the [GitLab SAML integration](saml.md). This documentation is for Omnibus GitLab 9.x installs or older.
 
-In order to enable Shibboleth support in GitLab we need to use Apache instead of NGINX (It may be possible to use NGINX, however this is difficult to configure using the bundled NGINX provided in the Omnibus GitLab package). Apache uses mod_shib2 module for Shibboleth authentication and can pass attributes as headers to OmniAuth Shibboleth provider.
+To enable Shibboleth support in GitLab we need to use Apache instead of NGINX. (It may be possible to use NGINX, however this is difficult to configure using the bundled NGINX provided in the Omnibus GitLab package.) Apache uses `mod_shib2` module for Shibboleth authentication and can pass attributes as headers to OmniAuth Shibboleth provider.
 
 To enable the Shibboleth OmniAuth provider you must configure Apache Shibboleth module.
 The installation and configuration of the module itself is out of the scope of this document.
-Check <https://wiki.shibboleth.net/confluence/display/SP3/Apache> for more information.
+Check [the Shibboleth documentation](https://wiki.shibboleth.net/confluence/display/SP3/Apache) for more information.
 
 You can find Apache configuration in [GitLab Recipes](https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/web-server/apache).
 
 The following changes are needed to enable Shibboleth:
 
-1. Protect OmniAuth Shibboleth callback URL:
+1. Protect the OmniAuth Shibboleth callback URL:
 
    ```apache
    <Location /users/auth/shibboleth/callback>
@@ -53,7 +53,7 @@ The following changes are needed to enable Shibboleth:
    ```
 
    NOTE:
-   Starting from GitLab 11.4, OmniAuth is enabled by default. If you're using an
+   In GitLab versions 11.4 and later, OmniAuth is enabled by default. If you're using an
    earlier version, you must explicitly enable it in `/etc/gitlab/gitlab.rb`.
 
 1. In addition, add Shibboleth to `/etc/gitlab/gitlab.rb` as an OmniAuth provider.
@@ -100,7 +100,7 @@ The following changes are needed to enable Shibboleth:
 1. [Reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) or [restart](../administration/restart_gitlab.md#installations-from-source) GitLab for the changes to take effect if you
    installed GitLab via Omnibus or from source respectively.
 
-On the sign in page, there should now be a "Sign in with: Shibboleth" icon below the regular sign in form. Click the icon to begin the authentication process. You are redirected to IdP server (depends on your Shibboleth module configuration). If everything goes well the user is returned to GitLab and is signed in.
+On the sign in page, there should now be a **Sign in with: Shibboleth** icon below the regular sign in form. Click the icon to begin the authentication process. You are redirected to IdP server (depends on your Shibboleth module configuration). If everything goes well the user is returned to GitLab and is signed in.
 
 ## Apache 2.4 / GitLab 8.6 update
 

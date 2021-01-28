@@ -5,9 +5,7 @@ module Gitlab
     class StandardContext
       GITLAB_STANDARD_SCHEMA_URL = 'iglu:com.gitlab/gitlab_standard/jsonschema/1-0-2'.freeze
 
-      def initialize(namespace: nil, project: nil, **data)
-        @namespace = namespace
-        @project = project
+      def initialize(namespace: nil, project: nil, user: nil, **data)
         @data = data
       end
 

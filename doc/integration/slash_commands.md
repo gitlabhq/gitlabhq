@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > The `run` command was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4466) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.6. [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24780) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.9.
 
-Slash commands in Mattermost and Slack allow you to control GitLab and view GitLab content right inside your chat client, without having to leave it. For Slack, this requires an [integration configuration](../user/project/integrations/slack_slash_commands.md). Simply type the command as a message in your chat client to activate it.
+Slash commands in Mattermost and Slack allow you to control GitLab and view GitLab content right inside your chat client, without having to leave it. For Slack, this requires an [integration configuration](../user/project/integrations/slack_slash_commands.md). Type the command as a message in your chat client to activate it.
 
 Commands are scoped to a project, with a trigger term that is specified during configuration.
 
@@ -28,8 +28,8 @@ Taking the trigger term as `project-name`, the commands are:
 | `/project-name deploy <from> to <to>` | Deploy from the `<from>` environment to the `<to>` environment |
 | `/project-name run <job name> <arguments>` | Execute [ChatOps](../ci/chatops/README.md) job `<job name>` on `master` |
 
-Note that if you are using the [GitLab Slack application](../user/project/integrations/gitlab_slack_application.md) for
-your GitLab.com projects, you need to [add the `gitlab` keyword at the beginning of the command](../user/project/integrations/gitlab_slack_application.md#usage).
+If you are using the [GitLab Slack application](../user/project/integrations/gitlab_slack_application.md) for
+your GitLab.com projects, [add the `gitlab` keyword at the beginning of the command](../user/project/integrations/gitlab_slack_application.md#usage).
 
 ## Issue commands
 

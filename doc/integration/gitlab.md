@@ -11,7 +11,7 @@ Import projects from GitLab.com and login to your GitLab instance with your GitL
 To enable the GitLab.com OmniAuth provider you must register your application with GitLab.com.
 GitLab.com generates an application ID and secret key for you to use.
 
-1. Sign in to GitLab.com
+1. Sign in to GitLab.com.
 
 1. On the upper right corner, click on your avatar and go to your **Settings**.
 

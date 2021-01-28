@@ -24,6 +24,11 @@ In particular, note:
     (order of hundred emails a day minimum to Gmail) for a few weeks at least".
   - Have a very low rate of spam complaints from users.
 - Emails must be authenticated via DKIM or SPF.
-- Before sending the final form ("Gmail Schema Whitelist Request"), you must send a real email from your production server. This means that you must find a way to send this email from the email address you are registering. You can do this by, for example, forwarding the real email from the email address you are registering or going into the rails console on the GitLab server and triggering the email sending from there.
+- Before sending the final form ("Gmail Schema Whitelist Request"), you must
+  send a real email from your production server. This means that you must find
+  a way to send this email from the email address you are registering. You can
+  do this by forwarding the real email from the email address you are
+  registering. You can also go into the Rails console on the GitLab server and
+  trigger sending the email from there.
 
 You can check how it looks going through all the steps laid out in the "Registering with Google" doc in [this GitLab.com issue](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/1517).

@@ -4,25 +4,24 @@ group: Editor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Migration to Versioned Snippets **(CORE ONLY)**
+# Migration to versioned snippets **(CORE ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215861) in GitLab 13.0.
 
 In GitLab 13.0, [GitLab Snippets are backed by Git repositories](../user/snippets.md#versioned-snippets).
-This means that the snippet content will be stored in the repository
-and users can update it directly through Git.
+Snippet content is stored in the repository, and users can update it directly through Git.
 
-Nevertheless, existing GitLab Snippets have to be migrated to this new functionality.
-For each snippet, a new repository is created and the snippet content is committed
-to the repository inside a file whose name is the filename used in the snippet
-as well.
+Nevertheless, existing GitLab Snippets must be migrated to this new feature.
+For each snippet:
+
+- A new repository is created.
+- A file is created in the repository, using the snippet filename.
+- The snippet is committed to the repository.
 
 GitLab performs this migration through a [Background Migration](../development/background_migrations.md)
-automatically when the GitLab instance is upgrade to 13.0 or a higher version.
-However, if the migration fails for any of the snippets, they still need
-to be migrated individually.
-
-The following Rake tasks will help with that process.
+when the GitLab instance is upgraded to 13.0 or a higher version.
+However, if the migration fails for any of the snippets, they must be migrated individually.
+The following Rake tasks help with that process.
 
 ## Migrate specific snippets to Git
 

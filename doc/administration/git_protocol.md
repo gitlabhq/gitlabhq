@@ -29,11 +29,11 @@ server to accept the `GIT_PROTOCOL` environment.
 
 In installations using [GitLab Helm Charts](https://docs.gitlab.com/charts/)
 and [All-in-one Docker image](https://docs.gitlab.com/omnibus/docker/), the SSH
-service is already configured to accept the `GIT_PROTOCOL` environment and users
+service is already configured to accept the `GIT_PROTOCOL` environment. Users
 need not do anything more.
 
-For Omnibus GitLab and installations from source, you have to manually update
-the SSH configuration of your server by adding the line below to the `/etc/ssh/sshd_config` file:
+For Omnibus GitLab and installations from source, update
+the SSH configuration of your server manually by adding this line to the `/etc/ssh/sshd_config` file:
 
 ```plaintext
 AcceptEnv GIT_PROTOCOL

@@ -9,7 +9,7 @@ import axios from '../../lib/utils/axios_utils';
 import { refreshCurrentPage, visitUrl } from '../../lib/utils/url_utility';
 import findAndFollowLink from '../../lib/utils/navigation_utility';
 import { parseBoolean, getCspNonceValue } from '~/lib/utils/common_utils';
-import { keysFor, TOGGLE_PERFORMANCE_BAR } from './keybindings';
+import { keysFor, TOGGLE_PERFORMANCE_BAR, TOGGLE_CANARY } from './keybindings';
 
 const defaultStopCallback = Mousetrap.prototype.stopCallback;
 Mousetrap.prototype.stopCallback = function customStopCallback(e, element, combo) {
@@ -72,6 +72,7 @@ export default class Shortcuts {
     Mousetrap.bind('/', Shortcuts.focusSearch);
     Mousetrap.bind('f', this.focusFilter.bind(this));
     Mousetrap.bind(keysFor(TOGGLE_PERFORMANCE_BAR), Shortcuts.onTogglePerfBar);
+    Mousetrap.bind(keysFor(TOGGLE_CANARY), Shortcuts.onToggleCanary);
 
     const findFileURL = document.body.dataset.findFile;
 
@@ -121,6 +122,14 @@ export default class Shortcuts {
     } else {
       Cookies.set(performanceBarCookieName, 'true', { expires: 365, path: '/' });
     }
+    refreshCurrentPage();
+  }
+
+  static onToggleCanary(e) {
+    e.preventDefault();
+    const canaryCookieName = 'gitlab_canary';
+    const currentValue = parseBoolean(Cookies.get(canaryCookieName));
+    Cookies.set(canaryCookieName, (!currentValue).toString(), { expires: 365, path: '/' });
     refreshCurrentPage();
   }
 

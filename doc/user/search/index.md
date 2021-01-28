@@ -9,16 +9,14 @@ type: index, reference, howto
 
 ## Issues and merge requests
 
-To search through issues and merge requests in multiple projects, you can use the **Issues** or **Merge Requests** links
-in the top-right part of your screen.
+To search through issues and merge requests in multiple projects, use the **Issues** or **Merge Requests** links
+in the top-right part of your screen. These instructions are valid for both.
 
-Both of them work in the same way, therefore, the following notes are valid for both.
-
-The number displayed on their right represents the number of issues and merge requests assigned to you.
+The number displayed on their right represents the number of issues and merge requests assigned to you:
 
 ![issues and MRs dashboard links](img/dashboard_links.png)
 
-When you click **Issues**, the opened issues assigned to you are shown straight away:
+When you click **Issues**, GitLab shows the opened issues assigned to you:
 
 ![Issues assigned to you](img/issues_assigned_to_you.png)
 
@@ -30,7 +28,7 @@ You can also filter the results using the search and filter field, as described 
 ### Issues and MRs assigned to you or created by you
 
 GitLab shows shortcuts to issues and merge requests created by you or assigned to you
-on the search field on the top-right of your screen:
+in the search field in the upper right corner:
 
 ![shortcut to your issues and merge requests](img/issues_mrs_shortcut.png)
 
@@ -156,15 +154,16 @@ using the filter functionality, you can start typing characters to bring up
 relevant users or other attributes.
 
 For performance optimization, there is a requirement of a minimum of three
-characters to begin your search. For example, if you want to search for
-issues that have the assignee "Simone Presley", you must type at
-least "Sim" before autocomplete gives any relevant results.
+characters to begin your search. To search for issues with the assignee `Simone Presley`,
+you must type at least `Sim` before autocomplete displays results.
 
 ## Search history
 
-You can view recent searches by clicking on the little arrow-clock icon, which is to the left of the search input. Click the search entry to run that search again. This feature is available for issues and merge requests. Searches are stored locally in your browser.
+Search history is available for issues and merge requests, and is stored locally
+in your browser. To run a search from history:
 
-![search history](img/search_history.gif)
+1. In the top menu, click **Issues** or **Merge requests**.
+1. To the left of the search bar, click **Recent searches**, and select a search from the list.
 
 ## Removing search filters
 
@@ -174,7 +173,7 @@ To delete filter tokens one at a time, the <kbd>⌥</kbd> (Mac) / <kbd>Control</
 
 ## Filtering with multiple filters of the same type
 
-Some filters can be added multiple times. These include but are not limited to assignees and labels. When you filter with these multiple filters of the same type, the AND logic is applied. For example, if you were filtering `assignee:@sam assignee:@sarah`, your results include only entries whereby the assignees are assigned to both Sam and Sarah are returned.
+Some filters can be added multiple times. These include but are not limited to assignees and labels. When you filter with these multiple filters of the same type, the `AND` logic is applied. For example, if you were filtering `assignee:@sam assignee:@sarah`, your results include only entries whereby the assignees are assigned to both Sam and Sarah are returned.
 
 ![multiple assignees filtering](img/multiple_assignees.png)
 
@@ -192,8 +191,8 @@ You can search through your projects from the left menu, by clicking the menu ba
 On the field **Filter by name**, type the project or group name you want to find, and GitLab
 filters them for you as you type.
 
-You can also look for the projects you [starred](../project/index.md#star-a-project) (**Starred projects**), and **Explore** all
-public and internal projects available in GitLab.com, from which you can filter by visibility,
+You can also look for the projects you [starred](../project/index.md#star-a-project) (**Starred projects**).
+You can **Explore** all public and internal projects available in GitLab.com, from which you can filter by visibility,
 through **Trending**, best rated with **Most stars**, or **All** of them.
 
 You can also sort them by **Name**, **Last created**, **Oldest created**, **Last updated**,
@@ -217,7 +216,7 @@ and sort them by **Last created**, **Oldest created**, **Last updated**, or **Ol
 From an [Issue Board](../../user/project/issue_board.md), you can filter issues by **Author**, **Assignee**, **Milestone**, and **Labels**.
 You can also filter them by name (issue title), from the field **Filter by name**, which is loaded as you type.
 
-When you want to search for issues to add to lists present in your Issue Board, click
+To search for issues to add to lists present in your Issue Board, click
 the button **Add issues** on the top-right of your screen, opening a modal window from which
 you can, besides filtering them by **Name**, **Author**, **Assignee**, **Milestone**,
 and **Labels**, select multiple issues to add to a list of your choice:
@@ -226,10 +225,14 @@ and **Labels**, select multiple issues to add to a list of your choice:
 
 ## Shortcut
 
-GitLab shows a shortcut on the search field on the top-right of the project's dashboard to
-quickly access issues and merge requests created or assigned to you in that project:
+To view issues and merge requests created or assigned to you in a project:
 
-![search per project - shortcut](img/project_search.png)
+1. Go to your project.
+1. In the top navigation bar, click the search box to display a list of issues and
+   merge requests.
+1. Select your desired issue or merge request:
+
+   ![search per project - shortcut](img/project_search.png)
 
 ### Autocomplete suggestions
 
@@ -246,7 +249,7 @@ You can also type in this search bar to see autocomplete suggestions for:
 
 ## Basic search
 
-The Basic search in GitLab is a global search service that allows you to search
+The Basic search in GitLab enables you to search
 across the entire GitLab instance, in a group, or in a single project. Basic search is
 backed by the database and allows searching in:
 

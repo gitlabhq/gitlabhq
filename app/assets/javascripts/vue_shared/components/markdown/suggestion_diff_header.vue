@@ -131,6 +131,7 @@ export default {
       <gl-button
         v-gl-tooltip.viewport="__('This also resolves all related threads')"
         class="btn-inverted js-apply-batch-btn btn-grouped"
+        data-qa-selector="apply_suggestions_batch_button"
         :disabled="isApplying"
         variant="success"
         @click="applySuggestionBatch"
@@ -145,6 +146,7 @@ export default {
       <gl-button
         v-if="suggestionsCount > 1 && canBeBatched && !isDisableButton"
         class="btn-inverted js-add-to-batch-btn btn-grouped"
+        data-qa-selector="add_suggestion_batch_button"
         :disabled="isDisableButton"
         @click="addSuggestionToBatch"
       >

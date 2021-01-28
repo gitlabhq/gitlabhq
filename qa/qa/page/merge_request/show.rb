@@ -90,6 +90,15 @@ module QA
           element :review_preview_toggle
         end
 
+        view 'app/assets/javascripts/vue_shared/components/markdown/suggestion_diff_header.vue' do
+          element :apply_suggestions_batch_button
+          element :add_suggestion_batch_button
+        end
+
+        view 'app/assets/javascripts/vue_shared/components/markdown/header.vue' do
+          element :suggestion_button
+        end
+
         def start_review
           click_element(:start_review_button)
 
@@ -305,6 +314,24 @@ module QA
             click_element(:dropdown_button)
             click_element(:edit_in_ide_button)
           end
+        end
+
+        def add_suggestion_to_diff(suggestion, line)
+          find("a[data-linenumber='#{line}']").hover
+          click_element(:diff_comment)
+          click_element(:suggestion_button)
+          initial_content = find_element(:reply_field).value
+          fill_element(:reply_field, '')
+          fill_element(:reply_field, initial_content.gsub(/(```suggestion:-0\+0\n).*(\n```)/, "\\1#{suggestion}\\2"))
+          click_element(:comment_now_button)
+        end
+
+        def add_suggestion_to_batch
+          all_elements(:add_suggestion_batch_button, minimum: 1).first.click
+        end
+
+        def apply_suggestions_batch
+          all_elements(:apply_suggestions_batch_button, minimum: 1).first.click
         end
       end
     end

@@ -411,6 +411,7 @@ reauthenticate
 reauthenticated
 reauthenticates
 reauthenticating
+rebalancing
 rebar
 rebase
 rebased
@@ -482,6 +483,7 @@ serializer
 serializers
 serializing
 serverless
+sharded
 sharding
 shfmt
 Shibboleth

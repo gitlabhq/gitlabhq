@@ -12,11 +12,13 @@ to sign in to other services.
 ## Introduction to OpenID Connect
 
 [OpenID Connect](https://openid.net/connect/) \(OIDC) is a simple identity layer on top of the
-OAuth 2.0 protocol. It allows clients to verify the identity of the end-user
-based on the authentication performed by GitLab, as well as to obtain
-basic profile information about the end-user in an interoperable and
-REST-like manner. OIDC performs many of the same tasks as OpenID 2.0,
-but does so in a way that is API-friendly, and usable by native and
+OAuth 2.0 protocol. It allows clients to:
+
+- Verify the identity of the end-user based on the authentication performed by GitLab.
+- Obtain basic profile information about the end-user in an interoperable and REST-like manner.
+
+OIDC performs many of the same tasks as OpenID 2.0,
+but does so in a way that is API-friendly and usable by native and
 mobile applications.
 
 On the client side, you can use [OmniAuth::OpenIDConnect](https://github.com/jjbohn/omniauth-openid-connect/) for Rails
@@ -34,7 +36,7 @@ is select the `openid` scope in the application settings.
 
 ## Shared information
 
-Currently the following user information is shared with clients:
+The following user information is shared with clients:
 
 | Claim            | Type      | Description |
 |:-----------------|:----------|:------------|

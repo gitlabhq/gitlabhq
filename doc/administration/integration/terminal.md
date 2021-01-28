@@ -8,13 +8,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7690) in GitLab 8.15.
 
+With the introduction of the [Kubernetes integration](../../user/project/clusters/index.md),
+GitLab can store and use credentials for a Kubernetes cluster.
+GitLab uses these credentials to provide access to
+[web terminals](../../ci/environments/index.md#web-terminals) for environments.
+
 NOTE:
 Only project maintainers and owners can access web terminals.
-
-With the introduction of the [Kubernetes integration](../../user/project/clusters/index.md),
-GitLab gained the ability to store and use credentials for a Kubernetes cluster.
-One of the things it uses these credentials for is providing access to
-[web terminals](../../ci/environments/index.md#web-terminals) for environments.
 
 ## How it works
 
@@ -53,15 +53,13 @@ detail below.
 
 NOTE:
 AWS Elastic Load Balancers (ELBs) do not support web sockets.
-AWS Application Load Balancers (ALBs) must be used if you want web terminals
-to work. See [AWS Elastic Load Balancing Product Comparison](https://aws.amazon.com/elasticloadbalancing/features/#compare)
+If you want web terminals to work, use AWS Application Load Balancers (ALBs).
+Read [AWS Elastic Load Balancing Product Comparison](https://aws.amazon.com/elasticloadbalancing/features/#compare)
 for more information.
 
 As web terminals use WebSockets, every HTTP/HTTPS reverse proxy in front of
-Workhorse needs to be configured to pass the `Connection` and `Upgrade` headers
-through to the next one in the chain. If you installed GitLab using Omnibus, or
-from source, starting with GitLab 8.15, this should be done by the default
-configuration, so there's no need for you to do anything.
+Workhorse must be configured to pass the `Connection` and `Upgrade` headers
+to the next one in the chain. GitLab is configured by default to do so.
 
 However, if you run a [load balancer](../load_balancer.md) in
 front of GitLab, you may need to make some changes to your configuration. These
@@ -73,17 +71,17 @@ guides document the necessary steps for a selection of popular reverse proxies:
 - [Varnish](https://varnish-cache.org/docs/4.1/users-guide/vcl-example-websockets.html)
 
 Workhorse doesn't let WebSocket requests through to non-WebSocket endpoints, so
-it's safe to enable support for these headers globally. If you'd rather had a
-narrower set of rules, you can restrict it to URLs ending with `/terminal.ws`
-(although this may still have a few false positives).
+it's safe to enable support for these headers globally. If you prefer a
+narrower set of rules, you can restrict it to URLs ending with `/terminal.ws`.
+This approach may still result in a few false positives.
 
 If you installed from source, or have made any configuration changes to your
 Omnibus installation before upgrading to 8.15, you may need to make some changes
-to your configuration. See the [Upgrading Community Edition and Enterprise
-Edition from source](../../update/upgrading_from_source.md#nginx-configuration)
-document for more details.
+to your configuration. Read
+[Upgrading Community Edition and Enterprise Edition from source](../../update/upgrading_from_source.md#nginx-configuration)
+for more details.
 
-If you'd like to disable web terminal support in GitLab, just stop passing
+To disable web terminal support in GitLab, stop passing
 the `Connection` and `Upgrade` hop-by-hop headers in the *first* HTTP reverse
 proxy in the chain. For most users, this is the NGINX server bundled with
 Omnibus GitLab, in which case, you need to:
@@ -104,4 +102,6 @@ they receive a `Connection failed` message.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8413) in GitLab 8.17.
 
 Terminal sessions, by default, do not expire.
-You can limit terminal session lifetime in your GitLab instance. To do so, navigate to [**Admin Area > Settings > Web terminal**](../../user/admin_area/settings/index.md#general), and set a `max session time`.
+You can limit terminal session lifetime in your GitLab instance. To do so,
+go to [**Admin Area > Settings > Web terminal**](../../user/admin_area/settings/index.md#general),
+and set a `max session time`.

@@ -18,7 +18,7 @@ abuse of the feature. The default value is **52428800 Bytes** (50 MB).
 
 ### How does it work?
 
-The content size limit will be applied when a snippet is created or updated.
+The content size limit is applied when a snippet is created or updated.
 
 This limit doesn't affect existing snippets until they're updated and their
 content changes.
@@ -60,8 +60,8 @@ To retrieve the current value, start the Rails console and run:
 
 #### Through the API
 
-The process to set the snippets size limit through the Application Settings API is
-exactly the same as you would do to [update any other setting](../../api/settings.md#change-application-settings).
+To set the snippets size limit through the Application Settings API (similar to
+[updating any other setting](../../api/settings.md#change-application-settings)), use this command:
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/settings?snippet_size_limit=52428800"

@@ -40,7 +40,7 @@ The following is a high-level architecture overview of how Gitaly is used.
 
 ## Configure Gitaly
 
-The Gitaly service itself is configured via a [TOML configuration file](reference.md).
+The Gitaly service itself is configured by using a [TOML configuration file](reference.md).
 
 To change Gitaly settings:
 
@@ -121,7 +121,7 @@ The following list depicts the network architecture of Gitaly:
   - GitLab Shell.
   - Elasticsearch indexer.
   - Gitaly itself.
-- A Gitaly server must be able to make RPC calls **to itself** via its own
+- A Gitaly server must be able to make RPC calls **to itself** by uing its own
   `(Gitaly address, Gitaly token)` pair as specified in `/config/gitlab.yml`.
 - Authentication is done through a static token which is shared among the Gitaly and GitLab Rails
   nodes.
@@ -502,8 +502,8 @@ If it's excluded, default Git storage directory is used for that storage shard.
 
 ### Disable Gitaly where not required (optional)
 
-If you are running Gitaly [as a remote service](#run-gitaly-on-its-own-server), you may want to
-disable the local Gitaly service that runs on your GitLab server by default and have it only running
+If you run Gitaly [as a remote service](#run-gitaly-on-its-own-server), consider
+disabling the local Gitaly service that runs on your GitLab server by default, and only run it
 where required.
 
 Disabling Gitaly on the GitLab instance only makes sense when you run GitLab in a custom cluster configuration, where
@@ -538,7 +538,7 @@ To disable Gitaly on a GitLab server:
 > - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/3160) in GitLab 13.6, outgoing TLS connections to GitLab provide client certificates if configured.
 
 Gitaly supports TLS encryption. To communicate with a Gitaly instance that listens for secure
-connections, you must use `tls://` URL scheme in the `gitaly_address` of the corresponding
+connections, use the `tls://` URL scheme in the `gitaly_address` of the corresponding
 storage entry in the GitLab configuration.
 
 Gitaly provides the same server certificates as client certificates in TLS
@@ -935,12 +935,13 @@ Note that `enforced="true"` means that authentication is being enforced.
 
 ## Direct Git access bypassing Gitaly
 
-While it is possible to access Gitaly repositories stored on disk directly with a Git client,
-it is not advisable because Gitaly is being continuously improved and changed. Theses improvements may invalidate assumptions, resulting in performance degradation, instability, and even data loss.
+GitLab doesn't advise directly accessing Gitaly repositories stored on disk with
+a Git client, because Gitaly is being continuously improved and changed. These
+improvements may invalidate assumptions, resulting in performance degradation, instability, and even data loss.
 
 Gitaly has optimizations, such as the
 [`info/refs` advertisement cache](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/design_diskcache.md),
-that rely on Gitaly controlling and monitoring access to repositories via the
+that rely on Gitaly controlling and monitoring access to repositories by using the
 official gRPC interface. Likewise, Praefect has optimizations, such as fault
 tolerance and distributed reads, that depend on the gRPC interface and
 database to determine repository state.
@@ -979,11 +980,11 @@ lookup. Even when Gitaly is able to re-use an already-running `git` process (for
 a commit), you still have:
 
 - The cost of a network roundtrip to Gitaly.
-- Within Gitaly, a write/read roundtrip on the Unix pipes that connect Gitaly to the `git` process.
+- Inside Gitaly, a write/read roundtrip on the Unix pipes that connect Gitaly to the `git` process.
 
 Using GitLab.com to measure, we reduced the number of Gitaly calls per request until the loss of
 Rugged's efficiency was no longer felt. It also helped that we run Gitaly itself directly on the Git
-file severs, rather than via NFS mounts. This gave us a speed boost that counteracted the negative
+file severs, rather than by using NFS mounts. This gave us a speed boost that counteracted the negative
 effect of not using Rugged anymore.
 
 Unfortunately, other deployments of GitLab could not remove NFS like we did on GitLab.com, and they
@@ -1018,7 +1019,7 @@ The result of these checks is cached.
 To see if GitLab can access the repository file system directly, we use the following heuristic:
 
 - Gitaly ensures that the file system has a metadata file in its root with a UUID in it.
-- Gitaly reports this UUID to GitLab via the `ServerInfo` RPC.
+- Gitaly reports this UUID to GitLab by using the `ServerInfo` RPC.
 - GitLab Rails tries to read the metadata file directly. If it exists, and if the UUID's match,
   assume we have direct access.
 
@@ -1085,7 +1086,7 @@ app nodes).
 ### Client side gRPC logs
 
 Gitaly uses the [gRPC](https://grpc.io/) RPC framework. The Ruby gRPC
-client has its own log file which may contain useful information when
+client has its own log file which may contain debugging information when
 you are seeing Gitaly errors. You can control the log level of the
 gRPC client with the `GRPC_LOG_LEVEL` environment variable. The
 default level is `WARN`.
@@ -1100,7 +1101,7 @@ sudo GRPC_TRACE=all GRPC_VERBOSITY=DEBUG gitlab-rake gitlab:gitaly:check
 
 Sometimes you need to find out which Gitaly RPC created a particular Git process.
 
-One method for doing this is via `DEBUG` logging. However, this needs to be enabled
+One method for doing this is by using `DEBUG` logging. However, this needs to be enabled
 ahead of time and the logs produced are quite verbose.
 
 A lightweight method for doing this correlation is by inspecting the environment
@@ -1137,16 +1138,19 @@ sum(rate(grpc_client_handled_total[5m])) by (grpc_method) > 0
 
 ### Repository changes fail with a `401 Unauthorized` error
 
-If you're running Gitaly on its own server and notice that users can
-successfully clone and fetch repositories (via both SSH and HTTPS), but can't
-push to them or make changes to the repository in the web UI without getting a
-`401 Unauthorized` message, then it's possible Gitaly is failing to authenticate
-with the Gitaly client due to having the [wrong secrets file](#configure-gitaly-servers).
+If you run Gitaly on its own server and notice these conditions:
+
+- Users can successfully clone and fetch repositories by using both SSH and HTTPS.
+- Users can't push to repositories, or receive a `401 Unauthorized` message when attempting to
+  make changes to them in the web UI.
+
+Gitaly may be failing to authenticate with the Gitaly client because it has the
+[wrong secrets file](#configure-gitaly-servers).
 
 Confirm the following are all true:
 
 - When any user performs a `git push` to any repository on this Gitaly server, it
-  fails with the following error (note the `401 Unauthorized`):
+  fails with a `401 Unauthorized` error:
 
   ```shell
   remote: GitLab: 401 Unauthorized
@@ -1158,7 +1162,7 @@ Confirm the following are all true:
 - When any user adds or modifies a file from the repository using the GitLab
   UI, it immediately fails with a red `401 Unauthorized` banner.
 - Creating a new project and [initializing it with a README](../../gitlab-basics/create-project.md#blank-projects)
-  successfully creates the project but doesn't create the README.
+  successfully creates the project, but doesn't create the README.
 - When [tailing the logs](https://docs.gitlab.com/omnibus/settings/logs.html#tail-logs-in-a-console-on-the-server)
   on a Gitaly client and reproducing the error, you get `401` errors
   when reaching the `/api/v4/internal/allowed` endpoint:
@@ -1229,11 +1233,11 @@ update the secrets file on the Gitaly server to match the Gitaly client, then
 
 ### Command line tools cannot connect to Gitaly
 
-If you are having trouble connecting to a Gitaly server with command line (CLI) tools,
+If you can't connect to a Gitaly server with command line (CLI) tools,
 and certain actions result in a `14: Connect Failed` error message,
-it means that gRPC cannot reach your Gitaly server.
+gRPC cannot reach your Gitaly server.
 
-Verify that you can reach Gitaly via TCP:
+Verify you can reach Gitaly by using TCP:
 
 ```shell
 sudo gitlab-rake gitlab:tcp_check[GITALY_SERVER_IP,GITALY_LISTEN_PORT]

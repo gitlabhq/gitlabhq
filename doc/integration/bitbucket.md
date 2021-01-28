@@ -10,8 +10,8 @@ NOTE:
 Starting from GitLab 11.4, OmniAuth is enabled by default. If you're using an
 earlier version, you must explicitly enable it.
 
-You can set up Bitbucket.org as an OAuth2 provider so that you can use your
-Bitbucket.org account credentials to sign into GitLab or import your projects from
+You can set up Bitbucket.org as an OAuth2 provider to use your
+Bitbucket.org account credentials to sign in to GitLab, or import your projects from
 Bitbucket.org.
 
 - To use Bitbucket.org as an OmniAuth provider, follow the

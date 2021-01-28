@@ -31,16 +31,16 @@ module BulkImports
 
       private # rubocop:disable Lint/UselessAccessModifier
 
-      def run_pipeline_step(type, class_name, context)
+      def run_pipeline_step(step, class_name, context)
         raise MarkedAsFailedError if marked_as_failed?(context)
 
-        info(context, type => class_name)
+        info(context, step => class_name)
 
         yield
       rescue MarkedAsFailedError
-        log_skip(context, type => class_name)
+        log_skip(context, step => class_name)
       rescue => e
-        log_import_failure(e, context)
+        log_import_failure(e, step, context)
 
         mark_as_failed(context) if abort_on_failure?
       end
@@ -72,10 +72,11 @@ module BulkImports
         info(context, log)
       end
 
-      def log_import_failure(exception, context)
+      def log_import_failure(exception, step, context)
         attributes = {
           bulk_import_entity_id: context.entity.id,
           pipeline_class: pipeline,
+          pipeline_step: step,
           exception_class: exception.class.to_s,
           exception_message: exception.message.truncate(255),
           correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id

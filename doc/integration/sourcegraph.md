@@ -25,7 +25,7 @@ you can choose to enable Sourcegraph [through your user preferences](#enable-sou
 
 ## Set up for self-managed GitLab instances **(CORE ONLY)**
 
-Before you can enable Sourcegraph code intelligence in GitLab you will need to:
+Before you can enable Sourcegraph code intelligence in GitLab you must:
 
 - Enable the `sourcegraph` feature flag for your GitLab instance.
 - Configure a Sourcegraph instance with your GitLab instance as an external service.
@@ -33,7 +33,7 @@ Before you can enable Sourcegraph code intelligence in GitLab you will need to:
 ### Enable the Sourcegraph feature flag
 
 NOTE:
-If you are running a self-managed instance, the Sourcegraph integration will not be available
+If you are running a self-managed instance, the Sourcegraph integration is unavailable
 unless the feature flag `sourcegraph` is enabled. This can be done from the Rails console
 by instance administrators.
 
@@ -64,7 +64,7 @@ Feature.enable(:sourcegraph, Project.find_by_full_path('my_group/my_project'))
 
 If you are new to Sourcegraph, head over to the [Sourcegraph installation documentation](https://docs.sourcegraph.com/admin) and get your instance up and running.
 
-If you are using an HTTPS connection to GitLab, you will need to [configure HTTPS](https://docs.sourcegraph.com/admin/http_https_configuration) for your Sourcegraph instance.
+If you are using an HTTPS connection to GitLab, you must [configure HTTPS](https://docs.sourcegraph.com/admin/http_https_configuration) for your Sourcegraph instance.
 
 ### Connect your Sourcegraph instance to your GitLab instance
 
@@ -79,9 +79,9 @@ You can skip this step if you already have your GitLab repositories searchable i
 1. In GitLab, go to **Admin Area > Settings > General**.
 1. Expand the **Sourcegraph** configuration section.
 1. Check **Enable Sourcegraph**.
-1. Set the Sourcegraph URL to your Sourcegraph instance, e.g., `https://sourcegraph.example.com`.
+1. Set the Sourcegraph URL to your Sourcegraph instance, such as `https://sourcegraph.example.com`.
 
-![Sourcegraph admin settings](img/sourcegraph_admin_v12_5.png)
+![Sourcegraph administration settings](img/sourcegraph_admin_v12_5.png)
 
 ## Enable Sourcegraph in user preferences
 
@@ -95,7 +95,7 @@ If a GitLab administrator has enabled Sourcegraph, you can enable this feature i
 
 ## Using Sourcegraph code intelligence
 
-Once enabled, participating projects will have a code intelligence popover available in
+Once enabled, participating projects display a code intelligence popover available in
 the following code views:
 
 - Merge request diffs
@@ -114,7 +114,7 @@ When visiting one of these views, you can now hover over a code reference to see
 
 Sourcegraph powered code intelligence is available for all public projects on GitLab.com.
 
-Support for private projects is currently not available for GitLab.com;
+Support for private projects is not yet available for GitLab.com;
 follow the epic [&2201](https://gitlab.com/groups/gitlab-org/-/epics/2201)
 for updates.
 
@@ -122,7 +122,7 @@ for updates.
 
 ### Sourcegraph isn't working
 
-If you enabled Sourcegraph for your project but still it doesn't look like it's working, it might be because Sourcegraph has not indexed the project yet. You can check for Sourcegraph's availability of your project by visiting `https://sourcegraph.com/gitlab.com/<project-path>`replacing `<project-path>` with the path to your GitLab project.
+If you enabled Sourcegraph for your project but it isn't working, Sourcegraph may not have indexed the project yet. You can check for Sourcegraph's availability of your project by visiting `https://sourcegraph.com/gitlab.com/<project-path>`replacing `<project-path>` with the path to your GitLab project.
 
 ## Sourcegraph and Privacy
 
@@ -130,5 +130,5 @@ From Sourcegraph's [extension documentation](https://docs.sourcegraph.com/integr
 engine behind the native GitLab integration:
 
 > Sourcegraph integrations never send any logs, pings, usage statistics, or telemetry to Sourcegraph.com.
-> They will only connect to Sourcegraph.com as required to provide code intelligence or other functionality on public code.
+> They connect only to Sourcegraph.com as required to provide code intelligence or other functionality on public code.
 > As a result, no private code, private repository names, usernames, or any other specific data is sent to Sourcegraph.com.

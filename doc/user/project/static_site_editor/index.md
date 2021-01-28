@@ -23,8 +23,8 @@ and submit the changes for review.
 The Static Site Editor allows collaborators to submit changes to static site
 files seamlessly. For example:
 
-- Non-technical collaborators can easily edit a page directly from the browser;
-  they don't need to know Git and the details of your project to be able to contribute.
+- Non-technical collaborators can edit a page directly from the browser.
+  They don't need to know Git and the details of your project to contribute.
 - Recently hired team members can quickly edit content.
 - Temporary collaborators can jump from project to project and quickly edit pages instead
   of having to clone or fork every single project they need to submit changes to.
@@ -68,7 +68,7 @@ The editor can then navigate to the merge request to assign it to a colleague fo
 ## Set up your project
 
 First, set up the project. Once done, you can use the Static Site Editor to
-easily [edit your content](#edit-content).
+[edit your content](#edit-content).
 
 1. To get started, create a new project from the [Static Site Editor - Middleman](https://gitlab.com/gitlab-org/project-templates/static-site-editor-middleman)
    template. You can either [fork it](../repository/forking_workflow.md#creating-a-fork)
@@ -101,7 +101,7 @@ To edit a file:
    wish to edit the raw Markdown instead, you can toggle the **Markdown** mode
    in the bottom-right corner.
 1. When you're done, click **Submit changes...**.
-1. (Optional) Adjust the default title and description of the merge request that will be submitted
+1. (Optional) Adjust the default title and description of the merge request, to submit
    with your changes. Alternatively, select a [merge request template](../../../user/project/description_templates.md#creating-merge-request-templates)
    from the dropdown menu and edit it accordingly.
 1. Click **Submit changes**.
@@ -154,9 +154,9 @@ so you can verify the correct image is included and there aren't any references 
 You can embed YouTube videos on the WYSIWYG mode by clicking the video icon (**{live-preview}**).
 The following URL/ID formats are supported:
 
-- YouTube watch URL (e.g. `https://www.youtube.com/watch?v=0t1DgySidms`)
-- YouTube embed URL (e.g. `https://www.youtube.com/embed/0t1DgySidms`)
-- YouTube video ID (e.g. `0t1DgySidms`)
+- **YouTube watch URLs**: `https://www.youtube.com/watch?v=0t1DgySidms`
+- **YouTube embed URLs**: `https://www.youtube.com/embed/0t1DgySidms`
+- **YouTube video IDs**: `0t1DgySidms`
 
 ### Front matter
 
@@ -164,13 +164,13 @@ The following URL/ID formats are supported:
 > - Ability to edit page front matter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235921) in GitLab 13.5.
 
 Front matter is a flexible and convenient way to define page-specific variables in data files
-intended to be parsed by a static site generator. It is commonly used for setting a page's
-title, layout template, or author, but can be used to pass any kind of metadata to the
+intended to be parsed by a static site generator. Use it to set a page's
+title, layout template, or author. You can also pass any kind of metadata to the
 generator as the page renders out to HTML. Included at the very top of each data file, the
-front matter is often formatted as YAML or JSON and requires consistent and accurate syntax.
+front matter is often formatted as YAML or JSON, and requires consistent and accurate syntax.
 
 To edit the front matter from the Static Site Editor you can use the GitLab regular file editor,
-the Web IDE, or easily update the data directly from the WYSIWYG editor:
+the Web IDE, or update the data directly from the WYSIWYG editor:
 
 1. Click the **Page settings** button on the bottom-right to reveal a web form with the data you
    have on the page's front matter. The form is populated with the current data:
@@ -181,10 +181,16 @@ the Web IDE, or easily update the data directly from the WYSIWYG editor:
 1. When you're done, click **Submit changes...**.
 1. Describe your changes (add a commit message).
 1. Click **Submit changes**.
-1. Click **View merge request** and GitLab will take you there.
+1. Click **View merge request** to view it.
 
-Note that support for adding new attributes to the page's front matter from the form is not supported
-yet. You can do so by editing the file locally, through the GitLab regular file editor, or through the Web IDE. Once added, the form will load the new fields.
+Adding new attributes to the page's front matter from the form is not supported.
+To add new attributes:
+
+- Edit the file locally
+- Edit the file with the GitLab regular file editor.
+- Edit the file with the Web IDE.
+
+After adding an attribute, the form loads the new fields.
 
 ## Configuration files
 
@@ -206,8 +212,8 @@ use to customize behavior of the Static Site Editor (SSE). If the file does not 
 default values which support a default Middleman project configuration are used.
 The [Static Site Editor - Middleman](https://gitlab.com/gitlab-org/project-templates/static-site-editor-middleman) project template generates a file pre-populated with these defaults.
 
-To customize the behavior of the SSE, edit `.gitlab/static-site-editor.yml`'s entries
-(described in the table below) according to what works best for your project (respecting YAML syntax).
+To customize the behavior of the SSE, edit `.gitlab/static-site-editor.yml`'s entries,
+according to your project's needs. Make sure to respect YAML syntax.
 
 After the table, see an [example of the SSE configuration file](#gitlabstatic-site-editoryml-example).
 
@@ -224,8 +230,9 @@ image_upload_path: 'source/images' # Relative path to the project's root. Don't 
 ### Static Site Generator configuration
 
 The Static Site Editor uses Middleman's configuration file, `data/config.yml`
-to customize the behavior of the project itself and to control the **Edit this
-page** button, rendered through the file [`layout.erb`](https://gitlab.com/gitlab-org/project-templates/static-site-editor-middleman/-/blob/master/source/layouts/layout.erb).
+to customize the behavior of the project itself. This file also controls the
+**Edit this page** button, rendered through the file
+[`layout.erb`](https://gitlab.com/gitlab-org/project-templates/static-site-editor-middleman/-/blob/master/source/layouts/layout.erb).
 
 To [configure the project template to your own project](#set-up-your-project),
 you must replace the `<username>` and `<project-name>` in the `data/config.yml`
@@ -236,7 +243,7 @@ the Static Site Editor may use different configuration files or approaches.
 
 ## Using Other Static Site Generators
 
-Although Middleman is the only Static Site Generator currently officially supported
+Although Middleman is the only Static Site Generator officially supported
 by the Static Site Editor, you can configure your project's build and deployment
 to use a different Static Site Generator. In this case, use the Middleman layout
 as an example, and follow a similar approach to properly render an **Edit this page**

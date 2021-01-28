@@ -16406,6 +16406,9 @@ msgstr ""
 msgid "KeyboardShortcuts|Global Shortcuts"
 msgstr ""
 
+msgid "KeyboardShortcuts|Toggle GitLab Next"
+msgstr ""
+
 msgid "KeyboardShortcuts|Toggle the Performance Bar"
 msgstr ""
 
@@ -29905,6 +29908,9 @@ msgid "To-do item successfully marked as done."
 msgstr ""
 
 msgid "Today"
+msgstr ""
+
+msgid "Toggle GitLab Next"
 msgstr ""
 
 msgid "Toggle Markdown preview"

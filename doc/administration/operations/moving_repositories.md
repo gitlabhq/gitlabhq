@@ -20,8 +20,8 @@ The GitLab API is the recommended way to move Git repositories:
 
 For more information, see:
 
-- [Configuring additional storage for Gitaly](../gitaly/index.md#network-architecture). Within this
-  example, additional storage called `storage1` and `storage2` is configured.
+- [Configuring additional storage for Gitaly](../gitaly/index.md#network-architecture). This
+  example configures additional storage called `storage1` and `storage2`.
 - [The API documentation](../../api/project_repository_storage_moves.md) details the endpoints for
   querying and scheduling project repository moves.
 - [The API documentation](../../api/snippet_repository_storage_moves.md) details the endpoints for
@@ -38,7 +38,7 @@ Read more in the [API documentation for projects](../../api/project_repository_s
 GitLab environment, for example:
 
 - From a single-node GitLab to a scaled-out architecture.
-- From a GitLab instance in your private datacenter to a cloud provider.
+- From a GitLab instance in your private data center to a cloud provider.
 
 The rest of the document looks
 at some of the ways you can copy all your repositories from
@@ -103,8 +103,8 @@ Using `rsync` to migrate Git data can cause data loss and repository corruption.
 If the target directory already contains a partial / outdated copy
 of the repositories it may be wasteful to copy all the data again
 with `tar`. In this scenario it is better to use `rsync`. This utility
-is either already installed on your system or easily installable
-via `apt`, `yum`, and so on.
+is either already installed on your system, or installable
+by using `apt` or `yum`.
 
 ```shell
 sudo -u git  sh -c 'rsync -a --delete /var/opt/gitlab/git-data/repositories/. \
@@ -112,7 +112,7 @@ sudo -u git  sh -c 'rsync -a --delete /var/opt/gitlab/git-data/repositories/. \
 ```
 
 The `/.` in the command above is very important, without it you can
-easily get the wrong directory structure in the target directory.
+get the wrong directory structure in the target directory.
 If you want to see progress, replace `-a` with `-av`.
 
 #### Single `rsync` to another server
@@ -135,20 +135,23 @@ WARNING:
 Using `rsync` to migrate Git data can cause data loss and repository corruption.
 [These instructions are being reviewed](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
 
-Every time you start an `rsync` job it has to inspect all files in
-the source directory, all files in the target directory, and then
-decide what files to copy or not. If the source or target directory
-has many contents this startup phase of `rsync` can become a burden
-for your GitLab server. In cases like this you can make `rsync`'s
-life easier by dividing its work in smaller pieces, and sync one
-repository at a time.
+Every time you start an `rsync` job it must:
+
+- Inspect all files in the source directory.
+- Inspect all files in the target directory.
+- Decide whether or not to copy files.
+
+If the source or target directory
+has many contents, this startup phase of `rsync` can become a burden
+for your GitLab server. You can reduce the workload of `rsync` by dividing its
+work in smaller pieces, and sync one repository at a time.
 
 In addition to `rsync` we use [GNU Parallel](http://www.gnu.org/software/parallel/).
-This utility is not included in GitLab so you need to install it yourself with `apt`
-or `yum`. Also note that the GitLab scripts we used below were added in GitLab 8.1.
+This utility is not included in GitLab, so you must install it yourself with `apt`
+or `yum`.
 
-**This process does not clean up repositories at the target location that no
-longer exist at the source.**
+This process does not clean up repositories at the target location that no
+longer exist at the source.
 
 #### Parallel `rsync` for all repositories known to GitLab
 
@@ -218,8 +221,8 @@ Using `rsync` to migrate Git data can cause data loss and repository corruption.
 [These instructions are being reviewed](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
 
 Suppose you have already done one sync that started after 2015-10-1 12:00 UTC.
-Then you might only want to sync repositories that were changed via GitLab
-_after_ that time. You can use the `SINCE` variable to tell `rake
+Then you might only want to sync repositories that were changed by using GitLab
+after that time. You can use the `SINCE` variable to tell `rake
 gitlab:list_repos` to only print repositories with recent activity.
 
 ```shell
