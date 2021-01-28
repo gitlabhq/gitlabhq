@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Encrypted Configuration **(CORE ONLY)**
+# Encrypted Configuration **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45712) in GitLab 13.7.
 

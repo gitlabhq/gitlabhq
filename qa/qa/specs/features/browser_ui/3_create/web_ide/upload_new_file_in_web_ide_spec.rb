@@ -22,7 +22,7 @@ module QA
       context 'when a file with the same name already exists' do
         let(:file_name) { 'README.md' }
 
-        it 'throws an error' do
+        it 'throws an error', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1136' do
           Page::Project::WebIDE::Edit.perform do |ide|
             ide.upload_file(file_path)
           end
@@ -34,7 +34,7 @@ module QA
       context 'when the file is a text file' do
         let(:file_name) { 'text_file.txt' }
 
-        it 'shows the Edit tab with the text' do
+        it 'shows the Edit tab with the text', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1138' do
           Page::Project::WebIDE::Edit.perform do |ide|
             ide.upload_file(file_path)
 
@@ -52,7 +52,7 @@ module QA
       context 'when the file is binary' do
         let(:file_name) { 'logo_sample.svg' }
 
-        it 'shows a Download button' do
+        it 'shows a Download button', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1137' do
           Page::Project::WebIDE::Edit.perform do |ide|
             ide.upload_file(file_path)
 
@@ -70,7 +70,7 @@ module QA
       context 'when the file is an image' do
         let(:file_name) { 'dk.png' }
 
-        it 'shows an image viewer' do
+        it 'shows an image viewer', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1139' do
           Page::Project::WebIDE::Edit.perform do |ide|
             ide.upload_file(file_path)
 

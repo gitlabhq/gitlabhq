@@ -27,6 +27,7 @@ exceptions:
   - CNA
   - CNAME
   - CORE
+  - FREE
   - CPU
   - CRIME
   - CSRF
@@ -121,6 +122,7 @@ exceptions:
   - SCP
   - SCSS
   - SDK
+  - SELF
   - SEO
   - SHA
   - SLA

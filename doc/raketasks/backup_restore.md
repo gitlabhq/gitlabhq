@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Back up and restore GitLab **(CORE ONLY)**
+# Back up and restore GitLab **(FREE SELF)**
 
 GitLab provides Rake tasks for backing up and restoring GitLab instances.
 

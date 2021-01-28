@@ -12,6 +12,8 @@ module Users
 
       user.delete_async(deleted_by: current_user, params: { hard_delete: true })
 
+      after_reject_hook(user)
+
       NotificationService.new.user_admin_rejection(user.name, user.email)
 
       success
@@ -24,5 +26,11 @@ module Users
     def allowed?
       can?(current_user, :reject_user)
     end
+
+    def after_reject_hook(user)
+      # overridden by EE module
+    end
   end
 end
+
+Users::RejectService.prepend_if_ee('EE::Users::RejectService')

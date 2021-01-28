@@ -50,5 +50,17 @@ RSpec.describe Users::RejectService do
         end
       end
     end
+
+    context 'audit events' do
+      context 'when not licensed' do
+        before do
+          stub_licensed_features(admin_audit_log: false)
+        end
+
+        it 'does not log any audit event' do
+          expect { subject }.not_to change(AuditEvent, :count)
+        end
+      end
+    end
   end
 end

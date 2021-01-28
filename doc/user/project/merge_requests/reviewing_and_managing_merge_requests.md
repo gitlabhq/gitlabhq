@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Reviewing and managing merge requests **(CORE)**
+# Reviewing and managing merge requests **(FREE)**
 
 Merge requests are the primary method of making changes to files in a GitLab project.
 Changes are proposed by [creating and submitting a merge request](creating_merge_requests.md),
@@ -142,7 +142,7 @@ whitespace changes.
 > - It's deployed behind a feature flag, enabled by default.
 > - It's enabled on GitLab.com.
 > - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-file-views). **(CORE ONLY)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-file-views). **(FREE SELF)**
 
 When reviewing a merge request with many files multiple times, it may be useful to the reviewer
 to focus on new changes and ignore the files that they have already reviewed and don't want to 
@@ -157,7 +157,7 @@ To mark a file as viewed:
 Once checked, the file will remain marked for that reviewer unless there are newly introduced 
 changes to its content or the checkbox is unchecked.
 
-### Enable or disable file views **(CORE ONLY)**
+### Enable or disable file views **(FREE SELF)**
 
 The file view feature is under development but ready for production use.
 It is deployed behind a feature flag that is **enabled by default**.
@@ -193,7 +193,7 @@ in a Merge Request. To do so, click the **{comment}** **comment** icon in the gu
 > - It's enabled on GitLab.com.
 > - It can be disabled or enabled per-project.
 > - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-multiline-comments). **(CORE ONLY)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-multiline-comments). **(FREE SELF)**
 
 GitLab provides a way to select which lines of code a comment refers to. After starting a comment
 a dropdown selector is shown to select the first line that this comment refers to.
@@ -209,7 +209,7 @@ above it.
 
 ![Multiline comment selection displayed above comment](img/multiline-comment-saved.png)
 
-### Enable or disable multiline comments **(CORE ONLY)**
+### Enable or disable multiline comments **(FREE SELF)**
 
 The multiline comments feature is under development but ready for production use.
 It is deployed behind a feature flag that is **disabled by default**.

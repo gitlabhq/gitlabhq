@@ -6,7 +6,7 @@ type: reference, howto
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/lfs/lfs_administration.html'
 ---
 
-# GitLab Git Large File Storage (LFS) Administration **(CORE ONLY)**
+# GitLab Git Large File Storage (LFS) Administration **(FREE SELF)**
 
 > - Git LFS is supported in GitLab starting with version 8.2.
 > - Support for object storage, such as AWS S3, was introduced in 10.0.

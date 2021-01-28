@@ -66,7 +66,7 @@ which already limits users from pushing directly.
 By default, GitLab restricts certain formats of branch names for security purposes.
 Currently 40-character hexadecimal names, similar to Git commit hashes, are prohibited.
 
-### Custom Push Rules **(CORE ONLY)**
+### Custom Push Rules **(FREE SELF)**
 
 It's possible to create custom push rules rather than the push rules available in
 **Admin Area > Push Rules** by using more advanced server hooks.

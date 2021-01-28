@@ -3,7 +3,7 @@ import { GlLoadingIcon, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 const MARK_TEXT = __('Mark as done');
-const TODO_TEXT = __('Add a To-Do');
+const TODO_TEXT = __('Add a to do');
 
 export default {
   components: {

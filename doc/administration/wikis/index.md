@@ -5,7 +5,7 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Wiki settings **(CORE ONLY)**
+# Wiki settings **(FREE SELF)**
 
 Adjust the wiki settings of your GitLab instance.
 

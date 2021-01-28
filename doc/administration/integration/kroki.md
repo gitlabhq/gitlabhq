@@ -1,4 +1,4 @@
-# Kroki diagrams **(CORE ONLY)**
+# Kroki diagrams **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241744) in GitLab 13.7.
 

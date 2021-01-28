@@ -18,7 +18,7 @@ The **GitLab import/export** button is displayed if the project import option is
 See also:
 
 - [Project import/export API](../../../api/project_import_export.md)
-- [Project import/export administration Rake tasks](../../../administration/raketasks/project_import_export.md) **(CORE ONLY)**
+- [Project import/export administration Rake tasks](../../../administration/raketasks/project_import_export.md) **(FREE SELF)**
 - [Group import/export](../../group/settings/import_export.md)
 - [Group import/export API](../../../api/group_import_export.md)
 
@@ -187,7 +187,7 @@ As an administrator, you can modify the maximum import file size. To do so, use 
 You can query an import through the [Project import/export API](../../../api/project_import_export.md#import-status).
 As described in the API documentation, the query may return an import error or exceptions.
 
-### Import large projects **(CORE ONLY)**
+### Import large projects **(FREE SELF)**
 
 If you have a larger project, consider using a Rake task, as described in our [developer documentation](../../../development/import_project.md#importing-via-a-rake-task).
 

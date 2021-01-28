@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Labels administration **(CORE ONLY)**
+# Labels administration **(FREE SELF)**
 
 In the Admin Area, you can manage labels for the GitLab instance. For more details, see [Labels](../project/labels.md).
 

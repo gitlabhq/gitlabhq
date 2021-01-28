@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Log system **(CORE)**
+# Log system **(FREE SELF)**
 
 GitLab has an advanced log system where everything is logged, so you
 can analyze your instance using various system log files. In addition to

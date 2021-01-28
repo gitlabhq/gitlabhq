@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, howto
 ---
 
-# Health Check **(CORE ONLY)**
+# Health Check **(FREE SELF)**
 
 > - Liveness and readiness probes were [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10416) in GitLab 9.1.
 > - The `health_check` endpoint was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3888) in GitLab 8.8 and was

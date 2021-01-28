@@ -501,7 +501,7 @@ to your branch to address your reviewers' requests.
 
    ![A code change suggestion displayed, with the button to apply the batch of suggestions highlighted.](img/apply_batch_of_suggestions_v13_1.jpg "Apply a batch of suggestions")
 
-#### Enable or disable Batch Suggestions **(CORE ONLY)**
+#### Enable or disable Batch Suggestions **(FREE SELF)**
 
 Batch Suggestions is
 deployed behind a feature flag that is **enabled by default**.

@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Tracing **(CORE)**
+# Tracing **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7903) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.5.
 > - [Moved to GitLab Core](https://gitlab.com/gitlab-org/gitlab/-/issues/42645) in 13.5.

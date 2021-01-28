@@ -4,7 +4,7 @@ group: Product Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Product Analytics **(CORE)**
+# Product Analytics **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225167) in GitLab 13.3.
 > - It's deployed behind a feature flag, disabled by default.

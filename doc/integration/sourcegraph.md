@@ -23,7 +23,7 @@ NOTE:
 This feature requires user opt-in. After Sourcegraph has been enabled for your GitLab instance,
 you can choose to enable Sourcegraph [through your user preferences](#enable-sourcegraph-in-user-preferences).
 
-## Set up for self-managed GitLab instances **(CORE ONLY)**
+## Set up for self-managed GitLab instances **(FREE SELF)**
 
 Before you can enable Sourcegraph code intelligence in GitLab you must:
 

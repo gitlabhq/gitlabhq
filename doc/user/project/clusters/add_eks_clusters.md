@@ -20,7 +20,7 @@ requirements are met:
   - `kubectl` [installed and configured](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html#get-started-kubectl)
     for access to the EKS cluster.
 
-### Additional requirements for self-managed instances **(CORE ONLY)**
+### Additional requirements for self-managed instances **(FREE SELF)**
 
 If you are using a self-managed GitLab instance, GitLab must first be configured with a set of
 Amazon credentials. These credentials are used to assume an Amazon IAM role provided by the user

@@ -47,7 +47,7 @@ RSpec.describe 'Alert details', :js do
       expect(page).to have_selector('[data-testid="alert-todo-button"]')
       todo_button = find('[data-testid="alert-todo-button"]')
 
-      expect(todo_button).to have_content('Add a To-Do')
+      expect(todo_button).to have_content('Add a to do')
       find('[data-testid="alert-todo-button"]').click
       wait_for_requests
 

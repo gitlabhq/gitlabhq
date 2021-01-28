@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # CI/CD Analytics
 
-## Pipeline success and duration charts **(CORE)**
+## Pipeline success and duration charts **(FREE)**
 
 > - Introduced in GitLab 3.1.1 as Commit Stats, and later renamed to Pipeline Charts.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/38318) to CI/CD Analytics in GitLab 12.8.

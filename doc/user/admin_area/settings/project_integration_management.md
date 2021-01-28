@@ -17,7 +17,7 @@ for all projects that didn't have it already enabled.
 
 Only the complete settings for an integration can be inherited. Per-field inheritance is [planned](https://gitlab.com/groups/gitlab-org/-/epics/2137).
 
-## Manage instance-level default settings for a project integration **(CORE ONLY)**
+## Manage instance-level default settings for a project integration **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2137) in GitLab 13.3 for project-level integrations.
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2543) in GitLab 13.6 for group-level integrations.

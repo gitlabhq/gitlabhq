@@ -91,7 +91,7 @@ Also, not implementing extra servers for GitLab doesn't necessarily mean that yo
 more downtime. Depending on your needs and experience level, single servers can
 have more actual perceived uptime for your users.
 
-### Automated backups **(CORE ONLY)**
+### Automated backups **(FREE SELF)**
 
 > - Level of complexity: **Low**
 > - Required domain knowledge: PostgreSQL, GitLab configurations, Git

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Third party offers **(CORE ONLY)**
+# Third party offers **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20379) in [GitLab Core](https://about.gitlab.com/pricing/) 11.1.
 

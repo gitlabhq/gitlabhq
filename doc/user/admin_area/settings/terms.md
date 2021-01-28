@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Enforce accepting Terms of Service **(CORE ONLY)**
+# Enforce accepting Terms of Service **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18570) in [GitLab Core](https://about.gitlab.com/pricing/) 10.8.
 

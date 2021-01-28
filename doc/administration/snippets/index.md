@@ -5,7 +5,7 @@ group: Editor
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 ---
 
-# Snippets settings **(CORE ONLY)**
+# Snippets settings **(FREE SELF)**
 
 Adjust the snippets' settings of your GitLab instance.
 

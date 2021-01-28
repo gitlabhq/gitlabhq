@@ -81,7 +81,7 @@ The following time units are available:
 
 Default conversion rates are 1mo = 4w, 1w = 5d and 1d = 8h.
 
-### Limit displayed units to hours **(CORE ONLY)**
+### Limit displayed units to hours **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29469/) in GitLab 12.1.
 

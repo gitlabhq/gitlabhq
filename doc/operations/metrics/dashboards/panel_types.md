@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Panel types for dashboards **(CORE)**
+# Panel types for dashboards **(FREE)**
 
 The below panel types are supported in monitoring dashboards.
 

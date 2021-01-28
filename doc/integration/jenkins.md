@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Jenkins CI service **(CORE)**
+# Jenkins CI service **(FREE)**
 
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/246756) to Core in GitLab 13.7.
 

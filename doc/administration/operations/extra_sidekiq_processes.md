@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Run multiple Sidekiq processes **(CORE ONLY)**
+# Run multiple Sidekiq processes **(FREE SELF)**
 
 GitLab allows you to start multiple Sidekiq processes.
 These processes can be used to consume a dedicated set

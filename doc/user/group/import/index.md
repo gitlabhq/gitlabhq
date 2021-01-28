@@ -5,7 +5,7 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Import groups from another instance of GitLab **(CORE)**
+# Import groups from another instance of GitLab **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/249160) in GitLab 13.7.
 > - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.

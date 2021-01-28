@@ -555,7 +555,7 @@ username, you can create a new group and transfer projects to it.
 
 You can change settings that are specific to repositories in your group.
 
-#### Custom initial branch name **(CORE ONLY)**
+#### Custom initial branch name **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43290) in GitLab 13.6.
 
@@ -834,7 +834,7 @@ When set, new subgroups have push rules set for them based on either:
 - The closest parent group with push rules defined.
 - Push rules set at the instance level, if no parent groups have push rules defined.
 
-### Maximum artifacts size **(CORE ONLY)**
+### Maximum artifacts size **(FREE SELF)**
 
 For information about setting a maximum artifact size for a group, see
 [Maximum artifacts size](../admin_area/settings/continuous_integration.md#maximum-artifacts-size).

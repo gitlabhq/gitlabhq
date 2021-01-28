@@ -270,7 +270,7 @@ closed issues remain as-is. Disabling automatic issue closing only affects merge
 requests *in* the project and does not prevent other projects from closing it
 via cross-project issues.
 
-#### Customizing the issue closing pattern **(CORE ONLY)**
+#### Customizing the issue closing pattern **(FREE SELF)**
 
 In order to change the default issue closing pattern, GitLab administrators must edit the
 [`gitlab.rb` or `gitlab.yml` file](../../../administration/issue_closing_pattern.md)

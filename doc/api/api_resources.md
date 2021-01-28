@@ -127,8 +127,8 @@ The following API resources are available outside of project and group contexts 
 | Resource                                           | Available endpoints                                                     |
 |:---------------------------------------------------|:------------------------------------------------------------------------|
 | [Instance-level CI/CD variables](instance_level_ci_variables.md) | `/admin/ci/variables`                                     |
-| [Sidekiq queues administration](admin_sidekiq_queues.md) **(CORE ONLY)** | `/admin/sidekiq/queues/:queue_name`               |
-| [Appearance](appearance.md) **(CORE ONLY)**        | `/application/appearance`                                               |
+| [Sidekiq queues administration](admin_sidekiq_queues.md) **(FREE SELF)** | `/admin/sidekiq/queues/:queue_name`               |
+| [Appearance](appearance.md) **(FREE SELF)**        | `/application/appearance`                                               |
 | [Applications](applications.md)                    | `/applications`                                                         |
 | [Audit Events](audit_events.md) **(PREMIUM ONLY)** | `/audit_events`                                                         |
 | [Avatar](avatar.md)                                | `/avatar`                                                               |
@@ -145,7 +145,7 @@ The following API resources are available outside of project and group contexts 
 | [Issues](issues.md)                                | `/issues` (also available for groups and projects)                      |
 | [Issues Statistics](issues_statistics.md)          | `/issues_statistics` (also available for groups and projects)           |
 | [Keys](keys.md)                                    | `/keys`                                                                 |
-| [License](license.md) **(CORE ONLY)**              | `/license`                                                              |
+| [License](license.md) **(FREE SELF)**              | `/license`                                                              |
 | [Markdown](markdown.md)                            | `/markdown`                                                             |
 | [Merge requests](merge_requests.md)                | `/merge_requests` (also available for groups and projects)              |
 | [Metrics dashboard annotations](metrics_dashboard_annotations.md) | `/environments/:id/metrics_dashboard/annotations`, `/clusters/:id/metrics_dashboard/annotations` |
@@ -154,13 +154,13 @@ The following API resources are available outside of project and group contexts 
 | [Pages domains](pages_domains.md)                  | `/pages/domains` (also available for projects)                          |
 | [Personal access tokens](personal_access_tokens.md) | `/personal_access_tokens`                                              |
 | [Projects](projects.md)                            | `/users/:id/projects` (also available for projects)                     |
-| [Project repository storage moves](project_repository_storage_moves.md) **(CORE ONLY)** | `/project_repository_storage_moves` |
+| [Project repository storage moves](project_repository_storage_moves.md) **(FREE SELF)** | `/project_repository_storage_moves` |
 | [Runners](runners.md)                              | `/runners` (also available for projects)                                |
 | [Search](search.md)                                | `/search` (also available for groups and projects)                      |
-| [Settings](settings.md) **(CORE ONLY)**            | `/application/settings`                                                 |
-| [Snippet repository storage moves](snippet_repository_storage_moves.md) **(CORE ONLY)** | `/snippet_repository_storage_moves` |
+| [Settings](settings.md) **(FREE SELF)**            | `/application/settings`                                                 |
+| [Snippet repository storage moves](snippet_repository_storage_moves.md) **(FREE SELF)** | `/snippet_repository_storage_moves` |
 | [Statistics](statistics.md)                        | `/application/statistics`                                               |
-| [Sidekiq metrics](sidekiq_metrics.md) **(CORE ONLY)** | `/sidekiq`                                                           |
+| [Sidekiq metrics](sidekiq_metrics.md) **(FREE SELF)** | `/sidekiq`                                                           |
 | [Suggestions](suggestions.md)                      | `/suggestions`                                                          |
 | [System hooks](system_hooks.md)                    | `/hooks`                                                                |
 | [To-dos](todos.md)                                  | `/todos`                                                                |

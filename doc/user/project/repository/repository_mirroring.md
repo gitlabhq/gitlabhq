@@ -16,7 +16,7 @@ at most once every 5 minutes on GitLab.com with [the limit set by the administra
 
 There are two kinds of repository mirroring supported by GitLab:
 
-- [Push](#pushing-to-a-remote-repository): for mirroring a GitLab repository to another location. **(CORE)**
+- [Push](#pushing-to-a-remote-repository): for mirroring a GitLab repository to another location. **(FREE)**
 - [Pull](#pulling-from-a-remote-repository): for mirroring a repository from another location to GitLab. **(STARTER)**
 
 When the mirror repository is updated, all new branches, tags, and commits will be visible in the
@@ -47,7 +47,7 @@ The following are some possible use cases for repository mirroring:
   GitLab.com repository that's public, allows you to open source specific projects and contribute back
   to the open source community.
 
-## Pushing to a remote repository **(CORE)**
+## Pushing to a remote repository **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249) in GitLab Enterprise Edition 8.7.
 > - [Moved to GitLab Core](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18715) in 10.8.
@@ -406,7 +406,7 @@ NOTE:
 The generated keys are stored in the GitLab database, not in the filesystem. Therefore,
 SSH public key authentication for mirrors cannot be used in a pre-receive hook.
 
-## Forcing an update **(CORE)**
+## Forcing an update **(FREE)**
 
 While mirrors are scheduled to update automatically, you can always force an update by using the
 update button which is available on the **Mirroring repositories** section of the **Repository Settings** page.

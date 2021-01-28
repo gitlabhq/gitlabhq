@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto, reference
 ---
 
-# Deploy Boards **(CORE)**
+# Deploy Boards **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1589) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.0.
 > - [Moved](<https://gitlab.com/gitlab-org/gitlab/-/issues/212320>) to GitLab Core in 13.8.

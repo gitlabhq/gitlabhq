@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Incidents **(CORE)**
+# Incidents **(FREE)**
 
 Incidents are critical entities in incident management workflows. They represent
 a service disruption or outage that needs to be restored urgently. GitLab provides

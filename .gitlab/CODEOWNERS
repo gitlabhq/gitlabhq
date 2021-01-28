@@ -257,3 +257,18 @@ Dangerfile @gl-quality/eng-prod
 /lib/gitlab/usage_data.rb @gitlab-org/growth/product_intelligence/engineers
 /lib/gitlab/cycle_analytics/usage_data.rb @gitlab-org/growth/product-intelligence/engineers
 /lib/gitlab/usage_data_counters/ @gitlab-org/growth/product-intelligence/engineers
+
+[Growth Experiments]
+/app/assets/javascripts/lib/utils/experimentation.js @gitlab-org/growth/experiment-devs
+/app/experiments/ @gitlab-org/growth/experiment-devs
+/app/models/experiment.rb @gitlab-org/growth/experiment-devs
+/app/models/experiment_subject.rb @gitlab-org/growth/experiment-devs
+/app/models/experiment_user.rb @gitlab-org/growth/experiment-devs
+/app/workers/experiments/ @gitlab-org/growth/experiment-devs
+/config/feature_flags/experiment/ @gitlab-org/growth/experiment-devs
+/ee/config/feature_flags/experiment/ @gitlab-org/growth/experiment-devs
+/ee/lib/api/experiments.rb @gitlab-org/growth/experiment-devs
+/ee/lib/ee/api/entities/experiment.rb @gitlab-org/growth/experiment-devs
+/lib/gitlab/experimentation/ @gitlab-org/growth/experiment-devs
+/lib/gitlab/experimentation.rb @gitlab-org/growth/experiment-devs
+/lib/gitlab/experimentation_logger.rb @gitlab-org/growth/experiment-devs

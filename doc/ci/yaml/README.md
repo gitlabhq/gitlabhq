@@ -379,7 +379,7 @@ NOTE:
 Use merging to customize and override included CI/CD configurations with local
 configurations. Local configurations in the `.gitlab-ci.yml` file override included configurations.
 
-#### Variables with `include` **(CORE ONLY)**
+#### Variables with `include` **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/284883) in GitLab 13.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/294294) in GitLab 13.9.
@@ -1436,7 +1436,7 @@ In this example, if the first rule matches, then the job has `when: manual` and 
 > - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/289803) on GitLab 13.8.
 > - It's enabled on GitLab.com.
 > - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-rulesvariables). **(CORE ONLY)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-rulesvariables). **(FREE SELF)**
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -1461,7 +1461,7 @@ job:
     - echo "Run another script if $IS_A_FEATURE exists"
 ```
 
-##### Enable or disable rules:variables **(CORE ONLY)**
+##### Enable or disable rules:variables **(FREE SELF)**
 
 rules:variables is under development but ready for production use.
 It is deployed behind a feature flag that is **enabled by default**.
@@ -2034,7 +2034,7 @@ This example creates four paths of execution:
 - Related to the above, stages must be explicitly defined for all jobs
   that have the keyword `needs:` or are referred to by one.
 
-##### Changing the `needs:` job limit **(CORE ONLY)**
+##### Changing the `needs:` job limit **(FREE SELF)**
 
 The maximum number of jobs that can be defined in `needs:` defaults to 50.
 

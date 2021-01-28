@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Alerts **(CORE)**
+# Alerts **(FREE)**
 
 Alerts are a critical entity in your incident management workflow. They represent a notable event that might indicate a service outage or disruption. GitLab provides a list view for triage and detail view for deeper investigation of what happened.
 
@@ -196,9 +196,9 @@ add a to-do item:
 
 1. To display the list of current alerts, navigate to **Operations > Alerts**.
 1. Select your desired alert to display its **Alert Management Details View**.
-1. Select the **Add a To-Do** button in the right sidebar:
+1. Select the **Add a to do** button in the right sidebar:
 
-   ![Alert Details Add a To-Do](img/alert_detail_add_todo_v13_1.png)
+   ![Alert Details Add a to do](img/alert_detail_add_todo_v13_9.png)
 
 Select the **To-Do List** **{todo-done}** in the navigation bar to view your current to-do list.
 

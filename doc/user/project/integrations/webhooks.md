@@ -31,7 +31,7 @@ update a backup mirror, or even deploy to your production server.
 
 Webhooks are available:
 
-- Per project, at a project's **Settings > Webhooks** menu. **(CORE)**
+- Per project, at a project's **Settings > Webhooks** menu. **(FREE)**
 - Additionally per group, at a group's **Settings > Webhooks** menu. **(PREMIUM)**
 
 NOTE:

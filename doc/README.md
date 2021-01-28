@@ -42,12 +42,12 @@ Have a look at some of our most popular topics:
 | [GitLab groups](user/group/index.md)                                                                       | Manage projects together.                                                  |
 | [GitLab CI/CD pipeline configuration reference](ci/yaml/README.md)                                         | Available configuration options for `.gitlab-ci.yml` files.                |
 | [Activate GitLab EE with a license](user/admin_area/license.md) **(STARTER ONLY)**                         | Activate GitLab Enterprise Edition functionality with a license.           |
-| [Back up and restore GitLab](raketasks/backup_restore.md) **(CORE ONLY)**                                  | Rake tasks for backing up and restoring GitLab self-managed instances.     |
+| [Back up and restore GitLab](raketasks/backup_restore.md) **(FREE SELF)**                                  | Rake tasks for backing up and restoring GitLab self-managed instances.     |
 | [GitLab release and maintenance policy](policy/maintenance.md)                                             | Policies for version naming and cadence, and also upgrade recommendations. |
 | [Elasticsearch integration](integration/elasticsearch.md) **(STARTER ONLY)**                               | Integrate Elasticsearch with GitLab to enable advanced searching.          |
-| [Omnibus GitLab database settings](https://docs.gitlab.com/omnibus/settings/database.html) **(CORE ONLY)** | Database settings for Omnibus GitLab self-managed instances.               |
-| [Omnibus GitLab NGINX settings](https://docs.gitlab.com/omnibus/settings/nginx.html) **(CORE ONLY)**       | NGINX settings for Omnibus GitLab self-managed instances.                  |
-| [Omnibus GitLab SSL configuration](https://docs.gitlab.com/omnibus/settings/ssl.html) **(CORE ONLY)**      | SSL settings for Omnibus GitLab self-managed instances.                    |
+| [Omnibus GitLab database settings](https://docs.gitlab.com/omnibus/settings/database.html) **(FREE SELF)** | Database settings for Omnibus GitLab self-managed instances.               |
+| [Omnibus GitLab NGINX settings](https://docs.gitlab.com/omnibus/settings/nginx.html) **(FREE SELF)**       | NGINX settings for Omnibus GitLab self-managed instances.                  |
+| [Omnibus GitLab SSL configuration](https://docs.gitlab.com/omnibus/settings/ssl.html) **(FREE SELF)**      | SSL settings for Omnibus GitLab self-managed instances.                    |
 | [GitLab.com settings](user/gitlab_com/index.md)                                                            | Settings used for GitLab.com.                                              |
 
 ## The entire DevOps lifecycle

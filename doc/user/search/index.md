@@ -117,14 +117,14 @@ the dropdown) **Approved-By** and select the user.
 
 ![Filter MRs by approved by](img/filter_approved_by_merge_requests_v13_0.png)
 
-### Filtering merge requests by reviewer **(CORE)**
+### Filtering merge requests by reviewer **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47605) in GitLab 13.7.
 
 To filter review requested merge requests for a specific individual, you can type (or select from
 the dropdown) **Reviewer** and select the user.
 
-### Filtering merge requests by environment or deployment date **(CORE)**
+### Filtering merge requests by environment or deployment date **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44041) in GitLab 13.6.
 
@@ -310,7 +310,7 @@ Use advanced queries for more targeted search results.
 > - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
 > - It's disabled on GitLab.com.
 > - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-search-project-settings). **(CORE ONLY)**
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-search-project-settings). **(FREE SELF)**
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -321,7 +321,7 @@ appear highlighted in the sections that match the search term.
 
 ![Search project settings](img/project_search_general_settings_v13_8.png)
 
-### Enable or disable Search project settings **(CORE ONLY)**
+### Enable or disable Search project settings **(FREE SELF)**
 
 Search project settings is under development and not ready for production use. It is
 deployed behind a feature flag that is **disabled by default**.

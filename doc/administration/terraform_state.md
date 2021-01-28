@@ -47,7 +47,7 @@ Terraform state files are stored locally, follow the steps below.
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-## Using object storage **(CORE ONLY)**
+## Using object storage **(FREE SELF)**
 
 Instead of storing Terraform state files on disk, we recommend the use of [one of the supported object
 storage options](object_storage.md#options). This configuration relies on valid credentials to

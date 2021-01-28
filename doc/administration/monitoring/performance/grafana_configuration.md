@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Grafana Configuration **(CORE)**
+# Grafana Configuration **(FREE SELF)**
 
 [Grafana](https://grafana.com/) is a tool that enables you to visualize time
 series metrics through graphs and dashboards. GitLab writes performance data to Prometheus,

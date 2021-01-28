@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Listing repository directories **(CORE ONLY)**
+# Listing repository directories **(FREE SELF)**
 
 You can print a list of all Git repositories on disk managed by GitLab.
 

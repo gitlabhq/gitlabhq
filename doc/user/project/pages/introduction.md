@@ -63,7 +63,7 @@ If the case of `404.html`, there are different scenarios. For example:
 You can configure redirects for your site using a `_redirects` file. To learn more, read
 the [redirects documentation](redirects.md).
 
-## GitLab Pages Access Control **(CORE)**
+## GitLab Pages Access Control **(FREE)**
 
 To restrict access to your website, enable [GitLab Pages Access Control](pages_access_control.md).
 

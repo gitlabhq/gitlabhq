@@ -33,11 +33,11 @@ The following analytics features are available at the group level:
 
 The following analytics features are available at the project level:
 
-- [CI/CD](ci_cd_analytics.md). **(CORE)**
+- [CI/CD](ci_cd_analytics.md). **(FREE)**
 - [Code Review](code_review_analytics.md). **(STARTER)**
 - [Insights](../project/insights/index.md). **(ULTIMATE)**
 - [Issue](../group/issues_analytics/index.md). **(PREMIUM)**
 - [Merge Request](merge_request_analytics.md), enabled with the `project_merge_request_analytics`
   [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-locally-in-development). **(STARTER)**
-- [Repository](repository_analytics.md). **(CORE)**
-- [Value Stream](value_stream_analytics.md). **(CORE)**
+- [Repository](repository_analytics.md). **(FREE)**
+- [Value Stream](value_stream_analytics.md). **(FREE)**

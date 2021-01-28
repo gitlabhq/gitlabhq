@@ -58,8 +58,9 @@ export default {
         <new-entry-button
           :label="__('New file')"
           :show-label="false"
-          class="d-flex border-0 p-0 mr-3 qa-new-file"
+          class="d-flex border-0 p-0 mr-3"
           icon="doc-new"
+          data-qa-selector="new_file_button"
           @click="createNewFile()"
         />
         <upload
@@ -73,6 +74,7 @@ export default {
           :show-label="false"
           class="d-flex border-0 p-0"
           icon="folder-new"
+          data-qa-selector="new_directory_button"
           @click="createNewFolder()"
         />
       </div>

@@ -37,7 +37,7 @@ With the Gitpod integration enabled for your GitLab instance, to enable it for y
 1. Under **Integrations**, locate the **Gitpod** section.
 1. Check the **Enable Gitpod integration** checkbox and select the **Save changes** button.
 
-## Configure a self-managed instance **(CORE ONLY)**
+## Configure a self-managed instance **(FREE SELF)**
 
 For GitLab self-managed instances, a GitLab administrator needs to:
 

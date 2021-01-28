@@ -262,7 +262,7 @@ Click on **Register U2F Device** to complete the process.
 > - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
 > - It's disabled on GitLab.com.
 > - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-webauthn). **(CORE ONLY)**
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-webauthn). **(FREE SELF)**
 
 The WebAuthn workflow is [supported by](https://caniuse.com/#search=webauthn) the
 following desktop browsers:
@@ -479,7 +479,7 @@ Sign in and re-enable two-factor authentication as soon as possible.
 
 - To enforce 2FA at the system or group levels see [Enforce Two-factor Authentication](../../../security/two_factor_authentication.md).
 
-## Enable or disable WebAuthn **(CORE ONLY)**
+## Enable or disable WebAuthn **(FREE SELF)**
 
 Support for WebAuthn is under development and not ready for production use. It is
 deployed behind a feature flag that is **disabled by default**.

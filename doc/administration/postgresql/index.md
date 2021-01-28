@@ -21,7 +21,7 @@ the package, so you can it to set up the whole PostgreSQL infrastructure (primar
 
 [> Read how to set up PostgreSQL replication and failover using Omnibus GitLab](replication_and_failover.md)
 
-## Standalone PostgreSQL using Omnibus GitLab **(CORE ONLY)**
+## Standalone PostgreSQL using Omnibus GitLab **(FREE SELF)**
 
 This setup is for when you have installed the
 [Omnibus GitLab packages](https://about.gitlab.com/install/) (CE or EE),
@@ -29,7 +29,7 @@ to use the bundled PostgreSQL having only its service enabled.
 
 [> Read how to set up a standalone PostgreSQL instance using Omnibus GitLab](standalone.md)
 
-## Provide your own PostgreSQL instance **(CORE ONLY)**
+## Provide your own PostgreSQL instance **(FREE SELF)**
 
 This setup is for when you have installed GitLab using the
 [Omnibus GitLab packages](https://about.gitlab.com/install/) (CE or EE),

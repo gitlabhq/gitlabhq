@@ -5,13 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Pipeline Editor **(CORE)**
+# Pipeline Editor **(FREE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4540) in GitLab 13.8.
 > - It's [deployed behind a feature flag](../../user/feature_flags.md), enabled by default.
 > - It's enabled on GitLab.com.
 > - It's recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-pipeline-editor). **(CORE ONLY)**
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-pipeline-editor). **(FREE SELF)**
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -63,7 +63,7 @@ reflected in the CI lint. It displays the same results as the existing [CI Lint 
 > - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/290117) in GitLab 13.8.
 > - It's enabled on GitLab.com.
 > - It's recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-cicd-configuration-visualization). **(CORE ONLY)**
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-cicd-configuration-visualization). **(FREE SELF)**
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -81,7 +81,7 @@ Hovering on a job highlights its `needs` relationships:
 If the configuration does not have any `needs` relationships, then no lines are drawn because
 each job depends only on the previous stage being completed successfully.
 
-### Enable or disable CI/CD configuration visualization **(CORE ONLY)**
+### Enable or disable CI/CD configuration visualization **(FREE SELF)**
 
 CI/CD configuration visualization is under development but ready for production use.
 It is deployed behind a feature flag that is **enabled by default**.
@@ -113,7 +113,7 @@ checkbox appears. Select it to start a new merge request after you commit the ch
 
 ![The commit form with a new branch](img/pipeline_editor_commit_v13_8.png)
 
-## Enable or disable pipeline editor **(CORE ONLY)**
+## Enable or disable pipeline editor **(FREE SELF)**
 
 The pipeline editor is under development but ready for production use. It is
 deployed behind a feature flag that is **enabled by default**.

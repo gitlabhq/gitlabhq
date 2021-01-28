@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# File Locking **(CORE)**
+# File Locking **(FREE)**
 
 Preventing wasted work caused by unresolvable merge conflicts requires
 a different way of working. This means explicitly requesting write permissions,
@@ -26,7 +26,7 @@ GitLab supports two different modes of file locking:
 
 - [Exclusive file locks](#exclusive-file-locks) for binary files: done **through
   the command line** with Git LFS and `.gitattributes`, it prevents locked
-  files from being modified on any branch. **(CORE)**
+  files from being modified on any branch. **(FREE)**
 - [Default branch locks](#default-branch-file-and-directory-locks): done
   **through the GitLab UI**, it prevents locked files and directories being
   modified on the default branch. **(PREMIUM)**

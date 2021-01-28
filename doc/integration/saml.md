@@ -5,7 +5,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# SAML OmniAuth Provider **(CORE ONLY)**
+# SAML OmniAuth Provider **(FREE SELF)**
 
 This page describes instance-wide SAML for self-managed GitLab instances. For SAML on GitLab.com, see [SAML SSO for GitLab.com groups](../user/group/saml_sso/index.md).
 

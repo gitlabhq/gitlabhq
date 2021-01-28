@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Issues **(CORE)**
+# Issues **(FREE)**
 
 Issues are the fundamental mechanism in GitLab to collaborate on ideas, solve
 problems, and plan work.
@@ -85,7 +85,7 @@ you can also work with several issues at a time by using these features:
 On an issue's page, you can view [all aspects of the issue](issue_data_and_actions.md),
 and modify them if you have the necessary [permissions](../../permissions.md).
 
-#### Real-time sidebar **(CORE ONLY)**
+#### Real-time sidebar **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 13.3.
 
@@ -117,7 +117,7 @@ For more information, see the [Sorting and ordering issue lists](sorting_issue_l
 > - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
 > - It's disabled on GitLab.com.
 > - It's not recommended for production use.
-> - To use this feature in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-cached-issue-count) **(CORE ONLY)**
+> - To use this feature in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-cached-issue-count) **(FREE SELF)**
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -194,7 +194,7 @@ You can then see issue statuses in the [issue list](#issues-list) and the
 - Configure an [external issue tracker](../../../integration/external-issue-tracker.md)
   such as Jira, Redmine, Bugzilla, or EWM.
 
-## Enable or disable cached issue count **(CORE ONLY)**
+## Enable or disable cached issue count **(FREE SELF)**
 
 Cached issue count in the left sidebar is under development and not ready for production use. It is
 deployed behind a feature flag that is **disabled by default**.

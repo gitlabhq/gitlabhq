@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Repository storage types **(CORE ONLY)**
+# Repository storage types **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28283) in GitLab 10.0.
 > - Hashed storage became the default for new installations in GitLab 12.0

@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Namespaces **(CORE ONLY)**
+# Namespaces **(FREE SELF)**
 
 This Rake task enables [namespaces](../user/group/index.md#namespaces) for projects.
 

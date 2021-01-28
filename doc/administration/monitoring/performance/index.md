@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Performance Monitoring **(CORE)**
+# GitLab Performance Monitoring **(FREE SELF)**
 
 GitLab comes with its own application performance measuring system as of GitLab
 8.4, called "GitLab Performance Monitoring". GitLab Performance Monitoring is available in both the

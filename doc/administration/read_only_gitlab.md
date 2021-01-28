@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Place GitLab into a read-only state **(CORE ONLY)**
+# Place GitLab into a read-only state **(FREE SELF)**
 
 WARNING:
 This document should be used as a temporary solution.

@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Redis exporter **(CORE)**
+# Redis exporter **(FREE SELF)**
 
 The [Redis exporter](https://github.com/oliver006/redis_exporter) enables you to measure
 various [Redis](https://redis.io) metrics. For more information on what is exported,

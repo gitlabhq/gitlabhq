@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Visibility and access controls **(CORE ONLY)**
+# Visibility and access controls **(FREE SELF)**
 
 GitLab allows administrators to enforce specific controls.
 

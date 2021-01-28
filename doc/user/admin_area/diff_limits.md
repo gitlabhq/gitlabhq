@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Diff limits administration **(CORE ONLY)**
+# Diff limits administration **(FREE SELF)**
 
 You can set a maximum size for display of diff files (patches).
 

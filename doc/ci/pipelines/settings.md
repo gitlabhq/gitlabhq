@@ -63,7 +63,7 @@ if the job surpasses the threshold, it is marked as failed.
 Project defined timeout (either specific timeout set by user or the default
 60 minutes timeout) may be [overridden for runners](../runners/README.md#set-maximum-job-timeout-for-a-runner).
 
-## Maximum artifacts size **(CORE ONLY)**
+## Maximum artifacts size **(FREE SELF)**
 
 For information about setting a maximum artifact size for a project, see
 [Maximum artifacts size](../../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size).

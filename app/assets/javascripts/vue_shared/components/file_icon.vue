@@ -90,6 +90,12 @@ export default {
     <svg v-else-if="!folder" :key="spriteHref" :class="[iconSizeClass, cssClasses]">
       <use v-bind="{ 'xlink:href': spriteHref }" />
     </svg>
-    <gl-icon v-else :name="folderIconName" :size="size" class="folder-icon" />
+    <gl-icon
+      v-else
+      :name="folderIconName"
+      :size="size"
+      class="folder-icon"
+      data-qa-selector="folder_icon_content"
+    />
   </span>
 </template>

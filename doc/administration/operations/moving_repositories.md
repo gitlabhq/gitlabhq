@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Moving repositories managed by GitLab **(CORE ONLY)**
+# Moving repositories managed by GitLab **(FREE SELF)**
 
 Sometimes you need to move all repositories managed by GitLab to
 another file system or another server.

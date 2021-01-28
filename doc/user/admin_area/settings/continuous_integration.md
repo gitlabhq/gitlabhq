@@ -5,14 +5,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Continuous Integration and Deployment Admin settings **(CORE ONLY)**
+# Continuous Integration and Deployment Admin settings **(FREE SELF)**
 
 In this area, you will find settings for Auto DevOps, runners, and job artifacts.
 You can find it in the **Admin Area > Settings > CI/CD**.
 
 ![Admin Area settings button](../img/admin_area_settings_button.png)
 
-## Auto DevOps **(CORE ONLY)**
+## Auto DevOps **(FREE SELF)**
 
 To enable (or disable) [Auto DevOps](../../../topics/autodevops/index.md)
 for all projects:
@@ -29,7 +29,7 @@ From now on, every existing project and newly created ones that don't have a
 If you want to disable it for a specific project, you can do so in
 [its settings](../../../topics/autodevops/index.md#enablingdisabling-auto-devops).
 
-## Maximum artifacts size **(CORE ONLY)**
+## Maximum artifacts size **(FREE SELF)**
 
 The maximum size of the [job artifacts](../../../administration/job_artifacts.md)
 can be set at:
@@ -65,7 +65,7 @@ To change it at the:
 NOTE:
 The setting at all levels is only available to GitLab administrators.
 
-## Default artifacts expiration **(CORE ONLY)**
+## Default artifacts expiration **(FREE SELF)**
 
 The default expiration time of the [job artifacts](../../../administration/job_artifacts.md)
 can be set in the Admin Area of your GitLab instance. The syntax of duration is
@@ -126,7 +126,7 @@ a group in the **Usage Quotas** page available to the group page settings list.
 
 ![Group pipelines quota](img/group_pipelines_quota.png)
 
-## Archive jobs **(CORE ONLY)**
+## Archive jobs **(FREE SELF)**
 
 Archiving jobs is useful for reducing the CI/CD footprint on the system by
 removing some of the capabilities of the jobs (metadata needed to run the job),

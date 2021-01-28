@@ -7,7 +7,7 @@ description: Read through the GitLab installation methods.
 type: index
 ---
 
-# Installation **(CORE ONLY)**
+# Installation **(FREE SELF)**
 
 GitLab can be installed in most GNU/Linux distributions and with several
 cloud providers. To get the best experience from GitLab, you must balance

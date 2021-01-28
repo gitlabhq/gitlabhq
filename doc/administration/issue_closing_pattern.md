@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Issue closing pattern **(CORE ONLY)**
+# Issue closing pattern **(FREE SELF)**
 
 NOTE:
 This is the administration documentation. There is a separate [user documentation](../user/project/issues/managing_issues.md#closing-issues-automatically)

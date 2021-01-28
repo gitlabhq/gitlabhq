@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# License **(CORE ONLY)**
+# License **(FREE SELF)**
 
 To interact with license endpoints, you need to authenticate yourself as an
 administrator.

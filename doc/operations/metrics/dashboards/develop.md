@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Developing templates for custom dashboards **(CORE)**
+# Developing templates for custom dashboards **(FREE)**
 
 GitLab provides a template to make it easier for you to create templates for
 [custom dashboards](index.md). Templates provide helpful guidance and

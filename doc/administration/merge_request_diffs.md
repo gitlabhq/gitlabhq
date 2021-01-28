@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Merge request diffs storage **(CORE ONLY)**
+# Merge request diffs storage **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52568) in GitLab 11.8.
 

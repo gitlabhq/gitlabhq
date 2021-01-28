@@ -4,7 +4,7 @@ group: Memory
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Changing application settings cache expiry interval **(CORE ONLY)**
+# Changing application settings cache expiry interval **(FREE SELF)**
 
 Application settings are cached for 60 seconds by default which should work
 for most installations. A higher value would mean a greater delay between

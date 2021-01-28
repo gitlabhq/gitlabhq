@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Issue Boards **(CORE)**
+# Issue Boards **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5554) in [GitLab 8.11](https://about.gitlab.com/releases/2016/08/22/gitlab-8-11-released/#issue-board).
 
@@ -57,7 +57,7 @@ the Issue Board feature.
 > - Multiple issue boards per project [moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53811) to [GitLab Core](https://about.gitlab.com/pricing/) in GitLab 12.1.
 > - Multiple issue boards per group are available in [GitLab Premium](https://about.gitlab.com/pricing/).
 
-Multiple issue boards allow for more than one issue board for a given project **(CORE)** or group **(PREMIUM)**.
+Multiple issue boards allow for more than one issue board for a given project **(FREE)** or group **(PREMIUM)**.
 This is great for large projects with more than one team or when a repository hosts the code of multiple products.
 
 Using the search box at the top of the menu, you can filter the listed boards.
@@ -435,13 +435,13 @@ To remove a list from an issue board:
 1. Select **Remove list**. A confirmation dialog appears.
 1. Select **OK**.
 
-### Add issues to a list **(CORE ONLY)**
+### Add issues to a list **(FREE SELF)**
 
 > - Feature flag [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47898) in GitLab 13.7.
 > - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
 > - It's disabled on GitLab.com.
 > - It's recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-adding-issues-to-the-list). **(CORE ONLY)**
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-adding-issues-to-the-list). **(FREE SELF)**
 
 You can add issues to a list in a project issue board by clicking the **Add issues** button
 in the top right corner of the issue board. This opens up a modal
@@ -461,7 +461,7 @@ the list by filtering by the following:
 - Release
 - Weight
 
-#### Enable or disable adding issues to the list **(CORE ONLY)**
+#### Enable or disable adding issues to the list **(FREE SELF)**
 
 Adding issues to the list is deployed behind a feature flag that is **disabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)

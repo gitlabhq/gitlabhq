@@ -123,7 +123,7 @@ latest versions of the scanning tools without having to do anything. There are s
 with this approach, however, and there is a
 [plan to resolve them](https://gitlab.com/gitlab-org/gitlab/-/issues/9725).
 
-## Viewing security scan information in merge requests **(CORE)**
+## Viewing security scan information in merge requests **(FREE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4393) in GitLab Core 13.5.
 > - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/273205) in 13.6.
@@ -132,7 +132,7 @@ with this approach, however, and there is a
 > - It's enabled on GitLab.com.
 > - It can be enabled or disabled for a single project.
 > - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-the-basic-security-widget). **(CORE ONLY)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-the-basic-security-widget). **(FREE SELF)**
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -652,7 +652,7 @@ Analyzer results are displayed in the [job logs](../../ci/jobs/index.md#expand-a
 or [Security Dashboard](security_dashboard/index.md).
 There is [an open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/235772) in which changes to this behavior are being discussed.
 
-### Enable or disable the basic security widget **(CORE ONLY)**
+### Enable or disable the basic security widget **(FREE SELF)**
 
 The basic security widget is under development but ready for production use.
 It is deployed behind a feature flag that is **enabled by default**.

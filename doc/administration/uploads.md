@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Uploads administration **(CORE ONLY)**
+# Uploads administration **(FREE SELF)**
 
 Uploads represent all user data that may be sent to GitLab as a single file. As an example, avatars and notes' attachments are uploads. Uploads are integral to GitLab functionality, and therefore cannot be disabled.
 
@@ -49,7 +49,7 @@ _The uploads are stored by default in
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-## Using object storage **(CORE ONLY)**
+## Using object storage **(FREE SELF)**
 
 > **Notes:**
 >

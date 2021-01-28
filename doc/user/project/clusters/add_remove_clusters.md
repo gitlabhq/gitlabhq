@@ -40,7 +40,7 @@ Before [adding a Kubernetes cluster](#create-new-cluster) using GitLab, you need
   - [Maintainer access to a group](../../permissions.md#group-members-permissions) for a
     group-level cluster.
   - [Admin Area access](../../admin_area/index.md) for a self-managed instance-level
-    cluster. **(CORE ONLY)**
+    cluster. **(FREE SELF)**
 
 ## Access controls
 

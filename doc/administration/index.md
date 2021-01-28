@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 description: 'Learn how to install, configure, update, and maintain your GitLab instance.'
 ---
 
-# Administrator documentation **(CORE ONLY)**
+# Administrator documentation **(FREE SELF)**
 
 Learn how to administer your self-managed GitLab instance.
 

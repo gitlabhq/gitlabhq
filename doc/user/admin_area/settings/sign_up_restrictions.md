@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Sign-up restrictions **(CORE ONLY)**
+# Sign-up restrictions **(FREE SELF)**
 
 You can enforce the following restrictions on sign ups:
 
@@ -50,12 +50,12 @@ To enforce confirmation of the email address used for new sign ups:
 1. Go to **Admin Area > Settings > General** and expand **Sign-up restrictions**.
 1. Select the **Enable email restrictions for sign ups** checkbox, then select **Save changes**.
 
-## User cap **(CORE ONLY)**
+## User cap **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4315) in GitLab 13.7.
 > - It's [deployed behind a feature flag](../../feature_flags.md), enabled by default.
 > - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-user-cap). **(CORE ONLY)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-user-cap). **(FREE SELF)**
 
 When the number of billable users reaches the user cap, any user who is added or requests access must be
 [approved](../approving_users.md#approving-a-user) by an administrator before they can start using
@@ -64,7 +64,7 @@ their account.
 If an administrator increases or removes the user cap, the users in pending approval state are
 automatically approved in a background job.
 
-### Enable or disable User cap **(CORE ONLY)**
+### Enable or disable User cap **(FREE SELF)**
 
 User cap is under development but ready for production use.
 It is deployed behind a feature flag that is **enabled by default**.

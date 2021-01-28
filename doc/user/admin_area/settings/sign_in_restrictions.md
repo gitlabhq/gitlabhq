@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Sign-in restrictions **(CORE ONLY)**
+# Sign-in restrictions **(FREE SELF)**
 
 You can use **Sign-in restrictions** to customize authentication restrictions for web interfaces as well as Git over HTTP(S).
 

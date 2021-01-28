@@ -4,7 +4,7 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Generic Packages Repository **(CORE)**
+# GitLab Generic Packages Repository **(FREE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4209) in GitLab 13.5.
 > - It's [deployed behind a feature flag](../../../user/feature_flags.md), enabled by default.

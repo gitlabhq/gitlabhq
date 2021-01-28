@@ -1624,9 +1624,6 @@ msgstr ""
 msgid "Add a To Do"
 msgstr ""
 
-msgid "Add a To-Do"
-msgstr ""
-
 msgid "Add a bullet list"
 msgstr ""
 
@@ -15267,6 +15264,15 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Instance Configuration"
+msgstr ""
+
+msgid "Instance access request"
+msgstr ""
+
+msgid "Instance access request approved"
+msgstr ""
+
+msgid "Instance access request rejected"
 msgstr ""
 
 msgid "Instance administrators group already exists"

@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# PostgreSQL Server Exporter **(CORE)**
+# PostgreSQL Server Exporter **(FREE SELF)**
 
 The [PostgreSQL Server Exporter](https://github.com/wrouesnel/postgres_exporter) allows you to export various PostgreSQL metrics.
 

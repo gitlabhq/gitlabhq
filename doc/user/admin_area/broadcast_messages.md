@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Broadcast Messages **(CORE ONLY)**
+# Broadcast Messages **(FREE SELF)**
 
 GitLab can display broadcast messages to all users of a GitLab instance. There are two types of broadcast messages:
 

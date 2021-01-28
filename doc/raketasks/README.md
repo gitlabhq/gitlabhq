@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 comments: false
 ---
 
-# Rake tasks **(CORE ONLY)**
+# Rake tasks **(FREE SELF)**
 
 GitLab provides [Rake](https://ruby.github.io/rake/) tasks for common administration and operational processes.
 

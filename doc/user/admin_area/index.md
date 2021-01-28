@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# GitLab Admin Area **(CORE ONLY)**
+# GitLab Admin Area **(FREE SELF)**
 
 The Admin Area provides a web UI for administering some features of GitLab self-managed instances.
 
