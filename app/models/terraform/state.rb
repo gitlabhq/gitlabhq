@@ -24,6 +24,7 @@ module Terraform
     scope :ordered_by_name, -> { order(:name) }
     scope :with_name, -> (name) { where(name: name) }
 
+    validates :name, presence: true, uniqueness: { scope: :project_id }
     validates :project_id, presence: true
     validates :uuid, presence: true, uniqueness: true, length: { is: UUID_LENGTH },
               format: { with: HEX_REGEXP, message: 'only allows hex characters' }

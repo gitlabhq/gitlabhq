@@ -4,6 +4,7 @@ export const member = {
   canRemove: false,
   canOverride: false,
   isOverridden: false,
+  isDirectMember: false,
   accessLevel: { integerValue: 50, stringValue: 'Owner' },
   source: {
     id: 178,
@@ -71,3 +72,6 @@ export const accessRequest = {
 export const members = [member];
 
 export const membersJsonString = JSON.stringify(members);
+
+export const directMember = { ...member, isDirectMember: true };
+export const inheritedMember = { ...member, isDirectMember: false };

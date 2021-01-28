@@ -8,7 +8,10 @@ RSpec.describe Terraform::State do
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:locked_by_user).class_name('User') }
 
+  it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_presence_of(:project_id) }
+
+  it { is_expected.to validate_uniqueness_of(:name).scoped_to(:project_id) }
 
   describe 'scopes' do
     describe '.ordered_by_name' do

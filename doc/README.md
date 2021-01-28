@@ -23,32 +23,32 @@ Here you can access the complete documentation for GitLab, the single applicatio
 
 No matter how you use GitLab, we have documentation for you.
 
-| Essential documentation                                                                                              | Essential documentation                                                                                                    |
-|:---------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------|
+| Essential documentation | Essential documentation |
+|:------------------------|:------------------------|
 | [**User documentation**](user/index.md)<br>Discover features and concepts for GitLab users.                          | [**Administrator documentation**](administration/index.md)<br/>Everything GitLab self-managed administrators need to know. |
-| [**Contributing to GitLab**](#contributing-to-gitlab)<br/>At GitLab, everyone can contribute!                        | [**New to Git and GitLab?**](#new-to-git-and-gitlab)<br/>We have the resources to get you started.                         |
-| [**Build an integration with GitLab**](#build-an-integration-with-gitlab)<br/>Consult our integration documentation. | [**Coming to GitLab from another platform?**](#coming-to-gitlab-from-another-platform)<br/>Consult our guides.             |
-| [**Install GitLab**](https://about.gitlab.com/install/)<br/>Installation options for different platforms.            | [**Customers**](subscriptions/index.md)<br/>Information for new and existing customers.                                    |
-| [**Update GitLab**](update/README.md)<br/>Update your GitLab self-managed instance to the latest version.            | [**Reference Architectures**](administration/reference_architectures/index.md)<br/>GitLab reference architectures        |
-| [**GitLab releases**](https://about.gitlab.com/releases/)<br/>What's new in GitLab.                                  |                                                                                                                            |
+| [**Contributing to GitLab**](#contributing-to-gitlab)<br/>At GitLab, everyone can contribute!                        | [**New to Git and GitLab?**](#new-to-git-and-gitlab)<br/>We have the resources to get you started. |
+| [**Build an integration with GitLab**](#build-an-integration-with-gitlab)<br/>Consult our integration documentation. | [**Coming to GitLab from another platform?**](#coming-to-gitlab-from-another-platform)<br/>Consult our guides. |
+| [**Install GitLab**](https://about.gitlab.com/install/)<br/>Installation options for different platforms.            | [**Customers**](subscriptions/index.md)<br/>Information for new and existing customers. |
+| [**Update GitLab**](update/README.md)<br/>Update your GitLab self-managed instance to the latest version.            | [**Reference Architectures**](administration/reference_architectures/index.md)<br/>GitLab reference architectures. |
+| [**GitLab releases**](https://about.gitlab.com/releases/)<br/>What's new in GitLab.                                  |  |
 
 ## Popular topics
 
 Have a look at some of our most popular topics:
 
-| Popular topic                                                                                              | Description                                                                |
-|:-----------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------|
-| [Two-factor authentication](user/profile/account/two_factor_authentication.md)                             | Improve the security of your GitLab account.                               |
-| [GitLab groups](user/group/index.md)                                                                       | Manage projects together.                                                  |
-| [GitLab CI/CD pipeline configuration reference](ci/yaml/README.md)                                         | Available configuration options for `.gitlab-ci.yml` files.                |
-| [Activate GitLab EE with a license](user/admin_area/license.md) **(STARTER ONLY)**                         | Activate GitLab Enterprise Edition functionality with a license.           |
-| [Back up and restore GitLab](raketasks/backup_restore.md) **(FREE SELF)**                                  | Rake tasks for backing up and restoring GitLab self-managed instances.     |
-| [GitLab release and maintenance policy](policy/maintenance.md)                                             | Policies for version naming and cadence, and also upgrade recommendations. |
-| [Elasticsearch integration](integration/elasticsearch.md) **(STARTER ONLY)**                               | Integrate Elasticsearch with GitLab to enable advanced searching.          |
-| [Omnibus GitLab database settings](https://docs.gitlab.com/omnibus/settings/database.html) **(FREE SELF)** | Database settings for Omnibus GitLab self-managed instances.               |
-| [Omnibus GitLab NGINX settings](https://docs.gitlab.com/omnibus/settings/nginx.html) **(FREE SELF)**       | NGINX settings for Omnibus GitLab self-managed instances.                  |
-| [Omnibus GitLab SSL configuration](https://docs.gitlab.com/omnibus/settings/ssl.html) **(FREE SELF)**      | SSL settings for Omnibus GitLab self-managed instances.                    |
-| [GitLab.com settings](user/gitlab_com/index.md)                                                            | Settings used for GitLab.com.                                              |
+| Popular topic                                                                              | Description |
+|:-------------------------------------------------------------------------------------------|:------------|
+| [Two-factor authentication](user/profile/account/two_factor_authentication.md)             | Improve the security of your GitLab account. |
+| [GitLab groups](user/group/index.md)                                                       | Manage projects together. |
+| [GitLab CI/CD pipeline configuration reference](ci/yaml/README.md)                         | Available configuration options for `.gitlab-ci.yml` files. |
+| [Activate GitLab EE with a license](user/admin_area/license.md)                            | Activate GitLab Enterprise Edition functionality with a license. |
+| [Back up and restore GitLab](raketasks/backup_restore.md)                                  | Rake tasks for backing up and restoring GitLab self-managed instances. |
+| [GitLab release and maintenance policy](policy/maintenance.md)                             | Policies for version naming and cadence, and also upgrade recommendations. |
+| [Elasticsearch integration](integration/elasticsearch.md)                                  | Integrate Elasticsearch with GitLab to enable advanced searching. |
+| [Omnibus GitLab database settings](https://docs.gitlab.com/omnibus/settings/database.html) | Database settings for Omnibus GitLab self-managed instances. |
+| [Omnibus GitLab NGINX settings](https://docs.gitlab.com/omnibus/settings/nginx.html)       | NGINX settings for Omnibus GitLab self-managed instances. |
+| [Omnibus GitLab SSL configuration](https://docs.gitlab.com/omnibus/settings/ssl.html)      | SSL settings for Omnibus GitLab self-managed instances. |
+| [GitLab.com settings](user/gitlab_com/index.md)                                            | Settings used for GitLab.com. |
 
 ## The entire DevOps lifecycle
 
@@ -64,53 +64,53 @@ Working with new systems can be daunting.
 
 We have the following documentation to rapidly uplift your GitLab knowledge:
 
-| Topic                                                                                             | Description                                                    |
-|:--------------------------------------------------------------------------------------------------|:---------------------------------------------------------------|
-| [GitLab basics guides](gitlab-basics/README.md)                                                   | Start working on the command line and with GitLab.             |
-| [GitLab workflow overview](https://about.gitlab.com/blog/2016/10/25/gitlab-workflow-an-overview/) | Enhance your workflow with the best of GitLab Workflow.        |
-| [Get started with GitLab CI/CD](ci/quick_start/README.md)                                         | Quickly implement GitLab CI/CD.                                |
-| [Auto DevOps](topics/autodevops/index.md)                                                         | Learn more about Auto DevOps in GitLab.                         |
-| [GitLab Markdown](user/markdown.md)                                                               | Advanced formatting system (GitLab Flavored Markdown) |
+| Topic                                                                                             | Description |
+|:--------------------------------------------------------------------------------------------------|:------------|
+| [GitLab basics guides](gitlab-basics/README.md)                                                   | Start working on the command line and with GitLab. |
+| [GitLab workflow overview](https://about.gitlab.com/blog/2016/10/25/gitlab-workflow-an-overview/) | Enhance your workflow with the best of GitLab Workflow. |
+| [Get started with GitLab CI/CD](ci/quick_start/README.md)                                         | Quickly implement GitLab CI/CD. |
+| [Auto DevOps](topics/autodevops/index.md)                                                         | Learn more about Auto DevOps in GitLab. |
+| [GitLab Markdown](user/markdown.md)                                                               | Advanced formatting system (GitLab Flavored Markdown). |
 
 ### User account
 
 Learn more about GitLab account management:
 
-| Topic                                                      | Description                                                                                                                |
-|:-----------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------|
-| [User account](user/profile/index.md)                      | Manage your account.                                                                                                       |
+| Topic                                                      | Description |
+|:-----------------------------------------------------------|:------------|
+| [User account](user/profile/index.md)                      | Manage your account. |
 | [Authentication](topics/authentication/index.md)           | Account security with two-factor authentication, set up your SSH keys, and deploy keys for secure access to your projects. |
-| [Profile settings](user/profile/index.md#profile-settings) | Manage your profile settings, two factor authentication, and more.                                                         |
-| [User permissions](user/permissions.md)                    | Learn what each role in a project can do.                                                                                  |
+| [Profile settings](user/profile/index.md#profile-settings) | Manage your profile settings, two factor authentication, and more. |
+| [User permissions](user/permissions.md)                    | Learn what each role in a project can do. |
 
 ### Git and GitLab
 
 Learn more about using Git, and using Git with GitLab:
 
-| Topic                                                                        | Description                                                                |
-|:-----------------------------------------------------------------------------|:---------------------------------------------------------------------------|
+| Topic                                                                        | Description |
+|:-----------------------------------------------------------------------------|:------------|
 | [Git](topics/git/index.md)                                                   | Getting started with Git, branching strategies, Git LFS, and advanced use. |
-| [Git cheat sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf) | Download a PDF describing the most used Git operations.                    |
-| [GitLab Flow](topics/gitlab_flow.md)                                         | Explore the best of Git with the GitLab Flow strategy.                     |
+| [Git cheat sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf) | Download a PDF describing the most used Git operations. |
+| [GitLab Flow](topics/gitlab_flow.md)                                         | Explore the best of Git with the GitLab Flow strategy. |
 
 ## Coming to GitLab from another platform
 
 If you are coming to GitLab from another platform, the following information is useful:
 
-| Topic                                               | Description                                                                            |
-|:----------------------------------------------------|:---------------------------------------------------------------------------------------|
+| Topic                                               | Description |
+|:----------------------------------------------------|:------------|
 | [Importing to GitLab](user/project/import/index.md) | Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz, and SVN into GitLab. |
-| [Migrating from SVN](user/project/import/svn.md)    | Convert a SVN repository to Git and GitLab.                                            |
+| [Migrating from SVN](user/project/import/svn.md)    | Convert a SVN repository to Git and GitLab. |
 
 ## Build an integration with GitLab
 
 There are many ways to integrate with GitLab, including:
 
-| Topic                                      | Description                                  |
-|:-------------------------------------------|:---------------------------------------------|
-| [GitLab REST API](api/README.md)           | Integrate with GitLab using our REST API.    |
+| Topic                                      | Description |
+|:-------------------------------------------|:------------|
+| [GitLab REST API](api/README.md)           | Integrate with GitLab using our REST API. |
 | [GitLab GraphQL API](api/graphql/index.md) | Integrate with GitLab using our GraphQL API. |
-| [Integrations](integration/README.md)      | Integrations with third-party products.      |
+| [Integrations](integration/README.md)      | Integrations with third-party products. |
 
 ## Contributing to GitLab
 
@@ -119,8 +119,8 @@ and GitLab Enterprise Edition is [open-core](https://gitlab.com/gitlab-org/gitla
 
 Learn how to contribute to GitLab with the following resources:
 
-| Topic                                                       | Description                              |
-|:------------------------------------------------------------|:-----------------------------------------|
+| Topic                                                       | Description |
+|:------------------------------------------------------------|:------------|
 | [Development](development/README.md)                        | How to contribute to GitLab development. |
-| [Legal](legal/README.md)                                    | Contributor license agreements.          |
-| [Writing documentation](development/documentation/index.md) | How to contribute to GitLab Docs.        |
+| [Legal](legal/README.md)                                    | Contributor license agreements. |
+| [Writing documentation](development/documentation/index.md) | How to contribute to GitLab Docs. |

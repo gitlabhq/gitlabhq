@@ -7,7 +7,7 @@ RSpec.describe MemberSerializer do
 
   let_it_be(:current_user) { create(:user) }
 
-  subject { described_class.new.represent(members, { current_user: current_user, group: group }) }
+  subject { described_class.new.represent(members, { current_user: current_user, group: group, source: source }) }
 
   shared_examples 'members.json' do
     it 'matches json schema' do
@@ -17,6 +17,7 @@ RSpec.describe MemberSerializer do
 
   context 'group member' do
     let(:group) { create(:group) }
+    let(:source) { group }
     let(:members) { present_members(create_list(:group_member, 1, group: group)) }
 
     it_behaves_like 'members.json'
@@ -24,6 +25,7 @@ RSpec.describe MemberSerializer do
 
   context 'project member' do
     let(:project) { create(:project) }
+    let(:source) { project }
     let(:group) { project.group }
     let(:members) { present_members(create_list(:project_member, 1, project: project)) }
 

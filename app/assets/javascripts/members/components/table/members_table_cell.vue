@@ -19,7 +19,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['sourceId', 'currentUserId']),
+    ...mapState(['currentUserId']),
     isGroup() {
       return isGroup(this.member);
     },
@@ -41,19 +41,19 @@ export default {
       return MEMBER_TYPES.user;
     },
     isDirectMember() {
-      return isDirectMember(this.member, this.sourceId);
+      return isDirectMember(this.member);
     },
     isCurrentUser() {
       return isCurrentUser(this.member, this.currentUserId);
     },
     canRemove() {
-      return canRemove(this.member, this.sourceId);
+      return canRemove(this.member);
     },
     canResend() {
       return canResend(this.member);
     },
     canUpdate() {
-      return canUpdate(this.member, this.currentUserId, this.sourceId);
+      return canUpdate(this.member, this.currentUserId);
     },
   },
   render() {

@@ -32,7 +32,7 @@ module Projects::ProjectMembersHelper
   end
 
   def project_members_data_json(project, members)
-    MemberSerializer.new.represent(members, { current_user: current_user, group: project.group }).to_json
+    MemberSerializer.new.represent(members, { current_user: current_user, group: project.group, source: project }).to_json
   end
 
   def project_members_list_data_attributes(project, members)

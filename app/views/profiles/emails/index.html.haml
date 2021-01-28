@@ -13,7 +13,7 @@
     = form_for 'email', url: profile_emails_path do |f|
       .form-group
         = f.label :email, _('Email'), class: 'label-bold'
-        = f.text_field :email, class: 'form-control', data: { qa_selector: 'email_address_field' }
+        = f.text_field :email, class: 'form-control gl-form-input', data: { qa_selector: 'email_address_field' }
       .gl-mt-3
         = f.submit _('Add email address'), class: 'gl-button btn btn-success', data: { qa_selector: 'add_email_address_button' }
     %hr

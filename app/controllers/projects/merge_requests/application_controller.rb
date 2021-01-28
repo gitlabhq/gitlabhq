@@ -20,7 +20,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   end
 
   def preloadable_mr_relations
-    [:metrics, :assignees, { author: :status }]
+    [:metrics, { assignees: :status }, { author: :status }]
   end
 
   def merge_request_params

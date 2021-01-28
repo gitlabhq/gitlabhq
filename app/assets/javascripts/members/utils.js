@@ -35,26 +35,24 @@ export const isGroup = (member) => {
   return Boolean(member.sharedWithGroup);
 };
 
-export const isDirectMember = (member, sourceId) => {
-  return isGroup(member) || member.source?.id === sourceId;
+export const isDirectMember = (member) => {
+  return isGroup(member) || member.isDirectMember;
 };
 
 export const isCurrentUser = (member, currentUserId) => {
   return member.user?.id === currentUserId;
 };
 
-export const canRemove = (member, sourceId) => {
-  return isDirectMember(member, sourceId) && member.canRemove;
+export const canRemove = (member) => {
+  return isDirectMember(member) && member.canRemove;
 };
 
 export const canResend = (member) => {
   return Boolean(member.invite?.canResend);
 };
 
-export const canUpdate = (member, currentUserId, sourceId) => {
-  return (
-    !isCurrentUser(member, currentUserId) && isDirectMember(member, sourceId) && member.canUpdate
-  );
+export const canUpdate = (member, currentUserId) => {
+  return !isCurrentUser(member, currentUserId) && isDirectMember(member) && member.canUpdate;
 };
 
 export const parseSortParam = (sortableFields) => {

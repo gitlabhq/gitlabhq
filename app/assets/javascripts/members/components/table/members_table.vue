@@ -32,7 +32,7 @@ export default {
       import('ee_component/members/components/ldap/ldap_override_confirmation_modal.vue'),
   },
   computed: {
-    ...mapState(['members', 'tableFields', 'tableAttrs', 'currentUserId', 'sourceId']),
+    ...mapState(['members', 'tableFields', 'tableAttrs', 'currentUserId']),
     filteredFields() {
       return FIELDS.filter(
         (field) => this.tableFields.includes(field.key) && this.showField(field),
@@ -55,9 +55,9 @@ export default {
   methods: {
     hasActionButtons(member) {
       return (
-        canRemove(member, this.sourceId) ||
+        canRemove(member) ||
         canResend(member) ||
-        canUpdate(member, this.currentUserId, this.sourceId) ||
+        canUpdate(member, this.currentUserId) ||
         canOverride(member)
       );
     },

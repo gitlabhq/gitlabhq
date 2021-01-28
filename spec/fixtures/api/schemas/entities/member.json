@@ -9,7 +9,8 @@
     "source",
     "valid_roles",
     "can_update",
-    "can_remove"
+    "can_remove",
+    "is_direct_member"
   ],
   "properties": {
     "id": { "type": "integer" },
@@ -18,6 +19,7 @@
     "requested_at": { "type": ["date-time", "null"] },
     "can_update": { "type": "boolean" },
     "can_remove": { "type": "boolean" },
+    "is_direct_member": { "type": "boolean" },
     "access_level": {
       "type": "object",
       "required": ["integer_value", "string_value"],

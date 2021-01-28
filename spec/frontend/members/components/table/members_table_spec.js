@@ -15,7 +15,7 @@ import RoleDropdown from '~/members/components/table/role_dropdown.vue';
 import ExpirationDatepicker from '~/members/components/table/expiration_datepicker.vue';
 import MemberActionButtons from '~/members/components/table/member_action_buttons.vue';
 import * as initUserPopovers from '~/user_popovers';
-import { member as memberMock, invite, accessRequest } from '../../mock_data';
+import { member as memberMock, directMember, invite, accessRequest } from '../../mock_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -74,11 +74,6 @@ describe('MembersTable', () => {
   });
 
   describe('fields', () => {
-    const directMember = {
-      ...memberMock,
-      source: { ...memberMock.source, id: 1 },
-    };
-
     const memberCanUpdate = {
       ...directMember,
       canUpdate: true,

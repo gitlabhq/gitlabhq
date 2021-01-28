@@ -1,0 +1,5 @@
+---
+title: Add name validation to Terraform state
+merge_request: 52102
+author:
+type: changed

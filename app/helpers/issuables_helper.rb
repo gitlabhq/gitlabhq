@@ -346,6 +346,7 @@ module IssuablesHelper
   def assignee_sidebar_data(assignee, merge_request: nil)
     { avatar_url: assignee.avatar_url, name: assignee.name, username: assignee.username }.tap do |data|
       data[:can_merge] = merge_request.can_be_merged_by?(assignee) if merge_request
+      data[:availability] = assignee.status.availability if assignee.association(:status).loaded? && assignee.status&.availability
     end
   end
 

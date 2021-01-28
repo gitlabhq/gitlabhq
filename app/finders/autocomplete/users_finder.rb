@@ -38,7 +38,9 @@ module Autocomplete
         end
       end
 
-      items.uniq
+      items.uniq.tap do |unique_items|
+        preload_associations(unique_items)
+      end
     end
 
     private
@@ -91,6 +93,12 @@ module Autocomplete
         User.none
       end
     end
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def preload_associations(items)
+      ActiveRecord::Associations::Preloader.new.preload(items, :status)
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end
 

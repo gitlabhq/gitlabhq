@@ -18,7 +18,7 @@ module Groups::GroupMembersHelper
   end
 
   def members_data_json(group, members)
-    MemberSerializer.new.represent(members, { current_user: current_user, group: group }).to_json
+    MemberSerializer.new.represent(members, { current_user: current_user, group: group, source: group }).to_json
   end
 
   # Overridden in `ee/app/helpers/ee/groups/group_members_helper.rb`
