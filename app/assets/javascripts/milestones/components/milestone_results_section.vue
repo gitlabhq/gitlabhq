@@ -77,12 +77,7 @@ export default {
       </div>
     </template>
     <template v-else>
-      <gl-dropdown-item
-        v-for="{ title } in items"
-        :key="title"
-        role="milestone option"
-        @click="$emit('selected', title)"
-      >
+      <gl-dropdown-item v-for="{ title } in items" :key="title" @click="$emit('selected', title)">
         <span class="gl-pl-6" :class="{ 'selected-item': isSelectedMilestone(title) }">
           {{ title }}
         </span>

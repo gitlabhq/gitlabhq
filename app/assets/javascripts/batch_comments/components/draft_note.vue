@@ -79,7 +79,6 @@ export default {
 </script>
 <template>
   <article
-    role="article"
     class="draft-note-component note-wrapper"
     @mouseenter="handleMouseEnter(draft)"
     @mouseleave="handleMouseLeave(draft)"

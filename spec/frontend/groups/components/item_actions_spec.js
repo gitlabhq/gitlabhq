@@ -66,6 +66,22 @@ describe('ItemActions', () => {
     });
   });
 
+  it('emits `showLeaveGroupModal` event with the correct prefix if `action` prop is passed', () => {
+    const group = {
+      ...mockParentGroupItem,
+      canEdit: true,
+      canLeave: true,
+    };
+    createComponent({
+      group,
+      action: 'test',
+    });
+    jest.spyOn(eventHub, '$emit');
+    findLeaveGroupBtn().vm.$emit('click', { stopPropagation: () => {} });
+
+    expect(eventHub.$emit).toHaveBeenCalledWith('testshowLeaveGroupModal', group, parentGroup);
+  });
+
   it('does not render leave button if group can not be left', () => {
     createComponent({
       group: {

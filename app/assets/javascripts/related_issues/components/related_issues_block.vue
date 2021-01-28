@@ -146,7 +146,7 @@ export default {
             class="gl-display-flex gl-align-items-center gl-ml-2 gl-text-gray-500"
             :aria-label="__('Read more about related issues')"
           >
-            <gl-icon name="question" :size="12" role="text" />
+            <gl-icon name="question" :size="12" />
           </gl-link>
 
           <div class="gl-display-inline-flex">

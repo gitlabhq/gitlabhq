@@ -139,41 +139,33 @@ export default {
   <div class="ci-widget media">
     <template v-if="hasCIError">
       <gl-icon name="status_failed" class="gl-text-red-500" :size="24" />
-      <div
-        class="gl-flex-fill-1 gl-ml-5"
-        tabindex="0"
-        role="text"
-        :aria-label="$options.errorText"
-        data-testid="ci-error-message"
-      >
+      <p class="gl-flex-fill-1 gl-ml-5 gl-mb-0" data-testid="ci-error-message">
         <gl-sprintf :message="$options.errorText">
           <template #link="{ content }">
             <gl-link :href="mrTroubleshootingDocsPath">{{ content }}</gl-link>
           </template>
         </gl-sprintf>
-      </div>
+      </p>
     </template>
     <template v-else-if="!hasPipeline">
       <gl-loading-icon size="md" />
-      <div class="gl-flex-fill-1 gl-display-flex gl-ml-5" data-testid="monitoring-pipeline-message">
-        <span tabindex="0" role="text" :aria-label="$options.monitoringPipelineText">
-          <gl-sprintf :message="$options.monitoringPipelineText" />
-        </span>
+      <p
+        class="gl-flex-fill-1 gl-display-flex gl-ml-5 gl-mb-0"
+        data-testid="monitoring-pipeline-message"
+      >
+        {{ $options.monitoringPipelineText }}
         <gl-link
           :href="ciTroubleshootingDocsPath"
           target="_blank"
           class="gl-display-flex gl-align-items-center gl-ml-2"
-          tabindex="0"
         >
           <gl-icon
             name="question"
             :size="12"
-            tabindex="0"
-            role="text"
             :aria-label="__('Link to go to GitLab pipeline documentation')"
           />
         </gl-link>
-      </div>
+      </p>
     </template>
     <template v-else-if="hasPipeline">
       <a :href="status.details_path" class="align-self-start gl-mr-3">
