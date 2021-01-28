@@ -22,6 +22,8 @@ module Gitlab
       MR_APPLY_SUGGESTION_ACTION = 'i_code_review_user_apply_suggestion'
       MR_RESOLVE_THREAD_ACTION = 'i_code_review_user_resolve_thread'
       MR_UNRESOLVE_THREAD_ACTION = 'i_code_review_user_unresolve_thread'
+      MR_ASSIGNED_USERS_ACTION = 'i_code_review_user_assigned'
+      MR_REVIEW_REQUESTED_USERS_ACTION = 'i_code_review_user_review_requested'
 
       class << self
         def track_mr_diffs_action(merge_request:)
@@ -88,6 +90,14 @@ module Gitlab
           track_unique_action_by_user(MR_APPLY_SUGGESTION_ACTION, user)
         end
 
+        def track_users_assigned_to_mr(users:)
+          track_unique_action_by_users(MR_ASSIGNED_USERS_ACTION, users)
+        end
+
+        def track_users_review_requested(users:)
+          track_unique_action_by_users(MR_REVIEW_REQUESTED_USERS_ACTION, users)
+        end
+
         private
 
         def track_unique_action_by_merge_request(action, merge_request)
@@ -98,6 +108,12 @@ module Gitlab
           return unless user
 
           track_unique_action(action, user.id)
+        end
+
+        def track_unique_action_by_users(action, users)
+          return if users.blank?
+
+          track_unique_action(action, users.map(&:id))
         end
 
         def track_unique_action(action, value)

@@ -196,8 +196,8 @@ You can create [collapsible sections in job logs](#expand-and-collapse-job-log-s
 by manually outputting special codes
 that GitLab uses to determine what sections to collapse:
 
-- Section start marker: `section_start:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K` + `TEXT_OF_SECTION_HEADER`
-- Section end marker: `section_end:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K`
+- Section start marker: `\e[0Ksection_start:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K` + `TEXT_OF_SECTION_HEADER`
+- Section end marker: `\e[0Ksection_end:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K`
 
 You must add these codes to the script section of the CI configuration. For example,
 using `echo`:
@@ -205,9 +205,9 @@ using `echo`:
 ```yaml
 job1:
   script:
-    - echo -e "section_start:`date +%s`:my_first_section\r\e[0KHeader of the 1st collapsible section"
+    - echo -e "\e[0Ksection_start:`date +%s`:my_first_section\r\e[0KHeader of the 1st collapsible section"
     - echo 'this line should be hidden when collapsed'
-    - echo -e "section_end:`date +%s`:my_first_section\r\e[0K"
+    - echo -e "\e[0Ksection_end:`date +%s`:my_first_section\r\e[0K"
 ```
 
 In the example above:
@@ -223,9 +223,9 @@ In the example above:
 Sample raw job log:
 
 ```plaintext
-section_start:1560896352:my_first_section\r\e[0KHeader of the 1st collapsible section
+\e[0Ksection_start:1560896352:my_first_section\r\e[0KHeader of the 1st collapsible section
 this line should be hidden when collapsed
-section_end:1560896353:my_first_section\r\e[0K
+\e[0Ksection_end:1560896353:my_first_section\r\e[0K
 ```
 
 ### Pre-collapse sections
@@ -236,7 +236,7 @@ You can make the job log automatically collapse collapsible sections by adding t
 Add `[collapsed=true]` after the section name and before the `\r`. The section end marker
 remains unchanged:
 
-- Section start marker with `[collapsed=true]`: `section_start:UNIX_TIMESTAMP:SECTION_NAME[collapsed=true]\r\e[0K` + `TEXT_OF_SECTION_HEADER`
+- Section start marker with `[collapsed=true]`: `\e[0Ksection_start:UNIX_TIMESTAMP:SECTION_NAME[collapsed=true]\r\e[0K` + `TEXT_OF_SECTION_HEADER`
 - Section end marker: `section_end:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K`
 
 Add the updated section start text to the CI configuration. For example,
@@ -245,7 +245,7 @@ using `echo`:
 ```yaml
 job1:
   script:
-    - echo -e "section_start:`date +%s`:my_first_section[collapsed=true]\r\e[0KHeader of the 1st collapsible section"
+    - echo -e "\e[0Ksection_start:`date +%s`:my_first_section[collapsed=true]\r\e[0KHeader of the 1st collapsible section"
     - echo 'this line should be hidden automatically after loading the job log'
-    - echo -e "section_end:`date +%s`:my_first_section\r\e[0K"
+    - echo -e "\e[0Ksection_end:`date +%s`:my_first_section\r\e[0K"
 ```

@@ -99,11 +99,11 @@
   %td
     .gl-display-flex
       - if can?(current_user, :read_job_artifacts, job) && job.artifacts?
-        = link_to download_project_job_artifacts_path(job.project, job), rel: 'nofollow', download: '', title: _('Download artifacts'), class: 'btn btn-build gl-button btn-icon btn-svg' do
+        = link_to download_project_job_artifacts_path(job.project, job), rel: 'nofollow', download: '', title: _('Download artifacts'), class: 'btn btn-build btn-default gl-button btn-icon btn-svg' do
           = sprite_icon('download')
       - if can?(current_user, :update_build, job)
         - if job.active?
-          = link_to cancel_project_job_path(job.project, job, continue: { to: request.fullpath }), method: :post, title: _('Cancel'), class: 'btn gl-button btn-build' do
+          = link_to cancel_project_job_path(job.project, job, continue: { to: request.fullpath }), method: :post, title: _('Cancel'), class: 'btn gl-button btn-build btn-default' do
             = sprite_icon('close')
         - elsif job.scheduled?
           .btn-group
@@ -125,7 +125,7 @@
               = sprite_icon('time-out')
         - elsif allow_retry
           - if job.playable? && !admin && can?(current_user, :update_build, job)
-            = link_to play_project_job_path(job.project, job, return_to: request.original_url), method: :post, title: _('Play'), class: 'btn gl-button btn-build' do
+            = link_to play_project_job_path(job.project, job, return_to: request.original_url), method: :post, title: _('Play'), class: 'btn gl-button btn-build btn-default' do
               = custom_icon('icon_play')
           - elsif job.retryable?
             = link_to retry_project_job_path(job.project, job, return_to: request.original_url), method: :post, title: _('Retry'), class: 'btn btn-build gl-button btn-icon btn-default' do

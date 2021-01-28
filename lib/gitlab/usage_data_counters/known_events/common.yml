@@ -268,6 +268,11 @@
   redis_slot: testing
   aggregation: weekly
   feature_flag: usage_data_i_testing_web_performance_widget_total
+- name: i_testing_group_code_coverage_project_click_total
+  category: testing
+  redis_slot: testing
+  aggregation: weekly
+  feature_flag: usage_data_i_testing_group_code_coverage_project_click_total
 # Project Management group
 - name: g_project_management_issue_title_changed
   category: issues_edit
@@ -541,6 +546,16 @@
   category: code_review
   aggregation: weekly
   feature_flag: usage_data_i_code_review_user_apply_suggestion
+- name: i_code_review_user_assigned
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+  feature_flag: usage_data_i_code_review_user_assigned
+- name: i_code_review_user_review_requested
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+  feature_flag: usage_data_i_code_review_user_review_requested
 # Terraform
 - name: p_terraform_state_api_unique_users
   category: terraform

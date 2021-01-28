@@ -180,4 +180,20 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
       let(:action) { described_class::MR_APPLY_SUGGESTION_ACTION }
     end
   end
+
+  describe '.track_users_assigned_to_mr' do
+    subject { described_class.track_users_assigned_to_mr(users: [user]) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_ASSIGNED_USERS_ACTION }
+    end
+  end
+
+  describe '.track_users_review_requested' do
+    subject { described_class.track_users_review_requested(users: [user]) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_REVIEW_REQUESTED_USERS_ACTION }
+    end
+  end
 end

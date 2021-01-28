@@ -290,6 +290,14 @@ module Gitlab
           methods: :any,
           expose: headers_to_expose
       end
+
+      # Cross-origin requests must be enabled for the Authorization code with PKCE OAuth flow when used from a browser.
+      allow do
+        origins '*'
+        resource '/oauth/token',
+          credentials: false,
+          methods: [:post]
+      end
     end
 
     # Use caching across all environments

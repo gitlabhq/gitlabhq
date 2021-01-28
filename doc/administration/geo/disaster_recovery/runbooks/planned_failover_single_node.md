@@ -233,11 +233,24 @@ To promote the secondary node:
    check if replication and verification are complete before scheduling a planned
    failover to ensure the process will go smoothly:
 
+   NOTE:
+   In GitLab 13.7 and earlier, if you have a data type with zero items to sync,
+   this command reports `ERROR - Replication is not up-to-date` even if
+   replication is actually up-to-date. This bug was fixed in GitLab 13.8 and
+   later.
+
    ```shell
    gitlab-ctl promotion-preflight-checks
    ```
 
 1. Promote the **secondary**:
+
+   NOTE:
+   In GitLab 13.7 and earlier, if you have a data type with zero items to sync,
+   this command reports `ERROR - Replication is not up-to-date` even if
+   replication is actually up-to-date. If replication and verification output
+   shows that it is complete, you can add `--skip-preflight-checks` to make the
+   command complete promotion. This bug was fixed in GitLab 13.8 and later.
 
    ```shell
    gitlab-ctl promote-to-primary-node

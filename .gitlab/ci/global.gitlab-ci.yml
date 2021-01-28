@@ -75,7 +75,7 @@
   services:
     - name: postgres:11.6
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
-    - name: redis:4.0-alpine
+    - name: redis:5.0-alpine
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
 
@@ -84,7 +84,7 @@
   services:
     - name: postgres:12
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
-    - name: redis:4.0-alpine
+    - name: redis:5.0-alpine
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
 
@@ -93,7 +93,7 @@
   services:
     - name: postgres:11.6
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
-    - name: redis:4.0-alpine
+    - name: redis:5.0-alpine
     - name: elasticsearch:7.9.2
       command: ["elasticsearch", "-E", "discovery.type=single-node"]
   variables:
@@ -104,7 +104,7 @@
   services:
     - name: postgres:12
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
-    - name: redis:4.0-alpine
+    - name: redis:5.0-alpine
     - name: elasticsearch:7.9.2
       command: ["elasticsearch", "-E", "discovery.type=single-node"]
   variables:

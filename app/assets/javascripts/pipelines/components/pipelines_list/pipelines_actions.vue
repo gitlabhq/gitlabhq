@@ -81,7 +81,7 @@ export default {
       v-gl-tooltip
       type="button"
       :disabled="isLoading"
-      class="dropdown-new btn btn-default js-pipeline-dropdown-manual-actions"
+      class="dropdown-new gl-button btn btn-default js-pipeline-dropdown-manual-actions"
       :title="__('Run manual or delayed jobs')"
       data-toggle="dropdown"
       :aria-label="__('Run manual or delayed jobs')"

@@ -145,6 +145,13 @@ Note the following when promoting a secondary:
    a point-in-time recovery to the last known state.
    Data that was created on the primary while the secondary was paused will be lost.
 
+   NOTE:
+   In GitLab 13.7 and earlier, if you have a data type with zero items to sync,
+   this command reports `ERROR - Replication is not up-to-date` even if
+   replication is actually up-to-date. If replication and verification output
+   shows that it is complete, you can add `--skip-preflight-checks` to make the
+   command complete promotion. This bug was fixed in GitLab 13.8 and later.
+
    To promote the secondary node to primary along with preflight checks:
 
    ```shell

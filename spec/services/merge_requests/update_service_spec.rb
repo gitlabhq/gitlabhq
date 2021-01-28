@@ -143,7 +143,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
         let(:opts) { { reviewer_ids: [user2.id] } }
 
         context 'when merge_request_reviewers feature is disabled' do
-          before(:context) do
+          before do
             stub_feature_flags(merge_request_reviewers: false)
           end
 
@@ -151,6 +151,13 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
             note = find_note('review requested from')
 
             expect(note).to be_nil
+          end
+
+          it 'does not update the tracking' do
+            expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+              .not_to receive(:track_users_review_requested)
+
+            update_merge_request(reviewer_ids: [user.id])
           end
         end
 
@@ -164,6 +171,14 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
             expect(note).not_to be_nil
             expect(note.note).to include "requested review from #{user2.to_reference}"
+          end
+
+          it 'updates the tracking' do
+            expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+              .to receive(:track_users_review_requested)
+              .with(users: [user])
+
+            update_merge_request(reviewer_ids: [user.id])
           end
         end
       end
@@ -792,6 +807,14 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
         update_merge_request(assignee_ids: [user.id])
 
         expect(merge_request.assignee_ids).to eq([user.id])
+      end
+
+      it 'updates the tracking when user ids are valid' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .to receive(:track_users_assigned_to_mr)
+          .with(users: [user])
+
+        update_merge_request(assignee_ids: [user.id])
       end
 
       it 'does not update assignee_id when user cannot read issue' do
