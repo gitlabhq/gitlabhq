@@ -177,8 +177,11 @@ warrant a comment could be:
 
 Avoid:
 
-- Adding comments (referenced above, or TODO items) directly to the source code unless the reviewer requires you to do so. If the comments are added due to an actionable task,
-a link to an issue must be included.
+- Adding TODO comments (referenced above) directly to the source code unless the reviewer requires
+  you to do so. If TODO comments are added due to an actionable task,
+  [include a link to the relevant issue](code_comments.md).
+- Adding comments which only explain what the code is doing. If non-TODO comments are added, they should
+  [_explain why, not what_](https://blog.codinghorror.com/code-tells-you-how-comments-tell-you-why/).
 - Assigning merge requests with failed tests to maintainers. If the tests are failing and you have to assign, ensure you leave a comment with an explanation.
 - Excessively mentioning maintainers through email or Slack (if the maintainer is reachable
 through Slack). If you can't assign a merge request, `@` mentioning a maintainer in a comment is acceptable and in all other cases assigning the merge request is sufficient.

@@ -267,14 +267,6 @@ export default {
                   :class="{ 'is-replying': isReplying }"
                   class="discussion-reply-holder gl-border-t-0! clearfix"
                 >
-                  <user-avatar-link
-                    v-if="!isReplying && userCanReply"
-                    :link-href="currentUser.path"
-                    :img-src="currentUser.avatar_url"
-                    :img-alt="currentUser.name"
-                    :img-size="40"
-                    class="d-none d-sm-block"
-                  />
                   <discussion-actions
                     v-if="!isReplying && userCanReply"
                     :discussion="discussion"
@@ -285,27 +277,18 @@ export default {
                     @showReplyForm="showReplyForm"
                     @resolve="resolveHandler"
                   />
-                  <div v-if="isReplying" class="avatar-note-form-holder">
-                    <user-avatar-link
-                      v-if="currentUser"
-                      :link-href="currentUser.path"
-                      :img-src="currentUser.avatar_url"
-                      :img-alt="currentUser.name"
-                      :img-size="40"
-                      class="d-none d-sm-block"
-                    />
-                    <note-form
-                      ref="noteForm"
-                      :discussion="discussion"
-                      :is-editing="false"
-                      :line="diffLine"
-                      save-button-title="Comment"
-                      :autosave-key="autosaveKey"
-                      @handleFormUpdateAddToReview="addReplyToReview"
-                      @handleFormUpdate="saveReply"
-                      @cancelForm="cancelReplyForm"
-                    />
-                  </div>
+                  <note-form
+                    v-if="isReplying"
+                    ref="noteForm"
+                    :discussion="discussion"
+                    :is-editing="false"
+                    :line="diffLine"
+                    save-button-title="Comment"
+                    :autosave-key="autosaveKey"
+                    @handleFormUpdateAddToReview="addReplyToReview"
+                    @handleFormUpdate="saveReply"
+                    @cancelForm="cancelReplyForm"
+                  />
                   <note-signed-out-widget v-if="!isLoggedIn" />
                 </div>
               </template>

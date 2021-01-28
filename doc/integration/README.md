@@ -65,7 +65,9 @@ Integration with services such as Campfire, Flowdock, HipChat, Pivotal Tracker, 
 
 ### SSL certificate errors
 
-When trying to integrate GitLab with services that are using self-signed certificates, it is very likely that SSL certificate errors occur in different parts of the application, most likely Sidekiq.
+When trying to integrate GitLab with services using self-signed certificates,
+SSL certificate errors can occur in different parts of the application. Sidekiq
+is a common culprit.
 
 There are two approaches you can take to solve this:
 

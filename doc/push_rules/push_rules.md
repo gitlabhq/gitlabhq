@@ -10,16 +10,16 @@ type: reference, howto
 Gain additional control over what can and can't be pushed to your repository by using
 regular expressions to reject pushes based on commit contents, branch names or file details.
 
-## Overview
-
 GitLab already offers [protected branches](../user/project/protected_branches.md), but there are
-cases when you need some specific rules like preventing Git tag removal or
+cases when you need some specific rules. Some common scenarios: preventing Git tag removal, or
 enforcing a special format for commit messages.
 
-Push rules are essentially [pre-receive Git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) that are easy to
-enable in a user-friendly interface. They are defined globally if you are an
-admin or per project so you can have different rules applied to different
-projects depending on your needs.
+Push rules are [pre-receive Git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) you
+can enable in a user-friendly interface. They are defined either:
+
+- Globally if you are an administrator.
+- Per project, so you can have different rules applied to different
+  projects depending on your needs.
 
 ## Use cases
 
@@ -32,24 +32,24 @@ Let's assume you have the following requirements for your workflow:
 - every commit should reference a Jira issue, for example: `Refactored css. Fixes JIRA-123.`
 - users should not be able to remove Git tags with `git push`
 
-All you need to do is write a simple regular expression that requires the mention
+Write a regular expression that requires the mention
 of a Jira issue in the commit message, like `JIRA\-\d+`.
 
-Now when a user tries to push a commit with a message `Bugfix`, their push will
-be declined. Only pushing commits with messages like `Bugfix according to JIRA-123`
-will be accepted.
+Now when a user tries to push a commit with a message `Bugfix`, their push is
+declined. Only pushing commits with messages like `Bugfix according to JIRA-123`
+is accepted.
 
 ### Restrict branch names
 
-Let's assume there's a strict policy for branch names in your company, and
-you want the branches to start with a certain name because you have different
-GitLab CI/CD jobs (`feature`, `hotfix`, `docker`, `android`, etc.) that rely on the
+If your company has a strict policy for branch names, you may want the branches to start
+with a certain name. This approach enables different
+GitLab CI/CD jobs (such as `feature`, `hotfix`, `docker`, `android`) that rely on the
 branch name.
 
-Your developers, however, don't always remember that policy, so they might push to
+Your developers may not remember that policy, so they might push to
 various branches, and CI pipelines might not work as expected. By restricting the
 branch names globally in Push Rules, such mistakes are prevented.
-Any branch name that doesn't match your push rule will get rejected.
+Any branch name that doesn't match your push rule is rejected.
 
 Note that the name of your default branch is always allowed, regardless of the branch naming
 regular expression (regex) specified. GitLab is configured this way
@@ -64,7 +64,7 @@ which already limits users from pushing directly.
 > Introduced in GitLab 12.10.
 
 By default, GitLab restricts certain formats of branch names for security purposes.
-Currently 40-character hexadecimal names, similar to Git commit hashes, are prohibited.
+40-character hexadecimal names, similar to Git commit hashes, are prohibited.
 
 ### Custom Push Rules **(FREE SELF)**
 
@@ -77,7 +77,7 @@ See [server hooks](../administration/server_hooks.md) for more information.
 
 NOTE:
 GitLab administrators can set push rules globally under
-**Admin Area > Push Rules** that all new projects will inherit. You can later
+**Admin Area > Push Rules** that all new projects inherit. You can later
 override them in a project's settings. They can be also set on a [group level](../user/group/index.md#group-push-rules).
 
 1. Navigate to your project's **Settings > Repository** and expand **Push Rules**
@@ -88,11 +88,11 @@ The following options are available:
 
 | Push rule                       | Description |
 |---------------------------------|-------------|
-| Removal of tags with `git push` | Forbid users to remove Git tags with `git push`. Tags will still be able to be deleted through the web UI. |
+| Removal of tags with `git push` | Forbid users to remove Git tags with `git push`. Tags can be deleted through the web UI. |
 | Check whether author is a GitLab user | Restrict commits by author (email) to existing GitLab users. |
-| Committer restriction **(PREMIUM)** | GitLab will reject any commit that was not committed by the current authenticated user. |
+| Committer restriction **(PREMIUM)** | GitLab rejects any commit that was not committed by the current authenticated user. |
 | Check whether commit is signed through GPG **(PREMIUM)** | Reject commit when it is not signed through GPG. Read [signing commits with GPG](../user/project/repository/gpg_signed_commits/index.md). |
-| Prevent committing secrets to Git | GitLab will reject any files that are likely to contain secrets. Read [what files are forbidden](#prevent-pushing-secrets-to-the-repository). |
+| Prevent committing secrets to Git | GitLab rejects any files that are likely to contain secrets. Read [what files are forbidden](#prevent-pushing-secrets-to-the-repository). |
 | Restrict by commit message | Only commit messages that match this regular expression are allowed to be pushed. Leave empty to allow any commit message. Uses multiline mode, which can be disabled using `(?-m)`. |
 | Restrict by commit message (negative match) | Only commit messages that do not match this regular expression are allowed to be pushed. Leave empty to allow any commit message. Uses multiline mode, which can be disabled using `(?-m)`. |
 | Restrict by branch name | Only branch names that match this regular expression are allowed to be pushed. Leave empty to allow any branch name. |
@@ -108,8 +108,8 @@ GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385) in [GitLab Starter](https://about.gitlab.com/pricing/) 8.12.
 
 Secrets such as credential files, SSH private keys, and other files containing secrets should never be committed to source control.
-GitLab allows you to turn on a predefined denylist of files which won't be allowed to be
-pushed to a repository, stopping those commits from reaching the remote repository.
+GitLab enables you to turn on a predefined denylist of files which can't be
+pushed to a repository. The list stops those commits from reaching the remote repository.
 
 By selecting the checkbox *Prevent committing secrets to Git*, GitLab prevents
 pushes to the repository when a file matches a regular expression as read from
@@ -117,9 +117,9 @@ pushes to the repository when a file matches a regular expression as read from
 as your GitLab version when viewing this file).
 
 NOTE:
-Files already committed won't get restricted by this push rule.
+Files already committed aren't restricted by this push rule.
 
-Below is an example list of what will be rejected by these regular expressions:
+Below is an example list of what GitLab rejects with these regular expressions:
 
 ```shell
 #####################
@@ -204,13 +204,17 @@ Example: prevent a specific configuration file in a known directory from being p
 ^directory-name\/config\.yml$
 ```
 
-Example: prevent the specific file named `install.exe` from being pushed to any location in the repository. Note that the parenthesized expression `(^|\/)` will match either a file following a directory separator or a file in the root directory of the repository:
+Example: prevent the specific file named `install.exe` from being pushed to any
+location in the repository. The parenthesized expression `(^|\/)` matches either
+a file following a directory separator or a file in the root directory of the repository:
 
 ```plaintext
 (^|\/)install\.exe$
 ```
 
-Example: combining all of the above in a single expression. Note that all of the preceding expressions rely on the end of string character `$`, so we can move that part of each expression to the end of the grouped collection of match conditions where it will be appended to all matches:
+Example: combining all of the above in a single expression. The preceding expressions rely
+on the end-of-string character `$`. We can move that part of each expression to the
+end of the grouped collection of match conditions where it is appended to all matches:
 
 ```plaintext
 (\.exe|^config\.yml|^directory-name\/config\.yml|(^|\/)install\.exe)$

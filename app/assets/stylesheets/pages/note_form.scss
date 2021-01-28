@@ -212,8 +212,12 @@ table {
   }
 }
 
-.note-edit-form {
+// Snippets are the only non-vue form left
+.snippets.note-edit-form {
   display: none;
+}
+
+.note-edit-form {
   font-size: 14px;
 
   .md-area {

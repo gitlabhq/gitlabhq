@@ -1,25 +1,27 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import { removeBreakLine } from 'helpers/text_helper';
-import pipelineBlockedComponent from '~/vue_merge_request_widget/components/states/mr_widget_pipeline_blocked.vue';
+import { shallowMount, mount } from '@vue/test-utils';
+import PipelineBlockedComponent from '~/vue_merge_request_widget/components/states/mr_widget_pipeline_blocked.vue';
 
 describe('MRWidgetPipelineBlocked', () => {
-  let vm;
-  beforeEach(() => {
-    const Component = Vue.extend(pipelineBlockedComponent);
-    vm = mountComponent(Component);
-  });
+  let wrapper;
+
+  const createWrapper = (mountFn = shallowMount) => {
+    wrapper = mountFn(PipelineBlockedComponent);
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('renders warning icon', () => {
-    expect(vm.$el.querySelector('.ci-status-icon-warning')).not.toBe(null);
+    createWrapper(mount);
+
+    expect(wrapper.find('.ci-status-icon-warning').exists()).toBe(true);
   });
 
   it('renders information text', () => {
-    expect(removeBreakLine(vm.$el.textContent).trim()).toContain(
+    createWrapper();
+
+    expect(wrapper.text()).toBe(
       'Pipeline blocked. The pipeline for this merge request requires a manual action to proceed',
     );
   });

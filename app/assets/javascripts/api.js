@@ -179,9 +179,9 @@ const Api = {
       });
   },
 
-  groupLabels(namespace) {
+  groupLabels(namespace, options = {}) {
     const url = Api.buildUrl(Api.groupLabelsPath).replace(':namespace_path', namespace);
-    return axios.get(url).then(({ data }) => data);
+    return axios.get(url, options).then(({ data }) => data);
   },
 
   // Return namespaces list. Filtered by query

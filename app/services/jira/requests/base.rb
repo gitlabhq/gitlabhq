@@ -18,14 +18,14 @@ module Jira
         request
       end
 
+      private
+
+      attr_reader :jira_service, :project
+
       # We have to add the context_path here because the Jira client is not taking it into account
       def base_api_url
         "#{context_path}/rest/api/#{api_version}"
       end
-
-      private
-
-      attr_reader :jira_service, :project
 
       def context_path
         client.options[:context_path].to_s

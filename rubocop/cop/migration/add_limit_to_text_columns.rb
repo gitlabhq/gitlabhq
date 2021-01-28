@@ -20,6 +20,10 @@ module RuboCop
           (def :down ...)
         PATTERN
 
+        def_node_matcher :set_text_limit?, <<~PATTERN
+          (send _ :text_limit ...)
+        PATTERN
+
         def_node_matcher :add_text_limit?, <<~PATTERN
           (send _ :add_text_limit ...)
         PATTERN
@@ -111,18 +115,29 @@ module RuboCop
           limit_found = false
 
           node.each_descendant(:send) do |send_node|
-            next unless add_text_limit?(send_node)
-
-            limit_table = send_node.children[2].value
-            limit_attribute = send_node.children[3].value
-
-            if limit_table == table_name && limit_attribute == attribute_name
-              limit_found = true
-              break
+            if set_text_limit?(send_node)
+              limit_found = matching_set_text_limit?(send_node, attribute_name)
+            elsif add_text_limit?(send_node)
+              limit_found = matching_add_text_limit?(send_node, table_name, attribute_name)
             end
+
+            break if limit_found
           end
 
           !limit_found
+        end
+
+        def matching_set_text_limit?(send_node, attribute_name)
+          limit_attribute = send_node.children[2].value
+
+          limit_attribute == attribute_name
+        end
+
+        def matching_add_text_limit?(send_node, table_name, attribute_name)
+          limit_table = send_node.children[2].value
+          limit_attribute = send_node.children[3].value
+
+          limit_table == table_name && limit_attribute == attribute_name
         end
 
         def encrypted_attribute_name?(attribute_name)

@@ -1793,6 +1793,24 @@ RSpec.describe QuickActions::InterpretService do
       expect(text).to eq(" - list\n\ntest")
     end
 
+    it 'tracks MAU for commands' do
+      content = "/shrug test\n/assign me\n/milestone %4"
+
+      expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
+        .to receive(:track_unique_action)
+        .with('shrug', args: 'test', user: developer)
+
+      expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
+        .to receive(:track_unique_action)
+        .with('assign', args: 'me', user: developer)
+
+      expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
+        .to receive(:track_unique_action)
+        .with('milestone', args: '%4', user: developer)
+
+      service.execute(content, issue)
+    end
+
     context '/create_merge_request command' do
       let(:branch_name) { '1-feature' }
       let(:content) { "/create_merge_request #{branch_name}" }

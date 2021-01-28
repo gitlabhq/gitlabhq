@@ -37,7 +37,8 @@ module Gitlab
       end
 
       def bundle_to_disk
-        mkdir_p(shared.export_path)
+        mkdir_p(File.dirname(bundle_full_path))
+
         repository.bundle_to_disk(bundle_full_path)
       rescue => e
         shared.error(e)

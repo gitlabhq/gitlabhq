@@ -139,6 +139,12 @@ export default {
       <div class="issuable-main-info">
         <div data-testid="issuable-title" class="issue-title title">
           <span class="issue-title-text" dir="auto">
+            <gl-icon
+              v-if="issuable.confidential"
+              v-gl-tooltip
+              name="eye-slash"
+              :title="__('Confidential')"
+            />
             <gl-link :href="issuable.webUrl" v-bind="issuableTitleProps"
               >{{ issuable.title
               }}<gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2"

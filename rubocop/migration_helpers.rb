@@ -19,7 +19,7 @@ module RuboCop
     # or through a create/alter table (TABLE_METHODS)
     ADD_COLUMN_METHODS = %i(add_column add_column_with_default change_column_type_concurrently).freeze
 
-    TABLE_METHODS = %i(create_table create_table_if_not_exists change_table).freeze
+    TABLE_METHODS = %i(create_table create_table_if_not_exists change_table create_table_with_constraints).freeze
 
     def high_traffic_tables
       @high_traffic_tables ||= rubocop_migrations_config.dig('Migration/UpdateLargeTable', 'HighTrafficTables')

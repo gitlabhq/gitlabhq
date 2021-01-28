@@ -5,6 +5,12 @@ require 'spec_helper'
 RSpec.describe ApplicationExperiment do
   subject { described_class.new(:stub) }
 
+  it "naively assumes a 1x1 relationship to feature flags for tests" do
+    expect(Feature).to receive(:persist_used!).with('stub')
+
+    described_class.new(:stub)
+  end
+
   describe "publishing results" do
     it "tracks the assignment" do
       expect(subject).to receive(:track).with(:assignment)

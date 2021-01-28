@@ -475,6 +475,15 @@
     }
   }
 
+  .sort-dropdown-container {
+    // This property is set to have borders
+    // around sort dropdown match with filter
+    // input field.
+    .gl-button {
+      box-shadow: inset 0 0 0 1px $gray-400;
+    }
+  }
+
   @include media-breakpoint-up(md) {
     .sort-dropdown-container {
       margin-left: 10px;

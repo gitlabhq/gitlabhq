@@ -66,7 +66,7 @@ earlier version, you must explicitly enable it.
 NOTE:
 If you set `block_auto_created_users` to `false`, make sure to only
 define providers under `allow_single_sign_on` that you are able to control, like
-SAML, Shibboleth, Crowd, or Google, or set it to `false` otherwise any user on
+SAML, Shibboleth, Crowd, or Google. Otherwise, set it to `false`, or any user on
 the Internet can successfully sign in to your GitLab without
 administrative approval.
 
@@ -168,8 +168,6 @@ omniauth:
 
 ## Configure OmniAuth Providers as External
 
-> Introduced in GitLab 8.7.
-
 You can define which OmniAuth providers you want to be `external`. Users
 creating accounts, or logging in by using these `external` providers cannot have
 access to internal projects. You must use the full name of the provider,
@@ -215,7 +213,7 @@ from the OmniAuth provider's documentation.
   sudo service gitlab stop
   ```
 
-- Add the gem to your [Gemfile](https://gitlab.com/gitlab-org/gitlab/blob/master/Gemfile):
+- Add the gem to your [`Gemfile`](https://gitlab.com/gitlab-org/gitlab/blob/master/Gemfile):
 
   ```shell
   gem "omniauth-your-auth-provider"
@@ -240,25 +238,28 @@ from the OmniAuth provider's documentation.
 If you have successfully set up a provider that is not shipped with GitLab itself,
 please let us know.
 
+Share your experience [in the public Wiki](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Custom-omniauth-provider-configurations).
 You can help others by reporting successful configurations and probably share a
-few insights or provide warnings for common errors or pitfalls by sharing your
-experience [in the public Wiki](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Custom-omniauth-provider-configurations).
+few insights or provide warnings for common errors or pitfalls.
 
 While we can't officially support every possible authentication mechanism out there,
 we'd like to at least help those with specific needs.
 
 ## Enable or disable Sign In with an OmniAuth provider without disabling import sources
 
-> Introduced in GitLab 8.8.
-
-Administrators are able to enable or disable Sign In by using some OmniAuth providers.
+Administrators are able to enable or disable **Sign In** by using some OmniAuth providers.
 
 NOTE:
-By default Sign In is enabled by using all the OAuth Providers that have been configured in `config/gitlab.yml`.
+By default, **Sign In** is enabled by using all the OAuth Providers that have been configured in `config/gitlab.yml`.
 
-In order to enable/disable an OmniAuth provider, go to Admin Area -> Settings -> Sign-in Restrictions section -> Enabled OAuth Sign-In sources and select the providers you want to enable or disable.
+To enable/disable an OmniAuth provider:
 
-![Enabled OAuth Sign-In sources](img/enabled-oauth-sign-in-sources.png)
+1. In the top navigation bar, go to **Admin Area**.
+1. In the left sidebar, go to **Settings**.
+1. Scroll to the **Sign-in Restrictions** section, and click **Expand**.
+1. Next to **Enabled OAuth Sign-In sources**, select the check box for each provider you want to enable or disable.
+
+   ![Enabled OAuth Sign-In sources](img/enabled-oauth-sign-in-sources.png)
 
 ## Disabling OmniAuth
 
@@ -325,7 +326,7 @@ omniauth:
 
 You can add the `auto_sign_in_with_provider` setting to your GitLab
 configuration to redirect login requests to your OmniAuth provider for
-authentication, removing the need to click a button before actually signing in.
+authentication. This removes the need to click a button before actually signing in.
 
 For example, when using the Azure integration, set the following to enable auto
 sign-in:

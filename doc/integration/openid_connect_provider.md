@@ -17,8 +17,7 @@ OAuth 2.0 protocol. It allows clients to:
 - Verify the identity of the end-user based on the authentication performed by GitLab.
 - Obtain basic profile information about the end-user in an interoperable and REST-like manner.
 
-OIDC performs many of the same tasks as OpenID 2.0,
-but does so in a way that is API-friendly and usable by native and
+OIDC performs many of the same tasks as OpenID 2.0, but is API-friendly and usable by native and
 mobile applications.
 
 On the client side, you can use [OmniAuth::OpenIDConnect](https://github.com/jjbohn/omniauth-openid-connect/) for Rails

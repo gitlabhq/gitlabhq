@@ -260,6 +260,28 @@ describe('Api', () => {
     });
   });
 
+  describe('groupLabels', () => {
+    it('fetches group labels', (done) => {
+      const options = { params: { search: 'foo' } };
+      const expectedGroup = 'gitlab-org';
+      const expectedUrl = `${dummyUrlRoot}/groups/${expectedGroup}/-/labels`;
+      mock.onGet(expectedUrl).reply(httpStatus.OK, [
+        {
+          id: 1,
+          title: 'Foo Label',
+        },
+      ]);
+
+      Api.groupLabels(expectedGroup, options)
+        .then((res) => {
+          expect(res.length).toBe(1);
+          expect(res[0].title).toBe('Foo Label');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
   describe('namespaces', () => {
     it('fetches namespaces', (done) => {
       const query = 'dummy query';

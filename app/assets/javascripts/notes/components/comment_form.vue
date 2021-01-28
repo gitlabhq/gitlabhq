@@ -18,7 +18,6 @@ import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests
 import * as constants from '../constants';
 import eventHub from '../event_hub';
 import markdownField from '~/vue_shared/components/markdown/field.vue';
-import userAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import noteSignedOutWidget from './note_signed_out_widget.vue';
 import discussionLockedWidget from './discussion_locked_widget.vue';
@@ -31,7 +30,6 @@ export default {
     noteSignedOutWidget,
     discussionLockedWidget,
     markdownField,
-    userAvatarLink,
     GlButton,
     TimelineEntryItem,
     GlIcon,
@@ -301,15 +299,6 @@ export default {
     <ul v-else-if="canCreateNote" class="notes notes-form timeline">
       <timeline-entry-item class="note-form">
         <div class="flash-container error-alert timeline-content"></div>
-        <div class="timeline-icon d-none d-md-block">
-          <user-avatar-link
-            v-if="author"
-            :link-href="author.path"
-            :img-src="author.avatar_url"
-            :img-alt="author.name"
-            :img-size="40"
-          />
-        </div>
         <div class="timeline-content timeline-content-form">
           <form ref="commentForm" class="new-note common-note-form gfm-form js-main-target-form">
             <comment-field-layout

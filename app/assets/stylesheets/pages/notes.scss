@@ -1,6 +1,5 @@
 $system-note-icon-size: 32px;
 $system-note-svg-size: 16px;
-$note-form-margin-left: 72px;
 
 @mixin vertical-line($left) {
   &::before {
@@ -53,16 +52,6 @@ $note-form-margin-left: 72px;
 
     &.note-form {
       margin-left: 0;
-
-      @include notes-media('min', map-get($grid-breakpoints, md)) {
-        margin-left: $note-form-margin-left;
-      }
-
-      .timeline-icon {
-        @include notes-media('min', map-get($grid-breakpoints, sm)) {
-          margin-left: -$note-icon-gutter-width;
-        }
-      }
 
       .timeline-content {
         margin-left: 0;
@@ -529,21 +518,6 @@ $note-form-margin-left: 72px;
 .code-commit .notes-content,
 .diff-viewer > .image ~ .note-container {
   background-color: $white;
-
-  .avatar-note-form-holder {
-    .user-avatar-link img {
-      margin: 13px $gl-padding $gl-padding;
-    }
-
-    form,
-    ~ .discussion-form-container {
-      padding: $gl-padding;
-
-      @include media-breakpoint-up(sm) {
-        margin-left: $note-icon-gutter-width;
-      }
-    }
-  }
 }
 
 .diff-viewer > .image ~ .note-container form.new-note {

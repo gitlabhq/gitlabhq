@@ -1,82 +1,74 @@
 ---
-stage: Create
-group: Ecosystem
+stage: Manage
+group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GitLab as OAuth2 authentication service provider
 
-This document is about using GitLab as an OAuth authentication service provider
-to sign in to other services.
+This document describes how you can use GitLab as an OAuth 2
+authentication service provider.
 
 If you want to use:
 
 - The [OAuth2](https://oauth.net/2/) protocol to access GitLab resources on user's behalf,
-  see [OAuth2 provider](../api/oauth2.md)
-- Other OAuth authentication service providers to sign in to
+  see [OAuth2 provider](../api/oauth2.md).
+- Other OAuth 2 authentication service providers to sign in to
   GitLab, see the [OAuth2 client documentation](omniauth.md).
 - The related API, see [Applications API](../api/applications.md).
 
 ## Introduction to OAuth
 
-[OAuth](https://oauth.net/2/) provides to client applications a 'secure delegated access' to server
-resources on behalf of a resource owner. OAuth allows an authorization
-server to issue access tokens to third-party clients with the approval of the
-resource owner, or the end-user.
+[OAuth 2](https://oauth.net/2/) provides to client applications a 'secure delegated
+access' to server resources on behalf of a resource owner. OAuth 2 allows
+authorization servers to issue access tokens to third-party clients with the approval
+of the resource owner or the end-user.
 
-OAuth is mostly used as a Single Sign-On service (SSO), but you can find a
-lot of different uses for this functionality. For example, you can allow users
-to sign in to your application with their GitLab.com account. You can also use GitLab.com
-for authentication to your GitLab instance (see [GitLab OmniAuth](gitlab.md)).
+OAuth 2 can be used:
 
-The 'GitLab Importer' feature is also using the OAuth protocol to give access
+- To allow users to sign in to your application with their GitLab.com account.
+- To set up GitLab.com for authentication to your GitLab instance.
+(see [GitLab OmniAuth](gitlab.md)).
+
+The 'GitLab Importer' feature also uses OAuth 2 to give access
 to repositories without sharing user credentials to your GitLab.com account.
 
-GitLab supports two ways of adding a new OAuth2 application to an instance. You
-can either add an application as a regular user or add it in the Admin Area.
-What this means is that GitLab can actually have instance-wide and a user-wide
-applications. There is no difference between them except for the different
-permission levels they are set (user or administrator). The default callback URL is
-`http://your-gitlab.example.com/users/auth/gitlab/callback`
+GitLab supports two ways of adding a new OAuth 2 application to an instance:
 
-## Adding an application through the profile
+- As a regular user, for applications owned by an individual.
+- Through the Admin Area menu for instance-wide apps.
 
-In order to add a new application via your profile, navigate to
-**Profile Settings > Applications** and select **New Application**.
+The only difference between these two methods is the [permission](../user/permissions.md)
+levels. The default callback URL is `http://your-gitlab.example.com/users/auth/gitlab/callback`.
 
-![New OAuth application](img/oauth_provider_user_wide_applications.png)
+## Add an application through the profile
 
-In the application form, enter a **Name** (arbitrary), and make sure to set up
-correctly the **Redirect URI** which is the URL where users are sent after
-they authorize with GitLab.
+To add a new application via your profile, select your avatar in the top right, and then select
+**Settings > Applications**. You can then enter a **Name**, **Redirect URI** and
+OAuth 2 scopes as defined in [Authorized Applications](#authorized-applications).
 
-![New OAuth application form](img/oauth_provider_application_form.png)
+- The **Redirect URI** is the URL where users are sent after they authorize with GitLab.
 
-When you click **Submit** you are provided with the application ID and
-the application secret which you can then use with your application that
-connects to GitLab.
+When you select **Save application**, GitLab displays:
 
-![OAuth application ID and secret](img/oauth_provider_application_id_secret.png)
+- Application ID: OAuth 2 Client ID.
+- Secret: OAuth 2 Client Secret.
 
 ## OAuth applications in the Admin Area
 
-To create an application that does not belong to a certain user, you can create
-it from the Admin Area.
+To create an application for your GitLab instance, select
+**Admin Area > Applications > New application**.
 
-![OAuth administrator applications](img/oauth_provider_admin_application.png)
-
-You're also able to mark an application as _trusted_ when creating it through the Admin Area. By doing that,
-the user authorization step is automatically skipped for this application.
+When creating an **Admin Area** application, you can mark it as _trusted_.
+The user authorization step is automatically skipped for this application.
 
 ## Authorized applications
 
-Every application you authorized to use your GitLab credentials is shown
-in the **Authorized applications** section under **Profile Settings > Applications**.
+Every application you authorize with your GitLab credentials is shown
+in the **Authorized applications** section under **Settings > Applications**.
 
-![Authorized_applications](img/oauth_provider_authorized_application.png)
-
-The GitLab OAuth applications support scopes, which allow various actions that any given
-application can perform. The available scopes are depicted in the following table.
+The GitLab OAuth 2 applications support scopes, which allow various actions that any given
+application can perform. Available scopes are depicted in the following table.
 
 | Scope              | Description |
 | ------------------ | ----------- |

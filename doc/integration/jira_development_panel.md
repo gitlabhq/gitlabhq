@@ -62,8 +62,8 @@ self-managed GitLab) set up the integration to simplify administration.
 
 ### Jira DVCS configuration
 
-If you're using GitLab.com and Jira Cloud, we recommend you use the
-[GitLab for Jira app](#gitlab-for-jira-app), unless you have a specific need for the DVCS Connector.
+If you're using GitLab.com and Jira Cloud, use the
+[GitLab for Jira app](#gitlab-for-jira-app) unless you have a specific need for the DVCS Connector.
 
 When configuring Jira DVCS Connector:
 
@@ -79,13 +79,11 @@ create and use a single-purpose `jira` user in GitLab.
 
 1. In GitLab, create a new application to allow Jira to connect with your GitLab account.
 
-   While signed in to the GitLab account that you want Jira to use to connect to GitLab,
-   click your profile avatar at the top right, and then click **Settings > Applications**.
-   Use the form to create a new application.
-
-   In the **Name** field, enter a descriptive name for the integration, such as `Jira`.
-
-   For the **Redirect URI** field, enter `https://<gitlab.example.com>/login/oauth/callback`,
+1. Sign in to the GitLab account that you want Jira to use to connect to GitLab.
+1. In the top right corner, click your profile avatar.
+1. Click **Settings > Applications** to display the form to create a new application.
+1. In the **Name** field, enter a descriptive name for the integration, such as `Jira`.
+1. In the **Redirect URI** field, enter `https://<gitlab.example.com>/login/oauth/callback`,
    replacing `<gitlab.example.com>` with your GitLab instance domain. For example, if you are using GitLab.com,
    this would be `https://gitlab.com/login/oauth/callback`.
 
@@ -97,15 +95,15 @@ create and use a single-purpose `jira` user in GitLab.
 
    ![GitLab application setup](img/jira_dev_panel_gl_setup_1.png)
 
-   - Check **API** in the Scopes section and uncheck any other checkboxes.
+1. Check **API** in the Scopes section, and uncheck any other checkboxes.
 
 1. Click **Save application**. GitLab displays the generated **Application ID**
    and **Secret** values. Copy these values, which you use in Jira.
 
 #### Jira DVCS Connector setup
 
-If you're using GitLab.com and Jira Cloud, we recommend you use the
-[GitLab for Jira app](#gitlab-for-jira-app), unless you have a specific need for the DVCS Connector.
+If you're using GitLab.com and Jira Cloud, use the
+[GitLab for Jira app](#gitlab-for-jira-app) unless you have a specific need for the DVCS Connector.
 
 1. Ensure you have completed the [GitLab configuration](#gitlab-account-configuration-for-dvcs).
 1. If you're using Jira Server, go to **Settings (gear) > Applications > DVCS accounts**.
@@ -114,37 +112,39 @@ If you're using GitLab.com and Jira Cloud, we recommend you use the
    (We're pretending to be GitHub in this integration, until there's additional platform support in Jira.)
 1. Complete the form:
 
-   Select **GitHub Enterprise** for the **Host** field.
+1. Select **GitHub Enterprise** for the **Host** field.
 
-   In the **Team or User Account** field, enter the relative path of a top-level GitLab group that you have access to,
-   or the relative path of your personal namespace.
+1. In the **Team or User Account** field, enter either:
+
+   - The relative path of a top-level GitLab group that you have access to.
+   - The relative path of your personal namespace.
 
    ![Creation of Jira DVCS integration](img/jira_dev_panel_jira_setup_2.png)
 
-   In the **Host URL** field, enter `https://<gitlab.example.com>/`,
+1. In the **Host URL** field, enter `https://<gitlab.example.com>/`,
    replacing `<gitlab.example.com>` with your GitLab instance domain. For example, if you are using GitLab.com,
    this would be `https://gitlab.com/`.
 
    NOTE:
    If using a GitLab version earlier than 11.3 the **Host URL** value should be `https://<gitlab.example.com>/-/jira`
 
-   For the **Client ID** field, use the **Application ID** value from the previous section.
+1. For the **Client ID** field, use the **Application ID** value from the previous section.
 
-   For the **Client Secret** field, use the **Secret** value from the previous section.
+1. For the **Client Secret** field, use the **Secret** value from the previous section.
 
-   Ensure that the rest of the checkboxes are checked.
+1. Ensure that the rest of the checkboxes are checked.
 
 1. Click **Add** to complete and create the integration.
 
-   Jira takes up to a few minutes to know about (import behind the scenes) all the commits and branches
-   for all the projects in the GitLab group you specified in the previous step. These are refreshed
-   every 60 minutes.
+ Jira takes up to a few minutes to know about (import behind the scenes) all the commits and branches
+ for all the projects in the GitLab group you specified in the previous step. These are refreshed
+ every 60 minutes.
 
-   In the future, we plan on implementing real-time integration. If you need
-   to refresh the data manually, you can do this from the `Applications -> DVCS
-   accounts` screen where you initially set up the integration:
+ In the future, we plan on implementing real-time integration. If you need
+ to refresh the data manually, you can do this from the `Applications -> DVCS
+ accounts` screen where you initially set up the integration:
 
-   ![Refresh GitLab information in Jira](img/jira_dev_panel_manual_refresh.png)
+ ![Refresh GitLab information in Jira](img/jira_dev_panel_manual_refresh.png)
 
 To connect additional GitLab projects from other GitLab top-level groups (or personal namespaces), repeat the previous
 steps with additional Jira DVCS accounts.
@@ -252,7 +252,7 @@ resynchronize the information. To do so:
 
 You can integrate GitLab.com and Jira Cloud using the [GitLab for Jira](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud) app in the Atlassian Marketplace.
 
-This method is recommended when using GitLab.com and Jira Cloud because data is synchronized in real-time, while the DVCS connector updates data only once per hour. If you are not using both of these environments, use the [Jira DVCS Connector](#jira-dvcs-configuration) method.
+This method is recommended when using GitLab.com and Jira Cloud because data is synchronized in real-time. The DVCS connector updates data only once per hour. If you are not using both of these environments, use the [Jira DVCS Connector](#jira-dvcs-configuration) method.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a walkthrough of the integration with GitLab for Jira, watch [Configure GitLab Jira Integration using Marketplace App](https://youtu.be/SwR-g1s1zTo) on YouTube.
@@ -285,7 +285,7 @@ For more information, see [Usage](#usage).
 
 #### Troubleshooting GitLab for Jira
 
-The GitLab for Jira App uses an iframe to add namespaces on the settings page. Some browsers block cross-site cookies which can lead to a message saying that the user needs to log in on GitLab.com even though the user is already logged in.
+The GitLab for Jira App uses an iframe to add namespaces on the settings page. Some browsers block cross-site cookies. This can lead to a message saying that the user needs to log in on GitLab.com even though the user is already logged in.
 
 > "You need to sign in or sign up before continuing."
 

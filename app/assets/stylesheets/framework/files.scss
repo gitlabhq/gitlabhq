@@ -444,12 +444,6 @@ span.idiff {
     .user-avatar-link.new-comment {
       position: absolute;
       margin: 40px $gl-padding 0 116px;
-
-      ~ .note-edit-form form.edit-note {
-        @include media-breakpoint-up(sm) {
-          margin-left: $note-icon-gutter-width;
-        }
-      }
     }
   }
 

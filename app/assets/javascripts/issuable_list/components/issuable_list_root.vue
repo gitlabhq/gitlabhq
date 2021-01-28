@@ -230,7 +230,7 @@ export default {
       :initial-sort-by="initialSortBy"
       :show-checkbox="showBulkEditSidebar"
       :checkbox-checked="allIssuablesChecked"
-      class="gl-flex-grow-1 row-content-block"
+      class="gl-flex-grow-1 gl-border-t-none row-content-block"
       @checked-input="handleAllIssuablesCheckedInput"
       @onFilter="$emit('filter', $event)"
       @onSort="$emit('sort', $event)"
