@@ -161,7 +161,8 @@ When avatar is replaced, `Upload` model is destroyed and a new one takes place w
 
 #### CI artifacts
 
-CI Artifacts are S3 compatible since **9.4** (GitLab Premium), and available in GitLab Core since **10.6**.
+CI Artifacts are S3 compatible since **9.4** (GitLab Premium), and available in GitLab Free since
+**10.6**.
 
 #### LFS objects
 

@@ -65,7 +65,7 @@ Notify the [Distribution team](https://about.gitlab.com/handbook/engineering/dev
 
 New services to be bundled with GitLab need to be available in the following environments.
 
-**Dev environment**
+**Development environment**
 
 The first step of bundling a new service is to provide it in the development environment to engage in collaboration and feedback.
 

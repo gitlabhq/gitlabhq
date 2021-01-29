@@ -28,8 +28,12 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 
 ### 1.1. Version Control and Git
 
+<!-- vale gitlab.Spelling = NO -->
+
 1. [Version Control Systems](https://docs.google.com/presentation/d/16sX7hUrCZyOFbpvnrAFrg6tVO5_yT98IgdAqOmXwBho/edit#slide=id.g72f2e4906_2_29)
 1. [Katacoda: Learn Git Version Control using Interactive Browser-Based Scenarios](https://www.katacoda.com/courses/git)
+
+<!-- vale gitlab.Spelling = YES -->
 
 ### 1.2. GitLab Basics
 
@@ -55,11 +59,14 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 
 ### 1.5. Migrating from other Source Control
 
+<!-- vale gitlab.Spelling = NO -->
+
 1. [Migrating from Bitbucket/Stash](../user/project/import/bitbucket.md)
 1. [Migrating from GitHub](../user/project/import/github.md)
 1. [Migrating from SVN](../user/project/import/svn.md)
 1. [Migrating from Fogbugz](../user/project/import/fogbugz.md)
 
+<!-- vale gitlab.Spelling = YES -->
 ### 1.6. The GitLab team
 
 1. [About GitLab](https://about.gitlab.com/company/)
@@ -185,6 +192,8 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 
 ### 3.9. Integrations
 
+<!-- vale gitlab.Spelling = NO -->
+
 1. [How to Integrate Jira and Jenkins with GitLab - Video](https://gitlabmeetings.webex.com/gitlabmeetings/ldr.php?RCID=44b548147a67ab4d8a62274047146415)
 1. [How to Integrate Jira with GitLab](../user/project/integrations/jira.md)
 1. [How to Integrate Jenkins with GitLab](../integration/jenkins.md)
@@ -193,9 +202,11 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 1. [How to Integrate Convox with GitLab](https://about.gitlab.com/blog/2016/06/09/continuous-delivery-with-gitlab-and-convox/)
 1. [Getting Started with GitLab and Shippable CI](https://about.gitlab.com/blog/2016/05/05/getting-started-gitlab-and-shippable/)
 
+<!-- vale gitlab.Spelling = YES -->
+
 ## 4. External Articles
 
-1. [2011 WSJ article by Marc Andreessen - Software is Eating the World](https://www.wsj.com/articles/SB10001424053111903480904576512250915629460)
+1. [2011 Wall Street Journal article - Software is Eating the World](https://www.wsj.com/articles/SB10001424053111903480904576512250915629460)
 1. [2014 Blog post by Chris Dixon - Software eats software development](https://cdixon.org/2014/04/13/software-eats-software-development/)
 1. [2015 Venture Beat article - Actually, Open Source is Eating the World](https://venturebeat.com/2015/12/06/its-actually-open-source-software-thats-eating-the-world/)
 

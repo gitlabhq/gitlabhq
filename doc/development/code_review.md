@@ -24,7 +24,7 @@ uncovered edge cases.
 The default approach is to choose a reviewer from your group or team for the first review.
 This is only a recommendation and the reviewer may be from a different team.
 However, it is recommended to pick someone who is a [domain expert](#domain-experts).
-If your merge request touches more than one domain (for example, Dynamic Analysis and GraphQL), ask for reviews from an expert from each domain. 
+If your merge request touches more than one domain (for example, Dynamic Analysis and GraphQL), ask for reviews from an expert from each domain.
 
 You can read more about the importance of involving reviewer(s) in the section on the responsibility of the author below.
 
@@ -344,7 +344,7 @@ experience, refactors the existing code). Then:
     convey your intent.
   - For non-mandatory suggestions, decorate with (non-blocking) so the author knows they can
     optionally resolve within the merge request or follow-up at a later stage.
-  - There's a [Chrome/Firefox addon](https://gitlab.com/conventionalcomments/conventional-comments-button) which you can use to apply [Conventional Comment](https://conventionalcomments.org/) prefixes.
+  - There's a [Chrome/Firefox add-on](https://gitlab.com/conventionalcomments/conventional-comments-button) which you can use to apply [Conventional Comment](https://conventionalcomments.org/) prefixes.
 - After a round of line notes, it can be helpful to post a summary note such as
   "Looks good to me", or "Just a couple things to address."
 - Assign the merge request to the author if changes are required following your
@@ -569,7 +569,7 @@ A good example of collaboration on an MR touching multiple parts of the codebase
 
 ### Credits
 
-Largely based on the [thoughtbot code review guide](https://github.com/thoughtbot/guides/tree/master/code-review).
+Largely based on the [`thoughtbot` code review guide](https://github.com/thoughtbot/guides/tree/master/code-review).
 
 ---
 

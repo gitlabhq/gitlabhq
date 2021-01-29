@@ -17,6 +17,7 @@ module Users
         user.accept_pending_invitations! if user.active_for_authentication?
         DeviseMailer.user_admin_approval(user).deliver_later
 
+        log_event(user)
         after_approve_hook(user)
         success(message: 'Success', http_status: :created)
       else
@@ -38,6 +39,10 @@ module Users
 
     def approval_required?(user)
       user.blocked_pending_approval?
+    end
+
+    def log_event(user)
+      Gitlab::AppLogger.info(message: "User instance access request approved", user: "#{user.username}", email: "#{user.email}", approved_by: "#{current_user.username}", ip_address: "#{current_user.current_sign_in_ip}")
     end
   end
 end

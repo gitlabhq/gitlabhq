@@ -468,6 +468,49 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  context "project bots" do
+    let(:project_bot) { create(:user, :project_bot) }
+    let(:user) { create(:user) }
+
+    context "project_bot_access" do
+      context "when regular user and part of the project" do
+        let(:current_user) { user }
+
+        before do
+          project.add_developer(user)
+        end
+
+        it { is_expected.not_to be_allowed(:project_bot_access)}
+      end
+
+      context "when project bot and not part of the project" do
+        let(:current_user) { project_bot }
+
+        it { is_expected.not_to be_allowed(:project_bot_access)}
+      end
+
+      context "when project bot and part of the project" do
+        let(:current_user) { project_bot }
+
+        before do
+          project.add_developer(project_bot)
+        end
+
+        it { is_expected.to be_allowed(:project_bot_access)}
+      end
+    end
+
+    context 'with resource access tokens' do
+      let(:current_user) { project_bot }
+
+      before do
+        project.add_maintainer(project_bot)
+      end
+
+      it { is_expected.not_to be_allowed(:admin_resource_access_tokens)}
+    end
+  end
+
   describe 'read_prometheus_alerts' do
     context 'with admin' do
       let(:current_user) { admin }

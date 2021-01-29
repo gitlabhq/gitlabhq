@@ -46,7 +46,11 @@
     .project-repo-buttons.col-md-12.col-lg-6.d-inline-flex.flex-wrap.justify-content-lg-end
       - if current_user
         .d-inline-flex
-          = render 'shared/notifications/new_button', notification_setting: @notification_setting, btn_class: 'btn-xs', dropdown_container_class: 'gl-mr-3', emails_disabled: emails_disabled
+          - if Feature.enabled?(:vue_notification_dropdown, @project, default_enabled: :yaml)
+            - if @notification_setting
+              .js-vue-notification-dropdown{ data: { button_size: "small", disabled: emails_disabled, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), project_id: @project.id, container_class: 'gl-mr-3 gl-mt-5 gl-vertical-align-top' } }
+          - else
+            = render 'shared/notifications/new_button', notification_setting: @notification_setting, btn_class: 'btn-xs', dropdown_container_class: 'gl-mr-3', emails_disabled: emails_disabled
 
       .count-buttons.d-inline-flex
         = render 'projects/buttons/star'

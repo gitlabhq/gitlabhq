@@ -934,7 +934,7 @@ ps aux | grep '^git'
 ```
 
 GitLab has several components to operate. It requires a persistent database
-(PostgreSQL) and Redis database, and uses Apache `httpd` or NGINX to proxypass
+(PostgreSQL) and Redis database, and uses Apache `httpd` or NGINX to `proxypass`
 Puma. All these components should run as different system users to GitLab
 (for example, `postgres`, `redis`, and `www-data`, instead of `git`).
 

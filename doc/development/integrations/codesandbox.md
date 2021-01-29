@@ -1,3 +1,9 @@
+---
+stage: none
+group: Development
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+---
+
 # Set up local Codesandbox development environment
 
 This guide walks through setting up a local [Codesandbox repository](https://github.com/codesandbox/codesandbox-client) and integrating it with a local GitLab instance. Codesandbox

@@ -246,7 +246,7 @@ when building the `image:docs-lint-markdown` Docker image containing these tools
 | Tool               | Version  | Command                                   | Additional information |
 |--------------------|----------|-------------------------------------------|------------------------|
 | `markdownlint-cli` | Latest   | `yarn global add markdownlint-cli`        | n/a                    |
-| `markdownlint-cli` | Specfic  | `yarn global add markdownlint-cli@0.23.2` | The `@` indicates a specific version, and this example updates the tool to version `0.23.2`. |
+| `markdownlint-cli` | Specific  | `yarn global add markdownlint-cli@0.23.2` | The `@` indicates a specific version, and this example updates the tool to version `0.23.2`. |
 | Vale               | Latest   | `brew update && brew upgrade vale`        | This command is for macOS only. |
 | Vale               | Specific | n/a                                       | Not possible using `brew`, but can be [directly downloaded](https://github.com/errata-ai/vale/releases). |
 

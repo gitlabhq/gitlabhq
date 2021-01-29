@@ -56,12 +56,12 @@ The current Lefthook configuration can be found in [`lefthook.yml`](https://gitl
 Before you push your changes, Lefthook automatically runs the following checks:
 
 - Danger: Runs a subset of checks that `danger-review` runs on your merge requests.
-- ES lint: Run `yarn eslint` checks (with the [`.eslintrc.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.eslintrc.yml) config) on the modified `*.{js,vue}` files. Tags: `frontend`, `style`.
-- HAML lint: Run `bundle exec haml-lint` checks (with the [`.haml-lint.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.haml-lint.yml) config) on the modified `*.html.haml` files. Tags: `view`, `haml`, `style`.
+- ES lint: Run `yarn eslint` checks (with the [`.eslintrc.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.eslintrc.yml) configuration) on the modified `*.{js,vue}` files. Tags: `frontend`, `style`.
+- HAML lint: Run `bundle exec haml-lint` checks (with the [`.haml-lint.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.haml-lint.yml) configuration) on the modified `*.html.haml` files. Tags: `view`, `haml`, `style`.
 - Markdown lint: Run `yarn markdownlint` checks on the modified `*.md` files. Tags: `documentation`, `style`.
-- SCSS lint: Run `bundle exec scss-lint` checks (with the [`.scss-lint.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.scss-lint.yml) config) on the modified `*.scss{,.css}` files. Tags: `stylesheet`, `css`, `style`.
-- RuboCop: Run `bundle exec rubocop` checks (with the [`.rubocop.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.rubocop.yml) config) on the modified `*.rb` files. Tags: `backend`, `style`.
-- Vale: Run `vale` checks (with the [`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.vale.ini) config) on the modified `*.md` files. Tags: `documentation`, `style`.
+- SCSS lint: Run `bundle exec scss-lint` checks (with the [`.scss-lint.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.scss-lint.yml) configuration) on the modified `*.scss{,.css}` files. Tags: `stylesheet`, `css`, `style`.
+- RuboCop: Run `bundle exec rubocop` checks (with the [`.rubocop.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.rubocop.yml) configuration) on the modified `*.rb` files. Tags: `backend`, `style`.
+- Vale: Run `vale` checks (with the [`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.vale.ini) configuration) on the modified `*.md` files. Tags: `documentation`, `style`.
 
 In addition to the default configuration, you can define a [local configuration](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#local-config).
 
@@ -142,7 +142,7 @@ This ensures that our list isn't mistakenly removed by another auto generation o
 the `.rubocop_todo.yml`. This also allows us greater visibility into the exceptions
 which are currently being resolved.
 
-One way to generate the initial list is to run the todo auto generation,
+One way to generate the initial list is to run the `todo` auto generation,
 with `exclude limit` set to a high number.
 
 ```shell
@@ -180,7 +180,11 @@ See the dedicated [Shell scripting standards and style guidelines](../shell_scri
 
 ## Markdown
 
+<!-- vale gitlab.Spelling = NO -->
+
 We're following [Ciro Santilli's Markdown Style Guide](https://cirosantilli.com/markdown-style-guide/).
+
+<!-- vale gitlab.Spelling = YES -->
 
 ## Documentation
 

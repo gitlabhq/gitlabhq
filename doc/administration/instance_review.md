@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Instance Review
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6995) in [GitLab Core](https://about.gitlab.com/pricing/) 11.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6995) in [GitLab Free](https://about.gitlab.com/pricing/) 11.3.
 
 If you run a medium-sized self-managed instance (50+ users) of a free version of GitLab,
 [either Community Edition or unlicensed Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/),

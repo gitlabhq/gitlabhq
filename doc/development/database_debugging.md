@@ -69,16 +69,14 @@ bundle exec rails db -e development
 Use these instructions for exploring the GitLab database while developing with the GDK:
 
 1. Install or open [Visual Studio Code](https://code.visualstudio.com/download).
-1. Install the [PostgreSQL VSCode Extension](https://marketplace.visualstudio.com/items?itemName=ckolkman.vscode-postgres) by Chris Kolkman.
+1. Install the [PostgreSQL VSCode Extension](https://marketplace.visualstudio.com/items?itemName=ckolkman.vscode-postgres).
 1. In Visual Studio Code click on the PostgreSQL Explorer button in the left toolbar.
 1. In the top bar of the new window, click on the `+` to **Add Database Connection**, and follow the prompts to fill in the details:
    1. **Hostname**: the path to the PostgreSQL folder in your GDK directory (for example `/dev/gitlab-development-kit/postgresql`).
    1. **PostgreSQL user to authenticate as**: usually your local username, unless otherwise specified during PostgreSQL installation.
    1. **Password of the PostgreSQL user**: the password you set when installing PostgreSQL.
    1. **Port number to connect to**: `5432` (default).
-   1. <!-- vale gitlab.Spelling = NO -->
-      **Use an ssl connection?**
-      <!-- vale gitlab.Spelling = YES --> This depends on your installation. Options are:
+   1. **Use an SSL connection?** This depends on your installation. Options are:
       - **Use Secure Connection**
       - **Standard Connection** (default)
    1. **(Optional) The database to connect to**: `gitlabhq_development`.

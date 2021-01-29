@@ -303,7 +303,7 @@ test:
   artifacts:
     when: always
     reports:
-      junit: 
+      junit:
         - report.xml
 ```
 

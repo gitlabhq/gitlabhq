@@ -16,6 +16,8 @@ module Users
 
       NotificationService.new.user_admin_rejection(user.name, user.email)
 
+      log_event(user)
+
       success
     end
 
@@ -29,6 +31,10 @@ module Users
 
     def after_reject_hook(user)
       # overridden by EE module
+    end
+
+    def log_event(user)
+      Gitlab::AppLogger.info(message: "User instance access request rejected", user: "#{user.username}", email: "#{user.email}", rejected_by: "#{current_user.username}", ip_address: "#{current_user.current_sign_in_ip}")
     end
   end
 end

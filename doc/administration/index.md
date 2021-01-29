@@ -17,7 +17,7 @@ GitLab has two product distributions available through [different subscriptions]
 You can [install either GitLab CE or GitLab EE](https://about.gitlab.com/install/ce-or-ee/).
 However, the features you have access to depend on your chosen [subscription](https://about.gitlab.com/pricing/).
 
-GitLab Community Edition installations have access only to Core features.
+GitLab Community Edition installations have access only to Free features.
 
 Non-administrator users can't access GitLab administration tools and settings.
 

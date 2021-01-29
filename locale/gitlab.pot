@@ -3062,6 +3062,9 @@ msgstr ""
 msgid "An error occured while saving changes: %{error}"
 msgstr ""
 
+msgid "An error occured while updating the notification settings. Please try again."
+msgstr ""
+
 msgid "An error occurred adding a draft to the thread."
 msgstr ""
 

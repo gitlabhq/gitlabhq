@@ -126,7 +126,7 @@ not without its own challenges:
   instance of Docker engine so they don't conflict with each other. But this
   also means that jobs can be slower because there's no caching of layers.
 - By default, Docker 17.09 and higher uses `--storage-driver overlay2` which is
-  the recommended storage driver. See [Using the overlayfs driver](#use-the-overlayfs-driver)
+  the recommended storage driver. See [Using the OverlayFS driver](#use-the-overlayfs-driver)
   for details.
 - Since the `docker:19.03.12-dind` container and the runner container don't share their
   root file system, the job's working directory can be used as a mount point for

@@ -1683,7 +1683,7 @@ full stack:
 - An argument or scalar's [`prepare`](#validating-arguments) applies correctly.
 - Logic in a resolver or mutation's [`#ready?` method](#correct-use-of-resolverready) applies correctly.
 - An [argument's `default_value`](https://graphql-ruby.org/fields/arguments.html) applies correctly.
-- Objects resolve performantly and there are no N+1 issues.
+- Objects resolve successfully, and there are no N+1 issues.
 
 When adding a query, you can use the `a working graphql query` shared example to test if the query
 renders valid results.

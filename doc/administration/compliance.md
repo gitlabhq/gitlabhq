@@ -15,9 +15,9 @@ relevant compliance standards.
 
 |Feature   |GitLab tier |GitLab.com | Product level |
 | ---------| :--------: | :-------: | :-----------: |
-|**[Restrict SSH Keys](../security/ssh_keys_restrictions.md)**<br>Control the technology and key length of SSH keys used to access GitLab|Core+||Instance|
-|**[Granular user roles and flexible permissions](../user/permissions.md)**<br>Manage access and permissions with five different user roles and settings for external users. Set permissions according to people's role, rather than either read or write access to a repository. Don't share the source code with people that only need access to the issue tracker.|Core+|✓|Instance, Group, Project|
-|**[Enforce TOS acceptance](../user/admin_area/settings/terms.md)**<br>Enforce your users accepting new terms of service by blocking GitLab traffic.|Core+||Instance|
+|**[Restrict SSH Keys](../security/ssh_keys_restrictions.md)**<br>Control the technology and key length of SSH keys used to access GitLab|Free+||Instance|
+|**[Granular user roles and flexible permissions](../user/permissions.md)**<br>Manage access and permissions with five different user roles and settings for external users. Set permissions according to people's role, rather than either read or write access to a repository. Don't share the source code with people that only need access to the issue tracker.|Free+|✓|Instance, Group, Project|
+|**[Enforce TOS acceptance](../user/admin_area/settings/terms.md)**<br>Enforce your users accepting new terms of service by blocking GitLab traffic.|Free+||Instance|
 |**[Email all users of a project, group, or entire server](../tools/email.md)**<br>An admin can email groups of users based on project or group membership, or email everyone using the GitLab instance. This is great for scheduled maintenance or upgrades.|Starter+|||Instance
 |**[Omnibus package supports log forwarding](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-forwarding)**<br>Forward your logs to a central system.|Starter+||Instance|
 |**[Lock project membership to group](../user/group/index.md#member-lock)**<br>Group owners can prevent new members from being added to projects within a group.|Starter+|✓|Group|

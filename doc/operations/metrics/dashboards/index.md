@@ -94,7 +94,7 @@ with the **Add Panel** page:
 ## Duplicate a GitLab-defined dashboard
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/37238) in GitLab 12.7.
-> - From [GitLab 12.8 onwards](https://gitlab.com/gitlab-org/gitlab/-/issues/39505), custom metrics are also duplicated when you duplicate a dashboard.
+> - [GitLab versions 12.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/39505), custom metrics are also duplicated when you duplicate a dashboard.
 
 You can save a complete copy of a GitLab-defined dashboard along with all custom metrics added to it.
 The resulting `.yml` file can be customized and adapted to your project.
@@ -128,7 +128,7 @@ any chart on a dashboard:
 The options are:
 
 - **Expand panel** - Displays a larger version of a visualization. To return to
-  the dashboard, click the **Back** button in your browser, or press the <kbd>Esc</kbd> key.
+  the dashboard, click the **Back** button in your browser, or press the <kbd>Escape</kbd> key.
   ([Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3100) in GitLab 13.0.)
 - **View logs** **(ULTIMATE)** - Displays [Logs](../../../user/project/clusters/kubernetes_pod_logs.md),
   if they are enabled. If used in conjunction with the [timeline zoom](#timeline-zoom-and-url-sharing)
@@ -147,7 +147,7 @@ The options are:
 You can use the **Timeline zoom** function at the bottom of a chart to zoom in
 on a date and time of your choice. When you click and drag the sliders to select
 a different beginning or end date of data to display, GitLab adds your selected start
-and end times to the URL, enabling you to share specific timeframes more easily.
+and end times to the URL, enabling you to share specific time frames more easily.
 
 ## Dashboard Annotations
 

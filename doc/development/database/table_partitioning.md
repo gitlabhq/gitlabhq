@@ -60,7 +60,7 @@ was the first table to be partitioned in the application database
 (scheduled for deployment with the GitLab 13.5 release). This
 table tracks audit entries of security events that happen in the
 application. In almost all cases, users want to see audit activity that
-occurs in a certain timeframe. As a result, date-range partitioning
+occurs in a certain time frame. As a result, date-range partitioning
 was a natural fit for how the data would be accessed.
 
 To look at this in more detail, imagine a simplified `audit_events` schema:

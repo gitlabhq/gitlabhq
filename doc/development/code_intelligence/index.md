@@ -45,7 +45,7 @@ sequenceDiagram
    GitLab Rails to authorize the upload.
 
 1. GitLab Rails validates whether the artifact can be uploaded and sends
-   `ProcessLsif: true` header if the lsif artifact can be processed.
+   `ProcessLsif: true` header if the LSIF artifact can be processed.
 
 1. Workhorse reads the LSIF document line by line and generates code intelligence
    data for each file in the project. The output is a zipped directory of JSON

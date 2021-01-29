@@ -12,6 +12,7 @@ import notificationsDropdown from '../../../notifications_dropdown';
 import { showLearnGitLabProjectPopover } from '~/onboarding_issues';
 import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
+import initVueNotificationsDropdown from '~/notifications';
 
 initReadMore();
 new Star(); // eslint-disable-line no-new
@@ -42,7 +43,14 @@ leaveByUrl('project');
 
 showLearnGitLabProjectPopover();
 
-notificationsDropdown();
+if (gon.features?.vueNotificationDropdown) {
+  initVueNotificationsDropdown();
+} else {
+  notificationsDropdown();
+}
+
+initVueNotificationsDropdown();
+
 new ShortcutsNavigation(); // eslint-disable-line no-new
 
 initInviteMembersTrigger();

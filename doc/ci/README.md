@@ -71,7 +71,7 @@ available through the UI. You can use them by creating a new file,
 choosing a template that suits your application, and adjusting it
 to your needs:
 
-![Use a `.gitlab-ci.yml` template](img/add_file_template_11_10.png)
+![Use a YAML template](img/add_file_template_11_10.png)
 
 While building your `.gitlab-ci.yml`, you can use the [CI/CD configuration visualization](pipeline_editor/index.md#visualize-ci-configuration) to facilitate your writing experience.
 

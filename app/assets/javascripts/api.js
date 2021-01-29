@@ -83,6 +83,9 @@ const Api = {
   featureFlagUserList: '/api/:version/projects/:id/feature_flags_user_lists/:list_iid',
   billableGroupMembersPath: '/api/:version/groups/:id/billable_members',
   containerRegistryDetailsPath: '/api/:version/registry/repositories/:id/',
+  projectNotificationSettingsPath: '/api/:version/projects/:id/notification_settings',
+  groupNotificationSettingsPath: '/api/:version/groups/:id/notification_settings',
+  notificationSettingsPath: '/api/:version/notification_settings',
 
   group(groupId, callback = () => {}) {
     const url = Api.buildUrl(Api.groupPath).replace(':id', groupId);
@@ -905,6 +908,34 @@ const Api = {
         callback(data);
         return { data, headers };
       });
+  },
+
+  async updateNotificationSettings(projectId, groupId, data = {}) {
+    let url = Api.buildUrl(this.notificationSettingsPath);
+
+    if (projectId) {
+      url = Api.buildUrl(this.projectNotificationSettingsPath).replace(':id', projectId);
+    } else if (groupId) {
+      url = Api.buildUrl(this.groupNotificationSettingsPath).replace(':id', groupId);
+    }
+
+    const result = await axios.put(url, data);
+
+    return result;
+  },
+
+  async getNotificationSettings(projectId, groupId) {
+    let url = Api.buildUrl(this.notificationSettingsPath);
+
+    if (projectId) {
+      url = Api.buildUrl(this.projectNotificationSettingsPath).replace(':id', projectId);
+    } else if (groupId) {
+      url = Api.buildUrl(this.groupNotificationSettingsPath).replace(':id', groupId);
+    }
+
+    const result = await axios.get(url);
+
+    return result;
   },
 };
 

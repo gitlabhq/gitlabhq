@@ -36,7 +36,7 @@ environments are not displayed.
 
 To add a project to the dashboard:
 
-1. Click the **Add projects** button in the homescreen of the dashboard.
+1. Click the **Add projects** button in the home screen of the dashboard.
 1. Search and add one or more projects using the **Search your projects** field.
 1. Click the **Add projects** button.
 

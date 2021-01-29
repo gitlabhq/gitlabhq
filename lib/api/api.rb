@@ -268,6 +268,7 @@ module API
       mount ::API::Release::Links
       mount ::API::RemoteMirrors
       mount ::API::Repositories
+      mount ::API::ResourceAccessTokens
       mount ::API::Search
       mount ::API::Services
       mount ::API::Settings

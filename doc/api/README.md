@@ -124,7 +124,7 @@ There are several methods you can use to authenticate with the GitLab API:
 - [GitLab CI/CD job token](#gitlab-ci-job-token) **(Specific endpoints only)**
 
 NOTE:
-Project access tokens are supported for self-managed instances on Core and
+Project access tokens are supported for self-managed instances on Free and
 higher. They're also supported on GitLab.com Bronze and higher.
 
 For administrators who want to authenticate with the API as a specific user, or who want

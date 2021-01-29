@@ -341,7 +341,7 @@ include:
 
 > - Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.5.
 > - Available for Starter, Premium, and Ultimate in GitLab 10.6 and later.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/42861) to GitLab Core in 11.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/42861) to GitLab Free in 11.4.
 
 Use the `include` keyword to include external YAML files in your CI/CD configuration.
 You can break down one long `gitlab-ci.yml` file into multiple files to increase readability,
@@ -3675,7 +3675,7 @@ deploystacks:
 ### `trigger`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8997) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Core in 12.8.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Free in 12.8.
 
 Use `trigger` to define a downstream pipeline trigger. When GitLab starts a `trigger` job,
 a downstream pipeline is created.

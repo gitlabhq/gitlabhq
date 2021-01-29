@@ -61,6 +61,14 @@ RSpec.describe Users::ApproveService do
           expect(user.reload).to be_active
         end
 
+        it 'logs approval in application logs' do
+          allow(Gitlab::AppLogger).to receive(:info)
+
+          subject
+
+          expect(Gitlab::AppLogger).to have_received(:info).with(message: "User instance access request approved", user: "#{user.username}", email: "#{user.email}", approved_by: "#{current_user.username}", ip_address: "#{current_user.current_sign_in_ip}")
+        end
+
         it 'emails the user on approval' do
           expect(DeviseMailer).to receive(:user_admin_approval).with(user).and_call_original
           expect { subject }.to have_enqueued_mail(DeviseMailer, :user_admin_approval)

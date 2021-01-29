@@ -12,6 +12,7 @@ Ansible
 Anthos
 approvers
 architected
+architecting
 Arel
 Artifactory
 Asana
@@ -60,6 +61,10 @@ boolean
 booleans
 Bootsnap
 browsable
+bugfix
+bugfixed
+bugfixes
+bugfixing
 Bugzilla
 Buildkite
 buildpack
@@ -353,6 +358,7 @@ onboarding
 OpenID
 OpenShift
 Opsgenie
+Overcommit
 Packagist
 parallelization
 parallelizations
@@ -404,6 +410,7 @@ pseudocode
 pseudonymized
 pseudonymizer
 Puma
+pytest
 Python
 Qualys
 queryable
@@ -434,6 +441,8 @@ referer
 referers
 reflog
 reflogs
+refspec
+refspecs
 reindex
 reindexed
 reindexes
@@ -499,6 +508,7 @@ Silverlight
 Sisense
 Sitespeed
 Slack
+Slackbot
 Slony
 smartcard
 smartcards
@@ -541,11 +551,15 @@ subquery
 subquerying
 substring
 substrings
+subtask
+subtasks
 subtree
 subtrees
 sudo
 supercookie
 supercookies
+supertype
+supertypes
 swappiness
 swimlane
 swimlanes
@@ -668,6 +682,7 @@ unverify
 unverifying
 uploader
 uploaders
+upstreams
 upvoted
 upvotes
 URIs

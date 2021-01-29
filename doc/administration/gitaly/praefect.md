@@ -10,7 +10,7 @@ type: reference
 [Gitaly](index.md), the service that provides storage for Git repositories, can
 be run in a clustered configuration to increase fault tolerance. In this
 configuration, every Git repository is stored on every Gitaly node in the
-cluster. Multiple clusters (or shards) can be configured.
+cluster. Multiple clusters (or storage shards) can be configured.
 
 NOTE:
 Technical support for Gitaly clusters is limited to GitLab Premium and Ultimate
@@ -21,7 +21,7 @@ component for running a Gitaly Cluster.
 
 ![Architecture diagram](img/praefect_architecture_v12_10.png)
 
-Using a Gitaly Cluster increase fault tolerance by:
+Using a Gitaly Cluster increases fault tolerance by:
 
 - Replicating write operations to warm standby Gitaly nodes.
 - Detecting Gitaly node failures.
@@ -53,7 +53,7 @@ Gitaly Cluster supports:
 - Reporting of possible data loss if replication queue is non-empty.
 - Marking repositories as [read only](#read-only-mode) if data loss is detected to prevent data inconsistencies.
 
-Follow the [HA Gitaly epic](https://gitlab.com/groups/gitlab-org/-/epics/1489)
+Follow the [Gitaly Cluster epic](https://gitlab.com/groups/gitlab-org/-/epics/1489)
 for improvements including
 [horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/epics/2013).
 
@@ -80,23 +80,65 @@ For more information, see:
 - [Gitaly architecture](index.md#architecture).
 - Geo [use cases](../geo/index.md#use-cases) and [architecture](../geo/index.md#architecture).
 
-## Cluster or shard
+## Where Gitaly Cluster fits
+
+GitLab accesses [repositories](../../user/project/repository/index.md) through the configured
+[repository storages](../repository_storage_paths.md). Each new repository is stored on one of the
+repository storages based on their configured weights. Each repository storage is either:
+
+- A Gitaly storage served directly by Gitaly. These map to a directory on the file system of a
+  Gitaly node.
+- A [virtual storage](#virtual-storage-or-direct-gitaly-storage) served by Praefect. A virtual
+  storage is a cluster of Gitaly storages that appear as a single repository storage.
+
+Virtual storages are a feature of Gitaly Cluster. They support replicating the repositories to
+multiple storages for fault tolerance. Virtual storages can improve performance by distributing
+requests across Gitaly nodes. Their distributed nature makes it viable to have a single repository
+storage in GitLab to simplify repository management.
+
+## Components of Gitaly Cluster
+
+Gitaly Cluster consists of multiple components:
+
+- [Load balancer](#load-balancer) for distributing requests and providing fault-tolerant access to
+  Praefect nodes.
+- [Praefect](#praefect) nodes for managing the cluster and routing requests to Gitaly nodes.
+- [PostgreSQL database](#postgresql) for persisting cluster metadata and [PgBouncer](#pgbouncer),
+  recommended for pooling Praefect's database connections.
+- [Gitaly](index.md) nodes to provide repository storage and Git access.
+
+![Cluster example](img/cluster_example_v13_3.png)
+
+In this example:
+
+- Repositories are stored on a virtual storage called `storage-1`.
+- Three Gitaly nodes provide `storage-1` access: `gitaly-1`, `gitaly-2`, and `gitaly-3`.
+- The three Gitaly nodes store data on their filesystems.
+
+### Virtual storage or direct Gitaly storage
 
 Gitaly supports multiple models of scaling:
 
 - Clustering using Gitaly Cluster, where each repository is stored on multiple Gitaly nodes in the
   cluster. Read requests are distributed between repository replicas and write requests are
-  broadcast to repository replicas.
-- Sharding using [repository storage paths](../repository_storage_paths.md), where each repository
-  is stored on the assigned Gitaly node. All requests are routed to this node.
+  broadcast to repository replicas. GitLab accesses virtual storage.
+- Direct access to Gitaly storage using [repository storage paths](../repository_storage_paths.md),
+  where each repository is stored on the assigned Gitaly node. All requests are routed to this node.
 
-| Cluster                                           | Shard                                         |
-|:--------------------------------------------------|:----------------------------------------------|
-| ![Cluster example](img/cluster_example_v13_3.png) | ![Shard example](img/shard_example_v13_3.png) |
+The following is Gitaly set up to use direct access to Gitaly instead of Gitaly Cluster:
 
-Generally, Gitaly Cluster can replace sharded configurations, at the expense of additional storage
-needed to store each repository on multiple Gitaly nodes. The benefit of using Gitaly Cluster over
-sharding is:
+![Shard example](img/shard_example_v13_3.png)
+
+In this example:
+
+- Each repository is stored on one of three Gitaly storages: `storage-1`, `storage-2`,
+  or `storage-3`.
+- Each storage is serviced by a Gitaly node.
+- The three Gitaly nodes store data in three separate hashed storage locations.
+
+Generally, virtual storage with Gitaly Cluster can replace direct Gitaly storage configurations, at
+the expense of additional storage needed to store each repository on multiple Gitaly nodes. The
+benefit of using Gitaly Cluster over direct Gitaly storage is:
 
 - Improved fault tolerance, because each Gitaly node has a copy of every repository.
 - Improved resource utilization, reducing the need for over-provisioning for shard-specific peak
@@ -773,7 +815,7 @@ configuration.
 
 ### Load Balancer
 
-In a highly available Gitaly configuration, a load balancer is needed to route
+In a fault-tolerant Gitaly configuration, a load balancer is needed to route
 internal traffic from the GitLab application to the Praefect nodes. The
 specifics on which load balancer to use or the exact configuration is beyond the
 scope of the GitLab documentation.
@@ -785,7 +827,7 @@ addition to the GitLab nodes. Some requests handled by
 process. `gitaly-ruby` uses the Gitaly address set in the GitLab server's
 `git_data_dirs` setting to make this connection.
 
-We hope that if you’re managing HA systems like GitLab, you have a load balancer
+We hope that if you’re managing fault-tolerant systems like GitLab, you have a load balancer
 of choice already. Some examples include [HAProxy](https://www.haproxy.org/)
 (open-source), [Google Internal Load Balancer](https://cloud.google.com/load-balancing/docs/internal/),
 [AWS Elastic Load Balancer](https://aws.amazon.com/elasticloadbalancing/), F5
@@ -974,7 +1016,7 @@ To get started quickly:
 1. Go to **Explore** and query `gitlab_build_info` to verify that you are
    getting metrics from all your machines.
 
-Congratulations! You've configured an observable highly available Praefect
+Congratulations! You've configured an observable fault-tolerant Praefect
 cluster.
 
 ## Distributed reads
