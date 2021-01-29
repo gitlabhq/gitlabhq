@@ -71,7 +71,7 @@ Below are the changes made between V3 and V4.
 - Notes do not return deprecated field `upvote` and `downvote` [!9384](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9384)
 - Return HTTP status code `400` for all validation errors when creating or updating a member instead of sometimes `422` error. [!9523](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9523)
 - Remove `GET /groups/owned`. Use `GET /groups?owned=true` instead [!9505](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9505)
-- Return 202 with JSON body on async removals on V4 API (`DELETE /projects/:id/repository/merged_branches` and `DELETE /projects/:id`) [!9449](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9449)
+- Return 202 with JSON body on asynchronous removals on V4 API (`DELETE /projects/:id/repository/merged_branches` and `DELETE /projects/:id`) [!9449](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9449)
 - `GET /projects/:id/milestones?iid[]=x&iid[]=y` array filter has been renamed to `iids` [!9096](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9096)
 - Return basic information about pipeline in `GET /projects/:id/pipelines` [!8875](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8875)
 - Renamed all `build` references to `job` [!9463](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9463)

@@ -24,6 +24,8 @@ The **Kroki URL** is the hostname of the server running the container.
 
 The [`yuzutech/kroki`](https://hub.docker.com/r/yuzutech/kroki) image contains the following diagrams libraries out-of-the-box:
 
+<!-- vale gitlab.Spelling = NO -->
+
 - [Bytefield](https://bytefield-svg.deepsymmetry.org/)
 - [Ditaa](http://ditaa.sourceforge.net)
 - [Erd](https://github.com/BurntSushi/erd)
@@ -36,6 +38,8 @@ The [`yuzutech/kroki`](https://hub.docker.com/r/yuzutech/kroki) image contains t
 - [Vega](https://github.com/vega/vega)
 - [Vega-Lite](https://github.com/vega/vega-lite)
 - [WaveDrom](https://wavedrom.com/)
+
+<!-- vale gitlab.Spelling = YES -->
 
 If you want to use additional diagram libraries,
 read the [Kroki installation](https://docs.kroki.io/kroki/setup/install/#_images) to learn how to start Kroki companion containers.
@@ -138,7 +142,11 @@ Rel(banking_system, mainframe, "Uses")
 
 ![C4 PlantUML diagram](../img/kroki_c4_diagram.png)
 
+<!-- vale gitlab.Spelling = NO -->
+
 **Nomnoml**
+
+<!-- vale gitlab.Spelling = YES -->
 
 ```plaintext
 [nomnoml]
@@ -159,4 +167,4 @@ Rel(banking_system, mainframe, "Uses")
 ....
 ```
 
-![Nomnoml diagram](../img/kroki_nomnoml_diagram.png)
+![Diagram](../img/kroki_nomnoml_diagram.png)

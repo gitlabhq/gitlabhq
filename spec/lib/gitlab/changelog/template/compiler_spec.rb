@@ -125,5 +125,12 @@ RSpec.describe Gitlab::Changelog::Template::Compiler do
 
       expect(compile(input)).to eq(input)
     end
+
+    it 'ignores malicious code that makes use of whitespace' do
+      input = "x<\\\n%::Kernel.system(\"id\")%>"
+
+      expect(Kernel).not_to receive(:system).with('id')
+      expect(compile(input)).to eq('x<%::Kernel.system("id")%>')
+    end
   end
 end

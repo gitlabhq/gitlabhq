@@ -35,6 +35,8 @@ The Package Registry supports the following formats:
 The below table lists formats that are not supported, but are accepting Community contributions for. Consider contributing to GitLab. This [development documentation](../../development/packages.md)
 guides you through the process.
 
+<!-- vale gitlab.Spelling = NO -->
+
 | Format | Status |
 | ------ | ------ |
 | Chef      | [#36889](https://gitlab.com/gitlab-org/gitlab/-/issues/36889) |
@@ -50,6 +52,8 @@ guides you through the process.
 | SBT       | [#36898](https://gitlab.com/gitlab-org/gitlab/-/issues/36898) |
 | Terraform | [WIP: Merge Request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18834) |
 | Vagrant   | [#36899](https://gitlab.com/gitlab-org/gitlab/-/issues/36899) |
+
+<!-- vale gitlab.Spelling = YES -->
 
 ## Enabling the Packages feature
 

@@ -108,7 +108,7 @@ both primary and secondaries will fail.
 
 ### Merge requests, issues, epics
 
-All write actions except those mentioned above will fail. So, in maintenace mode, a user cannot update merge requests, issues, etc.
+All write actions except those mentioned above will fail. So, in maintenance mode, a user cannot update merge requests, issues, etc.
 
 ### Container Registry
 

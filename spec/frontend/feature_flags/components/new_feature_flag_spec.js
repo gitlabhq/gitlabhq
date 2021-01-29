@@ -41,6 +41,9 @@ describe('New feature flag form', () => {
     });
   };
 
+  const findWarningGlAlert = () =>
+    wrapper.findAll(GlAlert).filter((c) => c.props('variant') === 'warning');
+
   beforeEach(() => {
     factory();
   });
@@ -53,8 +56,9 @@ describe('New feature flag form', () => {
     it('should render the error', () => {
       store.dispatch('receiveCreateFeatureFlagError', { message: ['The name is required'] });
       return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('.alert').exists()).toEqual(true);
-        expect(wrapper.find('.alert').text()).toContain('The name is required');
+        const warningGlAlert = findWarningGlAlert();
+        expect(warningGlAlert.at(0).exists()).toBe(true);
+        expect(warningGlAlert.at(0).text()).toContain('The name is required');
       });
     });
   });
@@ -79,10 +83,6 @@ describe('New feature flag form', () => {
     expect(wrapper.vm.scopes).toEqual([defaultScope]);
 
     expect(wrapper.find(Form).props('scopes')).toContainEqual(defaultScope);
-  });
-
-  it('should not alert users that feature flags are changing soon', () => {
-    expect(wrapper.find(GlAlert).exists()).toBe(false);
   });
 
   it('has an all users strategy by default', () => {

@@ -91,9 +91,9 @@ export default {
         <h3 class="page-title gl-m-0">{{ title }}</h3>
       </div>
 
-      <div v-if="error.length" class="alert alert-danger">
+      <gl-alert v-if="error.length" variant="warning" class="gl-mb-5" :dismissible="false">
         <p v-for="(message, index) in error" :key="index" class="gl-mb-0">{{ message }}</p>
-      </div>
+      </gl-alert>
 
       <feature-flag-form
         :name="name"

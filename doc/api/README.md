@@ -207,7 +207,7 @@ to authenticate with the API:
   - [Go Proxy](../user/packages/go_proxy/index.md)
   - [Maven Repository](../user/packages/maven_repository/index.md#authenticate-with-a-ci-job-token-in-maven)
   - [NPM Repository](../user/packages/npm_registry/index.md#authenticate-with-a-ci-job-token)
-  - [Nuget Repository](../user/packages/nuget_repository/index.md)
+  - [NuGet Repository](../user/packages/nuget_repository/index.md)
   - [PyPI Repository](../user/packages/pypi_repository/index.md#authenticate-with-a-ci-job-token)
   - [Generic packages](../user/packages/generic_packages/index.md#publish-a-generic-package-by-using-cicd)
 - [Get job artifacts](job_artifacts.md#get-job-artifacts)

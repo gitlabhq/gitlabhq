@@ -319,7 +319,7 @@ POST /projects/:id/members
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer/string | yes | The user ID of the new member or multiple IDs separated by commas |
 | `access_level` | integer | yes | A valid access level |
-| `expires_at` | string | no | A date string in the format YEAR-MONTH-DAY |
+| `expires_at` | string | no | A date string in the format `YEAR-MONTH-DAY` |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "user_id=1&access_level=30" "https://gitlab.example.com/api/v4/groups/:id/members"
@@ -357,7 +357,7 @@ PUT /projects/:id/members/:user_id
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
 | `access_level` | integer | yes | A valid access level |
-| `expires_at` | string | no | A date string in the format YEAR-MONTH-DAY |
+| `expires_at` | string | no | A date string in the format `YEAR-MONTH-DAY` |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/:user_id?access_level=40"

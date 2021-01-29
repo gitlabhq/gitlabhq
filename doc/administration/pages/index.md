@@ -190,7 +190,7 @@ outside world.
 ### Additional configuration for Docker container
 
 The GitLab Pages daemon doesn't have permissions to bind mounts when it runs
-in a Docker container. To overcome this issue, you must change the chroot
+in a Docker container. To overcome this issue, you must change the `chroot`
 behavior:
 
 1. Edit `/etc/gitlab/gitlab.rb`.
@@ -236,7 +236,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `gitlab_secret` |  The OAuth application secret. Leave blank to automatically fill when Pages authenticates with GitLab.
 | `gitlab_server` |  Server to use for authentication when access control is enabled; defaults to GitLab `external_url`.
 | `headers` |  Specify any additional http headers that should be sent to the client with each response.
-| `inplace_chroot` |  On [systems that don't support bind-mounts](index.md#additional-configuration-for-docker-container), this instructs GitLab Pages to chroot into its `pages_path` directory. Some caveats exist when using inplace chroot; refer to the GitLab Pages [README](https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md#caveats) for more information.
+| `inplace_chroot` |  On [systems that don't support bind-mounts](index.md#additional-configuration-for-docker-container), this instructs GitLab Pages to `chroot` into its `pages_path` directory. Some caveats exist when using in-place `chroot`; refer to the GitLab Pages [README](https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md#caveats) for more information.
 | `insecure_ciphers` |  Use default list of cipher suites, may contain insecure ones like 3DES and RC4.
 | `internal_gitlab_server` | Internal GitLab server address used exclusively for API requests. Useful if you want to send that traffic over an internal load balancer. Defaults to GitLab `external_url`.
 | `listen_proxy` |  The addresses to listen on for reverse-proxy requests. Pages binds to these addresses' network sockets and receives incoming requests from them. Sets the value of `proxy_pass` in `$nginx-dir/conf/gitlab-pages.conf`.
@@ -538,7 +538,7 @@ the below steps to do a no downtime transfer to a new storage location.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 1. Verify Pages are still being served up as expected.
-1. Unpause Pages deployments by removing from `/etc/gitlab/gitlab.rb` the `sidekiq` setting set above.
+1. Resume Pages deployments by removing from `/etc/gitlab/gitlab.rb` the `sidekiq` setting set above.
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 1. Trigger a new Pages deployment and verify it's working as expected.
 1. Remove the old Pages storage location: `sudo rm -rf /var/opt/gitlab/gitlab-rails/shared/pages`
@@ -629,7 +629,7 @@ database encryption. Proceed with caution.
    on the **Pages server** and configure this share to
    allow access from your main **GitLab server**.
    Note that the example there is more general and
-   shares several sub-directories from `/home` to several `/nfs/home` mountpoints.
+   shares several sub-directories from `/home` to several `/nfs/home` mount points.
    For our Pages-specific example here, we instead share only the
    default GitLab Pages folder `/var/opt/gitlab/gitlab-rails/shared/pages`
    from the **Pages server** and we mount it to `/mnt/pages`
@@ -818,7 +818,7 @@ but commented out to help encourage others to add to it in the future. -->
 
 ### `open /etc/ssl/ca-bundle.pem: permission denied`
 
-GitLab Pages runs inside a chroot jail, usually in a uniquely numbered directory like
+GitLab Pages runs inside a `chroot` jail, usually in a uniquely numbered directory like
 `/tmp/gitlab-pages-*`.
 
 Within the jail, a bundle of trusted certificates is
@@ -828,7 +828,7 @@ from `/opt/gitlab/embedded/ssl/certs/cacert.pem`
 as part of starting up Pages.
 
 If the permissions on the source file are incorrect (they should be `0644`), then
-the file inside the chroot jail is also wrong.
+the file inside the `chroot` jail is also wrong.
 
 Pages logs errors in `/var/log/gitlab/gitlab-pages/current` like:
 
@@ -837,7 +837,7 @@ x509: failed to load system roots and no roots provided
 open /etc/ssl/ca-bundle.pem: permission denied
 ```
 
-The use of a chroot jail makes this error misleading, as it is not
+The use of a `chroot` jail makes this error misleading, as it is not
 referring to `/etc/ssl` on the root filesystem.
 
 The fix is to correct the source file permissions and restart Pages:
@@ -862,8 +862,8 @@ open /opt/gitlab/embedded/ssl/certs/cacert.pem: no such file or directory
 x509: certificate signed by unknown authority
 ```
 
-The reason for those errors is that the files `resolv.conf` and `ca-bundle.pem` are missing inside the chroot.
-The fix is to copy the host's `/etc/resolv.conf` and the GitLab certificate bundle inside the chroot:
+The reason for those errors is that the files `resolv.conf` and `ca-bundle.pem` are missing inside the `chroot`.
+The fix is to copy the host's `/etc/resolv.conf` and the GitLab certificate bundle inside the `chroot`:
 
 ```shell
 sudo mkdir -p /var/opt/gitlab/gitlab-rails/shared/pages/etc/ssl
@@ -895,7 +895,7 @@ gitlab_pages['listen_proxy'] = '127.0.0.1:8090'
 ### 404 error after transferring project to a different group or user
 
 If you encounter a `404 Not Found` error a Pages site after transferring a project to
-another group or user, you must trigger adomain configuration update for Pages. To do
+another group or user, you must trigger a domain configuration update for Pages. To do
 so, write something in the `.update` file. The Pages daemon monitors for changes to this
 file, and reloads the configuration when changes occur.
 
@@ -945,8 +945,8 @@ in all of your GitLab Pages instances.
 ### 500 error with `securecookie: failed to generate random iv` and `Failed to save the session`
 
 This problem most likely results from an [out-dated operating system](https://docs.gitlab.com/omnibus/package-information/deprecated_os.html).
-The [Pages daemon uses the `securecookie` library](https://gitlab.com/search?group_id=9970&project_id=734943&repository_ref=master&scope=blobs&search=securecookie&snippets=false) to get random strings via [crypto/rand in Go](https://golang.org/pkg/crypto/rand/#pkg-variables).
-This requires the `getrandom` syscall or `/dev/urandom` to be available on the host OS.
+The [Pages daemon uses the `securecookie` library](https://gitlab.com/search?group_id=9970&project_id=734943&repository_ref=master&scope=blobs&search=securecookie&snippets=false) to get random strings via [`crypto/rand` in Go](https://golang.org/pkg/crypto/rand/#pkg-variables).
+This requires the `getrandom` system call or `/dev/urandom` to be available on the host OS.
 Upgrading to an [officially supported operating system](https://about.gitlab.com/install/) is recommended.
 
 ### The requested scope is invalid, malformed, or unknown

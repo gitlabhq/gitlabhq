@@ -530,7 +530,12 @@ The process executes the following access checks:
 In Active Directory, a user is marked as disabled/blocked if the user
 account control attribute (`userAccountControl:1.2.840.113556.1.4.803`)
 has bit 2 set.
-For more information, see <https://ctovswild.com/2009/09/03/bitmask-searches-in-ldap/>
+
+<!-- vale gitlab.Spelling = NO -->
+
+For more information, see [Bitmask Searches in LDAP](https://ctovswild.com/2009/09/03/bitmask-searches-in-ldap/).
+
+<!-- vale gitlab.Spelling = YES -->
 
 The user is set to an `ldap_blocked` state in GitLab if the previous conditions
 fail. This means the user is not able to sign in or push/pull code.

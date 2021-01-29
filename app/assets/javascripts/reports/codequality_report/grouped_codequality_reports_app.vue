@@ -2,6 +2,7 @@
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { componentNames } from '~/reports/components/issue_body';
 import { s__, sprintf } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ReportSection from '~/reports/components/report_section.vue';
 import createStore from './store';
 
@@ -11,6 +12,7 @@ export default {
   components: {
     ReportSection,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     headPath: {
       type: String,
@@ -30,6 +32,11 @@ export default {
       required: false,
       default: null,
     },
+    codequalityReportsPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     codequalityHelpPath: {
       type: String,
       required: true,
@@ -37,7 +44,7 @@ export default {
   },
   componentNames,
   computed: {
-    ...mapState(['newIssues', 'resolvedIssues']),
+    ...mapState(['newIssues', 'resolvedIssues', 'hasError', 'statusReason']),
     ...mapGetters([
       'hasCodequalityIssues',
       'codequalityStatus',
@@ -51,10 +58,11 @@ export default {
       headPath: this.headPath,
       baseBlobPath: this.baseBlobPath,
       headBlobPath: this.headBlobPath,
+      reportsPath: this.codequalityReportsPath,
       helpPath: this.codequalityHelpPath,
     });
 
-    this.fetchReports();
+    this.fetchReports(this.glFeatures.codequalityMrDiff);
   },
   methods: {
     ...mapActions(['fetchReports', 'setPaths']),
@@ -80,5 +88,7 @@ export default {
     :popover-options="codequalityPopover"
     :show-report-section-status-icon="false"
     class="js-codequality-widget mr-widget-border-top mr-report"
-  />
+  >
+    <template v-if="hasError" #sub-heading>{{ statusReason }}</template>
+  </report-section>
 </template>

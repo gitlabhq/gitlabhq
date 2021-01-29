@@ -75,6 +75,8 @@ describe('Edit feature flag form', () => {
   });
 
   const findAlert = () => wrapper.find(GlAlert);
+  const findWarningGlAlert = () =>
+    wrapper.findAll(GlAlert).filter((c) => c.props('variant') === 'warning');
 
   it('should display the iid', () => {
     expect(wrapper.find('h3').text()).toContain('^5');
@@ -88,7 +90,7 @@ describe('Edit feature flag form', () => {
     expect(wrapper.find(GlToggle).props('value')).toBe(true);
   });
 
-  it('should not alert users that feature flags are changing soon', () => {
+  it('should alert users the flag is read only', () => {
     expect(findAlert().text()).toContain('GitLab is moving to a new way of managing feature flags');
   });
 
@@ -96,8 +98,9 @@ describe('Edit feature flag form', () => {
     it('should render the error', () => {
       store.dispatch('receiveUpdateFeatureFlagError', { message: ['The name is required'] });
       return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('.alert-danger').exists()).toEqual(true);
-        expect(wrapper.find('.alert-danger').text()).toContain('The name is required');
+        const warningGlAlert = findWarningGlAlert();
+        expect(warningGlAlert.at(1).exists()).toEqual(true);
+        expect(warningGlAlert.at(1).text()).toContain('The name is required');
       });
     });
   });

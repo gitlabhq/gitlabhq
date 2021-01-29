@@ -49,6 +49,20 @@ RSpec.describe ObjectStoreSettings do
         }
       end
 
+      shared_examples 'consolidated settings for objects accelerated by Workhorse' do
+        it 'consolidates active object storage settings' do
+          described_class::WORKHORSE_ACCELERATED_TYPES.each do |object_type|
+            # Use to_h to avoid https://gitlab.com/gitlab-org/gitlab/-/issues/286873
+            section = subject.try(object_type).to_h
+
+            next unless section.dig('object_store', 'enabled')
+
+            expect(section['object_store']['connection']).to eq(connection)
+            expect(section['object_store']['consolidated_settings']).to be true
+          end
+        end
+      end
+
       it 'sets correct default values' do
         subject
 
@@ -77,9 +91,7 @@ RSpec.describe ObjectStoreSettings do
         expect(settings.pages['object_store']['consolidated_settings']).to be true
 
         expect(settings.external_diffs['enabled']).to be false
-        expect(settings.external_diffs['object_store']['enabled']).to be false
-        expect(settings.external_diffs['object_store']['remote_directory']).to eq('external_diffs')
-        expect(settings.external_diffs['object_store']['consolidated_settings']).to be true
+        expect(settings.external_diffs['object_store']).to be_nil
       end
 
       it 'raises an error when a bucket is missing' do
@@ -95,29 +107,49 @@ RSpec.describe ObjectStoreSettings do
         expect(settings.pages['object_store']).to eq(nil)
       end
 
-      it 'allows pages to define its own connection' do
-        pages_connection = { 'provider' => 'Google', 'google_application_default' => true }
-        config['pages'] = {
-          'enabled' => true,
-          'object_store' => {
+      context 'GitLab Pages' do
+        let(:pages_connection) { { 'provider' => 'Google', 'google_application_default' => true } }
+
+        before do
+          config['pages'] = {
             'enabled' => true,
-            'connection' => pages_connection
+            'object_store' => {
+              'enabled' => true,
+              'connection' => pages_connection
+            }
           }
-        }
-
-        expect { subject }.not_to raise_error
-
-        described_class::WORKHORSE_ACCELERATED_TYPES.each do |object_type|
-          section = settings.try(object_type)
-
-          next unless section
-
-          expect(section['object_store']['connection']).to eq(connection)
-          expect(section['object_store']['consolidated_settings']).to be true
         end
 
-        expect(settings.pages['object_store']['connection']).to eq(pages_connection)
-        expect(settings.pages['object_store']['consolidated_settings']).to be_falsey
+        it_behaves_like 'consolidated settings for objects accelerated by Workhorse'
+
+        it 'allows pages to define its own connection' do
+          expect { subject }.not_to raise_error
+
+          expect(settings.pages['object_store']['connection']).to eq(pages_connection)
+          expect(settings.pages['object_store']['consolidated_settings']).to be_falsey
+        end
+      end
+
+      context 'when object storage is selectively disabled for artifacts' do
+        before do
+          config['artifacts'] = {
+            'enabled' => true,
+            'object_store' => {
+              'enabled' => false
+            }
+          }
+        end
+
+        it_behaves_like 'consolidated settings for objects accelerated by Workhorse'
+
+        it 'does not enable consolidated settings for artifacts' do
+          subject
+
+          expect(settings.artifacts['enabled']).to be true
+          expect(settings.artifacts['object_store']['remote_directory']).to be_nil
+          expect(settings.artifacts['object_store']['enabled']).to be_falsey
+          expect(settings.artifacts['object_store']['consolidated_settings']).to be_falsey
+        end
       end
 
       context 'with legacy config' do

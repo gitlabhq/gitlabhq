@@ -489,7 +489,7 @@ This experimental implementation has the following limitations:
 - Whenever `gitlab-ctl reconfigure` runs on a Patroni Leader instance, there's a
   chance the node will be demoted due to the required short-time restart. To
   avoid this, you can pause auto-failover by running `gitlab-ctl patroni pause`.
-  After a reconfigure, it unpauses on its own.
+  After a reconfigure, it resumes on its own.
 
 For instructions about how to set up Patroni on the primary node, see the
 [PostgreSQL replication and failover with Omnibus GitLab](../../postgresql/replication_and_failover.md#patroni) page.
@@ -644,8 +644,8 @@ With Patroni it's now possible to support that. In order to migrate the existing
 1. [Configure a permanent replication slot](#step-1-configure-patroni-permanent-replication-slot-on-the-primary-site).
 1. [Configure a Standby Cluster](#step-2-configure-a-standby-cluster-on-the-secondary-site)
    on that single node machine.
-   
-You will end up with a "Standby Cluster" with a single node. That allows you to later on add additional patroni nodes
+
+You will end up with a "Standby Cluster" with a single node. That allows you to later on add additional Patroni nodes
 by following the same instructions above.
 
 ## Troubleshooting

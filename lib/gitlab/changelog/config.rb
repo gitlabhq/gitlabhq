@@ -37,7 +37,10 @@ module Gitlab
         end
 
         if (template = hash['template'])
-          config.template = Template::Compiler.new.compile(template)
+          # We use the full namespace here (and further down) as otherwise Rails
+          # may use the wrong constant when autoloading is used.
+          config.template =
+            ::Gitlab::Changelog::Template::Compiler.new.compile(template)
         end
 
         if (categories = hash['categories'])
@@ -54,7 +57,8 @@ module Gitlab
       def initialize(project)
         @project = project
         @date_format = DEFAULT_DATE_FORMAT
-        @template = Template::Compiler.new.compile(DEFAULT_TEMPLATE)
+        @template =
+          ::Gitlab::Changelog::Template::Compiler.new.compile(DEFAULT_TEMPLATE)
         @categories = {}
       end
 

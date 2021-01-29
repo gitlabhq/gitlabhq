@@ -3,8 +3,10 @@ import CodeQualityComparisonWorker from '../../workers/codequality_comparison_wo
 export const parseCodeclimateMetrics = (issues = [], path = '') => {
   return issues.map((issue) => {
     const parsedIssue = {
-      ...issue,
       name: issue.description,
+      path: issue.file_path,
+      urlPath: `${path}/${issue.file_path}#L${issue.line}`,
+      ...issue,
     };
 
     if (issue?.location?.path) {

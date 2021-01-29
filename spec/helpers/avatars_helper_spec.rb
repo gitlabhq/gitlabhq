@@ -135,6 +135,15 @@ RSpec.describe AvatarsHelper do
         helper.avatar_icon_for_user(nil, 20, 2)
       end
     end
+
+    context 'for a blocked user' do
+      let(:user) { create(:user, :blocked) }
+
+      it 'returns the default avatar' do
+        expect(helper.avatar_icon_for_user(user).to_s)
+          .to eq(helper.default_avatar)
+      end
+    end
   end
 
   describe '#gravatar_icon' do

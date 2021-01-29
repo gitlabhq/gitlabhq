@@ -241,10 +241,11 @@ export default class MergeRequestStore {
     this.isDismissedSuggestPipeline = data.is_dismissed_suggest_pipeline;
     this.securityReportsDocsPath = data.security_reports_docs_path;
 
-    // codeclimate
+    // code quality
     const blobPath = data.blob_path || {};
     this.headBlobPath = blobPath.head_path || '';
     this.baseBlobPath = blobPath.base_path || '';
+    this.codequalityReportsPath = data.codequality_reports_path;
     this.codequalityHelpPath = data.codequality_help_path;
     this.codeclimate = data.codeclimate;
 

@@ -30,11 +30,13 @@ describe('Actions Package list store', () => {
       sort: 'asc',
       orderBy: 'version',
     };
+
+    const filter = [];
     it('should fetch the project packages list when isGroupPage is false', (done) => {
       testAction(
         actions.requestPackagesList,
         undefined,
-        { config: { isGroupPage: false, resourceId: 1 }, sorting },
+        { config: { isGroupPage: false, resourceId: 1 }, sorting, filter },
         [],
         [
           { type: 'setLoading', payload: true },
@@ -54,7 +56,7 @@ describe('Actions Package list store', () => {
       testAction(
         actions.requestPackagesList,
         undefined,
-        { config: { isGroupPage: true, resourceId: 2 }, sorting },
+        { config: { isGroupPage: true, resourceId: 2 }, sorting, filter },
         [],
         [
           { type: 'setLoading', payload: true },
@@ -70,7 +72,7 @@ describe('Actions Package list store', () => {
       );
     });
 
-    it('should fetch packages of a certain type when selectedType is present', (done) => {
+    it('should fetch packages of a certain type when a filter with a type is present', (done) => {
       const packageType = 'maven';
 
       testAction(
@@ -79,7 +81,7 @@ describe('Actions Package list store', () => {
         {
           config: { isGroupPage: false, resourceId: 1 },
           sorting,
-          selectedType: { type: packageType },
+          filter: [{ type: 'type', value: { data: 'maven' } }],
         },
         [],
         [
@@ -107,7 +109,7 @@ describe('Actions Package list store', () => {
       testAction(
         actions.requestPackagesList,
         undefined,
-        { config: { isGroupPage: false, resourceId: 2 }, sorting },
+        { config: { isGroupPage: false, resourceId: 2 }, sorting, filter },
         [],
         [
           { type: 'setLoading', payload: true },

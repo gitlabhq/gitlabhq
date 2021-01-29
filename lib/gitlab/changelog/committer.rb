@@ -26,7 +26,13 @@ module Gitlab
         # scratch, otherwise we may end up throwing away changes. As such, all
         # the logic is contained within the retry block.
         Retriable.retriable(on: CommitError) do
-          commit = @project.commit(branch)
+          commit = Gitlab::Git::Commit.last_for_path(
+            @project.repository,
+            branch,
+            file,
+            literal_pathspec: true
+          )
+
           content = blob_content(file, commit)
 
           # If the release has already been added (e.g. concurrently by another

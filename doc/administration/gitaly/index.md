@@ -121,7 +121,7 @@ The following list depicts the network architecture of Gitaly:
   - GitLab Shell.
   - Elasticsearch indexer.
   - Gitaly itself.
-- A Gitaly server must be able to make RPC calls **to itself** by uing its own
+- A Gitaly server must be able to make RPC calls **to itself** by using its own
   `(Gitaly address, Gitaly token)` pair as specified in `/config/gitlab.yml`.
 - Authentication is done through a static token which is shared among the Gitaly and GitLab Rails
   nodes.

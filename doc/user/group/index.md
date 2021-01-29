@@ -555,7 +555,7 @@ username, you can create a new group and transfer projects to it.
 
 You can change settings that are specific to repositories in your group.
 
-#### Custom initial branch name **(FREE SELF)**
+#### Custom initial branch name **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43290) in GitLab 13.6.
 

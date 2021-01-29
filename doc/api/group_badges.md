@@ -12,10 +12,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Badges support placeholders that are replaced in real time in both the link and image URL. The allowed placeholders are:
 
+<!-- vale gitlab.Spelling = NO -->
+
 - **%{project_path}**: replaced by the project path.
 - **%{project_id}**: replaced by the project ID.
 - **%{default_branch}**: replaced by the project default branch.
 - **%{commit_sha}**: replaced by the last project's commit SHA.
+
+<!-- vale gitlab.Spelling = YES -->
 
 Because these endpoints aren't inside a project's context, the information used to replace the placeholders comes
 from the first group's project by creation date. If the group hasn't got any project the original URL with the placeholders is returned.

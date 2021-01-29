@@ -28,11 +28,7 @@ export default {
     state.sorting = { ...state.sorting, ...sorting };
   },
 
-  [types.SET_SELECTED_TYPE](state, type) {
-    state.selectedType = type;
-  },
-
-  [types.SET_FILTER](state, query) {
-    state.filterQuery = query;
+  [types.SET_FILTER](state, filter) {
+    state.filter = filter;
   },
 };

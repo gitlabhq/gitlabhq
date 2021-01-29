@@ -86,5 +86,43 @@ RSpec.describe Gitlab::Changelog::Committer do
         end.not_to raise_error
       end
     end
+
+    context "when the changelog changes before saving the changes" do
+      it 'raises a CommitError' do
+        release1 = Gitlab::Changelog::Release
+          .new(version: '1.0.0', date: Time.utc(2020, 1, 1), config: config)
+
+        release2 = Gitlab::Changelog::Release
+          .new(version: '2.0.0', date: Time.utc(2020, 1, 1), config: config)
+
+        # This creates the initial commit we'll later use to see if the
+        # changelog changed before saving our changes.
+        committer.commit(
+          release: release1,
+          file: 'CHANGELOG.md',
+          branch: 'master',
+          message: 'Initial commit'
+        )
+
+        allow(Gitlab::Git::Commit)
+          .to receive(:last_for_path)
+          .with(
+            project.repository,
+            'master',
+            'CHANGELOG.md',
+            literal_pathspec: true
+          )
+          .and_return(double(:commit, sha: 'foo'))
+
+        expect do
+          committer.commit(
+            release: release2,
+            file: 'CHANGELOG.md',
+            branch: 'master',
+            message: 'Test commit'
+          )
+        end.to raise_error(described_class::CommitError)
+      end
+    end
   end
 end

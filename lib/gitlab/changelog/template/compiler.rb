@@ -98,19 +98,27 @@ module Gitlab
         ESCAPED_NEWLINE = /\\\n$/.freeze
 
         # The start tag for ERB tags. These tags will be escaped, preventing
-        # users FROM USING erb DIRECTLY.
-        ERB_START_TAG = '<%'
+        # users from using ERB directly.
+        ERB_START_TAG = /<\\?\s*\\?\s*%/.freeze
 
         def compile(template)
           transformed_lines = ['<% it = variables %>']
 
+          # ERB tags must be stripped here, otherwise a user may introduce ERB
+          # tags by making clever use of whitespace. See
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/300224 for more
+          # information.
+          template = template.gsub(ERB_START_TAG, '<%%')
+
           template.each_line { |line| transformed_lines << transform(line) }
-          Template.new(transformed_lines.join)
+
+          # We use the full namespace here as otherwise Rails may use the wrong
+          # constant when autoloading is used.
+          ::Gitlab::Changelog::Template::Template.new(transformed_lines.join)
         end
 
         def transform(line)
           line.gsub!(ESCAPED_NEWLINE, '')
-          line.gsub!(ERB_START_TAG, '<%%')
 
           # This replacement ensures that "end" blocks on their own lines
           # don't add extra newlines. Using an ERB -%> tag sadly swallows too

@@ -78,7 +78,7 @@ class ObjectStoreSettings
   #   "background_upload" => false,
   #   "proxy_download" => false,
   #   "remote_directory" => "artifacts"
-  #  }
+  # }
   #
   # Settings.lfs['object_store'] = {
   #   "enabled" => true,
@@ -97,7 +97,7 @@ class ObjectStoreSettings
   #   "background_upload" => false,
   #   "proxy_download" => true,
   #   "remote_directory" => "lfs-objects"
-  #  }
+  # }
   #
   # Note that with the common config:
   # 1. Only one object store credentials can now be used. This is
@@ -124,9 +124,9 @@ class ObjectStoreSettings
       target_config = common_config.merge(overrides.slice(*ALLOWED_OBJECT_STORE_OVERRIDES))
       section = settings.try(store_type)
 
-      next unless section
+      next unless uses_object_storage?(section)
 
-      if section['enabled'] && target_config['bucket'].blank?
+      if target_config['bucket'].blank?
         missing_bucket_for(store_type)
         next
       end
@@ -140,9 +140,25 @@ class ObjectStoreSettings
       target_config['consolidated_settings'] = true
       section['object_store'] = target_config
     end
+
+    settings
   end
 
   private
+
+  # Admins can selectively disable object storage for a specific type. If
+  # this hasn't been set, we assume that the consolidated settings
+  # should be used.
+  def uses_object_storage?(section)
+    # Use to_h to avoid https://gitlab.com/gitlab-org/gitlab/-/issues/286873
+    section = section.to_h
+
+    enabled_globally = section.fetch('enabled', false)
+    object_store_settings = section.fetch('object_store', {})
+    os_enabled = object_store_settings.fetch('enabled', true)
+
+    enabled_globally && os_enabled
+  end
 
   # We only can use the common object storage settings if:
   # 1. The common settings are defined
@@ -152,8 +168,9 @@ class ObjectStoreSettings
     return false unless settings.dig('object_store', 'connection').present?
 
     WORKHORSE_ACCELERATED_TYPES.each do |store|
-      # to_h is needed because something strange happens to
-      # Settingslogic#dig when stub_storage_settings is run in tests:
+      # to_h is needed because we define `default` as a Gitaly storage name
+      # in stub_storage_settings. This causes Settingslogic to redefine Hash#default,
+      # which causes Hash#dig to fail when the key doesn't exist: https://gitlab.com/gitlab-org/gitlab/-/issues/286873
       #
       # (byebug) section.dig
       # *** ArgumentError Exception: wrong number of arguments (given 0, expected 1+)

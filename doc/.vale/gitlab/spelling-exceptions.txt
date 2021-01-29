@@ -2,6 +2,7 @@ Akismet
 Alertmanager
 Algolia
 Alibaba
+Aliyun
 allowlist
 allowlisted
 allowlisting
@@ -34,6 +35,7 @@ autoscaler
 autoscales
 autoscaling
 awardable
+awardables
 Axios
 Azure
 B-tree
@@ -111,6 +113,7 @@ Dangerfile
 datetime
 Debian
 Decompressor
+decryptable
 deduplicate
 deduplicated
 deduplicates
@@ -168,6 +171,7 @@ Figma
 Filebeat
 Fio
 firewalled
+firewalling
 Flawfinder
 Flowdock
 Fluentd
@@ -272,6 +276,7 @@ libFuzzer
 Libravatar
 liveness
 Lograge
+logrotate
 Logstash
 lookahead
 lookaheads
@@ -282,6 +287,7 @@ loopback
 Lucene
 Maildir
 Mailgun
+Mailroom
 Makefile
 Makefiles
 Markdown
@@ -505,6 +511,8 @@ spidering
 Splunk
 SpotBugs
 Stackdriver
+starrer
+starrers
 storable
 storages
 strace
@@ -525,6 +533,8 @@ subnet
 subnets
 subnetting
 subpath
+subproject
+subprojects
 subqueried
 subqueries
 subquery
@@ -534,9 +544,12 @@ substrings
 subtree
 subtrees
 sudo
+supercookie
+supercookies
 swappiness
 swimlane
 swimlanes
+syncable
 Sysbench
 syslog
 tanuki
@@ -633,6 +646,9 @@ unresolved
 unresolving
 unschedule
 unscoped
+unshare
+unshared
+unshares
 unstage
 unstaged
 unstages

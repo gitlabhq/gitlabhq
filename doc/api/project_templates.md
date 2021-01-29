@@ -34,7 +34,7 @@ GET /projects/:id/templates/:type
 | Attribute  | Type   | Required | Description |
 | ---------- | ------ | -------- | ----------- |
 | `id`      | integer / string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
-| `type`     | string | yes| The type `(dockerfiles|gitignores|gitlab_ci_ymls|licenses|issues|merge_requests)` of the template |
+| `type`     | string | yes | The type `(dockerfiles|gitignores|gitlab_ci_ymls|licenses|issues|merge_requests)` of the template |
 
 Example response (licenses):
 

@@ -970,9 +970,13 @@ For Omnibus GitLab installations, Redis logs reside in `/var/log/gitlab/redis/`.
 
 For Omnibus GitLab installations, Alertmanager logs reside in `/var/log/gitlab/alertmanager/`.
 
+<!-- vale gitlab.Spelling = NO -->
+
 ## Crond Logs
 
-For Omnibus GitLab installations, `crond` logs reside in `/var/log/gitlab/crond/`.
+For Omnibus GitLab installations, crond logs reside in `/var/log/gitlab/crond/`.
+
+<!-- vale gitlab.Spelling = YES -->
 
 ## Grafana Logs
 
@@ -980,7 +984,7 @@ For Omnibus GitLab installations, Grafana logs reside in `/var/log/gitlab/grafan
 
 ## LogRotate Logs
 
-For Omnibus GitLab installations, logrotate logs reside in `/var/log/gitlab/logrotate/`.
+For Omnibus GitLab installations, `logrotate` logs reside in `/var/log/gitlab/logrotate/`.
 
 ## GitLab Monitor Logs
 
@@ -1023,14 +1027,14 @@ GitLab Support often asks for one of these, and maintains the required tools.
 ### Briefly tail the main logs
 
 If the bug or error is readily reproducible, save the main GitLab logs
-[to a file](troubleshooting/linux_cheat_sheet.md#files--dirs) while reproducing the
+[to a file](troubleshooting/linux_cheat_sheet.md#files-and-directories) while reproducing the
 problem a few times:
 
 ```shell
 sudo gitlab-ctl tail | tee /tmp/<case-ID-and-keywords>.log
 ```
 
-Conclude the log gathering with <kbd>Ctrl</kbd> + <kbd>C</kbd>.
+Conclude the log gathering with <kbd>Control</kbd> + <kbd>C</kbd>.
 
 ### GitLabSOS
 

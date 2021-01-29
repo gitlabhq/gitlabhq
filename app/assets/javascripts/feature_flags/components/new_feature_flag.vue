@@ -1,4 +1,5 @@
 <script>
+import { GlAlert } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 import axios from '~/lib/utils/axios_utils';
 import FeatureFlagForm from './form.vue';
@@ -10,6 +11,7 @@ import featureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 export default {
   components: {
     FeatureFlagForm,
+    GlAlert,
   },
   mixins: [featureFlagsMixin()],
   inject: {
@@ -61,9 +63,9 @@ export default {
   <div>
     <h3 class="page-title">{{ s__('FeatureFlags|New feature flag') }}</h3>
 
-    <div v-if="error.length" class="alert alert-danger">
-      <p v-for="(message, index) in error" :key="index" class="mb-0">{{ message }}</p>
-    </div>
+    <gl-alert v-if="error.length" variant="warning" class="gl-mb-5" :dismissible="false">
+      <p v-for="(message, index) in error" :key="index" class="gl-mb-0">{{ message }}</p>
+    </gl-alert>
 
     <feature-flag-form
       :cancel-path="path"

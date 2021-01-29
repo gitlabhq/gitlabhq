@@ -46,7 +46,7 @@ Each database node runs three services:
 
 `PostgreSQL` - The database itself.
 
-`Patroni` - Communicates with other patroni services in the cluster and handles
+`Patroni` - Communicates with other Patroni services in the cluster and handles
 failover when issues with the leader server occurs. The failover procedure
 consists of:
 

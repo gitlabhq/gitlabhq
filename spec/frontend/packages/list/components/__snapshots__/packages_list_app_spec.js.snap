@@ -6,517 +6,60 @@ exports[`packages_list_app renders 1`] = `
     packagehelpurl="foo"
   />
    
-  <b-tabs-stub
-    activenavitemclass="gl-tab-nav-item-active gl-tab-nav-item-active-indigo"
-    class="gl-tabs"
-    contentclass=",gl-tab-content"
-    navclass=",gl-tabs-nav"
-    nofade="true"
-    nonavstyle="true"
-    tag="div"
-  >
-    <template>
-       
-      <b-tab-stub
-        tag="div"
-        title="All"
-        titlelinkclass="gl-tab-nav-item"
-      >
-        <template>
-          <div>
-            <section
-              class="row empty-state text-center"
-            >
-              <div
-                class="col-12"
-              >
-                <div
-                  class="svg-250 svg-content"
-                >
-                  <img
-                    alt=""
-                    class="gl-max-w-full"
-                    src="helpSvg"
-                  />
-                </div>
-              </div>
-               
-              <div
-                class="col-12"
-              >
-                <div
-                  class="text-content gl-mx-auto gl-my-0 gl-p-5"
-                >
-                  <h1
-                    class="h4"
-                  >
-                    There are no packages yet
-                  </h1>
-                   
-                  <p>
-                    Learn how to 
-                    <b-link-stub
-                      class="gl-link"
-                      event="click"
-                      href="helpUrl"
-                      routertag="a"
-                      target="_blank"
-                    >
-                      publish and share your packages
-                    </b-link-stub>
-                     with GitLab.
-                  </p>
-                   
-                  <div>
-                    <!---->
-                     
-                    <!---->
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-        </template>
-      </b-tab-stub>
-      <b-tab-stub
-        tag="div"
-        title="Composer"
-        titlelinkclass="gl-tab-nav-item"
-      >
-        <template>
-          <div>
-            <section
-              class="row empty-state text-center"
-            >
-              <div
-                class="col-12"
-              >
-                <div
-                  class="svg-250 svg-content"
-                >
-                  <img
-                    alt=""
-                    class="gl-max-w-full"
-                    src="helpSvg"
-                  />
-                </div>
-              </div>
-               
-              <div
-                class="col-12"
-              >
-                <div
-                  class="text-content gl-mx-auto gl-my-0 gl-p-5"
-                >
-                  <h1
-                    class="h4"
-                  >
-                    There are no Composer packages yet
-                  </h1>
-                   
-                  <p>
-                    Learn how to 
-                    <b-link-stub
-                      class="gl-link"
-                      event="click"
-                      href="helpUrl"
-                      routertag="a"
-                      target="_blank"
-                    >
-                      publish and share your packages
-                    </b-link-stub>
-                     with GitLab.
-                  </p>
-                   
-                  <div>
-                    <!---->
-                     
-                    <!---->
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-        </template>
-      </b-tab-stub>
-      <b-tab-stub
-        tag="div"
-        title="Conan"
-        titlelinkclass="gl-tab-nav-item"
-      >
-        <template>
-          <div>
-            <section
-              class="row empty-state text-center"
-            >
-              <div
-                class="col-12"
-              >
-                <div
-                  class="svg-250 svg-content"
-                >
-                  <img
-                    alt=""
-                    class="gl-max-w-full"
-                    src="helpSvg"
-                  />
-                </div>
-              </div>
-               
-              <div
-                class="col-12"
-              >
-                <div
-                  class="text-content gl-mx-auto gl-my-0 gl-p-5"
-                >
-                  <h1
-                    class="h4"
-                  >
-                    There are no Conan packages yet
-                  </h1>
-                   
-                  <p>
-                    Learn how to 
-                    <b-link-stub
-                      class="gl-link"
-                      event="click"
-                      href="helpUrl"
-                      routertag="a"
-                      target="_blank"
-                    >
-                      publish and share your packages
-                    </b-link-stub>
-                     with GitLab.
-                  </p>
-                   
-                  <div>
-                    <!---->
-                     
-                    <!---->
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-        </template>
-      </b-tab-stub>
-      <b-tab-stub
-        tag="div"
-        title="Generic"
-        titlelinkclass="gl-tab-nav-item"
-      >
-        <template>
-          <div>
-            <section
-              class="row empty-state text-center"
-            >
-              <div
-                class="col-12"
-              >
-                <div
-                  class="svg-250 svg-content"
-                >
-                  <img
-                    alt=""
-                    class="gl-max-w-full"
-                    src="helpSvg"
-                  />
-                </div>
-              </div>
-               
-              <div
-                class="col-12"
-              >
-                <div
-                  class="text-content gl-mx-auto gl-my-0 gl-p-5"
-                >
-                  <h1
-                    class="h4"
-                  >
-                    There are no Generic packages yet
-                  </h1>
-                   
-                  <p>
-                    Learn how to 
-                    <b-link-stub
-                      class="gl-link"
-                      event="click"
-                      href="helpUrl"
-                      routertag="a"
-                      target="_blank"
-                    >
-                      publish and share your packages
-                    </b-link-stub>
-                     with GitLab.
-                  </p>
-                   
-                  <div>
-                    <!---->
-                     
-                    <!---->
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-        </template>
-      </b-tab-stub>
-      <b-tab-stub
-        tag="div"
-        title="Maven"
-        titlelinkclass="gl-tab-nav-item"
-      >
-        <template>
-          <div>
-            <section
-              class="row empty-state text-center"
-            >
-              <div
-                class="col-12"
-              >
-                <div
-                  class="svg-250 svg-content"
-                >
-                  <img
-                    alt=""
-                    class="gl-max-w-full"
-                    src="helpSvg"
-                  />
-                </div>
-              </div>
-               
-              <div
-                class="col-12"
-              >
-                <div
-                  class="text-content gl-mx-auto gl-my-0 gl-p-5"
-                >
-                  <h1
-                    class="h4"
-                  >
-                    There are no Maven packages yet
-                  </h1>
-                   
-                  <p>
-                    Learn how to 
-                    <b-link-stub
-                      class="gl-link"
-                      event="click"
-                      href="helpUrl"
-                      routertag="a"
-                      target="_blank"
-                    >
-                      publish and share your packages
-                    </b-link-stub>
-                     with GitLab.
-                  </p>
-                   
-                  <div>
-                    <!---->
-                     
-                    <!---->
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-        </template>
-      </b-tab-stub>
-      <b-tab-stub
-        tag="div"
-        title="NPM"
-        titlelinkclass="gl-tab-nav-item"
-      >
-        <template>
-          <div>
-            <section
-              class="row empty-state text-center"
-            >
-              <div
-                class="col-12"
-              >
-                <div
-                  class="svg-250 svg-content"
-                >
-                  <img
-                    alt=""
-                    class="gl-max-w-full"
-                    src="helpSvg"
-                  />
-                </div>
-              </div>
-               
-              <div
-                class="col-12"
-              >
-                <div
-                  class="text-content gl-mx-auto gl-my-0 gl-p-5"
-                >
-                  <h1
-                    class="h4"
-                  >
-                    There are no NPM packages yet
-                  </h1>
-                   
-                  <p>
-                    Learn how to 
-                    <b-link-stub
-                      class="gl-link"
-                      event="click"
-                      href="helpUrl"
-                      routertag="a"
-                      target="_blank"
-                    >
-                      publish and share your packages
-                    </b-link-stub>
-                     with GitLab.
-                  </p>
-                   
-                  <div>
-                    <!---->
-                     
-                    <!---->
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-        </template>
-      </b-tab-stub>
-      <b-tab-stub
-        tag="div"
-        title="NuGet"
-        titlelinkclass="gl-tab-nav-item"
-      >
-        <template>
-          <div>
-            <section
-              class="row empty-state text-center"
-            >
-              <div
-                class="col-12"
-              >
-                <div
-                  class="svg-250 svg-content"
-                >
-                  <img
-                    alt=""
-                    class="gl-max-w-full"
-                    src="helpSvg"
-                  />
-                </div>
-              </div>
-               
-              <div
-                class="col-12"
-              >
-                <div
-                  class="text-content gl-mx-auto gl-my-0 gl-p-5"
-                >
-                  <h1
-                    class="h4"
-                  >
-                    There are no NuGet packages yet
-                  </h1>
-                   
-                  <p>
-                    Learn how to 
-                    <b-link-stub
-                      class="gl-link"
-                      event="click"
-                      href="helpUrl"
-                      routertag="a"
-                      target="_blank"
-                    >
-                      publish and share your packages
-                    </b-link-stub>
-                     with GitLab.
-                  </p>
-                   
-                  <div>
-                    <!---->
-                     
-                    <!---->
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-        </template>
-      </b-tab-stub>
-      <b-tab-stub
-        tag="div"
-        title="PyPI"
-        titlelinkclass="gl-tab-nav-item"
-      >
-        <template>
-          <div>
-            <section
-              class="row empty-state text-center"
-            >
-              <div
-                class="col-12"
-              >
-                <div
-                  class="svg-250 svg-content"
-                >
-                  <img
-                    alt=""
-                    class="gl-max-w-full"
-                    src="helpSvg"
-                  />
-                </div>
-              </div>
-               
-              <div
-                class="col-12"
-              >
-                <div
-                  class="text-content gl-mx-auto gl-my-0 gl-p-5"
-                >
-                  <h1
-                    class="h4"
-                  >
-                    There are no PyPI packages yet
-                  </h1>
-                   
-                  <p>
-                    Learn how to 
-                    <b-link-stub
-                      class="gl-link"
-                      event="click"
-                      href="helpUrl"
-                      routertag="a"
-                      target="_blank"
-                    >
-                      publish and share your packages
-                    </b-link-stub>
-                     with GitLab.
-                  </p>
-                   
-                  <div>
-                    <!---->
-                     
-                    <!---->
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-        </template>
-      </b-tab-stub>
-    </template>
-    <template>
+  <package-search-stub />
+   
+  <div>
+    <section
+      class="row empty-state text-center"
+    >
       <div
-        class="gl-display-flex gl-align-self-center gl-py-2 gl-flex-grow-1 gl-justify-content-end"
+        class="col-12"
       >
-        <package-filter-stub
-          class="gl-mr-2"
-        />
-         
-        <package-sort-stub />
+        <div
+          class="svg-250 svg-content"
+        >
+          <img
+            alt=""
+            class="gl-max-w-full"
+            src="helpSvg"
+          />
+        </div>
       </div>
-    </template>
-  </b-tabs-stub>
+       
+      <div
+        class="col-12"
+      >
+        <div
+          class="text-content gl-mx-auto gl-my-0 gl-p-5"
+        >
+          <h1
+            class="h4"
+          >
+            There are no packages yet
+          </h1>
+           
+          <p>
+            Learn how to 
+            <b-link-stub
+              class="gl-link"
+              event="click"
+              href="helpUrl"
+              routertag="a"
+              target="_blank"
+            >
+              publish and share your packages
+            </b-link-stub>
+             with GitLab.
+          </p>
+           
+          <div>
+            <!---->
+             
+            <!---->
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 </div>
 `;

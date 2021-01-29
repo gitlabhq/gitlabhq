@@ -55,6 +55,12 @@ describe('Codequality Reports mutations', () => {
       expect(localState.hasError).toEqual(false);
     });
 
+    it('clears statusReason', () => {
+      mutations.RECEIVE_REPORTS_SUCCESS(localState, {});
+
+      expect(localState.statusReason).toEqual('');
+    });
+
     it('sets newIssues and resolvedIssues from response data', () => {
       const data = { newIssues: [{ id: 1 }], resolvedIssues: [{ id: 2 }] };
       mutations.RECEIVE_REPORTS_SUCCESS(localState, data);
@@ -75,6 +81,14 @@ describe('Codequality Reports mutations', () => {
       mutations.RECEIVE_REPORTS_ERROR(localState);
 
       expect(localState.hasError).toEqual(true);
+    });
+
+    it('sets statusReason to string from error response data', () => {
+      const data = { status_reason: 'This merge request does not have codequality reports' };
+      const error = { response: { data } };
+      mutations.RECEIVE_REPORTS_ERROR(localState, error);
+
+      expect(localState.statusReason).toEqual(data.status_reason);
     });
   });
 });

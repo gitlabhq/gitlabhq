@@ -1,9 +1,10 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { GlEmptyState, GlTab, GlTabs, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlEmptyState, GlSprintf, GlLink } from '@gitlab/ui';
 import * as commonUtils from '~/lib/utils/common_utils';
 import createFlash from '~/flash';
 import PackageListApp from '~/packages/list/components/packages_list_app.vue';
+import PackageSearch from '~/packages/list/components/package_search.vue';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages/shared/constants';
 import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '~/packages/list/constants';
 
@@ -26,9 +27,9 @@ describe('packages_list_app', () => {
   const emptyListHelpUrl = 'helpUrl';
   const findEmptyState = () => wrapper.find(GlEmptyState);
   const findListComponent = () => wrapper.find(PackageList);
-  const findTabComponent = (index = 0) => wrapper.findAll(GlTab).at(index);
+  const findPackageSearch = () => wrapper.find(PackageSearch);
 
-  const createStore = (filterQuery = '') => {
+  const createStore = (filter = []) => {
     store = new Vuex.Store({
       state: {
         isLoading: false,
@@ -38,7 +39,7 @@ describe('packages_list_app', () => {
           emptyListHelpUrl,
           packageHelpUrl: 'foo',
         },
-        filterQuery,
+        filter,
       },
     });
     store.dispatch = jest.fn();
@@ -52,8 +53,6 @@ describe('packages_list_app', () => {
         GlEmptyState,
         GlLoadingIcon,
         PackageList,
-        GlTab,
-        GlTabs,
         GlSprintf,
         GlLink,
       },
@@ -122,27 +121,9 @@ describe('packages_list_app', () => {
     expect(store.dispatch).toHaveBeenCalledTimes(1);
   });
 
-  describe('tab change', () => {
-    it('calls requestPackagesList when all tab is clicked', () => {
-      mountComponent();
-
-      findTabComponent().trigger('click');
-
-      expect(store.dispatch).toHaveBeenCalledWith('requestPackagesList');
-    });
-
-    it('calls requestPackagesList when a package type tab is clicked', () => {
-      mountComponent();
-
-      findTabComponent(1).trigger('click');
-
-      expect(store.dispatch).toHaveBeenCalledWith('requestPackagesList');
-    });
-  });
-
   describe('filter without results', () => {
     beforeEach(() => {
-      createStore('foo');
+      createStore([{ type: 'something' }]);
       mountComponent();
     });
 
@@ -154,12 +135,28 @@ describe('packages_list_app', () => {
     });
   });
 
+  describe('Package Search', () => {
+    it('exists', () => {
+      mountComponent();
+
+      expect(findPackageSearch().exists()).toBe(true);
+    });
+
+    it.each(['sort:changed', 'filter:changed'])('on %p fetches data from the store', (event) => {
+      mountComponent();
+
+      findPackageSearch().vm.$emit(event);
+
+      expect(store.dispatch).toHaveBeenCalledWith('requestPackagesList');
+    });
+  });
+
   describe('delete alert handling', () => {
     const { location } = window.location;
     const search = `?${SHOW_DELETE_SUCCESS_ALERT}=true`;
 
     beforeEach(() => {
-      createStore('foo');
+      createStore();
       jest.spyOn(commonUtils, 'historyReplaceState').mockImplementation(() => {});
       delete window.location;
       window.location = {

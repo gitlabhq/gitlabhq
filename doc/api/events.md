@@ -25,7 +25,7 @@ Available action types for the `action` parameter are:
 - `destroyed`
 - `expired`
 
-Note that these options are downcased.
+Note that these options are in lower case.
 
 ### Target Types
 
@@ -39,7 +39,7 @@ Available target types for the `target_type` parameter are:
 - `snippet`
 - `user`
 
-Note that these options are downcased.
+Note that these options are in lower case.
 
 ### Date formatting
 

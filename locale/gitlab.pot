@@ -19884,9 +19884,6 @@ msgstr ""
 msgid "No start date"
 msgstr ""
 
-msgid "No status"
-msgstr ""
-
 msgid "No template"
 msgstr ""
 
@@ -20804,9 +20801,6 @@ msgstr ""
 msgid "PackageRegistry|Delete package"
 msgstr ""
 
-msgid "PackageRegistry|Filter by name"
-msgstr ""
-
 msgid "PackageRegistry|For more information on Composer packages in GitLab, %{linkStart}see the documentation.%{linkEnd}"
 msgstr ""
 
@@ -20900,9 +20894,6 @@ msgstr ""
 msgid "PackageRegistry|Source project located at %{link}"
 msgstr ""
 
-msgid "PackageRegistry|There are no %{packageType} packages yet"
-msgstr ""
-
 msgid "PackageRegistry|There are no other versions of this package."
 msgstr ""
 
@@ -20916,6 +20907,9 @@ msgid "PackageRegistry|This NuGet package has no dependencies."
 msgstr ""
 
 msgid "PackageRegistry|To widen your search, change or remove the filters above."
+msgstr ""
+
+msgid "PackageRegistry|Type"
 msgstr ""
 
 msgid "PackageRegistry|Unable to fetch package version information."
@@ -33393,13 +33387,13 @@ msgstr ""
 msgid "Your GPG keys (%{count})"
 msgstr ""
 
+msgid "Your GitLab Ultimate trial will last 30 days after which point you can keep your free GitLab account forever. We just need some additional information to activate your trial."
+msgstr ""
+
 msgid "Your GitLab account request has been approved!"
 msgstr ""
 
 msgid "Your GitLab group"
-msgstr ""
-
-msgid "Your Gitlab Ultimate trial will last 30 days after which point you can keep your free Gitlab account forever. We just need some additional information to activate your trial."
 msgstr ""
 
 msgid "Your Groups"
