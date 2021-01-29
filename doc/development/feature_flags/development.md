@@ -66,6 +66,13 @@ Feature.disabled?(:my_ops_flag, project, type: :ops)
 push_frontend_feature_flag(:my_ops_flag, project, type: :ops)
 ```
 
+### `experiment` type
+
+`experiment` feature flags are used for A/B testing on GitLab.com.
+
+An `experiment` feature flag should conform to the same standards as a `development` feature flag, 
+although the interface has some differences. More information can be found in the [experiment guide](../experiment_guide/index.md).
+
 ## Feature flag definition and validation
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229161) in GitLab 13.3.

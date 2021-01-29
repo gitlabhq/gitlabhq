@@ -117,6 +117,43 @@ information about multiplexed queries is also available for
 [GraphQL Ruby](https://graphql-ruby.org/queries/multiplex.html), the
 library GitLab uses on the backend.
 
+## Limits
+
+The following limits apply to the GitLab GraphQL API.
+
+### Max page size
+
+By default, connections return at most `100` records ("nodes") per page,
+and this limit applies to most connections in the API. Particular connections
+may have different max page size limits that are higher or lower.
+
+### Max query complexity
+
+The GitLab GraphQL API scores the _complexity_ of a query. Generally, larger
+queries will have a higher complexity score. This limit is designed to protect
+the API from performing queries that could negatively impact its overall performance.
+
+The complexity of a single query is limited to a maximum of:
+
+- `200` for unauthenticated requests.
+- `250` for authenticated requests.
+
+There is no way to discover the complexity of a query except by exceeding the limit.
+
+If a query exceeds the complexity limit an error message response will
+be returned.
+
+In general, each field in a query will add `1` to the complexity score, although
+this can be higher or lower for particular fields. Sometimes the addition of
+certain arguments may also increase the complexity of a query.
+
+The complexity limits may be revised in future, and additionally, the complexity
+of a query may be altered.
+
+### Request timeout
+
+Requests time out at 30 seconds.
+
 ## Reference
 
 The GitLab GraphQL reference [is available](reference/index.md).

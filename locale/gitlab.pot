@@ -14955,9 +14955,6 @@ msgstr ""
 msgid "In order to enable Service Desk for your instance, you must first set up incoming email."
 msgstr ""
 
-msgid "In order to personalize your experience with GitLab%{br_tag}we would like to know a bit more about you."
-msgstr ""
-
 msgid "In progress"
 msgstr ""
 
@@ -29422,9 +29419,6 @@ msgstr ""
 msgid "This will clear repository check states for ALL projects in the database. This cannot be undone. Are you sure?"
 msgstr ""
 
-msgid "This will help us personalize your onboarding experience."
-msgstr ""
-
 msgid "This will redirect you to an external sign in page."
 msgstr ""
 
@@ -29898,6 +29892,9 @@ msgid "To only use CI/CD features for an external repository, choose %{strong_op
 msgstr ""
 
 msgid "To open Jaeger and easily view tracing from GitLab, link the %{link} page to your server"
+msgstr ""
+
+msgid "To personalize your GitLab experience, we'd like to know a bit more about you. We won't share this information with anyone."
 msgstr ""
 
 msgid "To preserve performance only %{strong_open}%{display_size} of %{real_size}%{strong_close} files are displayed."
@@ -32090,10 +32087,10 @@ msgstr ""
 msgid "Welcome to GitLab"
 msgstr ""
 
-msgid "Welcome to GitLab%{br_tag}%{name}!"
+msgid "Welcome to GitLab, %{first_name}!"
 msgstr ""
 
-msgid "Welcome to GitLab, %{first_name}!"
+msgid "Welcome to GitLab,%{br_tag}%{name}!"
 msgstr ""
 
 msgid "Welcome to the guided GitLab tour"

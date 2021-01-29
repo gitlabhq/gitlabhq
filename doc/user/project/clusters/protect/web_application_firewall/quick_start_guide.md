@@ -55,7 +55,7 @@ those projects provide a bare-bones application built on some well-known framewo
 
 1. Give your project a name, optionally a description, and make it public so that
    you can take advantage of the features available in the
-   [GitLab Gold plan](https://about.gitlab.com/pricing/#gitlab-com).
+   [GitLab Ultimate plan](https://about.gitlab.com/pricing/).
 
    ![Create project](../../../../../topics/autodevops/img/guide_create_project_v12_3.png)
 

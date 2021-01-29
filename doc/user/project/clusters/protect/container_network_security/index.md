@@ -28,10 +28,9 @@ chart.
 - GitLab managed installation of Cilium.
 - Support for L3, L4, and L7 policies.
 - Ability to export logs to a SIEM.
-- Statistics page showing volume of packets processed and dropped over time (Gold/Ultimate users
-  only).
+- Statistics page showing volume of packets processed and dropped over time (Ultimate users only).
 - Management of NetworkPolicies through code in a project (Available for auto DevOps users only).
-- Management of CiliumNetworkPolicies through a UI policy manager (Gold/Ultimate users only).
+- Management of CiliumNetworkPolicies through a UI policy manager (Ultimate users only).
 
 ## Supported container orchestrators
 

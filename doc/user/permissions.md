@@ -421,7 +421,8 @@ details such as projects or subgroups. They do not have access to the group's pa
 ### Minimal access users take license seats
 
 Users with even a "minimal access" role are counted against your number of license seats. This
-requirement does not apply for [GitLab Gold/Ultimate](https://about.gitlab.com/pricing/) subscriptions.
+requirement does not apply for [GitLab Ultimate](https://about.gitlab.com/pricing/)
+subscriptions.
 
 ## Project features
 

@@ -314,9 +314,10 @@ Pagination is a way of only asking for a subset of the records (say, the first 1
 If we want more of them, we can make another request for the next 10 from the server
 (in the form of something like "please give me the next 10 records").
 
-By default, the GitLab GraphQL API returns only the first 100 records of any collection.
+By default, the GitLab GraphQL API returns 100 records per page.
 This can be changed by using `first` or `last` arguments. Both arguments take a value,
 so `first: 10` returns the first 10 records, and `last: 10` the last 10 records.
+There is a limit on how many records will be returned per page, which is generally `100`.
 
 Example: Retrieve only the first 2 issues (slicing). The `cursor` field gives us a position from which
 we can retrieve further records relative to that one.

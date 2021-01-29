@@ -4,10 +4,8 @@
   .d-flex.gl-flex-direction-column.gl-align-items-center.gl-w-full.gl-p-5
     .edit-profile.login-page.d-flex.flex-column.gl-align-items-center.pt-lg-3
       = render_if_exists "registrations/welcome/progress_bar"
-      %h2.gl-text-center= html_escape(_('Welcome to GitLab%{br_tag}%{name}!')) % { name: html_escape(current_user.first_name), br_tag: '<br/>'.html_safe }
-      %p
-        .gl-text-center= html_escape(_('In order to personalize your experience with GitLab%{br_tag}we would like to know a bit more about you.')) % { br_tag: '<br/>'.html_safe }
-
+      %h2.gl-text-center= html_escape(_('Welcome to GitLab,%{br_tag}%{name}!')) % { name: html_escape(current_user.first_name), br_tag: '<br/>'.html_safe }
+      %p.gl-text-center= html_escape(_('To personalize your GitLab experience, we\'d like to know a bit more about you. We won\'t share this information with anyone.')) % { br_tag: '<br/>'.html_safe }
       = form_for(current_user, url: users_sign_up_welcome_path, html: { class: 'card gl-w-full! gl-p-5', 'aria-live' => 'assertive' }) do |f|
         .devise-errors
           = render 'devise/shared/error_messages', resource: current_user
@@ -20,9 +18,6 @@
             .form-group.col-sm-12.js-other-role-group{ class: ("hidden") }
               = f.label :other_role, _('What is your job title? (optional)'), class: 'form-check-label gl-mb-3'
               = f.text_field :other_role, class: 'form-control'
-        .row
-          .form-group.col-sm-12
-            .form-text.gl-text-gray-500.gl-mt-0.gl-line-height-normal.gl-px-1= _('This will help us personalize your onboarding experience.')
         = render_if_exists "registrations/welcome/setup_for_company", f: f
         .row
           .form-group.col-sm-12.gl-mb-0

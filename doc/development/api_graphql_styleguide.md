@@ -45,6 +45,32 @@ can be shared.
 It's also possible to add a `private_token` to the query string, or
 add a `HTTP_PRIVATE_TOKEN` header.
 
+## Limits
+
+Several limits apply to the GraphQL API and some of these can be overridden
+by developers.
+
+### Max page size
+
+By default, [connections](#connection-types) can only return
+at most a maximum number of records defined in
+[`app/graphql/gitlab_schema.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/gitlab_schema.rb)
+per page.
+
+Developers can [specify a custom max page size](#page-size-limit) when defining
+a connection.
+
+### Max complexity
+
+Complexity is explained [on our client-facing API page](../api/graphql/index.md#max-query-complexity).
+
+Fields default to adding `1` to a query's complexity score, but developers can
+[specify a custom complexity](#field-complexity) when defining a field.
+
+### Request timeout
+
+Requests time out at 30 seconds.
+
 ## Global IDs
 
 The GitLab GraphQL API uses Global IDs (i.e: `"gid://gitlab/MyObject/123"`)
@@ -283,6 +309,61 @@ They need to be kept in sync with their canonical field, and deprecated or modif
 Use the functionality the framework provides unless there is a compelling reason to do otherwise.
 
 For example, instead of `latest_pipeline`, use `pipelines(last: 1)`.
+
+#### Page size limit
+
+By default, the API returns at most a maximum number of records defined in
+[`app/graphql/gitlab_schema.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/gitlab_schema.rb)
+per page within a connection and this will also be the default number of records
+returned per page if no limiting arguments (`first:` or `last:`) are provided by a client.
+
+The `max_page_size` argument can be used to specify a different page size limit
+for a connection.
+
+WARNING:
+It's better to change the frontend client, or product requirements, to not need large amounts of
+records per page than it is to raise the `max_page_size`, as the default is set to ensure
+the GraphQL API remains performant.
+
+For example:
+
+```ruby
+field :tags,
+  Types::ContainerRepositoryTagType.connection_type,
+  null: true,
+  description: 'Tags of the container repository',
+  max_page_size: 20
+```
+
+### Field complexity
+
+The GitLab GraphQL API uses a _complexity_ score to limit performing overly complex queries.
+Complexity is described in [our client documentation](../api/graphql/index.md#max-query-complexity) on the topic.
+
+Complexity limits are defined in [`app/graphql/gitlab_schema.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/gitlab_schema.rb).
+
+By default, fields will add `1` to a query's complexity score. This can be overridden by
+[providing a custom `complexity`](https://graphql-ruby.org/queries/complexity_and_depth.html) value for a field.
+
+Developers should specify higher complexity for fields that cause more _work_ to be performed
+by the server in order to return data. Fields that represent data that can be returned
+with little-to-no _work_, for example in most cases; `id` or `title`, can be given a complexity of `0`.
+
+### `calls_gitaly`
+
+Fields that have the potential to perform a [Gitaly](../administration/gitaly/index.md) call when resolving _must_ be marked as
+such by passing `calls_gitaly: true` to `field` when defining it.
+
+For example:
+
+```ruby
+field :blob, type: Types::Snippets::BlobType,
+      description: 'Snippet blob',
+      null: false,
+      calls_gitaly: true
+```
+
+This will increment the [`complexity` score](#field-complexity) of the field by `1`.
 
 ### Exposing permissions for a type
 
