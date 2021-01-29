@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Issuable do
   include ProjectForksHelper
+  using RSpec::Parameterized::TableSyntax
 
   let(:issuable_class) { Issue }
   let(:issue) { create(:issue, title: 'An issue', description: 'A description') }
@@ -45,13 +46,17 @@ RSpec.describe Issuable do
       end
 
       it { is_expected.to validate_presence_of(:project) }
-      it { is_expected.to validate_presence_of(:iid) }
       it { is_expected.to validate_presence_of(:author) }
       it { is_expected.to validate_presence_of(:title) }
       it { is_expected.to validate_length_of(:title).is_at_most(described_class::TITLE_LENGTH_MAX) }
       it { is_expected.to validate_length_of(:description).is_at_most(described_class::DESCRIPTION_LENGTH_MAX).on(:create) }
 
-      it_behaves_like 'validates description length with custom validation'
+      it_behaves_like 'validates description length with custom validation' do
+        before do
+          allow(InternalId).to receive(:generate_next).and_call_original
+        end
+      end
+
       it_behaves_like 'truncates the description to its allowed maximum length on import'
     end
   end
@@ -820,8 +825,6 @@ RSpec.describe Issuable do
   end
 
   describe '#supports_time_tracking?' do
-    using RSpec::Parameterized::TableSyntax
-
     where(:issuable_type, :supports_time_tracking) do
       :issue         | true
       :incident      | true
@@ -838,8 +841,6 @@ RSpec.describe Issuable do
   end
 
   describe '#supports_severity?' do
-    using RSpec::Parameterized::TableSyntax
-
     where(:issuable_type, :supports_severity) do
       :issue         | false
       :incident      | true
@@ -856,8 +857,6 @@ RSpec.describe Issuable do
   end
 
   describe '#incident?' do
-    using RSpec::Parameterized::TableSyntax
-
     where(:issuable_type, :incident) do
       :issue         | false
       :incident      | true
@@ -874,8 +873,6 @@ RSpec.describe Issuable do
   end
 
   describe '#supports_issue_type?' do
-    using RSpec::Parameterized::TableSyntax
-
     where(:issuable_type, :supports_issue_type) do
       :issue         | true
       :merge_request | false
@@ -894,8 +891,6 @@ RSpec.describe Issuable do
     subject { issuable.severity }
 
     context 'when issuable is not an incident' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:issuable_type, :severity) do
         :issue         | 'unknown'
         :merge_request | 'unknown'

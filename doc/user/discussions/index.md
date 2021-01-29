@@ -115,7 +115,7 @@ are resolved](#only-allow-merge-requests-to-be-merged-if-all-threads-are-resolve
 there will be an **open an issue to resolve them later** link in the merge
 request widget.
 
-![Link in merge request widget](img/resolve_thread_open_issue.png)
+![Link in merge request widget](img/resolve_thread_open_issue_v13_9.png)
 
 This will prepare an issue with its content referring to the merge request and
 the unresolved threads.
@@ -161,7 +161,7 @@ box and hit **Save** for the changes to take effect.
 From now on, you will not be able to merge from the UI until all threads
 are resolved.
 
-![Only allow merge if all the threads are resolved message](img/resolve_thread_open_issue.png)
+![Only allow merge if all the threads are resolved message](img/resolve_thread_open_issue_v13_9.png)
 
 ### Automatically resolve merge request diff threads when they become outdated
 

@@ -22,10 +22,10 @@ export default {
   strings: {
     alertTitle: __('You are about to permanently delete this project'),
     alertBody: __(
-      'Once a project is permanently deleted it %{strongStart}cannot be recovered%{strongEnd}. Permanently deleting this project will %{strongStart}immediately delete%{strongEnd} its repositories and %{strongStart}all related resources%{strongEnd} including issues, merge requests etc.',
+      'Once a project is permanently deleted, it %{strongStart}cannot be recovered%{strongEnd}. Permanently deleting this project will %{strongStart}immediately delete%{strongEnd} its repositories and %{strongStart}all related resources%{strongEnd}, including issues, merge requests etc.',
     ),
     modalBody: __(
-      "This action cannot be undone. You will lose this project's repository and all content: issues, merge requests, etc.",
+      "This action cannot be undone. You will lose this project's repository and all related resources, including issues, merge requests, etc.",
     ),
   },
 };

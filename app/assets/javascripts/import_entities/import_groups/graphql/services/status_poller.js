@@ -46,7 +46,10 @@ export class StatusPoller {
       const { bulkImportSourceGroups } = this.client.readQuery({
         query: bulkImportSourceGroupsQuery,
       });
-      const groupsInProgress = bulkImportSourceGroups.filter((g) => g.status === STATUSES.STARTED);
+
+      const groupsInProgress = bulkImportSourceGroups.nodes.filter(
+        (g) => g.status === STATUSES.STARTED,
+      );
       if (groupsInProgress.length) {
         const { data: results } = await this.client.query({
           query: generateGroupsQuery(groupsInProgress),

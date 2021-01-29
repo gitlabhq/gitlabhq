@@ -34,7 +34,7 @@ limit by passing a number to the check task:
 rake gitlab:ldap:check[50]
 ```
 
-## Run a group sync **(STARTER ONLY)**
+## Run a group sync **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14735) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.2.
 

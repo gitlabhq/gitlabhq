@@ -23,8 +23,8 @@ RSpec.describe 'Import/Export - Connect to another instance', :js do
       source_url = 'https://gitlab.com'
       pat = 'demo-pat'
       stub_path = 'stub-group'
-
-      stub_request(:get, "%{url}/api/v4/groups?page=1&per_page=30&top_level_only=true&min_access_level=40" % { url: source_url }).to_return(
+      total = 37
+      stub_request(:get, "%{url}/api/v4/groups?page=1&per_page=20&top_level_only=true&min_access_level=40&search=" % { url: source_url }).to_return(
         body: [{
           id: 2595438,
           web_url: 'https://gitlab.com/groups/auto-breakfast',
@@ -33,7 +33,14 @@ RSpec.describe 'Import/Export - Connect to another instance', :js do
           full_name: 'Stub',
           full_path: stub_path
           }].to_json,
-        headers: { 'Content-Type' => 'application/json' }
+        headers: {
+          'Content-Type' => 'application/json',
+          'X-Next-Page' => 2,
+          'X-Page' => 1,
+          'X-Per-Page' => 20,
+          'X-Total' => total,
+          'X-Total-Pages' => 2
+        }
       )
 
       expect(page).to have_content 'Import groups from another instance of GitLab'
@@ -44,7 +51,7 @@ RSpec.describe 'Import/Export - Connect to another instance', :js do
 
       click_on 'Connect instance'
 
-      expect(page).to have_content 'Importing groups from %{url}' % { url: source_url }
+      expect(page).to have_content 'Showing 1-1 of %{total} groups from %{url}' % { url: source_url, total: total }
       expect(page).to have_content stub_path
     end
   end

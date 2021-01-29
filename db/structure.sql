@@ -22511,6 +22511,14 @@ CREATE INDEX index_on_users_lower_username ON users USING btree (lower((username
 
 CREATE INDEX index_on_users_name_lower ON users USING btree (lower((name)::text));
 
+CREATE INDEX index_onboarding_progresses_for_create_track ON onboarding_progresses USING btree (created_at) WHERE (git_write_at IS NULL);
+
+CREATE INDEX index_onboarding_progresses_for_team_track ON onboarding_progresses USING btree (GREATEST(git_write_at, pipeline_created_at, trial_started_at)) WHERE ((git_write_at IS NOT NULL) AND (pipeline_created_at IS NOT NULL) AND (trial_started_at IS NOT NULL) AND (user_added_at IS NULL));
+
+CREATE INDEX index_onboarding_progresses_for_trial_track ON onboarding_progresses USING btree (GREATEST(git_write_at, pipeline_created_at)) WHERE ((git_write_at IS NOT NULL) AND (pipeline_created_at IS NOT NULL) AND (trial_started_at IS NULL));
+
+CREATE INDEX index_onboarding_progresses_for_verify_track ON onboarding_progresses USING btree (git_write_at) WHERE ((git_write_at IS NOT NULL) AND (pipeline_created_at IS NULL));
+
 CREATE UNIQUE INDEX index_onboarding_progresses_on_namespace_id ON onboarding_progresses USING btree (namespace_id);
 
 CREATE INDEX index_open_project_tracker_data_on_service_id ON open_project_tracker_data USING btree (service_id);

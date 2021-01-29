@@ -21,6 +21,7 @@ class Notify < ApplicationMailer
   include Emails::Groups
   include Emails::Reviews
   include Emails::ServiceDesk
+  include Emails::InProductMarketing
 
   helper TimeboxesHelper
   helper MergeRequestsHelper
@@ -32,6 +33,7 @@ class Notify < ApplicationMailer
   helper AvatarsHelper
   helper GitlabRoutingHelper
   helper IssuablesHelper
+  helper InProductMarketingHelper
 
   def test_email(recipient_email, subject, body)
     mail(to: recipient_email,

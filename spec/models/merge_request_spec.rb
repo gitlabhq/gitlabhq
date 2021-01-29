@@ -271,8 +271,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
         stub_feature_flags(stricter_mr_branch_name: false)
       end
 
-      using RSpec::Parameterized::TableSyntax
-
       where(:branch_name, :valid) do
         'foo' | true
         'foo:bar' | false
@@ -2778,8 +2776,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     context 'with skip_ci_check option' do
-      using RSpec::Parameterized::TableSyntax
-
       before do
         allow(subject).to receive_messages(check_mergeability: nil,
                                            can_be_merged?: true,
@@ -2803,8 +2799,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     context 'with skip_discussions_check option' do
-      using RSpec::Parameterized::TableSyntax
-
       before do
         allow(subject).to receive_messages(mergeable_ci_state?: true,
                                            check_mergeability: nil,

@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Access::BranchProtection do
-  describe '#any?' do
-    using RSpec::Parameterized::TableSyntax
+  using RSpec::Parameterized::TableSyntax
 
+  describe '#any?' do
     where(:level, :result) do
       Gitlab::Access::PROTECTION_NONE          | false
       Gitlab::Access::PROTECTION_DEV_CAN_PUSH  | true
@@ -19,8 +19,6 @@ RSpec.describe Gitlab::Access::BranchProtection do
   end
 
   describe '#developer_can_push?' do
-    using RSpec::Parameterized::TableSyntax
-
     where(:level, :result) do
       Gitlab::Access::PROTECTION_NONE          | false
       Gitlab::Access::PROTECTION_DEV_CAN_PUSH  | true
@@ -36,8 +34,6 @@ RSpec.describe Gitlab::Access::BranchProtection do
   end
 
   describe '#developer_can_merge?' do
-    using RSpec::Parameterized::TableSyntax
-
     where(:level, :result) do
       Gitlab::Access::PROTECTION_NONE          | false
       Gitlab::Access::PROTECTION_DEV_CAN_PUSH  | false
@@ -53,8 +49,6 @@ RSpec.describe Gitlab::Access::BranchProtection do
   end
 
   describe '#fully_protected?' do
-    using RSpec::Parameterized::TableSyntax
-
     where(:level, :result) do
       Gitlab::Access::PROTECTION_NONE          | false
       Gitlab::Access::PROTECTION_DEV_CAN_PUSH  | false

@@ -1,48 +1,60 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
+import { GlLoadingIcon } from '@gitlab/ui';
+import { shallowMount, mount } from '@vue/test-utils';
 import mrStatusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
 
 describe('MR widget status icon component', () => {
-  let vm;
-  let Component;
+  let wrapper;
 
-  beforeEach(() => {
-    Component = Vue.extend(mrStatusIcon);
-  });
+  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findDisabledMergeButton = () => wrapper.find('[data-testid="disabled-merge-button"]');
+
+  const createWrapper = (props, mountFn = shallowMount) => {
+    wrapper = mountFn(mrStatusIcon, {
+      propsData: {
+        ...props,
+      },
+    });
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   describe('while loading', () => {
     it('renders loading icon', () => {
-      vm = mountComponent(Component, { status: 'loading' });
+      createWrapper({ status: 'loading' });
 
-      expect(vm.$el.querySelector('.mr-widget-icon span').classList).toContain('gl-spinner');
+      expect(findLoadingIcon().exists()).toBe(true);
     });
   });
 
   describe('with status icon', () => {
-    it('renders ci status icon', () => {
-      vm = mountComponent(Component, { status: 'failed' });
+    it('renders success status icon', () => {
+      createWrapper({ status: 'success' }, mount);
 
-      expect(vm.$el.querySelector('.js-ci-status-icon-failed')).not.toBeNull();
+      expect(wrapper.find('[data-testid="status_success-icon"]').exists()).toBe(true);
+    });
+
+    it('renders failed status icon', () => {
+      createWrapper({ status: 'failed' }, mount);
+
+      expect(wrapper.find('[data-testid="status_failed-icon"]').exists()).toBe(true);
     });
   });
 
   describe('with disabled button', () => {
     it('renders a disabled button', () => {
-      vm = mountComponent(Component, { status: 'failed', showDisabledButton: true });
+      createWrapper({ status: 'failed', showDisabledButton: true });
 
-      expect(vm.$el.querySelector('.js-disabled-merge-button').textContent.trim()).toEqual('Merge');
+      expect(findDisabledMergeButton().exists()).toBe(true);
     });
   });
 
   describe('without disabled button', () => {
     it('does not render a disabled button', () => {
-      vm = mountComponent(Component, { status: 'failed' });
+      createWrapper({ status: 'failed' });
 
-      expect(vm.$el.querySelector('.js-disabled-merge-button')).toBeNull();
+      expect(findDisabledMergeButton().exists()).toBe(false);
     });
   });
 });

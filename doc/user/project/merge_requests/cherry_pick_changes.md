@@ -13,12 +13,13 @@ with introducing a **Cherry-pick** button in merge requests and commit details.
 
 ## Cherry-picking a merge request
 
-After the merge request has been merged, a **Cherry-pick** button will be available
+After the merge request has been merged, a **Cherry-pick** button displays
 to cherry-pick the changes introduced by that merge request.
 
 ![Cherry-pick Merge Request](img/cherry_pick_changes_mr.png)
 
-After you click that button, a modal will appear showing a [branch filter search box](../repository/branches/index.md#branch-filter-search-box)
+After you click that button, a modal displays a
+[branch filter search box](../repository/branches/index.md#branch-filter-search-box)
 where you can choose to either:
 
 - Cherry-pick the changes directly into the selected branch.
@@ -28,12 +29,12 @@ where you can choose to either:
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2675) in GitLab 12.9.
 
-When you cherry-pick a merge commit, GitLab will output a system note to the related merge
-request thread crosslinking the new commit and the existing merge request.
+When you cherry-pick a merge commit, GitLab displays a system note to the related merge
+request thread. It crosslinks the new commit and the existing merge request.
 
 ![Cherry-pick tracking in Merge Request timeline](img/cherry_pick_mr_timeline_v12_9.png)
 
-Each deployment's [list of associated merge requests](../../../api/deployments.md#list-of-merge-requests-associated-with-a-deployment) will include cherry-picked merge commits.
+Each deployment's [list of associated merge requests](../../../api/deployments.md#list-of-merge-requests-associated-with-a-deployment) includes cherry-picked merge commits.
 
 NOTE:
 We only track cherry-pick executed from GitLab (both UI and API). Support for [tracking cherry-picked commits through the command line](https://gitlab.com/gitlab-org/gitlab/-/issues/202215) is planned for a future release.
@@ -44,15 +45,15 @@ You can cherry-pick a commit from the commit details page:
 
 ![Cherry-pick commit](img/cherry_pick_changes_commit.png)
 
-Similar to cherry-picking a merge request, you can opt to cherry-pick the changes
+Similar to cherry-picking a merge request, you can cherry-pick the changes
 directly into the target branch or create a new merge request to cherry-pick the
 changes.
 
-Please note that when cherry-picking merge commits, the mainline will always be the
-first parent. If you want to use a different mainline then you need to do that
+When cherry-picking merge commits, the mainline is always the
+first parent. If you want to use a different mainline, you need to do that
 from the command line.
 
-Here is a quick example to cherry-pick a merge commit using the second parent as the
+Here's a quick example to cherry-pick a merge commit using the second parent as the
 mainline:
 
 ```shell

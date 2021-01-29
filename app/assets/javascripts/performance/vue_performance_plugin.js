@@ -1,6 +1,3 @@
-// This is a false violation of @gitlab/no-runtime-template-compiler, since it
-// is simply defining a global Vue mixin.
-/* eslint-disable @gitlab/no-runtime-template-compiler */
 const ComponentPerformancePlugin = {
   install(Vue, options) {
     Vue.mixin({

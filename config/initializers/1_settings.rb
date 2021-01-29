@@ -544,6 +544,9 @@ Settings.cron_jobs['schedule_merge_request_cleanup_refs_worker']['job_class'] = 
 Settings.cron_jobs['manage_evidence_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['manage_evidence_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['manage_evidence_worker']['job_class'] = 'Releases::ManageEvidenceWorker'
+Settings.cron_jobs['namespaces_in_product_marketing_emails_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['namespaces_in_product_marketing_emails_worker']['cron'] ||= '0 9 * * *'
+Settings.cron_jobs['namespaces_in_product_marketing_emails_worker']['job_class'] = 'Namespaces::InProductMarketingEmailsWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= Settingslogic.new({})

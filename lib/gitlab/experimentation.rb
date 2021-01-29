@@ -109,6 +109,9 @@ module Gitlab
       },
       trial_onboarding_issues: {
         tracking_category: 'Growth::Conversion::Experiment::TrialOnboardingIssues'
+      },
+      in_product_marketing_emails: {
+        tracking_category: 'Growth::Activation::Experiment::InProductMarketingEmails'
       }
     }.freeze
 

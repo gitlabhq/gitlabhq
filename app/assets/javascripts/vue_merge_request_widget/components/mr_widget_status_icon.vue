@@ -43,10 +43,9 @@ export default {
 
     <gl-button
       v-if="showDisabledButton"
-      type="button"
       category="primary"
       variant="success"
-      class="js-disabled-merge-button"
+      data-testid="disabled-merge-button"
       :disabled="true"
     >
       {{ s__('mrWidget|Merge') }}

@@ -68,7 +68,9 @@
   .settings-content
     .sub-section
       %h4= _('Housekeeping')
-      %p= _('Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects.')
+      %p
+        = _('Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects.')
+        = link_to _('Learn more.'), help_page_path('administration/housekeeping'), target: '_blank', rel: 'noopener noreferrer'
       = link_to _('Run housekeeping'), housekeeping_project_path(@project),
         method: :post, class: "gl-button btn btn-default"
 
@@ -80,6 +82,13 @@
       = render 'projects/errors'
       = form_for @project do |f|
         .form-group
+          - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/settings/index', anchor: 'renaming-a-repository') }
+          %p= _("A project’s repository name defines its URL (the one you use to access the project via a browser) and its place on the file disk where GitLab is installed. %{link_start}Learn more.%{link_end}").html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+          %ul
+            %li= _("Be careful. Renaming a project's repository can have unintended side effects.")
+            %li= _('You will need to update your local repositories to point to the new location.')
+            - if @project.deployment_platform.present?
+              %li= _('Your deployment services will be broken, you will need to manually fix the services after renaming.')
           = f.label :path, _('Path'), class: 'label-bold'
           .form-group
             .input-group
@@ -87,11 +96,6 @@
                 .input-group-text
                   #{Gitlab::Utils.append_path(root_url, @project.namespace.full_path)}/
               = f.text_field :path, class: 'form-control qa-project-path-field h-auto'
-          %ul
-            %li= _("Be careful. Renaming a project's repository can have unintended side effects.")
-            %li= _('You will need to update your local repositories to point to the new location.')
-            - if @project.deployment_platform.present?
-              %li= _('Your deployment services will be broken, you will need to manually fix the services after renaming.')
         = f.submit _('Change path'), class: "gl-button btn btn-warning qa-change-path-button"
 
     = render 'transfer', project: @project

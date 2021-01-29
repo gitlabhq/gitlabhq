@@ -764,8 +764,8 @@ Parameters:
 | `request_access_enabled`             | boolean | no       | Allow users to request member access. |
 | `parent_id`                          | integer | no       | The parent group ID for creating nested group. |
 | `default_branch_protection`          | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). Default to the global level default branch protection setting.      |
-| `shared_runners_minutes_limit`       | integer | no       | **(STARTER ONLY)** Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
-| `extra_shared_runners_minutes_limit` | integer | no       | **(STARTER ONLY)** Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
+| `shared_runners_minutes_limit`       | integer | no       | **(PREMIUM SELF)** Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
+| `extra_shared_runners_minutes_limit` | integer | no       | **(PREMIUM SELF)** Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
 
 ### Options for `default_branch_protection`
 
@@ -838,8 +838,8 @@ PUT /groups/:id
 | `request_access_enabled`             | boolean | no       | Allow users to request member access. |
 | `default_branch_protection`          | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). |
 | `file_template_project_id`           | integer | no       | **(PREMIUM)** The ID of a project to load custom file templates from. |
-| `shared_runners_minutes_limit`       | integer | no       | **(STARTER ONLY)** Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
-| `extra_shared_runners_minutes_limit` | integer | no       | **(STARTER ONLY)** Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
+| `shared_runners_minutes_limit`       | integer | no       | **(PREMIUM SELF)** Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
+| `extra_shared_runners_minutes_limit` | integer | no       | **(PREMIUM SELF)** Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
 | `prevent_forking_outside_group`      | boolean | no       | **(PREMIUM)** When enabled, users can **not** fork projects from this group to external namespaces
 | `shared_runners_setting`             | string  | no       | See [Options for `shared_runners_setting`](#options-for-shared_runners_setting). Enable or disable shared runners for a group's subgroups and projects. |
 
@@ -1135,7 +1135,7 @@ DELETE /groups/:id/hooks/:hook_id
 
 Group audit events can be accessed via the [Group Audit Events API](audit_events.md#group-audit-events)
 
-## Sync group with LDAP **(STARTER ONLY)**
+## Sync group with LDAP **(PREMIUM SELF)**
 
 Syncs the group with its linked LDAP group. Only available to group owners and administrators.
 
@@ -1155,7 +1155,7 @@ Please consult the [Group Members](members.md) documentation.
 
 List, add, and delete LDAP group links.
 
-### List LDAP group links **(STARTER ONLY)**
+### List LDAP group links **(PREMIUM SELF)**
 
 Lists LDAP group links.
 
@@ -1167,7 +1167,7 @@ GET /groups/:id/ldap_group_links
 | --------- | -------------- | -------- | ----------- |
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 
-### Add LDAP group link with CN or filter **(STARTER ONLY)**
+### Add LDAP group link with CN or filter **(PREMIUM SELF)**
 
 Adds an LDAP group link using a CN or filter. Adding a group link by filter is only supported in the Premium tier and above.
 
@@ -1186,7 +1186,7 @@ POST /groups/:id/ldap_group_links
 NOTE:
 To define the LDAP group link, provide either a `cn` or a `filter`, but not both.
 
-### Delete LDAP group link **(STARTER ONLY)**
+### Delete LDAP group link **(PREMIUM SELF)**
 
 Deletes an LDAP group link. Deprecated. Scheduled for removal in a future release.
 
@@ -1211,7 +1211,7 @@ DELETE /groups/:id/ldap_group_links/:provider/:cn
 | `cn`      | string         | yes      | The CN of an LDAP group |
 | `provider` | string        | yes      | LDAP provider for the LDAP group link |
 
-### Delete LDAP group link with CN or filter **(STARTER ONLY)**
+### Delete LDAP group link with CN or filter **(PREMIUM SELF)**
 
 Deletes an LDAP group link using a CN or filter. Deleting by filter is only supported in the Premium tier and above.
 

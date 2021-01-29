@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:pages:migrate_legacy_storagerake task', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/300123' do
+RSpec.describe 'gitlab:pages:migrate_legacy_storagerake task' do
   before(:context) do
     Rake.application.rake_require 'tasks/gitlab/pages'
   end

@@ -1,0 +1,5 @@
+---
+title: Handle IPv6 hostname in ExternalHTTP instrumenter
+merge_request: 52691
+author:
+type: fixed

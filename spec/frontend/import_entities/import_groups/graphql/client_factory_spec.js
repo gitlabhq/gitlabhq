@@ -79,33 +79,56 @@ describe('Bulk import resolvers', () => {
         axiosMockAdapter
           .onGet(FAKE_ENDPOINTS.availableNamespaces)
           .reply(httpStatus.OK, availableNamespacesFixture);
-
-        const response = await client.query({ query: bulkImportSourceGroupsQuery });
-        results = response.data.bulkImportSourceGroups;
       });
 
-      it('mirrors REST endpoint response fields', () => {
-        const MIRRORED_FIELDS = ['id', 'full_name', 'full_path', 'web_url'];
-        expect(
-          results.every((r, idx) =>
-            MIRRORED_FIELDS.every(
-              (field) => r[field] === statusEndpointFixture.importable_data[idx][field],
+      describe('when called', () => {
+        beforeEach(async () => {
+          const response = await client.query({ query: bulkImportSourceGroupsQuery });
+          results = response.data.bulkImportSourceGroups.nodes;
+        });
+
+        it('mirrors REST endpoint response fields', () => {
+          const MIRRORED_FIELDS = ['id', 'full_name', 'full_path', 'web_url'];
+          expect(
+            results.every((r, idx) =>
+              MIRRORED_FIELDS.every(
+                (field) => r[field] === statusEndpointFixture.importable_data[idx][field],
+              ),
             ),
-          ),
-        ).toBe(true);
+          ).toBe(true);
+        });
+
+        it('populates each result instance with status field default to none', () => {
+          expect(results.every((r) => r.status === STATUSES.NONE)).toBe(true);
+        });
+
+        it('populates each result instance with import_target defaulted to first available namespace', () => {
+          expect(
+            results.every(
+              (r) => r.import_target.target_namespace === availableNamespacesFixture[0].full_path,
+            ),
+          ).toBe(true);
+        });
       });
 
-      it('populates each result instance with status field default to none', () => {
-        expect(results.every((r) => r.status === STATUSES.NONE)).toBe(true);
-      });
-
-      it('populates each result instance with import_target defaulted to first available namespace', () => {
-        expect(
-          results.every(
-            (r) => r.import_target.target_namespace === availableNamespacesFixture[0].full_path,
-          ),
-        ).toBe(true);
-      });
+      it.each`
+        variable     | queryParam    | value
+        ${'filter'}  | ${'filter'}   | ${'demo'}
+        ${'perPage'} | ${'per_page'} | ${30}
+        ${'page'}    | ${'page'}     | ${3}
+      `(
+        'properly passes GraphQL variable $variable as REST $queryParam query parameter',
+        async ({ variable, queryParam, value }) => {
+          await client.query({
+            query: bulkImportSourceGroupsQuery,
+            variables: { [variable]: value },
+          });
+          const restCall = axiosMockAdapter.history.get.find(
+            (q) => q.url === FAKE_ENDPOINTS.status,
+          );
+          expect(restCall.params[queryParam]).toBe(value);
+        },
+      );
     });
   });
 
@@ -117,20 +140,28 @@ describe('Bulk import resolvers', () => {
       client.writeQuery({
         query: bulkImportSourceGroupsQuery,
         data: {
-          bulkImportSourceGroups: [
-            {
-              __typename: clientTypenames.BulkImportSourceGroup,
-              id: GROUP_ID,
-              status: STATUSES.NONE,
-              web_url: 'https://fake.host/1',
-              full_path: 'fake_group_1',
-              full_name: 'fake_name_1',
-              import_target: {
-                target_namespace: 'root',
-                new_name: 'group1',
+          bulkImportSourceGroups: {
+            nodes: [
+              {
+                __typename: clientTypenames.BulkImportSourceGroup,
+                id: GROUP_ID,
+                status: STATUSES.NONE,
+                web_url: 'https://fake.host/1',
+                full_path: 'fake_group_1',
+                full_name: 'fake_name_1',
+                import_target: {
+                  target_namespace: 'root',
+                  new_name: 'group1',
+                },
               },
+            ],
+            pageInfo: {
+              page: 1,
+              perPage: 20,
+              total: 37,
+              totalPages: 2,
             },
-          ],
+          },
         },
       });
 
@@ -140,7 +171,7 @@ describe('Bulk import resolvers', () => {
           fetchPolicy: 'cache-only',
         })
         .subscribe(({ data }) => {
-          results = data.bulkImportSourceGroups;
+          results = data.bulkImportSourceGroups.nodes;
         });
     });
 
@@ -174,7 +205,9 @@ describe('Bulk import resolvers', () => {
         });
         await waitForPromises();
 
-        const { bulkImportSourceGroups: intermediateResults } = client.readQuery({
+        const {
+          bulkImportSourceGroups: { nodes: intermediateResults },
+        } = client.readQuery({
           query: bulkImportSourceGroupsQuery,
         });
 

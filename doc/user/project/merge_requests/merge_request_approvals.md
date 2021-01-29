@@ -10,8 +10,8 @@ type: reference, concepts
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/580) in GitLab Enterprise Edition 7.2. Available in GitLab Core and higher tiers.
 > - Redesign [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8 and [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/10685) in 12.0.
 
-Code review is an essential practice of every successful project, and giving your
-approval once a merge request is in good shape is an important part of the review
+Code review is an essential practice of every successful project. Approving a
+merge request is an important part of the review
 process, as it clearly communicates the ability to merge the change.
 
 ## Optional Approvals
@@ -19,8 +19,8 @@ process, as it clearly communicates the ability to merge the change.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27426) in GitLab 13.2.
 
 Any user with Developer or greater [permissions](../../permissions.md) can approve a merge request in GitLab Core and higher tiers.
-This provides a consistent mechanism for reviewers to approve merge requests, and makes it easy for
-maintainers to know when a change is ready to merge. Approvals in Core are optional and do
+This provides a consistent mechanism for reviewers to approve merge requests, and ensures
+maintainers know a change is ready to merge. Approvals in Core are optional, and do
 not prevent a merge request from being merged when there is no approval.
 
 ## Required Approvals **(STARTER)**
@@ -50,8 +50,9 @@ be merged, and optionally which users should do the approving. Approvals can be 
 - [As project defaults](#adding--editing-a-default-approval-rule).
 - [Per merge request](#editing--overriding-approval-rules-per-merge-request).
 
-If no approval rules are defined, any user can approve a merge request, though the default
-minimum number of required approvers can still be set in the [project settings for merge request approvals](#merge-request-approvals-project-settings).
+If no approval rules are defined, any user can approve a merge request. However, the default
+minimum number of required approvers can still be set in the
+[project settings for merge request approvals](#merge-request-approvals-project-settings).
 
 You can opt to define one single rule to approve a merge request among the available rules
 or choose more than one with [multiple approval rules](#multiple-approval-rules).
@@ -81,20 +82,21 @@ A group of users can also be added as approvers. In the future, group approvers 
 [restricted to only groups with share access to the project](https://gitlab.com/gitlab-org/gitlab/-/issues/2048).
 
 If a user is added as an individual approver and is also part of a group approver,
-then that user is just counted once. The merge request author, as well as users who have committed
+then that user is just counted once. The merge request author, and users who have committed
 to the merge request, do not count as eligible approvers,
 if [**Prevent author approval**](#allowing-merge-request-authors-to-approve-their-own-merge-requests) (enabled by default)
 and [**Prevent committers approval**](#prevent-approval-of-merge-requests-by-their-committers) (disabled by default)
 are enabled on the project settings.
 
-When an eligible approver comments on a merge request, it appears in the **Commented by** column of the Approvals widget,
-indicating who has engaged in the merge request review. Authors and reviewers can also easily identify who they should reach out
-to if they have any questions or inputs about the content of the merge request.
+When an eligible approver comments on a merge request, it displays in the
+**Commented by** column of the Approvals widget. It indicates who participated in
+the merge request review. Authors and reviewers can also identify who they should reach out
+to if they have any questions about the content of the merge request.
 
 ##### Implicit Approvers
 
 If the number of required approvals is greater than the number of assigned approvers,
-approvals from other users will count towards meeting the requirement. These would be
+approvals from other users counts towards meeting the requirement. These would be
 users with developer [permissions](../../permissions.md) or higher in the project who
 were not explicitly listed in the approval rules.
 
@@ -103,7 +105,7 @@ were not explicitly listed in the approval rules.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7933) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.5.
 
 If you add [Code Owners](../code_owners.md) to your repository, the owners to the
-corresponding files will become eligible approvers, together with members with Developer
+corresponding files become eligible approvers, together with members with Developer
 or higher [permissions](../../permissions.md).
 
 To enable this merge request approval rule:
@@ -115,7 +117,7 @@ To enable this merge request approval rule:
 ![MR approvals by Code Owners](img/mr_approvals_by_code_owners_v12_7.png)
 
 Once set, merge requests can only be merged once approved by the
-number of approvals you've set. GitLab will accept approvals from
+number of approvals you've set. GitLab accepts approvals from
 users with Developer or higher permissions, as well as by Code Owners,
 indistinguishably.
 
@@ -154,27 +156,27 @@ To add or edit the default merge request approval rule:
 1. Click **Add approval rule**, or **Edit**.
    - Add or change the **Rule name**.
    - Set the number of required approvals in **Approvals required**. The minimum value is `0`.
-   - (Optional) Search for users or groups that will be [eligible to approve](#eligible-approvers)
+   - (Optional) Search for users or groups that are [eligible to approve](#eligible-approvers)
      merge requests and click the **Add** button to add them as approvers. Before typing
-     in the search field, approvers will be suggested based on the previous authors of
+     in the search field, approvers are suggested based on the previous authors of
      the files being changed by the merge request.
    - (Optional) Click the **{remove}** **Remove** button next to a group or user to delete it from
      the rule.
 1. Click **Add approval rule** or **Update approval rule**.
 
 When [approval rule overrides](#prevent-overriding-default-approvals) are allowed,
-changes to these default rules will **not** be applied to existing merge
+changes to these default rules are not applied to existing merge
 requests, except for changes to the [target branch](#scoped-to-protected-branch) of
 the rule.
 
 When approval rule overrides are not allowed, all changes to these default rules
-will be applied to existing merge requests. Any approval rules that had previously been
+are applied to existing merge requests. Any approval rules that had previously been
 manually [overridden](#editing--overriding-approval-rules-per-merge-request) during a
-period when approval rule overrides where allowed, will not be modified.
+period when approval rule overrides where allowed, are not modified.
 
 NOTE:
 If a merge request targets a different project, such as from a fork to the upstream project,
-the default approval rules will be taken from the target (upstream) project, not the
+the default approval rules are taken from the target (upstream) project, not the
 source (fork).
 
 ##### Editing / overriding approval rules per merge request
@@ -193,8 +195,8 @@ the same steps as [Adding / editing a default approval rule](#adding--editing-a-
 
 #### Set up an optional approval rule
 
-MR approvals can be configured to be optional.
-This can be useful if you're working on a team where approvals are appreciated, but not required.
+MR approvals can be configured to be optional, which can help if you're working
+on a team where approvals are appreciated, but not required.
 
 To configure an approval to be optional, set the number of required approvals in **Approvals required** to `0`.
 
@@ -209,16 +211,16 @@ as well as multiple default approval rules per project.
 
 Adding or editing multiple default rules is identical to
 [adding or editing a single default approval rule](#adding--editing-a-default-approval-rule),
-except the **Add approval rule** button will be available to add more rules, even after
+except the **Add approval rule** button is available to add more rules, even after
 a rule is already defined.
 
 Similarly, editing or overriding multiple approval rules per merge request is identical
 to [editing or overriding approval rules per merge request](#editing--overriding-approval-rules-per-merge-request),
-except the **Add approval rule** button will be available to add more rules, even after
+except the **Add approval rule** button is available to add more rules, even after
 a rule is already defined.
 
-When an [eligible approver](#eligible-approvers) approves a merge request, it will
-reduce the number of approvals left for all rules that the approver belongs to.
+When an [eligible approver](#eligible-approvers) approves a merge request, it
+reduces the number of approvals left for all rules that the approver belongs to.
 
 ![Approvals premium merge request widget](img/approvals_premium_mr_widget_v13_3.png)
 
@@ -267,7 +269,7 @@ The merge request author is not allowed to approve their own merge request if
 [**Prevent author approval**](#allowing-merge-request-authors-to-approve-their-own-merge-requests)
 is enabled in the project settings.
 
-Once the approval rules have been met, the merge request can be merged if there is nothing
+After the approval rules have been met, the merge request can be merged if there is nothing
 else blocking it. Note that the merge request could still be blocked by other conditions,
 such as merge conflicts, [pending discussions](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-threads-are-resolved),
 or a [failed CI/CD pipeline](merge_when_pipeline_succeeds.md).
@@ -289,7 +291,7 @@ To prevent that from happening:
 #### Resetting approvals on push
 
 You can force all approvals on a merge request to be removed when new commits are
-pushed to the source branch of the merge request. If disabled, approvals will persist
+pushed to the source branch of the merge request. If disabled, approvals persist
 even if there are changes added to the merge request. To enable this feature:
 
 1. Check the **Require new approvals when new commits are added to an MR.**
@@ -298,7 +300,7 @@ even if there are changes added to the merge request. To enable this feature:
 
 NOTE:
 Approvals do not get reset when [rebasing a merge request](fast_forward_merge.md)
-from the UI. However, approvals will be reset if the target branch is changed.
+from the UI. However, approvals are reset if the target branch is changed.
 
 #### Allowing merge request authors to approve their own merge requests
 
@@ -330,7 +332,7 @@ enable this feature:
 NOTE:
 To require authentication when approving a merge request, you must enable
 **Password authentication enabled for web interface** under [sign-in restrictions](../../admin_area/settings/sign_in_restrictions.md#password-authentication-enabled).
-in the Admin area.
+in the Admin Area.
 
 You can force the approver to enter a password in order to authenticate before adding
 the approval. This enables an Electronic Signature for approvals such as the one defined

@@ -187,7 +187,7 @@ The name of the attribute can be anything you like, but it must contain the grou
 to which a user belongs. In order to tell GitLab where to find these groups, you need
 to add a `groups_attribute:` element to your SAML settings.
 
-### Required groups **(STARTER ONLY)**
+### Required groups **(PREMIUM SELF)**
 
 Your IdP passes Group Information to the SP (GitLab) in the SAML Response. You need to configure GitLab to identify:
 
@@ -213,7 +213,7 @@ Example:
   } }
 ```
 
-### External Groups **(STARTER ONLY)**
+### External groups **(PREMIUM SELF)**
 
 SAML login supports automatic identification on whether a user should be considered an [external](../user/permissions.md) user. This is based on the user's group membership in the SAML identity provider.
 
@@ -231,7 +231,7 @@ SAML login supports automatic identification on whether a user should be conside
   } }
 ```
 
-### Admin Groups **(STARTER ONLY)**
+### Admin groups **(PREMIUM SELF)**
 
 The requirements are the same as the previous settings, your IdP needs to pass Group information to GitLab, you need to tell
 GitLab where to look for the groups in the SAML response, and which group(s) should be
@@ -251,7 +251,7 @@ considered admin users.
   } }
 ```
 
-### Auditor Groups **(STARTER ONLY)**
+### Auditor groups **(PREMIUM SELF)**
 
 > Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 11.4.
 

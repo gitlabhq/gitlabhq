@@ -13,10 +13,10 @@ which is then reviewed, and accepted (or rejected).
 
 ## View project merge requests
 
-View all the merge requests within a project by navigating to **Project > Merge Requests**.
+View all the merge requests in a project by navigating to **Project > Merge Requests**.
 
-When you access your project's merge requests, GitLab will present them in a list,
-and you can use the tabs available to quickly filter by open and closed. You can also [search and filter the results](../../search/index.md#filtering-issue-and-merge-request-lists).
+When you access your project's merge requests, GitLab displays them in a list.
+Use the tabs to quickly filter by open and closed. You can also [search and filter the results](../../search/index.md#filtering-issue-and-merge-request-lists).
 
 ![Project merge requests list view](img/project_merge_requests_list_view_v13_5.png)
 
@@ -32,7 +32,7 @@ You can [search and filter the results](../../search/index.md#filtering-issue-an
 
 A merge commit is created for every merge, but the branch is only merged if
 a fast-forward merge is possible. This ensures that if the merge request build
-succeeded, the target branch build will also succeed after merging.
+succeeded, the target branch build also succeeds after the merge.
 
 Navigate to a project's settings, select the **Merge commit with semi-linear history**
 option under **Merge Requests: Merge method** and save your changes.
@@ -80,12 +80,15 @@ Click **Expand file** on any file to view the changes for that file.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222790) in GitLab 13.2.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/229848) in GitLab 13.7.
 
-For larger merge requests it might sometimes be useful to review single files at a time. To enable,
-from your avatar on the top-right navigation bar, click **Settings**, and go to **Preferences** on the left
-sidebar. Scroll down to the **Behavior** section and select **Show one file at a time on merge request's Changes tab**.
-Click **Save changes** to apply.
+For larger merge requests, consider reviewing one file at a time. To enable this feature:
 
-From there, when reviewing merge requests' **Changes** tab, you will see only one file at a time. You can then click the buttons **Prev** and **Next** to view the other files changed.
+1. In the top right corner of the navigation bar, click your user avatar.
+1. Click **Settings**.
+1. In the left sidebar, go to **Preferences**.
+1. Scroll to the **Behavior** section and select **Show one file at a time on merge request's Changes tab**.
+1. Click **Save changes** to apply.
+
+After you enable this setting, GitLab displays only one file at a time in the **Changes** tab when you review merge requests. You can click **Prev** and **Next** to view other changed files.
 
 ![File-by-file diff navigation](img/file_by_file_v13_2.png)
 
@@ -104,10 +107,14 @@ browser's cookies or change this behavior again.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18140) in GitLab 13.0.
 
-To seamlessly navigate among commits in a merge request, from the **Commits** tab, click one of
-the commits to open the single-commit view. From there, you can navigate among the commits
-by clicking the **Prev** and **Next** buttons on the top-right of the page or by using the
-<kbd>X</kbd> and <kbd>C</kbd> keyboard shortcuts.
+To seamlessly navigate among commits in a merge request:
+
+1. Click the **Commits** tab.
+1. Click a commit to open it in the single-commit view.
+1. Navigate through the commits by either:
+
+   - Clicking **Prev** and **Next** buttons on the top-right of the page.
+   - Using the <kbd>X</kbd> and <kbd>C</kbd> keyboard shortcuts.
 
 ![Merge requests commit navigation](img/commit_nav_v13_4.png)
 
@@ -120,7 +127,7 @@ to expand the entire file.
 
 ![Incrementally expand merge request diffs](img/incrementally_expand_merge_request_diffs_v12_2.png)
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205401) in GitLab 13.1, when viewing a
+In GitLab [versions 13.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/205401), when viewing a
 merge request's **Changes** tab, if a certain file was only renamed, you can expand it to see the
 entire content by clicking **Show file contents**.
 
@@ -145,7 +152,7 @@ whitespace changes.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-file-views). **(FREE SELF)**
 
 When reviewing a merge request with many files multiple times, it may be useful to the reviewer
-to focus on new changes and ignore the files that they have already reviewed and don't want to 
+to focus on new changes and ignore the files that they have already reviewed and don't want to
 see anymore unless they are changed again.
 
 To mark a file as viewed:
@@ -154,7 +161,7 @@ To mark a file as viewed:
 1. On the right-top of the file, locate the **Viewed** checkbox.
 1. Check it to mark the file as viewed.
 
-Once checked, the file will remain marked for that reviewer unless there are newly introduced 
+Once checked, the file remains marked for that reviewer unless there are newly introduced
 changes to its content or the checkbox is unchecked.
 
 ### Enable or disable file views **(FREE SELF)**
@@ -180,8 +187,9 @@ Feature.disable(:local_file_reviews)
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/13950) in GitLab 11.5.
 
-GitLab provides a way of leaving comments in any part of the file being changed
-in a Merge Request. To do so, click the **{comment}** **comment** icon in the gutter of the Merge Request diff UI to expand the diff lines and leave a comment, just as you would for a changed line.
+In a merge request, you can leave comments in any part of the file being changed.
+In the Merge Request Diff UI, click the **{comment}** **comment** icon in the gutter
+to expand the diff lines and leave a comment, just as you would for a changed line.
 
 ![Comment on any diff file line](img/comment-on-any-diff-line.png)
 
@@ -231,31 +239,30 @@ Feature.enable(:multiline_comments)
 ## Pipeline status in merge requests widgets
 
 If you've set up [GitLab CI/CD](../../../ci/README.md) in your project,
-you will be able to see:
+you can see:
 
 - Both pre-merge and post-merge pipelines and the environment information if any.
 - Which deployments are in progress.
 
-If there's an [environment](../../../ci/environments/index.md) and the application is
-successfully deployed to it, the deployed environment and the link to the
-Review App will be shown as well.
+If an application is successfully deployed to an
+[environment](../../../ci/environments/index.md), the deployed environment and the link to the
+Review App are both shown.
 
 NOTE:
-When the default branch (for example, `main`) is red due to a failed CI pipeline, the `merge` button
-When the pipeline fails in a merge request but it can be merged nonetheless,
-the **Merge** button will be colored in red.
+When the pipeline fails in a merge request but it can still be merged,
+the **Merge** button is colored red.
 
 ### Post-merge pipeline status
 
 When a merge request is merged, you can see the post-merge pipeline status of
 the branch the merge request was merged into. For example, when a merge request
-is merged into the master branch and then triggers a deployment to the staging
+is merged into the `master` branch and then triggers a deployment to the staging
 environment.
 
-Deployments that are ongoing will be shown, as well as the deploying/deployed state
+Ongoing deployments are shown, and the state (deploying or deployed)
 for environments. If it's the first time the branch is deployed, the link
-will return a `404` error until done. During the deployment, the stop button will
-be disabled. If the pipeline fails to deploy, the deployment information will be hidden.
+returns a `404` error until done. During the deployment, the stop button is
+disabled. If the pipeline fails to deploy, the deployment information is hidden.
 
 ![Merge request pipeline](img/merge_request_pipeline.png)
 
@@ -263,14 +270,15 @@ For more information, [read about pipelines](../../../ci/pipelines/index.md).
 
 ### Merge when pipeline succeeds (MWPS)
 
-Set a merge request that looks ready to merge to [merge automatically when CI pipeline succeeds](merge_when_pipeline_succeeds.md).
+Set a merge request that looks ready to merge to
+[merge automatically when CI pipeline succeeds](merge_when_pipeline_succeeds.md).
 
 ### Live preview with Review Apps
 
 If you configured [Review Apps](https://about.gitlab.com/stages-devops-lifecycle/review-apps/) for your project,
-you can preview the changes submitted to a feature-branch through a merge request
-in a per-branch basis. No need to checkout the branch, install and preview locally;
-all your changes will be available to preview by anyone with the Review Apps link.
+you can preview the changes submitted to a feature branch through a merge request
+on a per-branch basis. You don't need to checkout the branch, install, and preview locally.
+All your changes are available to preview by anyone with the Review Apps link.
 
 With GitLab [Route Maps](../../../ci/review_apps/index.md#route-maps) set, the
 merge request widget takes you directly to the pages changed, making it easier and
@@ -280,21 +288,26 @@ faster to preview proposed modifications.
 
 ## Associated features
 
-There is also a large number of features to associated to merge requests:
+These features are associated with merge requests:
 
-| Feature                                                                                                                                               | Description                                                                                                                                              |
-|-------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [Bulk editing merge requests](../../project/bulk_editing.md)                                                                                          | Update the attributes of multiple merge requests simultaneously.                                                                                         |
-| [Cherry-pick changes](cherry_pick_changes.md)                                                                                                         | Cherry-pick any commit in the UI by simply clicking the **Cherry-pick** button in a merged merge requests or a commit.                                   |
-| [Fast-forward merge requests](fast_forward_merge.md)                                                                                                  | For a linear Git history and a way to accept merge requests without creating merge commits                                                               |
-| [Find the merge request that introduced a change](versions.md)                                                                                        | When viewing the commit details page, GitLab will link to the merge request(s) containing that commit.                                                   |
-| [Merge requests versions](versions.md)                                                                                                                | Select and compare the different versions of merge request diffs                                                                                         |
-| [Resolve conflicts](resolve_conflicts.md)                                                                                                             | GitLab can provide the option to resolve certain merge request conflicts in the GitLab UI.                                                               |
-| [Revert changes](revert_changes.md)                                                                                                                   | Revert changes from any commit from within a merge request.                                                                                              |
+- [Bulk editing merge requests](../../project/bulk_editing.md):
+  Update the attributes of multiple merge requests simultaneously.
+- [Cherry-pick changes](cherry_pick_changes.md):
+  Cherry-pick any commit in the UI by clicking the **Cherry-pick** button in a merged merge requests or a commit.
+- [Fast-forward merge requests](fast_forward_merge.md):
+  For a linear Git history and a way to accept merge requests without creating merge commits
+- [Find the merge request that introduced a change](versions.md):
+  When viewing the commit details page, GitLab links to the merge request(s) containing that commit.
+- [Merge requests versions](versions.md):
+  Select and compare the different versions of merge request diffs
+- [Resolve conflicts](resolve_conflicts.md):
+  GitLab can provide the option to resolve certain merge request conflicts in the GitLab UI.
+- [Revert changes](revert_changes.md):
+  Revert changes from any commit from a merge request.
 
 ## Troubleshooting
 
-Sometimes things don't go as expected in a merge request, here are some
+Sometimes things don't go as expected in a merge request. Here are some
 troubleshooting steps.
 
 ### Merge request cannot retrieve the pipeline status
@@ -304,7 +317,7 @@ This can occur if Sidekiq doesn't pick up the changes fast enough.
 #### Sidekiq
 
 Sidekiq didn't process the CI state change fast enough. Please wait a few
-seconds and the status will update automatically.
+seconds and the status should update automatically.
 
 #### Bug
 
@@ -320,11 +333,8 @@ Merge Request again.
 
 ## Tips
 
-Here are some tips that will help you be more efficient with merge requests in
+Here are some tips to help you be more efficient with merge requests in
 the command line.
-
-NOTE:
-This section might move in its own document in the future.
 
 ### Copy the branch name for local checkout
 
@@ -334,7 +344,7 @@ The merge request sidebar contains the branch reference for the source branch
 used to contribute changes for this merge request.
 
 To copy the branch reference into your clipboard, click the **Copy branch name** button
-(**{copy-to-clipboard}**) in the right sidebar. You can then use it to checkout the branch locally
+(**{copy-to-clipboard}**) in the right sidebar. Use it to checkout the branch locally
 via command line by running `git checkout <branch-name>`.
 
 ### Checkout merge requests locally through the `head` ref
@@ -343,7 +353,7 @@ A merge request contains all the history from a repository, plus the additional
 commits added to the branch associated with the merge request. Here's a few
 ways to checkout a merge request locally.
 
-Please note that you can checkout a merge request locally even if the source
+You can checkout a merge request locally even if the source
 project is a fork (even a private fork) of the target project.
 
 This relies on the merge request `head` ref (`refs/merge-requests/:iid/head`)
@@ -352,10 +362,10 @@ request via its ID instead of its branch.
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223156) in GitLab
 13.4, 14 days after a merge request gets closed or merged, the merge request
-`head` ref will be deleted. This means that the merge request will not be available
+`head` ref is deleted. This means that the merge request is not available
 for local checkout via the merge request `head` ref anymore. The merge request
-can still be re-opened. Also, as long as the merge request's branch
-exists, you can still check out the branch as it won't be affected.
+can still be re-opened. If the merge request's branch
+exists, you can still check out the branch, as it isn't affected.
 
 #### Checkout locally by adding a Git alias
 
@@ -374,7 +384,7 @@ from the `origin` remote, do:
 git mr origin 5
 ```
 
-This will fetch the merge request into a local `mr-origin-5` branch and check
+This fetches the merge request into a local `mr-origin-5` branch and check
 it out.
 
 #### Checkout locally by modifying `.git/config` for a given repository

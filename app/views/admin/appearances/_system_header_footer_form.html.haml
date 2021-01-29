@@ -9,10 +9,10 @@
   .col-lg-8
     .form-group
       = form.label :header_message, _('Header message'), class: 'col-form-label label-bold'
-      = form.text_area :header_message, placeholder: _('State your message to activate'), class: "form-control js-autosize"
+      = form.text_area :header_message, placeholder: _('State your message to activate'), class: "form-control gl-form-input js-autosize"
     .form-group
       = form.label :footer_message, _('Footer message'), class: 'col-form-label label-bold'
-      = form.text_area :footer_message, placeholder: _('State your message to activate'), class: "form-control js-autosize"
+      = form.text_area :footer_message, placeholder: _('State your message to activate'), class: "form-control gl-form-input js-autosize"
     .form-group
       .form-check
         = form.check_box :email_header_and_footer_enabled, class: 'form-check-input'
@@ -27,7 +27,7 @@
         = _('Customize colors')
     .form-group.js-toggle-colors-container.hide
       = form.label :message_background_color, _('Background Color'), class: 'col-form-label label-bold'
-      = form.color_field :message_background_color, class: "form-control"
+      = form.color_field :message_background_color, class: "form-control gl-form-input"
     .form-group.js-toggle-colors-container.hide
       = form.label :message_font_color, _('Font Color'), class: 'col-form-label label-bold'
-      = form.color_field :message_font_color, class: "form-control"
+      = form.color_field :message_font_color, class: "form-control gl-form-input"

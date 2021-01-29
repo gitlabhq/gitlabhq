@@ -73,6 +73,7 @@ export default () => {
     boardsStore.setTimeTrackingLimitToHours($boardApp.dataset.timeTrackingLimitToHours);
   }
 
+  // eslint-disable-next-line @gitlab/no-runtime-template-compiler
   issueBoardsApp = new Vue({
     el: $boardApp,
     components: {
@@ -275,7 +276,7 @@ export default () => {
     },
   });
 
-  // eslint-disable-next-line no-new
+  // eslint-disable-next-line no-new, @gitlab/no-runtime-template-compiler
   new Vue({
     el: document.getElementById('js-add-list'),
     data: {

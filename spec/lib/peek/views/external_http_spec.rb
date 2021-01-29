@@ -84,4 +84,108 @@ RSpec.describe Peek::Views::ExternalHttp, :request_store do
       results[:details].map { |data| data.slice(:duration, :label, :code, :proxy, :error, :warnings) }
     ).to match_array(expected)
   end
+
+  context 'when the host is in IPv4 format' do
+    it 'displays IPv4 in the label' do
+      subscriber.request(
+        double(:event, payload: {
+          method: 'POST', code: "200", duration: 0.03,
+          scheme: 'https', host: '1.2.3.4', port: 80, path: '/api/v4/projects',
+          query: 'current=true'
+        })
+      )
+      expect(
+        subject.results[:details].map { |data| data.slice(:duration, :label, :code, :proxy, :error, :warnings) }
+      ).to match_array(
+        [
+          {
+            duration: 30.0,
+            label: "POST https://1.2.3.4:80/api/v4/projects?current=true",
+            code: "Response status: 200",
+            proxy: nil,
+            error: nil,
+            warnings: []
+          }
+        ]
+      )
+    end
+  end
+
+  context 'when the host is in IPv6 foramat' do
+    it 'displays IPv6 in the label' do
+      subscriber.request(
+        double(:event, payload: {
+          method: 'POST', code: "200", duration: 0.03,
+          scheme: 'https', host: '2606:4700:90:0:f22e:fbec:5bed:a9b9', port: 80, path: '/api/v4/projects',
+          query: 'current=true'
+        })
+      )
+      expect(
+        subject.results[:details].map { |data| data.slice(:duration, :label, :code, :proxy, :error, :warnings) }
+      ).to match_array(
+        [
+          {
+            duration: 30.0,
+            label: "POST https://[2606:4700:90:0:f22e:fbec:5bed:a9b9]:80/api/v4/projects?current=true",
+            code: "Response status: 200",
+            proxy: nil,
+            error: nil,
+            warnings: []
+          }
+        ]
+      )
+    end
+  end
+
+  context 'when the host is invalid' do
+    it 'displays unknown in the label' do
+      subscriber.request(
+        double(:event, payload: {
+          method: 'POST', code: "200", duration: 0.03,
+          scheme: 'https', host: '!@#%!@#%!@#%', port: 80, path: '/api/v4/projects',
+          query: 'current=true'
+        })
+      )
+      expect(
+        subject.results[:details].map { |data| data.slice(:duration, :label, :code, :proxy, :error, :warnings) }
+      ).to match_array(
+        [
+          {
+            duration: 30.0,
+            label: "POST unknown",
+            code: "Response status: 200",
+            proxy: nil,
+            error: nil,
+            warnings: []
+          }
+        ]
+      )
+    end
+  end
+
+  context 'when another URI component is invalid' do
+    it 'displays unknown in the label' do
+      subscriber.request(
+        double(:event, payload: {
+          method: 'POST', code: "200", duration: 0.03,
+          scheme: 'https', host: 'invalid', port: 'invalid', path: '/api/v4/projects',
+          query: 'current=true'
+        })
+      )
+      expect(
+        subject.results[:details].map { |data| data.slice(:duration, :label, :code, :proxy, :error, :warnings) }
+      ).to match_array(
+        [
+          {
+            duration: 30.0,
+            label: "POST unknown",
+            code: "Response status: 200",
+            proxy: nil,
+            error: nil,
+            warnings: []
+          }
+        ]
+      )
+    end
+  end
 end

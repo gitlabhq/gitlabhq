@@ -9,19 +9,30 @@ RSpec.shared_examples 'AtomicInternalId' do |validate_presence: true|
     end
 
     describe 'Validation' do
-      before do
-        allow_any_instance_of(described_class).to receive(:"ensure_#{scope}_#{internal_id_attribute}!")
-
-        instance.valid?
-      end
-
       context 'when presence validation is required' do
         before do
           skip unless validate_presence
         end
 
-        it 'validates presence' do
-          expect(instance.errors[internal_id_attribute]).to include("can't be blank")
+        context 'when creating an object' do
+          before do
+            allow_any_instance_of(described_class).to receive(:"ensure_#{scope}_#{internal_id_attribute}!")
+          end
+
+          it 'raises an error if the internal id is blank' do
+            expect { instance.save! }.to raise_error(AtomicInternalId::MissingValueError)
+          end
+        end
+
+        context 'when updating an object' do
+          it 'raises an error if the internal id is blank' do
+            instance.save!
+
+            write_internal_id(nil)
+            allow(instance).to receive(:"ensure_#{scope}_#{internal_id_attribute}!")
+
+            expect { instance.save! }.to raise_error(AtomicInternalId::MissingValueError)
+          end
         end
       end
 
@@ -30,8 +41,27 @@ RSpec.shared_examples 'AtomicInternalId' do |validate_presence: true|
           skip if validate_presence
         end
 
-        it 'does not validate presence' do
-          expect(instance.errors[internal_id_attribute]).to be_empty
+        context 'when creating an object' do
+          before do
+            allow_any_instance_of(described_class).to receive(:"ensure_#{scope}_#{internal_id_attribute}!")
+          end
+
+          it 'does not raise an error if the internal id is blank' do
+            expect(read_internal_id).to be_nil
+
+            expect { instance.save! }.not_to raise_error
+          end
+        end
+
+        context 'when updating an object' do
+          it 'does not raise an error if the internal id is blank' do
+            instance.save!
+
+            write_internal_id(nil)
+            allow(instance).to receive(:"ensure_#{scope}_#{internal_id_attribute}!")
+
+            expect { instance.save! }.not_to raise_error
+          end
         end
       end
     end
@@ -72,6 +102,51 @@ RSpec.shared_examples 'AtomicInternalId' do |validate_presence: true|
             .with(instance, scope_attrs, usage, internal_id, any_args)
             .and_return(internal_id)
           subject
+        end
+      end
+    end
+
+    describe 'unsetting the instance internal id on rollback' do
+      context 'when the internal id has been changed' do
+        context 'when the internal id is automatically set' do
+          it 'clears it on the instance' do
+            expect_iid_to_be_set_and_rollback
+
+            expect(read_internal_id).to be_nil
+          end
+        end
+
+        context 'when the internal id is manually set' do
+          it 'does not clear it on the instance' do
+            write_internal_id(100)
+
+            expect_iid_to_be_set_and_rollback
+
+            expect(read_internal_id).not_to be_nil
+          end
+        end
+      end
+
+      context 'when the internal id has not been changed' do
+        it 'preserves the value on the instance' do
+          instance.save!
+          original_id = read_internal_id
+
+          expect(original_id).not_to be_nil
+
+          expect_iid_to_be_set_and_rollback
+
+          expect(read_internal_id).to eq(original_id)
+        end
+      end
+
+      def expect_iid_to_be_set_and_rollback
+        ActiveRecord::Base.transaction(requires_new: true) do
+          instance.save!
+
+          expect(read_internal_id).not_to be_nil
+
+          raise ActiveRecord::Rollback
         end
       end
     end

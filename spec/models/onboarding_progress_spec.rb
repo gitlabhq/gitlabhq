@@ -29,6 +29,67 @@ RSpec.describe OnboardingProgress do
     end
   end
 
+  describe 'scopes' do
+    describe '.incomplete_actions' do
+      subject { described_class.incomplete_actions(actions) }
+
+      let!(:no_actions_completed) { create(:onboarding_progress) }
+      let!(:one_action_completed_one_action_incompleted) { create(:onboarding_progress, "#{action}_at" => Time.current) }
+
+      context 'when given one action' do
+        let(:actions) { action }
+
+        it { is_expected.to eq [no_actions_completed] }
+      end
+
+      context 'when given an array of actions' do
+        let(:actions) { [action, :git_write] }
+
+        it { is_expected.to eq [no_actions_completed] }
+      end
+    end
+
+    describe '.completed_actions' do
+      subject { described_class.completed_actions(actions) }
+
+      let!(:one_action_completed_one_action_incompleted) { create(:onboarding_progress, "#{action}_at" => Time.current) }
+      let!(:both_actions_completed) { create(:onboarding_progress, "#{action}_at" => Time.current, git_write_at: Time.current) }
+
+      context 'when given one action' do
+        let(:actions) { action }
+
+        it { is_expected.to eq [one_action_completed_one_action_incompleted, both_actions_completed] }
+      end
+
+      context 'when given an array of actions' do
+        let(:actions) { [action, :git_write] }
+
+        it { is_expected.to eq [both_actions_completed] }
+      end
+    end
+
+    describe '.completed_actions_with_latest_in_range' do
+      subject { described_class.completed_actions_with_latest_in_range(actions, 1.day.ago.beginning_of_day..1.day.ago.end_of_day) }
+
+      let!(:one_action_completed_in_range_one_action_incompleted) { create(:onboarding_progress, "#{action}_at" => 1.day.ago.middle_of_day) }
+      let!(:git_write_action_completed_in_range) { create(:onboarding_progress, git_write_at: 1.day.ago.middle_of_day) }
+      let!(:both_actions_completed_latest_action_out_of_range) { create(:onboarding_progress, "#{action}_at" => 1.day.ago.middle_of_day, git_write_at: Time.current) }
+      let!(:both_actions_completed_latest_action_in_range) { create(:onboarding_progress, "#{action}_at" => 1.day.ago.middle_of_day, git_write_at: 2.days.ago.middle_of_day) }
+
+      context 'when given one action' do
+        let(:actions) { :git_write }
+
+        it { is_expected.to eq [git_write_action_completed_in_range] }
+      end
+
+      context 'when given an array of actions' do
+        let(:actions) { [action, :git_write] }
+
+        it { is_expected.to eq [both_actions_completed_latest_action_in_range] }
+      end
+    end
+  end
+
   describe '.onboard' do
     subject(:onboard) { described_class.onboard(namespace) }
 
@@ -103,5 +164,11 @@ RSpec.describe OnboardingProgress do
         it { is_expected.to eq(true) }
       end
     end
+  end
+
+  describe '.column_name' do
+    subject { described_class.column_name(action) }
+
+    it { is_expected.to eq(:subscription_created_at) }
   end
 end

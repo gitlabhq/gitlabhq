@@ -30,15 +30,9 @@ module Peek
       end
 
       def format_call_details(call)
-        uri = URI("")
-        uri.scheme = call[:scheme]
-        uri.host = call[:host]
-        uri.port = call[:port]
-        uri.path = call[:path]
-        uri.query = call[:query]
-
+        full_path = generate_path(call)
         super.merge(
-          label: "#{call[:method]} #{uri}",
+          label: "#{call[:method]} #{full_path}",
           code: code(call),
           proxy: proxy(call),
           error: error(call)
@@ -81,6 +75,22 @@ module Peek
         else
           nil
         end
+      end
+
+      def generate_path(call)
+        uri = URI("")
+        uri.scheme = call[:scheme]
+        # The host can be a domain, IPv4 or IPv6.
+        # Ruby handle IPv6 for us at
+        # https://github.com/ruby/ruby/blob/v2_6_0/lib/uri/generic.rb#L662
+        uri.hostname = call[:host]
+        uri.port = call[:port]
+        uri.path = call[:path]
+        uri.query = call[:query]
+
+        uri.to_s
+      rescue URI::Error
+        'unknown'
       end
     end
   end

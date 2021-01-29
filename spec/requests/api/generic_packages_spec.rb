@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::GenericPackages do
   include HttpBasicAuthHelpers
+  using RSpec::Parameterized::TableSyntax
 
   let_it_be(:personal_access_token) { create(:personal_access_token) }
   let_it_be(:project, reload: true) { create(:project) }
@@ -76,8 +77,6 @@ RSpec.describe API::GenericPackages do
 
   describe 'PUT /api/v4/projects/:id/packages/generic/:package_name/:package_version/:file_name/authorize' do
     context 'with valid project' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:project_visibility, :user_role, :member?, :authenticate_with, :expected_status) do
         'PUBLIC'  | :developer | true  | :personal_access_token         | :success
         'PUBLIC'  | :guest     | true  | :personal_access_token         | :forbidden
@@ -194,8 +193,6 @@ RSpec.describe API::GenericPackages do
     let(:params) { { file: file_upload } }
 
     context 'authentication' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:project_visibility, :user_role, :member?, :authenticate_with, :expected_status) do
         'PUBLIC'  | :guest     | true  | :personal_access_token         | :forbidden
         'PUBLIC'  | :guest     | true  | :user_basic_auth               | :forbidden
@@ -373,8 +370,6 @@ RSpec.describe API::GenericPackages do
     end
 
     context 'application security' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:param_name, :param_value) do
         :package_name | 'my-package/../'
         :package_name | 'my-package%2f%2e%2e%2f'
@@ -404,8 +399,6 @@ RSpec.describe API::GenericPackages do
   end
 
   describe 'GET /api/v4/projects/:id/packages/generic/:package_name/:package_version/:file_name' do
-    using RSpec::Parameterized::TableSyntax
-
     let_it_be(:package) { create(:generic_package, project: project) }
     let_it_be(:package_file) { create(:package_file, :generic, package: package) }
 
@@ -527,8 +520,6 @@ RSpec.describe API::GenericPackages do
     end
 
     context 'application security' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:param_name, :param_value) do
         :package_name | 'my-package/../'
         :package_name | 'my-package%2f%2e%2e%2f'

@@ -327,7 +327,7 @@ A group's **Details** page includes tabs for:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab [Starter](https://about.gitlab.com/pricing/) 12.10 as
 a [beta feature](https://about.gitlab.com/handbook/product/#beta)
 
-The group details view also shows the number of the following items created in the last 90 days: **(STARTER)**
+The group details view also shows the number of the following items created in the last 90 days: **(PREMIUM)**
 
 - Merge requests.
 - Issues.
@@ -389,7 +389,7 @@ To share a given group, for example, 'Frontend' with another group, for example,
 
 All the members of the 'Engineering' group will have been added to 'Frontend'.
 
-## Manage group memberships via LDAP **(STARTER ONLY)**
+## Manage group memberships via LDAP **(PREMIUM SELF)**
 
 Group syncing allows LDAP groups to be mapped to GitLab groups. This provides more control over per-group user management. To configure group syncing edit the `group_base` **DN** (`'OU=Global Groups,OU=GitLab INT,DC=GitLab,DC=org'`). This **OU** contains all groups that will be associated with GitLab groups.
 
@@ -400,7 +400,7 @@ For more information on the administration of LDAP and group sync, refer to the 
 NOTE:
 If an LDAP user is a group member when LDAP Synchronization is added, and they are not part of the LDAP group, they will be removed from the group.
 
-### Creating group links via CN **(STARTER ONLY)**
+### Creating group links via CN **(PREMIUM SELF)**
 
 To create group links via CN:
 
@@ -428,7 +428,7 @@ To create group links via filter:
 
 ![Creating group links via filter](img/ldap_sync_filter_v13_1.png)
 
-### Overriding user permissions **(STARTER ONLY)**
+### Overriding user permissions **(PREMIUM SELF)**
 
 In GitLab [8.15](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/822) and later, LDAP user permissions can now be manually overridden by an admin user. To override a user's permissions:
 
@@ -616,7 +616,7 @@ To enable this feature, navigate to the group settings page. Select
 
 ![Checkbox for share with group lock](img/share_with_group_lock.png)
 
-#### Member Lock **(STARTER)**
+#### Member Lock **(PREMIUM)**
 
 Member lock lets a group owner prevent any new project membership to all of the
 projects within a group, allowing tighter control over project membership.
@@ -814,11 +814,11 @@ To enable prevent project forking:
 - **Webhooks**: Configure [webhooks](../project/integrations/webhooks.md) for your group.
 - **Kubernetes cluster integration**: Connect your GitLab group with [Kubernetes clusters](clusters/index.md).
 - **Audit Events**: View [Audit Events](../../administration/audit_events.md)
-  for the group. **(STARTER ONLY)**
+  for the group. **(PREMIUM SELF)**
 - **Pipelines quota**: Keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group.
 - **Integrations**: Configure [integrations](../admin_area/settings/project_integration_management.md) for your group.
 
-#### Group push rules **(STARTER)**
+#### Group push rules **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34370) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/224129) in GitLab 13.4.
@@ -839,7 +839,7 @@ When set, new subgroups have push rules set for them based on either:
 For information about setting a maximum artifact size for a group, see
 [Maximum artifacts size](../admin_area/settings/continuous_integration.md#maximum-artifacts-size).
 
-## User contribution analysis **(STARTER)**
+## User contribution analysis **(PREMIUM)**
 
 With [GitLab Contribution Analytics](contribution_analytics/index.md),
 you have an overview of the contributions (pushes, merge requests,

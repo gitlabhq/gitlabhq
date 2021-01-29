@@ -1,5 +1,3 @@
-// Work around for https://github.com/vuejs/eslint-plugin-vue/issues/1411
-/* eslint-disable vue/one-component-per-file */
 import { setHTMLFixture } from 'helpers/fixtures';
 import Tracking, { initUserTracking, initDefaultTrackers } from '~/tracking';
 

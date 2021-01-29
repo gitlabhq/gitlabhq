@@ -226,6 +226,22 @@ you should fully roll out the feature by enabling the flag **globally** by runni
 This changes the feature flag state to be **enabled** always, which overrides the
 existing gates (e.g. `--group=gitlab-org`) in the above processes.
 
+##### Disabling feature flags
+
+To disable a feature flag that has been globally enabled you can run:
+
+```shell
+/chatops run feature set some_feature false
+```
+
+To disable a feature flag that has been enabled for a specific project you can run:
+
+```shell
+/chatops run feature set --group=gitlab-org some_feature false
+```
+
+You cannot selectively disable feature flags for a specific project/group/user without applying a [specific method of implementing](development.md#selectively-disable-by-actor) the feature flags.
+
 ### Feature flag change logging
 
 #### Chatops level

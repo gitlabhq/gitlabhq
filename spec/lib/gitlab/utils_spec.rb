@@ -116,8 +116,6 @@ RSpec.describe Gitlab::Utils do
   end
 
   describe '.ms_to_round_sec' do
-    using RSpec::Parameterized::TableSyntax
-
     where(:original, :expected) do
       1999.8999     | 1.9999
       12384         | 12.384
@@ -169,8 +167,6 @@ RSpec.describe Gitlab::Utils do
   end
 
   describe '.remove_line_breaks' do
-    using RSpec::Parameterized::TableSyntax
-
     where(:original, :expected) do
       "foo\nbar\nbaz"     | "foobarbaz"
       "foo\r\nbar\r\nbaz" | "foobarbaz"
@@ -281,8 +277,6 @@ RSpec.describe Gitlab::Utils do
   end
 
   describe '.append_path' do
-    using RSpec::Parameterized::TableSyntax
-
     where(:host, :path, :result) do
       'http://test/'  | '/foo/bar'  |  'http://test/foo/bar'
       'http://test/'  | '//foo/bar' |  'http://test/foo/bar'
@@ -393,8 +387,6 @@ RSpec.describe Gitlab::Utils do
   end
 
   describe ".safe_downcase!" do
-    using RSpec::Parameterized::TableSyntax
-
     where(:str, :result) do
       "test".freeze | "test"
       "Test".freeze | "test"

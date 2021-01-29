@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, how-to
 ---
 
-# Kerberos integration **(STARTER ONLY)**
+# Kerberos integration **(PREMIUM SELF)**
 
 GitLab can integrate with [Kerberos](https://web.mit.edu/kerberos/) as an authentication mechanism.
 

@@ -4,6 +4,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 
 import createFlash from '~/flash';
 import { StatusPoller } from '~/import_entities/import_groups/graphql/services/status_poller';
+import { clientTypenames } from '~/import_entities/import_groups/graphql/client_factory';
 import bulkImportSourceGroupsQuery from '~/import_entities/import_groups/graphql/queries/bulk_import_source_groups.query.graphql';
 import { STATUSES } from '~/import_entities/constants';
 import { SourceGroupsManager } from '~/import_entities/import_groups/graphql/services/source_groups_manager';
@@ -17,6 +18,7 @@ jest.mock('~/import_entities/import_groups/graphql/services/source_groups_manage
 }));
 
 const TEST_POLL_INTERVAL = 1000;
+const FAKE_PAGE_INFO = { page: 1, perPage: 20, total: 40, totalPages: 2 };
 
 describe('Bulk import status poller', () => {
   let poller;
@@ -24,6 +26,25 @@ describe('Bulk import status poller', () => {
 
   const listQueryCacheCalls = () =>
     clientMock.readQuery.mock.calls.filter((call) => call[0].query === bulkImportSourceGroupsQuery);
+
+  const generateFakeGroups = (statuses) =>
+    statuses.map((status, idx) => generateFakeEntry({ status, id: idx }));
+
+  const writeFakeGroupsQuery = (nodes) => {
+    clientMock.cache.writeQuery({
+      query: bulkImportSourceGroupsQuery,
+      data: {
+        bulkImportSourceGroups: {
+          __typename: clientTypenames.BulkImportSourceGroupConnection,
+          nodes,
+          pageInfo: {
+            __typename: clientTypenames.BulkImportPageInfo,
+            ...FAKE_PAGE_INFO,
+          },
+        },
+      },
+    });
+  };
 
   beforeEach(() => {
     clientMock = createMockClient({
@@ -42,10 +63,7 @@ describe('Bulk import status poller', () => {
 
   describe('general behavior', () => {
     beforeEach(() => {
-      clientMock.cache.writeQuery({
-        query: bulkImportSourceGroupsQuery,
-        data: { bulkImportSourceGroups: [] },
-      });
+      writeFakeGroupsQuery([]);
     });
 
     it('does not perform polling when constructed', () => {
@@ -94,14 +112,7 @@ describe('Bulk import status poller', () => {
   });
 
   it('does not query server when no groups have STARTED status', async () => {
-    clientMock.cache.writeQuery({
-      query: bulkImportSourceGroupsQuery,
-      data: {
-        bulkImportSourceGroups: [STATUSES.NONE, STATUSES.FINISHED].map((status, idx) =>
-          generateFakeEntry({ status, id: idx }),
-        ),
-      },
-    });
+    writeFakeGroupsQuery(generateFakeGroups([STATUSES.NONE, STATUSES.FINISHED]));
 
     jest.spyOn(clientMock, 'query');
     poller.startPolling();
@@ -111,44 +122,23 @@ describe('Bulk import status poller', () => {
   describe('when there are groups which have STARTED status', () => {
     const TARGET_NAMESPACE = 'root';
 
-    const STARTED_GROUP_1 = {
+    const STARTED_GROUP_1 = generateFakeEntry({
       status: STATUSES.STARTED,
       id: 'started1',
-      import_target: {
-        target_namespace: TARGET_NAMESPACE,
-        new_name: 'group1',
-      },
-    };
+    });
 
-    const STARTED_GROUP_2 = {
+    const STARTED_GROUP_2 = generateFakeEntry({
       status: STATUSES.STARTED,
       id: 'started2',
-      import_target: {
-        target_namespace: TARGET_NAMESPACE,
-        new_name: 'group2',
-      },
-    };
+    });
 
-    const NOT_STARTED_GROUP = {
+    const NOT_STARTED_GROUP = generateFakeEntry({
       status: STATUSES.NONE,
       id: 'not_started',
-      import_target: {
-        target_namespace: TARGET_NAMESPACE,
-        new_name: 'group3',
-      },
-    };
+    });
 
     it('query server only for groups with STATUSES.STARTED', async () => {
-      clientMock.cache.writeQuery({
-        query: bulkImportSourceGroupsQuery,
-        data: {
-          bulkImportSourceGroups: [
-            STARTED_GROUP_1,
-            NOT_STARTED_GROUP,
-            STARTED_GROUP_2,
-          ].map((group) => generateFakeEntry(group)),
-        },
-      });
+      writeFakeGroupsQuery([STARTED_GROUP_1, NOT_STARTED_GROUP, STARTED_GROUP_2]);
 
       clientMock.query = jest.fn().mockResolvedValue({ data: {} });
       poller.startPolling();
@@ -166,14 +156,7 @@ describe('Bulk import status poller', () => {
     });
 
     it('updates statuses only for groups in response', async () => {
-      clientMock.cache.writeQuery({
-        query: bulkImportSourceGroupsQuery,
-        data: {
-          bulkImportSourceGroups: [STARTED_GROUP_1, STARTED_GROUP_2].map((group) =>
-            generateFakeEntry(group),
-          ),
-        },
-      });
+      writeFakeGroupsQuery([STARTED_GROUP_1, STARTED_GROUP_2]);
 
       clientMock.query = jest.fn().mockResolvedValue({ data: { group0: {} } });
       poller.startPolling();
@@ -188,14 +171,7 @@ describe('Bulk import status poller', () => {
 
     describe('when error occurs', () => {
       beforeEach(() => {
-        clientMock.cache.writeQuery({
-          query: bulkImportSourceGroupsQuery,
-          data: {
-            bulkImportSourceGroups: [STARTED_GROUP_1, STARTED_GROUP_2].map((group) =>
-              generateFakeEntry(group),
-            ),
-          },
-        });
+        writeFakeGroupsQuery([STARTED_GROUP_1, STARTED_GROUP_2]);
 
         clientMock.query = jest.fn().mockRejectedValue(new Error('dummy error'));
         poller.startPolling();

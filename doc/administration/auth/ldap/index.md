@@ -53,8 +53,8 @@ are already logged in or are using Git over SSH are be able to access
 GitLab for up to one hour. Manually block the user in the GitLab Admin Area to
 immediately block all access.
 
-GitLab Enterprise Edition Starter supports a
-[configurable sync time](#adjusting-ldap-user-sync-schedule). **(STARTER)**
+GitLab Enterprise Edition Premium supports a
+[configurable sync time](#adjusting-ldap-user-sync-schedule). **(PREMIUM)**
 
 ## Git password authentication **(FREE SELF)**
 
@@ -205,7 +205,7 @@ LDAP attributes that GitLab uses to create an account for the LDAP user. The spe
 | `first_name` | LDAP attribute for user first name. Used when the attribute configured for `name` does not exist. | no | `'givenName'` |
 | `last_name` | LDAP attribute for user last name. Used when the attribute configured for `name` does not exist. | no | `'sn'` |
 
-### LDAP Sync Configuration Settings **(STARTER ONLY)**
+### LDAP Sync Configuration Settings **(PREMIUM SELF)**
 
 | Setting | Description | Required | Examples |
 | ------- | ----------- | -------- | -------- |
@@ -254,7 +254,7 @@ group, you can use the following syntax:
 For more information about this "LDAP_MATCHING_RULE_IN_CHAIN" filter, see the following
 [Microsoft Search Filter Syntax](https://docs.microsoft.com/en-us/windows/win32/adsi/search-filter-syntax) document.
 Support for nested members in the user filter should not be confused with
-[group sync nested groups support](#supported-ldap-group-typesattributes). **(STARTER ONLY)**
+[group sync nested groups support](#supported-ldap-group-typesattributes). **(PREMIUM SELF)**
 
 Please note that GitLab does not support the custom filter syntax used by
 OmniAuth LDAP.
@@ -467,7 +467,7 @@ You should disable anonymous LDAP authentication and enable simple or SASL
 authentication. The TLS client authentication setting in your LDAP server cannot
 be mandatory and clients cannot be authenticated with the TLS protocol.
 
-## Multiple LDAP servers **(STARTER ONLY)**
+## Multiple LDAP servers **(PREMIUM SELF)**
 
 With GitLab Enterprise Edition Starter, you can configure multiple LDAP servers
 that your GitLab instance connects to.
@@ -515,7 +515,7 @@ gitlab_rails['ldap_servers'] = {
 
 If you configure multiple LDAP servers, use a unique naming convention for the `label` section of each entry. That label is used as the display name of the tab shown on the sign-in page.
 
-## User sync **(STARTER ONLY)**
+## User sync **(PREMIUM SELF)**
 
 Once per day, GitLab runs a worker to check and update GitLab
 users against LDAP.
@@ -546,7 +546,7 @@ The LDAP sync process:
 - Updates existing users.
 - Creates new users on first sign in.
 
-### Adjusting LDAP user sync schedule **(STARTER ONLY)**
+### Adjusting LDAP user sync schedule **(PREMIUM SELF)**
 
 By default, GitLab runs a worker once per day at 01:30 a.m. server time to
 check and update GitLab users against LDAP.
@@ -579,7 +579,7 @@ sync to run once every 12 hours at the top of the hour.
 
 1. [Restart GitLab](../../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-## Group Sync **(STARTER ONLY)**
+## Group Sync **(PREMIUM SELF)**
 
 If your LDAP supports the `memberof` property, when the user signs in for the
 first time GitLab triggers a sync for groups the user should be a member of.
@@ -629,11 +629,11 @@ following.
 To take advantage of group sync, group owners or maintainers need to [create one
 or more LDAP group links](#adding-group-links).
 
-### Adding group links **(STARTER ONLY)**
+### Adding group links **(PREMIUM SELF)**
 
 For information on adding group links via CNs and filters, refer to [the GitLab groups documentation](../../../user/group/index.md#manage-group-memberships-via-ldap).
 
-### Administrator sync **(STARTER ONLY)**
+### Administrator sync **(PREMIUM SELF)**
 
 As an extension of group sync, you can automatically manage your global GitLab
 administrators. Specify a group CN for `admin_group` and all members of the
@@ -677,7 +677,7 @@ group, as opposed to the full DN.
 
 1. [Restart GitLab](../../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-### Global group memberships lock **(STARTER ONLY)**
+### Global group memberships lock **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1793) in GitLab 12.0.
 
@@ -696,7 +696,7 @@ To enable it you need to:
 1. Navigate to **(admin)** **Admin Area > Settings -> Visibility and access controls**.
 1. Make sure the "Lock memberships to LDAP synchronization" checkbox is enabled.
 
-### Adjusting LDAP group sync schedule **(STARTER ONLY)**
+### Adjusting LDAP group sync schedule **(PREMIUM SELF)**
 
 By default, GitLab runs a group sync process every hour, on the hour.
 The values shown are in cron format. If needed, you can use a
@@ -735,7 +735,7 @@ sync to run once every 2 hours at the top of the hour.
 
 1. [Restart GitLab](../../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-### External groups **(STARTER ONLY)**
+### External groups **(PREMIUM SELF)**
 
 Using the `external_groups` setting will allow you to mark all users belonging
 to these groups as [external users](../../../user/permissions.md#external-users).

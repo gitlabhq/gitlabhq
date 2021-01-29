@@ -191,7 +191,7 @@ export default {
       }
 
       return sprintf(
-        s__('mrWidget|Merge failed: %{mergeError}. Please try again.'),
+        s__('mrWidget|%{mergeError}. Try again.'),
         {
           mergeError,
         },

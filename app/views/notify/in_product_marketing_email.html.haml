@@ -1,0 +1,204 @@
+!!!
+%html{ lang: "en" }
+  %head
+    %meta{ content: "text/html; charset=utf-8", "http-equiv" => "Content-Type" }
+    %meta{ content: "width=device-width, initial-scale=1", name: "viewport" }
+    %link{ href: "https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600", rel: "stylesheet", type: "text/css" }
+    %title= message.subject
+    :css
+      /* CLIENT-SPECIFIC STYLES */
+      body,
+      table,
+      td,
+      a {
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+      }
+
+      table,
+      td {
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+      }
+
+      img {
+        -ms-interpolation-mode: bicubic;
+      }
+
+      /* RESET STYLES */
+      img {
+        border: 0;
+        height: auto;
+        line-height: 100%;
+        outline: none;
+        text-decoration: none;
+      }
+
+      table {
+        border-collapse: collapse !important;
+      }
+
+      body {
+        height: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        background-color: #ffffff;
+        color: #424242;
+      }
+
+      a {
+        color: #6b4fbb;
+        text-decoration: underline;
+      }
+
+      .cta_link a {
+        font-size: 24px;
+        font-family: 'Source Sans Pro', helvetica, arial, sans-serif;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 5px;
+        -webkit-border-radius: 5px;
+        background-color: #6e49cb;
+        border-top: 15px solid #6e49cb;
+        border-bottom: 15px solid #6e49cb;
+        border-right: 40px solid #6e49cb;
+        border-left: 40px solid #6e49cb;
+        display: inline-block;
+      }
+
+      .footernav {
+        display: inline !important;
+      }
+
+      .footernav a {
+        color: #6e49cb;
+      }
+
+      .address {
+        margin: 0;
+        font-size: 16px;
+        line-height: 26px;
+      }
+
+    :css
+      /* iOS BLUE LINKS */
+      a[x-apple-data-detectors] {
+      color: inherit !important;
+      text-decoration: none !important;
+      font-size: inherit !important;
+      font-family: inherit !important;
+      font-weight: inherit !important;
+      line-height: inherit !important;
+      }
+    /[if gte mso 9]
+      <xml>
+      <o:OfficeDocumentSettings>
+      <o:AllowPNG/>
+      <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+      </xml>
+    /[if (mso)|(mso 16)]
+      <style type="text/css">
+      body, table, td, a, span {  font-family: Arial, Helvetica, sans-serif !important;  }
+      </style>
+    :css
+      @media only screen and (max-width: 595px) {
+
+      .wrapper {
+        width: 100% !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        }
+
+        p,
+        li {
+        font-size: 18px !important;
+        line-height: 26px !important;
+        }
+
+        .stack {
+          width: 100% !important;
+        }
+
+        .stack-mobile-padding {
+          width: 100% !important;
+          margin-top: 20px !important;
+        }
+
+        .callout {
+          padding-bottom: 20px !important;
+        }
+
+        .redbutton {
+          text-align: center;
+        }
+
+        .stack33 {
+          display: block !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          direction: ltr !important;
+          text-align: center !important;
+        }
+      }
+
+      @media only screen and (max-width: 480px) {
+        u~div {
+          width: 100vw !important;
+        }
+
+        div>u~div {
+          width: 100% !important;
+        }
+      }
+  %body#body{ width: "100%" }
+    %table{ border: "0", cellpadding: "0", cellspacing: "0", role: "presentation", width: "100%" }
+      %tr
+        %td{ align: "center", style: "padding: 0px;" }
+          %table.wrapper{ border: "0", cellpadding: "0", cellspacing: "0", role: "presentation", width: "600" }
+            %tr
+              %td{ style: "padding: 0px;" }
+                #main-story.mktEditable{ mktoname: "main-story" }
+                  %table{ border: "0", cellpadding: "0", cellspacing: "0", role: "presentation", width: "100%" }
+                    %tr
+                      %td{ align: "left", style: "padding: 0px;" }
+                        = about_link('mailers/in_product_marketing', 'gitlab-logo-gray-rgb.png', 200)
+                    %tr
+                      %td{ "aria-hidden" => "true", height: "30", style: "font-size: 0; line-height: 0;" }
+                    %tr
+                      %td{ bgcolor: "#ffffff", height: "auto", style: "max-width: 600px; width: 100%; text-align: center; height: 200px; padding: 25px 15px; mso-line-height-rule: exactly; min-height: 40px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif;", valign: "middle", width: "100%" }
+                        = in_product_marketing_logo(@track, @series)
+                        %h1{ style: "font-size: 40px; line-height: 46x; color: #000000; padding: 20px 0 0 0; font-weight: normal;" }
+                          = in_product_marketing_title(@track, @series)
+                        %h2{ style: "font-size: 28px; line-height: 34px; color: #000000; padding: 0; font-weight: 400;" }
+                          = in_product_marketing_subtitle(@track, @series)
+                    %tr
+                      %td{ style: "padding: 10px 20px 30px 20px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif; color:#000000; font-size: 18px; line-height: 24px;" }
+                        %p{ style: "margin: 0 0 20px 0;" }
+                          = in_product_marketing_body_line1(@track, @series, format: :html).html_safe
+                        %p{ style: "margin: 0 0 20px 0;" }
+                          = in_product_marketing_body_line2(@track, @series, format: :html).html_safe
+                    %tr
+                      %td{ align: "center", style: "padding: 10px 20px 80px 20px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif;" }
+                        .cta_link= cta_link(@track, @series, @group, format: :html)
+                    %tr{ style: "background-color: #ffffff;" }
+                      %td{ style: "color: #424242; padding: 10px 30px; text-align: center; font-family: 'Source Sans Pro', helvetica, arial, sans-serif;font-size: 16px; line-height: 22px; border: 1px solid #dddddd" }
+                        %p
+                          = in_product_marketing_progress(@track, @series)
+                    %tr{ style: "background-color: #ffffff;" }
+                      %td{ align: "center", style: "padding:50px 20px 0 20px;" }
+                        = about_link('', 'gitlab_logo.png', 80)
+                    %tr{ style: "background-color: #ffffff;" }
+                      %td{ align: "center", style: "padding:0px ;" }
+                    %tr{ style: "background-color: #ffffff;" }
+                      %td{ align: "center", style: "padding:0px 10px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif; " }
+                        %span.footernav{ style: "color: #6e49cb; font-size: 16px; line-height: 26px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif;" }
+                          = footer_links(format: :html).join('&nbsp;' * 3 + '|' + '&nbsp;' * 4).html_safe
+                    %tr{ style: "background-color:#ffffff;" }
+                      %td{ align: "center", style: "padding: 40px 30px 20px 30px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif;" }
+                        .address= address(format: :html)
+                    %tr{ style: "background-color: #ffffff;" }
+                      %td{ align: "left", style: "padding:20px 30px 20px 30px;" }
+                        %span.footernav{ style: "color: #6e49cb; font-size: 14px; line-height: 20px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif; color:#424242;" }
+                          = unsubscribe(format: :html).html_safe

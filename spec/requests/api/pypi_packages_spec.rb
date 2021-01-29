@@ -5,6 +5,7 @@ RSpec.describe API::PypiPackages do
   include WorkhorseHelpers
   include PackagesManagerApiSpecHelpers
   include HttpBasicAuthHelpers
+  using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :public) }
@@ -20,8 +21,6 @@ RSpec.describe API::PypiPackages do
     subject { get api(url) }
 
     context 'with valid project' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:project_visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
         'PUBLIC'  | :developer  | true  | true  | 'PyPI package versions' | :success
         'PUBLIC'  | :guest      | true  | true  | 'PyPI package versions' | :success
@@ -83,8 +82,6 @@ RSpec.describe API::PypiPackages do
     subject { post api(url), headers: headers }
 
     context 'with valid project' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:project_visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
         'PUBLIC'  | :developer  | true  | true  | 'process PyPI api request' | :success
         'PUBLIC'  | :guest      | true  | true  | 'process PyPI api request' | :forbidden
@@ -149,8 +146,6 @@ RSpec.describe API::PypiPackages do
     end
 
     context 'with valid project' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:project_visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
         'PUBLIC'  | :developer  | true  | true  | 'PyPI package creation'    | :created
         'PUBLIC'  | :guest      | true  | true  | 'process PyPI api request' | :forbidden
@@ -239,8 +234,6 @@ RSpec.describe API::PypiPackages do
     subject { get api(url) }
 
     context 'with valid project' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:project_visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
         'PUBLIC'  | :developer  | true  | true  | 'PyPI package download' | :success
         'PUBLIC'  | :guest      | true  | true  | 'PyPI package download' | :success

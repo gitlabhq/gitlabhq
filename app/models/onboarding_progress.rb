@@ -22,6 +22,24 @@ class OnboardingProgress < ApplicationRecord
     :repository_mirrored
   ].freeze
 
+  scope :incomplete_actions, -> (actions) do
+    Array.wrap(actions).inject(self) { |scope, action| scope.where(column_name(action) => nil) }
+  end
+
+  scope :completed_actions, -> (actions) do
+    Array.wrap(actions).inject(self) { |scope, action| scope.where.not(column_name(action) => nil) }
+  end
+
+  scope :completed_actions_with_latest_in_range, -> (actions, range) do
+    actions = Array(actions)
+    if actions.size == 1
+      where(column_name(actions[0]) => range)
+    else
+      action_columns = actions.map { |action| arel_table[column_name(action)] }
+      completed_actions(actions).where(Arel::Nodes::NamedFunction.new('GREATEST', action_columns).between(range))
+    end
+  end
+
   class << self
     def onboard(namespace)
       return unless root_namespace?(namespace)
@@ -44,11 +62,11 @@ class OnboardingProgress < ApplicationRecord
       where(namespace: namespace).where.not(action_column => nil).exists?
     end
 
-    private
-
     def column_name(action)
       :"#{action}_at"
     end
+
+    private
 
     def root_namespace?(namespace)
       namespace && namespace.root?

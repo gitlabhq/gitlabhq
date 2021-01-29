@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::Prometheus::Alerts::NotifyService do
   include PrometheusHelpers
+  using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project, reload: true) { create(:project) }
 
@@ -61,8 +62,6 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
     end
 
     context 'with project specific cluster' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:cluster_enabled, :status, :configured_token, :token_input, :result) do
         true  | :installed | token | token | :success
         true  | :installed | nil   | nil   | :success
@@ -104,8 +103,6 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
     end
 
     context 'with manual prometheus installation' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:alerting_setting, :configured_token, :token_input, :result) do
         true  | token | token | :success
         true  | token | 'x'   | :failure
@@ -139,8 +136,6 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
     end
 
     context 'with HTTP integration' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:active, :token, :result) do
         :active   | :valid    | :success
         :active   | :invalid  | :failure

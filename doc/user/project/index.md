@@ -17,12 +17,12 @@ the number of private projects you create.
 
 ## Project features
 
-When you create a project in GitLab, you'll have access to a large number of
+When you create a project in GitLab, you receive access to a large number of
 [features](https://about.gitlab.com/features/):
 
 **Repositories:**
 
-- [Issue tracker](issues/index.md): Discuss implementations with your team within issues
+- [Issue tracker](issues/index.md): Discuss implementations with your team in issues
   - [Issue Boards](issue_board.md): Organize and prioritize your workflow
   - [Multiple Issue Boards](issue_board.md#multiple-issue-boards): Allow your teams to create their own workflows (Issue Boards) for the same project
 - [Repositories](repository/index.md): Host your code in a fully
@@ -42,13 +42,13 @@ When you create a project in GitLab, you'll have access to a large number of
 
 **Issues and merge requests:**
 
-- [Issue tracker](issues/index.md): Discuss implementations with your team within issues
+- [Issue tracker](issues/index.md): Discuss implementations with your team in issues
   - [Issue Boards](issue_board.md): Organize and prioritize your workflow
   - [Multiple Issue Boards](issue_board.md#multiple-issue-boards): Allow your teams to create their own workflows (Issue Boards) for the same project
 - [Merge Requests](merge_requests/index.md): Apply your branching
   strategy and get reviewed by your team
   - [Merge Request Approvals](merge_requests/merge_request_approvals.md): Ask for approval before
-  implementing a change **(STARTER)**
+  implementing a change
   - [Fix merge conflicts from the UI](merge_requests/resolve_conflicts.md):
   Your Git diff tool right from the GitLab UI
   - [Review Apps](../../ci/review_apps/index.md): Live preview the results
@@ -108,7 +108,7 @@ When you create a project in GitLab, you'll have access to a large number of
 - [Conan packages](../packages/conan_repository/index.md): your private Conan repository in GitLab.
 - [Maven packages](../packages/maven_repository/index.md): your private Maven repository in GitLab.
 - [NPM packages](../packages/npm_registry/index.md): your private NPM package registry in GitLab.
-- [Code owners](code_owners.md): specify code owners for certain files **(STARTER)**
+- [Code owners](code_owners.md): specify code owners for certain files
 - [License Compliance](../compliance/license_compliance/index.md): approve and deny licenses for projects. **(ULTIMATE)**
 - [Dependency List](../application_security/dependency_list/index.md): view project dependencies. **(ULTIMATE)**
 - [Requirements](requirements/index.md): Requirements allow you to create criteria to check your products against. **(ULTIMATE)**
@@ -192,7 +192,7 @@ To delete a project, first navigate to the home page for that project.
 1. Click **Delete project**
 1. Confirm this action by typing in the expected text.
 
-Projects in personal namespaces are deleted immediately on request. For information on delayed deletion of projects within a group, please see [Enabling delayed project removal](../group/index.md#enabling-delayed-project-removal).
+Projects in personal namespaces are deleted immediately on request. For information on delayed deletion of projects in a group, please see [Enabling delayed project removal](../group/index.md#enabling-delayed-project-removal).
 
 ## CI/CD for external repositories **(PREMIUM)**
 
@@ -214,11 +214,11 @@ filtered by **Push events**, **Merge events**, **Issue events**, **Comments**,
 
 ### Leave a project
 
-**Leave project** will only display on the project's dashboard
+**Leave project** only displays on the project's dashboard
 when a project is part of a group (under a
 [group namespace](../group/index.md#namespaces)).
-If you choose to leave a project you will no longer be a project
-member, therefore, unable to contribute.
+If you choose to leave a project you are no longer a project
+member, and cannot contribute.
 
 ## Project's landing page
 
@@ -230,15 +230,15 @@ with [permissions to view the project's code](../permissions.md#project-members-
 
 - The content of a
   [`README` or an index file](repository/#repository-readme-and-index-files)
-  is displayed (if any), followed by the list of directories within the
+  is displayed (if any), followed by the list of directories in the
   project's repository.
 - If the project doesn't contain either of these files, the
-  visitor will see the list of files and directories of the repository.
+  visitor sees the list of files and directories of the repository.
 
-For users without permissions to view the project's code:
+For users without permissions to view the project's code, GitLab displays:
 
-- The wiki homepage is displayed, if any.
-- The list of issues within the project is displayed.
+- The wiki homepage, if any.
+- The list of issues in the project.
 
 ## GitLab Workflow - VS Code extension
 
@@ -259,15 +259,15 @@ Depending on the situation, different things apply.
 When [renaming a user](../profile/index.md#changing-your-username),
 [changing a group path](../group/index.md#changing-a-groups-path) or [renaming a repository](settings/index.md#renaming-a-repository):
 
-- Existing web URLs for the namespace and anything under it (e.g., projects) will
+- Existing web URLs for the namespace and anything under it (such as projects) will
   redirect to the new URLs.
 - Starting with GitLab 10.3, existing Git remote URLs for projects under the
-  namespace will redirect to the new remote URL. Every time you push/pull to a
+  namespace redirect to the new remote URL. Every time you push/pull to a
   repository that has changed its location, a warning message to update
-  your remote will be displayed instead of rejecting your action.
-  This means that any automation scripts, or Git clients will continue to
+  your remote is displayed instead of rejecting your action.
+  This means that any automation scripts, or Git clients continue to
   work after a rename, making any transition a lot smoother.
-- The redirects will be available as long as the original path is not claimed by
+- The redirects are available as long as the original path is not claimed by
   another group, user or project.
 
 ## Use your project as a Go package
@@ -278,11 +278,11 @@ and `godoc.org` discovery requests, including the
 [`go-source`](https://github.com/golang/gddo/wiki/Source-Code-Links) meta tags.
 
 Private projects, including projects in subgroups, can be used as a Go package,
-but may require configuration to work correctly. GitLab will respond correctly
+but may require configuration to work correctly. GitLab responds correctly
 to `go get` discovery requests for projects that *are not* in subgroups,
 regardless of authentication or authorization.
 [Authentication](#authenticate-go-requests) is required to use a private project
-in a subgroup as a Go package. Otherwise, GitLab will truncate the path for
+in a subgroup as a Go package. Otherwise, GitLab truncates the path for
 private projects in subgroups to the first two segments, causing `go get` to
 fail.
 
@@ -302,10 +302,10 @@ queries), and [`GONOSUMDB`](../../development/go_guide/dependencies.md#fetching)
 
 `GOPRIVATE`, `GONOPROXY`, and `GONOSUMDB` are comma-separated lists of Go
 modules and Go module prefixes. For example,
-`GOPRIVATE=gitlab.example.com/my/private/project` will disable queries for that
-one project, but `GOPRIVATE=gitlab.example.com` will disable queries for *all*
-projects on GitLab.com. Go will not query module proxies if the module name or a
-prefix of it appears in `GOPRIVATE` or `GONOPROXY`. Go will not query checksum
+`GOPRIVATE=gitlab.example.com/my/private/project` disables queries for that
+one project, but `GOPRIVATE=gitlab.example.com` disables queries for *all*
+projects on GitLab.com. Go does not query module proxies if the module name or a
+prefix of it appears in `GOPRIVATE` or `GONOPROXY`. Go does not query checksum
 databases if the module name or a prefix of it appears in `GONOPRIVATE` or
 `GONOSUMDB`.
 
@@ -315,8 +315,8 @@ To authenticate requests to private projects made by Go, use a [`.netrc`
 file](https://ec.haxx.se/usingcurl-netrc.html) and a [personal access
 token](../profile/personal_access_tokens.md) in the password field. **This only
 works if your GitLab instance can be accessed with HTTPS.** The `go` command
-will not transmit credentials over insecure connections. This will authenticate
-all HTTPS requests made directly by Go but will not authenticate requests made
+does not transmit credentials over insecure connections. This authenticates
+all HTTPS requests made directly by Go, but does not authenticate requests made
 through Git.
 
 For example:
@@ -332,16 +332,18 @@ On Windows, Go reads `~/_netrc` instead of `~/.netrc`.
 
 ### Authenticate Git fetches
 
-If a module cannot be fetched from a proxy, Go will fall back to using Git (for
-GitLab projects). Git will use `.netrc` to authenticate requests. Alternatively,
-Git can be configured to embed specific credentials in the request URL, or to
-use SSH instead of HTTPS (as Go always uses HTTPS to fetch Git repositories):
+If a module cannot be fetched from a proxy, Go falls back to using Git (for
+GitLab projects). Git uses `.netrc` to authenticate requests. You can also
+configure Git to either:
+
+- Embed specific credentials in the request URL.
+- Use SSH instead of HTTPS, as Go always uses HTTPS to fetch Git repositories.
 
 ```shell
-# embed credentials in any request to GitLab.com:
+# Embed credentials in any request to GitLab.com:
 git config --global url."https://${user}:${personal_access_token}@gitlab.example.com".insteadOf "https://gitlab.example.com"
 
-# use SSH instead of HTTPS:
+# Use SSH instead of HTTPS:
 git config --global url."git@gitlab.example.com".insteadOf "https://gitlab.example.com"
 ```
 
@@ -354,7 +356,7 @@ visit the `/projects/:id` URL in your browser or other tool accessing the projec
 
 ## Project aliases **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3264) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3264) in GitLab Premium 12.1.
 
 When migrating repositories to GitLab and they are being accessed by other systems,
 it's very useful to be able to access them using the same name especially when
@@ -369,9 +371,9 @@ A project alias can be only created via API and only by GitLab administrators.
 Follow the [Project Aliases API documentation](../../api/project_aliases.md) for
 more details.
 
-Once an alias has been created for a project (e.g., an alias `gitlab` for the
-project `https://gitlab.com/gitlab-org/gitlab`), the repository can be cloned
-using the alias (e.g `git clone git@gitlab.com:gitlab.git` instead of
+After an alias has been created for a project (such as an alias `gitlab` for the
+project `https://gitlab.com/gitlab-org/gitlab`), you can clone the repository
+with the alias (e.g `git clone git@gitlab.com:gitlab.git` instead of
 `git clone git@gitlab.com:gitlab-org/gitlab.git`).
 
 ## Project activity analytics overview **(ULTIMATE SELF)**
