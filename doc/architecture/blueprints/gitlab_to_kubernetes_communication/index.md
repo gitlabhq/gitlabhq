@@ -6,7 +6,7 @@ comments: false
 description: 'GitLab to Kubernetes communication'
 ---
 
-# GitLab to Kubernetes communication
+# GitLab to Kubernetes communication **(CORE)**
 
 The goal of this document is to define how GitLab can communicate with Kubernetes
 and in-cluster services through the GitLab Kubernetes Agent.

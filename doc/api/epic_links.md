@@ -15,7 +15,7 @@ Every API call to `epic_links` must be authenticated.
 If a user is not a member of a private group, a `GET` request on that
 group results in a `404` status code.
 
-Multi-level Epics are available only in GitLab [Ultimate/Gold](https://about.gitlab.com/pricing/).
+Multi-level Epics are available only in GitLab [Ultimate](https://about.gitlab.com/pricing/).
 If the Multi-level Epics feature is not available, a `403` status code is returned.
 
 ## List epics related to a given epic

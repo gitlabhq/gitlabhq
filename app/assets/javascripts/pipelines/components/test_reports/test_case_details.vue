@@ -1,12 +1,13 @@
 <script>
-import { GlModal } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { GlBadge, GlModal } from '@gitlab/ui';
+import { __, n__, sprintf } from '~/locale';
 import CodeBlock from '~/vue_shared/components/code_block.vue';
 
 export default {
   name: 'TestCaseDetails',
   components: {
     CodeBlock,
+    GlBadge,
     GlModal,
   },
   props: {
@@ -21,9 +22,35 @@ export default {
         Boolean(classname) && Boolean(formattedTime) && Boolean(name),
     },
   },
+  computed: {
+    failureHistoryMessage() {
+      if (!this.hasRecentFailures) {
+        return null;
+      }
+
+      return sprintf(
+        n__(
+          'Reports|Failed %{count} time in %{baseBranch} in the last 14 days',
+          'Reports|Failed %{count} times in %{baseBranch} in the last 14 days',
+          this.recentFailures.count,
+        ),
+        {
+          count: this.recentFailures.count,
+          baseBranch: this.recentFailures.base_branch,
+        },
+      );
+    },
+    hasRecentFailures() {
+      return Boolean(this.recentFailures);
+    },
+    recentFailures() {
+      return this.testCase.recent_failures;
+    },
+  },
   text: {
     name: __('Name'),
     duration: __('Execution time'),
+    history: __('History'),
     trace: __('System output'),
   },
   modalCloseButton: {
@@ -50,6 +77,13 @@ export default {
       <strong class="gl-text-right col-sm-3">{{ $options.text.duration }}</strong>
       <div class="col-sm-9" data-testid="test-case-duration">
         {{ testCase.formattedTime }}
+      </div>
+    </div>
+
+    <div v-if="testCase.recent_failures" class="gl-display-flex gl-flex-wrap gl-mx-n4 gl-my-3">
+      <strong class="gl-text-right col-sm-3">{{ $options.text.history }}</strong>
+      <div class="col-sm-9" data-testid="test-case-recent-failures">
+        <gl-badge variant="warning">{{ failureHistoryMessage }}</gl-badge>
       </div>
     </div>
 

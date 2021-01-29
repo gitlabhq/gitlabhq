@@ -39,6 +39,8 @@ To learn how to create templates for various file types in groups, visit
   images guidelines, link to the related issue, reviewer name, and so on.
 - You can also create issues and merge request templates for different
   stages of your workflow, for example, feature proposal, feature improvement, or a bug report.
+- You can use an [issue description template](#creating-issue-templates) as a
+  [Service Desk email template](service_desk.md#new-service-desk-issues).
 
 ## Creating issue templates
 

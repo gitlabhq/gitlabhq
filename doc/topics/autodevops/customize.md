@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Customizing Auto DevOps
+# Customizing Auto DevOps **(CORE)**
 
 While [Auto DevOps](index.md) provides great defaults to get you started, you can customize
 almost everything to fit your needs. Auto DevOps offers everything from custom

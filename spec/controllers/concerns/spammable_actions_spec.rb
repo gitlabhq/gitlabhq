@@ -68,12 +68,9 @@ RSpec.describe SpammableActions do
         allow(spammable).to receive(:valid?) { false }
       end
 
-      # NOTE: Not adding coverage of details of render_recaptcha?, the plan is to refactor it out
-      # of this module anyway as part of adding support for the GraphQL reCAPTCHA flow.
-
-      context 'when render_recaptcha? is true' do
+      context 'when spammable.render_recaptcha? is true' do
         before do
-          expect(controller).to receive(:render_recaptcha?) { true }
+          expect(spammable).to receive(:render_recaptcha?) { true }
         end
 
         context 'when format is :html' do

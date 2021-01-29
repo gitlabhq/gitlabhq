@@ -78,6 +78,21 @@ RSpec.describe 'Creating a Snippet' do
       end
 
       it_behaves_like 'spam flag is present'
+
+      context 'when snippet_spam flag is disabled' do
+        before do
+          stub_feature_flags(snippet_spam: false)
+        end
+
+        it 'passes disable_spam_action_service param to service' do
+          expect(::Snippets::CreateService)
+            .to receive(:new)
+                  .with(anything, anything, hash_including(disable_spam_action_service: true))
+                  .and_call_original
+
+          subject
+        end
+      end
     end
 
     shared_examples 'creates snippet' do

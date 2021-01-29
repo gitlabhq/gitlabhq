@@ -19,7 +19,7 @@ integration as well as linking to more detailed resources for how to do so.
 
 ## Integration Tiers
 
-The security offerings in GitLab are designed for GitLab Gold and GitLab Ultimate users, and the
+The security offerings in GitLab are designed for GitLab Ultimate users, and the
 [DevSecOps](https://about.gitlab.com/handbook/use-cases/#4-devsecops-shift-left-security)
 use case. All the features are in those tiers. This includes the APIs and standard reporting
 framework needed to provide a consistent experience for users to easily bring their preferred
@@ -75,7 +75,7 @@ and complete an integration with the Secure stage.
 1. [Create an issue](https://gitlab.com/gitlab-com/alliances/alliances/-/issues/new?issuable_template=new_partner)
    using our new partner issue template to begin the discussion.
 1. Get a test account to begin developing your integration. You can
-   request a [GitLab.com Gold Subscription Sandbox](https://about.gitlab.com/partners/integrate/#gitlabcom-gold-subscription-sandbox-request)
+   request a [GitLab.com Subscription Sandbox](https://about.gitlab.com/partners/integrate/#gitlabcom-subscription-sandbox-request)
    or an [EE Developer License](https://about.gitlab.com/partners/integrate/#requesting-ee-dev-license-for-rd).
 1. Provide a [pipeline job](../../development/pipelines.md)
    template that users could integrate into their own GitLab pipelines.

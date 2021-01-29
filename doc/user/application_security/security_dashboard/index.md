@@ -5,13 +5,13 @@ group: Threat Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Security Dashboard, Security Center, and Vulnerability Reports **(ULTIMATE)**
+# GitLab Security Dashboards and Security Center **(ULTIMATE)**
 
 GitLab provides a comprehensive set of features for viewing and managing vulnerabilities:
 
 - Security dashboards: An overview of the security status in your instance, [groups](#group-security-dashboard), and
   [projects](#project-security-dashboard).
-- [Vulnerability reports](#vulnerability-report): Detailed lists of all vulnerabilities for the instance, group, project, or
+- [Vulnerability reports](../vulnerability_report/index.md): Detailed lists of all vulnerabilities for the instance, group, project, or
   pipeline. This is where you triage and manage vulnerabilities.
 - [Security Center](#instance-security-center): A dedicated area for vulnerability management at the instance level. This
   includes a security dashboard, vulnerability report, and settings.
@@ -27,7 +27,7 @@ To benefit from these features, you must first configure one of the
 
 ## Supported reports
 
-The vulnerability report displays vulnerabilities detected by scanners such as:
+The security dashboard and vulnerability report displays information about vulnerabilities detected by scanners such as:
 
 - [Container Scanning](../container_scanning/index.md)
 - [Dynamic Application Security Testing](../dast/index.md)
@@ -68,50 +68,13 @@ the analyzer outputs an
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235558) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.6.
 
 At the project level, the Security Dashboard displays a chart with the number of vulnerabilities over time.
-Access it by navigating to **Security & Compliance > Security Dashboard**. Currently, we display historical
+Access it by navigating to **Security & Compliance > Security Dashboard**. We display historical
 data up to 365 days.
 
 ![Project Security Dashboard](img/project_security_dashboard_chart_v13_6.png)
 
 Filter the historical data by clicking on the corresponding legend name. The image above, for example, shows
 only the graph for vulnerabilities with **high** severity.
-
-### Vulnerability Report
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6165) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.1.
-
-The vulnerabilities that exist in your project's
-[default branch](../../project/repository/branches/index.md#default-branch) are accessed by navigating to
-**Security & Compliance > Vulnerability Report**. By default, the Vulnerability Report is filtered to
-display all detected and confirmed vulnerabilities.
-
-The Vulnerability Report first displays the time at which the last pipeline completed on the project's
-default branch. There's also a link to view this in more detail. In the case of any pipeline failures,
-the number of failures is indicated. The failure notification takes you directly to
-the **Failed jobs** tab of the pipeline page.
-
-The Vulnerability Report next displays the total number of vulnerabilities by severity (for example,
-Critical, High, Medium, Low, Info, Unknown). Below this, a table shows each vulnerability's status, severity,
-description and if there is a Merge Request related to it. Clicking a vulnerability takes you to its
-[Vulnerability Details](../vulnerabilities)
-page to view more information about that vulnerability.
-
-![Project Vulnerability Report](img/project_security_dashboard_v13_5.png)
-
-You can filter the vulnerabilities by one or more of the following:
-
-| Filter | Available Options |
-| --- | --- |
-| Status | Detected, Confirmed, Dismissed, Resolved |
-| Severity | Critical, High, Medium, Low, Info, Unknown |
-| Scanner | [Available Scanners](../index.md#security-scanning-tools) |
-
-You can also dismiss vulnerabilities in the table:
-
-1. Select the checkbox for each vulnerability you want to dismiss.
-1. In the menu that appears, select the reason for dismissal and click **Dismiss Selected**.
-
-![Project Vulnerability Report](img/project_security_dashboard_dismissal_v13_4.png)
 
 ## Group Security Dashboard
 
@@ -146,7 +109,7 @@ Next to the timeline chart is a list of projects, grouped and sorted by the seve
 Projects with no vulnerability tests configured don't appear in the list. Additionally, dismissed
 vulnerabilities are excluded.
 
-Navigate to the group's [vulnerability report](#vulnerability-report-1) to view the vulnerabilities found.
+Navigate to the group's [vulnerability report](../vulnerability_report/index.md) to view the vulnerabilities found.
 
 ## Instance Security Center
 
@@ -157,7 +120,7 @@ vulnerabilities present in the default branches of all the projects you configur
 following:
 
 - The [group security dashboard's](#group-security-dashboard) features.
-- A [vulnerability report](#vulnerability-report).
+- A [vulnerability report](../vulnerability_report/index.md).
 - A dedicated settings area to configure which projects to display.
 
 ![Instance Security Dashboard with projects](img/instance_security_dashboard_v13_4.png)
@@ -183,36 +146,6 @@ To add projects to the Security Center:
 
 After you add projects, the security dashboard and vulnerability report display the vulnerabilities
 found in those projects' default branches.
-
-## Export vulnerabilities
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213014) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
-
-You can export all your vulnerabilities in CSV (comma separated values) format by clicking the
-**{upload}** **Export** button located at top right of the Security Dashboard. When the report is
-ready, the CSV report downloads to your local machine. The report contains all vulnerabilities for
-the projects defined in the Security Dashboard, as filters don't apply to the export function.
-
-NOTE:
-It may take several minutes for the download to start if your project contains
-thousands of vulnerabilities. Don't close the page until the download finishes.
-
-The fields in the export include:
-
-- Group Name
-- Project Name
-- Scanner Type
-- Scanner Name
-- Status
-- Vulnerability
-- Details
-- Additional Info
-- Severity
-- [CVE](https://cve.mitre.org/) (Common Vulnerabilities and Exposures)
-- [CWE](https://cwe.mitre.org/) (Common Weakness Enumeration)
-- Other Identifiers
-
-![Export vulnerabilities](img/instance_security_dashboard_export_csv_v13_4.png)
 
 ## Keeping the dashboards up to date
 
@@ -244,35 +177,6 @@ lock files. Python projects can have lock files, but GitLab Secure tools don't s
 When using [Auto DevOps](../../../topics/autodevops/index.md), use
 [special environment variables](../../../topics/autodevops/customize.md#environment-variables)
 to configure daily security scans.
-
-## Vulnerability report
-
-Each vulnerability report contains vulnerabilities from the latest scans that were merged
-into the default branch.
-
-![Vulnerability Report](img/group_vulnerability_report_v13_7.png)
-
-You can filter which vulnerabilities the vulnerability report displays by:
-
-| Filter | Available Options |
-| --- | --- |
-| Status | Detected, Confirmed, Dismissed, Resolved |
-| Severity | Critical, High, Medium, Low, Info, Unknown |
-| Scanner | [Available Scanners](../index.md#security-scanning-tools) |
-| Project | Projects configured in the Security Center settings |
-
-Clicking any vulnerability in the table takes you to its
-[Vulnerability Details](../vulnerabilities) page to see more information on that vulnerability.
-To create an issue associated with the vulnerability, click the **Create Issue** button.
-
-![Create an issue for the vulnerability](img/vulnerability_details_create_issue_v13_7.png)
-
-After you create the issue, the linked issue icon in the vulnerability list:
-
-- Indicates that an issue has been created for that vulnerability.
-- Shows a tooltip that contains a link to the issue.
-
-![Display attached issues](img/vulnerability_list_table_v13_4.png)
 
 <!-- ## Troubleshooting
 

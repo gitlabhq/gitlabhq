@@ -67,8 +67,9 @@ execution time and the error output.
 
 ### Number of recent failures
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241759) in GitLab 13.7.
+> - [Introduced in Merge Requests](https://gitlab.com/gitlab-org/gitlab/-/issues/241759) in GitLab 13.7.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/268249) in GitLab 13.8.
+> - [Introduced in Test Reports](https://gitlab.com/gitlab-org/gitlab/-/issues/235525) in GitLab 13.9.
 
 If a test failed in the project's default branch in the last 14 days, a message like
 `Failed {n} time(s) in {default_branch} in the last 14 days` is displayed for that test.

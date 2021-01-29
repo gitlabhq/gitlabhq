@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Getting started with Auto DevOps
+# Getting started with Auto DevOps **(CORE)**
 
 This step-by-step guide helps you use [Auto DevOps](index.md) to
 deploy a project hosted on GitLab.com to Google Kubernetes Engine.
@@ -51,7 +51,7 @@ those projects provide a bare-bones application built on some well-known framewo
 
 1. Give your project a name, optionally a description, and make it public so that
    you can take advantage of the features available in the
-   [GitLab Gold plan](https://about.gitlab.com/pricing/#gitlab-com).
+   [GitLab Ultimate plan](https://about.gitlab.com/pricing/).
 
    ![Create project](img/guide_create_project_v12_3.png)
 

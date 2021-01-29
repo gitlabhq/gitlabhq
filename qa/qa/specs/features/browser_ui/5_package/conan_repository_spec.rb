@@ -75,9 +75,7 @@ module QA
           index.click_package(package_name)
         end
 
-        Page::Project::Packages::Show.perform do |package|
-          package.click_delete
-        end
+        Page::Project::Packages::Show.perform(&:click_delete)
 
         Page::Project::Packages::Index.perform do |index|
           expect(index).to have_content("Package deleted successfully")

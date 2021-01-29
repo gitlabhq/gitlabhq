@@ -60,5 +60,5 @@ GitLab has the ability to filter analytics based on a date range. To filter resu
 
 The **Productivity Analytics** dashboard can be accessed only:
 
-- On [Premium or Silver tier](https://about.gitlab.com/pricing/) and above.
+- On the [Premium tier](https://about.gitlab.com/pricing/) and above.
 - By users with [Reporter access](../permissions.md) and above.

@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Upgrading PostgreSQL for Auto DevOps
+# Upgrading PostgreSQL for Auto DevOps **(CORE)**
 
 Auto DevOps provides an [in-cluster PostgreSQL database](customize.md#postgresql-database-support)
 for your application.

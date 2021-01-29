@@ -210,16 +210,22 @@ module Projects
     end
 
     def set_project_name_from_path
-      # Set project name from path
-      if @project.name.present? && @project.path.present?
-        # if both name and path set - everything is ok
-      elsif @project.path.present?
+      # if both name and path set - everything is ok
+      return if @project.name.present? && @project.path.present?
+
+      if @project.path.present?
         # Set project name from path
         @project.name = @project.path.dup
       elsif @project.name.present?
         # For compatibility - set path from name
-        # TODO: remove this in 8.0
-        @project.path = @project.name.dup.parameterize
+        @project.path = @project.name.dup
+
+        # TODO: Retained for backwards compatibility. Remove in API v5.
+        #       When removed, validation errors will get bubbled up automatically.
+        #       See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52725
+        unless @project.path.match?(Gitlab::PathRegex.project_path_format_regex)
+          @project.path = @project.path.parameterize
+        end
       end
     end
 

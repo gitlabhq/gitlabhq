@@ -24059,6 +24059,11 @@ msgstr ""
 msgid "Reports|Execution time"
 msgstr ""
 
+msgid "Reports|Failed %{count} time in %{baseBranch} in the last 14 days"
+msgid_plural "Reports|Failed %{count} times in %{baseBranch} in the last 14 days"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Reports|Failed %{count} time in %{base_branch} in the last 14 days"
 msgid_plural "Reports|Failed %{count} times in %{base_branch} in the last 14 days"
 msgstr[0] ""

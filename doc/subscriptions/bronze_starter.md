@@ -70,6 +70,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Code Owners as eligible approvers](../user/project/merge_requests/merge_request_approvals.md#code-owners-as-eligible-approvers)
   - All [Approval rules](../user/project/merge_requests/merge_request_approvals.md#approval-rules) features
   - [Restricting push and merge access to certain users](../user/project/protected_branches.md#restricting-push-and-merge-access-to-certain-users)
+  - [Visual Reviews](../ci/review_apps/index.md#visual-reviews)
 - Metrics and analytics:
   - [Contribution Analytics](../user/group/contribution_analytics/index.md)
   - [Merge Request Analytics](../user/analytics/merge_request_analytics.md)
@@ -132,5 +133,6 @@ Bronze-level subscribers:
   - Fields in the [Merge requests API](../api/merge_requests.md) for [merge request approvals](../user/project/merge_requests/merge_request_approvals.md)
   - Fields in the [Protected branches API](../api/protected_branches.md) that specify users or groups allowed to merge
   - [Merge request approvals API](../api/merge_request_approvals.md)
+  - [Visual review discussions API](../api/visual_review_discussions.md)
 - Development information:
   - [Run Jenkins in a macOS development environment](../development/integrations/jenkins.md)

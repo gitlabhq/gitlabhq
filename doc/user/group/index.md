@@ -580,7 +580,7 @@ To remove a group and its contents:
 This action either:
 
 - Removes the group, and also queues a background job to delete all projects in that group.
-- Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [Premium or Silver](https://about.gitlab.com/pricing/premium/) or higher tiers, this action adds a background job to mark a group for deletion. By default, the job schedules the deletion 7 days in the future. You can modify this waiting period through the [instance settings](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
+- Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [Premium](https://about.gitlab.com/pricing/premium/) or higher tiers, this action adds a background job to mark a group for deletion. By default, the job schedules the deletion 7 days in the future. You can modify this waiting period through the [instance settings](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
 
 Since [GitLab 13.6](https://gitlab.com/gitlab-org/gitlab/-/issues/39504), if the user who sets up the deletion leaves or is otherwise removed from the group before the
 actual deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
@@ -638,8 +638,8 @@ request to add a new user to a project through API will not be possible.
 
 #### IP access restriction **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1985) in [GitLab Ultimate and Gold](https://about.gitlab.com/pricing/) 12.0.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215410) to [GitLab Premium and Silver](https://about.gitlab.com/pricing/) in 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1985) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215410) to [GitLab Premium](https://about.gitlab.com/pricing/) in 13.1.
 
 NOTE:
 IP Access Restrictions are currently not functioning as expected on GitLab.com. Some users
@@ -676,7 +676,7 @@ To enable this feature:
 
 #### Allowed domain restriction **(PREMIUM)**
 
->- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7297) in [GitLab Premium and Silver](https://about.gitlab.com/pricing/) 12.2.
+>- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7297) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
 >- Support for specifying multiple email domains [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33143) in GitLab 13.1
 
 You can restrict access to groups by allowing only users with email addresses in particular domains to be added to the group.
@@ -775,7 +775,7 @@ To enable this feature:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
 
 By default, projects within a group are deleted immediately.
-Optionally, on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers,
+Optionally, on [Premium](https://about.gitlab.com/pricing/) or higher tiers,
 you can configure the projects within a group to be deleted after a delayed interval.
 
 During this interval period, the projects will be in a read-only state and can be restored, if required.
@@ -795,7 +795,7 @@ The group setting for delayed deletion is not inherited by sub-groups and has to
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216987) in GitLab 13.3.
 
 By default, projects within a group can be forked.
-Optionally, on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers,
+Optionally, on [Premium](https://about.gitlab.com/pricing/) or higher tiers,
 you can prevent the projects within a group from being forked outside of the current top-level group.
 
 Previously this setting was available only for groups enforcing group managed account. This setting will be

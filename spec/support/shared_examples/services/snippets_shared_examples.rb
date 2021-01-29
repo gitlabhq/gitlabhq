@@ -5,13 +5,15 @@ RSpec.shared_examples 'checking spam' do
   let(:api) { true }
   let(:captcha_response) { 'abc123' }
   let(:spam_log_id) { 1 }
+  let(:disable_spam_action_service) { false }
 
   let(:extra_opts) do
     {
       request: request,
       api: api,
       captcha_response: captcha_response,
-      spam_log_id: spam_log_id
+      spam_log_id: spam_log_id,
+      disable_spam_action_service: disable_spam_action_service
     }
   end
 
@@ -40,6 +42,16 @@ RSpec.shared_examples 'checking spam' do
     end
 
     subject
+  end
+
+  context 'when spam action service is disabled' do
+    let(:disable_spam_action_service) { true }
+
+    it 'request parameter is not passed to the service' do
+      expect(Spam::SpamActionService).not_to receive(:new)
+
+      subject
+    end
   end
 end
 

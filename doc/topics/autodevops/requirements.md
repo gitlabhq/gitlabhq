@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Requirements for Auto DevOps
+# Requirements for Auto DevOps **(CORE)**
 
 You can set up Auto DevOps for [Kubernetes](#auto-devops-requirements-for-kubernetes),
 [Amazon Elastic Container Service (ECS)](#auto-devops-requirements-for-amazon-ecs),

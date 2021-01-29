@@ -3,6 +3,8 @@
 module Snippets
   class CreateService < Snippets::BaseService
     def execute
+      # NOTE: disable_spam_action_service can be removed when the ':snippet_spam' feature flag is removed.
+      disable_spam_action_service = params.delete(:disable_spam_action_service) == true
       @request = params.delete(:request)
       @spam_params = Spam::SpamActionService.filter_spam_params!(params)
 
@@ -16,12 +18,14 @@ module Snippets
 
       @snippet.author = current_user
 
-      Spam::SpamActionService.new(
-        spammable: @snippet,
-        request: request,
-        user: current_user,
-        action: :create
-      ).execute(spam_params: spam_params)
+      unless disable_spam_action_service
+        Spam::SpamActionService.new(
+          spammable: @snippet,
+          request: request,
+          user: current_user,
+          action: :create
+        ).execute(spam_params: spam_params)
+      end
 
       if save_and_commit
         UserAgentDetailService.new(@snippet, request).create

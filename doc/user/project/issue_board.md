@@ -38,10 +38,9 @@ as shown in the following table:
 
 | Tier             | Number of project issue boards | Number of [group issue boards](#group-issue-boards) | [Configurable issue boards](#configurable-issue-boards) | [Assignee lists](#assignee-lists) |
 |------------------|--------------------------------|------------------------------|---------------------------|----------------|
-| Core / Free      | Multiple                       | 1                            | No                        | No             |
-| Starter / Bronze | Multiple                       | 1                            | Yes                       | No             |
-| Premium / Silver | Multiple                       | Multiple                     | Yes                       | Yes            |
-| Ultimate / Gold  | Multiple                       | Multiple                     | Yes                       | Yes            |
+| Free             | Multiple                       | 1                            | No                        | No             |
+| Premium          | Multiple                       | Multiple                     | Yes                       | Yes            |
+| Ultimate         | Multiple                       | Multiple                     | Yes                       | Yes            |
 
 To learn more, visit [GitLab Enterprise features for issue boards](#gitlab-enterprise-features-for-issue-boards) below.
 

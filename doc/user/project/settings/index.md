@@ -53,12 +53,12 @@ This feature might not be available to you. Check the **version history** note a
 
 GitLab 13.8 introduces custom compliance frameworks at the group-level. A group owner can create a compliance framework label
 and assign it to any number of projects within that group or sub-groups. When this feature is enabled, projects can only
-be assigned compliance framework labels that already exist within that group. 
+be assigned compliance framework labels that already exist within that group.
 
 If existing [Compliance frameworks](#compliance-framework) are not sufficient, you can now create
 your own.
 
-New compliance framework labels can be created and updated using GraphQL. 
+New compliance framework labels can be created and updated using GraphQL.
 
 ### Sharing and permissions
 
@@ -265,7 +265,7 @@ To delete a project:
 This action:
 
 - Deletes a project including all associated resources (issues, merge requests etc).
-- From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers,
+- From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on [Premium](https://about.gitlab.com/pricing/) or higher tiers,
 group administrators can [configure](../../group/index.md#enabling-delayed-project-removal) projects within a group
 to be deleted after a delayed period.
 When enabled, actual deletion happens after number of days

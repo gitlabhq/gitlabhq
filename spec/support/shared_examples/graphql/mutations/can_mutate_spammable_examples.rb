@@ -33,18 +33,4 @@ RSpec.shared_examples 'can raise spam flag' do
       expect(mutation_response['errors']).to include("Your snippet has been recognized as spam and has been discarded.")
     end
   end
-
-  context 'when :snippet_spam flag is disabled' do
-    before do
-      stub_feature_flags(snippet_spam: false)
-    end
-
-    it 'request parameter is not passed to the service' do
-      expect(service).to receive(:new)
-        .with(anything, anything, hash_not_including(request: instance_of(ActionDispatch::Request)))
-        .and_call_original
-
-      subject
-    end
-  end
 end

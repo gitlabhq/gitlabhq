@@ -7,6 +7,8 @@ module Snippets
     UpdateError = Class.new(StandardError)
 
     def execute(snippet)
+      # NOTE: disable_spam_action_service can be removed when the ':snippet_spam' feature flag is removed.
+      disable_spam_action_service = params.delete(:disable_spam_action_service) == true
       @request = params.delete(:request)
       @spam_params = Spam::SpamActionService.filter_spam_params!(params)
 
@@ -17,17 +19,20 @@ module Snippets
       end
 
       update_snippet_attributes(snippet)
-      Spam::SpamActionService.new(
-        spammable: snippet,
-        request: request,
-        user: current_user,
-        action: :update
-      ).execute(spam_params: spam_params)
+
+      unless disable_spam_action_service
+        Spam::SpamActionService.new(
+          spammable: snippet,
+          request: request,
+          user: current_user,
+          action: :update
+        ).execute(spam_params: spam_params)
+      end
 
       if save_and_commit(snippet)
         Gitlab::UsageDataCounters::SnippetCounter.count(:update)
 
-        ServiceResponse.success(payload: { snippet: snippet } )
+        ServiceResponse.success(payload: { snippet: snippet })
       else
         snippet_error_response(snippet, 400)
       end

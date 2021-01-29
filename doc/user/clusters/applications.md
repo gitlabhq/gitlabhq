@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Managed Apps
+# GitLab Managed Apps **(CORE)**
 
 GitLab provides **GitLab Managed Apps** for various
 applications which can be added directly to your configured cluster. These

@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Adding and removing Kubernetes clusters
+# Adding and removing Kubernetes clusters **(CORE)**
 
 GitLab offers integrated cluster creation for the following Kubernetes providers:
 

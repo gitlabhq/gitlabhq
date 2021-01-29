@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Terraform integration in Merge Requests
+# Terraform integration in Merge Requests **(CORE)**
 
 Collaborating around Infrastructure as Code (IaC) changes requires both code changes and expected infrastructure changes to be checked and approved. GitLab provides a solution to help collaboration around Terraform code changes and their expected effects using the Merge Request pages. This way users don't have to build custom tools or rely on 3rd party solutions to streamline their IaC workflows.
 

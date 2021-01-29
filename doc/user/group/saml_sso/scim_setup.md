@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # SCIM provisioning using SAML SSO for GitLab.com groups **(PREMIUM SAAS)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9388) in [GitLab.com Silver](https://about.gitlab.com/pricing/) 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9388) in GitLab Premium 11.10.
 
 System for Cross-domain Identity Management (SCIM), is an open standard that enables the
 automation of user provisioning. When SCIM is provisioned for a GitLab group, membership of

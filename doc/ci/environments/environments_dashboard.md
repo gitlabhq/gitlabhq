@@ -53,4 +53,4 @@ You can add up to 150 projects for GitLab to display on this dashboard.
 
 GitLab.com users can add public projects to the Environments
 Dashboard for free. If your project is private, the group it belongs
-to must have a [GitLab Silver](https://about.gitlab.com/pricing/) plan.
+to must have a [GitLab Premium](https://about.gitlab.com/pricing/) plan.

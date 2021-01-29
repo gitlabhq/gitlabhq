@@ -34,7 +34,7 @@ It provides a unique email address for end users to create issues in a project.
 Follow-up notes can be sent either through the GitLab interface or by email. End
 users only see the thread through email.
 
-For instance, let's assume you develop a game for iOS or Android.
+For example, let's assume you develop a game for iOS or Android.
 The codebase is hosted in your GitLab instance, built and deployed
 with GitLab CI/CD.
 
@@ -98,31 +98,51 @@ An email is sent to the author when:
 - A user submits a new issue using Service Desk.
 - A new note is created on a Service Desk issue.
 
-The body of these email messages can be customized by using templates. To create a new customized template,
-create a new Markdown (`.md`) file inside the `.gitlab/service_desk_templates/`
-directory in your repository. Commit and push to your default branch.
+You can customize the body of these email messages with templates.
+Save your templates in the `.gitlab/service_desk_templates/`
+directory in your repository.
+
+With Service Desk, you can use templates for:
+
+- [Thank you emails](#thank-you-email)
+- [New note emails](#new-note-email)
+- [New Service Desk issues](#new-service-desk-issues)
 
 #### Thank you email
 
-The **Thank you email** is the email sent to a user after they submit an issue.
-The filename of the template has to be `thank_you.md`.
-There are a few placeholders you can use which are automatically replaced in the email:
+When a user submits an issue through Service Desk, GitLab sends a **thank you email**.
+You must name the template file `thank_you.md`.
+
+You can use these placeholders to be automatically replaced in each email:
 
 - `%{ISSUE_ID}`: issue IID
 - `%{ISSUE_PATH}`: project path appended with the issue IID
 
-As the Service Desk issues are created as confidential (only project members can see them)
-the response email does not provide the issue link.
+Because Service Desk issues are created as [confidential](issues/confidential_issues.md) (only project members can see them),
+the response email does not contain the issue link.
 
 #### New note email
 
-When a user-submitted issue receives a new comment, GitLab sends a **New note email**
-to the user. The filename of this template must be `new_note.md`, and you can
-use these placeholders in the email:
+When a user-submitted issue receives a new comment, GitLab sends a **new note email**.
+You must name the template file `new_note.md`.
+
+You can use these placeholders to be automatically replaced in each email:
 
 - `%{ISSUE_ID}`: issue IID
 - `%{ISSUE_PATH}`: project path appended with the issue IID
 - `%{NOTE_TEXT}`: note text
+
+#### New Service Desk issues
+
+You can select one [issue description template](description_templates.md#creating-issue-templates)
+**per project** to be appended to every new Service Desk issue's description.
+Issue description templates should reside in your repository's `.gitlab/issue_templates/` directory.
+
+To use a custom issue template with Service Desk, in your project:
+
+1. [Create a description template](description_templates.md#creating-issue-templates)
+1. Go to **Settings > General > Service Desk**.
+1. From the dropdown **Template to append to all Service Desk issues**, select your template.
 
 ### Using custom email display name
 

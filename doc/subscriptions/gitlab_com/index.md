@@ -46,11 +46,11 @@ at any given time doesn't exceed the subscription count.
 
 Every occupied seat is counted in the subscription, with the following exception:
 
-- Members with Guest permissions on a Gold subscription.
+- Members with Guest permissions on an Ultimate subscription.
 
 NOTE:
 To support the open source community and encourage the development of open
-source projects, GitLab grants access to **Gold** features for all GitLab.com
+source projects, GitLab grants access to **Ultimate** features for all GitLab.com
 **public** projects, regardless of the subscription.
 
 ## Obtain a GitLab.com subscription
@@ -62,7 +62,7 @@ To subscribe to GitLab.com:
      [sign up page](https://gitlab.com/users/sign_up).
   1. Visit the [billing page](https://gitlab.com/profile/billings)
      under your profile.
-  1. Select the **Bronze**, **Silver**, or **Gold** GitLab.com plan through the
+  1. Select the **Bronze**, **Premium**, or **Ultimate** GitLab.com plan through the
      [Customers Portal](https://customers.gitlab.com/).
   1. Link your GitLab.com account with your Customers Portal account.
      Once a plan has been selected, if your account is not
@@ -79,7 +79,7 @@ To subscribe to GitLab.com:
      namespace.
   1. Create additional users and
      [add them to the group](../../user/group/index.md#add-users-to-a-group).
-  1. Select the **Bronze**, **Silver**, or **Gold** GitLab.com plan through the
+  1. Select the **Bronze**, **Premium**, or **Ultimate** GitLab.com plan through the
      [Customers Portal](https://customers.gitlab.com/).
   1. Link your GitLab.com account with your Customers Portal account.
      Once a plan has been selected, if your account is not
@@ -271,8 +271,8 @@ of CI pipeline minutes:
 
 - Free: 400 minutes
 - Bronze: 2,000 minutes
-- Silver: 10,000 minutes
-- Gold: 50,000 minutes
+- Premium: 10,000 minutes
+- Ultimate: 50,000 minutes
 
 Quotas apply to:
 
@@ -290,7 +290,7 @@ The available quota is reset on the first of each calendar month at midnight UTC
 
 When the CI minutes are depleted, an email is sent automatically to notify the owner(s)
 of the namespace. You can [purchase additional CI minutes](#purchase-additional-ci-minutes),
-or upgrade your account to [Silver or Gold](https://about.gitlab.com/pricing/).
+or upgrade your account to [Premium or Ultimate](https://about.gitlab.com/pricing/).
 Your own runners can still be used even if you reach your limits.
 
 ### Purchase additional CI minutes

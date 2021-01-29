@@ -17,15 +17,11 @@ module SpammableActions
 
   private
 
-  def ensure_spam_config_loaded!
-    Gitlab::Recaptcha.load_configurations!
-  end
-
   def recaptcha_check_with_fallback(should_redirect = true, &fallback)
     if should_redirect && spammable.valid?
       redirect_to spammable_path
-    elsif render_recaptcha?
-      ensure_spam_config_loaded!
+    elsif spammable.render_recaptcha?
+      Gitlab::Recaptcha.load_configurations!
 
       respond_to do |format|
         format.html do
@@ -81,12 +77,5 @@ module SpammableActions
 
   def authorize_submit_spammable!
     access_denied! unless current_user.admin?
-  end
-
-  def render_recaptcha?
-    return false if spammable.errors.count > 1 # re-render "new" template in case there are other errors
-    return false unless Gitlab::Recaptcha.enabled?
-
-    spammable.needs_recaptcha?
   end
 end
