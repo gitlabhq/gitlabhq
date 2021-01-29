@@ -1006,7 +1006,7 @@ installations from source.
 Performance bar statistics (currently only duration of SQL queries) are recorded in that file. For example:
 
 ```json
-{"severity":"INFO","time":"2020-12-04T09:29:44.592Z","correlation_id":"33680b1490ccd35981b03639c406a697","filename":"app/models/ci/pipeline.rb","filenum":"395","method":"each_with_object","request_id":"rYHomD0VJS4","duration_ms":26.889,"type": "sql"}
+{"severity":"INFO","time":"2020-12-04T09:29:44.592Z","correlation_id":"33680b1490ccd35981b03639c406a697","filename":"app/models/ci/pipeline.rb","method_path":"app/models/ci/pipeline.rb:each_with_object","request_id":"rYHomD0VJS4","duration_ms":26.889,"count":2,"type": "sql"}
 ```
 
 These statistics are logged on .com only, disabled on self-deployments.

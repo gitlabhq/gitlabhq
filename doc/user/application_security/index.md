@@ -522,13 +522,28 @@ This error appears when the included job's stage (named `test`) isn't declared i
 To fix this issue, you can either:
 
 - Add a `test` stage in your `.gitlab-ci.yml`.
-- Change the default stage of the included security jobs. For example, with SpotBugs (SAST):
+- Override the default stage of each security job. For example, to use a pre-defined stage name `unit-tests`:
 
   ```yaml
   include:
-    template: Security/SAST.gitlab-ci.yml
+    - template: Security/Dependency-Scanning.gitlab-ci.yml
+    - template: Security/License-Scanning.gitlab-ci.yml
+    - template: Security/SAST.gitlab-ci.yml
+    - template: Security/Secret-Detection.gitlab-ci.yml
 
-  spotbugs-sast:
+  stages:
+    - unit-tests
+
+  dependency_scanning:
+    stage: unit-tests
+
+  license_scanning:
+    stage: unit-tests
+
+  sast:
+    stage: unit-tests
+
+  .secret-analyzer:
     stage: unit-tests
   ```
 

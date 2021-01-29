@@ -22,10 +22,12 @@ RSpec.describe Gitlab::PerformanceBar::Stats do
 
         expect(logger).to receive(:info)
           .with({ duration_ms: 1.096, filename: 'lib/gitlab/pagination/offset_pagination.rb',
-                  filenum: 53, method: 'add_pagination_headers', request_id: 'foo', type: :sql })
+                  method_path: 'lib/gitlab/pagination/offset_pagination.rb:add_pagination_headers',
+                  count: 1, request_id: 'foo', type: :sql })
         expect(logger).to receive(:info)
-          .with({ duration_ms: 0.817, filename: 'lib/api/helpers.rb',
-                  filenum: 112, method: 'find_project', request_id: 'foo', type: :sql }).twice
+          .with({ duration_ms: 1.634, filename: 'lib/api/helpers.rb',
+                  method_path: 'lib/api/helpers.rb:find_project',
+                  count: 2, request_id: 'foo', type: :sql })
 
         subject
       end
