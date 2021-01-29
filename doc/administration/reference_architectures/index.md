@@ -102,7 +102,7 @@ this can be an optimal solution if you don't have strict requirements.
 [Automated backups](../../raketasks/backup_restore.md#configuring-cron-to-make-daily-backups)
 is the least complex to setup. This provides a point-in-time recovery of a predetermined schedule.
 
-### Traffic load balancer **(STARTER ONLY)**
+### Traffic load balancer **(PREMIUM SELF)**
 
 > - Level of complexity: **Medium**
 > - Required domain knowledge: HAProxy, shared storage, distributed systems
@@ -124,7 +124,7 @@ to the default installation:
 For more details on how to configure a traffic load balancer with GitLab, you can refer
 to any of the [available reference architectures](#available-reference-architectures) with more than 1,000 users.
 
-### Zero downtime updates **(STARTER ONLY)**
+### Zero downtime updates **(PREMIUM SELF)**
 
 > - Level of complexity: **Medium**
 > - Required domain knowledge: PostgreSQL, HAProxy, shared storage, distributed systems

@@ -118,12 +118,10 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-mt-5">
-    <gl-search-box-by-type
-      :value="searchTerm"
-      :debounce="$options.TYPING_DELAY"
-      :placeholder="__('Search settings')"
-      @input="search"
-    />
-  </div>
+  <gl-search-box-by-type
+    :value="searchTerm"
+    :debounce="$options.TYPING_DELAY"
+    :placeholder="__('Search settings')"
+    @input="search"
+  />
 </template>

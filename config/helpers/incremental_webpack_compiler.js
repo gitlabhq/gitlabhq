@@ -8,7 +8,9 @@ const log = (msg, ...rest) => console.log(`IncrementalWebpackCompiler: ${msg}`, 
 const TIMEOUT = 5000;
 
 class NoopCompiler {
-  enabled = false;
+  constructor() {
+    this.enabled = false;
+  }
 
   filterEntryPoints(entryPoints) {
     return entryPoints;
@@ -20,8 +22,6 @@ class NoopCompiler {
 }
 
 class IncrementalWebpackCompiler extends NoopCompiler {
-  enabled = true;
-
   constructor(historyFilePath) {
     super();
     this.history = {};
@@ -33,6 +33,7 @@ class IncrementalWebpackCompiler extends NoopCompiler {
     ]);
     this.historyFilePath = historyFilePath;
     this.loadFromHistory();
+    this.enabled = true;
   }
 
   filterEntryPoints(entrypoints) {

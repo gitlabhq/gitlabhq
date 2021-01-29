@@ -38,7 +38,7 @@ describe('BoardCardAssigneeDropdown', () => {
         return {
           search,
           selected: [],
-          participants,
+          issueParticipants: participants,
         };
       },
       store,
@@ -49,7 +49,7 @@ describe('BoardCardAssigneeDropdown', () => {
       mocks: {
         $apollo: {
           queries: {
-            participants: {
+            searchUsers: {
               loading,
             },
           },
@@ -70,7 +70,6 @@ describe('BoardCardAssigneeDropdown', () => {
         return {
           search,
           selected: [],
-          participants,
         };
       },
       store,
@@ -256,17 +255,15 @@ describe('BoardCardAssigneeDropdown', () => {
     },
   );
 
-  describe('when participants is loading', () => {
-    beforeEach(() => {
-      createComponent('', true);
-    });
-
+  describe('when searching users is loading', () => {
     it('finds a loading icon in the dropdown', () => {
+      createComponent('test', true);
+
       expect(findLoadingIcon().exists()).toBe(true);
     });
   });
 
-  describe('when participants is loading is false', () => {
+  describe('when participants loading is false', () => {
     beforeEach(() => {
       createComponent();
     });

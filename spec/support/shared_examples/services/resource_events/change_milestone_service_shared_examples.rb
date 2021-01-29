@@ -4,7 +4,7 @@ RSpec.shared_examples 'timebox(milestone or iteration) resource events creator' 
   let_it_be(:user) { create(:user) }
 
   context 'when milestone/iteration is added' do
-    let(:service) { described_class.new(resource, user, add_timebox_args) }
+    let(:service) { described_class.new(resource, user, **add_timebox_args) }
 
     before do
       set_timebox(timebox_event_class, timebox)
@@ -18,7 +18,7 @@ RSpec.shared_examples 'timebox(milestone or iteration) resource events creator' 
   end
 
   context 'when milestone/iteration is removed' do
-    let(:service) { described_class.new(resource, user, remove_timebox_args) }
+    let(:service) { described_class.new(resource, user, **remove_timebox_args) }
 
     before do
       set_timebox(timebox_event_class, nil)

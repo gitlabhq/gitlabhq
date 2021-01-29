@@ -63,6 +63,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [`audit_json.log`](../administration/logs.md#audit_jsonlog) (specific entries)
   - [`elasticsearch.log`](../administration/logs.md#elasticsearchlog)
 - Merge requests:
+  - [Full code quality reports in the code quality tab](../user/project/merge_requests/code_quality.md#code-quality-reports)
   - [Merge request approvals](../user/project/merge_requests/merge_request_approvals.md)
   - [Multiple assignees](../user/project/merge_requests/getting_started.md#multiple-assignees)
   - [Approval Rule information for Reviewers](../user/project/merge_requests/getting_started.md#approval-rule-information-for-reviewers), and [enabling or disabling it](../user/project/merge_requests/getting_started.md#enable-or-disable-approval-rule-information-for-reviewers)

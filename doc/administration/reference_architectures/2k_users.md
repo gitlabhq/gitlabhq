@@ -932,7 +932,7 @@ functioning backups is encountered.
   </a>
 </div>
 
-## Configure Advanced Search **(STARTER ONLY)**
+## Configure Advanced Search **(PREMIUM SELF)**
 
 You can leverage Elasticsearch and [enable Advanced Search](../../integration/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.

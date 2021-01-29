@@ -24,7 +24,7 @@ The following are available Rake tasks:
 | [Clean up](cleanup.md)                                                                              | Clean up unneeded items from GitLab instances.                                            |
 | [Development](../development/rake_tasks.md)                                                         | Tasks for GitLab contributors.                                                            |
 | [Doctor tasks](../administration/raketasks/doctor.md)                                               | Checks for data integrity issues.                                                         |
-| [Elasticsearch](../integration/elasticsearch.md#gitlab-advanced-search-rake-tasks) **(STARTER ONLY)** | Maintain Elasticsearch in a GitLab instance.                                              |
+| [Elasticsearch](../integration/elasticsearch.md#gitlab-advanced-search-rake-tasks) **(PREMIUM SELF)** | Maintain Elasticsearch in a GitLab instance.                                              |
 | [Enable namespaces](features.md)                                                                    | Enable usernames and namespaces for user projects.                                        |
 | [General maintenance](../administration/raketasks/maintenance.md)                                   | General maintenance and self-check tasks.                                                 |
 | [Geo maintenance](../administration/raketasks/geo.md) **(PREMIUM SELF)**                            | [Geo](../administration/geo/index.md)-related maintenance.                    |

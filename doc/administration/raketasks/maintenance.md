@@ -64,9 +64,10 @@ Repository storage paths:
 GitLab Shell path:      /opt/gitlab/embedded/service/gitlab-shell
 ```
 
-## Show GitLab license information **(STARTER ONLY)**
+## Show GitLab license information **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20501) in GitLab Starter 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20501) in GitLab 12.6.
+> - [Moved](../../subscriptions/bronze_starter.md) to GitLab Premium in 13.9.
 
 This command shows information about your [GitLab license](../../user/admin_area/license.md) and
 how many seats are used. It is only available on GitLab Enterprise

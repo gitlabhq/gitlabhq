@@ -13,6 +13,7 @@ end
 Warning[:deprecated] = true unless ENV.key?('SILENCE_DEPRECATIONS')
 
 require './spec/deprecation_toolkit_env'
+DeprecationToolkitEnv.configure!
 
 require './spec/simplecov_env'
 SimpleCovEnv.start!
@@ -174,6 +175,7 @@ RSpec.configure do |config|
   if ENV['CI'] || ENV['RETRIES']
     # This includes the first try, i.e. tests will be run 4 times before failing.
     config.default_retry_count = ENV.fetch('RETRIES', 3).to_i + 1
+    config.exceptions_to_hard_fail = [DeprecationToolkitEnv::DeprecationBehaviors::SelectiveRaise::RaiseDisallowedDeprecation]
   end
 
   if ENV['FLAKY_RSPEC_GENERATE_REPORT']

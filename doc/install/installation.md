@@ -603,7 +603,7 @@ You can specify a different Git repository by providing it as an extra parameter
 sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse,https://example.com/gitlab-workhorse.git]" RAILS_ENV=production
 ```
 
-### Install GitLab-Elasticsearch-indexer on Enterprise Edition **(STARTER ONLY)**
+### Install GitLab-Elasticsearch-indexer on Enterprise Edition **(PREMIUM SELF)**
 
 GitLab-Elasticsearch-Indexer uses [GNU Make](https://www.gnu.org/software/make/). The
 following command-line installs GitLab-Elasticsearch-Indexer in `/home/git/gitlab-elasticsearch-indexer`

@@ -1,2 +1,6 @@
+- container_class = local_assigns.fetch(:container_class, 'gl-mt-5')
+
 - if Feature.enabled?(:search_settings_in_page, @project, default_enabled: false)
-  .js-search-settings-app
+  %div{ class: container_class }
+    .js-search-settings-app
+      %input.gl-form-input.form-control{ type: "text", placeholder: _("Search settings"), aria_label: _("Search settings"), disabled: true }

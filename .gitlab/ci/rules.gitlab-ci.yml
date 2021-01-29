@@ -126,6 +126,8 @@
 
 .frontend-dependency-patterns: &frontend-dependency-patterns
   - "{package.json,yarn.lock}"
+  - "config/webpack.config.js"
+  - "config/helpers/*.js"
 
 .frontend-patterns: &frontend-patterns
   - "{package.json,yarn.lock}"

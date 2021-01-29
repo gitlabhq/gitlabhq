@@ -36,7 +36,7 @@ in the search field in the upper right corner:
 
 > - Filtering by Epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195704) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
 > - Filtering by child Epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9029) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0.
-> - Filtering by Iterations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.6.
+> - Filtering by Iterations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6. [Moved](../../subscriptions/bronze_starter.md) to GitLab Premium in 13.9.
 
 Follow these steps to filter the **Issues** and **Merge Requests** list pages in projects and
 groups:
@@ -99,18 +99,20 @@ You can filter the **Issues** list to individual instances by their ID. For exam
 
 ![filter issues by specific id](img/issue_search_by_id.png)
 
-### Filtering merge requests by approvers **(STARTER)**
+### Filtering merge requests by approvers **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9468) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9468) in GitLab 11.9.
+> - [Moved](../../subscriptions/bronze_starter.md) to GitLab Premium in 13.9.
 
 To filter merge requests by an individual approver, you can type (or select from
 the dropdown) **Approver** and select the user.
 
 ![Filter MRs by an approver](img/filter_approver_merge_requests.png)
 
-### Filtering merge requests by "approved by" **(STARTER)**
+### Filtering merge requests by "approved by" **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30335) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30335) in GitLab 13.0.
+> - [Moved](../../subscriptions/bronze_starter.md) to GitLab Premium in 13.9.
 
 To filter merge requests already approved by a specific individual, you can type (or select from
 the dropdown) **Approved-By** and select the user.
@@ -291,14 +293,14 @@ redirected to the commit result and given the option to return to the search res
 
 ![project SHA search redirect](img/project_search_sha_redirect.png)
 
-## Advanced Search **(STARTER)**
+## Advanced Search **(PREMIUM)**
 
 Leverage Elasticsearch for faster, more advanced code search across your entire
 GitLab instance.
 
 [Learn how to use the Advanced Search.](advanced_global_search.md)
 
-## Advanced Search Syntax **(STARTER)**
+## Advanced Search Syntax **(PREMIUM)**
 
 Use advanced queries for more targeted search results.
 
