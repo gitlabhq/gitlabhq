@@ -1,0 +1,5 @@
+---
+title: Migrate feature flags page toggles to GlToggle
+merge_request: 52728
+author:
+type: changed

@@ -1393,7 +1393,9 @@ job:
         - Dockerfile
 ```
 
-You can also use glob patterns to match multiple files in any directory in the repository:
+Paths are relative to the project directory (`$CI_PROJECT_DIR`) and can't directly link outside it.
+
+You can use glob patterns to match multiple files in any directory in the repository:
 
 ```yaml
 job:
@@ -1402,6 +1404,9 @@ job:
     - exists:
         - spec/**.rb
 ```
+
+Glob patterns are interpreted with Ruby [File.fnmatch](https://docs.ruby-lang.org/en/2.7.0/File.html#method-c-fnmatch)
+with the flags `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
 
 For performance reasons, using `exists` with patterns is limited to 10,000
 checks. After the 10,000th check, rules with patterned globs always match.

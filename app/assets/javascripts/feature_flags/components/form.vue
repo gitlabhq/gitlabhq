@@ -10,11 +10,11 @@ import {
   GlFormCheckbox,
   GlSprintf,
   GlIcon,
+  GlToggle,
 } from '@gitlab/ui';
 import RelatedIssuesRoot from '~/related_issues/components/related_issues_root.vue';
 import { s__ } from '~/locale';
 import featureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import ToggleButton from '~/vue_shared/components/toggle_button.vue';
 import EnvironmentsDropdown from './environments_dropdown.vue';
 import Strategy from './strategy.vue';
 import {
@@ -37,7 +37,7 @@ export default {
     GlTooltip,
     GlSprintf,
     GlIcon,
-    ToggleButton,
+    GlToggle,
     EnvironmentsDropdown,
     Strategy,
     RelatedIssuesRoot,
@@ -372,7 +372,7 @@ export default {
                   {{ s__('FeatureFlags|Environment Spec') }}
                 </div>
                 <div
-                  class="table-mobile-content js-feature-flag-status d-flex align-items-center justify-content-start"
+                  class="table-mobile-content gl-display-flex gl-align-items-center gl-justify-content-start"
                 >
                   <p v-if="isAllEnvironment(scope.environmentScope)" class="js-scope-all pl-3">
                     {{ $options.translations.allEnvironmentsText }}
@@ -398,10 +398,10 @@ export default {
                 <div class="table-mobile-header" role="rowheader">
                   {{ s__('FeatureFlags|Status') }}
                 </div>
-                <div class="table-mobile-content js-feature-flag-status">
-                  <toggle-button
+                <div class="table-mobile-content gl-display-flex gl-justify-content-center">
+                  <gl-toggle
                     :value="scope.active"
-                    :disabled-input="!active || !canUpdateScope(scope)"
+                    :disabled="!active || !canUpdateScope(scope)"
                     @change="(status) => (scope.active = status)"
                   />
                 </div>
@@ -498,25 +498,26 @@ export default {
                 <div class="table-mobile-header" role="rowheader">
                   {{ s__('FeatureFlags|Remove') }}
                 </div>
-                <div class="table-mobile-content js-feature-flag-delete">
+                <div class="table-mobile-content">
                   <gl-button
                     v-if="!isAllEnvironment(scope.environmentScope) && canUpdateScope(scope)"
                     v-gl-tooltip
                     :title="s__('FeatureFlags|Remove')"
                     class="js-delete-scope btn-transparent pr-3 pl-3"
                     icon="clear"
+                    data-testid="feature-flag-delete"
                     @click="removeScope(scope)"
                   />
                 </div>
               </div>
             </div>
 
-            <div class="js-add-new-scope gl-responsive-table-row" role="row">
+            <div class="gl-responsive-table-row" role="row" data-testid="add-new-scope">
               <div class="table-section section-30" role="gridcell">
                 <div class="table-mobile-header" role="rowheader">
                   {{ s__('FeatureFlags|Environment Spec') }}
                 </div>
-                <div class="table-mobile-content js-feature-flag-status">
+                <div class="table-mobile-content">
                   <environments-dropdown
                     class="js-new-scope-name col-12"
                     :value="newScope"
@@ -530,9 +531,9 @@ export default {
                 <div class="table-mobile-header" role="rowheader">
                   {{ s__('FeatureFlags|Status') }}
                 </div>
-                <div class="table-mobile-content js-feature-flag-status">
-                  <toggle-button
-                    :disabled-input="!active"
+                <div class="table-mobile-content gl-display-flex gl-justify-content-center">
+                  <gl-toggle
+                    :disabled="!active"
                     :value="false"
                     @change="createNewScope({ active: true })"
                   />

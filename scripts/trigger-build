@@ -231,7 +231,7 @@ module Trigger
     # Remove a remote branch in gitlab-docs.
     #
     def cleanup!
-      Gitlab.delete_branch(downstream_project_path, ref)
+      gitlab_client(:downstream).delete_branch(downstream_project_path, ref)
       puts "=> Remote branch '#{downstream_project_path}' deleted"
     end
 
@@ -275,7 +275,7 @@ module Trigger
     end
 
     def create_remote_branch!
-      Gitlab.create_branch(downstream_project_path, ref, 'master')
+      gitlab_client(:downstream).create_branch(downstream_project_path, ref, 'master')
       puts "=> Remote branch '#{ref}' created"
     rescue Gitlab::Error::BadRequest
       puts "=> Remote branch '#{ref}' already exists!"
@@ -288,7 +288,7 @@ module Trigger
       loop do
         sleep 1
         puts "=> Waiting for pipeline to start..."
-        pipelines = Gitlab.pipelines(downstream_project_path, { ref: ref })
+        pipelines = gitlab_client(:downstream).pipelines(downstream_project_path, { ref: ref })
         break if pipelines.any?
       end
 
@@ -296,7 +296,7 @@ module Trigger
       pipeline_id = pipelines.first.id
 
       # Cancel the pipeline
-      Gitlab.cancel_pipeline(downstream_project_path, pipeline_id)
+      gitlab_client(:downstream).cancel_pipeline(downstream_project_path, pipeline_id)
     end
 
     def display_success_message
