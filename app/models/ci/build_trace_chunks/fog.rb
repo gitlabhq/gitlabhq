@@ -14,15 +14,7 @@ module Ci
       end
 
       def set_data(model, new_data)
-        if Feature.enabled?(:ci_live_trace_use_fog_attributes, default_enabled: true)
-          files.create(create_attributes(model, new_data))
-        else
-          # TODO: Support AWS S3 server side encryption
-          files.create({
-            key: key(model),
-            body: new_data
-          })
-        end
+        files.create(create_attributes(model, new_data))
       end
 
       def append_data(model, new_data, offset)
