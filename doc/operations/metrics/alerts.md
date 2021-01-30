@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Set up alerts for Prometheus metrics **(FREE)**
 
-> [Moved from Ultimate to Core](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) in GitLab 12.10.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) to GitLab Free in 12.10.
 
 After [configuring metrics for your CI/CD environment](index.md), you can set up
 alerting for Prometheus metrics depending on the location of your instances, and
@@ -47,8 +47,8 @@ as soon as the alert fires:
 
 ## External Prometheus instances
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9258) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.8.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) to [GitLab Core](https://about.gitlab.com/pricing/) in 12.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9258) in GitLab Ultimate 11.8.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) to GitLab Free in 12.10.
 
 For manually configured Prometheus servers, GitLab provides a notify endpoint for
 use with Prometheus webhooks. If you have manual configuration enabled, an

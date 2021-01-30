@@ -7,9 +7,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Conan packages in the Package Registry
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8248) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.6.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
-Publish Conan packages in your project’s Package Registry. Then install the
+Publish Conan packages in your project's Package Registry. Then install the
 packages whenever you need to use them as a dependency.
 
 To publish Conan packages to the Package Registry, add the Package Registry as a

@@ -102,8 +102,9 @@ To view the metrics for an alert:
 
 #### View an alert's logs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201846) in GitLab Ultimate 12.8. and [improved](https://gitlab.com/gitlab-org/gitlab/-/issues/217768) in GitLab 13.3.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25455) to [GitLab Core](https://about.gitlab.com/pricing/) 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201846) in GitLab Ultimate 12.8.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/217768) in GitLab 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25455) to GitLab Free 12.9.
 
 Viewing logs from a metrics panel can be useful if you're triaging an
 application incident and need to [explore logs](../metrics/dashboards/index.md#chart-context-menu)

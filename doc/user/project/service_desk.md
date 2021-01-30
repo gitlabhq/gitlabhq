@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/149) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.1.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/214839) to [GitLab Starter](https://about.gitlab.com/pricing/) in 13.0.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215364) to [GitLab Core](https://about.gitlab.com/pricing/) in 13.2.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215364) to [GitLab Free](https://about.gitlab.com/pricing/) in 13.2.
 
 Service Desk is a module that allows your team to connect
 with any external party through email, without any external tools.
@@ -91,7 +91,7 @@ Service Desk is now enabled for this project! You should be able to access it fr
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2460) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.7.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/214839) to [GitLab Starter](https://about.gitlab.com/pricing/) in 13.0.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215364) to [GitLab Core](https://about.gitlab.com/pricing/) in 13.2.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215364) to [GitLab Free](https://about.gitlab.com/pricing/) in 13.2.
 
 An email is sent to the author when:
 

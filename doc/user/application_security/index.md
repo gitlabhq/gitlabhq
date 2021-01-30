@@ -125,7 +125,7 @@ with this approach, however, and there is a
 
 ## Viewing security scan information in merge requests **(FREE)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4393) in GitLab Core 13.5.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4393) in GitLab Free 13.5.
 > - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/273205) in 13.6.
 > - Report download dropdown [added](https://gitlab.com/gitlab-org/gitlab/-/issues/273418) in 13.7.
 > - It's [deployed behind a feature flag](../feature_flags.md), enabled by default.

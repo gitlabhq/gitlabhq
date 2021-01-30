@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Maven packages in the Package Repository
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5811) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
 Publish [Maven](https://maven.apache.org) artifacts in your project’s Package Registry.
 Then, install the packages whenever you need to use them as a dependency.
@@ -220,7 +220,7 @@ The `name` must be `Private-Token`.
 ### Authenticate with a deploy token in Maven
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) deploy token authentication in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
 To use a deploy token, add this section to your
 [`settings.xml`](https://maven.apache.org/settings.html) file.
@@ -416,7 +416,7 @@ repositories {
 ### Group-level Maven endpoint
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8798) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.7.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
 If you rely on many packages, it might be inefficient to include the `repository` section
 with a unique URL for each package. Instead, you can use the group-level endpoint for
@@ -474,7 +474,7 @@ repositories {
 ### Instance-level Maven endpoint
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8274) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.7.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
 If you rely on many packages, it might be inefficient to include the `repository` section
 with a unique URL for each package. Instead, you can use the instance-level endpoint for

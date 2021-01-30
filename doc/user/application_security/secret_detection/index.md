@@ -86,7 +86,7 @@ However not all features are available on every tier. See the breakdown below fo
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
 
-| Capability                                                                | In Core             | In Ultimate        |
+| Capability                                                                | In Free             | In Ultimate        |
 |:--------------------------------------------------------------------------|:--------------------|:-------------------|
 | [Configure Secret Detection Scanners](#configuration)                                 | **{check-circle}**  | **{check-circle}** |
 | [Customize Secret Detection Settings](#customizing-settings)                 | **{check-circle}**  | **{check-circle}** |

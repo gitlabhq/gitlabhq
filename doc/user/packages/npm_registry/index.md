@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # NPM packages in the Package Registry
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5934) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.7.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
 Publish NPM packages in your project's Package Registry. Then install the
 packages whenever you need to use them as a dependency.
@@ -159,7 +159,7 @@ If you encounter an error with [Yarn](https://classic.yarnpkg.com/en/), view
 ### Authenticate with a CI job token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9104) in GitLab Premium 12.5.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
 If you're using NPM with GitLab CI/CD, a CI job token can be used instead of a personal access token or deploy token.
 The token inherits the permissions of the user that generates the pipeline.
@@ -352,7 +352,7 @@ and use your organization's URL. The name is case-sensitive and must match the n
 ### NPM dependencies metadata
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11867) in GitLab Premium 12.6.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
 In GitLab 12.6 and later, packages published to the Package Registry expose the following attributes to the NPM client:
 
@@ -369,7 +369,7 @@ In GitLab 12.6 and later, packages published to the Package Registry expose the 
 ## Add NPM distribution tags
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9425) in GitLab Premium 12.8.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
 You can add [distribution tags](https://docs.npmjs.com/cli/dist-tag/) to newly-published packages.
 Tags are optional and can be assigned to only one package at a time.

@@ -6,8 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Jira Development Panel integration **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2381) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.0.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/233149) to [GitLab Core](https://about.gitlab.com/pricing/) in 13.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/233149) to GitLab Free in 13.4.
 
 The Jira Development Panel integration allows you to reference Jira issues in GitLab, displaying
 activity in the [Development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/)
@@ -230,7 +229,7 @@ Potential resolutions:
 
 - If you're using GitLab versions 11.10-12.7, upgrade to GitLab 12.8.10 or later
   to resolve an identified [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/37012).
-- If you're using GitLab Core or GitLab Starter, be sure you're using
+- If you're using GitLab Free or GitLab Starter, be sure you're using
   GitLab 13.4 or later.
 
 [Contact GitLab Support](https://about.gitlab.com/support/) if none of these reasons apply.

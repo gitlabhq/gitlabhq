@@ -328,7 +328,7 @@ For GitLab self-managed customers, there is a 14-day grace period when your feat
 continue to work as-is, after which the entire instance becomes read
 only.
 
-However, if you remove the license, you immediately revert to Core
+However, if you remove the license, you immediately revert to Free
 features, and the instance become read / write again.
 
 ## Contact Support

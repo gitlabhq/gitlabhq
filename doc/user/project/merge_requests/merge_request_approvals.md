@@ -7,7 +7,7 @@ type: reference, concepts
 
 # Merge Request Approvals **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/580) in GitLab Enterprise Edition 7.2. Available in GitLab Core and higher tiers.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/580) in GitLab Enterprise Edition 7.2. Available in GitLab Free and higher tiers.
 > - Redesign [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8 and [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/10685) in 12.0.
 
 Code review is an essential practice of every successful project. Approving a
@@ -18,9 +18,9 @@ process, as it clearly communicates the ability to merge the change.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27426) in GitLab 13.2.
 
-Any user with Developer or greater [permissions](../../permissions.md) can approve a merge request in GitLab Core and higher tiers.
+Any user with Developer or greater [permissions](../../permissions.md) can approve a merge request in GitLab Free and higher tiers.
 This provides a consistent mechanism for reviewers to approve merge requests, and ensures
-maintainers know a change is ready to merge. Approvals in Core are optional, and do
+maintainers know a change is ready to merge. Approvals in Free are optional, and do
 not prevent a merge request from being merged when there is no approval.
 
 ## Required Approvals **(STARTER)**

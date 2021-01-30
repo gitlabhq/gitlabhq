@@ -71345,11 +71345,11 @@
         {
           "kind": "OBJECT",
           "name": "Todo",
-          "description": "Representing a todo entry",
+          "description": "Representing a to-do entry",
           "fields": [
             {
               "name": "action",
-              "description": "Action of the todo",
+              "description": "Action of the to-do",
               "args": [
 
               ],
@@ -71367,7 +71367,7 @@
             },
             {
               "name": "author",
-              "description": "The author of this todo",
+              "description": "The author of this to-do",
               "args": [
 
               ],
@@ -71385,7 +71385,7 @@
             },
             {
               "name": "body",
-              "description": "Body of the todo",
+              "description": "Body of the to-do",
               "args": [
 
               ],
@@ -71403,7 +71403,7 @@
             },
             {
               "name": "createdAt",
-              "description": "Timestamp this todo was created",
+              "description": "Timestamp this to-do was created",
               "args": [
 
               ],
@@ -71421,7 +71421,7 @@
             },
             {
               "name": "group",
-              "description": "Group this todo is associated with",
+              "description": "Group this to-do is associated with",
               "args": [
 
               ],
@@ -71435,7 +71435,7 @@
             },
             {
               "name": "id",
-              "description": "ID of the todo",
+              "description": "ID of the to-do",
               "args": [
 
               ],
@@ -71453,7 +71453,7 @@
             },
             {
               "name": "project",
-              "description": "The project this todo is associated with",
+              "description": "The project this to-do is associated with",
               "args": [
 
               ],
@@ -71467,7 +71467,7 @@
             },
             {
               "name": "state",
-              "description": "State of the todo",
+              "description": "State of the to-do",
               "args": [
 
               ],
@@ -71485,7 +71485,7 @@
             },
             {
               "name": "targetType",
-              "description": "Target type of the todo",
+              "description": "Target type of the to-do",
               "args": [
 
               ],
@@ -71794,7 +71794,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The global ID of the todo to mark as done.",
+              "description": "The global ID of the to-do to mark as done.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -71868,7 +71868,7 @@
             },
             {
               "name": "todo",
-              "description": "The requested todo.",
+              "description": "The requested to-do.",
               "args": [
 
               ],
@@ -71900,7 +71900,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The global ID of the todo to restore.",
+              "description": "The global ID of the to-do to restore.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -71935,7 +71935,7 @@
           "inputFields": [
             {
               "name": "ids",
-              "description": "The global IDs of the todos to restore (a maximum of 50 is supported at once).",
+              "description": "The global IDs of the to-dos to restore (a maximum of 50 is supported at once).",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -72017,7 +72017,7 @@
             },
             {
               "name": "todos",
-              "description": "Updated todos.",
+              "description": "Updated to-dos.",
               "args": [
 
               ],
@@ -72043,7 +72043,7 @@
             },
             {
               "name": "updatedIds",
-              "description": "The IDs of the updated todo items. Deprecated in 13.2: Use todos.",
+              "description": "The IDs of the updated to-do items. Deprecated in 13.2: Use todos.",
               "args": [
 
               ],
@@ -72122,7 +72122,7 @@
             },
             {
               "name": "todo",
-              "description": "The requested todo.",
+              "description": "The requested to-do.",
               "args": [
 
               ],

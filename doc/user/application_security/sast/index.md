@@ -8,7 +8,7 @@ type: reference, howto
 # Static Application Security Testing (SAST)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3775) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.3.
-> - All open source (OSS) analyzers were moved to GitLab Core in GitLab 13.3.
+> - All open source (OSS) analyzers were moved to GitLab Free in GitLab 13.3.
 
 NOTE:
 The whitepaper ["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)
@@ -121,14 +121,14 @@ the repository. For details on the Solution format, see the Microsoft reference 
 
 ### Making SAST analyzers available to all GitLab tiers
 
-All open source (OSS) analyzers have been moved to the GitLab Core tier as of GitLab 13.3.
+All open source (OSS) analyzers have been moved to the GitLab Free tier as of GitLab 13.3.
 
 #### Summary of features per tier
 
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
 
-| Capability                                                                         | In Core             | In Ultimate        |
+| Capability                                                                         | In Free             | In Ultimate        |
 |:-----------------------------------------------------------------------------------|:--------------------|:-------------------|
 | [Configure SAST Scanners](#configuration)                                          | **{check-circle}**  | **{check-circle}** |
 | [Customize SAST Settings](#customizing-the-sast-settings)                          | **{check-circle}**  | **{check-circle}** |

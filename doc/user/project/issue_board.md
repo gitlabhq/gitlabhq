@@ -53,7 +53,7 @@ the Issue Board feature.
 ## Multiple issue boards
 
 > - [Introduced](https://about.gitlab.com/releases/2016/10/22/gitlab-8-13-released/) in GitLab 8.13.
-> - Multiple issue boards per project [moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53811) to [GitLab Core](https://about.gitlab.com/pricing/) in GitLab 12.1.
+> - Multiple issue boards per project [moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53811) to [GitLab Free](https://about.gitlab.com/pricing/) in GitLab 12.1.
 > - Multiple issue boards per group are available in [GitLab Premium](https://about.gitlab.com/pricing/).
 
 Multiple issue boards allow for more than one issue board for a given project **(FREE)** or group **(PREMIUM)**.
@@ -227,7 +227,7 @@ and vice versa.
 
 ## GitLab Enterprise features for issue boards
 
-GitLab issue boards are available on GitLab Core and GitLab.com Free tiers, but some
+GitLab issue boards are available on the GitLab Free tier, but some
 advanced functionality is present in [higher tiers only](https://about.gitlab.com/pricing/).
 
 ### Configurable issue boards **(STARTER)**
@@ -257,8 +257,8 @@ the Configurable Issue Board feature.
 ### Focus mode
 
 > - [Introduced]((https://about.gitlab.com/releases/2017/04/22/gitlab-9-1-released/#issue-boards-focus-mode-ees-eep)) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.1.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28597) to the Free tier of GitLab.com in 12.10.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212331) to GitLab Core in 13.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28597) to the Free tier of GitLab SaaS in 12.10.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212331) to GitLab Free self-managed in 13.0.
 
 To enable or disable focus mode, select the **Toggle focus mode** button (**{maximize}**) at the top
 right. In focus mode, the navigation UI is hidden, allowing you to focus on issues in the board.

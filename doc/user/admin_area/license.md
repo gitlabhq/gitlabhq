@@ -25,7 +25,7 @@ by **signing into your GitLab instance as an admin** or adding it at
 installation time.
 
 As of GitLab Enterprise Edition 9.4.0, a newly-installed instance without an
-uploaded license only has the Core features active. A trial license
+uploaded license only has the Free features active. A trial license
 activates all Ultimate features, but after
 [the trial expires](#what-happens-when-your-license-expires), some functionality
 is locked.
@@ -86,7 +86,7 @@ These methods only add a license at the time of installation. Use the
 
 After the license is uploaded, all GitLab Enterprise Edition functionality
 is active until the end of the license period. When that period ends, the
-instance will [fall back](#what-happens-when-your-license-expires) to Core-only
+instance will [fall back](#what-happens-when-your-license-expires) to Free-only
 functionality.
 
 You can review the license details at any time in the **License** section of the
@@ -106,7 +106,7 @@ In case your license expires, GitLab locks down some features like Git pushes,
 and issue creation, and displays a message to all administrators to inform of the expired license.
 
 To get back all the previous functionality, you must upload a new license.
-To fall back to having only the Core features active, you must delete the
+To fall back to having only the Free features active, you must delete the
 expired license(s).
 
 ### Remove a license

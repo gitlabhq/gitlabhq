@@ -3927,9 +3927,6 @@ msgstr ""
 msgid "Assign custom color like #FF0000"
 msgstr ""
 
-msgid "Assign epic"
-msgstr ""
-
 msgid "Assign labels"
 msgstr ""
 
@@ -11354,6 +11351,9 @@ msgstr ""
 msgid "Epics|Are you sure you want to remove %{bStart}%{targetIssueTitle}%{bEnd} from %{bStart}%{parentEpicTitle}%{bEnd}?"
 msgstr ""
 
+msgid "Epics|Assign Epic"
+msgstr ""
+
 msgid "Epics|Enter a title for your epic"
 msgstr ""
 
@@ -11367,6 +11367,12 @@ msgid "Epics|Remove epic"
 msgstr ""
 
 msgid "Epics|Remove issue"
+msgstr ""
+
+msgid "Epics|Search epics"
+msgstr ""
+
+msgid "Epics|Select epic"
 msgstr ""
 
 msgid "Epics|Show more"

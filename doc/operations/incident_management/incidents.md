@@ -24,7 +24,7 @@ Incident, you have two options to do this manually.
 
 **From the Incidents List:**
 
-> [Moved](https://gitlab.com/gitlab-org/monitor/health/-/issues/24) to GitLab core in 13.3.
+> [Moved](https://gitlab.com/gitlab-org/monitor/health/-/issues/24) to GitLab Free in 13.3.
 
 - Navigate to **Operations > Incidents** and click **Create Incident**.
 - Create a new issue using the `incident` template available when creating it.
@@ -117,7 +117,7 @@ in your project's sidebar. The list contains the following metrics:
   to a [Status Page](status_page.md). **(ULTIMATE)**
 
 The Incident list displays incidents sorted by incident created date.
-([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229534) to GitLab core in 13.3.)
+([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229534) to GitLab Free in 13.3.)
 To see if a column is sortable, point your mouse at the header. Sortable columns
 display an arrow next to the column name.
 

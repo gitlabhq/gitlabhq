@@ -7,8 +7,6 @@ type: reference
 
 # Enforce accepting Terms of Service **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18570) in [GitLab Core](https://about.gitlab.com/pricing/) 10.8.
-
 An admin can enforce acceptance of a terms of service and privacy policy. When this option is enabled, new and existing users must accept the terms.
 
 If configured, the Terms of Service page can be viewed via `https://your-instance.com/-/users/terms` at anytime.

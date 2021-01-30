@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Export Issues to CSV
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1126) in [GitLab Starter 9.0](https://about.gitlab.com/releases/2017/03/22/gitlab-9-0-released/#export-issues-ees-eep).
-> - Moved to GitLab Core in GitLab 12.10.
+> - Moved to GitLab Free in GitLab 12.10.
 
 Issues can be exported as CSV from GitLab and are sent to your default notification email as an attachment.
 

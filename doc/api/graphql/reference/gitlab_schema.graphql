@@ -24542,51 +24542,51 @@ type TimelogEdge {
 }
 
 """
-Representing a todo entry
+Representing a to-do entry
 """
 type Todo {
   """
-  Action of the todo
+  Action of the to-do
   """
   action: TodoActionEnum!
 
   """
-  The author of this todo
+  The author of this to-do
   """
   author: User!
 
   """
-  Body of the todo
+  Body of the to-do
   """
   body: String!
 
   """
-  Timestamp this todo was created
+  Timestamp this to-do was created
   """
   createdAt: Time!
 
   """
-  Group this todo is associated with
+  Group this to-do is associated with
   """
   group: Group
 
   """
-  ID of the todo
+  ID of the to-do
   """
   id: ID!
 
   """
-  The project this todo is associated with
+  The project this to-do is associated with
   """
   project: Project
 
   """
-  State of the todo
+  State of the to-do
   """
   state: TodoStateEnum!
 
   """
-  Target type of the todo
+  Target type of the to-do
   """
   targetType: TodoTargetEnum!
 }
@@ -24686,7 +24686,7 @@ input TodoMarkDoneInput {
   clientMutationId: String
 
   """
-  The global ID of the todo to mark as done.
+  The global ID of the to-do to mark as done.
   """
   id: TodoID!
 }
@@ -24706,7 +24706,7 @@ type TodoMarkDonePayload {
   errors: [String!]!
 
   """
-  The requested todo.
+  The requested to-do.
   """
   todo: Todo!
 }
@@ -24721,7 +24721,7 @@ input TodoRestoreInput {
   clientMutationId: String
 
   """
-  The global ID of the todo to restore.
+  The global ID of the to-do to restore.
   """
   id: TodoID!
 }
@@ -24736,7 +24736,7 @@ input TodoRestoreManyInput {
   clientMutationId: String
 
   """
-  The global IDs of the todos to restore (a maximum of 50 is supported at once).
+  The global IDs of the to-dos to restore (a maximum of 50 is supported at once).
   """
   ids: [TodoID!]!
 }
@@ -24756,12 +24756,12 @@ type TodoRestoreManyPayload {
   errors: [String!]!
 
   """
-  Updated todos.
+  Updated to-dos.
   """
   todos: [Todo!]!
 
   """
-  The IDs of the updated todo items. Deprecated in 13.2: Use todos.
+  The IDs of the updated to-do items. Deprecated in 13.2: Use todos.
   """
   updatedIds: [TodoID!]! @deprecated(reason: "Use todos. Deprecated in 13.2.")
 }
@@ -24781,7 +24781,7 @@ type TodoRestorePayload {
   errors: [String!]!
 
   """
-  The requested todo.
+  The requested to-do.
   """
   todo: Todo!
 }

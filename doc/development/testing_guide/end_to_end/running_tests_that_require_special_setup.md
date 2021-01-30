@@ -177,7 +177,7 @@ The following includes more information on the command:
 
 At the moment of this writing, there are two specs which run monitor tests:
 
--`qa/specs/features/browser_ui/8_monitor/all_monitor_core_features_spec.rb` - has the specs of features in GitLab Core
+-`qa/specs/features/browser_ui/8_monitor/all_monitor_core_features_spec.rb` - has the specs of features in GitLab Free
 -`qa/specs/features/ee/browser_ui/8_monitor/all_monitor_features_spec.rb` - has the specs of features for paid GitLab (Enterprise Edition)
 
 ### How to debug

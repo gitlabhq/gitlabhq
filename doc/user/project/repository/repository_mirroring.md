@@ -50,7 +50,7 @@ The following are some possible use cases for repository mirroring:
 ## Pushing to a remote repository **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249) in GitLab Enterprise Edition 8.7.
-> - [Moved to GitLab Core](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18715) in 10.8.
+> - [Moved to GitLab Free](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18715) in 10.8.
 > - [LFS support over HTTPS added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40137) in 13.5
 
 For an existing project, you can set up push mirroring as follows:
@@ -317,7 +317,7 @@ creating a repository mirror.
 ## SSH authentication
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2551) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.5 for Pull mirroring.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22982) in [GitLab Core](https://about.gitlab.com/pricing/) 11.6 for Push mirroring.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22982) in [GitLab Free](https://about.gitlab.com/pricing/) 11.6 for Push mirroring.
 
 SSH authentication is mutual:
 

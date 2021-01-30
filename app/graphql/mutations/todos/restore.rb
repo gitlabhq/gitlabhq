@@ -10,11 +10,11 @@ module Mutations
       argument :id,
                ::Types::GlobalIDType[::Todo],
                required: true,
-               description: 'The global ID of the todo to restore.'
+               description: 'The global ID of the to-do to restore.'
 
       field :todo, Types::TodoType,
             null: false,
-            description: 'The requested todo.'
+            description: 'The requested to-do.'
 
       def resolve(id:)
         todo = authorized_find!(id: id)

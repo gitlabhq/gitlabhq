@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Jenkins CI service **(FREE)**
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/246756) to Core in GitLab 13.7.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/246756) to GitLab Free in 13.7.
 
 From GitLab, you can trigger a Jenkins build when you push code to a repository, or when a merge
 request is created. In return, the Jenkins pipeline status is shown on merge requests widgets and
