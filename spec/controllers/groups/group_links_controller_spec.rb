@@ -9,6 +9,10 @@ RSpec.describe Groups::GroupLinksController do
   let(:group_member) { create(:user) }
   let!(:project) { create(:project, group: shared_group) }
 
+  around do |example|
+    travel_to DateTime.new(2019, 4, 1) { example.run }
+  end
+
   before do
     sign_in(user)
 

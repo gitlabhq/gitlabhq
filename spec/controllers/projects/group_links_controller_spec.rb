@@ -8,6 +8,10 @@ RSpec.describe Projects::GroupLinksController do
   let_it_be(:project) { create(:project, :private, group: group2) }
   let_it_be(:user) { create(:user) }
 
+  around do |example|
+    travel_to DateTime.new(2019, 4, 1) { example.run }
+  end
+
   before do
     project.add_maintainer(user)
     sign_in(user)
