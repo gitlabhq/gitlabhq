@@ -4,7 +4,7 @@
   %fieldset
     .form-group
       = f.label :diff_max_patch_bytes, 'Maximum diff patch size (Bytes)', class: 'label-light'
-      = f.number_field :diff_max_patch_bytes, class: 'form-control'
+      = f.number_field :diff_max_patch_bytes, class: 'form-control gl-form-input'
       %span.form-text.text-muted
         Diff files surpassing this limit will be presented as 'too large'
         and won't be expandable.

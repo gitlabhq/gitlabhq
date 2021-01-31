@@ -22,7 +22,7 @@
             = f.label :gitpod_enabled, s_('Gitpod|Enable Gitpod integration'), class: 'form-check-label'
         .form-group
           = f.label :gitpod_url, s_('Gitpod|Gitpod URL'), class: 'label-bold'
-          = f.text_field :gitpod_url, class: 'form-control', placeholder: s_('Gitpod|e.g. https://gitpod.example.com')
+          = f.text_field :gitpod_url, class: 'form-control gl-form-input', placeholder: s_('Gitpod|e.g. https://gitpod.example.com')
           .form-text.text-muted
             = s_('Gitpod|Add the URL to your Gitpod instance configured to read your GitLab projects.')
       = f.submit s_('Save changes'), class: 'gl-button btn btn-success'

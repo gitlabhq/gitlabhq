@@ -31,20 +31,20 @@
                   = f.hidden_field(:plan_id, value: plan.id)
                   .form-group
                     = f.label :conan_max_file_size, _('Maximum Conan package file size in bytes'), class: 'label-bold'
-                    = f.number_field :conan_max_file_size, class: 'form-control'
+                    = f.number_field :conan_max_file_size, class: 'form-control gl-form-input'
                   .form-group
                     = f.label :maven_max_file_size, _('Maximum Maven package file size in bytes'), class: 'label-bold'
-                    = f.number_field :maven_max_file_size, class: 'form-control'
+                    = f.number_field :maven_max_file_size, class: 'form-control gl-form-input'
                   .form-group
                     = f.label :npm_max_file_size, _('Maximum NPM package file size in bytes'), class: 'label-bold'
-                    = f.number_field :npm_max_file_size, class: 'form-control'
+                    = f.number_field :npm_max_file_size, class: 'form-control gl-form-input'
                   .form-group
                     = f.label :nuget_max_file_size, _('Maximum NuGet package file size in bytes'), class: 'label-bold'
-                    = f.number_field :nuget_max_file_size, class: 'form-control'
+                    = f.number_field :nuget_max_file_size, class: 'form-control gl-form-input'
                   .form-group
                     = f.label :pypi_max_file_size, _('Maximum PyPI package file size in bytes'), class: 'label-bold'
-                    = f.number_field :pypi_max_file_size, class: 'form-control'
+                    = f.number_field :pypi_max_file_size, class: 'form-control gl-form-input'
                   .form-group
                     = f.label :generic_packages_max_file_size, _('Generic package file size in bytes'), class: 'label-bold'
-                    = f.number_field :generic_packages_max_file_size, class: 'form-control'
+                    = f.number_field :generic_packages_max_file_size, class: 'form-control gl-form-input'
                   = f.submit _('Save %{name} size limits').html_safe % { name: plan.name.capitalize }, class: 'btn gl-button btn-success'

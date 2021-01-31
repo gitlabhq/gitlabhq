@@ -5,13 +5,13 @@
     .form-group
       = f.label :static_objects_external_storage_url, class: 'label-bold' do
         = _('External storage URL')
-      = f.text_field :static_objects_external_storage_url, class: 'form-control'
+      = f.text_field :static_objects_external_storage_url, class: 'form-control gl-form-input'
       %span.form-text.text-muted#static_objects_external_storage_url_help_block
         = _('URL of the external storage that will serve the repository static objects (e.g. archives, blobs, ...).')
     .form-group
       = f.label :static_objects_external_storage_auth_token, class: 'label-bold' do
         = _('External storage authentication token')
-      = f.text_field :static_objects_external_storage_auth_token, class: 'form-control'
+      = f.text_field :static_objects_external_storage_auth_token, class: 'form-control gl-form-input'
       %span.form-text.text-muted#static_objects_external_storage_auth_token_help_block
         = _('A secure token that identifies an external storage request.')
 

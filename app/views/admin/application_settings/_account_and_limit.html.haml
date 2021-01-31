@@ -10,23 +10,23 @@
 
     .form-group
       = f.label :default_projects_limit, _('Default projects limit'), class: 'label-bold'
-      = f.number_field :default_projects_limit, class: 'form-control', title: _('Maximum number of projects.'), data: { toggle: 'tooltip', container: 'body' }
+      = f.number_field :default_projects_limit, class: 'form-control gl-form-input', title: _('Maximum number of projects.'), data: { toggle: 'tooltip', container: 'body' }
     .form-group
       = f.label :max_attachment_size, _('Maximum attachment size (MB)'), class: 'label-bold'
-      = f.number_field :max_attachment_size, class: 'form-control', title: _('Maximum size of individual attachments in comments.'), data: { toggle: 'tooltip', container: 'body' }
+      = f.number_field :max_attachment_size, class: 'form-control gl-form-input', title: _('Maximum size of individual attachments in comments.'), data: { toggle: 'tooltip', container: 'body' }
 
     = render_if_exists 'admin/application_settings/repository_size_limit_setting', form: f
 
     .form-group
       = f.label :receive_max_input_size, _('Maximum push size (MB)'), class: 'label-light'
-      = f.number_field :receive_max_input_size, class: 'form-control qa-receive-max-input-size-field', title: _('Maximum size limit for a single commit.'), data: { toggle: 'tooltip', container: 'body' }
+      = f.number_field :receive_max_input_size, class: 'form-control gl-form-input qa-receive-max-input-size-field', title: _('Maximum size limit for a single commit.'), data: { toggle: 'tooltip', container: 'body' }
     .form-group
       = f.label :max_import_size, _('Maximum import size (MB)'), class: 'label-light'
-      = f.number_field :max_import_size, class: 'form-control qa-receive-max-import-size-field', title: _('Maximum size of import files.'), data: { toggle: 'tooltip', container: 'body' }
+      = f.number_field :max_import_size, class: 'form-control gl-form-input qa-receive-max-import-size-field', title: _('Maximum size of import files.'), data: { toggle: 'tooltip', container: 'body' }
       %span.form-text.text-muted= _('0 for unlimited, only effective with remote storage enabled.')
     .form-group
       = f.label :session_expire_delay, _('Session duration (minutes)'), class: 'label-light'
-      = f.number_field :session_expire_delay, class: 'form-control', title: _('Maximum duration of a session.'), data: { toggle: 'tooltip', container: 'body' }
+      = f.number_field :session_expire_delay, class: 'form-control gl-form-input', title: _('Maximum duration of a session.'), data: { toggle: 'tooltip', container: 'body' }
       %span.form-text.text-muted#session_expire_delay_help_block= _('GitLab restart is required to apply changes.')
 
     = render_if_exists 'admin/application_settings/personal_access_token_expiration_policy', form: f
@@ -47,14 +47,14 @@
           = _('Newly registered users will by default be external')
       .gl-mt-3
         = _('Internal users')
-      = f.text_field :user_default_internal_regex, placeholder: _('Regex pattern'), class: 'form-control gl-mt-2'
+      = f.text_field :user_default_internal_regex, placeholder: _('Regex pattern'), class: 'form-control gl-form-input gl-mt-2'
       .help-block
         = _('Specify an e-mail address regex pattern to identify default internal users.')
         = link_to _('More information'), help_page_path('user/permissions', anchor: 'setting-new-users-to-external'),
           target: '_blank'
     .form-group
       = f.label :personal_access_token_prefix, _('Personal Access Token prefix'), class: 'label-light'
-      = f.text_field :personal_access_token_prefix, placeholder: _('Max 20 characters'), class: 'form-control'
+      = f.text_field :personal_access_token_prefix, placeholder: _('Max 20 characters'), class: 'form-control gl-form-input'
     .form-group
       = f.label :user_show_add_ssh_key_message, _('Prompt users to upload SSH keys'), class: 'label-bold'
       .form-check

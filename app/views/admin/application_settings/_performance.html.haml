@@ -17,17 +17,17 @@
 
     .form-group
       = f.label :raw_blob_request_limit, _('Raw blob request rate limit per minute'), class: 'label-bold'
-      = f.number_field :raw_blob_request_limit, class: 'form-control'
+      = f.number_field :raw_blob_request_limit, class: 'form-control gl-form-input'
       .form-text.text-muted
         = _('Highest number of requests per minute for each raw path, default to 300. To disable throttling set to 0.')
     .form-group
       = f.label :push_event_hooks_limit, class: 'label-bold'
-      = f.number_field :push_event_hooks_limit, class: 'form-control'
+      = f.number_field :push_event_hooks_limit, class: 'form-control gl-form-input'
       .form-text.text-muted
         = _("Number of changes (branches or tags) in a single push to determine whether webhooks and services will be fired or not. Webhooks and services won't be submitted if it surpasses that value.")
     .form-group
       = f.label :push_event_activities_limit, class: 'label-bold'
-      = f.number_field :push_event_activities_limit, class: 'form-control'
+      = f.number_field :push_event_activities_limit, class: 'form-control gl-form-input'
       .form-text.text-muted
         = _('Number of changes (branches or tags) in a single push to determine whether individual push events or bulk push event will be created. Bulk push event will be created if it surpasses that value.')
 

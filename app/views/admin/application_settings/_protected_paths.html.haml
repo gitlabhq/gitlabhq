@@ -17,15 +17,15 @@
           = _('Helps reduce request volume for protected paths')
     .form-group
       = f.label :throttle_protected_paths_requests_per_period, 'Max requests per period per user', class: 'label-bold'
-      = f.number_field :throttle_protected_paths_requests_per_period, class: 'form-control'
+      = f.number_field :throttle_protected_paths_requests_per_period, class: 'form-control gl-form-input'
     .form-group
       = f.label :throttle_protected_paths_period_in_seconds, 'Rate limit period in seconds', class: 'label-bold'
-      = f.number_field :throttle_protected_paths_period_in_seconds, class: 'form-control'
+      = f.number_field :throttle_protected_paths_period_in_seconds, class: 'form-control gl-form-input'
     .form-group
       = f.label :protected_paths, class: 'label-bold' do
         - relative_url_link = 'https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab'
         - relative_url_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: relative_url_link }
         = _('All paths are relative to the GitLab URL. Do not include %{relative_url_link_start}relative URL%{relative_url_link_end}.').html_safe % { relative_url_link_start: relative_url_link_start, relative_url_link_end: '</a>'.html_safe }
-      = f.text_area :protected_paths_raw, placeholder: '/users/sign_in,/users/password', class: 'form-control', rows: 10
+      = f.text_area :protected_paths_raw, placeholder: '/users/sign_in,/users/password', class: 'form-control gl-form-input', rows: 10
 
   = f.submit 'Save changes', class: 'gl-button btn btn-success'

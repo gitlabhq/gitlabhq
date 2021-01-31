@@ -57,7 +57,7 @@
 
     .form-group
       = f.label :custom_http_clone_url_root, _('Custom Git clone URL for HTTP(S)'), class: 'label-bold'
-      = f.text_field :custom_http_clone_url_root, class: 'form-control', placeholder: 'https://git.example.com', :'aria-describedby' => 'custom_http_clone_url_root_help_block'
+      = f.text_field :custom_http_clone_url_root, class: 'form-control gl-form-input', placeholder: 'https://git.example.com', :'aria-describedby' => 'custom_http_clone_url_root_help_block'
       %span.form-text.text-muted#custom_http_clone_url_root_help_block
         = _('Replaces the clone URL root.')
 

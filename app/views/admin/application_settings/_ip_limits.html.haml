@@ -13,10 +13,10 @@
           Helps reduce request volume (e.g. from crawlers or abusive bots)
     .form-group
       = f.label :throttle_unauthenticated_requests_per_period, 'Max unauthenticated requests per period per IP', class: 'label-bold'
-      = f.number_field :throttle_unauthenticated_requests_per_period, class: 'form-control'
+      = f.number_field :throttle_unauthenticated_requests_per_period, class: 'form-control gl-form-input'
     .form-group
       = f.label :throttle_unauthenticated_period_in_seconds, 'Unauthenticated rate limit period in seconds', class: 'label-bold'
-      = f.number_field :throttle_unauthenticated_period_in_seconds, class: 'form-control'
+      = f.number_field :throttle_unauthenticated_period_in_seconds, class: 'form-control gl-form-input'
     %hr
     %h5
       = _('Authenticated API request rate limit')
@@ -29,10 +29,10 @@
           Helps reduce request volume (e.g. from crawlers or abusive bots)
     .form-group
       = f.label :throttle_authenticated_api_requests_per_period, 'Max authenticated API requests per period per user', class: 'label-bold'
-      = f.number_field :throttle_authenticated_api_requests_per_period, class: 'form-control'
+      = f.number_field :throttle_authenticated_api_requests_per_period, class: 'form-control gl-form-input'
     .form-group
       = f.label :throttle_authenticated_api_period_in_seconds, 'Authenticated API rate limit period in seconds', class: 'label-bold'
-      = f.number_field :throttle_authenticated_api_period_in_seconds, class: 'form-control'
+      = f.number_field :throttle_authenticated_api_period_in_seconds, class: 'form-control gl-form-input'
     %hr
     %h5
       = _('Authenticated web request rate limit')
@@ -45,16 +45,16 @@
           Helps reduce request volume (e.g. from crawlers or abusive bots)
     .form-group
       = f.label :throttle_authenticated_web_requests_per_period, 'Max authenticated web requests per period per user', class: 'label-bold'
-      = f.number_field :throttle_authenticated_web_requests_per_period, class: 'form-control'
+      = f.number_field :throttle_authenticated_web_requests_per_period, class: 'form-control gl-form-input'
     .form-group
       = f.label :throttle_authenticated_web_period_in_seconds, 'Authenticated web rate limit period in seconds', class: 'label-bold'
-      = f.number_field :throttle_authenticated_web_period_in_seconds, class: 'form-control'
+      = f.number_field :throttle_authenticated_web_period_in_seconds, class: 'form-control gl-form-input'
     %hr
     %h5
       = _('Response text')
     .form-group
       = f.label :rate_limiting_response_text, class: 'label-bold' do
         = _('A plain-text response to show to clients that hit the rate limit.')
-      = f.text_area :rate_limiting_response_text, placeholder: ::Gitlab::Throttle::DEFAULT_RATE_LIMITING_RESPONSE_TEXT, class: 'form-control', rows: 5
+      = f.text_area :rate_limiting_response_text, placeholder: ::Gitlab::Throttle::DEFAULT_RATE_LIMITING_RESPONSE_TEXT, class: 'form-control gl-form-input', rows: 5
 
   = f.submit 'Save changes', class: "gl-button btn btn-success", data: { qa_selector: 'save_changes_button' }

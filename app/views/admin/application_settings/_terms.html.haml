@@ -12,7 +12,7 @@
     .form-group
       = f.label :terms do
         = _("Terms of Service Agreement and Privacy Policy")
-      = f.text_area :terms, class: 'form-control', rows: 8
+      = f.text_area :terms, class: 'form-control gl-form-input', rows: 8
       .form-text.text-muted
         = _("Markdown enabled")
   = f.submit _("Save changes"), class: "gl-button btn btn-success"

@@ -14,7 +14,7 @@
               = link_to _('More information'), help_page_path('topics/autodevops/index.md'), target: '_blank'
     .form-group
       = f.label :auto_devops_domain, s_('AdminSettings|Auto DevOps domain'), class: 'label-bold'
-      = f.text_field :auto_devops_domain, class: 'form-control', placeholder: 'domain.com'
+      = f.text_field :auto_devops_domain, class: 'form-control gl-form-input', placeholder: 'domain.com'
       .form-text.text-muted
         = s_("AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages.")
     .form-group
@@ -27,23 +27,23 @@
 
     .form-group
       = f.label :shared_runners_text, class: 'label-bold'
-      = f.text_area :shared_runners_text, class: 'form-control', rows: 4
+      = f.text_area :shared_runners_text, class: 'form-control gl-form-input', rows: 4
       .form-text.text-muted= _("Markdown enabled")
     .form-group
       = f.label :max_artifacts_size, _('Maximum artifacts size (MB)'), class: 'label-bold'
-      = f.number_field :max_artifacts_size, class: 'form-control'
+      = f.number_field :max_artifacts_size, class: 'form-control gl-form-input'
       .form-text.text-muted
         = _("Set the maximum file size for each job's artifacts")
         = link_to sprite_icon('question-o'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size')
     .form-group
       = f.label :default_artifacts_expire_in, _('Default artifacts expiration'), class: 'label-bold'
-      = f.text_field :default_artifacts_expire_in, class: 'form-control'
+      = f.text_field :default_artifacts_expire_in, class: 'form-control gl-form-input'
       .form-text.text-muted
         = html_escape(_("Set the default expiration time for each job's artifacts. 0 for unlimited. The default unit is in seconds, but you can define an alternative. For example: %{code_open}4 mins 2 sec%{code_close}, %{code_open}2h42min%{code_close}.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
         = link_to sprite_icon('question-o'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'default-artifacts-expiration')
     .form-group
       = f.label :archive_builds_in_human_readable, _('Archive jobs'), class: 'label-bold'
-      = f.text_field :archive_builds_in_human_readable, class: 'form-control', placeholder: 'never'
+      = f.text_field :archive_builds_in_human_readable, class: 'form-control gl-form-input', placeholder: 'never'
       .form-text.text-muted
         = html_escape(_("Set the duration for which the jobs will be considered as old and expired. Once that time passes, the jobs will be archived and no longer able to be retried. Make it empty to never expire jobs. It has to be no less than 1 day, for example: %{code_open}15 days%{code_close}, %{code_open}1 month%{code_close}, %{code_open}2 years%{code_close}.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
     .form-group
@@ -55,7 +55,7 @@
         = s_('AdminSettings|When creating a new environment variable it will be protected by default.')
     .form-group
       = f.label :ci_config_path, _('Default CI configuration path'), class: 'label-bold'
-      = f.text_field :default_ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
+      = f.text_field :default_ci_config_path, class: 'form-control gl-form-input', placeholder: '.gitlab-ci.yml'
       %p.form-text.text-muted
         = _("The default CI configuration path for new projects.").html_safe
         = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'custom-cicd-configuration-path'), target: '_blank'

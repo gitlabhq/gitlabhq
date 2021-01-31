@@ -4,31 +4,31 @@
   %fieldset
     .form-group
       = f.label :project_import_limit, _('Max Project Import requests per minute per user'), class: 'label-bold'
-      = f.number_field :project_import_limit, class: 'form-control'
+      = f.number_field :project_import_limit, class: 'form-control gl-form-input'
 
   %fieldset
     .form-group
       = f.label :project_export_limit, _('Max Project Export requests per minute per user'), class: 'label-bold'
-      = f.number_field :project_export_limit, class: 'form-control'
+      = f.number_field :project_export_limit, class: 'form-control gl-form-input'
 
   %fieldset
     .form-group
       = f.label :project_download_export_limit, _('Max Project Export Download requests per minute per user'), class: 'label-bold'
-      = f.number_field :project_download_export_limit, class: 'form-control'
+      = f.number_field :project_download_export_limit, class: 'form-control gl-form-input'
 
   %fieldset
     .form-group
       = f.label :group_import_limit, _('Max Group Import requests per minute per user'), class: 'label-bold'
-      = f.number_field :group_import_limit, class: 'form-control'
+      = f.number_field :group_import_limit, class: 'form-control gl-form-input'
 
   %fieldset
     .form-group
       = f.label :group_export_limit, _('Max Group Export requests per minute per user'), class: 'label-bold'
-      = f.number_field :group_export_limit, class: 'form-control'
+      = f.number_field :group_export_limit, class: 'form-control gl-form-input'
 
   %fieldset
     .form-group
       = f.label :group_download_export_limit, _('Max Group Export Download requests per minute per user'), class: 'label-bold'
-      = f.number_field :group_download_export_limit, class: 'form-control'
+      = f.number_field :group_download_export_limit, class: 'form-control gl-form-input'
 
   = f.submit 'Save changes', class: "gl-button btn btn-success", data: { qa_selector: 'save_changes_button' }
