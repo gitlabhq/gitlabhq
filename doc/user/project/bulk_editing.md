@@ -21,6 +21,10 @@ Only the items visible on the current page are selected for bulk editing (up to 
 
 ## Bulk edit issues at the project level
 
+> - Assigning epic ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
+> - Editing health status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218395) in GitLab 13.2.
+> - Editing iteration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196806) in GitLab 13.9.
+
 NOTE:
 You need a permission level of [Reporter or higher](../permissions.md) to manage issues.
 
@@ -28,13 +32,12 @@ When bulk editing issues in a project, you can edit the following attributes:
 
 - Status (open/closed)
 - Assignee
-- Epic ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in
-   [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.) **(PREMIUM)**
-- Milestone
-- Labels
-- Health status ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218395) in
-   [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.2.) **(ULTIMATE)**
-- Subscriptions
+- [Epic](../group/epics/index.md)
+- [Milestone](milestones/index.md)
+- [Labels](labels.md)
+- [Health status](issues/index.md#health-status)
+- Notification subscription
+- [Iteration](../group/iterations/index.md)
 
 To update multiple project issues at the same time:
 

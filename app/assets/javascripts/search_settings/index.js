@@ -1,23 +1,10 @@
-import Vue from 'vue';
-import $ from 'jquery';
-import { expandSection, closeSection } from '~/settings_panels';
-import SearchSettings from '~/search_settings/components/search_settings.vue';
+const initSearch = async () => {
+  const el = document.querySelector('.js-search-settings-app');
 
-const initSearch = ({ el }) =>
-  new Vue({
-    el,
-    render: (h) =>
-      h(SearchSettings, {
-        ref: 'searchSettings',
-        props: {
-          searchRoot: document.querySelector('#content-body'),
-          sectionSelector: 'section.settings',
-        },
-        on: {
-          collapse: (section) => closeSection($(section)),
-          expand: (section) => expandSection($(section)),
-        },
-      }),
-  });
+  if (el) {
+    const { default: mount } = await import(/* webpackChunkName: 'search_settings' */ './mount');
+    mount({ el });
+  }
+};
 
 export default initSearch;

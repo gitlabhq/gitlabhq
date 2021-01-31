@@ -10,7 +10,7 @@ import initProjectPermissionsSettings from '../shared/permissions';
 import initProjectDeleteButton from '~/projects/project_delete_button';
 import UserCallout from '~/user_callout';
 import initServiceDesk from '~/projects/settings_service_desk';
-import mountSearchSettings from './mount_search_settings';
+import initSearchSettings from '~/search_settings';
 
 document.addEventListener('DOMContentLoaded', () => {
   initFilePickers();
@@ -32,5 +32,5 @@ document.addEventListener('DOMContentLoaded', () => {
     ),
   );
 
-  mountSearchSettings();
+  initSearchSettings();
 });

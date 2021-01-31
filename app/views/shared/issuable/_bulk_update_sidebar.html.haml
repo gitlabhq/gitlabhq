@@ -1,6 +1,7 @@
 - type = local_assigns.fetch(:type)
 - bulk_issue_health_status_flag = type == :issues && @project&.group&.feature_available?(:issuable_health_status)
 - epic_bulk_edit_flag = @project&.group&.feature_available?(:epics) && type == :issues
+- bulk_iterations_flag = @project.feature_available?(:iterations) && @project&.group.present? && type == :issues
 
 %aside.issues-bulk-update.js-right-sidebar.right-sidebar{ "aria-live" => "polite", data: { 'signed-in': current_user.present? } }
   .issuable-sidebar.hidden
@@ -41,6 +42,8 @@
           = _('Milestone')
         .filter-item
           = dropdown_tag(_("Select milestone"), options: { title: _("Assign milestone"), toggle_class: "js-milestone-select js-extra-options js-filter-submit js-filter-bulk-update", filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone", placeholder: _("Search milestones"), data: { show_no: true, field_name: "update[milestone_id]", project_id: @project.id, use_id: true, default_label: _("Milestone") } })
+      - if bulk_iterations_flag
+        = render_if_exists 'shared/iterations_dropdown', path: @project.group.full_path
       .block
         .title
           = _('Labels')
