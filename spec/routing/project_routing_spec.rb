@@ -876,4 +876,73 @@ RSpec.describe 'project routing' do
       )
     end
   end
+
+  context 'with a non-existent project' do
+    it 'routes to 404 with get request' do
+      expect(get: "/gitlab/not_exist").to route_to(
+        'application#route_not_found',
+        unmatched_route: 'gitlab/not_exist'
+      )
+    end
+
+    it 'routes to 404 with delete request' do
+      expect(delete: "/gitlab/not_exist").to route_to(
+        'application#route_not_found',
+        namespace_id: 'gitlab',
+        project_id: 'not_exist'
+      )
+    end
+
+    it 'routes to 404 with post request' do
+      expect(post: "/gitlab/not_exist").to route_to(
+        'application#route_not_found',
+        namespace_id: 'gitlab',
+        project_id: 'not_exist'
+      )
+    end
+
+    it 'routes to 404 with put request' do
+      expect(put: "/gitlab/not_exist").to route_to(
+        'application#route_not_found',
+        namespace_id: 'gitlab',
+        project_id: 'not_exist'
+      )
+    end
+
+    context 'with route to some action' do
+      it 'routes to 404 with get request to' do
+        expect(get: "/gitlab/not_exist/some_action").to route_to(
+          'application#route_not_found',
+          unmatched_route: 'gitlab/not_exist/some_action'
+        )
+      end
+
+      it 'routes to 404 with delete request' do
+        expect(delete: "/gitlab/not_exist/some_action").to route_to(
+          'application#route_not_found',
+          namespace_id: 'gitlab',
+          project_id: 'not_exist',
+          all: 'some_action'
+        )
+      end
+
+      it 'routes to 404 with post request' do
+        expect(post: "/gitlab/not_exist/some_action").to route_to(
+          'application#route_not_found',
+          namespace_id: 'gitlab',
+          project_id: 'not_exist',
+          all: 'some_action'
+        )
+      end
+
+      it 'routes to 404 with put request' do
+        expect(put: "/gitlab/not_exist/some_action").to route_to(
+          'application#route_not_found',
+          namespace_id: 'gitlab',
+          project_id: 'not_exist',
+          all: 'some_action'
+        )
+      end
+    end
+  end
 end
