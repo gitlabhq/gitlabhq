@@ -1,5 +1,6 @@
 <script>
 import { isNumber } from 'lodash';
+import { sanitize } from '~/lib/dompurify';
 import ArtifactsApp from './artifacts_list_app.vue';
 import Deployment from './deployment/deployment.vue';
 import MrWidgetContainer from './mr_widget_container.vue';
@@ -41,7 +42,7 @@ export default {
       return this.isPostMerge ? this.mr.targetBranch : this.mr.sourceBranch;
     },
     branchLink() {
-      return this.isPostMerge ? this.mr.targetBranch : this.mr.sourceBranchLink;
+      return this.isPostMerge ? sanitize(this.mr.targetBranch) : this.mr.sourceBranchLink;
     },
     deployments() {
       return this.isPostMerge ? this.mr.postMergeDeployments : this.mr.deployments;
