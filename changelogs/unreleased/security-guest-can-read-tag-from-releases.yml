@@ -1,5 +1,0 @@
----
-title: Avoid exposing release links when the user cannot read git-tag/repository
-merge_request:
-author:
-type: security
