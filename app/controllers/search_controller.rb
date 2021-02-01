@@ -67,6 +67,9 @@ class SearchController < ApplicationController
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  def opensearch
+  end
+
   private
 
   # overridden in EE

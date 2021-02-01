@@ -17,7 +17,7 @@ RSpec.describe 'aggregated metrics' do
     Gitlab::UsageDataCounters::HLLRedisCounter.known_events
   end
 
-  Gitlab::UsageDataCounters::HLLRedisCounter.aggregated_metrics.tap do |aggregated_metrics|
+  Gitlab::Usage::Metrics::Aggregates::Aggregate.new.send(:aggregated_metrics).tap do |aggregated_metrics|
     it 'all events has unique name' do
       event_names = aggregated_metrics&.map { |event| event[:name] }
 
@@ -37,7 +37,7 @@ RSpec.describe 'aggregated metrics' do
         end
 
         it "uses allowed aggregation operators" do
-          expect(Gitlab::UsageDataCounters::HLLRedisCounter::ALLOWED_METRICS_AGGREGATIONS).to include aggregate[:operator]
+          expect(Gitlab::Usage::Metrics::Aggregates::ALLOWED_METRICS_AGGREGATIONS).to include aggregate[:operator]
         end
 
         it "uses events from the same Redis slot" do

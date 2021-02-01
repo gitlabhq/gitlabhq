@@ -169,9 +169,9 @@ RSpec.describe DiffHelper do
     it "returns strings with marked inline diffs" do
       marked_old_line, marked_new_line = mark_inline_diffs(old_line, new_line)
 
-      expect(marked_old_line).to eq(%q{abc <span class="idiff left right deletion">&#39;def&#39;</span>})
+      expect(marked_old_line).to eq(%q{abc <span class="idiff left deletion">&#39;</span>def<span class="idiff right deletion">&#39;</span>})
       expect(marked_old_line).to be_html_safe
-      expect(marked_new_line).to eq(%q{abc <span class="idiff left right addition">&quot;def&quot;</span>})
+      expect(marked_new_line).to eq(%q{abc <span class="idiff left addition">&quot;</span>def<span class="idiff right addition">&quot;</span>})
       expect(marked_new_line).to be_html_safe
     end
 

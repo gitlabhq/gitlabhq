@@ -10,8 +10,6 @@ module BulkImports
 
         extractor Common::Extractors::GraphqlExtractor, query: Graphql::GetGroupQuery
 
-        transformer Common::Transformers::HashKeyDigger, key_path: %w[data group]
-        transformer Common::Transformers::UnderscorifyKeysTransformer
         transformer Common::Transformers::ProhibitedAttributesTransformer
         transformer Groups::Transformers::GroupAttributesTransformer
 

@@ -12,7 +12,9 @@ module BulkImports
 
         info(context, message: 'Pipeline started', pipeline_class: pipeline)
 
-        Array.wrap(extracted_data_from(context)).each do |entry|
+        extracted_data = extracted_data_from(context)
+
+        extracted_data&.each do |entry|
           transformers.each do |transformer|
             entry = run_pipeline_step(:transformer, transformer.class.name, context) do
               transformer.transform(context, entry)
@@ -24,7 +26,7 @@ module BulkImports
           end
         end
 
-        after_run(context) if respond_to?(:after_run)
+        after_run(context, extracted_data) if respond_to?(:after_run)
       rescue MarkedAsFailedError
         log_skip(context)
       end
@@ -43,6 +45,8 @@ module BulkImports
         log_import_failure(e, step, context)
 
         mark_as_failed(context) if abort_on_failure?
+
+        nil
       end
 
       def extracted_data_from(context)

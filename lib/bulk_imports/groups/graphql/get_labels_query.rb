@@ -32,6 +32,18 @@ module BulkImports
             cursor: entity.next_page_for(:labels)
           }
         end
+
+        def base_path
+          %w[data group labels]
+        end
+
+        def data_path
+          base_path << 'nodes'
+        end
+
+        def page_info_path
+          base_path << 'page_info'
+        end
       end
     end
   end

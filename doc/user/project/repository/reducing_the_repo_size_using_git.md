@@ -23,107 +23,28 @@ Rewriting repository history is a destructive operation. Make sure to back up yo
 you begin. The best way back up a repository is to
 [export the project](../settings/import_export.md#exporting-a-project-and-its-data).
 
-NOTE:
-Git LFS files can only be removed by an Administrator using a
-[Rake task](../../../raketasks/cleanup.md). Removal of this limitation
-[is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/223621).
+## Purge files from repository history and storage
 
-## Purge files from repository history
-
-To reduce the size of your repository in GitLab, you must remove references to large files from branches, tags, and
+To reduce the size of your repository in GitLab, you must remove references to large files from branches, tags, *and*
 other internal references (refs) that are automatically created by GitLab. These refs include:
 
 - `refs/merge-requests/*` for merge requests.
 - `refs/pipelines/*` for
   [pipelines](../../../ci/troubleshooting.md#fatal-reference-is-not-a-tree-error).
 - `refs/environments/*` for environments.
+- `refs/keep-around/*` are created as hidden refs to prevent commits referenced in the database from being removed
 
-Git doesn't usually download these refs to make cloning and fetch faster, but we can use the `--mirror` option to
-download all the advertised refs.
+These refs are not automatically downloaded and hidden refs are not advertised, but we can remove these refs using a project export.
 
-1. [Install `git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/INSTALL.md)
-   using a supported package manager or from source.
-
-1. Clone a fresh copy of the repository using `--bare` and `--mirror`:
-
-   ```shell
-   git clone --bare --mirror https://gitlab.example.com/my/project.git
-   ```
-
-1. Using `git filter-repo`, purge any files from the history of your repository.
-
-   To purge large files, the `--strip-blobs-bigger-than` option can be used:
-
-   ```shell
-   git filter-repo --strip-blobs-bigger-than 10M
-   ```
-
-   To purge large files stored using Git LFS, the `--blob--callback` option can
-   be used. The example below, uses the callback to read the file size from the
-   Git LFS pointer, and removes files larger than 10MB.
-
-   ```shell
-   git filter-repo --blob-callback '
-     if blob.data.startswith(b"version https://git-lfs.github.com/spec/v1"):
-       size_in_bytes = int.from_bytes(blob.data[124:], byteorder="big")
-       if size_in_bytes > 10*1000:
-         blob.skip()
-     '
-   ```
-
-   To purge specific large files by path, the `--path` and `--invert-paths` options can be combined:
-
-   ```shell
-   git filter-repo --path path/to/big/file.m4v --invert-paths
-   ```
-
-   See the
-   [`git filter-repo` documentation](https://htmlpreview.github.io/?https://github.com/newren/git-filter-repo/blob/docs/html/git-filter-repo.html#EXAMPLES)
-   for more examples and the complete documentation.
-
-1. Force push your changes to overwrite all branches on GitLab:
-
-   ```shell
-   git push origin --force 'refs/heads/*'
-   ```
-
-   [Protected branches](../protected_branches.md) cause this to fail. To proceed, you must
-   remove branch protection, push, and then re-enable protected branches.
-
-1. To remove large files from tagged releases, force push your changes to all tags on GitLab:
-
-   ```shell
-   git push origin --force 'refs/tags/*'
-   ```
-
-   [Protected tags](../protected_tags.md) cause this to fail. To proceed, you must remove tag
-   protection, push, and then re-enable protected tags.
-
-1. To prevent dead links to commits that no longer exist, push the `refs/replace` created by `git filter-repo`.
-
-   ```shell
-   git push origin --force 'refs/replace/*'
-   ```
-
-   Refer to the Git [`replace`](https://git-scm.com/book/en/v2/Git-Tools-Replace) documentation for information on how this works.
-
-1. Run a [repository cleanup](#repository-cleanup).
-
-NOTE:
-Project statistics are cached for performance. You may need to wait 5-10 minutes
-to see a reduction in storage utilization.
-
-## Purge files from GitLab storage
-
-In addition to the refs mentioned above, GitLab also creates hidden `refs/keep-around/*`to prevent commits being deleted. Hidden refs are not advertised, which means we can't download them using Git, but these refs are included in a project export.
-
-To purge files from GitLab storage:
+To purge files from a GitLab repository:
 
 1. [Install `git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/INSTALL.md)
    using a supported package manager or from source.
 
 1. Generate a fresh [export from the
    project](../settings/import_export.html#exporting-a-project-and-its-data) and download it.
+   This project export contains a backup copy of your repository *and* refs
+   we can use to purge files from your repository.
 
 1. Decompress the backup using `tar`:
 
@@ -134,7 +55,7 @@ To purge files from GitLab storage:
    This contains a `project.bundle` file, which was created by
    [`git bundle`](https://git-scm.com/docs/git-bundle).
 
-1. Clone a fresh copy of the repository from the bundle:
+1. Clone a fresh copy of the repository from the bundle using  `--bare` and `--mirror` options:
 
    ```shell
    git clone --bare --mirror /path/to/project.bundle
@@ -149,7 +70,7 @@ To purge files from GitLab storage:
    the previous run. You need this file from **every** run. Do the next step every time you run
    `git filter-repo`.
 
-   To purge all large files, the `--strip-blobs-bigger-than` option can be used:
+   To purge all files larger than 10M, the `--strip-blobs-bigger-than` option can be used:
 
    ```shell
    git filter-repo --strip-blobs-bigger-than 10M
@@ -236,14 +157,14 @@ This:
 - Runs `git gc --prune=30.minutes.ago` against the repository to remove unreferenced objects. Repacking your repository temporarily
   causes the size of your repository to increase significantly, because the old pack files are not removed until the
   new pack files have been created.
-- Unlinks any unused LFS objects currently attached to your project, freeing up storage space.
+- Unlinks any unused LFS objects attached to your project, freeing up storage space.
 - Recalculates the size of your repository on disk.
 
 GitLab sends an email notification with the recalculated repository size after the cleanup has completed.
 
 If the repository size does not decrease, this may be caused by loose objects
 being kept around because they were referenced in a Git operation that happened
-in the last 30 minutes. Try re-running these steps once the repository has been
+in the last 30 minutes. Try re-running these steps after the repository has been
 dormant for at least 30 minutes.
 
 When using repository cleanup, note:

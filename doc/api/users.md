@@ -264,6 +264,7 @@ Parameters:
   "created_at": "2012-05-23T08:00:58Z",
   "bio": "",
   "bio_html": "",
+  "bot": false,
   "location": null,
   "public_email": "john@example.com",
   "skype": "",

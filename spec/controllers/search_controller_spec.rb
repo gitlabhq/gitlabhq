@@ -258,6 +258,20 @@ RSpec.describe SearchController do
     it_behaves_like 'with external authorization service enabled', :autocomplete, { term: 'hello' }
   end
 
+  describe 'GET #opensearch' do
+    render_views
+
+    it 'renders xml' do
+      get :opensearch, format: :xml
+
+      doc = Nokogiri::XML.parse(response.body)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(doc.css('OpenSearchDescription ShortName').text).to eq('GitLab')
+      expect(doc.css('OpenSearchDescription *').map(&:name)).to eq(%w[ShortName Description InputEncoding Image Url SearchForm])
+    end
+  end
+
   describe '#append_info_to_payload' do
     it 'appends search metadata for logging' do
       last_payload = nil

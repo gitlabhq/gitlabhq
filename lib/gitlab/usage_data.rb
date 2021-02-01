@@ -23,6 +23,7 @@ module Gitlab
         deployment_minimum_id
         deployment_maximum_id
         auth_providers
+        aggregated_metrics
         recorded_at
       ).freeze
 
@@ -691,13 +692,13 @@ module Gitlab
 
       def aggregated_metrics_monthly
         {
-          aggregated_metrics: ::Gitlab::UsageDataCounters::HLLRedisCounter.aggregated_metrics_monthly_data
+          aggregated_metrics: aggregated_metrics.monthly_data
         }
       end
 
       def aggregated_metrics_weekly
         {
-          aggregated_metrics: ::Gitlab::UsageDataCounters::HLLRedisCounter.aggregated_metrics_weekly_data
+          aggregated_metrics: aggregated_metrics.weekly_data
         }
       end
 
@@ -741,6 +742,10 @@ module Gitlab
       end
 
       private
+
+      def aggregated_metrics
+        @aggregated_metrics ||= ::Gitlab::Usage::Metrics::Aggregates::Aggregate.new
+      end
 
       def event_monthly_active_users(date_range)
         data = {

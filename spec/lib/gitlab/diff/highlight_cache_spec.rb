@@ -233,4 +233,22 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
       cache.write_if_empty
     end
   end
+
+  describe '#key' do
+    subject { cache.key }
+
+    it 'returns the next version of the cache' do
+      is_expected.to start_with("highlighted-diff-files:#{cache.diffable.cache_key}:2")
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(improved_merge_diff_highlighting: false)
+      end
+
+      it 'returns the original version of the cache' do
+        is_expected.to start_with("highlighted-diff-files:#{cache.diffable.cache_key}:1")
+      end
+    end
+  end
 end

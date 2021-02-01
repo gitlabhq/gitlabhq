@@ -2,13 +2,49 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationExperiment do
+RSpec.describe ApplicationExperiment, :experiment do
   subject { described_class.new(:stub) }
+
+  before do
+    allow(subject).to receive(:enabled?).and_return(true)
+  end
 
   it "naively assumes a 1x1 relationship to feature flags for tests" do
     expect(Feature).to receive(:persist_used!).with('stub')
 
     described_class.new(:stub)
+  end
+
+  describe "enabled" do
+    before do
+      allow(subject).to receive(:enabled?).and_call_original
+
+      allow(Feature::Definition).to receive(:get).and_return('_instance_')
+      allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
+      allow(Feature).to receive(:get).and_return(double(state: :on))
+    end
+
+    it "is enabled when all criteria are met" do
+      expect(subject).to be_enabled
+    end
+
+    it "isn't enabled if the feature definition doesn't exist" do
+      expect(Feature::Definition).to receive(:get).with('stub').and_return(nil)
+
+      expect(subject).not_to be_enabled
+    end
+
+    it "isn't enabled if we're not in dev or dotcom environments" do
+      expect(Gitlab).to receive(:dev_env_or_com?).and_return(false)
+
+      expect(subject).not_to be_enabled
+    end
+
+    it "isn't enabled if the feature flag state is :off" do
+      expect(Feature).to receive(:get).with('stub').and_return(double(state: :off))
+
+      expect(subject).not_to be_enabled
+    end
   end
 
   describe "publishing results" do
@@ -37,8 +73,8 @@ RSpec.describe ApplicationExperiment do
   end
 
   describe "tracking events", :snowplow do
-    it "doesn't track if excluded" do
-      subject.exclude { true }
+    it "doesn't track if we shouldn't track" do
+      allow(subject).to receive(:should_track?).and_return(false)
 
       subject.track(:action)
 

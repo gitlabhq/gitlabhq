@@ -9,13 +9,18 @@ module BulkImports
         extractor BulkImports::Common::Extractors::GraphqlExtractor,
           query: BulkImports::Groups::Graphql::GetLabelsQuery
 
-        transformer BulkImports::Common::Transformers::HashKeyDigger, key_path: %w[data group labels]
         transformer Common::Transformers::ProhibitedAttributesTransformer
 
         loader BulkImports::Groups::Loaders::LabelsLoader
 
-        def after_run(context)
-          if context.entity.has_next_page?(:labels)
+        def after_run(context, extracted_data)
+          context.entity.update_tracker_for(
+            relation: :labels,
+            has_next_page: extracted_data.has_next_page?,
+            next_page: extracted_data.next_page
+          )
+
+          if extracted_data.has_next_page?
             run(context)
           end
         end

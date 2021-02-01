@@ -19,6 +19,9 @@ RSpec.describe Gitlab::Auth::IpRateLimiter, :use_clean_rails_memory_store_cachin
 
   before do
     stub_rack_attack_setting(options)
+    Rack::Attack.reset!
+    Rack::Attack.clear_configuration
+    Gitlab::RackAttack.configure(Rack::Attack)
   end
 
   after do

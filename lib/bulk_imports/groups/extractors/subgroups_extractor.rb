@@ -9,9 +9,11 @@ module BulkImports
         def extract(context)
           encoded_parent_path = ERB::Util.url_encode(context.entity.source_full_path)
 
-          http_client(context.entity.bulk_import.configuration)
+          response = http_client(context.entity.bulk_import.configuration)
             .each_page(:get, "groups/#{encoded_parent_path}/subgroups")
             .flat_map(&:itself)
+
+          BulkImports::Pipeline::ExtractedData.new(data: response)
         end
 
         private

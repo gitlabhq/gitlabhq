@@ -53,18 +53,26 @@ RSpec.describe BulkImports::Pipeline::Runner do
       end
 
       it 'runs pipeline extractor, transformer, loader' do
-        entries = [{ foo: :bar }]
+        extracted_data = BulkImports::Pipeline::ExtractedData.new(data: { foo: :bar })
 
         expect_next_instance_of(BulkImports::Extractor) do |extractor|
-          expect(extractor).to receive(:extract).with(context).and_return(entries)
+          expect(extractor)
+            .to receive(:extract)
+            .with(context)
+            .and_return(extracted_data)
         end
 
         expect_next_instance_of(BulkImports::Transformer) do |transformer|
-          expect(transformer).to receive(:transform).with(context, entries.first).and_return(entries.first)
+          expect(transformer)
+            .to receive(:transform)
+            .with(context, extracted_data.data.first)
+            .and_return(extracted_data.data.first)
         end
 
         expect_next_instance_of(BulkImports::Loader) do |loader|
-          expect(loader).to receive(:load).with(context, entries.first)
+          expect(loader)
+            .to receive(:load)
+            .with(context, extracted_data.data.first)
         end
 
         expect_next_instance_of(Gitlab::Import::Logger) do |logger|
