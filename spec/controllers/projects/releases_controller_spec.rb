@@ -9,6 +9,7 @@ RSpec.describe Projects::ReleasesController do
   let_it_be(:private_project) { create(:project, :repository, :private) }
   let_it_be(:developer)  { create(:user) }
   let_it_be(:reporter)   { create(:user) }
+  let_it_be(:guest)      { create(:user) }
   let_it_be(:user)       { developer }
   let!(:release_1)       { create(:release, project: project, released_at: Time.zone.parse('2018-10-18')) }
   let!(:release_2)       { create(:release, project: project, released_at: Time.zone.parse('2019-10-19')) }
@@ -16,6 +17,7 @@ RSpec.describe Projects::ReleasesController do
   before do
     project.add_developer(developer)
     project.add_reporter(reporter)
+    project.add_guest(guest)
   end
 
   shared_examples_for 'successful request' do
@@ -196,6 +198,13 @@ RSpec.describe Projects::ReleasesController do
 
     context 'when release does not exist' do
       let(:tag) { 'non-existent-tag' }
+
+      it_behaves_like 'not found'
+    end
+
+    context 'when user is a guest' do
+      let(:project) { private_project }
+      let(:user) { guest }
 
       it_behaves_like 'not found'
     end

@@ -5,6 +5,9 @@ class Projects::ReleasesController < Projects::ApplicationController
   before_action :require_non_empty_project, except: [:index]
   before_action :release, only: %i[edit show update downloads]
   before_action :authorize_read_release!
+  # We have to check `download_code` permission because detail URL path
+  # contains git-tag name.
+  before_action :authorize_download_code!, except: [:index]
   before_action do
     push_frontend_feature_flag(:graphql_release_data, project, default_enabled: true)
     push_frontend_feature_flag(:graphql_milestone_stats, project, default_enabled: true)
