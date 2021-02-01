@@ -1,0 +1,5 @@
+---
+title: Filter sensitive GraphQL variables from logs
+merge_request:
+author:
+type: security
