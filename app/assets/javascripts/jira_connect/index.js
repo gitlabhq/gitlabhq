@@ -4,8 +4,8 @@ import setConfigs from '@gitlab/ui/dist/config';
 import Translate from '~/vue_shared/translate';
 import GlFeatureFlagsPlugin from '~/vue_shared/gl_feature_flags_plugin';
 
-import JiraConnectApp from './components/app.vue';
 import { addSubscription, removeSubscription } from '~/jira_connect/api';
+import JiraConnectApp from './components/app.vue';
 import createStore from './store';
 import { SET_ERROR_MESSAGE } from './store/mutation_types';
 

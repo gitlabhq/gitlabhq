@@ -6,9 +6,9 @@ import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests
 import eventHub from '~/sidebar/event_hub';
 import Store from '~/sidebar/stores/sidebar_store';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { __ } from '~/locale';
 import ReviewerTitle from './reviewer_title.vue';
 import Reviewers from './reviewers.vue';
-import { __ } from '~/locale';
 
 export default {
   name: 'SidebarReviewers',

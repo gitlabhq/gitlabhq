@@ -1,5 +1,5 @@
-import types from './mutation_types';
 import { PROJECT_BADGE } from '../constants';
+import types from './mutation_types';
 
 const reorderBadges = (badges) =>
   badges.sort((a, b) => {

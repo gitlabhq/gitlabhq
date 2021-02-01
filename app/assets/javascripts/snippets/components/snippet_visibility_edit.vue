@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlFormGroup, GlFormRadio, GlFormRadioGroup, GlLink } from '@gitlab/ui';
-import { defaultSnippetVisibilityLevels } from '../utils/blob';
 import { SNIPPET_LEVELS_RESTRICTED, SNIPPET_LEVELS_DISABLED } from '~/snippets/constants';
+import { defaultSnippetVisibilityLevels } from '../utils/blob';
 
 export default {
   components: {

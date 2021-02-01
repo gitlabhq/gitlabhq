@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import { pull, union } from 'lodash';
-import { formatIssue, moveIssueListHelper } from '../boards_util';
-import * as mutationTypes from './mutation_types';
 import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { formatIssue, moveIssueListHelper } from '../boards_util';
+import * as mutationTypes from './mutation_types';
 
 const notImplemented = () => {
   /* eslint-disable-next-line @gitlab/require-i18n-strings */

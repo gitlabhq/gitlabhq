@@ -7,17 +7,16 @@ import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
-import diffDiscussionsMockData from '../mock_data/diff_discussions';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { diffViewerModes } from '~/ide/constants';
 import { __, sprintf } from '~/locale';
 import { scrollToElement } from '~/lib/utils/common_utils';
 
-import testAction from '../../__helpers__/vuex_action_helper';
-
 import { SET_MR_FILE_REVIEWS } from '~/diffs/store/mutation_types';
 import { reviewFile } from '~/diffs/store/actions';
 import { DIFF_FILE_AUTOMATIC_COLLAPSE, DIFF_FILE_MANUAL_COLLAPSE } from '~/diffs/constants';
+import testAction from '../../__helpers__/vuex_action_helper';
+import diffDiscussionsMockData from '../mock_data/diff_discussions';
 
 jest.mock('~/lib/utils/common_utils');
 

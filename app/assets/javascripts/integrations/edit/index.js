@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import { createStore } from './store';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { createStore } from './store';
 import IntegrationForm from './components/integration_form.vue';
 
 function parseBooleanInData(data) {

@@ -1,6 +1,6 @@
 import { shallowMount, mount } from '@vue/test-utils';
-import { TEST_HOST } from 'helpers/test_constants';
 import { GlDropdown, GlDropdownItem, GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { TEST_HOST } from 'helpers/test_constants';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import eventHub from '~/environments/event_hub';
 import EnvironmentActions from '~/environments/components/environment_actions.vue';

@@ -1,6 +1,6 @@
-import { file } from 'jest/ide/helpers';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { file } from 'jest/ide/helpers';
 import testAction from 'helpers/vuex_action_helper';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { createStore } from '~/ide/stores';

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Resolvers
-  # No return types defined because they can be different.
-  # rubocop: disable Graphql/ResolverType
   class PackageDetailsResolver < BaseResolver
+    type ::Types::Packages::PackageType, null: true
+
     argument :id, ::Types::GlobalIDType[::Packages::Package],
       required: true,
       description: 'The global ID of the package.'

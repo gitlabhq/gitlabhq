@@ -1,4 +1,3 @@
-import * as types from './mutation_types';
 import api from '~/api';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__ } from '~/locale';
@@ -10,6 +9,7 @@ import {
   convertOneReleaseGraphQLResponse,
 } from '~/releases/util';
 import oneReleaseQuery from '~/releases/queries/one_release.query.graphql';
+import * as types from './mutation_types';
 
 export const initializeRelease = ({ commit, dispatch, getters }) => {
   if (getters.isExistingRelease) {

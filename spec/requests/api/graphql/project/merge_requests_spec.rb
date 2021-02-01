@@ -196,17 +196,18 @@ RSpec.describe 'getting merge request listings nested in a project' do
     end
 
     context 'when requesting `commit_count`' do
-      let(:requested_fields) { [:commit_count] }
+      let(:merge_request_with_commits) { create(:merge_request, source_project: project) }
+      let(:search_params) { { iids: [merge_request_a.iid.to_s, merge_request_with_commits.iid.to_s] } }
+      let(:requested_fields) { [:iid, :commit_count] }
 
       it 'exposes `commit_count`' do
-        merge_request_a.metrics.update!(commits_count: 5)
-
         execute_query
 
-        expect(results).to include(a_hash_including('commitCount' => 5))
+        expect(results).to match_array([
+          { "iid" => merge_request_a.iid.to_s, "commitCount" => 0 },
+          { "iid" => merge_request_with_commits.iid.to_s, "commitCount" => 29 }
+        ])
       end
-
-      include_examples 'N+1 query check'
     end
 
     context 'when requesting `merged_at`' do

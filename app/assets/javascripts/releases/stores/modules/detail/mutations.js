@@ -1,6 +1,6 @@
 import { uniqueId, cloneDeep } from 'lodash';
-import * as types from './mutation_types';
 import { DEFAULT_ASSET_LINK_TYPE } from '../../../constants';
+import * as types from './mutation_types';
 
 const findReleaseLink = (release, id) => {
   return release.assets.links.find((l) => l.id === id);

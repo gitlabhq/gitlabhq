@@ -1,8 +1,8 @@
 import { mount } from '@vue/test-utils';
 import DesignOverlay from '~/design_management/components/design_overlay.vue';
 import updateActiveDiscussion from '~/design_management/graphql/mutations/update_active_discussion.mutation.graphql';
-import notes from '../mock_data/notes';
 import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '~/design_management/constants';
+import notes from '../mock_data/notes';
 
 const mutate = jest.fn(() => Promise.resolve());
 

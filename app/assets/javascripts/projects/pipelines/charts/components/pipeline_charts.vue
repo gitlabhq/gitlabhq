@@ -2,10 +2,10 @@
 import dateFormat from 'dateformat';
 import { GlColumnChart } from '@gitlab/ui/dist/charts';
 import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
-import getPipelineCountByStatus from '../graphql/queries/get_pipeline_count_by_status.query.graphql';
-import getProjectPipelineStatistics from '../graphql/queries/get_project_pipeline_statistics.query.graphql';
 import { __, s__, sprintf } from '~/locale';
 import { getDateInPast } from '~/lib/utils/datetime_utility';
+import getPipelineCountByStatus from '../graphql/queries/get_pipeline_count_by_status.query.graphql';
+import getProjectPipelineStatistics from '../graphql/queries/get_project_pipeline_statistics.query.graphql';
 import {
   DEFAULT,
   CHART_CONTAINER_HEIGHT,

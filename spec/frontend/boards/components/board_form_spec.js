@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 
-import { TEST_HOST } from 'helpers/test_constants';
 import { GlModal } from '@gitlab/ui';
+import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import { deprecatedCreateFlash as createFlash } from '~/flash';

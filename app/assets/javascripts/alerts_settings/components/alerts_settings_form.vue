@@ -15,8 +15,6 @@ import {
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import MappingBuilder from './alert_mapping_builder.vue';
-import AlertSettingsFormHelpBlock from './alert_settings_form_help_block.vue';
 import getCurrentIntegrationQuery from '../graphql/queries/get_current_integration.query.graphql';
 import {
   integrationTypes,
@@ -24,6 +22,8 @@ import {
   targetPrometheusUrlPlaceholder,
   typeSet,
 } from '../constants';
+import MappingBuilder from './alert_mapping_builder.vue';
+import AlertSettingsFormHelpBlock from './alert_settings_form_help_block.vue';
 // Mocks will be removed when integrating with BE is ready
 // data format is defined and will be the same as mocked (maybe with some minor changes)
 // feature rollout plan - https://gitlab.com/gitlab-org/gitlab/-/issues/262707#note_442529171

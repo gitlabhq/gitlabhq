@@ -1,9 +1,9 @@
 import { debounce } from 'lodash';
 import InputValidator from '~/validators/input_validator';
 
-import fetchGroupPathAvailability from './fetch_group_path_availability';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
+import fetchGroupPathAvailability from './fetch_group_path_availability';
 
 const debounceTimeoutDuration = 1000;
 const invalidInputClass = 'gl-field-error-outline';

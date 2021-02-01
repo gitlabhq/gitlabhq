@@ -10,11 +10,11 @@ import {
   GlFormInput,
 } from '@gitlab/ui';
 import { partition, isString } from 'lodash';
-import eventHub from '../event_hub';
 import { s__, __, sprintf } from '~/locale';
 import Api from '~/api';
 import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
+import eventHub from '../event_hub';
 
 export default {
   name: 'InviteMembersModal',

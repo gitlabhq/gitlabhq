@@ -1,3 +1,4 @@
+import { mergeUrlParams } from '../lib/utils/url_utility';
 import DropdownHint from './dropdown_hint';
 import DropdownUser from './dropdown_user';
 import DropdownNonUser from './dropdown_non_user';
@@ -6,7 +7,6 @@ import NullDropdown from './null_dropdown';
 import DropdownAjaxFilter from './dropdown_ajax_filter';
 import DropdownOperator from './dropdown_operator';
 import DropdownUtils from './dropdown_utils';
-import { mergeUrlParams } from '../lib/utils/url_utility';
 
 export default class AvailableDropdownMappings {
   constructor({

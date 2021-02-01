@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 import environmentRowComponent from '~/serverless/components/environment_row.vue';
 
-import { mockServerlessFunctions, mockServerlessFunctionsDiffEnv } from '../mock_data';
 import { translate } from '~/serverless/utils';
+import { mockServerlessFunctions, mockServerlessFunctionsDiffEnv } from '../mock_data';
 
 const createComponent = (env, envName) =>
   shallowMount(environmentRowComponent, {

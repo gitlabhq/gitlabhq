@@ -6,8 +6,8 @@ import MockAdapter from 'axios-mock-adapter';
 import { GlLoadingIcon, GlSearchBoxByType, GlDropdownItem } from '@gitlab/ui';
 import { ENTER_KEY } from '~/lib/utils/keys';
 import MilestoneCombobox from '~/milestones/components/milestone_combobox.vue';
-import { projectMilestones, groupMilestones } from './mock_data';
 import createStore from '~/milestones/stores/';
+import { projectMilestones, groupMilestones } from './mock_data';
 
 const extraLinks = [
   { text: 'Create new', url: 'http://127.0.0.1:3000/h5bp/html5-boilerplate/-/milestones/new' },

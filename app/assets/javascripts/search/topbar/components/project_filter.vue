@@ -1,8 +1,8 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
-import SearchableDropdown from './searchable_dropdown.vue';
 import { ANY_OPTION, GROUP_DATA, PROJECT_DATA } from '../constants';
+import SearchableDropdown from './searchable_dropdown.vue';
 
 export default {
   name: 'ProjectFilter',

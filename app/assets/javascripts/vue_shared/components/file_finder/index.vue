@@ -3,8 +3,8 @@ import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import Mousetrap from 'mousetrap';
 import VirtualList from 'vue-virtual-scroll-list';
 import { GlIcon } from '@gitlab/ui';
-import Item from './item.vue';
 import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
+import Item from './item.vue';
 
 export const MAX_FILE_FINDER_RESULTS = 40;
 export const FILE_FINDER_ROW_HEIGHT = 55;

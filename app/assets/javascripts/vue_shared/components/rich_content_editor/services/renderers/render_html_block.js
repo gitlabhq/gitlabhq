@@ -1,6 +1,6 @@
-import { buildUneditableHtmlAsTextTokens } from './build_uneditable_token';
-import { ALLOWED_VIDEO_ORIGINS } from '../../constants';
 import { getURLOrigin } from '~/lib/utils/url_utility';
+import { ALLOWED_VIDEO_ORIGINS } from '../../constants';
+import { buildUneditableHtmlAsTextTokens } from './build_uneditable_token';
 
 const isVideoFrame = (html) => {
   const parser = new DOMParser();

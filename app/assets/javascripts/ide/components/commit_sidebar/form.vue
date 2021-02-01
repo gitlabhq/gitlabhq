@@ -2,11 +2,11 @@
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { GlModal, GlSafeHtmlDirective, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { n__, s__ } from '~/locale';
+import { leftSidebarViews, MAX_WINDOW_HEIGHT_COMPACT } from '../../constants';
+import { createUnexpectedCommitError } from '../../lib/errors';
 import CommitMessageField from './message_field.vue';
 import Actions from './actions.vue';
 import SuccessMessage from './success_message.vue';
-import { leftSidebarViews, MAX_WINDOW_HEIGHT_COMPACT } from '../../constants';
-import { createUnexpectedCommitError } from '../../lib/errors';
 
 const MSG_CANNOT_PUSH_CODE = s__(
   'WebIDE|You need permission to edit files directly in this project.',

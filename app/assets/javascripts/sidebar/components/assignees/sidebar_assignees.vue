@@ -4,10 +4,10 @@ import eventHub from '~/sidebar/event_hub';
 import Store from '~/sidebar/stores/sidebar_store';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { __ } from '~/locale';
 import AssigneeTitle from './assignee_title.vue';
 import Assignees from './assignees.vue';
 import AssigneesRealtime from './assignees_realtime.vue';
-import { __ } from '~/locale';
 
 export default {
   name: 'SidebarAssignees',

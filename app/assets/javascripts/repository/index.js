@@ -1,17 +1,17 @@
 import Vue from 'vue';
+import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
 import { escapeFileUrl } from '../lib/utils/url_utility';
+import { parseBoolean } from '../lib/utils/common_utils';
+import { __ } from '../locale';
 import createRouter from './router';
 import App from './components/app.vue';
 import Breadcrumbs from './components/breadcrumbs.vue';
 import LastCommit from './components/last_commit.vue';
 import TreeActionLink from './components/tree_action_link.vue';
-import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
 import DirectoryDownloadLinks from './components/directory_download_links.vue';
 import apolloProvider from './graphql';
 import { setTitle } from './utils/title';
 import { updateFormAction } from './utils/dom';
-import { parseBoolean } from '../lib/utils/common_utils';
-import { __ } from '../locale';
 
 export default function setupVueRepositoryList() {
   const el = document.getElementById('js-tree-list');

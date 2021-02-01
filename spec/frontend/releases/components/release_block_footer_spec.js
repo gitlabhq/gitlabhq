@@ -1,8 +1,8 @@
 import { mount } from '@vue/test-utils';
 import { GlLink, GlIcon } from '@gitlab/ui';
+import { cloneDeep } from 'lodash';
 import { trimText } from 'helpers/text_helper';
 import { getJSONFixture } from 'helpers/fixtures';
-import { cloneDeep } from 'lodash';
 import ReleaseBlockFooter from '~/releases/components/release_block_footer.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 

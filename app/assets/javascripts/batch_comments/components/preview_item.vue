@@ -3,13 +3,13 @@ import { mapGetters } from 'vuex';
 import { GlSprintf, GlIcon } from '@gitlab/ui';
 import { IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { sprintf, __ } from '~/locale';
-import resolvedStatusMixin from '../mixins/resolved_status';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   getStartLineNumber,
   getEndLineNumber,
   getLineClasses,
 } from '~/notes/components/multiline_comment_utils';
+import resolvedStatusMixin from '../mixins/resolved_status';
 
 export default {
   components: {

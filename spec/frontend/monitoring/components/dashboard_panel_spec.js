@@ -1,28 +1,13 @@
 import Vuex from 'vuex';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import { setTestTimeout } from 'helpers/timeout';
 import { GlDropdownItem } from '@gitlab/ui';
+import { setTestTimeout } from 'helpers/timeout';
 import invalidUrl from '~/lib/utils/invalid_url';
 import axios from '~/lib/utils/axios_utils';
 import AlertWidget from '~/monitoring/components/alert_widget.vue';
 
 import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
-import {
-  mockAlert,
-  mockLogsHref,
-  mockLogsPath,
-  mockNamespace,
-  mockNamespacedData,
-  mockTimeRange,
-} from '../mock_data';
-import { dashboardProps, graphData, graphDataEmpty } from '../fixture_data';
-import {
-  anomalyGraphData,
-  singleStatGraphData,
-  heatmapGraphData,
-  barGraphData,
-} from '../graph_data';
 
 import { panelTypes } from '~/monitoring/constants';
 
@@ -37,6 +22,21 @@ import MonitorStackedColumnChart from '~/monitoring/components/charts/stacked_co
 
 import { createStore, monitoringDashboard } from '~/monitoring/stores';
 import { createStore as createEmbedGroupStore } from '~/monitoring/stores/embed_group';
+import {
+  anomalyGraphData,
+  singleStatGraphData,
+  heatmapGraphData,
+  barGraphData,
+} from '../graph_data';
+import { dashboardProps, graphData, graphDataEmpty } from '../fixture_data';
+import {
+  mockAlert,
+  mockLogsHref,
+  mockLogsPath,
+  mockNamespace,
+  mockNamespacedData,
+  mockTimeRange,
+} from '../mock_data';
 
 const mocks = {
   $toast: {

@@ -1,8 +1,8 @@
 import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import waitForPromises from 'helpers/wait_for_promises';
 import { GlFilteredSearch, GlButton, GlLoadingIcon } from '@gitlab/ui';
+import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
@@ -15,9 +15,9 @@ import PipelinesTableComponent from '~/pipelines/components/pipelines_list/pipel
 
 import PipelinesComponent from '~/pipelines/components/pipelines_list/pipelines.vue';
 import Store from '~/pipelines/stores/pipelines_store';
-import { pipelineWithStages, stageReply, users, mockSearch, branches } from './mock_data';
 import { RAW_TEXT_WARNING } from '~/pipelines/constants';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import { pipelineWithStages, stageReply, users, mockSearch, branches } from './mock_data';
 
 jest.mock('~/flash');
 

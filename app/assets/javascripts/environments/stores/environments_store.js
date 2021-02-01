@@ -1,5 +1,5 @@
-import { setDeployBoard } from './helpers';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
+import { setDeployBoard } from './helpers';
 
 /**
  * Environments Store.

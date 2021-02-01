@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import SentryErrorStackTrace from './components/sentry_error_stack_trace.vue';
 import store from '~/error_tracking/store';
+import SentryErrorStackTrace from './components/sentry_error_stack_trace.vue';
 
 export default function initSentryErrorStacktrace() {
   const sentryErrorStackTraceEl = document.querySelector('#js-sentry-error-stack-trace');

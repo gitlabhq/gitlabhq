@@ -1,9 +1,9 @@
+import { __ } from '~/locale';
 import { deprecatedCreateFlash as Flash } from '../flash';
 import Ajax from '../droplab/plugins/ajax';
 import Filter from '../droplab/plugins/filter';
 import FilteredSearchDropdown from './filtered_search_dropdown';
 import DropdownUtils from './dropdown_utils';
-import { __ } from '~/locale';
 
 export default class DropdownEmoji extends FilteredSearchDropdown {
   constructor(options = {}) {

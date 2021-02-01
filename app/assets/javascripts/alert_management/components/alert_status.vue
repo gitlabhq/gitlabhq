@@ -2,8 +2,8 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
-import { trackAlertStatusUpdateOptions } from '../constants';
 import updateAlertStatusMutation from '~/graphql_shared/mutations/update_alert_status.mutation.graphql';
+import { trackAlertStatusUpdateOptions } from '../constants';
 
 export default {
   i18n: {

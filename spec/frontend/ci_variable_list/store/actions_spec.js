@@ -6,8 +6,8 @@ import { deprecatedCreateFlash as createFlash } from '~/flash';
 import getInitialState from '~/ci_variable_list/store/state';
 import * as actions from '~/ci_variable_list/store/actions';
 import * as types from '~/ci_variable_list/store/mutation_types';
-import mockData from '../services/mock_data';
 import { prepareDataForDisplay, prepareEnvironments } from '~/ci_variable_list/store/utils';
+import mockData from '../services/mock_data';
 
 jest.mock('~/api.js');
 jest.mock('~/flash.js');

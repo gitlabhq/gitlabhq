@@ -1,10 +1,10 @@
 <script>
 import { mapState, mapMutations } from 'vuex';
 import { GlAlert } from '@gitlab/ui';
+import { scrollToElement } from '~/lib/utils/common_utils';
+import { HIDE_ERROR } from '../store/mutation_types';
 import MembersTable from './table/members_table.vue';
 import FilterSortContainer from './filter_sort/filter_sort_container.vue';
-import { HIDE_ERROR } from '../store/mutation_types';
-import { scrollToElement } from '~/lib/utils/common_utils';
 
 export default {
   name: 'MembersApp',

@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
-import { TEST_HOST, FIXTURES_PATH } from 'spec/test_constants';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
+import { TEST_HOST, FIXTURES_PATH } from 'spec/test_constants';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import axios from '~/lib/utils/axios_utils';
 

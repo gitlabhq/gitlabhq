@@ -1,10 +1,10 @@
-import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __ } from '~/locale';
 import { NEW_VERSION_FLAG } from '../../constants';
 import { mapFromScopesViewModel, mapStrategiesToRails } from '../helpers';
+import * as types from './mutation_types';
 
 /**
  * Handles the edition of a feature flag.

@@ -10,13 +10,13 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { n__, s__, __ } from '~/locale';
-import AccessorUtilities from '../../lib/utils/accessor';
-import IssueCount from './issue_count.vue';
-import eventHub from '../eventhub';
 import sidebarEventHub from '~/sidebar/event_hub';
-import { inactiveId, LIST, ListType } from '../constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { isListDraggable } from '~/boards/boards_util';
+import { inactiveId, LIST, ListType } from '../constants';
+import eventHub from '../eventhub';
+import AccessorUtilities from '../../lib/utils/accessor';
+import IssueCount from './issue_count.vue';
 
 export default {
   i18n: {

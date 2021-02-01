@@ -1,7 +1,7 @@
-import * as types from './mutation_types';
-import { X_TOTAL_HEADER } from '../constants';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
+import { X_TOTAL_HEADER } from '../constants';
+import * as types from './mutation_types';
 
 export default {
   [types.SET_PROJECT_ID](state, projectId) {

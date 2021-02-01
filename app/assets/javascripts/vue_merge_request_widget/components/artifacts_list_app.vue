@@ -1,8 +1,8 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
+import createStore from '../stores/artifacts_list';
 import ArtifactsList from './artifacts_list.vue';
 import MrCollapsibleExtension from './mr_collapsible_extension.vue';
-import createStore from '../stores/artifacts_list';
 
 export default {
   store: createStore(),

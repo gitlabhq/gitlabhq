@@ -9,9 +9,9 @@ import {
   GlLoadingIcon,
 } from '@gitlab/ui';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
-import projectMilestones from '../../graphql/project_milestones.query.graphql';
 import createFlash from '~/flash';
 import { __, s__ } from '~/locale';
+import projectMilestones from '../../graphql/project_milestones.query.graphql';
 
 export default {
   components: {

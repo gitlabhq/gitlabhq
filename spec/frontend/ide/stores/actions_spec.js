@@ -20,8 +20,8 @@ import {
 } from '~/ide/stores/actions';
 import axios from '~/lib/utils/axios_utils';
 import * as types from '~/ide/stores/mutation_types';
-import { file, createTriggerRenameAction, createTriggerChangeAction } from '../helpers';
 import eventHub from '~/ide/eventhub';
+import { file, createTriggerRenameAction, createTriggerChangeAction } from '../helpers';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn(),

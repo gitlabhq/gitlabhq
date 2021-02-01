@@ -1,7 +1,7 @@
 import axios from '~/lib/utils/axios_utils';
-import * as types from './mutation_types';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__ } from '~/locale';
+import * as types from './mutation_types';
 
 export const fetchSummary = ({ state, commit, dispatch }) => {
   dispatch('toggleLoading');

@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import environmentsComponent from './components/environments_app.vue';
+import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '../lib/utils/common_utils';
 import Translate from '../vue_shared/translate';
-import createDefaultClient from '~/lib/graphql';
+import environmentsComponent from './components/environments_app.vue';
 
 Vue.use(Translate);
 Vue.use(VueApollo);

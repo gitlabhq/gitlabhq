@@ -3,9 +3,9 @@ import { TEST_HOST } from 'helpers/test_constants';
 import Anomaly from '~/monitoring/components/charts/anomaly.vue';
 
 import { colorValues } from '~/monitoring/constants';
+import MonitorTimeSeriesChart from '~/monitoring/components/charts/time_series.vue';
 import { anomalyDeploymentData, mockProjectDir } from '../../mock_data';
 import { anomalyGraphData } from '../../graph_data';
-import MonitorTimeSeriesChart from '~/monitoring/components/charts/time_series.vue';
 
 const mockProjectPath = `${TEST_HOST}${mockProjectDir}`;
 

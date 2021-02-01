@@ -3,12 +3,12 @@ import { GlLoadingIcon, GlSkeletonLoader } from '@gitlab/ui';
 import autoMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/auto_merge';
 import autoMergeEnabledQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/auto_merge_enabled.query.graphql';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { __ } from '~/locale';
 import { deprecatedCreateFlash as Flash } from '../../../flash';
 import statusIcon from '../mr_widget_status_icon.vue';
 import MrWidgetAuthor from '../mr_widget_author.vue';
 import eventHub from '../../event_hub';
 import { AUTO_MERGE_STRATEGIES } from '../../constants';
-import { __ } from '~/locale';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 
 export default {

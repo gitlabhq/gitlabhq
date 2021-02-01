@@ -2,9 +2,9 @@
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { GlLink, GlLoadingIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
+import { CHECKING_INSTALLED } from '../constants';
 import EnvironmentRow from './environment_row.vue';
 import EmptyState from './empty_state.vue';
-import { CHECKING_INSTALLED } from '../constants';
 
 export default {
   components: {

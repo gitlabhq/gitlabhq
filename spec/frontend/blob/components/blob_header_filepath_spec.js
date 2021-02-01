@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 import BlobHeaderFilepath from '~/blob/components/blob_header_filepath.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import { Blob as MockBlob } from './mock_data';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
+import { Blob as MockBlob } from './mock_data';
 
 jest.mock('~/lib/utils/number_utils', () => ({
   numberToHumanSize: jest.fn(() => 'a lot'),

@@ -2,10 +2,10 @@
 
 import $ from 'jquery';
 import Dropzone from 'dropzone';
+import { sprintf, __ } from '~/locale';
 import { visitUrl } from '../lib/utils/url_utility';
 import { HIDDEN_CLASS } from '../lib/utils/constants';
 import csrf from '../lib/utils/csrf';
-import { sprintf, __ } from '~/locale';
 
 Dropzone.autoDiscover = false;
 

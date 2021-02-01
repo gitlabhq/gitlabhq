@@ -3,10 +3,9 @@ import { GlAvatar, GlButton } from '@gitlab/ui';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
-import { mockGroup1 } from '../mock_data';
-
 import GroupsListItem from '~/jira_connect/components/groups_list_item.vue';
 import * as JiraConnectApi from '~/jira_connect/api';
+import { mockGroup1 } from '../mock_data';
 
 describe('GroupsListItem', () => {
   let wrapper;

@@ -12,13 +12,13 @@ import { s__, __ } from '~/locale';
 // Mocks will be removed when integrating with BE is ready
 // data format is defined and will be the same as mocked (maybe with some minor changes)
 // feature rollout plan - https://gitlab.com/gitlab-org/gitlab/-/issues/262707#note_442529171
-import gitlabFieldsMock from './mocks/gitlabFields.json';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import {
   getMappingData,
   getPayloadFields,
   transformForSave,
 } from '../utils/mapping_transformations';
+import gitlabFieldsMock from './mocks/gitlabFields.json';
 
 export const i18n = {
   columns: {

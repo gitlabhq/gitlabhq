@@ -19,6 +19,7 @@ import { defaultTimeRange } from '~/vue_shared/constants';
 import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as flash } from '~/flash';
 
+import { TOKEN_TYPE_POD_NAME } from '~/logs/constants';
 import {
   mockPodName,
   mockEnvironmentsEndpoint,
@@ -34,7 +35,6 @@ import {
   mockManagedApps,
   mockManagedAppsEndpoint,
 } from '../mock_data';
-import { TOKEN_TYPE_POD_NAME } from '~/logs/constants';
 
 jest.mock('~/flash');
 jest.mock('~/lib/utils/datetime_range');

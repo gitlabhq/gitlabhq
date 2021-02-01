@@ -1,8 +1,8 @@
 import Visibility from 'visibilityjs';
 import axios from '../../lib/utils/axios_utils';
 import Poll from '../../lib/utils/poll';
-import * as types from './mutation_types';
 import httpStatusCodes from '../../lib/utils/http_status';
+import * as types from './mutation_types';
 
 export const setEndpoint = ({ commit }, endpoint) => commit(types.SET_ENDPOINT, endpoint);
 

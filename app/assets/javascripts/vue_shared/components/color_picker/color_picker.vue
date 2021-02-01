@@ -6,7 +6,7 @@
  * <color-picker
      :invalid-feedback="__('Please enter a valid hex (#RRGGBB or #RGB) color value')"
      :label="__('Background color')"
-     set-color="#FF0000"
+     :value="#FF0000"
      state="isValidColor"
    />
  */
@@ -38,7 +38,7 @@ export default {
       required: false,
       default: '',
     },
-    setColor: {
+    value: {
       type: String,
       required: false,
       default: '',
@@ -48,11 +48,6 @@ export default {
       required: false,
       default: null,
     },
-  },
-  data() {
-    return {
-      selectedColor: this.setColor.trim() || '',
-    };
   },
   computed: {
     description() {
@@ -65,7 +60,7 @@ export default {
     },
     previewColor() {
       if (this.state) {
-        return { backgroundColor: this.selectedColor };
+        return { backgroundColor: this.value };
       }
 
       return {};
@@ -82,9 +77,7 @@ export default {
   },
   methods: {
     handleColorChange(color) {
-      this.selectedColor = color.trim();
-
-      this.$emit('input', this.selectedColor);
+      this.$emit('input', color.trim());
     },
   },
   i18n: {
@@ -109,7 +102,7 @@ export default {
         max-length="7"
         type="text"
         class="gl-align-center gl-rounded-0 gl-rounded-top-right-base gl-rounded-bottom-right-base"
-        :value="selectedColor"
+        :value="value"
         :state="state"
         @input="handleColorChange"
       >
@@ -119,7 +112,7 @@ export default {
               type="color"
               class="gl-absolute gl-top-0 gl-left-0 gl-h-full! gl-p-0! gl-m-0! gl-cursor-pointer gl-opacity-0"
               tabindex="-1"
-              :value="selectedColor"
+              :value="value"
               @input="handleColorChange"
             />
           </div>

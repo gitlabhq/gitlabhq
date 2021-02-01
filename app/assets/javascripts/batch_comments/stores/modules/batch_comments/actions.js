@@ -2,8 +2,8 @@ import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import service from '../../../services/drafts_service';
-import * as types from './mutation_types';
 import { CHANGES_TAB, DISCUSSION_TAB, SHOW_TAB } from '../../../constants';
+import * as types from './mutation_types';
 
 export const saveDraft = ({ dispatch }, draft) =>
   dispatch('saveNote', { ...draft, isDraft: true }, { root: true });

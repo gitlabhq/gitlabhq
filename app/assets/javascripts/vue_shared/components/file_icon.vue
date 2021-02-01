@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
-import getIconForFile from './file_icon/file_icon_map';
 import { FILE_SYMLINK_MODE } from '../constants';
+import getIconForFile from './file_icon/file_icon_map';
 
 /* This is a re-usable vue component for rendering a svg sprite
     icon

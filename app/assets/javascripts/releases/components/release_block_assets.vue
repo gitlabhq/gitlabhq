@@ -1,8 +1,8 @@
 <script>
 import { GlTooltipDirective, GlLink, GlButton, GlCollapse, GlIcon, GlBadge } from '@gitlab/ui';
 import { difference, get } from 'lodash';
-import { ASSET_LINK_TYPE } from '../constants';
 import { __, s__, sprintf } from '~/locale';
+import { ASSET_LINK_TYPE } from '../constants';
 
 export default {
   name: 'ReleaseBlockAssets',

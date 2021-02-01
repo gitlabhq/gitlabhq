@@ -1,6 +1,6 @@
 <script>
-import EmailParticipantsWarning from './email_participants_warning.vue';
 import NoteableWarning from '~/vue_shared/components/notes/noteable_warning.vue';
+import EmailParticipantsWarning from './email_participants_warning.vue';
 
 const DEFAULT_NOTEABLE_TYPE = 'Issue';
 

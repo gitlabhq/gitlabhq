@@ -2,6 +2,7 @@
 import { GlButton } from '@gitlab/ui';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__ } from '~/locale';
+import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import eventHub from '../../event_hub';
 import approvalsMixin from '../../mixins/approvals';
 import MrWidgetContainer from '../mr_widget_container.vue';
@@ -9,7 +10,6 @@ import MrWidgetIcon from '../mr_widget_icon.vue';
 import ApprovalsSummary from './approvals_summary.vue';
 import ApprovalsSummaryOptional from './approvals_summary_optional.vue';
 import { FETCH_LOADING, FETCH_ERROR, APPROVE_ERROR, UNAPPROVE_ERROR } from './messages';
-import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 
 export default {
   name: 'MRWidgetApprovals',

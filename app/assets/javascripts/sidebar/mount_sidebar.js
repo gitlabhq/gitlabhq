@@ -1,6 +1,16 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
+import {
+  isInIssuePage,
+  isInDesignPage,
+  isInIncidentPage,
+  parseBoolean,
+} from '~/lib/utils/common_utils';
+import createFlash from '~/flash';
+import { __ } from '~/locale';
+import Translate from '../vue_shared/translate';
 import SidebarTimeTracking from './components/time_tracking/sidebar_time_tracking.vue';
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
 import SidebarLabels from './components/labels/sidebar_labels.vue';
@@ -11,17 +21,7 @@ import IssuableLockForm from './components/lock/issuable_lock_form.vue';
 import sidebarParticipants from './components/participants/sidebar_participants.vue';
 import sidebarSubscriptions from './components/subscriptions/sidebar_subscriptions.vue';
 import SidebarSeverity from './components/severity/sidebar_severity.vue';
-import Translate from '../vue_shared/translate';
 import CopyEmailToClipboard from './components/copy_email_to_clipboard.vue';
-import createDefaultClient from '~/lib/graphql';
-import {
-  isInIssuePage,
-  isInDesignPage,
-  isInIncidentPage,
-  parseBoolean,
-} from '~/lib/utils/common_utils';
-import createFlash from '~/flash';
-import { __ } from '~/locale';
 
 Vue.use(Translate);
 Vue.use(VueApollo);

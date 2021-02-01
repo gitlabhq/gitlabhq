@@ -235,3 +235,9 @@ export const graphQLProjectImageRepositoriesDetailsMock = {
     },
   },
 };
+
+export const graphQLEmptyImageDetailsMock = {
+  data: {
+    containerRepository: null,
+  },
+};

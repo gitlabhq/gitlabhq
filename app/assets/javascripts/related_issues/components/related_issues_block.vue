@@ -1,13 +1,13 @@
 <script>
 import { GlLink, GlIcon, GlButton } from '@gitlab/ui';
-import AddIssuableForm from './add_issuable_form.vue';
-import RelatedIssuesList from './related_issues_list.vue';
 import {
   issuableIconMap,
   issuableQaClassMap,
   linkedIssueTypesMap,
   linkedIssueTypesTextMap,
 } from '../constants';
+import AddIssuableForm from './add_issuable_form.vue';
+import RelatedIssuesList from './related_issues_list.vue';
 
 export default {
   name: 'RelatedIssuesBlock',

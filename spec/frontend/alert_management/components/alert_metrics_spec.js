@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
-import waitForPromises from 'helpers/wait_for_promises';
 import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
+import waitForPromises from 'helpers/wait_for_promises';
 import AlertMetrics from '~/alert_management/components/alert_metrics.vue';
 import MetricEmbed from '~/monitoring/components/embeds/metric_embed.vue';
 

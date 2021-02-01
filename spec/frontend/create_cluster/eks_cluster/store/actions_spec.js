@@ -1,6 +1,6 @@
+import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
-import MockAdapter from 'axios-mock-adapter';
 import createState from '~/create_cluster/eks_cluster/store/state';
 import * as actions from '~/create_cluster/eks_cluster/store/actions';
 import {

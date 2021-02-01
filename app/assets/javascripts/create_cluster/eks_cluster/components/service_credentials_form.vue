@@ -3,9 +3,9 @@
 import { GlButton, GlFormGroup, GlFormInput, GlIcon, GlLink, GlSprintf, GlAlert } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { mapState, mapActions } from 'vuex';
-import { DEFAULT_REGION } from '../constants';
 import { sprintf, s__, __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import { DEFAULT_REGION } from '../constants';
 
 export default {
   components: {

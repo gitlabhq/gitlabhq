@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import MRPopover from './components/mr_popover.vue';
 import createDefaultClient from '~/lib/graphql';
+import MRPopover from './components/mr_popover.vue';
 
 let renderedPopover;
 let renderFn;

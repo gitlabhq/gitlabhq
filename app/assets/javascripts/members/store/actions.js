@@ -1,6 +1,6 @@
-import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import { formatDate } from '~/lib/utils/datetime_utility';
+import * as types from './mutation_types';
 
 export const updateMemberRole = async ({ state, commit }, { memberId, accessLevel }) => {
   try {

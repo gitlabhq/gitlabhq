@@ -1,7 +1,7 @@
 <script>
 import { sprintf, __ } from '~/locale';
-import GraphBar from './graph_bar.vue';
 import { MAX_COMMIT_COUNT } from '../constants';
+import GraphBar from './graph_bar.vue';
 
 export default {
   components: {

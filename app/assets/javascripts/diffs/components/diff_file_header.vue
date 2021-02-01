@@ -18,16 +18,16 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __, s__, sprintf } from '~/locale';
-import DiffStats from './diff_stats.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
 
+import { diffViewerModes } from '~/ide/constants';
 import { collapsedType, isCollapsed } from '../utils/diff_file';
 import { reviewable } from '../utils/file_reviews';
 
-import { diffViewerModes } from '~/ide/constants';
 import { DIFF_FILE_AUTOMATIC_COLLAPSE } from '../constants';
 
 import { DIFF_FILE_HEADER } from '../i18n';
+import DiffStats from './diff_stats.vue';
 
 export default {
   components: {

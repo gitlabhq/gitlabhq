@@ -1,5 +1,5 @@
-import * as types from './mutation_types';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
+import * as types from './mutation_types';
 
 const mapLine = ({ timestamp, pod, message }) => ({
   timestamp,

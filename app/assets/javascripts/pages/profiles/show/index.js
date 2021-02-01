@@ -1,10 +1,10 @@
 import $ from 'jquery';
-import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 import emojiRegex from 'emoji-regex';
+import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import EmojiMenu from './emoji_menu';
 import { __ } from '~/locale';
 import * as Emoji from '~/emoji';
+import EmojiMenu from './emoji_menu';
 
 const defaultStatusEmoji = 'speech_balloon';
 

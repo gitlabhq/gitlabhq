@@ -1,8 +1,8 @@
 <script>
 import { mapGetters } from 'vuex';
 import { GlLink, GlTooltipDirective } from '@gitlab/ui';
-import TerminalSyncStatusSafe from './terminal_sync/terminal_sync_status_safe.vue';
 import { isTextFile, getFileEOL } from '~/ide/utils';
+import TerminalSyncStatusSafe from './terminal_sync/terminal_sync_status_safe.vue';
 
 export default {
   components: {

@@ -1,11 +1,11 @@
 import $ from 'jquery';
 import Mousetrap from 'mousetrap';
-import Sidebar from '../../right_sidebar';
-import Shortcuts from './shortcuts';
-import { CopyAsGFM } from '../markdown/copy_as_gfm';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
 import { isElementVisible } from '~/lib/utils/dom_utils';
 import { clickCopyToClipboardButton } from '~/behaviors/copy_to_clipboard';
+import { CopyAsGFM } from '../markdown/copy_as_gfm';
+import Sidebar from '../../right_sidebar';
+import Shortcuts from './shortcuts';
 
 export default class ShortcutsIssuable extends Shortcuts {
   constructor() {

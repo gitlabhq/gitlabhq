@@ -2,9 +2,9 @@
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
 import { debounceByAnimationFrame } from '~/lib/utils/common_utils';
+import { __ } from '~/locale';
 import { X_INTERVAL } from '../constants';
 import { validateGraphData } from '../utils';
-import { __ } from '~/locale';
 
 let debouncedResize;
 

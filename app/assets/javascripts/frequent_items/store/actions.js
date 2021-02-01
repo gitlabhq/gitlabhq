@@ -1,7 +1,7 @@
 import AccessorUtilities from '~/lib/utils/accessor';
-import * as types from './mutation_types';
-import { getTopFrequentItems } from '../utils';
 import { getGroups, getProjects } from '~/rest_api';
+import { getTopFrequentItems } from '../utils';
+import * as types from './mutation_types';
 
 export const setNamespace = ({ commit }, namespace) => {
   commit(types.SET_NAMESPACE, namespace);

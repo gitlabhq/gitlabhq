@@ -1,14 +1,7 @@
 import * as Sentry from '~/sentry/wrapper';
-import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
-import {
-  gqClient,
-  parseEnvironmentsResponse,
-  parseAnnotationsResponse,
-  removeLeadingSlash,
-} from './utils';
 import trackDashboardLoad from '../monitoring_tracking_helper';
 import getEnvironments from '../queries/getEnvironments.query.graphql';
 import getAnnotations from '../queries/getAnnotations.query.graphql';
@@ -18,6 +11,13 @@ import { s__, sprintf } from '../../locale';
 import { getDashboard, getPrometheusQueryData } from '../requests';
 
 import { ENVIRONMENT_AVAILABLE_STATE, OVERVIEW_DASHBOARD_PATH, VARIABLE_TYPES } from '../constants';
+import {
+  gqClient,
+  parseEnvironmentsResponse,
+  parseAnnotationsResponse,
+  removeLeadingSlash,
+} from './utils';
+import * as types from './mutation_types';
 
 const axiosCancelToken = axios.CancelToken;
 let cancelTokenSource;

@@ -5,15 +5,15 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
+import { __ } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '../flash';
 import initIssuableSidebar from '../init_issuable_sidebar';
 import './merge_conflict_store';
+import syntaxHighlight from '../syntax_highlight';
 import MergeConflictsService from './merge_conflict_service';
 import './components/diff_file_editor';
 import './components/inline_conflict_lines';
 import './components/parallel_conflict_lines';
-import syntaxHighlight from '../syntax_highlight';
-import { __ } from '~/locale';
 
 export default function initMergeConflicts() {
   const INTERACTIVE_RESOLVE_MODE = 'interactive';

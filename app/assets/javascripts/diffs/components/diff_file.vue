@@ -6,10 +6,8 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { sprintf } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { hasDiff } from '~/helpers/diffs_helper';
-import notesEventHub from '../../notes/event_hub';
-import DiffFileHeader from './diff_file_header.vue';
-import DiffContent from './diff_content.vue';
 import { diffViewerErrors } from '~/ide/constants';
+import notesEventHub from '../../notes/event_hub';
 
 import { collapsedType, isCollapsed, getShortShaFromFile } from '../utils/diff_file';
 
@@ -22,6 +20,8 @@ import {
 } from '../constants';
 import { DIFF_FILE, GENERIC_ERROR } from '../i18n';
 import eventHub from '../event_hub';
+import DiffContent from './diff_content.vue';
+import DiffFileHeader from './diff_file_header.vue';
 
 export default {
   components: {

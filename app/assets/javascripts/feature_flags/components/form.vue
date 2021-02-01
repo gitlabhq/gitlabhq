@@ -15,8 +15,6 @@ import {
 import RelatedIssuesRoot from '~/related_issues/components/related_issues_root.vue';
 import { s__ } from '~/locale';
 import featureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import EnvironmentsDropdown from './environments_dropdown.vue';
-import Strategy from './strategy.vue';
 import {
   ROLLOUT_STRATEGY_ALL_USERS,
   ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
@@ -27,6 +25,8 @@ import {
   LEGACY_FLAG,
 } from '../constants';
 import { createNewEnvironmentScope } from '../store/helpers';
+import EnvironmentsDropdown from './environments_dropdown.vue';
+import Strategy from './strategy.vue';
 
 export default {
   components: {

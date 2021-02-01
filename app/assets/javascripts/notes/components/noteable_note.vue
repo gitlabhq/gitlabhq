@@ -6,16 +6,17 @@ import { GlSprintf, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { truncateSha } from '~/lib/utils/text_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
+import httpStatusCodes from '~/lib/utils/http_status';
+import { INLINE_DIFF_LINES_KEY } from '~/diffs/constants';
 import { __, s__, sprintf } from '../../locale';
 import { deprecatedCreateFlash as Flash } from '../../flash';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-import noteHeader from './note_header.vue';
-import noteActions from './note_actions.vue';
-import NoteBody from './note_body.vue';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
-import httpStatusCodes from '~/lib/utils/http_status';
+import noteHeader from './note_header.vue';
+import noteActions from './note_actions.vue';
+import NoteBody from './note_body.vue';
 import {
   getStartLineNumber,
   getEndLineNumber,
@@ -23,7 +24,6 @@ import {
   commentLineOptions,
   formatLineRange,
 } from './multiline_comment_utils';
-import { INLINE_DIFF_LINES_KEY } from '~/diffs/constants';
 
 export default {
   name: 'NoteableNote',

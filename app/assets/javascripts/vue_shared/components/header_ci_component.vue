@@ -1,11 +1,11 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { GlTooltipDirective, GlLink, GlButton, GlTooltip } from '@gitlab/ui';
+import { glEmojiTag } from '../../emoji';
+import { __, sprintf } from '../../locale';
 import CiIconBadge from './ci_badge_link.vue';
 import TimeagoTooltip from './time_ago_tooltip.vue';
 import UserAvatarImage from './user_avatar/user_avatar_image.vue';
-import { glEmojiTag } from '../../emoji';
-import { __, sprintf } from '../../locale';
 
 /**
  * Renders header component for job and pipeline page based on UI mockups

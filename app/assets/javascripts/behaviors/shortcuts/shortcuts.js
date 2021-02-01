@@ -3,12 +3,12 @@ import Cookies from 'js-cookie';
 import Mousetrap from 'mousetrap';
 import Vue from 'vue';
 import { flatten } from 'lodash';
-import { disableShortcuts, shouldDisableShortcuts } from './shortcuts_toggle';
-import ShortcutsToggle from './shortcuts_toggle.vue';
+import { parseBoolean, getCspNonceValue } from '~/lib/utils/common_utils';
 import axios from '../../lib/utils/axios_utils';
 import { refreshCurrentPage, visitUrl } from '../../lib/utils/url_utility';
 import findAndFollowLink from '../../lib/utils/navigation_utility';
-import { parseBoolean, getCspNonceValue } from '~/lib/utils/common_utils';
+import { disableShortcuts, shouldDisableShortcuts } from './shortcuts_toggle';
+import ShortcutsToggle from './shortcuts_toggle.vue';
 import { keysFor, TOGGLE_PERFORMANCE_BAR, TOGGLE_CANARY } from './keybindings';
 
 const defaultStopCallback = Mousetrap.prototype.stopCallback;

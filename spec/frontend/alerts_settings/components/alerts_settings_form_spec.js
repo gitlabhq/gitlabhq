@@ -10,8 +10,8 @@ import {
 import waitForPromises from 'helpers/wait_for_promises';
 import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form.vue';
 import MappingBuilder from '~/alerts_settings/components/alert_mapping_builder.vue';
-import { defaultAlertSettingsConfig } from './util';
 import { typeSet } from '~/alerts_settings/constants';
+import { defaultAlertSettingsConfig } from './util';
 
 describe('AlertsSettingsFormNew', () => {
   let wrapper;

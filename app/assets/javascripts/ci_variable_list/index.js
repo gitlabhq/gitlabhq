@@ -1,7 +1,7 @@
 import Vue from 'vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import CiVariableSettings from './components/ci_variable_settings.vue';
 import createStore from './store';
-import { parseBoolean } from '~/lib/utils/common_utils';
 
 export default (containerId = 'js-ci-project-variables') => {
   const containerEl = document.getElementById(containerId);

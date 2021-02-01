@@ -3,8 +3,8 @@ import { backoffMockImplementation } from 'helpers/backoff_helper';
 import axios from '~/lib/utils/axios_utils';
 import statusCodes from '~/lib/utils/http_status';
 import * as commonUtils from '~/lib/utils/common_utils';
-import { metricsDashboardResponse } from '../fixture_data';
 import { getDashboard, getPrometheusQueryData } from '~/monitoring/requests';
+import { metricsDashboardResponse } from '../fixture_data';
 
 describe('monitoring metrics_requests', () => {
   let mock;

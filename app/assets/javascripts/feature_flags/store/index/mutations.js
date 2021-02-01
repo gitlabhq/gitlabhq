@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import * as types from './mutation_types';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { FEATURE_FLAG_SCOPE, USER_LIST_SCOPE } from '../../constants';
 import { mapToScopesViewModel } from '../helpers';
+import * as types from './mutation_types';
 
 const mapFlag = (flag) => ({ ...flag, scopes: mapToScopesViewModel(flag.scopes || []) });
 

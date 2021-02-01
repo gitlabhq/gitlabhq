@@ -5,11 +5,10 @@ import { uniqueId } from 'lodash';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
+import { DEFAULT_SKELETON_COUNT } from '../constants';
 import IssuableTabs from './issuable_tabs.vue';
 import IssuableItem from './issuable_item.vue';
 import IssuableBulkEditSidebar from './issuable_bulk_edit_sidebar.vue';
-
-import { DEFAULT_SKELETON_COUNT } from '../constants';
 
 export default {
   components: {

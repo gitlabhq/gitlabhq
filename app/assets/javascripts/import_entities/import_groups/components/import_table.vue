@@ -8,13 +8,13 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
 import bulkImportSourceGroupsQuery from '../graphql/queries/bulk_import_source_groups.query.graphql';
 import availableNamespacesQuery from '../graphql/queries/available_namespaces.query.graphql';
 import setTargetNamespaceMutation from '../graphql/mutations/set_target_namespace.mutation.graphql';
 import setNewNameMutation from '../graphql/mutations/set_new_name.mutation.graphql';
 import importGroupMutation from '../graphql/mutations/import_group.mutation.graphql';
 import ImportTableRow from './import_table_row.vue';
-import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
 
 export default {
   components: {

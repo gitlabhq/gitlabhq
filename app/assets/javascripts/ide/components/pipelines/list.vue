@@ -10,12 +10,11 @@ import {
   GlBadge,
   GlAlert,
 } from '@gitlab/ui';
+import IDEServices from '~/ide/services';
 import { sprintf, __ } from '../../../locale';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
 import EmptyState from '../../../pipelines/components/pipelines_list/empty_state.vue';
 import JobsList from '../jobs/list.vue';
-
-import IDEServices from '~/ide/services';
 
 export default {
   components: {

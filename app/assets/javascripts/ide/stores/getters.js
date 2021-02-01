@@ -1,4 +1,5 @@
-import { getChangesCountForFiles, filePathMatches } from './utils';
+import { addNumericSuffix } from '~/ide/utils';
+import Api from '~/api';
 import {
   leftSidebarViews,
   packageJsonPath,
@@ -7,8 +8,7 @@ import {
   PERMISSION_CREATE_MR,
   PERMISSION_PUSH_CODE,
 } from '../constants';
-import { addNumericSuffix } from '~/ide/utils';
-import Api from '~/api';
+import { getChangesCountForFiles, filePathMatches } from './utils';
 
 export const activeFile = (state) => state.openFiles.find((file) => file.active) || null;
 

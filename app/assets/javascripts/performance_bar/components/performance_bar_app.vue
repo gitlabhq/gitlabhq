@@ -2,10 +2,10 @@
 /* eslint-disable vue/no-v-html */
 import { glEmojiTag } from '~/emoji';
 
+import { s__ } from '~/locale';
 import AddRequest from './add_request.vue';
 import DetailedMetric from './detailed_metric.vue';
 import RequestSelector from './request_selector.vue';
-import { s__ } from '~/locale';
 
 export default {
   components: {

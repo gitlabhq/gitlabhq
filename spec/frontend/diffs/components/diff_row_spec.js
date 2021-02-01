@@ -3,8 +3,8 @@ import { getByTestId, fireEvent } from '@testing-library/dom';
 import Vuex from 'vuex';
 import diffsModule from '~/diffs/store/modules';
 import DiffRow from '~/diffs/components/diff_row.vue';
-import diffFileMockData from '../mock_data/diff_file';
 import { mapParallel } from '~/diffs/components/diff_row_utils';
+import diffFileMockData from '../mock_data/diff_file';
 
 describe('DiffRow', () => {
   const testLines = [

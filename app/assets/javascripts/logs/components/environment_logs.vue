@@ -11,13 +11,12 @@ import {
   GlInfiniteScroll,
 } from '@gitlab/ui';
 
-import LogSimpleFilters from './log_simple_filters.vue';
-import LogAdvancedFilters from './log_advanced_filters.vue';
-import LogControlButtons from './log_control_buttons.vue';
-
 import { defaultTimeRange } from '~/vue_shared/constants';
 import { timeRangeFromUrl } from '~/monitoring/utils';
 import { formatDate } from '../utils';
+import LogSimpleFilters from './log_simple_filters.vue';
+import LogAdvancedFilters from './log_advanced_filters.vue';
+import LogControlButtons from './log_control_buttons.vue';
 
 export default {
   components: {

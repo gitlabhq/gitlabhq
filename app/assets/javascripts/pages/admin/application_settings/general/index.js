@@ -3,8 +3,8 @@
 // template.
 /* eslint-disable @gitlab/no-runtime-template-compiler */
 import Vue from 'vue';
-import initUserInternalRegexPlaceholder from '../account_and_limits';
 import IntegrationHelpText from '~/vue_shared/components/integrations_help_text.vue';
+import initUserInternalRegexPlaceholder from '../account_and_limits';
 
 document.addEventListener('DOMContentLoaded', () => {
   initUserInternalRegexPlaceholder();

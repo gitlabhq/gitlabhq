@@ -160,7 +160,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
         it 'merges the merge request' do
           expect(page).to have_content('Merged by')
-          expect(page).to have_link('Revert')
+          expect(page).to have_button('Revert')
         end
       end
 
@@ -357,7 +357,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
         it 'merges the merge request' do
           expect(page).to have_content('Merged by')
-          expect(page).to have_link('Revert')
+          expect(page).to have_button('Revert')
         end
       end
 

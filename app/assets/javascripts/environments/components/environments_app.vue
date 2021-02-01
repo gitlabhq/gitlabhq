@@ -2,10 +2,10 @@
 import { GlBadge, GlButton, GlModalDirective, GlTab, GlTabs } from '@gitlab/ui';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import { s__ } from '~/locale';
-import emptyState from './empty_state.vue';
+import CIPaginationMixin from '~/vue_shared/mixins/ci_pagination_api_mixin';
 import eventHub from '../event_hub';
 import environmentsMixin from '../mixins/environments_mixin';
-import CIPaginationMixin from '~/vue_shared/mixins/ci_pagination_api_mixin';
+import emptyState from './empty_state.vue';
 import EnableReviewAppModal from './enable_review_app_modal.vue';
 import StopEnvironmentModal from './stop_environment_modal.vue';
 import DeleteEnvironmentModal from './delete_environment_modal.vue';

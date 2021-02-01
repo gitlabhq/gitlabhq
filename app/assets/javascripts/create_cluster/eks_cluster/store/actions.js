@@ -1,9 +1,9 @@
-import * as types from './mutation_types';
-import { DEFAULT_REGION } from '../constants';
-import { setAWSConfig } from '../services/aws_services_facade';
 import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { setAWSConfig } from '../services/aws_services_facade';
+import { DEFAULT_REGION } from '../constants';
+import * as types from './mutation_types';
 
 const getErrorMessage = (data) => {
   const errorKey = Object.keys(data)[0];

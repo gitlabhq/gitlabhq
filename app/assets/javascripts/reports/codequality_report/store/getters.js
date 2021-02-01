@@ -1,6 +1,6 @@
-import { LOADING, ERROR, SUCCESS } from '../../constants';
 import { sprintf, __, s__, n__ } from '~/locale';
 import { spriteIcon } from '~/lib/utils/common_utils';
+import { LOADING, ERROR, SUCCESS } from '../../constants';
 
 export const hasCodequalityIssues = (state) =>
   Boolean(state.newIssues?.length || state.resolvedIssues?.length);

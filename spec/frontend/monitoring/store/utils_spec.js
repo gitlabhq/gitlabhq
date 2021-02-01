@@ -11,8 +11,8 @@ import {
   normalizeCustomDashboardPath,
 } from '~/monitoring/stores/utils';
 import * as urlUtils from '~/lib/utils/url_utility';
-import { annotationsData } from '../mock_data';
 import { NOT_IN_DB_PREFIX } from '~/monitoring/constants';
+import { annotationsData } from '../mock_data';
 
 const projectPath = 'gitlab-org/gitlab-test';
 

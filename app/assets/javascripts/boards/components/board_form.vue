@@ -8,10 +8,10 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import boardsStore from '~/boards/stores/boards_store';
 import { fullLabelId, fullBoardId } from '../boards_util';
 
-import BoardConfigurationOptions from './board_configuration_options.vue';
 import updateBoardMutation from '../graphql/board_update.mutation.graphql';
 import createBoardMutation from '../graphql/board_create.mutation.graphql';
 import destroyBoardMutation from '../graphql/board_destroy.mutation.graphql';
+import BoardConfigurationOptions from './board_configuration_options.vue';
 
 const boardDefaults = {
   id: false,

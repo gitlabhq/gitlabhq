@@ -1,13 +1,13 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { CI_CONFIG_STATUS_INVALID } from '~/pipeline_editor/constants';
 import { generateLinksData } from '../graph_shared/drawing_utils';
-import JobPill from './job_pill.vue';
-import StagePill from './stage_pill.vue';
 import { parseData } from '../parsing_utils';
 import { DRAW_FAILURE, DEFAULT, INVALID_CI_CONFIG, EMPTY_PIPELINE_DATA } from '../../constants';
 import { createJobsHash, generateJobNeedsDict } from '../../utils';
-import { CI_CONFIG_STATUS_INVALID } from '~/pipeline_editor/constants';
+import StagePill from './stage_pill.vue';
+import JobPill from './job_pill.vue';
 
 export default {
   components: {

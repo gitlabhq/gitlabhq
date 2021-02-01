@@ -1,7 +1,7 @@
 <script>
 import { GlTabs, GlTab } from '@gitlab/ui';
-import PipelineCharts from './pipeline_charts.vue';
 import { mergeUrlParams, updateHistory, getParameterValues } from '~/lib/utils/url_utility';
+import PipelineCharts from './pipeline_charts.vue';
 
 const charts = ['pipelines', 'deployments'];
 

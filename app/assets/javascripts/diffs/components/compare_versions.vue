@@ -3,11 +3,11 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlTooltipDirective, GlLink, GlButton, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { polyfillSticky } from '~/lib/utils/sticky';
+import { CENTERED_LIMITED_CONTAINER_CLASSES, EVT_EXPAND_ALL_FILES } from '../constants';
+import eventHub from '../event_hub';
 import CompareDropdownLayout from './compare_dropdown_layout.vue';
 import SettingsDropdown from './settings_dropdown.vue';
 import DiffStats from './diff_stats.vue';
-import { CENTERED_LIMITED_CONTAINER_CLASSES, EVT_EXPAND_ALL_FILES } from '../constants';
-import eventHub from '../event_hub';
 
 export default {
   components: {

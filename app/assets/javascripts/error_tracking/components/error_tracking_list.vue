@@ -18,9 +18,9 @@ import { isEmpty } from 'lodash';
 import AccessorUtils from '~/lib/utils/accessor';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { __ } from '~/locale';
-import ErrorTrackingActions from './error_tracking_actions.vue';
 import Tracking from '~/tracking';
 import { trackErrorListViewsOptions, trackErrorStatusUpdateOptions } from '../utils';
+import ErrorTrackingActions from './error_tracking_actions.vue';
 
 export const tableDataClass = 'table-col d-flex d-md-table-cell align-items-center';
 

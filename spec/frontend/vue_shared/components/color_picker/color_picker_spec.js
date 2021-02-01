@@ -29,8 +29,6 @@ describe('ColorPicker', () => {
       '#428BCA': 'Moderate blue',
       '#44AD8E': 'Lime green',
     };
-
-    createComponent(shallowMount);
   });
 
   afterEach(() => {
@@ -39,6 +37,8 @@ describe('ColorPicker', () => {
 
   describe('label', () => {
     it('hides the label if the label is not passed', () => {
+      createComponent(shallowMount);
+
       expect(label()).toBe('');
     });
 
@@ -60,9 +60,9 @@ describe('ColorPicker', () => {
     });
 
     it('has a color set on initialization', () => {
-      createComponent(shallowMount, { setColor });
+      createComponent(mount, { value: setColor });
 
-      expect(wrapper.vm.$data.selectedColor).toBe(setColor);
+      expect(colorInput().props('value')).toBe(setColor);
     });
 
     it('emits input event from component when a color is selected', async () => {
@@ -76,7 +76,7 @@ describe('ColorPicker', () => {
       createComponent();
       await colorInput().setValue(`    ${setColor}    `);
 
-      expect(wrapper.vm.$data.selectedColor).toBe(setColor);
+      expect(wrapper.emitted().input[0]).toStrictEqual([setColor]);
       expect(colorPreview().attributes('class')).toContain('gl-inset-border-1-gray-400');
       expect(colorInput().attributes('class')).not.toContain('is-invalid');
     });
@@ -95,14 +95,14 @@ describe('ColorPicker', () => {
       createComponent();
       await colorInput().setValue(setColor);
 
-      expect(wrapper.vm.$data.selectedColor).toBe(setColor);
+      expect(wrapper.emitted().input[0]).toStrictEqual([setColor]);
     });
 
     it('has color picker value entered', async () => {
       createComponent();
       await colorPicker().setValue(setColor);
 
-      expect(wrapper.vm.$data.selectedColor).toBe(setColor);
+      expect(wrapper.emitted().input[0]).toStrictEqual([setColor]);
     });
   });
 
@@ -127,7 +127,7 @@ describe('ColorPicker', () => {
       createComponent();
       await presetColors().at(0).trigger('click');
 
-      expect(wrapper.vm.$data.selectedColor).toBe(setColor);
+      expect(wrapper.emitted().input[0]).toStrictEqual([setColor]);
     });
   });
 });

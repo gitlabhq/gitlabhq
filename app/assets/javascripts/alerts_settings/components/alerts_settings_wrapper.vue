@@ -12,8 +12,6 @@ import destroyHttpIntegrationMutation from '../graphql/mutations/destroy_http_in
 import resetHttpTokenMutation from '../graphql/mutations/reset_http_token.mutation.graphql';
 import resetPrometheusTokenMutation from '../graphql/mutations/reset_prometheus_token.mutation.graphql';
 import updateCurrentIntergrationMutation from '../graphql/mutations/update_current_intergration.mutation.graphql';
-import IntegrationsList from './alerts_integrations_list.vue';
-import AlertSettingsForm from './alerts_settings_form.vue';
 import service from '../services';
 import { typeSet } from '../constants';
 import {
@@ -27,6 +25,8 @@ import {
   UPDATE_INTEGRATION_ERROR,
   INTEGRATION_PAYLOAD_TEST_ERROR,
 } from '../utils/error_messages';
+import AlertSettingsForm from './alerts_settings_form.vue';
+import IntegrationsList from './alerts_integrations_list.vue';
 
 export default {
   typeSet,

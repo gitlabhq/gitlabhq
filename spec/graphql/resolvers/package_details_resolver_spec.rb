@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Resolvers::PackageDetailsResolver do
   include GraphqlHelpers
+  include ::Gitlab::Graphql::Laziness
 
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:user) { project.owner }
@@ -11,10 +12,10 @@ RSpec.describe Resolvers::PackageDetailsResolver do
 
   describe '#resolve' do
     let(:args) do
-      { id: package.to_global_id.to_s }
+      { id: global_id_of(package) }
     end
 
-    subject { resolve(described_class, ctx: { current_user: user }, args: args).sync }
+    subject { force(resolve(described_class, ctx: { current_user: user }, args: args)) }
 
     it { is_expected.to eq(package) }
   end

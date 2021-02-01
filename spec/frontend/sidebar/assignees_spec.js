@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
-import { trimText } from 'helpers/text_helper';
 import { GlIcon } from '@gitlab/ui';
+import { trimText } from 'helpers/text_helper';
 import UsersMockHelper from 'helpers/user_mock_data_helper';
 import Assignee from '~/sidebar/components/assignees/assignees.vue';
 import UsersMock from './mock_data';

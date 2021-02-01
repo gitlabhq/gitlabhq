@@ -2,8 +2,8 @@ import { mount } from '@vue/test-utils';
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import LinkedPipelineComponent from '~/pipelines/components/graph/linked_pipeline.vue';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
-import mockData from './linked_pipelines_mock_data';
 import { UPSTREAM, DOWNSTREAM } from '~/pipelines/components/graph/constants';
+import mockData from './linked_pipelines_mock_data';
 
 const mockPipeline = mockData.triggered[0];
 const validTriggeredPipelineId = mockPipeline.project.id;

@@ -5,8 +5,8 @@ import stubChildren from 'helpers/stub_children';
 import ErrorTrackingList from '~/error_tracking/components/error_tracking_list.vue';
 import ErrorTrackingActions from '~/error_tracking/components/error_tracking_actions.vue';
 import { trackErrorListViewsOptions, trackErrorStatusUpdateOptions } from '~/error_tracking/utils';
-import errorsList from './list_mock.json';
 import Tracking from '~/tracking';
+import errorsList from './list_mock.json';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

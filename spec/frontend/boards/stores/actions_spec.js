@@ -1,16 +1,4 @@
 import testAction from 'helpers/vuex_action_helper';
-import {
-  mockLists,
-  mockListsById,
-  mockIssue,
-  mockIssue2,
-  rawIssue,
-  mockIssues,
-  mockMilestone,
-  labels,
-  mockActiveIssue,
-  mockGroupProjects,
-} from '../mock_data';
 import actions, { gqlClient } from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
 import { inactiveId } from '~/boards/constants';
@@ -25,6 +13,18 @@ import {
   formatIssueInput,
 } from '~/boards/boards_util';
 import createFlash from '~/flash';
+import {
+  mockLists,
+  mockListsById,
+  mockIssue,
+  mockIssue2,
+  rawIssue,
+  mockIssues,
+  mockMilestone,
+  labels,
+  mockActiveIssue,
+  mockGroupProjects,
+} from '../mock_data';
 
 jest.mock('~/flash');
 

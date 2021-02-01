@@ -3,8 +3,8 @@ import { mapActions, mapState } from 'vuex';
 import { debounce } from 'lodash';
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
-import Item from './item.vue';
 import TokenedInput from '../shared/tokened_input.vue';
+import Item from './item.vue';
 
 const SEARCH_TYPES = [
   { type: 'created', label: __('Created by me') },

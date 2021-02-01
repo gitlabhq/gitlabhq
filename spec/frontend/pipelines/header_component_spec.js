@@ -1,15 +1,15 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlModal, GlLoadingIcon } from '@gitlab/ui';
+import HeaderComponent from '~/pipelines/components/header_component.vue';
+import deletePipelineMutation from '~/pipelines/graphql/mutations/delete_pipeline.mutation.graphql';
+import retryPipelineMutation from '~/pipelines/graphql/mutations/retry_pipeline.mutation.graphql';
+import cancelPipelineMutation from '~/pipelines/graphql/mutations/cancel_pipeline.mutation.graphql';
 import {
   mockCancelledPipelineHeader,
   mockFailedPipelineHeader,
   mockRunningPipelineHeader,
   mockSuccessfulPipelineHeader,
 } from './mock_data';
-import HeaderComponent from '~/pipelines/components/header_component.vue';
-import deletePipelineMutation from '~/pipelines/graphql/mutations/delete_pipeline.mutation.graphql';
-import retryPipelineMutation from '~/pipelines/graphql/mutations/retry_pipeline.mutation.graphql';
-import cancelPipelineMutation from '~/pipelines/graphql/mutations/cancel_pipeline.mutation.graphql';
 
 describe('Pipeline details header', () => {
   let wrapper;

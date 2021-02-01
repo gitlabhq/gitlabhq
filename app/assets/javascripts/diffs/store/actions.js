@@ -7,19 +7,10 @@ import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __, s__ } from '~/locale';
 import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/utils/common_utils';
 import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
+import { diffViewerModes } from '~/ide/constants';
 import TreeWorker from '../workers/tree_worker';
 import notesEventHub from '../../notes/event_hub';
 import eventHub from '../event_hub';
-import {
-  getDiffPositionByLineCode,
-  getNoteFormData,
-  convertExpandLines,
-  idleCallback,
-  allDiscussionWrappersExpanded,
-  prepareDiffData,
-  prepareLineForRenamedFile,
-} from './utils';
-import * as types from './mutation_types';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
   INLINE_DIFF_VIEW_TYPE,
@@ -48,10 +39,19 @@ import {
   DIFF_VIEW_ALL_FILES,
   DIFF_FILE_BY_FILE_COOKIE_NAME,
 } from '../constants';
-import { diffViewerModes } from '~/ide/constants';
 import { isCollapsed } from '../utils/diff_file';
 import { getDerivedMergeRequestInformation } from '../utils/merge_request';
 import { markFileReview, setReviewsForMergeRequest } from '../utils/file_reviews';
+import * as types from './mutation_types';
+import {
+  getDiffPositionByLineCode,
+  getNoteFormData,
+  convertExpandLines,
+  idleCallback,
+  allDiscussionWrappersExpanded,
+  prepareDiffData,
+  prepareLineForRenamedFile,
+} from './utils';
 
 export const setBaseConfig = ({ commit }, options) => {
   const {

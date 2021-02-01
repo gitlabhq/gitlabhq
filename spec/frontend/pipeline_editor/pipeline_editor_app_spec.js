@@ -1,12 +1,19 @@
 import { nextTick } from 'vue';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlAlert, GlButton, GlFormInput, GlFormTextarea, GlLoadingIcon, GlTabs } from '@gitlab/ui';
-import waitForPromises from 'helpers/wait_for_promises';
 import VueApollo from 'vue-apollo';
+import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 
 import httpStatusCodes from '~/lib/utils/http_status';
 import { objectToQuery, redirectTo, refreshCurrentPage } from '~/lib/utils/url_utility';
+
+import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
+import getCiConfigData from '~/pipeline_editor/graphql/queries/ci_config.graphql';
+import EditorTab from '~/pipeline_editor/components/ui/editor_tab.vue';
+import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
+import PipelineEditorApp from '~/pipeline_editor/pipeline_editor_app.vue';
+import TextEditor from '~/pipeline_editor/components/text_editor.vue';
 import {
   mockCiConfigPath,
   mockCiConfigQueryResponse,
@@ -20,13 +27,6 @@ import {
   mockProjectNamespace,
   mockNewMergeRequestPath,
 } from './mock_data';
-
-import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
-import getCiConfigData from '~/pipeline_editor/graphql/queries/ci_config.graphql';
-import EditorTab from '~/pipeline_editor/components/ui/editor_tab.vue';
-import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
-import PipelineEditorApp from '~/pipeline_editor/pipeline_editor_app.vue';
-import TextEditor from '~/pipeline_editor/components/text_editor.vue';
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);

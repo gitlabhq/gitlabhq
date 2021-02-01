@@ -5850,7 +5850,16 @@ msgstr ""
 msgid "Clean up image tags"
 msgstr ""
 
+msgid "Cleanup policies are executed by background workers. This setting defines the maximum number of workers that can run concurrently. Set it to 0 to remove all workers and not execute the cleanup policies."
+msgstr ""
+
+msgid "Cleanup policy maximum number of tags to be deleted"
+msgstr ""
+
 msgid "Cleanup policy maximum processing time (seconds)"
+msgstr ""
+
+msgid "Cleanup policy maximum workers running concurrently"
 msgstr ""
 
 msgid "Clear"
@@ -7680,6 +7689,9 @@ msgstr ""
 msgid "ContainerRegistry|Image repository deletion failed"
 msgstr ""
 
+msgid "ContainerRegistry|Image repository not found"
+msgstr ""
+
 msgid "ContainerRegistry|Image repository will be deleted"
 msgstr ""
 
@@ -7805,7 +7817,13 @@ msgstr ""
 msgid "ContainerRegistry|The cleanup policy timed out before it could delete all tags. An administrator can %{adminLinkStart}manually run cleanup now%{adminLinkEnd} or you can wait for the cleanup policy to automatically run again. %{docLinkStart}More information%{docLinkEnd}"
 msgstr ""
 
+msgid "ContainerRegistry|The image repository could not be found."
+msgstr ""
+
 msgid "ContainerRegistry|The last tag related to this image was recently removed. This empty image and any associated data will be automatically removed as part of the regular Garbage Collection process. If you have any questions, contact your administrator."
+msgstr ""
+
+msgid "ContainerRegistry|The requested image repository does not exist or has been deleted. If you think this is an error, try refreshing the page."
 msgstr ""
 
 msgid "ContainerRegistry|The value of this input should be less than 256 characters"
@@ -28789,6 +28807,9 @@ msgid "The maximum file size in megabytes for individual job artifacts."
 msgstr ""
 
 msgid "The maximum file size is %{size}."
+msgstr ""
+
+msgid "The maximum number of tags that a single worker accepts for cleanup. If the number of tags goes above this limit, the list of tags to delete is truncated to this number. To remove this limit, set it to 0."
 msgstr ""
 
 msgid "The merge conflicts for this merge request cannot be resolved through GitLab. Please try to resolve them locally."

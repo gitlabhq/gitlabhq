@@ -6,6 +6,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import httpStatusCodes from '~/lib/utils/http_status';
 
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
+import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
 import CiLint from './components/lint/ci_lint.vue';
 import CommitForm from './components/commit/commit_form.vue';
 import ConfirmUnsavedChangesDialog from './components/ui/confirm_unsaved_changes_dialog.vue';
@@ -16,7 +17,6 @@ import ValidationSegment from './components/info/validation_segment.vue';
 import commitCiFileMutation from './graphql/mutations/commit_ci_file.mutation.graphql';
 import getBlobContent from './graphql/queries/blob_content.graphql';
 import getCiConfigData from './graphql/queries/ci_config.graphql';
-import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
 
 const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
 const MR_TARGET_BRANCH = 'merge_request[target_branch]';

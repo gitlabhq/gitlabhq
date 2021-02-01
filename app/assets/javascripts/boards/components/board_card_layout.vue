@@ -1,7 +1,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import IssueCardInner from './issue_card_inner.vue';
 import { ISSUABLE } from '~/boards/constants';
+import IssueCardInner from './issue_card_inner.vue';
 
 export default {
   name: 'BoardCardLayout',

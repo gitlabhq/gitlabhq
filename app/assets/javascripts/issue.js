@@ -1,9 +1,9 @@
 import $ from 'jquery';
+import { joinPaths } from '~/lib/utils/url_utility';
 import axios from './lib/utils/axios_utils';
 import { addDelimiter } from './lib/utils/text_utility';
 import { deprecatedCreateFlash as flash } from './flash';
 import CreateMergeRequestDropdown from './create_merge_request_dropdown';
-import { joinPaths } from '~/lib/utils/url_utility';
 import { __ } from './locale';
 
 export default class Issue {

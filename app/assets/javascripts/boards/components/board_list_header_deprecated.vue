@@ -10,13 +10,13 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { n__, s__ } from '~/locale';
+import sidebarEventHub from '~/sidebar/event_hub';
+import { isScopedLabel } from '~/lib/utils/common_utils';
 import AccessorUtilities from '../../lib/utils/accessor';
-import IssueCount from './issue_count.vue';
 import boardsStore from '../stores/boards_store';
 import eventHub from '../eventhub';
-import sidebarEventHub from '~/sidebar/event_hub';
 import { inactiveId, LIST, ListType } from '../constants';
-import { isScopedLabel } from '~/lib/utils/common_utils';
+import IssueCount from './issue_count.vue';
 
 // This component is being replaced in favor of './board_list_header.vue' for GraphQL boards
 

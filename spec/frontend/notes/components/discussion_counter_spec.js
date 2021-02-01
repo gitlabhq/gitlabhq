@@ -3,8 +3,8 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
 import notesModule from '~/notes/stores/modules';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
-import { noteableDataMock, discussionMock, notesDataMock, userDataMock } from '../mock_data';
 import * as types from '~/notes/stores/mutation_types';
+import { noteableDataMock, discussionMock, notesDataMock, userDataMock } from '../mock_data';
 
 describe('DiscussionCounter component', () => {
   let store;

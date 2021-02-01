@@ -1,9 +1,9 @@
 /* eslint-disable class-methods-use-this */
 import { __ } from '~/locale';
-import ListLabel from './label';
-import ListAssignee from './assignee';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import boardsStore from '../stores/boards_store';
+import ListLabel from './label';
+import ListAssignee from './assignee';
 import ListMilestone from './milestone';
 import 'ee_else_ce/boards/models/issue';
 

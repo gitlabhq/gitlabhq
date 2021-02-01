@@ -3,13 +3,13 @@
 import { mapGetters, mapActions, mapState } from 'vuex';
 import { GlButton } from '@gitlab/ui';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
-import eventHub from '../event_hub';
 import markdownField from '~/vue_shared/components/markdown/field.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import issuableStateMixin from '../mixins/issuable_state';
-import resolvable from '../mixins/resolvable';
 import { __, sprintf } from '~/locale';
 import { getDraft, updateDraft } from '~/lib/utils/autosave';
+import issuableStateMixin from '../mixins/issuable_state';
+import resolvable from '../mixins/resolvable';
+import eventHub from '../event_hub';
 import CommentFieldLayout from './comment_field_layout.vue';
 
 export default {

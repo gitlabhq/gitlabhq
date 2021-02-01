@@ -11,7 +11,7 @@ import DeleteModal from '../components/details_page/delete_modal.vue';
 import DetailsHeader from '../components/details_page/details_header.vue';
 import TagsList from '../components/details_page/tags_list.vue';
 import TagsLoader from '../components/details_page/tags_loader.vue';
-import EmptyTagsState from '../components/details_page/empty_tags_state.vue';
+import EmptyState from '../components/details_page/empty_state.vue';
 
 import getContainerRepositoryDetailsQuery from '../graphql/queries/get_container_repository_details.query.graphql';
 import deleteContainerRepositoryTagsMutation from '../graphql/mutations/delete_container_repository_tags.mutation.graphql';
@@ -24,6 +24,7 @@ import {
   GRAPHQL_PAGE_SIZE,
   FETCH_IMAGES_LIST_ERROR_MESSAGE,
   UNFINISHED_STATUS,
+  MISSING_OR_DELETE_IMAGE_BREADCRUMB,
 } from '../constants/index';
 
 export default {
@@ -36,7 +37,7 @@ export default {
     DeleteModal,
     TagsList,
     TagsLoader,
-    EmptyTagsState,
+    EmptyState,
   },
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
@@ -54,7 +55,7 @@ export default {
       },
       result({ data }) {
         this.tagsPageInfo = data.containerRepository?.tags?.pageInfo;
-        this.breadCrumbState.updateName(data.containerRepository?.name);
+        this.updateBreadcrumb();
       },
       error() {
         createFlash({ message: FETCH_IMAGES_LIST_ERROR_MESSAGE });
@@ -101,8 +102,15 @@ export default {
     showPagination() {
       return this.tagsPageInfo.hasPreviousPage || this.tagsPageInfo.hasNextPage;
     },
+    hasNoTags() {
+      return this.tags.length === 0;
+    },
   },
   methods: {
+    updateBreadcrumb() {
+      const name = this.image?.name || MISSING_OR_DELETE_IMAGE_BREADCRUMB;
+      this.breadCrumbState.updateName(name);
+    },
     deleteTags(toBeDeleted) {
       this.itemsToBeDeleted = this.tags.filter((tag) => toBeDeleted[tag.name]);
       this.track('click_button');
@@ -182,45 +190,48 @@ export default {
 
 <template>
   <div v-gl-resize-observer="handleResize" class="gl-my-3">
-    <delete-alert
-      v-model="deleteAlertType"
-      :garbage-collection-help-page-path="config.garbageCollectionHelpPagePath"
-      :is-admin="config.isAdmin"
-      class="gl-my-2"
-    />
+    <template v-if="image">
+      <delete-alert
+        v-model="deleteAlertType"
+        :garbage-collection-help-page-path="config.garbageCollectionHelpPagePath"
+        :is-admin="config.isAdmin"
+        class="gl-my-2"
+      />
 
-    <partial-cleanup-alert
-      v-if="showPartialCleanupWarning"
-      :run-cleanup-policies-help-page-path="config.runCleanupPoliciesHelpPagePath"
-      :cleanup-policies-help-page-path="config.cleanupPoliciesHelpPagePath"
-      @dismiss="dismissPartialCleanupWarning"
-    />
+      <partial-cleanup-alert
+        v-if="showPartialCleanupWarning"
+        :run-cleanup-policies-help-page-path="config.runCleanupPoliciesHelpPagePath"
+        :cleanup-policies-help-page-path="config.cleanupPoliciesHelpPagePath"
+        @dismiss="dismissPartialCleanupWarning"
+      />
 
-    <details-header :image="image" :metadata-loading="isLoading" />
+      <details-header :image="image" :metadata-loading="isLoading" />
 
-    <tags-loader v-if="isLoading" />
-    <template v-else>
-      <empty-tags-state v-if="tags.length === 0" :no-containers-image="config.noContainersImage" />
+      <tags-loader v-if="isLoading" />
       <template v-else>
-        <tags-list :tags="tags" :is-mobile="isMobile" @delete="deleteTags" />
-        <div class="gl-display-flex gl-justify-content-center">
-          <gl-keyset-pagination
-            v-if="showPagination"
-            :has-next-page="tagsPageInfo.hasNextPage"
-            :has-previous-page="tagsPageInfo.hasPreviousPage"
-            class="gl-mt-3"
-            @prev="fetchPreviousPage"
-            @next="fetchNextPage"
-          />
-        </div>
+        <empty-state v-if="hasNoTags" :no-containers-image="config.noContainersImage" />
+        <template v-else>
+          <tags-list :tags="tags" :is-mobile="isMobile" @delete="deleteTags" />
+          <div class="gl-display-flex gl-justify-content-center">
+            <gl-keyset-pagination
+              v-if="showPagination"
+              :has-next-page="tagsPageInfo.hasNextPage"
+              :has-previous-page="tagsPageInfo.hasPreviousPage"
+              class="gl-mt-3"
+              @prev="fetchPreviousPage"
+              @next="fetchNextPage"
+            />
+          </div>
+        </template>
       </template>
-    </template>
 
-    <delete-modal
-      ref="deleteModal"
-      :items-to-be-deleted="itemsToBeDeleted"
-      @confirmDelete="handleDelete"
-      @cancel="track('cancel_delete')"
-    />
+      <delete-modal
+        ref="deleteModal"
+        :items-to-be-deleted="itemsToBeDeleted"
+        @confirmDelete="handleDelete"
+        @cancel="track('cancel_delete')"
+      />
+    </template>
+    <empty-state v-else is-empty-image :no-containers-image="config.noContainersImage" />
   </div>
 </template>

@@ -1,10 +1,10 @@
 import { __, n__ } from '~/locale';
-import { parallelizeDiffLines } from './utils';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
   INLINE_DIFF_VIEW_TYPE,
   INLINE_DIFF_LINES_KEY,
 } from '../constants';
+import { parallelizeDiffLines } from './utils';
 
 export * from './getters_versions_dropdowns';
 

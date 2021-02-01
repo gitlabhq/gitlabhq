@@ -13,22 +13,22 @@ import {
 } from '@gitlab/ui';
 import * as Sentry from '~/sentry/wrapper';
 import { s__ } from '~/locale';
-import alertQuery from '../graphql/queries/details.query.graphql';
-import sidebarStatusQuery from '../graphql/queries/sidebar_status.query.graphql';
 import { fetchPolicies } from '~/lib/graphql';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 import initUserPopovers from '~/user_popovers';
-import { ALERTS_SEVERITY_LABELS, trackAlertsDetailsViewsOptions } from '../constants';
-import createIssueMutation from '../graphql/mutations/create_issue_from_alert.mutation.graphql';
-import toggleSidebarStatusMutation from '../graphql/mutations/toggle_sidebar_status.mutation.graphql';
 import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
 import { toggleContainerClasses } from '~/lib/utils/dom_utils';
+import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
+import alertQuery from '../graphql/queries/details.query.graphql';
+import sidebarStatusQuery from '../graphql/queries/sidebar_status.query.graphql';
+import { ALERTS_SEVERITY_LABELS, trackAlertsDetailsViewsOptions } from '../constants';
+import createIssueMutation from '../graphql/mutations/create_issue_from_alert.mutation.graphql';
+import toggleSidebarStatusMutation from '../graphql/mutations/toggle_sidebar_status.mutation.graphql';
 import SystemNote from './system_notes/system_note.vue';
 import AlertSidebar from './alert_sidebar.vue';
 import AlertMetrics from './alert_metrics.vue';
-import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
 import AlertSummaryRow from './alert_summary_row.vue';
 
 const containerEl = document.querySelector('.page-with-contextual-sidebar');

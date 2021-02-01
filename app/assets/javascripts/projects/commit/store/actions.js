@@ -1,7 +1,7 @@
-import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import { PROJECT_BRANCHES_ERROR } from '../constants';
+import * as types from './mutation_types';
 
 export const clearModal = ({ commit }) => {
   commit(types.CLEAR_MODAL);

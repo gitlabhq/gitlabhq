@@ -6,10 +6,10 @@ import {
   GlSearchBoxByType,
   GlLoadingIcon,
 } from '@gitlab/ui';
-import eventHub from '../eventhub';
 import { s__ } from '~/locale';
-import Api from '../../api';
 import { featureAccessLevel } from '~/pages/projects/shared/permissions/constants';
+import eventHub from '../eventhub';
+import Api from '../../api';
 import { ListType } from '../constants';
 
 export default {

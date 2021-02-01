@@ -4,9 +4,9 @@ import languages from '~/ide/lib/languages';
 import { defaultEditorOptions } from '~/ide/lib/editor_options';
 import { registerLanguages } from '~/ide/utils';
 import { joinPaths } from '~/lib/utils/url_utility';
+import { uuids } from '~/diffs/utils/uuids';
 import { clearDomElement } from './utils';
 import { EDITOR_LITE_INSTANCE_ERROR_NO_EL, URI_PREFIX, EDITOR_READY_EVENT } from './constants';
-import { uuids } from '~/diffs/utils/uuids';
 
 export default class EditorLite {
   constructor(options = {}) {

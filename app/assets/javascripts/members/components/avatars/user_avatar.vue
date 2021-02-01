@@ -7,8 +7,8 @@ import {
 } from '@gitlab/ui';
 import { generateBadges } from 'ee_else_ce/members/utils';
 import { __ } from '~/locale';
-import { AVATAR_SIZE } from '../../constants';
 import { glEmojiTag } from '~/emoji';
+import { AVATAR_SIZE } from '../../constants';
 
 export default {
   name: 'UserAvatar',

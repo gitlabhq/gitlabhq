@@ -1,5 +1,5 @@
-import testAction from 'helpers/vuex_action_helper';
 import MockAdapter from 'axios-mock-adapter';
+import testAction from 'helpers/vuex_action_helper';
 import axios from '~/lib/utils/axios_utils';
 import AccessorUtilities from '~/lib/utils/accessor';
 import * as actions from '~/frequent_items/store/actions';

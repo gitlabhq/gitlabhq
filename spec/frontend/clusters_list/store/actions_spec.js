@@ -5,10 +5,10 @@ import * as Sentry from '~/sentry/wrapper';
 import Poll from '~/lib/utils/poll';
 import { deprecatedCreateFlash as flashError } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { apiData } from '../mock_data';
 import { MAX_REQUESTS } from '~/clusters_list/constants';
 import * as types from '~/clusters_list/store/mutation_types';
 import * as actions from '~/clusters_list/store/actions';
+import { apiData } from '../mock_data';
 
 jest.mock('~/flash.js');
 

@@ -9,10 +9,10 @@ import {
   GlBadge,
   GlLoadingIcon,
 } from '@gitlab/ui';
-import SkeletonLoader from './skeleton_loader.vue';
-import Feature from './feature.vue';
 import Tracking from '~/tracking';
 import { getDrawerBodyHeight } from '../utils/get_drawer_body_height';
+import SkeletonLoader from './skeleton_loader.vue';
+import Feature from './feature.vue';
 
 const trackingMixin = Tracking.mixin();
 

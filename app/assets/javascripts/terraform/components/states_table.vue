@@ -3,9 +3,9 @@ import { GlAlert, GlBadge, GlIcon, GlLink, GlSprintf, GlTable, GlTooltip } from 
 import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
-import StateActions from './states_table_actions.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import StateActions from './states_table_actions.vue';
 
 export default {
   components: {

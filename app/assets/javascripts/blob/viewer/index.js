@@ -1,11 +1,11 @@
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
+import { __ } from '~/locale';
+import { fixTitle } from '~/tooltips';
 import { deprecatedCreateFlash as Flash } from '../../flash';
 import { handleLocationHash } from '../../lib/utils/common_utils';
 import axios from '../../lib/utils/axios_utils';
 import eventHub from '../../notes/event_hub';
-import { __ } from '~/locale';
-import { fixTitle } from '~/tooltips';
 
 const loadRichBlobViewer = (type) => {
   switch (type) {

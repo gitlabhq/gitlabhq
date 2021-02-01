@@ -1,7 +1,7 @@
 <script>
-import updateMixin from '../../mixins/update';
 import markdownField from '~/vue_shared/components/markdown/field.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import updateMixin from '../../mixins/update';
 
 export default {
   components: {

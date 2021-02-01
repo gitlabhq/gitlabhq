@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { shallowMount } from '@vue/test-utils';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import BranchesDropdown from '~/projects/commit/components/branches_dropdown.vue';
 
 Vue.use(Vuex);

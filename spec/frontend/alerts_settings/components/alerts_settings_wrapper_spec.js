@@ -1,10 +1,10 @@
 import VueApollo from 'vue-apollo';
 import { mount, createLocalVue } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import { GlLoadingIcon } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
-import { GlLoadingIcon } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import AlertsSettingsWrapper from '~/alerts_settings/components/alerts_settings_wrapper.vue';
 import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form.vue';

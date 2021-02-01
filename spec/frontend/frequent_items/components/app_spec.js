@@ -8,8 +8,8 @@ import appComponent from '~/frequent_items/components/app.vue';
 import eventHub from '~/frequent_items/event_hub';
 import { FREQUENT_ITEMS, HOUR_IN_MS } from '~/frequent_items/constants';
 import { getTopFrequentItems } from '~/frequent_items/utils';
-import { currentSession, mockFrequentProjects, mockSearchedProjects } from '../mock_data';
 import { createStore } from '~/frequent_items/store';
+import { currentSession, mockFrequentProjects, mockSearchedProjects } from '../mock_data';
 
 useLocalStorageSpy();
 

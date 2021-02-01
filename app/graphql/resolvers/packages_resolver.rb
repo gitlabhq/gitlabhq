@@ -2,7 +2,7 @@
 
 module Resolvers
   class PackagesResolver < BaseResolver
-    type Types::Packages::PackageType, null: true
+    type Types::Packages::PackageType.connection_type, null: true
 
     def resolve(**args)
       return unless packages_available?

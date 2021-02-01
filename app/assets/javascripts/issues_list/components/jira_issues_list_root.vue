@@ -2,13 +2,13 @@
 import { GlAlert, GlLabel } from '@gitlab/ui';
 import { last } from 'lodash';
 import { n__ } from '~/locale';
-import getIssuesListDetailsQuery from '../queries/get_issues_list_details.query.graphql';
 import {
   calculateJiraImportLabel,
   isInProgress,
   setFinishedAlertHideMap,
   shouldShowFinishedAlert,
 } from '~/jira_import/utils/jira_import_utils';
+import getIssuesListDetailsQuery from '../queries/get_issues_list_details.query.graphql';
 
 export default {
   name: 'JiraIssuesList',

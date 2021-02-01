@@ -1,5 +1,5 @@
-import * as types from './mutation_types';
 import { displayText } from '../constants';
+import * as types from './mutation_types';
 
 export default {
   [types.REQUEST_VARIABLES](state) {

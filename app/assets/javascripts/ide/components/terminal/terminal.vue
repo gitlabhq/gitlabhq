@@ -3,9 +3,9 @@ import { mapState } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import GLTerminal from '~/terminal/terminal';
-import TerminalControls from './terminal_controls.vue';
 import { RUNNING, STOPPING } from '../../stores/modules/terminal/constants';
 import { isStartingStatus } from '../../stores/modules/terminal/utils';
+import TerminalControls from './terminal_controls.vue';
 
 export default {
   components: {

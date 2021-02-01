@@ -237,6 +237,10 @@ module GraphqlHelpers
     query_graphql_path([[name, args], node_selection], fields)
   end
 
+  def query_graphql_fragment(name)
+    "... on #{name} { #{all_graphql_fields_for(name)} }"
+  end
+
   # e.g:
   #   query_graphql_path(%i[foo bar baz], all_graphql_fields_for('Baz'))
   #   => foo { bar { baz { x y z } } }

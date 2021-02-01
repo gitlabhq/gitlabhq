@@ -2,6 +2,8 @@ import Visibility from 'visibilityjs';
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
 import AccessorUtilities from '~/lib/utils/accessor';
+import initProjectSelectDropdown from '~/project_select';
+import initServerlessSurveyBanner from '~/serverless/survey_banner';
 import PersistentUserCallout from '../persistent_user_callout';
 import { s__, sprintf } from '../locale';
 import { deprecatedCreateFlash as Flash } from '../flash';
@@ -13,8 +15,6 @@ import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
 import Applications from './components/applications.vue';
 import RemoveClusterConfirmation from './components/remove_cluster_confirmation.vue';
-import initProjectSelectDropdown from '~/project_select';
-import initServerlessSurveyBanner from '~/serverless/survey_banner';
 
 const Environments = () => import('ee_component/clusters/components/environments.vue');
 

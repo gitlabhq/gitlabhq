@@ -162,15 +162,12 @@ module QA
         def click_discussions_tab
           click_element(:notes_tab)
 
-          wait_for_loading
+          wait_for_requests
         end
 
         def click_diffs_tab
           click_element(:diffs_tab)
-
-          wait_for_loading
-
-          click_element(:dismiss_popover_button) if has_element?(:dismiss_popover_button)
+          click_element(:dismiss_popover_button) if has_element?(:dismiss_popover_button, wait: 1)
         end
 
         def click_pipeline_link

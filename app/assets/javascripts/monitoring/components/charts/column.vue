@@ -2,11 +2,11 @@
 import { GlResizeObserverDirective } from '@gitlab/ui';
 import { GlColumnChart } from '@gitlab/ui/dist/charts';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
-import { chartHeight } from '../../constants';
 import { makeDataSeries } from '~/helpers/monitor_helper';
+import { chartHeight } from '../../constants';
 import { graphDataValidatorForValues } from '../../utils';
-import { getTimeAxisOptions, getYAxisOptions, getChartGrid } from './options';
 import { timezones } from '../../format_date';
+import { getTimeAxisOptions, getYAxisOptions, getChartGrid } from './options';
 
 export default {
   components: {

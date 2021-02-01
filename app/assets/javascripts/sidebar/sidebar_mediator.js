@@ -1,8 +1,8 @@
 import Store from 'ee_else_ce/sidebar/stores/sidebar_store';
+import { __ } from '~/locale';
 import { visitUrl } from '../lib/utils/url_utility';
 import { deprecatedCreateFlash as Flash } from '../flash';
 import Service from './services/sidebar_service';
-import { __ } from '~/locale';
 
 export default class SidebarMediator {
   constructor(options) {

@@ -1,9 +1,9 @@
 import * as Sentry from '~/sentry/wrapper';
-import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __ } from '~/locale';
 import { joinPaths } from '~/lib/utils/url_utility';
+import * as types from './mutation_types';
 
 export default {
   setInitialData({ commit }, data) {

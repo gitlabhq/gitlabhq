@@ -1,7 +1,7 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import emptyStateSVG from 'icons/_mr_widget_empty_state.svg';
 import { GlButton } from '@gitlab/ui';
+import emptyStateSVG from 'icons/_mr_widget_empty_state.svg';
 
 export default {
   name: 'MRWidgetNothingToMerge',

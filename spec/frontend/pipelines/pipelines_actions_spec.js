@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import { TEST_HOST } from 'spec/test_constants';
 import { GlButton } from '@gitlab/ui';
+import { TEST_HOST } from 'spec/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import PipelinesActions from '~/pipelines/components/pipelines_list/pipelines_actions.vue';

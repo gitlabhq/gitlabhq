@@ -1,5 +1,5 @@
-import * as types from './mutation_types';
 import mirror, { canConnect } from '../../../lib/mirror';
+import * as types from './mutation_types';
 
 export const upload = ({ rootState, commit }) => {
   commit(types.START_LOADING);

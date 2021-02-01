@@ -1,7 +1,7 @@
 <script>
+import { sanitizeItem } from '../utils';
 import FrequentItemsListItem from './frequent_items_list_item.vue';
 import frequentItemsMixin from './frequent_items_mixin';
-import { sanitizeItem } from '../utils';
 
 export default {
   components: {

@@ -40,12 +40,23 @@ export const REMOVE_TAG_CONFIRMATION_TEXT = s__(
 export const REMOVE_TAGS_CONFIRMATION_TEXT = s__(
   `ContainerRegistry|You are about to remove %{item} tags. Are you sure?`,
 );
-export const EMPTY_IMAGE_REPOSITORY_TITLE = s__('ContainerRegistry|This image has no active tags');
-export const EMPTY_IMAGE_REPOSITORY_MESSAGE = s__(
+export const NO_TAGS_TITLE = s__('ContainerRegistry|This image has no active tags');
+export const NO_TAGS_MESSAGE = s__(
   `ContainerRegistry|The last tag related to this image was recently removed.
 This empty image and any associated data will be automatically removed as part of the regular Garbage Collection process.
 If you have any questions, contact your administrator.`,
 );
+
+export const MISSING_OR_DELETED_IMAGE_TITLE = s__(
+  'ContainerRegistry|The image repository could not be found.',
+);
+export const MISSING_OR_DELETED_IMAGE_MESSAGE = s__(
+  'ContainerRegistry|The requested image repository does not exist or has been deleted. If you think this is an error, try refreshing the page.',
+);
+export const MISSING_OR_DELETE_IMAGE_BREADCRUMB = s__(
+  'ContainerRegistry|Image repository not found',
+);
+
 export const ADMIN_GARBAGE_COLLECTION_TIP = s__(
   'ContainerRegistry|Remember to run %{docLinkStart}garbage collection%{docLinkEnd} to remove the stale data from storage.',
 );

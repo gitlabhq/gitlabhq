@@ -11,9 +11,9 @@ import {
   GlIcon,
 } from '@gitlab/ui';
 import modSecurityLogo from 'images/cluster_app_logos/gitlab.png';
-import { s__, __ } from '../../locale';
 import { APPLICATION_STATUS, INGRESS, LOGGING_MODE, BLOCKING_MODE } from '~/clusters/constants';
 import eventHub from '~/clusters/event_hub';
+import { s__, __ } from '../../locale';
 
 const { UPDATING, UNINSTALLING, INSTALLING, INSTALLED, UPDATED } = APPLICATION_STATUS;
 

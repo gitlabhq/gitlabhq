@@ -9,9 +9,9 @@ import eventHub from '~/boards/eventhub';
 import BoardList from '~/boards/components/board_list_deprecated.vue';
 import '~/boards/models/issue';
 import '~/boards/models/list';
-import { listObj, boardsMockInterceptor } from './mock_data';
 import store from '~/boards/stores';
 import boardsStore from '~/boards/stores/boards_store';
+import { listObj, boardsMockInterceptor } from './mock_data';
 
 const createComponent = ({ done, listIssueProps = {}, componentProps = {}, listProps = {} }) => {
   const el = document.createElement('div');

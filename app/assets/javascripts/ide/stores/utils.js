@@ -1,10 +1,10 @@
-import { commitActionTypes } from '../constants';
 import {
   relativePathToAbsolute,
   isAbsolute,
   isRootRelative,
   isBlobUrl,
 } from '~/lib/utils/url_utility';
+import { commitActionTypes } from '../constants';
 
 export const dataStructure = () => ({
   id: '',

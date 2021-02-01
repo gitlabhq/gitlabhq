@@ -1,7 +1,7 @@
-import * as types from './mutation_types';
 import Api from '~/api';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __ } from '~/locale';
+import * as types from './mutation_types';
 
 export const requestAddFreezePeriod = ({ commit }) => {
   commit(types.REQUEST_ADD_FREEZE_PERIOD);

@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { Rails } from '~/lib/utils/rails_ujs';
-import { deprecatedCreateFlash as Flash } from './flash';
 import { __ } from '~/locale';
+import { deprecatedCreateFlash as Flash } from './flash';
 
 export default function notificationsDropdown() {
   $(document).on('click', '.update-notification', function updateNotificationCallback(e) {

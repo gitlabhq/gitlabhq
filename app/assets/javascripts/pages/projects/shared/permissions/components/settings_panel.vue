@@ -3,9 +3,8 @@ import { GlIcon, GlSprintf, GlLink, GlFormCheckbox } from '@gitlab/ui';
 
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
 import { s__ } from '~/locale';
-import projectFeatureSetting from './project_feature_setting.vue';
 import projectFeatureToggle from '~/vue_shared/components/toggle_button.vue';
-import projectSettingRow from './project_setting_row.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   visibilityOptions,
   visibilityLevelDescriptions,
@@ -15,7 +14,8 @@ import {
   featureAccessLevelNone,
 } from '../constants';
 import { toggleHiddenClassBySelector } from '../external';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import projectFeatureSetting from './project_feature_setting.vue';
+import projectSettingRow from './project_setting_row.vue';
 
 const PAGE_FEATURE_ACCESS_LEVEL = s__('ProjectSettings|Everyone');
 

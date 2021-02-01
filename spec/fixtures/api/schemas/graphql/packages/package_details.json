@@ -1,5 +1,10 @@
 {
   "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id", "name", "createdAt", "updatedAt", "version", "packageType",
+    "project", "tags", "pipelines", "versions", "metadata"
+  ],
   "properties": {
     "id": {
       "type": "string"
@@ -16,21 +21,46 @@
     "version": {
       "type": ["string", "null"]
     },
-    "package_type": {
+    "packageType": {
       "type": ["string"],
       "enum": ["MAVEN", "NPM", "CONAN", "NUGET", "PYPI", "COMPOSER", "GENERIC", "GOLANG", "DEBIAN"]
     },
     "tags": {
-      "type": "object"
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pageInfo": { "type": "object" },
+        "edges": { "type": "array" },
+        "nodes": { "type": "array" }
+      }
     },
     "project": {
       "type": "object"
     },
     "pipelines": {
-      "type": "object"
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pageInfo": { "type": "object" },
+        "count": { "type": "integer" },
+        "edges": { "type": "array" },
+        "nodes": { "type": "array" }
+      }
     },
     "versions": {
-      "type": "object"
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pageInfo": { "type": "object" },
+        "edges": { "type": "array" },
+        "nodes": { "type": "array" }
+      }
+    },
+    "metadata": {
+      "anyOf": [
+        { "$ref": "./package_composer_metadata.json" },
+        { "type": "null" }
+      ]
     }
   }
 }

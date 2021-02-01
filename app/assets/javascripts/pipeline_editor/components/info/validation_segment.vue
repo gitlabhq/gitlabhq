@@ -1,8 +1,8 @@
 <script>
 import { GlIcon, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
-import { CI_CONFIG_STATUS_VALID } from '../../constants';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import { CI_CONFIG_STATUS_VALID } from '../../constants';
 
 export const i18n = {
   learnMore: __('Learn more'),

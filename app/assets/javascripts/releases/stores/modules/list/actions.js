@@ -1,4 +1,3 @@
-import * as types from './mutation_types';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __ } from '~/locale';
 import api from '~/api';
@@ -10,6 +9,7 @@ import {
 import allReleasesQuery from '~/releases/queries/all_releases.query.graphql';
 import { gqClient, convertAllReleasesGraphQLResponse } from '../../../util';
 import { PAGE_SIZE } from '../../../constants';
+import * as types from './mutation_types';
 
 /**
  * Gets a paginated list of releases from the server

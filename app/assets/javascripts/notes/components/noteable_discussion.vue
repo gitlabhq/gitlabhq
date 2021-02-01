@@ -8,13 +8,13 @@ import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import { deprecatedCreateFlash as Flash } from '../../flash';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import noteable from '../mixins/noteable';
+import resolvable from '../mixins/resolvable';
+import eventHub from '../event_hub';
 import diffDiscussionHeader from './diff_discussion_header.vue';
 import noteSignedOutWidget from './note_signed_out_widget.vue';
 import noteForm from './note_form.vue';
 import diffWithNote from './diff_with_note.vue';
-import noteable from '../mixins/noteable';
-import resolvable from '../mixins/resolvable';
-import eventHub from '../event_hub';
 import DiscussionNotes from './discussion_notes.vue';
 import DiscussionActions from './discussion_actions.vue';
 

@@ -10,10 +10,10 @@ import {
   GlTable,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { __, sprintf } from '~/locale';
+import { CLUSTER_TYPES, STATUSES } from '../constants';
 import AncestorNotice from './ancestor_notice.vue';
 import NodeErrorHelpText from './node_error_help_text.vue';
-import { CLUSTER_TYPES, STATUSES } from '../constants';
-import { __, sprintf } from '~/locale';
 
 export default {
   nodeMemoryText: __('%{totalMemory} (%{freeSpacePercentage}%{percentSymbol} free)'),

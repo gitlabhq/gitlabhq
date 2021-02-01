@@ -2,8 +2,8 @@
 import { __ } from '~/locale';
 import activeDiscussionQuery from '../graphql/queries/active_discussion.query.graphql';
 import updateActiveDiscussionMutation from '../graphql/mutations/update_active_discussion.mutation.graphql';
-import DesignNotePin from './design_note_pin.vue';
 import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../constants';
+import DesignNotePin from './design_note_pin.vue';
 
 export default {
   name: 'DesignOverlay',

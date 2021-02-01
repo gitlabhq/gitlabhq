@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { GlAlert, GlButton, GlModal } from '@gitlab/ui';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
 import JiraConnectApp from '~/jira_connect/components/app.vue';
 import createStore from '~/jira_connect/store';

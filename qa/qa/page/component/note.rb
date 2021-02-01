@@ -162,10 +162,6 @@ module QA
           fill_element :reply_field, reply_text
         end
 
-        def wait_for_loading
-          has_no_element?(:skeleton_note_placeholer)
-        end
-
         private
 
         def select_filter_with_text(text)
@@ -174,7 +170,7 @@ module QA
             click_element :discussion_filter_dropdown
             find_element(:filter_menu_item, text: text).click
 
-            wait_for_loading
+            wait_for_requests
           end
         end
       end

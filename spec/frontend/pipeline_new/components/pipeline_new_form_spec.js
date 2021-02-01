@@ -5,6 +5,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import httpStatusCodes from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
 import PipelineNewForm from '~/pipeline_new/components/pipeline_new_form.vue';
+import { redirectTo } from '~/lib/utils/url_utility';
 import {
   mockBranches,
   mockTags,
@@ -13,7 +14,6 @@ import {
   mockProjectId,
   mockError,
 } from '../mock_data';
-import { redirectTo } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   redirectTo: jest.fn(),

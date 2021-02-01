@@ -17,9 +17,9 @@ import {
   parseIntPagination,
   convertObjectPropsToCamelCase,
 } from '~/lib/utils/common_utils';
-import { pageInfoHeadersWithoutPagination } from '../../../mock_data';
 import allReleasesQuery from '~/releases/queries/all_releases.query.graphql';
 import { PAGE_SIZE } from '~/releases/constants';
+import { pageInfoHeadersWithoutPagination } from '../../../mock_data';
 
 const originalRelease = getJSONFixture('api/releases/release.json');
 const originalReleases = [originalRelease];

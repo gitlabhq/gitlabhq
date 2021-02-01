@@ -1,5 +1,5 @@
-import { BYTES_IN_KIB } from './constants';
 import { sprintf, __ } from '~/locale';
+import { BYTES_IN_KIB } from './constants';
 
 /**
  * Function that allows a number with an X amount of decimals

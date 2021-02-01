@@ -15,13 +15,13 @@ import {
   slugifyWithUnderscore,
 } from '~/lib/utils/text_utility';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
-import * as constants from '../constants';
-import eventHub from '../event_hub';
 import markdownField from '~/vue_shared/components/markdown/field.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import * as constants from '../constants';
+import eventHub from '../event_hub';
+import issuableStateMixin from '../mixins/issuable_state';
 import noteSignedOutWidget from './note_signed_out_widget.vue';
 import discussionLockedWidget from './discussion_locked_widget.vue';
-import issuableStateMixin from '../mixins/issuable_state';
 import CommentFieldLayout from './comment_field_layout.vue';
 
 export default {

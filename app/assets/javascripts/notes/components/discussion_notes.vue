@@ -1,15 +1,15 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { SYSTEM_NOTE } from '../constants';
 import { __ } from '~/locale';
 import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
 import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { SYSTEM_NOTE } from '../constants';
 import NoteableNote from './noteable_note.vue';
 import ToggleRepliesWidget from './toggle_replies_widget.vue';
 import NoteEditedText from './note_edited_text.vue';
 import DiscussionNotesRepliesWrapper from './discussion_notes_replies_wrapper.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'DiscussionNotes',

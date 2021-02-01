@@ -2,9 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['PackageComposerMetadatumType'] do
-  it { expect(described_class.graphql_name).to eq('PackageComposerMetadatumType') }
-
+RSpec.describe GitlabSchema.types['ComposerMetadata'] do
   it 'includes composer metadatum fields' do
     expected_fields = %w[
      target_sha composer_json

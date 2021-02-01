@@ -1,5 +1,5 @@
-import FilteredSearchServiceDesk from './filtered_search';
 import initIssuablesList from '~/issues_list';
+import FilteredSearchServiceDesk from './filtered_search';
 
 const supportBotData = JSON.parse(
   document.querySelector('.js-service-desk-issues').dataset.supportBot,

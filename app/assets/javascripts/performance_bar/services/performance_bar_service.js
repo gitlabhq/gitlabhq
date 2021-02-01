@@ -1,5 +1,5 @@
-import axios from '../../lib/utils/axios_utils';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import axios from '../../lib/utils/axios_utils';
 
 export default class PerformanceBarService {
   static interceptor = null;

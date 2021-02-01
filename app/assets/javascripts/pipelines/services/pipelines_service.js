@@ -1,5 +1,5 @@
-import axios from '../../lib/utils/axios_utils';
 import Api from '~/api';
+import axios from '../../lib/utils/axios_utils';
 import { validateParams } from '../utils';
 
 export default class PipelinesService {

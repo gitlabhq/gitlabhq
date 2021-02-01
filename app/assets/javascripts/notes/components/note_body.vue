@@ -3,12 +3,12 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
+import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
+import autosave from '../mixins/autosave';
 import noteEditedText from './note_edited_text.vue';
 import noteAwardsList from './note_awards_list.vue';
 import noteAttachment from './note_attachment.vue';
 import noteForm from './note_form.vue';
-import autosave from '../mixins/autosave';
-import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 
 export default {
   components: {

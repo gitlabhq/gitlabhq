@@ -1,8 +1,8 @@
 import Editor from '~/ide/lib/editor';
 import DecorationsController from '~/ide/lib/decorations/controller';
 import Model from '~/ide/lib/common/model';
-import { file } from '../../helpers';
 import { createStore } from '~/ide/stores';
+import { file } from '../../helpers';
 
 describe('Multi-file editor library decorations controller', () => {
   let editorInstance;

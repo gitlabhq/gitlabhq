@@ -5,8 +5,8 @@ import { s__ } from '~/locale';
 import createFlash from '~/flash';
 import { historyReplaceState } from '~/lib/utils/common_utils';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages/shared/constants';
-import PackageList from './packages_list.vue';
 import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '../constants';
+import PackageList from './packages_list.vue';
 import PackageTitle from './package_title.vue';
 import PackageSearch from './package_search.vue';
 

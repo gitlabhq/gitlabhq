@@ -1,6 +1,6 @@
 import filesQuery from 'shared_queries/repository/files.query.graphql';
-import getRefMixin from './get_ref';
 import projectPathQuery from '../queries/project_path.query.graphql';
+import getRefMixin from './get_ref';
 
 export default {
   mixins: [getRefMixin],

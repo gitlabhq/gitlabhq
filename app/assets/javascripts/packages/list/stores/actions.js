@@ -2,7 +2,6 @@ import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { DELETE_PACKAGE_ERROR_MESSAGE } from '~/packages/shared/constants';
-import * as types from './mutation_types';
 import {
   FETCH_PACKAGES_LIST_ERROR_MESSAGE,
   DELETE_PACKAGE_SUCCESS_MESSAGE,
@@ -11,6 +10,7 @@ import {
   MISSING_DELETE_PATH_ERROR,
 } from '../constants';
 import { getNewPaginationPage } from '../utils';
+import * as types from './mutation_types';
 
 export const setInitialState = ({ commit }, data) => commit(types.SET_INITIAL_STATE, data);
 export const setLoading = ({ commit }, data) => commit(types.SET_MAIN_LOADING, data);

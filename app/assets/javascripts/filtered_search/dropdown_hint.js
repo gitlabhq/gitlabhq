@@ -1,9 +1,9 @@
 import Filter from '~/droplab/plugins/filter';
+import { __ } from '~/locale';
 import FilteredSearchDropdown from './filtered_search_dropdown';
 import DropdownUtils from './dropdown_utils';
 import FilteredSearchDropdownManager from './filtered_search_dropdown_manager';
 import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
-import { __ } from '~/locale';
 
 export default class DropdownHint extends FilteredSearchDropdown {
   constructor(options = {}) {

@@ -187,9 +187,9 @@ module InProductMarketingHelper
   def cta_link(track, series, group, format: nil)
     case format
     when :html
-      link_to in_product_marketing_cta_text(track, series), in_product_marketing_cta_link(track, series, group), target: '_blank', rel: 'noopener noreferrer'
+      link_to in_product_marketing_cta_text(track, series), group_email_campaigns_url(group, track: track, series: series), target: '_blank', rel: 'noopener noreferrer'
     else
-      [in_product_marketing_cta_text(track, series), in_product_marketing_cta_link(track, series, group)].join(' >> ')
+      [in_product_marketing_cta_text(track, series), group_email_campaigns_url(group, track: track, series: series)].join(' >> ')
     end
   end
 
@@ -256,31 +256,6 @@ module InProductMarketingHelper
         s_('InProductMarketing|Invite your colleagues today'),
         s_('InProductMarketing|Invite your team in less than 60 seconds'),
         s_('InProductMarketing|Invite your team now')
-      ]
-    }[track][series]
-  end
-
-  def in_product_marketing_cta_link(track, series, group)
-    {
-      create: [
-        new_project_url,
-        new_project_url(anchor: 'import_project'),
-        help_page_url('user/project/repository/repository_mirroring')
-      ],
-      verify: [
-        project_pipelines_url(group.projects.first),
-        project_pipelines_url(group.projects.first),
-        project_pipelines_url(group.projects.first)
-      ],
-      trial: [
-        'https://about.gitlab.com/free-trial/',
-        'https://about.gitlab.com/free-trial/',
-        'https://about.gitlab.com/free-trial/'
-      ],
-      team: [
-        group_group_members_url(group),
-        group_group_members_url(group),
-        group_group_members_url(group)
       ]
     }[track][series]
   end

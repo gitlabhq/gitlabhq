@@ -111,6 +111,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resources :container_registries, only: [:index, :show], controller: 'registry/repositories'
     resource :dependency_proxy, only: [:show, :update]
+    resources :email_campaigns, only: :index
   end
 
   scope(path: '*id',

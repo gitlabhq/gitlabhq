@@ -1,6 +1,6 @@
 import Mousetrap from 'mousetrap';
-import ShortcutsNavigation from './shortcuts_navigation';
 import findAndFollowLink from '../../lib/utils/navigation_utility';
+import ShortcutsNavigation from './shortcuts_navigation';
 
 export default class ShortcutsWiki extends ShortcutsNavigation {
   constructor() {

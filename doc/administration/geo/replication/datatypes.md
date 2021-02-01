@@ -146,7 +146,7 @@ The replication for some data types is behind a corresponding feature flag:
 > - They are recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable them](#enable-or-disable-replication-for-some-data-types). **(FREE SELF)**
 
-#### Enable or disable replication (for some data types) **(FREE SELF)**
+#### Enable or disable replication (for some data types)
 
 Replication for some data types are released behind feature flags that are **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../feature_flags.md) can opt to disable it for your instance. You can find feature flag names of each of those data types in the notes column of the table below.

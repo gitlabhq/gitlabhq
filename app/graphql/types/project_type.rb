@@ -179,7 +179,7 @@ module Types
           description: 'A single issue of the project',
           resolver: Resolvers::IssuesResolver.single
 
-    field :packages, Types::Packages::PackageType.connection_type, null: true,
+    field :packages,
          description: 'Packages of the project',
          resolver: Resolvers::PackagesResolver
 

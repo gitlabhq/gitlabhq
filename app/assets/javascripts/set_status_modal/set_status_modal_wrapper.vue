@@ -2,15 +2,15 @@
 /* eslint-disable vue/no-v-html */
 import $ from 'jquery';
 import Vue from 'vue';
-import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 import { GlToast, GlModal, GlTooltipDirective, GlIcon, GlFormCheckbox } from '@gitlab/ui';
+import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __, s__ } from '~/locale';
 import { updateUserStatus } from '~/rest_api';
-import EmojiMenuInModal from './emoji_menu_in_modal';
-import { isUserBusy, isValidAvailibility } from './utils';
 import * as Emoji from '~/emoji';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
+import EmojiMenuInModal from './emoji_menu_in_modal';
+import { isUserBusy, isValidAvailibility } from './utils';
 
 const emojiMenuClass = 'js-modal-status-emoji-menu';
 export const AVAILABILITY_STATUS = {

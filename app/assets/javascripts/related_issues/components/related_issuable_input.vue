@@ -1,13 +1,13 @@
 <script>
 import $ from 'jquery';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
-import issueToken from './issue_token.vue';
 import {
   autoCompleteTextMap,
   inputPlaceholderConfidentialTextMap,
   inputPlaceholderTextMap,
   issuableTypesMap,
 } from '../constants';
+import issueToken from './issue_token.vue';
 
 const SPACE_FACTOR = 1;
 

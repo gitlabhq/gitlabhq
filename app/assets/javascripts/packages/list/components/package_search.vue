@@ -2,9 +2,9 @@
 import { GlSorting, GlSortingItem, GlFilteredSearch } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 import { __, s__ } from '~/locale';
-import PackageTypeToken from './tokens/package_type_token.vue';
 import { ASCENDING_ODER, DESCENDING_ORDER } from '../constants';
 import getTableHeaders from '../utils';
+import PackageTypeToken from './tokens/package_type_token.vue';
 
 export default {
   components: {

@@ -73,8 +73,8 @@ $system-note-svg-size: 16px;
   .replies-toggle {
     background-color: $gray-light;
     padding: $gl-padding-8 $gl-padding;
-    border-top: 1px solid $gray-50;
-    border-bottom: 1px solid $gray-50;
+    border-top: 1px solid $gray-100;
+    border-bottom: 1px solid $gray-100;
 
     .collapse-replies-btn:hover {
       color: $blue-600;

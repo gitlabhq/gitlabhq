@@ -3,12 +3,12 @@
 import { mapState, mapGetters } from 'vuex';
 import { GlIcon, GlSprintf, GlTooltipDirective, GlBadge } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
-import PackageTags from '../../shared/components/package_tags.vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import { __ } from '~/locale';
+import PackageTags from '../../shared/components/package_tags.vue';
 
 export default {
   name: 'PackageTitle',

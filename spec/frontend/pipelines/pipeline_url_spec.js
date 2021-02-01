@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import { trimText } from 'helpers/text_helper';
 import { shallowMount } from '@vue/test-utils';
+import { trimText } from 'helpers/text_helper';
 import PipelineUrlComponent from '~/pipelines/components/pipelines_list/pipeline_url.vue';
 
 $.fn.popover = () => {};

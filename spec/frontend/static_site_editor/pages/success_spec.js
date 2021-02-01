@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlButton, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import Success from '~/static_site_editor/pages/success.vue';
-import { savedContentMeta, returnUrl, sourcePath } from '../mock_data';
 import { HOME_ROUTE } from '~/static_site_editor/router/constants';
+import { savedContentMeta, returnUrl, sourcePath } from '../mock_data';
 
 describe('~/static_site_editor/pages/success.vue', () => {
   const mergeRequestsIllustrationPath = 'illustrations/merge_requests.svg';

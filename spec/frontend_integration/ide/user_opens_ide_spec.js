@@ -1,5 +1,5 @@
-import { useOverclockTimers } from 'test_helpers/utils/overclock_timers';
 import { screen } from '@testing-library/dom';
+import { useOverclockTimers } from 'test_helpers/utils/overclock_timers';
 import * as ideHelper from './helpers/ide_helper';
 import startWebIDE from './helpers/start';
 

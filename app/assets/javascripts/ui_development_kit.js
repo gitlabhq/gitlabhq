@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import Api from './api';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import Api from './api';
 
 export default () => {
   initDeprecatedJQueryDropdown($('#js-project-dropdown'), {

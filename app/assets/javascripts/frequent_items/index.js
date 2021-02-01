@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import Translate from '~/vue_shared/translate';
-import eventHub from './event_hub';
 import { createStore } from '~/frequent_items/store';
+import eventHub from './event_hub';
 
 Vue.use(Translate);
 

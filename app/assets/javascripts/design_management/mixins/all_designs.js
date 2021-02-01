@@ -2,8 +2,8 @@ import { propertyOf } from 'lodash';
 import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
 import createFlash, { FLASH_TYPES } from '~/flash';
 import { s__ } from '~/locale';
-import allVersionsMixin from './all_versions';
 import { DESIGNS_ROUTE_NAME } from '../router/constants';
+import allVersionsMixin from './all_versions';
 
 export default {
   mixins: [allVersionsMixin],

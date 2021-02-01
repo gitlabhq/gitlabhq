@@ -2,9 +2,9 @@
 import { debounce } from 'lodash';
 import { mapActions, mapState } from 'vuex';
 import { GlIcon } from '@gitlab/ui';
+import Tracking from '~/tracking';
 import eventHub from '../event_hub';
 import frequentItemsMixin from './frequent_items_mixin';
-import Tracking from '~/tracking';
 
 const trackingMixin = Tracking.mixin();
 

@@ -1,6 +1,7 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { merge } from 'lodash';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import Vuex from 'vuex';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -26,8 +27,8 @@ import securityReportDownloadPathsQuery from '~/vue_shared/security_reports/quer
 
 jest.mock('~/flash');
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(VueApollo);
+Vue.use(Vuex);
 
 const SAST_COMPARISON_PATH = '/sast.json';
 const SECRET_SCANNING_COMPARISON_PATH = '/secret_detection.json';
@@ -47,7 +48,6 @@ describe('Security reports app', () => {
       SecurityReportsApp,
       merge(
         {
-          localVue,
           propsData: { ...props },
           stubs: {
             HelpIcon: true,
@@ -64,8 +64,6 @@ describe('Security reports app', () => {
     Promise.resolve({ data: securityReportDownloadPathsQueryNoArtifactsResponse });
   const failureHandler = () => Promise.resolve({ errors: [{ message: 'some error' }] });
   const createMockApolloProvider = (handler) => {
-    localVue.use(VueApollo);
-
     const requestHandlers = [[securityReportDownloadPathsQuery, handler]];
 
     return createMockApollo(requestHandlers);

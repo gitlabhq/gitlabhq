@@ -2,11 +2,11 @@
 import { GlResizeObserverDirective } from '@gitlab/ui';
 import { GlStackedColumnChart } from '@gitlab/ui/dist/charts';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
-import { chartHeight, legendLayoutTypes } from '../../constants';
 import { s__ } from '~/locale';
+import { chartHeight, legendLayoutTypes } from '../../constants';
 import { graphDataValidatorForValues } from '../../utils';
-import { getTimeAxisOptions, axisTypes } from './options';
 import { formats, timezones } from '../../format_date';
+import { getTimeAxisOptions, axisTypes } from './options';
 
 export default {
   components: {

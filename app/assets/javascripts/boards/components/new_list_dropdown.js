@@ -4,12 +4,12 @@ import $ from 'jquery';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as flash } from '~/flash';
-import CreateLabelDropdown from '../../create_label';
-import boardsStore from '../stores/boards_store';
-import { fullLabelId } from '../boards_util';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import store from '~/boards/stores';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import CreateLabelDropdown from '../../create_label';
+import boardsStore from '../stores/boards_store';
+import { fullLabelId } from '../boards_util';
 
 function shouldCreateListGraphQL(label) {
   return store.getters.shouldUseGraphQL && !store.getters.getListByLabelId(fullLabelId(label));

@@ -1,14 +1,14 @@
 import { sprintf, __ } from '~/locale';
 import { deprecatedCreateFlash as flash } from '~/flash';
+import { addNumericSuffix } from '~/ide/utils';
 import * as rootTypes from '../../mutation_types';
 import { createCommitPayload, createNewMergeRequestUrl } from '../../utils';
 import service from '../../../services';
-import * as types from './mutation_types';
-import { COMMIT_TO_CURRENT_BRANCH } from './constants';
 import { leftSidebarViews } from '../../../constants';
 import eventHub from '../../../eventhub';
 import { parseCommitError } from '../../../lib/errors';
-import { addNumericSuffix } from '~/ide/utils';
+import { COMMIT_TO_CURRENT_BRANCH } from './constants';
+import * as types from './mutation_types';
 
 export const updateCommitMessage = ({ commit }, message) => {
   commit(types.UPDATE_COMMIT_MESSAGE, message);

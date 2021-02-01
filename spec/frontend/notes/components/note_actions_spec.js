@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import { mount, createLocalVue, createWrapper } from '@vue/test-utils';
-import { TEST_HOST } from 'spec/test_constants';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import { TEST_HOST } from 'spec/test_constants';
 import createStore from '~/notes/stores';
 import noteActions from '~/notes/components/note_actions.vue';
-import { userDataMock } from '../mock_data';
 import axios from '~/lib/utils/axios_utils';
+import { userDataMock } from '../mock_data';
 
 describe('noteActions', () => {
   let wrapper;

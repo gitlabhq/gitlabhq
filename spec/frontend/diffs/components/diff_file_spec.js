@@ -6,8 +6,6 @@ import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
 import createDiffsStore from '~/diffs/store/modules';
 import createNotesStore from '~/notes/stores/modules';
-import diffFileMockDataReadable from '../mock_data/diff_file';
-import diffFileMockDataUnreadable from '../mock_data/diff_file_unreadable';
 
 import DiffFileComponent from '~/diffs/components/diff_file.vue';
 import DiffFileHeaderComponent from '~/diffs/components/diff_file_header.vue';
@@ -21,6 +19,8 @@ import {
 } from '~/diffs/constants';
 
 import { diffViewerModes, diffViewerErrors } from '~/ide/constants';
+import diffFileMockDataUnreadable from '../mock_data/diff_file_unreadable';
+import diffFileMockDataReadable from '../mock_data/diff_file';
 
 function changeViewer(store, index, { automaticallyCollapsed, manuallyCollapsed, name }) {
   const file = store.state.diffs.diffFiles[index];

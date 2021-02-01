@@ -20,8 +20,11 @@ import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import { relativePathToAbsolute, getBaseURL, visitUrl, isSafeURL } from '~/lib/utils/url_utility';
 import { __, n__ } from '~/locale';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
+import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { panelTypes } from '../constants';
 
+import { timeRangeToUrl, downloadCSVOptions, generateLinkToChartOptions } from '../utils';
+import { graphDataToCsv } from '../csv_export';
 import MonitorEmptyChart from './charts/empty_chart.vue';
 import MonitorTimeSeriesChart from './charts/time_series.vue';
 import MonitorAnomalyChart from './charts/anomaly.vue';
@@ -32,10 +35,7 @@ import MonitorColumnChart from './charts/column.vue';
 import MonitorBarChart from './charts/bar.vue';
 import MonitorStackedColumnChart from './charts/stacked_column.vue';
 
-import TrackEventDirective from '~/vue_shared/directives/track_event';
 import AlertWidget from './alert_widget.vue';
-import { timeRangeToUrl, downloadCSVOptions, generateLinkToChartOptions } from '../utils';
-import { graphDataToCsv } from '../csv_export';
 
 const events = {
   timeRangeZoom: 'timerangezoom',

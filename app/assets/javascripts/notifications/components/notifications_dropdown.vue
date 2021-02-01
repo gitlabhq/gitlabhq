@@ -8,8 +8,8 @@ import {
 } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import Api from '~/api';
-import NotificationsDropdownItem from './notifications_dropdown_item.vue';
 import { CUSTOM_LEVEL, i18n } from '../constants';
+import NotificationsDropdownItem from './notifications_dropdown_item.vue';
 
 export default {
   name: 'NotificationsDropdown',

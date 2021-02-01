@@ -2,8 +2,8 @@
 import { debounce } from 'lodash';
 import { GlTokenSelector, GlAvatar, GlAvatarLabeled, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { USER_SEARCH_DELAY } from '../constants';
 import { getUsers } from '~/rest_api';
+import { USER_SEARCH_DELAY } from '../constants';
 
 export default {
   components: {

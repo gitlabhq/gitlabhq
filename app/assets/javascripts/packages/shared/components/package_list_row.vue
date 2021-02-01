@@ -1,11 +1,11 @@
 <script>
 import { GlButton, GlIcon, GlLink, GlSprintf, GlTooltipDirective, GlTruncate } from '@gitlab/ui';
+import timeagoMixin from '~/vue_shared/mixins/timeago';
+import ListItem from '~/vue_shared/components/registry/list_item.vue';
+import { getPackageTypeLabel } from '../utils';
 import PackageTags from './package_tags.vue';
 import PackagePath from './package_path.vue';
 import PublishMethod from './publish_method.vue';
-import { getPackageTypeLabel } from '../utils';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
-import ListItem from '~/vue_shared/components/registry/list_item.vue';
 
 export default {
   name: 'PackageListRow',

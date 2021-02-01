@@ -1,6 +1,6 @@
-import * as types from './mutation_types';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import AccessorUtils from '~/lib/utils/accessor';
+import * as types from './mutation_types';
 
 export default {
   [types.SET_ERRORS](state, data) {

@@ -7,12 +7,12 @@ import BlobViewer from '~/blob/viewer/index';
 import Activities from '~/activities';
 import initReadMore from '~/read_more';
 import leaveByUrl from '~/namespaces/leave_by_url';
-import Star from '../../../star';
-import notificationsDropdown from '../../../notifications_dropdown';
 import { showLearnGitLabProjectPopover } from '~/onboarding_issues';
 import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
 import initVueNotificationsDropdown from '~/notifications';
+import notificationsDropdown from '../../../notifications_dropdown';
+import Star from '../../../star';
 
 initReadMore();
 new Star(); // eslint-disable-line no-new

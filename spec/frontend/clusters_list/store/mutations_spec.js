@@ -1,7 +1,7 @@
 import * as types from '~/clusters_list/store/mutation_types';
-import { apiData } from '../mock_data';
 import getInitialState from '~/clusters_list/store/state';
 import mutations from '~/clusters_list/store/mutations';
+import { apiData } from '../mock_data';
 
 describe('Admin statistics panel mutations', () => {
   let state;

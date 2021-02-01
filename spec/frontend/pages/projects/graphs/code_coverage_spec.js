@@ -6,8 +6,8 @@ import { GlAreaChart } from '@gitlab/ui/dist/charts';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import CodeCoverage from '~/pages/projects/graphs/components/code_coverage.vue';
-import { codeCoverageMockData, sortedDataByDates } from './mock_data';
 import httpStatusCodes from '~/lib/utils/http_status';
+import { codeCoverageMockData, sortedDataByDates } from './mock_data';
 
 describe('Code Coverage', () => {
   let wrapper;

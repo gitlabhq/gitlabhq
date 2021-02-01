@@ -1,9 +1,9 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMount } from '@vue/test-utils';
+import { GlButtonGroup, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
-import { GlButtonGroup, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import httpStatus from '~/lib/utils/http_status';
 import NotificationsDropdown from '~/notifications/components/notifications_dropdown.vue';
 import NotificationsDropdownItem from '~/notifications/components/notifications_dropdown_item.vue';

@@ -30,9 +30,9 @@ import {
 import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_version_history';
 import noteHeader from '~/notes/components/note_header.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import TimelineEntryItem from './timeline_entry_item.vue';
-import { spriteIcon } from '../../../lib/utils/common_utils';
 import initMRPopovers from '~/mr_popover/';
+import { spriteIcon } from '../../../lib/utils/common_utils';
+import TimelineEntryItem from './timeline_entry_item.vue';
 
 const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
 

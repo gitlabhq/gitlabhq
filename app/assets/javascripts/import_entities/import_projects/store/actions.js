@@ -1,6 +1,4 @@
 import Visibility from 'visibilityjs';
-import * as types from './mutation_types';
-import { isProjectImportable } from '../utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import Poll from '~/lib/utils/poll';
 import { visitUrl, objectToQuery } from '~/lib/utils/url_utility';
@@ -9,6 +7,8 @@ import { s__, sprintf } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { isProjectImportable } from '../utils';
+import * as types from './mutation_types';
 
 let eTagPoll;
 

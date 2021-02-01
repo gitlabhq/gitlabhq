@@ -1,8 +1,8 @@
 import { GlButton, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import job from '../mock_data';
 import JobsSidebarRetryButton from '~/jobs/components/job_sidebar_retry_button.vue';
 import createStore from '~/jobs/store';
+import job from '../mock_data';
 
 describe('Job Sidebar Retry Button', () => {
   let store;

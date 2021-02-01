@@ -4,11 +4,11 @@ import { escape, template } from 'lodash';
 import { s__ } from '~/locale';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import { isUserBusy } from '~/set_status_modal/utils';
+import axios from '~/lib/utils/axios_utils';
+import * as Emoji from '~/emoji';
 import glRegexp from './lib/utils/regexp';
 import AjaxCache from './lib/utils/ajax_cache';
-import axios from '~/lib/utils/axios_utils';
 import { spriteIcon } from './lib/utils/common_utils';
-import * as Emoji from '~/emoji';
 
 function sanitize(str) {
   return str.replace(/<(?:.|\n)*?>/gm, '');
