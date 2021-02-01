@@ -163,7 +163,9 @@ will be returned to GitLab and will be signed in.
 
 ## SAML Groups
 
-You can require users to be members of a certain group, or assign users `external`, `admin` or `auditor` roles based on group membership. This feature **does not** allow you to
+You can require users to be members of a certain group, or assign users [external](../user/permissions.md#external-users), admin or [auditor](../user/permissions.md#auditor-users) roles based on group membership.
+These groups are checked on each SAML login and user attributes updated as necessary.
+This feature **does not** allow you to
 automatically add users to GitLab [Groups](../user/group/index.md).
 
 ### Requirements
@@ -215,7 +217,7 @@ Example:
 
 ### External groups **(PREMIUM SELF)**
 
-SAML login supports automatic identification on whether a user should be considered an [external](../user/permissions.md) user. This is based on the user's group membership in the SAML identity provider.
+SAML login supports automatic identification on whether a user should be considered an [external user](../user/permissions.md#external-users). This is based on the user's group membership in the SAML identity provider.
 
 ```yaml
 { name: 'saml',
@@ -257,7 +259,7 @@ considered admin users.
 
 The requirements are the same as the previous settings, your IdP needs to pass Group information to GitLab, you need to tell
 GitLab where to look for the groups in the SAML response, and which group(s) should be
-considered auditor users.
+considered [auditor users](../user/permissions.md#auditor-users).
 
 ```yaml
 { name: 'saml',
@@ -385,7 +387,7 @@ This setting should be used only to map attributes that are part of the OmniAuth
 `attribute_statements` is used to map Attribute Names in a SAMLResponse to entries
 in the OmniAuth [`info` hash](https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema#schema-10-and-later).
 
-For example, if your SAMLResponse contains an Attribute called 'EmailAddress',
+For example, if your SAMLResponse contains an Attribute called `EmailAddress`,
 specify `{ email: ['EmailAddress'] }` to map the Attribute to the
 corresponding key in the `info` hash. URI-named Attributes are also supported, e.g.
 `{ email: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] }`.
@@ -582,8 +584,8 @@ GitLab will sign the request with the provided private key. GitLab will include 
 
 Avoid user control of the following attributes:
 
-- [`*NameID*`](../user/group/saml_sso/index.md#nameid)
-- *Email* when used with `omniauth_auto_link_saml_user`
+- [`NameID`](../user/group/saml_sso/index.md#nameid)
+- `Email` when used with `omniauth_auto_link_saml_user`
 
 These attributes define the SAML user. If users can change these attributes, they can impersonate others.
 

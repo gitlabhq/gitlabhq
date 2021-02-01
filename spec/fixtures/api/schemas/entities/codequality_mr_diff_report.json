@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "description": "The schema used to display codequality report in mr diff",
+  "required": ["files"],
+  "properties": {
+    "patternProperties": {
+      ".*.": {
+        "type": "array",
+        "items": {
+          "required": ["line", "description", "severity"],
+          "properties": {
+            "line": { "type": "integer" },
+            "description": { "type": "string" },
+            "severity": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
+  }
+}

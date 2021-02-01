@@ -123,6 +123,7 @@
   - ".gitlab/route-map.yml"
   - "doc/**/*"
   - ".markdownlint.json"
+  - "scripts/lint-doc.sh"
 
 .frontend-dependency-patterns: &frontend-dependency-patterns
   - "{package.json,yarn.lock}"

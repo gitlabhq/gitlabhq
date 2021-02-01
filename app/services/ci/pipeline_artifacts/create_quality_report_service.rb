@@ -22,10 +22,16 @@ module Ci
 
       def build_carrierwave_file(pipeline)
         CarrierWaveStringFile.new_file(
-          file_content: pipeline.codequality_reports.to_json,
+          file_content: build_quality_mr_diff_report(pipeline),
           filename: Ci::PipelineArtifact::DEFAULT_FILE_NAMES.fetch(:code_quality),
           content_type: 'application/json'
         )
+      end
+
+      def build_quality_mr_diff_report(pipeline)
+        mr_diff_report = Gitlab::Ci::Reports::CodequalityMrDiff.new(pipeline.codequality_reports)
+
+        Ci::CodequalityMrDiffReportSerializer.new.represent(mr_diff_report).to_json # rubocop: disable CodeReuse/Serializer
       end
     end
   end

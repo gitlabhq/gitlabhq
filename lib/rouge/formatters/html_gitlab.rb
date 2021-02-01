@@ -8,9 +8,9 @@ module Rouge
       # Creates a new <tt>Rouge::Formatter::HTMLGitlab</tt> instance.
       #
       # [+tag+]     The tag (language) of the lexer used to generate the formatted tokens
-      def initialize(tag: nil)
+      def initialize(options = {})
         @line_number = 1
-        @tag = tag
+        @tag = options[:tag]
       end
 
       def stream(tokens)

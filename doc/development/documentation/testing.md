@@ -93,8 +93,8 @@ To execute documentation link tests locally:
 
 ### UI link tests
 
-The `ui-docs-links lint` job uses `haml-lint` to test that all links to docs from
-UI elements (`app/views` files, for example) are linking to valid docs and anchors.
+The `ui-docs-links lint` job uses `haml-lint` to test that all documentation links from
+UI elements (`app/views` files, for example) are linking to valid pages and anchors.
 
 To run the `ui-docs-links` test locally:
 
@@ -156,12 +156,12 @@ markdownlint configuration is found in the following projects:
 - [`charts`](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/.markdownlint.json)
 - [`gitlab-development-kit`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/.markdownlint.json)
 
-This configuration is also used within build pipelines.
+This configuration is also used in build pipelines.
 
 You can use markdownlint:
 
 - [On the command line](https://github.com/igorshubovych/markdownlint-cli#markdownlint-cli--).
-- [Within a code editor](#configure-editors).
+- [In a code editor](#configure-editors).
 - [In a `pre-push` hook](#configure-pre-push-hooks).
 
 ### Vale
@@ -172,10 +172,10 @@ English language. Vale's configuration is stored in the
 directory of projects.
 
 Vale supports creating [custom tests](https://errata-ai.github.io/vale/styles/) that extend any of
-several types of checks, which we store in the `.linting/vale/styles/gitlab` directory within the
+several types of checks, which we store in the `.linting/vale/styles/gitlab` directory in the
 documentation directory of projects.
 
-Vale configuration is found in the following projects:
+You can find Vale configuration in the following projects:
 
 - [`gitlab`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/.vale/gitlab)
 - [`gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/master/docs/.vale/gitlab)
@@ -183,13 +183,13 @@ Vale configuration is found in the following projects:
 - [`charts`](https://gitlab.com/gitlab-org/charts/gitlab/-/tree/master/doc/.vale/gitlab)
 - [`gitlab-development-kit`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/tree/master/doc/.vale/gitlab)
 
-This configuration is also used within build pipelines, where
+This configuration is also used in build pipelines, where
 [error-level rules](#vale-result-types) are enforced.
 
 You can use Vale:
 
 - [On the command line](https://errata-ai.gitbook.io/vale/getting-started/usage).
-- [Within a code editor](#configure-editors).
+- [In a code editor](#configure-editors).
 - [In a Git hook](#configure-pre-push-hooks). Vale only reports errors in the Git hook (the same
   configuration as the CI/CD pipelines), and does not report suggestions or warnings.
 
@@ -243,32 +243,40 @@ To match the versions of `markdownlint-cli` and `vale` used in the GitLab projec
 [versions used](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/.gitlab-ci.yml#L447)
 when building the `image:docs-lint-markdown` Docker image containing these tools for CI/CD.
 
-| Tool               | Version  | Command                                   | Additional information |
-|--------------------|----------|-------------------------------------------|------------------------|
-| `markdownlint-cli` | Latest   | `yarn global add markdownlint-cli`        | n/a                    |
+| Tool               | Version   | Command                                   | Additional information |
+|--------------------|-----------|-------------------------------------------|------------------------|
+| `markdownlint-cli` | Latest    | `yarn global add markdownlint-cli`        | n/a                    |
 | `markdownlint-cli` | Specific  | `yarn global add markdownlint-cli@0.23.2` | The `@` indicates a specific version, and this example updates the tool to version `0.23.2`. |
-| Vale               | Latest   | `brew update && brew upgrade vale`        | This command is for macOS only. |
-| Vale               | Specific | n/a                                       | Not possible using `brew`, but can be [directly downloaded](https://github.com/errata-ai/vale/releases). |
+| Vale               | Latest    | `brew update && brew upgrade vale`        | This command is for macOS only. |
+| Vale               | Specific  | n/a                                       | Not possible using `brew`, but can be [directly downloaded](https://github.com/errata-ai/vale/releases). |
 
 ### Configure editors
 
 Using linters in your editor is more convenient than having to run the commands from the
 command line.
 
-To configure markdownlint within your editor, install one of the following as appropriate:
+To configure markdownlint in your editor, install one of the following as appropriate:
 
-- [Sublime Text](https://packagecontrol.io/packages/SublimeLinter-contrib-markdownlint)
-- [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
-- [Atom](https://atom.io/packages/linter-node-markdownlint)
-- [Vim](https://github.com/dense-analysis/ale)
+- Sublime Text [`SublimeLinter-contrib-markdownlint` package](https://packagecontrol.io/packages/SublimeLinter-contrib-markdownlint).
+- Visual Studio Code [`DavidAnson.vscode-markdownlint` extension](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint).
+- Atom [`linter-node-markdownlint` package](https://atom.io/packages/linter-node-markdownlint).
+- Vim [ALE plugin](https://github.com/dense-analysis/ale).
 
-To configure Vale within your editor, install one of the following as appropriate:
+To configure Vale in your editor, install one of the following as appropriate:
 
-- The Sublime Text [`SublimeLinter-contrib-vale` plugin](https://packagecontrol.io/packages/SublimeLinter-contrib-vale).
-- The Visual Studio Code [`errata-ai.vale-server` extension](https://marketplace.visualstudio.com/items?itemName=errata-ai.vale-server).
-  You don't need Vale Server to use the plugin. You can configure the plugin to
+- Sublime Text [`SublimeLinter-contrib-vale` package](https://packagecontrol.io/packages/SublimeLinter-contrib-vale).
+- Visual Studio Code [`errata-ai.vale-server` extension](https://marketplace.visualstudio.com/items?itemName=errata-ai.vale-server).
+  You can configure the plugin to
   [display only a subset of alerts](#show-subset-of-vale-alerts).
-- [Vim](https://github.com/dense-analysis/ale).
+
+  In the extension's settings:
+
+  - Select the **Use CLI** checkbox.
+  - In the **Config** setting, enter an absolute path to [`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/blob/master/.vale.ini) in one of the cloned GitLab repositories on your computer.
+  - In the **Path** setting, enter the absolute path to the Vale binary. In most
+    cases, `vale` should work. To find the location, run `which vale` in a terminal.
+
+- Vim [ALE plugin](https://github.com/dense-analysis/ale).
 
 We don't use [Vale Server](https://errata-ai.github.io/vale/#using-vale-with-a-text-editor-or-another-third-party-application).
 

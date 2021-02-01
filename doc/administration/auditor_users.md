@@ -68,6 +68,8 @@ To create a new Auditor user:
 To revoke Auditor permissions from a user, make them a regular user by
 following the previous steps.
 
+Additionally users can be set as an Auditor using [SAML groups](../integration/saml.md#auditor-groups).
+
 ## Permissions and restrictions of an Auditor user
 
 An Auditor user should be able to access all projects and groups of a GitLab

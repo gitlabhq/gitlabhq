@@ -145,7 +145,7 @@ whitespace changes.
 
 ## Mark files as viewed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51513) in GitLab 13.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51513) in GitLab 13.9.
 > - It's deployed behind a feature flag, enabled by default.
 > - It's enabled on GitLab.com.
 > - It's recommended for production use.

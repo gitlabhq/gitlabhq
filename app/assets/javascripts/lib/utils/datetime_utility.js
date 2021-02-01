@@ -6,6 +6,7 @@ import { languageCode, s__, __, n__ } from '../../locale';
 
 const MILLISECONDS_IN_HOUR = 60 * 60 * 1000;
 const MILLISECONDS_IN_DAY = 24 * MILLISECONDS_IN_HOUR;
+const DAYS_IN_WEEK = 7;
 
 window.timeago = timeago;
 
@@ -694,6 +695,25 @@ export const nDaysAfter = (date, numberOfDays) =>
 export const nDaysBefore = (date, numberOfDays) => nDaysAfter(date, -numberOfDays);
 
 /**
+ * Returns the date n weeks after the date provided
+ *
+ * @param {Date} date the initial date
+ * @param {Number} numberOfWeeks number of weeks after
+ * @return {Date} the date following the date provided
+ */
+export const nWeeksAfter = (date, numberOfWeeks) =>
+  new Date(newDate(date)).setDate(date.getDate() + DAYS_IN_WEEK * numberOfWeeks);
+
+/**
+ * Returns the date n weeks before the date provided
+ *
+ * @param {Date} date the initial date
+ * @param {Number} numberOfWeeks number of weeks before
+ * @return {Date} the date following the date provided
+ */
+export const nWeeksBefore = (date, numberOfWeeks) => nWeeksAfter(date, -numberOfWeeks);
+
+/**
  * Returns the date n months after the date provided
  *
  * @param {Date} date the initial date
@@ -896,4 +916,20 @@ export const getOverlapDateInPeriods = (givenPeriodLeft = {}, givenPeriodRight =
     overlapStartDate,
     overlapEndDate,
   };
+};
+
+/**
+ * A utility function that checks that the date is today
+ *
+ * @param {Date} date
+ *
+ * @return {Boolean} true if provided date is today
+ */
+export const isToday = (date) => {
+  const today = new Date();
+  return (
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
+  );
 };

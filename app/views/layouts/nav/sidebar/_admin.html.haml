@@ -1,4 +1,4 @@
-.nav-sidebar.qa-admin-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?) }
+%aside.nav-sidebar.qa-admin-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), 'aria-label': _('Admin navigation') }
   .nav-sidebar-inner-scroll
     .context-header
       = link_to admin_root_path, title: _('Admin Overview') do

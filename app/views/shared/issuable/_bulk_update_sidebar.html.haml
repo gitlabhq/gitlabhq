@@ -3,7 +3,7 @@
 - epic_bulk_edit_flag = @project&.group&.feature_available?(:epics) && type == :issues
 - bulk_iterations_flag = @project&.group&.feature_available?(:iterations) && type == :issues
 
-%aside.issues-bulk-update.js-right-sidebar.right-sidebar{ "aria-live" => "polite", data: { 'signed-in': current_user.present? } }
+%aside.issues-bulk-update.js-right-sidebar.right-sidebar{ "aria-live" => "polite", data: { 'signed-in': current_user.present? }, 'aria-label': _('Bulk update') }
   .issuable-sidebar.hidden
     = form_tag [:bulk_update, @project, type], method: :post, class: "bulk-update" do
       .block.issuable-sidebar-header

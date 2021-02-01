@@ -1905,6 +1905,9 @@ msgstr ""
 msgid "Admin mode enabled"
 msgstr ""
 
+msgid "Admin navigation"
+msgstr ""
+
 msgid "Admin notes"
 msgstr ""
 
@@ -4656,6 +4659,9 @@ msgstr ""
 msgid "Boards|An error occurred while updating the list. Please try again."
 msgstr ""
 
+msgid "Boards|Board"
+msgstr ""
+
 msgid "Boards|Collapse"
 msgstr ""
 
@@ -4851,6 +4857,9 @@ msgstr ""
 msgid "Branches|protected"
 msgstr ""
 
+msgid "Breadcrumbs"
+msgstr ""
+
 msgid "Brief title about the change"
 msgstr ""
 
@@ -4888,6 +4897,9 @@ msgid "Built-in"
 msgstr ""
 
 msgid "Bulk request concurrency"
+msgstr ""
+
+msgid "Bulk update"
 msgstr ""
 
 msgid "BulkImport|From source group"
@@ -8904,7 +8916,7 @@ msgstr ""
 msgid "Dashboard|%{firstProject}, %{rest}, and %{secondProject}"
 msgstr ""
 
-msgid "Dashboard|Unable to add %{invalidProjects}. This dashboard is available for public projects, and private projects in groups with a Silver plan."
+msgid "Dashboard|Unable to add %{invalidProjects}. This dashboard is available for public projects, and private projects in groups with a Premium plan."
 msgstr ""
 
 msgid "DastProfiles|A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities."
@@ -13876,6 +13888,9 @@ msgstr ""
 msgid "Group name (your organization)"
 msgstr ""
 
+msgid "Group navigation"
+msgstr ""
+
 msgid "Group overview"
 msgstr ""
 
@@ -16723,7 +16738,7 @@ msgstr ""
 msgid "Job|Job has been erased"
 msgstr ""
 
-msgid "Job|Job has been erased by"
+msgid "Job|Job has been erased by %{userLink}"
 msgstr ""
 
 msgid "Job|Keep"
@@ -20507,7 +20522,7 @@ msgstr ""
 msgid "One or more of your personal access tokens will expire in %{days_to_expire} days or less."
 msgstr ""
 
-msgid "Only 'Reporter' roles and above on tiers Premium / Silver and above can see Value Stream Analytics."
+msgid "Only 'Reporter' roles and above on tiers Premium and above can see Value Stream Analytics."
 msgstr ""
 
 msgid "Only 1 appearances row can exist"
@@ -20543,7 +20558,7 @@ msgstr ""
 msgid "Only verified users with an email address in any of these domains can be added to the group."
 msgstr ""
 
-msgid "Only ‘Reporter’ roles and above on tiers Premium / Silver and above can see Productivity Analytics."
+msgid "Only ‘Reporter’ roles and above on tiers Premium and above can see Productivity Analytics."
 msgstr ""
 
 msgid "Oops, are you sure?"
@@ -22611,6 +22626,9 @@ msgid "Project name"
 msgstr ""
 
 msgid "Project name suffix"
+msgstr ""
+
+msgid "Project navigation"
 msgstr ""
 
 msgid "Project order will not be saved as local storage is not available."
@@ -25595,6 +25613,9 @@ msgstr ""
 msgid "Security dashboard"
 msgstr ""
 
+msgid "Security navigation"
+msgstr ""
+
 msgid "Security report is out of date. Please update your branch with the latest changes from the target branch (%{targetBranchName})"
 msgstr ""
 
@@ -27708,6 +27729,9 @@ msgid "StorageSize|Unknown"
 msgstr ""
 
 msgid "Subgroup milestone"
+msgstr ""
+
+msgid "Subgroup navigation"
 msgstr ""
 
 msgid "Subgroup overview"
@@ -30322,7 +30346,7 @@ msgstr ""
 msgid "To see all the user's personal access tokens you must impersonate them first."
 msgstr ""
 
-msgid "To see this project's operational details, %{linkStart}upgrade its group plan to Silver%{linkEnd}. You can also remove the project from the dashboard."
+msgid "To see this project's operational details, %{linkStart}upgrade its group plan to Premium%{linkEnd}. You can also remove the project from the dashboard."
 msgstr ""
 
 msgid "To see this project's operational details, contact an owner of group %{groupName} to upgrade the plan. You can also remove the project from the dashboard."

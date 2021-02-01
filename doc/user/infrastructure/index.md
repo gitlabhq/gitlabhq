@@ -26,6 +26,8 @@ variables:
   # If not using GitLab's HTTP backend, remove this line and specify TF_HTTP_* variables
   TF_STATE_NAME: default
   TF_CACHE_KEY: default
+  # If your terraform files are in a subdirectory, set TF_ROOT accordingly
+  # TF_ROOT: terraform/production
 ```
 
 This template uses `.latest.`, instead of stable, and may include breaking changes.
@@ -38,6 +40,15 @@ This template also includes some opinionated decisions, which you can override:
   `init`, `validate`, `build`, and `deploy`. These stages
   [run the Terraform commands](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform/Base.latest.gitlab-ci.yml)
   `init`, `validate`, `plan`, `plan-json`, and `apply`. The `apply` command only runs on `master`.
+
+This video from January 2021 walks you through all the GitLab Terraform integration features:
+
+<div class="video-fallback">
+  See the video: <a href="https://www.youtube.com/watch?v=iGXjUrkkzDI">Terraform with GitLab</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/iGXjUrkkzDI" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
 
 ## GitLab Managed Terraform state
 

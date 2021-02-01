@@ -1779,7 +1779,7 @@ To add a tier badge to a heading, add the relevant [tier badge](#available-produ
 after the heading text. For example:
 
 ```markdown
-# Heading title `**(FREE)**`
+# Heading title **(FREE)**
 ```
 
 #### Product tier badges on other content

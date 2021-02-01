@@ -618,9 +618,12 @@ describe('nDaysAfter', () => {
     ${-1}        | ${new Date('2019-07-15T00:00:00.000Z').valueOf()}
     ${0}         | ${date.valueOf()}
     ${0.9}       | ${date.valueOf()}
-  `('returns $numberOfDays day(s) after the provided date', ({ numberOfDays, expectedResult }) => {
-    expect(datetimeUtility.nDaysAfter(date, numberOfDays)).toBe(expectedResult);
-  });
+  `(
+    'returns the date $numberOfDays day(s) after the provided date',
+    ({ numberOfDays, expectedResult }) => {
+      expect(datetimeUtility.nDaysAfter(date, numberOfDays)).toBe(expectedResult);
+    },
+  );
 });
 
 describe('nDaysBefore', () => {
@@ -633,9 +636,48 @@ describe('nDaysBefore', () => {
     ${-1}        | ${new Date('2019-07-17T00:00:00.000Z').valueOf()}
     ${0}         | ${date.valueOf()}
     ${0.9}       | ${new Date('2019-07-15T00:00:00.000Z').valueOf()}
-  `('returns $numberOfDays day(s) before the provided date', ({ numberOfDays, expectedResult }) => {
-    expect(datetimeUtility.nDaysBefore(date, numberOfDays)).toBe(expectedResult);
-  });
+  `(
+    'returns the date $numberOfDays day(s) before the provided date',
+    ({ numberOfDays, expectedResult }) => {
+      expect(datetimeUtility.nDaysBefore(date, numberOfDays)).toBe(expectedResult);
+    },
+  );
+});
+
+describe('nWeeksAfter', () => {
+  const date = new Date('2021-07-16T00:00:00.000Z');
+
+  it.each`
+    numberOfWeeks | expectedResult
+    ${1}          | ${new Date('2021-07-23T00:00:00.000Z').valueOf()}
+    ${3}          | ${new Date('2021-08-06T00:00:00.000Z').valueOf()}
+    ${-1}         | ${new Date('2021-07-09T00:00:00.000Z').valueOf()}
+    ${0}          | ${date.valueOf()}
+    ${0.6}        | ${new Date('2021-07-20T00:00:00.000Z').valueOf()}
+  `(
+    'returns the date $numberOfWeeks week(s) after the provided date',
+    ({ numberOfWeeks, expectedResult }) => {
+      expect(datetimeUtility.nWeeksAfter(date, numberOfWeeks)).toBe(expectedResult);
+    },
+  );
+});
+
+describe('nWeeksBefore', () => {
+  const date = new Date('2021-07-16T00:00:00.000Z');
+
+  it.each`
+    numberOfWeeks | expectedResult
+    ${1}          | ${new Date('2021-07-09T00:00:00.000Z').valueOf()}
+    ${3}          | ${new Date('2021-06-25T00:00:00.000Z').valueOf()}
+    ${-1}         | ${new Date('2021-07-23T00:00:00.000Z').valueOf()}
+    ${0}          | ${date.valueOf()}
+    ${0.6}        | ${new Date('2021-07-11T00:00:00.000Z').valueOf()}
+  `(
+    'returns the date $numberOfWeeks week(s) before the provided date',
+    ({ numberOfWeeks, expectedResult }) => {
+      expect(datetimeUtility.nWeeksBefore(date, numberOfWeeks)).toBe(expectedResult);
+    },
+  );
 });
 
 describe('nMonthsAfter', () => {
@@ -659,7 +701,7 @@ describe('nMonthsAfter', () => {
     ${may2020} | ${0}           | ${may2020.valueOf()}
     ${may2020} | ${0.9}         | ${may2020.valueOf()}
   `(
-    'returns $numberOfMonths month(s) after the provided date',
+    'returns the date $numberOfMonths month(s) after the provided date',
     ({ date, numberOfMonths, expectedResult }) => {
       expect(datetimeUtility.nMonthsAfter(date, numberOfMonths)).toBe(expectedResult);
     },
@@ -687,7 +729,7 @@ describe('nMonthsBefore', () => {
     ${june2020}  | ${0}           | ${june2020.valueOf()}
     ${june2020}  | ${0.9}         | ${new Date('2020-05-15T00:00:00.000Z').valueOf()}
   `(
-    'returns $numberOfMonths month(s) before the provided date',
+    'returns the date $numberOfMonths month(s) before the provided date',
     ({ date, numberOfMonths, expectedResult }) => {
       expect(datetimeUtility.nMonthsBefore(date, numberOfMonths)).toBe(expectedResult);
     },
@@ -896,5 +938,16 @@ describe('getOverlapDateInPeriods', () => {
         datetimeUtility.getOverlapDateInPeriods({ start, end }, { start, end: endInvalid }),
       ).toThrow(error);
     });
+  });
+});
+
+describe('isToday', () => {
+  const today = new Date();
+  it.each`
+    date                                    | expected | negation
+    ${today}                                | ${true}  | ${'is'}
+    ${new Date('2021-01-21T12:00:00.000Z')} | ${false} | ${'is NOT'}
+  `('returns $expected as $date $negation today', ({ date, expected }) => {
+    expect(datetimeUtility.isToday(date)).toBe(expected);
   });
 });

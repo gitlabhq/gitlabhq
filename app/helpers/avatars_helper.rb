@@ -31,10 +31,11 @@ module AvatarsHelper
   end
 
   def avatar_icon_for_user(user = nil, size = nil, scale = 2, only_path: true)
-    return gravatar_icon(nil, size, scale) unless user
-    return default_avatar if user.blocked?
-
-    user.avatar_url(size: size, only_path: only_path) || default_avatar
+    if user
+      user.avatar_url(size: size, only_path: only_path) || default_avatar
+    else
+      gravatar_icon(nil, size, scale)
+    end
   end
 
   def gravatar_icon(user_email = '', size = nil, scale = 2)
