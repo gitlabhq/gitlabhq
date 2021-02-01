@@ -118,6 +118,7 @@ exceptions:
   - RSS
   - RVM
   - SAML
+  - SAAS
   - SAST
   - SCIM
   - SCP
@@ -146,6 +147,7 @@ exceptions:
   - TLS
   - TODO
   - TOML
+  - TTL
   - UNIX
   - URI
   - URL

@@ -56,7 +56,7 @@ module API
           detail 'This feature was introduced in GitLab 13.5'
         end
 
-        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
+        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth, authenticate_non_public: true
         get 'Release.gpg' do
           not_found!
         end
@@ -66,7 +66,7 @@ module API
           detail 'This feature was introduced in GitLab 13.5'
         end
 
-        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
+        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth, authenticate_non_public: true
         get 'Release' do
           # https://gitlab.com/gitlab-org/gitlab/-/issues/5835#note_414103286
           'TODO Release'
@@ -77,7 +77,7 @@ module API
           detail 'This feature was introduced in GitLab 13.5'
         end
 
-        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
+        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth, authenticate_non_public: true
         get 'InRelease' do
           not_found!
         end
@@ -93,7 +93,7 @@ module API
             detail 'This feature was introduced in GitLab 13.5'
           end
 
-          route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
+          route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth, authenticate_non_public: true
           get 'Packages' do
             # https://gitlab.com/gitlab-org/gitlab/-/issues/5835#note_414103286
             'TODO Packages'
@@ -116,7 +116,7 @@ module API
           detail 'This feature was introduced in GitLab 13.5'
         end
 
-        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
+        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth, authenticate_non_public: true
         get ':file_name', requirements: FILE_NAME_REQUIREMENTS do
           # https://gitlab.com/gitlab-org/gitlab/-/issues/5835#note_414103286
           'TODO File'
