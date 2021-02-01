@@ -691,3 +691,17 @@ Feature.disable(:core_security_mr_widget)
 # For a single project
 Feature.disable(:core_security_mr_widget, Project.find(<project id>))
 ```
+
+### Error: job `is used for configuration only, and its script should not be executed`
+
+[Changes made in GitLab 13.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41260)
+to the `Security/Dependency-Scanning.gitlab-ci.yml` and `Security/SAST.gitlab-ci.yml`
+templates mean that if you enable the `sast` or `dependency_scanning` jobs by setting the `rules` attribute,
+they will fail with the error `(job) is used for configuration only, and its script should not be executed`.
+
+The `sast` or `dependency_scanning` stanzas can be used to make changes to all SAST or Dependency Scanning,
+such as changing `variables` or the `stage`, but they cannot be used to define shared `rules`.
+
+There [is an issue open to improve extendability](https://gitlab.com/gitlab-org/gitlab/-/issues/218444).
+Please upvote the issue to help with prioritization, and
+[contributions are welcomed](https://about.gitlab.com/community/contribute/).
