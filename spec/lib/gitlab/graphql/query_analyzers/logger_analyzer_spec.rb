@@ -40,4 +40,22 @@ RSpec.describe Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer do
       end
     end
   end
+
+  describe '#initial_value' do
+    it 'filters out sensitive variables' do
+      doc = GraphQL.parse <<-GRAPHQL
+        mutation createNote($body: String!) {
+          createNote(input: {noteableId: "1", body: $body}) {
+            note {
+              id
+            }
+          }
+        }
+      GRAPHQL
+
+      query = GraphQL::Query.new(GitlabSchema, document: doc, context: {}, variables: { body: "some note" })
+
+      expect(subject.initial_value(query)[:variables]).to eq('{:body=>"[FILTERED]"}')
+    end
+  end
 end
