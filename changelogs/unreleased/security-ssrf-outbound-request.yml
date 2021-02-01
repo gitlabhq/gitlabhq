@@ -1,0 +1,5 @@
+---
+title: Fix DNS rebinding protection bypass when allowing an IP address in Outbound Requests setting
+merge_request:
+author:
+type: security

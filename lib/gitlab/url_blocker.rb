@@ -49,9 +49,11 @@ module Gitlab
         return [uri, nil] unless address_info
 
         ip_address = ip_address(address_info)
-        return [uri, nil] if domain_allowed?(uri) || ip_allowed?(ip_address, port: get_port(uri))
+        return [uri, nil] if domain_allowed?(uri)
 
         protected_uri_with_hostname = enforce_uri_hostname(ip_address, uri, dns_rebind_protection)
+
+        return protected_uri_with_hostname if ip_allowed?(ip_address, port: get_port(uri))
 
         # Allow url from the GitLab instance itself but only for the configured hostname and ports
         return protected_uri_with_hostname if internal?(uri)
