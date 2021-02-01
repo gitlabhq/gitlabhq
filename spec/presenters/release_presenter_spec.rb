@@ -62,6 +62,12 @@ RSpec.describe ReleasePresenter do
     it 'returns its own url' do
       is_expected.to eq(project_release_url(project, release))
     end
+
+    context 'when user is guest' do
+      let(:user) { guest }
+
+      it { is_expected.to be_nil }
+    end
   end
 
   describe '#opened_merge_requests_url' do
