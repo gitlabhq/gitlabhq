@@ -49,11 +49,19 @@ module Gitlab
         private
 
         def process_variables(variables)
-          if variables.respond_to?(:to_s)
-            variables.to_s
+          filtered_variables = filter_sensitive_variables(variables)
+
+          if filtered_variables.respond_to?(:to_s)
+            filtered_variables.to_s
           else
-            variables
+            filtered_variables
           end
+        end
+
+        def filter_sensitive_variables(variables)
+          ActiveSupport::ParameterFilter
+            .new(::Rails.application.config.filter_parameters)
+            .filter(variables)
         end
 
         def duration(time_started)
