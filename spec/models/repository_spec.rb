@@ -483,12 +483,6 @@ RSpec.describe Repository do
       it { is_expected.to be_an_instance_of(::Blob) }
     end
 
-    context 'readme blob on HEAD' do
-      subject { repository.blob_at(repository.head_commit.sha, 'README.md') }
-
-      it { is_expected.to be_an_instance_of(::ReadmeBlob) }
-    end
-
     context 'readme blob not on HEAD' do
       subject { repository.blob_at(repository.find_branch('feature').target, 'README.md') }
 
@@ -1938,7 +1932,6 @@ RSpec.describe Repository do
       expect(repository).to receive(:expire_method_caches).with([
         :size,
         :commit_count,
-        :rendered_readme,
         :readme_path,
         :contribution_guide,
         :changelog,
@@ -2314,14 +2307,6 @@ RSpec.describe Repository do
           expect(repository.readme).to be_nil
         end
       end
-
-      context 'when a README exists' do
-        let(:project) { create(:project, :repository) }
-
-        it 'returns the README' do
-          expect(repository.readme).to be_an_instance_of(ReadmeBlob)
-        end
-      end
     end
   end
 
@@ -2527,9 +2512,8 @@ RSpec.describe Repository do
   describe '#refresh_method_caches' do
     it 'refreshes the caches of the given types' do
       expect(repository).to receive(:expire_method_caches)
-        .with(%i(rendered_readme readme_path license_blob license_key license))
+        .with(%i(readme_path license_blob license_key license))
 
-      expect(repository).to receive(:rendered_readme)
       expect(repository).to receive(:readme_path)
       expect(repository).to receive(:license_blob)
       expect(repository).to receive(:license_key)

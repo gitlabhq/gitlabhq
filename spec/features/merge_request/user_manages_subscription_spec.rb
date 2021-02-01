@@ -15,7 +15,7 @@ RSpec.describe 'User manages subscription', :js do
   end
 
   it 'toggles subscription' do
-    page.within('.js-issuable-subscribe-button') do
+    page.within('[data-testid="subscription-toggle"]') do
       wait_for_requests
 
       expect(page).to have_css 'button:not(.is-checked)'

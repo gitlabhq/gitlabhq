@@ -13,8 +13,16 @@ RSpec.describe 'Project members list' do
 
   before do
     stub_feature_flags(invite_members_group_modal: false)
+    stub_feature_flags(vue_project_members_list: false)
+
     sign_in(user1)
     group.add_owner(user1)
+  end
+
+  it 'pushes `vue_project_members_list` feature flag to the frontend' do
+    visit_members_page
+
+    expect(page).to have_pushed_frontend_feature_flags(vueProjectMembersList: false)
   end
 
   it 'show members from project and group' do

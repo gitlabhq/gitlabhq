@@ -8,6 +8,10 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   # Authorize
   before_action :authorize_admin_project_member!, except: [:index, :leave, :request_access]
 
+  before_action do
+    push_frontend_feature_flag(:vue_project_members_list, @project)
+  end
+
   feature_category :authentication_and_authorization
 
   def index

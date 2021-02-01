@@ -411,7 +411,7 @@ plugins:
     enabled: true
 ```
 
-This adds SonarJava to the `plugins:` section of the [default `.codeclimate.yml`](https://gitlab.com/gitlab-org/ci-cd/codequality/-/blob/master/codeclimate_defaults/.codeclimate.yml)
+This adds SonarJava to the `plugins:` section of the [default `.codeclimate.yml`](https://gitlab.com/gitlab-org/ci-cd/codequality/-/blob/master/codeclimate_defaults/.codeclimate.yml.template)
 included in your project.
 
 Changes to the `plugins:` section do not affect the `exclude_patterns` section of the
@@ -428,7 +428,7 @@ Here's [an example project](https://gitlab.com/jheimbuck_gl/jh_java_example_proj
 A common issue is that the terms `Code Quality` (GitLab specific) and `Code Climate`
 (Engine used by GitLab) are very similar. You must add a **`.codeclimate.yml`** file
 to change the default configuration, **not** a `.codequality.yml` file. If you use
-the wrong filename, the [default `.codeclimate.yml`](https://gitlab.com/gitlab-org/ci-cd/codequality/-/blob/master/codeclimate_defaults/.codeclimate.yml)
+the wrong filename, the [default `.codeclimate.yml`](https://gitlab.com/gitlab-org/ci-cd/codequality/-/blob/master/codeclimate_defaults/.codeclimate.yml.template)
 is still used.
 
 ### No Code Quality report is displayed in a Merge Request
@@ -444,15 +444,15 @@ This can be due to multiple reasons:
 - The [`artifacts:expire_in`](../../../ci/yaml/README.md#artifactsexpire_in) CI/CD
   setting can cause the Code Quality artifact(s) to expire faster than desired.
 - If you use the [`REPORT_STDOUT` environment variable](https://gitlab.com/gitlab-org/ci-cd/codequality#environment-variables), no report file is generated and nothing displays in the merge request.
-- Large `codeclimate.json` files (esp. >10 MB) are [known to prevent the report from being displayed](https://gitlab.com/gitlab-org/gitlab/-/issues/2737).
+- Large `gl-code-quality-report.json` files (esp. >10 MB) are [known to prevent the report from being displayed](https://gitlab.com/gitlab-org/gitlab/-/issues/2737).
   As a work-around, try removing [properties](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types)
   that are [ignored by GitLab](#implementing-a-custom-tool). You can:
   - Configure the Code Quality tool to not output those types.
   - Use `sed`, `awk` or similar commands in the `.gitlab-ci.yml` script to
-    edit the `codeclimate.json` before the job completes.
+    edit the `gl-code-quality-report.json` before the job completes.
 
 ### Only a single Code Quality report is displayed, but more are defined
 
 GitLab only uses the Code Quality artifact from the latest created job (with the largest job ID).
 If multiple jobs in a pipeline generate a code quality artifact, those of earlier jobs are ignored.
-To avoid confusion, configure only one job to generate a `codeclimate.json`.
+To avoid confusion, configure only one job to generate a `gl-code-quality-report.json`.

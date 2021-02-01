@@ -255,15 +255,7 @@ class CommitStatus < ApplicationRecord
   end
 
   def all_met_to_become_pending?
-    !any_unmet_prerequisites? && !requires_resource?
-  end
-
-  def any_unmet_prerequisites?
-    false
-  end
-
-  def requires_resource?
-    false
+    true
   end
 
   def auto_canceled?

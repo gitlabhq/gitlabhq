@@ -13,6 +13,8 @@ RSpec.describe 'Projects members', :js do
   let(:group_requester) { create(:user) }
 
   before do
+    stub_feature_flags(vue_project_members_list: false)
+
     project.add_developer(developer)
     group.add_owner(user)
     sign_in(user)

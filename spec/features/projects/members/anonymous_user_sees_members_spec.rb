@@ -8,6 +8,8 @@ RSpec.describe 'Projects > Members > Anonymous user sees members' do
   let(:project) { create(:project, :public) }
 
   before do
+    stub_feature_flags(vue_project_members_list: false)
+
     project.add_maintainer(user)
     create(:project_group_link, project: project, group: group)
   end

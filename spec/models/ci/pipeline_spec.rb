@@ -2321,7 +2321,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
     context 'on waiting for resource' do
       before do
-        allow(build).to receive(:requires_resource?) { true }
+        allow(build).to receive(:with_resource_group?) { true }
         allow(Ci::ResourceGroups::AssignResourceFromResourceGroupWorker).to receive(:perform_async)
 
         build.enqueue

@@ -73,6 +73,15 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
         end
       end
 
+      context 'when resource_group key is not a string' do
+        let(:config) { { resource_group: 123 } }
+
+        it 'returns error about wrong value type' do
+          expect(entry).not_to be_valid
+          expect(entry.errors).to include "job resource group should be a string"
+        end
+      end
+
       context 'when it uses both "when:" and "rules:"' do
         let(:config) do
           {
@@ -337,6 +346,26 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
         end
 
         it_behaves_like 'has no warnings'
+      end
+    end
+
+    context 'with resource group' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:resource_group, :result) do
+        'iOS'                         | 'iOS'
+        'review/$CI_COMMIT_REF_NAME'  | 'review/$CI_COMMIT_REF_NAME'
+        nil                           | nil
+      end
+
+      with_them do
+        let(:config) { { script: 'ls', resource_group: resource_group }.compact }
+
+        it do
+          entry.compose!(deps)
+
+          expect(entry.resource_group).to eq(result)
+        end
       end
     end
 

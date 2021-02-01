@@ -39,7 +39,7 @@ class Repository
   #
   # For example, for entry `:commit_count` there's a method called `commit_count` which
   # stores its data in the `commit_count` cache key.
-  CACHED_METHODS = %i(size commit_count rendered_readme readme_path contribution_guide
+  CACHED_METHODS = %i(size commit_count readme_path contribution_guide
                       changelog license_blob license_key gitignore
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? root_ref merged_branch_names
@@ -53,7 +53,7 @@ class Repository
   # changed. This Hash maps file types (as returned by Gitlab::FileDetector) to
   # the corresponding methods to call for refreshing caches.
   METHOD_CACHES_FOR_FILE_TYPES = {
-    readme: %i(rendered_readme readme_path),
+    readme: %i(readme_path),
     changelog: :changelog,
     license: %i(license_blob license_key license),
     contributing: :contribution_guide,
@@ -498,23 +498,7 @@ class Repository
   end
 
   def blob_at(sha, path)
-    blob = Blob.decorate(raw_repository.blob_at(sha, path), container)
-
-    # Don't attempt to return a special result if there is no blob at all
-    return unless blob
-
-    # Don't attempt to return a special result if this can't be a README
-    return blob unless Gitlab::FileDetector.type_of(blob.name) == :readme
-
-    # Don't attempt to return a special result unless we're looking at HEAD
-    return blob unless head_commit&.sha == sha
-
-    case path
-    when head_tree&.readme_path
-      ReadmeBlob.new(blob, self)
-    else
-      blob
-    end
+    Blob.decorate(raw_repository.blob_at(sha, path), container)
   rescue Gitlab::Git::Repository::NoRepository
     nil
   end
@@ -611,15 +595,6 @@ class Repository
     head_tree&.readme_path
   end
   cache_method :readme_path
-
-  def rendered_readme
-    return unless readme
-
-    context = { project: project }
-
-    MarkupHelper.markup_unsafe(readme.name, readme.data, context)
-  end
-  cache_method :rendered_readme
 
   def contribution_guide
     file_on_head(:contributing)

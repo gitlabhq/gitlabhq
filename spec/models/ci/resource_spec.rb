@@ -19,7 +19,7 @@ RSpec.describe Ci::Resource do
     subject { described_class.retained_by(build) }
 
     let(:build) { create(:ci_build) }
-    let!(:resource) { create(:ci_resource, build: build) }
+    let!(:resource) { create(:ci_resource, processable: build) }
 
     it 'returns retained resources' do
       is_expected.to eq([resource])

@@ -11,6 +11,8 @@ RSpec.describe 'Projects > Settings > User manages project members' do
   let(:user_mike) { create(:user, name: 'Mike') }
 
   before do
+    stub_feature_flags(vue_project_members_list: false)
+
     project.add_maintainer(user)
     project.add_developer(user_dmitriy)
     sign_in(user)

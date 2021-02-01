@@ -20,6 +20,7 @@ RSpec.describe 'Projects > Members > Tabs' do
   end
 
   before do
+    stub_feature_flags(vue_project_members_list: false)
     allow(Kaminari.config).to receive(:default_per_page).and_return(1)
 
     sign_in(user)

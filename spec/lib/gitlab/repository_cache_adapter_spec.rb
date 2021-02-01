@@ -292,12 +292,11 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
 
   describe '#expire_method_caches' do
     it 'expires the caches of the given methods' do
-      expect(cache).to receive(:expire).with(:rendered_readme)
       expect(cache).to receive(:expire).with(:branch_names)
-      expect(redis_set_cache).to receive(:expire).with(:rendered_readme, :branch_names)
-      expect(redis_hash_cache).to receive(:delete).with(:rendered_readme, :branch_names)
+      expect(redis_set_cache).to receive(:expire).with(:branch_names)
+      expect(redis_hash_cache).to receive(:delete).with(:branch_names)
 
-      repository.expire_method_caches(%i(rendered_readme branch_names))
+      repository.expire_method_caches(%i(branch_names))
     end
 
     it 'does not expire caches for non-existent methods' do

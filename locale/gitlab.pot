@@ -3281,6 +3281,9 @@ msgstr ""
 msgid "An error occurred while loading the file. Please try again later."
 msgstr ""
 
+msgid "An error occurred while loading the members, please try again."
+msgstr ""
+
 msgid "An error occurred while loading the merge request changes."
 msgstr ""
 
@@ -18099,6 +18102,9 @@ msgid "Members|Reverted to LDAP group sync settings."
 msgstr ""
 
 msgid "Members|Role updated successfully."
+msgstr ""
+
+msgid "Members|Search groups"
 msgstr ""
 
 msgid "Members|Search invited"

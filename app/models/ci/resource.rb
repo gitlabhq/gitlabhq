@@ -5,9 +5,9 @@ module Ci
     extend Gitlab::Ci::Model
 
     belongs_to :resource_group, class_name: 'Ci::ResourceGroup', inverse_of: :resources
-    belongs_to :build, class_name: 'Ci::Build', inverse_of: :resource
+    belongs_to :processable, class_name: 'Ci::Processable', foreign_key: 'build_id', inverse_of: :resource
 
-    scope :free, -> { where(build: nil) }
-    scope :retained_by, -> (build) { where(build: build) }
+    scope :free, -> { where(processable: nil) }
+    scope :retained_by, -> (processable) { where(processable: processable) }
   end
 end

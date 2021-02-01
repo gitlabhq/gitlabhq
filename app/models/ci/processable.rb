@@ -3,6 +3,11 @@
 module Ci
   class Processable < ::CommitStatus
     include Gitlab::Utils::StrongMemoize
+    extend ::Gitlab::Utils::Override
+
+    has_one :resource, class_name: 'Ci::Resource', foreign_key: 'build_id', inverse_of: :processable
+
+    belongs_to :resource_group, class_name: 'Ci::ResourceGroup', inverse_of: :processables
 
     accepts_nested_attributes_for :needs
 
@@ -18,6 +23,48 @@ module Ci
       needs = Ci::BuildNeed.scoped_build.select(1)
       needs = needs.where(name: names) if names
       where('NOT EXISTS (?)', needs)
+    end
+
+    state_machine :status do
+      event :enqueue do
+        transition [:created, :skipped, :manual, :scheduled] => :waiting_for_resource, if: :with_resource_group?
+      end
+
+      event :enqueue_scheduled do
+        transition scheduled: :waiting_for_resource, if: :with_resource_group?
+      end
+
+      event :enqueue_waiting_for_resource do
+        transition waiting_for_resource: :preparing, if: :any_unmet_prerequisites?
+        transition waiting_for_resource: :pending
+      end
+
+      before_transition any => :waiting_for_resource do |processable|
+        processable.waiting_for_resource_at = Time.current
+      end
+
+      before_transition on: :enqueue_waiting_for_resource do |processable|
+        next unless processable.with_resource_group?
+
+        processable.resource_group.assign_resource_to(processable)
+      end
+
+      after_transition any => :waiting_for_resource do |processable|
+        processable.run_after_commit do
+          Ci::ResourceGroups::AssignResourceFromResourceGroupWorker
+            .perform_async(processable.resource_group_id)
+        end
+      end
+
+      after_transition any => ::Ci::Processable.completed_statuses do |processable|
+        next unless processable.with_resource_group?
+        next unless processable.resource_group.release_resource_from(processable)
+
+        processable.run_after_commit do
+          Ci::ResourceGroups::AssignResourceFromResourceGroupWorker
+            .perform_async(processable.resource_group_id)
+        end
+      end
     end
 
     def self.select_with_aggregated_needs(project)
@@ -75,6 +122,15 @@ module Ci
 
     def scoped_variables_hash
       raise NotImplementedError
+    end
+
+    override :all_met_to_become_pending?
+    def all_met_to_become_pending?
+      super && !with_resource_group?
+    end
+
+    def with_resource_group?
+      self.resource_group_id.present?
     end
 
     # Overriding scheduling_type enum's method for nil `scheduling_type`s

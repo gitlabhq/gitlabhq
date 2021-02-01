@@ -158,7 +158,7 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
 
             it 'writes a warning to the log' do
               expect(Gitlab::AppLogger).to receive(:warn).with(
-                message: 'Unable to create AlertManagement::Alert',
+                message: 'Unable to create AlertManagement::Alert from Prometheus',
                 project_id: project.id,
                 alert_errors: { hosts: ['hosts array is over 255 chars'] }
               )

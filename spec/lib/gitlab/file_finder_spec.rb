@@ -53,6 +53,14 @@ RSpec.describe Gitlab::FileFinder do
       end
     end
 
+    context 'with white space in the path' do
+      it 'filters by path correctly' do
+        results = subject.find('directory path:"with space/README.md"')
+
+        expect(results.count).to eq(1)
+      end
+    end
+
     it 'does not cause N+1 query' do
       expect(Gitlab::GitalyClient).to receive(:call).at_most(10).times.and_call_original
 

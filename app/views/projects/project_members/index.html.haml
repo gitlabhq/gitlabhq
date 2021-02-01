@@ -1,5 +1,6 @@
 - page_title _("Members")
 - group = @project.group
+- vue_project_members_list_enabled = Feature.enabled?(:vue_project_members_list, @project)
 
 .js-remove-member-modal
 .row.gl-mt-3
@@ -74,24 +75,44 @@
             %span.badge.badge-pill= @requesters.count
     .tab-content
       #tab-members.tab-pane{ class: ('active' unless groups_tab_active?) }
-        = render 'projects/project_members/team', project: @project, group: group, members: @project_members, current_user_is_group_owner: current_user_is_group_owner?(@project)
+        - if vue_project_members_list_enabled
+          .js-project-members-list{ data: project_members_list_data_attributes(@project, @project_members) }
+            .loading
+              .spinner.spinner-md
+        - else
+          = render 'projects/project_members/team', project: @project, group: group, members: @project_members, current_user_is_group_owner: current_user_is_group_owner?(@project)
         = paginate @project_members, theme: "gitlab", params: { search_groups: nil }
       - if show_groups?(@group_links)
         #tab-groups.tab-pane{ class: ('active' if groups_tab_active?) }
-          = render 'projects/project_members/groups', group_links: @group_links
+          - if vue_project_members_list_enabled
+            .js-project-group-links-list{ data: project_group_links_list_data_attributes(@project, @group_links) }
+              .loading
+                .spinner.spinner-md
+          - else
+            = render 'projects/project_members/groups', group_links: @group_links
       - if show_invited_members?(@project, @invited_members)
         #tab-invited-members.tab-pane
-          .card.card-without-border
-            = render 'shared/members/tab_pane/header' do
-              = render 'shared/members/tab_pane/title' do
-                = html_escape(_('Members invited to %{strong_start}%{project_name}%{strong_end}')) % { project_name: @project.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
-            %ul.content-list.members-list
-              = render partial: 'shared/members/member', collection: @invited_members, as: :member, locals: { membership_source: @project, group: group, current_user_is_group_owner: current_user_is_group_owner?(@project) }
+          - if vue_project_members_list_enabled
+            .js-project-invited-members-list{ data: project_members_list_data_attributes(@project, @invited_members) }
+              .loading
+                .spinner.spinner-md
+          - else
+            .card.card-without-border
+              = render 'shared/members/tab_pane/header' do
+                = render 'shared/members/tab_pane/title' do
+                  = html_escape(_('Members invited to %{strong_start}%{project_name}%{strong_end}')) % { project_name: @project.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
+              %ul.content-list.members-list
+                = render partial: 'shared/members/member', collection: @invited_members, as: :member, locals: { membership_source: @project, group: group, current_user_is_group_owner: current_user_is_group_owner?(@project) }
       - if show_access_requests?(@project, @requesters)
         #tab-access-requests.tab-pane
-          .card.card-without-border
-            = render 'shared/members/tab_pane/header' do
-              = render 'shared/members/tab_pane/title' do
-                = html_escape(_('Users requesting access to %{strong_start}%{project_name}%{strong_end}')) % { project_name: @project.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
-            %ul.content-list.members-list
-              = render partial: 'shared/members/member', collection: @requesters, as: :member, locals: { membership_source: @project, group: group }
+          - if vue_project_members_list_enabled
+            .js-project-access-requests-list{ data: project_members_list_data_attributes(@project, @requesters) }
+              .loading
+                .spinner.spinner-md
+          - else
+            .card.card-without-border
+              = render 'shared/members/tab_pane/header' do
+                = render 'shared/members/tab_pane/title' do
+                  = html_escape(_('Users requesting access to %{strong_start}%{project_name}%{strong_end}')) % { project_name: @project.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
+              %ul.content-list.members-list
+                = render partial: 'shared/members/member', collection: @requesters, as: :member, locals: { membership_source: @project, group: group }

@@ -32,12 +32,12 @@ RSpec.describe Ci::ResourceGroup do
     let(:build) { create(:ci_build) }
     let(:resource_group) { create(:ci_resource_group) }
 
-    it 'retains resource for the build' do
-      expect(resource_group.resources.first.build).to be_nil
+    it 'retains resource for the processable' do
+      expect(resource_group.resources.first.processable).to be_nil
 
       is_expected.to eq(true)
 
-      expect(resource_group.resources.first.build).to eq(build)
+      expect(resource_group.resources.first.processable).to eq(build)
     end
 
     context 'when there are no free resources' do
@@ -51,7 +51,7 @@ RSpec.describe Ci::ResourceGroup do
     end
 
     context 'when the build has already retained a resource' do
-      let!(:another_resource) { create(:ci_resource, resource_group: resource_group, build: build) }
+      let!(:another_resource) { create(:ci_resource, resource_group: resource_group, processable: build) }
 
       it 'fails to retain resource' do
         expect { subject }.to raise_error(ActiveRecord::RecordNotUnique)
@@ -71,11 +71,11 @@ RSpec.describe Ci::ResourceGroup do
       end
 
       it 'releases resource from the build' do
-        expect(resource_group.resources.first.build).to eq(build)
+        expect(resource_group.resources.first.processable).to eq(build)
 
         is_expected.to eq(true)
 
-        expect(resource_group.resources.first.build).to be_nil
+        expect(resource_group.resources.first.processable).to be_nil
       end
     end
 

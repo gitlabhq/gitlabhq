@@ -14,7 +14,7 @@ module Gitlab
           ALLOWED_KEYS = %i[tags script type image services start_in artifacts
                             cache dependencies before_script after_script
                             environment coverage retry parallel interruptible timeout
-                            resource_group release secrets].freeze
+                            release secrets].freeze
 
           REQUIRED_BY_NEEDS = %i[stage].freeze
 
@@ -30,7 +30,6 @@ module Gitlab
               }
 
               validates :dependencies, array_of_strings: true
-              validates :resource_group, type: String
               validates :allow_failure, hash_or_boolean: true
             end
 
@@ -124,7 +123,7 @@ module Gitlab
 
           attributes :script, :tags, :when, :dependencies,
                      :needs, :retry, :parallel, :start_in,
-                     :interruptible, :timeout, :resource_group,
+                     :interruptible, :timeout,
                      :release, :allow_failure
 
           def self.matching?(name, config)
@@ -174,7 +173,6 @@ module Gitlab
               ignore: ignored?,
               allow_failure_criteria: allow_failure_criteria,
               needs: needs_defined? ? needs_value : nil,
-              resource_group: resource_group,
               scheduling_type: needs_defined? ? :dag : :stage
             ).compact
           end

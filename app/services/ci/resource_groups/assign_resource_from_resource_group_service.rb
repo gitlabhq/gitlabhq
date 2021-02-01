@@ -7,8 +7,8 @@ module Ci
       def execute(resource_group)
         free_resources = resource_group.resources.free.count
 
-        resource_group.builds.waiting_for_resource.take(free_resources).each do |build|
-          build.enqueue_waiting_for_resource
+        resource_group.processables.waiting_for_resource.take(free_resources).each do |processable|
+          processable.enqueue_waiting_for_resource
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord

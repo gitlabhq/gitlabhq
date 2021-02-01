@@ -10,6 +10,8 @@ RSpec.describe "Admin::Projects" do
   let(:current_user) { create(:admin) }
 
   before do
+    stub_feature_flags(vue_project_members_list: false)
+
     sign_in(current_user)
     gitlab_enable_admin_mode_sign_in(current_user)
   end
