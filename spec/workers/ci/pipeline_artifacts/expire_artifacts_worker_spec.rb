@@ -7,7 +7,7 @@ RSpec.describe Ci::PipelineArtifacts::ExpireArtifactsWorker do
 
   describe '#perform' do
     let_it_be(:pipeline_artifact) do
-      create(:ci_pipeline_artifact, expire_at: 1.week.ago)
+      create(:ci_pipeline_artifact, :with_coverage_report, expire_at: 1.week.ago)
     end
 
     it 'executes a service' do

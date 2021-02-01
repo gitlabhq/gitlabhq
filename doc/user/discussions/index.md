@@ -376,7 +376,11 @@ from any device you're logged into.
 
 ## Suggest Changes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/18008) in GitLab 11.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/18008) in GitLab 11.6.
+> - Custom commit messages for suggestions were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25381) in GitLab 13.9.
+> - Custom commit messages for suggestions is disabled on GitLab.com and not recommended for production use.
+> - Custom commit messages for suggestions was deployed behind a [feature flag](../feature_flags.md), disabled by default.
+> - To use custom commit messages for suggestions in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-custom-commit-messages-for-suggestions). **(FREE SELF)**
 
 As a reviewer, you're able to suggest code changes with a simple
 Markdown syntax in Merge Request Diff threads. Then, the
@@ -388,23 +392,49 @@ the merge request authored by the user that applied them.
 1. Choose a line of code to be changed, add a new comment, then click
    on the **Insert suggestion** icon in the toolbar:
 
-   ![Add a new comment](img/suggestion_button_v12_7.png)
+   ![Add a new comment](img/suggestion_button_v13_9.png)
 
 1. In the comment, add your suggestion to the pre-populated code block:
 
-   ![Add a suggestion into a code block tagged properly](img/make_suggestion_v12_7.png)
+   ![Add a suggestion into a code block tagged properly](img/make_suggestion_v13_9.png)
 
 1. Click either **Start a review** or **Add to review** to add your comment to a [review](#merge-request-reviews), or **Add comment now** to add the comment to the thread immediately.
 
    The Suggestion in the comment can be applied by the merge request author
    directly from the merge request:
 
-   ![Apply suggestions](img/apply_suggestion_v12_7.png)
+   ![Apply suggestions](img/apply_suggestion_v13_9.png)
+
+1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25381) in GitLab 13.9,
+   you can opt to add a custom commit message to describe your change. If you don't
+   specify it, the default commit message will be used. Note that [this feature may not be available to you](#enable-or-disable-custom-commit-messages-for-suggestions). 
+   Also, it is not supported for [batch suggestions](#batch-suggestions).
+
+   ![Custom commit](img/custom_commit_v13_9.png)
 
 After the author applies a Suggestion, it will be marked with the **Applied** label,
 the thread will be automatically resolved, and GitLab will create a new commit
 and push the suggested change directly into the codebase in the merge request's
 branch. [Developer permission](../permissions.md) is required to do so.
+
+### Enable or disable Custom commit messages for suggestions **(FREE SELF)**
+
+Custom commit messages for suggestions is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it.
+
+To enable custom commit messages for suggestions:
+
+```ruby
+Feature.enable(:suggestions_custom_commit)
+```
+
+To disable custom commit messages for suggestions:
+
+```ruby
+Feature.disable(:suggestions_custom_commit)
+```
 
 ### Multi-line Suggestions
 

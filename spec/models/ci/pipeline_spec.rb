@@ -3388,7 +3388,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
   describe '#batch_lookup_report_artifact_for_file_type' do
     context 'with code quality report artifact' do
-      let(:pipeline) { create(:ci_pipeline, :with_codequality_report, project: project) }
+      let(:pipeline) { create(:ci_pipeline, :with_codequality_reports, project: project) }
 
       it "returns the code quality artifact" do
         expect(pipeline.batch_lookup_report_artifact_for_file_type(:codequality)).to eq(pipeline.job_artifacts.sample)
@@ -3514,7 +3514,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     subject { pipeline.has_codequality_reports? }
 
     context 'when pipeline has a codequality artifact' do
-      let(:pipeline) { create(:ci_pipeline, :with_codequality_report_artifact, :running, project: project) }
+      let(:pipeline) { create(:ci_pipeline, :with_quality_report_artifact, :running, project: project) }
 
       it { expect(subject).to be_truthy }
     end

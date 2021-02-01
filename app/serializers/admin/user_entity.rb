@@ -10,6 +10,7 @@ module Admin
     expose :email
     expose :last_activity_on
     expose :avatar_url
+    expose :note
     expose :badges do |user|
       user_badges_in_admin_section(user)
     end

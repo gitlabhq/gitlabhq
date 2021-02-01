@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Registrations::ExperienceLevelsController do
+  include AfterNextHelpers
+
   let_it_be(:namespace) { create(:group, path: 'group-path' ) }
   let_it_be(:user) { create(:user) }
 
@@ -45,6 +47,9 @@ RSpec.describe Registrations::ExperienceLevelsController do
     end
 
     context 'with an authenticated user' do
+      let_it_be(:project) { build(:project, namespace: namespace, creator: user, path: 'project-path') }
+      let_it_be(:issues_board) { build(:board, id: 123, project: project) }
+
       before do
         sign_in(user)
         stub_experiment_for_subject(onboarding_issues: true)
@@ -85,97 +90,77 @@ RSpec.describe Registrations::ExperienceLevelsController do
           end
         end
 
-        describe 'redirection' do
-          let(:project) { build(:project, namespace: namespace, creator: user, path: 'project-path') }
-          let(:issues_board) { build(:board, id: 123, project: project) }
+        context 'when "Learn GitLab" project exists' do
+          let(:learn_gitlab_available?) { true }
 
           before do
-            stub_experiment_for_subject(
-              onboarding_issues: true,
-              default_to_issues_board: default_to_issues_board_xp?
-            )
             allow_next_instance_of(LearnGitlab) do |learn_gitlab|
               allow(learn_gitlab).to receive(:available?).and_return(learn_gitlab_available?)
               allow(learn_gitlab).to receive(:project).and_return(project)
               allow(learn_gitlab).to receive(:board).and_return(issues_board)
+              allow(learn_gitlab).to receive(:label).and_return(double(id: 1))
             end
           end
 
-          context 'when namespace_path param is missing' do
-            let(:params) { super().merge(namespace_path: nil) }
+          context 'redirection' do
+            context 'when namespace_path param is missing' do
+              let(:params) { super().merge(namespace_path: nil) }
 
-            where(
-              default_to_issues_board_xp?: [true, false],
-              learn_gitlab_available?: [true, false]
-            )
+              where(
+                learn_gitlab_available?: [true, false]
+              )
 
-            with_them do
-              it { is_expected.to redirect_to('/') }
-            end
-          end
-
-          context 'when we have a namespace_path param' do
-            using RSpec::Parameterized::TableSyntax
-
-            where(:default_to_issues_board_xp?, :learn_gitlab_available?, :path) do
-              true  | true  | '/group-path/project-path/-/boards/123'
-              true  | false | '/group-path'
-              false | true  | '/group-path'
-              false | false | '/group-path'
-            end
-
-            with_them do
-              it { is_expected.to redirect_to(path) }
-            end
-          end
-        end
-
-        describe 'applying the chosen level' do
-          context 'when a "Learn GitLab" project is available' do
-            before do
-              allow_next_instance_of(LearnGitlab) do |learn_gitlab|
-                allow(learn_gitlab).to receive(:available?).and_return(true)
-                allow(learn_gitlab).to receive(:label).and_return(double(id: 1))
+              with_them do
+                it { is_expected.to redirect_to('/') }
               end
             end
 
-            context 'when novice' do
-              let(:params) { super().merge(experience_level: :novice) }
+            context 'when we have a namespace_path param' do
+              using RSpec::Parameterized::TableSyntax
 
-              it 'adds a BoardLabel' do
-                expect_next_instance_of(Boards::UpdateService) do |service|
-                  expect(service).to receive(:execute)
-                end
-
-                subject
+              where(:learn_gitlab_available?, :path) do
+                true  | '/group-path/project-path/-/boards/123'
+                false | '/group-path'
               end
-            end
 
-            context 'when experienced' do
-              let(:params) { super().merge(experience_level: :experienced) }
-
-              it 'does not add a BoardLabel' do
-                expect(Boards::UpdateService).not_to receive(:new)
-
-                subject
+              with_them do
+                it { is_expected.to redirect_to(path) }
               end
             end
           end
 
-          context 'when no "Learn GitLab" project exists' do
+          context 'when novice' do
             let(:params) { super().merge(experience_level: :novice) }
 
-            before do
-              allow_next_instance_of(LearnGitlab) do |learn_gitlab|
-                allow(learn_gitlab).to receive(:available?).and_return(false)
-              end
+            it 'adds a BoardLabel' do
+              expect_next(Boards::UpdateService).to receive(:execute)
+
+              subject
             end
+          end
+
+          context 'when experienced' do
+            let(:params) { super().merge(experience_level: :experienced) }
 
             it 'does not add a BoardLabel' do
               expect(Boards::UpdateService).not_to receive(:new)
 
               subject
             end
+          end
+        end
+
+        context 'when no "Learn GitLab" project exists' do
+          let(:params) { super().merge(experience_level: :novice) }
+
+          before do
+            allow_next(LearnGitlab).to receive(:available?).and_return(false)
+          end
+
+          it 'does not add a BoardLabel' do
+            expect(Boards::UpdateService).not_to receive(:new)
+
+            subject
           end
         end
       end

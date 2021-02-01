@@ -22,6 +22,7 @@ RSpec.describe Admin::UserEntity do
         :username,
         :last_activity_on,
         :avatar_url,
+        :note,
         :badges,
         :projects_count,
         :actions

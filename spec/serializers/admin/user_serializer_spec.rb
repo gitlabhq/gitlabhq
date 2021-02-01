@@ -17,6 +17,7 @@ RSpec.describe Admin::UserSerializer do
         :username,
         :last_activity_on,
         :avatar_url,
+        :note,
         :badges,
         :projects_count,
         :actions

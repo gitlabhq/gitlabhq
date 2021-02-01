@@ -1,8 +1,0 @@
----
-name: default_to_issues_board_experiment_percentage
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43939
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/268298
-milestone: '13.5'
-type: experiment
-group: group::conversion
-default_enabled: true

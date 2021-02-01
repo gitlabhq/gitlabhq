@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineArtifact, type: :model do
-  let(:coverage_report) { create(:ci_pipeline_artifact) }
+  let(:coverage_report) { create(:ci_pipeline_artifact, :with_coverage_report) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:pipeline) }
@@ -15,7 +15,7 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
   it_behaves_like 'UpdateProjectStatistics' do
     let_it_be(:pipeline, reload: true) { create(:ci_pipeline) }
 
-    subject { build(:ci_pipeline_artifact, pipeline: pipeline) }
+    subject { build(:ci_pipeline_artifact, :with_code_coverage_with_multiple_files, pipeline: pipeline) }
   end
 
   describe 'validations' do
@@ -51,7 +51,7 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
   end
 
   describe 'file is being stored' do
-    subject { create(:ci_pipeline_artifact) }
+    subject { create(:ci_pipeline_artifact, :with_coverage_report) }
 
     context 'when existing object has local store' do
       it_behaves_like 'mounted file in local store'
@@ -68,7 +68,7 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
     end
 
     context 'when file contains multi-byte characters' do
-      let(:coverage_report_multibyte) { create(:ci_pipeline_artifact, :with_multibyte_characters) }
+      let(:coverage_report_multibyte) { create(:ci_pipeline_artifact, :with_coverage_multibyte_characters) }
 
       it 'sets the size in bytesize' do
         expect(coverage_report_multibyte.size).to eq(14)
@@ -83,7 +83,7 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
       let(:file_type) { :code_coverage }
 
       context 'when pipeline artifact has a coverage report' do
-        let!(:pipeline_artifact) { create(:ci_pipeline_artifact) }
+        let!(:pipeline_artifact) { create(:ci_pipeline_artifact, :with_coverage_report) }
 
         it 'returns true' do
           expect(pipeline_artifact).to be_truthy
@@ -101,7 +101,7 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
       let(:file_type) { :code_quality }
 
       context 'when pipeline artifact has a quality report' do
-        let!(:pipeline_artifact) { create(:ci_pipeline_artifact, :codequality_report) }
+        let!(:pipeline_artifact) { create(:ci_pipeline_artifact, :with_codequality_report) }
 
         it 'returns true' do
           expect(pipeline_artifact).to be_truthy
@@ -131,7 +131,7 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
       let(:file_type) { :code_coverage }
 
       context 'when pipeline artifact has a coverage report' do
-        let!(:coverage_report) { create(:ci_pipeline_artifact) }
+        let!(:coverage_report) { create(:ci_pipeline_artifact, :with_coverage_report) }
 
         it 'returns a pipeline artifact with a coverage report' do
           expect(pipeline_artifact.file_type).to eq('code_coverage')
@@ -149,7 +149,7 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
       let(:file_type) { :code_quality }
 
       context 'when pipeline artifact has a quality report' do
-        let!(:coverage_report) { create(:ci_pipeline_artifact, :codequality_report) }
+        let!(:coverage_report) { create(:ci_pipeline_artifact, :with_codequality_report) }
 
         it 'returns a pipeline artifact with a quality report' do
           expect(pipeline_artifact.file_type).to eq('code_quality')
