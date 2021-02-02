@@ -20,7 +20,7 @@ module QA
       before do
         Flow::Login.sign_in
 
-        Flow::Project.add_member(project: project, username: user.username)
+        project.add_member(user)
 
         Resource::Issue.fabricate_via_api! do |issue|
           issue.project = project

@@ -803,7 +803,7 @@ module Ci
           variables.concat(merge_request.predefined_variables)
         end
 
-        if Gitlab::Ci::Features.pipeline_open_merge_requests?(project) && open_merge_requests_refs.any?
+        if open_merge_requests_refs.any?
           variables.append(key: 'CI_OPEN_MERGE_REQUESTS', value: open_merge_requests_refs.join(','))
         end
 

@@ -20,7 +20,12 @@ module QA
       end
 
       it 'is received by a user for project invitation', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/676' do
-        Flow::Project.add_member(project: project, username: user.username)
+        project.visit!
+
+        Page::Project::Menu.perform(&:click_members)
+        Page::Project::Members.perform do |member_settings|
+          member_settings.add_member(user.username)
+        end
 
         expect(page).to have_content(/@#{user.username}(\n| )?Given access/)
 

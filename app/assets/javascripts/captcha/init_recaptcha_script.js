@@ -2,9 +2,6 @@
 import { memoize } from 'lodash';
 
 export const RECAPTCHA_API_URL_PREFIX = 'https://www.google.com/recaptcha/api.js';
-/**
- * The name which will be used for the reCAPTCHA script's onload callback
- */
 export const RECAPTCHA_ONLOAD_CALLBACK_NAME = 'recaptchaOnloadCallback';
 
 /**
@@ -21,9 +18,7 @@ export const RECAPTCHA_ONLOAD_CALLBACK_NAME = 'recaptchaOnloadCallback';
  *
  */
 export const initRecaptchaScript = memoize(() => {
-  /**
-   * Appends the the reCAPTCHA script tag to the head of document
-   */
+  // Appends the the reCAPTCHA script tag to the head of document
   const appendRecaptchaScript = () => {
     const script = document.createElement('script');
     script.src = `${RECAPTCHA_API_URL_PREFIX}?onload=${RECAPTCHA_ONLOAD_CALLBACK_NAME}&render=explicit`;
@@ -31,11 +26,14 @@ export const initRecaptchaScript = memoize(() => {
     document.head.appendChild(script);
   };
 
-  /**
-   * Returns a Promise which is fulfilled after the reCAPTCHA script is loaded
-   */
   return new Promise((resolve) => {
-    window[RECAPTCHA_ONLOAD_CALLBACK_NAME] = resolve;
+    // This global callback resolves the Promise and is passed by name to the reCAPTCHA script.
+    window[RECAPTCHA_ONLOAD_CALLBACK_NAME] = (val) => {
+      // Let's clean up after ourselves. This is also important for testing, because `window` is NOT cleared between tests.
+      // https://github.com/facebook/jest/issues/1224#issuecomment-444586798.
+      delete window[RECAPTCHA_ONLOAD_CALLBACK_NAME];
+      resolve(val);
+    };
     appendRecaptchaScript();
   });
 });

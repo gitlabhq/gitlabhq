@@ -55,10 +55,6 @@ module Gitlab
         ::Feature.enabled?(:ci_trace_log_invalid_chunks, project, type: :ops, default_enabled: false)
       end
 
-      def self.pipeline_open_merge_requests?(project)
-        ::Feature.enabled?(:ci_pipeline_open_merge_requests, project, default_enabled: true)
-      end
-
       def self.ci_pipeline_editor_page_enabled?(project)
         ::Feature.enabled?(:ci_pipeline_editor_page, project, default_enabled: :yaml)
       end
