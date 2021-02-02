@@ -25,7 +25,7 @@
         = (_("Code coverage statistics for %{ref} %{start_date} - %{end_date}") % { ref: "<strong>#{h @ref}</strong>", start_date: start_date, end_date: end_date }).html_safe
       - download_path = capture do
         #{@daily_coverage_options[:download_path]}
-      %a.btn.gl-button.btn-sm{ href: "#{download_path}?#{@daily_coverage_options[:base_params].to_query}" }
+      %a.btn.gl-button.btn-default.btn-sm{ href: "#{download_path}?#{@daily_coverage_options[:base_params].to_query}" }
         %small
           = _("Download raw data (.csv)")
     #js-code-coverage-chart{ data: { graph_endpoint: "#{@daily_coverage_options[:graph_api_path]}?#{@daily_coverage_options[:base_params].to_query}" } }

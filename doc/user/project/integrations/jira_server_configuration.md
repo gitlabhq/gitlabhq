@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Create Jira Server username and password
 
-We need to create a user account in Jira to have access to all projects that
-need to integrate with GitLab.
+For [integrations with Jira](jira.md), you must create a user account in Jira to have access to
+all projects that need to integrate with GitLab.
 
 The Jira user account created for the integration must have write access to
 your Jira projects.
@@ -65,4 +65,4 @@ member of a new group named `gitlab-developers`:
    ![Jira group access](img/jira_group_access.png)
 
 The Jira configuration is complete. Write down the new Jira username and its
-password, as you'll need them when [configuring GitLab in the next section](jira.md#configuring-gitlab).
+password, as you need them when [configuring GitLab](jira.md#configure-gitlab).

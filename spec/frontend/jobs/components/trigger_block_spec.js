@@ -1,100 +1,86 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import component from '~/jobs/components/trigger_block.vue';
+import { mount } from '@vue/test-utils';
+import { GlButton, GlTable } from '@gitlab/ui';
+import TriggerBlock from '~/jobs/components/trigger_block.vue';
 
 describe('Trigger block', () => {
-  const Component = Vue.extend(component);
-  let vm;
+  let wrapper;
+
+  const findRevealButton = () => wrapper.find(GlButton);
+  const findVariableTable = () => wrapper.find(GlTable);
+  const findShortToken = () => wrapper.find('[data-testid="trigger-short-token"]');
+  const findVariableValue = (index) =>
+    wrapper.findAll('[data-testid="trigger-build-value"]').at(index);
+  const findVariableKey = (index) => wrapper.findAll('[data-testid="trigger-build-key"]').at(index);
+
+  const createComponent = (props) => {
+    wrapper = mount(TriggerBlock, {
+      propsData: {
+        ...props,
+      },
+    });
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
+    wrapper = null;
   });
 
-  describe('with short token', () => {
+  describe('with short token and no variables', () => {
     it('renders short token', () => {
-      vm = mountComponent(Component, {
+      createComponent({
         trigger: {
           short_token: '0a666b2',
+          variables: [],
         },
       });
 
-      expect(vm.$el.querySelector('.js-short-token').textContent).toContain('0a666b2');
+      expect(findShortToken().text()).toContain('0a666b2');
     });
   });
 
-  describe('without short token', () => {
-    it('does not render short token', () => {
-      vm = mountComponent(Component, { trigger: {} });
+  describe('without variables or short token', () => {
+    beforeEach(() => {
+      createComponent({ trigger: { variables: [] } });
+    });
 
-      expect(vm.$el.querySelector('.js-short-token')).toBeNull();
+    it('does not render short token', () => {
+      expect(findShortToken().exists()).toBe(false);
+    });
+
+    it('does not render variables', () => {
+      expect(findRevealButton().exists()).toBe(false);
+      expect(findVariableTable().exists()).toBe(false);
     });
   });
 
   describe('with variables', () => {
     describe('hide/reveal variables', () => {
-      it('should toggle variables on click', (done) => {
-        vm = mountComponent(Component, {
+      it('should toggle variables on click', async () => {
+        const hiddenValue = '••••••';
+        const gcsVar = { key: 'UPLOAD_TO_GCS', value: 'false', public: false };
+        const s3Var = { key: 'UPLOAD_TO_S3', value: 'true', public: false };
+
+        createComponent({
           trigger: {
-            short_token: 'bd7e',
-            variables: [
-              { key: 'UPLOAD_TO_GCS', value: 'false', public: false },
-              { key: 'UPLOAD_TO_S3', value: 'true', public: false },
-            ],
+            variables: [gcsVar, s3Var],
           },
         });
 
-        vm.$el.querySelector('.js-reveal-variables').click();
+        expect(findRevealButton().text()).toBe('Reveal values');
 
-        vm.$nextTick()
-          .then(() => {
-            expect(vm.$el.querySelector('.js-build-variables')).not.toBeNull();
-            expect(vm.$el.querySelector('.js-reveal-variables').textContent.trim()).toEqual(
-              'Hide values',
-            );
+        expect(findVariableValue(0).text()).toBe(hiddenValue);
+        expect(findVariableValue(1).text()).toBe(hiddenValue);
 
-            expect(vm.$el.querySelector('.js-build-variables').textContent).toContain(
-              'UPLOAD_TO_GCS',
-            );
+        expect(findVariableKey(0).text()).toBe(gcsVar.key);
+        expect(findVariableKey(1).text()).toBe(s3Var.key);
 
-            expect(vm.$el.querySelector('.js-build-variables').textContent).toContain('false');
-            expect(vm.$el.querySelector('.js-build-variables').textContent).toContain(
-              'UPLOAD_TO_S3',
-            );
+        await findRevealButton().trigger('click');
 
-            expect(vm.$el.querySelector('.js-build-variables').textContent).toContain('true');
+        expect(findRevealButton().text()).toBe('Hide values');
 
-            vm.$el.querySelector('.js-reveal-variables').click();
-          })
-          .then(vm.$nextTick)
-          .then(() => {
-            expect(vm.$el.querySelector('.js-reveal-variables').textContent.trim()).toEqual(
-              'Reveal values',
-            );
-
-            expect(vm.$el.querySelector('.js-build-variables').textContent).toContain(
-              'UPLOAD_TO_GCS',
-            );
-
-            expect(vm.$el.querySelector('.js-build-value').textContent).toContain('••••••');
-
-            expect(vm.$el.querySelector('.js-build-variables').textContent).toContain(
-              'UPLOAD_TO_S3',
-            );
-
-            expect(vm.$el.querySelector('.js-build-value').textContent).toContain('••••••');
-          })
-          .then(done)
-          .catch(done.fail);
+        expect(findVariableValue(0).text()).toBe(gcsVar.value);
+        expect(findVariableValue(1).text()).toBe(s3Var.value);
       });
-    });
-  });
-
-  describe('without variables', () => {
-    it('does not render variables', () => {
-      vm = mountComponent(Component, { trigger: {} });
-
-      expect(vm.$el.querySelector('.js-reveal-variables')).toBeNull();
-      expect(vm.$el.querySelector('.js-build-variables')).toBeNull();
     });
   });
 });

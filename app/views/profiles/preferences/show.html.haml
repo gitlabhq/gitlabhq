@@ -8,7 +8,7 @@
   = stylesheet_link_tag "themes/#{theme.css_filename}" if theme.css_filename
 
 = form_for @user, url: profile_preferences_path, remote: true, method: :put do |f|
-  .row.gl-mt-3.js-preferences-form
+  .row.gl-mt-3.js-preferences-form.js-search-settings-section
     .col-lg-4.application-theme#navigation-theme
       %h4.gl-mt-0
         = s_('Preferences|Navigation theme')
@@ -25,6 +25,7 @@
     .col-sm-12
       %hr
 
+  .row.js-preferences-form.js-search-settings-section
     .col-lg-4.profile-settings-sidebar#syntax-highlighting-theme
       %h4.gl-mt-0
         = s_('Preferences|Syntax highlighting theme')
@@ -42,6 +43,7 @@
     .col-sm-12
       %hr
 
+  .row.js-preferences-form.js-search-settings-section
     .col-lg-4.profile-settings-sidebar#behavior
       %h4.gl-mt-0
         = s_('Preferences|Behavior')
@@ -97,7 +99,7 @@
 
     .col-sm-12
       %hr
-
+  .row.js-preferences-form.js-search-settings-section
     .col-lg-4.profile-settings-sidebar#localization
       %h4.gl-mt-0
         = _('Localization')

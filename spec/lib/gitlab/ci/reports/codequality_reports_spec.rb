@@ -4,62 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Reports::CodequalityReports do
   let(:codequality_report) { described_class.new }
-  let(:degradation_1) do
-    {
-      "categories": [
-        "Complexity"
-      ],
-      "check_name": "argument_count",
-      "content": {
-        "body": ""
-      },
-      "description": "Method `new_array` has 12 arguments (exceeds 4 allowed). Consider refactoring.",
-      "fingerprint": "15cdb5c53afd42bc22f8ca366a08d547",
-      "location": {
-        "path": "foo.rb",
-        "lines": {
-          "begin": 10,
-          "end": 10
-        }
-      },
-      "other_locations": [],
-      "remediation_points": 900000,
-      "severity": "major",
-      "type": "issue",
-      "engine_name": "structure"
-    }.with_indifferent_access
-  end
-
-  let(:degradation_2) do
-    {
-      "type": "Issue",
-      "check_name": "Rubocop/Metrics/ParameterLists",
-      "description": "Avoid parameter lists longer than 5 parameters. [12/5]",
-      "categories": [
-        "Complexity"
-      ],
-      "remediation_points": 550000,
-      "location": {
-        "path": "foo.rb",
-        "positions": {
-          "begin": {
-            "column": 14,
-            "line": 10
-          },
-          "end": {
-            "column": 39,
-            "line": 10
-          }
-        }
-      },
-      "content": {
-        "body": "This cop checks for methods with too many parameters.\nThe maximum number of parameters is configurable.\nKeyword arguments can optionally be excluded from the total count."
-      },
-      "engine_name": "rubocop",
-      "fingerprint": "ab5f8b935886b942d621399f5a2ca16e",
-      "severity": "minor"
-    }.with_indifferent_access
-  end
+  let(:degradation_1) { build(:codequality_degradation_1) }
+  let(:degradation_2) { build(:codequality_degradation_2) }
 
   it { expect(codequality_report.degradations).to eq({}) }
 

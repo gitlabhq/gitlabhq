@@ -681,7 +681,7 @@ export const secondsToHours = (offset) => {
  * @param {Date} date the initial date
  * @param {Number} numberOfDays number of days after
  * @param {Object} [options={}] Additional options for this calculation
- * @param {boolean} [options.utc=false] Perform the calculation using UTC dates.
+ * @param {boolean} [options.utc=false] Performs the calculation using UTC dates.
  * This will cause Daylight Saving Time to be ignored. Defaults to `false`
  * if not provided, which causes the calculation to be performed in the
  * user's timezone.
@@ -704,7 +704,7 @@ export const nDaysAfter = (date, numberOfDays, { utc = false } = {}) => {
  * @param {Date} date the initial date
  * @param {Number} numberOfDays number of days before
  * @param {Object} [options={}] Additional options for this calculation
- * @param {boolean} [options.utc=false] Perform the calculation using UTC dates.
+ * @param {boolean} [options.utc=false] Performs the calculation using UTC dates.
  * This will cause Daylight Saving Time to be ignored. Defaults to `false`
  * if not provided, which causes the calculation to be performed in the
  * user's timezone.
@@ -719,7 +719,7 @@ export const nDaysBefore = (date, numberOfDays, options) =>
  * @param {Date} date the initial date
  * @param {Number} numberOfWeeks number of weeks after
  * @param {Object} [options={}] Additional options for this calculation
- * @param {boolean} [options.utc=false] Perform the calculation using UTC dates.
+ * @param {boolean} [options.utc=false] Performs the calculation using UTC dates.
  * This will cause Daylight Saving Time to be ignored. Defaults to `false`
  * if not provided, which causes the calculation to be performed in the
  * user's timezone.
@@ -735,7 +735,7 @@ export const nWeeksAfter = (date, numberOfWeeks, options) =>
  * @param {Date} date the initial date
  * @param {Number} numberOfWeeks number of weeks before
  * @param {Object} [options={}] Additional options for this calculation
- * @param {boolean} [options.utc=false] Perform the calculation using UTC dates.
+ * @param {boolean} [options.utc=false] Performs the calculation using UTC dates.
  * This will cause Daylight Saving Time to be ignored. Defaults to `false`
  * if not provided, which causes the calculation to be performed in the
  * user's timezone.
@@ -751,7 +751,7 @@ export const nWeeksBefore = (date, numberOfWeeks, options) =>
  * @param {Date} date the initial date
  * @param {Number} numberOfMonths number of months after
  * @param {Object} [options={}] Additional options for this calculation
- * @param {boolean} [options.utc=false] Perform the calculation using UTC dates.
+ * @param {boolean} [options.utc=false] Performs the calculation using UTC dates.
  * This will cause Daylight Saving Time to be ignored. Defaults to `false`
  * if not provided, which causes the calculation to be performed in the
  * user's timezone.
@@ -774,7 +774,7 @@ export const nMonthsAfter = (date, numberOfMonths, { utc = false } = {}) => {
  * @param {Date} date the initial date
  * @param {Number} numberOfMonths number of months before
  * @param {Object} [options={}] Additional options for this calculation
- * @param {boolean} [options.utc=false] Perform the calculation using UTC dates.
+ * @param {boolean} [options.utc=false] Performs the calculation using UTC dates.
  * This will cause Daylight Saving Time to be ignored. Defaults to `false`
  * if not provided, which causes the calculation to be performed in the
  * user's timezone.
@@ -789,7 +789,7 @@ export const nMonthsBefore = (date, numberOfMonths, options) =>
  *
  * @param {Date} date the initial date
  * @param {Object} [options={}] Additional options for this calculation
- * @param {boolean} [options.utc=false] Perform the calculation using UTC dates.
+ * @param {boolean} [options.utc=false] Performs the calculation using UTC dates.
  * This will cause Daylight Saving Time to be ignored. Defaults to `false`
  * if not provided, which causes the calculation to be performed in the
  * user's timezone.
@@ -996,7 +996,7 @@ export const isToday = (date) => {
  * Returns the start of the provided day
  *
  * @param {Object} [options={}] Additional options for this calculation
- * @param {boolean} [options.utc=false] Perform the calculation using UTC time.
+ * @param {boolean} [options.utc=false] Performs the calculation using UTC time.
  * If `true`, the time returned will be midnight UTC. If `false` (the default)
  * the time returned will be midnight in the user's local time.
  *

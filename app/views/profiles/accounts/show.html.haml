@@ -15,7 +15,7 @@
     .gl-alert-body
       = _('Congratulations! You have enabled Two-factor Authentication!')
 
-.row.gl-mt-3
+.row.gl-mt-3.js-search-settings-section
   .col-lg-4.profile-settings-sidebar
     %h4.gl-mt-0
       = s_('Profiles|Two-Factor Authentication')
@@ -29,10 +29,11 @@
     - else
       .gl-mb-3
         = link_to _('Enable two-factor authentication'), profile_two_factor_auth_path, class: 'gl-button btn btn-success', data: { qa_selector: 'enable_2fa_button' }
+  .col-lg-12
+    %hr
 
-%hr
 - if display_providers_on_profile?
-  .row.gl-mt-3
+  .row.gl-mt-3.js-search-settings-section
     .col-lg-4.profile-settings-sidebar
       %h4.gl-mt-0
         = s_('Profiles|Social sign-in')
@@ -40,9 +41,10 @@
         = s_('Profiles|Activate signin with one of the following services')
     .col-lg-8
       = render 'providers', providers: button_based_providers, group_saml_identities: local_assigns[:group_saml_identities]
-  %hr
+    .col-lg-12
+      %hr
 - if current_user.can_change_username?
-  .row.gl-mt-3
+  .row.gl-mt-3.js-search-settings-section
     .col-lg-4.profile-settings-sidebar
       %h4.gl-mt-0.warning-title
         = s_('Profiles|Change username')
@@ -53,9 +55,10 @@
     .col-lg-8
       - data = { initial_username: current_user.username, root_url: root_url, action_url: update_username_profile_path(format: :json) }
       #update-username{ data: data }
-  %hr
+    .col-lg-12
+      %hr
 
-.row.gl-mt-3
+.row.gl-mt-3.js-search-settings-section
   .col-lg-4.profile-settings-sidebar
     %h4.gl-mt-0.danger-title
       = s_('Profiles|Delete account')

@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlBadge, GlLink } from '@gitlab/ui';
-import { s__ } from '../../locale';
+import { s__ } from '~/locale';
 /**
  * Renders Stuck Runners block for job's view.
  */

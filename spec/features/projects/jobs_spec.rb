@@ -533,10 +533,10 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
             expect(page).to have_content('Trigger token')
             expect(page).to have_content('Trigger variables')
 
-            expect(page).not_to have_css('.js-reveal-variables')
+            expect(page).not_to have_selector('[data-testid="trigger-reveal-values-button"]')
 
-            expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
-            expect(page).to have_selector('.js-build-value', text: '••••••')
+            expect(page).to have_selector('[data-testid="trigger-build-key"]', text: 'TRIGGER_KEY_1')
+            expect(page).to have_selector('[data-testid="trigger-build-value"]', text: '••••••')
           end
         end
 
@@ -571,17 +571,17 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
             expect(page).to have_content('Trigger token')
             expect(page).to have_content('Trigger variables')
 
-            expect(page).to have_css('.js-reveal-variables')
+            expect(page).to have_selector('[data-testid="trigger-reveal-values-button"]')
 
-            expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
-            expect(page).to have_selector('.js-build-value', text: '••••••')
+            expect(page).to have_selector('[data-testid="trigger-build-key"]', text: 'TRIGGER_KEY_1')
+            expect(page).to have_selector('[data-testid="trigger-build-value"]', text: '••••••')
           end
 
           it 'reveals values on button click', :js do
             click_button 'Reveal values'
 
-            expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
-            expect(page).to have_selector('.js-build-value', text: 'TRIGGER_VALUE_1')
+            expect(page).to have_selector('[data-testid="trigger-build-key"]', text: 'TRIGGER_KEY_1')
+            expect(page).to have_selector('[data-testid="trigger-build-value"]', text: 'TRIGGER_VALUE_1')
           end
         end
 
