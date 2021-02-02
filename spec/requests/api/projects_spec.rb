@@ -1687,7 +1687,7 @@ RSpec.describe API::Projects do
       end
 
       it 'returns a 404 error if not found' do
-        get api('/projects/42', user)
+        get api("/projects/#{non_existing_record_id}", user)
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Project Not Found')
       end
@@ -2048,7 +2048,7 @@ RSpec.describe API::Projects do
       end
 
       it 'returns a 404 error if not found' do
-        get api('/projects/42/users', user)
+        get api("/projects/#{non_existing_record_id}/users", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Project Not Found')
@@ -3177,7 +3177,7 @@ RSpec.describe API::Projects do
       end
 
       it 'fails if project to fork from does not exist' do
-        post api('/projects/424242/fork', user)
+        post api("/projects/#{non_existing_record_id}/fork", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Project Not Found')
@@ -3211,7 +3211,7 @@ RSpec.describe API::Projects do
       end
 
       it 'fails if trying to fork to non-existent namespace' do
-        post api("/projects/#{project.id}/fork", user2), params: { namespace: 42424242 }
+        post api("/projects/#{project.id}/fork", user2), params: { namespace: non_existing_record_id }
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Namespace Not Found')

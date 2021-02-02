@@ -62,3 +62,25 @@ data_source: database
 distribution: [ee, ce]
 tier: ['free', 'starter', 'premium', 'ultimate', 'bronze', 'silver', 'gold']
 ```
+
+## Create a new metric definition
+
+The GitLab codebase provides a dedicated [generator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/generators/gitlab/usage_metric_definition_generator.rb) to create new metric definitions.
+
+The generator takes the key path argument and 2 options and creates the metric YAML definition in corresponding location:
+
+- `--ee`, `--no-ee` Indicates if metric is for EE.
+- `--dir=DIR` indicates the metric directory. It must be one of: `counts_7d`, `7d`, `counts_28d`, `28d`, `counts_all`, `all`, `settings`, `license`.
+
+```shell
+bundle exec rails generate gitlab:usage_metric_definition counts.issues --dir=7d
+create  config/metrics/counts_7d/issues.yml
+```
+
+NOTE:
+To create a metric definition used in EE, add the `--ee` flag.
+
+```shell
+bundle exec rails generate gitlab:usage_metric_definition counts.issues --ee --dir=7d
+create  ee/config/metrics/counts_7d/issues.yml
+```

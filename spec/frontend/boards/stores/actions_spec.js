@@ -71,7 +71,7 @@ describe('setFilters', () => {
       actions.setFilters,
       filters,
       state,
-      [{ type: types.SET_FILTERS, payload: filters }],
+      [{ type: types.SET_FILTERS, payload: { ...filters, not: {} } }],
       [],
       done,
     );

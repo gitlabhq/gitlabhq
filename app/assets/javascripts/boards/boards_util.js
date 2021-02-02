@@ -1,6 +1,6 @@
 import { sortBy } from 'lodash';
+import { ListType, NOT_FILTER } from './constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { ListType } from './constants';
 
 export function getMilestone() {
   return null;
@@ -144,6 +144,17 @@ export function isListDraggable(list) {
   return list.listType !== ListType.backlog && list.listType !== ListType.closed;
 }
 
+export function transformNotFilters(filters) {
+  return Object.keys(filters)
+    .filter((key) => key.startsWith(NOT_FILTER))
+    .reduce((obj, key) => {
+      return {
+        ...obj,
+        [key.substring(4, key.length - 1)]: filters[key],
+      };
+    }, {});
+}
+
 // EE-specific feature. Find the implementation in the `ee/`-folder
 export function transformBoardConfig() {
   return '';
@@ -157,4 +168,5 @@ export default {
   fullLabelId,
   fullIterationId,
   isListDraggable,
+  transformNotFilters,
 };

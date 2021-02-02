@@ -16,6 +16,7 @@ import {
   formatIssue,
   formatIssueInput,
   updateListPosition,
+  transformNotFilters,
 } from '../boards_util';
 import listsIssuesQuery from '../graphql/lists_issues.query.graphql';
 import boardLabelsQuery from '../graphql/board_labels.query.graphql';
@@ -66,6 +67,7 @@ export default {
       'releaseTag',
       'search',
     ]);
+    filterParams.not = transformNotFilters(filters);
     commit(types.SET_FILTERS, filterParams);
   },
 

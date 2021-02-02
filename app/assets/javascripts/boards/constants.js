@@ -16,6 +16,8 @@ export const inactiveId = 0;
 export const ISSUABLE = 'issuable';
 export const LIST = 'list';
 
+export const NOT_FILTER = 'not[';
+
 export default {
   BoardType,
   ListType,
