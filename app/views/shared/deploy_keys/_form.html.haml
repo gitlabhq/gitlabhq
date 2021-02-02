@@ -6,7 +6,7 @@
 
 .form-group
   = form.label :title, class: 'col-form-label col-sm-2'
-  .col-sm-10= form.text_field :title, class: 'form-control', readonly: ('readonly' unless can?(current_user, :update_deploy_key, deploy_key))
+  .col-sm-10= form.text_field :title, class: 'form-control gl-form-input', readonly: ('readonly' unless can?(current_user, :update_deploy_key, deploy_key))
 
 .form-group
   - if deploy_key.new_record?
@@ -16,11 +16,11 @@
         - link_start = "<a href='#{help_page_path('ssh/README')}' target='_blank' rel='noreferrer noopener'>".html_safe
         - link_end = '</a>'
         = _('Paste a machine public key here. Read more about how to generate it %{link_start}here%{link_end}').html_safe % { link_start: link_start, link_end: link_end.html_safe }
-      = form.text_area :key, class: 'form-control thin_area', rows: 5
+      = form.text_area :key, class: 'form-control gl-form-input thin_area', rows: 5
   - else
     = form.label :fingerprint, class: 'col-form-label col-sm-2'
     .col-sm-10
-      = form.text_field :fingerprint, class: 'form-control', readonly: 'readonly'
+      = form.text_field :fingerprint, class: 'form-control gl-form-input', readonly: 'readonly'
 
 - if deploy_keys_project.present?
   = form.fields_for :deploy_keys_projects, deploy_keys_project do |deploy_keys_project_form|

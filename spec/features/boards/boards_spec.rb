@@ -13,6 +13,8 @@ RSpec.describe 'Issue Boards', :js do
   let_it_be(:user2)   { create(:user) }
 
   before do
+    stub_feature_flags(board_new_list: false)
+
     project.add_maintainer(user)
     project.add_maintainer(user2)
 

@@ -18,6 +18,7 @@ RSpec.describe 'Labels Hierarchy', :js do
 
   before do
     stub_feature_flags(graphql_board_lists: false)
+    stub_feature_flags(board_new_list: false)
     grandparent.add_owner(user)
 
     sign_in(user)
@@ -270,6 +271,10 @@ RSpec.describe 'Labels Hierarchy', :js do
   end
 
   context 'creating boards lists' do
+    before do
+      stub_feature_flags(board_new_list: false)
+    end
+
     context 'on project boards' do
       let(:board) { create(:board, project: project_1) }
 

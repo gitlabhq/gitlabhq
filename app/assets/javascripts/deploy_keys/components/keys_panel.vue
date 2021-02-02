@@ -48,7 +48,7 @@ export default {
         :project-id="projectId"
       />
     </template>
-    <div v-else class="settings-message text-center">
+    <div v-else class="settings-message text-center gl-mt-5">
       {{ s__('DeployKeys|No deploy keys found. Create one with the form above.') }}
     </div>
   </div>

@@ -61,7 +61,7 @@ module Gitlab
             key_slot(args.first)
           end
 
-          unless key_slots.uniq.length == 1
+          if key_slots.uniq.many? # rubocop: disable CodeReuse/ActiveRecord
             raise CrossSlotError.new("Redis command #{command_name} arguments hash to different slots. See https://docs.gitlab.com/ee/development/redis.html#multi-key-commands")
           end
         end

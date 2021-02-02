@@ -212,7 +212,8 @@
 
             = render_if_exists "layouts/nav/test_cases_link", project: @project
 
-      = render_if_exists 'layouts/nav/sidebar/project_security_link' # EE-specific
+      - if project_nav_tab? :security_and_compliance
+        = render_if_exists 'layouts/nav/sidebar/project_security_link' # EE-specific
 
       - if project_nav_tab? :operations
         = nav_link(controller: sidebar_operations_paths) do

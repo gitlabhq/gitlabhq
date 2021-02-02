@@ -270,4 +270,8 @@ export default {
       state.selectedBoardItems.filter((obj) => obj !== boardItem),
     );
   },
+
+  [mutationTypes.SET_ADD_COLUMN_FORM_VISIBLE]: (state, visible) => {
+    state.addColumnFormVisible = visible;
+  },
 };

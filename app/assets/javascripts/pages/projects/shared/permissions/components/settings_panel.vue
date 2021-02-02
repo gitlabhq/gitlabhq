@@ -75,6 +75,11 @@ export default {
       required: false,
       default: false,
     },
+    securityAndComplianceAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     visibilityHelpPath: {
       type: String,
       required: false,
@@ -141,6 +146,7 @@ export default {
       metricsDashboardAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
       analyticsAccessLevel: featureAccessLevel.EVERYONE,
       requirementsAccessLevel: featureAccessLevel.EVERYONE,
+      securityAndComplianceAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
       operationsAccessLevel: featureAccessLevel.EVERYONE,
       containerRegistryEnabled: true,
       lfsEnabled: true,
@@ -263,6 +269,10 @@ export default {
         this.requirementsAccessLevel = Math.min(
           featureAccessLevel.PROJECT_MEMBERS,
           this.requirementsAccessLevel,
+        );
+        this.securityAndComplianceAccessLevel = Math.min(
+          featureAccessLevel.PROJECT_MEMBERS,
+          this.securityAndComplianceAccessLevel,
         );
         this.operationsAccessLevel = Math.min(
           featureAccessLevel.PROJECT_MEMBERS,
@@ -550,6 +560,17 @@ export default {
           v-model="requirementsAccessLevel"
           :options="featureAccessLevelOptions"
           name="project[project_feature_attributes][requirements_access_level]"
+        />
+      </project-setting-row>
+      <project-setting-row
+        v-if="securityAndComplianceAvailable"
+        :label="s__('ProjectSettings|Security & Compliance')"
+        :help-text="s__('ProjectSettings|Security & Compliance for this project')"
+      >
+        <project-feature-setting
+          v-model="securityAndComplianceAccessLevel"
+          :options="featureAccessLevelOptions"
+          name="project[project_feature_attributes][security_and_compliance_access_level]"
         />
       </project-setting-row>
       <project-setting-row

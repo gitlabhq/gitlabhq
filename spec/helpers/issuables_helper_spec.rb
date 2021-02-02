@@ -72,28 +72,38 @@ RSpec.describe IssuablesHelper do
     let(:user) { create(:user) }
 
     describe 'state text' do
-      before do
-        allow(helper).to receive(:issuables_count_for_state).and_return(42)
+      context 'when number of issuables can be generated' do
+        before do
+          allow(helper).to receive(:issuables_count_for_state).and_return(42)
+        end
+
+        it 'returns navigation with badges' do
+          expect(helper.issuables_state_counter_text(:issues, :opened, true))
+            .to eq('<span>Open</span> <span class="badge badge-pill">42</span>')
+          expect(helper.issuables_state_counter_text(:issues, :closed, true))
+            .to eq('<span>Closed</span> <span class="badge badge-pill">42</span>')
+          expect(helper.issuables_state_counter_text(:merge_requests, :merged, true))
+            .to eq('<span>Merged</span> <span class="badge badge-pill">42</span>')
+          expect(helper.issuables_state_counter_text(:merge_requests, :all, true))
+            .to eq('<span>All</span> <span class="badge badge-pill">42</span>')
+        end
       end
 
-      it 'returns "Open" when state is :opened' do
-        expect(helper.issuables_state_counter_text(:issues, :opened, true))
-          .to eq('<span>Open</span> <span class="badge badge-pill">42</span>')
-      end
+      context 'when count cannot be generated' do
+        before do
+          allow(helper).to receive(:issuables_count_for_state).and_return(-1)
+        end
 
-      it 'returns "Closed" when state is :closed' do
-        expect(helper.issuables_state_counter_text(:issues, :closed, true))
-          .to eq('<span>Closed</span> <span class="badge badge-pill">42</span>')
-      end
-
-      it 'returns "Merged" when state is :merged' do
-        expect(helper.issuables_state_counter_text(:merge_requests, :merged, true))
-          .to eq('<span>Merged</span> <span class="badge badge-pill">42</span>')
-      end
-
-      it 'returns "All" when state is :all' do
-        expect(helper.issuables_state_counter_text(:merge_requests, :all, true))
-          .to eq('<span>All</span> <span class="badge badge-pill">42</span>')
+        it 'returns avigation without badges' do
+          expect(helper.issuables_state_counter_text(:issues, :opened, true))
+            .to eq('<span>Open</span>')
+          expect(helper.issuables_state_counter_text(:issues, :closed, true))
+            .to eq('<span>Closed</span>')
+          expect(helper.issuables_state_counter_text(:merge_requests, :merged, true))
+            .to eq('<span>Merged</span>')
+          expect(helper.issuables_state_counter_text(:merge_requests, :all, true))
+            .to eq('<span>All</span>')
+        end
       end
     end
   end

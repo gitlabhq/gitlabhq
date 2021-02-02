@@ -24,6 +24,7 @@ export default () => ({
   },
   selectedProject: {},
   error: undefined,
+  addColumnFormVisible: false,
   // TODO: remove after ce/ee split of board_content.vue
   isShowingEpicsSwimlanes: false,
 });

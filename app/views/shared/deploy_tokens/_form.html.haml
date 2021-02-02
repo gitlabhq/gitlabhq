@@ -6,15 +6,15 @@
 
   .form-group
     = f.label :name, class: 'label-bold'
-    = f.text_field :name, class: 'form-control qa-deploy-token-name', required: true
+    = f.text_field :name, class: 'form-control gl-form-input qa-deploy-token-name', required: true
 
   .form-group
     = f.label :expires_at, class: 'label-bold'
-    = f.text_field :expires_at, class: 'datepicker form-control qa-deploy-token-expires-at', value: f.object.expires_at
+    = f.text_field :expires_at, class: 'datepicker form-control gl-form-input qa-deploy-token-expires-at', value: f.object.expires_at
 
   .form-group
     = f.label :username, class: 'label-bold'
-    = f.text_field :username, class: 'form-control qa-deploy-token-username'
+    = f.text_field :username, class: 'form-control gl-form-input qa-deploy-token-username'
     .text-secondary= s_('DeployTokens|Default format is "gitlab+deploy-token-{n}". Enter custom username if you want to change it.')
 
   .form-group

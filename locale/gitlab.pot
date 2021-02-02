@@ -1635,9 +1635,6 @@ msgstr ""
 msgid "Add a Grafana button in the admin sidebar, monitoring section, to access a variety of statistics on the health and performance of GitLab."
 msgstr ""
 
-msgid "Add a To Do"
-msgstr ""
-
 msgid "Add a bullet list"
 msgstr ""
 
@@ -2576,9 +2573,6 @@ msgstr ""
 msgid "AlertManagement|There was an error displaying the alerts. Confirm your endpoint's configuration details to ensure alerts appear."
 msgstr ""
 
-msgid "AlertManagement|There was an error while updating the To-Do of the alert."
-msgstr ""
-
 msgid "AlertManagement|There was an error while updating the assignee(s) list. Please try again."
 msgstr ""
 
@@ -2586,6 +2580,9 @@ msgid "AlertManagement|There was an error while updating the assignee(s) of the 
 msgstr ""
 
 msgid "AlertManagement|There was an error while updating the status of the alert."
+msgstr ""
+
+msgid "AlertManagement|There was an error while updating the to-do item of the alert."
 msgstr ""
 
 msgid "AlertManagement|This assignee cannot be assigned to this alert."
@@ -8195,9 +8192,6 @@ msgstr ""
 msgid "Could not upload your designs as one or more files uploaded are not supported."
 msgstr ""
 
-msgid "Couldn't calculate number of %{issuables}."
-msgstr ""
-
 msgid "Country"
 msgstr ""
 
@@ -8312,6 +8306,9 @@ msgid "Create issue"
 msgstr ""
 
 msgid "Create iteration"
+msgstr ""
+
+msgid "Create list"
 msgstr ""
 
 msgid "Create lists from labels. Issues with that label appear in that list."
@@ -12035,10 +12032,10 @@ msgstr ""
 msgid "Failed to create Merge Request. Please try again."
 msgstr ""
 
-msgid "Failed to create To-Do for the design."
+msgid "Failed to create a branch for this issue. Please try again."
 msgstr ""
 
-msgid "Failed to create a branch for this issue. Please try again."
+msgid "Failed to create a to-do item for the design."
 msgstr ""
 
 msgid "Failed to create framework"
@@ -12155,10 +12152,10 @@ msgstr ""
 msgid "Failed to publish issue on status page."
 msgstr ""
 
-msgid "Failed to remove To-Do for the design."
+msgid "Failed to remove a Zoom meeting"
 msgstr ""
 
-msgid "Failed to remove a Zoom meeting"
+msgid "Failed to remove a to-do item for the design."
 msgstr ""
 
 msgid "Failed to remove issue from board, please try again."
@@ -12203,7 +12200,7 @@ msgstr ""
 msgid "Failed to signing using smartcard authentication"
 msgstr ""
 
-msgid "Failed to toggle To-Do for the design."
+msgid "Failed to toggle the to-do status for the design."
 msgstr ""
 
 msgid "Failed to update branch!"
@@ -22973,6 +22970,12 @@ msgstr ""
 msgid "ProjectSettings|Requirements management system for this project"
 msgstr ""
 
+msgid "ProjectSettings|Security & Compliance"
+msgstr ""
+
+msgid "ProjectSettings|Security & Compliance for this project"
+msgstr ""
+
 msgid "ProjectSettings|Set the default behavior and availability of this option in merge requests. Changes made are also applied to existing merge requests."
 msgstr ""
 
@@ -28478,9 +28481,6 @@ msgstr ""
 msgid "TestCases|Something went wrong while creating a test case."
 msgstr ""
 
-msgid "TestCases|Something went wrong while fetching count of test cases."
-msgstr ""
-
 msgid "TestCases|Something went wrong while fetching test case."
 msgstr ""
 
@@ -29109,10 +29109,10 @@ msgstr ""
 msgid "There is a halted Elasticsearch migration"
 msgstr ""
 
-msgid "There is already a To-Do for this design."
+msgid "There is already a repository with that name on disk"
 msgstr ""
 
-msgid "There is already a repository with that name on disk"
+msgid "There is already a to-do item for this design."
 msgstr ""
 
 msgid "There is no chart data available."
@@ -30380,9 +30380,6 @@ msgid "To widen your search, change or remove filters above"
 msgstr ""
 
 msgid "To widen your search, change or remove filters."
-msgstr ""
-
-msgid "To-Do"
 msgstr ""
 
 msgid "To-Do List"

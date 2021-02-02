@@ -53,6 +53,7 @@ RSpec.describe Gitlab::Instrumentation::RedisClusterValidator do
       :del | [%w(foo bar)] | true # Arguments can be a nested array
       :del | %w(foo foo) | false
       :hset | %w(foo bar) | false # Not a multi-key command
+      :mget | [] | false # This is invalid, but not because it's a cross-slot command
     end
 
     with_them do

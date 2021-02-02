@@ -1,4 +1,10 @@
 {
+   "ignoreFiles": [
+     "app/assets/stylesheets/pages/emojis.scss",
+     "app/assets/stylesheets/startup/startup-*.scss",
+     "app/assets/stylesheets/lazy_bundles/select2.scss",
+     "app/assets/stylesheets/highlight/themes/*.scss"
+   ],
    "plugins":[
       "./scripts/frontend/stylelint/stylelint-duplicate-selectors.js",
       "./scripts/frontend/stylelint/stylelint-utility-classes.js",
@@ -47,7 +53,7 @@
       "indentation":2,
       "length-zero-no-unit":true,
       "max-nesting-depth":[
-         3,
+         6,
          {
             "ignoreAtRules":[
                "each",
@@ -97,15 +103,22 @@
          }
       ],
       "selector-list-comma-newline-after":"always",
-      "selector-max-compound-selectors":[3, { "severity": "warning" }],
+      "selector-max-compound-selectors":[6, { "severity": "warning" }],
       "selector-max-id":1,
       "selector-no-vendor-prefix":true,
       "selector-pseudo-element-colon-notation":"double",
       "selector-pseudo-element-no-unknown":true,
       "shorthand-property-no-redundant-values":true,
       "string-quotes":"single",
-      "value-no-vendor-prefix":[true, { "ignoreValues": ["sticky"] }],
+      "value-no-vendor-prefix": [true, { "ignoreValues": ["sticky"] }],
       "stylelint-gitlab/duplicate-selectors":[true,{ "severity": "warning" }],
-      "stylelint-gitlab/utility-classes":[true,{ "severity": "warning" }]
+      "stylelint-gitlab/utility-classes":[true,{ "severity": "warning" }],
+      "declaration-block-no-duplicate-properties": [
+        true,
+        {
+          "ignore": ["consecutive-duplicates"]
+        }
+      ],
+      "no-eol-whitespace": true,
    }
 }

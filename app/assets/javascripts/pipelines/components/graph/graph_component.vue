@@ -168,6 +168,7 @@ export default {
         <template #downstream>
           <linked-pipelines-column
             v-if="showDownstreamPipelines"
+            class="gl-mr-6"
             :linked-pipelines="downstreamPipelines"
             :column-title="__('Downstream')"
             :type="$options.pipelineTypeConstants.DOWNSTREAM"

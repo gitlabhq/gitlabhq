@@ -63,7 +63,7 @@
         .form-group
           = f.fields_for :ci_cd_settings_attributes, @project.ci_cd_settings do |form|
             = form.label :default_git_depth, _('Git shallow clone'), class: 'label-bold'
-            = form.number_field :default_git_depth, { class: 'form-control', min: 0, max: 1000 }
+            = form.number_field :default_git_depth, { class: 'form-control gl-form-input', min: 0, max: 1000 }
             %p.form-text.text-muted
               = html_escape(_('The number of changes to fetch from GitLab when cloning a repository. Lower values can speed up pipeline execution. Set to %{code_open}0%{code_close} or blank to fetch all branches and tags for each job')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
               = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'git-shallow-clone'), target: '_blank'
@@ -71,7 +71,7 @@
         %hr
         .form-group
           = f.label :build_timeout_human_readable, _('Timeout'), class: 'label-bold'
-          = f.text_field :build_timeout_human_readable, class: 'form-control'
+          = f.text_field :build_timeout_human_readable, class: 'form-control gl-form-input'
           %p.form-text.text-muted
             = html_escape(_('Jobs fail if they run longer than the timeout time. Input value is in seconds by default. Human readable input is also accepted, for example %{code_open}1 hour%{code_close}.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
             = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'timeout'), target: '_blank'
@@ -79,7 +79,7 @@
         - if can?(current_user, :update_max_artifacts_size, @project)
           .form-group
             = f.label :max_artifacts_size, _('Maximum artifacts size'), class: 'label-bold'
-            = f.number_field :max_artifacts_size, class: 'form-control'
+            = f.number_field :max_artifacts_size, class: 'form-control gl-form-input'
             %p.form-text.text-muted
               = _("The maximum file size in megabytes for individual job artifacts.")
               = link_to sprite_icon('question-o'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size'), target: '_blank'
@@ -89,7 +89,7 @@
           .input-group
             %span.input-group-prepend
               .input-group-text /
-            = f.text_field :build_coverage_regex, class: 'form-control', placeholder: 'Regular expression', data: { qa_selector: 'build_coverage_regex_field' }
+            = f.text_field :build_coverage_regex, class: 'form-control gl-form-input', placeholder: 'Regular expression', data: { qa_selector: 'build_coverage_regex_field' }
             %span.input-group-append
               .input-group-text /
           %p.form-text.text-muted

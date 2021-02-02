@@ -4,7 +4,7 @@
       .discard-changes-alert
         Are you sure you want to discard your changes?
         .discard-actions
-          %button.btn.btn-sm.btn-close{ "@click" => "acceptDiscardConfirmation(file)" } Discard changes
-          %button.btn.btn-sm{ "@click" => "cancelDiscardConfirmation(file)" } Cancel
+          %button.btn.btn-sm.btn-danger-secondary.gl-button{ "@click" => "acceptDiscardConfirmation(file)" } Discard changes
+          %button.btn.btn-default.btn-sm.gl-button{ "@click" => "cancelDiscardConfirmation(file)" } Cancel
     .editor-wrap{ ":class" => "classObject" }
       .editor{ "style" => "height: 350px", data: { 'editor-loading': true } }

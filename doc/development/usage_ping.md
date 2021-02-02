@@ -133,7 +133,7 @@ Any such changes lead to inconsistent reports from multiple GitLab instances.
 If there is a problem with an existing metric, it's best to deprecate the existing metric,
 and use it, side by side, with the desired new metric.
 
-Example: 
+Example:
 Consider following change. Before GitLab 12.6, the `example_metric` was implemented as:
 
 ```ruby
@@ -495,7 +495,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
      aggregation.
    - `aggregation`: may be set to a `:daily` or `:weekly` key. Defines how counting data is stored in Redis.
      Aggregation on a `daily` basis does not pull more fine grained data.
-   - `feature_flag`: optional. For details, see our [GitLab internal Feature flags](feature_flags/) documentation.
+   - `feature_flag`: optional. For details, see our [GitLab internal Feature flags](feature_flags/) documentation. The feature flags are owned by the group adding the event tracking.
 
 Use one of the following methods to track events:
 

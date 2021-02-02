@@ -215,24 +215,12 @@ module IssuablesHelper
     state_title = titles[state] || state.to_s.humanize
     html = content_tag(:span, state_title)
 
-    if display_count
-      count = issuables_count_for_state(issuable_type, state)
-      tag =
-        if count == -1
-          tooltip = _("Couldn't calculate number of %{issuables}.") % { issuables: issuable_type.to_s.humanize(capitalize: false) }
+    return html.html_safe unless display_count
 
-          content_tag(
-            :span,
-            '?',
-            class: 'badge badge-pill has-tooltip',
-            aria: { label: tooltip },
-            title: tooltip
-          )
-        else
-          content_tag(:span, number_with_delimiter(count), class: 'badge badge-pill')
-        end
+    count = issuables_count_for_state(issuable_type, state)
 
-      html << " " << tag
+    if count != -1
+      html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge badge-pill')
     end
 
     html.html_safe

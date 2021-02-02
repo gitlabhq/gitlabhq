@@ -2,10 +2,10 @@
   = form_errors(@deploy_keys.new_key)
   .form-group.row
     = f.label :title, class: "label-bold"
-    = f.text_field :title, class: 'form-control', required: true
+    = f.text_field :title, class: 'form-control gl-form-input', required: true
   .form-group.row
     = f.label :key, class: "label-bold"
-    = f.text_area :key, class: "form-control", rows: 5, required: true
+    = f.text_area :key, class: 'form-control gl-form-input', rows: 5, required: true
   .form-group.row
     %p.light.gl-mb-0
       = _('Paste a machine public key here. Read more about how to generate it')

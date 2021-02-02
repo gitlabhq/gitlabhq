@@ -24,7 +24,7 @@
       .form-group
         = f.fields_for :tracing_setting_attributes, setting do |form|
           = form.label :external_url, _('Jaeger URL'), class: 'label-bold'
-          = form.url_field :external_url, class: 'form-control', placeholder: 'e.g. https://jaeger.mycompany.com'
+          = form.url_field :external_url, class: 'form-control gl-form-input', placeholder: 'e.g. https://jaeger.mycompany.com'
           %p.form-text.text-muted
             - jaeger_help_url = "https://www.jaegertracing.io/docs/1.7/getting-started/"
             - link_start_tag = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: jaeger_help_url }

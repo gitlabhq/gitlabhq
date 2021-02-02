@@ -2,10 +2,10 @@
 
 .form-group
   = form.label :url, s_('Webhooks|URL'), class: 'label-bold'
-  = form.text_field :url, class: 'form-control', placeholder: 'http://example.com/trigger-ci.json'
+  = form.text_field :url, class: 'form-control gl-form-input', placeholder: 'http://example.com/trigger-ci.json'
 .form-group
   = form.label :token, s_('Webhooks|Secret Token'), class: 'label-bold'
-  = form.text_field :token, class: 'form-control', placeholder: ''
+  = form.text_field :token, class: 'form-control gl-form-input', placeholder: ''
   %p.form-text.text-muted
   = s_('Webhooks|Use this token to validate received payloads. It will be sent with the request in the X-Gitlab-Token HTTP header.')
 .form-group
@@ -13,9 +13,9 @@
   %ul.list-unstyled.gl-ml-6
     %li
       = form.check_box :push_events, class: 'form-check-input'
-      = form.label :push_events, class: 'list-label form-check-label gl-ml-1' do
+      = form.label :push_events, class: 'list-label form-check-label gl-ml-1 gl-mb-3' do
         %strong= s_('Webhooks|Push events')
-      = form.text_field :push_events_branch_filter, class: 'form-control', placeholder: 'Branch name or wildcard pattern to trigger on (leave blank for all)'
+      = form.text_field :push_events_branch_filter, class: 'form-control gl-form-input', placeholder: 'Branch name or wildcard pattern to trigger on (leave blank for all)'
       %p.text-muted.gl-ml-1
         = s_('Webhooks|This URL will be triggered by a push to the repository')
     %li
