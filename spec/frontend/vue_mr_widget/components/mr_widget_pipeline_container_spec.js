@@ -78,6 +78,18 @@ describe('MrWidgetPipelineContainer', () => {
       });
     });
 
+    it('sanitizes the targetBranch', () => {
+      factory({
+        isPostMerge: true,
+        mr: {
+          ...mockStore,
+          targetBranch: 'Foo<script>alert("XSS")</script>',
+        },
+      });
+
+      expect(wrapper.find(MrWidgetPipeline).props().sourceBranchLink).toBe('Foo');
+    });
+
     it('renders deployments', () => {
       const expectedProps = mockStore.postMergeDeployments.map((dep) =>
         expect.objectContaining({

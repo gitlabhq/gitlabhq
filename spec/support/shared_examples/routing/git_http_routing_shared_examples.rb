@@ -16,10 +16,6 @@ RSpec.shared_examples 'git repository routes' do
       expect(get("#{container_path}/info/refs?service=git-upload-pack")).to redirect_to("#{container_path}.git/info/refs?service=git-upload-pack")
       expect(get("#{container_path}/info/refs?service=git-receive-pack")).to redirect_to("#{container_path}.git/info/refs?service=git-receive-pack")
     end
-
-    it 'does not redirect other requests' do
-      expect(post("#{container_path}/git-upload-pack")).not_to be_routable
-    end
   end
 
   it 'routes LFS endpoints' do
@@ -35,6 +31,56 @@ RSpec.shared_examples 'git repository routes' do
     expect(get("#{path}/gitlab-lfs/objects/#{oid}")).to route_to('repositories/lfs_storage#download', oid: oid, **params)
     expect(put("#{path}/gitlab-lfs/objects/#{oid}/456/authorize")).to route_to('repositories/lfs_storage#upload_authorize', oid: oid, size: '456', **params)
     expect(put("#{path}/gitlab-lfs/objects/#{oid}/456")).to route_to('repositories/lfs_storage#upload_finalize', oid: oid, size: '456', **params)
+  end
+end
+
+RSpec.shared_examples 'git repository routes without fallback' do
+  let(:container_path) { path.delete_suffix('.git') }
+
+  context 'requests without .git format' do
+    it 'does not redirect other requests' do
+      expect(post("#{container_path}/git-upload-pack")).not_to be_routable
+    end
+  end
+
+  it 'routes LFS endpoints for unmatched routes' do
+    oid = generate(:oid)
+
+    expect(put("#{path}/gitlab-lfs/objects/foo")).not_to be_routable
+    expect(put("#{path}/gitlab-lfs/objects/#{oid}/foo")).not_to be_routable
+    expect(put("#{path}/gitlab-lfs/objects/#{oid}/foo/authorize")).not_to be_routable
+  end
+end
+
+RSpec.shared_examples 'git repository routes with fallback' do
+  let(:container_path) { path.delete_suffix('.git') }
+
+  context 'requests without .git format' do
+    it 'does not redirect other requests' do
+      expect(post("#{container_path}/git-upload-pack")).to route_to_route_not_found
+    end
+  end
+
+  it 'routes LFS endpoints' do
+    oid = generate(:oid)
+
+    expect(put("#{path}/gitlab-lfs/objects/foo")).to route_to_route_not_found
+    expect(put("#{path}/gitlab-lfs/objects/#{oid}/foo")).to route_to_route_not_found
+    expect(put("#{path}/gitlab-lfs/objects/#{oid}/foo/authorize")).to route_to_route_not_found
+  end
+end
+
+RSpec.shared_examples 'git repository routes with fallback for git-upload-pack' do
+  let(:container_path) { path.delete_suffix('.git') }
+
+  context 'requests without .git format' do
+    it 'does not redirect other requests' do
+      expect(post("#{container_path}/git-upload-pack")).to route_to_route_not_found
+    end
+  end
+
+  it 'routes LFS endpoints for unmatched routes' do
+    oid = generate(:oid)
 
     expect(put("#{path}/gitlab-lfs/objects/foo")).not_to be_routable
     expect(put("#{path}/gitlab-lfs/objects/#{oid}/foo")).not_to be_routable

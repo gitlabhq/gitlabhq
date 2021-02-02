@@ -8,18 +8,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8935) in GitLab 9.0.
 
-GitLab offers powerful integration with [Prometheus](https://prometheus.io) for monitoring key metrics of your apps, directly within GitLab.
+GitLab offers powerful integration with [Prometheus](https://prometheus.io) for
+monitoring key metrics of your apps, directly in GitLab.
 Metrics for each environment are retrieved from Prometheus, and then displayed
-within the GitLab interface.
+in the GitLab interface.
 
 ![Environment Dashboard](img/prometheus_dashboard.png)
 
 There are two ways to set up Prometheus integration, depending on where your apps are running:
 
 - For deployments on Kubernetes, GitLab can automatically [deploy and manage Prometheus](#managed-prometheus-on-kubernetes).
-- For other deployment targets, simply [specify the Prometheus server](#manual-configuration-of-prometheus).
+- For other deployment targets, [specify the Prometheus server](#manual-configuration-of-prometheus).
 
-Once enabled, GitLab detects metrics from known services in the [metric library](prometheus_library/index.md). You can also [add your own metrics](../../../operations/metrics/index.md#adding-custom-metrics) and create
+Once enabled, GitLab detects metrics from known services in the
+[metric library](prometheus_library/index.md). You can also
+[add your own metrics](../../../operations/metrics/index.md#adding-custom-metrics) and create
 [custom dashboards](../../../operations/metrics/dashboards/index.md).
 
 ## Enabling Prometheus Integration
@@ -28,7 +31,8 @@ Once enabled, GitLab detects metrics from known services in the [metric library]
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28916) in GitLab 10.5.
 
-GitLab can seamlessly deploy and manage Prometheus on a [connected Kubernetes cluster](../clusters/index.md), making monitoring of your apps easy.
+GitLab can seamlessly deploy and manage Prometheus on a
+[connected Kubernetes cluster](../clusters/index.md), to help you monitor your apps.
 
 #### Requirements
 
@@ -36,7 +40,7 @@ GitLab can seamlessly deploy and manage Prometheus on a [connected Kubernetes cl
 
 #### Getting started
 
-Once you have a connected Kubernetes cluster, deploying a managed Prometheus is as easy as a single click.
+After you have a connected Kubernetes cluster, you can deploy a managed Prometheus with a single click.
 
 1. Go to the **Operations > Kubernetes** page to view your connected clusters
 1. Select the cluster you would like to deploy Prometheus to
@@ -46,17 +50,28 @@ Once you have a connected Kubernetes cluster, deploying a managed Prometheus is 
 
 #### About managed Prometheus deployments
 
-Prometheus is deployed into the `gitlab-managed-apps` namespace, using the [official Helm chart](https://github.com/helm/charts/tree/master/stable/prometheus). Prometheus is only accessible within the cluster, with GitLab communicating through the [Kubernetes API](https://kubernetes.io/docs/concepts/overview/kubernetes-api/).
+Prometheus is deployed into the `gitlab-managed-apps` namespace, using the
+[official Helm chart](https://github.com/helm/charts/tree/master/stable/prometheus).
+Prometheus is only accessible in the cluster, with GitLab communicating through the
+[Kubernetes API](https://kubernetes.io/docs/concepts/overview/kubernetes-api/).
 
-The Prometheus server [automatically detects and monitors](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config) nodes, pods, and endpoints. To configure a resource to be monitored by Prometheus, simply set the following [Kubernetes annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/):
+The Prometheus server
+[automatically detects and monitors](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config)
+nodes, pods, and endpoints. To configure a resource to be monitored by Prometheus,
+set the following [Kubernetes annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/):
 
 - `prometheus.io/scrape` to `true` to enable monitoring of the resource.
 - `prometheus.io/port` to define the port of the metrics endpoint.
 - `prometheus.io/path` to define the path of the metrics endpoint. Defaults to `/metrics`.
 
-CPU and Memory consumption is monitored, but requires [naming conventions](prometheus_library/kubernetes.md#specifying-the-environment) in order to determine the environment. If you are using [Auto DevOps](../../../topics/autodevops/index.md), this is handled automatically.
+CPU and Memory consumption is monitored, but requires
+[naming conventions](prometheus_library/kubernetes.md#specifying-the-environment)
+to determine the environment. If you are using
+[Auto DevOps](../../../topics/autodevops/index.md), this is handled automatically.
 
-The [NGINX Ingress](../clusters/index.md#installing-applications) that is deployed by GitLab to clusters, is automatically annotated for monitoring providing key response metrics: latency, throughput, and error rates.
+The [NGINX Ingress](../clusters/index.md#installing-applications) that is deployed
+by GitLab to clusters, is automatically annotated for monitoring providing key
+response metrics: latency, throughput, and error rates.
 
 ##### Example of Kubernetes service annotations and labels
 
@@ -161,15 +176,16 @@ Installing and configuring Prometheus to monitor applications is fairly straight
 
 1. [Install Prometheus](https://prometheus.io/docs/prometheus/latest/installation/)
 1. Set up one of the [supported monitoring targets](prometheus_library/index.md)
-1. Configure the Prometheus server to [collect their metrics](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config)
+1. Configure the Prometheus server to
+   [collect their metrics](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config)
 
 #### Configuration in GitLab
 
-The actual configuration of Prometheus integration within GitLab
+The actual configuration of Prometheus integration in GitLab
 requires the domain name or IP address of the Prometheus server you'd like
 to integrate with. If the Prometheus resource is secured with Google's Identity-Aware Proxy (IAP),
-additional information like Client ID and Service Account credentials can be passed which
-GitLab can use to access the resource. More information about authentication from a
+you can pass information like Client ID and Service Account credentials.
+GitLab can use these to access the resource. More information about authentication from a
 service account can be found at Google's documentation for
 [Authenticating from a service account](https://cloud.google.com/iap/docs/authentication-howto#authenticating_from_a_service_account).
 
@@ -189,12 +205,13 @@ service account can be found at Google's documentation for
 #### Thanos configuration in GitLab
 
 You can configure [Thanos](https://thanos.io/) as a drop-in replacement for Prometheus
-with GitLab, using the domain name or IP address of the Thanos server you'd like
+with GitLab. Use the domain name or IP address of the Thanos server you'd like
 to integrate with.
 
 1. Navigate to the [Integrations page](overview.md#accessing-integrations).
 1. Click the **Prometheus** service.
-1. Provide the domain name or IP address of your server, for example `http://thanos.example.com/` or `http://192.0.2.1/`.
+1. Provide the domain name or IP address of your server, for example
+   `http://thanos.example.com/` or `http://192.0.2.1/`.
 1. Click **Save changes**.
 
 ### Precedence with multiple Prometheus configurations
@@ -221,7 +238,7 @@ can use only one:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10408) in GitLab 9.2.
 > - GitLab 9.3 added the [numeric comparison](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/27439) of the 30 minute averages.
 
-Developers can view the performance impact of their changes within the merge
+Developers can view the performance impact of their changes in the merge
 request workflow. This feature requires [Kubernetes](prometheus_library/kubernetes.md) metrics.
 
 When a source branch has been deployed to an environment, a sparkline and

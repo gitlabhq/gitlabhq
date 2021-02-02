@@ -7,6 +7,10 @@ module Gitlab
         Gitlab::SafeRequestStore.fetch(:current_application_settings) { ensure_application_settings! }
       end
 
+      def current_application_settings?
+        Gitlab::SafeRequestStore.exist?(:current_application_settings) || ::ApplicationSetting.current.present?
+      end
+
       def expire_current_application_settings
         ::ApplicationSetting.expire
         Gitlab::SafeRequestStore.delete(:current_application_settings)

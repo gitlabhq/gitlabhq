@@ -21,9 +21,9 @@ class NoopCompiler {
   setupMiddleware() {}
 }
 
-class IncrementalWebpackCompiler extends NoopCompiler {
+class IncrementalWebpackCompiler {
   constructor(historyFilePath) {
-    super();
+    this.enabled = true;
     this.history = {};
     this.compiledEntryPoints = new Set([
       // Login page
@@ -32,8 +32,7 @@ class IncrementalWebpackCompiler extends NoopCompiler {
       'pages.root',
     ]);
     this.historyFilePath = historyFilePath;
-    this.loadFromHistory();
-    this.enabled = true;
+    this._loadFromHistory();
   }
 
   filterEntryPoints(entrypoints) {
@@ -65,7 +64,7 @@ class IncrementalWebpackCompiler extends NoopCompiler {
       if (fileName.startsWith('pages.') && fileName.endsWith('.chunk.js')) {
         const chunk = fileName.replace(/\.chunk\.js$/, '');
 
-        this.addToHistory(chunk);
+        this._addToHistory(chunk);
 
         if (!this.compiledEntryPoints.has(chunk)) {
           log(`First time we are seeing ${chunk}. Adding to compilation.`);
@@ -88,7 +87,7 @@ class IncrementalWebpackCompiler extends NoopCompiler {
 
   // private methods
 
-  addToHistory(chunk) {
+  _addToHistory(chunk) {
     if (!this.history[chunk]) {
       this.history[chunk] = { lastVisit: null, count: 0 };
     }
@@ -102,7 +101,7 @@ class IncrementalWebpackCompiler extends NoopCompiler {
     }
   }
 
-  loadFromHistory() {
+  _loadFromHistory() {
     try {
       this.history = JSON.parse(fs.readFileSync(this.historyFilePath, 'utf8'));
       const entryPoints = Object.keys(this.history);

@@ -20,7 +20,7 @@ module Gitlab
       private
 
       def package_versions_map
-        @packages.each_with_object({}) do |package, map|
+        @packages.sort_by(&:version).each_with_object({}) do |package, map|
           map[package.version] = package_metadata(package)
         end
       end

@@ -7,6 +7,10 @@ RSpec.describe 'git_http routing' do
     it_behaves_like 'git repository routes' do
       let(:path) { '/gitlab-org/gitlab-test.git' }
     end
+
+    it_behaves_like 'git repository routes with fallback for git-upload-pack' do
+      let(:path) { '/gitlab-org/gitlab-test.git' }
+    end
   end
 
   describe 'wiki repositories' do
@@ -14,6 +18,7 @@ RSpec.describe 'git_http routing' do
       let(:path) { '/gitlab-org/gitlab-test.wiki.git' }
 
       it_behaves_like 'git repository routes'
+      it_behaves_like 'git repository routes with fallback for git-upload-pack'
 
       describe 'redirects', type: :request do
         let(:web_path) { '/gitlab-org/gitlab-test/-/wikis' }
@@ -37,10 +42,18 @@ RSpec.describe 'git_http routing' do
       it_behaves_like 'git repository routes' do
         let(:path) { '/gitlab-org.wiki.git' }
       end
+
+      it_behaves_like 'git repository routes with fallback for git-upload-pack' do
+        let(:path) { '/gitlab-org.wiki.git' }
+      end
     end
 
     context 'in child group' do
       it_behaves_like 'git repository routes' do
+        let(:path) { '/gitlab-org/child.wiki.git' }
+      end
+
+      it_behaves_like 'git repository routes with fallback for git-upload-pack' do
         let(:path) { '/gitlab-org/child.wiki.git' }
       end
     end
@@ -51,10 +64,18 @@ RSpec.describe 'git_http routing' do
       it_behaves_like 'git repository routes' do
         let(:path) { '/snippets/123.git' }
       end
+
+      it_behaves_like 'git repository routes without fallback' do
+        let(:path) { '/snippets/123.git' }
+      end
     end
 
     context 'project snippet' do
       it_behaves_like 'git repository routes' do
+        let(:path) { '/gitlab-org/gitlab-test/snippets/123.git' }
+      end
+
+      it_behaves_like 'git repository routes with fallback' do
         let(:path) { '/gitlab-org/gitlab-test/snippets/123.git' }
       end
     end

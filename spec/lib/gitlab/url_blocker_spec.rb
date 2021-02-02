@@ -91,6 +91,21 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
       end
     end
 
+    context 'DNS rebinding protection with IP allowed' do
+      let(:import_url) { 'http://a.192.168.0.120.3times.127.0.0.1.1time.repeat.rebind.network:9121/scrape?target=unix:///var/opt/gitlab/redis/redis.socket&amp;check-keys=*' }
+
+      before do
+        stub_dns(import_url, ip_address: '192.168.0.120')
+
+        allow(Gitlab::UrlBlockers::UrlAllowlist).to receive(:ip_allowed?).and_return(true)
+      end
+
+      it_behaves_like 'validates URI and hostname' do
+        let(:expected_uri) { 'http://192.168.0.120:9121/scrape?target=unix:///var/opt/gitlab/redis/redis.socket&amp;check-keys=*' }
+        let(:expected_hostname) { 'a.192.168.0.120.3times.127.0.0.1.1time.repeat.rebind.network' }
+      end
+    end
+
     context 'disabled DNS rebinding protection' do
       subject { described_class.validate!(import_url, dns_rebind_protection: false) }
 

@@ -20,6 +20,8 @@ class ReleasePresenter < Gitlab::View::Presenter::Delegated
   end
 
   def self_url
+    return unless can_download_code?
+
     project_release_url(project, release)
   end
 

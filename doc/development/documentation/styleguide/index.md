@@ -15,9 +15,7 @@ For guidelines specific to text in the GitLab interface, see the Pajamas [Conten
 
 For information on how to validate styles locally or by using GitLab CI/CD, see [Testing](../testing.md).
 
-Use this guide for standards on grammar, formatting, word usage, and more.
-
-You can also view a list of [recent updates to this guide](https://gitlab.com/dashboard/merge_requests?scope=all&utf8=%E2%9C%93&state=merged&label_name[]=tw-style&not[label_name][]=docs%3A%3Afix).
+You can view a list of [recent updates to this guide](https://gitlab.com/dashboard/merge_requests?scope=all&utf8=%E2%9C%93&state=merged&label_name[]=tw-style&not[label_name][]=docs%3A%3Afix).
 
 If you can't find what you need:
 
@@ -31,10 +29,8 @@ If you have questions about style, mention `@tw-style` in an issue or merge requ
 
 ## Documentation is the single source of truth (SSOT)
 
-### Why a single source of truth
-
-The documentation of GitLab products and features is the SSOT for all
-information related to implementation, usage, and troubleshooting. It evolves
+The GitLab documentation is the SSOT for all
+information related to GitLab implementation, usage, and troubleshooting. It evolves
 continuously, in keeping with new products and features, and with improvements
 for clarity, accuracy, and completeness.
 
@@ -44,7 +40,7 @@ about GitLab products.
 It also informs decisions about the kinds of content we include in our
 documentation.
 
-### All information
+### The documentation includes all information
 
 Include problem-solving actions that may address rare cases or be considered
 _risky_, but provide proper context through fully-detailed
@@ -54,10 +50,13 @@ If you think you have found an exception to this rule, contact the
 Technical Writing team.
 
 GitLab adds all troubleshooting information to the documentation, no matter how
-unlikely a user is to encounter a situation. For the [Troubleshooting sections](#troubleshooting),
-people in GitLab Support can merge additions themselves.
+unlikely a user is to encounter a situation.
 
-### All media types
+GitLab Support maintains their own
+[troubleshooting content](../../../administration/index.md#support-team-docs)
+in the GitLab documentation.
+
+### The documentation includes all media types
 
 Include any media types/sources if the content is relevant to readers. You can
 freely include or link presentations, diagrams, and videos. No matter who
@@ -71,48 +70,33 @@ include it.
   quotation with the source cited. Typically it is better to either rephrase
   relevant information in your own words or link out to the other source.
 
-### No special types
+### Topic types
 
 In the software industry, it is a best practice to organize documentation in
-different types. For example, [Divio recommends](https://www.divio.com/blog/documentation/):
+different types. For example:
 
-- Tutorials
-- How-to guides
-- Explanation
-- Reference (for example, a glossary)
+- Concepts
+- Tasks
+- Reference
+- Troubleshooting
 
-At GitLab, we have so many product changes in our monthly releases that we can't
-afford to continuously update multiple types of information. If we have multiple
-types, the information becomes outdated. Therefore, we have a
-[single template](../structure.md) for documentation.
+At GitLab, we have not traditionally used topic types. However, we are starting to
+move in this direction, so we can address these issues:
 
-GitLab documentation does not distinguish specific document types. We are open to
-reconsidering this policy after the documentation has reached a future stage of
-maturity and quality. If you are reading this, then despite our continuous
-improvement efforts, that point hasn't been reached.
+- **Content is hard to find.** Our docs are comprehensive and include a large amount of
+  useful information. Topic types create repeatable patterns that make our content easier
+  to scan and parse.
+- **Content is often written from the contributor's point of view.**  Our docs
+  are written by contributors. Topic types (tasks specifically) help put
+  information into a format that is geared toward helping others, rather than
+  documenting how a feature was implemented.
 
-### Link instead of summarize
+GitLab uses these [topic type templates](../structure.md).
 
-There is a temptation to summarize the information on another page, which
-causes the information to live in two places. Instead, link to the single source
-of truth and explain why it is important to consume the information.
+### Link instead of repeating text
 
-### Organize by topic, not by type
-
-We organize content by topic, not by type, so it can be located in the
-single-source-of-truth (SSOT) section for the subject matter. Top-level audience-type
-folders, like `administration`, are exceptions.
-
-For example, do not create groupings of similar media types. For example:
-
-- Glossaries.
-- FAQs.
-- Sets of all articles or videos.
-
-Such grouping of content by type makes it difficult to browse for the information
-you need and difficult to maintain up-to-date content. Instead, organize content
-by its subject (for example, everything related to CI goes together) and
-cross-link between any related content.
+Rather than repeating information from another topic, link to the single source
+of truth and explain why it is important.
 
 ### Docs-first methodology
 
@@ -127,14 +111,9 @@ of GitLab more efficient.
   should be to create a merge request (MR) to add this information to the
   documentation. You can then share the MR to communicate this information.
 
-New information about the future usage or troubleshooting
-of GitLab should not be written directly in a forum or other messaging system.
-Instead, add it to a documentation merge request, then reference it. Note
-that among any other documentation changes, you can either:
-
-- Add a [Troubleshooting section](#troubleshooting) to a doc if none exists.
-- Un-comment and use the placeholder Troubleshooting section included as part of
-  our [documentation template](../structure.md#template-for-new-docs), if present.
+New information that would be useful toward the future usage or troubleshooting
+of GitLab should not be written directly in a forum or other messaging system,
+but added to a documentation MR and then referenced, as described above. 
 
 The more we reflexively add information to the documentation, the more
 the documentation helps others efficiently accomplish tasks and solve problems.
@@ -217,8 +196,11 @@ included in backticks. For example:
 
 ## Structure
 
-Because we want documentation to be a SSOT, we should [organize by topic, not by
-type](#organize-by-topic-not-by-type).
+We include concept and task topic types in the same larger topic.
+
+In general, we have one topic that's a [landing page](../structure.md#landing-pages).
+Below that topic in the left nav are individual topics. Each of these include a concept
+and multiple related tasks, reference, and troubleshooting topics.
 
 ### Folder structure overview
 
@@ -299,7 +281,7 @@ place for it.
 ### Avoid duplication
 
 Do not include the same information in multiple places.
-[Link to a single source of truth instead.](#link-instead-of-summarize)
+[Link to a single source of truth instead.](#link-instead-of-repeating-text)
 
 ### References across documents
 
@@ -966,8 +948,8 @@ this option.
 
 ## Links
 
-Links are important in GitLab documentation. They allow you to [link instead of
-summarizing](#link-instead-of-summarize) to help preserve a [single source of truth](#why-a-single-source-of-truth)
+Links are important in GitLab documentation. Use links instead of
+summarizing to help preserve a [single source of truth](#documentation-is-the-single-source-of-truth-ssot)
 in GitLab documentation.
 
 We include guidance for links in these categories:
@@ -1894,21 +1876,6 @@ In this case:
 - Use the appropriate syntax highlighting for each code block.
 - Use the [GitLab Restart](#gitlab-restart) section to explain any required
   restart or reconfigure of GitLab.
-
-### Troubleshooting
-
-For troubleshooting sections, provide as much context as possible so
-users can identify their problem and resolve it on their own. You
-can facilitate this by making sure the troubleshooting content addresses:
-
-1. The problem the user needs to solve.
-1. How the user can confirm they have the problem.
-1. Steps the user can take towards resolution of the problem.
-
-If the contents of each category can be summarized in one line and a list of
-steps aren't required, consider setting up a [table](#tables). Create headers of
-_Problem_ \| _Cause_ \| _Solution_ (or _Workaround_ if the fix is temporary), or
-_Error message_ \| _Solution_.
 
 ## Feature flags
 

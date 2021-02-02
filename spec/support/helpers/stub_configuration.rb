@@ -121,6 +121,12 @@ module StubConfiguration
     allow(::Gitlab.config.packages).to receive_messages(to_settings(messages))
   end
 
+  def stub_maintenance_mode_setting(value)
+    allow(Gitlab::CurrentSettings).to receive(:current_application_settings?).and_return(true)
+
+    stub_application_setting(maintenance_mode: value)
+  end
+
   private
 
   # Modifies stubbed messages to also stub possible predicate versions

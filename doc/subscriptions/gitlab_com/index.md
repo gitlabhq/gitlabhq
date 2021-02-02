@@ -13,20 +13,6 @@ install anything to use GitLab SaaS, you only need to
 
 This page reviews the details of your GitLab SaaS subscription.
 
-## Choose a GitLab SaaS group or personal subscription
-
-On GitLab SaaS you can apply a subscription to either a group or a personal namespace.
-
-When applied to:
-
-- A **group**, the group, all subgroups, and all projects under the selected
-  group on GitLab SaaS contains the features of the associated tier. GitLab recommends
-  choosing a group plan when managing an organization's projects and users.
-- A **personal user space**, all projects contain features with the
-  subscription applied, but as it's not a group, group features aren't available.
-
-You can read more about [common misconceptions](https://about.gitlab.com/handbook/marketing/strategic-marketing/enablement/dotcom-subscriptions/#common-misconceptions) regarding a GitLab SaaS subscription to help avoid issues.
-
 ## Choose a GitLab SaaS tier
 
 Pricing is [tier-based](https://about.gitlab.com/pricing/), allowing you to choose
@@ -57,36 +43,22 @@ source projects, GitLab grants access to **Ultimate** features for all GitLab Sa
 
 To subscribe to GitLab SaaS:
 
-- **For individuals**:
-  1. Create a user account for yourself using our
-     [sign up page](https://gitlab.com/users/sign_up).
-  1. Visit the [billing page](https://gitlab.com/profile/billings)
-     under your profile.
-  1. Select the **Premium** or **Ultimate** GitLab SaaS plan through the
-     [Customers Portal](https://customers.gitlab.com/).
-  1. Link your GitLab SaaS account with your Customers Portal account.
-     Once a plan has been selected, if your account is not
-     already linked, GitLab prompts you to link your account with a
-     **Sign in to GitLab.com** button.
-  1. Select the namespace from the drop-down list to associate the subscription.
-  1. Proceed to checkout.
-- **For groups**:
-  1. Create a user account for yourself using our
-     [sign up page](https://gitlab.com/users/sign_up).
-  1. Create a [group](../../user/group/index.md). GitLab groups help assemble related
-     projects together allowing you to grant members access to several projects
-     at once. A group is not required if you plan on having projects inside a personal
-     namespace.
-  1. Create additional users and
-     [add them to the group](../../user/group/index.md#add-users-to-a-group).
-  1. Select the GitLab SaaS plan through the
-     [Customers Portal](https://customers.gitlab.com/).
-  1. Link your GitLab SaaS account with your Customers Portal account.
-     Once a plan has been selected, if your account is not
-     already linked, GitLab prompts you to link your account with a
-     **Sign in to GitLab.com** button.
-  1. Select the namespace from the drop-down list to associate the subscription.
-  1. Proceed to checkout.
+1. Create a user account for yourself using our
+   [sign up page](https://gitlab.com/users/sign_up).
+1. Create a [group](../../user/group/index.md). GitLab groups help assemble related
+   projects together allowing you to grant members access to several projects
+   at once. A group is not required if you plan on having projects inside a personal
+   namespace.
+1. Create additional users and
+   [add them to the group](../../user/group/index.md#add-users-to-a-group).
+1. Select the GitLab SaaS plan through the
+   [Customers Portal](https://customers.gitlab.com/).
+1. Link your GitLab SaaS account with your Customers Portal account.
+   Once a plan has been selected, if your account is not
+   already linked, GitLab prompts you to link your account with a
+   **Sign in to GitLab.com** button.
+1. Select the namespace from the drop-down list to associate the subscription.
+1. Proceed to checkout.
 
 NOTE:
 You can also go to the [**My Account**](https://customers.gitlab.com/customers/edit)
@@ -95,25 +67,21 @@ page to add or change the GitLab SaaS account link.
 ## View your GitLab SaaS subscription
 
 To see the status of your GitLab SaaS subscription, log in to GitLab SaaS and go
-to the **Billing** section of the relevant namespace:
+to the **Billing** section:
 
-- **For individuals**: Visit the [billing page](https://gitlab.com/profile/billings)
-  under your profile.
-- **For groups**: From the group page (*not* from a project in the group), go to **Settings > Billing**.
+NOTE:
+You must have Owner level [permissions](../../user/permissions.md) to view the billing page.
 
-  NOTE:
-  You must have Owner level [permissions](../../user/permissions.md) to view a group's billing page.
+The following table describes details of your subscription:
 
-  The following table describes details of your subscription for groups:
-
-  | Field                       | Description |
-  |-----------------------------|-------------|
-  | **Seats in subscription**   | If this is a paid plan, represents the number of seats you've bought for this group. |
-  | **Seats currently in use**  | Number of seats in use. Select **See usage** to see a list of the users using these seats. For more details, see [Seat usage](#seat-usage). |
-  | **Max seats used**          | Highest number of seats you've used. |
-  | **Seats owed**              | _Seats owed_ = _Max seats used_ - _Seats in subscription_. |
-  | **Subscription start date** | Date your subscription started. If this is for a Free plan, it's the date you transitioned off your group's paid plan. |
-  | **Subscription end date**   | Date your current subscription ends. Does not apply to Free plans. |
+| Field                       | Description |
+|:----------------------------|:------------|
+| **Seats in subscription**   | If this is a paid plan, represents the number of seats you've bought for this group. |
+| **Seats currently in use**  | Number of seats in use. Select **See usage** to see a list of the users using these seats. For more details, see [Seat usage](#seat-usage). |
+| **Max seats used**          | Highest number of seats you've used. |
+| **Seats owed**              | _Seats owed_ = _Max seats used_ - _Seats in subscription_. |
+| **Subscription start date** | Date your subscription started. If this is for a Free plan, it's the date you transitioned off your group's paid plan. |
+| **Subscription end date**   | Date your current subscription ends. Does not apply to Free plans. |
 
 ## Seat usage
 
