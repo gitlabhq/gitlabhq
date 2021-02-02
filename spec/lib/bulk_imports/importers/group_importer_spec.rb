@@ -7,19 +7,13 @@ RSpec.describe BulkImports::Importers::GroupImporter do
   let(:bulk_import) { create(:bulk_import) }
   let(:bulk_import_entity) { create(:bulk_import_entity, :started, bulk_import: bulk_import) }
   let(:bulk_import_configuration) { create(:bulk_import_configuration, bulk_import: bulk_import) }
-  let(:context) do
-    BulkImports::Pipeline::Context.new(
-      current_user: user,
-      entity: bulk_import_entity,
-      configuration: bulk_import_configuration
-    )
-  end
-
-  subject { described_class.new(bulk_import_entity) }
+  let(:context) { BulkImports::Pipeline::Context.new(bulk_import_entity) }
 
   before do
     allow(BulkImports::Pipeline::Context).to receive(:new).and_return(context)
   end
+
+  subject { described_class.new(bulk_import_entity) }
 
   describe '#execute' do
     it 'starts the entity and run its pipelines' do

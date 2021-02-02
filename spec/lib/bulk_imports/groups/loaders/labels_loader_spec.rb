@@ -7,12 +7,7 @@ RSpec.describe BulkImports::Groups::Loaders::LabelsLoader do
     let(:user) { create(:user) }
     let(:group) { create(:group) }
     let(:entity) { create(:bulk_import_entity, group: group) }
-    let(:context) do
-      BulkImports::Pipeline::Context.new(
-        entity: entity,
-        current_user: user
-      )
-    end
+    let(:context) { BulkImports::Pipeline::Context.new(entity) }
 
     let(:data) do
       {

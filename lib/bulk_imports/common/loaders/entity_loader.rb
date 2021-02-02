@@ -7,7 +7,7 @@ module BulkImports
         def initialize(*args); end
 
         def load(context, entity)
-          context.entity.bulk_import.entities.create!(entity)
+          context.bulk_import.entities.create!(entity)
         end
       end
     end

@@ -45,12 +45,8 @@ RSpec.describe BulkImports::Pipeline::Runner do
     end
 
     context 'when entity is not marked as failed' do
-      let(:context) do
-        instance_double(
-          BulkImports::Pipeline::Context,
-          entity: instance_double(BulkImports::Entity, id: 1, source_type: 'group', failed?: false)
-        )
-      end
+      let(:entity) { create(:bulk_import_entity) }
+      let(:context) { BulkImports::Pipeline::Context.new(entity) }
 
       it 'runs pipeline extractor, transformer, loader' do
         extracted_data = BulkImports::Pipeline::ExtractedData.new(data: { foo: :bar })
@@ -80,15 +76,27 @@ RSpec.describe BulkImports::Pipeline::Runner do
             .with(
               message: 'Pipeline started',
               pipeline_class: 'BulkImports::MyPipeline',
-              bulk_import_entity_id: 1,
-              bulk_import_entity_type: 'group'
+              bulk_import_entity_id: entity.id,
+              bulk_import_entity_type: 'group_entity'
             )
           expect(logger).to receive(:info)
-            .with(bulk_import_entity_id: 1, bulk_import_entity_type: 'group', extractor: 'BulkImports::Extractor')
+            .with(
+              bulk_import_entity_id: entity.id,
+              bulk_import_entity_type: 'group_entity',
+              extractor: 'BulkImports::Extractor'
+            )
           expect(logger).to receive(:info)
-            .with(bulk_import_entity_id: 1, bulk_import_entity_type: 'group', transformer: 'BulkImports::Transformer')
+            .with(
+              bulk_import_entity_id: entity.id,
+              bulk_import_entity_type: 'group_entity',
+              transformer: 'BulkImports::Transformer'
+            )
           expect(logger).to receive(:info)
-            .with(bulk_import_entity_id: 1, bulk_import_entity_type: 'group', loader: 'BulkImports::Loader')
+            .with(
+              bulk_import_entity_id: entity.id,
+              bulk_import_entity_type: 'group_entity',
+              loader: 'BulkImports::Loader'
+            )
         end
 
         BulkImports::MyPipeline.new.run(context)
@@ -96,7 +104,7 @@ RSpec.describe BulkImports::Pipeline::Runner do
 
       context 'when exception is raised' do
         let(:entity) { create(:bulk_import_entity, :created) }
-        let(:context) { BulkImports::Pipeline::Context.new(entity: entity) }
+        let(:context) { BulkImports::Pipeline::Context.new(entity) }
 
         before do
           allow_next_instance_of(BulkImports::Extractor) do |extractor|
@@ -153,21 +161,19 @@ RSpec.describe BulkImports::Pipeline::Runner do
     end
 
     context 'when entity is marked as failed' do
-      let(:context) do
-        instance_double(
-          BulkImports::Pipeline::Context,
-          entity: instance_double(BulkImports::Entity, id: 1, source_type: 'group', failed?: true)
-        )
-      end
+      let(:entity) { create(:bulk_import_entity) }
+      let(:context) { BulkImports::Pipeline::Context.new(entity) }
 
       it 'logs and returns without execution' do
+        allow(entity).to receive(:failed?).and_return(true)
+
         expect_next_instance_of(Gitlab::Import::Logger) do |logger|
           expect(logger).to receive(:info)
             .with(
               message: 'Skipping due to failed pipeline status',
               pipeline_class: 'BulkImports::MyPipeline',
-              bulk_import_entity_id: 1,
-              bulk_import_entity_type: 'group'
+              bulk_import_entity_id: entity.id,
+              bulk_import_entity_type: 'group_entity'
             )
         end
 

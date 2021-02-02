@@ -97,7 +97,7 @@ export default {
   methods: {
     projectTooltipTitle(project) {
       return project.can_push
-        ? s__('DeployKeys|Write access allowed')
+        ? s__('DeployKeys|Grant write permissions to this key')
         : s__('DeployKeys|Read access only');
     },
     toggleExpanded() {

@@ -14,13 +14,7 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline do
       )
     end
 
-    let(:context) do
-      instance_double(
-        BulkImports::Pipeline::Context,
-        current_user: user,
-        entity: parent_entity
-      )
-    end
+    let(:context) { BulkImports::Pipeline::Context.new(parent_entity) }
 
     let(:subgroup_data) do
       [

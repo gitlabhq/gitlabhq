@@ -16,12 +16,7 @@ RSpec.describe BulkImports::Groups::Pipelines::LabelsPipeline do
     )
   end
 
-  let(:context) do
-    BulkImports::Pipeline::Context.new(
-      current_user: user,
-      entity: entity
-    )
-  end
+  let(:context) { BulkImports::Pipeline::Context.new(entity) }
 
   def extractor_data(title:, has_next_page:, cursor: nil)
     data = [

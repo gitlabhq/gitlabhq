@@ -20,7 +20,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initSharedRunnersForm();
   initVariableList();
 
-  if (gon?.features?.runnerInstructions) {
-    initInstallRunner();
-  }
+  initInstallRunner();
 });

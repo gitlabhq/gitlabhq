@@ -6,21 +6,18 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline do
   describe '#run' do
     let(:user) { create(:user) }
     let(:parent) { create(:group) }
+    let(:bulk_import) { create(:bulk_import, user: user) }
     let(:entity) do
       create(
         :bulk_import_entity,
+        bulk_import: bulk_import,
         source_full_path: 'source/full/path',
         destination_name: 'My Destination Group',
         destination_namespace: parent.full_path
       )
     end
 
-    let(:context) do
-      BulkImports::Pipeline::Context.new(
-        current_user: user,
-        entity: entity
-      )
-    end
+    let(:context) { BulkImports::Pipeline::Context.new(entity) }
 
     let(:group_data) do
       {
@@ -35,8 +32,6 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline do
         'mentions_disabled' => true
       }
     end
-
-    subject { described_class.new }
 
     before do
       allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|

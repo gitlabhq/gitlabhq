@@ -8,17 +8,17 @@
     = f.text_area :key, class: 'form-control gl-form-input', rows: 5, required: true
   .form-group.row
     %p.light.gl-mb-0
-      = _('Paste a machine public key here. Read more about how to generate it')
-      = link_to "here", help_page_path("ssh/README")
+      = _('Paste a public key here.')
+      = link_to _('How do I generate it?'), help_page_path("ssh/README")
 
   = f.fields_for :deploy_keys_projects do |deploy_keys_project_form|
     .form-group.row
       = deploy_keys_project_form.label :can_push do
         = deploy_keys_project_form.check_box :can_push
-        %strong= _('Write access allowed')
+        %strong= _('Grant write permissions to this key')
     .form-group.row
       %p.light.gl-mb-0
-        = _('Allow this key to push to repository as well? (Default only allows pull access.)')
+        = _('Allow this key to push to this repository')
 
   .form-group.row
     = f.submit _("Add key"), class: "btn-success btn"

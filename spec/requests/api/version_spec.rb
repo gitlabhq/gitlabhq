@@ -33,6 +33,12 @@ RSpec.describe API::Version do
 
           expect_version
         end
+
+        it 'returns "200" response on head requests' do
+          head api('/version', personal_access_token: personal_access_token)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
       end
 
       context 'with read_user scope' do
@@ -42,6 +48,12 @@ RSpec.describe API::Version do
           get api('/version', personal_access_token: personal_access_token)
 
           expect_version
+        end
+
+        it 'returns "200" response on head requests' do
+          head api('/version', personal_access_token: personal_access_token)
+
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 

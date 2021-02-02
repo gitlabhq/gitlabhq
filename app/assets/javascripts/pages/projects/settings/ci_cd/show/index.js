@@ -41,7 +41,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initSharedRunnersToggle();
   }
 
-  if (gon?.features?.runnerInstructions) {
-    initInstallRunner();
-  }
+  initInstallRunner();
 });

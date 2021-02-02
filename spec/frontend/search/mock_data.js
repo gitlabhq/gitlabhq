@@ -45,3 +45,19 @@ export const MOCK_PROJECTS = [
     id: 'test_2',
   },
 ];
+
+export const MOCK_SORT_OPTIONS = [
+  {
+    title: 'Most relevant',
+    sortable: false,
+    sortParam: 'relevant',
+  },
+  {
+    title: 'Created date',
+    sortable: true,
+    sortParam: {
+      asc: 'created_asc',
+      desc: 'created_desc',
+    },
+  },
+];

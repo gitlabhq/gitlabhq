@@ -5,6 +5,7 @@ import { queryToObject } from '~/lib/utils/url_utility';
 import createStore from './store';
 import { initTopbar } from './topbar';
 import { initSidebar } from './sidebar';
+import { initSearchSort } from './sort';
 
 export const initSearchApp = () => {
   // Similar to url_utility.decodeUrlParameter
@@ -16,6 +17,7 @@ export const initSearchApp = () => {
 
   initTopbar(store);
   initSidebar(store);
+  initSearchSort(store);
 
   setHighlightClass(query.search); // Code Highlighting
   refreshCounts(); // Other Scope Tab Counts

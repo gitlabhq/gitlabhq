@@ -66,10 +66,10 @@ describe('Pipelines', () => {
   const findRunPipelineButton = () => findByTestId('run-pipeline-button');
   const findCiLintButton = () => findByTestId('ci-lint-button');
   const findCleanCacheButton = () => findByTestId('clear-cache-button');
+  const findStagesDropdown = () => findByTestId('mini-pipeline-graph-dropdown-toggle');
 
   const findEmptyState = () => wrapper.find(EmptyState);
   const findBlankState = () => wrapper.find(BlankState);
-  const findStagesDropdown = () => wrapper.find('.js-builds-dropdown-button');
 
   const findTablePagination = () => wrapper.find(TablePagination);
 

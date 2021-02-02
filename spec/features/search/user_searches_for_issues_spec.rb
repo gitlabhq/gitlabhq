@@ -75,7 +75,7 @@ RSpec.describe 'User searches for issues', :js do
         expect(page.all('.search-result-row').last).to have_link(issue1.title)
       end
 
-      find('.reverse-sort-btn').click
+      find('[data-testid="sort-highest-icon"]').click
 
       page.within('.results') do
         expect(page.all('.search-result-row').first).to have_link(issue1.title)

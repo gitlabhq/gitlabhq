@@ -525,24 +525,26 @@ RSpec.describe 'Pipelines', :js do
                                       name: 'build')
         end
 
+        dropdown_toggle_selector = '[data-testid="mini-pipeline-graph-dropdown-toggle"]'
+
         before do
           visit_project_pipelines
         end
 
         it 'renders a mini pipeline graph' do
           expect(page).to have_selector('[data-testid="widget-mini-pipeline-graph"]')
-          expect(page).to have_selector('.js-builds-dropdown-button')
+          expect(page).to have_selector(dropdown_toggle_selector)
         end
 
         context 'when clicking a stage badge' do
           it 'opens a dropdown' do
-            find('.js-builds-dropdown-button').click
+            find(dropdown_toggle_selector).click
 
             expect(page).to have_link build.name
           end
 
           it 'is possible to cancel pending build' do
-            find('.js-builds-dropdown-button').click
+            find(dropdown_toggle_selector).click
             find('.js-ci-action').click
             wait_for_requests
 
@@ -558,7 +560,7 @@ RSpec.describe 'Pipelines', :js do
           end
 
           it 'displays the failure reason' do
-            find('.js-builds-dropdown-button').click
+            find(dropdown_toggle_selector).click
 
             within('.js-builds-dropdown-list') do
               build_element = page.find('.mini-pipeline-graph-dropdown-item')

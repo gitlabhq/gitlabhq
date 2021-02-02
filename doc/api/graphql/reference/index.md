@@ -263,6 +263,7 @@ Represents an epic on an issue board.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | `author` | User! | Author of the epic |
+| `awardEmoji` | AwardEmojiConnection | A list of award emojis associated with the epic |
 | `children` | EpicConnection | Children (sub-epics) of the epic |
 | `closedAt` | Time | Timestamp of when the epic was closed |
 | `confidential` | Boolean | Indicates if the epic is confidential |
@@ -1381,6 +1382,7 @@ Represents an epic.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | `author` | User! | Author of the epic |
+| `awardEmoji` | AwardEmojiConnection | A list of award emojis associated with the epic |
 | `children` | EpicConnection | Children (sub-epics) of the epic |
 | `closedAt` | Time | Timestamp of when the epic was closed |
 | `confidential` | Boolean | Indicates if the epic is confidential |

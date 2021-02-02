@@ -55,6 +55,12 @@ RSpec.describe API::Events do
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
       end
+
+      it 'returns "200" response on head request' do
+        head api('/events?action=closed&target_type=issue&after=2016-12-1&before=2016-12-31', personal_access_token: token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
     end
 
     context 'when the requesting token does not have "read_user" or "api" scope' do

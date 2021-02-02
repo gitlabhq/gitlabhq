@@ -76,7 +76,7 @@ describe('Deploy keys key', () => {
       createComponent({ deployKey: { ...deployKey, deploy_keys_projects: deployKeysProjects } });
 
       expect(wrapper.find('.deploy-project-label').attributes('title')).toBe(
-        'Write access allowed',
+        'Grant write permissions to this key',
       );
     });
 

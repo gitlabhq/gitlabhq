@@ -10,7 +10,5 @@ document.addEventListener('DOMContentLoaded', () => {
     useDefaultState: true,
   });
 
-  if (gon?.features?.runnerInstructions) {
-    initInstallRunner();
-  }
+  initInstallRunner();
 });

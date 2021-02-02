@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require './spec/support/sidekiq_middleware'
-
 # Create an api access token for root user with the value:
 token = 'ypCa3Dzb23o5nvsixwPA'
 scopes = Gitlab::Auth.all_available_scopes

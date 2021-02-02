@@ -7,10 +7,10 @@ type: howto, reference
 
 # Deploy Keys
 
-Deploy keys allow read-only or read-write (if enabled) access to one or
-more repositories, by importing an SSH public key to your GitLab instance.
+Deploy keys allow read-only or read-write access to your
+repositories by importing an SSH public key into your GitLab instance.
 
-This is useful for cloning repositories to your Continuous
+This is useful, for example, for cloning repositories to your Continuous
 Integration (CI) server. By using deploy keys, you don't have to set up a
 fake user account.
 
@@ -82,7 +82,7 @@ can add or enable a deploy key for a project repository:
 1. Navigate to the project's **Settings > Repository** page.
 1. Expand the **Deploy Keys** section.
 1. Specify a title for the new deploy key and paste your public SSH key.
-1. (Optional) Check **Write access allowed** to allow `read-write` access. Leave it unchecked for `read-only` access.
+1. (Optional) Check **Grant write permissions to this key** to allow `read-write` access. Leave it unchecked for `read-only` access.
 
 There are three lists of Project Deploy Keys:
 

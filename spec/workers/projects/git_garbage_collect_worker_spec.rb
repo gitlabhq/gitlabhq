@@ -9,7 +9,7 @@ RSpec.describe Projects::GitGarbageCollectWorker do
     let(:resource) { project }
     let(:statistics_service_klass) { Projects::UpdateStatisticsService }
     let(:statistics_keys) { [:repository_size, :lfs_objects_size] }
-    let(:expected_default_lease) { "#{resource.id}" }
+    let(:expected_default_lease) { "projects:#{resource.id}" }
   end
 
   context 'when is able to get the lease' do

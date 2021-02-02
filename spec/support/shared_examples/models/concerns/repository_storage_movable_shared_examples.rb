@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'handles repository moves' do |check_worker: true|
+RSpec.shared_examples 'handles repository moves' do
   describe 'associations' do
     it { is_expected.to belong_to(:container) }
   end
@@ -61,25 +61,23 @@ RSpec.shared_examples 'handles repository moves' do |check_worker: true|
     context 'when in the default state' do
       subject(:storage_move) { create(repository_storage_factory_key, container: container, destination_storage_name: 'test_second_storage') }
 
-      if check_worker
-        context 'and transits to scheduled' do
-          it 'triggers the corresponding repository storage worker' do
-            expect(repository_storage_worker).to receive(:perform_async).with(container.id, 'test_second_storage', storage_move.id)
+      context 'and transits to scheduled' do
+        it 'triggers the corresponding repository storage worker' do
+          expect(repository_storage_worker).to receive(:perform_async).with(container.id, 'test_second_storage', storage_move.id)
+
+          storage_move.schedule!
+
+          expect(container).to be_repository_read_only
+        end
+
+        context 'when the transition fails' do
+          it 'does not trigger the corresponding repository storage worker and adds an error' do
+            allow(storage_move.container).to receive(:set_repository_read_only!).and_raise(StandardError, 'foobar')
+            expect(repository_storage_worker).not_to receive(:perform_async)
 
             storage_move.schedule!
 
-            expect(container).to be_repository_read_only
-          end
-
-          context 'when the transition fails' do
-            it 'does not trigger the corresponding repository storage worker and adds an error' do
-              allow(storage_move.container).to receive(:set_repository_read_only!).and_raise(StandardError, 'foobar')
-              expect(repository_storage_worker).not_to receive(:perform_async)
-
-              storage_move.schedule!
-
-              expect(storage_move.errors[error_key]).to include('foobar')
-            end
+            expect(storage_move.errors[error_key]).to include('foobar')
           end
         end
       end

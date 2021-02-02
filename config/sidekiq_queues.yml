@@ -160,6 +160,8 @@
   - 1
 - - group_wikis_git_garbage_collect
   - 1
+- - groups_update_repository_storage
+  - 1
 - - hashed_storage
   - 1
 - - import_issues_csv

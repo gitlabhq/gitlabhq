@@ -63,7 +63,7 @@ RSpec.describe 'Projects > Settings > Repository settings' do
         click_button 'Add key'
 
         expect(page).to have_content('new_deploy_key')
-        expect(page).to have_content('Write access allowed')
+        expect(page).to have_content('Grant write permissions to this key')
       end
 
       it 'edit an existing deploy key' do
@@ -77,7 +77,7 @@ RSpec.describe 'Projects > Settings > Repository settings' do
         click_button 'Save changes'
 
         expect(page).to have_content('updated_deploy_key')
-        expect(page).to have_content('Write access allowed')
+        expect(page).to have_content('Grant write permissions to this key')
       end
 
       it 'edit an existing public deploy key to be writable' do
@@ -90,7 +90,7 @@ RSpec.describe 'Projects > Settings > Repository settings' do
         click_button 'Save changes'
 
         expect(page).to have_content('public_deploy_key')
-        expect(page).to have_content('Write access allowed')
+        expect(page).to have_content('Grant write permissions to this key')
       end
 
       it 'edit a deploy key from projects user has access to' do

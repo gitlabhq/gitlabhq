@@ -160,7 +160,8 @@ export default {
       v-gl-tooltip.hover
       :class="triggerButtonClass"
       :title="stage.title"
-      class="mini-pipeline-graph-dropdown-toggle js-builds-dropdown-button"
+      class="mini-pipeline-graph-dropdown-toggle"
+      data-testid="mini-pipeline-graph-dropdown-toggle"
       data-toggle="dropdown"
       data-display="static"
       type="button"
