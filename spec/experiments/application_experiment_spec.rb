@@ -5,6 +5,14 @@ require 'spec_helper'
 RSpec.describe ApplicationExperiment, :experiment do
   subject { described_class.new(:stub) }
 
+  let(:feature_definition) { { name: 'stub', type: 'experiment', group: 'group::adoption', default_enabled: false } }
+
+  around do |example|
+    Feature::Definition.definitions[:stub] = Feature::Definition.new('stub.yml', feature_definition)
+    example.run
+    Feature::Definition.definitions.delete(:stub)
+  end
+
   before do
     allow(subject).to receive(:enabled?).and_return(true)
   end
@@ -105,6 +113,12 @@ RSpec.describe ApplicationExperiment, :experiment do
   end
 
   describe "variant resolution" do
+    it "uses the default value as specified in the yaml" do
+      expect(Feature).to receive(:enabled?).with('stub', subject, type: :experiment, default_enabled: :yaml)
+
+      expect(subject.variant.name).to eq('control')
+    end
+
     it "returns nil when not rolled out" do
       stub_feature_flags(stub: false)
 

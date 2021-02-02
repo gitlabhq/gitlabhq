@@ -10,23 +10,11 @@ RSpec.describe API::DeployTokens do
   let!(:deploy_token) { create(:deploy_token, projects: [project]) }
   let!(:group_deploy_token) { create(:deploy_token, :group, groups: [group]) }
 
-  shared_examples 'with feature flag disabled' do
-    context 'disabled feature flag' do
-      before do
-        stub_feature_flags(deploy_tokens_api: false)
-      end
-
-      it { is_expected.to have_gitlab_http_status(:service_unavailable) }
-    end
-  end
-
   describe 'GET /deploy_tokens' do
     subject do
       get api('/deploy_tokens', user)
       response
     end
-
-    it_behaves_like 'with feature flag disabled'
 
     context 'when unauthenticated' do
       let(:user) { nil }
@@ -81,8 +69,6 @@ RSpec.describe API::DeployTokens do
         project.add_maintainer(user)
       end
 
-      it_behaves_like 'with feature flag disabled'
-
       it { is_expected.to have_gitlab_http_status(:ok) }
 
       it 'returns all deploy tokens for the project' do
@@ -127,8 +113,6 @@ RSpec.describe API::DeployTokens do
       before do
         group.add_maintainer(user)
       end
-
-      it_behaves_like 'with feature flag disabled'
 
       it { is_expected.to have_gitlab_http_status(:ok) }
 

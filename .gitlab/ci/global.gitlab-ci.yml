@@ -16,13 +16,21 @@
     - source scripts/utils.sh
     - source scripts/prepare_build.sh
 
-.rails-cache:
+.setup-test-env-cache:
   cache:
-    key: "rails-v3"
+    key: "setup-test-env-v1"
     paths:
       - vendor/ruby/
       - vendor/gitaly-ruby/
       - .go/pkg/mod/
+    policy: pull
+
+.rails-cache:
+  cache:
+    key: "rails-v4"
+    paths:
+      - vendor/ruby/
+      - vendor/gitaly-ruby/
     policy: pull
 
 .static-analysis-cache:

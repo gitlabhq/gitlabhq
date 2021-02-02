@@ -66,6 +66,18 @@ module Gitlab
       answer
     end
 
+    # Prompt the user to input a password
+    #
+    # message - custom message to display before input
+    def prompt_for_password(message = 'Enter password: ')
+      unless STDIN.tty?
+        print(message)
+        return STDIN.gets.chomp
+      end
+
+      STDIN.getpass(message)
+    end
+
     # Runs the given command and matches the output against the given pattern
     #
     # Returns nil if nothing matched

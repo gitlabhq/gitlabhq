@@ -5502,6 +5502,81 @@ type DastOnDemandScanCreatePayload {
   pipelineUrl: String
 }
 
+"""
+Represents a DAST Profile
+"""
+type DastProfile {
+  """
+  The associated scanner profile.
+  """
+  dastScannerProfile: DastScannerProfile
+
+  """
+  The associated site profile.
+  """
+  dastSiteProfile: DastSiteProfile
+
+  """
+  The description of the scan.
+  """
+  description: String
+
+  """
+  Relative web path to the edit page of a profile.
+  """
+  editPath: String
+
+  """
+  ID of the profile.
+  """
+  id: DastProfileID!
+
+  """
+  The name of the profile.
+  """
+  name: String
+}
+
+"""
+The connection type for DastProfile.
+"""
+type DastProfileConnection {
+  """
+  A list of edges.
+  """
+  edges: [DastProfileEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [DastProfile]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type DastProfileEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: DastProfile
+}
+
+"""
+Identifier of Dast::Profile.
+"""
+scalar DastProfileID
+
 enum DastScanTypeEnum {
   """
   Active DAST scan. This scan will make active attacks against the target site.
@@ -18195,7 +18270,32 @@ type Project {
   createdAt: Time
 
   """
-  The DAST scanner profiles associated with the project
+  DAST Profiles associated with the project. Always returns no nodes if `dast_saved_scans` is disabled.
+  """
+  dastProfiles(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): DastProfileConnection
+
+  """
+  The DAST scanner profiles associated with the project.
   """
   dastScannerProfiles(
     """
@@ -18220,7 +18320,7 @@ type Project {
   ): DastScannerProfileConnection
 
   """
-  DAST Site Profile associated with the project
+  DAST Site Profile associated with the project.
   """
   dastSiteProfile(
     """
@@ -18230,7 +18330,7 @@ type Project {
   ): DastSiteProfile
 
   """
-  DAST Site Profiles associated with the project
+  DAST Site Profiles associated with the project.
   """
   dastSiteProfiles(
     """
@@ -18255,8 +18355,8 @@ type Project {
   ): DastSiteProfileConnection
 
   """
-  DAST Site Validations associated with the project. Will always return no nodes
-  if `security_on_demand_scans_site_validation` is disabled
+  DAST Site Validations associated with the project. Always returns no nodes if
+  `security_on_demand_scans_site_validation` is disabled.
   """
   dastSiteValidations(
     """

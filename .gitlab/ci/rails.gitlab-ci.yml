@@ -141,6 +141,7 @@
 setup-test-env:
   extends:
     - .rails-job-base
+    - .setup-test-env-cache
     - .rails:rules:default-refs-code-backstage-qa
     - .use-pg11
   stage: prepare
@@ -180,13 +181,19 @@ setup-test-env:
       - tmp/tests/second_storage/
     when: always
 
-update-rails-cache:
+update-setup-test-env-cache:
   extends:
     - setup-test-env
     - .shared:rules:update-cache
-  artifacts: {}  # This job's purpose is only to update the cache.
+  artifacts:
+    paths: []  # This job's purpose is only to update the cache.
   cache:
     policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
+
+update-rails-cache:
+  extends:
+    - update-setup-test-env-cache
+    - .rails-cache
 
 .coverage-base:
   extends:
