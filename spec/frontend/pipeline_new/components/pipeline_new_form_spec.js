@@ -34,6 +34,7 @@ describe('Pipeline New Form', () => {
   const findForm = () => wrapper.find(GlForm);
   const findDropdown = () => wrapper.find(GlDropdown);
   const findDropdownItems = () => wrapper.findAll(GlDropdownItem);
+  const findSubmitButton = () => wrapper.find('[data-testid="run_pipeline_button"]');
   const findVariableRows = () => wrapper.findAll('[data-testid="ci-variable-row"]');
   const findRemoveIcons = () => wrapper.findAll('[data-testid="remove-ci-variable-row"]');
   const findKeyInputs = () => wrapper.findAll('[data-testid="pipeline-form-ci-variable-key"]');
@@ -155,6 +156,18 @@ describe('Pipeline New Form', () => {
 
       await waitForPromises();
     });
+
+    it('disables the submit button immediately after submitting', async () => {
+      createComponent();
+
+      expect(findSubmitButton().props('disabled')).toBe(false);
+
+      findForm().vm.$emit('submit', dummySubmitEvent);
+      await waitForPromises();
+
+      expect(findSubmitButton().props('disabled')).toBe(true);
+    });
+
     it('creates pipeline with full ref and variables', async () => {
       createComponent();
 
@@ -167,6 +180,7 @@ describe('Pipeline New Form', () => {
       expect(getExpectedPostParams().ref).toEqual(wrapper.vm.$data.refValue.fullName);
       expect(redirectTo).toHaveBeenCalledWith(`${pipelinesPath}/${postResponse.id}`);
     });
+
     it('creates a pipeline with short ref and variables', async () => {
       // query params are used
       createComponent('', mockParams);
@@ -312,31 +326,55 @@ describe('Pipeline New Form', () => {
   describe('Form errors and warnings', () => {
     beforeEach(() => {
       createComponent();
-
-      mock.onPost(pipelinesPath).reply(httpStatusCodes.BAD_REQUEST, mockError);
-
-      findForm().vm.$emit('submit', dummySubmitEvent);
-
-      return waitForPromises();
     });
 
-    it('shows both error and warning', () => {
-      expect(findErrorAlert().exists()).toBe(true);
-      expect(findWarningAlert().exists()).toBe(true);
+    describe('when the error response can be handled', () => {
+      beforeEach(async () => {
+        mock.onPost(pipelinesPath).reply(httpStatusCodes.BAD_REQUEST, mockError);
+
+        findForm().vm.$emit('submit', dummySubmitEvent);
+
+        await waitForPromises();
+      });
+
+      it('shows both error and warning', () => {
+        expect(findErrorAlert().exists()).toBe(true);
+        expect(findWarningAlert().exists()).toBe(true);
+      });
+
+      it('shows the correct error', () => {
+        expect(findErrorAlert().text()).toBe(mockError.errors[0]);
+      });
+
+      it('shows the correct warning title', () => {
+        const { length } = mockError.warnings;
+
+        expect(findWarningAlertSummary().attributes('message')).toBe(`${length} warnings found:`);
+      });
+
+      it('shows the correct amount of warnings', () => {
+        expect(findWarnings()).toHaveLength(mockError.warnings.length);
+      });
+
+      it('re-enables the submit button', () => {
+        expect(findSubmitButton().props('disabled')).toBe(false);
+      });
     });
 
-    it('shows the correct error', () => {
-      expect(findErrorAlert().text()).toBe(mockError.errors[0]);
-    });
+    describe('when the error response cannot be handled', () => {
+      beforeEach(async () => {
+        mock
+          .onPost(pipelinesPath)
+          .reply(httpStatusCodes.INTERNAL_SERVER_ERROR, 'something went wrong');
 
-    it('shows the correct warning title', () => {
-      const { length } = mockError.warnings;
+        findForm().vm.$emit('submit', dummySubmitEvent);
 
-      expect(findWarningAlertSummary().attributes('message')).toBe(`${length} warnings found:`);
-    });
+        await waitForPromises();
+      });
 
-    it('shows the correct amount of warnings', () => {
-      expect(findWarnings()).toHaveLength(mockError.warnings.length);
+      it('re-enables the submit button', () => {
+        expect(findSubmitButton().props('disabled')).toBe(false);
+      });
     });
   });
 });

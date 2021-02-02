@@ -18,6 +18,7 @@ module Types
             description: 'Indicates if the status has further details.',
             method: :has_details?
       field :label, GraphQL::STRING_TYPE, null: true,
+            calls_gitaly: true,
             description: 'Label of the status.'
       field :text, GraphQL::STRING_TYPE, null: true,
             description: 'Text of the status.'
@@ -25,8 +26,8 @@ module Types
             description: 'Tooltip associated with the status.',
             method: :status_tooltip
       field :action, Types::Ci::StatusActionType, null: true,
-          calls_gitaly: true,
-          description: 'Action information for the status. This includes method, button title, icon, path, and title.'
+            calls_gitaly: true,
+            description: 'Action information for the status. This includes method, button title, icon, path, and title.'
 
       def action
         if object.has_action?

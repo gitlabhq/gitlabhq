@@ -1,9 +1,11 @@
 <!-- Matomo -->
+- matomo_disable_cookies = extra_config.has_key?('matomo_disable_cookies') && extra_config.matomo_disable_cookies
 = javascript_tag do
   :plain
     var _paq = window._paq = window._paq || [];
     _paq.push(['trackPageView']);
     _paq.push(['enableLinkTracking']);
+    #{matomo_disable_cookies ? '_paq.push(["disableCookies"])' : ""};
     (function() {
       var u="//#{extra_config.matomo_url}/";
       _paq.push(['setTrackerUrl', u+'matomo.php']);

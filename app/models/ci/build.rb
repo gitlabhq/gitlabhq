@@ -367,7 +367,7 @@ module Ci
 
     def detailed_status(current_user)
       Gitlab::Ci::Status::Build::Factory
-        .new(self, current_user)
+        .new(self.present, current_user)
         .fabricate!
     end
 

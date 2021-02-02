@@ -825,14 +825,11 @@ describe('MrWidgetOptions', () => {
 
   describe('security widget', () => {
     describe.each`
-      context                             | hasPipeline | isFlagEnabled | shouldRender
-      ${'has pipeline and flag enabled'}  | ${true}     | ${true}       | ${true}
-      ${'has pipeline and flag disabled'} | ${true}     | ${false}      | ${false}
-      ${'no pipeline and flag enabled'}   | ${false}    | ${true}       | ${false}
-    `('given $context', ({ hasPipeline, isFlagEnabled, shouldRender }) => {
+      context                  | hasPipeline | shouldRender
+      ${'there is a pipeline'} | ${true}     | ${true}
+      ${'no pipeline'}         | ${false}    | ${false}
+    `('given $context', ({ hasPipeline, shouldRender }) => {
       beforeEach(() => {
-        gon.features.coreSecurityMrWidget = isFlagEnabled;
-
         const mrData = {
           ...mockData,
           ...(hasPipeline ? {} : { pipeline: null }),

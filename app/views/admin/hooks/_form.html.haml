@@ -2,10 +2,10 @@
 
 .form-group
   = form.label :url, _('URL'), class: 'label-bold'
-  = form.text_field :url, class: 'form-control'
+  = form.text_field :url, class: 'form-control gl-form-input'
 .form-group
   = form.label :token, _('Secret Token'), class: 'label-bold'
-  = form.text_field :token, class: 'form-control'
+  = form.text_field :token, class: 'form-control gl-form-input'
   %p.form-text.text-muted= _('Use this token to validate received payloads')
 .form-group
   = form.label :url, _('Trigger'), class: 'label-bold'

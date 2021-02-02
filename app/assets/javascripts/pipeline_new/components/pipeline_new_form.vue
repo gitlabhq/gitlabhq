@@ -116,6 +116,7 @@ export default {
       totalWarnings: 0,
       isWarningDismissed: false,
       isLoading: false,
+      submitted: false,
     };
   },
   computed: {
@@ -294,6 +295,7 @@ export default {
         });
     },
     createPipeline() {
+      this.submitted = true;
       const filteredVariables = this.variables
         .filter(({ key, value }) => key !== '' && value !== '')
         .map(({ variable_type, key, value }) => ({
@@ -313,8 +315,16 @@ export default {
           redirectTo(`${this.pipelinesPath}/${data.id}`);
         })
         .catch((err) => {
-          const { errors, warnings, total_warnings: totalWarnings } = err.response.data;
+          // always re-enable submit button
+          this.submitted = false;
+
+          const {
+            errors = [],
+            warnings = [],
+            total_warnings: totalWarnings = 0,
+          } = err?.response?.data;
           const [error] = errors;
+
           this.error = error;
           this.warnings = warnings;
           this.totalWarnings = totalWarnings;
@@ -464,6 +474,8 @@ export default {
         variant="success"
         class="js-no-auto-disable"
         data-qa-selector="run_pipeline_button"
+        data-testid="run_pipeline_button"
+        :disabled="submitted"
         >{{ s__('Pipeline|Run Pipeline') }}</gl-button
       >
       <gl-button :href="pipelinesPath">{{ __('Cancel') }}</gl-button>

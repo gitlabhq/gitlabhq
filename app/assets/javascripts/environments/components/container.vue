@@ -26,26 +26,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    deployBoardsHelpPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    helpCanaryDeploymentsPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    lockPromotionSvgPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    userCalloutsPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   methods: {
     onChangePage(page) {
@@ -62,14 +42,7 @@ export default {
     <slot name="empty-state"></slot>
 
     <div v-if="!isLoading && environments.length > 0" class="table-holder">
-      <environment-table
-        :environments="environments"
-        :can-read-environment="canReadEnvironment"
-        :user-callouts-path="userCalloutsPath"
-        :lock-promotion-svg-path="lockPromotionSvgPath"
-        :help-canary-deployments-path="helpCanaryDeploymentsPath"
-        :deploy-boards-help-path="deployBoardsHelpPath"
-      />
+      <environment-table :environments="environments" :can-read-environment="canReadEnvironment" />
 
       <table-pagination
         v-if="pagination && pagination.totalPages > 1"

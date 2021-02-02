@@ -181,7 +181,7 @@ export default {
       );
     },
     shouldRenderSecurityReport() {
-      return Boolean(window.gon?.features?.coreSecurityMrWidget && this.mr.pipeline.id);
+      return Boolean(this.mr.pipeline.id);
     },
     mergeError() {
       let { mergeError } = this.mr;

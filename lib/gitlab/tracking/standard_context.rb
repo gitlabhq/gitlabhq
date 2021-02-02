@@ -3,7 +3,7 @@
 module Gitlab
   module Tracking
     class StandardContext
-      GITLAB_STANDARD_SCHEMA_URL = 'iglu:com.gitlab/gitlab_standard/jsonschema/1-0-2'.freeze
+      GITLAB_STANDARD_SCHEMA_URL = 'iglu:com.gitlab/gitlab_standard/jsonschema/1-0-3'.freeze
       GITLAB_RAILS_SOURCE = 'gitlab-rails'.freeze
 
       def initialize(namespace: nil, project: nil, user: nil, **data)

@@ -18,7 +18,7 @@ class AutocompleteController < ApplicationController
       .new(params: params, current_user: current_user, project: project, group: group)
       .execute
 
-    render json: UserSerializer.new(params).represent(users, project: project)
+    render json: UserSerializer.new(params.merge({ current_user: current_user })).represent(users, project: project)
   end
 
   def user

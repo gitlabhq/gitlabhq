@@ -63,13 +63,13 @@ Total number of sites in a Geo deployment
 | `distribution` | ee |
 | `tier` | premium, ultimate |
 
-## counts_monthy.deployments
+## counts_monthly.deployments
 
 Total deployments count for recent 28 days
 
 | field | value |
 | --- | --- |
-| `key_path` | **counts_monthy.deployments** |
+| `key_path` | **counts_monthly.deployments** |
 | `value_type` | integer |
 | `stage` | release |
 | `status` | data_available |

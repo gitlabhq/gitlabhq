@@ -50,3 +50,5 @@ module Ci
     end
   end
 end
+
+Ci::BuildPresenter.prepend_if_ee('EE::Ci::BuildPresenter')

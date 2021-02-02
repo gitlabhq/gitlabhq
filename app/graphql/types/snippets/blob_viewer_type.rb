@@ -11,7 +11,7 @@ module Types
             null: false
 
       field :load_async, GraphQL::BOOLEAN_TYPE,
-            description: 'Shows whether the blob content is loaded async',
+            description: 'Shows whether the blob content is loaded asynchronously',
             null: false
 
       field :collapsed, GraphQL::BOOLEAN_TYPE,

@@ -1242,6 +1242,7 @@ production: &base
     ## Matomo analytics.
     # matomo_url: '_your_matomo_url'
     # matomo_site_id: '_your_matomo_site_id'
+    # matomo_disable_cookies: false
 
   rack_attack:
     git_basic_auth:

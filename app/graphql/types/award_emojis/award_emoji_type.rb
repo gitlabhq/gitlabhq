@@ -23,7 +23,7 @@ module Types
       field :unicode,
             GraphQL::STRING_TYPE,
             null: false,
-            description: 'The emoji in unicode.'
+            description: 'The emoji in Unicode.'
 
       field :emoji,
             GraphQL::STRING_TYPE,
@@ -33,7 +33,7 @@ module Types
       field :unicode_version,
             GraphQL::STRING_TYPE,
             null: false,
-            description: 'The unicode version for this emoji.'
+            description: 'The Unicode version for this emoji.'
 
       field :user,
             Types::UserType,

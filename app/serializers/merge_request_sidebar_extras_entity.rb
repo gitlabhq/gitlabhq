@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class MergeRequestSidebarExtrasEntity < IssuableSidebarExtrasEntity
-  expose :assignees do |merge_request|
-    MergeRequestUserEntity.represent(merge_request.assignees, merge_request: merge_request)
+  expose :assignees do |merge_request, options|
+    MergeRequestUserEntity.represent(merge_request.assignees, options.merge(merge_request: merge_request))
   end
 
-  expose :reviewers, if: -> (m) { m.allows_reviewers? } do |merge_request|
-    MergeRequestUserEntity.represent(merge_request.reviewers, merge_request: merge_request)
+  expose :reviewers, if: -> (m) { m.allows_reviewers? } do |merge_request, options|
+    MergeRequestUserEntity.represent(merge_request.reviewers, options.merge(merge_request: merge_request))
   end
 end

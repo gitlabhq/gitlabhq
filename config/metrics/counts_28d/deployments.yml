@@ -1,4 +1,4 @@
-key_path: counts_monthy.deployments
+key_path: counts_monthly.deployments
 description: Total deployments count for recent 28 days
 value_type: integer
 stage: release

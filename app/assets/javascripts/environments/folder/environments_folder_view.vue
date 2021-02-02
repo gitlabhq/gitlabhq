@@ -34,21 +34,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    userCalloutsPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    lockPromotionSvgPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    helpCanaryDeploymentsPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   methods: {
     successCallback(resp) {
@@ -88,9 +73,6 @@ export default {
       :environments="state.environments"
       :pagination="state.paginationInformation"
       :can-read-environment="canReadEnvironment"
-      :user-callouts-path="userCalloutsPath"
-      :lock-promotion-svg-path="lockPromotionSvgPath"
-      :help-canary-deployments-path="helpCanaryDeploymentsPath"
       @onChangePage="onChangePage"
     />
   </div>

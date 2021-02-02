@@ -10,6 +10,10 @@ export const getJwt = () => {
 
 export const getLocation = () => {
   return new Promise((resolve) => {
+    if (typeof AP.getLocation !== 'function') {
+      resolve();
+    }
+
     AP.getLocation((location) => {
       resolve(location);
     });

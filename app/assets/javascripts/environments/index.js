@@ -30,7 +30,6 @@ export default () => {
         endpoint: environmentsData.environmentsDataEndpoint,
         newEnvironmentPath: environmentsData.newEnvironmentPath,
         helpPagePath: environmentsData.helpPagePath,
-        deployBoardsHelpPath: environmentsData.deployBoardsHelpPath,
         canCreateEnvironment: parseBoolean(environmentsData.canCreateEnvironment),
         canReadEnvironment: parseBoolean(environmentsData.canReadEnvironment),
       };
@@ -41,7 +40,6 @@ export default () => {
           endpoint: this.endpoint,
           newEnvironmentPath: this.newEnvironmentPath,
           helpPagePath: this.helpPagePath,
-          deployBoardsHelpPath: this.deployBoardsHelpPath,
           canCreateEnvironment: this.canCreateEnvironment,
           canReadEnvironment: this.canReadEnvironment,
         },

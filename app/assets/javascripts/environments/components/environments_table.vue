@@ -23,30 +23,10 @@ export default {
       required: true,
       default: () => [],
     },
-    deployBoardsHelpPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
     canReadEnvironment: {
       type: Boolean,
       required: false,
       default: false,
-    },
-    helpCanaryDeploymentsPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    lockPromotionSvgPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    userCalloutsPath: {
-      type: String,
-      required: false,
-      default: '',
     },
   },
   data() {
@@ -189,7 +169,6 @@ export default {
         <div class="deploy-board-container">
           <deploy-board
             :deploy-board-data="model.deployBoardData"
-            :deploy-boards-help-path="deployBoardsHelpPath"
             :is-loading="model.isLoadingDeployBoard"
             :is-empty="model.isEmptyDeployBoard"
             :logs-path="model.logs_path"

@@ -8,6 +8,7 @@ module Types
       connection_type_class(Types::CountableConnectionType)
 
       authorize :read_pipeline
+      present_using ::Ci::PipelinePresenter
 
       expose_permissions Types::PermissionTypes::Ci::Pipeline
 
@@ -30,7 +31,7 @@ module Types
             description: 'Detailed status of the pipeline.'
 
       field :config_source, PipelineConfigSourceEnum, null: true,
-            description: "Config source of the pipeline (#{::Enums::Ci::Pipeline.config_sources.keys.join(', ').upcase})"
+            description: "Configuration source of the pipeline (#{::Enums::Ci::Pipeline.config_sources.keys.join(', ').upcase})"
 
       field :duration, GraphQL::INT_TYPE, null: true,
             description: 'Duration of the pipeline in seconds.'

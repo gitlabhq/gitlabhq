@@ -45,7 +45,7 @@
             %tr
               %td= subscription.namespace.full_path
               %td= subscription.created_at
-              %td= link_to 'Remove', jira_connect_subscription_path(subscription), class: 'remove-subscription'
+              %td= link_to 'Remove', jira_connect_subscription_path(subscription), class: 'js-jira-connect-remove-subscription'
     - else
       %h4.empty-subscriptions
         No linked namespaces

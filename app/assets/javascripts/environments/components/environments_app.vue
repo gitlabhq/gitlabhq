@@ -51,29 +51,9 @@ export default {
       type: String,
       required: true,
     },
-    helpCanaryDeploymentsPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
     helpPagePath: {
       type: String,
       required: true,
-    },
-    deployBoardsHelpPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    lockPromotionSvgPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    userCalloutsPath: {
-      type: String,
-      required: false,
-      default: '',
     },
   },
 
@@ -195,10 +175,6 @@ export default {
         :environments="state.environments"
         :pagination="state.paginationInformation"
         :can-read-environment="canReadEnvironment"
-        :user-callouts-path="userCalloutsPath"
-        :lock-promotion-svg-path="lockPromotionSvgPath"
-        :help-canary-deployments-path="helpCanaryDeploymentsPath"
-        :deploy-boards-help-path="deployBoardsHelpPath"
         @onChangePage="onChangePage"
       >
         <template v-if="!isLoading && state.environments.length === 0" #empty-state>
