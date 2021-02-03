@@ -3510,16 +3510,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe '#has_codequality_reports?' do
-    subject { pipeline.has_codequality_reports? }
+  describe '#has_codequality_mr_diff_report?' do
+    subject { pipeline.has_codequality_mr_diff_report? }
 
-    context 'when pipeline has a codequality artifact' do
-      let(:pipeline) { create(:ci_pipeline, :with_quality_report_artifact, :running, project: project) }
+    context 'when pipeline has a codequality mr diff report' do
+      let(:pipeline) { create(:ci_pipeline, :with_codequality_mr_diff_report, :running, project: project) }
 
       it { expect(subject).to be_truthy }
     end
 
-    context 'when pipeline does not have a codequality artifact' do
+    context 'when pipeline does not have a codequality mr diff report' do
       let(:pipeline) { create(:ci_pipeline, :success, project: project) }
 
       it { expect(subject).to be_falsey }

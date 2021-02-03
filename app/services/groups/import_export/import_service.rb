@@ -123,3 +123,5 @@ module Groups
     end
   end
 end
+
+Groups::ImportExport::ImportService.prepend_if_ee('EE::Groups::ImportExport::ImportService')

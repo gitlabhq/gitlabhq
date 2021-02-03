@@ -3152,6 +3152,9 @@ msgstr ""
 msgid "An error occurred while fetching branches.  Retry the search."
 msgstr ""
 
+msgid "An error occurred while fetching codequality mr diff reports."
+msgstr ""
+
 msgid "An error occurred while fetching commits.  Retry the search."
 msgstr ""
 
@@ -15905,6 +15908,9 @@ msgid "Integrations|Standard"
 msgstr ""
 
 msgid "Integrations|This integration, and inheriting projects were reset."
+msgstr ""
+
+msgid "Integrations|This requires mirroring your GitHub repository to this project. %{docs_link}"
 msgstr ""
 
 msgid "Integrations|To keep this project going, create a new issue."

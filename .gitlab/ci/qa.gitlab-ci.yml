@@ -47,7 +47,7 @@ update-qa-cache:
     policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .package-and-qa-base:
-  image: ruby:2.7-alpine
+  image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7-alpine
   stage: qa
   retry: 0
   script:

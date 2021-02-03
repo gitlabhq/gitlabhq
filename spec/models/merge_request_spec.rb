@@ -1982,6 +1982,30 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
+  describe '#has_codequality_mr_diff_report?' do
+    subject { merge_request.has_codequality_mr_diff_report? }
+
+    context 'when head pipeline has codequality mr diff report' do
+      let(:merge_request) { create(:merge_request, :with_codequality_mr_diff_reports) }
+
+      it { is_expected.to be_truthy }
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(codequality_mr_diff: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when head pipeline does not have codeqquality mr diff report' do
+      let(:merge_request) { create(:merge_request) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#has_codequality_reports?' do
     subject { merge_request.has_codequality_reports? }
 
@@ -2149,6 +2173,54 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
           it 'raises and InvalidateReactiveCache error' do
             expect { subject }.to raise_error(ReactiveCaching::InvalidateReactiveCache)
+          end
+        end
+      end
+    end
+  end
+
+  describe '#find_codequality_mr_diff_reports' do
+    let(:project) { create(:project, :repository) }
+    let(:merge_request) { create(:merge_request, :with_codequality_mr_diff_reports, source_project: project) }
+    let(:pipeline) { merge_request.head_pipeline }
+
+    subject(:mr_diff_report) { merge_request.find_codequality_mr_diff_reports }
+
+    context 'when head pipeline has coverage reports' do
+      context 'when reactive cache worker is parsing results asynchronously' do
+        it 'returns status' do
+          expect(mr_diff_report[:status]).to eq(:parsing)
+        end
+      end
+
+      context 'when reactive cache worker is inline' do
+        before do
+          synchronous_reactive_cache(merge_request)
+        end
+
+        it 'returns status and data' do
+          expect(mr_diff_report[:status]).to eq(:parsed)
+        end
+
+        context 'when an error occurrs' do
+          before do
+            merge_request.update!(head_pipeline: nil)
+          end
+
+          it 'returns an error message' do
+            expect(mr_diff_report[:status]).to eq(:error)
+          end
+        end
+
+        context 'when cached results is not latest' do
+          before do
+            allow_next_instance_of(Ci::GenerateCodequalityMrDiffReportService) do |service|
+              allow(service).to receive(:latest?).and_return(false)
+            end
+          end
+
+          it 'raises and InvalidateReactiveCache error' do
+            expect { mr_diff_report }.to raise_error(ReactiveCaching::InvalidateReactiveCache)
           end
         end
       end

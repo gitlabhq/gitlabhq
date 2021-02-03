@@ -11,6 +11,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include RecordUserLastActivity
   include SourcegraphDecorator
   include DiffHelper
+  include CommentAndCloseFlag
 
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]
   before_action :apply_diff_view_cookie!, only: [:show]
@@ -22,7 +23,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :coverage_reports,
     :terraform_reports,
     :accessibility_reports,
-    :codequality_reports
+    :codequality_reports,
+    :codequality_mr_diff_reports
   ]
   before_action :set_issuables_index, only: [:index]
   before_action :authenticate_user!, only: [:assign_related_issues]
@@ -66,7 +68,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
                      :toggle_award_emoji, :toggle_subscription, :update
                    ]
 
-  feature_category :code_testing, [:test_reports, :coverage_reports]
+  feature_category :code_testing, [:test_reports, :coverage_reports, :codequality_mr_diff_reports]
   feature_category :accessibility_testing, [:accessibility_reports]
   feature_category :infrastructure_as_code, [:terraform_reports]
 
@@ -193,6 +195,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     else
       head :no_content
     end
+  end
+
+  def codequality_mr_diff_reports
+    reports_response(@merge_request.find_codequality_mr_diff_reports)
   end
 
   def codequality_reports

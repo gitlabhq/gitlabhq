@@ -97,18 +97,18 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
       end
     end
 
-    context 'when file_type is code_quality' do
-      let(:file_type) { :code_quality }
+    context 'when file_type is code_quality_mr_diff' do
+      let(:file_type) { :code_quality_mr_diff }
 
-      context 'when pipeline artifact has a quality report' do
-        let!(:pipeline_artifact) { create(:ci_pipeline_artifact, :with_codequality_report) }
+      context 'when pipeline artifact has a codequality mr diff report' do
+        let!(:pipeline_artifact) { create(:ci_pipeline_artifact, :with_codequality_mr_diff_report) }
 
         it 'returns true' do
           expect(pipeline_artifact).to be_truthy
         end
       end
 
-      context 'when pipeline artifact does not have a quality report' do
+      context 'when pipeline artifact does not have a codequality mr diff report' do
         it 'returns false' do
           expect(pipeline_artifact).to be_falsey
         end
@@ -145,14 +145,14 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
       end
     end
 
-    context 'when file_type is code_quality' do
-      let(:file_type) { :code_quality }
+    context 'when file_type is code_quality_mr_diff' do
+      let(:file_type) { :code_quality_mr_diff }
 
       context 'when pipeline artifact has a quality report' do
-        let!(:coverage_report) { create(:ci_pipeline_artifact, :with_codequality_report) }
+        let!(:coverage_report) { create(:ci_pipeline_artifact, :with_codequality_mr_diff_report) }
 
         it 'returns a pipeline artifact with a quality report' do
-          expect(pipeline_artifact.file_type).to eq('code_quality')
+          expect(pipeline_artifact.file_type).to eq('code_quality_mr_diff')
         end
       end
 

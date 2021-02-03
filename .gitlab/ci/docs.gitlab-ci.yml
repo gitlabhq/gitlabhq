@@ -2,7 +2,7 @@
   extends:
     - .default-retry
     - .docs:rules:review-docs
-  image: ruby:2.7-alpine
+  image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7-alpine
   stage: review
   needs: []
   variables:

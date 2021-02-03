@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 module Ci
   module PipelineArtifacts
-    class CreateQualityReportService
+    class CreateCodeQualityMrDiffReportService
       def execute(pipeline)
         return unless pipeline.can_generate_codequality_reports?
-        return if pipeline.has_codequality_reports?
+        return if pipeline.has_codequality_mr_diff_report?
 
         file = build_carrierwave_file(pipeline)
 
         pipeline.pipeline_artifacts.create!(
           project_id: pipeline.project_id,
-          file_type: :code_quality,
+          file_type: :code_quality_mr_diff,
           file_format: :raw,
           size: file["tempfile"].size,
           file: file,
@@ -23,7 +23,7 @@ module Ci
       def build_carrierwave_file(pipeline)
         CarrierWaveStringFile.new_file(
           file_content: build_quality_mr_diff_report(pipeline),
-          filename: Ci::PipelineArtifact::DEFAULT_FILE_NAMES.fetch(:code_quality),
+          filename: Ci::PipelineArtifact::DEFAULT_FILE_NAMES.fetch(:code_quality_mr_diff),
           content_type: 'application/json'
         )
       end

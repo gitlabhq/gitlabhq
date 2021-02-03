@@ -1484,6 +1484,24 @@ class MergeRequest < ApplicationRecord
     compare_reports(Ci::GenerateCoverageReportsService)
   end
 
+  def has_codequality_mr_diff_report?
+    return false unless ::Gitlab::Ci::Features.display_quality_on_mr_diff?(project)
+
+    actual_head_pipeline&.has_codequality_mr_diff_report?
+  end
+
+  # TODO: this method and compare_test_reports use the same
+  # result type, which is handled by the controller's #reports_response.
+  # we should minimize mistakes by isolating the common parts.
+  # issue: https://gitlab.com/gitlab-org/gitlab/issues/34224
+  def find_codequality_mr_diff_reports
+    unless has_codequality_mr_diff_report?
+      return { status: :error, status_reason: 'This merge request does not have codequality mr diff reports' }
+    end
+
+    compare_reports(Ci::GenerateCodequalityMrDiffReportService)
+  end
+
   def has_codequality_reports?
     return false unless ::Gitlab::Ci::Features.display_quality_on_mr_diff?(project)
 

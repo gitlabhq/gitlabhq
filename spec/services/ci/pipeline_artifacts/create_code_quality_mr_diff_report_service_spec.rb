@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::PipelineArtifacts::CreateQualityReportService do
+RSpec.describe ::Ci::PipelineArtifacts::CreateCodeQualityMrDiffReportService do
   describe '#execute' do
     subject(:pipeline_artifact) { described_class.new.execute(pipeline) }
 
@@ -27,7 +27,7 @@ RSpec.describe ::Ci::PipelineArtifacts::CreateQualityReportService do
           end
 
           it 'persists the default file name' do
-            expect(pipeline_artifact.file.filename).to eq('code_quality.json')
+            expect(pipeline_artifact.file.filename).to eq('code_quality_mr_diff.json')
           end
 
           it 'sets expire_at to 1 week' do

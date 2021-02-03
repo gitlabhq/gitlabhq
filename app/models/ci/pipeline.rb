@@ -1003,8 +1003,8 @@ module Ci
       has_reports?(Ci::JobArtifact.coverage_reports)
     end
 
-    def has_codequality_reports?
-      pipeline_artifacts&.has_report?(:code_quality)
+    def has_codequality_mr_diff_report?
+      pipeline_artifacts&.has_report?(:code_quality_mr_diff)
     end
 
     def can_generate_codequality_reports?

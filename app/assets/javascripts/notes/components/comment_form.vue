@@ -143,6 +143,9 @@ export default {
     trackingLabel() {
       return slugifyWithUnderscore(`${this.commentButtonTitle} button`);
     },
+    hasCloseAndCommentButton() {
+      return !this.glFeatures.removeCommentCloseReopen;
+    },
   },
   watch: {
     note(newNote) {
@@ -405,7 +408,7 @@ export default {
               </div>
 
               <gl-button
-                v-if="canToggleIssueState"
+                v-if="hasCloseAndCommentButton && canToggleIssueState"
                 :loading="isToggleStateButtonLoading"
                 category="secondary"
                 :variant="buttonVariant"

@@ -130,13 +130,14 @@ RSpec.describe ObjectStoreSettings do
         end
       end
 
-      context 'when object storage is selectively disabled for artifacts' do
+      context 'when object storage is disabled for artifacts with no bucket' do
         before do
           config['artifacts'] = {
             'enabled' => true,
-            'object_store' => {
-              'enabled' => false
-            }
+            'object_store' => {}
+          }
+          config['object_store']['objects']['artifacts'] = {
+            'enabled' => false
           }
         end
 

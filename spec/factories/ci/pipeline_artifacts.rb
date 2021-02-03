@@ -49,12 +49,12 @@ FactoryBot.define do
       size { 1.megabyte }
     end
 
-    trait :with_codequality_report do
-      file_type { :code_quality }
+    trait :with_codequality_mr_diff_report do
+      file_type { :code_quality_mr_diff }
 
       after(:build) do |artifact, _evaluator|
         artifact.file = fixture_file_upload(
-          Rails.root.join('spec/fixtures/pipeline_artifacts/code_quality.json'), 'application/json')
+          Rails.root.join('spec/fixtures/pipeline_artifacts/code_quality_mr_diff.json'), 'application/json')
       end
 
       size { file.size }

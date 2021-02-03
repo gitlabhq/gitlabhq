@@ -259,13 +259,13 @@ coverage-frontend:
 
 qa-frontend-node:10:
   extends: .qa-frontend-node
-  image: node:dubnium
+  image: ${GITLAB_DEPENDENCY_PROXY}node:dubnium
 
 qa-frontend-node:latest:
   extends:
     - .qa-frontend-node
     - .frontend:rules:qa-frontend-node-latest
-  image: node:latest
+  image: ${GITLAB_DEPENDENCY_PROXY}node:latest
 
 webpack-dev-server:
   extends:

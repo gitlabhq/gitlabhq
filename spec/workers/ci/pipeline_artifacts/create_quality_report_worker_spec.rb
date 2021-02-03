@@ -11,7 +11,7 @@ RSpec.describe ::Ci::PipelineArtifacts::CreateQualityReportWorker do
       let(:pipeline_id) { pipeline.id }
 
       it 'calls pipeline codequality report service' do
-        expect_next_instance_of(::Ci::PipelineArtifacts::CreateQualityReportService) do |quality_report_service|
+        expect_next_instance_of(::Ci::PipelineArtifacts::CreateCodeQualityMrDiffReportService) do |quality_report_service|
           expect(quality_report_service).to receive(:execute)
         end
 
@@ -31,7 +31,7 @@ RSpec.describe ::Ci::PipelineArtifacts::CreateQualityReportWorker do
       let(:pipeline_id) { non_existing_record_id }
 
       it 'does not call pipeline codequality report service' do
-        expect(Ci::PipelineArtifacts::CreateQualityReportService).not_to receive(:execute)
+        expect(Ci::PipelineArtifacts::CreateCodeQualityMrDiffReportService).not_to receive(:execute)
 
         subject
       end

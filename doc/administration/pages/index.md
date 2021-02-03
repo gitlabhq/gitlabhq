@@ -730,6 +730,13 @@ or report an issue.
 
 ### Object storage settings
 
+WARNING:
+With the following settings, Pages uses both NFS and Object Storage locations when deploying the
+site. **Do not remove the existing NFS mount used by Pages** when applying these settings. For more
+information, see the epics
+[3901](https://gitlab.com/groups/gitlab-org/-/epics/3901#how-to-test-object-storage-integration-in-beta)
+and [3910](https://gitlab.com/groups/gitlab-org/-/epics/3910).
+
 The following settings are:
 
 - Nested under `pages:` and then `object_store:` on source installations.

@@ -155,9 +155,9 @@ FactoryBot.define do
         end
       end
 
-      trait :with_quality_report_artifact do
+      trait :with_codequality_mr_diff_report do
         after(:build) do |pipeline, evaluator|
-          pipeline.pipeline_artifacts << build(:ci_pipeline_artifact, :with_codequality_report, pipeline: pipeline, project: pipeline.project)
+          pipeline.pipeline_artifacts << build(:ci_pipeline_artifact, :with_codequality_mr_diff_report, pipeline: pipeline, project: pipeline.project)
         end
       end
 

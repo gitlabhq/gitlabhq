@@ -44,6 +44,8 @@ class ApplicationSetting < ApplicationRecord
   serialize :domain_denylist, Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :repository_storages # rubocop:disable Cop/ActiveRecordSerialize
   serialize :asset_proxy_allowlist, Array # rubocop:disable Cop/ActiveRecordSerialize
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/300916
+  serialize :asset_proxy_whitelist, Array # rubocop:disable Cop/ActiveRecordSerialize
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text

@@ -12,7 +12,7 @@ module Ci
 
       def perform(pipeline_id)
         Ci::Pipeline.find_by_id(pipeline_id).try do |pipeline|
-          Ci::PipelineArtifacts::CreateQualityReportService.new.execute(pipeline)
+          Ci::PipelineArtifacts::CreateCodeQualityMrDiffReportService.new.execute(pipeline)
         end
       end
     end

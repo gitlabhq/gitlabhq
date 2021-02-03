@@ -159,7 +159,12 @@ export default {
   [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { discussion, diffPositionByLineCode, hash }) {
     const { latestDiff } = state;
 
-    const discussionLineCodes = [discussion.line_code, ...(discussion.line_codes || [])];
+    const originalStartLineCode = discussion.original_position?.line_range?.start?.line_code;
+    const discussionLineCodes = [
+      discussion.line_code,
+      originalStartLineCode,
+      ...(discussion.line_codes || []),
+    ];
     const fileHash = discussion.diff_file.file_hash;
     const lineCheck = (line) =>
       discussionLineCodes.some(
