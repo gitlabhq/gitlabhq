@@ -34,20 +34,38 @@ RSpec.describe Projects::Pipelines::TestsController do
   end
 
   describe 'GET #show.json' do
-    context 'when pipeline has build report results' do
-      let(:pipeline) { create(:ci_pipeline, :with_report_results, project: project) }
+    context 'when pipeline has builds with test reports' do
+      let(:main_pipeline) { create(:ci_pipeline, :with_test_reports_with_three_failures, project: project) }
+      let(:pipeline) { create(:ci_pipeline, :with_test_reports_with_three_failures, project: project, ref: 'new-feature') }
       let(:suite_name) { 'test' }
       let(:build_ids) { pipeline.latest_builds.pluck(:id) }
+
+      before do
+        build = main_pipeline.builds.last
+        build.update_column(:finished_at, 1.day.ago) # Just to be sure we are included in the report window
+
+        # The JUnit fixture for the given build has 3 failures.
+        # This service will create 1 test case failure record for each.
+        Ci::TestFailureHistoryService.new(main_pipeline).execute
+      end
 
       it 'renders test suite data' do
         get_tests_show_json(build_ids)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq('test')
+
+        # Each test failure in this pipeline has a matching failure in the default branch
+        recent_failures = json_response['test_cases'].map { |tc| tc['recent_failures'] }
+        expect(recent_failures).to eq([
+          { 'count' => 1, 'base_branch' => 'master' },
+          { 'count' => 1, 'base_branch' => 'master' },
+          { 'count' => 1, 'base_branch' => 'master' }
+        ])
       end
     end
 
-    context 'when pipeline does not have build report results' do
+    context 'when pipeline has no builds that matches the given build_ids' do
       let(:pipeline) { create(:ci_empty_pipeline) }
       let(:suite_name) { 'test' }
 

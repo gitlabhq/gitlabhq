@@ -59,7 +59,9 @@ module Banzai
       end
 
       def self.determine_allowlist(application_settings)
-        application_settings.asset_proxy_whitelist.presence || [Gitlab.config.gitlab.host]
+        application_settings.try(:asset_proxy_allowlist).presence ||
+          application_settings.try(:asset_proxy_whitelist).presence ||
+          [Gitlab.config.gitlab.host]
       end
     end
   end

@@ -269,13 +269,13 @@ module ApplicationSettingImplementation
     self.protected_paths = strings_to_array(values)
   end
 
-  def asset_proxy_whitelist=(values)
+  def asset_proxy_allowlist=(values)
     values = strings_to_array(values) if values.is_a?(String)
 
-    # make sure we always whitelist the running host
+    # make sure we always allow the running host
     values << Gitlab.config.gitlab.host unless values.include?(Gitlab.config.gitlab.host)
 
-    self[:asset_proxy_whitelist] = values
+    self[:asset_proxy_allowlist] = values
   end
 
   def repository_storages

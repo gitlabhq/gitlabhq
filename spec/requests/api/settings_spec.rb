@@ -199,6 +199,14 @@ RSpec.describe API::Settings, 'Settings' do
       expect(json_response['allow_local_requests_from_hooks_and_services']).to eq(true)
     end
 
+    it 'supports legacy asset_proxy_whitelist' do
+      put api("/application/settings", admin),
+        params: { asset_proxy_whitelist: ['example.com', '*.example.com'] }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['asset_proxy_allowlist']).to eq(['example.com', '*.example.com', 'localhost'])
+    end
+
     it 'disables ability to switch to legacy storage' do
       put api("/application/settings", admin),
           params: { hashed_storage_enabled: false }
@@ -362,24 +370,24 @@ RSpec.describe API::Settings, 'Settings' do
             asset_proxy_enabled: true,
             asset_proxy_url: 'http://assets.example.com',
             asset_proxy_secret_key: 'shared secret',
-            asset_proxy_whitelist: ['example.com', '*.example.com']
+            asset_proxy_allowlist: ['example.com', '*.example.com']
           }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['asset_proxy_enabled']).to be(true)
         expect(json_response['asset_proxy_url']).to eq('http://assets.example.com')
         expect(json_response['asset_proxy_secret_key']).to be_nil
-        expect(json_response['asset_proxy_whitelist']).to eq(['example.com', '*.example.com', 'localhost'])
+        expect(json_response['asset_proxy_allowlist']).to eq(['example.com', '*.example.com', 'localhost'])
       end
 
-      it 'allows a string for asset_proxy_whitelist' do
+      it 'allows a string for asset_proxy_allowlist' do
         put api('/application/settings', admin),
           params: {
-            asset_proxy_whitelist: 'example.com, *.example.com'
+            asset_proxy_allowlist: 'example.com, *.example.com'
           }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['asset_proxy_whitelist']).to eq(['example.com', '*.example.com', 'localhost'])
+        expect(json_response['asset_proxy_allowlist']).to eq(['example.com', '*.example.com', 'localhost'])
       end
     end
 

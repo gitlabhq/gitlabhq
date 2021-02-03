@@ -635,28 +635,28 @@ RSpec.describe ApplicationSetting do
         end
       end
 
-      describe '#asset_proxy_whitelist' do
+      describe '#asset_proxy_allowlist' do
         context 'when given an Array' do
           it 'sets the domains and adds current running host' do
-            setting.asset_proxy_whitelist = ['example.com', 'assets.example.com']
-            expect(setting.asset_proxy_whitelist).to eq(['example.com', 'assets.example.com', 'localhost'])
+            setting.asset_proxy_allowlist = ['example.com', 'assets.example.com']
+            expect(setting.asset_proxy_allowlist).to eq(['example.com', 'assets.example.com', 'localhost'])
           end
         end
 
         context 'when given a String' do
           it 'sets multiple domains with spaces' do
-            setting.asset_proxy_whitelist = 'example.com *.example.com'
-            expect(setting.asset_proxy_whitelist).to eq(['example.com', '*.example.com', 'localhost'])
+            setting.asset_proxy_allowlist = 'example.com *.example.com'
+            expect(setting.asset_proxy_allowlist).to eq(['example.com', '*.example.com', 'localhost'])
           end
 
           it 'sets multiple domains with newlines and a space' do
-            setting.asset_proxy_whitelist = "example.com\n *.example.com"
-            expect(setting.asset_proxy_whitelist).to eq(['example.com', '*.example.com', 'localhost'])
+            setting.asset_proxy_allowlist = "example.com\n *.example.com"
+            expect(setting.asset_proxy_allowlist).to eq(['example.com', '*.example.com', 'localhost'])
           end
 
           it 'sets multiple domains with commas' do
-            setting.asset_proxy_whitelist = "example.com, *.example.com"
-            expect(setting.asset_proxy_whitelist).to eq(['example.com', '*.example.com', 'localhost'])
+            setting.asset_proxy_allowlist = "example.com, *.example.com"
+            expect(setting.asset_proxy_allowlist).to eq(['example.com', '*.example.com', 'localhost'])
           end
         end
       end
