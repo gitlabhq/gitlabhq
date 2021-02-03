@@ -1,6 +1,7 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { leftSidebarViews } from '../constants';
 
 export default {
@@ -20,7 +21,7 @@ export default {
 
       this.updateActivityBarView(view);
 
-      this.$root.$emit('bv::hide::tooltip');
+      this.$root.$emit(BV_HIDE_TOOLTIP);
     },
   },
   leftSidebarViews,

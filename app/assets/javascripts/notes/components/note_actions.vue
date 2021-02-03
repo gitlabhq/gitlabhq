@@ -6,6 +6,7 @@ import resolvedStatusMixin from '~/batch_comments/mixins/resolved_status';
 import eventHub from '~/sidebar/event_hub';
 import Api from '~/api';
 import { deprecatedCreateFlash as flash } from '~/flash';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { splitCamelCase } from '../../lib/utils/text_utility';
 import ReplyButton from './note_actions/reply_button.vue';
 
@@ -193,7 +194,7 @@ export default {
     },
     closeTooltip() {
       this.$nextTick(() => {
-        this.$root.$emit('bv::hide::tooltip');
+        this.$root.$emit(BV_HIDE_TOOLTIP);
       });
     },
     handleAssigneeUpdate(assignees) {

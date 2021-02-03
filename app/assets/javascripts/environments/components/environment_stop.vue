@@ -6,6 +6,7 @@
 
 import { GlTooltipDirective, GlButton, GlModalDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import eventHub from '../event_hub';
 
 export default {
@@ -40,7 +41,7 @@ export default {
   },
   methods: {
     onClick() {
-      this.$root.$emit('bv::hide::tooltip', this.$options.stopEnvironmentTooltipId);
+      this.$root.$emit(BV_HIDE_TOOLTIP, this.$options.stopEnvironmentTooltipId);
       eventHub.$emit('requestStopEnvironment', this.environment);
     },
     onStopEnvironment(environment) {

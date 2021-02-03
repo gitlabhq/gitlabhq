@@ -11,6 +11,7 @@ import {
   CONFLICT_THEIR,
   CONFLICT_MARKER,
 } from '../constants';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import DiffGutterAvatars from './diff_gutter_avatars.vue';
 import * as utils from './diff_row_utils';
 
@@ -162,7 +163,7 @@ export default {
       this.$emit('enterdragging', { ...line, index });
     },
     onDragStart(line) {
-      this.$root.$emit('bv::hide::tooltip');
+      this.$root.$emit(BV_HIDE_TOOLTIP);
       this.dragging = true;
       this.$emit('startdragging', line);
     },

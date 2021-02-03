@@ -10,6 +10,7 @@ import {
 } from '@gitlab/ui';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
 import createFlash from '~/flash';
+import { BV_DROPDOWN_HIDE } from '~/lib/utils/constants';
 import { __, s__ } from '~/locale';
 import projectMilestones from '../../graphql/project_milestones.query.graphql';
 
@@ -73,7 +74,7 @@ export default {
     },
   },
   mounted() {
-    this.$root.$on('bv::dropdown::hide', () => {
+    this.$root.$on(BV_DROPDOWN_HIDE, () => {
       this.$refs.sidebarItem.collapse();
     });
   },

@@ -3,6 +3,7 @@ import { GlIcon } from '@gitlab/ui';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import IdeSidebarNav from '~/ide/components/ide_sidebar_nav.vue';
 import { SIDE_RIGHT, SIDE_LEFT } from '~/ide/constants';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 
 const TEST_TABS = [
   {
@@ -74,7 +75,7 @@ describe('ide/components/ide_sidebar_nav', () => {
         createComponent({ isOpen, side });
 
         bsTooltipHide = jest.fn();
-        wrapper.vm.$root.$on('bv::hide::tooltip', bsTooltipHide);
+        wrapper.vm.$root.$on(BV_HIDE_TOOLTIP, bsTooltipHide);
       });
 
       it('renders buttons', () => {

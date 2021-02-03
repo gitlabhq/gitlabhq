@@ -3,6 +3,7 @@ import { Sortable, MultiDrag } from 'sortablejs';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import eventHub from '../eventhub';
 import boardsStore from '../stores/boards_store';
 import {
@@ -167,7 +168,7 @@ export default {
 
         boardsStore.startMoving(list, issue);
 
-        this.$root.$emit('bv::hide::tooltip');
+        this.$root.$emit(BV_HIDE_TOOLTIP);
 
         sortableStart();
       },

@@ -1,0 +1,6 @@
+---
+title: Change projects.has_external_wiki column to be not null and default to false,
+  and cleanup all null and incorrect data
+merge_request: 50916
+author:
+type: changed

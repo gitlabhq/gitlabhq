@@ -89,12 +89,12 @@ The following options are available:
 | Push rule                       | Description |
 |---------------------------------|-------------|
 | Removal of tags with `git push` | Forbid users to remove Git tags with `git push`. Tags can be deleted through the web UI. |
-| Check whether author is a GitLab user | Restrict commits by author (email) to existing GitLab users. |
-| Committer restriction **(PREMIUM)** | GitLab rejects any commit that was not committed by the current authenticated user. |
+| Check whether the commit author is a GitLab user | Restrict commits to existing GitLab users (checked against their emails). |
+| Reject unverified users **(PREMIUM)** | GitLab rejects any commit that was not committed by an authenticated user. |
 | Check whether commit is signed through GPG **(PREMIUM)** | Reject commit when it is not signed through GPG. Read [signing commits with GPG](../user/project/repository/gpg_signed_commits/index.md). |
-| Prevent committing secrets to Git | GitLab rejects any files that are likely to contain secrets. Read [what files are forbidden](#prevent-pushing-secrets-to-the-repository). |
-| Restrict by commit message | Only commit messages that match this regular expression are allowed to be pushed. Leave empty to allow any commit message. Uses multiline mode, which can be disabled using `(?-m)`. |
-| Restrict by commit message (negative match) | Only commit messages that do not match this regular expression are allowed to be pushed. Leave empty to allow any commit message. Uses multiline mode, which can be disabled using `(?-m)`. |
+| Prevent pushing secret files | GitLab rejects any files that are likely to contain secrets. See the [forbiden file names](#prevent-pushing-secrets-to-the-repository). |
+| Require expression in commit messages | Only commit messages that match this regular expression are allowed to be pushed. Leave empty to allow any commit message. Uses multiline mode, which can be disabled using `(?-m)`. |
+| Reject expression in commit messages | Only commit messages that do not match this regular expression are allowed to be pushed. Leave empty to allow any commit message. Uses multiline mode, which can be disabled using `(?-m)`. |
 | Restrict by branch name | Only branch names that match this regular expression are allowed to be pushed. Leave empty to allow any branch name. |
 | Restrict by commit author's email | Only commit author's email that match this regular expression are allowed to be pushed. Leave empty to allow any email. |
 | Prohibited file names | Any committed filenames that match this regular expression and do not already exist in the repository are not allowed to be pushed. Leave empty to allow any filenames. See [common examples](#prohibited-file-names). |

@@ -16129,7 +16129,7 @@ CREATE TABLE projects (
     repository_storage character varying DEFAULT 'default'::character varying NOT NULL,
     repository_read_only boolean,
     request_access_enabled boolean DEFAULT true NOT NULL,
-    has_external_wiki boolean,
+    has_external_wiki boolean DEFAULT false,
     ci_config_path character varying,
     lfs_enabled boolean,
     description_html text,
@@ -19662,6 +19662,9 @@ ALTER TABLE ONLY chat_teams
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 
+ALTER TABLE projects
+    ADD CONSTRAINT check_421d399b70 CHECK ((has_external_wiki IS NOT NULL)) NOT VALID;
+
 ALTER TABLE group_import_states
     ADD CONSTRAINT check_cda75c7c3f CHECK ((user_id IS NOT NULL)) NOT VALID;
 
@@ -22127,8 +22130,6 @@ CREATE INDEX index_incident_management_oncall_schedules_on_project_id ON inciden
 
 CREATE INDEX index_incident_management_oncall_shifts_on_participant_id ON incident_management_oncall_shifts USING btree (participant_id);
 
-CREATE INDEX index_incident_management_oncall_shifts_on_rotation_id ON incident_management_oncall_shifts USING btree (rotation_id);
-
 CREATE UNIQUE INDEX index_index_statuses_on_project_id ON index_statuses USING btree (project_id);
 
 CREATE INDEX index_insights_on_namespace_id ON insights USING btree (namespace_id);
@@ -22574,6 +22575,8 @@ CREATE INDEX index_onboarding_progresses_for_trial_track ON onboarding_progresse
 CREATE INDEX index_onboarding_progresses_for_verify_track ON onboarding_progresses USING btree (git_write_at) WHERE ((git_write_at IS NOT NULL) AND (pipeline_created_at IS NULL));
 
 CREATE UNIQUE INDEX index_onboarding_progresses_on_namespace_id ON onboarding_progresses USING btree (namespace_id);
+
+CREATE INDEX index_oncall_shifts_on_rotation_id_and_starts_at_and_ends_at ON incident_management_oncall_shifts USING btree (rotation_id, starts_at, ends_at);
 
 CREATE INDEX index_open_project_tracker_data_on_service_id ON open_project_tracker_data USING btree (service_id);
 

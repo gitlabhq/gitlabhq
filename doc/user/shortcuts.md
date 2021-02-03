@@ -35,6 +35,7 @@ These shortcuts are available in most areas of GitLab
 | <kbd>Shift</kbd> + <kbd>m</kbd> | Go to your Merge requests page.|
 | <kbd>Shift</kbd> + <kbd>t</kbd> | Go to your To-Do List page. |
 | <kbd>p</kbd> + <kbd>b</kbd>     | Show/hide the Performance Bar. |
+| <kbd>g</kbd> + <kbd>x</kbd>     | Toggle between [GitLab](https://gitlab.com/) and [GitLab Next](https://next.gitlab.com/). |
 
 Additionally, the following shortcuts are available when editing text in text fields,
 for example comments, replies, issue descriptions, and merge request descriptions:

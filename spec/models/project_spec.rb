@@ -1145,11 +1145,32 @@ RSpec.describe Project, factory_default: :keep do
       is_expected.to eq(nil)
     end
 
-    it 'sets Project#has_external_wiki when it is nil' do
-      create(:service, project: project, type: 'ExternalWikiService', active: true)
-      project.update_column(:has_external_wiki, nil)
+    it 'calls Project#cache_has_external_wiki when `has_external_wiki` is nil' do
+      project = build(:project, has_external_wiki: nil)
 
-      expect { subject }.to change { project.has_external_wiki }.from(nil).to(true)
+      expect(project).to receive(:cache_has_external_wiki)
+
+      project.external_wiki
+    end
+
+    it 'does not call Project#cache_has_external_wiki when `has_external_wiki` is not nil' do
+      project = build(:project)
+
+      expect(project).not_to receive(:cache_has_external_wiki)
+
+      project.external_wiki
+    end
+  end
+
+  describe '#cache_has_external_wiki (private method)' do
+    it 'sets Project#has_external_wiki correctly, affecting Project#external_wiki' do
+      project = create(:project)
+      create(:service, project: project, type: 'ExternalWikiService', active: true)
+      project.update_column(:has_external_wiki, false)
+
+      expect { project.send(:cache_has_external_wiki) }
+        .to change { project.has_external_wiki }.from(false).to(true)
+        .and(change { project.external_wiki }.from(nil).to(kind_of(ExternalWikiService)))
     end
   end
 

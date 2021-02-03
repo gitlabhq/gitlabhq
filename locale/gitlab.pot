@@ -4926,6 +4926,9 @@ msgstr ""
 msgid "BulkImport|Update of import statuses with realtime changes failed"
 msgstr ""
 
+msgid "BulkImport|destination group cannot be part of the source group tree"
+msgstr ""
+
 msgid "BulkImport|expected an associated Group but has an associated Project"
 msgstr ""
 
@@ -23774,7 +23777,7 @@ msgstr ""
 msgid "Push to create a project"
 msgstr ""
 
-msgid "PushRule|Committer restriction"
+msgid "PushRule|Reject unverified users"
 msgstr ""
 
 msgid "Pushed"

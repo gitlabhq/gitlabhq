@@ -17,6 +17,7 @@ import boardsStore from '../stores/boards_store';
 import eventHub from '../eventhub';
 import { inactiveId, LIST, ListType } from '../constants';
 import IssueCount from './issue_count.vue';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 
 // This component is being replaced in favor of './board_list_header.vue' for GraphQL boards
 
@@ -142,7 +143,7 @@ export default {
 
       // When expanding/collapsing, the tooltip on the caret button sometimes stays open.
       // Close all tooltips manually to prevent dangling tooltips.
-      this.$root.$emit('bv::hide::tooltip');
+      this.$root.$emit(BV_HIDE_TOOLTIP);
     },
     addToLocalStorage() {
       if (AccessorUtilities.isLocalStorageAccessSafe()) {

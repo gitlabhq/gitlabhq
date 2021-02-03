@@ -138,8 +138,8 @@ wait_for_pids(){
     i=$((i+1))
     if [ $((i%10)) = 0 ]; then
       echo -n "."
-    elif [ $((i)) = 301 ]; then
-      echo "Waited 30s for the processes to write their pids, something probably went wrong."
+    elif [ $((i)) = 601 ]; then
+      echo "Waited 60s for the processes to write their pids, something probably went wrong."
       exit 1;
     fi
   done

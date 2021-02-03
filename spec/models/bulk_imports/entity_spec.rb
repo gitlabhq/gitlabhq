@@ -81,6 +81,37 @@ RSpec.describe BulkImports::Entity, type: :model do
         expect(entity.errors).to include(:parent)
       end
     end
+
+    context 'validate destination namespace of a group_entity' do
+      it 'is invalid if destination namespace is the source namespace' do
+        group_a = create(:group, path: 'group_a')
+
+        entity = build(
+          :bulk_import_entity,
+          :group_entity,
+          source_full_path: group_a.full_path,
+          destination_namespace: group_a.full_path
+        )
+
+        expect(entity).not_to be_valid
+        expect(entity.errors).to include(:destination_namespace)
+      end
+
+      it 'is invalid if destination namespace is a descendant of the source' do
+        group_a = create(:group, path: 'group_a')
+        group_b = create(:group, parent: group_a, path: 'group_b')
+
+        entity = build(
+          :bulk_import_entity,
+          :group_entity,
+          source_full_path: group_a.full_path,
+          destination_namespace: group_b.full_path
+        )
+
+        expect(entity).not_to be_valid
+        expect(entity.errors).to include(:destination_namespace)
+      end
+    end
   end
 
   describe "#update_tracker_for" do

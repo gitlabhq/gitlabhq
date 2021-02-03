@@ -4,6 +4,7 @@ import { sprintf } from '~/locale';
 import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 import ActionComponent from './action_component.vue';
 import JobNameComponent from './job_name_component.vue';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { accessValue } from './accessors';
 import { REST } from './constants';
 import { reportToSentry } from './utils';
@@ -144,7 +145,7 @@ export default {
   },
   methods: {
     hideTooltips() {
-      this.$root.$emit('bv::hide::tooltip');
+      this.$root.$emit(BV_HIDE_TOOLTIP);
     },
     pipelineActionRequestComplete() {
       this.$emit('pipelineActionRequestComplete');
