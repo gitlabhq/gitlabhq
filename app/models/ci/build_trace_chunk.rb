@@ -77,6 +77,22 @@ module Ci
       end
 
       ##
+      # Sometime we need to ensure that the first read goes to a primary
+      # database, what is especially important in EE. This method does not
+      # change the behavior in CE.
+      #
+      def with_read_consistency(build, &block)
+        return yield unless consistent_reads_enabled?(build)
+
+        ::Gitlab::Database::Consistency
+          .with_read_consistency(&block)
+      end
+
+      def consistent_reads_enabled?(build)
+        Feature.enabled?(:gitlab_ci_trace_read_consistency, build.project, type: :development, default_enabled: false)
+      end
+
+      ##
       # Sometimes we do not want to read raw data. This method makes it easier
       # to find attributes that are just metadata excluding raw data.
       #
@@ -154,8 +170,8 @@ module Ci
       in_lock(lock_key, **lock_params) do # exclusive Redis lock is acquired first
         raise FailedToPersistDataError, 'Modifed build trace chunk detected' if has_changes_to_save?
 
-        self.reset.then do |chunk|     # we ensure having latest lock_version
-          chunk.unsafe_persist_data!   # we migrate the data and update data store
+        self.class.with_read_consistency(build) do
+          self.reset.then { |chunk| chunk.unsafe_persist_data! }
         end
       end
     rescue FailedToObtainLockError

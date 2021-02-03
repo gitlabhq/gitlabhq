@@ -203,6 +203,17 @@ module DiffHelper
     set_secure_cookie(:diff_view, params.delete(:view), type: CookiesHelper::COOKIE_TYPE_PERMANENT) if params[:view].present?
   end
 
+  def collapsed_diff_url(diff_file)
+    url_for(
+      safe_params.merge(
+        action: :diff_for_path,
+        old_path: diff_file.old_path,
+        new_path: diff_file.new_path,
+        file_identifier: diff_file.file_identifier
+      )
+    )
+  end
+
   private
 
   def diff_btn(title, name, selected)

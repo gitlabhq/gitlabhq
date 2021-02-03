@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file was prefixed with zz_ because we want to load it the last!
 # See: https://gitlab.com/gitlab-org/gitlab-foss/issues/55611
 

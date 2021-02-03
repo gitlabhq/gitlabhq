@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'peek/adapters/redis'
 
 Peek::Adapters::Redis.prepend ::Gitlab::PerformanceBar::RedisAdapterWhenPeekEnabled

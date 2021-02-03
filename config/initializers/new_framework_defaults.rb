@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Remove this `if` condition when upgraded to rails 5.0.
 # The body must be kept.
 # Be sure to restart your server when you modify this file.

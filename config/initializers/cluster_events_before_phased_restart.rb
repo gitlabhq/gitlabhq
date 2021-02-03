@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Technical debt, this should be ideally upstreamed.
 #
 # However, there's currently no way to hook before doing

@@ -15,7 +15,7 @@ You can read more about [project access tokens](../user/project/settings/project
 Get a list of project access tokens.
 
 ```plaintext
-GET /:id/access_tokens
+GET projects/:id/access_tokens
 ```
 
 | Attribute | Type    | required | Description         |
@@ -50,7 +50,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 Create a project access token.
 
 ```plaintext
-POST /:id/access_tokens
+POST projects/:id/access_tokens
 ```
 
 | Attribute | Type    | required | Description         |
@@ -89,7 +89,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 Revoke a project access token.
 
 ```plaintext
-DELETE /:id/access_tokens/:token_id
+DELETE projects/:id/access_tokens/:token_id
 ```
 
 | Attribute | Type    | required | Description         |

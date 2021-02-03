@@ -13630,9 +13630,6 @@ msgstr ""
 msgid "Go full screen"
 msgstr ""
 
-msgid "Go to %{strongStart}Issues%{strongEnd} &gt; %{strongStart}Boards%{strongEnd} to access your personalized learning issue board."
-msgstr ""
-
 msgid "Go to Integrations"
 msgstr ""
 
@@ -14522,9 +14519,6 @@ msgid "Helps reduce alert volume (e.g. if creating too many issues)"
 msgstr ""
 
 msgid "Helps reduce request volume for protected paths"
-msgstr ""
-
-msgid "Here are all your projects in your group, including the one you just created. To start, let’s take a look at your personalized learning project which will help you learn about GitLab at your own pace."
 msgstr ""
 
 msgid "Here you will find recent merge request activity"

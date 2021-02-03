@@ -172,7 +172,11 @@ sudo apt-get install -y postfix
 
 Then select 'Internet Site' and press enter to confirm the hostname.
 
+<!-- vale gitlab.Spelling = NO -->
+
 ### Exiftool
+
+<!-- vale gitlab.Spelling = YES -->
 
 [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse#dependencies)
 requires `exiftool` to remove EXIF data from uploaded images.
@@ -187,7 +191,7 @@ The Ruby interpreter is required to run GitLab.
 See the [requirements page](requirements.md#ruby-versions) for the minimum
 Ruby requirements.
 
-The use of Ruby version managers such as [RVM](https://rvm.io/), [rbenv](https://github.com/rbenv/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab
+The use of Ruby version managers such as [`RVM`](https://rvm.io/), [`rbenv`](https://github.com/rbenv/rbenv) or [`chruby`](https://github.com/postmodern/chruby) with GitLab
 in production, frequently leads to hard to diagnose problems. Version managers
 are not supported and we strongly advise everyone to follow the instructions
 below to use a system Ruby.
@@ -241,7 +245,7 @@ requirements for these are:
 - `node` >= v10.14.2. (We recommend node 14.x as it is faster)
 - `yarn` >= v1.10.0.
 
-In many distros,
+In many distributions,
 the versions provided by the official package repositories are out of date, so
 we need to install through the following commands:
 
@@ -935,7 +939,7 @@ production:
   url: redis://redis.example.tld:6379
 ```
 
-If you want to connect the Redis server via socket, use the "unix:" URL scheme and the path to the Redis socket file in the `config/resque.yml` file.
+If you want to connect the Redis server via socket, use the `unix:` URL scheme and the path to the Redis socket file in the `config/resque.yml` file.
 
 ```yaml
 # example

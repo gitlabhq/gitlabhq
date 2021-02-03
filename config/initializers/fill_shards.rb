@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The explicit schema version check is needed because during our migration rollback testing,
 # `Shard.connected?` could be cached and return true even though the table doesn't exist
 return unless Shard.connected?

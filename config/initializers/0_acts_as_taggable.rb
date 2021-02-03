@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ActsAsTaggableOn.strict_case_match = true
 
 # tags_counter enables caching count of tags which results in an update whenever a tag is added or removed

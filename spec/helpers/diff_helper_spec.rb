@@ -358,4 +358,24 @@ RSpec.describe DiffHelper do
       expect(diff_file_path_text(diff_file, max: 10)).to eq("...open.rb")
     end
   end
+
+  describe "#collapsed_diff_url" do
+    let(:params) do
+      {
+        controller: "projects/commit",
+        action: "show",
+        namespace_id: "foo",
+        project_id: "bar",
+        id: commit.sha
+      }
+    end
+
+    subject { helper.collapsed_diff_url(diff_file) }
+
+    it "returns a valid URL" do
+      allow(helper).to receive(:safe_params).and_return(params)
+
+      expect(subject).to match(/foo\/bar\/-\/commit\/#{commit.sha}\/diff_for_path/)
+    end
+  end
 end

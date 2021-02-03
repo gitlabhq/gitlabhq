@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Description: https://coderwall.com/p/heed_q/rails-routing-and-namespaced-models
 #
 # This allows us to use CI ActiveRecord objects in all routes and use it:

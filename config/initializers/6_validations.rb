@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def storage_validation_error(message)
   raise "#{message}. Please fix this in your gitlab.yml before starting GitLab."
 end

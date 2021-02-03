@@ -1,0 +1,3 @@
+query getCommitSha {
+  commitSha @client
+}

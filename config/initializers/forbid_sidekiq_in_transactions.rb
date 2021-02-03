@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Sidekiq
   module Worker
     EnqueueFromTransactionError = Class.new(StandardError)

@@ -78,14 +78,16 @@ export default {
       return !this.disabled && this.listType !== ListType.closed;
     },
     showMilestoneListDetails() {
-      return (
-        this.list.type === 'milestone' &&
-        this.list.milestone &&
-        (this.list.isExpanded || !this.isSwimlanesHeader)
-      );
+      return this.list.type === 'milestone' && this.list.milestone && this.showListDetails;
     },
     showAssigneeListDetails() {
-      return this.list.type === 'assignee' && (this.list.isExpanded || !this.isSwimlanesHeader);
+      return this.list.type === 'assignee' && this.showListDetails;
+    },
+    showIterationListDetails() {
+      return this.listType === ListType.iteration && this.showListDetails;
+    },
+    showListDetails() {
+      return this.list.isExpanded || !this.isSwimlanesHeader;
     },
     issuesCount() {
       return this.list.issuesSize;
@@ -201,6 +203,17 @@ export default {
         }"
       >
         <gl-icon name="timer" />
+      </span>
+
+      <span
+        v-if="showIterationListDetails"
+        aria-hidden="true"
+        :class="{
+          'gl-mt-3 gl-rotate-90': !list.isExpanded,
+          'gl-mr-2': list.isExpanded,
+        }"
+      >
+        <gl-icon name="iteration" />
       </span>
 
       <a

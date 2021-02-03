@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 app = Rails.application
 
 if app.config.public_file_server.enabled

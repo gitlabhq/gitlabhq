@@ -63,10 +63,9 @@ of possible security breaches in our code:
 
 Remember to run
 [SAST](../../user/application_security/sast/index.md) and [Dependency Scanning](../../user/application_security/dependency_scanning/index.md)
-**(ULTIMATE)** on your project (or at least the [gosec
-analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/gosec)),
-and to follow our [Security
-requirements](../code_review.md#security-requirements).
+**(ULTIMATE)** on your project (or at least the
+[`gosec` analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/gosec)),
+and to follow our [Security requirements](../code_review.md#security-requirements).
 
 Web servers can take advantages of middlewares like [Secure](https://github.com/unrolled/secure).
 
@@ -92,9 +91,9 @@ projects:
 - Avoid global variables, even in packages. By doing so you introduce side
   effects if the package is included multiple times.
 - Use `goimports` before committing.
-  [goimports](https://godoc.org/golang.org/x/tools/cmd/goimports)
+  [`goimports`](https://godoc.org/golang.org/x/tools/cmd/goimports)
   is a tool that automatically formats Go source code using
-  [Gofmt](https://golang.org/cmd/gofmt/), in addition to formatting import lines,
+  [`Gofmt`](https://golang.org/cmd/gofmt/), in addition to formatting import lines,
   adding missing ones and removing unreferenced ones.
 
   Most editors/IDEs allow you to run commands before/after saving a file, you can set it
@@ -162,8 +161,8 @@ be downloaded repeatedly, which can lead to intermittent problems due to rate
 limiting or network failures. In these circumstances, you should [cache the
 downloaded code between](../../ci/caching/index.md#caching-go-dependencies).
 
-There was a [bug on modules
-checksums](https://github.com/golang/go/issues/29278) in Go < v1.11.4, so make
+There was a
+[bug on modules checksums](https://github.com/golang/go/issues/29278) in Go versions earlier than v1.11.4, so make
 sure to use at least this version to avoid `checksum mismatch` errors.
 
 ### ORM
@@ -171,7 +170,7 @@ sure to use at least this version to avoid `checksum mismatch` errors.
 We don't use object-relational mapping libraries (ORMs) at GitLab (except
 [ActiveRecord](https://guides.rubyonrails.org/active_record_basics.html) in
 Ruby on Rails). Projects can be structured with services to avoid them.
-[pgx](https://github.com/jackc/pgx) should be enough to interact with PostgreSQL
+[`pgx`](https://github.com/jackc/pgx) should be enough to interact with PostgreSQL
 databases.
 
 ### Migrations
@@ -193,7 +192,7 @@ external dependencies might be worth considering in case we decide to use a spec
 library or framework:
 
 - [Testify](https://github.com/stretchr/testify)
-- [httpexpect](https://github.com/gavv/httpexpect)
+- [`httpexpect`](https://github.com/gavv/httpexpect)
 
 ### Subtests
 
@@ -329,8 +328,8 @@ A few things to keep in mind when adding context:
 ## CLIs
 
 Every Go program is launched from the command line.
-[cli](https://github.com/urfave/cli) is a convenient package to create command
-line apps. It should be used whether the project is a daemon or a simple cli
+[`cli`](https://github.com/urfave/cli) is a convenient package to create command
+line apps. It should be used whether the project is a daemon or a simple CLI
 tool. Flags can be mapped to [environment
 variables](https://github.com/urfave/cli#values-from-the-environment) directly,
 which documents and centralizes at the same time all the possible command line
@@ -389,7 +388,7 @@ functionality:
 This gives us a thin abstraction over underlying implementations that is
 consistent across Workhorse, Gitaly, and, in future, other Go servers. For
 example, in the case of `gitlab.com/gitlab-org/labkit/tracing` we can switch
-from using Opentracing directly to using Zipkin or Gokit's own tracing wrapper
+from using `Opentracing` directly to using `Zipkin` or Gokit's own tracing wrapper
 without changes to the application code, while still keeping the same
 consistent configuration mechanism (i.e. the `GITLAB_TRACING` environment
 variable).
@@ -489,9 +488,9 @@ The following are some style guidelines that are specific to the Secure Team.
 ### Code style and format
 
 Use `goimports -local gitlab.com/gitlab-org` before committing.
-[goimports](https://godoc.org/golang.org/x/tools/cmd/goimports)
+[`goimports`](https://godoc.org/golang.org/x/tools/cmd/goimports)
 is a tool that automatically formats Go source code using
-[Gofmt](https://golang.org/cmd/gofmt/), in addition to formatting import lines,
+[`Gofmt`](https://golang.org/cmd/gofmt/), in addition to formatting import lines,
 adding missing ones and removing unreferenced ones.
 By using the `-local gitlab.com/gitlab-org` option, `goimports` groups locally referenced
 packages separately from external ones. See

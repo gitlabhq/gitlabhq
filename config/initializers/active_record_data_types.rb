@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # ActiveRecord custom data type for storing datetimes with timezone information.
 # See https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/11229
 

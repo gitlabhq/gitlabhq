@@ -191,7 +191,7 @@ support is done by overriding a specific function in the API helpers, like
 For this authentication mechanism, keep in mind that some clients can send an unauthenticated
 request first, wait for the 401 Unauthorized response with the [`WWW-Authenticate`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/WWW-Authenticate)
 field, then send an updated (authenticated) request. This case is more involved as
-GitLab needs to handle the 401 Unauthorized response. The [Nuget API](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/nuget_packages.rb)
+GitLab needs to handle the 401 Unauthorized response. The [NuGet API](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/nuget_packages.rb)
 supports this case.
 
 #### Authorization
@@ -245,8 +245,8 @@ in your local development environment.
 #### Rate Limits on GitLab.com
 
 Package manager clients can make rapid requests that exceed the
-[GitLab.com standard API rate limits](../user/gitlab_com/index.md#gitlabcom-specific-rate-limits). 
-This results in a `429 Too Many Requests` error. 
+[GitLab.com standard API rate limits](../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
+This results in a `429 Too Many Requests` error.
 
 We have opened a set of paths to allow higher rate limits. Unless it is not possible,
 new package managers should follow these conventions so they can take advantage of the

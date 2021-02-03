@@ -178,4 +178,4 @@ authenticate requests made over HTTP. Go rejects HTTP-only entries in
 `GOPROXY` that have embedded credentials.
 
 In a future version, Go may add support for arbitrary authentication headers.
-Follow [golang/go#26232](https://github.com/golang/go/issues/26232) for details.
+Follow [`golang/go#26232`](https://github.com/golang/go/issues/26232) for details.

@@ -1,7 +1,6 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { GlLoadingIcon, GlBadge, GlTooltipDirective } from '@gitlab/ui';
-import { showLearnGitLabGroupItemPopover } from '~/onboarding_issues';
 import { visitUrl } from '../../lib/utils/url_utility';
 import identicon from '../../vue_shared/components/identicon.vue';
 import eventHub from '../event_hub';
@@ -76,11 +75,6 @@ export default {
     microdata() {
       return this.group.microdata || {};
     },
-  },
-  mounted() {
-    if (this.group.name === 'Learn GitLab') {
-      showLearnGitLabGroupItemPopover(this.group.id);
-    }
   },
   methods: {
     onClickRowGroup(e) {

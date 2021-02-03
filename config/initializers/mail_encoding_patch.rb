@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Monkey patch mail 2.7.1 to fix quoted-printable issues with newlines
 # The issues upstream invalidate SMIME signatures under some conditions
 # This was working properly in 2.6.6

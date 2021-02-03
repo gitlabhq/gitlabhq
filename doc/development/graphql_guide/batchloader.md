@@ -20,7 +20,7 @@ When implementing a new endpoint we should aim to minimise the number of SQL que
 
 Batch loading is useful when a series of queries for inputs `Qα, Qβ, ... Qω` can be combined to a single query for `Q[α, β, ... ω]`. An example of this is lookups by ID, where we can find two users by usernames as cheaply as one, but real-world examples can be more complex.
 
-Batchloading is not suitable when the result sets have different sort-orders, grouping, aggregation or other non-composable features.
+Batch loading is not suitable when the result sets have different sort-orders, grouping, aggregation or other non-composable features.
 
 There are two ways to use the batch-loader in your code. For simple ID lookups, use `::Gitlab::Graphql::Loaders::BatchModelLoader.new(model, id).find`. For more complex cases, you can use the batch API directly.
 

@@ -15,7 +15,7 @@ NOTE:
 Support for MySQL was removed in GitLab 12.1. This procedure should be performed
 **before** installing GitLab 12.1.
 
-[pgloader](https://pgloader.io/) 3.4.1+ is required, confirm with `pgloader -V`.
+[pgLoader](https://pgloader.io/) 3.4.1+ is required, confirm with `pgloader -V`.
 
 You can install it directly from your distribution, for example in
 Debian/Ubuntu:
@@ -52,7 +52,7 @@ For other distributions, follow the instructions in PostgreSQL's
 and then install `pgloader`.
 
 If you are migrating to a Docker based installation, you must install
-pgloader within the container as it is not included in the container image.
+pgLoader within the container as it is not included in the container image.
 
 1. Start a shell session in the context of the running container:
 
@@ -60,7 +60,7 @@ pgloader within the container as it is not included in the container image.
    docker exec -it gitlab bash
    ```
 
-1. Install pgloader:
+1. Install pgLoader:
 
    ```shell
    apt-get update

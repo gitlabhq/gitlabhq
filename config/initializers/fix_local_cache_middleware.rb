@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LocalCacheRegistryCleanupWithEnsure
   LocalCacheRegistry =
     ActiveSupport::Cache::Strategy::LocalCache::LocalCacheRegistry

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 unless Rails.env.test?
   required_version = Gitlab::VersionInfo.parse(Gitlab::Shell.version_required)
   current_version = Gitlab::VersionInfo.parse(Gitlab::Shell.version)

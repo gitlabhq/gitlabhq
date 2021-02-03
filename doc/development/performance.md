@@ -50,7 +50,7 @@ GitLab provides built-in tools to help improve performance and availability:
 - [Service measurement](service_measurement.md) for measuring and logging service execution.
 
 GitLab team members can use [GitLab.com's performance monitoring systems](https://about.gitlab.com/handbook/engineering/monitoring/) located at
-<https://dashboards.gitlab.net>, this requires you to log in using your
+[`dashboards.gitlab.net`](https://dashboards.gitlab.net), this requires you to log in using your
 `@gitlab.com` email address. Non-GitLab team-members are advised to set up their
 own Prometheus and Grafana stack.
 
@@ -176,7 +176,7 @@ stackprof tmp/project_policy_spec.rb.dump --graphviz > project_policy_spec.dot
 dot -Tsvg project_policy_spec.dot > project_policy_spec.svg
 ```
 
-To load the profile in [kcachegrind](https://kcachegrind.github.io/):
+To load the profile in [KCachegrind](https://kcachegrind.github.io/):
 
 ```shell
 stackprof tmp/project_policy_spec.rb.dump --callgrind > project_policy_spec.callgrind
@@ -184,7 +184,7 @@ kcachegrind project_policy_spec.callgrind # Linux
 qcachegrind project_policy_spec.callgrind # Mac
 ```
 
-For flamegraphs, enable raw collection first. Note that raw
+For flame graphs, enable raw collection first. Note that raw
 collection can generate a very large file, so increase the `INTERVAL`, or
 run on a smaller number of specs for smaller file size:
 
@@ -192,7 +192,7 @@ run on a smaller number of specs for smaller file size:
 RAW=true bin/rspec-stackprof spec/policies/group_member_policy_spec.rb
 ```
 
-You can then generate, and view the resultant flamegraph. It might take a
+You can then generate, and view the resultant flame graph. It might take a
 while to generate based on the output file size:
 
 ```shell
@@ -251,7 +251,7 @@ In order to enable production profiling for Ruby processes, you can set the `STA
 
 The following configuration options can be configured:
 
-- `STACKPROF_ENABLED`: Enables stackprof signal handler on SIGUSR2 signal.
+- `STACKPROF_ENABLED`: Enables Stackprof signal handler on SIGUSR2 signal.
   Defaults to `false`.
 - `STACKPROF_MODE`: See [sampling modes](https://github.com/tmm1/stackprof#sampling).
   Defaults to `cpu`.
@@ -264,7 +264,7 @@ The following configuration options can be configured:
 - `STACKPROF_TIMEOUT_S`: Profiling timeout in seconds. Profiling will
   automatically stop after this time has elapsed. Defaults to `30`.
 - `STACKPROF_RAW`: Whether to collect raw samples or only aggregates. Raw
-  samples are needed to generate flamegraphs, but they do have a higher memory
+  samples are needed to generate flame graphs, but they do have a higher memory
   and disk overhead. Defaults to `true`.
 
 Once enabled, profiling can be triggered by sending a `SIGUSR2` signal to the
@@ -287,7 +287,7 @@ The Puma master process is not supported. Neither is Unicorn.
 Sending SIGUSR2 to either of those triggers restarts. In the case of Puma,
 take care to only send the signal to Puma workers.
 
-This can be done via `pkill -USR2 puma:`. The `:` disambiguates between `puma
+This can be done via `pkill -USR2 puma:`. The `:` distinguishes between `puma
 4.3.3.gitlab.2 ...` (the master process) from `puma: cluster worker 0: ...` (the
 worker processes), selecting the latter.
 
@@ -296,7 +296,7 @@ For Sidekiq, the signal can be sent to the `sidekiq-cluster` process via `pkill
 children. Alternatively, you can also select a specific pid of interest.
 
 Production profiles can be especially noisy. It can be helpful to visualize them
-as a [flamegraph](https://github.com/brendangregg/FlameGraph). This can be done
+as a [flame graph](https://github.com/brendangregg/FlameGraph). This can be done
 via:
 
 ```shell
@@ -747,5 +747,4 @@ Assuming you are working with ActiveRecord models, you might also find these lin
 
 ### Examples
 
-You may find some useful examples in this snippet:
-<https://gitlab.com/gitlab-org/gitlab-foss/snippets/33946>
+You may find some useful examples in [this snippet](https://gitlab.com/gitlab-org/gitlab-foss/snippets/33946).

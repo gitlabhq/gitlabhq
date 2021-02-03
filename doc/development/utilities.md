@@ -117,9 +117,8 @@ regular Ruby module.
 
 Since we already have `Prependable` as a patch for `ActiveSupport::Concern`
 to enable `prepend`, it has consequences with how it would interact with
-`override` and `class_methods`. We add a workaround directly into
-`Prependable` to resolve the problem, by `extend`ing `ClassMethods` into the
-defining module.
+`override` and `class_methods`. As a workaround, `extend` `ClassMethods`
+into the defining `Prependable` module.
 
 This allows us to use `override` to verify `class_methods` used in the
 context mentioned above. This workaround only applies when we run the

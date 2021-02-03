@@ -9,7 +9,9 @@ class RemoveHasExternalWikiConstraint < ActiveRecord::Migration[6.0]
 
   def up
     # This reverts the following migration: add_not_null_constraint :projects, :has_external_wiki, validate: false
-    remove_not_null_constraint :projects, :has_external_wiki
+    if check_not_null_constraint_exists?(:projects, :has_external_wiki)
+      remove_not_null_constraint :projects, :has_external_wiki
+    end
   end
 
   def down

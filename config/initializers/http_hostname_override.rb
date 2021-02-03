@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This override allows passing `@hostname_override` to the SNI protocol,
 # which is used to lookup the correct SSL certificate in the
 # request handshake process.

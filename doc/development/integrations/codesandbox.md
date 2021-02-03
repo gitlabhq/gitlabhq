@@ -4,17 +4,17 @@ group: Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Set up local Codesandbox development environment
+# Set up local CodeSandbox development environment
 
-This guide walks through setting up a local [Codesandbox repository](https://github.com/codesandbox/codesandbox-client) and integrating it with a local GitLab instance. Codesandbox
-is used to power the Web IDE's [Live Preview feature](../../user/project/web_ide/index.md#live-preview). Having a local Codesandbox setup is useful for debugging upstream issues or
+This guide walks through setting up a local [CodeSandbox repository](https://github.com/codesandbox/codesandbox-client) and integrating it with a local GitLab instance. CodeSandbox
+is used to power the Web IDE's [Live Preview feature](../../user/project/web_ide/index.md#live-preview). Having a local CodeSandbox setup is useful for debugging upstream issues or
 creating upstream contributions like [this one](https://github.com/codesandbox/codesandbox-client/pull/5137).
 
 ## Initial setup
 
-Before using Codesandbox with your local GitLab instance, you must:
+Before using CodeSandbox with your local GitLab instance, you must:
 
-1. Enable HTTPS on your GDK. Codesandbox uses Service Workers that require `https`.
+1. Enable HTTPS on your GDK. CodeSandbox uses Service Workers that require `https`.
    Follow the GDK [NGINX configuration instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/howto/nginx.md) to enable HTTPS for GDK.
 1. Clone the [`codesandbox-client` project](https://github.com/codesandbox/codesandbox-client)
    locally. If you plan on contributing upstream, you might want to fork and clone first.
@@ -38,16 +38,16 @@ Before using Codesandbox with your local GitLab instance, you must:
 
    You can run `yarn build:clean` to clean up the build assets.
 
-## Use local GitLab instance with local Codesandbox
+## Use local GitLab instance with local CodeSandbox
 
-GitLab integrates with two parts of Codesandbox:
+GitLab integrates with two parts of CodeSandbox:
 
 - An NPM package called `smooshpack` (called `sandpack` in the `codesandbox-client` project).
   This exposes an entrypoint for us to kick off Codesandbox's bundler.
-- A server that houses Codesandbox assets for bundling and previewing. This is hosted
+- A server that houses CodeSandbox assets for bundling and previewing. This is hosted
   on a separate server for security.
 
-Each time you want to run GitLab and Codesandbox together, you need to perform the
+Each time you want to run GitLab and CodeSandbox together, you need to perform the
 steps in the following sections.
 
 ### Use local `smooshpack` for GitLab
@@ -94,7 +94,7 @@ mkdir node_modules
 ln -s $PATH_TO_LOCAL_GITLAB/node_modules/core-js ./node_modules/core-js
 ```
 
-### Start building codesandbox app assets
+### Start building CodeSandbox app assets
 
 In the `codesandbox-client` project directory:
 
@@ -104,7 +104,7 @@ cd packages/app
 yarn start:sandpack-sandbox
 ```
 
-### Create HTTPS proxy for Codesandbox `sandpack` assets
+### Create HTTPS proxy for CodeSandbox `sandpack` assets
 
 Because we need `https`, we need to create a proxy to the webpack server. We can use
 [`http-server`](https://www.npmjs.com/package/http-server), which can do this proxying
@@ -117,7 +117,7 @@ npx http-server --proxy http://localhost:3000 -S -C $PATH_TO_CERT_PEM -K $PATH_T
 ### Update `bundler_url` setting in GitLab
 
 We need to update our `application_setting_implementation.rb` to point to the server that hosts the
-Codesandbox `sandpack` assets. For instance, if these assets are hosted by a server at `https://sandpack.local:8044`:
+CodeSandbox `sandpack` assets. For instance, if these assets are hosted by a server at `https://sandpack.local:8044`:
 
 ```patch
 diff --git a/app/models/application_setting_implementation.rb b/app/models/application_setting_implementation.rb
@@ -139,7 +139,7 @@ index 6eed627b502..1824669e881 100644
 NOTE:
 You can apply this patch by copying it to your clipboard and running `pbpaste | git apply`.
 
-You'll might want to restart the GitLab Rails server after making this change:
+You may want to restart the GitLab Rails server after making this change:
 
 ```shell
 gdk restart rails-web

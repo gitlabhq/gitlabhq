@@ -5,6 +5,7 @@ import boardsStore from '../stores/boards_store';
 import ListLabel from './label';
 import ListAssignee from './assignee';
 import ListMilestone from './milestone';
+import ListIteration from './iteration';
 import 'ee_else_ce/boards/models/issue';
 
 const TYPES = {
@@ -57,6 +58,9 @@ class List {
     } else if (IS_EE && obj.milestone) {
       this.milestone = new ListMilestone(obj.milestone);
       this.title = this.milestone.title;
+    } else if (IS_EE && obj.iteration) {
+      this.iteration = new ListIteration(obj.iteration);
+      this.title = this.iteration.title;
     }
 
     // doNotFetchIssues is a temporary workaround until issues are fetched using GraphQL on issue boards

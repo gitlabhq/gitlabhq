@@ -28,7 +28,6 @@ export default {
     return {
       currentPipeline: null,
       loadingPipelineId: null,
-      minWidth: 0,
       pipelineExpanded: false,
     };
   },
@@ -40,6 +39,7 @@ export default {
     'gl-pl-3',
     'gl-mb-5',
   ],
+  minWidth: `${ONE_COL_WIDTH}px`,
   computed: {
     columnClass() {
       const positionValues = {
@@ -48,18 +48,18 @@ export default {
       };
       return `graph-position-${this.graphPosition} ${positionValues[this.graphPosition]}`;
     },
-    graphPosition() {
-      return this.isUpstream ? 'left' : 'right';
-    },
-    isUpstream() {
-      return this.type === UPSTREAM;
-    },
     computedTitleClasses() {
       const positionalClasses = this.isUpstream
         ? ['gl-w-full', 'gl-text-right', 'gl-linked-pipeline-padding']
         : [];
 
       return [...this.$options.titleClasses, ...positionalClasses];
+    },
+    graphPosition() {
+      return this.isUpstream ? 'left' : 'right';
+    },
+    isUpstream() {
+      return this.type === UPSTREAM;
     },
   },
   methods: {
@@ -105,7 +105,6 @@ export default {
       if (this.currentPipeline?.id === pipeline.id) {
         this.pipelineExpanded = false;
         this.currentPipeline = null;
-        this.minWidth = 0;
         return;
       }
 
@@ -120,11 +119,6 @@ export default {
       */
       this.pipelineExpanded = true;
 
-      /*
-        Min-width is set manually for timing reasons.
-      */
-      this.minWidth = `${ONE_COL_WIDTH}px`;
-
       this.getPipelineData(pipeline);
     },
     onDownstreamHovered(jobName) {
@@ -137,6 +131,9 @@ export default {
       }
 
       this.$emit('pipelineExpandToggle', jobName, expanded);
+    },
+    showDownstreamContainer(id) {
+      return !this.isUpstream && (this.isExpanded(id) || this.isLoadingPipeline(id));
     },
   },
 };
@@ -167,12 +164,12 @@ export default {
             @pipelineExpandToggle="onPipelineExpandToggle"
           />
           <div
-            v-if="isExpanded(pipeline.id) && !isUpstream"
-            :style="{ minWidth }"
+            v-if="showDownstreamContainer(pipeline.id)"
+            :style="{ minWidth: $options.minWidth }"
             class="gl-display-inline-block"
           >
             <pipeline-graph
-              v-if="currentPipeline"
+              v-if="isExpanded(pipeline.id)"
               :type="type"
               class="d-inline-block gl-mt-n2"
               :pipeline="currentPipeline"

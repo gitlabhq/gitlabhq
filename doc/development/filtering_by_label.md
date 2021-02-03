@@ -137,7 +137,7 @@ object, so the number of combinations would balloon further.
 
 ### Attempt B2: store label titles for each object
 
-From the perspective of updating the labelable object, this is the worst
+From the perspective of updating the object, this is the worst
 option. We have to bulk update the objects when:
 
 1. The objects are moved from one project to another.
@@ -159,7 +159,7 @@ However, at present, the disadvantages outweigh the advantages.
 
 ## Conclusion
 
-We have yet to find a method that is demonstratably better than the current
+We have yet to find a method that is demonstrably better than the current
 method, when considering:
 
 1. Query performance.

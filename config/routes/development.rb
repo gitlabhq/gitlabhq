@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 if Rails.env.development?
   # Make the built-in Rails routes available in development, otherwise they'd
   # get swallowed by the `namespace/project` route matcher below.

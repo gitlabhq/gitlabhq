@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Alias import callbacks under the /users/auth endpoint so that
 # the OAuth2 callback URL can be restricted under http://example.com/users/auth
 # instead of http://example.com.

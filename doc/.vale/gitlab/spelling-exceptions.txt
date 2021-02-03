@@ -103,6 +103,7 @@ Conda
 Consul
 Contentful
 Corosync
+Coursier
 cron
 crons
 crontab
@@ -125,6 +126,10 @@ deduplicates
 deduplicating
 deduplication
 deliverables
+denormalize
+denormalized
+denormalizes
+denormalizing
 denylist
 denylisting
 denylists
@@ -138,6 +143,7 @@ dequarantine
 dequarantined
 dequarantining
 DevOps
+disambiguates
 discoverability
 dismissable
 Disqus
@@ -145,6 +151,7 @@ Divio
 Dockerfile
 Dockerfiles
 Dockerize
+Dockerized
 Dockerizing
 dogfood
 dogfooding
@@ -169,6 +176,7 @@ failover
 failovers
 failsafe
 Falco
+falsy
 fastlane
 favicon
 favorited
@@ -181,6 +189,7 @@ Flawfinder
 Flowdock
 Fluentd
 Forgerock
+formatters
 Fugit
 fuzzer
 Gantt
@@ -206,6 +215,7 @@ goroutines
 Gosec
 Gradle
 Grafana
+Grafonnet
 gravatar
 Gzip
 Haml
@@ -253,6 +263,7 @@ Jira
 jq
 jQuery
 jsdom
+Jsonnet
 JupyterHub
 kanban
 kanbans
@@ -282,6 +293,7 @@ Libravatar
 liveness
 Lograge
 logrotate
+Logrus
 Logstash
 lookahead
 lookaheads
@@ -366,6 +378,7 @@ passwordless
 Patroni
 performant
 PgBouncer
+pgLoader
 Phabricator
 phaser
 phasers
@@ -474,6 +487,7 @@ rsync
 rsynced
 rsyncing
 rsyncs
+Rubinius
 Rubix
 Rubocop
 Rubular
@@ -521,6 +535,7 @@ spidering
 Splunk
 SpotBugs
 Stackdriver
+Stackprof
 starrer
 starrers
 storable
@@ -553,6 +568,8 @@ substring
 substrings
 subtask
 subtasks
+subtest
+subtests
 subtree
 subtrees
 sudo
@@ -583,6 +600,8 @@ Tokenizers
 tokenizing
 toolchain
 toolchains
+toolkit
+toolkits
 tooltip
 tooltips
 transpile
@@ -592,6 +611,7 @@ Trello
 triaged
 triages
 triaging
+truthy
 Truststore
 Twilio
 Twitter
@@ -605,6 +625,7 @@ unarchive
 unarchived
 unarchives
 unarchiving
+unary
 unassign
 unassigning
 unassigns
@@ -673,6 +694,7 @@ unstarted
 unstash
 unstashed
 unstashing
+unsynced
 untarred
 untracked
 untrusted
@@ -683,9 +705,11 @@ unverifying
 uploader
 uploaders
 upstreams
+upvote
 upvoted
 upvotes
 URIs
+Vagrantfile
 validator
 validators
 vendored

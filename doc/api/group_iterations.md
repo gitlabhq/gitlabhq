@@ -49,7 +49,8 @@ Example response:
     "created_at": "2020-01-27T05:07:12.573Z",
     "updated_at": "2020-01-27T05:07:12.573Z",
     "due_date": "2020-02-01",
-    "start_date": "2020-02-14"
+    "start_date": "2020-02-14",
+    "web_url": "http://gitlab.example.com/groups/my-group/-/iterations/13"
   }
 ]
 ```

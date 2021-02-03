@@ -1,4 +1,4 @@
-mutation commitCIFileMutation(
+mutation commitCIFile(
   $projectPath: ID!
   $branch: String!
   $startBranch: String

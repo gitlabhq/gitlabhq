@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 scope(controller: :wikis) do
   scope(path: 'wikis', as: :wikis) do
     get :git_access

@@ -648,7 +648,7 @@ that are scoped to a single [configuration keyword](../ci/yaml/README.md#job-key
 |------------------|-------------|
 | `.default-retry` | Allows a job to [retry](../ci/yaml/README.md#retry) upon `unknown_failure`, `api_failure`, `runner_system_failure`, `job_execution_timeout`, or `stuck_or_timeout_failure`. |
 | `.default-before_script` | Allows a job to use a default `before_script` definition suitable for Ruby/Rails tasks that may need a database running (e.g. tests). |
-| `.setup-test-env-cache` | Allows a job to use a default `cache` definition suitable for setuping test environment for subsequent Ruby/Rails tasks. |
+| `.setup-test-env-cache` | Allows a job to use a default `cache` definition suitable for setting up test environment for subsequent Ruby/Rails tasks. |
 | `.rails-cache` | Allows a job to use a default `cache` definition suitable for Ruby/Rails tasks. |
 | `.static-analysis-cache` | Allows a job to use a default `cache` definition suitable for static analysis tasks. |
 | `.coverage-cache` | Allows a job to use a default `cache` definition suitable for coverage tasks. |

@@ -3,7 +3,9 @@ import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { sprintf } from '~/locale';
-import ValidationSegment, { i18n } from '~/pipeline_editor/components/info/validation_segment.vue';
+import ValidationSegment, {
+  i18n,
+} from '~/pipeline_editor/components/header/validation_segment.vue';
 import { CI_CONFIG_STATUS_INVALID } from '~/pipeline_editor/constants';
 import { mockYmlHelpPagePath, mergeUnwrappedCiConfig } from '../../mock_data';
 
@@ -28,6 +30,11 @@ describe('~/pipeline_editor/components/info/validation_segment.vue', () => {
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findLearnMoreLink = () => wrapper.findByTestId('learnMoreLink');
   const findValidationMsg = () => wrapper.findByTestId('validationMsg');
+
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
+  });
 
   it('shows the loading state', () => {
     createComponent({ loading: true });

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DirectUploadsValidator
   SUPPORTED_DIRECT_UPLOAD_PROVIDERS = [ObjectStorage::Config::GOOGLE_PROVIDER,
                                        ObjectStorage::Config::AWS_PROVIDER,

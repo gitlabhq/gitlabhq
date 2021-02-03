@@ -24,9 +24,7 @@ module Pages
       @queue.close
 
       @logger.info("Waiting for threads to finish...")
-      ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
-        threads.each(&:join)
-      end
+      threads.each(&:join)
 
       { migrated: @migrated, errored: @errored }
     end
@@ -34,8 +32,8 @@ module Pages
     def start_migration_threads
       Array.new(@migration_threads) do
         Thread.new do
-          Rails.application.executor.wrap do
-            while batch = @queue.pop
+          while batch = @queue.pop
+            Rails.application.executor.wrap do
               process_batch(batch)
             end
           end
@@ -51,6 +49,11 @@ module Pages
       end
 
       @logger.info("#{@migrated} projects are migrated successfully, #{@errored} projects failed to be migrated")
+    rescue => e
+      # This method should never raise exception otherwise all threads might be killed
+      # and this will result in queue starving (and deadlock)
+      Gitlab::ErrorTracking.track_exception(e)
+      @logger.error("failed processing a batch: #{e.message}")
     end
 
     def migrate_project(project)

@@ -9,7 +9,6 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Grouped code quality reports app', () => {
-  const Component = localVue.extend(GroupedCodequalityReportsApp);
   let wrapper;
   let mockStore;
 
@@ -22,7 +21,7 @@ describe('Grouped code quality reports app', () => {
   };
 
   const mountComponent = (props = {}) => {
-    wrapper = mount(Component, {
+    wrapper = mount(GroupedCodequalityReportsApp, {
       store: mockStore,
       localVue,
       propsData: {

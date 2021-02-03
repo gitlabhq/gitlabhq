@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 if Gitlab::QueryLimiting.enable?
   require_dependency 'gitlab/query_limiting/active_support_subscriber'
   require_dependency 'gitlab/query_limiting/transaction'

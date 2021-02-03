@@ -11,12 +11,12 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 
 To be able to turn on/off features behind feature flags in any of the
 GitLab Inc. provided environments such as staging and production, you need to
-have access to the [Chatops](../chatops_on_gitlabcom.md) bot. The Chatops bot
+have access to the [ChatOps](../chatops_on_gitlabcom.md) bot. The ChatOps bot
 is currently running on the ops instance, which is different from <https://gitlab.com> or <https://dev.gitlab.org>.
 
-Follow the Chatops document to [request access](../chatops_on_gitlabcom.md#requesting-access).
+Follow the ChatOps document to [request access](../chatops_on_gitlabcom.md#requesting-access).
 
-Once you are added to the project test if your access propagated,
+After you are added to the project test if your access propagated,
 run:
 
 ```shell
@@ -37,7 +37,7 @@ easier to measure the impact of both separately.
 The GitLab feature library (using
 [Flipper](https://github.com/jnunemaker/flipper), and covered in the [Feature
 Flags process](process.md) guide) supports rolling out changes to a percentage of
-time to users. This in turn can be controlled using [GitLab Chatops](../../ci/chatops/README.md).
+time to users. This in turn can be controlled using [GitLab ChatOps](../../ci/chatops/README.md).
 
 For an up to date list of feature flag commands please see [the source
 code](https://gitlab.com/gitlab-com/chatops/blob/master/lib/chatops/commands/feature.rb).
@@ -48,7 +48,7 @@ If you get an error "Whoops! This action is not allowed. This incident
 will be reported." that means your Slack account is not allowed to
 change feature flags or you do not [have access](#access).
 
-### Enabling a feature for preproduction testing
+### Enabling a feature for pre-production testing
 
 As a first step in a feature rollout, you should enable the feature on <https://about.staging.gitlab.com>
 and <https://dev.gitlab.org>.
@@ -62,7 +62,7 @@ a (very) rough estimate of how your feature will look/behave on GitLab.com.
 Both of these instances are connected to Sentry so make sure you check the projects
 there for any exceptions while testing your feature after enabling the feature flag.
 
-For these preproduction environments, the commands should be run in a
+For these pre-production environments, the commands should be run in a
 Slack channel for the stage the feature is relevant to. For example, use the
 `#s_monitor` channel for features developed by the Monitor stage, Health
 group.
@@ -77,7 +77,7 @@ To enable a feature for 25% of all users, run the following in Slack:
 ### Enabling a feature for GitLab.com
 
 When a feature has successfully been
-[enabled on a preproduction](#enabling-a-feature-for-preproduction-testing)
+[enabled on a pre-production](#enabling-a-feature-for-pre-production-testing)
 environment and verified as safe and working, you can roll out the
 change to GitLab.com (production).
 
@@ -244,9 +244,9 @@ You cannot selectively disable feature flags for a specific project/group/user w
 
 ### Feature flag change logging
 
-#### Chatops level
+#### ChatOps level
 
-Any feature flag change that affects GitLab.com (production) via [Chatops](https://gitlab.com/gitlab-com/chatops)
+Any feature flag change that affects GitLab.com (production) via [ChatOps](https://gitlab.com/gitlab-com/chatops)
 is automatically logged in an issue.
 
 The issue is created in the
@@ -259,7 +259,7 @@ The issue is then also posted to the GitLab internal
 marker to make the change even more visible.
 
 Changes to the issue format can be submitted in the
-[Chatops project](https://gitlab.com/gitlab-com/chatops).
+[ChatOps project](https://gitlab.com/gitlab-com/chatops).
 
 #### Instance level
 

@@ -305,7 +305,7 @@ events include:
 - Repositories Changed event
 - Repository Created event
 - Hashed Storage Migrated event
-- Lfs Object Deleted event
+- LFS Object Deleted event
 - Hashed Storage Attachments event
 - Job Artifact Deleted event
 - Upload Deleted event

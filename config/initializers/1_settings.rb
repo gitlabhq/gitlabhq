@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../settings'
 require_relative '../object_store_settings'
 require_relative '../smime_signature_settings'

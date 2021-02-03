@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # ActiveRecord custom method definitions with timezone information.
 # See https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/11229
 

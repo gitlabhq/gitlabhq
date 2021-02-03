@@ -74,13 +74,15 @@ export default {
   <div v-else>
     <gl-alert
       v-if="showAlert"
-      class="gl-w-max-content gl-ml-4"
+      class="gl-ml-4 gl-mb-4"
       :primary-button-text="$options.i18n.showLinksAnyways"
       @primaryAction="overrideShowLinks"
       @dismiss="dismissAlert"
     >
       {{ $options.i18n.tooManyJobs }}
     </gl-alert>
-    <slot></slot>
+    <div class="gl-display-flex gl-relative">
+      <slot></slot>
+    </div>
   </div>
 </template>

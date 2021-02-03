@@ -227,12 +227,20 @@ module Gitlab
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
-        def build_chunk
-          @chunks_cache[chunk_index] = ::Ci::BuildTraceChunk.new(build: build, chunk_index: chunk_index)
+        def next_chunk
+          @chunks_cache[chunk_index] = begin
+            if ::Ci::BuildTraceChunk.consistent_reads_enabled?(build)
+              ::Ci::BuildTraceChunk
+                .safe_find_or_create_by(build: build, chunk_index: chunk_index)
+            else
+              ::Ci::BuildTraceChunk
+                .new(build: build, chunk_index: chunk_index)
+            end
+          end
         end
 
         def ensure_chunk
-          current_chunk || build_chunk
+          current_chunk || next_chunk || current_chunk
         end
 
         # rubocop: disable CodeReuse/ActiveRecord

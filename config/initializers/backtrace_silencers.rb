@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.backtrace_cleaner.remove_silencers!
 
 # This allows us to see the proper caller of SQL calls in {development,test}.log

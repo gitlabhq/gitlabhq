@@ -1,7 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
 
-import { EDITOR_READY_EVENT } from '~/editor/constants';
-import TextEditor from '~/pipeline_editor/components/text_editor.vue';
 import {
   mockCiConfigPath,
   mockCiYml,
@@ -10,7 +8,10 @@ import {
   mockProjectNamespace,
 } from '../mock_data';
 
-describe('~/pipeline_editor/components/text_editor.vue', () => {
+import { EDITOR_READY_EVENT } from '~/editor/constants';
+import TextEditor from '~/pipeline_editor/components/text_editor.vue';
+
+describe('Pipeline Editor | Text editor component', () => {
   let wrapper;
 
   let editorReadyListener;
@@ -36,13 +37,16 @@ describe('~/pipeline_editor/components/text_editor.vue', () => {
       provide: {
         projectPath: mockProjectPath,
         projectNamespace: mockProjectNamespace,
-      },
-      propsData: {
         ciConfigPath: mockCiConfigPath,
-        commitSha: mockCommitSha,
       },
       attrs: {
         value: mockCiYml,
+      },
+      // Simulate graphQL client query result
+      data() {
+        return {
+          commitSha: mockCommitSha,
+        };
       },
       listeners: {
         [EDITOR_READY_EVENT]: editorReadyListener,
@@ -54,41 +58,64 @@ describe('~/pipeline_editor/components/text_editor.vue', () => {
     });
   };
 
-  const findEditor = () => wrapper.find(MockEditorLite);
+  const findEditor = () => wrapper.findComponent(MockEditorLite);
 
-  beforeEach(() => {
-    editorReadyListener = jest.fn();
-    mockUse = jest.fn();
-    mockRegisterCiSchema = jest.fn();
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
 
-    createComponent();
+    mockUse.mockClear();
+    mockRegisterCiSchema.mockClear();
   });
 
-  it('contains an editor', () => {
-    expect(findEditor().exists()).toBe(true);
-  });
+  describe('template', () => {
+    beforeEach(() => {
+      editorReadyListener = jest.fn();
+      mockUse = jest.fn();
+      mockRegisterCiSchema = jest.fn();
 
-  it('editor contains the value provided', () => {
-    expect(findEditor().props('value')).toBe(mockCiYml);
-  });
+      createComponent();
+    });
 
-  it('editor is configured for the CI config path', () => {
-    expect(findEditor().props('fileName')).toBe(mockCiConfigPath);
-  });
+    it('contains an editor', () => {
+      expect(findEditor().exists()).toBe(true);
+    });
 
-  it('editor is configured with syntax highligting', async () => {
-    expect(mockUse).toHaveBeenCalledTimes(1);
-    expect(mockRegisterCiSchema).toHaveBeenCalledTimes(1);
-    expect(mockRegisterCiSchema).toHaveBeenCalledWith({
-      projectNamespace: mockProjectNamespace,
-      projectPath: mockProjectPath,
-      ref: mockCommitSha,
+    it('editor contains the value provided', () => {
+      expect(findEditor().props('value')).toBe(mockCiYml);
+    });
+
+    it('editor is configured for the CI config path', () => {
+      expect(findEditor().props('fileName')).toBe(mockCiConfigPath);
+    });
+
+    it('bubbles up events', () => {
+      findEditor().vm.$emit(EDITOR_READY_EVENT);
+
+      expect(editorReadyListener).toHaveBeenCalled();
     });
   });
 
-  it('bubbles up events', () => {
-    findEditor().vm.$emit(EDITOR_READY_EVENT);
+  describe('register CI schema', () => {
+    beforeEach(async () => {
+      createComponent();
 
-    expect(editorReadyListener).toHaveBeenCalled();
+      // Since the editor will have already mounted, the event will have fired.
+      // To ensure we properly test this, we clear the mock and re-remit the event.
+      mockRegisterCiSchema.mockClear();
+      mockUse.mockClear();
+
+      findEditor().vm.$emit(EDITOR_READY_EVENT);
+    });
+
+    it('configures editor with syntax highlight', async () => {
+      expect(mockUse).toHaveBeenCalledTimes(1);
+      expect(mockRegisterCiSchema).toHaveBeenCalledTimes(1);
+      expect(mockRegisterCiSchema).toHaveBeenCalledWith({
+        projectNamespace: mockProjectNamespace,
+        projectPath: mockProjectPath,
+        ref: mockCommitSha,
+      });
+    });
   });
 });

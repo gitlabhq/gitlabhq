@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # All routing related to repository browsing
 
 resource :repository, only: [:create] do

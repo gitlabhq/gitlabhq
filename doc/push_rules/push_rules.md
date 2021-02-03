@@ -92,7 +92,7 @@ The following options are available:
 | Check whether the commit author is a GitLab user | Restrict commits to existing GitLab users (checked against their emails). |
 | Reject unverified users **(PREMIUM)** | GitLab rejects any commit that was not committed by an authenticated user. |
 | Check whether commit is signed through GPG **(PREMIUM)** | Reject commit when it is not signed through GPG. Read [signing commits with GPG](../user/project/repository/gpg_signed_commits/index.md). |
-| Prevent pushing secret files | GitLab rejects any files that are likely to contain secrets. See the [forbiden file names](#prevent-pushing-secrets-to-the-repository). |
+| Prevent pushing secret files | GitLab rejects any files that are likely to contain secrets. See the [forbidden file names](#prevent-pushing-secrets-to-the-repository). |
 | Require expression in commit messages | Only commit messages that match this regular expression are allowed to be pushed. Leave empty to allow any commit message. Uses multiline mode, which can be disabled using `(?-m)`. |
 | Reject expression in commit messages | Only commit messages that do not match this regular expression are allowed to be pushed. Leave empty to allow any commit message. Uses multiline mode, which can be disabled using `(?-m)`. |
 | Restrict by branch name | Only branch names that match this regular expression are allowed to be pushed. Leave empty to allow any branch name. |
