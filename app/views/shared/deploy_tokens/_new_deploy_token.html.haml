@@ -1,18 +1,24 @@
 .qa-created-deploy-token-section.created-deploy-token-container.info-well
   .well-segment
     %h5.gl-mt-0
-      = s_('DeployTokens|Your New Deploy Token')
+      = s_('DeployTokens|Your new Deploy Token username')
 
     .form-group
       .input-group
         = text_field_tag 'deploy-token-user', deploy_token.username, readonly: true, class: 'deploy-token-field form-control js-select-on-focus qa-deploy-token-user'
         .input-group-append
           = clipboard_button(text: deploy_token.username, title: s_('DeployTokens|Copy username'), placement: 'left')
-      %span.deploy-token-help-block.gl-mt-2.text-success= s_("DeployTokens|Use this username as a login.")
+      %span.deploy-token-help-block.gl-mt-2.text-success
+        - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/deploy_tokens/index.md') }
+        - link_end = "</a>".html_safe
+        = s_("DeployTokens|This username supports access. %{link_start}What kind of access?%{link_end}").html_safe % { link_start: link_start, link_end: link_end }
 
     .form-group
       .input-group
         = text_field_tag 'deploy-token', deploy_token.token, readonly: true, class: 'deploy-token-field form-control js-select-on-focus qa-deploy-token'
         .input-group-append
           = clipboard_button(text: deploy_token.token, title: s_('DeployTokens|Copy deploy token'), placement: 'left')
-      %span.deploy-token-help-block.gl-mt-2.text-danger= s_("DeployTokens|Use this token as a password. Make sure you save it - you won't be able to access it again.")
+      %span.deploy-token-help-block.gl-mt-2.text-danger
+        - i_start = "<i>".html_safe
+        - i_end = "</i>".html_safe
+        = s_("DeployTokens|Use this token as a password. Save it. This password can %{i_start}not%{i_end} be recovered.").html_safe % { i_start: i_start, i_end: i_end }

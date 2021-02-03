@@ -5105,10 +5105,8 @@ RSpec.describe Project, factory_default: :keep do
     it 'executes services with the specified scope' do
       data = 'any data'
 
-      expect(SlackService).to receive(:allocate).and_wrap_original do |method|
-        method.call.tap do |instance|
-          expect(instance).to receive(:async_execute).with(data).once
-        end
+      expect_next_found_instance_of(SlackService) do |instance|
+        expect(instance).to receive(:async_execute).with(data).once
       end
 
       service.project.execute_services(data, :push_hooks)

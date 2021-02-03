@@ -184,7 +184,7 @@ module TestEnv
   end
 
   def gitaly_dir
-    File.dirname(gitaly_socket_path)
+    File.dirname(File.expand_path(gitaly_socket_path))
   end
 
   def start_gitaly(gitaly_dir)

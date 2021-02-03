@@ -9681,22 +9681,22 @@ msgstr ""
 msgid "DeployTokens|Active Deploy Tokens (%{active_tokens})"
 msgstr ""
 
-msgid "DeployTokens|Add a deploy token"
+msgid "DeployTokens|Add a Deploy Token"
 msgstr ""
 
-msgid "DeployTokens|Allows read access to the package registry"
+msgid "DeployTokens|Allows read access to the package registry."
 msgstr ""
 
-msgid "DeployTokens|Allows read-only access to the registry images"
+msgid "DeployTokens|Allows read-only access to registry images."
 msgstr ""
 
-msgid "DeployTokens|Allows read-only access to the repository"
+msgid "DeployTokens|Allows read-only access to the repository."
 msgstr ""
 
-msgid "DeployTokens|Allows write access to the package registry"
+msgid "DeployTokens|Allows write access to registry images."
 msgstr ""
 
-msgid "DeployTokens|Allows write access to the registry images"
+msgid "DeployTokens|Allows write access to the package registry."
 msgstr ""
 
 msgid "DeployTokens|Copy deploy token"
@@ -9711,25 +9711,22 @@ msgstr ""
 msgid "DeployTokens|Created"
 msgstr ""
 
-msgid "DeployTokens|Default format is \"gitlab+deploy-token-{n}\". Enter custom username if you want to change it."
-msgstr ""
-
 msgid "DeployTokens|Deploy Tokens"
 msgstr ""
 
-msgid "DeployTokens|Deploy tokens allow access to packages, your repository, and registry images."
+msgid "DeployTokens|Deploy Tokens allow access to packages, your repository, and registry images."
 msgstr ""
 
 msgid "DeployTokens|Expires"
 msgstr ""
 
-msgid "DeployTokens|Group deploy tokens allow access to the packages, repositories, and registry images within the group."
+msgid "DeployTokens|Group Deploy Tokens allow access to the packages, repositories, and registry images within the group."
 msgstr ""
 
 msgid "DeployTokens|Name"
 msgstr ""
 
-msgid "DeployTokens|Pick a name for the application, and we'll give you a unique deploy token."
+msgid "DeployTokens|Pick a name for your unique deploy token."
 msgstr ""
 
 msgid "DeployTokens|Revoke"
@@ -9750,10 +9747,16 @@ msgstr ""
 msgid "DeployTokens|This action cannot be undone."
 msgstr ""
 
-msgid "DeployTokens|Use this token as a password. Make sure you save it - you won't be able to access it again."
+msgid "DeployTokens|This username supports access. %{link_start}What kind of access?%{link_end}"
 msgstr ""
 
-msgid "DeployTokens|Use this username as a login."
+msgid "DeployTokens|Unless you enter a date, the token does not expire."
+msgstr ""
+
+msgid "DeployTokens|Unless you specify a username, it is set to \"gitlab+deploy-token-{n}\"."
+msgstr ""
+
+msgid "DeployTokens|Use this token as a password. Save it. This password can %{i_start}not%{i_end} be recovered."
 msgstr ""
 
 msgid "DeployTokens|Username"
@@ -9762,7 +9765,7 @@ msgstr ""
 msgid "DeployTokens|You are about to revoke %{b_start}%{name}%{b_end}."
 msgstr ""
 
-msgid "DeployTokens|Your New Deploy Token"
+msgid "DeployTokens|Your new Deploy Token username"
 msgstr ""
 
 msgid "DeployTokens|Your new group deploy token has been created."
@@ -11871,6 +11874,9 @@ msgid "Expires"
 msgstr ""
 
 msgid "Expires at"
+msgstr ""
+
+msgid "Expires at (optional)"
 msgstr ""
 
 msgid "Expires in %{expires_at}"
@@ -23777,6 +23783,48 @@ msgstr ""
 msgid "Push to create a project"
 msgstr ""
 
+msgid "PushRules|All branch names must match this %{wiki_syntax_link_start}regular expression%{wiki_syntax_link_end}. If empty, any branch name is allowed."
+msgstr ""
+
+msgid "PushRules|All commit author's email must match this %{wiki_syntax_link_start}regular expression%{wiki_syntax_link_end}. If empty, any email is allowed."
+msgstr ""
+
+msgid "PushRules|All commit messages must match this %{wiki_syntax_link_start}regular expression%{wiki_syntax_link_end}. If empty, commit messages are not required to match any expression."
+msgstr ""
+
+msgid "PushRules|All committed filenames cannot match this %{wiki_syntax_link_start}regular expression%{wiki_syntax_link_end}. If empty, any filename is allowed."
+msgstr ""
+
+msgid "PushRules|Commit messages cannot match this %{wiki_syntax_link_start}regular expression%{wiki_syntax_link_end}. If empty, commit messages are not rejected based on any expression."
+msgstr ""
+
+msgid "PushRules|Do not allow users to remove Git tags with %{code_block_start}git push%{code_block_end}"
+msgstr ""
+
+msgid "PushRules|Reject any files likely to contain secrets. %{secret_files_link_start}What secret files are rejected?%{secret_files_link_end}"
+msgstr ""
+
+msgid "PushRules|Reject file sizes equal to or greater than this size. If set to 0, files of any size are allowed. This rule does not apply to files tracked by Git LFS."
+msgstr ""
+
+msgid "PushRules|Restrict commits to existing GitLab users."
+msgstr ""
+
+msgid "PushRules|Restrict push operations for this project."
+msgstr ""
+
+msgid "PushRules|Save Push Rules"
+msgstr ""
+
+msgid "PushRules|Select push rules"
+msgstr ""
+
+msgid "PushRules|Users can still delete tags through the GitLab UI."
+msgstr ""
+
+msgid "PushRule|Push Rules"
+msgstr ""
+
 msgid "PushRule|Reject unverified users"
 msgstr ""
 
@@ -25270,9 +25318,6 @@ msgstr ""
 msgid "Save Changes"
 msgstr ""
 
-msgid "Save Push Rules"
-msgstr ""
-
 msgid "Save application"
 msgstr ""
 
@@ -25340,6 +25385,9 @@ msgid "Scope board to current iteration"
 msgstr ""
 
 msgid "Scopes"
+msgstr ""
+
+msgid "Scopes [Select 1 or more]"
 msgstr ""
 
 msgid "Scopes can't be blank"

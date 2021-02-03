@@ -68,6 +68,10 @@ describe('stage column component', () => {
     it('should render the provided groups', () => {
       expect(findAllStageColumnGroups().length).toBe(mockGroups.length);
     });
+
+    it('should emit updateMeasurements event on mount', () => {
+      expect(wrapper.emitted().updateMeasurements).toHaveLength(1);
+    });
   });
 
   describe('when job notifies action is complete', () => {

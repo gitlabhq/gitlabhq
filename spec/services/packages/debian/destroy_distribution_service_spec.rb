@@ -55,6 +55,8 @@ RSpec.describe Packages::Debian::DestroyDistributionService do
       end
 
       context 'when destroy fails' do
+        let(:distribution) { create("debian_#{container_type}_distribution", container: container) }
+
         before do
           expect(distribution).to receive(:destroy).and_return(false)
         end

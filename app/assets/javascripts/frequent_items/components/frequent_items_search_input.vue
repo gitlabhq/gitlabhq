@@ -3,7 +3,6 @@ import { debounce } from 'lodash';
 import { mapActions, mapState } from 'vuex';
 import { GlIcon } from '@gitlab/ui';
 import Tracking from '~/tracking';
-import eventHub from '../event_hub';
 import frequentItemsMixin from './frequent_items_mixin';
 
 const trackingMixin = Tracking.mixin();
@@ -31,12 +30,6 @@ export default {
       });
       this.setSearchQuery(this.searchQuery);
     }, 500),
-  },
-  mounted() {
-    eventHub.$on(`${this.namespace}-dropdownOpen`, this.setFocus);
-  },
-  beforeDestroy() {
-    eventHub.$off(`${this.namespace}-dropdownOpen`, this.setFocus);
   },
   methods: {
     ...mapActions(['setSearchQuery']),

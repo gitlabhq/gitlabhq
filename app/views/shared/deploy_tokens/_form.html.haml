@@ -1,5 +1,5 @@
 %p.profile-settings-content
-  = s_("DeployTokens|Pick a name for the application, and we'll give you a unique deploy token.")
+  = s_("DeployTokens|Pick a name for your unique deploy token.")
 
 = form_for token, url: create_deploy_token_path(group_or_project, anchor: 'js-deploy-tokens'), method: :post, remote: Feature.enabled?(:ajax_new_deploy_token, group_or_project) do |f|
   = form_errors(token)
@@ -9,42 +9,43 @@
     = f.text_field :name, class: 'form-control gl-form-input qa-deploy-token-name', required: true
 
   .form-group
-    = f.label :expires_at, class: 'label-bold'
-    = f.text_field :expires_at, class: 'datepicker form-control gl-form-input qa-deploy-token-expires-at', value: f.object.expires_at
+    = f.label :expires_at, _('Expires at (optional)'), class: 'label-bold'
+    = f.text_field :expires_at, class: 'datepicker form-control qa-deploy-token-expires-at', value: f.object.expires_at
+    .text-secondary= s_('DeployTokens|Unless you enter a date, the token does not expire.')
 
   .form-group
-    = f.label :username, class: 'label-bold'
-    = f.text_field :username, class: 'form-control gl-form-input qa-deploy-token-username'
-    .text-secondary= s_('DeployTokens|Default format is "gitlab+deploy-token-{n}". Enter custom username if you want to change it.')
+    = f.label :username, _('Username (optional)'), class: 'label-bold'
+    = f.text_field :username, class: 'form-control qa-deploy-token-username'
+    .text-secondary= s_('DeployTokens|Unless you specify a username, it is set to "gitlab+deploy-token-{n}".')
 
   .form-group
-    = f.label :scopes, class: 'label-bold'
+    = f.label :scopes, _('Scopes [Select 1 or more]'), class: 'label-bold'
     %fieldset.form-group.form-check
       = f.check_box :read_repository, class: 'form-check-input qa-deploy-token-read-repository'
       = label_tag ("deploy_token_read_repository"), 'read_repository', class: 'label-bold form-check-label'
-      .text-secondary= s_('DeployTokens|Allows read-only access to the repository')
+      .text-secondary= s_('DeployTokens|Allows read-only access to the repository.')
 
     - if container_registry_enabled?(group_or_project)
       %fieldset.form-group.form-check
         = f.check_box :read_registry, class: 'form-check-input qa-deploy-token-read-registry'
         = label_tag ("deploy_token_read_registry"), 'read_registry', class: 'label-bold form-check-label'
-        .text-secondary= s_('DeployTokens|Allows read-only access to the registry images')
+        .text-secondary= s_('DeployTokens|Allows read-only access to registry images.')
 
       %fieldset.form-group.form-check
         = f.check_box :write_registry, class: 'form-check-input'
         = label_tag ("deploy_token_write_registry"), 'write_registry', class: 'label-bold form-check-label'
-        .text-secondary= s_('DeployTokens|Allows write access to the registry images')
+        .text-secondary= s_('DeployTokens|Allows write access to registry images.')
 
     - if packages_registry_enabled?(group_or_project)
       %fieldset.form-group.form-check
         = f.check_box :read_package_registry, class: 'form-check-input'
         = label_tag ("deploy_token_read_package_registry"), 'read_package_registry', class: 'label-bold form-check-label'
-        .text-secondary= s_('DeployTokens|Allows read access to the package registry')
+        .text-secondary= s_('DeployTokens|Allows read access to the package registry.')
 
       %fieldset.form-group.form-check
         = f.check_box :write_package_registry, class: 'form-check-input'
         = label_tag ("deploy_token_write_package_registry"), 'write_package_registry', class: 'label-bold form-check-label'
-        .text-secondary= s_('DeployTokens|Allows write access to the package registry')
+        .text-secondary= s_('DeployTokens|Allows write access to the package registry.')
 
   .gl-mt-3
     = f.submit s_('DeployTokens|Create deploy token'), class: 'btn gl-button btn-success qa-create-deploy-token'
