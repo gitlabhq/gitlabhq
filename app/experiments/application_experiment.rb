@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-class ApplicationExperiment < Gitlab::Experiment
+class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/NamespacedClass
   def enabled?
-    return false if Feature::Definition.get(name).nil? # there has to be a feature flag yaml file
+    return false if Feature::Definition.get(feature_flag_name).nil? # there has to be a feature flag yaml file
     return false unless Gitlab.dev_env_or_com? # we're in an environment that allows experiments
 
-    Feature.get(name).state != :off # rubocop:disable Gitlab/AvoidFeatureGet
+    Feature.get(feature_flag_name).state != :off # rubocop:disable Gitlab/AvoidFeatureGet
   end
 
   def publish(_result)
@@ -26,9 +26,13 @@ class ApplicationExperiment < Gitlab::Experiment
   private
 
   def resolve_variant_name
-    return variant_names.first if Feature.enabled?(name, self, type: :experiment, default_enabled: :yaml)
+    return variant_names.first if Feature.enabled?(feature_flag_name, self, type: :experiment, default_enabled: :yaml)
 
     nil # Returning nil vs. :control is important for not caching and rollouts.
+  end
+
+  def feature_flag_name
+    name.tr('/', '_')
   end
 
   # Cache is an implementation on top of Gitlab::Redis::SharedState that also
@@ -48,7 +52,7 @@ class ApplicationExperiment < Gitlab::Experiment
   # default cache key strategy. So running `cache.fetch("foo:bar", "value")`
   # would create/update a hash with the key of "foo", with a field named
   # "bar" that has "value" assigned to it.
-  class Cache < ActiveSupport::Cache::Store
+  class Cache < ActiveSupport::Cache::Store # rubocop:disable Gitlab/NamespacedClass
     # Clears the entire cache for a given experiment. Be careful with this
     # since it would reset all resolved variants for the entire experiment.
     def clear(key:)

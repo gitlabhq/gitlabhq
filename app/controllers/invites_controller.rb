@@ -6,6 +6,7 @@ class InvitesController < ApplicationController
   before_action :member
   before_action :ensure_member_exists
   before_action :invite_details
+  before_action :set_invite_type, only: :show
   skip_before_action :authenticate_user!, only: :decline
 
   helper_method :member?, :current_user_matches_invite?
@@ -15,11 +16,16 @@ class InvitesController < ApplicationController
   feature_category :authentication_and_authorization
 
   def show
+    experiment('members/invite_email', actor: member).track(:opened) if initial_invite_email?
+
     accept if skip_invitation_prompt?
   end
 
   def accept
     if member.accept_invite!(current_user)
+      experiment('members/invite_email', actor: member).track(:accepted) if initial_invite_email?
+      session.delete(:invite_type)
+
       redirect_to invite_details[:path], notice: _("You have been granted %{member_human_access} access to %{title} %{name}.") %
         { member_human_access: member.human_access, title: invite_details[:title], name: invite_details[:name] }
     else
@@ -46,6 +52,14 @@ class InvitesController < ApplicationController
   end
 
   private
+
+  def set_invite_type
+    session[:invite_type] = params[:invite_type] if params[:invite_type].in?([Members::InviteEmailExperiment::INVITE_TYPE])
+  end
+
+  def initial_invite_email?
+    session[:invite_type] == Members::InviteEmailExperiment::INVITE_TYPE
+  end
 
   def skip_invitation_prompt?
     !member? && current_user_matches_invite?

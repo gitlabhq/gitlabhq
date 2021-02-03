@@ -866,20 +866,20 @@
   resolved "https://registry.yarnpkg.com/@gitlab/favicon-overlay/-/favicon-overlay-2.0.0.tgz#2f32d0b6a4d5b8ac44e2927083d9ab478a78c984"
   integrity sha512-GNcORxXJ98LVGzOT9dDYKfbheqH6lNgPDD72lyXRnQIH7CjgGyos8i17aSBPq1f4s3zF3PyedFiAR4YEZbva2Q==
 
-"@gitlab/svgs@1.179.0":
-  version "1.179.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.179.0.tgz#c90032bf5aa611c53d1bfc0cdc0c23d74792b470"
-  integrity sha512-GspNQY1BuAn0VxvJnKA4jssLiqGstodHLxoc70y9ev3kiApMJzn6lHdiV+ecBZ/gD8Xo+8JeqyfxrToVbwuxtQ==
+"@gitlab/svgs@1.182.0":
+  version "1.182.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.182.0.tgz#600cb577c598ff63325c3f6f049e3254abdbb580"
+  integrity sha512-hV6Hkd92bNyzGm2awdwtyXVjT71QZkfAMVV9qHg9fhu5swA4qLrxzXpYBBfeY3/e2KJIByVfROP8tSFws0R6Kw==
 
 "@gitlab/tributejs@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@gitlab/tributejs/-/tributejs-1.0.0.tgz#672befa222aeffc83e7d799b0500a7a4418e59b8"
   integrity sha512-nmKw1+hB6MHvlmPz63yPwVs1qQkycHwsKgxpEbzmky16Y6mL4EJMk3w1b8QlOAF/AIAzjCERPhe/R4MJiohbZw==
 
-"@gitlab/ui@27.0.0":
-  version "27.0.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-27.0.0.tgz#79839c94e6a5cac52a2144e1969987e0d8bc0702"
-  integrity sha512-3Rect5ZUNICyIBaf8QzB/+hm5Gr9Ob6kVlna9EBUs+B5L7GuqDWTVcNxLGGnnzAba4UP8Ja/9cXbWvCIbw0o2A==
+"@gitlab/ui@27.1.5":
+  version "27.1.5"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-27.1.5.tgz#f18327f48b9ed38e674573a761ce89d33b359add"
+  integrity sha512-2L8Wa05IFx7Bj7smpwXFdnUoGi6CBzBIUVYIfPO/LkBtBHTYf9QoUH1EF7qduHY2EBWcWNu5X1EKWFrs9ErmsQ==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.3.0"

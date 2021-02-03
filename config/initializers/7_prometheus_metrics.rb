@@ -39,6 +39,32 @@ Sidekiq.configure_server do |config|
 end
 
 if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
+  # When running Puma in a Single mode, `on_master_start` and `on_worker_start` are the same.
+  # Thus, we order these events to run `reinitialize_on_pid_change` with `force: true` first.
+  Gitlab::Cluster::LifecycleEvents.on_master_start do
+    # Ensure that stale Prometheus metrics don't accumulate over time
+    Prometheus::CleanupMultiprocDirService.new.execute
+
+    ::Prometheus::Client.reinitialize_on_pid_change(force: true)
+
+    if Gitlab::Runtime.unicorn?
+      Gitlab::Metrics::Samplers::UnicornSampler.instance(Settings.monitoring.unicorn_sampler_interval).start
+    elsif Gitlab::Runtime.puma?
+      Gitlab::Metrics::Samplers::PumaSampler.instance.start
+    end
+
+    Gitlab::Metrics.gauge(:deployments, 'GitLab Version', {}, :max).set({ version: Gitlab::VERSION }, 1)
+
+    unless Gitlab::Runtime.sidekiq?
+      Gitlab::Metrics::RequestsRackMiddleware.initialize_metrics
+    end
+
+    Gitlab::Ci::Parsers.instrument!
+  rescue IOError => e
+    Gitlab::ErrorTracking.track_exception(e)
+    Gitlab::Metrics.error_detected!
+  end
+
   Gitlab::Cluster::LifecycleEvents.on_worker_start do
     defined?(::Prometheus::Client.reinitialize_on_pid_change) && Prometheus::Client.reinitialize_on_pid_change
 
@@ -52,27 +78,6 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
 
     if Gitlab.ee? && Gitlab::Runtime.sidekiq?
       Gitlab::Metrics::Samplers::GlobalSearchSampler.instance.start
-    end
-
-    Gitlab::Ci::Parsers.instrument!
-  rescue IOError => e
-    Gitlab::ErrorTracking.track_exception(e)
-    Gitlab::Metrics.error_detected!
-  end
-
-  Gitlab::Cluster::LifecycleEvents.on_master_start do
-    ::Prometheus::Client.reinitialize_on_pid_change(force: true)
-
-    if Gitlab::Runtime.unicorn?
-      Gitlab::Metrics::Samplers::UnicornSampler.instance(Settings.monitoring.unicorn_sampler_interval).start
-    elsif Gitlab::Runtime.puma?
-      Gitlab::Metrics::Samplers::PumaSampler.instance.start
-    end
-
-    Gitlab::Metrics.gauge(:deployments, 'GitLab Version', {}, :max).set({ version: Gitlab::VERSION }, 1)
-
-    unless Gitlab::Runtime.sidekiq?
-      Gitlab::Metrics::RequestsRackMiddleware.initialize_metrics
     end
 
     Gitlab::Ci::Parsers.instrument!

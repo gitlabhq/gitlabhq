@@ -63,7 +63,7 @@ to any PAT generated in the system by any user:
 It is also possible to configure the prefix via the [settings API](../../../api/settings.md)
 using the `personal_access_token_prefix` field.
 
-## Repository size limit **(STARTER ONLY)**
+## Repository size limit **(PREMIUM SELF)**
 
 Repositories in your GitLab instance can grow quickly, especially if you are
 using LFS. Their size can grow exponentially, rapidly consuming available storage.

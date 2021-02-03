@@ -905,6 +905,19 @@ RSpec.describe Notify do
           is_expected.to have_body_text project.full_name
           is_expected.to have_body_text project_member.human_access.downcase
           is_expected.to have_body_text project_member.invite_token
+          is_expected.to have_link('Join now', href: invite_url(project_member.invite_token, invite_type: Members::InviteEmailExperiment::INVITE_TYPE))
+        end
+
+        it 'contains invite link for the avatar', :experiment do
+          stub_experiments('members/invite_email': :avatar)
+
+          is_expected.not_to have_content('You are invited!')
+        end
+
+        it 'has invite link for the control group' do
+          stub_experiments('members/invite_email': :control)
+
+          is_expected.to have_content('You are invited!')
         end
       end
 

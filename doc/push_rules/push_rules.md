@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, howto
 ---
 
-# Push Rules **(STARTER)**
+# Push Rules **(PREMIUM)**
 
 Gain additional control over what can and can't be pushed to your repository by using
 regular expressions to reject pushes based on commit contents, branch names or file details.
@@ -105,7 +105,8 @@ GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular 
 
 ## Prevent pushing secrets to the repository
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385) in [GitLab Starter](https://about.gitlab.com/pricing/) 8.12.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385) in GitLab 8.12.
+> - Moved to GitLab Premium in 13.9.
 
 Secrets such as credential files, SSH private keys, and other files containing secrets should never be committed to source control.
 GitLab enables you to turn on a predefined denylist of files which can't be
@@ -180,7 +181,8 @@ id_ecdsa
 
 ## Prohibited file names
 
-> Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 7.10.
+> - Introduced in GitLab 7.10.
+> - Moved to GitLab Premium in 13.9.
 
 Each filename contained in a Git push is compared to the regular expression in this field. Filenames in Git consist of both the file's name and any directory that may precede it. A singular regular expression can contain multiple independent matches used as exclusions. File names can be broadly matched to any location in the repository, or restricted to specific locations. Filenames can also be partial matches used to exclude file types by extension.
 

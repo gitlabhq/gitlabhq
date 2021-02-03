@@ -60,7 +60,10 @@
   %ul.content-list.all-branches
     - @branches.each do |branch|
       = render "projects/branches/branch", branch: branch, merged: @merged_branch_names.include?(branch.name), commit_status: @branch_pipeline_statuses[branch.name], show_commit_status: @branch_pipeline_statuses.any?
-  = paginate @branches, theme: 'gitlab'
+  - if Feature.enabled?(:branches_pagination_without_count, @project, default_enabled: true)
+    = paginate_without_count @branches
+  - else
+    = paginate @branches, theme: 'gitlab'
 - else
   .nothing-here-block
     = s_('Branches|No branches to show')

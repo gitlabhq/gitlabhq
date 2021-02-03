@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46320
 rollout_issue_url:
 milestone: '13.6'
 type: development
-group: group::Release Management
+group: group::release
 default_enabled: false

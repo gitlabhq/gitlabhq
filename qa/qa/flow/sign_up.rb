@@ -5,6 +5,10 @@ module QA
     module SignUp
       module_function
 
+      def page
+        Capybara.current_session
+      end
+
       def sign_up!(user)
         Page::Main::Menu.perform(&:sign_out_if_signed_in)
         Page::Main::Login.perform(&:switch_to_register_page)
@@ -14,6 +18,11 @@ module QA
           sign_up.fill_new_user_username_field(user.username)
           sign_up.fill_new_user_email_field(user.email)
           sign_up.fill_new_user_password_field(user.password)
+
+          Support::Waiter.wait_until(sleep_interval: 0.5) do
+            page.has_content?("Username is available.")
+          end
+
           sign_up.click_new_user_register_button
         end
 

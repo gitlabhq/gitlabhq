@@ -10,6 +10,7 @@ query getAlerts(
   $nextPageCursor: String = ""
   $searchTerm: String = ""
   $assigneeUsername: String = ""
+  $domain: AlertManagementDomainFilter = operations
 ) {
   project(fullPath: $projectPath) {
     alertManagementAlerts(
@@ -21,6 +22,7 @@ query getAlerts(
       last: $lastPageSize
       after: $nextPageCursor
       before: $prevPageCursor
+      domain: $domain
     ) {
       nodes {
         ...AlertListItem

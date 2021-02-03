@@ -41,7 +41,7 @@ users will be prevented from modifying locked files by pushing, merging,
 or any other means, and will be shown an error like: `The path '.gitignore' is
 locked by Administrator`.
 
-## Exclusive file locks
+## Exclusive file locks **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/35856) in GitLab 10.5.
 

@@ -103,9 +103,9 @@ Deploy Keys are not available in the **Allowed to merge** dropdown.
 
 ![Deploy Keys on protected branches](img/protected_branches_deploy_keys_v13_5.png)
 
-## Restricting push and merge access to certain users **(STARTER)**
+## Restricting push and merge access to certain users **(PREMIUM)**
 
-With GitLab Enterprise Edition you can restrict access to protected branches
+With GitLab Premium you can restrict access to protected branches
 by choosing a role (Maintainers, Developers) and certain users. From the
 dropdown menu select the role and/or the users you want to have merge or push
 access.

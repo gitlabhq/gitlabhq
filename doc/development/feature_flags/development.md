@@ -70,7 +70,7 @@ push_frontend_feature_flag(:my_ops_flag, project, type: :ops)
 
 `experiment` feature flags are used for A/B testing on GitLab.com.
 
-An `experiment` feature flag should conform to the same standards as a `development` feature flag, 
+An `experiment` feature flag should conform to the same standards as a `development` feature flag,
 although the interface has some differences. More information can be found in the [experiment guide](../experiment_guide/index.md).
 
 ## Feature flag definition and validation
@@ -427,6 +427,9 @@ to ensure the feature works properly.
 
 When using the testing environment, all feature flags are enabled by default.
 
+WARNING:
+This does not apply to end-to-end (QA) tests, which [do not disable feature flags by default](#end-to-end-qa-tests). There is a different [process for using feature flags in end-to-end tests](../testing_guide/end_to_end/feature_flags.md).
+
 To disable a feature flag in a test, use the `stub_feature_flags`
 helper. For example, to globally disable the `ci_live_trace` feature
 flag in a test:
@@ -574,3 +577,17 @@ a mode that is used by `production` and `development`.
 
 You should use this mode only when you really want to tests aspects of Flipper
 with how it interacts with `ActiveRecord`.
+
+### End-to-end (QA) tests
+
+Toggling feature flags works differently in end-to-end (QA) tests. The end-to-end test framework does not have direct access to
+Rails or the database, so it can't use Flipper. Instead, it uses [the public API](../../api/features.md#set-or-create-a-feature). Each end-to-end test can [enable or disable a feature flag during the test](../testing_guide/end_to_end/feature_flags.md). Alternatively, you can enable or disable a feature flag before one or more tests when you [run them from your GitLab repository's `qa` directory](https://gitlab.com/gitlab-org/gitlab/tree/master/qa#running-tests-with-a-feature-flag-enabled-or-disabled), or if you [run the tests via GitLab QA](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#running-tests-with-a-feature-flag-enabled).
+
+[As noted above, feature flags are not enabled by default in end-to-end tests.](#feature-flags-in-tests)
+This means that end-to-end tests will run with feature flags in the default state implemented in the source
+code, or with the feature flag in its current state on the GitLab instance under test, unless the
+test is written to enable/disable a feature flag explicitly.
+
+When a feature flag is changed on Staging or on GitLab.com, a Slack message will be posted to the `#qa-staging` or `#qa-production` channels to inform
+the pipeline triage DRI so that they can more easily determine if any failures are related to a feature flag change. However, if you are working on a change you can
+help to avoid unexpected failures by [confirming that the end-to-end tests pass with a feature flag enabled.](../testing_guide/end_to_end/feature_flags.md#confirming-that-end-to-end-tests-pass-with-a-feature-flag-enabled)

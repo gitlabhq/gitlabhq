@@ -11,15 +11,14 @@
       = link_to new_project_milestone_path(@project), class: 'gl-button btn btn-success', data: { qa_selector: "new_project_milestone_link" }, title: _('New milestone') do
         = _('New milestone')
 
-.milestones
-  #js-delete-milestone-modal
-  #promote-milestone-modal
+- if @milestones.blank?
+  = render 'shared/empty_states/milestones'
+- else
+  .milestones
+    #js-delete-milestone-modal
+    #promote-milestone-modal
 
-  %ul.content-list
-    = render @milestones
+    %ul.content-list
+      = render @milestones
 
-    - if @milestones.blank?
-      %li
-        .nothing-here-block= _('No milestones to show')
-
-  = paginate @milestones, theme: 'gitlab'
+    = paginate @milestones, theme: 'gitlab'

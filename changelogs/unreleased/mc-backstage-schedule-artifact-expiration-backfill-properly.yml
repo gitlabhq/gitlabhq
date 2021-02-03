@@ -1,0 +1,5 @@
+---
+title: Schedule artifact expiry date backfill background jobs.
+merge_request: 51822
+author:
+type: fixed

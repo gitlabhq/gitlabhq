@@ -8,7 +8,7 @@ require 'gitlab/experiment/rspec'
 class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/NamespacedClass
   def initialize(*args)
     super
-    Feature.persist_used!(name)
+    Feature.persist_used!(feature_flag_name)
   end
 end
 

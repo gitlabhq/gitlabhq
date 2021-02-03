@@ -1409,7 +1409,6 @@ Gitlab/NamespacedClass:
     - 'app/controllers/user_callouts_controller.rb'
     - 'app/controllers/users_controller.rb'
     - 'app/controllers/whats_new_controller.rb'
-    - 'app/experiments/application_experiment.rb'
     - 'app/finders/abuse_reports_finder.rb'
     - 'app/finders/access_requests_finder.rb'
     - 'app/finders/admin/projects_finder.rb'

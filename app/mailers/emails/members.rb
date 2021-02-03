@@ -4,9 +4,11 @@ module Emails
   module Members
     extend ActiveSupport::Concern
     include MembersHelper
+    include Gitlab::Experiment::Dsl
 
     included do
       helper_method :member_source, :member
+      helper_method :experiment
     end
 
     def member_access_requested_email(member_source_type, member_id, recipient_id)

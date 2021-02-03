@@ -163,6 +163,7 @@ RSpec.describe 'Group show page' do
     let!(:project)   { create(:project, namespace: group) }
 
     before do
+      stub_feature_flags(vue_notification_dropdown: false)
       group.add_maintainer(maintainer)
       sign_in(maintainer)
     end

@@ -23,9 +23,10 @@ This provides a consistent mechanism for reviewers to approve merge requests, an
 maintainers know a change is ready to merge. Approvals in Free are optional, and do
 not prevent a merge request from being merged when there is no approval.
 
-## Required Approvals **(STARTER)**
+## Required Approvals **(PREMIUM)**
 
-> [Introduced](https://about.gitlab.com/releases/2015/06/22/gitlab-7-12-released/#merge-request-approvers-ee-only) in GitLab Enterprise Edition 7.12.
+> - [Introduced](https://about.gitlab.com/releases/2015/06/22/gitlab-7-12-released/#merge-request-approvers-ee-only) in GitLab Enterprise Edition 7.12.
+> - Moved to GitLab Premium in 13.9.
 
 Required approvals enable enforced code review by requiring specified people
 to approve a merge request before it can be merged.
@@ -63,7 +64,7 @@ group is public.
 
 #### Eligible Approvers
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10294) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.3, when an eligible approver comments on a merge request, it appears in the **Commented by** column of the Approvals widget.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10294) in GitLab 13.3, when an eligible approver comments on a merge request, it appears in the **Commented by** column of the Approvals widget.
 
 The following users can approve merge requests:
 
@@ -102,7 +103,8 @@ were not explicitly listed in the approval rules.
 
 ##### Code Owners as eligible approvers
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7933) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7933) in GitLab 11.5.
+> - Moved to GitLab Premium in 13.9.
 
 If you add [Code Owners](../code_owners.md) to your repository, the owners to the
 corresponding files become eligible approvers, together with members with Developer
@@ -126,7 +128,8 @@ Alternatively, you can **require**
 
 #### Merge Request approval segregation of duties
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40491) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40491) in GitLab 13.4.
+> - Moved to Premium in 13.9.
 
 Managers or operators with [Reporter permissions](../../permissions.md#project-members-permissions)
 to a project sometimes need to be required approvers of a merge request,
@@ -302,9 +305,10 @@ NOTE:
 Approvals do not get reset when [rebasing a merge request](fast_forward_merge.md)
 from the UI. However, approvals are reset if the target branch is changed.
 
-#### Allowing merge request authors to approve their own merge requests
+#### Allowing merge request authors to approve their own merge requests **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3349) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3349) in GitLab 11.3.
+> - Moved to GitLab Premium in 13.9.
 
 By default, projects are configured to prevent merge requests from being approved by
 their own authors. To change this setting:
@@ -315,9 +319,10 @@ their own authors. To change this setting:
 
 Note that users can edit the approval rules in every merge request and override pre-defined settings unless it's set [**not to allow** overrides](#prevent-overriding-default-approvals).
 
-#### Prevent approval of merge requests by their committers
+#### Prevent approval of merge requests by their committers **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10441) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10441) in GitLab 11.10.
+> - Moved to GitLab Premium in 13.9.
 
 You can prevent users that have committed to a merge request from approving it. To
 enable this feature:
@@ -327,7 +332,8 @@ enable this feature:
 
 #### Require authentication when approving a merge request
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5981) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5981) in GitLab 12.0.
+> - Moved to GitLab Premium in 13.9.
 
 NOTE:
 To require authentication when approving a merge request, you must enable

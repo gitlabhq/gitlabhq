@@ -45,6 +45,9 @@ export default {
     groupId: {
       default: null,
     },
+    showLabel: {
+      default: false,
+    },
   },
   data() {
     return {
@@ -69,6 +72,11 @@ export default {
       }
 
       return this.selectedNotificationLevel === 'disabled' ? 'notifications-off' : 'notifications';
+    },
+    buttonText() {
+      return this.showLabel
+        ? this.$options.i18n.notificationTitles[this.selectedNotificationLevel]
+        : null;
     },
     buttonTooltip() {
       const notificationTitle =
@@ -114,7 +122,9 @@ export default {
       data-testid="notificationButton"
       :size="buttonSize"
     >
-      <gl-button :size="buttonSize" :icon="buttonIcon" :loading="isLoading" :disabled="disabled" />
+      <gl-button :size="buttonSize" :icon="buttonIcon" :loading="isLoading" :disabled="disabled">
+        <template v-if="buttonText">{{ buttonText }}</template>
+      </gl-button>
       <gl-dropdown :size="buttonSize" :disabled="disabled">
         <notifications-dropdown-item
           v-for="item in notificationLevels"
@@ -141,6 +151,7 @@ export default {
       v-else
       v-gl-tooltip="{ title: buttonTooltip }"
       data-testid="notificationButton"
+      :text="buttonText"
       :icon="buttonIcon"
       :loading="isLoading"
       :size="buttonSize"

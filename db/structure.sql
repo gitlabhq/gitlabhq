@@ -22,8 +22,8 @@ UPDATE projects SET has_external_issue_tracker = (
     WHERE project_id = COALESCE(NEW.project_id, OLD.project_id)
       AND active = TRUE
       AND category = 'issue_tracker'
-    )
   )
+)
 WHERE projects.id = COALESCE(NEW.project_id, OLD.project_id);
 RETURN NULL;
 
@@ -21047,7 +21047,7 @@ CREATE UNIQUE INDEX epic_user_mentions_on_epic_id_and_note_id_index ON epic_user
 
 CREATE UNIQUE INDEX epic_user_mentions_on_epic_id_index ON epic_user_mentions USING btree (epic_id) WHERE (note_id IS NULL);
 
-CREATE INDEX expired_artifacts_temp_index ON ci_job_artifacts USING btree (id, created_at) WHERE ((expire_at IS NULL) AND (created_at < '2020-06-22 00:00:00+00'::timestamp with time zone));
+CREATE INDEX expired_artifacts_temp_index ON ci_job_artifacts USING btree (id, created_at) WHERE ((expire_at IS NULL) AND (date(timezone('UTC'::text, created_at)) < '2020-06-22'::date));
 
 CREATE INDEX finding_links_on_vulnerability_occurrence_id ON vulnerability_finding_links USING btree (vulnerability_occurrence_id);
 
