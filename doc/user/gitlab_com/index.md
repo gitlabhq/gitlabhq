@@ -97,7 +97,7 @@ Any settings or feature limits not listed here are using the defaults listed in 
 | -----------             | ----------------- | ------------- |
 | Artifacts maximum size (compressed) | 1G                | 100M          |
 | Artifacts [expiry time](../../ci/yaml/README.md#artifactsexpire_in)   | From June 22, 2020, deleted after 30 days unless otherwise specified (artifacts created before that date have no expiry).           | deleted after 30 days unless otherwise specified    |
-| Scheduled Pipeline Cron | `*/5 * * * *` | `19 * * * *` |
+| Scheduled Pipeline Cron | `*/5 * * * *` | `3-59/10 * * * *` |
 | [Max jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines) | `500` for Free tier, unlimited otherwise | Unlimited
 | [Max CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project) | `2` | Unlimited |
 | [Max pipeline schedules in projects](../../administration/instance_limits.md#number-of-pipeline-schedules) | `10` for Free tier, `50` for all paid tiers | Unlimited |

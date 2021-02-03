@@ -397,7 +397,7 @@ RSpec.describe Gitlab::Utils::UsageData do
           expect(redis).to receive(:set).with("#{metric_name}_#{time_period_name}-#{timestamp}", '{"141":1,"56":1}', ex: 80.hours)
         end
 
-        described_class.save_aggregated_metrics(method_params)
+        described_class.save_aggregated_metrics(**method_params)
       end
 
       context 'error handling' do
@@ -406,7 +406,7 @@ RSpec.describe Gitlab::Utils::UsageData do
         end
 
         it 'rescues and reraise ::Redis::CommandError for development and test environments' do
-          expect { described_class.save_aggregated_metrics(method_params) }.to raise_error ::Redis::CommandError
+          expect { described_class.save_aggregated_metrics(**method_params) }.to raise_error ::Redis::CommandError
         end
 
         context 'for environment different than development' do
@@ -415,7 +415,7 @@ RSpec.describe Gitlab::Utils::UsageData do
           end
 
           it 'rescues ::Redis::CommandError' do
-            expect { described_class.save_aggregated_metrics(method_params) }.not_to raise_error
+            expect { described_class.save_aggregated_metrics(**method_params) }.not_to raise_error
           end
         end
       end
@@ -434,12 +434,12 @@ RSpec.describe Gitlab::Utils::UsageData do
             expect(redis).not_to receive(:set)
           end
 
-          described_class.save_aggregated_metrics(method_params)
+          described_class.save_aggregated_metrics(**method_params)
         end
       end
 
       it 'raises error for development environment' do
-        expect { described_class.save_aggregated_metrics(method_params) }.to raise_error /Unsupported data type/
+        expect { described_class.save_aggregated_metrics(**method_params) }.to raise_error /Unsupported data type/
       end
     end
   end

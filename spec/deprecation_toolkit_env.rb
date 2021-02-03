@@ -55,8 +55,6 @@ module DeprecationToolkitEnv
   # one by one
   def self.allowed_kwarg_warning_paths
     %w[
-      ee/lib/ee/gitlab/usage_data.rb
-      spec/lib/gitlab/utils/usage_data_spec.rb
       spec/support/gitlab_experiment.rb
       spec/support/helpers/next_instance_of.rb
       rspec-mocks-3.10.0/lib/rspec/mocks/message_expectation.rb
@@ -70,8 +68,6 @@ module DeprecationToolkitEnv
       grape_logging-1.8.3/lib/grape_logging/middleware/request_logger.rb
       activesupport-6.0.3.4/lib/active_support/cache.rb
       factory_bot-6.1.0/lib/factory_bot/decorator.rb
-      doorkeeper-5.4.0/lib/doorkeeper/models/access_token_mixin.rb
-      rouge-3.26.0/lib/rouge/formatter.rb
       batch-loader-1.4.0/lib/batch_loader/graphql.rb
       carrierwave-1.3.1/lib/carrierwave/sanitized_file.rb
       activerecord-6.0.3.4/lib/active_record/relation.rb

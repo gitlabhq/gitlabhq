@@ -63,6 +63,17 @@ RSpec.describe Gitlab::Ci::CronParser do
       end
     end
 
+    context 'when range and slash used' do
+      let(:cron) { '3-59/10 * * * *' }
+      let(:cron_timezone) { 'UTC' }
+
+      it_behaves_like returns_time_for_epoch
+
+      it 'returns specific time' do
+        expect(subject.min).to be_in([3, 13, 23, 33, 43, 53])
+      end
+    end
+
     context 'when cron_timezone is TZInfo format' do
       before do
         allow(Time).to receive(:zone)
