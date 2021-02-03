@@ -17,7 +17,7 @@ RSpec.describe Mutations::CanMutateSpammable do
 
   describe '#additional_spam_params' do
     it 'returns additional spam-related params' do
-      expect(subject.additional_spam_params).to eq({ api: true, request: request })
+      expect(subject.send(:additional_spam_params)).to eq({ api: true, request: request })
     end
   end
 
@@ -30,7 +30,7 @@ RSpec.describe Mutations::CanMutateSpammable do
     end
 
     it 'merges in spam action fields from spammable' do
-      result = subject.with_spam_action_fields(spammable) do
+      result = subject.send(:with_spam_action_fields, spammable) do
         { other_field: true }
       end
       expect(result)

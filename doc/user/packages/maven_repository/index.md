@@ -464,7 +464,7 @@ repositories {
 ```
 
 - For the `id`, use what you [defined in `settings.xml`](#authenticate-to-the-package-registry-with-maven).
-- For `my-group`, use your group name.
+- For `GROUP_ID`, use your group ID, which you can view on your group's home page.
 - For `PROJECT_ID`, use your project ID, which you can view on your project's home page.
 - Replace `gitlab.example.com` with your domain name.
 - For retrieving artifacts, use either the

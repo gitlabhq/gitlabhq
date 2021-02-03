@@ -2,35 +2,35 @@
 
 require 'spec_helper'
 
-RSpec.shared_examples 'spam flag is present' do
-  specify :aggregate_failures do
-    subject
-
-    expect(mutation_response).to have_key('spam')
-    expect(mutation_response['spam']).to be_falsey
-  end
-end
-
-RSpec.shared_examples 'can raise spam flag' do
-  it 'spam parameters are passed to the service' do
-    args = [anything, anything, hash_including(api: true, request: instance_of(ActionDispatch::Request))]
-    expect(service).to receive(:new).with(*args).and_call_original
-
-    subject
-  end
-
-  context 'when the snippet is detected as spam' do
-    it 'raises spam flag' do
-      allow_next_instance_of(Spam::SpamActionService) do |instance|
-        allow(instance).to receive(:execute) { true }
-        instance.target.spam!
-        instance.target.unrecoverable_spam_error!
-      end
+RSpec.shared_examples 'a mutation which can mutate a spammable' do
+  describe "#additional_spam_params" do
+    it 'passes additional spam params to the service' do
+      args = [
+        anything,
+        anything,
+        hash_including(
+          api: true,
+          request: instance_of(ActionDispatch::Request),
+          captcha_response: captcha_response,
+          spam_log_id: spam_log_id
+        )
+      ]
+      expect(service).to receive(:new).with(*args).and_call_original
 
       subject
+    end
+  end
 
-      expect(mutation_response['spam']).to be true
-      expect(mutation_response['errors']).to include("Your snippet has been recognized as spam and has been discarded.")
+  describe "#with_spam_action_fields" do
+    it 'resolves with spam action fields' do
+      subject
+
+      # NOTE: We do not need to assert on the specific values of spam action fields here, we only need
+      # to verify that #with_spam_action_fields was invoked and that the fields are present in the
+      # response. The specific behavior of #with_spam_action_fields is covered in the
+      # CanMutateSpammable unit tests.
+      expect(mutation_response.keys)
+        .to include('spam', 'spamLogId', 'needsCaptchaResponse', 'captchaSiteKey')
     end
   end
 end

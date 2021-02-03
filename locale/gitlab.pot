@@ -9318,6 +9318,9 @@ msgstr ""
 msgid "Define approval settings."
 msgstr ""
 
+msgid "Define approval settings. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
 msgid "Define custom rules for what constitutes spam, independent of Akismet"
 msgstr ""
 
@@ -29290,6 +29293,9 @@ msgid "There was an error getting the epic participants."
 msgstr ""
 
 msgid "There was an error importing the Jira project."
+msgstr ""
+
+msgid "There was an error loading merge request approval settings."
 msgstr ""
 
 msgid "There was an error loading users activity calendar."

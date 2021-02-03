@@ -17,6 +17,7 @@ RSpec.describe 'Creating a Snippet' do
   let(:actions) { [{ action: action }.merge(file_1), { action: action }.merge(file_2)] }
   let(:project_path) { nil }
   let(:uploaded_files) { nil }
+  let(:spam_mutation_vars) { {} }
   let(:mutation_vars) do
     {
       description: description,
@@ -25,7 +26,7 @@ RSpec.describe 'Creating a Snippet' do
       project_path: project_path,
       uploaded_files: uploaded_files,
       blob_actions: actions
-    }
+    }.merge(spam_mutation_vars)
   end
 
   let(:mutation) do
@@ -77,8 +78,6 @@ RSpec.describe 'Creating a Snippet' do
         expect(mutation_response['snippet']).to be_nil
       end
 
-      it_behaves_like 'spam flag is present'
-
       context 'when snippet_spam flag is disabled' do
         before do
           stub_feature_flags(snippet_spam: false)
@@ -113,15 +112,24 @@ RSpec.describe 'Creating a Snippet' do
       end
 
       context 'when action is invalid' do
-        let(:file_1) { { filePath: 'example_file1' }}
+        let(:file_1) { { filePath: 'example_file1' } }
 
         it_behaves_like 'a mutation that returns errors in the response', errors: ['Snippet actions have invalid data']
         it_behaves_like 'does not create snippet'
       end
 
       it_behaves_like 'snippet edit usage data counters'
-      it_behaves_like 'spam flag is present'
-      it_behaves_like 'can raise spam flag' do
+
+      it_behaves_like 'a mutation which can mutate a spammable' do
+        let(:captcha_response) { 'abc123' }
+        let(:spam_log_id) { 1234 }
+        let(:spam_mutation_vars) do
+          {
+            captcha_response: captcha_response,
+            spam_log_id: spam_log_id
+          }
+        end
+
         let(:service) { Snippets::CreateService }
       end
     end
@@ -163,9 +171,6 @@ RSpec.describe 'Creating a Snippet' do
 
       it_behaves_like 'a mutation that returns errors in the response', errors: ["Title can't be blank"]
       it_behaves_like 'does not create snippet'
-      it_behaves_like 'can raise spam flag' do
-        let(:service) { Snippets::CreateService }
-      end
     end
 
     context 'when there non ActiveRecord errors' do

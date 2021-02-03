@@ -16,6 +16,7 @@ RSpec.describe 'Updating a Snippet' do
   let(:updated_file) { 'CHANGELOG' }
   let(:deleted_file) { 'README' }
   let(:snippet_gid) { GitlabSchema.id_from_object(snippet).to_s }
+  let(:spam_mutation_vars) { {} }
   let(:mutation_vars) do
     {
       id: snippet_gid,
@@ -26,7 +27,7 @@ RSpec.describe 'Updating a Snippet' do
         { action: :update, filePath: updated_file, content: updated_content },
         { action: :delete, filePath: deleted_file }
       ]
-    }
+    }.merge(spam_mutation_vars)
   end
 
   let(:mutation) do
@@ -81,12 +82,6 @@ RSpec.describe 'Updating a Snippet' do
         end
       end
 
-      it_behaves_like 'can raise spam flag' do
-        let(:service) { Snippets::UpdateService }
-      end
-
-      it_behaves_like 'spam flag is present'
-
       context 'when snippet_spam flag is disabled' do
         before do
           stub_feature_flags(snippet_spam: false)
@@ -127,11 +122,19 @@ RSpec.describe 'Updating a Snippet' do
             expect(mutation_response['snippet']['visibilityLevel']).to eq('private')
           end
         end
+      end
 
-        it_behaves_like 'spam flag is present'
-        it_behaves_like 'can raise spam flag' do
-          let(:service) { Snippets::UpdateService }
+      it_behaves_like 'a mutation which can mutate a spammable' do
+        let(:captcha_response) { 'abc123' }
+        let(:spam_log_id) { 1234 }
+        let(:spam_mutation_vars) do
+          {
+            captcha_response: captcha_response,
+            spam_log_id: spam_log_id
+          }
         end
+
+        let(:service) { Snippets::UpdateService }
       end
 
       def blob_at(filename)

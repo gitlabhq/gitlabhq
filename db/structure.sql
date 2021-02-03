@@ -16129,7 +16129,7 @@ CREATE TABLE projects (
     repository_storage character varying DEFAULT 'default'::character varying NOT NULL,
     repository_read_only boolean,
     request_access_enabled boolean DEFAULT true NOT NULL,
-    has_external_wiki boolean DEFAULT false,
+    has_external_wiki boolean,
     ci_config_path character varying,
     lfs_enabled boolean,
     description_html text,
@@ -19661,9 +19661,6 @@ ALTER TABLE ONLY chat_teams
 
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
-
-ALTER TABLE projects
-    ADD CONSTRAINT check_421d399b70 CHECK ((has_external_wiki IS NOT NULL)) NOT VALID;
 
 ALTER TABLE group_import_states
     ADD CONSTRAINT check_cda75c7c3f CHECK ((user_id IS NOT NULL)) NOT VALID;
