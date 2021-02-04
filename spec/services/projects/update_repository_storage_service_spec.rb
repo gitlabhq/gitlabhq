@@ -59,13 +59,18 @@ RSpec.describe Projects::UpdateRepositoryStorageService do
       end
 
       context 'when the filesystems are the same' do
-        let(:destination) { project.repository_storage }
+        before do
+          expect(Gitlab::GitalyClient).to receive(:filesystem_id).twice.and_return(SecureRandom.uuid)
+        end
 
-        it 'bails out and does nothing' do
+        it 'updates the database without trying to move the repostory', :aggregate_failures do
           result = subject.execute
+          project.reload
 
-          expect(result).to be_error
-          expect(result.message).to match(/SameFilesystemError/)
+          expect(result).to be_success
+          expect(project).not_to be_repository_read_only
+          expect(project.repository_storage).to eq('test_second_storage')
+          expect(project.project_repository.shard_name).to eq('test_second_storage')
         end
       end
 

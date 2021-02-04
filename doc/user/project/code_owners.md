@@ -231,6 +231,7 @@ the rules for "Groups" and "Documentation" sections:
 #### Optional Code Owners Sections **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232995) in GitLab Premium 13.8 behind a feature flag, enabled by default.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53227) in GitLab 13.9.
 
 To make a certain section optional, add a code owners section prepended with the
 caret `^` character. Approvals from owners listed in the section are **not** required. For example:

@@ -54,13 +54,18 @@ RSpec.describe Snippets::UpdateRepositoryStorageService do
     end
 
     context 'when the filesystems are the same' do
-      let(:destination) { snippet.repository_storage }
+      before do
+        expect(Gitlab::GitalyClient).to receive(:filesystem_id).twice.and_return(SecureRandom.uuid)
+      end
 
-      it 'bails out and does nothing' do
+      it 'updates the database without trying to move the repostory', :aggregate_failures do
         result = subject.execute
+        snippet.reload
 
-        expect(result).to be_error
-        expect(result.message).to match(/SameFilesystemError/)
+        expect(result).to be_success
+        expect(snippet).not_to be_repository_read_only
+        expect(snippet.repository_storage).to eq(destination)
+        expect(snippet.snippet_repository.shard_name).to eq(destination)
       end
     end
 
