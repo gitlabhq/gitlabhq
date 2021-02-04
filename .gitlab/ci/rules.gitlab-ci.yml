@@ -879,6 +879,7 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-master-schedule-2-hourly
+      allow_failure: true
     - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:master-schedule-nightly--code-backstage:

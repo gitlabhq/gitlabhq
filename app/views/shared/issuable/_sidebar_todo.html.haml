@@ -6,7 +6,7 @@
 - button_icon = has_todo ? todo_button_data[:mark_icon] : todo_button_data[:todo_icon]
 
 %button.issuable-todo-btn.js-issuable-todo{ type: 'button',
-  class: (is_collapsed ? 'btn-blank sidebar-collapsed-icon dont-change-state has-tooltip' : 'btn btn-default issuable-header-btn float-right'),
+  class: (is_collapsed ? 'btn-blank sidebar-collapsed-icon dont-change-state has-tooltip' : 'gl-button btn btn-default issuable-header-btn float-right'),
   title: button_title,
   'aria-label' => button_title,
   data: todo_button_data }

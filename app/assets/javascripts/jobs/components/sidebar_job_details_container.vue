@@ -3,6 +3,7 @@ import { mapState } from 'vuex';
 import { __, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import DetailRow from './sidebar_detail_row.vue';
 
 export default {
@@ -11,13 +12,6 @@ export default {
     DetailRow,
   },
   mixins: [timeagoMixin],
-  props: {
-    runnerHelpUrl: {
-      type: String,
-      required: false,
-      default: '',
-    },
-  },
   computed: {
     ...mapState(['job']),
     coverage() {
@@ -50,6 +44,11 @@ export default {
     },
     queued() {
       return timeIntervalInWords(this.job.queued);
+    },
+    runnerHelpUrl() {
+      return helpPagePath('ci/runners/README.html', {
+        anchor: 'set-maximum-job-timeout-for-a-runner',
+      });
     },
     runnerId() {
       return `${this.job.runner.description} (#${this.job.runner.id})`;

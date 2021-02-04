@@ -402,13 +402,55 @@ RSpec.describe Tooling::Danger::Helper do
     end
   end
 
-  describe '#security_mr?' do
-    it 'returns false when `gitlab_helper` is unavailable' do
+  describe '#mr_title' do
+    it 'returns "" when `gitlab_helper` is unavailable' do
       expect(helper).to receive(:gitlab_helper).and_return(nil)
 
-      expect(helper).not_to be_security_mr
+      expect(helper.mr_title).to eq('')
     end
 
+    it 'returns the MR title when `gitlab_helper` is available' do
+      mr_title = 'My MR title'
+      expect(fake_gitlab).to receive(:mr_json)
+        .and_return('title' => mr_title)
+
+      expect(helper.mr_title).to eq(mr_title)
+    end
+  end
+
+  describe '#mr_web_url' do
+    it 'returns "" when `gitlab_helper` is unavailable' do
+      expect(helper).to receive(:gitlab_helper).and_return(nil)
+
+      expect(helper.mr_web_url).to eq('')
+    end
+
+    it 'returns the MR web_url when `gitlab_helper` is available' do
+      mr_web_url = 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1'
+      expect(fake_gitlab).to receive(:mr_json)
+        .and_return('web_url' => mr_web_url)
+
+      expect(helper.mr_web_url).to eq(mr_web_url)
+    end
+  end
+
+  describe '#mr_target_branch' do
+    it 'returns "" when `gitlab_helper` is unavailable' do
+      expect(helper).to receive(:gitlab_helper).and_return(nil)
+
+      expect(helper.mr_target_branch).to eq('')
+    end
+
+    it 'returns the MR web_url when `gitlab_helper` is available' do
+      mr_target_branch = 'main'
+      expect(fake_gitlab).to receive(:mr_json)
+        .and_return('target_branch' => mr_target_branch)
+
+      expect(helper.mr_target_branch).to eq(mr_target_branch)
+    end
+  end
+
+  describe '#security_mr?' do
     it 'returns false when on a normal merge request' do
       expect(fake_gitlab).to receive(:mr_json)
         .and_return('web_url' => 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1')
@@ -425,12 +467,6 @@ RSpec.describe Tooling::Danger::Helper do
   end
 
   describe '#draft_mr?' do
-    it 'returns false when `gitlab_helper` is unavailable' do
-      expect(helper).to receive(:gitlab_helper).and_return(nil)
-
-      expect(helper).not_to be_draft_mr
-    end
-
     it 'returns true for a draft MR' do
       expect(fake_gitlab).to receive(:mr_json)
         .and_return('title' => 'Draft: My MR title')
@@ -447,12 +483,6 @@ RSpec.describe Tooling::Danger::Helper do
   end
 
   describe '#cherry_pick_mr?' do
-    it 'returns false when `gitlab_helper` is unavailable' do
-      expect(helper).to receive(:gitlab_helper).and_return(nil)
-
-      expect(helper).not_to be_cherry_pick_mr
-    end
-
     context 'when MR title does not mention a cherry-pick' do
       it 'returns false' do
         expect(fake_gitlab).to receive(:mr_json)
@@ -474,6 +504,46 @@ RSpec.describe Tooling::Danger::Helper do
 
           expect(helper).to be_cherry_pick_mr
         end
+      end
+    end
+  end
+
+  describe '#run_all_rspec_mr?' do
+    context 'when MR title does not mention RUN ALL RSPEC' do
+      it 'returns false' do
+        expect(fake_gitlab).to receive(:mr_json)
+          .and_return('title' => 'Add feature xyz')
+
+        expect(helper).not_to be_run_all_rspec_mr
+      end
+    end
+
+    context 'when MR title mentions RUN ALL RSPEC' do
+      it 'returns true' do
+        expect(fake_gitlab).to receive(:mr_json)
+          .and_return('title' => 'Add feature xyz RUN ALL RSPEC')
+
+        expect(helper).to be_run_all_rspec_mr
+      end
+    end
+  end
+
+  describe '#run_as_if_foss_mr?' do
+    context 'when MR title does not mention RUN AS-IF-FOSS' do
+      it 'returns false' do
+        expect(fake_gitlab).to receive(:mr_json)
+          .and_return('title' => 'Add feature xyz')
+
+        expect(helper).not_to be_run_as_if_foss_mr
+      end
+    end
+
+    context 'when MR title mentions RUN AS-IF-FOSS' do
+      it 'returns true' do
+        expect(fake_gitlab).to receive(:mr_json)
+          .and_return('title' => 'Add feature xyz RUN AS-IF-FOSS')
+
+        expect(helper).to be_run_as_if_foss_mr
       end
     end
   end

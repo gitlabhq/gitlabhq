@@ -8,7 +8,9 @@ RSpec.describe Tooling::Danger::FeatureFlag do
   include DangerSpecHelper
 
   let(:added_files) { nil }
-  let(:fake_git) { double('fake-git', added_files: added_files) }
+  let(:modified_files) { nil }
+  let(:deleted_files) { nil }
+  let(:fake_git) { double('fake-git', added_files: added_files, modified_files: modified_files, deleted_files: deleted_files) }
 
   let(:mr_labels) { nil }
   let(:mr_json) { nil }
@@ -24,29 +26,72 @@ RSpec.describe Tooling::Danger::FeatureFlag do
   subject(:feature_flag) { fake_danger.new(git: fake_git, gitlab: fake_gitlab, helper: fake_helper) }
 
   describe '#feature_flag_files' do
-    context 'added files contain several feature flags' do
-      let(:added_files) do
-        [
-          'config/feature_flags/development/entry.yml',
-          'ee/config/feature_flags/ops/entry.yml'
-        ]
-      end
+    let(:feature_flag_files) do
+      [
+        'config/feature_flags/development/entry.yml',
+        'ee/config/feature_flags/ops/entry.yml'
+      ]
+    end
 
+    let(:other_files) do
+      [
+        'app/models/model.rb',
+        'app/assets/javascripts/file.js'
+      ]
+    end
+
+    shared_examples 'an array of Found objects' do |change_type|
       it 'returns an array of Found objects' do
-        expect(feature_flag.feature_flag_files).to contain_exactly(an_instance_of(described_class::Found), an_instance_of(described_class::Found))
+        expect(feature_flag.feature_flag_files(change_type: change_type)).to contain_exactly(an_instance_of(described_class::Found), an_instance_of(described_class::Found))
+        expect(feature_flag.feature_flag_files(change_type: change_type).map(&:path)).to eq(feature_flag_files)
       end
     end
 
-    context 'added files do not contain a feature_flag' do
-      let(:added_files) do
-        [
-          'app/models/model.rb',
-          'app/assets/javascripts/file.js'
-        ]
+    shared_examples 'an empty array' do |change_type|
+      it 'returns an array of Found objects' do
+        expect(feature_flag.feature_flag_files(change_type: change_type)).to be_empty
+      end
+    end
+
+    describe 'retrieves added feature flag files' do
+      context 'with added added feature flag files' do
+        let(:added_files) { feature_flag_files }
+
+        include_examples 'an array of Found objects', :added
       end
 
-      it 'returns the feature flag file path' do
-        expect(feature_flag.feature_flag_files).to be_empty
+      context 'without added added feature flag files' do
+        let(:added_files) { other_files }
+
+        include_examples 'an empty array', :added
+      end
+    end
+
+    describe 'retrieves modified feature flag files' do
+      context 'with modified modified feature flag files' do
+        let(:modified_files) { feature_flag_files }
+
+        include_examples 'an array of Found objects', :modified
+      end
+
+      context 'without modified modified feature flag files' do
+        let(:modified_files) { other_files }
+
+        include_examples 'an empty array', :modified
+      end
+    end
+
+    describe 'retrieves deleted feature flag files' do
+      context 'with deleted deleted feature flag files' do
+        let(:deleted_files) { feature_flag_files }
+
+        include_examples 'an array of Found objects', :deleted
+      end
+
+      context 'without deleted deleted feature flag files' do
+        let(:deleted_files) { other_files }
+
+        include_examples 'an empty array', :deleted
       end
     end
   end

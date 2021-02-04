@@ -114,8 +114,7 @@ describe('Reviewer component', () => {
         editable: true,
       });
 
-      expect(wrapper.findAll('.user-item').length).toBe(users.length);
-      expect(wrapper.find('.user-list-more').exists()).toBe(false);
+      expect(wrapper.findAll('[data-testid="reviewer"]').length).toBe(users.length);
     });
 
     it('shows sorted reviewer where "can merge" users are sorted first', () => {
@@ -144,10 +143,10 @@ describe('Reviewer component', () => {
         users,
       });
 
-      const userItems = wrapper.findAll('.user-list .user-item a');
+      const userItems = wrapper.findAll('[data-testid="reviewer"]');
 
       expect(userItems.length).toBe(3);
-      expect(userItems.at(0).attributes('title')).toBe(users[2].name);
+      expect(userItems.at(0).find('a').attributes('title')).toBe(users[2].name);
     });
 
     it('passes the sorted reviewers to the collapsed-reviewer-list', () => {

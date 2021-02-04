@@ -23918,6 +23918,9 @@ msgstr ""
 msgid "Re-authentication required"
 msgstr ""
 
+msgid "Re-request review"
+msgstr ""
+
 msgid "Re-verification interval"
 msgstr ""
 
@@ -24735,6 +24738,9 @@ msgid "Requested %{time_ago}"
 msgstr ""
 
 msgid "Requested design version does not exist."
+msgstr ""
+
+msgid "Requested review"
 msgstr ""
 
 msgid "Requested states are invalid"

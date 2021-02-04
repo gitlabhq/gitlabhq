@@ -54,11 +54,6 @@ export default {
       required: false,
       default: null,
     },
-    runnerHelpUrl: {
-      type: String,
-      required: false,
-      default: null,
-    },
     deploymentHelpUrl: {
       type: String,
       required: false,
@@ -250,7 +245,6 @@ export default {
           v-if="shouldRenderSharedRunnerLimitWarning"
           :quota-used="job.runners.quota.used"
           :quota-limit="job.runners.quota.limit"
-          :runners-path="runnerHelpUrl"
           :project-path="projectPath"
           :subscriptions-more-minutes-url="subscriptionsMoreMinutesUrl"
         />
@@ -330,7 +324,6 @@ export default {
         'right-sidebar-collapsed': !isSidebarOpen,
       }"
       :artifact-help-url="artifactHelpUrl"
-      :runner-help-url="runnerHelpUrl"
       data-testid="job-sidebar"
     />
   </div>

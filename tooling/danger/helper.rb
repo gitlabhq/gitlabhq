@@ -215,28 +215,46 @@ module Tooling
         usernames.map { |u| Tooling::Danger::Teammate.new('username' => u) }
       end
 
-      def draft_mr?
-        return false unless gitlab_helper
+      def mr_title
+        return '' unless gitlab_helper
 
-        TitleLinting.has_draft_flag?(gitlab_helper.mr_json['title'])
+        gitlab_helper.mr_json['title']
+      end
+
+      def mr_web_url
+        return '' unless gitlab_helper
+
+        gitlab_helper.mr_json['web_url']
+      end
+
+      def mr_target_branch
+        return '' unless gitlab_helper
+
+        gitlab_helper.mr_json['target_branch']
+      end
+
+      def draft_mr?
+        TitleLinting.has_draft_flag?(mr_title)
       end
 
       def security_mr?
-        return false unless gitlab_helper
-
-        gitlab_helper.mr_json['web_url'].include?('/gitlab-org/security/')
+        mr_web_url.include?('/gitlab-org/security/')
       end
 
       def cherry_pick_mr?
-        return false unless gitlab_helper
+        TitleLinting.has_cherry_pick_flag?(mr_title)
+      end
 
-        /cherry[\s-]*pick/i.match?(gitlab_helper.mr_json['title'])
+      def run_all_rspec_mr?
+        TitleLinting.has_run_all_rspec_flag?(mr_title)
+      end
+
+      def run_as_if_foss_mr?
+        TitleLinting.has_run_as_if_foss_flag?(mr_title)
       end
 
       def stable_branch?
-        return false unless gitlab_helper
-
-        /\A\d+-\d+-stable-ee/i.match?(gitlab_helper.mr_json['target_branch'])
+        /\A\d+-\d+-stable-ee/i.match?(mr_target_branch)
       end
 
       def mr_has_labels?(*labels)

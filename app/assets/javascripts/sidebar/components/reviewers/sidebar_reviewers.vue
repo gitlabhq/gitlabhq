@@ -83,6 +83,9 @@ export default {
           return new Flash(__('Error occurred when saving reviewers'));
         });
     },
+    requestReview(data) {
+      this.mediator.requestReview(data);
+    },
   },
 };
 </script>
@@ -101,6 +104,7 @@ export default {
       :editable="store.editable"
       :issuable-type="issuableType"
       class="value"
+      @request-review="requestReview"
     />
   </div>
 </template>

@@ -41,11 +41,6 @@ export default {
       required: false,
       default: '',
     },
-    runnerHelpUrl: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   computed: {
     ...mapGetters(['hasForwardDeploymentFailure']),
@@ -135,7 +130,7 @@ export default {
             <gl-icon :size="14" name="external-link" />
           </gl-link>
         </div>
-        <job-sidebar-details-container :runner-help-url="runnerHelpUrl" />
+        <job-sidebar-details-container />
         <artifacts-block v-if="hasArtifact" :artifact="job.artifact" :help-url="artifactHelpUrl" />
         <trigger-block v-if="hasTriggers" :trigger="job.trigger" />
         <commit-block

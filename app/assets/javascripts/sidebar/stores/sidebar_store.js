@@ -96,6 +96,14 @@ export default class SidebarStore {
     }
   }
 
+  updateReviewer(id) {
+    const reviewer = this.findReviewer({ id });
+
+    if (reviewer) {
+      reviewer.reviewed = false;
+    }
+  }
+
   findAssignee(findAssignee) {
     return this.assignees.find(({ id }) => id === findAssignee.id);
   }
