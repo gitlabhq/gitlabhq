@@ -7,6 +7,10 @@ RSpec.describe Projects::ProjectMembersController do
   let(:group) { create(:group, :public) }
   let(:project) { create(:project, :public) }
 
+  around do |example|
+    travel_to DateTime.new(2019, 4, 1) { example.run }
+  end
+
   describe 'GET index' do
     it 'has the project_members address with a 200 status code' do
       get :index, params: { namespace_id: project.namespace, project_id: project }
