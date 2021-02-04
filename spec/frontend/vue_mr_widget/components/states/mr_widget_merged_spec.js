@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
 import { getByRole } from '@testing-library/dom';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import mergedComponent from '~/vue_merge_request_widget/components/states/mr_widget_merged.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import modalEventHub from '~/projects/commit/event_hub';

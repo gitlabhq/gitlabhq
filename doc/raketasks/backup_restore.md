@@ -16,7 +16,7 @@ of GitLab on which it was created. The best way to migrate your repositories
 from one server to another is through backup restore.
 
 WARNING:
-GitLab doesn't back up items that aren't stored in the filesystem. If you're
+GitLab doesn't back up items that aren't stored in the file system. If you're
 using [object storage](../administration/object_storage.md), be sure to enable
 backups with your object storage provider, if desired.
 
@@ -1042,12 +1042,12 @@ is being discussed in [issue #17517](https://gitlab.com/gitlab-org/gitlab/-/issu
 
 If your GitLab server contains a lot of Git repository data, you may find the
 GitLab backup script to be too slow. In this case you can consider using
-filesystem snapshots as part of your backup strategy.
+file system snapshots as part of your backup strategy.
 
 Example: Amazon EBS
 
 > A GitLab server using Omnibus GitLab hosted on Amazon AWS.
-> An EBS drive containing an ext4 filesystem is mounted at `/var/opt/gitlab`.
+> An EBS drive containing an ext4 file system is mounted at `/var/opt/gitlab`.
 > In this case you could make an application backup by taking an EBS snapshot.
 > The backup includes all repositories, uploads and PostgreSQL data.
 
@@ -1055,7 +1055,7 @@ Example: LVM snapshots + rsync
 
 > A GitLab server using Omnibus GitLab, with an LVM logical volume mounted at `/var/opt/gitlab`.
 > Replicating the `/var/opt/gitlab` directory using rsync would not be reliable because too many files would change while rsync is running.
-> Instead of rsync-ing `/var/opt/gitlab`, we create a temporary LVM snapshot, which we mount as a read-only filesystem at `/mnt/gitlab_backup`.
+> Instead of rsync-ing `/var/opt/gitlab`, we create a temporary LVM snapshot, which we mount as a read-only file system at `/mnt/gitlab_backup`.
 > Now we can have a longer running rsync job which creates a consistent replica on the remote server.
 > The replica includes all repositories, uploads and PostgreSQL data.
 
@@ -1370,7 +1370,7 @@ To get your registry working again:
 sudo chown -R registry:registry /var/opt/gitlab/gitlab-rails/shared/registry/docker
 ```
 
-If you changed the default filesystem location for the registry, run `chown`
+If you changed the default file system location for the registry, run `chown`
 against your custom location, instead of `/var/opt/gitlab/gitlab-rails/shared/registry/docker`.
 
 ### Backup fails to complete with Gzip error

@@ -6,6 +6,12 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import TextEditor from '~/pipeline_editor/components/text_editor.vue';
 
 import httpStatusCodes from '~/lib/utils/http_status';
+
+import { COMMIT_SUCCESS, COMMIT_FAILURE, LOAD_FAILURE_UNKNOWN } from '~/pipeline_editor/constants';
+import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
+import getCiConfigData from '~/pipeline_editor/graphql/queries/ci_config.graphql';
+import PipelineEditorApp from '~/pipeline_editor/pipeline_editor_app.vue';
+import PipelineEditorHome from '~/pipeline_editor/pipeline_editor_home.vue';
 import {
   mockCiConfigPath,
   mockCiConfigQueryResponse,
@@ -13,12 +19,6 @@ import {
   mockDefaultBranch,
   mockProjectFullPath,
 } from './mock_data';
-
-import { COMMIT_SUCCESS, COMMIT_FAILURE, LOAD_FAILURE_UNKNOWN } from '~/pipeline_editor/constants';
-import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
-import getCiConfigData from '~/pipeline_editor/graphql/queries/ci_config.graphql';
-import PipelineEditorApp from '~/pipeline_editor/pipeline_editor_app.vue';
-import PipelineEditorHome from '~/pipeline_editor/pipeline_editor_home.vue';
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);

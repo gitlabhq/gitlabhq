@@ -2,10 +2,10 @@
 import { GlLoadingIcon, GlTabs, GlTab } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 import CiLint from './lint/ci_lint.vue';
 import EditorTab from './ui/editor_tab.vue';
 import TextEditor from './text_editor.vue';
-import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 
 export default {
   i18n: {

@@ -69,7 +69,7 @@ Examples of both configurations can be found here:
 The [OpenAPI Specification](https://www.openapis.org/) (formerly the Swagger Specification) is an
 API description format for REST APIs. This section shows you how to configure API fuzzing by using
 an OpenAPI specification to provide information about the target API to test. OpenAPI specifications
-are provided as a filesystem resource or URL.
+are provided as a file system resource or URL.
 
 Follow these steps to configure API fuzzing in GitLab with an OpenAPI specification:
 

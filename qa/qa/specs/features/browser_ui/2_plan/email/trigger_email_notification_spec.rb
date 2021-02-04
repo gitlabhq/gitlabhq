@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', :orchestrated, :smtp do
+  RSpec.describe 'Plan', :orchestrated, :smtp, :requires_admin do
     describe 'Email Notification' do
       include Support::Api
 
@@ -16,7 +16,12 @@ module QA
       end
 
       before do
+        Runtime::Feature.enable('vue_project_members_list', project: project)
         Flow::Login.sign_in
+      end
+
+      after do
+        Runtime::Feature.disable('vue_project_members_list', project: project)
       end
 
       it 'is received by a user for project invitation', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/676' do
@@ -27,7 +32,7 @@ module QA
           member_settings.add_member(user.username)
         end
 
-        expect(page).to have_content(/@#{user.username}(\n| )?Given access/)
+        expect(page).to have_content("@#{user.username}")
 
         mailhog_items = mailhog_json.dig('items')
 

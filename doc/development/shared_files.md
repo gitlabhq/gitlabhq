@@ -32,7 +32,7 @@ disk in a temporary file so you can perform some checks on it. When the checks
 pass, you make the file official. In scenarios like this please follow these
 rules:
 
-- Store the temporary file under `shared/tmp`, i.e. on the same filesystem you
+- Store the temporary file under `shared/tmp`, i.e. on the same file system you
   want the official file to be on.
 - Use move/rename operations when operating on the file instead of copy
   operations where possible, because renaming a file is much faster than

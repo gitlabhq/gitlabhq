@@ -194,7 +194,7 @@ from [owasp.org](https://owasp.org/).
   administrator via SSH, and then back out to the **secondary** node in the same manner.
   In particular, this includes the PostgreSQL replication credentials and a secret
   key (`db_key_base`) which is used to decrypt certain columns in the database.
-  The `db_key_base` secret is stored unencrypted on the filesystem, in
+  The `db_key_base` secret is stored unencrypted on the file system, in
   `/etc/gitlab/gitlab-secrets.json`, along with a number of other secrets. There is
   no at-rest protection for them.
 
@@ -217,7 +217,7 @@ from [owasp.org](https://owasp.org/).
 
 - **Secondary** nodes and **primary** nodes interact via HTTP/HTTPS (secured with JSON web
   tokens) and via PostgreSQL streaming replication.
-- Within a **primary** node or **secondary** node, the SSOT is the filesystem and the database
+- Within a **primary** node or **secondary** node, the SSOT is the file system and the database
   (including Geo tracking database on **secondary** node). The various internal components
   are orchestrated to make alterations to these stores.
 
@@ -231,7 +231,7 @@ from [owasp.org](https://owasp.org/).
 
 ### What data is or may need to be encrypted and what key management requirements have been defined?
 
-- Neither **primary** nodes or **secondary** nodes encrypt Git repository or filesystem data at
+- Neither **primary** nodes or **secondary** nodes encrypt Git repository or file system data at
   rest. A subset of database columns are encrypted at rest using the `db_otp_key`.
 - A static secret shared across all hosts in a GitLab deployment.
 - In transit, data should be encrypted, although the application does permit
@@ -287,5 +287,5 @@ from [owasp.org](https://owasp.org/).
 
 ### What application auditing requirements have been defined? How are audit and debug logs accessed, stored, and secured?
 
-- Structured JSON log is written to the filesystem, and can also be ingested
+- Structured JSON log is written to the file system, and can also be ingested
   into a Kibana installation for further analysis.

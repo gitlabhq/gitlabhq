@@ -1,0 +1,5 @@
+---
+title: Re-add migration to fix invalid merge request index
+merge_request: 53042
+author:
+type: other

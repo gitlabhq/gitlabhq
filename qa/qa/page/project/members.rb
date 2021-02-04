@@ -11,10 +11,6 @@ module QA
           element :invite_member_button
         end
 
-        view 'app/views/projects/project_members/_team.html.haml' do
-          element :members_list
-        end
-
         view 'app/views/projects/project_members/index.html.haml' do
           element :invite_group_tab
           element :groups_list_tab
@@ -25,9 +21,16 @@ module QA
           element :invite_group_button
         end
 
-        view 'app/views/shared/members/_group.html.haml' do
+        view 'app/assets/javascripts/pages/projects/project_members/index.js' do
           element :group_row
+        end
+
+        view 'app/assets/javascripts/members/components/action_buttons/remove_group_link_button.vue' do
           element :delete_group_access_link
+        end
+
+        view 'app/assets/javascripts/members/components/modals/remove_group_link_modal.vue' do
+          element :remove_group_link_modal_content
         end
 
         def select_group(group_name)
@@ -50,10 +53,13 @@ module QA
         def remove_group(group_name)
           click_element :invite_group_tab
           click_element :groups_list_tab
-          page.accept_alert do
-            within_element(:group_row, text: group_name) do
-              click_element :delete_group_access_link
-            end
+
+          within_element(:group_row, text: group_name) do
+            click_element :delete_group_access_link
+          end
+
+          within_element(:remove_group_link_modal_content) do
+            click_button 'Remove group'
           end
         end
       end

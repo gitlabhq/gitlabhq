@@ -35,11 +35,13 @@ export default {
     },
     allowLabelEdit: {
       type: Boolean,
-      required: true,
+      required: false,
+      default: false,
     },
     allowLabelCreate: {
       type: Boolean,
-      required: true,
+      required: false,
+      default: false,
     },
     allowMultiselect: {
       type: Boolean,
@@ -48,7 +50,8 @@ export default {
     },
     allowScopedLabels: {
       type: Boolean,
-      required: true,
+      required: false,
+      default: false,
     },
     variant: {
       type: String,

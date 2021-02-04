@@ -35,21 +35,21 @@ verification methods:
 | Git      | Object pools for forked project deduplication   | Geo with Gitaly                       | _Not implemented_      |
 | Git      | Project Snippets                                | Geo with Gitaly                       | _Not implemented_      |
 | Git      | Personal Snippets                               | Geo with Gitaly                       | _Not implemented_      |
-| Blobs    | User uploads _(filesystem)_                     | Geo with API                          | _Not implemented_      |
+| Blobs    | User uploads _(file system)_                    | Geo with API                          | _Not implemented_      |
 | Blobs    | User uploads _(object storage)_                 | Geo with API/Managed (*2*)            | _Not implemented_      |
-| Blobs    | LFS objects _(filesystem)_                      | Geo with API                          | _Not implemented_      |
+| Blobs    | LFS objects _(file system)_                     | Geo with API                          | _Not implemented_      |
 | Blobs    | LFS objects _(object storage)_                  | Geo with API/Managed (*2*)            | _Not implemented_      |
-| Blobs    | CI job artifacts _(filesystem)_                 | Geo with API                          | _Not implemented_      |
+| Blobs    | CI job artifacts _(file system)_                | Geo with API                          | _Not implemented_      |
 | Blobs    | CI job artifacts _(object storage)_             | Geo with API/Managed (*2*)            | _Not implemented_      |
-| Blobs    | Archived CI build traces _(filesystem)_         | Geo with API                          | _Not implemented_      |
+| Blobs    | Archived CI build traces _(file system)_        | Geo with API                          | _Not implemented_      |
 | Blobs    | Archived CI build traces _(object storage)_     | Geo with API/Managed (*2*)            | _Not implemented_      |
-| Blobs    | Container registry _(filesystem)_               | Geo with API/Docker API               | _Not implemented_      |
+| Blobs    | Container registry _(file system)_              | Geo with API/Docker API               | _Not implemented_      |
 | Blobs    | Container registry _(object storage)_           | Geo with API/Managed/Docker API (*2*) | _Not implemented_      |
-| Blobs    | Package registry _(filesystem)_                 | Geo with API                          | _Not implemented_      |
+| Blobs    | Package registry _(file system)_                | Geo with API                          | _Not implemented_      |
 | Blobs    | Package registry _(object storage)_             | Geo with API/Managed (*2*)            | _Not implemented_      |
-| Blobs    | Versioned Terraform State _(filesystem)_        | Geo with API                          | _Not implemented_      |
+| Blobs    | Versioned Terraform State _(file system)_       | Geo with API                          | _Not implemented_      |
 | Blobs    | Versioned Terraform State _(object storage)_    | Geo with API/Managed (*2*)            | _Not implemented_      |
-| Blobs    | External Merge Request Diffs _(filesystem)_     | Geo with API                          | _Not implemented_      |
+| Blobs    | External Merge Request Diffs _(file system)_    | Geo with API                          | _Not implemented_      |
 | Blobs    | External Merge Request Diffs _(object storage)_ | Geo with API/Managed (*2*)            | _Not implemented_      |
 
 - (*1*): Redis replication can be used as part of HA with Redis sentinel. It's not used between Geo nodes.
@@ -63,8 +63,8 @@ is responsible for allowing access and operations on the locally stored Git repo
 on a machine with a single disk, multiple disks mounted as a single mount-point (like with a RAID array),
 or using LVM.
 
-It requires no special filesystem and can work with NFS or a mounted Storage Appliance (there may be
-performance limitations when using a remote filesystem).
+It requires no special file system and can work with NFS or a mounted Storage Appliance (there may be
+performance limitations when using a remote file system).
 
 Communication is done via Gitaly's own gRPC API. There are three possible ways of synchronization:
 
@@ -88,13 +88,13 @@ Both types will be synced to a secondary node.
 
 GitLab stores files and blobs such as Issue attachments or LFS objects into either:
 
-- The filesystem in a specific location.
+- The file system in a specific location.
 - An [Object Storage](../../object_storage.md) solution. Object Storage solutions can be:
   - Cloud based like Amazon S3 Google Cloud Storage.
   - Hosted by you (like MinIO).
   - A Storage Appliance that exposes an Object Storage-compatible API.
 
-When using the filesystem store instead of Object Storage, you need to use network mounted filesystems
+When using the file system store instead of Object Storage, you need to use network mounted file systems
 to run GitLab when using more than one server.
 
 With respect to replication and verification:

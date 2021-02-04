@@ -557,11 +557,11 @@ supported by consolidated configuration form, refer to the following guides:
 | [Terraform state files](terraform_state.md#using-object-storage) | Yes |
 | [GitLab Pages content](pages/index.md#using-object-storage) | Yes |
 
-### Other alternatives to filesystem storage
+### Other alternatives to file system storage
 
 If you're working to [scale out](reference_architectures/index.md) your GitLab implementation,
 or add fault tolerance and redundancy, you may be
-looking at removing dependencies on block or network filesystems.
+looking at removing dependencies on block or network file systems.
 See the following additional guides and
 [note that Pages requires disk storage](#gitlab-pages-requires-nfs):
 

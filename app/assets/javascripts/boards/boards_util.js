@@ -1,6 +1,6 @@
 import { sortBy } from 'lodash';
-import { ListType, NOT_FILTER } from './constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { ListType, NOT_FILTER } from './constants';
 
 export function getMilestone() {
   return null;

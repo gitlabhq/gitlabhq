@@ -411,7 +411,7 @@ to generate a new key. You'll have to update the other repository with the new
 key to keep the mirror running.
 
 NOTE:
-The generated keys are stored in the GitLab database, not in the filesystem. Therefore,
+The generated keys are stored in the GitLab database, not in the file system. Therefore,
 SSH public key authentication for mirrors cannot be used in a pre-receive hook.
 
 ## Forcing an update **(FREE)**

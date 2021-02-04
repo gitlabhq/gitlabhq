@@ -24,7 +24,7 @@ The Admin Area is made up of the following sections:
 | Section                                        | Description                                                                                                                                                                                                                                                                              |
 |:-----------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **{overview}** [Overview](#overview-section)   | View your GitLab [Dashboard](#admin-dashboard), and administer [projects](#administering-projects), [users](#administering-users), [groups](#administering-groups), [jobs](#administering-jobs), [runners](#administering-runners), and [Gitaly servers](#administering-gitaly-servers). |
-| **{monitor}** Monitoring                       | View GitLab [system information](#system-info), and information on [background jobs](#background-jobs), [logs](#logs), [health checks](monitoring/health_check.md), [requests profiles](#requests-profiles), and [audit events](#audit-events).                                  |
+| **{monitor}** Monitoring                       | View GitLab [system information](#system-information), and information on [background jobs](#background-jobs), [logs](#logs), [health checks](monitoring/health_check.md), [requests profiles](#requests-profiles), and [audit events](#audit-events).                                   |
 | **{messages}** Messages                        | Send and manage [broadcast messages](broadcast_messages.md) for your users.                                                                                                                                                                                                              |
 | **{hook}** System Hooks                        | Configure [system hooks](../../system_hooks/system_hooks.md) for many events.                                                                                                                                                                                                            |
 | **{applications}** Applications                | Create system [OAuth applications](../../integration/oauth_provider.md) for integrations with other services.                                                                                                                                                                            |
@@ -37,7 +37,7 @@ The Admin Area is made up of the following sections:
 | **{lock}** Credentials **(ULTIMATE SELF)**     | View [credentials](credentials_inventory.md) that can be used to access your instance.                                                                                                                                                                                                   |
 | **{template}** Service Templates               | Create [service templates](../project/integrations/services_templates.md) for projects.                                                                                                                                                                                                  |
 | **{labels}** Labels                            | Create and maintain [labels](labels.md) for your GitLab instance.                                                                                                                                                                                                                        |
-| **{appearance}** Appearance                    | Customize [GitLab appearance](appearance.md).                                                                                                                                                                                                                                          |
+| **{appearance}** Appearance                    | Customize [GitLab appearance](appearance.md).                                                                                                                                                                                                                                            |
 | **{settings}** Settings                        | Modify the [settings](settings/index.md) for your GitLab instance.                                                                                                                                                                                                                       |
 
 ## Admin Dashboard
@@ -267,7 +267,7 @@ For each Gitaly server, the following details are listed:
 
 The following topics document the **Monitoring** section of the Admin Area.
 
-### System Info
+### System Information
 
 The **System Info** page provides the following statistics:
 
@@ -314,7 +314,7 @@ For multi-node systems we recommend ingesting the logs into services like Elasti
 | `integrations_json.log` | Activity between GitLab and integrated systems |
 | `kubernetes.log`        | Kubernetes activity |
 
-The contents of these log files can be useful when troubleshooting a problem. 
+The contents of these log files can be useful when troubleshooting a problem.
 
 For details of these log files and their contents, see [Log system](../../administration/logs.md).
 

@@ -202,7 +202,7 @@ When using regular expressions to validate user input that is passed as an argum
 
 If you don't, an attacker could use this to execute commands with potentially harmful effect.
 
-For example, when a project's `import_url` is validated like below, the user could trick GitLab into cloning from a Git repository on the local filesystem.
+For example, when a project's `import_url` is validated like below, the user could trick GitLab into cloning from a Git repository on the local file system.
 
 ```ruby
 validates :import_url, format: { with: URI.regexp(%w(ssh git http https)) }

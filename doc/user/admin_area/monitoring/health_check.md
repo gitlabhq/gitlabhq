@@ -15,7 +15,7 @@ type: concepts, howto
 
 GitLab provides liveness and readiness probes to indicate service health and
 reachability to required services. These probes report on the status of the
-database connection, Redis connection, and access to the filesystem. These
+database connection, Redis connection, and access to the file system. These
 endpoints [can be provided to schedulers like Kubernetes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) to hold
 traffic until the system is ready or restart the container as needed.
 

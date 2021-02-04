@@ -29,7 +29,7 @@ WARNING:
 This is a [**beta** feature](https://about.gitlab.com/handbook/product/#beta) and is not ready yet for production use at any scale. The main limitations are a lack of testing at scale and no verification of any replicated data.
 
 **Secondary** nodes can replicate files stored on the **primary** node regardless of
-whether they are stored on the local filesystem or in object storage.
+whether they are stored on the local file system or in object storage.
 
 To enable GitLab replication, you must:
 

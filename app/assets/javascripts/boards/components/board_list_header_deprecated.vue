@@ -12,12 +12,12 @@ import {
 import { n__, s__ } from '~/locale';
 import sidebarEventHub from '~/sidebar/event_hub';
 import { isScopedLabel } from '~/lib/utils/common_utils';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import AccessorUtilities from '../../lib/utils/accessor';
 import boardsStore from '../stores/boards_store';
 import eventHub from '../eventhub';
 import { inactiveId, LIST, ListType } from '../constants';
 import IssueCount from './issue_count.vue';
-import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 
 // This component is being replaced in favor of './board_list_header.vue' for GraphQL boards
 

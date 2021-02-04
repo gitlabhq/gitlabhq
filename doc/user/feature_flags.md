@@ -29,11 +29,11 @@ GitLab.com. To see the full notes:
 
 1. Click the three-dots icon (ellipsis) to expand version history notes:
 
-   ![Version history note with FF info](img/version_history_notes_collapsed_v13_2.png)
+   ![Version history note with FF information](img/version_history_notes_collapsed_v13_2.png)
 
 1. Read the version history information:
 
-   ![Version history note with FF info](img/feature_flags_history_note_info_v13_2.png)
+   ![Version history note with FF information](img/feature_flags_history_note_info_v13_2.png)
 
 If you're a user of a GitLab self-managed instance and you want to try to use a
 disabled feature, you can ask a [GitLab administrator to enable it](../administration/feature_flags.md),

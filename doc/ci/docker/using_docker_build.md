@@ -801,7 +801,7 @@ NOTE:
 The shared runners on GitLab.com use the `overlay2` driver by default.
 
 By default, when using `docker:dind`, Docker uses the `vfs` storage driver which
-copies the filesystem on every run. This is a disk-intensive operation
+copies the file system on every run. This is a disk-intensive operation
 which can be avoided if a different driver is used, for example `overlay2`.
 
 ### Requirements

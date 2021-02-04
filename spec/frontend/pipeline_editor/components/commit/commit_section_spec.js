@@ -5,6 +5,7 @@ import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
 import { objectToQuery, redirectTo } from '~/lib/utils/url_utility';
 import commitCreate from '~/pipeline_editor/graphql/mutations/commit_ci_file.mutation.graphql';
 
+import { COMMIT_SUCCESS } from '~/pipeline_editor/constants';
 import {
   mockCiConfigPath,
   mockCiYml,
@@ -15,7 +16,6 @@ import {
   mockProjectFullPath,
   mockNewMergeRequestPath,
 } from '../../mock_data';
-import { COMMIT_SUCCESS } from '~/pipeline_editor/constants';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   redirectTo: jest.fn(),

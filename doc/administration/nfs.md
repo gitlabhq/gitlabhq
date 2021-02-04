@@ -20,10 +20,10 @@ From GitLab 14.0, technical support for NFS for Git repositories
 will no longer be provided. Upgrade to [Gitaly Cluster](gitaly/praefect.md)
 as soon as possible.
 
-Filesystem performance can impact overall GitLab performance, especially for
+File system performance can impact overall GitLab performance, especially for
 actions that read or write to Git repositories. For steps you can use to test
-filesystem performance, see
-[Filesystem Performance Benchmarking](operations/filesystem_benchmarking.md).
+file system performance, see
+[File system Performance Benchmarking](operations/filesystem_benchmarking.md).
 
 ## Known kernel version incompatibilities
 
@@ -408,7 +408,7 @@ For supported database architecture, see our documentation about
 ### Finding the requests that are being made to NFS
 
 In case of NFS-related problems, it can be helpful to trace
-the filesystem requests that are being made by using `perf`:
+the file system requests that are being made by using `perf`:
 
 ```shell
 sudo perf trace -e 'nfs4:*' -p $(pgrep -fd ',' puma && pgrep -fd ',' unicorn)

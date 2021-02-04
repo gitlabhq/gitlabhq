@@ -113,7 +113,7 @@ In this example:
 
 - Repositories are stored on a virtual storage called `storage-1`.
 - Three Gitaly nodes provide `storage-1` access: `gitaly-1`, `gitaly-2`, and `gitaly-3`.
-- The three Gitaly nodes store data on their filesystems.
+- The three Gitaly nodes store data on their file systems.
 
 ### Virtual storage or direct Gitaly storage
 

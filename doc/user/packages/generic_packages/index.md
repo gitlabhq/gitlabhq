@@ -48,7 +48,7 @@ PUT /projects/:id/packages/generic/:package_name/:package_version/:file_name
 | `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/README.md#namespaced-path-encoding).                                              |
 | `package_name`     | string          | yes      | The package name. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`).
 | `package_version`  | string          | yes      | The package version. It can contain only numbers (`0-9`), and dots (`.`). Must be in the format of `X.Y.Z`, i.e. should match `/\A\d+\.\d+\.\d+\z/` regular expression.
-| `file_name`        | string          | yes      | The file name. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`).
+| `file_name`        | string          | yes      | The filename. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`).
 
 Provide the file context in the request body.
 
@@ -87,7 +87,7 @@ GET /projects/:id/packages/generic/:package_name/:package_version/:file_name
 | `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/README.md#namespaced-path-encoding). |
 | `package_name`     | string          | yes      | The package name.                                                                   |
 | `package_version`  | string          | yes      | The package version.                                                                |
-| `file_name`        | string          | yes      | The file name.                                                                      |
+| `file_name`        | string          | yes      | The filename.                                                                      |
 
 The file context is served in the response body. The response content type is `application/octet-stream`.
 

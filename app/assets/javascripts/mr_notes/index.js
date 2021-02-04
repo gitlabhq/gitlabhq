@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import store from '~/mr_notes/stores';
+import initRevertCommitModal from '~/projects/commit/init_revert_commit_modal';
 import initDiffsApp from '../diffs';
 import discussionCounter from '../notes/components/discussion_counter.vue';
 import initDiscussionFilters from '../notes/discussion_filters';
@@ -7,7 +8,6 @@ import initSortDiscussions from '../notes/sort_discussions';
 import MergeRequest from '../merge_request';
 import { resetServiceWorkersPublicPath } from '../lib/utils/webpack';
 import initNotesApp from './init_notes';
-import initRevertCommitModal from '~/projects/commit/init_revert_commit_modal';
 
 export default function initMrNotes() {
   resetServiceWorkersPublicPath();

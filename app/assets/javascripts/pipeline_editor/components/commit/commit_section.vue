@@ -1,11 +1,11 @@
 <script>
-import CommitForm from './commit_form.vue';
+import { mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
+import { __, s__, sprintf } from '~/locale';
 import commitCIFile from '../../graphql/mutations/commit_ci_file.mutation.graphql';
 import getCommitSha from '../../graphql/queries/client/commit_sha.graphql';
 
 import { COMMIT_FAILURE, COMMIT_SUCCESS } from '../../constants';
-import { mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
-import { __, s__, sprintf } from '~/locale';
+import CommitForm from './commit_form.vue';
 
 const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
 const MR_TARGET_BRANCH = 'merge_request[target_branch]';

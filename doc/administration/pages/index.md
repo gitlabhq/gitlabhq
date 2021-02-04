@@ -845,7 +845,7 @@ open /etc/ssl/ca-bundle.pem: permission denied
 ```
 
 The use of a `chroot` jail makes this error misleading, as it is not
-referring to `/etc/ssl` on the root filesystem.
+referring to `/etc/ssl` on the root file system.
 
 The fix is to correct the source file permissions and restart Pages:
 

@@ -201,7 +201,7 @@ is a good way to balance the needs of letting a developer's per-commit pipeline 
 and also giving the fuzzer a large amount of time to fully explore and test the app.
 
 Long-running fuzzing jobs are usually necessary for the coverage guided fuzzer to find deeper bugs
-in your latest code base. THe following is an example of what `.gitlab-ci.yml` looks like in this
+in your latest codebase. THe following is an example of what `.gitlab-ci.yml` looks like in this
 workflow (for the full example, see the [repository](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example/-/tree/continuous_fuzzing)):
 
 ```yaml

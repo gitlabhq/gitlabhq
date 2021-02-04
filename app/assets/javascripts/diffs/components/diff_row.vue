@@ -2,6 +2,7 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlTooltipDirective, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import {
   CONTEXT_LINE_CLASS_NAME,
   PARALLEL_DIFF_VIEW_TYPE,
@@ -11,7 +12,6 @@ import {
   CONFLICT_THEIR,
   CONFLICT_MARKER,
 } from '../constants';
-import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import DiffGutterAvatars from './diff_gutter_avatars.vue';
 import * as utils from './diff_row_utils';
 

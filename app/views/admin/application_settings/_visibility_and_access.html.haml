@@ -35,11 +35,11 @@
         .form-check= source
       %span.form-text.text-muted#import-sources-help
         = _('Enabled sources for code import during project creation. OmniAuth must be configured for GitHub')
-        = link_to "(?)", help_page_path("integration/github")
+        = link_to sprite_icon('question-o'), help_page_path("integration/github")
         , Bitbucket
-        = link_to "(?)", help_page_path("integration/bitbucket")
+        = link_to sprite_icon('question-o'), help_page_path("integration/bitbucket")
         and GitLab.com
-        = link_to "(?)", help_page_path("integration/gitlab")
+        = link_to sprite_icon('question-o'), help_page_path("integration/gitlab")
 
     = render_if_exists 'admin/application_settings/ldap_access_setting', form: f
 

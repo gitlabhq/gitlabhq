@@ -121,3 +121,7 @@ Our accessibility standards and resources.
 
 Frontend internationalization support is described in [this document](../i18n/).
 The [externalization part of the guide](../i18n/externalization.md) explains the helpers/methods available.
+
+## [Troubleshooting](troubleshooting.md)
+
+Running into a Frontend development problem? Check out [this guide](troubleshooting.md) to help resolve your issue.

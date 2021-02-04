@@ -423,14 +423,14 @@ Path Traversal attacks can lead to multiple critical and high severity issues, l
 
 ### When to consider
 
-When working with user-controlled filenames/paths and filesystem APIs.
+When working with user-controlled filenames/paths and file system APIs.
 
 ### Mitigation and prevention
 
 In order to prevent Path Traversal vulnerabilities, user-controlled filenames or paths should be validated before being processed.
 
 - Comparing user input against an allowlist of allowed values or verifying that it only contains allowed characters.
-- After validating the user supplied input, it should be appended to the base directory and the path should be canonicalized using the filesystem API.
+- After validating the user supplied input, it should be appended to the base directory and the path should be canonicalized using the file system API.
 
 #### GitLab specific validations
 

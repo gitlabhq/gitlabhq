@@ -74,7 +74,7 @@ I, [2020-01-08T20:51:17.148765 #43765]  INFO -- : Removed unreferenced LFS files
 
 Clean up project upload files if they don't exist in GitLab database.
 
-### Clean up project upload files from filesystem
+### Clean up project upload files from file system
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20863) in GitLab 11.2.
 

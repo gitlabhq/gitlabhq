@@ -326,6 +326,39 @@ sudo gitlab-rake db:migrate
 After the command completes, run `sudo gitlab-rake db:migrate:status` to check if all
 migrations are completed (have an `up` status).
 
+## Rebuild database indexes
+
+WARNING:
+This is an experimental feature that isn't enabled by default.
+
+Database indexes can be rebuilt regularly to reclaim space and maintain healthy levels of index bloat over time.
+
+In order to rebuild the two indexes with the highest estimated bloat, use the following Rake task:
+
+```shell
+sudo gitlab-rake gitlab:db:reindex
+```
+
+In order to target a specific index, use the following Rake task:
+
+```shell
+sudo gitlab-rake gitlab:db:reindex['public.a_specific_index']
+```
+
+The following index types are not supported:
+
+1. Unique and primary key indexes
+1. Indexes used for constraint exclusion
+1. Partitioned indexes
+1. Expression indexes
+
+Optionally, this Rake task sends annotations to a Grafana (4.6 or later) endpoint. Use the following custom environment variables in order to enable annotations:
+
+1. `GRAFANA_API_URL` - Grafana's base URL, for example `http://some-host:3000`.
+1. `GRAFANA_API_KEY` - Grafana API key with at least `Editor role`.
+
+You can also [enable reindexing as a regular cron job](https://docs.gitlab.com/omnibus/settings/database.html#automatic-database-reindexing).
+
 ## Import common metrics
 
 Sometimes you may need to re-import the common metrics that power the Metrics dashboards.
