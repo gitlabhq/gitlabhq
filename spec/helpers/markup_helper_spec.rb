@@ -355,6 +355,21 @@ RSpec.describe MarkupHelper do
           expect(doc.css('.gl-label-link')).not_to be_empty
         end
       end
+
+      context 'when content has uploads' do
+        let(:upload_link) { '/uploads/test.png' }
+        let(:content) { "![ImageTest](#{upload_link})" }
+
+        before do
+          allow(wiki).to receive(:wiki_base_path).and_return(project.wiki.wiki_base_path)
+        end
+
+        it 'renders uploads relative to project' do
+          result = helper.render_wiki_content(wiki)
+
+          expect(result).to include("#{project.full_path}#{upload_link}")
+        end
+      end
     end
 
     context 'when file is Asciidoc' do
