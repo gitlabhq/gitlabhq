@@ -1010,7 +1010,7 @@ GET /groups?search=foobar
 ]
 ```
 
-## Hooks
+## Hooks **(PREMIUM)**
 
 Also called Group Hooks and Webhooks.
 These are different from [System Hooks](system_hooks.md) that are system wide and [Project Hooks](projects.md#hooks) that are limited to one project.
@@ -1057,6 +1057,7 @@ GET /groups/:id/hooks/:hook_id
   "wiki_page_events": true,
   "deployment_events": true,
   "releases_events": true,
+  "subgroup_events": true,
   "enable_ssl_verification": true,
   "created_at": "2012-10-12T17:04:47Z"
 }
@@ -1086,6 +1087,7 @@ POST /groups/:id/hooks
 | `wiki_page_events`           | boolean        | no       | Trigger hook on wiki events |
 | `deployment_events`          | boolean        | no       | Trigger hook on deployment events |
 | `releases_events`            | boolean        | no       | Trigger hook on release events |
+| `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events |
 | `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook |
 | `token`                      | string         | no       | Secret token to validate received payloads; not returned in the response |
 
@@ -1114,6 +1116,7 @@ PUT /groups/:id/hooks/:hook_id
 | `wiki_events`                | boolean        | no       | Trigger hook on wiki events |
 | `deployment_events`          | boolean        | no       | Trigger hook on deployment events |
 | `releases_events`            | boolean        | no       | Trigger hook on release events |
+| `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events |
 | `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook |
 | `token`                      | string         | no       | Secret token to validate received payloads; not returned in the response |
 

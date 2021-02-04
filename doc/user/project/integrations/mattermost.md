@@ -59,5 +59,6 @@ At the end, fill in your Mattermost details:
 | **Username** | Optional username which can be on messages sent to Mattermost. Fill this in if you want to change the username of the bot. |
 | **Notify only broken pipelines** | If you choose to enable the **Pipeline** event and you want to be only notified about failed pipelines. |
 | **Branches to be notified** | Select which types of branches to send notifications for. |
+| **Labels to be notified** | Optional labels that the issue or merge request must have in order to trigger a notification. Leave blank to get all notifications. |
 
-![Mattermost configuration](img/mattermost_configuration.png)
+![Mattermost configuration](img/mattermost_configuration_v2.png)

@@ -581,6 +581,10 @@ class ProjectPolicy < BasePolicy
     enable :read_issue_link
   end
 
+  rule { can?(:developer_access) }.policy do
+    enable :read_security_configuration
+  end
+
   # Design abilities could also be prevented in the issue policy.
   rule { design_management_disabled }.policy do
     prevent :read_design

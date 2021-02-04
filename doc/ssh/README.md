@@ -201,7 +201,7 @@ Now you can copy the SSH key you created to your GitLab account. To do so, follo
    pbcopy < ~/.ssh/id_ed25519.pub
    ```
 
-   **Linux (requires the xclip package):**
+   **Linux (requires the `xclip` package):**
 
    ```shell
    xclip -sel clip < ~/.ssh/id_ed25519.pub

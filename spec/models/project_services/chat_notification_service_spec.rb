@@ -75,6 +75,39 @@ RSpec.describe ChatNotificationService do
       end
     end
 
+    context 'when the data object has a label' do
+      let(:label) { create(:label, project: project, name: 'Bug')}
+      let(:issue) { create(:labeled_issue, project: project, labels: [label]) }
+      let(:note) { create(:note, noteable: issue, project: project)}
+      let(:data) { Gitlab::DataBuilder::Note.build(note, user) }
+
+      it 'notifies the chat service' do
+        expect(chat_service).to receive(:notify).with(any_args)
+
+        chat_service.execute(data)
+      end
+
+      context 'and the chat_service has a label filter that does not matches the label' do
+        subject(:chat_service) { described_class.new(labels_to_be_notified: '~some random label') }
+
+        it 'does not notify the chat service' do
+          expect(chat_service).not_to receive(:notify)
+
+          chat_service.execute(data)
+        end
+      end
+
+      context 'and the chat_service has a label filter that matches the label' do
+        subject(:chat_service) { described_class.new(labels_to_be_notified: '~Backend, ~Bug') }
+
+        it 'notifies the chat service' do
+          expect(chat_service).to receive(:notify).with(any_args)
+
+          chat_service.execute(data)
+        end
+      end
+    end
+
     context 'with "channel" property' do
       before do
         allow(chat_service).to receive(:channel).and_return(channel)

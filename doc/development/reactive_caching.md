@@ -103,7 +103,7 @@ not wait until the background worker completes.
 - An API that calls a model or service method that uses `ReactiveCaching` should return
   `202 accepted` when the cache is being calculated (when `#with_reactive_cache` returns `nil`).
 - It should also
-  [set the polling interval header](fe_guide/performance.md#realtime-components) with
+  [set the polling interval header](fe_guide/performance.md#real-time-components) with
   `Gitlab::PollingInterval.set_header`.
 - The consumer of the API is expected to poll the API.
 - You can also consider implementing [ETag caching](polling.md) to reduce the server

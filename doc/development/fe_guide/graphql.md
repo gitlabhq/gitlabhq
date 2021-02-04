@@ -18,6 +18,8 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 
 **GraphQL at GitLab**:
 
+<!-- vale gitlab.Spelling = NO -->
+
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab Unfiltered GraphQL playlist](https://www.youtube.com/watch?v=wHPKZBDMfxE&list=PL05JrBw4t0KpcjeHjaRMB7IGB2oDWyJzv)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GraphQL at GitLab: Deep Dive](../api_graphql_styleguide.md#deep-dive) (video) by Nick Thomas
   - An overview of the history of GraphQL at GitLab (not frontend-specific)
@@ -29,6 +31,8 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 - [🛠 Vuex -> Apollo Migration: a proof-of-concept project](https://gitlab.com/ntepluhina/vuex-to-apollo/blob/master/README.md)
   - A collection of examples that show the possible approaches for state management with Vue+GraphQL+(Vuex or Apollo) apps
 
+<!-- vale gitlab.Spelling = YES -->
+
 ### Libraries
 
 We use [Apollo](https://www.apollographql.com/) (specifically [Apollo Client](https://www.apollographql.com/docs/react/)) and [Vue Apollo](https://github.com/vuejs/vue-apollo)
@@ -39,12 +43,20 @@ can help you learn how to integrate Vue Apollo.
 
 For other use cases, check out the [Usage outside of Vue](#usage-outside-of-vue) section.
 
+<!-- vale gitlab.Spelling = NO -->
+
 We use [Immer](https://immerjs.github.io/immer/docs/introduction) for immutable cache updates;
 see [Immutability and cache updates](#immutability-and-cache-updates) for more information.
 
+<!-- vale gitlab.Spelling = YES -->
+
 ### Tooling
 
+<!-- vale gitlab.Spelling = NO -->
+
 - [Apollo Client Devtools](https://github.com/apollographql/apollo-client-devtools)
+
+<!-- vale gitlab.Spelling = YES -->
 
 #### [Apollo GraphQL VS Code extension](https://marketplace.visualstudio.com/items?itemName=apollographql.vscode-apollo)
 
@@ -160,8 +172,13 @@ const primaryKeyId = getIdFromGraphQLId(data.id);
 From Apollo version 3.0.0 all the cache updates need to be immutable. It needs to be replaced entirely
 with a **new and updated** object.
 
-To facilitate the process of updating the cache and returning the new object we use the library [Immer](https://immerjs.github.io/immer/docs/introduction).
+<!-- vale gitlab.Spelling = NO -->
+
+To facilitate the process of updating the cache and returning the new object we
+use the library [Immer](https://immerjs.github.io/immer/docs/introduction).
 When possible, follow these conventions:
+
+<!-- vale gitlab.Spelling = YES -->
 
 - The updated cache is named `data`.
 - The original cache data is named `sourceData`.
@@ -753,9 +770,13 @@ export default {
 
 #### Mocking response as component data
 
-With [Vue test utils](https://vue-test-utils.vuejs.org/) one can quickly test components that
+<!-- vale gitlab.Spelling = NO -->
+
+With [Vue Test Utils](https://vue-test-utils.vuejs.org/) one can quickly test components that
 fetch GraphQL queries. The simplest way is to use `shallowMount` and then set
-the data on the component
+the data on the component:
+
+<!-- vale gitlab.Spelling = YES -->
 
 ```javascript
 it('tests apollo component', () => {

@@ -14,7 +14,7 @@ module Mutations
 
       field :todo, Types::TodoType,
             null: true,
-            description: 'The to-do created.'
+            description: 'The to-do item created.'
 
       def resolve(target_id:)
         id = ::Types::GlobalIDType[Todoable].coerce_isolated_input(target_id)

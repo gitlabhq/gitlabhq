@@ -971,3 +971,21 @@ If the wildcard DNS [prerequisite](#prerequisites) can't be met, you can still u
 1. [Move](../../user/project/settings/index.md#transferring-an-existing-project-into-another-namespace)
    all projects you need to use Pages with into a single group namespace, for example `pages`.
 1. Configure a [DNS entry](#dns-configuration) without the `*.`-wildcard, for example `pages.example.io`.
+
+### Pages daemon fails with permission denied errors
+
+If `/tmp` is mounted with `noexec`, the Pages daemon fails to start with an error like:
+
+```plaintext
+{"error":"fork/exec /gitlab-pages: permission denied","level":"fatal","msg":"could not create pages daemon","time":"2021-02-02T21:54:34Z"}
+```
+
+In this case, change `TMPDIR` to a location that is not mounted with `noexec`. Add the following to
+`/etc/gitlab/gitlab.rb`:
+
+```ruby
+gitlab_pages['env'] = {'TMPDIR' => '<new_tmp_path>'}
+```
+
+Once added, reconfigure with `sudo gitlab-ctl reconfigure` and restart GitLab with
+`sudo gitlab-ctl restart`.

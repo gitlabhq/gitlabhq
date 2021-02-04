@@ -36,7 +36,7 @@ validations and index creation while it allows reads and writes).
 
 ### Exceptions
 
-Text columns used by `attr_encrypted` are not required to have a limit, becuase the length of the
+Text columns used by `attr_encrypted` are not required to have a limit, because the length of the
 text after encryption may be longer than the text itself. Instead, you can use an Active Record
 length validation on the attribute.
 

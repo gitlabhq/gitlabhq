@@ -11,9 +11,10 @@ import waitForPromises from 'helpers/wait_for_promises';
 import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form.vue';
 import MappingBuilder from '~/alerts_settings/components/alert_mapping_builder.vue';
 import { typeSet } from '~/alerts_settings/constants';
+import alertFields from '../mocks/alertFields.json';
 import { defaultAlertSettingsConfig } from './util';
 
-describe('AlertsSettingsFormNew', () => {
+describe('AlertsSettingsForm', () => {
   let wrapper;
   const mockToastShow = jest.fn();
 
@@ -21,6 +22,7 @@ describe('AlertsSettingsFormNew', () => {
     data = {},
     props = {},
     multipleHttpIntegrationsCustomMapping = false,
+    multiIntegrations = true,
   } = {}) => {
     wrapper = mount(AlertsSettingsForm, {
       data() {
@@ -32,8 +34,9 @@ describe('AlertsSettingsFormNew', () => {
         ...props,
       },
       provide: {
-        glFeatures: { multipleHttpIntegrationsCustomMapping },
         ...defaultAlertSettingsConfig,
+        glFeatures: { multipleHttpIntegrationsCustomMapping },
+        multiIntegrations,
       },
       mocks: {
         $toast: {
@@ -132,7 +135,11 @@ describe('AlertsSettingsFormNew', () => {
       });
 
       it('create with custom mapping', async () => {
-        createComponent({ multipleHttpIntegrationsCustomMapping: true });
+        createComponent({
+          multipleHttpIntegrationsCustomMapping: true,
+          multiIntegrations: true,
+          props: { alertFields },
+        });
 
         const integrationName = 'Test integration';
         await selectOptionAtIndex(1);
@@ -275,6 +282,7 @@ describe('AlertsSettingsFormNew', () => {
           currentIntegration: {
             type: typeSet.http,
           },
+          alertFields,
         },
       });
     });
@@ -347,18 +355,27 @@ describe('AlertsSettingsFormNew', () => {
 
   describe('Mapping builder section', () => {
     describe.each`
-      featureFlag | integrationOption | visible
-      ${true}     | ${1}              | ${true}
-      ${true}     | ${2}              | ${false}
-      ${false}    | ${1}              | ${false}
-      ${false}    | ${2}              | ${false}
-    `('', ({ featureFlag, integrationOption, visible }) => {
+      alertFieldsProvided | multiIntegrations | featureFlag | integrationOption | visible
+      ${true}             | ${true}           | ${true}     | ${1}              | ${true}
+      ${true}             | ${true}           | ${true}     | ${2}              | ${false}
+      ${true}             | ${true}           | ${false}    | ${1}              | ${false}
+      ${true}             | ${true}           | ${false}    | ${2}              | ${false}
+      ${true}             | ${false}          | ${true}     | ${1}              | ${false}
+      ${false}            | ${true}           | ${true}     | ${1}              | ${false}
+    `('', ({ alertFieldsProvided, multiIntegrations, featureFlag, integrationOption, visible }) => {
       const visibleMsg = visible ? 'is rendered' : 'is not rendered';
       const featureFlagMsg = featureFlag ? 'is enabled' : 'is disabled';
+      const alertFieldsMsg = alertFieldsProvided ? 'are provided' : 'are not provided';
       const integrationType = integrationOption === 1 ? typeSet.http : typeSet.prometheus;
 
-      it(`${visibleMsg} when multipleHttpIntegrationsCustomMapping feature flag ${featureFlagMsg} and integration type is ${integrationType}`, async () => {
-        createComponent({ multipleHttpIntegrationsCustomMapping: featureFlag });
+      it(`${visibleMsg} when multipleHttpIntegrationsCustomMapping feature flag ${featureFlagMsg} and integration type is ${integrationType} and alert fields ${alertFieldsMsg}`, async () => {
+        createComponent({
+          multipleHttpIntegrationsCustomMapping: featureFlag,
+          multiIntegrations,
+          props: {
+            alertFields: alertFieldsProvided ? alertFields : [],
+          },
+        });
         await selectOptionAtIndex(integrationOption);
 
         expect(findMappingBuilderSection().exists()).toBe(visible);

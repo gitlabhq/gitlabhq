@@ -240,7 +240,7 @@ The resulting file is named `dump_gitlab_backup.tar`. This is useful for
 systems that make use of rsync and incremental backups, and results in
 considerably faster transfer speeds.
 
-#### Rsyncable
+#### Confirm archive can be transferred
 
 To ensure the generated archive is transferable by rsync, you can set the `GZIP_RSYNCABLE=yes`
 option. This sets the `--rsyncable` option to `gzip`, which is useful only in
@@ -1204,9 +1204,9 @@ and the jobs begin running again.
 
 Use the information in the following sections at your own risk.
 
-#### Check for undecryptable values
+#### Verify that all values can be decrypted
 
-You can determine if you have undecryptable values in the database by using the
+You can determine if your database contains values that can't be decrypted by using the
 [Secrets Doctor Rake task](../administration/raketasks/doctor.md).
 
 #### Take a backup

@@ -350,7 +350,7 @@ type AlertManagementAlert implements Noteable {
   title: String
 
   """
-  To-dos of the current user for the alert.
+  To-do items of the current user for the alert.
   """
   todos(
     """
@@ -1017,7 +1017,7 @@ type AlertSetAssigneesPayload {
   issue: Issue
 
   """
-  The todo after mutation.
+  The to-do item after mutation.
   """
   todo: Todo
 }
@@ -1067,7 +1067,7 @@ type AlertTodoCreatePayload {
   issue: Issue
 
   """
-  The todo after mutation.
+  The to-do item after mutation.
   """
   todo: Todo
 }
@@ -1734,7 +1734,7 @@ type BoardEpic implements CurrentUserTodos & Noteable {
   createdAt: Time
 
   """
-  Todos for the current user.
+  To-do items for the current user.
   """
   currentUserTodos(
     """
@@ -1758,7 +1758,7 @@ type BoardEpic implements CurrentUserTodos & Noteable {
     last: Int
 
     """
-    State of the todos.
+    State of the to-do items.
     """
     state: TodoStateEnum
   ): TodoConnection!
@@ -4515,7 +4515,7 @@ type CreateAlertIssuePayload {
   issue: Issue
 
   """
-  The todo after mutation.
+  The to-do item after mutation.
   """
   todo: Todo
 }
@@ -5480,7 +5480,7 @@ type CreateTestCasePayload {
 
 interface CurrentUserTodos {
   """
-  Todos for the current user.
+  To-do items for the current user.
   """
   currentUserTodos(
     """
@@ -5504,7 +5504,7 @@ interface CurrentUserTodos {
     last: Int
 
     """
-    State of the todos.
+    State of the to-do items.
     """
     state: TodoStateEnum
   ): TodoConnection!
@@ -6622,7 +6622,7 @@ A single design
 """
 type Design implements CurrentUserTodos & DesignFields & Noteable {
   """
-  Todos for the current user.
+  To-do items for the current user.
   """
   currentUserTodos(
     """
@@ -6646,7 +6646,7 @@ type Design implements CurrentUserTodos & DesignFields & Noteable {
     last: Int
 
     """
-    State of the todos.
+    State of the to-do items.
     """
     state: TodoStateEnum
   ): TodoConnection!
@@ -8580,7 +8580,7 @@ type Epic implements CurrentUserTodos & Noteable {
   createdAt: Time
 
   """
-  Todos for the current user.
+  To-do items for the current user.
   """
   currentUserTodos(
     """
@@ -8604,7 +8604,7 @@ type Epic implements CurrentUserTodos & Noteable {
     last: Int
 
     """
-    State of the todos.
+    State of the to-do items.
     """
     state: TodoStateEnum
   ): TodoConnection!
@@ -9260,7 +9260,7 @@ type EpicIssue implements CurrentUserTodos & Noteable {
   createdAt: Time!
 
   """
-  Todos for the current user.
+  To-do items for the current user.
   """
   currentUserTodos(
     """
@@ -9284,7 +9284,7 @@ type EpicIssue implements CurrentUserTodos & Noteable {
     last: Int
 
     """
-    State of the todos.
+    State of the to-do items.
     """
     state: TodoStateEnum
   ): TodoConnection!
@@ -12471,7 +12471,7 @@ type Issue implements CurrentUserTodos & Noteable {
   createdAt: Time!
 
   """
-  Todos for the current user.
+  To-do items for the current user.
   """
   currentUserTodos(
     """
@@ -12495,7 +12495,7 @@ type Issue implements CurrentUserTodos & Noteable {
     last: Int
 
     """
-    State of the todos.
+    State of the to-do items.
     """
     state: TodoStateEnum
   ): TodoConnection!
@@ -14554,7 +14554,7 @@ type MergeRequest implements CurrentUserTodos & Noteable {
   createdAt: Time!
 
   """
-  Todos for the current user.
+  To-do items for the current user.
   """
   currentUserTodos(
     """
@@ -14578,7 +14578,7 @@ type MergeRequest implements CurrentUserTodos & Noteable {
     last: Int
 
     """
-    State of the todos.
+    State of the to-do items.
     """
     state: TodoStateEnum
   ): TodoConnection!
@@ -24925,47 +24925,47 @@ Representing a to-do entry
 """
 type Todo {
   """
-  Action of the to-do
+  Action of the to-do item
   """
   action: TodoActionEnum!
 
   """
-  The author of this to-do
+  The author of this to-do item
   """
   author: User!
 
   """
-  Body of the to-do
+  Body of the to-do item
   """
   body: String!
 
   """
-  Timestamp this to-do was created
+  Timestamp this to-do item was created
   """
   createdAt: Time!
 
   """
-  Group this to-do is associated with
+  Group this to-do item is associated with
   """
   group: Group
 
   """
-  ID of the to-do
+  ID of the to-do item
   """
   id: ID!
 
   """
-  The project this to-do is associated with
+  The project this to-do item is associated with
   """
   project: Project
 
   """
-  State of the to-do
+  State of the to-do item
   """
   state: TodoStateEnum!
 
   """
-  Target type of the to-do
+  Target type of the to-do item
   """
   targetType: TodoTargetEnum!
 }
@@ -25030,7 +25030,7 @@ type TodoCreatePayload {
   errors: [String!]!
 
   """
-  The to-do created.
+  The to-do item created.
   """
   todo: Todo
 }
@@ -25065,7 +25065,7 @@ input TodoMarkDoneInput {
   clientMutationId: String
 
   """
-  The global ID of the to-do to mark as done.
+  The global ID of the to-do item to mark as done.
   """
   id: TodoID!
 }
@@ -25085,7 +25085,7 @@ type TodoMarkDonePayload {
   errors: [String!]!
 
   """
-  The requested to-do.
+  The requested to-do item.
   """
   todo: Todo!
 }
@@ -25100,7 +25100,7 @@ input TodoRestoreInput {
   clientMutationId: String
 
   """
-  The global ID of the to-do to restore.
+  The global ID of the to-do item to restore.
   """
   id: TodoID!
 }
@@ -25115,7 +25115,7 @@ input TodoRestoreManyInput {
   clientMutationId: String
 
   """
-  The global IDs of the to-dos to restore (a maximum of 50 is supported at once).
+  The global IDs of the to-do items to restore (a maximum of 50 is supported at once).
   """
   ids: [TodoID!]!
 }
@@ -25135,14 +25135,14 @@ type TodoRestoreManyPayload {
   errors: [String!]!
 
   """
-  Updated to-dos.
+  Updated to-do items.
   """
   todos: [Todo!]!
 
   """
-  The IDs of the updated to-do items. Deprecated in 13.2: Use todos.
+  The IDs of the updated to-do items. Deprecated in 13.2: Use to-do items.
   """
-  updatedIds: [TodoID!]! @deprecated(reason: "Use todos. Deprecated in 13.2.")
+  updatedIds: [TodoID!]! @deprecated(reason: "Use to-do items. Deprecated in 13.2.")
 }
 
 """
@@ -25160,7 +25160,7 @@ type TodoRestorePayload {
   errors: [String!]!
 
   """
-  The requested to-do.
+  The requested to-do item.
   """
   todo: Todo!
 }
@@ -25232,14 +25232,14 @@ type TodosMarkAllDonePayload {
   errors: [String!]!
 
   """
-  Updated todos.
+  Updated to-do items.
   """
   todos: [Todo!]!
 
   """
-  Ids of the updated todos. Deprecated in 13.2: Use todos.
+  IDs of the updated to-do items. Deprecated in 13.2: Use to-do items.
   """
-  updatedIds: [TodoID!]! @deprecated(reason: "Use todos. Deprecated in 13.2.")
+  updatedIds: [TodoID!]! @deprecated(reason: "Use to-do items. Deprecated in 13.2.")
 }
 
 """
@@ -25509,7 +25509,7 @@ type UpdateAlertStatusPayload {
   issue: Issue
 
   """
-  The todo after mutation.
+  The to-do item after mutation.
   """
   todo: Todo
 }
@@ -26839,7 +26839,7 @@ type User {
   status: UserStatus
 
   """
-  Todos of the user
+  To-do items of the user
   """
   todos(
     """

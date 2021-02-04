@@ -953,7 +953,7 @@
             },
             {
               "name": "todos",
-              "description": "To-dos of the current user for the alert.",
+              "description": "To-do items of the current user for the alert.",
               "args": [
                 {
                   "name": "action",
@@ -2504,7 +2504,7 @@
             },
             {
               "name": "todo",
-              "description": "The todo after mutation.",
+              "description": "The to-do item after mutation.",
               "args": [
 
               ],
@@ -2648,7 +2648,7 @@
             },
             {
               "name": "todo",
-              "description": "The todo after mutation.",
+              "description": "The to-do item after mutation.",
               "args": [
 
               ],
@@ -4482,7 +4482,7 @@
             },
             {
               "name": "currentUserTodos",
-              "description": "Todos for the current user.",
+              "description": "To-do items for the current user.",
               "args": [
                 {
                   "name": "after",
@@ -4526,7 +4526,7 @@
                 },
                 {
                   "name": "state",
-                  "description": "State of the todos.",
+                  "description": "State of the to-do items.",
                   "type": {
                     "kind": "ENUM",
                     "name": "TodoStateEnum",
@@ -12313,7 +12313,7 @@
             },
             {
               "name": "todo",
-              "description": "The todo after mutation.",
+              "description": "The to-do item after mutation.",
               "args": [
 
               ],
@@ -14902,7 +14902,7 @@
           "fields": [
             {
               "name": "currentUserTodos",
-              "description": "Todos for the current user.",
+              "description": "To-do items for the current user.",
               "args": [
                 {
                   "name": "after",
@@ -14946,7 +14946,7 @@
                 },
                 {
                   "name": "state",
-                  "description": "State of the todos.",
+                  "description": "State of the to-do items.",
                   "type": {
                     "kind": "ENUM",
                     "name": "TodoStateEnum",
@@ -17991,7 +17991,7 @@
           "fields": [
             {
               "name": "currentUserTodos",
-              "description": "Todos for the current user.",
+              "description": "To-do items for the current user.",
               "args": [
                 {
                   "name": "after",
@@ -18035,7 +18035,7 @@
                 },
                 {
                   "name": "state",
-                  "description": "State of the todos.",
+                  "description": "State of the to-do items.",
                   "type": {
                     "kind": "ENUM",
                     "name": "TodoStateEnum",
@@ -23713,7 +23713,7 @@
             },
             {
               "name": "currentUserTodos",
-              "description": "Todos for the current user.",
+              "description": "To-do items for the current user.",
               "args": [
                 {
                   "name": "after",
@@ -23757,7 +23757,7 @@
                 },
                 {
                   "name": "state",
-                  "description": "State of the todos.",
+                  "description": "State of the to-do items.",
                   "type": {
                     "kind": "ENUM",
                     "name": "TodoStateEnum",
@@ -25584,7 +25584,7 @@
             },
             {
               "name": "currentUserTodos",
-              "description": "Todos for the current user.",
+              "description": "To-do items for the current user.",
               "args": [
                 {
                   "name": "after",
@@ -25628,7 +25628,7 @@
                 },
                 {
                   "name": "state",
-                  "description": "State of the todos.",
+                  "description": "State of the to-do items.",
                   "type": {
                     "kind": "ENUM",
                     "name": "TodoStateEnum",
@@ -34062,7 +34062,7 @@
             },
             {
               "name": "currentUserTodos",
-              "description": "Todos for the current user.",
+              "description": "To-do items for the current user.",
               "args": [
                 {
                   "name": "after",
@@ -34106,7 +34106,7 @@
                 },
                 {
                   "name": "state",
-                  "description": "State of the todos.",
+                  "description": "State of the to-do items.",
                   "type": {
                     "kind": "ENUM",
                     "name": "TodoStateEnum",
@@ -39886,7 +39886,7 @@
             },
             {
               "name": "currentUserTodos",
-              "description": "Todos for the current user.",
+              "description": "To-do items for the current user.",
               "args": [
                 {
                   "name": "after",
@@ -39930,7 +39930,7 @@
                 },
                 {
                   "name": "state",
-                  "description": "State of the todos.",
+                  "description": "State of the to-do items.",
                   "type": {
                     "kind": "ENUM",
                     "name": "TodoStateEnum",
@@ -72418,7 +72418,7 @@
           "fields": [
             {
               "name": "action",
-              "description": "Action of the to-do",
+              "description": "Action of the to-do item",
               "args": [
 
               ],
@@ -72436,7 +72436,7 @@
             },
             {
               "name": "author",
-              "description": "The author of this to-do",
+              "description": "The author of this to-do item",
               "args": [
 
               ],
@@ -72454,7 +72454,7 @@
             },
             {
               "name": "body",
-              "description": "Body of the to-do",
+              "description": "Body of the to-do item",
               "args": [
 
               ],
@@ -72472,7 +72472,7 @@
             },
             {
               "name": "createdAt",
-              "description": "Timestamp this to-do was created",
+              "description": "Timestamp this to-do item was created",
               "args": [
 
               ],
@@ -72490,7 +72490,7 @@
             },
             {
               "name": "group",
-              "description": "Group this to-do is associated with",
+              "description": "Group this to-do item is associated with",
               "args": [
 
               ],
@@ -72504,7 +72504,7 @@
             },
             {
               "name": "id",
-              "description": "ID of the to-do",
+              "description": "ID of the to-do item",
               "args": [
 
               ],
@@ -72522,7 +72522,7 @@
             },
             {
               "name": "project",
-              "description": "The project this to-do is associated with",
+              "description": "The project this to-do item is associated with",
               "args": [
 
               ],
@@ -72536,7 +72536,7 @@
             },
             {
               "name": "state",
-              "description": "State of the to-do",
+              "description": "State of the to-do item",
               "args": [
 
               ],
@@ -72554,7 +72554,7 @@
             },
             {
               "name": "targetType",
-              "description": "Target type of the to-do",
+              "description": "Target type of the to-do item",
               "args": [
 
               ],
@@ -72780,7 +72780,7 @@
             },
             {
               "name": "todo",
-              "description": "The to-do created.",
+              "description": "The to-do item created.",
               "args": [
 
               ],
@@ -72863,7 +72863,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The global ID of the to-do to mark as done.",
+              "description": "The global ID of the to-do item to mark as done.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -72937,7 +72937,7 @@
             },
             {
               "name": "todo",
-              "description": "The requested to-do.",
+              "description": "The requested to-do item.",
               "args": [
 
               ],
@@ -72969,7 +72969,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The global ID of the to-do to restore.",
+              "description": "The global ID of the to-do item to restore.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -73004,7 +73004,7 @@
           "inputFields": [
             {
               "name": "ids",
-              "description": "The global IDs of the to-dos to restore (a maximum of 50 is supported at once).",
+              "description": "The global IDs of the to-do items to restore (a maximum of 50 is supported at once).",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -73086,7 +73086,7 @@
             },
             {
               "name": "todos",
-              "description": "Updated to-dos.",
+              "description": "Updated to-do items.",
               "args": [
 
               ],
@@ -73112,7 +73112,7 @@
             },
             {
               "name": "updatedIds",
-              "description": "The IDs of the updated to-do items. Deprecated in 13.2: Use todos.",
+              "description": "The IDs of the updated to-do items. Deprecated in 13.2: Use to-do items.",
               "args": [
 
               ],
@@ -73134,7 +73134,7 @@
                 }
               },
               "isDeprecated": true,
-              "deprecationReason": "Use todos. Deprecated in 13.2."
+              "deprecationReason": "Use to-do items. Deprecated in 13.2."
             }
           ],
           "inputFields": null,
@@ -73191,7 +73191,7 @@
             },
             {
               "name": "todo",
-              "description": "The requested to-do.",
+              "description": "The requested to-do item.",
               "args": [
 
               ],
@@ -73363,7 +73363,7 @@
             },
             {
               "name": "todos",
-              "description": "Updated todos.",
+              "description": "Updated to-do items.",
               "args": [
 
               ],
@@ -73389,7 +73389,7 @@
             },
             {
               "name": "updatedIds",
-              "description": "Ids of the updated todos. Deprecated in 13.2: Use todos.",
+              "description": "IDs of the updated to-do items. Deprecated in 13.2: Use to-do items.",
               "args": [
 
               ],
@@ -73411,7 +73411,7 @@
                 }
               },
               "isDeprecated": true,
-              "deprecationReason": "Use todos. Deprecated in 13.2."
+              "deprecationReason": "Use to-do items. Deprecated in 13.2."
             }
           ],
           "inputFields": null,
@@ -74189,7 +74189,7 @@
             },
             {
               "name": "todo",
-              "description": "The todo after mutation.",
+              "description": "The to-do item after mutation.",
               "args": [
 
               ],
@@ -77580,7 +77580,7 @@
             },
             {
               "name": "todos",
-              "description": "Todos of the user",
+              "description": "To-do items of the user",
               "args": [
                 {
                   "name": "action",

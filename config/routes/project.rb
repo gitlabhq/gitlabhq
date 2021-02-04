@@ -37,6 +37,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
+        namespace :security do
+          resource :configuration, only: [:show], controller: :configuration
+        end
+
         resources :artifacts, only: [:index, :destroy]
 
         resources :packages, only: [:index, :show, :destroy], module: :packages

@@ -1,0 +1,123 @@
+[
+  {
+    "name": "title",
+    "label": "Title",
+    "type": [
+      "string"
+    ],
+    "types": [
+      "string",
+      "number",
+      "datetime"
+    ],
+    "numberOfFallbacks": 1
+  },
+  {
+    "name": "description",
+    "label": "Description",
+    "type": [
+      "string"
+    ],
+    "types": [
+      "string",
+      "number",
+      "datetime"
+    ]
+  },
+  {
+    "name": "start_time",
+    "label": "Start time",
+    "type": [
+      "datetime"
+    ],
+    "types": [
+      "number",
+      "datetime"
+    ]
+  },
+  {
+    "name": "end_time",
+    "label": "End time",
+    "type": [
+      "datetime"
+    ],
+    "types": [
+      "number",
+      "datetime"
+    ]
+  },
+  {
+    "name": "service",
+    "label": "Service",
+    "type": [
+      "string"
+    ],
+    "types": [
+      "string",
+      "number",
+      "datetime"
+    ]
+  },
+  {
+    "name": "monitoring_tool",
+    "label": "Monitoring tool",
+    "type": [
+      "string"
+    ],
+    "types": [
+      "string",
+      "number",
+      "datetime"
+    ]
+  },
+  {
+    "name": "hosts",
+    "label": "Hosts",
+    "type": [
+      "string",
+      "ARRAY"
+    ],
+    "types": [
+      "string",
+      "ARRAY",
+      "number",
+      "datetime"
+    ]
+  },
+  {
+    "name": "severity",
+    "label": "Severity",
+    "type": [
+      "string"
+    ],
+    "types": [
+      "string",
+      "number",
+      "datetime"
+    ]
+  },
+  {
+    "name": "fingerprint",
+    "label": "Fingerprint",
+    "type": [
+      "string"
+    ],
+    "types": [
+      "string",
+      "number",
+      "datetime"
+    ]
+  },
+  {
+    "name": "gitlab_environment_name",
+    "label": "Environment",
+    "type": [
+      "string"
+    ],
+    "types": [
+      "string",
+      "number",
+      "datetime"
+    ]
+  }
+]

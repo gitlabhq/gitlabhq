@@ -11,6 +11,11 @@ RSpec.describe 'Issue Sidebar' do
   let!(:label) { create(:label, project: project, title: 'bug') }
   let(:issue) { create(:labeled_issue, project: project, labels: [label]) }
   let!(:xss_label) { create(:label, project: project, title: '&lt;script&gt;alert("xss");&lt;&#x2F;script&gt;') }
+  let!(:milestone_expired) { create(:milestone, project: project, due_date: 5.days.ago) }
+  let!(:milestone_no_duedate) { create(:milestone, project: project, title: 'Foo - No due date') }
+  let!(:milestone1) { create(:milestone, project: project, title: 'Milestone-1', due_date: 20.days.from_now) }
+  let!(:milestone2) { create(:milestone, project: project, title: 'Milestone-2', due_date: 15.days.from_now) }
+  let!(:milestone3) { create(:milestone, project: project, title: 'Milestone-3', due_date: 10.days.from_now) }
 
   before do
     stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
@@ -130,6 +135,36 @@ RSpec.describe 'Issue Sidebar' do
             click_on 'Edit'
 
             expect(page).to have_content '<script>alert("xss");</script>'
+          end
+        end
+      end
+
+      context 'editing issue milestone', :js do
+        before do
+          page.within('.block.milestone > .title') do
+            click_on 'Edit'
+          end
+        end
+
+        it 'shows milestons list in the dropdown' do
+          page.within('.block.milestone .dropdown-content') do
+            # 5 milestones + "No milestone" = 6 items
+            expect(page.find('ul')).to have_selector('li[data-milestone-id]', count: 6)
+          end
+        end
+
+        it 'shows expired milestone at the bottom of the list' do
+          page.within('.block.milestone .dropdown-content ul') do
+            expect(page.find('li:last-child')).to have_content milestone_expired.title
+          end
+        end
+
+        it 'shows milestone due earliest at the top of the list' do
+          page.within('.block.milestone .dropdown-content ul') do
+            expect(page.all('li[data-milestone-id]')[1]).to have_content milestone3.title
+            expect(page.all('li[data-milestone-id]')[2]).to have_content milestone2.title
+            expect(page.all('li[data-milestone-id]')[3]).to have_content milestone1.title
+            expect(page.all('li[data-milestone-id]')[4]).to have_content milestone_no_duedate.title
           end
         end
       end

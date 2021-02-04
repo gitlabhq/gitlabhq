@@ -11,11 +11,13 @@ class ChatNotificationService < Service
     tag_push pipeline wiki_page deployment
   ].freeze
 
+  SUPPORTED_EVENTS_FOR_LABEL_FILTER = %w[issue confidential_issue merge_request note confidential_note].freeze
+
   EVENT_CHANNEL = proc { |event| "#{event}_channel" }
 
   default_value_for :category, 'chat'
 
-  prop_accessor :webhook, :username, :channel, :branches_to_be_notified
+  prop_accessor :webhook, :username, :channel, :branches_to_be_notified, :labels_to_be_notified
 
   # Custom serialized properties initialization
   prop_accessor(*SUPPORTED_EVENTS.map { |event| EVENT_CHANNEL[event] })
@@ -62,12 +64,16 @@ class ChatNotificationService < Service
       { type: 'text', name: 'webhook', placeholder: "e.g. #{webhook_placeholder}", required: true }.freeze,
       { type: 'text', name: 'username', placeholder: 'e.g. GitLab' }.freeze,
       { type: 'checkbox', name: 'notify_only_broken_pipelines' }.freeze,
-      { type: 'select', name: 'branches_to_be_notified', choices: branch_choices }.freeze
+      { type: 'select', name: 'branches_to_be_notified', choices: branch_choices }.freeze,
+      { type: 'text', name: 'labels_to_be_notified', placeholder: 'e.g. ~backend', help: 'Only supported for issue, merge request and note events.' }.freeze
     ].freeze
   end
 
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
+
+    return unless notify_label?(data)
+
     return unless webhook.present?
 
     object_kind = data[:object_kind]
@@ -113,6 +119,22 @@ class ChatNotificationService < Service
   end
 
   private
+
+  def labels_to_be_notified_list
+    return [] if labels_to_be_notified.nil?
+
+    labels_to_be_notified.delete('~').split(',').map(&:strip)
+  end
+
+  def notify_label?(data)
+    return true unless SUPPORTED_EVENTS_FOR_LABEL_FILTER.include?(data[:object_kind]) && labels_to_be_notified.present?
+
+    issue_labels = data.dig(:issue, :labels) || []
+    merge_request_labels = data.dig(:merge_request, :labels) || []
+    label_titles = (issue_labels + merge_request_labels).pluck(:title)
+
+    (labels_to_be_notified_list & label_titles).any?
+  end
 
   # every notifier must implement this independently
   def notify(message, opts)

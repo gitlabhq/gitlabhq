@@ -3,24 +3,23 @@ import {
   getPayloadFields,
   transformForSave,
 } from '~/alerts_settings/utils/mapping_transformations';
-import gitlabFieldsMock from '~/alerts_settings/components/mocks/gitlabFields.json';
 import parsedMapping from '~/alerts_settings/components/mocks/parsedMapping.json';
+import alertFields from '../mocks/alertFields.json';
 
 describe('Mapping Transformation Utilities', () => {
   const nameField = {
     label: 'Name',
     path: ['alert', 'name'],
-    type: 'STRING',
+    type: 'string',
   };
   const dashboardField = {
     label: 'Dashboard Id',
     path: ['alert', 'dashboardId'],
-    type: 'STRING',
+    type: 'string',
   };
 
   describe('getMappingData', () => {
     it('should return mapping data', () => {
-      const alertFields = gitlabFieldsMock.slice(0, 3);
       const result = getMappingData(
         alertFields,
         getPayloadFields(parsedMapping.samplePayload.payloadAlerFields.nodes.slice(0, 3)),
@@ -51,7 +50,9 @@ describe('Mapping Transformation Utilities', () => {
       ];
       const result = transformForSave(mockMappingData);
       const { path, type, label } = nameField;
-      expect(result).toEqual([{ fieldName, path, type, label }]);
+      expect(result).toEqual([
+        { fieldName: fieldName.toUpperCase(), path, type: type.toUpperCase(), label },
+      ]);
     });
 
     it('should return empty array if no mapping provided', () => {

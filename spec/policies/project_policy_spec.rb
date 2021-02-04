@@ -865,6 +865,28 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  context 'security configuration feature' do
+    %w(guest reporter).each do |role|
+      context role do
+        let(:current_user) { send(role) }
+
+        it 'prevents reading security configuration' do
+          expect_disallowed(:read_security_configuration)
+        end
+      end
+    end
+
+    %w(developer maintainer owner).each do |role|
+      context role do
+        let(:current_user) { send(role) }
+
+        it 'allows reading security configuration' do
+          expect_allowed(:read_security_configuration)
+        end
+      end
+    end
+  end
+
   describe 'design permissions' do
     let(:current_user) { guest }
 

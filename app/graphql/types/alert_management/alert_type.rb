@@ -112,7 +112,7 @@ module Types
       field :todos,
             Types::TodoType.connection_type,
             null: true,
-            description: 'To-dos of the current user for the alert.',
+            description: 'To-do items of the current user for the alert.',
             resolver: Resolvers::TodoResolver
 
       field :details_url,

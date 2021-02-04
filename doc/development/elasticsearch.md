@@ -210,7 +210,7 @@ class MigrationName < Elastic::Migration
 end
 ```
 
-Applied migrations are stored in `gitlab-#{RAILS_ENV}-migrations` index. All unexecuted migrations
+Applied migrations are stored in `gitlab-#{RAILS_ENV}-migrations` index. All migrations not executed
 are applied by the [`Elastic::MigrationWorker`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/workers/elastic/migration_worker.rb)
 cron worker sequentially.
 

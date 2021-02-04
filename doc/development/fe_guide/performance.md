@@ -202,15 +202,15 @@ help identify marks and measures coming from the different apps on the same page
 
 ## Best Practices
 
-### Realtime Components
+### Real-time Components
 
-When writing code for realtime features we have to keep a couple of things in mind:
+When writing code for real-time features we have to keep a couple of things in mind:
 
 1. Do not overload the server with requests.
-1. It should feel realtime.
+1. It should feel real-time.
 
-Thus, we must strike a balance between sending requests and the feeling of realtime.
-Use the following rules when creating realtime solutions.
+Thus, we must strike a balance between sending requests and the feeling of real-time.
+Use the following rules when creating real-time solutions.
 
 1. The server tells you how much to poll by sending `Poll-Interval` in the header.
    Use that as your polling interval. This enables system administrators to change the
@@ -221,7 +221,7 @@ Use the following rules when creating realtime solutions.
 1. Poll on active tabs only. Please use [Visibility](https://github.com/ai/visibilityjs).
 1. Use regular polling intervals, do not use backoff polling, or jitter, as the interval is
    controlled by the server.
-1. The backend code is likely to be using etags. You do not and should not check for status
+1. The backend code is likely to be using ETags. You do not and should not check for status
    `304 Not Modified`. The browser transforms it for you.
 
 ### Lazy Loading Images
@@ -333,7 +333,7 @@ browser's developer console from any page in GitLab.
       action();
     ```
 
-  For example, see how we use this in [app/assets/javascripts/pages/projects/graphs/charts/index.js](https://gitlab.com/gitlab-org/gitlab/-/commit/5e90885d6afd4497002df55bf015b338efcfc3c5#02e81de37f5b1716a3ef3222fa7f7edf22c40969_9_8):
+  For example, see how we use this in [`app/assets/javascripts/pages/projects/graphs/charts/index.js`](https://gitlab.com/gitlab-org/gitlab/-/commit/5e90885d6afd4497002df55bf015b338efcfc3c5#02e81de37f5b1716a3ef3222fa7f7edf22c40969_9_8):
 
   ```javascript
   waitForCSSLoaded(() => {

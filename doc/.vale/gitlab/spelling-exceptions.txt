@@ -1,3 +1,5 @@
+accessor
+accessors
 Akismet
 Alertmanager
 Algolia
@@ -75,6 +77,7 @@ burndown
 burnup
 burstable
 cacheable
+Caddy
 callstack
 callstacks
 Camo
@@ -291,6 +294,7 @@ Leiningen
 libFuzzer
 Libravatar
 liveness
+Lodash
 Lograge
 logrotate
 Logrus
@@ -582,11 +586,14 @@ swimlane
 swimlanes
 syncable
 Sysbench
+syscall
+syscalls
 syslog
 tanuki
 tcpdump
 templated
 Thanos
+Thoughtbot
 throughputs
 Tiller
 timebox
@@ -605,6 +612,7 @@ toolkits
 tooltip
 tooltips
 transpile
+transpiled
 transpiles
 transpiling
 Trello
@@ -636,6 +644,7 @@ unchecks
 uncomment
 uncommented
 uncommenting
+uncordon
 unencode
 unencoded
 unencoder
@@ -742,6 +751,7 @@ Worldline
 Xcode
 Xeon
 YouTrack
+Yubico
 Zeitwerk
 Zendesk
 zsh

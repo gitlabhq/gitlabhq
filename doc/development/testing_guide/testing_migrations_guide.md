@@ -32,7 +32,7 @@ migrate the database **down** to the previous migration version.
 
 With this approach you can test a migration against a database schema.
 
-An `after` hook migrates the database **up** and reinstitutes the latest
+An `after` hook migrates the database **up** and restores the latest
 schema version, so that the process does not affect subsequent specs and
 ensures proper isolation.
 

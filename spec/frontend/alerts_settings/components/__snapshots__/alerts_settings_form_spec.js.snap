@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AlertsSettingsFormNew with default values renders the initial template 1`] = `
+exports[`AlertsSettingsForm with default values renders the initial template 1`] = `
 <form
   class="gl-mt-6"
 >

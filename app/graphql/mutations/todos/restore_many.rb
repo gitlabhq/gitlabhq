@@ -10,16 +10,16 @@ module Mutations
       argument :ids,
                [::Types::GlobalIDType[::Todo]],
                required: true,
-               description: 'The global IDs of the to-dos to restore (a maximum of 50 is supported at once).'
+               description: 'The global IDs of the to-do items to restore (a maximum of 50 is supported at once).'
 
       field :updated_ids, [::Types::GlobalIDType[Todo]],
             null: false,
             description: 'The IDs of the updated to-do items.',
-            deprecated: { reason: 'Use todos', milestone: '13.2' }
+            deprecated: { reason: 'Use to-do items', milestone: '13.2' }
 
       field :todos, [::Types::TodoType],
             null: false,
-            description: 'Updated to-dos.'
+            description: 'Updated to-do items.'
 
       def resolve(ids:)
         check_update_amount_limit!(ids)
@@ -46,7 +46,7 @@ module Mutations
       end
 
       def raise_too_many_todos_requested_error
-        raise Gitlab::Graphql::Errors::ArgumentError, 'Too many to-dos requested.'
+        raise Gitlab::Graphql::Errors::ArgumentError, 'Too many to-do items requested.'
       end
 
       def check_update_amount_limit!(ids)

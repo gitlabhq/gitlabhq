@@ -26,7 +26,7 @@ To share 'Project Acme' with the 'Engineering' group:
 
 1. For 'Project Acme' use the left navigation menu to go to **Members**.
 
-   ![share project with groups](img/share_project_with_groups_tab_v13_8.png)
+   ![share project with groups](img/share_project_with_groups_tab_v13_9.png)
 
 1. Select the **Invite group** tab.
 1. Add the 'Engineering' group with the maximum access level of your choice.
@@ -35,7 +35,7 @@ To share 'Project Acme' with the 'Engineering' group:
 1. After sharing 'Project Acme' with 'Engineering':
    - The group is listed in the **Groups** tab.
 
-     !['Engineering' group is listed in Groups tab](img/project_groups_tab_13_8.png)
+     !['Engineering' group is listed in Groups tab](img/project_groups_tab_v13_9.png)
 
    - The project is listed on the group dashboard.
 

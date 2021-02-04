@@ -88,7 +88,7 @@ and they will assist you with any issues you are having.
 
 - Minimal configuration that can be used to [test a Kubernetes Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/620).
 
-- Tailing logs of a separate pod. An example for a Webservice pod:
+- Tailing logs of a separate pod. An example for a `webservice` pod:
 
   ```shell
   kubectl logs gitlab-webservice-54fbf6698b-hpckq -c webservice

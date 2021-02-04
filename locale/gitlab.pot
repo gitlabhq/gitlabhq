@@ -32536,6 +32536,9 @@ msgstr ""
 msgid "Webhooks|Secret Token"
 msgstr ""
 
+msgid "Webhooks|Subgroup events"
+msgstr ""
+
 msgid "Webhooks|Tag push events"
 msgstr ""
 
@@ -32561,6 +32564,9 @@ msgid "Webhooks|This URL will be triggered when a merge request is created/updat
 msgstr ""
 
 msgid "Webhooks|This URL will be triggered when a new tag is pushed to the repository"
+msgstr ""
+
+msgid "Webhooks|This URL will be triggered when a subgroup is created/removed"
 msgstr ""
 
 msgid "Webhooks|This URL will be triggered when a wiki page is created/updated"

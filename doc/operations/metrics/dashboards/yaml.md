@@ -133,7 +133,7 @@ metrics:
     unit: 'count'
 ```
 
-This works by lowercasing the value of `label` and, if there are more words separated by spaces, replacing those spaces with an underscore (`_`). The transformed value is then checked against the labels of the time series returned by the Prometheus query. If a time series label is found that is equal to the transformed value, then the label value renders in the legend like this:
+This works by converting the value of `label` to lower-case and, if there are more words separated by spaces, replacing those spaces with an underscore (`_`). The transformed value is then checked against the labels of the time series returned by the Prometheus query. If a time series label is found that is equal to the transformed value, then the label value renders in the legend like this:
 
 ![legend with label shorthand variable](img/prometheus_dashboard_label_variable_shorthand.png)
 

@@ -1221,7 +1221,7 @@ X-Gitlab-Event: Pipeline Hook
             "id": 380987,
             "description": "shared-runners-manager-6.gitlab.com",
             "active": true,
-            "is_shared": true, 
+            "is_shared": true,
             "tags": [
               "linux",
               "docker"
@@ -1484,6 +1484,74 @@ X-Gitlab-Event: Member Hook
   "event_name": "user_remove_from_group"
 }
 ```
+
+### Subgroup events **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/260419) in GitLab 13.9.
+
+Subgroup events are triggered when:
+
+- A [subgroup is created in a group](#subgroup-created-in-a-group)
+- A [subgroup is removed from a group](#subgroup-removed-from-a-group)
+
+#### Subgroup created in a group
+
+**Request Header**:
+
+```plaintext
+X-Gitlab-Event: Subgroup Hook
+```
+
+**Request Body**:
+
+```json
+{
+
+  "created_at": "2021-01-20T09:40:12Z",
+  "updated_at": "2021-01-20T09:40:12Z",
+  "event_name": "subgroup_create",
+  "name": "subgroup1",
+  "path": "subgroup1",
+  "full_path": "group1/subgroup1",
+  "group_id": 10,
+  "parent_group_id": 7,
+  "parent_name": "group1",
+  "parent_path": "group1",
+  "parent_full_path": "group1"
+
+}
+```
+
+#### Subgroup removed from a group
+
+**Request Header**:
+
+```plaintext
+X-Gitlab-Event: Subgroup Hook
+```
+
+**Request Body**:
+
+```json
+{
+
+  "created_at": "2021-01-20T09:40:12Z",
+  "updated_at": "2021-01-20T09:40:12Z",
+  "event_name": "subgroup_destroy",
+  "name": "subgroup1",
+  "path": "subgroup1",
+  "full_path": "group1/subgroup1",
+  "group_id": 10,
+  "parent_group_id": 7,
+  "parent_name": "group1",
+  "parent_path": "group1",
+  "parent_full_path": "group1"
+
+}
+```
+
+NOTE:
+Webhooks for when a [subgroup is removed from a group](#subgroup-removed-from-a-group) are not triggered when a [subgroup is transferred to a new parent group](../../group/index.md#transferring-groups)
 
 ### Feature Flag events
 

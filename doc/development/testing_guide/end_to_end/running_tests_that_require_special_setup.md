@@ -78,7 +78,7 @@ CONTAINER ID   ...     PORTS                                    NAMES
 d15d3386a0a8   ...     22/tcp, 443/tcp, 0.0.0.0:32772->80/tcp   gitlab-gitaly-ha
 ```
 
-That shows that the GitLab instance running in the `gitlab-gitaly-ha` container can be reached via `http://localhost:32772`. However, Git operations like cloning and pushing are performed against the URL revealed via the UI as the clone URL. It uses the hostname configured for the GitLab instance, which in this case matches the Docker container name and network, `gitlab-gitaly-ha.test`. Before you can run the tests you need to configure your computer to access the container via that address. One option is to [use caddyserver as described for running tests against GDK](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/run_qa_against_gdk.md#workarounds).
+That shows that the GitLab instance running in the `gitlab-gitaly-ha` container can be reached via `http://localhost:32772`. However, Git operations like cloning and pushing are performed against the URL revealed via the UI as the clone URL. It uses the hostname configured for the GitLab instance, which in this case matches the Docker container name and network, `gitlab-gitaly-ha.test`. Before you can run the tests you need to configure your computer to access the container via that address. One option is to [use Caddy server as described for running tests against GDK](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/run_qa_against_gdk.md#workarounds).
 
 Another option is to use NGINX.
 

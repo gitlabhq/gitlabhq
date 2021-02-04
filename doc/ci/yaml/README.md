@@ -6,7 +6,9 @@ type: reference
 ---
 
 <!-- markdownlint-disable MD044 -->
+<!-- vale gitlab.Spelling = NO -->
 # Keyword reference for the .gitlab-ci.yml file
+<!-- vale gitlab.Spelling = YES -->
 <!-- markdownlint-enable MD044 -->
 
 This document lists the configuration options for your GitLab `.gitlab-ci.yml` file.
@@ -1403,7 +1405,7 @@ job:
         - spec/**.rb
 ```
 
-Glob patterns are interpreted with Ruby [File.fnmatch](https://docs.ruby-lang.org/en/2.7.0/File.html#method-c-fnmatch)
+Glob patterns are interpreted with Ruby [`File.fnmatch`](https://docs.ruby-lang.org/en/2.7.0/File.html#method-c-fnmatch)
 with the flags `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
 
 For performance reasons, GitLab matches a maximum of 10,000 `exists` patterns. After the 10,000th check, rules with patterned globs always match.

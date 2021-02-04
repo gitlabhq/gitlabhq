@@ -48,6 +48,10 @@ This page gathers all the resources for the topic **Authentication** within GitL
 
 ## Third-party resources
 
+<!-- vale gitlab.Spelling = NO -->
+
 - [Kanboard Plugin GitLab Authentication](https://github.com/kanboard/plugin-gitlab-auth)
 - [Jenkins GitLab OAuth Plugin](https://wiki.jenkins.io/display/JENKINS/GitLab+OAuth+Plugin)
 - [OKD - Configuring Authentication and User Agent](https://docs.okd.io/3.11/install_config/configuring_authentication.html#GitLab)
+
+<!-- vale gitlab.Spelling = YES -->

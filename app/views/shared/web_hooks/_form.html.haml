@@ -50,6 +50,7 @@
         = s_('Webhooks|This URL will be triggered when a confidential issue is created/updated/merged')
     - if @group
       = render_if_exists 'groups/hooks/member_events', form: form
+      = render_if_exists 'groups/hooks/subgroup_events', form: form
     %li
       = form.check_box :merge_requests_events, class: 'form-check-input'
       = form.label :merge_requests_events, class: 'list-label form-check-label gl-ml-1' do

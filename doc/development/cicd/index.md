@@ -146,7 +146,7 @@ As we increase the number of runners in the pool we also increase the chances of
 
 ## The definition of "Job" in GitLab CI/CD
 
-"Job" in GitLab CI context refers a task to drive Continuous Integartion, Delivery and Deployment.
+"Job" in GitLab CI context refers a task to drive Continuous Integration, Delivery and Deployment.
 Typically, a pipeline contains multiple stages, and a stage contains multiple jobs.
 
 In Active Record modeling, Job is defined as `CommitStatus` class.
@@ -164,4 +164,4 @@ we should use "Job" in general, instead of "Build".
 
 We have a few inconsistencies in our codebase that should be refactored.
 For example, `CommitStatus` should be `Ci::Job` and `Ci::JobArtifact` should be `Ci::BuildArtifact`.
-Please read [this isse](https://gitlab.com/gitlab-org/gitlab/-/issues/16111) for the full refactoring plan.
+See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/16111) for the full refactoring plan.

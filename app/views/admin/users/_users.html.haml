@@ -78,10 +78,8 @@
 - else
   .table-holder
     .thead-white.text-nowrap.gl-responsive-table-row.table-row-header{ role: 'row' }
-      .table-section.section-40{ role: 'rowheader' }= _('Name')
-      .table-section.section-10{ role: 'rowheader' }= _('Projects')
-      .table-section.section-15{ role: 'rowheader' }= _('Created on')
-      .table-section.section-15{ role: 'rowheader' }= _('Last activity')
+      - user_table_headers.each do |header|
+        .table-section{ class: header[:section_class_name], role: 'rowheader' }= header[:header_text]
 
     = render partial: 'admin/users/user', collection: @users
 

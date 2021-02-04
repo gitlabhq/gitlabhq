@@ -10,9 +10,7 @@
 export const getMappingData = (gitlabFields, payloadFields, savedMapping) => {
   return gitlabFields.map((gitlabField) => {
     // find fields from payload that match gitlab alert field by type
-    const mappingFields = payloadFields.filter(({ type }) =>
-      gitlabField.compatibleTypes.includes(type),
-    );
+    const mappingFields = payloadFields.filter(({ type }) => gitlabField.types.includes(type));
 
     // find the mapping that was previously stored
     const foundMapping = savedMapping.find(({ fieldName }) => fieldName === gitlabField.name);
@@ -42,9 +40,9 @@ export const transformForSave = (mappingData) => {
     if (mapped) {
       const { path, type, label } = mapped;
       acc.push({
-        fieldName: field.name,
+        fieldName: field.name.toUpperCase(),
         path,
-        type,
+        type: type.toUpperCase(),
         label,
       });
     }

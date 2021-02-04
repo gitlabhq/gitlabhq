@@ -31,7 +31,7 @@ module Types
           description: 'Web path of the user'
     field :todos, Types::TodoType.connection_type, null: false,
           resolver: Resolvers::TodoResolver,
-          description: 'Todos of the user'
+          description: 'To-do items of the user'
     field :group_memberships, Types::GroupMemberType.connection_type, null: true,
           description: 'Group memberships of the user'
     field :group_count, GraphQL::INT_TYPE, null: true,

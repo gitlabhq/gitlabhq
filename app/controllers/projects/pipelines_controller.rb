@@ -16,6 +16,7 @@ class Projects::PipelinesController < Projects::ApplicationController
     push_frontend_feature_flag(:new_pipeline_form, project, default_enabled: true)
     push_frontend_feature_flag(:graphql_pipeline_details, project, type: :development, default_enabled: :yaml)
     push_frontend_feature_flag(:graphql_pipeline_details_users, current_user, type: :development, default_enabled: :yaml)
+    push_frontend_feature_flag(:ci_mini_pipeline_gl_dropdown, project, type: :development, default_enabled: :yaml)
   end
   before_action :ensure_pipeline, only: [:show]
   before_action :push_experiment_to_gon, only: :index, if: :html_request?

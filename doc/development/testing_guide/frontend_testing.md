@@ -258,7 +258,7 @@ it('exists', () => {
 ### Naming unit tests
 
 When writing describe test blocks to test specific functions/methods,
-please use the method name as the describe block name.
+use the method name as the describe block name.
 
 **Bad**:
 
@@ -439,7 +439,7 @@ it('waits for an Ajax call', done => {
 });
 ```
 
-If you are not able to register handlers to the `Promise`, for example because it is executed in a synchronous Vue life cycle hook, please take a look at the [waitFor](#wait-until-axios-requests-finish) helpers or you can flush all pending `Promise`s:
+If you are not able to register handlers to the `Promise`, for example because it is executed in a synchronous Vue life cycle hook, take a look at the [waitFor](#wait-until-axios-requests-finish) helpers or you can flush all pending `Promise`s:
 
 **in Jest:**
 
@@ -702,10 +702,10 @@ unit testing by mocking out modules which cannot be easily consumed in our test 
 Jest supports [manual module mocks](https://jestjs.io/docs/en/manual-mocks) by placing a mock in a `__mocks__/` directory next to the source module
 (e.g. `app/assets/javascripts/ide/__mocks__`). **Don't do this.** We want to keep all of our test-related code in one place (the `spec/` folder).
 
-If a manual mock is needed for a `node_modules` package, please use the `spec/frontend/__mocks__` folder. Here's an example of
+If a manual mock is needed for a `node_modules` package, use the `spec/frontend/__mocks__` folder. Here's an example of
 a [Jest mock for the package `monaco-editor`](https://gitlab.com/gitlab-org/gitlab/blob/b7f914cddec9fc5971238cdf12766e79fa1629d7/spec/frontend/__mocks__/monaco-editor/index.js#L1).
 
-If a manual mock is needed for a CE module, please place it in `spec/frontend/mocks/ce`.
+If a manual mock is needed for a CE module, place it in `spec/frontend/mocks/ce`.
 
 - Files in `spec/frontend/mocks/ce` mocks the corresponding CE module from `app/assets/javascripts`, mirroring the source module's path.
   - Example: `spec/frontend/mocks/ce/lib/utils/axios_utils` mocks the module `~/lib/utils/axios_utils`.
@@ -728,11 +728,11 @@ If a manual mock is needed for a CE module, please place it in `spec/frontend/mo
 Global mocks introduce magic and technically can reduce test coverage. When mocking is deemed profitable:
 
 - Keep the mock short and focused.
-- Please leave a top-level comment in the mock on why it is necessary.
+- Leave a top-level comment in the mock on why it is necessary.
 
 ### Additional mocking techniques
 
-Please consult the [official Jest docs](https://jestjs.io/docs/en/jest-object#mock-modules) for a full overview of the available mocking features.
+Consult the [official Jest docs](https://jestjs.io/docs/en/jest-object#mock-modules) for a full overview of the available mocking features.
 
 ## Running Frontend Tests
 
@@ -865,7 +865,7 @@ end
 This will create a new fixture located at
 `tmp/tests/frontend/fixtures-ee/graphql/releases/queries/all_releases.query.graphql.json`.
 
-Note that you will need to provide the paths to all fragments used by the query.
+You will need to provide the paths to all fragments used by the query.
 `get_graphql_query_as_string` reads all of the provided file paths and returns
 the result as a single, concatenated string.
 
@@ -929,7 +929,8 @@ it.each([
 );
 ```
 
-**Note**: only use template literal block if pretty print is **not** needed for spec output. For example, empty strings, nested objects etc.
+NOTE:
+Only use template literal block if pretty print is not needed for spec output. For example, empty strings, nested objects etc.
 
 For example, when testing the difference between an empty search string and a non-empty search string, the use of the array block syntax with the pretty print option would be preferred. That way the differences between an empty string e.g. `''` and a non-empty string e.g. `'search string'` would be visible in the spec output. Whereas with a template literal block, the empty string would be shown as a space, which could lead to a confusing developer experience
 
@@ -1038,7 +1039,8 @@ import Subject from '~/feature/the_subject.vue';
 import _Thing from '~/feature/path/to/thing.vue';
 ```
 
-**PLEASE NOTE:** Do not simply disregard test timeouts. This could be a sign that there's
+NOTE:
+Do not disregard test timeouts. This could be a sign that there's
 actually a production problem. Use this opportunity to analyze the production webpack bundles and
 chunks and confirm that there is not a production issue with the async imports.
 
@@ -1063,7 +1065,7 @@ See also [Notes on testing Vue components](../fe_guide/vue.md#testing-vue-compon
 ## Test helpers
 
 Test helpers can be found in [`spec/frontend/__helpers__`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/frontend/__helpers__).
-If you introduce new helpers, please place them in that directory.  
+If you introduce new helpers, place them in that directory.
 
 ### Vuex Helper: `testAction`
 

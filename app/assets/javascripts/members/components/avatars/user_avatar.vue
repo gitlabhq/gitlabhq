@@ -69,7 +69,10 @@ export default {
     >
       <template #meta>
         <div v-if="statusEmoji" class="gl-p-1">
-          <span v-safe-html:[$options.safeHtmlConfig]="glEmojiTag(statusEmoji)"></span>
+          <span
+            v-safe-html:[$options.safeHtmlConfig]="glEmojiTag(statusEmoji)"
+            class="user-status-emoji gl-mr-0"
+          ></span>
         </div>
         <div v-for="badge in badges" :key="badge.text" class="gl-p-1">
           <gl-badge size="sm" :variant="badge.variant">

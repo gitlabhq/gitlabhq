@@ -125,6 +125,9 @@ export default {
     prometheus: {
       default: {},
     },
+    multiIntegrations: {
+      default: false,
+    },
   },
   props: {
     loading: {
@@ -134,6 +137,11 @@ export default {
     canAddIntegration: {
       type: Boolean,
       required: true,
+    },
+    alertFields: {
+      type: Array,
+      required: false,
+      default: null,
     },
   },
   apollo: {
@@ -196,8 +204,10 @@ export default {
     },
     showMappingBuilder() {
       return (
+        this.multiIntegrations &&
         this.glFeatures.multipleHttpIntegrationsCustomMapping &&
-        this.selectedIntegration === typeSet.http
+        this.selectedIntegration === typeSet.http &&
+        this.alertFields?.length
       );
     },
     parsedSamplePayload() {
@@ -558,6 +568,7 @@ export default {
           <mapping-builder
             :parsed-payload="parsedSamplePayload"
             :saved-mapping="savedMapping"
+            :alert-fields="alertFields"
             @onMappingUpdate="updateMapping"
           />
         </gl-form-group>

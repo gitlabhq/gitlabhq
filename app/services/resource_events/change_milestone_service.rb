@@ -4,8 +4,8 @@ module ResourceEvents
   class ChangeMilestoneService < BaseChangeTimeboxService
     attr_reader :milestone, :old_milestone
 
-    def initialize(resource, user, created_at: Time.current, old_milestone:)
-      super(resource, user, created_at: created_at)
+    def initialize(resource, user, old_milestone:)
+      super(resource, user)
 
       @milestone = resource&.milestone
       @old_milestone = old_milestone

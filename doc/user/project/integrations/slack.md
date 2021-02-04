@@ -45,6 +45,7 @@ separately configured [Slack slash commands](slack_slash_commands.md).
 1. Select the **Notify only broken pipelines** check box to only notify on failures.
 1. In the **Branches to be notified** select box, choose which types of branches
    to send notifications for.
+1. Leave the **Labels to be notified** field blank to get all notifications or add labels that the issue or merge request must have in order to trigger a notification.
 1. Click **Test settings and save changes**.
 
 Your Slack team now starts receiving GitLab event notifications as configured.

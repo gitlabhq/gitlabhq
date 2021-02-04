@@ -57,6 +57,13 @@ export default {
       default: false,
     },
   },
+  props: {
+    alertFields: {
+      type: Array,
+      required: false,
+      default: null,
+    },
+  },
   apollo: {
     integrations: {
       fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
@@ -312,6 +319,7 @@ export default {
     <alert-settings-form
       :loading="isUpdating"
       :can-add-integration="canAddIntegration"
+      :alert-fields="alertFields"
       @create-new-integration="createNewIntegration"
       @update-integration="updateIntegration"
       @reset-token="resetToken"

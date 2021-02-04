@@ -3,6 +3,10 @@
 RSpec.shared_examples 'timebox(milestone or iteration) resource events creator' do |timebox_event_class|
   let_it_be(:user) { create(:user) }
 
+  before do
+    resource.system_note_timestamp = created_at_time
+  end
+
   context 'when milestone/iteration is added' do
     let(:service) { described_class.new(resource, user, **add_timebox_args) }
 

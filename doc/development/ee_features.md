@@ -166,9 +166,9 @@ still having access the class's implementation with `super`.
 There are a few gotchas with it:
 
 - you should always [`extend ::Gitlab::Utils::Override`](utilities.md#override) and use `override` to
-  guard the "overrider" method to ensure that if the method gets renamed in
+  guard the `overrider` method to ensure that if the method gets renamed in
   CE, the EE override isn't silently forgotten.
-- when the "overrider" would add a line in the middle of the CE
+- when the `overrider` would add a line in the middle of the CE
   implementation, you should refactor the CE method and split it in
   smaller methods. Or create a "hook" method that is empty in CE,
   and with the EE-specific implementation in EE.
@@ -971,7 +971,7 @@ information on managing page-specific JavaScript within EE.
 
 #### Child Component only used in EE
 
-To separate Vue template differences we should [async import the components](https://vuejs.org/v2/guide/components-dynamic-async.html#Async-Components).
+To separate Vue template differences we should [import the components asynchronously](https://vuejs.org/v2/guide/components-dynamic-async.html#Async-Components).
 
 Doing this allows for us to load the correct component in EE while in CE
 we can load a empty component that renders nothing. This code **should**
@@ -1068,7 +1068,7 @@ export default {
 **For EE components that need different results for the same computed values, we can pass in props to the CE wrapper as seen in the example.**
 
 - **EE Child components**
-  - Since we are using the async loading to check which component to load, we'd still use the component's name, check [this example](#child-component-only-used-in-ee).
+  - Since we are using the asynchronous loading to check which component to load, we'd still use the component's name, check [this example](#child-component-only-used-in-ee).
 
 - **EE extra HTML**
   - For the templates that have extra HTML in EE we should move it into a new component and use the `ee_else_ce` dynamic import

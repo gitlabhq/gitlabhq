@@ -6,67 +6,67 @@
         {
           "path": ["dashboardId"],
           "label": "Dashboard Id",
-          "type": "STRING"
+          "type": "string"
         },
         {
           "path": ["evalMatches"],
           "label": "Eval Matches",
-          "type": "ARRAY"
+          "type": "array"
         },
         {
           "path": ["createdAt"],
           "label": "Created At",
-          "type": "DATETIME"
+          "type": "datetime"
         },
         {
           "path": ["imageUrl"],
           "label": "Image Url",
-          "type": "STRING"
+          "type": "string"
         },
         {
           "path": ["message"],
           "label": "Message",
-          "type": "STRING"
+          "type": "string"
         },
         {
           "path": ["orgId"],
           "label": "Org Id",
-          "type": "STRING"
+          "type": "string"
         },
         {
           "path": ["panelId"],
           "label": "Panel Id",
-          "type": "STRING"
+          "type": "string"
         },
         {
           "path": ["ruleId"],
           "label": "Rule Id",
-          "type": "STRING"
+          "type": "string"
         },
         {
           "path": ["ruleName"],
           "label": "Rule Name",
-          "type": "STRING"
+          "type": "string"
         },
         {
           "path": ["ruleUrl"],
           "label": "Rule Url",
-          "type": "STRING"
+          "type": "string"
         },
         {
           "path": ["state"],
           "label": "State",
-          "type": "STRING"
+          "type": "string"
         },
         {
           "path": ["title"],
           "label": "Title",
-          "type": "STRING"
+          "type": "string"
         },
         {
           "path": ["tags", "tag"],
           "label": "Tags",
-          "type": "STRING"
+          "type": "string"
         }
       ]
     }

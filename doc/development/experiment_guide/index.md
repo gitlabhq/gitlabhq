@@ -44,7 +44,7 @@ addressed.
 > - It is not yet intended for use in GitLab self-managed instances.
 
 [GitLab Experiment](https://gitlab.com/gitlab-org/gitlab-experiment/) is a gem included
-in GitLab that can be used for running experiments. 
+in GitLab that can be used for running experiments.
 
 ## How to create an A/B test using `experimentation.rb`
 
@@ -368,7 +368,7 @@ Use a comma to list more than one experiment to be forced:
 document.cookie = "force_experiment=<EXPERIMENT_KEY>,<ANOTHER_EXPERIMENT_KEY>; path=/";
 ```
 
-Clear the experiments by unsetting the `force_experiment` cookie:
+To clear the experiments, unset the `force_experiment` cookie:
 
 ```javascript
 document.cookie = "force_experiment=; path=/";

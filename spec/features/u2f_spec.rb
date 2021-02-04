@@ -39,6 +39,11 @@ RSpec.describe 'Using U2F (Universal 2nd Factor) Devices for Authentication', :j
     end
 
     it 'allows the same device to be registered for multiple users' do
+      # U2f specs will be removed after WebAuthn migration completed
+      pending('FakeU2fDevice has static key handle, '\
+              'leading to duplicate credential_xid for WebAuthn during migration, '\
+              'resulting in unique constraint violation')
+
       # First user
       visit profile_account_path
       manage_two_factor_authentication
@@ -148,6 +153,11 @@ RSpec.describe 'Using U2F (Universal 2nd Factor) Devices for Authentication', :j
 
       describe "and also the current user" do
         it "allows logging in with that particular device" do
+          # U2f specs will be removed after WebAuthn migration completed
+          pending('FakeU2fDevice has static key handle, '\
+                  'leading to duplicate credential_xid for WebAuthn during migration, '\
+                  'resulting in unique constraint violation')
+
           # Register current user with the same U2F device
           current_user = gitlab_sign_in(:user)
           current_user.update_attribute(:otp_required_for_login, true)

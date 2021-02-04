@@ -10,4 +10,8 @@ type: index
 You can integrate GitLab with its security partners. This page has information on how do this with
 each security partner:
 
+<!-- vale gitlab.Spelling = NO -->
+
 - [Anchore](https://docs.anchore.com/current/docs/using/integration/ci_cd/gitlab/)
+
+<!-- vale gitlab.Spelling = YES -->
