@@ -22,6 +22,13 @@ describe('graph component', () => {
     pipeline: generateResponse(mockPipelineResponse, 'root/fungi-xoxo'),
   };
 
+  const defaultData = {
+    measurements: {
+      width: 800,
+      height: 800,
+    },
+  };
+
   const createComponent = ({
     data = {},
     mountFn = shallowMount,
@@ -34,7 +41,10 @@ describe('graph component', () => {
         ...props,
       },
       data() {
-        return { ...data };
+        return {
+          ...defaultData,
+          ...data,
+        };
       },
       provide: {
         dataMethod: GRAPHQL,

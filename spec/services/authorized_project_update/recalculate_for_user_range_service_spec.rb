@@ -9,7 +9,7 @@ RSpec.describe AuthorizedProjectUpdate::RecalculateForUserRangeService do
     it 'calls Users::RefreshAuthorizedProjectsService' do
       users.each do |user|
         expect(Users::RefreshAuthorizedProjectsService).to(
-          receive(:new).with(user).and_call_original)
+          receive(:new).with(user, source: described_class.name).and_call_original)
       end
 
       range = users.map(&:id).minmax

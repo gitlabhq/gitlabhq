@@ -65,7 +65,7 @@ describe('Codequality Reports actions', () => {
     let mock;
     let diffFeatureFlagEnabled;
 
-    describe('with codequalityMrDiff feature flag enabled', () => {
+    describe('with codequalityBackendComparison feature flag enabled', () => {
       beforeEach(() => {
         diffFeatureFlagEnabled = true;
         localState.reportsPath = `${TEST_HOST}/codequality_reports.json`;
@@ -112,7 +112,7 @@ describe('Codequality Reports actions', () => {
       });
     });
 
-    describe('with codequalityMrDiff feature flag disabled', () => {
+    describe('with codequalityBackendComparison feature flag disabled', () => {
       beforeEach(() => {
         diffFeatureFlagEnabled = false;
         localState.headPath = `${TEST_HOST}/head.json`;

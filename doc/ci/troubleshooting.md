@@ -262,6 +262,23 @@ To [prevent duplicate pipelines](yaml/README.md#prevent-duplicate-pipelines), us
 [`workflow: rules`](yaml/README.md#workflowrules) or rewrite your rules to control
 which pipelines can run.
 
+### Console workaround if job using resource_group gets stuck
+
+```ruby
+# find resource group by name
+resource_group = Project.find_by_full_path('...').resource_groups.find_by(key: 'the-group-name')
+busy_resources = resource_group.resources.where('build_id IS NOT NULL')
+
+# identify which builds are occupying the resource 
+# (I think it should be 1 as of today)
+busy_resources.pluck(:build_id)
+
+# it's good to check why this build is holding the resource.
+# Is it stuck? Has it been forcefully dropped by the system?
+# free up busy resources
+busy_resources.update_all(build_id: nil)
+```
+
 ## How to get help
 
 If you are unable to resolve pipeline issues, you can get help from:

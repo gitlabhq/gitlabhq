@@ -2483,9 +2483,6 @@ msgstr ""
 msgid "AlertManagement|Create incident"
 msgstr ""
 
-msgid "AlertManagement|Critical"
-msgstr ""
-
 msgid "AlertManagement|Display alerts from all your monitoring tools directly within GitLab. Streamline the investigation of your alerts and the escalation of alerts to incidents."
 msgstr ""
 
@@ -2498,22 +2495,10 @@ msgstr ""
 msgid "AlertManagement|Events"
 msgstr ""
 
-msgid "AlertManagement|High"
-msgstr ""
-
 msgid "AlertManagement|Incident"
 msgstr ""
 
-msgid "AlertManagement|Info"
-msgstr ""
-
 msgid "AlertManagement|Key"
-msgstr ""
-
-msgid "AlertManagement|Low"
-msgstr ""
-
-msgid "AlertManagement|Medium"
 msgstr ""
 
 msgid "AlertManagement|Metrics"
@@ -2595,9 +2580,6 @@ msgid "AlertManagement|Tool"
 msgstr ""
 
 msgid "AlertManagement|Triggered"
-msgstr ""
-
-msgid "AlertManagement|Unknown"
 msgstr ""
 
 msgid "AlertManagement|Value"
@@ -24544,6 +24526,9 @@ msgstr ""
 msgid "Reports|Actions"
 msgstr ""
 
+msgid "Reports|Activity"
+msgstr ""
+
 msgid "Reports|An error occured while loading report"
 msgstr ""
 
@@ -25805,6 +25790,9 @@ msgstr ""
 msgid "SecurityReports|Add projects to your group"
 msgstr ""
 
+msgid "SecurityReports|All"
+msgstr ""
+
 msgid "SecurityReports|Comment added to '%{vulnerabilityName}'"
 msgstr ""
 
@@ -25881,6 +25869,12 @@ msgid "SecurityReports|More info"
 msgstr ""
 
 msgid "SecurityReports|More information"
+msgstr ""
+
+msgid "SecurityReports|No activity"
+msgstr ""
+
+msgid "SecurityReports|No longer detected"
 msgstr ""
 
 msgid "SecurityReports|No vulnerabilities found"
@@ -26006,6 +26000,9 @@ msgid "SecurityReports|While it's rare to have no vulnerabilities for your pipel
 msgstr ""
 
 msgid "SecurityReports|While it's rare to have no vulnerabilities, it can happen. In any event, we ask that you double check your settings to make sure you've set up your dashboard correctly."
+msgstr ""
+
+msgid "SecurityReports|With issues"
 msgstr ""
 
 msgid "SecurityReports|Won't fix / Accept risk"

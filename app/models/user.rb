@@ -960,8 +960,8 @@ class User < ApplicationRecord
   end
 
   # rubocop: disable CodeReuse/ServiceClass
-  def refresh_authorized_projects
-    Users::RefreshAuthorizedProjectsService.new(self).execute
+  def refresh_authorized_projects(source: nil)
+    Users::RefreshAuthorizedProjectsService.new(self, source: source).execute
   end
   # rubocop: enable CodeReuse/ServiceClass
 

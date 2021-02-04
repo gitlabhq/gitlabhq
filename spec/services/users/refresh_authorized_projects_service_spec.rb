@@ -143,6 +143,21 @@ RSpec.describe Users::RefreshAuthorizedProjectsService do
       expect(authorizations[0].project_id).to eq(project.id)
       expect(authorizations[0].access_level).to eq(Gitlab::Access::MAINTAINER)
     end
+
+    it 'logs the details of the refresh' do
+      source = :foo
+      service = described_class.new(user, source: source)
+      user.project_authorizations.delete_all
+
+      expect(Gitlab::AppJsonLogger).to(
+        receive(:info)
+          .with(event: 'authorized_projects_refresh',
+                'authorized_projects_refresh.source': source,
+                'authorized_projects_refresh.rows_deleted': 0,
+                'authorized_projects_refresh.rows_added': 1))
+
+      service.update_authorizations([], [[user.id, project.id, Gitlab::Access::MAINTAINER]])
+    end
   end
 
   describe '#fresh_access_levels_per_project' do

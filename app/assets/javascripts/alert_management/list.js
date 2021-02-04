@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import { defaultDataIdFromObject } from 'apollo-cache-inmemory';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { PAGE_CONFIG } from '~/vue_shared/alert_details/constants';
 import AlertManagementList from './components/alert_management_list_wrapper.vue';
 
 Vue.use(VueApollo);
@@ -59,6 +60,7 @@ export default () => {
       populatingAlertsHelpUrl,
       emptyAlertSvgPath,
       alertManagementEnabled: parseBoolean(alertManagementEnabled),
+      trackAlertStatusUpdateOptions: PAGE_CONFIG.OPERATIONS.TRACK_ALERT_STATUS_UPDATE_OPTIONS,
       userCanEnableAlertManagement: parseBoolean(userCanEnableAlertManagement),
     },
     apolloProvider,

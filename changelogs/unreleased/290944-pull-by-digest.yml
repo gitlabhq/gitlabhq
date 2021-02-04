@@ -1,0 +1,5 @@
+---
+title: Pull-by-digest and Docker 20.x support for the Dependency Proxy
+merge_request: 52805
+author:
+type: changed

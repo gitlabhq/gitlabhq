@@ -126,7 +126,7 @@ Example response:
 }
 ```
 
-## Group Audit Events **(STARTER)**
+## Group Audit Events **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34078) in GitLab 12.5.
 
@@ -233,7 +233,7 @@ Example response:
 }
 ```
 
-## Project Audit Events **(STARTER)**
+## Project Audit Events **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219238) in GitLab 13.1.
 

@@ -56,7 +56,7 @@ If you're using:
 - Self-managed GitLab, self-managed Jira, or both, configure the integration using
   [Jira's DVCS Connector](#jira-dvcs-configuration), which syncs data hourly.
 
-We recommend that a GitLab group administrator or instance administrator (in the case of
+We recommend that a GitLab group maintainer or group owner, or instance administrator (in the case of
 self-managed GitLab) set up the integration to simplify administration.
 
 ### Jira DVCS configuration

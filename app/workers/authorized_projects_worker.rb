@@ -25,7 +25,7 @@ class AuthorizedProjectsWorker
   def perform(user_id)
     user = User.find_by(id: user_id)
 
-    user&.refresh_authorized_projects
+    user&.refresh_authorized_projects(source: self.class.name)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end

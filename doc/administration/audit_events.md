@@ -4,7 +4,7 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Audit Events **(STARTER)**
+# Audit Events **(PREMIUM)**
 
 GitLab offers a way to view the changes made within the GitLab server for owners and administrators on a [paid plan](https://about.gitlab.com/pricing/).
 
@@ -42,7 +42,7 @@ There are two kinds of events logged:
 
 Impersonation is where an administrator uses credentials to perform an action as a different user.
 
-### Group events **(STARTER)**
+### Group events **(PREMIUM)**
 
 A user with a Owner role (or above) can retrieve group audit events of all users.
 A user with a Developer or Maintainer role is limited to group audit events based on their individual actions.
@@ -72,7 +72,7 @@ From there, you can see the following actions:
 
 Group events can also be accessed via the [Group Audit Events API](../api/audit_events.md#group-audit-events)
 
-### Project events **(STARTER)**
+### Project events **(PREMIUM)**
 
 A user with a Maintainer role (or above) can retrieve project audit events of all users.
 A user with a Developer role is limited to project audit events based on their individual actions.

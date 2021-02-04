@@ -81,7 +81,7 @@ describe('AlertsSettingsFormNew', () => {
     });
 
     it('renders the initial template', () => {
-      expect(wrapper.html()).toMatchSnapshot();
+      expect(wrapper.element).toMatchSnapshot();
     });
 
     it('render the initial form with only an integration type dropdown', () => {

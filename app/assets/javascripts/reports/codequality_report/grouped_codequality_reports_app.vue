@@ -62,7 +62,7 @@ export default {
       helpPath: this.codequalityHelpPath,
     });
 
-    this.fetchReports(this.glFeatures.codequalityMrDiff);
+    this.fetchReports(this.glFeatures.codequalityBackendComparison);
   },
   methods: {
     ...mapActions(['fetchReports', 'setPaths']),

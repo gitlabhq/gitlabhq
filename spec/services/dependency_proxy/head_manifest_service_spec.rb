@@ -8,12 +8,19 @@ RSpec.describe DependencyProxy::HeadManifestService do
   let(:tag) { 'latest' }
   let(:token) { Digest::SHA256.hexdigest('123') }
   let(:digest) { '12345' }
+  let(:content_type) { 'foo' }
+  let(:headers) do
+    {
+      'docker-content-digest' => digest,
+      'content-type' => content_type
+    }
+  end
 
   subject { described_class.new(image, tag, token).execute }
 
   context 'remote request is successful' do
     before do
-      stub_manifest_head(image, tag, digest: digest)
+      stub_manifest_head(image, tag, headers: headers)
     end
 
     it { expect(subject[:status]).to eq(:success) }

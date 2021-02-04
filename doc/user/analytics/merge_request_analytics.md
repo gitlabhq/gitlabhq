@@ -5,7 +5,7 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Merge Request Analytics **(STARTER)**
+# Merge Request Analytics **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229045) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.3.
 

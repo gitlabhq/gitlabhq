@@ -560,7 +560,7 @@ You can change settings that are specific to repositories in your group.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43290) in GitLab 13.6.
 
 By default, when you create a new project in GitLab, the initial branch is called `master`.
-For groups, a group administrator can customize the initial branch name to something
+For groups, a group owner can customize the initial branch name to something
 else. This way, every new project created under that group from then on will start from the custom branch name rather than `master`. To do so:
 
 1. Go to the **Group page > Settings > Repository** and expand **Default initial

@@ -11775,7 +11775,9 @@ CREATE TABLE dependency_proxy_manifests (
     file_name text NOT NULL,
     file text NOT NULL,
     digest text NOT NULL,
+    content_type text,
     CONSTRAINT check_079b293a7b CHECK ((char_length(file) <= 255)),
+    CONSTRAINT check_167a9a8a91 CHECK ((char_length(content_type) <= 255)),
     CONSTRAINT check_c579e3f586 CHECK ((char_length(file_name) <= 255)),
     CONSTRAINT check_f5d9996bf1 CHECK ((char_length(digest) <= 255))
 );

@@ -2022,7 +2022,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
       context 'when feature flag is disabled' do
         before do
-          stub_feature_flags(codequality_mr_diff: false)
+          stub_feature_flags(codequality_backend_comparison: false)
         end
 
         it { is_expected.to be_falsey }

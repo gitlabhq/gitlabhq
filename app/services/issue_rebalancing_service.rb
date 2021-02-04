@@ -17,8 +17,21 @@ class IssueRebalancingService
 
     start = RelativePositioning::START_POSITION - (gaps / 2) * gap_size
 
-    Issue.transaction do
-      indexed_ids.each_slice(100) { |pairs| assign_positions(start, pairs) }
+    if Feature.enabled?(:issue_rebalancing_optimization)
+      Issue.transaction do
+        assign_positions(start, indexed_ids)
+          .sort_by(&:first)
+          .each_slice(100) do |pairs_with_position|
+          update_positions(pairs_with_position, 'rebalance issue positions in batches ordered by id')
+        end
+      end
+    else
+      Issue.transaction do
+        indexed_ids.each_slice(100) do |pairs|
+          pairs_with_position = assign_positions(start, pairs)
+          update_positions(pairs_with_position, 'rebalance issue positions')
+        end
+      end
     end
   end
 
@@ -32,13 +45,22 @@ class IssueRebalancingService
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  # rubocop: disable CodeReuse/ActiveRecord
-  def assign_positions(start, positions)
-    values = positions.map do |id, index|
-      "(#{id}, #{start + (index * gap_size)})"
+  def assign_positions(start, pairs)
+    pairs.map do |id, index|
+      [id, start + (index * gap_size)]
+    end
+  end
+
+  def update_positions(pairs_with_position, query_name)
+    values = pairs_with_position.map do |id, index|
+      "(#{id}, #{index})"
     end.join(', ')
 
-    Issue.connection.exec_query(<<~SQL, "rebalance issue positions")
+    run_update_query(values, query_name)
+  end
+
+  def run_update_query(values, query_name)
+    Issue.connection.exec_query(<<~SQL, query_name)
       WITH cte(cte_id, new_pos) AS (
        SELECT *
        FROM (VALUES #{values}) as t (id, pos)
@@ -49,7 +71,6 @@ class IssueRebalancingService
       WHERE cte_id = id
     SQL
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def issue_count
     @issue_count ||= base.count

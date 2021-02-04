@@ -1,3 +1,3 @@
-import AlertDetails from '~/alert_management/details';
+import AlertDetails from '~/vue_shared/alert_details';
 
 AlertDetails('#js-alert_details');
