@@ -8,22 +8,41 @@ module Integrations
       Gitlab::DataBuilder::Push.build_sample(project, current_user)
     end
 
+    def use_optimal_query?
+      Feature.enabled?(:integrations_test_webhook_optimizations, project)
+    end
+
     def note_events_data
-      note = project.notes.first
+      note = if use_optimal_query?
+               NotesFinder.new(current_user, project: project, target: project).execute.reorder(nil).last # rubocop: disable CodeReuse/ActiveRecord
+             else
+               project.notes.first
+             end
+
       return { error: s_('TestHooks|Ensure the project has notes.') } unless note.present?
 
       Gitlab::DataBuilder::Note.build(note, current_user)
     end
 
     def issues_events_data
-      issue = project.issues.first
+      issue = if use_optimal_query?
+                IssuesFinder.new(current_user, project_id: project.id, sort: 'created_desc').execute.first
+              else
+                project.issues.first
+              end
+
       return { error: s_('TestHooks|Ensure the project has issues.') } unless issue.present?
 
       issue.to_hook_data(current_user)
     end
 
     def merge_requests_events_data
-      merge_request = project.merge_requests.first
+      merge_request = if use_optimal_query?
+                        MergeRequestsFinder.new(current_user, project_id: project.id, sort: 'created_desc').execute.first
+                      else
+                        project.merge_requests.first
+                      end
+
       return { error: s_('TestHooks|Ensure the project has merge requests.') } unless merge_request.present?
 
       merge_request.to_hook_data(current_user)

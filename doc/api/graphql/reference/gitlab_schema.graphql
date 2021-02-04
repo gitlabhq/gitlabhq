@@ -9984,6 +9984,11 @@ input ExportRequirementsInput {
   search: String
 
   """
+  List of selected requirements fields to be exported.
+  """
+  selectedFields: [String!]
+
+  """
   List requirements by sort order.
   """
   sort: Sort

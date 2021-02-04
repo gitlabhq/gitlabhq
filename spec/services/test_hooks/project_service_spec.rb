@@ -6,8 +6,8 @@ RSpec.describe TestHooks::ProjectService do
   let(:current_user) { create(:user) }
 
   describe '#execute' do
-    let(:project) { create(:project, :repository) }
-    let(:hook)    { create(:project_hook, project: project) }
+    let_it_be(:project) { create(:project, :repository) }
+    let(:hook) { create(:project_hook, project: project) }
     let(:trigger) { 'not_implemented_events' }
     let(:service) { described_class.new(hook, current_user, trigger) }
     let(:sample_data) { { data: 'sample' } }
@@ -61,55 +61,85 @@ RSpec.describe TestHooks::ProjectService do
       end
 
       it 'executes hook' do
-        allow(project).to receive(:notes).and_return([Note.new])
+        create(:note, project: project)
+
         allow(Gitlab::DataBuilder::Note).to receive(:build).and_return(sample_data)
+        allow_next_instance_of(NotesFinder) do |finder|
+          allow(finder).to receive(:execute).and_return(Note.all)
+        end
 
         expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
         expect(service.execute).to include(success_result)
+      end
+
+      context 'when the query optimization feature flag is disabled' do
+        before do
+          stub_feature_flags(integrations_test_webhook_optimizations: false)
+        end
+
+        it 'executes the old query' do
+          allow(Gitlab::DataBuilder::Note).to receive(:build).and_return(sample_data)
+
+          expect(NotesFinder).not_to receive(:new)
+          expect(project).to receive(:notes).and_return([Note.new])
+          expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
+          expect(service.execute).to include(success_result)
+        end
+      end
+    end
+
+    shared_examples_for 'a test webhook that operates on issues' do
+      let(:issue) { build(:issue) }
+
+      it 'returns error message if not enough data' do
+        expect(hook).not_to receive(:execute)
+        expect(service.execute).to include({ status: :error, message: 'Ensure the project has issues.' })
+      end
+
+      it 'executes hook' do
+        allow(issue).to receive(:to_hook_data).and_return(sample_data)
+        allow_next_instance_of(IssuesFinder) do |finder|
+          allow(finder).to receive(:execute).and_return([issue])
+        end
+
+        expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
+        expect(service.execute).to include(success_result)
+      end
+
+      context 'when the query optimization feature flag is disabled' do
+        before do
+          stub_feature_flags(integrations_test_webhook_optimizations: false)
+        end
+
+        it 'executes the old query' do
+          allow(issue).to receive(:to_hook_data).and_return(sample_data)
+
+          expect(IssuesFinder).not_to receive(:new)
+          expect(project).to receive(:issues).and_return([issue])
+          expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
+          expect(service.execute).to include(success_result)
+        end
       end
     end
 
     context 'issues_events' do
       let(:trigger) { 'issues_events' }
       let(:trigger_key) { :issue_hooks }
-      let(:issue) { build(:issue) }
 
-      it 'returns error message if not enough data' do
-        expect(hook).not_to receive(:execute)
-        expect(service.execute).to include({ status: :error, message: 'Ensure the project has issues.' })
-      end
-
-      it 'executes hook' do
-        allow(project).to receive(:issues).and_return([issue])
-        allow(issue).to receive(:to_hook_data).and_return(sample_data)
-
-        expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
-        expect(service.execute).to include(success_result)
-      end
+      it_behaves_like 'a test webhook that operates on issues'
     end
 
     context 'confidential_issues_events' do
       let(:trigger) { 'confidential_issues_events' }
       let(:trigger_key) { :confidential_issue_hooks }
-      let(:issue) { build(:issue) }
 
-      it 'returns error message if not enough data' do
-        expect(hook).not_to receive(:execute)
-        expect(service.execute).to include({ status: :error, message: 'Ensure the project has issues.' })
-      end
-
-      it 'executes hook' do
-        allow(project).to receive(:issues).and_return([issue])
-        allow(issue).to receive(:to_hook_data).and_return(sample_data)
-
-        expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
-        expect(service.execute).to include(success_result)
-      end
+      it_behaves_like 'a test webhook that operates on issues'
     end
 
     context 'merge_requests_events' do
       let(:trigger) { 'merge_requests_events' }
       let(:trigger_key) { :merge_request_hooks }
+      let(:merge_request) { build(:merge_request) }
 
       it 'returns error message if not enough data' do
         expect(hook).not_to receive(:execute)
@@ -117,11 +147,28 @@ RSpec.describe TestHooks::ProjectService do
       end
 
       it 'executes hook' do
-        create(:merge_request, source_project: project)
-        allow_any_instance_of(MergeRequest).to receive(:to_hook_data).and_return(sample_data)
+        allow(merge_request).to receive(:to_hook_data).and_return(sample_data)
+        allow_next_instance_of(MergeRequestsFinder) do |finder|
+          allow(finder).to receive(:execute).and_return([merge_request])
+        end
 
         expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
         expect(service.execute).to include(success_result)
+      end
+
+      context 'when the query optimization feature flag is disabled' do
+        before do
+          stub_feature_flags(integrations_test_webhook_optimizations: false)
+        end
+
+        it 'executes the old query' do
+          allow(merge_request).to receive(:to_hook_data).and_return(sample_data)
+
+          expect(MergeRequestsFinder).not_to receive(:new)
+          expect(project).to receive(:merge_requests).and_return([merge_request])
+          expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
+          expect(service.execute).to include(success_result)
+        end
       end
     end
 
@@ -162,7 +209,7 @@ RSpec.describe TestHooks::ProjectService do
     end
 
     context 'wiki_page_events' do
-      let(:project) { create(:project, :wiki_repo) }
+      let_it_be(:project) { create(:project, :wiki_repo) }
       let(:trigger) { 'wiki_page_events' }
       let(:trigger_key) { :wiki_page_hooks }
 
