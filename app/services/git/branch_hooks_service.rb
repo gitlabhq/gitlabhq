@@ -44,11 +44,7 @@ module Git
     def invalidated_file_types
       return super unless default_branch? && !creating_branch?
 
-      paths = limited_commits.each_with_object(Set.new) do |commit, set|
-        commit.raw_deltas.each do |diff|
-          set << diff.new_path
-        end
-      end
+      paths = commit_paths.values.reduce(&:merge) || Set.new
 
       Gitlab::FileDetector.types_in_paths(paths)
     end
@@ -77,6 +73,7 @@ module Git
       enqueue_process_commit_messages
       enqueue_jira_connect_sync_messages
       enqueue_metrics_dashboard_sync
+      track_ci_config_change_event
     end
 
     def branch_remove_hooks
@@ -87,6 +84,18 @@ module Git
       return unless default_branch?
 
       ::Metrics::Dashboard::SyncDashboardsWorker.perform_async(project.id)
+    end
+
+    def track_ci_config_change_event
+      return unless Gitlab::CurrentSettings.usage_ping_enabled?
+      return unless ::Feature.enabled?(:usage_data_unique_users_committing_ciconfigfile, project, default_enabled: :yaml)
+      return unless default_branch?
+
+      commits_changing_ci_config.each do |commit|
+        Gitlab::UsageDataCounters::HLLRedisCounter.track_event(
+          'o_pipeline_authoring_unique_users_committing_ciconfigfile', values: commit.author&.id
+        )
+      end
     end
 
     # Schedules processing of commit messages
@@ -189,6 +198,23 @@ module Git
       end
 
       set
+    end
+
+    def commits_changing_ci_config
+      commit_paths.select do |commit, paths|
+        next if commit.merge_commit?
+
+        paths.include?(project.ci_config_path_or_default)
+      end.keys
+    end
+
+    def commit_paths
+      strong_memoize(:commit_paths) do
+        limited_commits.map do |commit|
+          paths = Set.new(commit.raw_deltas.map(&:new_path))
+          [commit, paths]
+        end.to_h
+      end
     end
   end
 end

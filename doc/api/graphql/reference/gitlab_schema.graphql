@@ -743,6 +743,26 @@ enum AlertManagementIntegrationType {
 }
 
 """
+Parsed field from an alert used for custom mappings
+"""
+type AlertManagementPayloadAlertField {
+  """
+  Human-readable label of the payload path.
+  """
+  label: String
+
+  """
+  Path to value inside payload JSON.
+  """
+  path: [String!]
+
+  """
+  Type of the parsed value.
+  """
+  type: AlertManagementPayloadAlertFieldType
+}
+
+"""
 Field that are available while modifying the custom mapping attributes for an HTTP integration
 """
 input AlertManagementPayloadAlertFieldInput {
@@ -1571,12 +1591,12 @@ Represents an epic on an issue board
 """
 type BoardEpic implements CurrentUserTodos & Noteable {
   """
-  Author of the epic
+  Author of the epic.
   """
   author: User!
 
   """
-  A list of award emojis associated with the epic
+  A list of award emojis associated with the epic.
   """
   awardEmoji(
     """
@@ -1601,7 +1621,7 @@ type BoardEpic implements CurrentUserTodos & Noteable {
   ): AwardEmojiConnection
 
   """
-  Children (sub-epics) of the epic
+  Children (sub-epics) of the epic.
   """
   children(
     """
@@ -1699,17 +1719,17 @@ type BoardEpic implements CurrentUserTodos & Noteable {
   ): EpicConnection
 
   """
-  Timestamp of when the epic was closed
+  Timestamp of when the epic was closed.
   """
   closedAt: Time
 
   """
-  Indicates if the epic is confidential
+  Indicates if the epic is confidential.
   """
   confidential: Boolean
 
   """
-  Timestamp of when the epic was created
+  Timestamp of when the epic was created.
   """
   createdAt: Time
 
@@ -1744,17 +1764,17 @@ type BoardEpic implements CurrentUserTodos & Noteable {
   ): TodoConnection!
 
   """
-  Number of open and closed descendant epics and issues
+  Number of open and closed descendant epics and issues.
   """
   descendantCounts: EpicDescendantCount
 
   """
-  Total weight of open and closed issues in the epic and its descendants
+  Total weight of open and closed issues in the epic and its descendants.
   """
   descendantWeightSum: EpicDescendantWeights
 
   """
-  Description of the epic
+  Description of the epic.
   """
   description: String
 
@@ -1784,67 +1804,67 @@ type BoardEpic implements CurrentUserTodos & Noteable {
   ): DiscussionConnection!
 
   """
-  Number of downvotes the epic has received
+  Number of downvotes the epic has received.
   """
   downvotes: Int!
 
   """
-  Due date of the epic
+  Due date of the epic.
   """
   dueDate: Time
 
   """
-  Fixed due date of the epic
+  Fixed due date of the epic.
   """
   dueDateFixed: Time
 
   """
-  Inherited due date of the epic from milestones
+  Inherited due date of the epic from milestones.
   """
   dueDateFromMilestones: Time
 
   """
-  Indicates if the due date has been manually set
+  Indicates if the due date has been manually set.
   """
   dueDateIsFixed: Boolean
 
   """
-  Group to which the epic belongs
+  Group to which the epic belongs.
   """
   group: Group!
 
   """
-  Indicates if the epic has children
+  Indicates if the epic has children.
   """
   hasChildren: Boolean!
 
   """
-  Indicates if the epic has direct issues
+  Indicates if the epic has direct issues.
   """
   hasIssues: Boolean!
 
   """
-  Indicates if the epic has a parent epic
+  Indicates if the epic has a parent epic.
   """
   hasParent: Boolean!
 
   """
-  Current health status of the epic
+  Current health status of the epic.
   """
   healthStatus: EpicHealthStatus
 
   """
-  ID of the epic
+  ID of the epic.
   """
   id: ID!
 
   """
-  Internal ID of the epic
+  Internal ID of the epic.
   """
   iid: ID!
 
   """
-  A list of issues associated with the epic
+  A list of issues associated with the epic.
   """
   issues(
     """
@@ -1869,7 +1889,7 @@ type BoardEpic implements CurrentUserTodos & Noteable {
   ): EpicIssueConnection
 
   """
-  Labels assigned to the epic
+  Labels assigned to the epic.
   """
   labels(
     """
@@ -1919,12 +1939,12 @@ type BoardEpic implements CurrentUserTodos & Noteable {
   ): NoteConnection!
 
   """
-  Parent epic of the epic
+  Parent epic of the epic.
   """
   parent: Epic
 
   """
-  List of participants for the epic
+  List of participants for the epic.
   """
   participants(
     """
@@ -1949,77 +1969,77 @@ type BoardEpic implements CurrentUserTodos & Noteable {
   ): UserConnection
 
   """
-  Internal reference of the epic. Returned in shortened format by default
+  Internal reference of the epic. Returned in shortened format by default.
   """
   reference(
     """
-    Indicates if the reference should be returned in full
+    Indicates if the reference should be returned in full.
     """
     full: Boolean = false
   ): String!
 
   """
-  URI path of the epic-issue relationship
+  URI path of the epic-issue relationship.
   """
   relationPath: String
 
   """
-  The relative position of the epic in the epic tree
+  The relative position of the epic in the epic tree.
   """
   relativePosition: Int
 
   """
-  Start date of the epic
+  Start date of the epic.
   """
   startDate: Time
 
   """
-  Fixed start date of the epic
+  Fixed start date of the epic.
   """
   startDateFixed: Time
 
   """
-  Inherited start date of the epic from milestones
+  Inherited start date of the epic from milestones.
   """
   startDateFromMilestones: Time
 
   """
-  Indicates if the start date has been manually set
+  Indicates if the start date has been manually set.
   """
   startDateIsFixed: Boolean
 
   """
-  State of the epic
+  State of the epic.
   """
   state: EpicState!
 
   """
-  Indicates the currently logged in user is subscribed to the epic
+  Indicates the currently logged in user is subscribed to the epic.
   """
   subscribed: Boolean!
 
   """
-  Title of the epic
+  Title of the epic.
   """
   title: String
 
   """
-  Timestamp of when the epic was updated
+  Timestamp of when the epic was updated.
   """
   updatedAt: Time
 
   """
-  Number of upvotes the epic has received
+  Number of upvotes the epic has received.
   """
   upvotes: Int!
 
   """
-  Number of user discussions in the epic
+  Number of user discussions in the epic.
   """
   userDiscussionsCount: Int!
 
   """
-  Number of user notes of the epic
+  Number of user notes of the epic.
   """
   userNotesCount: Int!
 
@@ -2034,12 +2054,12 @@ type BoardEpic implements CurrentUserTodos & Noteable {
   userPreferences: BoardEpicUserPreferences
 
   """
-  Web path of the epic
+  Web path of the epic.
   """
   webPath: String!
 
   """
-  Web URL of the epic
+  Web URL of the epic.
   """
   webUrl: String!
 }
@@ -8417,12 +8437,12 @@ Represents an epic
 """
 type Epic implements CurrentUserTodos & Noteable {
   """
-  Author of the epic
+  Author of the epic.
   """
   author: User!
 
   """
-  A list of award emojis associated with the epic
+  A list of award emojis associated with the epic.
   """
   awardEmoji(
     """
@@ -8447,7 +8467,7 @@ type Epic implements CurrentUserTodos & Noteable {
   ): AwardEmojiConnection
 
   """
-  Children (sub-epics) of the epic
+  Children (sub-epics) of the epic.
   """
   children(
     """
@@ -8545,17 +8565,17 @@ type Epic implements CurrentUserTodos & Noteable {
   ): EpicConnection
 
   """
-  Timestamp of when the epic was closed
+  Timestamp of when the epic was closed.
   """
   closedAt: Time
 
   """
-  Indicates if the epic is confidential
+  Indicates if the epic is confidential.
   """
   confidential: Boolean
 
   """
-  Timestamp of when the epic was created
+  Timestamp of when the epic was created.
   """
   createdAt: Time
 
@@ -8590,17 +8610,17 @@ type Epic implements CurrentUserTodos & Noteable {
   ): TodoConnection!
 
   """
-  Number of open and closed descendant epics and issues
+  Number of open and closed descendant epics and issues.
   """
   descendantCounts: EpicDescendantCount
 
   """
-  Total weight of open and closed issues in the epic and its descendants
+  Total weight of open and closed issues in the epic and its descendants.
   """
   descendantWeightSum: EpicDescendantWeights
 
   """
-  Description of the epic
+  Description of the epic.
   """
   description: String
 
@@ -8630,67 +8650,67 @@ type Epic implements CurrentUserTodos & Noteable {
   ): DiscussionConnection!
 
   """
-  Number of downvotes the epic has received
+  Number of downvotes the epic has received.
   """
   downvotes: Int!
 
   """
-  Due date of the epic
+  Due date of the epic.
   """
   dueDate: Time
 
   """
-  Fixed due date of the epic
+  Fixed due date of the epic.
   """
   dueDateFixed: Time
 
   """
-  Inherited due date of the epic from milestones
+  Inherited due date of the epic from milestones.
   """
   dueDateFromMilestones: Time
 
   """
-  Indicates if the due date has been manually set
+  Indicates if the due date has been manually set.
   """
   dueDateIsFixed: Boolean
 
   """
-  Group to which the epic belongs
+  Group to which the epic belongs.
   """
   group: Group!
 
   """
-  Indicates if the epic has children
+  Indicates if the epic has children.
   """
   hasChildren: Boolean!
 
   """
-  Indicates if the epic has direct issues
+  Indicates if the epic has direct issues.
   """
   hasIssues: Boolean!
 
   """
-  Indicates if the epic has a parent epic
+  Indicates if the epic has a parent epic.
   """
   hasParent: Boolean!
 
   """
-  Current health status of the epic
+  Current health status of the epic.
   """
   healthStatus: EpicHealthStatus
 
   """
-  ID of the epic
+  ID of the epic.
   """
   id: ID!
 
   """
-  Internal ID of the epic
+  Internal ID of the epic.
   """
   iid: ID!
 
   """
-  A list of issues associated with the epic
+  A list of issues associated with the epic.
   """
   issues(
     """
@@ -8715,7 +8735,7 @@ type Epic implements CurrentUserTodos & Noteable {
   ): EpicIssueConnection
 
   """
-  Labels assigned to the epic
+  Labels assigned to the epic.
   """
   labels(
     """
@@ -8765,12 +8785,12 @@ type Epic implements CurrentUserTodos & Noteable {
   ): NoteConnection!
 
   """
-  Parent epic of the epic
+  Parent epic of the epic.
   """
   parent: Epic
 
   """
-  List of participants for the epic
+  List of participants for the epic.
   """
   participants(
     """
@@ -8795,77 +8815,77 @@ type Epic implements CurrentUserTodos & Noteable {
   ): UserConnection
 
   """
-  Internal reference of the epic. Returned in shortened format by default
+  Internal reference of the epic. Returned in shortened format by default.
   """
   reference(
     """
-    Indicates if the reference should be returned in full
+    Indicates if the reference should be returned in full.
     """
     full: Boolean = false
   ): String!
 
   """
-  URI path of the epic-issue relationship
+  URI path of the epic-issue relationship.
   """
   relationPath: String
 
   """
-  The relative position of the epic in the epic tree
+  The relative position of the epic in the epic tree.
   """
   relativePosition: Int
 
   """
-  Start date of the epic
+  Start date of the epic.
   """
   startDate: Time
 
   """
-  Fixed start date of the epic
+  Fixed start date of the epic.
   """
   startDateFixed: Time
 
   """
-  Inherited start date of the epic from milestones
+  Inherited start date of the epic from milestones.
   """
   startDateFromMilestones: Time
 
   """
-  Indicates if the start date has been manually set
+  Indicates if the start date has been manually set.
   """
   startDateIsFixed: Boolean
 
   """
-  State of the epic
+  State of the epic.
   """
   state: EpicState!
 
   """
-  Indicates the currently logged in user is subscribed to the epic
+  Indicates the currently logged in user is subscribed to the epic.
   """
   subscribed: Boolean!
 
   """
-  Title of the epic
+  Title of the epic.
   """
   title: String
 
   """
-  Timestamp of when the epic was updated
+  Timestamp of when the epic was updated.
   """
   updatedAt: Time
 
   """
-  Number of upvotes the epic has received
+  Number of upvotes the epic has received.
   """
   upvotes: Int!
 
   """
-  Number of user discussions in the epic
+  Number of user discussions in the epic.
   """
   userDiscussionsCount: Int!
 
   """
-  Number of user notes of the epic
+  Number of user notes of the epic.
   """
   userNotesCount: Int!
 
@@ -8875,12 +8895,12 @@ type Epic implements CurrentUserTodos & Noteable {
   userPermissions: EpicPermissions!
 
   """
-  Web path of the epic
+  Web path of the epic.
   """
   webPath: String!
 
   """
-  Web URL of the epic
+  Web URL of the epic.
   """
   webUrl: String!
 }
@@ -15696,6 +15716,10 @@ enum MergeRequestState {
   all
   closed
   locked
+
+  """
+  Merge Request has been merged
+  """
   merged
   opened
 }
@@ -18307,6 +18331,16 @@ type Project {
     """
     last: Int
   ): AlertManagementIntegrationConnection
+
+  """
+  Extract alert fields from payload for custom mapping
+  """
+  alertManagementPayloadFields(
+    """
+    Sample payload for extracting alert fields for custom mappings.
+    """
+    payloadExample: String!
+  ): [AlertManagementPayloadAlertField!]
 
   """
   If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge

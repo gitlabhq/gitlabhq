@@ -34,6 +34,12 @@ but only for updating the declaration of the columns. We can then validate it at
 `VALIDATE CONSTRAINT`, which requires only a `SHARE UPDATE EXCLUSIVE LOCK` (only conflicts with other
 validations and index creation while it allows reads and writes).
 
+### Exceptions
+
+Text columns used by `attr_encrypted` are not required to have a limit, becuase the length of the
+text after encryption may be longer than the text itself. Instead, you can use an Active Record
+length validation on the attribute.
+
 ## Create a new table with text columns
 
 When adding a new table, the limits for all text columns should be added in the same migration as

@@ -316,4 +316,15 @@ RSpec.describe NotesHelper do
       end
     end
   end
+
+  describe '#notes_data' do
+    let(:issue) { create(:issue, project: project) }
+
+    it 'sets last_fetched_at to 0 when start_at_zero is true' do
+      @project = project
+      @noteable = issue
+
+      expect(helper.notes_data(issue, true)[:lastFetchedAt]).to eq(0)
+    end
+  end
 end

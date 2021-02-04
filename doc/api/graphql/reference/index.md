@@ -132,6 +132,16 @@ An endpoint and credentials used to accept alerts for a project.
 | `type` | AlertManagementIntegrationType! | Type of integration. |
 | `url` | String | Endpoint which accepts alert notifications. |
 
+### AlertManagementPayloadAlertField
+
+Parsed field from an alert used for custom mappings.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `label` | String | Human-readable label of the payload path. |
+| `path` | String! => Array | Path to value inside payload JSON. |
+| `type` | AlertManagementPayloadAlertFieldType | Type of the parsed value. |
+
 ### AlertManagementPrometheusIntegration
 
 An endpoint and credentials used to accept Prometheus alerts for a project.
@@ -262,52 +272,52 @@ Represents an epic on an issue board.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `author` | User! | Author of the epic |
-| `awardEmoji` | AwardEmojiConnection | A list of award emojis associated with the epic |
-| `children` | EpicConnection | Children (sub-epics) of the epic |
-| `closedAt` | Time | Timestamp of when the epic was closed |
-| `confidential` | Boolean | Indicates if the epic is confidential |
-| `createdAt` | Time | Timestamp of when the epic was created |
+| `author` | User! | Author of the epic. |
+| `awardEmoji` | AwardEmojiConnection | A list of award emojis associated with the epic. |
+| `children` | EpicConnection | Children (sub-epics) of the epic. |
+| `closedAt` | Time | Timestamp of when the epic was closed. |
+| `confidential` | Boolean | Indicates if the epic is confidential. |
+| `createdAt` | Time | Timestamp of when the epic was created. |
 | `currentUserTodos` | TodoConnection! | Todos for the current user. |
-| `descendantCounts` | EpicDescendantCount | Number of open and closed descendant epics and issues |
-| `descendantWeightSum` | EpicDescendantWeights | Total weight of open and closed issues in the epic and its descendants |
-| `description` | String | Description of the epic |
+| `descendantCounts` | EpicDescendantCount | Number of open and closed descendant epics and issues. |
+| `descendantWeightSum` | EpicDescendantWeights | Total weight of open and closed issues in the epic and its descendants. |
+| `description` | String | Description of the epic. |
 | `discussions` | DiscussionConnection! | All discussions on this noteable |
-| `downvotes` | Int! | Number of downvotes the epic has received |
-| `dueDate` | Time | Due date of the epic |
-| `dueDateFixed` | Time | Fixed due date of the epic |
-| `dueDateFromMilestones` | Time | Inherited due date of the epic from milestones |
-| `dueDateIsFixed` | Boolean | Indicates if the due date has been manually set |
-| `group` | Group! | Group to which the epic belongs |
-| `hasChildren` | Boolean! | Indicates if the epic has children |
-| `hasIssues` | Boolean! | Indicates if the epic has direct issues |
-| `hasParent` | Boolean! | Indicates if the epic has a parent epic |
-| `healthStatus` | EpicHealthStatus | Current health status of the epic |
-| `id` | ID! | ID of the epic |
-| `iid` | ID! | Internal ID of the epic |
-| `issues` | EpicIssueConnection | A list of issues associated with the epic |
-| `labels` | LabelConnection | Labels assigned to the epic |
+| `downvotes` | Int! | Number of downvotes the epic has received. |
+| `dueDate` | Time | Due date of the epic. |
+| `dueDateFixed` | Time | Fixed due date of the epic. |
+| `dueDateFromMilestones` | Time | Inherited due date of the epic from milestones. |
+| `dueDateIsFixed` | Boolean | Indicates if the due date has been manually set. |
+| `group` | Group! | Group to which the epic belongs. |
+| `hasChildren` | Boolean! | Indicates if the epic has children. |
+| `hasIssues` | Boolean! | Indicates if the epic has direct issues. |
+| `hasParent` | Boolean! | Indicates if the epic has a parent epic. |
+| `healthStatus` | EpicHealthStatus | Current health status of the epic. |
+| `id` | ID! | ID of the epic. |
+| `iid` | ID! | Internal ID of the epic. |
+| `issues` | EpicIssueConnection | A list of issues associated with the epic. |
+| `labels` | LabelConnection | Labels assigned to the epic. |
 | `notes` | NoteConnection! | All notes on this noteable |
-| `parent` | Epic | Parent epic of the epic |
-| `participants` | UserConnection | List of participants for the epic |
-| `reference` | String! | Internal reference of the epic. Returned in shortened format by default |
-| `relationPath` | String | URI path of the epic-issue relationship |
-| `relativePosition` | Int | The relative position of the epic in the epic tree |
-| `startDate` | Time | Start date of the epic |
-| `startDateFixed` | Time | Fixed start date of the epic |
-| `startDateFromMilestones` | Time | Inherited start date of the epic from milestones |
-| `startDateIsFixed` | Boolean | Indicates if the start date has been manually set |
-| `state` | EpicState! | State of the epic |
-| `subscribed` | Boolean! | Indicates the currently logged in user is subscribed to the epic |
-| `title` | String | Title of the epic |
-| `updatedAt` | Time | Timestamp of when the epic was updated |
-| `upvotes` | Int! | Number of upvotes the epic has received |
-| `userDiscussionsCount` | Int! | Number of user discussions in the epic |
-| `userNotesCount` | Int! | Number of user notes of the epic |
+| `parent` | Epic | Parent epic of the epic. |
+| `participants` | UserConnection | List of participants for the epic. |
+| `reference` | String! | Internal reference of the epic. Returned in shortened format by default. |
+| `relationPath` | String | URI path of the epic-issue relationship. |
+| `relativePosition` | Int | The relative position of the epic in the epic tree. |
+| `startDate` | Time | Start date of the epic. |
+| `startDateFixed` | Time | Fixed start date of the epic. |
+| `startDateFromMilestones` | Time | Inherited start date of the epic from milestones. |
+| `startDateIsFixed` | Boolean | Indicates if the start date has been manually set. |
+| `state` | EpicState! | State of the epic. |
+| `subscribed` | Boolean! | Indicates the currently logged in user is subscribed to the epic. |
+| `title` | String | Title of the epic. |
+| `updatedAt` | Time | Timestamp of when the epic was updated. |
+| `upvotes` | Int! | Number of upvotes the epic has received. |
+| `userDiscussionsCount` | Int! | Number of user discussions in the epic. |
+| `userNotesCount` | Int! | Number of user notes of the epic. |
 | `userPermissions` | EpicPermissions! | Permissions for the current user on the resource |
 | `userPreferences` | BoardEpicUserPreferences | User preferences for the epic on the issue board |
-| `webPath` | String! | Web path of the epic |
-| `webUrl` | String! | Web URL of the epic |
+| `webPath` | String! | Web path of the epic. |
+| `webUrl` | String! | Web URL of the epic. |
 
 ### BoardEpicUserPreferences
 
@@ -1384,51 +1394,51 @@ Represents an epic.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `author` | User! | Author of the epic |
-| `awardEmoji` | AwardEmojiConnection | A list of award emojis associated with the epic |
-| `children` | EpicConnection | Children (sub-epics) of the epic |
-| `closedAt` | Time | Timestamp of when the epic was closed |
-| `confidential` | Boolean | Indicates if the epic is confidential |
-| `createdAt` | Time | Timestamp of when the epic was created |
+| `author` | User! | Author of the epic. |
+| `awardEmoji` | AwardEmojiConnection | A list of award emojis associated with the epic. |
+| `children` | EpicConnection | Children (sub-epics) of the epic. |
+| `closedAt` | Time | Timestamp of when the epic was closed. |
+| `confidential` | Boolean | Indicates if the epic is confidential. |
+| `createdAt` | Time | Timestamp of when the epic was created. |
 | `currentUserTodos` | TodoConnection! | Todos for the current user. |
-| `descendantCounts` | EpicDescendantCount | Number of open and closed descendant epics and issues |
-| `descendantWeightSum` | EpicDescendantWeights | Total weight of open and closed issues in the epic and its descendants |
-| `description` | String | Description of the epic |
+| `descendantCounts` | EpicDescendantCount | Number of open and closed descendant epics and issues. |
+| `descendantWeightSum` | EpicDescendantWeights | Total weight of open and closed issues in the epic and its descendants. |
+| `description` | String | Description of the epic. |
 | `discussions` | DiscussionConnection! | All discussions on this noteable |
-| `downvotes` | Int! | Number of downvotes the epic has received |
-| `dueDate` | Time | Due date of the epic |
-| `dueDateFixed` | Time | Fixed due date of the epic |
-| `dueDateFromMilestones` | Time | Inherited due date of the epic from milestones |
-| `dueDateIsFixed` | Boolean | Indicates if the due date has been manually set |
-| `group` | Group! | Group to which the epic belongs |
-| `hasChildren` | Boolean! | Indicates if the epic has children |
-| `hasIssues` | Boolean! | Indicates if the epic has direct issues |
-| `hasParent` | Boolean! | Indicates if the epic has a parent epic |
-| `healthStatus` | EpicHealthStatus | Current health status of the epic |
-| `id` | ID! | ID of the epic |
-| `iid` | ID! | Internal ID of the epic |
-| `issues` | EpicIssueConnection | A list of issues associated with the epic |
-| `labels` | LabelConnection | Labels assigned to the epic |
+| `downvotes` | Int! | Number of downvotes the epic has received. |
+| `dueDate` | Time | Due date of the epic. |
+| `dueDateFixed` | Time | Fixed due date of the epic. |
+| `dueDateFromMilestones` | Time | Inherited due date of the epic from milestones. |
+| `dueDateIsFixed` | Boolean | Indicates if the due date has been manually set. |
+| `group` | Group! | Group to which the epic belongs. |
+| `hasChildren` | Boolean! | Indicates if the epic has children. |
+| `hasIssues` | Boolean! | Indicates if the epic has direct issues. |
+| `hasParent` | Boolean! | Indicates if the epic has a parent epic. |
+| `healthStatus` | EpicHealthStatus | Current health status of the epic. |
+| `id` | ID! | ID of the epic. |
+| `iid` | ID! | Internal ID of the epic. |
+| `issues` | EpicIssueConnection | A list of issues associated with the epic. |
+| `labels` | LabelConnection | Labels assigned to the epic. |
 | `notes` | NoteConnection! | All notes on this noteable |
-| `parent` | Epic | Parent epic of the epic |
-| `participants` | UserConnection | List of participants for the epic |
-| `reference` | String! | Internal reference of the epic. Returned in shortened format by default |
-| `relationPath` | String | URI path of the epic-issue relationship |
-| `relativePosition` | Int | The relative position of the epic in the epic tree |
-| `startDate` | Time | Start date of the epic |
-| `startDateFixed` | Time | Fixed start date of the epic |
-| `startDateFromMilestones` | Time | Inherited start date of the epic from milestones |
-| `startDateIsFixed` | Boolean | Indicates if the start date has been manually set |
-| `state` | EpicState! | State of the epic |
-| `subscribed` | Boolean! | Indicates the currently logged in user is subscribed to the epic |
-| `title` | String | Title of the epic |
-| `updatedAt` | Time | Timestamp of when the epic was updated |
-| `upvotes` | Int! | Number of upvotes the epic has received |
-| `userDiscussionsCount` | Int! | Number of user discussions in the epic |
-| `userNotesCount` | Int! | Number of user notes of the epic |
+| `parent` | Epic | Parent epic of the epic. |
+| `participants` | UserConnection | List of participants for the epic. |
+| `reference` | String! | Internal reference of the epic. Returned in shortened format by default. |
+| `relationPath` | String | URI path of the epic-issue relationship. |
+| `relativePosition` | Int | The relative position of the epic in the epic tree. |
+| `startDate` | Time | Start date of the epic. |
+| `startDateFixed` | Time | Fixed start date of the epic. |
+| `startDateFromMilestones` | Time | Inherited start date of the epic from milestones. |
+| `startDateIsFixed` | Boolean | Indicates if the start date has been manually set. |
+| `state` | EpicState! | State of the epic. |
+| `subscribed` | Boolean! | Indicates the currently logged in user is subscribed to the epic. |
+| `title` | String | Title of the epic. |
+| `updatedAt` | Time | Timestamp of when the epic was updated. |
+| `upvotes` | Int! | Number of upvotes the epic has received. |
+| `userDiscussionsCount` | Int! | Number of user discussions in the epic. |
+| `userNotesCount` | Int! | Number of user notes of the epic. |
 | `userPermissions` | EpicPermissions! | Permissions for the current user on the resource |
-| `webPath` | String! | Web path of the epic |
-| `webUrl` | String! | Web URL of the epic |
+| `webPath` | String! | Web path of the epic. |
+| `webUrl` | String! | Web URL of the epic. |
 
 ### EpicAddIssuePayload
 
@@ -2767,6 +2777,7 @@ Autogenerated return type of PipelineRetry.
 | `alertManagementAlertStatusCounts` | AlertManagementAlertStatusCountsType | Counts of alerts by status for the project |
 | `alertManagementAlerts` | AlertManagementAlertConnection | Alert Management alerts of the project |
 | `alertManagementIntegrations` | AlertManagementIntegrationConnection | Integrations which can receive alerts for the project |
+| `alertManagementPayloadFields` | AlertManagementPayloadAlertField! => Array | Extract alert fields from payload for custom mapping |
 | `allowMergeOnSkippedPipeline` | Boolean | If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of the project can also be merged with skipped jobs |
 | `archived` | Boolean | Indicates the archived status of the project |
 | `autocloseReferencedIssues` | Boolean | Indicates if issues referenced by merge requests and commits within the default branch are closed automatically |
@@ -4991,7 +5002,7 @@ State of a GitLab merge request.
 | `all` |  |
 | `closed` |  |
 | `locked` |  |
-| `merged` |  |
+| `merged` | Merge Request has been merged |
 | `opened` |  |
 
 ### MilestoneStateEnum

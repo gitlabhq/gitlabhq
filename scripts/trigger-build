@@ -200,7 +200,7 @@ module Trigger
 
   class Docs < Base
     def self.access_token
-      ENV['DOCS_API_TOKEN']
+      ENV['DOCS_PROJECT_API_TOKEN']
     end
 
     SUCCESS_MESSAGE = <<~MSG

@@ -4,6 +4,7 @@ import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 import { __ } from '~/locale';
 import initUserPopovers from '~/user_popovers';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getLocationHash, doesHashExistInUrl } from '../../lib/utils/url_utility';
 import { deprecatedCreateFlash as Flash } from '../../flash';
 import * as constants from '../constants';
@@ -30,6 +31,7 @@ export default {
     discussionFilterNote,
     OrderedLayout,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     noteableData: {
       type: Object,
@@ -57,7 +59,6 @@ export default {
   },
   data() {
     return {
-      isFetching: false,
       currentFilter: null,
     };
   },
@@ -68,6 +69,7 @@ export default {
       'convertedDisscussionIds',
       'getNotesDataByProp',
       'isLoading',
+      'isFetching',
       'commentsDisabled',
       'getNoteableData',
       'userCanReply',
@@ -103,6 +105,13 @@ export default {
     },
   },
   watch: {
+    async isFetching() {
+      if (!this.isFetching) {
+        await this.$nextTick();
+        await this.startTaskList();
+        await this.checkLocationHash();
+      }
+    },
     shouldShow() {
       if (!this.isNotesFetched) {
         this.fetchNotes();
@@ -153,6 +162,7 @@ export default {
   },
   methods: {
     ...mapActions([
+      'setFetchingState',
       'setLoadingState',
       'fetchDiscussions',
       'poll',
@@ -183,7 +193,11 @@ export default {
     fetchNotes() {
       if (this.isFetching) return null;
 
-      this.isFetching = true;
+      this.setFetchingState(true);
+
+      if (this.glFeatures.paginatedNotes) {
+        return this.initPolling();
+      }
 
       return this.fetchDiscussions(this.getFetchDiscussionsConfig())
         .then(this.initPolling)
@@ -191,11 +205,8 @@ export default {
           this.setLoadingState(false);
           this.setNotesFetchedState(true);
           eventHub.$emit('fetchedNotesData');
-          this.isFetching = false;
+          this.setFetchingState(false);
         })
-        .then(this.$nextTick)
-        .then(this.startTaskList)
-        .then(this.checkLocationHash)
         .catch(() => {
           this.setLoadingState(false);
           this.setNotesFetchedState(true);

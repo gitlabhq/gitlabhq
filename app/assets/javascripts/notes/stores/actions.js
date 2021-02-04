@@ -15,6 +15,7 @@ import loadAwardsHandler from '../../awards_handler';
 import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
 import { isInViewport, scrollToElement, isInMRPage } from '../../lib/utils/common_utils';
 import { mergeUrlParams } from '../../lib/utils/url_utility';
+import eventHub from '../event_hub';
 import mrWidgetEventHub from '../../vue_merge_request_widget/event_hub';
 import * as utils from './utils';
 import * as types from './mutation_types';
@@ -420,14 +421,25 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     .catch(processErrors);
 };
 
-const pollSuccessCallBack = (resp, commit, state, getters, dispatch) => {
+export const setFetchingState = ({ commit }, fetchingState) =>
+  commit(types.SET_NOTES_FETCHING_STATE, fetchingState);
+
+const pollSuccessCallBack = async (resp, commit, state, getters, dispatch) => {
   if (state.isResolvingDiscussion) {
     return null;
   }
 
+  if (window.gon?.features?.paginatedNotes && !resp.more && state.isFetching) {
+    eventHub.$emit('fetchedNotesData');
+    dispatch('setFetchingState', false);
+    dispatch('setNotesFetchedState', true);
+    dispatch('setLoadingState', false);
+  }
+
   if (resp.notes?.length) {
-    dispatch('updateOrCreateNotes', resp.notes);
+    await dispatch('updateOrCreateNotes', resp.notes);
     dispatch('startTaskList');
+    dispatch('updateResolvableDiscussionsCounts');
   }
 
   commit(types.SET_LAST_FETCHED_AT, resp.last_fetched_at);

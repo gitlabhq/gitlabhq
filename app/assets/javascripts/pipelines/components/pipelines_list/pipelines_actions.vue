@@ -1,7 +1,7 @@
 <script>
-import { GlTooltipDirective, GlButton, GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import { s__, __, sprintf } from '~/locale';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 import eventHub from '../../event_hub';
@@ -11,10 +11,10 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    GlIcon,
     GlCountdown,
-    GlButton,
-    GlLoadingIcon,
+    GlDropdown,
+    GlDropdownItem,
+    GlIcon,
   },
   props: {
     actions: {
@@ -61,7 +61,7 @@ export default {
         })
         .catch(() => {
           this.isLoading = false;
-          flash(__('An error occurred while making the request.'));
+          createFlash({ message: __('An error occurred while making the request.') });
         });
     },
 
@@ -76,39 +76,27 @@ export default {
 };
 </script>
 <template>
-  <div class="btn-group">
-    <button
-      v-gl-tooltip
-      type="button"
-      :disabled="isLoading"
-      class="dropdown-new gl-button btn btn-default js-pipeline-dropdown-manual-actions"
-      :title="__('Run manual or delayed jobs')"
-      data-toggle="dropdown"
-      :aria-label="__('Run manual or delayed jobs')"
+  <gl-dropdown
+    v-gl-tooltip
+    :title="__('Run manual or delayed jobs')"
+    :loading="isLoading"
+    data-testid="pipelines-manual-actions-dropdown"
+    right
+    icon="play"
+  >
+    <gl-dropdown-item
+      v-for="action in actions"
+      :key="action.path"
+      :disabled="isActionDisabled(action)"
+      @click="onClickAction(action)"
     >
-      <gl-icon name="play" class="icon-play" />
-      <gl-icon name="chevron-down" />
-      <gl-loading-icon v-if="isLoading" />
-    </button>
-
-    <ul class="dropdown-menu dropdown-menu-right">
-      <li v-for="action in actions" :key="action.path">
-        <gl-button
-          category="tertiary"
-          :class="{ disabled: isActionDisabled(action) }"
-          :disabled="isActionDisabled(action)"
-          class="js-pipeline-action-link"
-          @click="onClickAction(action)"
-        >
-          <div class="d-flex justify-content-between flex-wrap">
-            {{ action.name }}
-            <span v-if="action.scheduled_at">
-              <gl-icon name="clock" />
-              <gl-countdown :end-date-string="action.scheduled_at" />
-            </span>
-          </div>
-        </gl-button>
-      </li>
-    </ul>
-  </div>
+      <div class="gl-display-flex gl-justify-content-space-between gl-flex-wrap">
+        {{ action.name }}
+        <span v-if="action.scheduled_at">
+          <gl-icon name="clock" />
+          <gl-countdown :end-date-string="action.scheduled_at" />
+        </span>
+      </div>
+    </gl-dropdown-item>
+  </gl-dropdown>
 </template>

@@ -13,7 +13,7 @@ module Gitlab
         base_payload = parse_job(job)
         ActiveRecord::LogSubscriber.reset_runtime
 
-        Sidekiq.logger.info log_job_start(base_payload)
+        Sidekiq.logger.info log_job_start(job, base_payload)
 
         yield
 
@@ -40,12 +40,14 @@ module Gitlab
         output_payload.merge!(job.slice(*::Gitlab::Metrics::Subscribers::ActiveRecord::DB_COUNTERS))
       end
 
-      def log_job_start(payload)
+      def log_job_start(job, payload)
         payload['message'] = "#{base_message(payload)}: start"
         payload['job_status'] = 'start'
 
         scheduling_latency_s = ::Gitlab::InstrumentationHelper.queue_duration_for_job(payload)
         payload['scheduling_latency_s'] = scheduling_latency_s if scheduling_latency_s
+
+        payload['job_size_bytes'] = Sidekiq.dump_json(job).bytesize
 
         payload
       end

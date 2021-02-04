@@ -1,0 +1,5 @@
+---
+title: Fix opensearch for anonymous users
+merge_request: 53056
+author:
+type: fixed

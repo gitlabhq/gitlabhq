@@ -10,7 +10,7 @@ module BulkImports
       def run(context)
         raise MarkedAsFailedError if marked_as_failed?(context)
 
-        info(context, message: 'Pipeline started', pipeline_class: pipeline)
+        info(context, message: 'Pipeline started')
 
         extracted_data = extracted_data_from(context)
 
@@ -27,6 +27,8 @@ module BulkImports
         end
 
         after_run(context, extracted_data) if respond_to?(:after_run)
+
+        info(context, message: 'Pipeline finished')
       rescue MarkedAsFailedError
         log_skip(context)
       end
@@ -36,7 +38,7 @@ module BulkImports
       def run_pipeline_step(step, class_name, context)
         raise MarkedAsFailedError if marked_as_failed?(context)
 
-        info(context, step => class_name)
+        info(context, pipeline_step: step, step_class: class_name)
 
         yield
       rescue MarkedAsFailedError
@@ -100,7 +102,8 @@ module BulkImports
       def log_base_params(context)
         {
           bulk_import_entity_id: context.entity.id,
-          bulk_import_entity_type: context.entity.source_type
+          bulk_import_entity_type: context.entity.source_type,
+          pipeline_class: pipeline
         }
       end
 

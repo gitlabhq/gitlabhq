@@ -175,7 +175,7 @@ describe('Settings Panel', () => {
       wrapper = overrideCurrentSettings({ visibilityLevel: visibilityOptions.PRIVATE });
 
       expect(findRepositoryFeatureProjectRow().props().helpText).toBe(
-        'View and edit files in this project',
+        'View and edit files in this project.',
       );
     });
 
@@ -183,7 +183,7 @@ describe('Settings Panel', () => {
       wrapper = overrideCurrentSettings({ visibilityLevel: visibilityOptions.PUBLIC });
 
       expect(findRepositoryFeatureProjectRow().props().helpText).toBe(
-        'View and edit files in this project. Non-project members will only have read access',
+        'View and edit files in this project. Non-project members will only have read access.',
       );
     });
   });
@@ -400,7 +400,7 @@ describe('Settings Panel', () => {
             const link = message.find('a');
 
             expect(message.text()).toContain(
-              'LFS objects from this repository are still available to forks',
+              'LFS objects from this repository are available to forks.',
             );
             expect(link.text()).toBe('How do I remove them?');
             expect(link.attributes('href')).toBe(
@@ -530,7 +530,7 @@ describe('Settings Panel', () => {
 
     it('should contain help text', () => {
       expect(wrapper.find({ ref: 'metrics-visibility-settings' }).props().helpText).toBe(
-        'With Metrics Dashboard you can visualize this project performance metrics',
+        "Visualize the project's performance metrics.",
       );
     });
 

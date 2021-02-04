@@ -159,6 +159,7 @@ export default {
         .then((data) => {
           this.mr.setApprovals(data);
           eventHub.$emit('MRWidgetUpdateRequested');
+          eventHub.$emit('ApprovalUpdated');
           this.$emit('updated');
         })
         .catch(errFn)

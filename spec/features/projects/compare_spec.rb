@@ -17,10 +17,10 @@ RSpec.describe "Compare", :js do
         visit project_compare_index_path(project, from: 'master', to: 'master')
 
         select_using_dropdown 'from', 'feature'
-        expect(find('.js-compare-from-dropdown .dropdown-toggle-text')).to have_content('feature')
+        expect(find('.js-compare-from-dropdown .gl-new-dropdown-button-text')).to have_content('feature')
 
         select_using_dropdown 'to', 'binary-encoding'
-        expect(find('.js-compare-to-dropdown .dropdown-toggle-text')).to have_content('binary-encoding')
+        expect(find('.js-compare-to-dropdown .gl-new-dropdown-button-text')).to have_content('binary-encoding')
 
         click_button 'Compare'
 
@@ -32,8 +32,8 @@ RSpec.describe "Compare", :js do
     it "pre-populates fields" do
       visit project_compare_index_path(project, from: "master", to: "master")
 
-      expect(find(".js-compare-from-dropdown .dropdown-toggle-text")).to have_content("master")
-      expect(find(".js-compare-to-dropdown .dropdown-toggle-text")).to have_content("master")
+      expect(find(".js-compare-from-dropdown .gl-new-dropdown-button-text")).to have_content("master")
+      expect(find(".js-compare-to-dropdown .gl-new-dropdown-button-text")).to have_content("master")
     end
 
     it_behaves_like 'compares branches'
@@ -99,7 +99,7 @@ RSpec.describe "Compare", :js do
 
       find(".js-compare-from-dropdown .compare-dropdown-toggle").click
 
-      expect(find(".js-compare-from-dropdown .dropdown-content")).to have_selector("li", count: 3)
+      expect(find(".js-compare-from-dropdown .gl-new-dropdown-contents")).to have_selector('li.gl-new-dropdown-item', count: 1)
     end
 
     context 'when commit has overflow', :js do
@@ -125,10 +125,10 @@ RSpec.describe "Compare", :js do
       visit project_compare_index_path(project, from: "master", to: "master")
 
       select_using_dropdown "from", "v1.0.0"
-      expect(find(".js-compare-from-dropdown .dropdown-toggle-text")).to have_content("v1.0.0")
+      expect(find(".js-compare-from-dropdown .gl-new-dropdown-button-text")).to have_content("v1.0.0")
 
       select_using_dropdown "to", "v1.1.0"
-      expect(find(".js-compare-to-dropdown .dropdown-toggle-text")).to have_content("v1.1.0")
+      expect(find(".js-compare-to-dropdown .gl-new-dropdown-button-text")).to have_content("v1.1.0")
 
       click_button "Compare"
       expect(page).to have_content "Commits"
@@ -136,19 +136,22 @@ RSpec.describe "Compare", :js do
   end
 
   def select_using_dropdown(dropdown_type, selection, commit: false)
+    wait_for_requests
+
     dropdown = find(".js-compare-#{dropdown_type}-dropdown")
     dropdown.find(".compare-dropdown-toggle").click
     # find input before using to wait for the inputs visibility
     dropdown.find('.dropdown-menu')
     dropdown.fill_in("Filter by Git revision", with: selection)
+
     wait_for_requests
 
     if commit
-      dropdown.find('input[type="search"]').send_keys(:return)
+      dropdown.find('.gl-search-box-by-type-input').send_keys(:return)
     else
       # find before all to wait for the items visibility
-      dropdown.find("a[data-ref=\"#{selection}\"]", match: :first)
-      dropdown.all("a[data-ref=\"#{selection}\"]").last.click
+      dropdown.find(".js-compare-#{dropdown_type}-dropdown .dropdown-item", text: selection, match: :first)
+      dropdown.all(".js-compare-#{dropdown_type}-dropdown .dropdown-item", text: selection).first.click
     end
   end
 end

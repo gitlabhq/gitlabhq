@@ -15,6 +15,7 @@ class BaseDiscussionEntity < Grape::Entity
   expose :for_commit?, as: :for_commit
   expose :individual_note?, as: :individual_note
   expose :resolvable?, as: :resolvable
+  expose :resolved_by_push?, as: :resolved_by_push
 
   expose :truncated_diff_lines, using: DiffLineEntity, if: -> (d, _) { d.diff_discussion? && d.on_text? && (d.expanded? || render_truncated_diff_lines?) }
 

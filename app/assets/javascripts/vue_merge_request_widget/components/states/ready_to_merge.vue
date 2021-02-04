@@ -53,8 +53,8 @@ export default {
       result({ data }) {
         this.state = {
           ...data.project.mergeRequest,
-          mergeRequestsFfOnlyEnabled: data.mergeRequestsFfOnlyEnabled,
-          onlyAllowMergeIfPipelineSucceeds: data.onlyAllowMergeIfPipelineSucceeds,
+          mergeRequestsFfOnlyEnabled: data.project.mergeRequestsFfOnlyEnabled,
+          onlyAllowMergeIfPipelineSucceeds: data.project.onlyAllowMergeIfPipelineSucceeds,
         };
         this.removeSourceBranch = data.project.mergeRequest.shouldRemoveSourceBranch;
         this.commitMessage = data.project.mergeRequest.defaultMergeCommitMessage;
@@ -277,7 +277,20 @@ export default {
       return this.mr.mergeRequestDiffsPath;
     },
   },
+  mounted() {
+    if (this.glFeatures.mergeRequestWidgetGraphql) {
+      eventHub.$on('ApprovalUpdated', this.updateGraphqlState);
+    }
+  },
+  beforeDestroy() {
+    if (this.glFeatures.mergeRequestWidgetGraphql) {
+      eventHub.$off('ApprovalUpdated', this.updateGraphqlState);
+    }
+  },
   methods: {
+    updateGraphqlState() {
+      return this.$apollo.queries.state.refetch();
+    },
     updateMergeCommitMessage(includeDescription) {
       const commitMessage = this.glFeatures.mergeRequestWidgetGraphql
         ? this.state.defaultMergeCommitMessage
@@ -325,6 +338,10 @@ export default {
             this.initiateMergePolling();
           } else if (hasError) {
             eventHub.$emit('FailedToMerge', data.merge_error);
+          }
+
+          if (this.glFeatures.mergeRequestWidgetGraphql) {
+            this.updateGraphqlState();
           }
         })
         .catch(() => {
@@ -532,7 +549,7 @@ export default {
       </div>
       <merge-train-helper-text
         v-if="shouldRenderMergeTrainHelperText"
-        :pipeline-id="pipeline.id"
+        :pipeline-id="pipelineId"
         :pipeline-link="pipeline.path"
         :merge-train-length="stateData.mergeTrainsCount"
         :merge-train-when-pipeline-succeeds-docs-path="mr.mergeTrainWhenPipelineSucceedsDocsPath"

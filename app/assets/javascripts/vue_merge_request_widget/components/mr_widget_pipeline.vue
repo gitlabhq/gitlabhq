@@ -155,13 +155,14 @@ export default {
       >
         {{ $options.monitoringPipelineText }}
         <gl-link
+          v-gl-tooltip
           :href="ciTroubleshootingDocsPath"
           target="_blank"
+          :title="__('About this feature')"
           class="gl-display-flex gl-align-items-center gl-ml-2"
         >
           <gl-icon
             name="question"
-            :size="12"
             :aria-label="__('Link to go to GitLab pipeline documentation')"
           />
         </gl-link>

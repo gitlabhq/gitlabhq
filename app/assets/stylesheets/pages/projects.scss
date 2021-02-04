@@ -992,6 +992,20 @@ pre.light-well {
       width: auto;
     }
   }
+
+  // Remove once gitlab/ui solution is implemented:
+  // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1157
+  // https://gitlab.com/gitlab-org/gitlab/-/issues/300405
+  .gl-search-box-by-type-input {
+    width: 100%;
+  }
+
+  // Remove once gitlab/ui solution is implemented
+  // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1158
+  // https://gitlab.com/gitlab-org/gitlab/-/issues/300405
+  .gl-new-dropdown-button-text {
+    @include str-truncated;
+  }
 }
 
 .clearable-input {

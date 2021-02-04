@@ -40,7 +40,8 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'code_review',
         'terraform',
         'ci_templates',
-        'quickactions'
+        'quickactions',
+        'pipeline_authoring'
       )
     end
   end

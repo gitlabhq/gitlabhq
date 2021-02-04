@@ -804,7 +804,6 @@ Graphql/Descriptions:
     - 'ee/app/graphql/types/epic_health_status_type.rb'
     - 'ee/app/graphql/types/epic_issue_type.rb'
     - 'ee/app/graphql/types/epic_tree/epic_tree_node_input_type.rb'
-    - 'ee/app/graphql/types/epic_type.rb'
     - 'ee/app/graphql/types/external_issue_type.rb'
     - 'ee/app/graphql/types/geo/geo_node_type.rb'
     - 'ee/app/graphql/types/geo/merge_request_diff_registry_type.rb'

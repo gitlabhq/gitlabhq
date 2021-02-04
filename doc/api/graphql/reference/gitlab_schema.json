@@ -1910,6 +1910,69 @@
           "possibleTypes": null
         },
         {
+          "kind": "OBJECT",
+          "name": "AlertManagementPayloadAlertField",
+          "description": "Parsed field from an alert used for custom mappings",
+          "fields": [
+            {
+              "name": "label",
+              "description": "Human-readable label of the payload path.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "path",
+              "description": "Path to value inside payload JSON.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "Type of the parsed value.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "ENUM",
+                "name": "AlertManagementPayloadAlertFieldType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "INPUT_OBJECT",
           "name": "AlertManagementPayloadAlertFieldInput",
           "description": "Field that are available while modifying the custom mapping attributes for an HTTP integration",
@@ -4097,7 +4160,7 @@
           "fields": [
             {
               "name": "author",
-              "description": "Author of the epic",
+              "description": "Author of the epic.",
               "args": [
 
               ],
@@ -4115,7 +4178,7 @@
             },
             {
               "name": "awardEmoji",
-              "description": "A list of award emojis associated with the epic",
+              "description": "A list of award emojis associated with the epic.",
               "args": [
                 {
                   "name": "after",
@@ -4168,7 +4231,7 @@
             },
             {
               "name": "children",
-              "description": "Children (sub-epics) of the epic",
+              "description": "Children (sub-epics) of the epic.",
               "args": [
                 {
                   "name": "startDate",
@@ -4377,7 +4440,7 @@
             },
             {
               "name": "closedAt",
-              "description": "Timestamp of when the epic was closed",
+              "description": "Timestamp of when the epic was closed.",
               "args": [
 
               ],
@@ -4391,7 +4454,7 @@
             },
             {
               "name": "confidential",
-              "description": "Indicates if the epic is confidential",
+              "description": "Indicates if the epic is confidential.",
               "args": [
 
               ],
@@ -4405,7 +4468,7 @@
             },
             {
               "name": "createdAt",
-              "description": "Timestamp of when the epic was created",
+              "description": "Timestamp of when the epic was created.",
               "args": [
 
               ],
@@ -4486,7 +4549,7 @@
             },
             {
               "name": "descendantCounts",
-              "description": "Number of open and closed descendant epics and issues",
+              "description": "Number of open and closed descendant epics and issues.",
               "args": [
 
               ],
@@ -4500,7 +4563,7 @@
             },
             {
               "name": "descendantWeightSum",
-              "description": "Total weight of open and closed issues in the epic and its descendants",
+              "description": "Total weight of open and closed issues in the epic and its descendants.",
               "args": [
 
               ],
@@ -4514,7 +4577,7 @@
             },
             {
               "name": "description",
-              "description": "Description of the epic",
+              "description": "Description of the epic.",
               "args": [
 
               ],
@@ -4585,7 +4648,7 @@
             },
             {
               "name": "downvotes",
-              "description": "Number of downvotes the epic has received",
+              "description": "Number of downvotes the epic has received.",
               "args": [
 
               ],
@@ -4603,7 +4666,7 @@
             },
             {
               "name": "dueDate",
-              "description": "Due date of the epic",
+              "description": "Due date of the epic.",
               "args": [
 
               ],
@@ -4617,7 +4680,7 @@
             },
             {
               "name": "dueDateFixed",
-              "description": "Fixed due date of the epic",
+              "description": "Fixed due date of the epic.",
               "args": [
 
               ],
@@ -4631,7 +4694,7 @@
             },
             {
               "name": "dueDateFromMilestones",
-              "description": "Inherited due date of the epic from milestones",
+              "description": "Inherited due date of the epic from milestones.",
               "args": [
 
               ],
@@ -4645,7 +4708,7 @@
             },
             {
               "name": "dueDateIsFixed",
-              "description": "Indicates if the due date has been manually set",
+              "description": "Indicates if the due date has been manually set.",
               "args": [
 
               ],
@@ -4659,7 +4722,7 @@
             },
             {
               "name": "group",
-              "description": "Group to which the epic belongs",
+              "description": "Group to which the epic belongs.",
               "args": [
 
               ],
@@ -4677,7 +4740,7 @@
             },
             {
               "name": "hasChildren",
-              "description": "Indicates if the epic has children",
+              "description": "Indicates if the epic has children.",
               "args": [
 
               ],
@@ -4695,7 +4758,7 @@
             },
             {
               "name": "hasIssues",
-              "description": "Indicates if the epic has direct issues",
+              "description": "Indicates if the epic has direct issues.",
               "args": [
 
               ],
@@ -4713,7 +4776,7 @@
             },
             {
               "name": "hasParent",
-              "description": "Indicates if the epic has a parent epic",
+              "description": "Indicates if the epic has a parent epic.",
               "args": [
 
               ],
@@ -4731,7 +4794,7 @@
             },
             {
               "name": "healthStatus",
-              "description": "Current health status of the epic",
+              "description": "Current health status of the epic.",
               "args": [
 
               ],
@@ -4745,7 +4808,7 @@
             },
             {
               "name": "id",
-              "description": "ID of the epic",
+              "description": "ID of the epic.",
               "args": [
 
               ],
@@ -4763,7 +4826,7 @@
             },
             {
               "name": "iid",
-              "description": "Internal ID of the epic",
+              "description": "Internal ID of the epic.",
               "args": [
 
               ],
@@ -4781,7 +4844,7 @@
             },
             {
               "name": "issues",
-              "description": "A list of issues associated with the epic",
+              "description": "A list of issues associated with the epic.",
               "args": [
                 {
                   "name": "after",
@@ -4834,7 +4897,7 @@
             },
             {
               "name": "labels",
-              "description": "Labels assigned to the epic",
+              "description": "Labels assigned to the epic.",
               "args": [
                 {
                   "name": "after",
@@ -4944,7 +5007,7 @@
             },
             {
               "name": "parent",
-              "description": "Parent epic of the epic",
+              "description": "Parent epic of the epic.",
               "args": [
 
               ],
@@ -4958,7 +5021,7 @@
             },
             {
               "name": "participants",
-              "description": "List of participants for the epic",
+              "description": "List of participants for the epic.",
               "args": [
                 {
                   "name": "after",
@@ -5011,11 +5074,11 @@
             },
             {
               "name": "reference",
-              "description": "Internal reference of the epic. Returned in shortened format by default",
+              "description": "Internal reference of the epic. Returned in shortened format by default.",
               "args": [
                 {
                   "name": "full",
-                  "description": "Indicates if the reference should be returned in full",
+                  "description": "Indicates if the reference should be returned in full.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -5038,7 +5101,7 @@
             },
             {
               "name": "relationPath",
-              "description": "URI path of the epic-issue relationship",
+              "description": "URI path of the epic-issue relationship.",
               "args": [
 
               ],
@@ -5052,7 +5115,7 @@
             },
             {
               "name": "relativePosition",
-              "description": "The relative position of the epic in the epic tree",
+              "description": "The relative position of the epic in the epic tree.",
               "args": [
 
               ],
@@ -5066,7 +5129,7 @@
             },
             {
               "name": "startDate",
-              "description": "Start date of the epic",
+              "description": "Start date of the epic.",
               "args": [
 
               ],
@@ -5080,7 +5143,7 @@
             },
             {
               "name": "startDateFixed",
-              "description": "Fixed start date of the epic",
+              "description": "Fixed start date of the epic.",
               "args": [
 
               ],
@@ -5094,7 +5157,7 @@
             },
             {
               "name": "startDateFromMilestones",
-              "description": "Inherited start date of the epic from milestones",
+              "description": "Inherited start date of the epic from milestones.",
               "args": [
 
               ],
@@ -5108,7 +5171,7 @@
             },
             {
               "name": "startDateIsFixed",
-              "description": "Indicates if the start date has been manually set",
+              "description": "Indicates if the start date has been manually set.",
               "args": [
 
               ],
@@ -5122,7 +5185,7 @@
             },
             {
               "name": "state",
-              "description": "State of the epic",
+              "description": "State of the epic.",
               "args": [
 
               ],
@@ -5140,7 +5203,7 @@
             },
             {
               "name": "subscribed",
-              "description": "Indicates the currently logged in user is subscribed to the epic",
+              "description": "Indicates the currently logged in user is subscribed to the epic.",
               "args": [
 
               ],
@@ -5158,7 +5221,7 @@
             },
             {
               "name": "title",
-              "description": "Title of the epic",
+              "description": "Title of the epic.",
               "args": [
 
               ],
@@ -5172,7 +5235,7 @@
             },
             {
               "name": "updatedAt",
-              "description": "Timestamp of when the epic was updated",
+              "description": "Timestamp of when the epic was updated.",
               "args": [
 
               ],
@@ -5186,7 +5249,7 @@
             },
             {
               "name": "upvotes",
-              "description": "Number of upvotes the epic has received",
+              "description": "Number of upvotes the epic has received.",
               "args": [
 
               ],
@@ -5204,7 +5267,7 @@
             },
             {
               "name": "userDiscussionsCount",
-              "description": "Number of user discussions in the epic",
+              "description": "Number of user discussions in the epic.",
               "args": [
 
               ],
@@ -5222,7 +5285,7 @@
             },
             {
               "name": "userNotesCount",
-              "description": "Number of user notes of the epic",
+              "description": "Number of user notes of the epic.",
               "args": [
 
               ],
@@ -5272,7 +5335,7 @@
             },
             {
               "name": "webPath",
-              "description": "Web path of the epic",
+              "description": "Web path of the epic.",
               "args": [
 
               ],
@@ -5290,7 +5353,7 @@
             },
             {
               "name": "webUrl",
-              "description": "Web URL of the epic",
+              "description": "Web URL of the epic.",
               "args": [
 
               ],
@@ -23328,7 +23391,7 @@
           "fields": [
             {
               "name": "author",
-              "description": "Author of the epic",
+              "description": "Author of the epic.",
               "args": [
 
               ],
@@ -23346,7 +23409,7 @@
             },
             {
               "name": "awardEmoji",
-              "description": "A list of award emojis associated with the epic",
+              "description": "A list of award emojis associated with the epic.",
               "args": [
                 {
                   "name": "after",
@@ -23399,7 +23462,7 @@
             },
             {
               "name": "children",
-              "description": "Children (sub-epics) of the epic",
+              "description": "Children (sub-epics) of the epic.",
               "args": [
                 {
                   "name": "startDate",
@@ -23608,7 +23671,7 @@
             },
             {
               "name": "closedAt",
-              "description": "Timestamp of when the epic was closed",
+              "description": "Timestamp of when the epic was closed.",
               "args": [
 
               ],
@@ -23622,7 +23685,7 @@
             },
             {
               "name": "confidential",
-              "description": "Indicates if the epic is confidential",
+              "description": "Indicates if the epic is confidential.",
               "args": [
 
               ],
@@ -23636,7 +23699,7 @@
             },
             {
               "name": "createdAt",
-              "description": "Timestamp of when the epic was created",
+              "description": "Timestamp of when the epic was created.",
               "args": [
 
               ],
@@ -23717,7 +23780,7 @@
             },
             {
               "name": "descendantCounts",
-              "description": "Number of open and closed descendant epics and issues",
+              "description": "Number of open and closed descendant epics and issues.",
               "args": [
 
               ],
@@ -23731,7 +23794,7 @@
             },
             {
               "name": "descendantWeightSum",
-              "description": "Total weight of open and closed issues in the epic and its descendants",
+              "description": "Total weight of open and closed issues in the epic and its descendants.",
               "args": [
 
               ],
@@ -23745,7 +23808,7 @@
             },
             {
               "name": "description",
-              "description": "Description of the epic",
+              "description": "Description of the epic.",
               "args": [
 
               ],
@@ -23816,7 +23879,7 @@
             },
             {
               "name": "downvotes",
-              "description": "Number of downvotes the epic has received",
+              "description": "Number of downvotes the epic has received.",
               "args": [
 
               ],
@@ -23834,7 +23897,7 @@
             },
             {
               "name": "dueDate",
-              "description": "Due date of the epic",
+              "description": "Due date of the epic.",
               "args": [
 
               ],
@@ -23848,7 +23911,7 @@
             },
             {
               "name": "dueDateFixed",
-              "description": "Fixed due date of the epic",
+              "description": "Fixed due date of the epic.",
               "args": [
 
               ],
@@ -23862,7 +23925,7 @@
             },
             {
               "name": "dueDateFromMilestones",
-              "description": "Inherited due date of the epic from milestones",
+              "description": "Inherited due date of the epic from milestones.",
               "args": [
 
               ],
@@ -23876,7 +23939,7 @@
             },
             {
               "name": "dueDateIsFixed",
-              "description": "Indicates if the due date has been manually set",
+              "description": "Indicates if the due date has been manually set.",
               "args": [
 
               ],
@@ -23890,7 +23953,7 @@
             },
             {
               "name": "group",
-              "description": "Group to which the epic belongs",
+              "description": "Group to which the epic belongs.",
               "args": [
 
               ],
@@ -23908,7 +23971,7 @@
             },
             {
               "name": "hasChildren",
-              "description": "Indicates if the epic has children",
+              "description": "Indicates if the epic has children.",
               "args": [
 
               ],
@@ -23926,7 +23989,7 @@
             },
             {
               "name": "hasIssues",
-              "description": "Indicates if the epic has direct issues",
+              "description": "Indicates if the epic has direct issues.",
               "args": [
 
               ],
@@ -23944,7 +24007,7 @@
             },
             {
               "name": "hasParent",
-              "description": "Indicates if the epic has a parent epic",
+              "description": "Indicates if the epic has a parent epic.",
               "args": [
 
               ],
@@ -23962,7 +24025,7 @@
             },
             {
               "name": "healthStatus",
-              "description": "Current health status of the epic",
+              "description": "Current health status of the epic.",
               "args": [
 
               ],
@@ -23976,7 +24039,7 @@
             },
             {
               "name": "id",
-              "description": "ID of the epic",
+              "description": "ID of the epic.",
               "args": [
 
               ],
@@ -23994,7 +24057,7 @@
             },
             {
               "name": "iid",
-              "description": "Internal ID of the epic",
+              "description": "Internal ID of the epic.",
               "args": [
 
               ],
@@ -24012,7 +24075,7 @@
             },
             {
               "name": "issues",
-              "description": "A list of issues associated with the epic",
+              "description": "A list of issues associated with the epic.",
               "args": [
                 {
                   "name": "after",
@@ -24065,7 +24128,7 @@
             },
             {
               "name": "labels",
-              "description": "Labels assigned to the epic",
+              "description": "Labels assigned to the epic.",
               "args": [
                 {
                   "name": "after",
@@ -24175,7 +24238,7 @@
             },
             {
               "name": "parent",
-              "description": "Parent epic of the epic",
+              "description": "Parent epic of the epic.",
               "args": [
 
               ],
@@ -24189,7 +24252,7 @@
             },
             {
               "name": "participants",
-              "description": "List of participants for the epic",
+              "description": "List of participants for the epic.",
               "args": [
                 {
                   "name": "after",
@@ -24242,11 +24305,11 @@
             },
             {
               "name": "reference",
-              "description": "Internal reference of the epic. Returned in shortened format by default",
+              "description": "Internal reference of the epic. Returned in shortened format by default.",
               "args": [
                 {
                   "name": "full",
-                  "description": "Indicates if the reference should be returned in full",
+                  "description": "Indicates if the reference should be returned in full.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -24269,7 +24332,7 @@
             },
             {
               "name": "relationPath",
-              "description": "URI path of the epic-issue relationship",
+              "description": "URI path of the epic-issue relationship.",
               "args": [
 
               ],
@@ -24283,7 +24346,7 @@
             },
             {
               "name": "relativePosition",
-              "description": "The relative position of the epic in the epic tree",
+              "description": "The relative position of the epic in the epic tree.",
               "args": [
 
               ],
@@ -24297,7 +24360,7 @@
             },
             {
               "name": "startDate",
-              "description": "Start date of the epic",
+              "description": "Start date of the epic.",
               "args": [
 
               ],
@@ -24311,7 +24374,7 @@
             },
             {
               "name": "startDateFixed",
-              "description": "Fixed start date of the epic",
+              "description": "Fixed start date of the epic.",
               "args": [
 
               ],
@@ -24325,7 +24388,7 @@
             },
             {
               "name": "startDateFromMilestones",
-              "description": "Inherited start date of the epic from milestones",
+              "description": "Inherited start date of the epic from milestones.",
               "args": [
 
               ],
@@ -24339,7 +24402,7 @@
             },
             {
               "name": "startDateIsFixed",
-              "description": "Indicates if the start date has been manually set",
+              "description": "Indicates if the start date has been manually set.",
               "args": [
 
               ],
@@ -24353,7 +24416,7 @@
             },
             {
               "name": "state",
-              "description": "State of the epic",
+              "description": "State of the epic.",
               "args": [
 
               ],
@@ -24371,7 +24434,7 @@
             },
             {
               "name": "subscribed",
-              "description": "Indicates the currently logged in user is subscribed to the epic",
+              "description": "Indicates the currently logged in user is subscribed to the epic.",
               "args": [
 
               ],
@@ -24389,7 +24452,7 @@
             },
             {
               "name": "title",
-              "description": "Title of the epic",
+              "description": "Title of the epic.",
               "args": [
 
               ],
@@ -24403,7 +24466,7 @@
             },
             {
               "name": "updatedAt",
-              "description": "Timestamp of when the epic was updated",
+              "description": "Timestamp of when the epic was updated.",
               "args": [
 
               ],
@@ -24417,7 +24480,7 @@
             },
             {
               "name": "upvotes",
-              "description": "Number of upvotes the epic has received",
+              "description": "Number of upvotes the epic has received.",
               "args": [
 
               ],
@@ -24435,7 +24498,7 @@
             },
             {
               "name": "userDiscussionsCount",
-              "description": "Number of user discussions in the epic",
+              "description": "Number of user discussions in the epic.",
               "args": [
 
               ],
@@ -24453,7 +24516,7 @@
             },
             {
               "name": "userNotesCount",
-              "description": "Number of user notes of the epic",
+              "description": "Number of user notes of the epic.",
               "args": [
 
               ],
@@ -24489,7 +24552,7 @@
             },
             {
               "name": "webPath",
-              "description": "Web path of the epic",
+              "description": "Web path of the epic.",
               "args": [
 
               ],
@@ -24507,7 +24570,7 @@
             },
             {
               "name": "webUrl",
-              "description": "Web URL of the epic",
+              "description": "Web URL of the epic.",
               "args": [
 
               ],
@@ -43076,7 +43139,7 @@
             },
             {
               "name": "merged",
-              "description": null,
+              "description": "Merge Request has been merged",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -53964,6 +54027,41 @@
                 "kind": "OBJECT",
                 "name": "AlertManagementIntegrationConnection",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "alertManagementPayloadFields",
+              "description": "Extract alert fields from payload for custom mapping",
+              "args": [
+                {
+                  "name": "payloadExample",
+                  "description": "Sample payload for extracting alert fields for custom mappings.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "AlertManagementPayloadAlertField",
+                    "ofType": null
+                  }
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null

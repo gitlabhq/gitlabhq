@@ -74,28 +74,41 @@ RSpec.describe BulkImports::Pipeline::Runner do
         expect_next_instance_of(Gitlab::Import::Logger) do |logger|
           expect(logger).to receive(:info)
             .with(
+              bulk_import_entity_id: entity.id,
+              bulk_import_entity_type: 'group_entity',
               message: 'Pipeline started',
+              pipeline_class: 'BulkImports::MyPipeline'
+            )
+          expect(logger).to receive(:info)
+            .with(
+              bulk_import_entity_id: entity.id,
+              bulk_import_entity_type: 'group_entity',
               pipeline_class: 'BulkImports::MyPipeline',
-              bulk_import_entity_id: entity.id,
-              bulk_import_entity_type: 'group_entity'
+              pipeline_step: :extractor,
+              step_class: 'BulkImports::Extractor'
             )
           expect(logger).to receive(:info)
             .with(
               bulk_import_entity_id: entity.id,
               bulk_import_entity_type: 'group_entity',
-              extractor: 'BulkImports::Extractor'
+              pipeline_class: 'BulkImports::MyPipeline',
+              pipeline_step: :transformer,
+              step_class: 'BulkImports::Transformer'
             )
           expect(logger).to receive(:info)
             .with(
               bulk_import_entity_id: entity.id,
               bulk_import_entity_type: 'group_entity',
-              transformer: 'BulkImports::Transformer'
+              pipeline_class: 'BulkImports::MyPipeline',
+              pipeline_step: :loader,
+              step_class: 'BulkImports::Loader'
             )
           expect(logger).to receive(:info)
             .with(
               bulk_import_entity_id: entity.id,
               bulk_import_entity_type: 'group_entity',
-              loader: 'BulkImports::Loader'
+              message: 'Pipeline finished',
+              pipeline_class: 'BulkImports::MyPipeline'
             )
         end
 

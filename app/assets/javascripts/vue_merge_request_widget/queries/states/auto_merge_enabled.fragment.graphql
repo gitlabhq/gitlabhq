@@ -1,6 +1,7 @@
 fragment autoMergeEnabled on MergeRequest {
   autoMergeStrategy
   mergeUser {
+    id
     name
     username
     webUrl

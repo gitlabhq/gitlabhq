@@ -203,10 +203,11 @@ RSpec.describe 'User browses commits' do
 
       context 'when click the compare tab' do
         before do
+          wait_for_requests
           click_link('Compare')
         end
 
-        it 'does not render create merge request button' do
+        it 'does not render create merge request button', :js do
           expect(page).not_to have_link 'Create merge request'
         end
       end
@@ -236,10 +237,11 @@ RSpec.describe 'User browses commits' do
 
         context 'when click the compare tab' do
           before do
+            wait_for_requests
             click_link('Compare')
           end
 
-          it 'renders create merge request button' do
+          it 'renders create merge request button', :js do
             expect(page).to have_link 'Create merge request'
           end
         end
@@ -276,10 +278,11 @@ RSpec.describe 'User browses commits' do
 
         context 'when click the compare tab' do
           before do
+            wait_for_requests
             click_link('Compare')
           end
 
-          it 'renders button to the merge request' do
+          it 'renders button to the merge request', :js do
             expect(page).not_to have_link 'Create merge request'
             expect(page).to have_link 'View open merge request', href: project_merge_request_path(project, merge_request)
           end

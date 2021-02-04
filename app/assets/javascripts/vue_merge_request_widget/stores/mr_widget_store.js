@@ -156,9 +156,9 @@ export default class MergeRequestStore {
 
     this.setState();
 
-    mrEventHub.$emit('mr.state.updated', {
-      state: this.mergeRequestState,
-    });
+    if (!window.gon?.features?.mergeRequestWidgetGraphql) {
+      this.emitUpdatedState();
+    }
   }
 
   setGraphqlData(project) {
@@ -182,7 +182,9 @@ export default class MergeRequestStore {
     this.isSHAMismatch = this.sha !== mergeRequest.diffHeadSha;
     this.shouldBeRebased = mergeRequest.shouldBeRebased;
     this.workInProgress = mergeRequest.workInProgress;
+    this.mergeRequestState = mergeRequest.state;
 
+    this.emitUpdatedState();
     this.setState();
   }
 
@@ -206,6 +208,12 @@ export default class MergeRequestStore {
           this.state = null;
       }
     }
+  }
+
+  emitUpdatedState() {
+    mrEventHub.$emit('mr.state.updated', {
+      state: this.mergeRequestState,
+    });
   }
 
   setPaths(data) {

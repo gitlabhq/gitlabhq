@@ -93,12 +93,12 @@ RSpec.describe Git::BranchHooksService do
   describe 'Push Event' do
     let(:event) { Event.pushed_action.first }
 
-    before do
-      service.execute
-    end
+    subject(:execute_service) { service.execute }
 
     context "with an existing branch" do
       it 'generates a push event with one commit' do
+        execute_service
+
         expect(event).to be_an_instance_of(PushEvent)
         expect(event.project).to eq(project)
         expect(event).to be_pushed_action
@@ -109,12 +109,87 @@ RSpec.describe Git::BranchHooksService do
         expect(event.push_event_payload.ref).to eq('master')
         expect(event.push_event_payload.commit_count).to eq(1)
       end
+
+      context 'with changing CI config' do
+        before do
+          allow_next_instance_of(Gitlab::Git::Diff) do |diff|
+            allow(diff).to receive(:new_path).and_return('.gitlab-ci.yml')
+          end
+
+          allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
+        end
+
+        let!(:commit_author) { create(:user, email: sample_commit.author_email) }
+
+        let(:tracking_params) do
+          ['o_pipeline_authoring_unique_users_committing_ciconfigfile', values: commit_author.id]
+        end
+
+        it 'tracks the event' do
+          execute_service
+
+          expect(Gitlab::UsageDataCounters::HLLRedisCounter)
+            .to have_received(:track_event).with(*tracking_params)
+        end
+
+        context 'when the FF usage_data_unique_users_committing_ciconfigfile is disabled' do
+          before do
+            stub_feature_flags(usage_data_unique_users_committing_ciconfigfile: false)
+          end
+
+          it 'does not track the event' do
+            execute_service
+
+            expect(Gitlab::UsageDataCounters::HLLRedisCounter)
+              .not_to have_received(:track_event).with(*tracking_params)
+          end
+        end
+
+        context 'when usage ping is disabled' do
+          before do
+            stub_application_setting(usage_ping_enabled: false)
+          end
+
+          it 'does not track the event' do
+            execute_service
+
+            expect(Gitlab::UsageDataCounters::HLLRedisCounter)
+              .not_to have_received(:track_event).with(*tracking_params)
+          end
+        end
+
+        context 'when the branch is not the main branch' do
+          let(:branch) { 'feature' }
+
+          it 'does not track the event' do
+            execute_service
+
+            expect(Gitlab::UsageDataCounters::HLLRedisCounter)
+              .not_to have_received(:track_event).with(*tracking_params)
+          end
+        end
+
+        context 'when the CI config is a different path' do
+          before do
+            project.ci_config_path = 'config/ci.yml'
+          end
+
+          it 'does not track the event' do
+            execute_service
+
+            expect(Gitlab::UsageDataCounters::HLLRedisCounter)
+              .not_to have_received(:track_event).with(*tracking_params)
+          end
+        end
+      end
     end
 
     context "with a new branch" do
       let(:oldrev) { Gitlab::Git::BLANK_SHA }
 
       it 'generates a push event with more than one commit' do
+        execute_service
+
         expect(event).to be_an_instance_of(PushEvent)
         expect(event.project).to eq(project)
         expect(event).to be_pushed_action
@@ -131,6 +206,8 @@ RSpec.describe Git::BranchHooksService do
       let(:newrev) { Gitlab::Git::BLANK_SHA }
 
       it 'generates a push event with no commits' do
+        execute_service
+
         expect(event).to be_an_instance_of(PushEvent)
         expect(event.project).to eq(project)
         expect(event).to be_pushed_action

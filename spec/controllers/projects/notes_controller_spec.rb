@@ -150,7 +150,7 @@ RSpec.describe Projects::NotesController do
         end
 
         it 'returns an empty page of notes' do
-          expect(Gitlab::EtagCaching::Middleware).not_to receive(:skip!)
+          expect(Gitlab::EtagCaching::Middleware).to receive(:skip!)
 
           request.headers['X-Last-Fetched-At'] = microseconds(Time.zone.now)
 
@@ -169,6 +169,8 @@ RSpec.describe Projects::NotesController do
         end
 
         it 'returns all notes' do
+          expect(Gitlab::EtagCaching::Middleware).to receive(:skip!)
+
           get :index, params: request_params
 
           expect(json_response['notes'].count).to eq((page_1 + page_2 + page_3).size + 1)

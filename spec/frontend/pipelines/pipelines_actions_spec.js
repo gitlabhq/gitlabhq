@@ -1,25 +1,29 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import { GlButton } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { TEST_HOST } from 'spec/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import PipelinesActions from '~/pipelines/components/pipelines_list/pipelines_actions.vue';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
+
+jest.mock('~/flash');
 
 describe('Pipelines Actions dropdown', () => {
   let wrapper;
   let mock;
 
-  const createComponent = (actions = []) => {
-    wrapper = shallowMount(PipelinesActions, {
+  const createComponent = (props, mountFn = shallowMount) => {
+    wrapper = mountFn(PipelinesActions, {
       propsData: {
-        actions,
+        ...props,
       },
     });
   };
 
-  const findAllDropdownItems = () => wrapper.findAll(GlButton);
+  const findDropdown = () => wrapper.find(GlDropdown);
+  const findAllDropdownItems = () => wrapper.findAll(GlDropdownItem);
   const findAllCountdowns = () => wrapper.findAll(GlCountdown);
 
   beforeEach(() => {
@@ -47,7 +51,7 @@ describe('Pipelines Actions dropdown', () => {
     ];
 
     beforeEach(() => {
-      createComponent(mockActions);
+      createComponent({ actions: mockActions });
     });
 
     it('renders a dropdown with the provided actions', () => {
@@ -59,16 +63,33 @@ describe('Pipelines Actions dropdown', () => {
     });
 
     describe('on click', () => {
-      it('makes a request and toggles the loading state', () => {
+      beforeEach(() => {
+        createComponent({ actions: mockActions }, mount);
+      });
+
+      it('makes a request and toggles the loading state', async () => {
         mock.onPost(mockActions.path).reply(200);
 
-        wrapper.find(GlButton).vm.$emit('click');
+        findAllDropdownItems().at(0).vm.$emit('click');
 
-        expect(wrapper.vm.isLoading).toBe(true);
+        await wrapper.vm.$nextTick();
+        expect(findDropdown().props('loading')).toBe(true);
 
-        return waitForPromises().then(() => {
-          expect(wrapper.vm.isLoading).toBe(false);
-        });
+        await waitForPromises();
+        expect(findDropdown().props('loading')).toBe(false);
+      });
+
+      it('makes a failed request and toggles the loading state', async () => {
+        mock.onPost(mockActions.path).reply(500);
+
+        findAllDropdownItems().at(0).vm.$emit('click');
+
+        await wrapper.vm.$nextTick();
+        expect(findDropdown().props('loading')).toBe(true);
+
+        await waitForPromises();
+        expect(findDropdown().props('loading')).toBe(false);
+        expect(createFlash).toHaveBeenCalledTimes(1);
       });
     });
   });
@@ -89,10 +110,10 @@ describe('Pipelines Actions dropdown', () => {
 
     beforeEach(() => {
       jest.spyOn(Date, 'now').mockImplementation(() => new Date('2063-04-04T00:42:00Z').getTime());
-      createComponent([scheduledJobAction, expiredJobAction]);
+      createComponent({ actions: [scheduledJobAction, expiredJobAction] });
     });
 
-    it('makes post request after confirming', () => {
+    it('makes post request after confirming', async () => {
       mock.onPost(scheduledJobAction.path).reply(200);
       jest.spyOn(window, 'confirm').mockReturnValue(true);
 
@@ -100,19 +121,22 @@ describe('Pipelines Actions dropdown', () => {
 
       expect(window.confirm).toHaveBeenCalled();
 
-      return waitForPromises().then(() => {
-        expect(mock.history.post.length).toBe(1);
-      });
+      await waitForPromises();
+
+      expect(mock.history.post).toHaveLength(1);
     });
 
-    it('does not make post request if confirmation is cancelled', () => {
+    it('does not make post request if confirmation is cancelled', async () => {
       mock.onPost(scheduledJobAction.path).reply(200);
       jest.spyOn(window, 'confirm').mockReturnValue(false);
 
       findAllDropdownItems().at(0).vm.$emit('click');
 
       expect(window.confirm).toHaveBeenCalled();
-      expect(mock.history.post.length).toBe(0);
+
+      await waitForPromises();
+
+      expect(mock.history.post).toHaveLength(0);
     });
 
     it('displays the remaining time in the dropdown', () => {

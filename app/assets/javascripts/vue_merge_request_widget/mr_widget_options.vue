@@ -94,7 +94,6 @@ export default {
     state: {
       query: getStateQuery,
       manual: true,
-      pollInterval: 10 * 1000,
       skip() {
         return !this.mr || !window.gon?.features?.mergeRequestWidgetGraphql;
       },
@@ -286,6 +285,10 @@ export default {
       return new MRWidgetService(this.getServiceEndpoints(store));
     },
     checkStatus(cb, isRebased) {
+      if (window.gon?.features?.mergeRequestWidgetGraphql) {
+        this.$apollo.queries.state.refetch();
+      }
+
       return this.service
         .checkStatus()
         .then(({ data }) => {

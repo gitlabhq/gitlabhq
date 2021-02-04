@@ -32,6 +32,20 @@ export default {
         }
       }
 
+      if (window.gon?.features?.paginatedNotes && note.base_discussion) {
+        if (discussion.diff_file) {
+          discussion.file_hash = discussion.diff_file.file_hash;
+
+          discussion.truncated_diff_lines = utils.prepareDiffLines(
+            discussion.truncated_diff_lines || [],
+          );
+        }
+
+        discussion.resolvable = note.resolvable;
+        discussion.expanded = note.base_discussion.expanded;
+        discussion.resolved = note.resolved;
+      }
+
       // note.base_discussion = undefined; // No point keeping a reference to this
       delete note.base_discussion;
       discussion.notes = [note];
@@ -321,6 +335,10 @@ export default {
 
   [types.SET_NOTES_LOADING_STATE](state, value) {
     state.isLoading = value;
+  },
+
+  [types.SET_NOTES_FETCHING_STATE](state, value) {
+    state.isFetching = value;
   },
 
   [types.SET_DISCUSSION_DIFF_LINES](state, { discussionId, diffLines }) {

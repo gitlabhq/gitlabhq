@@ -16,7 +16,7 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Visibility, project features, permissions')
     %button.gl-button.btn.btn-default.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
-    %p= _('Choose visibility level, enable/disable project features (issues, repository, wiki, snippets) and set permissions.')
+    %p= _('Choose visibility level, enable/disable project features and their permissions, disable email notifications, and show default award emoji.')
 
   .settings-content
     = form_for @project, remote: true, html: { multipart: true, class: "sharing-permissions-form" }, authenticity_token: true do |f|
