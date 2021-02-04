@@ -1542,9 +1542,9 @@ RSpec.describe API::MergeRequests do
         end
       end
 
-      context 'when access_raw_diffs is passed as an option' do
+      context 'when access_raw_diffs is true' do
         it_behaves_like 'accesses diffs via raw_diffs' do
-          let(:params) { { access_raw_diffs: true } }
+          let(:params) { { access_raw_diffs: "true" } }
         end
       end
     end

@@ -39,6 +39,11 @@ GitLab can be integrated with the following external services to enhance securit
 
 GitLab also provides features to improve the security of your own application. For more details see [GitLab Secure](../user/application_security/index.md).
 
+## Security partners
+
+GitLab has integrated with several security partners. For more information, see
+[Security partners integration](security_partners/index.md).
+
 ## Continuous integration
 
 GitLab can be integrated with the following external service for continuous integration:

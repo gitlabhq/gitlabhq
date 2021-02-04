@@ -310,7 +310,7 @@
   - dompurify
   - Apache-2.0
   - :who: Lukas Eipert
-    :why: "https://github.com/cure53/DOMPurify/blob/main/LICENSE and https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31928#note_346604841"
+    :why: https://github.com/cure53/DOMPurify/blob/main/LICENSE and https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31928#note_346604841
     :versions: []
     :when: 2020-08-13 13:42:46.508082000 Z
 - - :permit
@@ -325,3 +325,9 @@
     :why: Used to generate documentation. https://pypi.org/project/docutils/0.13.1/
     :versions: []
     :when: 2020-10-05 20:22:55.955189491 Z
+- - :permit
+  - WTFPL
+  - :who: Stan Hu
+    :why: https://github.com/xijo/reverse_markdown/blob/master/LICENSE
+    :versions: []
+    :when: 2021-02-03 08:47:28.792907000 Z

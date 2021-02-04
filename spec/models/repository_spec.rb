@@ -1136,11 +1136,11 @@ RSpec.describe Repository do
       expect(repository.license_key).to be_nil
     end
 
-    it 'returns nil when the content is not recognizable' do
+    it 'returns other when the content is not recognizable' do
       repository.create_file(user, 'LICENSE', 'Gitlab B.V.',
         message: 'Add LICENSE', branch_name: 'master')
 
-      expect(repository.license_key).to be_nil
+      expect(repository.license_key).to eq('other')
     end
 
     it 'returns nil when the commit SHA does not exist' do
@@ -1180,11 +1180,12 @@ RSpec.describe Repository do
       expect(repository.license).to be_nil
     end
 
-    it 'returns nil when the content is not recognizable' do
+    it 'returns other when the content is not recognizable' do
+      license = Licensee::License.new('other')
       repository.create_file(user, 'LICENSE', 'Gitlab B.V.',
         message: 'Add LICENSE', branch_name: 'master')
 
-      expect(repository.license).to be_nil
+      expect(repository.license).to eq(license)
     end
 
     it 'returns the license' do

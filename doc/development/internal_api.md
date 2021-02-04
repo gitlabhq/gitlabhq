@@ -456,7 +456,7 @@ Cluster.
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
-| `alert` | Hash | yes | Alerts detail. Same format as [3rd party alert](../operations/incident_management/alert_integrations.md#customize-the-alert-payload-outside-of-gitlab). |
+| `alert` | Hash | yes | Alerts detail. Same format as [3rd party alert](../operations/incident_management/integrations.md#customize-the-alert-payload-outside-of-gitlab). |
 
 ```plaintext
 POST internal/kubernetes/modules/cilium_alert

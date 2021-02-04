@@ -56,7 +56,7 @@ POST projects/:id/access_tokens
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
 | `name` | String | yes | The name of the project access token  |
-| `scopes` | Array[String] | yes | [List of scopes](../user/project/settings/project_access_tokens.md#limiting-scopes-of-a-project-access-token) |
+| `scopes` | Array\[String] | yes | [List of scopes](../user/project/settings/project_access_tokens.md#limiting-scopes-of-a-project-access-token) |
 | `expires_at` | Date | no | The token expires at midnight UTC on that date |
 
 ```shell

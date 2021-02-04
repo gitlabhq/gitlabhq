@@ -83,7 +83,7 @@ You can display alerts with a `gitlab_environment_name` of `production`
 
 In GitLab versions 13.1 and greater, you can configure your manually configured
 Prometheus server to use the
-[Generic alerts integration](../incident_management/alert_integrations.md).
+[Generic alerts integration](../incident_management/integrations.md).
 
 ## Trigger actions from alerts **(ULTIMATE)**
 

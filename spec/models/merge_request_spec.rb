@@ -715,6 +715,10 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     context 'when external issue tracker is enabled' do
+      let(:project) { create(:project, :repository) }
+
+      subject { create(:merge_request, source_project: project) }
+
       before do
         subject.project.has_external_issue_tracker = true
         subject.project.save!
@@ -788,6 +792,10 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     context 'when only external issue tracker enabled' do
+      let(:project) { create(:project, :repository) }
+
+      subject { create(:merge_request, source_project: project) }
+
       before do
         subject.project.has_external_issue_tracker = true
         subject.project.issues_enabled = false
@@ -1274,8 +1282,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
     let(:mentioned_issue) { create :issue, project: subject.project }
     let(:commit) { double('commit', safe_message: "Fixes #{closing_issue.to_reference}") }
 
-    subject { create(:merge_request, source_project: create(:project)) }
-
     it 'detects issues mentioned in description but not closed' do
       subject.project.add_developer(subject.author)
       subject.description = "Is related to #{mentioned_issue.to_reference} and #{closing_issue.to_reference}"
@@ -1478,8 +1484,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
   end
 
   describe '#default_merge_commit_message' do
-    subject { create(:merge_request, source_project: create(:project)) }
-
     it 'includes merge information as the title' do
       request = build(:merge_request, source_branch: 'source', target_branch: 'target')
 
@@ -3424,6 +3428,10 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     context 'when resolve_outdated_diff_discussions is set' do
+      let(:project) { create(:project, :repository) }
+
+      subject { create(:merge_request, source_project: project) }
+
       before do
         discussion
 
@@ -3444,7 +3452,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
   describe '#branch_merge_base_commit' do
     let(:project) { create(:project, :repository) }
 
-    subject { create(:merge_request, :with_diffs, source_project: project) }
+    subject { create(:merge_request, source_project: project) }
 
     context 'source and target branch exist' do
       it { expect(subject.branch_merge_base_commit.sha).to eq('ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }
@@ -3467,7 +3475,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     context "with diffs" do
       let(:project) { create(:project, :repository) }
 
-      subject { create(:merge_request, :with_diffs, source_project: project) }
+      subject { create(:merge_request, source_project: project) }
 
       let(:expected_diff_refs) do
         Gitlab::Diff::DiffRefs.new(
@@ -3871,7 +3879,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
   describe '#fetch_ref!' do
     let(:project) { create(:project, :repository) }
 
-    subject { create(:merge_request, :with_diffs, source_project: project) }
+    subject { create(:merge_request, source_project: project) }
 
     it 'fetches the ref correctly' do
       expect { subject.target_project.repository.delete_refs(subject.ref_path) }.not_to raise_error

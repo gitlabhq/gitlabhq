@@ -361,7 +361,7 @@ module API
           with: Entities::MergeRequestChanges,
           current_user: current_user,
           project: user_project,
-          access_raw_diffs: params.fetch(:access_raw_diffs, false)
+          access_raw_diffs: to_boolean(params.fetch(:access_raw_diffs, false))
       end
 
       desc 'Get the merge request pipelines' do

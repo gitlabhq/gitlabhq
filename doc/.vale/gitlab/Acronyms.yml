@@ -149,6 +149,7 @@ exceptions:
   - TODO
   - TOML
   - TTL
+  - UDP
   - UNIX
   - URI
   - URL
