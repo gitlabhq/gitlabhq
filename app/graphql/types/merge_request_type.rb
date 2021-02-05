@@ -243,7 +243,7 @@ module Types
     end
 
     def reviewers
-      object.reviewers if object.allows_reviewers?
+      object.reviewers
     end
   end
 end

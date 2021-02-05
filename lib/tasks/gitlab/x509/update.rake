@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'logger'
 
 desc "GitLab | X509 | Update signatures when certificate store has changed"

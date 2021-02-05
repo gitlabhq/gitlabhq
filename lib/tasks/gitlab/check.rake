@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   desc 'GitLab | Check the configuration of GitLab and its environment'
   task check: :gitlab_environment do

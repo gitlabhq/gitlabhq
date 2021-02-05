@@ -92,10 +92,6 @@ module Gitlab
         tracking_category: 'Growth::Activation::Experiment::CiSyntaxTemplates',
         rollout_strategy: :user
       },
-      pipelines_empty_state: {
-        tracking_category: 'Growth::Activation::Experiment::PipelinesEmptyState',
-        rollout_strategy: :user
-      },
       invite_members_new_dropdown: {
         tracking_category: 'Growth::Expansion::Experiment::InviteMembersNewDropdown'
       },

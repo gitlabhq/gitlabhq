@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 desc 'GitLab | Generate PostgreSQL Password Hash'
 task :postgresql_md5_hash do
   require 'digest'

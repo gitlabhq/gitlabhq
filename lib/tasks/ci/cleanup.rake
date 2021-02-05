@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :ci do
   namespace :cleanup do
     desc "GitLab | CI | Clean running builds"

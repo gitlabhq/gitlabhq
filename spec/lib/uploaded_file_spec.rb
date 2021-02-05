@@ -218,6 +218,20 @@ RSpec.describe UploadedFile do
     end
   end
 
+  describe '#filename_sanitized?' do
+    it 'is true when filename has been sanitized' do
+      file = described_class.new(temp_file.path, filename: 'foo①.png')
+
+      expect(file).to be_filename_sanitized
+    end
+
+    it 'is false when filename has not been sanitized' do
+      file = described_class.new(temp_file.path, filename: 'foo.png')
+
+      expect(file).not_to be_filename_sanitized
+    end
+  end
+
   describe '#sanitize_filename' do
     it { expect(described_class.new(temp_file.path).sanitize_filename('spaced name')).to eq('spaced_name') }
     it { expect(described_class.new(temp_file.path).sanitize_filename('#$%^&')).to eq('_____') }

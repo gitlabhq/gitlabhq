@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :import_export do
     desc 'GitLab | Import/Export | Show Import/Export version'

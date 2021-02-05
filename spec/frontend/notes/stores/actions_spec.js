@@ -1312,10 +1312,27 @@ describe('Actions Notes Store', () => {
         return actions
           .updateConfidentialityOnIssuable({ commit: commitSpy, state, getters }, actionArgs)
           .then(() => {
+            expect(Flash).not.toHaveBeenCalled();
             expect(commitSpy).toHaveBeenCalledWith(
               mutationTypes.SET_ISSUE_CONFIDENTIAL,
               confidential,
             );
+          });
+      });
+    });
+
+    describe('on user recoverable error', () => {
+      it('sends the error to Flash', () => {
+        const error = 'error';
+
+        jest
+          .spyOn(utils.gqClient, 'mutate')
+          .mockResolvedValue({ data: { issueSetConfidential: { errors: [error] } } });
+
+        return actions
+          .updateConfidentialityOnIssuable({ commit: () => {}, state, getters }, actionArgs)
+          .then(() => {
+            expect(Flash).toHaveBeenCalledWith(error, 'alert');
           });
       });
     });

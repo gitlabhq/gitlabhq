@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :cache do
   namespace :clear do
     REDIS_CLEAR_BATCH_SIZE = 1000 # There seems to be no speedup when pushing beyond 1,000

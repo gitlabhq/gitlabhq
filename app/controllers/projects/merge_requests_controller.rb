@@ -52,7 +52,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   before_action do
-    push_frontend_feature_flag(:merge_request_reviewers, @project, default_enabled: true)
     push_frontend_feature_flag(:mr_collapsed_approval_rules, @project)
     push_frontend_feature_flag(:reviewer_approval_rules, @project, default_enabled: :yaml)
   end

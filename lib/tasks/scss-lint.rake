@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 unless Rails.env.production?
   require 'scss_lint/rake_task'
 

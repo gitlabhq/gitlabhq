@@ -265,18 +265,6 @@ RSpec.describe 'getting merge request listings nested in a project' do
         })
       end
 
-      context 'the feature flag is disabled' do
-        before do
-          stub_feature_flags(merge_request_reviewers: false)
-        end
-
-        it 'does not return reviewers' do
-          execute_query
-
-          expect(results).to all(match a_hash_including('reviewers' => be_nil))
-        end
-      end
-
       include_examples 'N+1 query check'
     end
   end
@@ -407,10 +395,12 @@ RSpec.describe 'getting merge request listings nested in a project' do
       end
 
       let(:query) do
+        # Note: __typename meta field is always requested by the FE
         graphql_query_for(:project, { full_path: project.full_path },
         <<~QUERY
-        mergeRequests(mergedAfter: "2020-01-01", mergedBefore: "2020-01-05", first: 0) {
+        mergeRequests(mergedAfter: "2020-01-01", mergedBefore: "2020-01-05", first: 0, sourceBranches: null, labels: null) {
           count
+          __typename
         }
         QUERY
         )

@@ -66,14 +66,6 @@ RSpec.describe 'getting merge request information nested in a project' do
       expect(graphql_data_at(:project, :merge_request, :reviewers, :nodes)).to match_array(expected)
       expect(graphql_data_at(:project, :merge_request, :participants, :nodes)).to include(*expected)
     end
-
-    it 'suppresses reviewers if reviewers are not allowed' do
-      stub_feature_flags(merge_request_reviewers: false)
-
-      post_graphql(query, current_user: current_user)
-
-      expect(graphql_data_at(:project, :merge_request, :reviewers)).to be_nil
-    end
   end
 
   it 'includes diff stats' do

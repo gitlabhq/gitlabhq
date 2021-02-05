@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :two_factor do
     desc "GitLab | 2FA | Disable Two-factor authentication (2FA) for all users"

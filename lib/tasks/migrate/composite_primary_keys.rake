@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :db do
     desc 'GitLab | DB | Adds primary keys to tables that only have composite unique keys'

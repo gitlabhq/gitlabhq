@@ -4,6 +4,7 @@ require 'spec_helper'
 RSpec.describe Mutations::DesignManagement::Upload do
   include DesignManagementTestHelpers
   include ConcurrentHelpers
+  using FixtureFileRefinements
 
   let(:issue) { create(:issue) }
   let(:user) { issue.author }
@@ -18,8 +19,12 @@ RSpec.describe Mutations::DesignManagement::Upload do
     mutation.resolve(project_path: project_path, iid: iid, files: files_to_upload)
   end
 
+  def uploaded_file(filename)
+    fixture_file_upload(expand_fixture_path(filename))
+  end
+
   describe "#resolve" do
-    let(:files) { [fixture_file_upload('spec/fixtures/dk.png')] }
+    let(:files) { [uploaded_file('dk.png').to_gitlab_uploaded_file] }
 
     subject(:resolve) do
       mutation.resolve(project_path: project.full_path, iid: issue.iid, files: files)
@@ -49,7 +54,7 @@ RSpec.describe Mutations::DesignManagement::Upload do
           ['dk.png', 'rails_sample.jpg', 'banana_sample.gif']
            .cycle
            .take(Concurrent.processor_count * 2)
-           .map { |f| RenameableUpload.unique_file(f) }
+           .map { |f| uploaded_file(f).uniquely_named.to_gitlab_uploaded_file }
         end
 
         def creates_designs

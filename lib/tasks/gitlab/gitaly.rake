@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :gitaly do
     desc 'GitLab | Gitaly | Install or upgrade gitaly'

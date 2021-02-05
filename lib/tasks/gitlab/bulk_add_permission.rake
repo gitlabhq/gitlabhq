@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :import do
     desc "GitLab | Import | Add all users to all projects (admin users are added as maintainers)"

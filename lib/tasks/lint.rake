@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 unless Rails.env.production?
   namespace :lint do
     task :static_verification_env do

@@ -112,6 +112,7 @@
 .workhorse-patterns: &workhorse-patterns
   - "GITLAB_WORKHORSE_VERSION"
   - "workhorse/**/*"
+  - ".gitlab/ci/workhorse.gitlab-ci.yml"
 
 .yaml-lint-patterns: &yaml-lint-patterns
   - ".gitlab-ci.yml"

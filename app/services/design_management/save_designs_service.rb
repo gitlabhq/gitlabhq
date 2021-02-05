@@ -18,6 +18,7 @@ module DesignManagement
       return error("Only #{MAX_FILES} files are allowed simultaneously") if files.size > MAX_FILES
       return error("Duplicate filenames are not allowed!") if files.map(&:original_filename).uniq.length != files.length
       return error("Design copy is in progress") if design_collection.copy_in_progress?
+      return error("Filenames contained invalid characters and could not be saved") if files.any?(&:filename_sanitized?)
 
       uploaded_designs, version = upload_designs!
       skipped_designs = designs - uploaded_designs

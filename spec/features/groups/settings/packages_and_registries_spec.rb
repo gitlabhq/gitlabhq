@@ -54,6 +54,37 @@ RSpec.describe 'Group Packages & Registries settings' do
       expect(page).to have_content('Package Registry')
       expect(page).to have_button('Collapse')
     end
+
+    it 'automatically saves changes to the server', :js do
+      visit_settings_page
+
+      expect(page).to have_content('Allow duplicates')
+
+      find('.gl-toggle').click
+
+      expect(page).to have_content('Do not allow duplicates')
+
+      visit_settings_page
+
+      expect(page).to have_content('Do not allow duplicates')
+    end
+
+    it 'shows an error on wrong regex', :js do
+      visit_settings_page
+
+      expect(page).to have_content('Allow duplicates')
+
+      find('.gl-toggle').click
+
+      expect(page).to have_content('Do not allow duplicates')
+
+      fill_in 'Exceptions', with: ')'
+
+      # simulate blur event
+      find('body').click
+
+      expect(page).to have_content('is an invalid regexp')
+    end
   end
 
   def find_settings_menu

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 desc 'Checks if migrations in a branch require downtime'
 task downtime_check: :environment do
   repo = if defined?(Gitlab::License)

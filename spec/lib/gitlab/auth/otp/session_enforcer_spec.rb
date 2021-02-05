@@ -9,11 +9,12 @@ RSpec.describe Gitlab::Auth::Otp::SessionEnforcer, :clean_gitlab_redis_shared_st
     it 'registers a session in Redis' do
       redis = double(:redis)
       expect(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
+      session_expiry_in_seconds = Gitlab::CurrentSettings.git_two_factor_session_expiry.minutes.to_i
 
       expect(redis).to(
         receive(:setex)
           .with("#{described_class::OTP_SESSIONS_NAMESPACE}:#{key.id}",
-                described_class::DEFAULT_EXPIRATION,
+                session_expiry_in_seconds,
                 true)
           .once)
 

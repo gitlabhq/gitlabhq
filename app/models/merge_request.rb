@@ -1784,7 +1784,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def allows_reviewers?
-    Feature.enabled?(:merge_request_reviewers, project, default_enabled: true)
+    true
   end
 
   def allows_multiple_reviewers?

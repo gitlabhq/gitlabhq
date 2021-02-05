@@ -10,7 +10,7 @@ class MergeRequestBasicEntity < Grape::Entity
   expose :milestone, using: API::Entities::Milestone
   expose :labels, using: LabelEntity
   expose :assignees, using: API::Entities::UserBasic
-  expose :reviewers, if: -> (m) { m.allows_reviewers? }, using: API::Entities::UserBasic
+  expose :reviewers, using: API::Entities::UserBasic
   expose :task_status, :task_status_short
   expose :lock_version, :lock_version
 end

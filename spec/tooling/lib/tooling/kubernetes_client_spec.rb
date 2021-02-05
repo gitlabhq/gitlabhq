@@ -29,7 +29,7 @@ RSpec.describe Tooling::KubernetesClient do
       specify do
         expect(Gitlab::Popen).to receive(:popen_with_detail)
           .with(["kubectl delete #{described_class::RESOURCE_LIST} " +
-            %(--namespace "#{namespace}" --now --ignore-not-found --include-uninitialized --wait=#{wait} #{release_names_in_command})])
+            %(--namespace "#{namespace}" --now --ignore-not-found --wait=#{wait} #{release_names_in_command})])
           .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
 
         expect(Gitlab::Popen).to receive(:popen_with_detail)
@@ -44,7 +44,7 @@ RSpec.describe Tooling::KubernetesClient do
     it 'raises an error if the Kubernetes command fails' do
       expect(Gitlab::Popen).to receive(:popen_with_detail)
         .with(["kubectl delete #{described_class::RESOURCE_LIST} " +
-          %(--namespace "#{namespace}" --now --ignore-not-found --include-uninitialized --wait=true -l release="#{release_name}")])
+          %(--namespace "#{namespace}" --now --ignore-not-found --wait=true -l release="#{release_name}")])
         .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: false)))
 
       expect { subject.cleanup_by_release(release_name: release_name) }.to raise_error(described_class::CommandFailedError)
@@ -81,7 +81,7 @@ RSpec.describe Tooling::KubernetesClient do
       specify do
         expect(Gitlab::Popen).to receive(:popen_with_detail)
           .with(["kubectl delete #{resource_type} ".squeeze(' ') +
-            %(--namespace "#{namespace}" --now --ignore-not-found --include-uninitialized --wait=#{wait} #{release_names_in_command})])
+            %(--namespace "#{namespace}" --now --ignore-not-found --wait=#{wait} #{release_names_in_command})])
           .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
 
         # We're not verifying the output here, just silencing it
@@ -92,7 +92,7 @@ RSpec.describe Tooling::KubernetesClient do
     it 'raises an error if the Kubernetes command fails' do
       expect(Gitlab::Popen).to receive(:popen_with_detail)
         .with(["kubectl delete #{resource_type} " +
-          %(--namespace "#{namespace}" --now --ignore-not-found --include-uninitialized --wait=true #{pod_for_release})])
+          %(--namespace "#{namespace}" --now --ignore-not-found --wait=true #{pod_for_release})])
         .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: false)))
 
       expect { subject.cleanup_by_created_at(resource_type: resource_type, created_before: two_days_ago) }.to raise_error(described_class::CommandFailedError)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :lfs do
     desc 'GitLab | LFS | Check integrity of uploaded LFS objects'

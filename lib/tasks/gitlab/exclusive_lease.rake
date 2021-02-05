@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :exclusive_lease do
     desc 'GitLab | Exclusive Lease | Clear existing exclusive leases for specified scope (default: *)'

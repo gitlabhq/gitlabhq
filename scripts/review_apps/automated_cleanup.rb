@@ -22,7 +22,8 @@ class AutomatedCleanup
     %w[gitlab gitlab-ee].include?(ENV['CI_PROJECT_NAME'])
   end
 
-  def initialize(project_path: ENV['CI_PROJECT_PATH'], gitlab_token: ENV['GITLAB_BOT_REVIEW_APPS_CLEANUP_TOKEN'])
+  # $GITLAB_PROJECT_REVIEW_APP_CLEANUP_API_TOKEN => `Automated Review App Cleanup` project token
+  def initialize(project_path: ENV['CI_PROJECT_PATH'], gitlab_token: ENV['GITLAB_PROJECT_REVIEW_APP_CLEANUP_API_TOKEN'])
     @project_path = project_path
     @gitlab_token = gitlab_token
   end

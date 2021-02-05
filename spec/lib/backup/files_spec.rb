@@ -21,10 +21,6 @@ RSpec.describe Backup::Files do
     allow(File).to receive(:realpath).with("/var/gitlab-pages").and_return("/var/gitlab-pages")
     allow(File).to receive(:realpath).with("/var/gitlab-pages/..").and_return("/var")
 
-    allow_any_instance_of(String).to receive(:color) do |string, _color|
-      string
-    end
-
     allow_any_instance_of(described_class).to receive(:progress).and_return(progress)
   end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 unless Rails.env.production?
   namespace :frontend do
     desc 'GitLab | Frontend | Generate fixtures for JavaScript tests'

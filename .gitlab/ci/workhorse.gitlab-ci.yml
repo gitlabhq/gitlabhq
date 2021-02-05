@@ -8,3 +8,39 @@ workhorse:
     - git checkout .
     - scripts/update-workhorse check
     - make -C workhorse
+
+workhorse:verify:
+  extends: .workhorse:rules:workhorse
+  image: ${GITLAB_DEPENDENCY_PROXY}golang:1.15
+  stage: test
+  needs: []
+  script:
+    - make -C workhorse verify
+
+.workhorse:test:
+  extends: .workhorse:rules:workhorse
+  services:
+    - name: registry.gitlab.com/gitlab-org/build/cng/gitaly:latest
+      # Disable the hooks so we don't have to stub the GitLab API
+      command: ["/usr/bin/env", "GITALY_TESTING_NO_GIT_HOOKS=1", "/scripts/process-wrapper"]
+      alias: gitaly
+  variables:
+    GITALY_ADDRESS: "tcp://gitaly:8075"
+  stage: test
+  needs: []
+  script:
+    - go version
+    - apt-get update && apt-get -y install libimage-exiftool-perl
+    - make -C workhorse test
+
+workhorse:test using go 1.13:
+  extends: .workhorse:test
+  image: ${GITLAB_DEPENDENCY_PROXY}golang:1.13
+
+workhorse:test using go 1.14:
+  extends: .workhorse:test
+  image: ${GITLAB_DEPENDENCY_PROXY}golang:1.14
+
+workhorse:test using go 1.15:
+  extends: .workhorse:test
+  image: ${GITLAB_DEPENDENCY_PROXY}golang:1.15

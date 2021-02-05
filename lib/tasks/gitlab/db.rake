@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :db do
     desc 'GitLab | DB | Manually insert schema migration version'

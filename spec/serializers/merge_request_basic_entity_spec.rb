@@ -20,23 +20,11 @@ RSpec.describe MergeRequestBasicEntity do
     let(:params) { { reviewers: [reviewer] } }
     let(:reviewer) { build(:user) }
 
-    context 'when merge_request_reviewers feature is disabled' do
-      it 'does not contain assignees attributes' do
-        stub_feature_flags(merge_request_reviewers: false)
-
-        expect(subject[:reviewers]).to be_nil
-      end
-    end
-
-    context 'when merge_request_reviewers feature is enabled' do
-      it 'contains reviewers attributes' do
-        stub_feature_flags(merge_request_reviewers: true)
-
-        expect(subject[:reviewers].count).to be 1
-        expect(subject[:reviewers].first.keys).to include(
-          :id, :name, :username, :state, :avatar_url, :web_url
-        )
-      end
+    it 'contains reviewers attributes' do
+      expect(subject[:reviewers].count).to be 1
+      expect(subject[:reviewers].first.keys).to include(
+        :id, :name, :username, :state, :avatar_url, :web_url
+      )
     end
   end
 end

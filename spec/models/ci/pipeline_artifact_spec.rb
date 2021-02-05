@@ -76,8 +76,8 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
     end
   end
 
-  describe '.has_report?' do
-    subject(:pipeline_artifact) { Ci::PipelineArtifact.has_report?(file_type) }
+  describe '.report_exists?' do
+    subject(:pipeline_artifact) { Ci::PipelineArtifact.report_exists?(file_type) }
 
     context 'when file_type is code_coverage' do
       let(:file_type) { :code_coverage }
@@ -173,11 +173,21 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
   end
 
   describe '#present' do
-    subject { coverage_report.present }
+    subject(:presenter) { report.present }
 
     context 'when file_type is code_coverage' do
+      let(:report) { coverage_report }
+
       it 'uses code coverage presenter' do
-        expect(subject.present).to be_kind_of(Ci::PipelineArtifacts::CodeCoveragePresenter)
+        expect(presenter).to be_kind_of(Ci::PipelineArtifacts::CodeCoveragePresenter)
+      end
+    end
+
+    context 'when file_type is code_quality_mr_diff' do
+      let(:report) { create(:ci_pipeline_artifact, :with_codequality_mr_diff_report) }
+
+      it 'uses code codequality mr diff presenter' do
+        expect(presenter).to be_kind_of(Ci::PipelineArtifacts::CodeQualityMrDiffPresenter)
       end
     end
   end

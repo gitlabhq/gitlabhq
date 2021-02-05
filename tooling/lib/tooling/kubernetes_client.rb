@@ -43,7 +43,6 @@ module Tooling
         %(--namespace "#{namespace}"),
         '--now',
         '--ignore-not-found',
-        '--include-uninitialized',
         %(--wait=#{wait}),
         selector
       ]
@@ -58,7 +57,6 @@ module Tooling
         %(--namespace "#{namespace}"),
         '--now',
         '--ignore-not-found',
-        '--include-uninitialized',
         %(--wait=#{wait}),
         resource_names.join(' ')
       ]

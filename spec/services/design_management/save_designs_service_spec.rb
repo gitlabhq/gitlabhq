@@ -4,6 +4,7 @@ require 'spec_helper'
 RSpec.describe DesignManagement::SaveDesignsService do
   include DesignManagementTestHelpers
   include ConcurrentHelpers
+  using FixtureFileRefinements
 
   let_it_be_with_reload(:issue) { create(:issue) }
   let_it_be(:developer) { create(:user, developer_projects: [issue.project]) }
@@ -12,11 +13,11 @@ RSpec.describe DesignManagement::SaveDesignsService do
   let(:files) { [rails_sample] }
   let(:design_repository) { ::Gitlab::GlRepository::DESIGN.repository_resolver.call(project) }
   let(:rails_sample_name) { 'rails_sample.jpg' }
-  let(:rails_sample) { sample_image(rails_sample_name) }
-  let(:dk_png) { sample_image('dk.png') }
+  let(:rails_sample) { uploaded_file(rails_sample_name).to_gitlab_uploaded_file }
+  let(:dk_png) { uploaded_file('dk.png').to_gitlab_uploaded_file }
 
-  def sample_image(filename)
-    fixture_file_upload("spec/fixtures/#{filename}")
+  def uploaded_file(filename)
+    fixture_file_upload(expand_fixture_path(filename))
   end
 
   def commit_count
@@ -122,7 +123,8 @@ RSpec.describe DesignManagement::SaveDesignsService do
         parellism = 4
 
         blocks = Array.new(parellism).map do
-          unique_files = [RenameableUpload.unique_file('rails_sample.jpg')]
+          unique_file = uploaded_file('dk.png').uniquely_named.to_gitlab_uploaded_file
+          unique_files = [unique_file]
 
           -> { run_service(unique_files) }
         end
@@ -304,6 +306,14 @@ RSpec.describe DesignManagement::SaveDesignsService do
 
           it 'returns the correct error' do
             expect(response[:message]).to match('Duplicate filenames are not allowed!')
+          end
+        end
+
+        context 'when uploading files with special characters in filenames' do
+          let(:files) { [uploaded_file('dk.png').renamed_as('special_char①.png').to_gitlab_uploaded_file] }
+
+          it 'returns the correct error' do
+            expect(response[:message]).to match('Filenames contained invalid characters and could not be saved')
           end
         end
       end

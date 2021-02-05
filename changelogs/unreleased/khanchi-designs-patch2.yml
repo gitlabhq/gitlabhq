@@ -1,0 +1,5 @@
+---
+title: 'Designs: return error if uploading filenames with special chars'
+merge_request: 44136
+author: Sushil Khanchi @khanchi97
+type: fixed

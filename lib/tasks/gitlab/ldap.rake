@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :ldap do
     desc 'GitLab | LDAP | Rename provider'

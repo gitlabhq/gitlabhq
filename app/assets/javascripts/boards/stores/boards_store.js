@@ -117,7 +117,6 @@ const boardsStore = {
   },
 
   updateNewListDropdown(listId) {
-    // eslint-disable-next-line no-unused-expressions
     document
       .querySelector(`.js-board-list-${getIdFromGraphQLId(listId)}`)
       ?.classList.remove('is-active');

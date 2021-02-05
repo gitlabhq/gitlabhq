@@ -29,6 +29,7 @@
       = f.number_field :session_expire_delay, class: 'form-control gl-form-input', title: _('Maximum duration of a session.'), data: { toggle: 'tooltip', container: 'body' }
       %span.form-text.text-muted#session_expire_delay_help_block= _('GitLab restart is required to apply changes.')
 
+    = render_if_exists 'admin/application_settings/git_two_factor_session_expiry', form: f
     = render_if_exists 'admin/application_settings/personal_access_token_expiration_policy', form: f
     = render_if_exists 'admin/application_settings/enforce_pat_expiration', form: f
     = render_if_exists 'admin/application_settings/enforce_ssh_key_expiration', form: f

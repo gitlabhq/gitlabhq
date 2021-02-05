@@ -123,7 +123,6 @@ module Ci
 
     def record_conversion_event
       Experiments::RecordConversionEventWorker.perform_async(:ci_syntax_templates, current_user.id)
-      Experiments::RecordConversionEventWorker.perform_async(:pipelines_empty_state, current_user.id)
     end
 
     def create_namespace_onboarding_action

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :features do
     desc 'GitLab | Features | Enable direct Git access via Rugged for NFS'

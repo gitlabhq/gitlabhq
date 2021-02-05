@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :usage_data do
     desc 'GitLab | UsageData | Generate raw SQLs for usage ping in YAML'

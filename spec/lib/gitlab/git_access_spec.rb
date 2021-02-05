@@ -411,6 +411,59 @@ RSpec.describe Gitlab::GitAccess do
           expect { pull_access_check }.not_to raise_error
         end
       end
+
+      context 'based on the duration set by the `git_two_factor_session_expiry` setting' do
+        let_it_be(:git_two_factor_session_expiry) { 20 }
+        let_it_be(:redis_key_expiry_at) { git_two_factor_session_expiry.minutes.from_now }
+
+        before do
+          stub_application_setting(git_two_factor_session_expiry: git_two_factor_session_expiry)
+        end
+
+        def value_of_key
+          key_expired = Time.current > redis_key_expiry_at
+          return if key_expired
+
+          true
+        end
+
+        def stub_redis
+          redis = double(:redis)
+          expect(Gitlab::Redis::SharedState).to receive(:with).at_most(:twice).and_yield(redis)
+
+          expect(redis).to(
+            receive(:get)
+              .with("#{Gitlab::Auth::Otp::SessionEnforcer::OTP_SESSIONS_NAMESPACE}:#{key.id}"))
+              .at_most(:twice)
+              .and_return(value_of_key)
+        end
+
+        context 'at a time before the stipulated expiry' do
+          it 'allows push and pull access' do
+            travel_to(10.minutes.from_now) do
+              stub_redis
+
+              aggregate_failures do
+                expect { push_access_check }.not_to raise_error
+                expect { pull_access_check }.not_to raise_error
+              end
+            end
+          end
+        end
+
+        context 'at a time after the stipulated expiry' do
+          it 'does not allow push and pull access' do
+            travel_to(30.minutes.from_now) do
+              stub_redis
+
+              aggregate_failures do
+                expect { push_access_check }.to raise_error
+                expect { pull_access_check }.to raise_error
+              end
+            end
+          end
+        end
+      end
     end
 
     context 'without OTP session' do

@@ -6,79 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Design Patterns
 
-## Singletons
+The following design patterns are suggested approaches for solving common problems. Use discretion when evaluating
+if a certain pattern makes sense in your situation. Just because it is a pattern, doesn't mean it is a good one for your problem.
 
-When exactly one object is needed for a given task, prefer to define it as a
-`class` rather than as an object literal. Prefer also to explicitly restrict
-instantiation, unless flexibility is important (such as for testing).
+**Please note:** When adding a design pattern to this document, be sure to clearly state the **problem it solves**.
 
-```javascript
-// bad
+## TBD
 
-const MyThing = {
-  prop1: 'hello',
-  method1: () => {}
-};
-
-export default MyThing;
-
-// good
-
-class MyThing {
-  constructor() {
-    this.prop1 = 'hello';
-  }
-  method1() {}
-}
-
-export default new MyThing();
-
-// best
-
-export default class MyThing {
-  constructor() {
-    if (!MyThing.prototype.singleton) {
-      this.init();
-      MyThing.prototype.singleton = this;
-    }
-    return MyThing.prototype.singleton;
-  }
-
-  init() {
-    this.prop1 = 'hello';
-  }
-
-  method1() {}
-}
-
-```
-
-## Manipulating the DOM in a JS Class
-
-When writing a class that needs to manipulate the DOM guarantee a container option is provided.
-This can be used when we need that class to be instantiated more than once in the same page.
-
-Bad:
-
-```javascript
-class Foo {
-  constructor() {
-    document.querySelector('.bar');
-  }
-}
-new Foo();
-```
-
-Good:
-
-```javascript
-class Foo {
-  constructor(opts) {
-    document.querySelector(`${opts.container} .bar`);
-  }
-}
-
-new Foo({ container: '.my-element' });
-```
-
-You can find an example of the above in this [class](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/javascripts/mini_pipeline_graph_dropdown.js);
+Stay tuned!

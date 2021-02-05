@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :artifacts do
     desc 'GitLab | Artifacts | Check integrity of uploaded job artifacts'

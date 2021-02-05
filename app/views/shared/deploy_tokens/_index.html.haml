@@ -2,7 +2,7 @@
 
 %section.qa-deploy-tokens-settings.settings.no-animate#js-deploy-tokens{ class: ('expanded' if expanded), data: { qa_selector: 'deploy_tokens_settings_content' } }
   .settings-header
-    %h4= s_('DeployTokens|Deploy Tokens')
+    %h4= s_('DeployTokens|Deploy tokens')
     %button.gl-button.btn.js-settings-toggle.qa-expand-deploy-keys{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
@@ -11,7 +11,7 @@
     - if @new_deploy_token.persisted?
       = render 'shared/deploy_tokens/new_deploy_token', deploy_token: @new_deploy_token
     %h5.gl-mt-0
-      = s_('DeployTokens|Add a Deploy Token')
+      = s_('DeployTokens|Add a deploy token')
     = render 'shared/deploy_tokens/form', group_or_project: group_or_project, token: @new_deploy_token, presenter: @deploy_tokens
     %hr
     = render 'shared/deploy_tokens/table', group_or_project: group_or_project, active_tokens: @deploy_tokens

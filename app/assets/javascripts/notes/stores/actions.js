@@ -739,9 +739,13 @@ export const updateConfidentialityOnIssuable = (
     })
     .then(({ data }) => {
       const {
-        issueSetConfidential: { issue },
+        issueSetConfidential: { issue, errors },
       } = data;
 
-      setConfidentiality({ commit }, issue.confidential);
+      if (errors?.length) {
+        Flash(errors[0], 'alert');
+      } else {
+        setConfidentiality({ commit }, issue.confidential);
+      }
     });
 };

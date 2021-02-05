@@ -18,6 +18,11 @@ module Ci
       code_quality_mr_diff: 'code_quality_mr_diff.json'
     }.freeze
 
+    REPORT_TYPES = {
+      code_coverage: :raw,
+      code_quality_mr_diff: :raw
+    }.freeze
+
     belongs_to :project, class_name: "Project", inverse_of: :pipeline_artifacts
     belongs_to :pipeline, class_name: "Ci::Pipeline", inverse_of: :pipeline_artifacts
 
@@ -36,7 +41,9 @@ module Ci
     }
 
     class << self
-      def has_report?(file_type)
+      def report_exists?(file_type)
+        return false unless REPORT_TYPES.key?(file_type)
+
         where(file_type: file_type).exists?
       end
 

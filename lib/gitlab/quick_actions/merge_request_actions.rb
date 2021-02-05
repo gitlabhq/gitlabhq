@@ -181,8 +181,7 @@ module Gitlab
         end
         types MergeRequest
         condition do
-          Feature.enabled?(:merge_request_reviewers, project, default_enabled: :yaml) &&
-            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
+          current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
         end
         parse_params do |reviewer_param|
           extract_users(reviewer_param)
@@ -221,7 +220,6 @@ module Gitlab
         types MergeRequest
         condition do
           quick_action_target.persisted? &&
-            Feature.enabled?(:merge_request_reviewers, project, default_enabled: :yaml) &&
             quick_action_target.reviewers.any? &&
             current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
         end

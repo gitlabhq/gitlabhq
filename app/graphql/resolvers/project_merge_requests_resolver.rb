@@ -22,7 +22,7 @@ module Resolvers
     def only_count_is_selected_with_merged_at_filter?(args)
       return unless lookahead
 
-      argument_names = args.except(:lookahead, :sort, :merged_before, :merged_after).keys
+      argument_names = args.compact.except(:lookahead, :sort, :merged_before, :merged_after).keys
 
       # no extra filtering arguments are provided
       return unless argument_names.empty?
@@ -34,7 +34,7 @@ module Resolvers
       #   totalTimeToMerge
       # }
       allowed_selected_fields = [:count, :total_time_to_merge]
-      selected_fields = lookahead.selections.map(&:field).map(&:original_name)
+      selected_fields = lookahead.selections.map(&:field).map(&:original_name) - [:__typename] # ignore __typename meta field
 
       # only the allowed_selected_fields are present
       (selected_fields - allowed_selected_fields).empty?

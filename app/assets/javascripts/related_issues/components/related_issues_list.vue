@@ -60,8 +60,8 @@ export default {
       const nextItemEl = itemEl.nextElementSibling;
 
       return {
-        beforeId: prevItemEl && parseInt(prevItemEl.dataset.orderingId, 0),
-        afterId: nextItemEl && parseInt(nextItemEl.dataset.orderingId, 0),
+        beforeId: prevItemEl && parseInt(prevItemEl.dataset.orderingId, 10),
+        afterId: nextItemEl && parseInt(nextItemEl.dataset.orderingId, 10),
       };
     },
     reordered(event) {

@@ -71,7 +71,7 @@ if (gon?.disable_animations) {
 // inject test utilities if necessary
 if (process.env.NODE_ENV !== 'production' && gon?.test_env) {
   disableJQueryAnimations();
-  import(/* webpackMode: "eager" */ './test_utils/'); // eslint-disable-line no-unused-expressions
+  import(/* webpackMode: "eager" */ './test_utils/');
 }
 
 document.addEventListener('beforeunload', () => {

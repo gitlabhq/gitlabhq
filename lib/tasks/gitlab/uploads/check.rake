@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :uploads do
     desc 'GitLab | Uploads | Check integrity of uploaded files'

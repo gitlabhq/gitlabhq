@@ -1713,7 +1713,7 @@ msgstr ""
 msgid "Add deploy freeze"
 msgstr ""
 
-msgid "Add deploy keys to grant read/write access to this repository. %{link_start}What are Deploy Keys?%{link_end}"
+msgid "Add deploy keys to grant read/write access to this repository. %{link_start}What are deploy keys?%{link_end}"
 msgstr ""
 
 msgid "Add domain"
@@ -2058,6 +2058,9 @@ msgstr ""
 msgid "AdminSettings|Integrations configured here will automatically apply to all projects on this instance."
 msgstr ""
 
+msgid "AdminSettings|Maximum duration of a session for Git operations when 2FA is enabled."
+msgstr ""
+
 msgid "AdminSettings|Moved to integrations"
 msgstr ""
 
@@ -2080,6 +2083,9 @@ msgid "AdminSettings|Service Templates will soon be deprecated."
 msgstr ""
 
 msgid "AdminSettings|Service template allows you to set default values for integrations"
+msgstr ""
+
+msgid "AdminSettings|Session duration for Git operations when 2FA is enabled (minutes)"
 msgstr ""
 
 msgid "AdminSettings|Set an instance-wide auto included %{link_start}pipeline configuration%{link_end}. This pipeline configuration will be run after the project's own configuration."
@@ -9273,9 +9279,6 @@ msgstr ""
 msgid "Decompressed archive size validation failed."
 msgstr ""
 
-msgid "Default Branch"
-msgstr ""
-
 msgid "Default CI configuration path"
 msgstr ""
 
@@ -9618,6 +9621,9 @@ msgstr ""
 msgid "Deploy key was successfully updated."
 msgstr ""
 
+msgid "Deploy keys"
+msgstr ""
+
 msgid "Deploy keys grant read/write access to all repositories in your instance"
 msgstr ""
 
@@ -9696,7 +9702,7 @@ msgstr ""
 msgid "DeployTokens|Active Deploy Tokens (%{active_tokens})"
 msgstr ""
 
-msgid "DeployTokens|Add a Deploy Token"
+msgid "DeployTokens|Add a deploy token"
 msgstr ""
 
 msgid "DeployTokens|Allows read access to the package registry."
@@ -9726,16 +9732,16 @@ msgstr ""
 msgid "DeployTokens|Created"
 msgstr ""
 
-msgid "DeployTokens|Deploy Tokens"
+msgid "DeployTokens|Deploy tokens"
 msgstr ""
 
-msgid "DeployTokens|Deploy Tokens allow access to packages, your repository, and registry images."
+msgid "DeployTokens|Deploy tokens allow access to packages, your repository, and registry images."
 msgstr ""
 
 msgid "DeployTokens|Expires"
 msgstr ""
 
-msgid "DeployTokens|Group Deploy Tokens allow access to the packages, repositories, and registry images within the group."
+msgid "DeployTokens|Group deploy tokens allow access to the packages, repositories, and registry images within the group."
 msgstr ""
 
 msgid "DeployTokens|Name"
@@ -11813,6 +11819,9 @@ msgstr ""
 msgid "Except policy:"
 msgstr ""
 
+msgid "Exceptions"
+msgstr ""
+
 msgid "Excess storage"
 msgstr ""
 
@@ -12078,6 +12087,12 @@ msgid "Failed to deploy to"
 msgstr ""
 
 msgid "Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later."
+msgstr ""
+
+msgid "Failed to fetch the iteration for this issue. Please try again."
+msgstr ""
+
+msgid "Failed to fetch the iterations for the group. Please try again."
 msgstr ""
 
 msgid "Failed to find import label for Jira import."
@@ -19842,6 +19857,9 @@ msgstr ""
 msgid "No iteration"
 msgstr ""
 
+msgid "No iterations found"
+msgstr ""
+
 msgid "No iterations to show"
 msgstr ""
 
@@ -20780,6 +20798,12 @@ msgstr ""
 msgid "Package type must be PyPi"
 msgstr ""
 
+msgid "PackageRegistry|%{boldStart}Allow duplicates%{boldEnd} - Packages with the same name and version are accepted."
+msgstr ""
+
+msgid "PackageRegistry|%{boldStart}Do not allow duplicates%{boldEnd} - Packages with the same name and version are rejected."
+msgstr ""
+
 msgid "PackageRegistry|%{name} version %{version} was first created %{datetime}"
 msgstr ""
 
@@ -20790,6 +20814,9 @@ msgid "PackageRegistry|Add NuGet Source"
 msgstr ""
 
 msgid "PackageRegistry|Add composer registry"
+msgstr ""
+
+msgid "PackageRegistry|An error occurred while saving the settings"
 msgstr ""
 
 msgid "PackageRegistry|App group: %{group}"
@@ -20936,6 +20963,9 @@ msgstr ""
 msgid "PackageRegistry|Package updated by commit %{link} on branch %{branch}, built by pipeline %{pipeline}, and published to the registry %{datetime}"
 msgstr ""
 
+msgid "PackageRegistry|Packages can be published if their name or version matches this regex"
+msgstr ""
+
 msgid "PackageRegistry|Pip Command"
 msgstr ""
 
@@ -20952,6 +20982,12 @@ msgid "PackageRegistry|Recipe: %{recipe}"
 msgstr ""
 
 msgid "PackageRegistry|Remove package"
+msgstr ""
+
+msgid "PackageRegistry|Settings for Maven packages"
+msgstr ""
+
+msgid "PackageRegistry|Settings saved successfully"
 msgstr ""
 
 msgid "PackageRegistry|Sorry, your filter produced no results"
@@ -21438,9 +21474,6 @@ msgid "Pipelines|Child pipeline"
 msgstr ""
 
 msgid "Pipelines|Clear Runner Caches"
-msgstr ""
-
-msgid "Pipelines|Continuous Integration can help catch bugs by running your tests automatically, while Continuous Deployment can help you deliver code to your product environment."
 msgstr ""
 
 msgid "Pipelines|Copy trigger token"
@@ -23588,9 +23621,6 @@ msgstr ""
 msgid "Protected Environment"
 msgstr ""
 
-msgid "Protected Environments"
-msgstr ""
-
 msgid "Protected Paths"
 msgstr ""
 
@@ -23601,6 +23631,9 @@ msgid "Protected Tags"
 msgstr ""
 
 msgid "Protected branches"
+msgstr ""
+
+msgid "Protected environments"
 msgstr ""
 
 msgid "ProtectedBranch|%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported."
@@ -23831,7 +23864,7 @@ msgstr ""
 msgid "PushRules|Users can still delete tags through the GitLab UI."
 msgstr ""
 
-msgid "PushRule|Push Rules"
+msgid "PushRule|Push rules"
 msgstr ""
 
 msgid "PushRule|Reject unverified users"
@@ -31387,6 +31420,12 @@ msgid "UsageQuota|LFS Objects"
 msgstr ""
 
 msgid "UsageQuota|LFS Storage"
+msgstr ""
+
+msgid "UsageQuota|Learn more about excess storage usage"
+msgstr ""
+
+msgid "UsageQuota|Learn more about usage quotas"
 msgstr ""
 
 msgid "UsageQuota|Packages"

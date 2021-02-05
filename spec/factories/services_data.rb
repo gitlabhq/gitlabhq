@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-# these factories should never be called directly, they are used when creating services
+# These factories should not be called directly unless we are testing a _tracker_data model.
+# The factories are used when creating integrations.
 FactoryBot.define do
   factory :jira_tracker_data do
     service

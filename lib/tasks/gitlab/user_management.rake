@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :user_management do
     desc "GitLab | User management | Update all users of a group with personal project limit to 0 and can_create_group to false"

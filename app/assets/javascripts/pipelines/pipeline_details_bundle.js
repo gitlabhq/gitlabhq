@@ -77,7 +77,7 @@ const createTestDetails = () => {
   });
 };
 
-export default async function () {
+export default async function initPipelineDetailsBundle() {
   createTestDetails();
   createDagApp();
 

@@ -10,7 +10,7 @@ import initInviteMemberTrigger from '~/invite_member/init_invite_member_trigger'
 import initInviteMemberModal from '~/invite_member/init_invite_member_modal';
 import StatusBox from '~/merge_request/components/status_box.vue';
 
-export default function () {
+export default function initMergeRequestShow() {
   new ZenMode(); // eslint-disable-line no-new
   initIssuableSidebar();
   initPipelines();

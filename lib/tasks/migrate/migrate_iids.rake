@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 desc "GitLab | Build internal ids for issues and merge requests"
 task migrate_iids: :environment do
   puts 'Issues'.color(:yellow)

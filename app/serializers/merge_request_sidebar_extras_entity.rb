@@ -5,7 +5,7 @@ class MergeRequestSidebarExtrasEntity < IssuableSidebarExtrasEntity
     MergeRequestUserEntity.represent(merge_request.assignees, options.merge(merge_request: merge_request))
   end
 
-  expose :reviewers, if: -> (m) { m.allows_reviewers? } do |merge_request, options|
+  expose :reviewers do |merge_request, options|
     MergeRequestUserEntity.represent(merge_request.reviewers, options.merge(merge_request: merge_request))
   end
 end

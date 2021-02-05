@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'logger'
 
 desc "GitLab | LFS | Migrate LFS objects to remote storage"

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 desc 'Run local Danger rules'
 task :danger_local do
   require_relative '../../tooling/gitlab_danger'

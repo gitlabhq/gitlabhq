@@ -9,6 +9,7 @@ import {
   GlFormGroup,
   GlFormInput,
   GlFormSelect,
+  GlFormTextarea,
   GlLink,
   GlDropdown,
   GlDropdownItem,
@@ -38,6 +39,9 @@ export default {
   errorTitle: __('Pipeline cannot be run.'),
   warningTitle: __('The form contains the following warning:'),
   maxWarningsSummary: __('%{total} warnings found: showing first %{warningsDisplayed}'),
+  // this height value is used inline on the textarea to match the input field height
+  // it's used to prevent the overwrite if 'gl-h-7' or 'gl-h-7!' were used
+  textAreaStyle: { height: '32px' },
   components: {
     GlAlert,
     GlIcon,
@@ -46,6 +50,7 @@ export default {
     GlFormGroup,
     GlFormInput,
     GlFormSelect,
+    GlFormTextarea,
     GlLink,
     GlDropdown,
     GlDropdownItem,
@@ -426,10 +431,12 @@ export default {
             data-testid="pipeline-form-ci-variable-key"
             @change="addEmptyVariable(refFullName)"
           />
-          <gl-form-input
+          <gl-form-textarea
             v-model="variable.value"
             :placeholder="s__('CiVariables|Input variable value')"
             class="gl-mb-3"
+            :style="$options.textAreaStyle"
+            :no-resize="false"
             data-testid="pipeline-form-ci-variable-value"
           />
 

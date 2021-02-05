@@ -174,15 +174,9 @@ module MergeRequestsHelper
     end
   end
 
-  def merge_request_reviewers_enabled?
-    Feature.enabled?(:merge_request_reviewers, default_enabled: :yaml)
-  end
-
   private
 
   def review_requested_merge_requests_count
-    return 0 unless merge_request_reviewers_enabled?
-
     current_user.review_requested_open_merge_requests_count
   end
 

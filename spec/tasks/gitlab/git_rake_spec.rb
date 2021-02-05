@@ -9,8 +9,6 @@ RSpec.describe 'gitlab:git rake tasks' do
   before do
     Rake.application.rake_require 'tasks/gitlab/git'
 
-    allow_any_instance_of(String).to receive(:color) { |string, _color| string }
-
     stub_warn_user_is_not_gitlab
   end
 

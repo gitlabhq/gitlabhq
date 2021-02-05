@@ -2,7 +2,7 @@
 
 %section.settings.no-animate#default-branch-settings{ class: ('expanded' if expanded) }
   .settings-header
-    %h4= _('Default Branch')
+    %h4= _('Default branch')
     %button.btn.js-settings-toggle
       = expanded ? _('Collapse') : _('Expand')
     %p
@@ -16,7 +16,7 @@
             = _('A default branch cannot be chosen for an empty project.')
         - else
           .form-group
-            = f.label :default_branch, "Default Branch", class: 'label-bold'
+            = f.label :default_branch, "Default branch", class: 'label-bold'
             = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
 
         .form-group
