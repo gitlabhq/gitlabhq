@@ -117,14 +117,31 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory do
     end
   end
 
+  context 'when bridge is waiting for resource' do
+    let(:bridge) { create_bridge(:waiting_for_resource, :resource_group) }
+
+    it 'matches correct core status' do
+      expect(factory.core_status).to be_a Gitlab::Ci::Status::WaitingForResource
+    end
+
+    it 'fabricates status with correct details' do
+      expect(status.text).to eq 'waiting'
+      expect(status.group).to eq 'waiting-for-resource'
+      expect(status.icon).to eq 'status_pending'
+      expect(status.favicon).to eq 'favicon_pending'
+      expect(status.illustration).to include(:image, :size, :title)
+      expect(status).not_to have_details
+    end
+  end
+
   private
 
-  def create_bridge(trait)
+  def create_bridge(*traits)
     upstream_project = create(:project, :repository)
     downstream_project = create(:project, :repository)
     upstream_pipeline = create(:ci_pipeline, :running, project: upstream_project)
     trigger = { trigger: { project: downstream_project.full_path, branch: 'feature' } }
 
-    create(:ci_bridge, trait, options: trigger, pipeline: upstream_pipeline)
+    create(:ci_bridge, *traits, options: trigger, pipeline: upstream_pipeline)
   end
 end

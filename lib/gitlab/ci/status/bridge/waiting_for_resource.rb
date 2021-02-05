@@ -3,7 +3,7 @@
 module Gitlab
   module Ci
     module Status
-      module Build
+      module Bridge
         class WaitingForResource < Status::Processable::WaitingForResource
         end
       end

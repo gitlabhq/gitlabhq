@@ -18,6 +18,17 @@ module Gitlab
         yield
 
         Sidekiq.logger.info log_job_done(job, started_time, base_payload)
+      rescue Sidekiq::JobRetry::Handled => job_exception
+        # Sidekiq::JobRetry::Handled is raised by the internal Sidekiq
+        # processor. It is a wrapper around real exception indicating an
+        # exception is already handled by the Job retrier. The real exception
+        # should be unwrapped before being logged.
+        #
+        # For more information:
+        # https://github.com/mperham/sidekiq/blob/v5.2.7/lib/sidekiq/processor.rb#L173
+        Sidekiq.logger.warn log_job_done(job, started_time, base_payload, job_exception.cause || job_exception)
+
+        raise
       rescue => job_exception
         Sidekiq.logger.warn log_job_done(job, started_time, base_payload, job_exception)
 
@@ -68,6 +79,7 @@ module Gitlab
           payload['job_status'] = 'fail'
           payload['error_message'] = job_exception.message
           payload['error_class'] = job_exception.class.name
+          add_exception_backtrace!(job_exception, payload)
         else
           payload['message'] = "#{message}: done: #{payload['duration_s']} sec"
           payload['job_status'] = 'done'
@@ -86,6 +98,12 @@ module Gitlab
         # supported OS version can be found at: https://www.rubydoc.info/stdlib/core/2.1.6/Process:clock_gettime
         payload['cpu_s'] = time[:cputime].round(Gitlab::InstrumentationHelper::DURATION_PRECISION) if time[:cputime] > 0
         payload['completed_at'] = Time.now.utc.to_f
+      end
+
+      def add_exception_backtrace!(job_exception, payload)
+        return if job_exception.backtrace.blank?
+
+        payload['error_backtrace'] = Rails.backtrace_cleaner.clean(job_exception.backtrace)
       end
 
       def elapsed(t0)

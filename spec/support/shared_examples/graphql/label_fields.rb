@@ -105,7 +105,7 @@ RSpec.shared_examples 'querying a GraphQL type with labels' do
       run_query(query_for(label_a))
     end
 
-    it 'batches queries for labels by title' do
+    it 'batches queries for labels by title', :request_store do
       multi_selection = query_for(label_b, label_c)
       single_selection = query_for(label_d)
 

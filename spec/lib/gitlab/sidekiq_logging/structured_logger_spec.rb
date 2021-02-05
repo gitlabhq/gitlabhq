@@ -59,7 +59,8 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         'message' => 'TestWorker JID-da883554ee4fe414012f5f42: fail: 0.0 sec',
         'job_status' => 'fail',
         'error_class' => 'ArgumentError',
-        'error_message' => 'some exception'
+        'error_message' => 'Something went wrong',
+        'error_backtrace' => be_a(Array).and(be_present)
       )
     end
 
@@ -89,18 +90,89 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         end
       end
 
+      it 'logs real job wrapped by active job worker' do
+        wrapped_job = job.merge(
+          "class" => "ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper",
+          "wrapped" => "TestWorker"
+        )
+        Timecop.freeze(timestamp) do
+          expect(logger).to receive(:info).with(start_payload).ordered
+          expect(logger).to receive(:info).with(end_payload).ordered
+          expect(subject).to receive(:log_job_start).and_call_original
+          expect(subject).to receive(:log_job_done).and_call_original
+
+          subject.call(wrapped_job, 'test_queue') {}
+        end
+      end
+
       it 'logs an exception in job' do
         Timecop.freeze(timestamp) do
           expect(logger).to receive(:info).with(start_payload)
-          expect(logger).to receive(:warn).with(hash_including(exception_payload))
+          expect(logger).to receive(:warn).with(include(exception_payload))
           expect(subject).to receive(:log_job_start).and_call_original
           expect(subject).to receive(:log_job_done).and_call_original
 
           expect do
             subject.call(job, 'test_queue') do
-              raise ArgumentError, 'some exception'
+              raise ArgumentError, 'Something went wrong'
             end
           end.to raise_error(ArgumentError)
+        end
+      end
+
+      it 'logs the root cause of an Sidekiq::JobRetry::Skip exception in the job' do
+        Timecop.freeze(timestamp) do
+          expect(logger).to receive(:info).with(start_payload)
+          expect(logger).to receive(:warn).with(include(exception_payload))
+          expect(subject).to receive(:log_job_start).and_call_original
+          expect(subject).to receive(:log_job_done).and_call_original
+
+          expect do
+            subject.call(job, 'test_queue') do
+              raise ArgumentError, 'Something went wrong'
+            rescue
+              raise Sidekiq::JobRetry::Skip
+            end
+          end.to raise_error(Sidekiq::JobRetry::Skip)
+        end
+      end
+
+      it 'logs the root cause of an Sidekiq::JobRetry::Handled exception in the job' do
+        Timecop.freeze(timestamp) do
+          expect(logger).to receive(:info).with(start_payload)
+          expect(logger).to receive(:warn).with(include(exception_payload))
+          expect(subject).to receive(:log_job_start).and_call_original
+          expect(subject).to receive(:log_job_done).and_call_original
+
+          expect do
+            subject.call(job, 'test_queue') do
+              raise ArgumentError, 'Something went wrong'
+            rescue
+              raise Sidekiq::JobRetry::Handled
+            end
+          end.to raise_error(Sidekiq::JobRetry::Handled)
+        end
+      end
+
+      it 'keeps Sidekiq::JobRetry::Handled exception if the cause does not exist' do
+        Timecop.freeze(timestamp) do
+          expect(logger).to receive(:info).with(start_payload)
+          expect(logger).to receive(:warn).with(
+            include(
+              'message' => 'TestWorker JID-da883554ee4fe414012f5f42: fail: 0.0 sec',
+              'job_status' => 'fail',
+              'error_class' => 'Sidekiq::JobRetry::Skip',
+              'error_message' => 'Sidekiq::JobRetry::Skip'
+            )
+          )
+          expect(subject).to receive(:log_job_start).and_call_original
+          expect(subject).to receive(:log_job_done).and_call_original
+
+          expect do
+            subject.call(job, 'test_queue') do
+              raise Sidekiq::JobRetry::Skip
+            end
+          end.to raise_error(Sidekiq::JobRetry::Skip)
         end
       end
 
@@ -114,6 +186,24 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
 
           subject.call(job, 'test_queue') do
             expect(job).to eq(job_copy)
+          end
+        end
+      end
+
+      it 'does not modify the wrapped job' do
+        Timecop.freeze(timestamp) do
+          wrapped_job = job.merge(
+            "class" => "ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper",
+            "wrapped" => "TestWorker"
+          )
+          job_copy = wrapped_job.deep_dup
+
+          allow(logger).to receive(:info)
+          allow(subject).to receive(:log_job_start).and_call_original
+          allow(subject).to receive(:log_job_done).and_call_original
+
+          subject.call(wrapped_job, 'test_queue') do
+            expect(wrapped_job).to eq(job_copy)
           end
         end
       end

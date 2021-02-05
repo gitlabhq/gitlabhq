@@ -1,0 +1,5 @@
+---
+title: Pipeline-level concurrency control with Cross-Project/Parent-Child pipelines
+merge_request: 53007
+author:
+type: added

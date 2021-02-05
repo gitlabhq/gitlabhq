@@ -31,9 +31,9 @@ Sidekiq.configure_server do |config|
     Sidekiq.logger.formatter = Gitlab::SidekiqLogging::JSONFormatter.new
     config.options[:job_logger] = Gitlab::SidekiqLogging::StructuredLogger
 
-    # Remove the default-provided handler
+    # Remove the default-provided handler. The exception is logged inside
+    # Gitlab::SidekiqLogging::StructuredLogger
     config.error_handlers.reject! { |handler| handler.is_a?(Sidekiq::ExceptionHandler::Logger) }
-    config.error_handlers << Gitlab::SidekiqLogging::ExceptionHandler.new
   end
 
   config.redis = queues_config_hash

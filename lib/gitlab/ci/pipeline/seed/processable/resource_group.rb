@@ -4,7 +4,7 @@ module Gitlab
   module Ci
     module Pipeline
       module Seed
-        class Build
+        module Processable
           class ResourceGroup < Seed::Base
             include Gitlab::Utils::StrongMemoize
 

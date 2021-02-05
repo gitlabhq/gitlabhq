@@ -84,21 +84,46 @@ RSpec.describe Ci::CreatePipelineService, '#execute' do
           stage: test
           resource_group: iOS
           trigger:
-            include:
-              - local: path/to/child.yml
+            include: path/to/child.yml
+            strategy: depend
         YAML
       end
 
-      # TODO: This test will be properly implemented in the next MR
-      # for https://gitlab.com/gitlab-org/gitlab/-/issues/39057.
-      it 'creates bridge job but still resource group is no-op', :aggregate_failures do
+      it 'creates bridge job with resource group', :aggregate_failures do
         pipeline = create_pipeline!
 
         test = pipeline.statuses.find_by(name: 'instrumentation_test')
-
-        expect(pipeline).to be_persisted
+        expect(pipeline).to be_created_successfully
+        expect(pipeline.triggered_pipelines).not_to be_exist
+        expect(project.resource_groups.count).to eq(1)
         expect(test).to be_a Ci::Bridge
-        expect(project.resource_groups.count).to eq(0)
+        expect(test).to be_waiting_for_resource
+        expect(test.resource_group.key).to eq('iOS')
+      end
+
+      context 'when sidekiq processes the job', :sidekiq_inline do
+        it 'transitions to pending status and triggers a downstream pipeline' do
+          pipeline = create_pipeline!
+
+          test = pipeline.statuses.find_by(name: 'instrumentation_test')
+          expect(test).to be_pending
+          expect(pipeline.triggered_pipelines.count).to eq(1)
+        end
+
+        context 'when the resource is occupied by the other bridge' do
+          before do
+            resource_group = create(:ci_resource_group, project: project, key: 'iOS')
+            resource_group.assign_resource_to(create(:ci_build, project: project))
+          end
+
+          it 'stays waiting for resource' do
+            pipeline = create_pipeline!
+
+            test = pipeline.statuses.find_by(name: 'instrumentation_test')
+            expect(test).to be_waiting_for_resource
+            expect(pipeline.triggered_pipelines.count).to eq(0)
+          end
+        end
       end
     end
   end

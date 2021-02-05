@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddPendoEnabledToApplicationSettings < ActiveRecord::Migration[5.2]
   include Gitlab::Database::MigrationHelpers
 

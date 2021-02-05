@@ -846,6 +846,28 @@ RSpec.describe 'Pipeline', :js do
             end
           end
         end
+
+        context 'when deploy job is a bridge to trigger a downstream pipeline' do
+          let!(:deploy_job) do
+            create(:ci_bridge, :created, stage: 'deploy', name: 'deploy',
+              stage_idx: 2, pipeline: pipeline, project: project, resource_group: resource_group)
+          end
+
+          it 'shows deploy job as waiting for resource' do
+            subject
+
+            within('.pipeline-header-container') do
+              expect(page).to have_content('waiting')
+            end
+
+            within('.pipeline-graph') do
+              within '.stage-column:nth-child(2)' do
+                expect(page).to have_content('deploy')
+                expect(page).to have_css('.ci-status-icon-waiting-for-resource')
+              end
+            end
+          end
+        end
       end
     end
   end

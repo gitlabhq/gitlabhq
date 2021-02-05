@@ -3,15 +3,10 @@
 include ActionDispatch::TestProcess
 
 FactoryBot.define do
-  factory :ci_build, class: 'Ci::Build' do
+  factory :ci_build, class: 'Ci::Build', parent: :ci_processable do
     name { 'test' }
-    stage { 'test' }
-    stage_idx { 0 }
-    ref { 'master' }
-    tag { false }
     add_attribute(:protected) { false }
     created_at { 'Di 29. Okt 09:50:00 CET 2013' }
-    scheduling_type { 'stage' }
     pending
 
     options do
@@ -28,7 +23,6 @@ FactoryBot.define do
       ]
     end
 
-    pipeline factory: :ci_pipeline
     project { pipeline.project }
 
     trait :degenerated do
@@ -77,10 +71,6 @@ FactoryBot.define do
 
     trait :created do
       status { 'created' }
-    end
-
-    trait :waiting_for_resource do
-      status { 'waiting_for_resource' }
     end
 
     trait :preparing do
@@ -211,14 +201,6 @@ FactoryBot.define do
 
     trait :triggered do
       trigger_request factory: :ci_trigger_request
-    end
-
-    trait :resource_group do
-      waiting_for_resource_at { 5.minutes.ago }
-
-      after(:build) do |build, evaluator|
-        build.resource_group = create(:ci_resource_group, project: build.project)
-      end
     end
 
     trait :with_deployment do

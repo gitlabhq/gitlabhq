@@ -6,7 +6,7 @@ module Gitlab
       include ::Gitlab::SidekiqMiddleware::MetricsHelper
 
       def handler(job, _exception)
-        labels = create_labels(job['class'].constantize, job['queue'])
+        labels = create_labels(job['class'].constantize, job['queue'], job)
 
         counter.increment(labels)
       end

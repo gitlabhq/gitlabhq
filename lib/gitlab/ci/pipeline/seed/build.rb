@@ -73,15 +73,26 @@ module Gitlab
 
           def to_resource
             strong_memoize(:resource) do
-              if bridge?
-                ::Ci::Bridge.new(attributes)
-              else
-                ::Ci::Build.new(attributes).tap do |build|
-                  build.assign_attributes(self.class.environment_attributes_for(build))
-                  build.resource_group = Seed::Build::ResourceGroup.new(build, @resource_group_key).to_resource
-                end
+              processable = initialize_processable
+              assign_resource_group(processable)
+              processable
+            end
+          end
+
+          def initialize_processable
+            if bridge?
+              ::Ci::Bridge.new(attributes)
+            else
+              ::Ci::Build.new(attributes).tap do |build|
+                build.assign_attributes(self.class.environment_attributes_for(build))
               end
             end
+          end
+
+          def assign_resource_group(processable)
+            processable.resource_group =
+              Seed::Processable::ResourceGroup.new(processable, @resource_group_key)
+                                              .to_resource
           end
 
           def self.environment_attributes_for(build)

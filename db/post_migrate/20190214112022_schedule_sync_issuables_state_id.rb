@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ScheduleSyncIssuablesStateId < ActiveRecord::Migration[5.0]
   # This migration schedules the sync of state_id for issues and merge requests
   # which are converting the state column from string to integer.
