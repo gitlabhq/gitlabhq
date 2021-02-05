@@ -484,6 +484,9 @@ a project, you can disable this behavior to save space:
 1. Navigate to **Settings > CI/CD > Artifacts**.
 1. Uncheck **Keep artifacts from most recent successful jobs**.
 
+When you disable the feature, the latest artifacts do not immediately expire.
+A new pipeline must run before the latest artifacts can expire and be deleted.
+
 ## Troubleshooting
 
 ### Error message `No files to upload`
