@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import store from '~/mr_notes/stores';
+import initCherryPickCommitModal from '~/projects/commit/init_cherry_pick_commit_modal';
 import initRevertCommitModal from '~/projects/commit/init_revert_commit_modal';
 import initDiffsApp from '../diffs';
 import discussionCounter from '../notes/components/discussion_counter.vue';
@@ -22,6 +23,7 @@ export default function initMrNotes() {
 
   document.addEventListener('merged:UpdateActions', () => {
     initRevertCommitModal();
+    initCherryPickCommitModal();
   });
 
   // eslint-disable-next-line no-new

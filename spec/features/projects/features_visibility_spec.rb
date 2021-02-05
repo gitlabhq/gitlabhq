@@ -187,7 +187,7 @@ RSpec.describe 'Edit Project Settings' do
         click_button "Save changes"
       end
 
-      expect(find(".sharing-permissions")).to have_selector(".project-feature-toggle.is-disabled", count: 4)
+      expect(find(".sharing-permissions")).to have_selector(".gl-toggle.is-disabled", minimum: 4)
     end
 
     it "shows empty features project homepage" do
@@ -282,10 +282,10 @@ RSpec.describe 'Edit Project Settings' do
   end
 
   def toggle_feature_off(feature_name)
-    find(".project-feature-controls[data-for=\"#{feature_name}\"] .project-feature-toggle.is-checked").click
+    find(".project-feature-controls[data-for=\"#{feature_name}\"] .gl-toggle.is-checked").click
   end
 
   def toggle_feature_on(feature_name)
-    find(".project-feature-controls[data-for=\"#{feature_name}\"] .project-feature-toggle:not(.is-checked)").click
+    find(".project-feature-controls[data-for=\"#{feature_name}\"] .gl-toggle:not(.is-checked)").click
   end
 end

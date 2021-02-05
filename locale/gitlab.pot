@@ -4734,12 +4734,6 @@ msgstr ""
 msgid "Branch not loaded - %{branchId}"
 msgstr ""
 
-msgid "BranchSwitcherPlaceholder|Search branches"
-msgstr ""
-
-msgid "BranchSwitcherTitle|Switch branch"
-msgstr ""
-
 msgid "Branches"
 msgstr ""
 
@@ -5037,6 +5031,26 @@ msgstr ""
 msgid "CI/CD settings"
 msgstr ""
 
+msgid "CICDAnalytics|%{percent}%{percentSymbol}"
+msgstr ""
+
+msgid "CICDAnalytics|All time"
+msgstr ""
+
+msgid "CICDAnalytics|Projects with releases"
+msgstr ""
+
+msgid "CICDAnalytics|Release"
+msgid_plural "CICDAnalytics|Releases"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "CICDAnalytics|Releases"
+msgstr ""
+
+msgid "CICDAnalytics|Something went wrong while fetching release statistics"
+msgstr ""
+
 msgid "CICD|Add a %{base_domain_link_start}base domain%{link_end} to your %{kubernetes_cluster_link_start}Kubernetes cluster%{link_end} for your deployment strategy to work."
 msgstr ""
 
@@ -5323,12 +5337,6 @@ msgid "ChangeReviewer|Reviewer changed to %{new}"
 msgstr ""
 
 msgid "ChangeReviewer|Unassigned"
-msgstr ""
-
-msgid "ChangeTypeActionLabel|Pick into branch"
-msgstr ""
-
-msgid "ChangeTypeActionLabel|Revert in branch"
 msgstr ""
 
 msgid "ChangeTypeAction|A new branch will be created in your fork and a new merge request will be started."
@@ -34848,7 +34856,7 @@ msgstr ""
 msgid "mrWidget|The changes will be merged into"
 msgstr ""
 
-msgid "mrWidget|The pipeline for this merge request did not complete. Push a new commit to fix the failure or check the %{linkStart}troubleshooting documentation%{linkEnd} to see other possible actions."
+msgid "mrWidget|The pipeline for this merge request did not complete. Push a new commit to fix the failure, or check the %{linkStart}troubleshooting documentation%{linkEnd} to see other possible actions."
 msgstr ""
 
 msgid "mrWidget|The source branch HEAD has recently changed. Please reload the page and review the changes before merging"

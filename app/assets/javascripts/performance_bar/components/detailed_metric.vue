@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlIcon, GlModal, GlModalDirective } from '@gitlab/ui';
+import { GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
 import RequestWarning from './request_warning.vue';
 
 export default {
@@ -7,7 +7,6 @@ export default {
     RequestWarning,
     GlButton,
     GlModal,
-    GlIcon,
   },
   directives: {
     'gl-modal': GlModalDirective,
@@ -97,7 +96,7 @@ export default {
       <span class="gl-text-blue-300 gl-font-weight-bold">{{ metricDetailsLabel }}</span>
     </gl-button>
     <gl-modal :modal-id="modalId" :title="header" size="lg" footer-class="d-none" scrollable>
-      <table class="table">
+      <table class="table gl-table">
         <template v-if="detailsList.length">
           <tr v-for="(item, index) in detailsList" :key="index">
             <td>
@@ -110,20 +109,22 @@ export default {
                 <div
                   v-for="(key, keyIndex) in keys"
                   :key="key"
-                  class="break-word"
+                  class="break-word gl-text-black-normal"
                   :class="{ 'mb-3 bold': keyIndex == 0 }"
                 >
                   {{ item[key] }}
                   <gl-button
                     v-if="keyIndex == 0 && item.backtrace"
-                    class="btn-sm gl-ml-3"
+                    class="gl-ml-3 button-ellipsis-horizontal"
                     data-testid="backtrace-expand-btn"
-                    type="button"
+                    category="primary"
+                    variant="default"
+                    icon="ellipsis_h"
+                    size="small"
+                    :selected="itemHasOpenedBacktrace(index)"
                     :aria-label="__('Toggle backtrace')"
                     @click="toggleBacktrace(index)"
-                  >
-                    <gl-icon :size="12" name="ellipsis_h" />
-                  </gl-button>
+                  />
                 </div>
                 <pre v-if="itemHasOpenedBacktrace(index)" class="backtrace-row mt-2">{{
                   item.backtrace

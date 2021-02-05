@@ -4,7 +4,7 @@ import mountComponent from 'helpers/vue_mount_component_helper';
 import mergedComponent from '~/vue_merge_request_widget/components/states/mr_widget_merged.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import modalEventHub from '~/projects/commit/event_hub';
-import { OPEN_REVERT_MODAL } from '~/projects/commit/constants';
+import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '~/projects/commit/constants';
 
 describe('MRWidgetMerged', () => {
   let vm;
@@ -161,6 +161,14 @@ describe('MRWidgetMerged', () => {
     getByRole(vm.$el, 'button', { name: /Revert/i }).click();
 
     expect(eventHubSpy).toHaveBeenCalledWith(OPEN_REVERT_MODAL);
+  });
+
+  it('emits event to open the cherry-pick modal on cherry-pick button click', () => {
+    const eventHubSpy = jest.spyOn(modalEventHub, '$emit');
+
+    getByRole(vm.$el, 'button', { name: /Cherry-pick/i }).click();
+
+    expect(eventHubSpy).toHaveBeenCalledWith(OPEN_CHERRY_PICK_MODAL);
   });
 
   it('has merged by information', () => {

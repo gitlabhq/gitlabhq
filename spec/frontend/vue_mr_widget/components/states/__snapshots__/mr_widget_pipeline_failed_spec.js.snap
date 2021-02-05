@@ -16,7 +16,7 @@ exports[`PipelineFailed should render error message with a disabled merge button
       class="bold"
     >
       <gl-sprintf-stub
-        message="The pipeline for this merge request did not complete. Push a new commit to fix the failure or check the %{linkStart}troubleshooting documentation%{linkEnd} to see other possible actions."
+        message="The pipeline for this merge request did not complete. Push a new commit to fix the failure, or check the %{linkStart}troubleshooting documentation%{linkEnd} to see other possible actions."
       />
     </span>
   </div>

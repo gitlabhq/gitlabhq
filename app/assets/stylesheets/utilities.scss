@@ -143,3 +143,17 @@
     flex-direction: column !important;
   }
 }
+
+// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1165
+.gl-xs-mb-4 {
+  @media (max-width: $breakpoint-sm) {
+    margin-bottom: $gl-spacing-scale-4;
+  }
+}
+
+// Same as above
+.gl-xs-mb-4\! {
+  @media (max-width: $breakpoint-sm) {
+    margin-bottom: $gl-spacing-scale-4 !important;
+  }
+}

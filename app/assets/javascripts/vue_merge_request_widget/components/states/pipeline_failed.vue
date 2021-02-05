@@ -18,7 +18,7 @@ export default {
   },
   i18n: {
     failedMessage: s__(
-      `mrWidget|The pipeline for this merge request did not complete. Push a new commit to fix the failure or check the %{linkStart}troubleshooting documentation%{linkEnd} to see other possible actions.`,
+      `mrWidget|The pipeline for this merge request did not complete. Push a new commit to fix the failure, or check the %{linkStart}troubleshooting documentation%{linkEnd} to see other possible actions.`,
     ),
   },
 };

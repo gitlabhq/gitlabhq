@@ -632,6 +632,25 @@ for redundancy.
 The current version of the build images can be found in the
 ["Used by GitLab section"](https://gitlab.com/gitlab-org/gitlab-build-images/blob/master/.gitlab-ci.yml).
 
+### Dependency Proxy
+
+Some of the jobs are using images from Docker Hub, where we also use
+`${GITLAB_DEPENDENCY_PROXY}` as a prefix to the image path, so that we pull
+images from our [Dependency Proxy](../user/packages/dependency_proxy/index.md).
+
+`${GITLAB_DEPENDENCY_PROXY}` is a group variable defined in
+[`gitlab-org`](https://gitlab.com/gitlab-org) as
+`${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/`. This means when we use an image
+defined as:
+
+```yaml
+image: ${GITLAB_DEPENDENCY_PROXY}alpine:edge
+```
+
+Projects in the `gitlab-org` group pull from the Dependency Proxy, while
+forks that reside on any other personal namespaces or groups fall back to
+Docker Hub unless `${GITLAB_DEPENDENCY_PROXY}` is also defined there.
+
 ### Default variables
 
 In addition to the [predefined variables](../ci/variables/predefined_variables.md),

@@ -77,15 +77,26 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
     end
 
     it 'allows me to merge, see cherry-pick modal and load branches list', :sidekiq_might_not_need_inline do
+      modal_selector = '[data-testid="modal-commit"]'
+
       wait_for_requests
       click_button 'Merge'
 
       wait_for_requests
-      click_link 'Cherry-pick'
-      page.find('.js-project-refs-dropdown').click
-      wait_for_requests
 
-      expect(page.all('.js-cherry-pick-form .dropdown-content li').size).to be > 1
+      click_button 'Cherry-pick'
+
+      page.within(modal_selector) do
+        click_button 'master'
+      end
+
+      page.within("#{modal_selector} .dropdown-menu") do
+        find('[data-testid="dropdown-search-box"]').set('')
+
+        wait_for_requests
+
+        expect(page.all('[data-testid="dropdown-item"]').size).to be > 1
+      end
     end
   end
 

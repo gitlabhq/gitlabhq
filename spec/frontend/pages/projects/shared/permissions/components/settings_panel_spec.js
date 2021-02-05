@@ -1,5 +1,5 @@
+import { GlToggle } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
-
 import settingsPanel from '~/pages/projects/shared/permissions/components/settings_panel.vue';
 import {
   featureAccessLevel,
@@ -7,7 +7,6 @@ import {
   visibilityOptions,
 } from '~/pages/projects/shared/permissions/constants';
 import projectFeatureSetting from '~/pages/projects/shared/permissions/components/project_feature_setting.vue';
-import projectFeatureToggle from '~/vue_shared/components/toggle_button.vue';
 
 const defaultProps = {
   currentSettings: {
@@ -69,57 +68,61 @@ describe('Settings Panel', () => {
     });
   };
 
-  const overrideCurrentSettings = (
-    currentSettingsProps,
-    extraProps = {},
-    mountFn = shallowMount,
-  ) => {
-    return mountComponent({ ...extraProps, currentSettings: currentSettingsProps }, mountFn);
-  };
-
   const findLFSSettingsRow = () => wrapper.find({ ref: 'git-lfs-settings' });
   const findLFSSettingsMessage = () => findLFSSettingsRow().find('p');
-  const findLFSFeatureToggle = () => findLFSSettingsRow().find(projectFeatureToggle);
-
+  const findLFSFeatureToggle = () => findLFSSettingsRow().find(GlToggle);
   const findRepositoryFeatureProjectRow = () => wrapper.find({ ref: 'repository-settings' });
   const findRepositoryFeatureSetting = () =>
     findRepositoryFeatureProjectRow().find(projectFeatureSetting);
-
+  const findProjectVisibilitySettings = () => wrapper.find({ ref: 'project-visibility-settings' });
   const findAnalyticsRow = () => wrapper.find({ ref: 'analytics-settings' });
-
-  beforeEach(() => {
-    wrapper = mountComponent();
-  });
+  const findProjectVisibilityLevelInput = () => wrapper.find('[name="project[visibility_level]"]');
+  const findRequestAccessEnabledInput = () =>
+    wrapper.find('[name="project[request_access_enabled]"]');
+  const findMergeRequestsAccessLevelInput = () =>
+    wrapper.find('[name="project[project_feature_attributes][merge_requests_access_level]"]');
+  const findForkingAccessLevelInput = () =>
+    wrapper.find('[name="project[project_feature_attributes][forking_access_level]"]');
+  const findBuildsAccessLevelInput = () =>
+    wrapper.find('[name="project[project_feature_attributes][builds_access_level]"]');
+  const findContainerRegistrySettings = () => wrapper.find({ ref: 'container-registry-settings' });
+  const findContainerRegistryEnabledInput = () =>
+    wrapper.find('[name="project[container_registry_enabled]"]');
+  const findPackageSettings = () => wrapper.find({ ref: 'package-settings' });
+  const findPackagesEnabledInput = () => wrapper.find('[name="project[packages_enabled]"]');
+  const findPagesSettings = () => wrapper.find({ ref: 'pages-settings' });
+  const findEmailSettings = () => wrapper.find({ ref: 'email-settings' });
+  const findShowDefaultAwardEmojis = () =>
+    wrapper.find('input[name="project[project_setting_attributes][show_default_award_emojis]"]');
+  const findMetricsVisibilitySettings = () => wrapper.find({ ref: 'metrics-visibility-settings' });
+  const findAllowEditingCommitMessages = () =>
+    wrapper.find({ ref: 'allow-editing-commit-messages' }).exists();
+  const findOperationsSettings = () => wrapper.find({ ref: 'operations-settings' });
 
   afterEach(() => {
     wrapper.destroy();
+    wrapper = null;
   });
 
   describe('Project Visibility', () => {
     it('should set the project visibility help path', () => {
-      expect(wrapper.find({ ref: 'project-visibility-settings' }).props().helpPath).toBe(
+      wrapper = mountComponent();
+
+      expect(findProjectVisibilitySettings().props('helpPath')).toBe(
         defaultProps.visibilityHelpPath,
       );
     });
 
     it('should not disable the visibility level dropdown', () => {
-      wrapper.setProps({ canChangeVisibilityLevel: true });
+      wrapper = mountComponent({ canChangeVisibilityLevel: true });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(
-          wrapper.find('[name="project[visibility_level]"]').attributes().disabled,
-        ).toBeUndefined();
-      });
+      expect(findProjectVisibilityLevelInput().attributes('disabled')).toBeUndefined();
     });
 
     it('should disable the visibility level dropdown', () => {
-      wrapper.setProps({ canChangeVisibilityLevel: false });
+      wrapper = mountComponent({ canChangeVisibilityLevel: false });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('[name="project[visibility_level]"]').attributes().disabled).toBe(
-          'disabled',
-        );
-      });
+      expect(findProjectVisibilityLevelInput().attributes('disabled')).toBe('disabled');
     });
 
     it.each`
@@ -133,56 +136,56 @@ describe('Settings Panel', () => {
     `(
       'sets disabled to $disabled for the visibility option $option when given $allowedOptions',
       ({ option, allowedOptions, disabled }) => {
-        wrapper.setProps({ allowedVisibilityOptions: allowedOptions });
+        wrapper = mountComponent({ allowedVisibilityOptions: allowedOptions });
 
-        return wrapper.vm.$nextTick(() => {
-          const attributeValue = wrapper
-            .find(`[name="project[visibility_level]"] option[value="${option}"]`)
-            .attributes().disabled;
+        const attributeValue = findProjectVisibilityLevelInput()
+          .find(`option[value="${option}"]`)
+          .attributes('disabled');
 
-          if (disabled) {
-            expect(attributeValue).toBe('disabled');
-          } else {
-            expect(attributeValue).toBeUndefined();
-          }
-        });
+        const expected = disabled ? 'disabled' : undefined;
+
+        expect(attributeValue).toBe(expected);
       },
     );
 
     it('should set the visibility level description based upon the selected visibility level', () => {
-      wrapper.find('[name="project[visibility_level]"]').setValue(visibilityOptions.INTERNAL);
+      wrapper = mountComponent();
 
-      expect(wrapper.find({ ref: 'project-visibility-settings' }).text()).toContain(
+      findProjectVisibilityLevelInput().setValue(visibilityOptions.INTERNAL);
+
+      expect(findProjectVisibilitySettings().text()).toContain(
         visibilityLevelDescriptions[visibilityOptions.INTERNAL],
       );
     });
 
     it('should show the request access checkbox if the visibility level is not private', () => {
-      wrapper = overrideCurrentSettings({ visibilityLevel: visibilityOptions.INTERNAL });
+      wrapper = mountComponent({
+        currentSettings: { visibilityLevel: visibilityOptions.INTERNAL },
+      });
 
-      expect(wrapper.find('[name="project[request_access_enabled]"]').exists()).toBe(true);
+      expect(findRequestAccessEnabledInput().exists()).toBe(true);
     });
 
     it('should not show the request access checkbox if the visibility level is private', () => {
-      wrapper = overrideCurrentSettings({ visibilityLevel: visibilityOptions.PRIVATE });
+      wrapper = mountComponent({ currentSettings: { visibilityLevel: visibilityOptions.PRIVATE } });
 
-      expect(wrapper.find('[name="project[request_access_enabled]"]').exists()).toBe(false);
+      expect(findRequestAccessEnabledInput().exists()).toBe(false);
     });
   });
 
   describe('Repository', () => {
     it('should set the repository help text when the visibility level is set to private', () => {
-      wrapper = overrideCurrentSettings({ visibilityLevel: visibilityOptions.PRIVATE });
+      wrapper = mountComponent({ currentSettings: { visibilityLevel: visibilityOptions.PRIVATE } });
 
-      expect(findRepositoryFeatureProjectRow().props().helpText).toBe(
+      expect(findRepositoryFeatureProjectRow().props('helpText')).toBe(
         'View and edit files in this project.',
       );
     });
 
     it('should set the repository help text with a read access warning when the visibility level is set to non-private', () => {
-      wrapper = overrideCurrentSettings({ visibilityLevel: visibilityOptions.PUBLIC });
+      wrapper = mountComponent({ currentSettings: { visibilityLevel: visibilityOptions.PUBLIC } });
 
-      expect(findRepositoryFeatureProjectRow().props().helpText).toBe(
+      expect(findRepositoryFeatureProjectRow().props('helpText')).toBe(
         'View and edit files in this project. Non-project members will only have read access.',
       );
     });
@@ -190,175 +193,152 @@ describe('Settings Panel', () => {
 
   describe('Merge requests', () => {
     it('should enable the merge requests access level input when the repository is enabled', () => {
-      wrapper = overrideCurrentSettings({ repositoryAccessLevel: featureAccessLevel.EVERYONE });
+      wrapper = mountComponent({
+        currentSettings: { repositoryAccessLevel: featureAccessLevel.EVERYONE },
+      });
 
-      expect(
-        wrapper
-          .find('[name="project[project_feature_attributes][merge_requests_access_level]"]')
-          .props().disabledInput,
-      ).toBe(false);
+      expect(findMergeRequestsAccessLevelInput().props('disabledInput')).toBe(false);
     });
 
     it('should disable the merge requests access level input when the repository is disabled', () => {
-      wrapper = overrideCurrentSettings({ repositoryAccessLevel: featureAccessLevel.NOT_ENABLED });
+      wrapper = mountComponent({
+        currentSettings: { repositoryAccessLevel: featureAccessLevel.NOT_ENABLED },
+      });
 
-      expect(
-        wrapper
-          .find('[name="project[project_feature_attributes][merge_requests_access_level]"]')
-          .props().disabledInput,
-      ).toBe(true);
+      expect(findMergeRequestsAccessLevelInput().props('disabledInput')).toBe(true);
     });
   });
 
   describe('Forks', () => {
     it('should enable the forking access level input when the repository is enabled', () => {
-      wrapper = overrideCurrentSettings({ repositoryAccessLevel: featureAccessLevel.EVERYONE });
+      wrapper = mountComponent({
+        currentSettings: { repositoryAccessLevel: featureAccessLevel.EVERYONE },
+      });
 
-      expect(
-        wrapper.find('[name="project[project_feature_attributes][forking_access_level]"]').props()
-          .disabledInput,
-      ).toBe(false);
+      expect(findForkingAccessLevelInput().props('disabledInput')).toBe(false);
     });
 
     it('should disable the forking access level input when the repository is disabled', () => {
-      wrapper = overrideCurrentSettings({ repositoryAccessLevel: featureAccessLevel.NOT_ENABLED });
+      wrapper = mountComponent({
+        currentSettings: { repositoryAccessLevel: featureAccessLevel.NOT_ENABLED },
+      });
 
-      expect(
-        wrapper.find('[name="project[project_feature_attributes][forking_access_level]"]').props()
-          .disabledInput,
-      ).toBe(true);
+      expect(findForkingAccessLevelInput().props('disabledInput')).toBe(true);
     });
   });
 
   describe('Pipelines', () => {
     it('should enable the builds access level input when the repository is enabled', () => {
-      wrapper = overrideCurrentSettings({ repositoryAccessLevel: featureAccessLevel.EVERYONE });
+      wrapper = mountComponent({
+        currentSettings: { repositoryAccessLevel: featureAccessLevel.EVERYONE },
+      });
 
-      expect(
-        wrapper.find('[name="project[project_feature_attributes][builds_access_level]"]').props()
-          .disabledInput,
-      ).toBe(false);
+      expect(findBuildsAccessLevelInput().props('disabledInput')).toBe(false);
     });
 
     it('should disable the builds access level input when the repository is disabled', () => {
-      wrapper = overrideCurrentSettings({ repositoryAccessLevel: featureAccessLevel.NOT_ENABLED });
+      wrapper = mountComponent({
+        currentSettings: { repositoryAccessLevel: featureAccessLevel.NOT_ENABLED },
+      });
 
-      expect(
-        wrapper.find('[name="project[project_feature_attributes][builds_access_level]"]').props()
-          .disabledInput,
-      ).toBe(true);
+      expect(findBuildsAccessLevelInput().props('disabledInput')).toBe(true);
     });
   });
 
   describe('Container registry', () => {
     it('should show the container registry settings if the registry is available', () => {
-      wrapper.setProps({ registryAvailable: true });
+      wrapper = mountComponent({ registryAvailable: true });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find({ ref: 'container-registry-settings' }).exists()).toBe(true);
-      });
+      expect(findContainerRegistrySettings().exists()).toBe(true);
     });
 
     it('should hide the container registry settings if the registry is not available', () => {
-      wrapper.setProps({ registryAvailable: false });
+      wrapper = mountComponent({ registryAvailable: false });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find({ ref: 'container-registry-settings' }).exists()).toBe(false);
-      });
+      expect(findContainerRegistrySettings().exists()).toBe(false);
     });
 
     it('should set the container registry settings help path', () => {
-      wrapper.setProps({ registryAvailable: true });
+      wrapper = mountComponent({ registryAvailable: true });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find({ ref: 'container-registry-settings' }).props().helpPath).toBe(
-          defaultProps.registryHelpPath,
-        );
-      });
+      expect(findContainerRegistrySettings().props('helpPath')).toBe(defaultProps.registryHelpPath);
     });
 
     it('should show the container registry public note if the visibility level is public and the registry is available', () => {
-      wrapper = overrideCurrentSettings(
-        { visibilityLevel: visibilityOptions.PUBLIC },
-        { registryAvailable: true },
-      );
+      wrapper = mountComponent({
+        currentSettings: { visibilityLevel: visibilityOptions.PUBLIC },
+        registryAvailable: true,
+      });
 
-      expect(wrapper.find({ ref: 'container-registry-settings' }).text()).toContain(
+      expect(findContainerRegistrySettings().text()).toContain(
         'Note: the container registry is always visible when a project is public',
       );
     });
 
     it('should hide the container registry public note if the visibility level is private and the registry is available', () => {
-      wrapper = overrideCurrentSettings(
-        { visibilityLevel: visibilityOptions.PRIVATE },
-        { registryAvailable: true },
-      );
+      wrapper = mountComponent({
+        currentSettings: { visibilityLevel: visibilityOptions.PRIVATE },
+        registryAvailable: true,
+      });
 
-      expect(wrapper.find({ ref: 'container-registry-settings' }).text()).not.toContain(
+      expect(findContainerRegistrySettings().text()).not.toContain(
         'Note: the container registry is always visible when a project is public',
       );
     });
 
     it('should enable the container registry input when the repository is enabled', () => {
-      wrapper = overrideCurrentSettings(
-        { repositoryAccessLevel: featureAccessLevel.EVERYONE },
-        { registryAvailable: true },
-      );
+      wrapper = mountComponent({
+        currentSettings: { repositoryAccessLevel: featureAccessLevel.EVERYONE },
+        registryAvailable: true,
+      });
 
-      expect(
-        wrapper.find('[name="project[container_registry_enabled]"]').props().disabledInput,
-      ).toBe(false);
+      expect(findContainerRegistryEnabledInput().props('disabled')).toBe(false);
     });
 
     it('should disable the container registry input when the repository is disabled', () => {
-      wrapper = overrideCurrentSettings(
-        { repositoryAccessLevel: featureAccessLevel.NOT_ENABLED },
-        { registryAvailable: true },
-      );
+      wrapper = mountComponent({
+        currentSettings: { repositoryAccessLevel: featureAccessLevel.NOT_ENABLED },
+        registryAvailable: true,
+      });
 
-      expect(
-        wrapper.find('[name="project[container_registry_enabled]"]').props().disabledInput,
-      ).toBe(true);
+      expect(findContainerRegistryEnabledInput().props('disabled')).toBe(true);
     });
   });
 
   describe('Git Large File Storage', () => {
     it('should show the LFS settings if LFS is available', () => {
-      wrapper.setProps({ lfsAvailable: true });
+      wrapper = mountComponent({ lfsAvailable: true });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(findLFSSettingsRow().exists()).toBe(true);
-      });
+      expect(findLFSSettingsRow().exists()).toBe(true);
     });
 
     it('should hide the LFS settings if LFS is not available', () => {
-      wrapper.setProps({ lfsAvailable: false });
+      wrapper = mountComponent({ lfsAvailable: false });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(findLFSSettingsRow().exists()).toBe(false);
-      });
+      expect(findLFSSettingsRow().exists()).toBe(false);
     });
 
     it('should set the LFS settings help path', () => {
-      expect(findLFSSettingsRow().props().helpPath).toBe(defaultProps.lfsHelpPath);
+      wrapper = mountComponent();
+      expect(findLFSSettingsRow().props('helpPath')).toBe(defaultProps.lfsHelpPath);
     });
 
     it('should enable the LFS input when the repository is enabled', () => {
-      wrapper = overrideCurrentSettings(
-        { repositoryAccessLevel: featureAccessLevel.EVERYONE },
-        { lfsAvailable: true },
-      );
+      wrapper = mountComponent({
+        currentSettings: { repositoryAccessLevel: featureAccessLevel.EVERYONE },
+        lfsAvailable: true,
+      });
 
-      expect(findLFSFeatureToggle().props().disabledInput).toBe(false);
+      expect(findLFSFeatureToggle().props('disabled')).toBe(false);
     });
 
     it('should disable the LFS input when the repository is disabled', () => {
-      wrapper = overrideCurrentSettings(
-        { repositoryAccessLevel: featureAccessLevel.NOT_ENABLED },
-        { lfsAvailable: true },
-      );
+      wrapper = mountComponent({
+        currentSettings: { repositoryAccessLevel: featureAccessLevel.NOT_ENABLED },
+        lfsAvailable: true,
+      });
 
-      expect(findLFSFeatureToggle().props().disabledInput).toBe(true);
+      expect(findLFSFeatureToggle().props('disabled')).toBe(true);
     });
 
     it('should not change lfsEnabled when disabling the repository', async () => {
@@ -373,8 +353,7 @@ describe('Settings Panel', () => {
       expect(isToggleButtonChecked(lfsFeatureToggleButton)).toBe(true);
       expect(isToggleButtonChecked(repositoryFeatureToggleButton)).toBe(true);
 
-      repositoryFeatureToggleButton.trigger('click');
-      await wrapper.vm.$nextTick();
+      await repositoryFeatureToggleButton.trigger('click');
 
       expect(isToggleButtonChecked(repositoryFeatureToggleButton)).toBe(false);
       // LFS toggle should still be checked
@@ -418,47 +397,39 @@ describe('Settings Panel', () => {
 
   describe('Packages', () => {
     it('should show the packages settings if packages are available', () => {
-      wrapper.setProps({ packagesAvailable: true });
+      wrapper = mountComponent({ packagesAvailable: true });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find({ ref: 'package-settings' }).exists()).toBe(true);
-      });
+      expect(findPackageSettings().exists()).toBe(true);
     });
 
     it('should hide the packages settings if packages are not available', () => {
-      wrapper.setProps({ packagesAvailable: false });
+      wrapper = mountComponent({ packagesAvailable: false });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find({ ref: 'package-settings' }).exists()).toBe(false);
-      });
+      expect(findPackageSettings().exists()).toBe(false);
     });
 
     it('should set the package settings help path', () => {
-      wrapper.setProps({ packagesAvailable: true });
+      wrapper = mountComponent({ packagesAvailable: true });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find({ ref: 'package-settings' }).props().helpPath).toBe(
-          defaultProps.packagesHelpPath,
-        );
-      });
+      expect(findPackageSettings().props('helpPath')).toBe(defaultProps.packagesHelpPath);
     });
 
     it('should enable the packages input when the repository is enabled', () => {
-      wrapper = overrideCurrentSettings(
-        { repositoryAccessLevel: featureAccessLevel.EVERYONE },
-        { packagesAvailable: true },
-      );
+      wrapper = mountComponent({
+        currentSettings: { repositoryAccessLevel: featureAccessLevel.EVERYONE },
+        packagesAvailable: true,
+      });
 
-      expect(wrapper.find('[name="project[packages_enabled]"]').props().disabledInput).toBe(false);
+      expect(findPackagesEnabledInput().props('disabled')).toBe(false);
     });
 
     it('should disable the packages input when the repository is disabled', () => {
-      wrapper = overrideCurrentSettings(
-        { repositoryAccessLevel: featureAccessLevel.NOT_ENABLED },
-        { packagesAvailable: true },
-      );
+      wrapper = mountComponent({
+        currentSettings: { repositoryAccessLevel: featureAccessLevel.NOT_ENABLED },
+        packagesAvailable: true,
+      });
 
-      expect(wrapper.find('[name="project[packages_enabled]"]').props().disabledInput).toBe(true);
+      expect(findPackagesEnabledInput().props('disabled')).toBe(true);
     });
   });
 
@@ -472,78 +443,66 @@ describe('Settings Panel', () => {
     `(
       'should $visibility the page settings if pagesAvailable is $pagesAvailable and pagesAccessControlEnabled is $pagesAccessControlEnabled',
       ({ pagesAvailable, pagesAccessControlEnabled, visibility }) => {
-        wrapper.setProps({ pagesAvailable, pagesAccessControlEnabled });
+        wrapper = mountComponent({ pagesAvailable, pagesAccessControlEnabled });
 
-        return wrapper.vm.$nextTick(() => {
-          expect(wrapper.find({ ref: 'pages-settings' }).exists()).toBe(visibility === 'show');
-        });
+        expect(findPagesSettings().exists()).toBe(visibility === 'show');
       },
     );
 
     it('should set the pages settings help path', () => {
-      wrapper.setProps({ pagesAvailable: true, pagesAccessControlEnabled: true });
+      wrapper = mountComponent({ pagesAvailable: true, pagesAccessControlEnabled: true });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find({ ref: 'pages-settings' }).props().helpPath).toBe(
-          defaultProps.pagesHelpPath,
-        );
-      });
+      expect(findPagesSettings().props('helpPath')).toBe(defaultProps.pagesHelpPath);
     });
   });
 
   describe('Email notifications', () => {
     it('should show the disable email notifications input if emails an be disabled', () => {
-      wrapper.setProps({ canDisableEmails: true });
+      wrapper = mountComponent({ canDisableEmails: true });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find({ ref: 'email-settings' }).exists()).toBe(true);
-      });
+      expect(findEmailSettings().exists()).toBe(true);
     });
 
     it('should hide the disable email notifications input if emails cannot be disabled', () => {
-      wrapper.setProps({ canDisableEmails: false });
+      wrapper = mountComponent({ canDisableEmails: false });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find({ ref: 'email-settings' }).exists()).toBe(false);
-      });
+      expect(findEmailSettings().exists()).toBe(false);
     });
   });
 
   describe('Default award emojis', () => {
     it('should show the "Show default award emojis" input', () => {
-      return wrapper.vm.$nextTick(() => {
-        expect(
-          wrapper
-            .find('input[name="project[project_setting_attributes][show_default_award_emojis]"]')
-            .exists(),
-        ).toBe(true);
-      });
+      wrapper = mountComponent();
+
+      expect(findShowDefaultAwardEmojis().exists()).toBe(true);
     });
   });
 
   describe('Metrics dashboard', () => {
     it('should show the metrics dashboard access toggle', () => {
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find({ ref: 'metrics-visibility-settings' }).exists()).toBe(true);
-      });
+      wrapper = mountComponent();
+
+      expect(findMetricsVisibilitySettings().exists()).toBe(true);
     });
 
     it('should contain help text', () => {
-      expect(wrapper.find({ ref: 'metrics-visibility-settings' }).props().helpText).toBe(
+      wrapper = mountComponent();
+
+      expect(findMetricsVisibilitySettings().props('helpText')).toBe(
         "Visualize the project's performance metrics.",
       );
     });
 
     it.each`
-      scenario                                                     | selectedOption                                | selectedOptionLabel
-      ${{ visibilityLevel: visibilityOptions.PRIVATE }}            | ${String(featureAccessLevel.PROJECT_MEMBERS)} | ${'Only Project Members'}
-      ${{ operationsAccessLevel: featureAccessLevel.NOT_ENABLED }} | ${String(featureAccessLevel.NOT_ENABLED)}     | ${'Enable feature to choose access level'}
+      scenario                                                                          | selectedOption                                | selectedOptionLabel
+      ${{ currentSettings: { visibilityLevel: visibilityOptions.PRIVATE } }}            | ${String(featureAccessLevel.PROJECT_MEMBERS)} | ${'Only Project Members'}
+      ${{ currentSettings: { operationsAccessLevel: featureAccessLevel.NOT_ENABLED } }} | ${String(featureAccessLevel.NOT_ENABLED)}     | ${'Enable feature to choose access level'}
     `(
       'should disable the metrics visibility dropdown when #scenario',
       ({ scenario, selectedOption, selectedOptionLabel }) => {
-        wrapper = overrideCurrentSettings(scenario, {}, mount);
+        wrapper = mountComponent(scenario, mount);
 
-        const select = wrapper.find({ ref: 'metrics-visibility-settings' }).find('select');
+        const select = findMetricsVisibilitySettings().find('select');
         const option = select.find('option');
 
         expect(select.attributes('disabled')).toBe('disabled');
@@ -556,31 +515,29 @@ describe('Settings Panel', () => {
 
   describe('Settings panel with feature flags', () => {
     describe('Allow edit of commit message', () => {
-      it('should show the allow editing of commit messages checkbox', async () => {
+      it('should show the allow editing of commit messages checkbox', () => {
         wrapper = mountComponent({
           glFeatures: { allowEditingCommitMessages: true },
         });
 
-        await wrapper.vm.$nextTick();
-
-        expect(wrapper.find({ ref: 'allow-editing-commit-messages' }).exists()).toBe(true);
+        expect(findAllowEditingCommitMessages()).toBe(true);
       });
     });
   });
 
   describe('Analytics', () => {
-    it('should show the analytics toggle', async () => {
-      await wrapper.vm.$nextTick();
+    it('should show the analytics toggle', () => {
+      wrapper = mountComponent();
 
       expect(findAnalyticsRow().exists()).toBe(true);
     });
   });
 
   describe('Operations', () => {
-    it('should show the operations toggle', async () => {
-      await wrapper.vm.$nextTick();
+    it('should show the operations toggle', () => {
+      wrapper = mountComponent();
 
-      expect(wrapper.find({ ref: 'operations-settings' }).exists()).toBe(true);
+      expect(findOperationsSettings().exists()).toBe(true);
     });
   });
 });

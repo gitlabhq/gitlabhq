@@ -5,7 +5,7 @@ import { deprecatedCreateFlash as Flash } from '~/flash';
 import { s__, __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import modalEventHub from '~/projects/commit/event_hub';
-import { OPEN_REVERT_MODAL } from '~/projects/commit/constants';
+import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '~/projects/commit/constants';
 import MrWidgetAuthorTime from '../mr_widget_author_time.vue';
 import statusIcon from '../mr_widget_status_icon.vue';
 import eventHub from '../../event_hub';
@@ -106,6 +106,9 @@ export default {
     openRevertModal() {
       modalEventHub.$emit(OPEN_REVERT_MODAL);
     },
+    openCherryPickModal() {
+      modalEventHub.$emit(OPEN_CHERRY_PICK_MODAL);
+    },
   },
 };
 </script>
@@ -148,9 +151,7 @@ export default {
           v-gl-tooltip.hover
           :title="cherryPickTitle"
           size="small"
-          href="#modal-cherry-pick-commit"
-          data-toggle="modal"
-          data-container="body"
+          @click="openCherryPickModal"
         >
           {{ cherryPickLabel }}
         </gl-button>

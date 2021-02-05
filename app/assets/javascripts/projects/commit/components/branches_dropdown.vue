@@ -78,6 +78,7 @@ export default {
       :name="branch"
       :is-checked="isSelected(branch)"
       is-check-item
+      data-testid="dropdown-item"
       @click="selectBranch(branch)"
     >
       {{ branch }}
