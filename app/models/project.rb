@@ -75,7 +75,7 @@ class Project < ApplicationRecord
   default_value_for :resolve_outdated_diff_discussions, false
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
   default_value_for(:repository_storage) do
-    pick_repository_storage
+    Repository.pick_storage_shard
   end
 
   default_value_for(:shared_runners_enabled) { Gitlab::CurrentSettings.shared_runners_enabled }
@@ -218,6 +218,7 @@ class Project < ApplicationRecord
 
   # Merge Requests for target project should be removed with it
   has_many :merge_requests, foreign_key: 'target_project_id', inverse_of: :target_project
+  has_many :merge_request_metrics, foreign_key: 'target_project', class_name: 'MergeRequest::Metrics', inverse_of: :target_project
   has_many :source_of_merge_requests, foreign_key: 'source_project_id', class_name: 'MergeRequest'
   has_many :issues
   has_many :labels, class_name: 'ProjectLabel'
@@ -456,7 +457,7 @@ class Project < ApplicationRecord
   validates :repository_storage,
     presence: true,
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
-  validates :variables, variable_duplicates: { scope: :environment_scope }
+  validates :variables, nested_attributes_duplicates: { scope: :environment_scope }
   validates :bfg_object_map, file_size: { maximum: :max_attachment_size }
   validates :max_artifacts_size, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
 
@@ -1314,21 +1315,11 @@ class Project < ApplicationRecord
   end
 
   def external_issue_tracker
-    if has_external_issue_tracker.nil?
-      cache_has_external_issue_tracker
-    end
+    cache_has_external_issue_tracker if has_external_issue_tracker.nil?
 
-    if has_external_issue_tracker?
-      strong_memoize(:external_issue_tracker) do
-        services.external_issue_trackers.first
-      end
-    else
-      nil
-    end
-  end
+    return unless has_external_issue_tracker?
 
-  def cache_has_external_issue_tracker
-    update_column(:has_external_issue_tracker, services.external_issue_trackers.any?) if Gitlab::Database.read_write?
+    @external_issue_tracker ||= services.external_issue_trackers.first
   end
 
   def external_references_supported?
@@ -2532,6 +2523,11 @@ class Project < ApplicationRecord
     tracing_setting&.external_url
   end
 
+  override :git_garbage_collect_worker_klass
+  def git_garbage_collect_worker_klass
+    Projects::GitGarbageCollectWorker
+  end
+
   private
 
   def find_service(services, name)
@@ -2689,6 +2685,10 @@ class Project < ApplicationRecord
 
   def cache_has_external_wiki
     update_column(:has_external_wiki, services.external_wikis.any?) if Gitlab::Database.read_write?
+  end
+
+  def cache_has_external_issue_tracker
+    update_column(:has_external_issue_tracker, services.external_issue_trackers.any?) if Gitlab::Database.read_write?
   end
 end
 

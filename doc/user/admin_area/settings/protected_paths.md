@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Protected paths **(CORE ONLY)**
+# Protected paths **(FREE SELF)**
 
 Rate limiting is a common technique used to improve the security and durability
 of a web application. For more details, see

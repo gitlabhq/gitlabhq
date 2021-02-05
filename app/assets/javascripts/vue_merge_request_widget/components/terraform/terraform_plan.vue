@@ -15,6 +15,16 @@ export default {
       type: Object,
     },
   },
+  i18n: {
+    changes: s__(
+      'Terraform|Reported Resource Changes: %{addNum} to add, %{changeNum} to change, %{deleteNum} to delete',
+    ),
+    generationErrored: s__('Terraform|Generating the report caused an error.'),
+    namedReportFailed: s__('Terraform|The report %{name} failed to generate.'),
+    namedReportGenerated: s__('Terraform|The report %{name} was generated in your pipelines.'),
+    reportFailed: s__('Terraform|A report failed to generate.'),
+    reportGenerated: s__('Terraform|A report was generated in your pipelines.'),
+  },
   computed: {
     addNum() {
       return Number(this.plan.create);
@@ -30,23 +40,21 @@ export default {
     },
     reportChangeText() {
       if (this.validPlanValues) {
-        return s__(
-          'Terraform|Reported Resource Changes: %{addNum} to add, %{changeNum} to change, %{deleteNum} to delete',
-        );
+        return this.$options.i18n.changes;
       }
 
-      return s__('Terraform|Generating the report caused an error.');
+      return this.$options.i18n.generationErrored;
     },
     reportHeaderText() {
       if (this.validPlanValues) {
         return this.plan.job_name
-          ? s__('Terraform|The Terraform report %{name} was generated in your pipelines.')
-          : s__('Terraform|A Terraform report was generated in your pipelines.');
+          ? this.$options.i18n.namedReportGenerated
+          : this.$options.i18n.reportGenerated;
       }
 
       return this.plan.job_name
-        ? s__('Terraform|The Terraform report %{name} failed to generate.')
-        : s__('Terraform|A Terraform report failed to generate.');
+        ? this.$options.i18n.namedReportFailed
+        : this.$options.i18n.reportFailed;
     },
     validPlanValues() {
       return this.addNum + this.changeNum + this.deleteNum >= 0;

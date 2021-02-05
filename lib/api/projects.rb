@@ -295,6 +295,8 @@ module API
         optional :namespace_path, type: String, desc: 'The path of the namespace that the project will be forked into'
         optional :path, type: String, desc: 'The path that will be assigned to the fork'
         optional :name, type: String, desc: 'The name that will be assigned to the fork'
+        optional :description, type: String, desc: 'The description that will be assigned to the fork'
+        optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the fork'
       end
       post ':id/fork', feature_category: :source_code_management do
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42284')

@@ -1,7 +1,7 @@
 <script>
 import { mapActions, mapState } from 'vuex';
-import Popover from './popover.vue';
 import eventHub from '../../notes/event_hub';
+import Popover from './popover.vue';
 
 export default {
   components: {

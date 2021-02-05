@@ -458,7 +458,7 @@
   h6 {
     a.anchor {
       float: left;
-      margin-left: -16px;
+      margin-left: -20px;
       text-decoration: none;
       outline: none;
 
@@ -470,6 +470,11 @@
 
     &:hover > a.anchor::after {
       visibility: visible;
+    }
+
+    > a.anchor:focus::after {
+      visibility: visible;
+      outline: auto;
     }
   }
 

@@ -31,7 +31,8 @@ In all cases, those working on the changes should ask themselves:
 
 > Why do I need to add a feature flag? If I don't add one, what options do I have to control the impact on application reliability, and user experience?
 
-For perspective on why we limit our use of feature flags please see the following [video](https://www.youtube.com/watch?v=DQaGqyolOd8). 
+For perspective on why we limit our use of feature flags please see
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Feature flags only when needed](https://www.youtube.com/watch?v=DQaGqyolOd8).
 
 In case you are uncertain if a feature flag is necessary, simply ask about this in an early merge request, and those reviewing the changes will likely provide you with an answer.
 

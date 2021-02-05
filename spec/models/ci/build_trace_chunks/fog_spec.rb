@@ -98,27 +98,6 @@ RSpec.describe Ci::BuildTraceChunks::Fog do
 
           expect(data_store.data(model)).to eq new_data
         end
-
-        context 'when ci_live_trace_use_fog_attributes flag is disabled' do
-          before do
-            stub_feature_flags(ci_live_trace_use_fog_attributes: false)
-          end
-
-          it 'does not pass along Fog attributes' do
-            expect_next_instance_of(Fog::AWS::Storage::Files) do |files|
-              expect(files).to receive(:create).with(
-                key: anything,
-                body: new_data
-              ).and_call_original
-            end
-
-            expect(data_store.data(model)).to be_nil
-
-            data_store.set_data(model, new_data)
-
-            expect(data_store.data(model)).to eq new_data
-          end
-        end
       end
     end
   end

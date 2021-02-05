@@ -7,6 +7,7 @@ import RefreshButton from '~/monitoring/components/refresh_button.vue';
 import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
 import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
 import ActionsMenu from '~/monitoring/components/dashboard_actions_menu.vue';
+import { redirectTo } from '~/lib/utils/url_utility';
 import { setupAllDashboards, setupStoreWithDashboard, setupStoreWithData } from '../store_utils';
 import {
   environmentData,
@@ -14,7 +15,6 @@ import {
   selfMonitoringDashboardGitResponse,
   dashboardHeaderProps,
 } from '../mock_data';
-import { redirectTo } from '~/lib/utils/url_utility';
 
 const mockProjectPath = 'https://path/to/project';
 

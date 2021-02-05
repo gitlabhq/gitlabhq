@@ -186,6 +186,13 @@ RSpec.describe Projects::DiscussionsController do
           expect(Note.find(note.id).discussion.resolved?).to be false
         end
 
+        it "tracks thread unresolve usage data" do
+          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+            .to receive(:track_unresolve_thread_action).with(user: user)
+
+          delete :unresolve, params: request_params
+        end
+
         it "returns status 200" do
           delete :unresolve, params: request_params
 

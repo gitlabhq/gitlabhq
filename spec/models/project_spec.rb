@@ -21,6 +21,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:services) }
     it { is_expected.to have_many(:events) }
     it { is_expected.to have_many(:merge_requests) }
+    it { is_expected.to have_many(:merge_request_metrics).class_name('MergeRequest::Metrics') }
     it { is_expected.to have_many(:issues) }
     it { is_expected.to have_many(:milestones) }
     it { is_expected.to have_many(:iterations) }
@@ -1002,71 +1003,6 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '#external_issue_tracker' do
-    let(:project) { create(:project) }
-    let(:ext_project) { create(:redmine_project) }
-
-    context 'on existing projects with no value for has_external_issue_tracker' do
-      before do
-        project.update_column(:has_external_issue_tracker, nil)
-        ext_project.update_column(:has_external_issue_tracker, nil)
-      end
-
-      it 'updates the has_external_issue_tracker boolean' do
-        expect do
-          project.external_issue_tracker
-        end.to change { project.reload.has_external_issue_tracker }.to(false)
-
-        expect do
-          ext_project.external_issue_tracker
-        end.to change { ext_project.reload.has_external_issue_tracker }.to(true)
-      end
-    end
-
-    it 'returns nil and does not query services when there is no external issue tracker' do
-      expect(project).not_to receive(:services)
-
-      expect(project.external_issue_tracker).to eq(nil)
-    end
-
-    it 'retrieves external_issue_tracker querying services and cache it when there is external issue tracker' do
-      ext_project.reload # Factory returns a project with changed attributes
-      expect(ext_project).to receive(:services).once.and_call_original
-
-      2.times { expect(ext_project.external_issue_tracker).to be_a_kind_of(RedmineService) }
-    end
-  end
-
-  describe '#cache_has_external_issue_tracker' do
-    let_it_be(:project) { create(:project, has_external_issue_tracker: nil) }
-
-    it 'stores true if there is any external_issue_tracker' do
-      services = double(:service, external_issue_trackers: [RedmineService.new])
-      expect(project).to receive(:services).and_return(services)
-
-      expect do
-        project.cache_has_external_issue_tracker
-      end.to change { project.has_external_issue_tracker}.to(true)
-    end
-
-    it 'stores false if there is no external_issue_tracker' do
-      services = double(:service, external_issue_trackers: [])
-      expect(project).to receive(:services).and_return(services)
-
-      expect do
-        project.cache_has_external_issue_tracker
-      end.to change { project.has_external_issue_tracker}.to(false)
-    end
-
-    it 'does not cache data when in a read-only GitLab instance' do
-      allow(Gitlab::Database).to receive(:read_only?) { true }
-
-      expect do
-        project.cache_has_external_issue_tracker
-      end.not_to change { project.has_external_issue_tracker }
-    end
-  end
-
   describe '#has_wiki?' do
     let(:no_wiki_project)       { create(:project, :wiki_disabled, has_external_wiki: false) }
     let(:wiki_enabled_project)  { create(:project) }
@@ -1099,6 +1035,93 @@ RSpec.describe Project, factory_default: :keep do
         allow(group).to receive(:default_owner).and_return(Object.new)
 
         expect(project.default_owner).to eq(group.default_owner)
+      end
+    end
+  end
+
+  describe '#external_issue_tracker' do
+    it 'sets Project#has_external_issue_tracker when it is nil' do
+      project_with_no_tracker = create(:project, has_external_issue_tracker: nil)
+      project_with_tracker = create(:redmine_project, has_external_issue_tracker: nil)
+
+      expect do
+        project_with_no_tracker.external_issue_tracker
+      end.to change { project_with_no_tracker.reload.has_external_issue_tracker }.from(nil).to(false)
+
+      expect do
+        project_with_tracker.external_issue_tracker
+      end.to change { project_with_tracker.reload.has_external_issue_tracker }.from(nil).to(true)
+    end
+
+    it 'returns nil and does not query services when there is no external issue tracker' do
+      project = create(:project)
+
+      expect(project).not_to receive(:services)
+      expect(project.external_issue_tracker).to eq(nil)
+    end
+
+    it 'retrieves external_issue_tracker querying services and cache it when there is external issue tracker' do
+      project = create(:redmine_project)
+
+      expect(project).to receive(:services).once.and_call_original
+      2.times { expect(project.external_issue_tracker).to be_a_kind_of(RedmineService) }
+    end
+  end
+
+  describe '#has_external_issue_tracker' do
+    let_it_be(:project) { create(:project) }
+
+    def subject
+      project.reload.has_external_issue_tracker
+    end
+
+    it 'is false when external issue tracker service is not active' do
+      create(:service, project: project, category: 'issue_tracker', active: false)
+
+      is_expected.to eq(false)
+    end
+
+    it 'is false when other service is active' do
+      create(:service, project: project, category: 'not_issue_tracker', active: true)
+
+      is_expected.to eq(false)
+    end
+
+    context 'when there is an active external issue tracker service' do
+      let!(:service) do
+        create(:service, project: project, type: 'JiraService', category: 'issue_tracker', active: true)
+      end
+
+      specify { is_expected.to eq(true) }
+
+      it 'becomes false when external issue tracker service is destroyed' do
+        expect do
+          Service.find(service.id).delete
+        end.to change { subject }.to(false)
+      end
+
+      it 'becomes false when external issue tracker service becomes inactive' do
+        expect do
+          service.update_column(:active, false)
+        end.to change { subject }.to(false)
+      end
+
+      context 'when there are two active external issue tracker services' do
+        let_it_be(:second_service) do
+          create(:service, project: project, type: 'CustomIssueTracker', category: 'issue_tracker', active: true)
+        end
+
+        it 'does not become false when external issue tracker service is destroyed' do
+          expect do
+            Service.find(service.id).delete
+          end.not_to change { subject }
+        end
+
+        it 'does not become false when external issue tracker service becomes inactive' do
+          expect do
+            service.update_column(:active, false)
+          end.not_to change { subject }
+        end
       end
     end
   end
@@ -1234,7 +1257,7 @@ RSpec.describe Project, factory_default: :keep do
 
     it 'is false if avatar is html page' do
       project.update_attribute(:avatar, 'uploads/avatar.html')
-      expect(project.avatar_type).to eq(['file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico'])
+      expect(project.avatar_type).to eq(['file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico, webp'])
     end
   end
 
@@ -1529,10 +1552,7 @@ RSpec.describe Project, factory_default: :keep do
     let(:project) { build(:project) }
 
     it 'picks storage from ApplicationSetting' do
-      expect_next_instance_of(ApplicationSetting) do |instance|
-        expect(instance).to receive(:pick_repository_storage).and_return('picked')
-      end
-      expect(described_class).to receive(:pick_repository_storage).and_call_original
+      expect(Repository).to receive(:pick_storage_shard).and_return('picked')
 
       expect(project.repository_storage).to eq('picked')
     end
@@ -2227,8 +2247,6 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#ci_config_path=' do
-    using RSpec::Parameterized::TableSyntax
-
     let(:project) { build_stubbed(:project) }
 
     where(:default_ci_config_path, :project_ci_config_path, :expected_ci_config_path) do
@@ -2980,6 +2998,7 @@ RSpec.describe Project, factory_default: :keep do
   it_behaves_like 'can housekeep repository' do
     let(:resource) { build_stubbed(:project) }
     let(:resource_key) { 'projects' }
+    let(:expected_worker_class) { Projects::GitGarbageCollectWorker }
   end
 
   describe '#deployment_variables' do
@@ -3926,7 +3945,6 @@ RSpec.describe Project, factory_default: :keep do
   describe '.filter_by_feature_visibility' do
     include_context 'ProjectPolicyTable context'
     include ProjectHelpers
-    using RSpec::Parameterized::TableSyntax
 
     let_it_be(:group) { create(:group) }
     let!(:project) { create(:project, project_level, namespace: group ) }
@@ -4176,8 +4194,6 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#git_transfer_in_progress?' do
-    using RSpec::Parameterized::TableSyntax
-
     let(:project) { build(:project) }
 
     subject { project.git_transfer_in_progress? }
@@ -5068,10 +5084,8 @@ RSpec.describe Project, factory_default: :keep do
     it 'executes services with the specified scope' do
       data = 'any data'
 
-      expect(SlackService).to receive(:allocate).and_wrap_original do |method|
-        method.call.tap do |instance|
-          expect(instance).to receive(:async_execute).with(data).once
-        end
+      expect_next_found_instance_of(SlackService) do |instance|
+        expect(instance).to receive(:async_execute).with(data).once
       end
 
       service.project.execute_services(data, :push_hooks)
@@ -5801,8 +5815,6 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe 'validation #changing_shared_runners_enabled_is_allowed' do
-    using RSpec::Parameterized::TableSyntax
-
     where(:shared_runners_setting, :project_shared_runners_enabled, :valid_record) do
       'enabled'                    | true  | true
       'enabled'                    | false | true
@@ -6025,8 +6037,6 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#closest_setting' do
-    using RSpec::Parameterized::TableSyntax
-
     shared_examples_for 'fetching closest setting' do
       let!(:namespace) { create(:namespace) }
       let!(:project) { create(:project, namespace: namespace) }

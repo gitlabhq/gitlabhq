@@ -952,9 +952,9 @@ RSpec.describe Ci::CreatePipelineService do
           expect(result).to be_persisted
           expect(deploy_job.resource_group.key).to eq(resource_group_key)
           expect(project.resource_groups.count).to eq(1)
-          expect(resource_group.builds.count).to eq(1)
+          expect(resource_group.processables.count).to eq(1)
           expect(resource_group.resources.count).to eq(1)
-          expect(resource_group.resources.first.build).to eq(nil)
+          expect(resource_group.resources.first.processable).to eq(nil)
         end
 
         context 'when resource group key includes predefined variables' do

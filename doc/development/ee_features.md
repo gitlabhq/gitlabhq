@@ -92,12 +92,36 @@ class User < ActiveRecord::Base
   # ... lots of code here ...
 end
 
-User.prepend_if_ee('EE::User')
+User.prepend_ee_mod
 ```
 
 Do not use methods such as `prepend`, `extend`, and `include`. Instead, use
-`prepend_if_ee`, `extend_if_ee`, or `include_if_ee`. These methods take a
-_String_ containing the full module name as the argument, not the module itself.
+`prepend_ee_mod`, `extend_ee_mod`, or `include_ee_mod`. These methods will try to
+find the relevant EE module by the name of the receiver module, for example;
+
+```ruby
+module Vulnerabilities
+  class Finding
+    #...
+  end
+end
+
+Vulnerabilities::Finding.prepend_ee_mod
+```
+
+will prepend the module named `::EE::Vulnerabilities::Finding`.
+
+If the extending module does not follow this naming convention, you can also provide the module name
+by using `prepend_if_ee`, `extend_if_ee`, or `include_if_ee`. These methods take a
+_String_ containing the full module name as the argument, not the module itself, like so;
+
+```ruby
+class User
+  #...
+end
+
+User.prepend_if_ee('::EE::UserExtension')
+```
 
 Since the module would require an `EE` namespace, the file should also be
 put in an `ee/` sub-directory. For example, we want to extend the user model
@@ -142,9 +166,9 @@ still having access the class's implementation with `super`.
 There are a few gotchas with it:
 
 - you should always [`extend ::Gitlab::Utils::Override`](utilities.md#override) and use `override` to
-  guard the "overrider" method to ensure that if the method gets renamed in
+  guard the `overrider` method to ensure that if the method gets renamed in
   CE, the EE override isn't silently forgotten.
-- when the "overrider" would add a line in the middle of the CE
+- when the `overrider` would add a line in the middle of the CE
   implementation, you should refactor the CE method and split it in
   smaller methods. Or create a "hook" method that is empty in CE,
   and with the EE-specific implementation in EE.
@@ -947,7 +971,7 @@ information on managing page-specific JavaScript within EE.
 
 #### Child Component only used in EE
 
-To separate Vue template differences we should [async import the components](https://vuejs.org/v2/guide/components-dynamic-async.html#Async-Components).
+To separate Vue template differences we should [import the components asynchronously](https://vuejs.org/v2/guide/components-dynamic-async.html#Async-Components).
 
 Doing this allows for us to load the correct component in EE while in CE
 we can load a empty component that renders nothing. This code **should**
@@ -1044,7 +1068,7 @@ export default {
 **For EE components that need different results for the same computed values, we can pass in props to the CE wrapper as seen in the example.**
 
 - **EE Child components**
-  - Since we are using the async loading to check which component to load, we'd still use the component's name, check [this example](#child-component-only-used-in-ee).
+  - Since we are using the asynchronous loading to check which component to load, we'd still use the component's name, check [this example](#child-component-only-used-in-ee).
 
 - **EE extra HTML**
   - For the templates that have extra HTML in EE we should move it into a new component and use the `ee_else_ce` dynamic import

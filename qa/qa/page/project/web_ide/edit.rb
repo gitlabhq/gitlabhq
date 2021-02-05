@@ -18,7 +18,8 @@ module QA
           end
 
           view 'app/assets/javascripts/ide/components/ide_tree.vue' do
-            element :new_file
+            element :new_file_button
+            element :new_directory_button
           end
 
           view 'app/assets/javascripts/ide/components/ide_tree_list.vue' do
@@ -63,6 +64,7 @@ module QA
           view 'app/assets/javascripts/ide/components/new_dropdown/index.vue' do
             element :dropdown_button
             element :rename_move_button
+            element :delete_button
           end
 
           view 'app/views/shared/_confirm_fork_modal.html.haml' do
@@ -82,6 +84,10 @@ module QA
             element :changed_file_icon_content
           end
 
+          view 'app/assets/javascripts/vue_shared/components/file_icon.vue' do
+            element :folder_icon_content
+          end
+
           view 'app/assets/javascripts/vue_shared/components/content_viewer/content_viewer.vue' do
             element :preview_container
           end
@@ -98,10 +104,18 @@ module QA
             element :file_upload_field
           end
 
+          view 'app/assets/javascripts/ide/components/commit_sidebar/list_item.vue' do
+            element :file_to_commit_content
+          end
+
           def has_file?(file_name)
             within_element(:file_list) do
-              has_text?(file_name)
+              has_element?(:file_name_content, file_name: file_name)
             end
+          end
+
+          def has_file_to_commit?(file_name)
+            has_element?(:file_to_commit_content, file_name: file_name)
           end
 
           def has_project_path?(project_path)
@@ -111,6 +125,12 @@ module QA
           def has_file_addition_icon?(file_name)
             within_element(:file_row_container, file_name: file_name) do
               has_element?(:changed_file_icon_content, title: 'Added')
+            end
+          end
+
+          def has_folder_icon?(file_name)
+            within_element(:file_row_container, file_name: file_name) do
+              has_element?(:folder_icon_content)
             end
           end
 
@@ -128,12 +148,19 @@ module QA
             end
           end
 
+          def has_file_content?(file_name, file_content)
+            click_element(:file_row_container, file_name: file_name)
+            within_element(:editor_container) do
+              has_text?(file_content)
+            end
+          end
+
           def go_to_project
             click_element(:project_path_content, Page::Project::Show)
           end
 
           def create_new_file_from_template(file_name, template)
-            click_element(:new_file, Page::Component::WebIDE::Modal::CreateNewFile)
+            click_element(:new_file_button, Page::Component::WebIDE::Modal::CreateNewFile)
 
             within_element(:template_list) do
               click_on file_name
@@ -226,7 +253,7 @@ module QA
           end
 
           def add_file(file_name, file_text)
-            click_element(:new_file, Page::Component::WebIDE::Modal::CreateNewFile)
+            click_element(:new_file_button, Page::Component::WebIDE::Modal::CreateNewFile)
             fill_element(:file_name_field, file_name)
             click_button('Create file')
             wait_until(reload: false) { has_file?(file_name) }
@@ -235,8 +262,15 @@ module QA
             end
           end
 
+          def add_directory(directory_name)
+            click_element(:new_directory_button, Page::Component::WebIDE::Modal::CreateNewFile)
+            fill_element(:file_name_field, directory_name)
+            click_button('Create directory')
+            wait_until(reload: false) { has_file?(directory_name) }
+          end
+
           def rename_file(file_name, new_file_name)
-            click_element(:file_name_content, text: file_name)
+            click_element(:file_name_content, file_name: file_name)
             click_element(:dropdown_button)
             click_element(:rename_move_button, Page::Component::WebIDE::Modal::CreateNewFile)
             fill_element(:file_name_field, new_file_name)
@@ -258,6 +292,16 @@ module QA
             within_element(:file_list) do
               find_element(:file_upload_field, visible: false).send_keys(file_path)
             end
+          end
+
+          def delete_file(file_name)
+            click_element(:file_name_content, file_name: file_name)
+            click_element(:dropdown_button)
+            click_element(:delete_button)
+          end
+
+          def switch_to_commit_tab
+            click_element(:commit_mode_tab)
           end
         end
       end

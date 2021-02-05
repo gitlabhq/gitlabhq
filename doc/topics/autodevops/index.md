@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Auto DevOps
+# Auto DevOps **(CORE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/37115) in GitLab 10.0.
 > - Generally available on GitLab 11.0.
@@ -156,16 +156,6 @@ The base domain variable `KUBE_INGRESS_BASE_DOMAIN` follows the same order of pr
 as other environment [variables](../../ci/variables/README.md#priority-of-environment-variables).
 If the CI/CD variable is not set and the cluster setting is left blank, the instance-wide **Auto DevOps domain**
 setting is used if set.
-
-NOTE:
-If you use the [GitLab managed app for Ingress](../../user/clusters/applications.md#ingress),
-the URL endpoint should be automatically configured for you. All you must do
-is use its value for the `KUBE_INGRESS_BASE_DOMAIN` variable.
-
-NOTE:
-`AUTO_DEVOPS_DOMAIN` was [deprecated in GitLab 11.8](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52363)
-and replaced with `KUBE_INGRESS_BASE_DOMAIN`, and removed in
-[GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/56959).
 
 Auto DevOps requires a wildcard DNS A record matching the base domain(s). For
 a base domain of `example.com`, you'd need a DNS entry like:

@@ -53,7 +53,7 @@ internally-hosted registry or provide access to the individual scanner images.
 
 You must also ensure that your app has access to common package repositories
 that are not hosted on GitLab.com, such as npm, yarn, or Ruby gems. Packages
-from these repos can be obtained by temporarily connecting to a network or by
+from these repositories can be obtained by temporarily connecting to a network or by
 mirroring the packages inside your own offline network.
 
 ### Interacting with the vulnerabilities
@@ -132,7 +132,7 @@ a bastion, and used only for this specific project.
 #### Scheduling the updates
 
 By default, this project's pipeline runs only once, when the `.gitlab-ci.yml` is added to the
-repo. To update the GitLab security scanners and signatures, it's necessary to run this pipeline
+repository. To update the GitLab security scanners and signatures, it's necessary to run this pipeline
 regularly. GitLab provides a way to [schedule pipelines](../../../ci/pipelines/schedules.md). For
 example, you can set this up to download and store the Docker images every week.
 

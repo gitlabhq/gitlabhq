@@ -197,7 +197,7 @@ export default {
       <gl-button
         v-if="canRenderPipelineButton"
         block
-        class="gl-mt-3 gl-mb-0 gl-display-md-none"
+        class="gl-mt-3 gl-mb-0 gl-md-display-none"
         variant="success"
         data-testid="run_pipeline_button_mobile"
         :loading="state.isRunningMergeRequestPipeline"

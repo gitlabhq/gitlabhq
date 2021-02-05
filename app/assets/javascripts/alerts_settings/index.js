@@ -31,6 +31,7 @@ export default (el) => {
     url,
     projectPath,
     multiIntegrations,
+    alertFields,
   } = el.dataset;
 
   return new Vue({
@@ -60,7 +61,14 @@ export default (el) => {
     },
     apolloProvider,
     render(createElement) {
-      return createElement('alert-settings-wrapper');
+      return createElement('alert-settings-wrapper', {
+        props: {
+          alertFields:
+            gon.features?.multipleHttpIntegrationsCustomMapping && parseBoolean(multiIntegrations)
+              ? JSON.parse(alertFields)
+              : null,
+        },
+      });
     },
   });
 };

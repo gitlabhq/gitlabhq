@@ -4,16 +4,16 @@ import { TestStatus } from '../../constants';
 export function iconForTestStatus(status) {
   switch (status) {
     case TestStatus.SUCCESS:
-      return 'status_success_borderless';
+      return 'status_success';
     case TestStatus.FAILED:
-      return 'status_failed_borderless';
+      return 'status_failed';
     case TestStatus.ERROR:
-      return 'status_warning_borderless';
+      return 'status_warning';
     case TestStatus.SKIPPED:
-      return 'status_skipped_borderless';
+      return 'status_skipped';
     case TestStatus.UNKNOWN:
     default:
-      return 'status_notfound_borderless';
+      return 'status_notfound';
   }
 }
 

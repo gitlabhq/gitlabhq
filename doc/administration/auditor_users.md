@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Auditor users **(PREMIUM ONLY)**
+# Auditor users **(PREMIUM SELF)**
 
 Auditor users are given read-only access to all projects, groups, and other
 resources on the GitLab instance.
@@ -67,6 +67,8 @@ To create a new Auditor user:
 
 To revoke Auditor permissions from a user, make them a regular user by
 following the previous steps.
+
+Additionally users can be set as an Auditor using [SAML groups](../integration/saml.md#auditor-groups).
 
 ## Permissions and restrictions of an Auditor user
 

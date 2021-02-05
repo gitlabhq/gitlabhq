@@ -51,6 +51,20 @@ RSpec.describe UserRecentEventsFinder do
       end
     end
 
+    describe 'issue activity events' do
+      let(:issue) { create(:issue, project: public_project) }
+      let(:note) { create(:note_on_issue, noteable: issue, project: public_project) }
+      let!(:event_a) { create(:event, :commented, target: note, author: project_owner) }
+      let!(:event_b) { create(:event, :closed, target: issue, author: project_owner) }
+
+      it 'includes all issue related events', :aggregate_failures do
+        events = finder.execute
+
+        expect(events).to include(event_a)
+        expect(events).to include(event_b)
+      end
+    end
+
     context 'limits' do
       before do
         stub_const("#{described_class}::DEFAULT_LIMIT", 1)

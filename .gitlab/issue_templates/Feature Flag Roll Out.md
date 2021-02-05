@@ -31,7 +31,6 @@ If applicable, any groups/projects that are happy to have this feature turned on
 
 ## Roll Out Steps
 
-- [ ] Confirm that QA tests pass with the feature flag enabled (if you're unsure how, contact the relevant [stable counterpart in the Quality department](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors))
 - [ ] Enable on staging (`/chatops run feature set feature_name true --staging`)
 - [ ] Test on staging
 - [ ] Ensure that documentation has been updated

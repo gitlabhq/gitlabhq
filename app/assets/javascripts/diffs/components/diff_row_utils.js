@@ -50,11 +50,11 @@ export const classNameMapCell = ({ line, hll, isLoggedIn, isHover }) => {
   ];
 };
 
-export const addCommentTooltip = (line) => {
+export const addCommentTooltip = (line, dragCommentSelectionEnabled = false) => {
   let tooltip;
   if (!line) return tooltip;
 
-  tooltip = gon.drag_comment_selection
+  tooltip = dragCommentSelectionEnabled
     ? __('Add a comment to this line or drag for multiple lines')
     : __('Add a comment to this line');
   const brokenSymlinks = line.commentsDisabled;

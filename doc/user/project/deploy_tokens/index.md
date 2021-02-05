@@ -67,7 +67,7 @@ following table along with GitLab version it was introduced in:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29639) in GitLab 12.1.
 
-The default username format is `gitlab+deploy-token-#{n}`. Some tools or
+The default username format is `gitlab+deploy-token-{n}`. Some tools or
 platforms may not support this format; in this case you can specify a custom
 username to be used when creating the deploy token.
 

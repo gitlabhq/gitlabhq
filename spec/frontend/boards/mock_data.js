@@ -137,7 +137,7 @@ export const rawIssue = {
       {
         id: 1,
         title: 'test',
-        color: 'red',
+        color: '#F0AD4E',
         description: 'testing',
       },
     ],
@@ -165,7 +165,7 @@ export const mockIssue = {
     {
       id: 1,
       title: 'test',
-      color: 'red',
+      color: '#F0AD4E',
       description: 'testing',
     },
   ],

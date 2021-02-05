@@ -12,6 +12,9 @@ class MergeRequestContextCommit < ApplicationRecord
   validates :sha, presence: true
   validates :sha, uniqueness: { message: 'has already been added' }
 
+  serialize :trailers, Serializers::JSON # rubocop:disable Cop/ActiveRecordSerialize
+  validates :trailers, json_schema: { filename: 'git_trailers' }
+
   # Sort by committed date in descending order to ensure latest commits comes on the top
   scope :order_by_committed_date_desc, -> { order('committed_date DESC') }
 

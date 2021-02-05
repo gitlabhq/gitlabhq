@@ -45,6 +45,17 @@ module Spammable
     self.needs_recaptcha = true
   end
 
+  ##
+  # Indicates if a recaptcha should be rendered before allowing this model to be saved.
+  #
+  def render_recaptcha?
+    return false unless Gitlab::Recaptcha.enabled?
+
+    return false if self.errors.count > 1 # captcha should not be rendered if are still other errors
+
+    self.needs_recaptcha?
+  end
+
   def spam!
     self.spam = true
   end

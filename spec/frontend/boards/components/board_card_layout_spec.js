@@ -1,28 +1,14 @@
-/* global List */
-/* global ListLabel */
-
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 
-import MockAdapter from 'axios-mock-adapter';
-import waitForPromises from 'helpers/wait_for_promises';
-import axios from '~/lib/utils/axios_utils';
-
-import '~/boards/models/label';
-import '~/boards/models/assignee';
-import '~/boards/models/list';
-import boardsVuexStore from '~/boards/stores';
-import boardsStore from '~/boards/stores/boards_store';
+import defaultState from '~/boards/stores/state';
 import BoardCardLayout from '~/boards/components/board_card_layout.vue';
-import issueCardInner from '~/boards/components/issue_card_inner.vue';
-import { listObj, boardsMockInterceptor, setMockEndpoints } from '../mock_data';
-
+import IssueCardInner from '~/boards/components/issue_card_inner.vue';
 import { ISSUABLE } from '~/boards/constants';
+import { mockLabelList, mockIssue } from '../mock_data';
 
 describe('Board card layout', () => {
   let wrapper;
-  let mock;
-  let list;
   let store;
 
   const localVue = createLocalVue();
@@ -30,7 +16,7 @@ describe('Board card layout', () => {
 
   const createStore = ({ getters = {}, actions = {} } = {}) => {
     store = new Vuex.Store({
-      ...boardsVuexStore,
+      state: defaultState,
       actions,
       getters,
     });
@@ -41,12 +27,12 @@ describe('Board card layout', () => {
     wrapper = shallowMount(BoardCardLayout, {
       localVue,
       stubs: {
-        issueCardInner,
+        IssueCardInner,
       },
       store,
       propsData: {
-        list,
-        issue: list.issues[0],
+        list: mockLabelList,
+        issue: mockIssue,
         disabled: false,
         index: 0,
         ...propsData,
@@ -60,34 +46,9 @@ describe('Board card layout', () => {
     });
   };
 
-  const setupData = () => {
-    list = new List(listObj);
-    boardsStore.create();
-    boardsStore.detail.issue = {};
-    const label1 = new ListLabel({
-      id: 3,
-      title: 'testing 123',
-      color: '#000cff',
-      text_color: 'white',
-      description: 'test',
-    });
-    return waitForPromises().then(() => {
-      list.issues[0].labels.push(label1);
-    });
-  };
-
-  beforeEach(() => {
-    mock = new MockAdapter(axios);
-    mock.onAny().reply(boardsMockInterceptor);
-    setMockEndpoints();
-    return setupData();
-  });
-
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
-    list = null;
-    mock.restore();
   });
 
   describe('mouse events', () => {
@@ -112,25 +73,21 @@ describe('Board card layout', () => {
       expect(wrapper.vm.showDetail).toBe(false);
     });
 
-    it("calls 'setActiveId' when 'graphqlBoardLists' feature flag is turned on", async () => {
+    it("calls 'setActiveId'", async () => {
       const setActiveId = jest.fn();
       createStore({
         actions: {
           setActiveId,
         },
       });
-      mountComponent({
-        provide: {
-          glFeatures: { graphqlBoardLists: true },
-        },
-      });
+      mountComponent();
 
       wrapper.trigger('mouseup');
       await wrapper.vm.$nextTick();
 
       expect(setActiveId).toHaveBeenCalledTimes(1);
       expect(setActiveId).toHaveBeenCalledWith(expect.any(Object), {
-        id: list.issues[0].id,
+        id: mockIssue.id,
         sidebarType: ISSUABLE,
       });
     });
@@ -151,7 +108,7 @@ describe('Board card layout', () => {
 
       expect(setActiveId).toHaveBeenCalledTimes(1);
       expect(setActiveId).toHaveBeenCalledWith(expect.any(Object), {
-        id: list.issues[0].id,
+        id: mockIssue.id,
         sidebarType: ISSUABLE,
       });
     });

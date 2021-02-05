@@ -2,10 +2,10 @@
 /* eslint-disable @gitlab/vue-require-i18n-strings */
 import { GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
-import ModalFilters from './filters';
-import ModalTabs from './tabs.vue';
 import ModalStore from '../../stores/modal_store';
 import modalMixin from '../../mixins/modal_mixins';
+import ModalFilters from './filters';
+import ModalTabs from './tabs.vue';
 
 export default {
   components: {

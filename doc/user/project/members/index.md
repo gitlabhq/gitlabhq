@@ -21,42 +21,74 @@ project's **Members**.
 When your project belongs to the group, group members inherit the membership and permission
 level for the project from the group.
 
-![Project members page](img/project_members_13_8.png)
+![Project members page](img/project_members_v13_9.png)
 
 From the image above, we can deduce the following things:
 
 - There are 3 members that have access to the project.
 - User0 is a Reporter and has inherited their permissions from group `demo`
   which contains current project.
-- For User1 there is no indication of a group, therefore they belong directly
+- User1 is shown as a **Direct member** in the **Source** column, therefore they belong directly
   to the project we're inspecting.
 - Administrator is the Owner and member of **all** groups and for that reason,
   there is an indication of an ancestor group and inherited Owner permissions.
 
-[From GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/21727), you can filter this list
-using the dropdown on the right side:
+## Filter and sort members
 
-![Project members filter](img/project_members_filter_v12_6.png)
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21727) in GitLab 12.6.
+> - [Improved](https://gitlab.com/groups/gitlab-org/-/epics/4901) in GitLab 13.9.
+> - Improvements are [deployed behind a feature flag](../../feature_flags.md), enabled by default.
+> - Improvements are enabled on GitLab.com.
+> - Improvements are recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable improvements](#enable-or-disable-improvements-to-project-member-management). **(FREE SELF)**
 
-- **Show only direct members** displays only User1.
-- **Show only inherited members** displays User0 and Administrator.
+The following sections illustrate how you can filter and sort members in a project. To view these options,
+navigate to your desired project, go to **Members**, and include the noted search terms.
+
+### Membership filter
+
+By default, inherited and direct members are displayed. The membership filter can be used to display only inherited or only direct members.
+
+#### Display inherited members
+
+To display inherited members, include `Membership` `=` `Inherited` in the search text box.
+
+![Project members filter inherited](img/project_members_filter_inherited_v13_9.png)
+
+#### Display direct members
+
+To display direct members, include `Membership` `=` `Direct` in the search text box.
+
+![Project members filter direct](img/project_members_filter_direct_v13_9.png)
+
+### Search
+
+You can search for members by name, username, or email.
+
+![Project members search](img/project_members_search_v13_9.png)
+
+### Sort
+
+You can sort members by **Account**, **Access granted**, **Max role**, or **Last sign-in** in ascending or descending order.
+
+![Project members sort](img/project_members_sort_v13_9.png)
 
 ## Add a user
 
 Right next to **People**, start typing the name or username of the user you
 want to add.
 
-![Search for people](img/add_user_search_people_13_8.png)
+![Search for people](img/add_user_search_people_v13_8.png)
 
 Select the user and the [permission level](../../permissions.md)
 that you'd like to give the user. Note that you can select more than one user.
 
-![Give user permissions](img/add_user_give_permissions_13_8.png)
+![Give user permissions](img/add_user_give_permissions_v13_8.png)
 
 Once done, select **Add users to project** and they are immediately added to
 your project with the permissions you gave them above.
 
-![List members](img/add_user_list_members_13_8.png)
+![List members](img/add_user_list_members_v13_9.png)
 
 From there on, you can either remove an existing user or change their access
 level to the project.
@@ -68,14 +100,14 @@ You can import another project's users in your own project by hitting the
 
 In the dropdown menu, you can see only the projects you are Maintainer on.
 
-![Import members from another project](img/add_user_import_members_from_another_project_13_8.png)
+![Import members from another project](img/add_user_import_members_from_another_project_v13_8.png)
 
 Select the one you want and hit **Import project members**. A flash message
 displays, notifying you that the import was successful, and the new members
 are now in the project's members list. Notice that the permissions that they
 had on the project you imported from are retained.
 
-![Members list of new members](img/add_user_imported_members_13_8.png)
+![Members list of new members](img/add_user_imported_members_v13_9.png)
 
 ## Invite people using their e-mail address
 
@@ -83,18 +115,18 @@ If a user you want to give access to doesn't have an account on your GitLab
 instance, you can invite them just by typing their e-mail address in the
 user search field.
 
-![Invite user by mail](img/add_user_email_search_13_8.png)
+![Invite user by mail](img/add_user_email_search_v13_8.png)
 
 As you can imagine, you can mix inviting multiple people and adding existing
 GitLab users to the project.
 
-![Invite user by mail ready to submit](img/add_user_email_ready_13_8.png)
+![Invite user by mail ready to submit](img/add_user_email_ready_v13_8.png)
 
 Once done, hit **Add users to project** and watch that there is a new member
 with the e-mail address we used above. From there on, you can resend the
 invitation, change their access level, or even delete them.
 
-![Invite user members list](img/add_user_email_accept_13_8.png)
+![Invite user members list](img/add_user_email_accept_v13_9.png)
 
 While unaccepted, the system automatically sends reminder emails on the second, fifth,
 and tenth day after the invitation was initially sent.
@@ -130,7 +162,7 @@ NOTE:
 If a project does not have any maintainers, the notification is sent to the
 most recently active owners of the project's group.
 
-![Manage access requests](img/access_requests_management_13_8.png)
+![Manage access requests](img/access_requests_management_v13_9.png)
 
 If you change your mind before your request is approved, just click the
 **Withdraw Access Request** button.
@@ -167,3 +199,27 @@ To remove a member from a project:
    A **Remove member** modal appears.
 1. (Optional) Select the **Also unassign this user from related issues and merge requests** checkbox.
 1. Click **Remove member**.
+
+## Enable or disable improvements to project member management **(FREE SELF)**
+
+Project member management improvements are deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can opt to disable the improvements.
+
+To disable them:
+
+```ruby
+# For the instance
+Feature.disable(:vue_project_members_list)
+# For a single project
+Feature.disable(:vue_project_members_list, Project.find(<project id>))
+```
+
+To enable them:
+
+```ruby
+# For the instance
+Feature.enable(:vue_project_members_list)
+# For a single project
+Feature.enable(:vue_project_members_list, Project.find(<project id>))
+```

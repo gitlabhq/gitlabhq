@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import issuableApp from './components/app.vue';
 import incidentTabs from './components/incidents/incident_tabs.vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
 
 Vue.use(VueApollo);
 

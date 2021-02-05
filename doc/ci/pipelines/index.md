@@ -132,10 +132,6 @@ Pipelines can be manually executed, with predefined or manually-specified [varia
 You might do this if the results of a pipeline (for example, a code build) are required outside the normal
 operation of the pipeline.
 
-[In GitLab 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30101),
-all global variables with descriptions defined in the `.gitlab-ci.yml` file are
-displayed in the variable fields.
-
 To execute a pipeline manually:
 
 1. Navigate to your project's **CI/CD > Pipelines**.
@@ -143,9 +139,32 @@ To execute a pipeline manually:
 1. On the **Run Pipeline** page:
     1. Select the branch to run the pipeline for in the **Create for** field.
     1. Enter any [environment variables](../variables/README.md) required for the pipeline run.
+       You can set specific variables to have their [values prefilled in the form](#prefill-variables-in-manual-pipelines).
     1. Click the **Create pipeline** button.
 
 The pipeline now executes the jobs as configured.
+
+#### Prefill variables in manual pipelines
+
+> [Introduced in](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) GitLab 13.7.
+
+You can use the [`value` and `description`](../yaml/README.md#prefill-variables-in-manual-pipelines)
+keywords to define [variables](../variables/README.md) that are prefilled when running
+a pipeline manually.
+
+In pipelines triggered manually, the **Run pipelines** page displays all variables
+with a `description` and `value` defined in the `.gitlab-ci.yml` file. The values
+can then be modified if needed, which overrides the value for that single pipeline run.
+
+The description is displayed below the variable. It can be used to explain what
+the variable is used for, what the acceptable values are, and so on:
+
+```yaml
+variables:
+  DEPLOY_ENVIRONMENT:
+    value: "staging"  # Deploy to staging by default
+    description: "The deployment target. Change this variable to 'canary' or 'production' if needed."
+```
 
 ### Run a pipeline by using a URL query string
 

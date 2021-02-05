@@ -2,12 +2,11 @@
 
 module ResourceEvents
   class BaseChangeTimeboxService
-    attr_reader :resource, :user, :event_created_at
+    attr_reader :resource, :user
 
-    def initialize(resource, user, created_at: Time.current)
+    def initialize(resource, user)
       @resource = resource
       @user = user
-      @event_created_at = created_at
     end
 
     def execute
@@ -27,7 +26,7 @@ module ResourceEvents
 
       {
         user_id: user.id,
-        created_at: event_created_at,
+        created_at: resource.system_note_timestamp,
         key => resource.id
       }
     end

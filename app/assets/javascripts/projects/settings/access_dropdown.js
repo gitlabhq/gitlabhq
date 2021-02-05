@@ -3,8 +3,8 @@ import { escape, find, countBy } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import { n__, s__, __, sprintf } from '~/locale';
-import { LEVEL_TYPES, LEVEL_ID_PROP, ACCESS_LEVELS, ACCESS_LEVEL_NONE } from './constants';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import { LEVEL_TYPES, LEVEL_ID_PROP, ACCESS_LEVELS, ACCESS_LEVEL_NONE } from './constants';
 
 export default class AccessDropdown {
   constructor(options) {

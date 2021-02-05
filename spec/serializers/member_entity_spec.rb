@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe MemberEntity do
   let_it_be(:current_user) { create(:user) }
-  let(:entity) { described_class.new(member, { current_user: current_user, group: group }) }
+  let(:entity) { described_class.new(member, { current_user: current_user, group: group, source: source }) }
   let(:entity_hash) { entity.as_json }
 
   shared_examples 'member.json' do
@@ -40,8 +40,27 @@ RSpec.describe MemberEntity do
     end
   end
 
+  shared_examples 'is_direct_member' do
+    context 'when `source` is the same as `member.source`' do
+      let(:source) { direct_member_source }
+
+      it 'exposes `is_direct_member` as `true`' do
+        expect(entity_hash[:is_direct_member]).to be(true)
+      end
+    end
+
+    context 'when `source` is not the same as `member.source`' do
+      let(:source) { inherited_member_source }
+
+      it 'exposes `is_direct_member` as `false`' do
+        expect(entity_hash[:is_direct_member]).to be(false)
+      end
+    end
+  end
+
   context 'group member' do
     let(:group) { create(:group) }
+    let(:source) { group }
     let(:member) { GroupMemberPresenter.new(create(:group_member, group: group), current_user: current_user) }
 
     it_behaves_like 'member.json'
@@ -52,11 +71,19 @@ RSpec.describe MemberEntity do
       it_behaves_like 'member.json'
       it_behaves_like 'invite'
     end
+
+    context 'is_direct_member' do
+      let(:direct_member_source) { group }
+      let(:inherited_member_source) { create(:group) }
+
+      it_behaves_like 'is_direct_member'
+    end
   end
 
   context 'project member' do
     let(:project) { create(:project) }
     let(:group) { project.group }
+    let(:source) { project }
     let(:member) { ProjectMemberPresenter.new(create(:project_member, project: project), current_user: current_user) }
 
     it_behaves_like 'member.json'
@@ -66,6 +93,13 @@ RSpec.describe MemberEntity do
 
       it_behaves_like 'member.json'
       it_behaves_like 'invite'
+    end
+
+    context 'is_direct_member' do
+      let(:direct_member_source) { project }
+      let(:inherited_member_source) { group }
+
+      it_behaves_like 'is_direct_member'
     end
   end
 end

@@ -154,6 +154,7 @@ export default {
       }"
       class="md"
     ></div>
+    <!-- eslint-disable vue/no-mutating-props -->
     <textarea
       v-if="descriptionText"
       ref="textarea"
@@ -163,6 +164,7 @@ export default {
       dir="auto"
     >
     </textarea>
+    <!-- eslint-enable vue/no-mutating-props -->
 
     <recaptcha-modal v-show="showRecaptcha" :html="recaptchaHTML" @close="closeRecaptcha" />
   </div>

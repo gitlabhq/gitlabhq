@@ -12,7 +12,7 @@
     %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? _('Collapse') : _('Expand')
     %p
-      = _("Customize your pipeline configuration, view your pipeline status and coverage report.")
+      = _("Customize your pipeline configuration and coverage report.")
   .settings-content
     = render 'form'
 
@@ -41,7 +41,7 @@
       = expanded ? _('Collapse') : _('Expand')
     %p
       = _("Runners are processes that pick up and execute CI/CD jobs for GitLab.")
-      = link_to s_('How do I configure runners?'), help_page_path('ci/runners/README')
+      = link_to s_('How do I configure runners?'), help_page_path('ci/runners/README'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'projects/runners/index'
 
@@ -69,7 +69,8 @@
     %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? _('Collapse') : _('Expand')
     %p
-      = _("Triggers can force a specific branch or tag to get rebuilt with an API call. These tokens will impersonate their associated user including their access to projects and their project permissions.")
+      = _("Trigger a pipeline for a branch or tag by generating a trigger token and using it with an API call. The token impersonates a user's project access and permissions.")
+      = link_to _('Learn more.'), help_page_path('ci/triggers/README'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'projects/triggers/index'
 
@@ -82,7 +83,7 @@
         = expanded ? _('Collapse') : _('Expand')
       %p
         = _("Save space and find images in the Container Registry. Remove unneeded tags and keep only the ones you want.")
-        = link_to _('How does cleanup work?'), help_page_path('user/packages/container_registry/index', anchor: 'cleanup-policy', target: '_blank', rel: 'noopener noreferrer')
+        = link_to _('How does cleanup work?'), help_page_path('user/packages/container_registry/index', anchor: 'cleanup-policy'), target: '_blank', rel: 'noopener noreferrer'
     .settings-content
       = render 'projects/registry/settings/index'
 
@@ -98,11 +99,11 @@
       %p
         - freeze_period_docs = help_page_path('user/project/releases/index', anchor: 'prevent-unintentional-releases-by-setting-a-deploy-freeze')
         - freeze_period_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: freeze_period_docs }
-        = html_escape(s_('DeployFreeze|Specify times when deployments are not allowed for an environment. The %{filename} file must be updated to make deployment jobs aware of the %{freeze_period_link_start}freeze period%{freeze_period_link_end}.')) % { freeze_period_link_start: freeze_period_link_start, freeze_period_link_end: '</a>'.html_safe, filename: tag.code('gitlab-ci.yml') }
+        = html_escape(s_('DeployFreeze|Add a freeze period to prevent unintended releases during a period of time for a given environment. You must update the deployment jobs in %{filename} according to the deploy freezes added here. %{freeze_period_link_start}Learn more.%{freeze_period_link_end}')) % { freeze_period_link_start: freeze_period_link_start, freeze_period_link_end: '</a>'.html_safe, filename: tag.code('.gitlab-ci.yml') }
 
         - cron_syntax_url = 'https://crontab.guru/'
         - cron_syntax_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: cron_syntax_url }
-        = s_('DeployFreeze|You can specify deploy freezes using only %{cron_syntax_link_start}cron syntax%{cron_syntax_link_end}.').html_safe % { cron_syntax_link_start: cron_syntax_link_start, cron_syntax_link_end: "</a>".html_safe }
+        = s_('DeployFreeze|Specify deploy freezes using %{cron_syntax_link_start}cron syntax%{cron_syntax_link_end}.').html_safe % { cron_syntax_link_start: cron_syntax_link_start, cron_syntax_link_end: "</a>".html_safe }
 
     .settings-content
       = render 'ci/deploy_freeze/index'

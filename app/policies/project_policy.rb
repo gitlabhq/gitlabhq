@@ -30,6 +30,9 @@ class ProjectPolicy < BasePolicy
   desc "User has maintainer access"
   condition(:maintainer) { team_access_level >= Gitlab::Access::MAINTAINER }
 
+  desc "User is a project bot"
+  condition(:project_bot) { user.project_bot? && team_member? }
+
   desc "Project is public"
   condition(:public_project, scope: :subject, score: 0) { project.public? }
 
@@ -578,6 +581,10 @@ class ProjectPolicy < BasePolicy
     enable :read_issue_link
   end
 
+  rule { can?(:developer_access) }.policy do
+    enable :read_security_configuration
+  end
+
   # Design abilities could also be prevented in the issue policy.
   rule { design_management_disabled }.policy do
     prevent :read_design
@@ -616,9 +623,13 @@ class ProjectPolicy < BasePolicy
     prevent :read_project
   end
 
+  rule { project_bot }.enable :project_bot_access
+
   rule { resource_access_token_available & can?(:admin_project) }.policy do
     enable :admin_resource_access_tokens
   end
+
+  rule { can?(:project_bot_access) }.prevent :admin_resource_access_tokens
 
   rule { user_defined_variables_allowed | can?(:maintainer_access) }.policy do
     enable :set_pipeline_variables

@@ -3,10 +3,10 @@ import $ from 'jquery';
 import Pikaday from 'pikaday';
 import dateFormat from 'dateformat';
 import { __ } from '~/locale';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import axios from './lib/utils/axios_utils';
 import { timeFor, parsePikadayDate, pikadayToString } from './lib/utils/datetime_utility';
 import boardsStore from './boards/stores/boards_store';
-import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 class DueDateSelect {
   constructor({ $dropdown, $loading } = {}) {

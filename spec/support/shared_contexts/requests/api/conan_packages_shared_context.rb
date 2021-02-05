@@ -22,7 +22,7 @@ RSpec.shared_context 'conan api setup' do
 
   let(:jwt_secret) do
     OpenSSL::HMAC.hexdigest(
-      OpenSSL::Digest::SHA256.new,
+      OpenSSL::Digest.new('SHA256'),
       base_secret,
       Gitlab::ConanToken::HMAC_KEY
     )

@@ -31,7 +31,7 @@ GET /search
 
 Search the expression within the specified scope. Currently these scopes are supported: projects, issues, merge_requests, milestones, snippet_titles, users.
 
-If Elasticsearch is enabled additional scopes available are blobs, wiki_blobs, notes, and commits. Find more about [the feature](../integration/elasticsearch.md). **(STARTER)**
+If Elasticsearch is enabled additional scopes available are blobs, wiki_blobs, notes, and commits. Find more about [the feature](../integration/elasticsearch.md). **(PREMIUM)**
 
 The response depends on the requested scope.
 
@@ -266,7 +266,9 @@ Example response:
 ]
 ```
 
-### Scope: wiki_blobs **(STARTER)**
+### Scope: wiki_blobs **(PREMIUM)**
+
+> Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
@@ -295,7 +297,9 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: commits **(STARTER)**
+### Scope: commits **(PREMIUM)**
+
+> Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
@@ -328,7 +332,9 @@ Example response:
 ]
 ```
 
-### Scope: blobs **(STARTER)**
+### Scope: blobs **(PREMIUM)**
+
+> Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
@@ -367,7 +373,9 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: notes **(STARTER)**
+### Scope: notes **(PREMIUM)**
+
+> Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
@@ -444,7 +452,7 @@ GET /groups/:id/search
 
 Search the expression within the specified scope. Currently these scopes are supported: projects, issues, merge_requests, milestones, users.
 
-If Elasticsearch is enabled additional scopes available are blobs, wiki_blobs, notes, and commits. Find more about [the feature](../integration/elasticsearch.md). **(STARTER)**
+If Elasticsearch is enabled additional scopes available are blobs, wiki_blobs, notes, and commits. Find more about [the feature](../integration/elasticsearch.md). **(PREMIUM)**
 
 The response depends on the requested scope.
 
@@ -648,7 +656,9 @@ Example response:
 ]
 ```
 
-### Scope: wiki_blobs **(STARTER)**
+### Scope: wiki_blobs **(PREMIUM)**
+
+> Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
@@ -677,7 +687,9 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: commits **(STARTER)**
+### Scope: commits **(PREMIUM)**
+
+> Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
@@ -710,7 +722,9 @@ Example response:
 ]
 ```
 
-### Scope: blobs **(STARTER)**
+### Scope: blobs **(PREMIUM)**
+
+> Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
@@ -749,7 +763,9 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: notes **(STARTER)**
+### Scope: notes **(PREMIUM)**
+
+> Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
@@ -998,7 +1014,9 @@ Example response:
 ]
 ```
 
-### Scope: notes **(STARTER)**
+### Scope: notes **(PREMIUM)**
+
+> Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
@@ -1032,7 +1050,9 @@ Example response:
 ]
 ```
 
-### Scope: wiki_blobs **(STARTER)**
+### Scope: wiki_blobs **(PREMIUM)**
+
+> Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
@@ -1078,7 +1098,9 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: commits **(STARTER)**
+### Scope: commits **(PREMIUM)**
+
+> Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
@@ -1111,7 +1133,9 @@ Example response:
 ]
 ```
 
-### Scope: blobs **(STARTER)**
+### Scope: blobs **(PREMIUM)**
+
+> Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 

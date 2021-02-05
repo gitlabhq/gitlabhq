@@ -6,7 +6,7 @@ module Gitlab
       class TreeRestorer
         include Gitlab::Utils::StrongMemoize
 
-        attr_reader :user, :shared
+        attr_reader :user, :shared, :groups_mapping
 
         def initialize(user:, shared:, group:)
           @user = user

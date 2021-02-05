@@ -400,6 +400,19 @@ describe('Notes Store mutations', () => {
       expect(state.discussions[0].notes[0].note).toEqual('Foo');
     });
 
+    it('does not update existing note if it matches', () => {
+      const state = {
+        discussions: [{ ...individualNote, individual_note: false }],
+      };
+      jest.spyOn(state.discussions[0].notes, 'splice');
+
+      const updated = individualNote.notes[0];
+
+      mutations.UPDATE_NOTE(state, updated);
+
+      expect(state.discussions[0].notes.splice).not.toHaveBeenCalled();
+    });
+
     it('transforms an individual note to discussion', () => {
       const state = {
         discussions: [individualNote],

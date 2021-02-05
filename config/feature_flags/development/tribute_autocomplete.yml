@@ -1,7 +1,7 @@
 ---
 name: tribute_autocomplete
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32671
-rollout_issue_url: 
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/292804
 milestone: '13.2'
 type: development
 group: group::project management

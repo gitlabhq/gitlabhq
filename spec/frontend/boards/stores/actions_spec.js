@@ -1,16 +1,4 @@
 import testAction from 'helpers/vuex_action_helper';
-import {
-  mockLists,
-  mockListsById,
-  mockIssue,
-  mockIssue2,
-  rawIssue,
-  mockIssues,
-  mockMilestone,
-  labels,
-  mockActiveIssue,
-  mockGroupProjects,
-} from '../mock_data';
 import actions, { gqlClient } from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
 import { inactiveId } from '~/boards/constants';
@@ -25,6 +13,18 @@ import {
   formatIssueInput,
 } from '~/boards/boards_util';
 import createFlash from '~/flash';
+import {
+  mockLists,
+  mockListsById,
+  mockIssue,
+  mockIssue2,
+  rawIssue,
+  mockIssues,
+  mockMilestone,
+  labels,
+  mockActiveIssue,
+  mockGroupProjects,
+} from '../mock_data';
 
 jest.mock('~/flash');
 
@@ -71,7 +71,7 @@ describe('setFilters', () => {
       actions.setFilters,
       filters,
       state,
-      [{ type: types.SET_FILTERS, payload: filters }],
+      [{ type: types.SET_FILTERS, payload: { ...filters, not: {} } }],
       [],
       done,
     );
@@ -251,6 +251,27 @@ describe('createList', () => {
       [],
       done,
     );
+  });
+});
+
+describe('fetchLabels', () => {
+  it('should commit mutation RECEIVE_LABELS_SUCCESS on success', async () => {
+    const queryResponse = {
+      data: {
+        group: {
+          labels: {
+            nodes: labels,
+          },
+        },
+      },
+    };
+    jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
+
+    await testAction({
+      action: actions.fetchLabels,
+      state: { boardType: 'group' },
+      expectedMutations: [{ type: types.RECEIVE_LABELS_SUCCESS, payload: labels }],
+    });
   });
 });
 
@@ -1197,6 +1218,40 @@ describe('setSelectedProject', () => {
       ],
       [],
       done,
+    );
+  });
+});
+
+describe('toggleBoardItemMultiSelection', () => {
+  const boardItem = mockIssue;
+
+  it('should commit mutation ADD_BOARD_ITEM_TO_SELECTION if item is not on selection state', () => {
+    testAction(
+      actions.toggleBoardItemMultiSelection,
+      boardItem,
+      { selectedBoardItems: [] },
+      [
+        {
+          type: types.ADD_BOARD_ITEM_TO_SELECTION,
+          payload: boardItem,
+        },
+      ],
+      [],
+    );
+  });
+
+  it('should commit mutation REMOVE_BOARD_ITEM_FROM_SELECTION if item is on selection state', () => {
+    testAction(
+      actions.toggleBoardItemMultiSelection,
+      boardItem,
+      { selectedBoardItems: [mockIssue] },
+      [
+        {
+          type: types.REMOVE_BOARD_ITEM_FROM_SELECTION,
+          payload: boardItem,
+        },
+      ],
+      [],
     );
   });
 });

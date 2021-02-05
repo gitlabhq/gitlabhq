@@ -95,13 +95,13 @@ key_path = '/home/git/key.pem'
 
 ### Storage
 
-GitLab repositories are grouped into directories known as "storages"
-(e.g., `/home/git/repositories`) containing bare repositories managed
-by GitLab with names (e.g., `default`).
+GitLab repositories are grouped into directories known as storages, such as
+`/home/git/repositories`. They contain bare repositories managed
+by GitLab with names, such as `default`.
 
 These names and paths are also defined in the `gitlab.yml` configuration file of
-GitLab. When you run Gitaly on the same machine as GitLab, which is the default
-and recommended configuration, storage paths defined in Gitaly's `config.toml`
+GitLab. When you run Gitaly on the same machine as GitLab (the default
+and recommended configuration) storage paths defined in Gitaly's `config.toml`
 must match those in `gitlab.yml`.
 
 | Name | Type | Required | Description |
@@ -232,9 +232,9 @@ The following values configure logging in Gitaly under the `[logging]` section.
 | ---- | ---- | -------- | ----------- |
 | `format` | string | no | Log format: `text` or `json`. Default: `text`. |
 | `level`  | string | no | Log level: `debug`, `info`, `warn`, `error`, `fatal`, or `panic`. Default: `info`. |
-| `sentry_dsn` | string | no | Sentry DSN for exception monitoring. |
+| `sentry_dsn` | string | no | Sentry DSN (Data Source Name) for exception monitoring. |
 | `sentry_environment` | string | no | [Sentry Environment](https://docs.sentry.io/product/sentry-basics/environments/) for exception monitoring. |
-| `ruby_sentry_dsn` | string | no | Sentry DSN for `gitaly-ruby` exception monitoring. |
+| `ruby_sentry_dsn` | string | no | Sentry DSN (Data Source Name) for `gitaly-ruby` exception monitoring. |
 
 While the main Gitaly application logs go to `stdout`, there are some extra log
 files that go to a configured directory, like the GitLab Shell logs.

@@ -202,7 +202,11 @@ describe('MRWidgetAutoMergeEnabled', () => {
             wrapper.vm.cancelAutomaticMerge();
             setImmediate(() => {
               expect(wrapper.vm.isCancellingAutoMerge).toBeTruthy();
-              expect(eventHub.$emit).toHaveBeenCalledWith('UpdateWidgetData', mrObj);
+              if (mergeRequestWidgetGraphql) {
+                expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
+              } else {
+                expect(eventHub.$emit).toHaveBeenCalledWith('UpdateWidgetData', mrObj);
+              }
               done();
             });
           });

@@ -11,7 +11,7 @@ module Types
 
       implements(Types::ResolvableInterface)
 
-      field :id, GraphQL::ID_TYPE, null: false,
+      field :id, ::Types::GlobalIDType[::Note], null: false,
             description: 'ID of the note'
 
       field :project, Types::ProjectType,

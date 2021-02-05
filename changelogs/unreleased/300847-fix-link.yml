@@ -1,0 +1,5 @@
+---
+title: Fixes broken password reset link in account deletion message
+merge_request: 53274
+author:
+type: fixed

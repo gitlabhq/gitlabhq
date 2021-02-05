@@ -155,7 +155,7 @@ It may seem like feature flags are configuration, which goes against our [conven
 principle. However, configuration is by definition something that is user-manageable.
 Feature flags are not intended to be user-editable. Instead, they are intended as a tool for Engineers
 and Site Reliability Engineers to use to de-risk their changes. Feature flags are the shim that gets us
-to Continuous Delivery with our mono repo and without having to deploy the entire codebase on every change. 
+to Continuous Delivery with our monorepo and without having to deploy the entire codebase on every change.
 Feature flags are created to ensure that we can safely rollout our work on our terms.
 If we use Feature Flags as a configuration, we are doing it wrong and are indeed in violation of our
 principles. If something needs to be configured, we should intentionally make it configuration from the
@@ -173,5 +173,5 @@ Some of the benefits of using development-type feature flags are:
 1. Improved throughput: when a change is less risky because a flag exists, theoretical tests about
    scalability can potentially become unnecessary or less important. This allows an engineer to
    potentially test a feature on a small project, monitor the impact, and proceed. The alternative might
-   be to build complex benchmarks locally, or on staging, or on another GitLab deployment, which has an
-   outsized impact on the time it can take to build and release a feature.
+   be to build complex benchmarks locally, or on staging, or on another GitLab deployment, which has a
+   large impact on the time it can take to build and release a feature.

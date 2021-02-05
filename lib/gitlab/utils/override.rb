@@ -153,7 +153,13 @@ module Gitlab
       def extended(mod = nil)
         super
 
-        queue_verification(mod.singleton_class) if mod
+        # Hack to resolve https://gitlab.com/gitlab-org/gitlab/-/issues/23932
+        is_not_concern_hack =
+          (mod.is_a?(Class) || !name&.end_with?('::ClassMethods'))
+
+        if mod && is_not_concern_hack
+          queue_verification(mod.singleton_class)
+        end
       end
 
       def queue_verification(base, verify: false)
@@ -174,7 +180,7 @@ module Gitlab
       end
 
       def self.verify!
-        extensions.values.each(&:verify!)
+        extensions.each_value(&:verify!)
       end
     end
   end

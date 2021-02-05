@@ -262,7 +262,7 @@ func (u *upstream) configureRoutes() {
 		u.route("POST", apiPattern+`v4/projects/[0-9]+/packages/pypi`, upload.Accelerate(api, signingProxy, preparers.packages)),
 
 		// Debian Artifact Repository
-		u.route("PUT", apiPattern+`v4/projects/[0-9]+/-/packages/debian/incoming/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
+		u.route("PUT", apiPattern+`v4/projects/[0-9]+/packages/debian/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
 
 		// We are porting API to disk acceleration
 		// we need to declare each routes until we have fixed all the routes on the rails codebase.

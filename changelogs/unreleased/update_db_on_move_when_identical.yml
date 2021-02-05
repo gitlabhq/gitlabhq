@@ -1,0 +1,5 @@
+---
+title: Update the database when moving repos between identical storages
+merge_request: 52743
+author:
+type: fixed

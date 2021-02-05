@@ -12,6 +12,8 @@ import './behaviors';
 import applyGitLabUIConfig from '@gitlab/ui/dist/config';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { initRails } from '~/lib/utils/rails_ujs';
+import * as tooltips from '~/tooltips';
+import * as popovers from '~/popovers';
 import {
   handleLocationHash,
   addSelectOnFocusBehaviour,
@@ -37,9 +39,6 @@ import initBroadcastNotifications from './broadcast_notification';
 import initPersistentUserCallouts from './persistent_user_callouts';
 import { initUserTracking, initDefaultTrackers } from './tracking';
 import { __ } from './locale';
-
-import * as tooltips from '~/tooltips';
-import * as popovers from '~/popovers';
 
 import 'ee_else_ce/main_ee';
 

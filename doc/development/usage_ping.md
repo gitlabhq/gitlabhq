@@ -6,10 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Usage Ping Guide
 
-> - Introduced in GitLab Enterprise Edition 8.10.
-> - More statistics were added in GitLab Enterprise Edition 8.12.
-> - Moved to GitLab Core in 9.1.
-> - More statistics were added in GitLab Ultimate 11.2.
+> Introduced in GitLab Ultimate 11.2, more statistics.
 
 This guide describes Usage Ping's purpose and how it's implemented.
 
@@ -122,6 +119,60 @@ sequenceDiagram
    the hostname is `version.gitlab.com`, the protocol is `TCP`, and the port number is `443`,
    the required URL is <https://version.gitlab.com/>.
 
+## Usage Ping Metric Life cycle
+
+### 1. New metrics addition
+
+Please follow the [Implementing Usage Ping](#implementing-usage-ping) guide.
+
+### 2. Existing metric change
+
+Because we do not control when customers update their self-managed instances of GitLab,
+we **STRONGLY DISCOURAGE** changes to the logic used to calculate any metric.
+Any such changes lead to inconsistent reports from multiple GitLab instances.
+If there is a problem with an existing metric, it's best to deprecate the existing metric,
+and use it, side by side, with the desired new metric.
+
+Example:
+Consider following change. Before GitLab 12.6, the `example_metric` was implemented as:
+
+```ruby
+{
+  ...
+  example_metric: distinct_count(Project, :creator_id)
+}
+```
+
+For GitLab 12.6, the metric was changed to filter out archived projects:
+
+```ruby
+{
+  ...
+  example_metric: distinct_count(Project.non_archived, :creator_id)
+}
+```
+
+In this scenario all instances running up to GitLab 12.5 continue to report `example_metric`,
+including all archived projects, while all instances running GitLab 12.6 and higher filters
+out such projects. As Usage Ping data is collected from all reporting instances, the
+resulting dataset includes mixed data, which distorts any following business analysis.
+
+The correct approach is to add a new metric for GitLab 12.6 release with updated logic:
+
+```ruby
+{
+  ...
+  example_metric_without_archived: distinct_count(Project.non_archived, :creator_id)
+}
+```
+
+and update existing business analysis artefacts to use `example_metric_without_archived` instead of `example_metric`
+
+### 3. Metrics deprecation and removal
+
+The process for deprecating and removing metrics is currently under development. For
+more information, see the following [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/284637).
+
 ## Implementing Usage Ping
 
 Usage Ping consists of two kinds of data, counters and observations. Counters track how often a certain event
@@ -175,9 +226,9 @@ Arguments:
 
 - `relation` the ActiveRecord_Relation to perform the count
 - `column` the column to perform the count on, by default is the primary key
-- `batch`: default `true` in order to use batch counting
-- `start`: custom start of the batch counting in order to avoid complex min calculations
-- `end`: custom end of the batch counting in order to avoid complex min calculations
+- `batch`: default `true` to use batch counting
+- `start`: custom start of the batch counting to avoid complex min calculations
+- `end`: custom end of the batch counting to avoid complex min calculations
 
 Examples:
 
@@ -199,10 +250,10 @@ Arguments:
 
 - `relation` the ActiveRecord_Relation to perform the count
 - `column` the column to perform the distinct count, by default is the primary key
-- `batch`: default `true` in order to use batch counting
+- `batch`: default `true` to use batch counting
 - `batch_size`: if none set it uses default value 10000 from `Gitlab::Database::BatchCounter`
-- `start`: custom start of the batch counting in order to avoid complex min calculations
-- `end`: custom end of the batch counting in order to avoid complex min calculations
+- `start`: custom start of the batch counting to avoid complex min calculations
+- `end`: custom end of the batch counting to avoid complex min calculations
 
 WARNING:
 Counting over non-unique columns can lead to performance issues. Take a look at the [iterating tables in batches](iterating_tables_in_batches.md) guide for more details.
@@ -228,8 +279,8 @@ Arguments:
 - `relation` the ActiveRecord_Relation to perform the operation
 - `column` the column to sum on
 - `batch_size`: if none set it uses default value 1000 from `Gitlab::Database::BatchCounter`
-- `start`: custom start of the batch counting in order to avoid complex min calculations
-- `end`: custom end of the batch counting in order to avoid complex min calculations
+- `start`: custom start of the batch counting to avoid complex min calculations
+- `end`: custom end of the batch counting to avoid complex min calculations
 
 Examples:
 
@@ -281,7 +332,7 @@ The method includes the following arguments:
 - `column`: The column to perform the distinct count. The default is the primary key.
 - `batch_size`: The default is 10,000, from `Gitlab::Database::PostgresHll::BatchDistinctCounter::DEFAULT_BATCH_SIZE`.
 - `start`: The custom start of the batch count, to avoid complex minimum calculations.
-- `finish`: The custom end of the batch count in order to avoid complex maximum calculations.
+- `finish`: The custom end of the batch count to avoid complex maximum calculations.
 
 The method includes the following prerequisites:
 
@@ -364,7 +415,7 @@ Examples of implementation:
 
    API requests are protected by checking for a valid CSRF token.
 
-   In order to be able to increment the values the related feature `usage_data_<event_name>` should be enabled.
+   To be able to increment the values, the related feature `usage_data_<event_name>` should be enabled.
 
    ```plaintext
    POST /usage_data/increment_counter
@@ -383,7 +434,7 @@ Examples of implementation:
 
 1. Track events using JavaScript/Vue API helper which calls the API above
 
-   Note that `usage_data_api` and `usage_data_#{event_name}` should be enabled in order to be able to track events
+   Note that `usage_data_api` and `usage_data_#{event_name}` should be enabled to be able to track events
 
    ```javascript
    import api from '~/api';
@@ -429,7 +480,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
         - `a_` for events encompassing all `g_`, `p_`, `i_`.
         - `o_` for other.
 
-     Consider including in the event's name the Redis slot in order to be able to count totals for a specific category.
+     Consider including in the event's name the Redis slot to be able to count totals for a specific category.
 
      Example names: `i_compliance_credential_inventory`, `g_analytics_contribution`.
 
@@ -444,7 +495,9 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
      aggregation.
    - `aggregation`: may be set to a `:daily` or `:weekly` key. Defines how counting data is stored in Redis.
      Aggregation on a `daily` basis does not pull more fine grained data.
-   - `feature_flag`: optional. For details, see our [GitLab internal Feature flags](feature_flags/) documentation.
+   - `feature_flag`: optional. For details, see our [GitLab internal Feature flags](feature_flags/) documentation. The feature flags are owned by the group adding the event tracking.
+
+Use one of the following methods to track events:
 
 1. Track event in controller using `RedisTracking` module with `track_redis_hll_event(*controller_actions, name:, feature:, feature_default_enabled: false)`.
 
@@ -481,7 +534,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
 
 1. Track event in API using `increment_unique_values(event_name, values)` helper method.
 
-   In order to be able to track the event, Usage Ping must be enabled and the event feature `usage_data_<event_name>` must be enabled.
+   To be able to track the event, Usage Ping must be enabled and the event feature `usage_data_<event_name>` must be enabled.
 
    Arguments:
 
@@ -526,7 +579,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
 
    API requests are protected by checking for a valid CSRF token.
 
-   In order to increment the values, the related feature `usage_data_<event_name>` should be
+   To increment the values, the related feature `usage_data_<event_name>` should be
    set to `default_enabled: true`. For more information, see
    [Feature flags in development of GitLab](feature_flags/index.md).
 
@@ -561,21 +614,6 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
 
    api.trackRedisHllUserEvent('my_already_defined_event_name'),
    ```
-
-1. Track event using base module `Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values:)`.
-
-   Arguments:
-
-   - `event_name`: event name.
-   - `values`: One value or array of values we count. For example: user_id, visitor_id, user_ids.
-
-1. Track event on context level using base module `Gitlab::UsageDataCounters::HLLRedisCounter.track_event_in_context(event_name, values:, context:)`.
-
-   Arguments:
-
-   - `event_name`: event name.
-   - `values`: values we count. For example: user_id, visitor_id.
-   - `context`: context value. Allowed values are `default`, `free`, `bronze`, `silver`, `gold`, `starter`, `premium`, `ultimate`
 
 1. Get event data using `Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names:, start_date:, end_date:, context: '')`.
 
@@ -780,7 +818,7 @@ Paste the SQL query into `#database-lab` to see how the query performs at scale.
 - Any single query must stay below [1 second execution time](query_performance.md#timing-guidelines-for-queries) with cold caches.
 - Add a specialized index on columns involved to reduce the execution time.
 
-In order to have an understanding of the query's execution we add in the MR description the following information:
+To have an understanding of the query's execution we add in the MR description the following information:
 
 - For counters that have a `time_period` test we add information for both cases:
   - `time_period = {}` for all time periods
@@ -839,16 +877,16 @@ There are currently three kinds of components that may export data to Prometheus
 
 This is the recommended approach to test Prometheus based Usage Ping.
 
-The easiest way to verify your changes is to build a new Omnibus image from your code branch via CI, then download the image
+The easiest way to verify your changes is to build a new Omnibus image from your code branch by using CI, then download the image
 and run a local container instance:
 
 1. From your merge request, click on the `qa` stage, then trigger the `package-and-qa` job. This job triggers an Omnibus
 build in a [downstream pipeline of the `omnibus-gitlab-mirror` project](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/-/pipelines).
 1. In the downstream pipeline, wait for the `gitlab-docker` job to finish.
 1. Open the job logs and locate the full container name including the version. It takes the following form: `registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:<VERSION>`.
-1. On your local machine, make sure you are logged in to the GitLab Docker registry. You can find the instructions for this in
+1. On your local machine, make sure you are signed in to the GitLab Docker registry. You can find the instructions for this in
 [Authenticate to the GitLab Container Registry](../user/packages/container_registry/index.md#authenticate-with-the-container-registry).
-1. Once logged in, download the new image via `docker pull registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:<VERSION>`
+1. Once signed in, download the new image by using `docker pull registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:<VERSION>`
 1. For more information about working with and running Omnibus GitLab containers in Docker, please refer to [GitLab Docker images](https://docs.gitlab.com/omnibus/docker/README.html) in the Omnibus documentation.
 
 #### Test with GitLab development toolkits
@@ -875,7 +913,7 @@ appear to be associated to any of the services running, since they all appear to
 WARNING:
 This feature is intended solely for internal GitLab use.
 
-In order to add data for aggregated metrics into Usage Ping payload you should add corresponding definition in [`aggregated_metrics`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/aggregated_metrics/). Each aggregate definition includes following parts:
+To add data for aggregated metrics into Usage Ping payload you should add corresponding definition in [`aggregated_metrics`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/aggregated_metrics/). Each aggregate definition includes following parts:
 
 - name: unique name under which aggregate metric is added to Usage Ping payload
 - operator: operator that defines how aggregated metric data is counted. Available operators are:

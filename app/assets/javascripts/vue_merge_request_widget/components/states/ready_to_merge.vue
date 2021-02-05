@@ -15,19 +15,19 @@ import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_
 import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
 import simplePoll from '~/lib/utils/simple_poll';
 import { __ } from '~/locale';
-import MergeRequest from '../../../merge_request';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import MergeRequest from '../../../merge_request';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import { deprecatedCreateFlash as Flash } from '../../../flash';
 import MergeRequestStore from '../../stores/mr_widget_store';
 import statusIcon from '../mr_widget_status_icon.vue';
 import eventHub from '../../event_hub';
+import { AUTO_MERGE_STRATEGIES, DANGER, INFO, WARNING } from '../../constants';
 import SquashBeforeMerge from './squash_before_merge.vue';
 import CommitsHeader from './commits_header.vue';
 import CommitEdit from './commit_edit.vue';
 import CommitMessageDropdown from './commit_message_dropdown.vue';
-import { AUTO_MERGE_STRATEGIES, DANGER, INFO, WARNING } from '../../constants';
 
 const PIPELINE_RUNNING_STATE = 'running';
 const PIPELINE_FAILED_STATE = 'failed';
@@ -53,8 +53,8 @@ export default {
       result({ data }) {
         this.state = {
           ...data.project.mergeRequest,
-          mergeRequestsFfOnlyEnabled: data.mergeRequestsFfOnlyEnabled,
-          onlyAllowMergeIfPipelineSucceeds: data.onlyAllowMergeIfPipelineSucceeds,
+          mergeRequestsFfOnlyEnabled: data.project.mergeRequestsFfOnlyEnabled,
+          onlyAllowMergeIfPipelineSucceeds: data.project.onlyAllowMergeIfPipelineSucceeds,
         };
         this.removeSourceBranch = data.project.mergeRequest.shouldRemoveSourceBranch;
         this.commitMessage = data.project.mergeRequest.defaultMergeCommitMessage;
@@ -277,7 +277,20 @@ export default {
       return this.mr.mergeRequestDiffsPath;
     },
   },
+  mounted() {
+    if (this.glFeatures.mergeRequestWidgetGraphql) {
+      eventHub.$on('ApprovalUpdated', this.updateGraphqlState);
+    }
+  },
+  beforeDestroy() {
+    if (this.glFeatures.mergeRequestWidgetGraphql) {
+      eventHub.$off('ApprovalUpdated', this.updateGraphqlState);
+    }
+  },
   methods: {
+    updateGraphqlState() {
+      return this.$apollo.queries.state.refetch();
+    },
     updateMergeCommitMessage(includeDescription) {
       const commitMessage = this.glFeatures.mergeRequestWidgetGraphql
         ? this.state.defaultMergeCommitMessage
@@ -325,6 +338,10 @@ export default {
             this.initiateMergePolling();
           } else if (hasError) {
             eventHub.$emit('FailedToMerge', data.merge_error);
+          }
+
+          if (this.glFeatures.mergeRequestWidgetGraphql) {
+            this.updateGraphqlState();
           }
         })
         .catch(() => {
@@ -532,7 +549,7 @@ export default {
       </div>
       <merge-train-helper-text
         v-if="shouldRenderMergeTrainHelperText"
-        :pipeline-id="pipeline.id"
+        :pipeline-id="pipelineId"
         :pipeline-link="pipeline.path"
         :merge-train-length="stateData.mergeTrainsCount"
         :merge-train-when-pipeline-succeeds-docs-path="mr.mergeTrainWhenPipelineSucceedsDocsPath"

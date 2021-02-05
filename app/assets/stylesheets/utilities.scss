@@ -110,7 +110,7 @@
 
 // This utility is used to force the z-index to match that of dropdown menu's
 .gl-z-dropdown-menu\! {
-  z-index: 300 !important;
+  z-index: $zindex-dropdown-menu !important;
 }
 
 .gl-flex-basis-quarter {

@@ -4,3 +4,7 @@
 = render 'commit_box'
 = render 'ci_menu'
 = render 'projects/commit/pipelines_list', endpoint: pipelines_project_commit_path(@project, @commit.id)
+
+- if can_collaborate_with_project?(@project)
+  = render "projects/commit/change", type: 'revert', commit: @commit, pajamas: true
+  = render "projects/commit/change", type: 'cherry-pick', commit: @commit, pajamas: true

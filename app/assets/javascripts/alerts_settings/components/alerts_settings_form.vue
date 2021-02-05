@@ -15,8 +15,6 @@ import {
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import MappingBuilder from './alert_mapping_builder.vue';
-import AlertSettingsFormHelpBlock from './alert_settings_form_help_block.vue';
 import getCurrentIntegrationQuery from '../graphql/queries/get_current_integration.query.graphql';
 import {
   integrationTypes,
@@ -24,6 +22,8 @@ import {
   targetPrometheusUrlPlaceholder,
   typeSet,
 } from '../constants';
+import MappingBuilder from './alert_mapping_builder.vue';
+import AlertSettingsFormHelpBlock from './alert_settings_form_help_block.vue';
 // Mocks will be removed when integrating with BE is ready
 // data format is defined and will be the same as mocked (maybe with some minor changes)
 // feature rollout plan - https://gitlab.com/gitlab-org/gitlab/-/issues/262707#note_442529171
@@ -125,6 +125,9 @@ export default {
     prometheus: {
       default: {},
     },
+    multiIntegrations: {
+      default: false,
+    },
   },
   props: {
     loading: {
@@ -134,6 +137,11 @@ export default {
     canAddIntegration: {
       type: Boolean,
       required: true,
+    },
+    alertFields: {
+      type: Array,
+      required: false,
+      default: null,
     },
   },
   apollo: {
@@ -152,6 +160,7 @@ export default {
       },
       resetSamplePayloadConfirmed: false,
       customMapping: null,
+      mapping: [],
       parsingPayload: false,
       currentIntegration: null,
     };
@@ -195,14 +204,16 @@ export default {
     },
     showMappingBuilder() {
       return (
+        this.multiIntegrations &&
         this.glFeatures.multipleHttpIntegrationsCustomMapping &&
-        this.selectedIntegration === typeSet.http
+        this.selectedIntegration === typeSet.http &&
+        this.alertFields?.length
       );
     },
-    mappingBuilderFields() {
+    parsedSamplePayload() {
       return this.customMapping?.samplePayload?.payloadAlerFields?.nodes;
     },
-    mappingBuilderMapping() {
+    savedMapping() {
       return this.customMapping?.storedMapping?.nodes;
     },
     hasSamplePayload() {
@@ -255,9 +266,20 @@ export default {
     },
     submit() {
       const { name, apiUrl } = this.integrationForm;
+      const customMappingVariables = this.glFeatures.multipleHttpIntegrationsCustomMapping
+        ? {
+            payloadAttributeMappings: this.mapping,
+            payloadExample: this.integrationTestPayload.json,
+          }
+        : {};
+
       const variables =
         this.selectedIntegration === typeSet.http
-          ? { name, active: this.active }
+          ? {
+              name,
+              active: this.active,
+              ...customMappingVariables,
+            }
           : { apiUrl, active: this.active };
       const integrationPayload = { type: this.selectedIntegration, variables };
 
@@ -335,6 +357,9 @@ export default {
         this.customMapping = res;
         this.integrationTestPayload.json = res?.samplePayload.body;
       });
+    },
+    updateMapping(mapping) {
+      this.mapping = mapping;
     },
   },
 };
@@ -541,8 +566,10 @@ export default {
         >
           <span>{{ $options.i18n.integrationFormSteps.step5.intro }}</span>
           <mapping-builder
-            :payload-fields="mappingBuilderFields"
-            :mapping="mappingBuilderMapping"
+            :parsed-payload="parsedSamplePayload"
+            :saved-mapping="savedMapping"
+            :alert-fields="alertFields"
+            @onMappingUpdate="updateMapping"
           />
         </gl-form-group>
       </div>

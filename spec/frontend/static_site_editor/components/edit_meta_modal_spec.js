@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlModal } from '@gitlab/ui';
-import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import MockAdapter from 'axios-mock-adapter';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import axios from '~/lib/utils/axios_utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import EditMetaModal from '~/static_site_editor/components/edit_meta_modal.vue';

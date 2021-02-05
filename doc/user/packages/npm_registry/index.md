@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # NPM packages in the Package Registry
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5934) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.7.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
 Publish NPM packages in your project's Package Registry. Then install the
 packages whenever you need to use them as a dependency.
@@ -159,7 +159,7 @@ If you encounter an error with [Yarn](https://classic.yarnpkg.com/en/), view
 ### Authenticate with a CI job token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9104) in GitLab Premium 12.5.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
 If you're using NPM with GitLab CI/CD, a CI job token can be used instead of a personal access token or deploy token.
 The token inherits the permissions of the user that generates the pipeline.
@@ -244,7 +244,9 @@ Prerequisites:
 
 - [Authenticate](#authenticate-to-the-package-registry) to the Package Registry.
 - Set a [project-level NPM endpoint](#use-the-gitlab-endpoint-for-npm-packages).
-- Your NPM package name must be in the format of [@scope/package-name](#package-naming-convention). It must match exactly, including the case.
+- Your NPM package name must be in the format of [@scope/package-name](#package-naming-convention).
+  It must match exactly, including the case. This is different than the
+  NPM naming convention, but it is required to work with the GitLab Package Registry.
 
 To upload an NPM package to your project, run this command:
 
@@ -263,6 +265,9 @@ Prerequisites:
 
 - [Authenticate](#authenticate-to-the-package-registry) to the Package Registry.
 - Set a [project-level NPM endpoint](#use-the-gitlab-endpoint-for-npm-packages).
+- Your NPM package name must be in the format of [@scope/package-name](#package-naming-convention).
+  It must match exactly, including the case. This is different than the
+  NPM naming convention, but it is required to work with the GitLab Package Registry.
 
 To work with NPM commands within [GitLab CI/CD](../../../ci/README.md), you can use
 `CI_JOB_TOKEN` in place of the personal access token or deploy token in your commands.
@@ -297,7 +302,8 @@ the same version more than once, even if it has been deleted.
 ## Install a package
 
 NPM packages are commonly-installed by using the `npm` or `yarn` commands
-in a JavaScript project.
+in a JavaScript project. You can install a package from the scope of a project, group,
+or instance.
 
 1. Set the URL for scoped packages by running:
 
@@ -309,16 +315,16 @@ in a JavaScript project.
 
 1. Ensure [authentication](#authenticate-to-the-package-registry) is configured.
 
-1. In your project, to install a package, run:
+1. To install a package in your project, run:
 
    ```shell
-   npm install @my-project-scope/my-package
+   npm install @my-scope/my-package
    ```
 
    Or if you're using Yarn:
 
    ```shell
-   yarn add @my-project-scope/my-package
+   yarn add @my-scope/my-package
    ```
 
 In [GitLab 12.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/55344),
@@ -346,7 +352,7 @@ and use your organization's URL. The name is case-sensitive and must match the n
 ### NPM dependencies metadata
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11867) in GitLab Premium 12.6.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
 In GitLab 12.6 and later, packages published to the Package Registry expose the following attributes to the NPM client:
 
@@ -363,7 +369,7 @@ In GitLab 12.6 and later, packages published to the Package Registry expose the 
 ## Add NPM distribution tags
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9425) in GitLab Premium 12.8.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
 You can add [distribution tags](https://docs.npmjs.com/cli/dist-tag/) to newly-published packages.
 Tags are optional and can be assigned to only one package at a time.
@@ -456,7 +462,7 @@ If you get this error, ensure that:
 
 - Your token is not expired and has appropriate permissions.
 - [Your token does not begin with `-`](https://gitlab.com/gitlab-org/gitlab/-/issues/235473).
-- A package with the same name doesn't already exist within the given scope.
+- A package with the same name or version doesn't already exist within the given scope.
 - The scoped packages URL includes a trailing slash:
   - Correct: `//gitlab.example.com/api/v4/packages/npm/`
   - Incorrect: `//gitlab.example.com/api/v4/packages/npm`

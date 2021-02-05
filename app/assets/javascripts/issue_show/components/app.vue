@@ -5,16 +5,16 @@ import { __, s__, sprintf } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { visitUrl } from '~/lib/utils/url_utility';
 import Poll from '~/lib/utils/poll';
+import recaptchaModalImplementor from '~/vue_shared/mixins/recaptcha_modal_implementor';
 import eventHub from '../event_hub';
 import Service from '../services/index';
 import Store from '../stores';
+import { IssuableStatus, IssuableStatusText, IssuableType } from '../constants';
 import titleComponent from './title.vue';
 import descriptionComponent from './description.vue';
 import editedComponent from './edited.vue';
 import formComponent from './form.vue';
 import PinnedLinks from './pinned_links.vue';
-import recaptchaModalImplementor from '~/vue_shared/mixins/recaptcha_modal_implementor';
-import { IssuableStatus, IssuableStatusText, IssuableType } from '../constants';
 
 export default {
   components: {

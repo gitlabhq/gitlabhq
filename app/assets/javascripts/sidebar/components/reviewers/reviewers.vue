@@ -46,6 +46,9 @@ export default {
     assignSelf() {
       this.$emit('assign-self');
     },
+    requestReview(data) {
+      this.$emit('request-review', data);
+    },
   },
 };
 </script>
@@ -66,6 +69,7 @@ export default {
         :users="sortedReviewers"
         :root-path="rootPath"
         :issuable-type="issuableType"
+        @request-review="requestReview"
       />
     </div>
   </div>

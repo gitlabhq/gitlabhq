@@ -240,7 +240,7 @@ following desktop browsers:
 
 NOTE:
 For Firefox 47-66, you can enable the FIDO U2F API in
-[about:config](https://support.mozilla.org/en-US/kb/about-config-editor-firefox).
+[`about:config`](https://support.mozilla.org/en-US/kb/about-config-editor-firefox).
 Search for `security.webauth.u2f` and double click on it to toggle to `true`.
 
 To set up 2FA with a U2F device:
@@ -262,7 +262,7 @@ Click on **Register U2F Device** to complete the process.
 > - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
 > - It's disabled on GitLab.com.
 > - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-webauthn). **(CORE ONLY)**
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-webauthn). **(FREE SELF)**
 
 The WebAuthn workflow is [supported by](https://caniuse.com/#search=webauthn) the
 following desktop browsers:
@@ -384,7 +384,7 @@ codes. If you saved these codes, you can use one of them to sign in.
 To use a recovery code, enter your username/email and password on the GitLab
 sign-in page. When prompted for a two-factor code, enter the recovery code.
 
-Once you use a recovery code, you cannot re-use it. You can still use the other
+After you use a recovery code, you cannot re-use it. You can still use the other
 recovery codes you saved.
 
 ### Generate new recovery codes using SSH
@@ -479,7 +479,7 @@ Sign in and re-enable two-factor authentication as soon as possible.
 
 - To enforce 2FA at the system or group levels see [Enforce Two-factor Authentication](../../../security/two_factor_authentication.md).
 
-## Enable or disable WebAuthn **(CORE ONLY)**
+## Enable or disable WebAuthn **(FREE SELF)**
 
 Support for WebAuthn is under development and not ready for production use. It is
 deployed behind a feature flag that is **disabled by default**.

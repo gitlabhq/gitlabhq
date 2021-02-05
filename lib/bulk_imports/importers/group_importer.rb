@@ -8,14 +8,7 @@ module BulkImports
       end
 
       def execute
-        bulk_import = entity.bulk_import
-        configuration = bulk_import.configuration
-
-        context = BulkImports::Pipeline::Context.new(
-          current_user: bulk_import.user,
-          entity: entity,
-          configuration: configuration
-        )
+        context = BulkImports::Pipeline::Context.new(entity)
 
         pipelines.each { |pipeline| pipeline.new.run(context) }
 
@@ -29,7 +22,8 @@ module BulkImports
       def pipelines
         [
           BulkImports::Groups::Pipelines::GroupPipeline,
-          BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline
+          BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline,
+          BulkImports::Groups::Pipelines::LabelsPipeline
         ]
       end
     end

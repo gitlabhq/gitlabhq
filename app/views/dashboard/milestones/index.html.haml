@@ -17,12 +17,11 @@
   .nav-controls
     = render 'shared/milestones/search_form'
 
-.milestones
-  %ul.content-list
-    - if @milestones.blank?
-      %li
-        .nothing-here-block No milestones to show
-    - else
+- if @milestones.blank?
+  = render 'shared/empty_states/milestones'
+- else
+  .milestones
+    %ul.content-list
       - @milestones.each do |milestone|
         = render 'milestone', milestone: milestone
-  = paginate @milestones, theme: 'gitlab'
+    = paginate @milestones, theme: 'gitlab'

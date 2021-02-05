@@ -5,9 +5,10 @@ module Gitlab
   module Template
     module Finders
       class GlobalTemplateFinder < BaseTemplateFinder
-        def initialize(base_dir, extension, categories = {}, excluded_patterns: [])
+        def initialize(base_dir, extension, categories = {}, include_categories_for_file = {}, excluded_patterns: [])
           @categories = categories
           @extension  = extension
+          @include_categories_for_file = include_categories_for_file
           @excluded_patterns = excluded_patterns
 
           super(base_dir)
@@ -47,7 +48,9 @@ module Gitlab
         end
 
         def select_directory(file_name)
-          @categories.keys.find do |category|
+          categories = @categories
+          categories.merge!(@include_categories_for_file[file_name]) if @include_categories_for_file[file_name].present?
+          categories.keys.find do |category|
             File.exist?(File.join(category_directory(category), file_name))
           end
         end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe InvitesController, :snowplow do
+RSpec.describe InvitesController do
   let_it_be(:user) { create(:user) }
   let(:member) { create(:project_member, :invited, invite_email: user.email) }
   let(:raw_invite_token) { member.raw_invite_token }
@@ -51,6 +51,28 @@ RSpec.describe InvitesController, :snowplow do
       end
 
       it_behaves_like 'invalid token'
+
+      context 'when invite comes from the initial email invite' do
+        let(:params) { { id: raw_invite_token, invite_type: Members::InviteEmailExperiment::INVITE_TYPE } }
+
+        it 'tracks via experiment', :aggregate_failures do
+          experiment = double(track: true)
+          allow(controller).to receive(:experiment).and_return(experiment)
+
+          request
+
+          expect(experiment).to have_received(:track).with(:opened)
+          expect(experiment).to have_received(:track).with(:accepted)
+        end
+      end
+
+      context 'when invite does not come from initial email invite' do
+        it 'does not track via experiment' do
+          expect(controller).not_to receive(:experiment)
+
+          request
+        end
+      end
     end
 
     context 'when not logged in' do
@@ -82,6 +104,25 @@ RSpec.describe InvitesController, :snowplow do
     subject(:request) { post :accept, params: params }
 
     it_behaves_like 'invalid token'
+
+    context 'when invite comes from the initial email invite' do
+      it 'tracks via experiment' do
+        experiment = double(track: true)
+        allow(controller).to receive(:experiment).and_return(experiment)
+
+        post :accept, params: params, session: { invite_type: Members::InviteEmailExperiment::INVITE_TYPE }
+
+        expect(experiment).to have_received(:track).with(:accepted)
+      end
+    end
+
+    context 'when invite does not come from initial email invite' do
+      it 'does not track via experiment' do
+        expect(controller).not_to receive(:experiment)
+
+        request
+      end
+    end
   end
 
   describe 'POST #decline for link in UI' do

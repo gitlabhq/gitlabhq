@@ -30,4 +30,4 @@
     = render 'shared/tokens/scopes_form', prefix: prefix, token: token, scopes: scopes
 
   .gl-mt-3
-    = f.submit _('Create %{type}') % { type: type }, class: 'btn btn-success', data: { qa_selector: 'create_token_button' }
+    = f.submit _('Create %{type}') % { type: type }, class: 'gl-button btn btn-success', data: { qa_selector: 'create_token_button' }

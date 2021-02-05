@@ -1,4 +1,4 @@
-#import "~/graphql_shared/fragments/author.fragment.graphql"
+#import "./author.fragment.graphql"
 
 fragment AlertNote on Note {
   id

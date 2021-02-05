@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Disaster recovery for planned failover **(PREMIUM ONLY)**
+# Disaster recovery for planned failover **(PREMIUM SELF)**
 
 The primary use-case of Disaster Recovery is to ensure business continuity in
 the event of unplanned outage, but it can be used in conjunction with a planned
@@ -44,6 +44,12 @@ be adapted for use with any other file-based data, such as GitLab Pages (to
 be found in `/var/opt/gitlab/gitlab-rails/shared/pages` if using Omnibus).
 
 ## Preflight checks
+
+NOTE:
+In GitLab 13.7 and earlier, if you have a data type with zero items to sync,
+this command reports `ERROR - Replication is not up-to-date` even if
+replication is actually up-to-date. This bug was fixed in GitLab 13.8 and
+later.
 
 Run this command to list out all preflight checks and automatically check if replication and verification are complete before scheduling a planned failover to ensure the process will go smoothly:
 

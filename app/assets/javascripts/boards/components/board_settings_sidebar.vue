@@ -5,17 +5,13 @@ import { __ } from '~/locale';
 import boardsStore from '~/boards/stores/boards_store';
 import eventHub from '~/sidebar/event_hub';
 import { isScopedLabel } from '~/lib/utils/common_utils';
-import { LIST } from '~/boards/constants';
+import { LIST, ListType, ListTypeTitles } from '~/boards/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 // NOTE: need to revisit how we handle headerHeight, because we have so many different header and footer options.
 export default {
   headerHeight: process.env.NODE_ENV === 'development' ? '75px' : '40px',
   listSettingsText: __('List settings'),
-  assignee: 'assignee',
-  milestone: 'milestone',
-  label: 'label',
-  labelListText: __('Label'),
   components: {
     GlButton,
     GlDrawer,
@@ -32,6 +28,11 @@ export default {
       required: false,
       default: false,
     },
+  },
+  data() {
+    return {
+      ListType,
+    };
   },
   computed: {
     ...mapGetters(['isSidebarOpen', 'shouldUseGraphQL']),
@@ -56,7 +57,7 @@ export default {
       return this.activeList.type || this.activeList.listType || null;
     },
     listTypeTitle() {
-      return this.$options.labelListText;
+      return ListTypeTitles[ListType.label];
     },
     showSidebar() {
       return this.sidebarType === LIST;
@@ -98,7 +99,7 @@ export default {
   >
     <template #header>{{ $options.listSettingsText }}</template>
     <template v-if="isSidebarOpen">
-      <div v-if="boardListType === $options.label">
+      <div v-if="boardListType === ListType.label">
         <label class="js-list-label gl-display-block">{{ listTypeTitle }}</label>
         <gl-label
           :title="activeListLabel.title"

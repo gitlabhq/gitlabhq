@@ -1,3 +1,5 @@
+import { truncateSha } from '~/lib/utils/text_utility';
+
 import {
   DIFF_FILE_SYMLINK_MODE,
   DIFF_FILE_DELETED_MODE,
@@ -77,4 +79,8 @@ export function isCollapsed(file) {
   };
 
   return collapsedStates[type];
+}
+
+export function getShortShaFromFile(file) {
+  return file.content_sha ? truncateSha(String(file.content_sha)) : null;
 }

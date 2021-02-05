@@ -1,6 +1,6 @@
-import FileTemplateSelector from '../file_template_selector';
 import { __ } from '~/locale';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import FileTemplateSelector from '../file_template_selector';
 
 export default class DockerfileSelector extends FileTemplateSelector {
   constructor({ mediator }) {

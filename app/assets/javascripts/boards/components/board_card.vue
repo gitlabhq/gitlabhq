@@ -1,13 +1,14 @@
 <script>
-import BoardCardLayout from './board_card_layout.vue';
-import eventHub from '../eventhub';
 import sidebarEventHub from '~/sidebar/event_hub';
+import eventHub from '../eventhub';
 import boardsStore from '../stores/boards_store';
+import BoardCardLayout from './board_card_layout.vue';
+import BoardCardLayoutDeprecated from './board_card_layout_deprecated.vue';
 
 export default {
   name: 'BoardsIssueCard',
   components: {
-    BoardCardLayout,
+    BoardCardLayout: gon.features?.graphqlBoardLists ? BoardCardLayout : BoardCardLayoutDeprecated,
   },
   props: {
     list: {

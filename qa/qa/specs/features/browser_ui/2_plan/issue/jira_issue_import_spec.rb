@@ -39,27 +39,22 @@ module QA
       private
 
       def set_up_jira_integration
-        # Retry is required because allow_local_requests_from_web_hooks_and_services
-        # takes some time to get enabled.
-        # Bug issue: https://gitlab.com/gitlab-org/gitlab/-/issues/217010
-        QA::Support::Retrier.retry_on_exception(max_attempts: 5, sleep_interval: 3) do
-          Runtime::ApplicationSettings.set_application_settings(allow_local_requests_from_web_hooks_and_services: true)
+        Runtime::ApplicationSettings.set_application_settings(allow_local_requests_from_web_hooks_and_services: true)
 
-          page.visit Runtime::Scenario.gitlab_address
-          Flow::Login.sign_in_unless_signed_in
+        page.visit Runtime::Scenario.gitlab_address
+        Flow::Login.sign_in_unless_signed_in
 
-          project.visit!
+        project.visit!
 
-          Page::Project::Menu.perform(&:go_to_integrations_settings)
-          QA::Page::Project::Settings::Integrations.perform(&:click_jira_link)
+        Page::Project::Menu.perform(&:go_to_integrations_settings)
+        QA::Page::Project::Settings::Integrations.perform(&:click_jira_link)
 
-          QA::Page::Project::Settings::Services::Jira.perform do |jira|
-            jira.setup_service_with(url: Vendor::Jira::JiraAPI.perform(&:base_url))
-          end
-
-          expect(page).not_to have_text("Url is blocked")
-          expect(page).to have_text("Jira settings saved and active.")
+        QA::Page::Project::Settings::Services::Jira.perform do |jira|
+          jira.setup_service_with(url: Vendor::Jira::JiraAPI.perform(&:base_url))
         end
+
+        expect(page).not_to have_text("Url is blocked")
+        expect(page).to have_text("Jira settings saved and active.")
       end
 
       def import_jira_issues

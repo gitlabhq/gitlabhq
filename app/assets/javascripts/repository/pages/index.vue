@@ -1,6 +1,6 @@
 <script>
-import TreePage from './tree.vue';
 import { updateElementsVisibility } from '../utils/dom';
+import TreePage from './tree.vue';
 
 export default {
   components: {

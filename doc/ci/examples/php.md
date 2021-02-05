@@ -66,8 +66,7 @@ docker-php-ext-install pdo_mysql
 
 You might wonder what `docker-php-ext-install` is. In short, it is a script
 provided by the official PHP Docker image that you can use to easily install
-extensions. For more information read the documentation at
-<https://hub.docker.com/_/php>.
+extensions. For more information read [the documentation](https://hub.docker.com/_/php).
 
 Now that we created the script that contains all prerequisites for our build
 environment, let's add it in `.gitlab-ci.yml`:
@@ -179,8 +178,8 @@ phpenv config-add my_config.ini
 
 *__Important note:__ It seems `phpenv/phpenv`
  [is abandoned](https://github.com/phpenv/phpenv/issues/57). There is a fork
- at [madumlao/phpenv](https://github.com/madumlao/phpenv) that tries to bring
- the project back to life. [CHH/phpenv](https://github.com/CHH/phpenv) also
+ at [`madumlao/phpenv`](https://github.com/madumlao/phpenv) that tries to bring
+ the project back to life. [`CHH/phpenv`](https://github.com/CHH/phpenv) also
  seems like a good alternative. Picking any of the mentioned tools works
  with the basic phpenv commands. Guiding you to choose the right phpenv is out
  of the scope of this tutorial.*
@@ -201,10 +200,10 @@ command once, only to set up the build environment.
 
 ## Extend your tests
 
-### Using atoum
+### Using `atoum`
 
 Instead of PHPUnit, you can use any other tool to run unit tests. For example
-you can use [atoum](https://github.com/atoum/atoum):
+you can use [`atoum`](https://github.com/atoum/atoum):
 
 ```yaml
 before_script:

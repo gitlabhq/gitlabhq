@@ -5,7 +5,7 @@ require 'securerandom'
 module QA
   module Resource
     class Issue < Base
-      attr_writer :description, :milestone, :weight
+      attr_writer :description, :milestone, :template, :weight
 
       attribute :project do
         Project.fabricate! do |resource|
@@ -33,7 +33,8 @@ module QA
 
         Page::Project::Issue::New.perform do |new_page|
           new_page.fill_title(@title)
-          new_page.fill_description(@description)
+          new_page.choose_template(@template) if @template
+          new_page.fill_description(@description) if @description
           new_page.choose_milestone(@milestone) if @milestone
           new_page.create_new_issue
         end

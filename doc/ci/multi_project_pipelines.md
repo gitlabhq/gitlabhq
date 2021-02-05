@@ -261,7 +261,7 @@ test:
 ### Mirroring status from triggered pipeline
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11238) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Core in 12.8.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Free in 12.8.
 
 You can mirror the pipeline status from the triggered pipeline to the source
 bridge job by using `strategy: depend`. For example:

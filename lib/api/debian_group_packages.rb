@@ -8,12 +8,14 @@ module API
 
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       before do
+        require_packages_enabled!
+
         not_found! unless ::Feature.enabled?(:debian_packages, user_group)
 
         authorize_read_package!(user_group)
       end
 
-      namespace ':id/-/packages/debian' do
+      namespace ':id/packages/debian' do
         include DebianPackageEndpoints
       end
     end

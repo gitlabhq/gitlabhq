@@ -38,7 +38,7 @@ very fast file copying tool.
 
 ## GitLab git-annex Configuration
 
-`git-annex` is disabled by default in GitLab. Below you will find the
+`git-annex` is disabled by default in GitLab. Below are the
 configuration options required to enable it.
 
 ### Requirements
@@ -60,7 +60,7 @@ sudo yum install epel-release && sudo yum install git-annex
 ### Configuration for Omnibus packages
 
 For Omnibus GitLab packages, only one configuration setting is needed.
-The Omnibus package will internally set the correct options in all locations.
+The Omnibus package internally sets the correct options in all locations.
 
 1. In `/etc/gitlab/gitlab.rb` add the following line:
 
@@ -148,15 +148,15 @@ To example.com:group/project.git
 ok
 ```
 
-Your files can be found in the `master` branch, but you'll notice that there
-are more branches created by the `annex sync` command.
+Your files can be found in the `master` branch, but more branches are created
+by the `annex sync` command.
 
-Git Annex will also create a new directory at `.git/annex/` and will record the
+Git Annex creates a new directory at `.git/annex/` and records the
 tracked files in the `.git/config` file. The files you assign to be tracked
-with `git-annex` will not affect the existing `.git/config` records. The files
+with `git-annex` don't affect the existing `.git/config` records. The files
 are turned into symbolic links that point to data in `.git/annex/objects/`.
 
-The `debian.iso` file in the example will contain the symbolic link:
+The `debian.iso` file in the example contain the symbolic link:
 
 ```plaintext
 .git/annex/objects/ZW/1k/SHA256E-s82701--6384039733b5035b559efd5a2e25a493ab6e09aabfd5162cc03f6f0ec238429d.png/SHA256E-s82701--6384039733b5035b559efd5a2e25a493ab6e09aabfd5162cc03f6f0ec238429d.iso
@@ -167,7 +167,7 @@ repository.
 
 ---
 
-Downloading a single large file is also very simple:
+You can download a single large file with these commands:
 
 ```shell
 git clone git@gitlab.example.com:group/project.git
@@ -185,7 +185,7 @@ git annex sync --content  # sync Git branches and download all the large files
 ```
 
 By using `git-annex` without GitLab, anyone that can access the server can also
-access the files of all projects, but GitLab Annex ensures that you can only
+access the files of all projects. GitLab Annex ensures that you can only
 access files of projects you have access to (developer, maintainer, or owner role).
 
 ## How it works

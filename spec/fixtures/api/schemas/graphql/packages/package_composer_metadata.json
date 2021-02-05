@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["targetSha", "composerJson"],
+  "properties": {
+    "targetSha": {
+      "type": "string"
+    },
+    "composerJson": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type", "license", "version"],
+      "properties": {
+        "name": { "type": "string" },
+        "type": { "type": "string" },
+        "license": { "type": "string" },
+        "version": { "type": "string" }
+      }
+    }
+  }
+}

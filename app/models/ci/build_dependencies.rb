@@ -103,7 +103,7 @@ module Ci
     end
 
     def valid_local?
-      return true if Feature.enabled?(:ci_disable_validates_dependencies)
+      return true unless Gitlab::Ci::Features.validate_build_dependencies?(project)
 
       local.all?(&:valid_dependency?)
     end

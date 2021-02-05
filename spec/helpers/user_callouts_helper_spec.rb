@@ -222,4 +222,24 @@ RSpec.describe UserCalloutsHelper do
       it { is_expected.to be true }
     end
   end
+
+  describe '.show_unfinished_tag_cleanup_callout?' do
+    subject { helper.show_unfinished_tag_cleanup_callout? }
+
+    before do
+      allow(helper).to receive(:user_dismissed?).with(described_class::UNFINISHED_TAG_CLEANUP_CALLOUT) { dismissed }
+    end
+
+    context 'when user has not dismissed' do
+      let(:dismissed) { false }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when user dismissed' do
+      let(:dismissed) { true }
+
+      it { is_expected.to be false }
+    end
+  end
 end

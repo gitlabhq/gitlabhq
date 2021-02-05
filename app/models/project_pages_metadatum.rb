@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ProjectPagesMetadatum < ApplicationRecord
+  extend SuppressCompositePrimaryKeyWarning
+
   include EachBatch
 
   self.primary_key = :project_id
@@ -11,4 +13,5 @@ class ProjectPagesMetadatum < ApplicationRecord
 
   scope :deployed, -> { where(deployed: true) }
   scope :only_on_legacy_storage, -> { deployed.where(pages_deployment: nil) }
+  scope :with_project_route_and_deployment, -> { preload(:pages_deployment, project: [:namespace, :route]) }
 end

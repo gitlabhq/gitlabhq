@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Storage usage quota
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/13294) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/13294) in GitLab 12.0.
 > - Moved to GitLab Free.
 
 A project's repository has a free storage quota of 10 GB. When a project's repository reaches
@@ -32,11 +32,11 @@ namespace to trigger a recalculation.
 A stacked bar graph shows the proportional storage used for the namespace, including a total per
 storage item. Click on each project's title to see a breakdown per storage item.
 
-## Storage usage statistics **(BRONZE ONLY)**
+## Storage usage statistics
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247831) in GitLab 13.7.
 > - It's [deployed behind a feature flag](../user/feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
+> - It's enabled on GitLab SaaS.
 > - It's recommended for production use.
 
 WARNING:

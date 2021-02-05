@@ -1,6 +1,6 @@
 import { s__, sprintf } from '~/locale';
-import { countVulnerabilities, groupedTextBuilder } from './utils';
 import { LOADING, ERROR, SUCCESS } from '~/reports/constants';
+import { countVulnerabilities, groupedTextBuilder } from './utils';
 import { TRANSLATION_IS_LOADING } from './messages';
 
 export const summaryCounts = (state) =>

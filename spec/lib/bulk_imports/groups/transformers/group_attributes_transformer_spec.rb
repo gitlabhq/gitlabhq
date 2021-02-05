@@ -7,22 +7,18 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
     let(:user) { create(:user) }
     let(:parent) { create(:group) }
     let(:group) { create(:group, name: 'My Source Group', parent: parent) }
+    let(:bulk_import) { create(:bulk_import, user: user) }
     let(:entity) do
-      instance_double(
-        BulkImports::Entity,
+      create(
+        :bulk_import_entity,
+        bulk_import: bulk_import,
         source_full_path: 'source/full/path',
         destination_name: group.name,
         destination_namespace: parent.full_path
       )
     end
 
-    let(:context) do
-      instance_double(
-        BulkImports::Pipeline::Context,
-        current_user: user,
-        entity: entity
-      )
-    end
+    let(:context) { BulkImports::Pipeline::Context.new(entity) }
 
     let(:data) do
       {
@@ -85,16 +81,16 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
       end
 
       context 'when destination namespace is user namespace' do
-        let(:entity) do
-          instance_double(
-            BulkImports::Entity,
+        it 'does not set parent id' do
+          entity = create(
+            :bulk_import_entity,
+            bulk_import: bulk_import,
             source_full_path: 'source/full/path',
             destination_name: group.name,
             destination_namespace: user.namespace.full_path
           )
-        end
+          context = BulkImports::Pipeline::Context.new(entity)
 
-        it 'does not set parent id' do
           transformed_data = subject.transform(context, data)
 
           expect(transformed_data).not_to have_key('parent_id')

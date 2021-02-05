@@ -4,9 +4,9 @@ import Cookies from 'js-cookie';
 import DesignSidebar from '~/design_management/components/design_sidebar.vue';
 import Participants from '~/sidebar/components/participants/participants.vue';
 import DesignDiscussion from '~/design_management/components/design_notes/design_discussion.vue';
-import design from '../mock_data/design';
 import updateActiveDiscussionMutation from '~/design_management/graphql/mutations/update_active_discussion.mutation.graphql';
 import DesignTodoButton from '~/design_management/components/design_todo_button.vue';
+import design from '../mock_data/design';
 
 const scrollIntoViewMock = jest.fn();
 HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;

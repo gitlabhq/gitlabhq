@@ -123,7 +123,7 @@ Parameters:
 | `tag_name`            | string         | yes      | The name of a tag                                                                                               |
 | `ref`                 | string         | yes      | Create tag using commit SHA, another tag name, or branch name                                                   |
 | `message`             | string         | no       | Creates annotated tag                                                                                           |
-| `release_description` | string         | no       | Add release notes to the Git tag and store it in the GitLab database                                            |
+| `release_description` | string         | no       | This parameter is [deprecated](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41766) for use in GitLab 11.7, and is planned for [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/290311) in GitLab 14.0. Use the [Releases API](../api/releases/index.md) instead. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/tags?tag_name=test&ref=master"
@@ -186,6 +186,11 @@ Parameters:
 
 ## Create a new release
 
+WARNING:
+This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41766)
+for use in GitLab 11.7, and is planned for [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/290311)
+in GitLab 14.0. Use the [Releases API](../api/releases/index.md) instead.
+
 Add release notes to the existing Git tag. If there
 already exists a release for the given tag, status code `409` is returned.
 
@@ -220,6 +225,11 @@ Response:
 ```
 
 ## Update a release
+
+WARNING:
+This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41766)
+for use in GitLab 11.7, and is planned for [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/290311)
+in GitLab 14.0. Use the [Releases API](../api/releases/index.md) instead.
 
 Updates the release notes of a given release.
 

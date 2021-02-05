@@ -4,12 +4,12 @@ import { GlLink, GlTooltip, GlResizeObserverDirective, GlIcon } from '@gitlab/ui
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import { s__ } from '~/locale';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
-import { panelTypes, chartHeight, lineTypes, lineWidths, legendLayoutTypes } from '../../constants';
-import { getYAxisOptions, getTimeAxisOptions, getChartGrid, getTooltipFormatter } from './options';
-import { annotationsYAxis, generateAnnotationsSeries } from './annotations';
 import { makeDataSeries } from '~/helpers/monitor_helper';
+import { panelTypes, chartHeight, lineTypes, lineWidths, legendLayoutTypes } from '../../constants';
 import { graphDataValidatorForValues } from '../../utils';
 import { formatDate, timezones } from '../../format_date';
+import { getYAxisOptions, getTimeAxisOptions, getChartGrid, getTooltipFormatter } from './options';
+import { annotationsYAxis, generateAnnotationsSeries } from './annotations';
 
 export const timestampToISODate = (timestamp) => new Date(timestamp).toISOString();
 

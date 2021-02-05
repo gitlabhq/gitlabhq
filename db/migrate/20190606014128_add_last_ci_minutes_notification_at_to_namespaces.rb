@@ -7,6 +7,6 @@ class AddLastCiMinutesNotificationAtToNamespaces < ActiveRecord::Migration[5.1]
   DOWNTIME = false
 
   def change
-    add_column :namespaces, :last_ci_minutes_notification_at, :datetime_with_timezone
+    add_column :namespaces, :last_ci_minutes_notification_at, :datetime_with_timezone # rubocop:disable Migration/AddColumnsToWideTables
   end
 end

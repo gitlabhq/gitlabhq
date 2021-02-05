@@ -216,7 +216,7 @@
   position: absolute;
   width: auto;
   top: 100%;
-  z-index: 300;
+  z-index: $zindex-dropdown-menu;
   min-width: 240px;
   max-width: 500px;
   margin-top: $dropdown-vertical-offset;
@@ -896,7 +896,7 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
       position: absolute;
       top: 13px;
       right: 25px;
-      color: $gray-50;
+      color: $gray-300;
     }
   }
 

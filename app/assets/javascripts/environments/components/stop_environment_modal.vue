@@ -1,7 +1,7 @@
 <script>
 import { GlSprintf, GlTooltipDirective, GlModal } from '@gitlab/ui';
-import eventHub from '../event_hub';
 import { __, s__ } from '~/locale';
+import eventHub from '../event_hub';
 
 export default {
   id: 'stop-environment-modal',

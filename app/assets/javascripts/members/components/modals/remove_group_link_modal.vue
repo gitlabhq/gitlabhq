@@ -52,6 +52,7 @@ export default {
     :action-primary="$options.actionPrimary"
     :action-cancel="$options.actionCancel"
     size="sm"
+    data-qa-selector="remove_group_link_modal_content"
     @primary="handlePrimary"
     @hide="hideRemoveGroupLinkModal"
   >

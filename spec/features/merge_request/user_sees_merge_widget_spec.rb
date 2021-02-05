@@ -319,7 +319,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
       wait_for_requests
 
       page.within('.mr-section-container') do
-        expect(page).to have_content('Merge failed: Something went wrong')
+        expect(page).to have_content('Something went wrong.')
       end
     end
   end
@@ -340,7 +340,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
       wait_for_requests
 
       page.within('.mr-section-container') do
-        expect(page).to have_content('Merge failed: Something went wrong')
+        expect(page).to have_content('Something went wrong.')
       end
     end
   end

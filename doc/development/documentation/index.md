@@ -12,7 +12,7 @@ The GitLab documentation is [intended as the single source of truth (SSOT)](http
 In addition to this page, the following resources can help you craft and contribute to documentation:
 
 - [Style Guide](styleguide/index.md) - What belongs in the docs, language guidelines, Markdown standards to follow, links, and more.
-- [Structure and template](structure.md) - Learn the typical parts of a doc page and how to write each one.
+- [Topic type template](structure.md) - Learn about the different types of topics.
 - [Documentation process](workflow.md).
 - [Markdown Guide](../../user/markdown.md) - A reference for all Markdown syntax supported by GitLab.
 - [Site architecture](site_architecture/index.md) - How <https://docs.gitlab.com> is built.
@@ -514,7 +514,7 @@ To run the tool on an existing screenshot generator, take the following steps:
 1. Set up the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/gitlab_docs.md).
 1. Navigate to the subdirectory with your cloned GitLab repository, typically `gdk/gitlab`.
 1. Make sure that your GDK database is fully migrated: `bin/rake db:migrate RAILS_ENV=development`.
-1. Install pngquant, see the tool website for more information: [`pngquant`](https://pngquant.org/)
+1. Install `pngquant`, see the tool website for more information: [`pngquant`](https://pngquant.org/)
 1. Run `scripts/docs_screenshots.rb spec/docs_screenshots/<name_of_screenshot_generator>.rb <milestone-version>`.
 1. Identify the location of the screenshots, based on the `gitlab/doc` location defined by the `it` parameter in your script.
 1. Commit the newly created screenshots.

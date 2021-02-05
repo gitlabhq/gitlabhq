@@ -1,6 +1,7 @@
 <script>
 // NOTE! For the first iteration, we are simply copying the implementation of Assignees
 // It will soon be overhauled in Issue https://gitlab.com/gitlab-org/gitlab/-/issues/233736
+import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import ReviewerAvatarLink from './reviewer_avatar_link.vue';
 
@@ -8,7 +9,12 @@ const DEFAULT_RENDER_COUNT = 5;
 
 export default {
   components: {
+    GlButton,
+    GlIcon,
     ReviewerAvatarLink,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     users: {
@@ -28,6 +34,8 @@ export default {
   data() {
     return {
       showLess: true,
+      loading: false,
+      requestedReviewSuccess: false,
     };
   },
   computed: {
@@ -61,43 +69,53 @@ export default {
     toggleShowLess() {
       this.showLess = !this.showLess;
     },
+    reRequestReview(userId) {
+      this.loading = true;
+      this.$emit('request-review', { userId, callback: this.requestReviewComplete });
+    },
+    requestReviewComplete(success) {
+      if (success) {
+        this.requestedReviewSuccess = true;
+
+        setTimeout(() => {
+          this.requestedReviewSuccess = false;
+        }, 1500);
+      }
+
+      this.loading = false;
+    },
   },
 };
 </script>
 
 <template>
-  <reviewer-avatar-link
-    v-if="hasOneUser"
-    #default="{ user }"
-    tooltip-placement="left"
-    :tooltip-has-name="false"
-    :user="firstUser"
-    :root-path="rootPath"
-    :issuable-type="issuableType"
-  >
-    <div class="gl-ml-3 gl-line-height-normal">
-      <div class="author">{{ user.name }}</div>
-      <div class="username">{{ username }}</div>
-    </div>
-  </reviewer-avatar-link>
-  <div v-else>
-    <div class="user-list">
-      <div v-for="user in uncollapsedUsers" :key="user.id" class="user-item">
-        <reviewer-avatar-link :user="user" :root-path="rootPath" :issuable-type="issuableType" />
-      </div>
-    </div>
-    <div v-if="renderShowMoreSection" class="user-list-more">
-      <button
-        type="button"
-        class="btn-link"
-        data-qa-selector="more_reviewers_link"
-        @click="toggleShowLess"
-      >
-        <template v-if="showLess">
-          {{ hiddenReviewersLabel }}
-        </template>
-        <template v-else>{{ __('- show less') }}</template>
-      </button>
+  <div>
+    <div
+      v-for="(user, index) in users"
+      :key="user.id"
+      :class="{ 'gl-mb-3': index !== users.length - 1 }"
+      data-testid="reviewer"
+    >
+      <reviewer-avatar-link :user="user" :root-path="rootPath" :issuable-type="issuableType">
+        <div class="gl-ml-3">@{{ user.username }}</div>
+      </reviewer-avatar-link>
+      <gl-icon
+        v-if="requestedReviewSuccess"
+        :size="24"
+        name="check"
+        class="float-right gl-text-green-500"
+      />
+      <gl-button
+        v-else-if="user.can_update_merge_request && user.reviewed"
+        v-gl-tooltip.left
+        :title="__('Re-request review')"
+        :loading="loading"
+        class="float-right gl-text-gray-500!"
+        size="small"
+        icon="redo"
+        variant="link"
+        @click="reRequestReview(user.id)"
+      />
     </div>
   </div>
 </template>

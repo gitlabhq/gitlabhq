@@ -7,7 +7,7 @@ RSpec.describe BulkImports::Common::Loaders::EntityLoader do
     it "creates entities for the given data" do
       group = create(:group, path: "imported-group")
       parent_entity = create(:bulk_import_entity, group: group, bulk_import: create(:bulk_import))
-      context = instance_double(BulkImports::Pipeline::Context, entity: parent_entity)
+      context = BulkImports::Pipeline::Context.new(parent_entity)
 
       data = {
         source_type: :group_entity,

@@ -69,8 +69,8 @@ RSpec.describe Gitlab::ImportExport::Importer do
         repo_path = File.join(shared.export_path, Gitlab::ImportExport.project_bundle_filename)
         restorer = double(Gitlab::ImportExport::RepoRestorer)
 
-        expect(Gitlab::ImportExport::RepoRestorer).to receive(:new).with(path_to_bundle: repo_path, shared: shared, project: project).and_return(restorer)
-        expect(Gitlab::ImportExport::RepoRestorer).to receive(:new).with(path_to_bundle: wiki_repo_path, shared: shared, project: ProjectWiki.new(project)).and_return(restorer)
+        expect(Gitlab::ImportExport::RepoRestorer).to receive(:new).with(path_to_bundle: repo_path, shared: shared, importable: project).and_return(restorer)
+        expect(Gitlab::ImportExport::RepoRestorer).to receive(:new).with(path_to_bundle: wiki_repo_path, shared: shared, importable: ProjectWiki.new(project)).and_return(restorer)
         expect(Gitlab::ImportExport::RepoRestorer).to receive(:new).and_call_original
 
         expect(restorer).to receive(:restore).and_return(true).twice

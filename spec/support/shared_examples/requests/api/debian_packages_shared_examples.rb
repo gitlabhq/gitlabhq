@@ -201,7 +201,7 @@ RSpec.shared_examples 'rejects Debian access with unknown project id' do
     let(:project) { double(id: non_existing_record_id) }
 
     context 'as anonymous' do
-      it_behaves_like 'Debian project repository GET request', :anonymous, true, :not_found, nil
+      it_behaves_like 'Debian project repository GET request', :anonymous, true, :unauthorized, nil
     end
 
     context 'as authenticated user' do
@@ -228,13 +228,13 @@ RSpec.shared_examples 'Debian project repository GET endpoint' do |success_statu
       'PUBLIC'  | :anonymous  | false | true  | success_status | success_body
       'PRIVATE' | :developer  | true  | true  | success_status | success_body
       'PRIVATE' | :guest      | true  | true  | :forbidden     | nil
-      'PRIVATE' | :developer  | true  | false | :not_found     | nil
-      'PRIVATE' | :guest      | true  | false | :not_found     | nil
+      'PRIVATE' | :developer  | true  | false | :unauthorized  | nil
+      'PRIVATE' | :guest      | true  | false | :unauthorized  | nil
       'PRIVATE' | :developer  | false | true  | :not_found     | nil
       'PRIVATE' | :guest      | false | true  | :not_found     | nil
-      'PRIVATE' | :developer  | false | false | :not_found     | nil
-      'PRIVATE' | :guest      | false | false | :not_found     | nil
-      'PRIVATE' | :anonymous  | false | true  | :not_found     | nil
+      'PRIVATE' | :developer  | false | false | :unauthorized  | nil
+      'PRIVATE' | :guest      | false | false | :unauthorized  | nil
+      'PRIVATE' | :anonymous  | false | true  | :unauthorized  | nil
     end
 
     with_them do
@@ -263,13 +263,13 @@ RSpec.shared_examples 'Debian project repository PUT endpoint' do |success_statu
       'PUBLIC'  | :anonymous  | false | true  | :unauthorized  | nil
       'PRIVATE' | :developer  | true  | true  | success_status | nil
       'PRIVATE' | :guest      | true  | true  | :forbidden     | nil
-      'PRIVATE' | :developer  | true  | false | :not_found     | nil
-      'PRIVATE' | :guest      | true  | false | :not_found     | nil
+      'PRIVATE' | :developer  | true  | false | :unauthorized  | nil
+      'PRIVATE' | :guest      | true  | false | :unauthorized  | nil
       'PRIVATE' | :developer  | false | true  | :not_found     | nil
       'PRIVATE' | :guest      | false | true  | :not_found     | nil
-      'PRIVATE' | :developer  | false | false | :not_found     | nil
-      'PRIVATE' | :guest      | false | false | :not_found     | nil
-      'PRIVATE' | :anonymous  | false | true  | :not_found     | nil
+      'PRIVATE' | :developer  | false | false | :unauthorized  | nil
+      'PRIVATE' | :guest      | false | false | :unauthorized  | nil
+      'PRIVATE' | :anonymous  | false | true  | :unauthorized  | nil
     end
 
     with_them do
@@ -321,7 +321,7 @@ RSpec.shared_examples 'rejects Debian access with unknown group id' do
     let(:group) { double(id: non_existing_record_id) }
 
     context 'as anonymous' do
-      it_behaves_like 'Debian group repository GET request', :anonymous, true, :not_found, nil
+      it_behaves_like 'Debian group repository GET request', :anonymous, true, :unauthorized, nil
     end
 
     context 'as authenticated user' do
@@ -348,13 +348,13 @@ RSpec.shared_examples 'Debian group repository GET endpoint' do |success_status,
       'PUBLIC'  | :anonymous  | false | true  | success_status | success_body
       'PRIVATE' | :developer  | true  | true  | success_status | success_body
       'PRIVATE' | :guest      | true  | true  | :forbidden     | nil
-      'PRIVATE' | :developer  | true  | false | :not_found     | nil
-      'PRIVATE' | :guest      | true  | false | :not_found     | nil
+      'PRIVATE' | :developer  | true  | false | :unauthorized  | nil
+      'PRIVATE' | :guest      | true  | false | :unauthorized  | nil
       'PRIVATE' | :developer  | false | true  | :not_found     | nil
       'PRIVATE' | :guest      | false | true  | :not_found     | nil
-      'PRIVATE' | :developer  | false | false | :not_found     | nil
-      'PRIVATE' | :guest      | false | false | :not_found     | nil
-      'PRIVATE' | :anonymous  | false | true  | :not_found     | nil
+      'PRIVATE' | :developer  | false | false | :unauthorized  | nil
+      'PRIVATE' | :guest      | false | false | :unauthorized  | nil
+      'PRIVATE' | :anonymous  | false | true  | :unauthorized  | nil
     end
 
     with_them do

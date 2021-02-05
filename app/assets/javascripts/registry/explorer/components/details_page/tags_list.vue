@@ -1,7 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import TagsListRow from './tags_list_row.vue';
 import { REMOVE_TAGS_BUTTON_TITLE, TAGS_LIST_TITLE } from '../../constants/index';
+import TagsListRow from './tags_list_row.vue';
 
 export default {
   name: 'TagsList',

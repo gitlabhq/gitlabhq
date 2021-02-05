@@ -21,7 +21,7 @@ RSpec.describe StatAnchorsHelper do
         let(:anchor) { anchor_klass.new(false, nil, nil, 'default') }
 
         it 'returns the proper attributes' do
-          expect(subject[:class]).to include('btn btn-default')
+          expect(subject[:class]).to include('gl-button btn btn-default')
         end
       end
 
@@ -29,7 +29,7 @@ RSpec.describe StatAnchorsHelper do
         let(:anchor) { anchor_klass.new(false) }
 
         it 'returns the proper attributes' do
-          expect(subject[:class]).to include('btn btn-missing')
+          expect(subject[:class]).to include('gl-button btn btn-dashed')
         end
       end
     end

@@ -8,13 +8,13 @@ exports[`grafana integration component default state to match the default snapsh
   <div
     class="settings-header"
   >
-    <h3
-      class="js-section-header h4"
+    <h4
+      class="js-section-header"
     >
       
       Grafana authentication
     
-    </h3>
+    </h4>
      
     <gl-button-stub
       buttontextclasses=""

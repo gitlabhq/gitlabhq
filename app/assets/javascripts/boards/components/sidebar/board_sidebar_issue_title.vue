@@ -136,36 +136,34 @@ export default {
     <template #collapsed>
       <span class="gl-text-gray-800">{{ issue.referencePath }}</span>
     </template>
-    <template>
-      <gl-alert v-if="showChangesAlert" variant="warning" class="gl-mb-5" :dismissible="false">
-        {{ $options.i18n.reviewYourChanges }}
-      </gl-alert>
-      <gl-form @submit.prevent="setTitle">
-        <gl-form-group :invalid-feedback="$options.i18n.invalidFeedback" :state="validationState">
-          <gl-form-input
-            v-model="title"
-            v-autofocusonshow
-            :placeholder="$options.i18n.issueTitlePlaceholder"
-            :state="validationState"
-          />
-        </gl-form-group>
+    <gl-alert v-if="showChangesAlert" variant="warning" class="gl-mb-5" :dismissible="false">
+      {{ $options.i18n.reviewYourChanges }}
+    </gl-alert>
+    <gl-form @submit.prevent="setTitle">
+      <gl-form-group :invalid-feedback="$options.i18n.invalidFeedback" :state="validationState">
+        <gl-form-input
+          v-model="title"
+          v-autofocusonshow
+          :placeholder="$options.i18n.issueTitlePlaceholder"
+          :state="validationState"
+        />
+      </gl-form-group>
 
-        <div class="gl-display-flex gl-w-full gl-justify-content-space-between gl-mt-5">
-          <gl-button
-            variant="success"
-            size="small"
-            data-testid="submit-button"
-            :disabled="!title"
-            @click="setTitle"
-          >
-            {{ $options.i18n.submitButton }}
-          </gl-button>
+      <div class="gl-display-flex gl-w-full gl-justify-content-space-between gl-mt-5">
+        <gl-button
+          variant="success"
+          size="small"
+          data-testid="submit-button"
+          :disabled="!title"
+          @click="setTitle"
+        >
+          {{ $options.i18n.submitButton }}
+        </gl-button>
 
-          <gl-button size="small" data-testid="cancel-button" @click="cancel">
-            {{ $options.i18n.cancelButton }}
-          </gl-button>
-        </div>
-      </gl-form>
-    </template>
+        <gl-button size="small" data-testid="cancel-button" @click="cancel">
+          {{ $options.i18n.cancelButton }}
+        </gl-button>
+      </div>
+    </gl-form>
   </board-editable-item>
 </template>

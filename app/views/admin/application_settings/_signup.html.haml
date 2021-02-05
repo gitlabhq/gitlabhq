@@ -26,13 +26,13 @@
 
     .form-group
       = f.label :minimum_password_length, _('Minimum password length (number of characters)'), class: 'label-bold'
-      = f.number_field :minimum_password_length, class: 'form-control', rows: 4, min: ApplicationSetting::DEFAULT_MINIMUM_PASSWORD_LENGTH, max: Devise.password_length.max
+      = f.number_field :minimum_password_length, class: 'form-control gl-form-input', rows: 4, min: ApplicationSetting::DEFAULT_MINIMUM_PASSWORD_LENGTH, max: Devise.password_length.max
       - password_policy_guidelines_link = link_to _('Password Policy Guidelines'), 'https://about.gitlab.com/handbook/security/#gitlab-password-policy-guidelines', target: '_blank', rel: 'noopener noreferrer nofollow'
       .form-text.text-muted
         = _("See GitLab's %{password_policy_guidelines}").html_safe % { password_policy_guidelines: password_policy_guidelines_link }
     .form-group
       = f.label :domain_allowlist, _('Allowed domains for sign-ups'), class: 'label-bold'
-      = f.text_area :domain_allowlist_raw, placeholder: 'domain.com', class: 'form-control', rows: 8
+      = f.text_area :domain_allowlist_raw, placeholder: 'domain.com', class: 'form-control gl-form-input', rows: 8
       .form-text.text-muted ONLY users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com
     .form-group
       = f.label :domain_denylist_enabled, _('Domain denylist'), class: 'label-bold'
@@ -53,11 +53,11 @@
             Enter denylist manually
     .form-group.js-denylist-file
       = f.label :domain_denylist_file, _('Denylist file'), class: 'label-bold'
-      = f.file_field :domain_denylist_file, class: 'form-control', accept: '.txt,.conf'
+      = f.file_field :domain_denylist_file, class: 'form-control gl-form-input', accept: '.txt,.conf'
       .form-text.text-muted Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines or commas for multiple entries.
     .form-group.js-denylist-raw
       = f.label :domain_denylist, _('Denied domains for sign-ups'), class: 'label-bold'
-      = f.text_area :domain_denylist_raw, placeholder: 'domain.com', class: 'form-control', rows: 8
+      = f.text_area :domain_denylist_raw, placeholder: 'domain.com', class: 'form-control gl-form-input', rows: 8
       .form-text.text-muted Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com
     .form-group
       = f.label :email_restrictions_enabled, _('Email restrictions'), class: 'label-bold'
@@ -67,7 +67,7 @@
           = _('Enable email restrictions for sign ups')
     .form-group
       = f.label :email_restrictions, _('Email restrictions for sign-ups'), class: 'label-bold'
-      = f.text_area :email_restrictions, class: 'form-control', rows: 4
+      = f.text_area :email_restrictions, class: 'form-control gl-form-input', rows: 4
       .form-text.text-muted
       - supported_syntax_link_url = 'https://github.com/google/re2/wiki/Syntax'
       - supported_syntax_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: supported_syntax_link_url }
@@ -75,6 +75,6 @@
 
     .form-group
       = f.label :after_sign_up_text, class: 'label-bold'
-      = f.text_area :after_sign_up_text, class: 'form-control', rows: 4
+      = f.text_area :after_sign_up_text, class: 'form-control gl-form-input', rows: 4
       .form-text.text-muted Markdown enabled
   = f.submit 'Save changes', class: "gl-button btn btn-success", data: { qa_selector: 'save_changes_button' }

@@ -1,10 +1,10 @@
 <script>
+import { TODAY, TOTAL_DAYS_TO_SHOW, START_DATE } from '../constants';
 import InstanceCounts from './instance_counts.vue';
 import InstanceStatisticsCountChart from './instance_statistics_count_chart.vue';
 import UsersChart from './users_chart.vue';
 import ProjectsAndGroupsChart from './projects_and_groups_chart.vue';
 import ChartsConfig from './charts_config';
-import { TODAY, TOTAL_DAYS_TO_SHOW, START_DATE } from '../constants';
 
 export default {
   name: 'InstanceStatisticsApp',

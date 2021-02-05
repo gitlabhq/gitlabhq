@@ -254,26 +254,6 @@ RSpec.describe Deployment do
 
             deployment.send(event)
           end
-
-          context 'the feature is disabled' do
-            it 'does not trigger a worker' do
-              stub_feature_flags(jira_sync_deployments: false)
-
-              expect(worker).not_to receive(:perform_async)
-
-              deployment.send(event)
-            end
-          end
-
-          context 'the feature is enabled for this project' do
-            it 'does trigger a worker' do
-              stub_feature_flags(jira_sync_deployments: deployment.project)
-
-              expect(worker).to receive(:perform_async)
-
-              deployment.send(event)
-            end
-          end
         end
       end
     end

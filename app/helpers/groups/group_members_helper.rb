@@ -13,12 +13,12 @@ module Groups::GroupMembersHelper
     render 'shared/members/invite_member', submit_url: group_group_members_path(group), access_levels: group.access_level_roles, default_access_level: default_access_level
   end
 
-  def linked_groups_data_json(group_links)
-    GroupGroupLinkSerializer.new.represent(group_links, { current_user: current_user }).to_json
+  def group_group_links_data_json(group_links)
+    GroupLink::GroupGroupLinkSerializer.new.represent(group_links, { current_user: current_user }).to_json
   end
 
   def members_data_json(group, members)
-    MemberSerializer.new.represent(members, { current_user: current_user, group: group }).to_json
+    MemberSerializer.new.represent(members, { current_user: current_user, group: group, source: group }).to_json
   end
 
   # Overridden in `ee/app/helpers/ee/groups/group_members_helper.rb`
@@ -26,16 +26,16 @@ module Groups::GroupMembersHelper
     {
       members: members_data_json(group, members),
       member_path: group_group_member_path(group, ':id'),
-      group_id: group.id,
+      source_id: group.id,
       can_manage_members: can?(current_user, :admin_group_member, group).to_s
     }
   end
 
-  def linked_groups_list_data_attributes(group)
+  def group_group_links_list_data_attributes(group)
     {
-      members: linked_groups_data_json(group.shared_with_group_links),
+      members: group_group_links_data_json(group.shared_with_group_links),
       member_path: group_group_link_path(group, ':id'),
-      group_id: group.id
+      source_id: group.id
     }
   end
 end

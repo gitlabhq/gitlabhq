@@ -10,7 +10,8 @@ FactoryBot.define do
   factory :dependency_proxy_manifest, class: 'DependencyProxy::Manifest' do
     group
     file { fixture_file_upload('spec/fixtures/dependency_proxy/manifest') }
-    digest { 'sha256:5ab5a6872b264fe4fd35d63991b9b7d8425f4bc79e7cf4d563c10956581170c9' }
+    digest { 'sha256:d0710affa17fad5f466a70159cc458227bd25d4afb39514ef662ead3e6c99515' }
     file_name { 'alpine:latest.json' }
+    content_type { 'application/vnd.docker.distribution.manifest.v2+json' }
   end
 end

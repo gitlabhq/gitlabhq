@@ -20,7 +20,7 @@ module RepositoryStorageMovable
     validate :container_repository_writable, on: :create
 
     default_value_for(:destination_storage_name, allows_nil: false) do
-      pick_repository_storage
+      Repository.pick_storage_shard
     end
 
     state_machine initial: :initial do
@@ -79,16 +79,6 @@ module RepositoryStorageMovable
       state :failed, value: 5
       state :replicated, value: 6
       state :cleanup_failed, value: 7
-    end
-  end
-
-  class_methods do
-    private
-
-    def pick_repository_storage
-      container_klass = reflect_on_association(:container).class_name.constantize
-
-      container_klass.pick_repository_storage
     end
   end
 

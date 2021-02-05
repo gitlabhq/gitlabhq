@@ -4,7 +4,10 @@ import { projectData, branches } from 'jest/ide/mock_data';
 import NewMergeRequestOption from '~/ide/components/commit_sidebar/new_merge_request_option.vue';
 import { createStore } from '~/ide/stores';
 import { PERMISSION_CREATE_MR } from '~/ide/constants';
-import consts from '~/ide/stores/modules/commit/constants';
+import {
+  COMMIT_TO_CURRENT_BRANCH,
+  COMMIT_TO_NEW_BRANCH,
+} from '~/ide/stores/modules/commit/constants';
 
 describe('create new MR checkbox', () => {
   let store;
@@ -27,8 +30,8 @@ describe('create new MR checkbox', () => {
     vm = createComponentWithStore(Component, store);
 
     vm.$store.state.commit.commitAction = createNewBranch
-      ? consts.COMMIT_TO_NEW_BRANCH
-      : consts.COMMIT_TO_CURRENT_BRANCH;
+      ? COMMIT_TO_NEW_BRANCH
+      : COMMIT_TO_CURRENT_BRANCH;
 
     vm.$store.state.currentBranchId = currentBranchId;
 

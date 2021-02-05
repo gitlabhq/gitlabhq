@@ -1,12 +1,12 @@
 /* eslint-disable no-new */
 
 import $ from 'jquery';
-import NewCommitForm from '../new_commit_form';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import BlobFileDropzone from '../blob/blob_file_dropzone';
 import initPopover from '~/blob/suggest_gitlab_ci_yml';
 import { disableButtonIfEmptyField, setCookie } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
+import BlobFileDropzone from '../blob/blob_file_dropzone';
+import NewCommitForm from '../new_commit_form';
 
 const initPopovers = () => {
   const suggestEl = document.querySelector('.js-suggest-gitlab-ci-yml');

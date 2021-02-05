@@ -103,6 +103,7 @@ module Gitlab
           @committer_name = committer[:name]
           @committer_email = committer[:email]
           @parent_ids = commit.parents.map(&:oid)
+          @trailers = Hash[commit.trailers]
         end
       end
     end

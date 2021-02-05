@@ -48,6 +48,26 @@ RSpec.describe Users::RejectService do
 
           subject
         end
+
+        it 'logs rejection in application logs' do
+          allow(Gitlab::AppLogger).to receive(:info)
+
+          subject
+
+          expect(Gitlab::AppLogger).to have_received(:info).with(message: "User instance access request rejected", user: "#{user.username}", email: "#{user.email}", rejected_by: "#{current_user.username}", ip_address: "#{current_user.current_sign_in_ip}")
+        end
+      end
+    end
+
+    context 'audit events' do
+      context 'when not licensed' do
+        before do
+          stub_licensed_features(admin_audit_log: false)
+        end
+
+        it 'does not log any audit event' do
+          expect { subject }.not_to change(AuditEvent, :count)
+        end
       end
     end
   end

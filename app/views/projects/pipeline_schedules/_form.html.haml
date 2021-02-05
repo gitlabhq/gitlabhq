@@ -39,5 +39,5 @@
         = f.check_box :active, required: false, value: @schedule.active?
         = f.label :active, _('Active'), class: 'gl-font-weight-normal'
   .footer-block.row-content-block
-    = f.submit _('Save pipeline schedule'), class: 'btn btn-success'
-    = link_to _('Cancel'), pipeline_schedules_path(@project), class: 'btn btn-cancel'
+    = f.submit _('Save pipeline schedule'), class: 'btn gl-button btn-success'
+    = link_to _('Cancel'), pipeline_schedules_path(@project), class: 'btn gl-button btn-default btn-cancel'

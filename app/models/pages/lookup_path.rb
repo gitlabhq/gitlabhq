@@ -4,6 +4,9 @@ module Pages
   class LookupPath
     include Gitlab::Utils::StrongMemoize
 
+    LegacyStorageDisabledError = Class.new(::StandardError)
+    MIGRATED_FILE_NAME = "_migrated.zip"
+
     def initialize(project, trim_prefix: nil, domain: nil)
       @project = project
       @domain = domain
@@ -24,7 +27,7 @@ module Pages
     end
 
     def source
-      zip_source || file_source
+      zip_source || legacy_source
     end
 
     def prefix
@@ -52,6 +55,8 @@ module Pages
 
       return if deployment.file.file_storage? && !Feature.enabled?(:pages_serve_with_zip_file_protocol, project)
 
+      return if deployment.file.filename == MIGRATED_FILE_NAME && !Feature.enabled?(:pages_serve_from_migrated_zip, project)
+
       global_id = ::Gitlab::GlobalId.build(deployment, id: deployment.id).to_s
 
       {
@@ -64,11 +69,17 @@ module Pages
       }
     end
 
-    def file_source
+    def legacy_source
+      raise LegacyStorageDisabledError unless Feature.enabled?(:pages_serve_from_legacy_storage, default_enabled: true)
+
       {
         type: 'file',
         path: File.join(project.full_path, 'public/')
       }
+    rescue LegacyStorageDisabledError => e
+      Gitlab::ErrorTracking.track_exception(e)
+
+      nil
     end
   end
 end

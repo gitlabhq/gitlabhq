@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe ContainerRegistryHelper do
   using RSpec::Parameterized::TableSyntax
 
-  describe '#limit_delete_tags_service?' do
-    subject { helper.limit_delete_tags_service? }
+  describe '#container_registry_expiration_policies_throttling?' do
+    subject { helper.container_registry_expiration_policies_throttling? }
 
     where(:feature_flag_enabled, :client_support, :expected_result) do
       true  | true  | true

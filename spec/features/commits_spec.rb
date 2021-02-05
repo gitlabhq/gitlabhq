@@ -138,9 +138,8 @@ RSpec.describe 'Commits' do
         end
       end
 
-      context 'when accessing internal project with disallowed access', :js do
+      context 'when accessing internal project with disallowed access', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/299575' do
         before do
-          stub_feature_flags(graphql_pipeline_header: false)
           project.update(
             visibility_level: Gitlab::VisibilityLevel::INTERNAL,
             public_builds: false)

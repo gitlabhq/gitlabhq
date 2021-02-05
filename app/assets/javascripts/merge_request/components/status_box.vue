@@ -5,12 +5,14 @@ import mrEventHub from '../eventhub';
 
 const CLASSES = {
   opened: 'status-box-open',
+  locked: 'status-box-open',
   closed: 'status-box-mr-closed',
   merged: 'status-box-mr-merged',
 };
 
 const STATUS = {
   opened: [__('Open'), 'issue-open-m'],
+  locked: [__('Open'), 'issue-open-m'],
   closed: [__('Closed'), 'close'],
   merged: [__('Merged'), 'git-merge'],
 };
@@ -59,10 +61,10 @@ export default {
   <div :class="statusBoxClass" class="issuable-status-box status-box">
     <gl-icon
       :name="statusIconName"
-      class="gl-display-block gl-display-sm-none!"
+      class="gl-display-block gl-sm-display-none!"
       data-testid="status-icon"
     />
-    <span class="gl-display-none gl-display-sm-block">
+    <span class="gl-display-none gl-sm-display-block">
       {{ statusHumanName }}
     </span>
   </div>

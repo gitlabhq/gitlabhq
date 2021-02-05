@@ -53,14 +53,14 @@ the target is the project's **default branch**.
 The default branch is also initially [protected](../../protected_branches.md#protected-branches)
 against accidental deletion and forced pushes.
 
-### Custom initial branch name **(CORE ONLY)**
+### Custom initial branch name **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221013) in GitLab 13.2.
 > - It's deployed behind a feature flag, enabled by default.
 > - It's enabled on GitLab.com.
 > - It cannot be enabled or disabled per-project.
 > - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-custom-initial-branch-name). **(CORE ONLY)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-custom-initial-branch-name). **(FREE SELF)**
 
 By default, when you create a new project in GitLab, the initial branch is called `master`.
 For self-managed instances, a GitLab administrator can customize the initial branch name to something
@@ -71,7 +71,7 @@ else. This way, every new project created from then on will start from the custo
 1. Change the default initial branch to a custom name of your choice.
 1. **Save Changes**.
 
-#### Enable or disable custom initial branch name **(CORE ONLY)**
+#### Enable or disable custom initial branch name **(FREE SELF)**
 
 Setting the default initial branch name is under development but ready for production use.
 It is deployed behind a feature flag that is **enabled by default**.

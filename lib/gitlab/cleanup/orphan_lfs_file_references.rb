@@ -5,15 +5,14 @@ module Gitlab
     class OrphanLfsFileReferences
       include Gitlab::Utils::StrongMemoize
 
-      attr_reader :project, :dry_run, :logger, :limit
+      attr_reader :project, :dry_run, :logger
 
       DEFAULT_REMOVAL_LIMIT = 1000
 
-      def initialize(project, dry_run: true, logger: nil, limit: nil)
+      def initialize(project, dry_run: true, logger: nil)
         @project = project
         @dry_run = dry_run
         @logger = logger || Gitlab::AppLogger
-        @limit = limit
       end
 
       def run!
@@ -66,6 +65,10 @@ module Gitlab
 
       def log_info(msg)
         logger.info("#{'[DRY RUN] ' if dry_run}#{msg}")
+      end
+
+      def limit
+        ENV['LIMIT']&.to_i
       end
     end
   end

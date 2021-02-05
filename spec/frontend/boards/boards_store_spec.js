@@ -3,10 +3,10 @@ import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import boardsStore from '~/boards/stores/boards_store';
 import eventHub from '~/boards/eventhub';
-import { listObj, listObjDuplicate } from './mock_data';
 
 import ListIssue from '~/boards/models/issue';
 import List from '~/boards/models/list';
+import { listObj, listObjDuplicate } from './mock_data';
 
 jest.mock('js-cookie');
 

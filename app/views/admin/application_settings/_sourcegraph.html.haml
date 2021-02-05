@@ -32,7 +32,7 @@
               = s_('SourcegraphAdmin|If checked, only public projects will have code intelligence and communicate with Sourcegraph.')
         .form-group
           = f.label :sourcegraph_url, s_('SourcegraphAdmin|Sourcegraph URL'), class: 'label-bold'
-          = f.text_field :sourcegraph_url, class: 'form-control', placeholder: s_('SourcegraphAdmin|e.g. https://sourcegraph.example.com')
+          = f.text_field :sourcegraph_url, class: 'form-control gl-form-input', placeholder: s_('SourcegraphAdmin|e.g. https://sourcegraph.example.com')
           .form-text.text-muted
             = s_('SourcegraphAdmin|Configure the URL to a Sourcegraph instance which can read your GitLab projects.')
       = f.submit s_('SourcegraphAdmin|Save changes'), class: 'gl-button btn btn-success'

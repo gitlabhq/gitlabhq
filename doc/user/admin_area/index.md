@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# GitLab Admin Area **(CORE ONLY)**
+# GitLab Admin Area **(FREE SELF)**
 
 The Admin Area provides a web UI for administering some features of GitLab self-managed instances.
 
@@ -24,20 +24,20 @@ The Admin Area is made up of the following sections:
 | Section                                        | Description                                                                                                                                                                                                                                                                              |
 |:-----------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **{overview}** [Overview](#overview-section)   | View your GitLab [Dashboard](#admin-dashboard), and administer [projects](#administering-projects), [users](#administering-users), [groups](#administering-groups), [jobs](#administering-jobs), [runners](#administering-runners), and [Gitaly servers](#administering-gitaly-servers). |
-| **{monitor}** Monitoring                       | View GitLab [system information](#system-info), and information on [background jobs](#background-jobs), [logs](#logs), [health checks](monitoring/health_check.md), [requests profiles](#requests-profiles), and [audit events](#audit-events).                                  |
+| **{monitor}** Monitoring                       | View GitLab [system information](#system-information), and information on [background jobs](#background-jobs), [logs](#logs), [health checks](monitoring/health_check.md), [requests profiles](#requests-profiles), and [audit events](#audit-events).                                   |
 | **{messages}** Messages                        | Send and manage [broadcast messages](broadcast_messages.md) for your users.                                                                                                                                                                                                              |
 | **{hook}** System Hooks                        | Configure [system hooks](../../system_hooks/system_hooks.md) for many events.                                                                                                                                                                                                            |
 | **{applications}** Applications                | Create system [OAuth applications](../../integration/oauth_provider.md) for integrations with other services.                                                                                                                                                                            |
 | **{slight-frown}** Abuse Reports               | Manage [abuse reports](abuse_reports.md) submitted by your users.                                                                                                                                                                                                                        |
 | **{license}** License **(STARTER ONLY)**       | Upload, display, and remove [licenses](license.md).                                                                                                                                                                                                                                      |
 | **{cloud-gear}** Kubernetes                    | Create and manage instance-level [Kubernetes clusters](../instance/clusters/index.md).                                                                                                                                                                                                   |
-| **{push-rules}** Push Rules **(STARTER ONLY)** | Configure pre-defined Git [push rules](../../push_rules/push_rules.md) for projects. Also, configure [merge requests approvers rules](merge_requests_approvals.md). **(PREMIUM ONLY)**                                                                                                   |
-| **{location-dot}** Geo **(PREMIUM ONLY)**      | Configure and maintain [Geo nodes](geo_nodes.md).                                                                                                                                                                                                                                        |
+| **{push-rules}** Push Rules **(STARTER ONLY)** | Configure pre-defined Git [push rules](../../push_rules/push_rules.md) for projects. Also, configure [merge requests approvers rules](merge_requests_approvals.md). **(PREMIUM SELF)**                                                                                                   |
+| **{location-dot}** Geo **(PREMIUM SELF)**      | Configure and maintain [Geo nodes](geo_nodes.md).                                                                                                                                                                                                                                        |
 | **{key}** Deploy Keys                          | Create instance-wide [SSH deploy keys](../../ssh/README.md#deploy-keys).                                                                                                                                                                                                                 |
-| **{lock}** Credentials **(ULTIMATE ONLY)**     | View [credentials](credentials_inventory.md) that can be used to access your instance.                                                                                                                                                                                                   |
+| **{lock}** Credentials **(ULTIMATE SELF)**     | View [credentials](credentials_inventory.md) that can be used to access your instance.                                                                                                                                                                                                   |
 | **{template}** Service Templates               | Create [service templates](../project/integrations/services_templates.md) for projects.                                                                                                                                                                                                  |
 | **{labels}** Labels                            | Create and maintain [labels](labels.md) for your GitLab instance.                                                                                                                                                                                                                        |
-| **{appearance}** Appearance                    | Customize [GitLab appearance](appearance.md).                                                                                                                                                                                                                                          |
+| **{appearance}** Appearance                    | Customize [GitLab appearance](appearance.md).                                                                                                                                                                                                                                            |
 | **{settings}** Settings                        | Modify the [settings](settings/index.md) for your GitLab instance.                                                                                                                                                                                                                       |
 
 ## Admin Dashboard
@@ -242,7 +242,7 @@ For each runner, the following attributes are listed:
 | Projects     | Projects to which the runner is assigned |
 | Jobs         | Total of jobs run by the runner |
 | Tags         | Tags associated with the runner |
-| Last contact | Timestamp indicating when the GitLab instance last contacted the runner |
+| Last contact | Timestamp indicating when the runner last contacted the GitLab instance |
 
 You can also edit, pause, or remove each runner.
 
@@ -267,7 +267,7 @@ For each Gitaly server, the following details are listed:
 
 The following topics document the **Monitoring** section of the Admin Area.
 
-### System Info
+### System Information
 
 The **System Info** page provides the following statistics:
 
@@ -300,7 +300,9 @@ The Sidekiq dashboard consists of the following elements:
 
 ### Logs
 
-The **Logs** page provides access to the following log files:
+Since GitLab 13.0, **Log** view has been removed from the admin dashboard since the logging does not work in multi-node setups and could cause confusion for administrators by displaying partial information.
+
+For multi-node systems we recommend ingesting the logs into services like Elasticsearch and Splunk.
 
 | Log file                | Contents |
 | :---------------------- | :------- |
@@ -312,7 +314,7 @@ The **Logs** page provides access to the following log files:
 | `integrations_json.log` | Activity between GitLab and integrated systems |
 | `kubernetes.log`        | Kubernetes activity |
 
-The contents of these log files can be useful when troubleshooting a problem. Access is available to GitLab admins, without requiring direct access to the log files.
+The contents of these log files can be useful when troubleshooting a problem.
 
 For details of these log files and their contents, see [Log system](../../administration/logs.md).
 
@@ -322,6 +324,6 @@ The content of each log file is listed in chronological order. To minimize perfo
 
 The **Requests Profiles** page contains the token required for profiling. For more details, see [Request Profiling](../../administration/monitoring/performance/request_profiling.md).
 
-### Audit Events **(PREMIUM ONLY)**
+### Audit Events **(PREMIUM SELF)**
 
 The **Audit Events** page lists changes made within the GitLab server. With this information you can control, analyze, and track every change.

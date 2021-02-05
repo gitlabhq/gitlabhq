@@ -551,17 +551,17 @@ supported by consolidated configuration form, refer to the following guides:
 | [Merge request diffs](merge_request_diffs.md#using-object-storage) | Yes |
 | [Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage)| No |
 | [Packages](packages/index.md#using-object-storage) (optional feature) | Yes |
-| [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) **(PREMIUM ONLY)** | Yes |
-| [Pseudonymizer](pseudonymizer.md#configuration) (optional feature) **(ULTIMATE ONLY)** | No |
+| [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) **(PREMIUM SELF)** | Yes |
+| [Pseudonymizer](pseudonymizer.md#configuration) (optional feature) **(ULTIMATE SELF)** | No |
 | [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | No |
 | [Terraform state files](terraform_state.md#using-object-storage) | Yes |
 | [GitLab Pages content](pages/index.md#using-object-storage) | Yes |
 
-### Other alternatives to filesystem storage
+### Other alternatives to file system storage
 
 If you're working to [scale out](reference_architectures/index.md) your GitLab implementation,
 or add fault tolerance and redundancy, you may be
-looking at removing dependencies on block or network filesystems.
+looking at removing dependencies on block or network file systems.
 See the following additional guides and
 [note that Pages requires disk storage](#gitlab-pages-requires-nfs):
 

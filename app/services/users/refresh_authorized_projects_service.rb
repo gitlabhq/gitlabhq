@@ -14,13 +14,14 @@ module Users
   #     service = Users::RefreshAuthorizedProjectsService.new(some_user)
   #     service.execute
   class RefreshAuthorizedProjectsService
-    attr_reader :user
+    attr_reader :user, :source
 
     LEASE_TIMEOUT = 1.minute.to_i
 
     # user - The User for which to refresh the authorized projects.
-    def initialize(user, incorrect_auth_found_callback: nil, missing_auth_found_callback: nil)
+    def initialize(user, source: nil, incorrect_auth_found_callback: nil, missing_auth_found_callback: nil)
       @user = user
+      @source = source
       @incorrect_auth_found_callback = incorrect_auth_found_callback
       @missing_auth_found_callback = missing_auth_found_callback
 
@@ -91,6 +92,8 @@ module Users
     # remove - The IDs of the authorization rows to remove.
     # add - Rows to insert in the form `[user id, project id, access level]`
     def update_authorizations(remove = [], add = [])
+      log_refresh_details(remove.length, add.length)
+
       User.transaction do
         user.remove_project_authorizations(remove) unless remove.empty?
         ProjectAuthorization.insert_authorizations(add) unless add.empty?
@@ -99,6 +102,13 @@ module Users
       # Since we batch insert authorization rows, Rails' associations may get
       # out of sync. As such we force a reload of the User object.
       user.reset
+    end
+
+    def log_refresh_details(rows_deleted, rows_added)
+      Gitlab::AppJsonLogger.info(event: 'authorized_projects_refresh',
+                                 'authorized_projects_refresh.source': source,
+                                 'authorized_projects_refresh.rows_deleted': rows_deleted,
+                                 'authorized_projects_refresh.rows_added': rows_added)
     end
 
     def fresh_access_levels_per_project

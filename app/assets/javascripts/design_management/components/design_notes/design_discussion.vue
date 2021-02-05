@@ -9,12 +9,12 @@ import allVersionsMixin from '../../mixins/all_versions';
 import createNoteMutation from '../../graphql/mutations/create_note.mutation.graphql';
 import toggleResolveDiscussionMutation from '../../graphql/mutations/toggle_resolve_discussion.mutation.graphql';
 import activeDiscussionQuery from '../../graphql/queries/active_discussion.query.graphql';
-import DesignNote from './design_note.vue';
-import DesignReplyForm from './design_reply_form.vue';
 import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../../constants';
-import ToggleRepliesWidget from './toggle_replies_widget.vue';
 import { hasErrors } from '../../utils/cache_update';
 import { ADD_DISCUSSION_COMMENT_ERROR } from '../../utils/error_messages';
+import DesignNote from './design_note.vue';
+import DesignReplyForm from './design_reply_form.vue';
+import ToggleRepliesWidget from './toggle_replies_widget.vue';
 
 export default {
   components: {

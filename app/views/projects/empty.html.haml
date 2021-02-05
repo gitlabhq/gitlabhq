@@ -2,6 +2,9 @@
 - default_branch_name = @project.default_branch || "master"
 - @skip_current_level_breadcrumb = true
 
+= content_for :invite_members_sidebar do
+  = render partial: 'projects/invite_members_link'
+
 = render partial: 'flash_messages', locals: { project: @project }
 
 = render "home_panel"

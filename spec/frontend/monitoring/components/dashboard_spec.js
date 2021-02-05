@@ -16,6 +16,7 @@ import GraphGroup from '~/monitoring/components/graph_group.vue';
 import LinksSection from '~/monitoring/components/links_section.vue';
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import {
   setupAllDashboards,
   setupStoreWithDashboard,
@@ -30,7 +31,6 @@ import {
   metricsDashboardPanelCount,
   dashboardProps,
 } from '../fixture_data';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
 
 jest.mock('~/flash');
 

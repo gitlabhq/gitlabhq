@@ -452,162 +452,50 @@ RSpec.describe Issues::CreateService do
     end
 
     context 'checking spam' do
-      include_context 'includes Spam constants'
+      let(:request) { double(:request) }
+      let(:api) { true }
+      let(:captcha_response) { 'abc123' }
+      let(:spam_log_id) { 1 }
 
-      let(:title) { 'Legit issue' }
-      let(:description) { 'please fix' }
-      let(:opts) do
+      let(:params) do
         {
-          title: title,
-          description: description,
-          request: double(:request, env: {})
+          title: 'Spam issue',
+          request: request,
+          api: api,
+          captcha_response: captcha_response,
+          spam_log_id: spam_log_id
         }
       end
 
-      subject { described_class.new(project, user, opts) }
+      subject do
+        described_class.new(project, user, params)
+      end
 
       before do
-        stub_feature_flags(allow_possible_spam: false)
-      end
-
-      context 'when reCAPTCHA was verified' do
-        let(:log_user)  { user }
-        let(:spam_logs) { create_list(:spam_log, 2, user: log_user, title: title) }
-        let(:target_spam_log) { spam_logs.last }
-
-        before do
-          opts[:recaptcha_verified] = true
-          opts[:spam_log_id] = target_spam_log.id
-
-          expect(Spam::SpamVerdictService).not_to receive(:new)
-        end
-
-        it 'does not mark an issue as spam' do
-          expect(issue).not_to be_spam
-        end
-
-        it 'creates a valid issue' do
-          expect(issue).to be_valid
-        end
-
-        it 'does not assign a spam_log to the issue' do
-          expect(issue.spam_log).to be_nil
-        end
-
-        it 'marks related spam_log as recaptcha_verified' do
-          expect { issue }.to change { target_spam_log.reload.recaptcha_verified }.from(false).to(true)
-        end
-
-        context 'when spam log does not belong to a user' do
-          let(:log_user) { create(:user) }
-
-          it 'does not mark spam_log as recaptcha_verified' do
-            expect { issue }.not_to change { target_spam_log.reload.recaptcha_verified }
-          end
+        allow_next_instance_of(UserAgentDetailService) do |instance|
+          allow(instance).to receive(:create)
         end
       end
 
-      context 'when reCAPTCHA was not verified' do
-        before do
-          expect_next_instance_of(Spam::SpamActionService) do |spam_service|
-            expect(spam_service).to receive_messages(check_for_spam?: true)
-          end
+      it 'executes SpamActionService' do
+        spam_params = Spam::SpamParams.new(
+          api: api,
+          captcha_response: captcha_response,
+          spam_log_id: spam_log_id
+        )
+        expect_next_instance_of(
+          Spam::SpamActionService,
+          {
+            spammable: an_instance_of(Issue),
+            request: request,
+            user: user,
+            action: :create
+          }
+        ) do |instance|
+          expect(instance).to receive(:execute).with(spam_params: spam_params)
         end
 
-        context 'when SpamVerdictService requires reCAPTCHA' do
-          before do
-            expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
-              expect(verdict_service).to receive(:execute).and_return(CONDITIONAL_ALLOW)
-            end
-          end
-
-          it 'does not mark the issue as spam' do
-            expect(issue).not_to be_spam
-          end
-
-          it 'marks the issue as needing reCAPTCHA' do
-            expect(issue.needs_recaptcha?).to be_truthy
-          end
-
-          it 'invalidates the issue' do
-            expect(issue).to be_invalid
-          end
-
-          it 'creates a new spam_log' do
-            expect { issue }
-                .to have_spam_log(title: title, description: description, user_id: user.id, noteable_type: 'Issue')
-          end
-        end
-
-        context 'when SpamVerdictService disallows creation' do
-          before do
-            expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
-              expect(verdict_service).to receive(:execute).and_return(DISALLOW)
-            end
-          end
-
-          context 'when allow_possible_spam feature flag is false' do
-            it 'marks the issue as spam' do
-              expect(issue).to be_spam
-            end
-
-            it 'does not mark the issue as needing reCAPTCHA' do
-              expect(issue.needs_recaptcha?).to be_falsey
-            end
-
-            it 'invalidates the issue' do
-              expect(issue).to be_invalid
-            end
-
-            it 'creates a new spam_log' do
-              expect { issue }
-                  .to have_spam_log(title: title, description: description, user_id: user.id, noteable_type: 'Issue')
-            end
-          end
-
-          context 'when allow_possible_spam feature flag is true' do
-            before do
-              stub_feature_flags(allow_possible_spam: true)
-            end
-
-            it 'does not mark the issue as spam' do
-              expect(issue).not_to be_spam
-            end
-
-            it 'does not mark the issue as needing reCAPTCHA' do
-              expect(issue.needs_recaptcha?).to be_falsey
-            end
-
-            it 'creates a valid issue' do
-              expect(issue).to be_valid
-            end
-
-            it 'creates a new spam_log' do
-              expect { issue }
-                  .to have_spam_log(title: title, description: description, user_id: user.id, noteable_type: 'Issue')
-            end
-          end
-        end
-
-        context 'when the SpamVerdictService allows creation' do
-          before do
-            expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
-              expect(verdict_service).to receive(:execute).and_return(ALLOW)
-            end
-          end
-
-          it 'does not mark an issue as spam' do
-            expect(issue).not_to be_spam
-          end
-
-          it 'creates a valid issue' do
-            expect(issue).to be_valid
-          end
-
-          it 'does not assign a spam_log to an issue' do
-            expect(issue.spam_log).to be_nil
-          end
-        end
+        subject.execute
       end
     end
   end

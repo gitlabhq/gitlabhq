@@ -4,8 +4,10 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 <!-- markdownlint-disable MD044 -->
+<!-- vale gitlab.Spelling = NO -->
 # Validate .gitlab-ci.yml syntax with the CI Lint tool
 <!-- markdownlint-enable MD044 -->
+<!-- vale gitlab.Spelling = YES -->
 
 If you want to test the validity of your GitLab CI/CD configuration before committing
 the changes, you can use the CI Lint tool. This tool checks for syntax and logical

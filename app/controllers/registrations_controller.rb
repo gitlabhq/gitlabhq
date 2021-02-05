@@ -31,6 +31,8 @@ class RegistrationsController < Devise::RegistrationsController
         NotificationService.new.new_instance_access_request(new_user)
       end
 
+      after_request_hook(new_user)
+
       yield new_user if block_given?
     end
 
@@ -83,6 +85,10 @@ class RegistrationsController < Devise::RegistrationsController
 
   def build_resource(hash = nil)
     super
+  end
+
+  def after_request_hook(user)
+    # overridden by EE module
   end
 
   def after_sign_up_path_for(user)

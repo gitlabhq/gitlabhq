@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Developing templates for custom dashboards **(CORE)**
+# Developing templates for custom dashboards **(FREE)**
 
 GitLab provides a template to make it easier for you to create templates for
 [custom dashboards](index.md). Templates provide helpful guidance and
@@ -27,7 +27,7 @@ Navigate to the browser-based editor of your choice:
   1. Click **{doc-new}** **New file**, then click **Choose a template** to see a list of available templates:
      ![Metrics dashboard template selection WebIDE](img/metrics_dashboard_template_selection_web_ide_v13_3.png)
 
-## Custom dashboard templates **(PREMIUM ONLY)**
+## Custom dashboard templates **(PREMIUM SELF)**
 
 To enable and use a custom dashboard templates on your GitLab instance, read the
 [guide for creating custom templates](../../../user/admin_area/settings/instance_template_repository.md).

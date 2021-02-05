@@ -237,6 +237,10 @@ module GraphqlHelpers
     query_graphql_path([[name, args], node_selection], fields)
   end
 
+  def query_graphql_fragment(name)
+    "... on #{name} { #{all_graphql_fields_for(name)} }"
+  end
+
   # e.g:
   #   query_graphql_path(%i[foo bar baz], all_graphql_fields_for('Baz'))
   #   => foo { bar { baz { x y z } } }
@@ -510,8 +514,12 @@ module GraphqlHelpers
     end
   end
 
-  def global_id_of(model)
-    model.to_global_id.to_s
+  def global_id_of(model, id: nil, model_name: nil)
+    if id || model_name
+      ::Gitlab::GlobalId.build(model, id: id, model_name: model_name).to_s
+    else
+      model.to_global_id.to_s
+    end
   end
 
   def missing_required_argument(path, argument)

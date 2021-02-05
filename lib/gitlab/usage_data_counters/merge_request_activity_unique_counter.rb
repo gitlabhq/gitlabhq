@@ -18,6 +18,12 @@ module Gitlab
       MR_CREATE_MULTILINE_COMMENT_ACTION = 'i_code_review_user_create_multiline_mr_comment'
       MR_EDIT_MULTILINE_COMMENT_ACTION = 'i_code_review_user_edit_multiline_mr_comment'
       MR_REMOVE_MULTILINE_COMMENT_ACTION = 'i_code_review_user_remove_multiline_mr_comment'
+      MR_ADD_SUGGESTION_ACTION = 'i_code_review_user_add_suggestion'
+      MR_APPLY_SUGGESTION_ACTION = 'i_code_review_user_apply_suggestion'
+      MR_RESOLVE_THREAD_ACTION = 'i_code_review_user_resolve_thread'
+      MR_UNRESOLVE_THREAD_ACTION = 'i_code_review_user_unresolve_thread'
+      MR_ASSIGNED_USERS_ACTION = 'i_code_review_user_assigned'
+      MR_REVIEW_REQUESTED_USERS_ACTION = 'i_code_review_user_review_requested'
 
       class << self
         def track_mr_diffs_action(merge_request:)
@@ -45,6 +51,14 @@ module Gitlab
           track_unique_action_by_user(MR_REOPEN_ACTION, user)
         end
 
+        def track_resolve_thread_action(user:)
+          track_unique_action_by_user(MR_RESOLVE_THREAD_ACTION, user)
+        end
+
+        def track_unresolve_thread_action(user:)
+          track_unique_action_by_user(MR_UNRESOLVE_THREAD_ACTION, user)
+        end
+
         def track_create_comment_action(note:)
           track_unique_action_by_user(MR_CREATE_COMMENT_ACTION, note.author)
           track_multiline_unique_action(MR_CREATE_MULTILINE_COMMENT_ACTION, note)
@@ -68,6 +82,22 @@ module Gitlab
           track_unique_action_by_user(MR_PUBLISH_REVIEW_ACTION, user)
         end
 
+        def track_add_suggestion_action(user:)
+          track_unique_action_by_user(MR_ADD_SUGGESTION_ACTION, user)
+        end
+
+        def track_apply_suggestion_action(user:)
+          track_unique_action_by_user(MR_APPLY_SUGGESTION_ACTION, user)
+        end
+
+        def track_users_assigned_to_mr(users:)
+          track_unique_action_by_users(MR_ASSIGNED_USERS_ACTION, users)
+        end
+
+        def track_users_review_requested(users:)
+          track_unique_action_by_users(MR_REVIEW_REQUESTED_USERS_ACTION, users)
+        end
+
         private
 
         def track_unique_action_by_merge_request(action, merge_request)
@@ -78,6 +108,12 @@ module Gitlab
           return unless user
 
           track_unique_action(action, user.id)
+        end
+
+        def track_unique_action_by_users(action, users)
+          return if users.blank?
+
+          track_unique_action(action, users.map(&:id))
         end
 
         def track_unique_action(action, value)

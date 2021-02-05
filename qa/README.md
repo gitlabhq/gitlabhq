@@ -104,6 +104,15 @@ bundle exec bin/qa Test::Instance::All http://localhost:3000 -- qa/specs/feature
 Note that the separator `--` is required; all subsequent options will be
 ignored by the QA framework and passed to `rspec`.
 
+#### Running tests for transient bugs
+
+A suite of tests have been written to test for [transient bugs](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#transient-bugs).
+Those tests are tagged `:transient` and therefore can be run via:
+
+```shell
+bundle exec bin/qa Test::Instance::All http://localhost:3000 -- --tag transient
+```
+
 ### Overriding the authenticated user
 
 Unless told otherwise, the QA tests will run as the default `root` user seeded

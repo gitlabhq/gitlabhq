@@ -1,5 +1,5 @@
-import * as types from './mutation_types';
 import gapiLoader from '../gapi_loader';
+import * as types from './mutation_types';
 
 const gapiResourceListRequest = ({ resource, params, commit, mutation, payloadKey }) =>
   new Promise((resolve, reject) => {

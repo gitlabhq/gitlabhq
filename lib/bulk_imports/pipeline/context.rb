@@ -3,30 +3,23 @@
 module BulkImports
   module Pipeline
     class Context
-      include Gitlab::Utils::LazyAttributes
+      attr_reader :entity, :bulk_import
 
-      Attribute = Struct.new(:name, :type)
-
-      PIPELINE_ATTRIBUTES = [
-        Attribute.new(:current_user, User),
-        Attribute.new(:entity, ::BulkImports::Entity),
-        Attribute.new(:configuration, ::BulkImports::Configuration)
-      ].freeze
-
-      def initialize(args)
-        assign_attributes(args)
+      def initialize(entity)
+        @entity = entity
+        @bulk_import = entity.bulk_import
       end
 
-      private
-
-      PIPELINE_ATTRIBUTES.each do |attr|
-        lazy_attr_reader attr.name, type: attr.type
+      def group
+        entity.group
       end
 
-      def assign_attributes(values)
-        values.slice(*PIPELINE_ATTRIBUTES.map(&:name)).each do |name, value|
-          instance_variable_set("@#{name}", value)
-        end
+      def current_user
+        bulk_import.user
+      end
+
+      def configuration
+        bulk_import.configuration
       end
     end
   end

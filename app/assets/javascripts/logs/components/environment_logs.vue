@@ -11,13 +11,12 @@ import {
   GlInfiniteScroll,
 } from '@gitlab/ui';
 
-import LogSimpleFilters from './log_simple_filters.vue';
-import LogAdvancedFilters from './log_advanced_filters.vue';
-import LogControlButtons from './log_control_buttons.vue';
-
 import { defaultTimeRange } from '~/vue_shared/constants';
 import { timeRangeFromUrl } from '~/monitoring/utils';
 import { formatDate } from '../utils';
+import LogSimpleFilters from './log_simple_filters.vue';
+import LogAdvancedFilters from './log_advanced_filters.vue';
+import LogControlButtons from './log_control_buttons.vue';
 
 export default {
   components: {
@@ -176,7 +175,7 @@ export default {
           id="environments-dropdown"
           :text="environments.current || managedApps.current"
           :disabled="environments.isLoading"
-          class="gl-mr-3 gl-mb-3 gl-display-flex gl-display-md-block js-environments-dropdown"
+          class="gl-mr-3 gl-mb-3 gl-display-flex gl-md-display-block js-environments-dropdown"
         >
           <gl-dropdown-section-header>
             {{ s__('Environments|Environments') }}

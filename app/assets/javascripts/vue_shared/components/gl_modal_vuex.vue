@@ -1,6 +1,7 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { GlModal } from '@gitlab/ui';
+import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 
 /**
  * This component keeps the GlModal's visibility in sync with the given vuex module.
@@ -46,11 +47,11 @@ export default {
       },
     }),
     bsShow() {
-      this.$root.$emit('bv::show::modal', this.modalId);
+      this.$root.$emit(BV_SHOW_MODAL, this.modalId);
     },
     bsHide() {
       // $root.$emit is a workaround because other b-modal approaches don't work yet with gl-modal
-      this.$root.$emit('bv::hide::modal', this.modalId);
+      this.$root.$emit(BV_HIDE_MODAL, this.modalId);
     },
     cancel() {
       this.$emit('cancel');

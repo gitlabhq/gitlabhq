@@ -203,7 +203,7 @@ module Gitlab
     def self.authorization_token(storage)
       token = token(storage).to_s
       issued_at = real_time.to_i.to_s
-      hmac = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new, token, issued_at)
+      hmac = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('SHA256'), token, issued_at)
 
       "v2.#{hmac}.#{issued_at}"
     end

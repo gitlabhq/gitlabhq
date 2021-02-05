@@ -13,7 +13,7 @@
     = form_for 'email', url: profile_emails_path do |f|
       .form-group
         = f.label :email, _('Email'), class: 'label-bold'
-        = f.text_field :email, class: 'form-control', data: { qa_selector: 'email_address_field' }
+        = f.text_field :email, class: 'form-control gl-form-input', data: { qa_selector: 'email_address_field' }
       .gl-mt-3
         = f.submit _('Add email address'), class: 'gl-button btn btn-success', data: { qa_selector: 'add_email_address_button' }
     %hr
@@ -37,23 +37,23 @@
       %li
         = render partial: 'shared/email_with_badge', locals: { email: @primary_email, verified: current_user.confirmed? }
         %span.float-right
-          %span.badge.badge-success= s_('Profiles|Primary email')
+          %span.badge.badge-muted.badge-pill.gl-badge.badge-success= s_('Profiles|Primary email')
           - if @primary_email === current_user.commit_email
-            %span.badge.badge-info= s_('Profiles|Commit email')
+            %span.badge.badge-muted.badge-pill.gl-badge.badge-info= s_('Profiles|Commit email')
           - if @primary_email === current_user.public_email
-            %span.badge.badge-info= s_('Profiles|Public email')
+            %span.badge.badge-muted.badge-pill.gl-badge.badge-info= s_('Profiles|Public email')
           - if @primary_email === current_user.notification_email
-            %span.badge.badge-info= s_('Profiles|Default notification email')
+            %span.badge.badge-muted.badge-pill.gl-badge.badge-info= s_('Profiles|Default notification email')
       - @emails.each do |email|
         %li{ data: { qa_selector: 'email_row_content' } }
           = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
           %span.float-right
             - if email.email === current_user.commit_email
-              %span.badge.badge-info= s_('Profiles|Commit email')
+              %span.badge.badge-muted.badge-pill.gl-badge.badge-info= s_('Profiles|Commit email')
             - if email.email === current_user.public_email
-              %span.badge.badge-info= s_('Profiles|Public email')
+              %span.badge.badge-muted.badge-pill.gl-badge.badge-info= s_('Profiles|Public email')
             - if email.email === current_user.notification_email
-              %span.badge.badge-info= s_('Profiles|Notification email')
+              %span.badge.badge-muted.badge-pill.gl-badge.badge-info= s_('Profiles|Notification email')
             - unless email.confirmed?
               - confirm_title = "#{email.confirmation_sent_at ? _('Resend confirmation email') : _('Send confirmation email')}"
               = link_to confirm_title, resend_confirmation_instructions_profile_email_path(email), method: :put, class: 'gl-button btn btn-sm btn-warning gl-ml-3'

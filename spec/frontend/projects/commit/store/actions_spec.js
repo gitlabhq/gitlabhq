@@ -5,8 +5,8 @@ import createFlash from '~/flash';
 import getInitialState from '~/projects/commit/store/state';
 import * as actions from '~/projects/commit/store/actions';
 import * as types from '~/projects/commit/store/mutation_types';
-import mockData from '../mock_data';
 import { PROJECT_BRANCHES_ERROR } from '~/projects/commit/constants';
+import mockData from '../mock_data';
 
 jest.mock('~/flash.js');
 

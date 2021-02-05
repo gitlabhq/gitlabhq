@@ -18,6 +18,10 @@ module Packages
         belongs_to container_type
         belongs_to :creator, class_name: 'User'
 
+        has_many :components,
+          class_name: "Packages::Debian::#{container_type.capitalize}Component",
+          foreign_key: :distribution_id,
+          inverse_of: :distribution
         has_many :architectures,
           class_name: "Packages::Debian::#{container_type.capitalize}Architecture",
           foreign_key: :distribution_id,

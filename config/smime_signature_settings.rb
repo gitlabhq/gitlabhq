@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Set default values for email_smime settings
 class SmimeSignatureSettings
   def self.parse(email_smime)

@@ -77,8 +77,9 @@
           = link_to resume_group_runner_path(@group, runner), method: :post, class: 'btn btn-default has-tooltip', title: _('Resume'), ref: 'tooltip', aria: { label: _('Resume') }, data: { placement: 'top', container: 'body'} do
             = sprite_icon('play')
       - if runner.belongs_to_more_than_one_project?
-        .btn-group
-          .btn.btn-danger.has-tooltip{ 'aria-label' => 'Remove', 'data-container' => 'body', 'data-original-title' => _('Multi-project Runners cannot be removed'), 'data-placement' => 'top', disabled: 'disabled' }
+        - delete_runner_tooltip = _('Multi-project Runners cannot be removed')
+        .btn-group.has-tooltip{ data: { container: 'body', placement: 'top' }, title: delete_runner_tooltip }
+          .btn.btn-danger{ 'aria-label' => delete_runner_tooltip, disabled: 'disabled' }
             = sprite_icon('close')
       - else
         .btn-group

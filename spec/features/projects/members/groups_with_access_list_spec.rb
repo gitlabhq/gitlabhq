@@ -11,6 +11,8 @@ RSpec.describe 'Projects > Members > Groups with access list', :js do
   let!(:group_link) { create(:project_group_link, project: project, group: group, **additional_link_attrs) }
 
   before do
+    stub_feature_flags(vue_project_members_list: false)
+
     travel_to Time.now.utc.beginning_of_day
 
     project.add_maintainer(user)

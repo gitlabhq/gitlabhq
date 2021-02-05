@@ -2,9 +2,18 @@
   = form_errors(@group)
 
   .gl-border-l-solid.gl-border-r-solid.gl-border-gray-100.gl-border-1.gl-p-5
-    %h4
+    %h4.gl-display-flex
       = s_('GroupsNew|Import groups from another instance of GitLab')
-    %p
+      %span.badge.badge-info.badge-pill.gl-badge.md.gl-ml-3
+        = _('Beta')
+    .gl-alert.gl-alert-warning{ role: 'alert' }
+      = sprite_icon('warning', css_class: 'gl-icon s16 gl-alert-icon gl-alert-icon-no-title')
+      .gl-alert-body
+        - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/index.md') }
+        - feedback_link_start = '<a href="https://gitlab.com/gitlab-org/gitlab/-/issues/284495" target="_blank" rel="noopener noreferrer">'.html_safe
+        - link_end = '</a>'.html_safe
+        = s_('GroupsNew|Not all related objects are migrated, as %{docs_link_start}described here%{docs_link_end}. Please %{feedback_link_start}leave feedback%{feedback_link_end} on this feature.').html_safe % { docs_link_start: docs_link_start, docs_link_end: link_end, feedback_link_start: feedback_link_start, feedback_link_end: link_end }
+    %p.gl-mt-3
       = s_('GroupsNew|Provide credentials for another instance of GitLab to import your groups directly.')
     .form-group.gl-display-flex.gl-flex-direction-column
       = f.label :bulk_import_gitlab_url, s_('GroupsNew|GitLab source URL'), for: 'import_gitlab_url'

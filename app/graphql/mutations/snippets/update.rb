@@ -3,7 +3,8 @@
 module Mutations
   module Snippets
     class Update < Base
-      include SpammableMutationFields
+      include ServiceCompatibility
+      include CanMutateSpammable
 
       graphql_name 'UpdateSnippet'
 
@@ -30,19 +31,23 @@ module Mutations
       def resolve(id:, **args)
         snippet = authorized_find!(id: id)
 
-        result = ::Snippets::UpdateService.new(snippet.project,
-                                               current_user,
-                                               update_params(args)).execute(snippet)
-        snippet = result.payload[:snippet]
+        process_args_for_params!(args)
+
+        service_response = ::Snippets::UpdateService.new(snippet.project, current_user, args).execute(snippet)
+
+        # TODO: DRY this up - From here down, this is all duplicated with Mutations::Snippets::Create#resolve, except for
+        #    `snippet.reset`, which is required in order to return the object in its non-dirty, unmodified, database state
+        #    See issue here: https://gitlab.com/gitlab-org/gitlab/-/issues/300250
 
         # Only when the user is not an api user and the operation was successful
-        if !api_user? && result.success?
+        if !api_user? && service_response.success?
           ::Gitlab::UsageDataCounters::EditorUniqueCounter.track_snippet_editor_edit_action(author: current_user)
         end
 
-        with_spam_fields(snippet) do
+        snippet = service_response.payload[:snippet]
+        with_spam_action_fields(snippet) do
           {
-            snippet: result.success? ? snippet : snippet.reset,
+            snippet: service_response.success? ? snippet : snippet.reset,
             errors: errors_on_object(snippet)
           }
         end
@@ -50,18 +55,25 @@ module Mutations
 
       private
 
-      def ability_name
-        'update'
+      # process_args_for_params!(args)    -> nil
+      #
+      # Modifies/adds/deletes mutation resolve args as necessary to be passed as params to service layer.
+      def process_args_for_params!(args)
+        convert_blob_actions_to_snippet_actions!(args)
+
+        if Feature.enabled?(:snippet_spam)
+          args.merge!(additional_spam_params)
+        else
+          args[:disable_spam_action_service] = true
+        end
+
+        # Return nil to make it explicit that this method is mutating the args parameter, and that
+        # the return value is not relevant and is not to be used.
+        nil
       end
 
-      def update_params(args)
-        with_spam_params do
-          args.tap do |update_args|
-            # We need to rename `blob_actions` into `snippet_actions` because
-            # it's the expected key param
-            update_args[:snippet_actions] = update_args.delete(:blob_actions)&.map(&:to_h)
-          end
-        end
+      def ability_name
+        'update'
       end
     end
   end

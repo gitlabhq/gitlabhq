@@ -3,12 +3,13 @@
 module Gitlab
   module Diff
     class Highlight
-      attr_reader :diff_file, :diff_lines, :raw_lines, :repository
+      attr_reader :diff_file, :diff_lines, :raw_lines, :repository, :project
 
       delegate :old_path, :new_path, :old_sha, :new_sha, to: :diff_file, prefix: :diff
 
       def initialize(diff_lines, repository: nil)
         @repository = repository
+        @project = repository&.project
 
         if diff_lines.is_a?(Gitlab::Diff::File)
           @diff_file = diff_lines
@@ -66,7 +67,7 @@ module Gitlab
       end
 
       def inline_diffs
-        @inline_diffs ||= InlineDiff.for_lines(@raw_lines)
+        @inline_diffs ||= InlineDiff.for_lines(@raw_lines, project: project)
       end
 
       def old_lines

@@ -1,12 +1,12 @@
 import { s__ } from '~/locale';
 
-export const ALERTS_SEVERITY_LABELS = {
-  CRITICAL: s__('AlertManagement|Critical'),
-  HIGH: s__('AlertManagement|High'),
-  MEDIUM: s__('AlertManagement|Medium'),
-  LOW: s__('AlertManagement|Low'),
-  INFO: s__('AlertManagement|Info'),
-  UNKNOWN: s__('AlertManagement|Unknown'),
+export const SEVERITY_LEVELS = {
+  CRITICAL: s__('severity|Critical'),
+  HIGH: s__('severity|High'),
+  MEDIUM: s__('severity|Medium'),
+  LOW: s__('severity|Low'),
+  INFO: s__('severity|Info'),
+  UNKNOWN: s__('severity|Unknown'),
 };
 
 export const ALERTS_STATUS_TABS = [
@@ -45,21 +45,4 @@ export const ALERTS_STATUS_TABS = [
 export const trackAlertListViewsOptions = {
   category: 'Alert Management',
   action: 'view_alerts_list',
-};
-
-/**
- * Tracks snowplow event when user views alert details
- */
-export const trackAlertsDetailsViewsOptions = {
-  category: 'Alert Management',
-  action: 'view_alert_details',
-};
-
-/**
- * Tracks snowplow event when alert status is updated
- */
-export const trackAlertStatusUpdateOptions = {
-  category: 'Alert Management',
-  action: 'update_alert_status',
-  label: 'Status',
 };

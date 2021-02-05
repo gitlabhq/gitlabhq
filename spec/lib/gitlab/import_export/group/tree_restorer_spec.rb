@@ -21,6 +21,7 @@ RSpec.describe Gitlab::ImportExport::Group::TreeRestorer do
         group_tree_restorer = described_class.new(user: user, shared: @shared, group: @group)
 
         expect(group_tree_restorer.restore).to be_truthy
+        expect(group_tree_restorer.groups_mapping).not_to be_empty
       end
     end
 

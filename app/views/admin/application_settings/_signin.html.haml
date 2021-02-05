@@ -43,18 +43,18 @@
           target: '_blank'
     .form-group
       = f.label :two_factor_authentication, 'Two-factor grace period (hours)', class: 'label-bold'
-      = f.number_field :two_factor_grace_period, min: 0, class: 'form-control', placeholder: '0'
+      = f.number_field :two_factor_grace_period, min: 0, class: 'form-control gl-form-input', placeholder: '0'
       .form-text.text-muted Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication
     .form-group
       = f.label :home_page_url, 'Home page URL', class: 'label-bold'
-      = f.text_field :home_page_url, class: 'form-control', placeholder: 'http://company.example.com', :'aria-describedby' => 'home_help_block'
+      = f.text_field :home_page_url, class: 'form-control gl-form-input', placeholder: 'http://company.example.com', :'aria-describedby' => 'home_help_block'
       %span.form-text.text-muted#home_help_block We will redirect non-logged in users to this page
     .form-group
       = f.label :after_sign_out_path, _('After sign-out path'), class: 'label-bold'
-      = f.text_field :after_sign_out_path, class: 'form-control', placeholder: 'http://company.example.com', :'aria-describedby' => 'after_sign_out_path_help_block'
+      = f.text_field :after_sign_out_path, class: 'form-control gl-form-input', placeholder: 'http://company.example.com', :'aria-describedby' => 'after_sign_out_path_help_block'
       %span.form-text.text-muted#after_sign_out_path_help_block We will redirect users to this page after they sign out
     .form-group
       = f.label :sign_in_text, _('Sign-in text'), class: 'label-bold'
-      = f.text_area :sign_in_text, class: 'form-control', rows: 4
+      = f.text_area :sign_in_text, class: 'form-control gl-form-input', rows: 4
       .form-text.text-muted Markdown enabled
   = f.submit 'Save changes', class: "gl-button btn btn-success"

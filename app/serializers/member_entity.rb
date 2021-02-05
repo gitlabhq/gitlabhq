@@ -23,6 +23,10 @@ class MemberEntity < Grape::Entity
     member.can_remove?
   end
 
+  expose :is_direct_member do |member, options|
+    member.source == options[:source]
+  end
+
   expose :access_level do
     expose :human_access, as: :string_value
     expose :access_level, as: :integer_value

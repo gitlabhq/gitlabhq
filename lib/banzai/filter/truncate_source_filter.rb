@@ -6,7 +6,9 @@ module Banzai
       def call
         return text unless context.key?(:limit)
 
-        text.truncate_bytes(context[:limit])
+        # Use three dots instead of the ellipsis Unicode character because
+        # some clients show the raw Unicode value in the merge commit.
+        text.truncate_bytes(context[:limit], omission: '...')
       end
     end
   end

@@ -152,7 +152,7 @@ module Types
     end
     field :task_completion_status, Types::TaskCompletionStatus, null: false,
           description: Types::TaskCompletionStatus.description
-    field :commit_count, GraphQL::INT_TYPE, null: true,
+    field :commit_count, GraphQL::INT_TYPE, null: true, method: :commits_count,
           description: 'Number of commits in the merge request'
     field :conflicts, GraphQL::BOOLEAN_TYPE, null: false, method: :cannot_be_merged?,
           description: 'Indicates if the merge request has conflicts'
@@ -216,10 +216,6 @@ module Types
 
     def diff_stats_summary
       BatchLoaders::MergeRequestDiffSummaryBatchLoader.load_for(object)
-    end
-
-    def commit_count
-      object&.metrics&.commits_count
     end
 
     def source_branch_protected

@@ -16,12 +16,32 @@ RSpec.describe MergeRequestDiff do
   describe 'validations' do
     subject { diff_with_commits }
 
+    it { is_expected.not_to validate_uniqueness_of(:diff_type).scoped_to(:merge_request_id) }
+
     it 'checks sha format of base_commit_sha, head_commit_sha and start_commit_sha' do
       subject.base_commit_sha = subject.head_commit_sha = subject.start_commit_sha = 'foobar'
 
       expect(subject.valid?).to be false
       expect(subject.errors.count).to eq 3
       expect(subject.errors).to all(include('is not a valid SHA'))
+    end
+
+    it 'does not validate uniqueness by default' do
+      expect(build(:merge_request_diff, merge_request: subject.merge_request)).to be_valid
+    end
+
+    context 'when merge request diff is a merge_head type' do
+      it 'is valid' do
+        expect(build(:merge_request_diff, :merge_head, merge_request: subject.merge_request)).to be_valid
+      end
+
+      context 'when merge_head diff exists' do
+        let(:existing_merge_head_diff) { create(:merge_request_diff, :merge_head) }
+
+        it 'validates uniqueness' do
+          expect(build(:merge_request_diff, :merge_head, merge_request: existing_merge_head_diff.merge_request)).not_to be_valid
+        end
+      end
     end
   end
 
@@ -35,6 +55,26 @@ RSpec.describe MergeRequestDiff do
     it { expect(subject.head_commit_sha).to eq('b83d6e391c22777fca1ed3012fce84f633d7fed0') }
     it { expect(subject.base_commit_sha).to eq('ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }
     it { expect(subject.start_commit_sha).to eq('0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
+
+    context 'when diff_type is merge_head' do
+      let_it_be(:merge_request) { create(:merge_request) }
+
+      let_it_be(:merge_head) do
+        MergeRequests::MergeToRefService
+          .new(merge_request.project, merge_request.author)
+          .execute(merge_request)
+
+        merge_request.create_merge_head_diff
+      end
+
+      it { expect(merge_head).to be_valid }
+      it { expect(merge_head).to be_persisted }
+      it { expect(merge_head.commits.count).to eq(30) }
+      it { expect(merge_head.diffs.count).to eq(20) }
+      it { expect(merge_head.head_commit_sha).to eq(merge_request.merge_ref_head.diff_refs.head_sha) }
+      it { expect(merge_head.base_commit_sha).to eq(merge_request.merge_ref_head.diff_refs.base_sha) }
+      it { expect(merge_head.start_commit_sha).to eq(merge_request.target_branch_sha) }
+    end
   end
 
   describe '.by_commit_sha' do
@@ -63,6 +103,7 @@ RSpec.describe MergeRequestDiff do
     let_it_be(:merge_request) { create(:merge_request) }
     let_it_be(:outdated) { merge_request.merge_request_diff }
     let_it_be(:latest) { merge_request.create_merge_request_diff }
+    let_it_be(:merge_head) { merge_request.create_merge_head_diff }
 
     let_it_be(:closed_mr) { create(:merge_request, :closed_last_month) }
     let(:closed) { closed_mr.merge_request_diff }
@@ -103,14 +144,14 @@ RSpec.describe MergeRequestDiff do
         stub_external_diffs_setting(enabled: true)
       end
 
-      it { is_expected.to contain_exactly(outdated.id, latest.id, closed.id, merged.id, closed_recently.id, merged_recently.id) }
+      it { is_expected.to contain_exactly(outdated.id, latest.id, closed.id, merged.id, closed_recently.id, merged_recently.id, merge_head.id) }
 
       it 'ignores diffs with 0 files' do
         MergeRequestDiffFile.where(merge_request_diff_id: [closed_recently.id, merged_recently.id]).delete_all
         closed_recently.update!(files_count: 0)
         merged_recently.update!(files_count: 0)
 
-        is_expected.to contain_exactly(outdated.id, latest.id, closed.id, merged.id)
+        is_expected.to contain_exactly(outdated.id, latest.id, closed.id, merged.id, merge_head.id)
       end
     end
 

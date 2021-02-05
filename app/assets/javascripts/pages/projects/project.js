@@ -7,9 +7,9 @@ import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { serializeForm } from '~/lib/utils/forms';
 import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as flash } from '~/flash';
-import projectSelect from '../../project_select';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import initClonePanel from '~/clone_panel';
+import projectSelect from '../../project_select';
 
 export default class Project {
   constructor() {
@@ -126,8 +126,9 @@ export default class Project {
               const refs = this.fullData.Branches.concat(this.fullData.Tags);
               const currentRef = refs.find((ref) => loc.indexOf(ref) > -1);
               if (currentRef) {
-                const targetPath = loc.split(currentRef)[1].slice(1);
+                const targetPath = loc.split(currentRef)[1].slice(1).split('#')[0];
                 selectedUrl.searchParams.set('path', targetPath);
+                selectedUrl.hash = window.location.hash;
               }
             }
 

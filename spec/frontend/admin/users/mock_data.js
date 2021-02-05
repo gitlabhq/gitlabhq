@@ -14,6 +14,7 @@ export const users = [
     ],
     projectsCount: 0,
     actions: [],
+    note: 'Create per issue #999',
   },
 ];
 

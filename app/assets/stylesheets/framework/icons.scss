@@ -3,20 +3,12 @@
   svg {
     fill: $green-500;
   }
-
-  &.add-border {
-    @include borderless-status-icon($green-500);
-  }
 }
 
 .ci-status-icon-error,
 .ci-status-icon-failed {
   svg {
     fill: $red-500;
-  }
-
-  &.add-border {
-    @include borderless-status-icon($red-500);
   }
 }
 
@@ -27,59 +19,29 @@
   svg {
     fill: $orange-500;
   }
-
-  &.add-border {
-    @include borderless-status-icon($orange-500);
-  }
-}
-
-.ci-status-icon-preparing {
-  svg {
-    fill: $gray-300;
-  }
-
-  &.add-border {
-    @include borderless-status-icon($gray-300);
-  }
 }
 
 .ci-status-icon-running {
   svg {
     fill: $blue-400;
   }
-
-  &.add-border {
-    @include borderless-status-icon($blue-400);
-  }
 }
 
 .ci-status-icon-canceled,
-.ci-status-icon-disabled {
-  svg {
-    fill: $gl-text-color;
-  }
-
-  &.add-border {
-    @include borderless-status-icon($gl-text-color);
-  }
-}
-
-.ci-status-icon-created,
-.ci-status-icon-skipped,
-.ci-status-icon-notfound {
-  svg {
-    fill: $gray-darkest;
-  }
-
-  &.add-border {
-    @include borderless-status-icon($gray-darkest);
-  }
-}
-
+.ci-status-icon-disabled,
 .ci-status-icon-scheduled,
 .ci-status-icon-manual {
   svg {
     fill: $gl-text-color;
+  }
+}
+
+.ci-status-icon-preparing,
+.ci-status-icon-created,
+.ci-status-icon-skipped,
+.ci-status-icon-notfound {
+  svg {
+    fill: var(--gray-400, $gray-400);
   }
 }
 

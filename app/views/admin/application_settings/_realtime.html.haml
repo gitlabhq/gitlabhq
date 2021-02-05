@@ -4,7 +4,7 @@
   %fieldset
     .form-group
       = f.label :polling_interval_multiplier, 'Polling interval multiplier', class: 'label-bold'
-      = f.text_field :polling_interval_multiplier, class: 'form-control'
+      = f.text_field :polling_interval_multiplier, class: 'form-control gl-form-input'
       .form-text.text-muted
         Change this value to influence how frequently the GitLab UI polls for updates.
         If you set the value to 2 all polling intervals are multiplied

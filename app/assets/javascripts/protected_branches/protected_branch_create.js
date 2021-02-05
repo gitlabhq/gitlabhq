@@ -4,8 +4,8 @@ import axios from '~/lib/utils/axios_utils';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import CreateItemDropdown from '~/create_item_dropdown';
-import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
 import { __ } from '~/locale';
+import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
 
 export default class ProtectedBranchCreate {
   constructor(options) {

@@ -40,7 +40,7 @@ If you're not using the Omnibus GitLab package you may have to adjust the paths 
 `pg_dump` and the PostgreSQL installation directory to match the paths of your
 configuration.
 
-Once the structure dump is generated we also need to generate a dump for the
+After the structure dump is generated we also need to generate a dump for the
 `schema_migrations` table. This table doesn't have any primary keys and as such
 can't be replicated easily by Slony. To generate this dump run the following
 command on your active database server:
@@ -210,7 +210,7 @@ this output, don't just append it below it. The result looks like this:
 ]
 ```
 
-Once you have the configuration file generated you must install it on both the
+After you have the configuration file generated you must install it on both the
 old and new database. To do so, place it in
 `/var/opt/gitlab/postgresql/slony/slon_tools.conf` (for which we created the
 directory earlier on).
@@ -218,7 +218,7 @@ directory earlier on).
 Now that the configuration file is in place we can _finally_ start replicating
 our database. First we must set up the schema in our new database. To do so make
 sure that the SQL files we generated earlier can be found in the `/tmp`
-directory of the new server. Once these files are in place start a `psql`
+directory of the new server. After these files are in place start a `psql`
 session on this server:
 
 ```shell

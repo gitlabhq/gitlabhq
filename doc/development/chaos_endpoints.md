@@ -6,7 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Generating chaos in a test GitLab instance
 
+<!-- vale gitlab.Spelling = NO -->
+
 As [Werner Vogels](https://twitter.com/Werner), the CTO at Amazon Web Services, famously put it, **Everything fails, all the time**.
+
+<!-- vale gitlab.Spelling = NO -->
 
 As a developer, it's as important to consider the failure modes in which your software may operate as much as normal operation. Doing so can mean the difference between a minor hiccup leading to a scattering of `500` errors experienced by a tiny fraction of users, and a full site outage that affects all users for an extended period.
 
@@ -159,4 +163,59 @@ GET /-/chaos/kill?async=true
 ```shell
 curl "http://localhost:3000/-/chaos/kill" --header 'X-Chaos-Secret: secret'
 curl "http://localhost:3000/-/chaos/kill?token=secret"
+```
+
+## Run garbage collector
+
+This endpoint triggers a GC run on the worker handling the request and returns its worker ID
+plus GC stats as JSON. This is mostly useful when running Puma in standalone mode, since
+otherwise the worker handling the request will not be known upfront.
+
+Endpoint:
+
+```plaintext
+POST /-/chaos/gc
+```
+
+Example request:
+
+```shell
+curl --request POST "http://localhost:3000/-/chaos/gc" --header 'X-Chaos-Secret: secret'
+curl --request POST "http://localhost:3000/-/chaos/gc?token=secret"
+```
+
+Example response:
+
+```json
+{
+  "worker_id": "puma_1",
+  "gc_stat": {
+    "count": 94,
+    "heap_allocated_pages": 9077,
+    "heap_sorted_length": 9077,
+    "heap_allocatable_pages": 0,
+    "heap_available_slots": 3699720,
+    "heap_live_slots": 2827510,
+    "heap_free_slots": 872210,
+    "heap_final_slots": 0,
+    "heap_marked_slots": 2827509,
+    "heap_eden_pages": 9077,
+    "heap_tomb_pages": 0,
+    "total_allocated_pages": 9077,
+    "total_freed_pages": 0,
+    "total_allocated_objects": 14229357,
+    "total_freed_objects": 11401847,
+    "malloc_increase_bytes": 8192,
+    "malloc_increase_bytes_limit": 30949538,
+    "minor_gc_count": 71,
+    "major_gc_count": 23,
+    "compact_count": 0,
+    "remembered_wb_unprotected_objects": 41685,
+    "remembered_wb_unprotected_objects_limit": 83370,
+    "old_objects": 2617806,
+    "old_objects_limit": 5235612,
+    "oldmalloc_increase_bytes": 8192,
+    "oldmalloc_increase_bytes_limit": 122713697
+  }
+}
 ```

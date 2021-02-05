@@ -5,10 +5,11 @@ group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Elasticsearch integration **(STARTER ONLY)**
+# Elasticsearch integration **(PREMIUM SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109 "Elasticsearch Merge Request") in GitLab [Starter](https://about.gitlab.com/pricing/) 8.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109 "Elasticsearch Merge Request") in GitLab 8.4.
 > - Support for [Amazon Elasticsearch](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-gsg.html) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1305) in GitLab [Starter](https://about.gitlab.com/pricing/) 9.0.
+> - [Moved](../subscriptions/bronze_starter.md) to GitLab Premium in 13.9.
 
 This document describes how to enable Advanced Search. After
 Advanced Search is enabled, you'll have the benefit of fast search response times
@@ -152,7 +153,7 @@ cd $indexer_path && sudo make install
 
 The `gitlab-elasticsearch-indexer` will be installed to `/usr/local/bin`.
 
-You can change the installation path with the `PREFIX` env variable.
+You can change the installation path with the `PREFIX` environment variable.
 Please remember to pass the `-E` flag to `sudo` if you do so.
 
 Example:
@@ -175,8 +176,7 @@ instances](#indexing-large-instances) below.
 
 To enable Advanced Search, you need to have admin access to GitLab:
 
-1. Navigate to **Admin Area**, then **Settings > General**
-   and expand the **Advanced Search** section.
+1. Navigate to **Admin Area**, then **Settings > Advanced Search**.
 
    NOTE:
    To see the Advanced Search section, you need an active Starter
@@ -186,7 +186,7 @@ To enable Advanced Search, you need to have admin access to GitLab:
    your Elasticsearch cluster. Do not enable **Search with Elasticsearch enabled**
    yet.
 1. Now enable **Elasticsearch indexing** in **Admin Area > Settings >
-   General > Advanced Search** and click **Save changes**. This will create
+   Advanced Search** and click **Save changes**. This will create
    an empty index if one does not already exist.
 1. Click **Index all projects**.
 1. Click **Check progress** in the confirmation message to see the status of
@@ -202,7 +202,7 @@ To enable Advanced Search, you need to have admin access to GitLab:
    ```
 
 1. After the indexing has completed, enable **Search with Elasticsearch enabled** in
-   **Admin Area > Settings > General > Advanced Search** and click **Save
+   **Admin Area > Settings > Advanced Search** and click **Save
    changes**.
 
 NOTE:
@@ -218,7 +218,7 @@ The following Elasticsearch settings are available:
 | Parameter                                             | Description |
 |-------------------------------------------------------|-------------|
 | `Elasticsearch indexing`                              | Enables or disables Elasticsearch indexing and creates an empty index if one does not already exist. You may want to enable indexing but disable search in order to give the index time to be fully completed, for example. Also, keep in mind that this option doesn't have any impact on existing data, this only enables/disables the background indexer which tracks data changes and ensures new data is indexed. |
-| `Pause Elasticsearch indexing`                        | Enables or disables temporary indexing pause. This is useful for cluster migration/reindexing. All changes are still tracked, but they are not committed to the Elasticsearch index until unpaused. |
+| `Pause Elasticsearch indexing`                        | Enables or disables temporary indexing pause. This is useful for cluster migration/reindexing. All changes are still tracked, but they are not committed to the Elasticsearch index until resumed. |
 | `Search with Elasticsearch enabled`                   | Enables or disables using Elasticsearch in search. |
 | `URL`                                                 | The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., `http://host1, https://host2:9200`). If your Elasticsearch instance is password protected, pass the `username:password` in the URL (e.g., `http://<username>:<password>@<elastic_host>:9200/`). |
 | `Number of Elasticsearch shards`                      | Elasticsearch indexes are split into multiple shards for performance reasons. In general, larger indexes need to have more shards. Changes to this value do not take effect until the index is recreated. You can read more about tradeoffs in the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/scalability.html). |
@@ -260,13 +260,13 @@ from the Elasticsearch index as expected.
 
 ## Enabling custom language analyzers
 
-You can improve the language support for Chinese and Japanese languages by utilizing [smartcn](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) and/or [kuromoji](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) analysis plugins from Elastic.
+You can improve the language support for Chinese and Japanese languages by utilizing [`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) and/or [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) analysis plugins from Elastic.
 
 To enable language(s) support:
 
 1. Install the desired plugin(s), please refer to [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/7.9/installation.html) for plugins installation instructions. The plugin(s) must be installed on every node in the cluster, and each node must be restarted after installation. For a list of plugins, see the table later in this section.
-1. Navigate to the **Admin Area**, then **Settings > General**..
-1. Expand the **Advanced Search** section and locate **Custom analyzers: language support**.
+1. Navigate to the **Admin Area**, then **Settings > Advanced Search**..
+1. Locate **Custom analyzers: language support**.
 1. Enable plugin(s) support for **Indexing**.
 1. Click **Save changes** for the changes to take effect.
 1. Trigger [Zero downtime reindexing](#zero-downtime-reindexing) or reindex everything from scratch to create a new index with updated mappings.
@@ -276,18 +276,17 @@ For guidance on what to install, see the following Elasticsearch language plugin
 
 | Parameter                                             | Description |
 |-------------------------------------------------------|-------------|
-| `Enable Chinese (smartcn) custom analyzer: Indexing`   | Enables or disables Chinese language support using [smartcn](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) custom analyzer for newly created indices.|
-| `Enable Chinese (smartcn) custom analyzer: Search`   | Enables or disables using [smartcn](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) fields for Advanced Search. Please only enable this after [installing the plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html), enabling custom analyzer indexing and recreating the index.|
-| `Enable Japanese (kuromoji) custom analyzer: Indexing`   | Enables or disables Japanese language support using [kuromoji](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) custom analyzer for newly created indices.|
-| `Enable Japanese (kuromoji) custom analyzer: Search`  | Enables or disables using [kuromoji](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) fields for Advanced Search. Please only enable this after [installing the plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html), enabling custom analyzer indexing and recreating the index.|
+| `Enable Chinese (smartcn) custom analyzer: Indexing`   | Enables or disables Chinese language support using [`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) custom analyzer for newly created indices.|
+| `Enable Chinese (smartcn) custom analyzer: Search`   | Enables or disables using [`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) fields for Advanced Search. Please only enable this after [installing the plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html), enabling custom analyzer indexing and recreating the index.|
+| `Enable Japanese (kuromoji) custom analyzer: Indexing`   | Enables or disables Japanese language support using [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) custom analyzer for newly created indices.|
+| `Enable Japanese (kuromoji) custom analyzer: Search`  | Enables or disables using [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) fields for Advanced Search. Please only enable this after [installing the plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html), enabling custom analyzer indexing and recreating the index.|
 
 ## Disabling Advanced Search
 
 To disable the Elasticsearch integration:
 
-1. Navigate to the **Admin Area**, then **Settings > General**.
-1. Expand the **Advanced Search** section and uncheck **Elasticsearch indexing**
-   and **Search with Elasticsearch enabled**.
+1. Navigate to the **Admin Area**, then **Settings > Advanced Search**.
+1. Uncheck **Elasticsearch indexing** and **Search with Elasticsearch enabled**.
 1. Click **Save changes** for the changes to take effect.
 1. (Optional) Delete the existing indexes:
 
@@ -315,12 +314,12 @@ used by the GitLab Advanced Search integration.
 
 ### Pause the indexing
 
-In the **Admin Area > Settings > General > Advanced Search** section, select the
+In the **Admin Area > Settings > Advanced Search** section, select the
 **Pause Elasticsearch Indexing** setting, and then save your change.
 With this, all updates that should happen on your Elasticsearch index will be
-buffered and caught up once unpaused.
+buffered and caught up after resuming.
 
-The indexing will also be automatically paused when the [**Trigger cluster reindexing**](#trigger-the-reindex-via-the-advanced-search-administration) button is used, and unpaused when the reindexing completes or aborts.
+The indexing will also be automatically paused when the [**Trigger cluster reindexing**](#trigger-the-reindex-via-the-advanced-search-administration) button is used, and resumes when the reindexing completes or aborts.
 
 ### Setup
 
@@ -332,7 +331,7 @@ This process involves several shell commands and curl invocations, so a good
 initial setup will help for later:
 
 ```shell
-# You can find this value under Admin Area > Settings > General > Advanced Search > URL
+# You can find this value under Admin Area > Settings > Advanced Search > URL
 export CLUSTER_URL="http://localhost:9200"
 export PRIMARY_INDEX="gitlab-production"
 export SECONDARY_INDEX="gitlab-production-$(date +%s)"
@@ -431,16 +430,16 @@ To trigger the re-index from `primary` index:
 
     The reindexing is now completed. Your GitLab instance is now ready to use the [automated in-cluster reindexing](#trigger-the-reindex-via-the-advanced-search-administration) feature for future reindexing.
 
-1. Unpause the indexing
+1. Resume the indexing
 
-    Under **Admin Area > Settings > General > Advanced Search**, uncheck the **Pause Elasticsearch Indexing** setting and save.
+    Under **Admin Area > Settings > Advanced Search**, uncheck the **Pause Elasticsearch Indexing** setting and save.
 
 ### Trigger the reindex via the Advanced Search administration
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34069) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.2.
 > - A scheduled index deletion and the ability to cancel it was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38914) in GitLab Starter 13.3.
 
-Under **Admin Area > Settings > General > Advanced Search > Elasticsearch zero-downtime reindexing**, click on **Trigger cluster reindexing**.
+Under **Admin Area > Settings > Advanced Search > Elasticsearch zero-downtime reindexing**, click on **Trigger cluster reindexing**.
 
 Reindexing can be a lengthy process depending on the size of your Elasticsearch cluster.
 
@@ -449,9 +448,9 @@ After the reindexing is completed, the original index will be scheduled to be de
 
 While the reindexing is running, you will be able to follow its progress under that same section.
 
-### Mark the most recent reindex job as failed and unpause the indexing
+### Mark the most recent reindex job as failed and resume the indexing
 
-Sometimes, you might want to abandon the unfinished reindex job and unpause the indexing. You can achieve this via the following steps:
+Sometimes, you might want to abandon the unfinished reindex job and resume the indexing. You can achieve this via the following steps:
 
 1. Mark the most recent reindex job as failed:
 
@@ -463,7 +462,7 @@ Sometimes, you might want to abandon the unfinished reindex job and unpause the 
    bundle exec rake gitlab:elastic:mark_reindex_failed RAILS_ENV=production
    ```
 
-1. Uncheck the "Pause Elasticsearch indexing" checkbox in **Admin Area > Settings > General > Advanced Search**.
+1. Uncheck the "Pause Elasticsearch indexing" checkbox in **Admin Area > Settings > Advanced Search**.
 
 ## Background migrations
 
@@ -519,8 +518,8 @@ In order to debug issues with the migrations you can check the [`elasticsearch.l
 Some migrations are built with a retry limit. If the migration cannot finish within the retry limit,
 it will be halted and a notification will be displayed in the Advanced Search integration settings.
 It is recommended to check the [`elasticsearch.log` file](../administration/logs.md#elasticsearchlog) to
-debug why the migration was halted and make any changes before retrying the migration. Once you believe you've 
-fixed the cause of the failure, click "Retry migration", and the migration will be scheduled to be retried 
+debug why the migration was halted and make any changes before retrying the migration. Once you believe you've
+fixed the cause of the failure, click "Retry migration", and the migration will be scheduled to be retried
 in the background.
 
 ## GitLab Advanced Search Rake tasks
@@ -599,7 +598,7 @@ For basic guidance on choosing a cluster configuration you may refer to [Elastic
 - Number of CPUs (CPU cores) per node usually corresponds to the `Number of Elasticsearch shards` setting described below.
 - A good guideline is to ensure you keep the number of shards per node below 20 per GB heap it has configured. A node with a 30GB heap should therefore have a maximum of 600 shards, but the further below this limit you can keep it the better. This will generally help the cluster stay in good health.
 - Small shards result in small segments, which increases overhead. Aim to keep the average shard size between at least a few GB and a few tens of GB. Another consideration is the number of documents, you should aim for this simple formula for the number of shards: `number of expected documents / 5M +1`.
-- `refresh_interval` is a per index setting. You may want to adjust that from default `1s` to a bigger value if you don't need data in realtime. This will change how soon you will see fresh results. If that's important for you, you should leave it as close as possible to the default value.
+- `refresh_interval` is a per index setting. You may want to adjust that from default `1s` to a bigger value if you don't need data in real-time. This will change how soon you will see fresh results. If that's important for you, you should leave it as close as possible to the default value.
 - You might want to raise [`indices.memory.index_buffer_size`](https://www.elastic.co/guide/en/elasticsearch/reference/current/indexing-buffer.html) to 30% or 40% if you have a lot of heavy indexing operations.
 
 ### Advanced Search integration settings guidance
@@ -823,7 +822,7 @@ There are a couple of ways to achieve that:
   This is always correctly identifying whether the current project/namespace
   being searched is using Elasticsearch.
 
-- From the admin area under **Settings > General > Advanced Search** check that the
+- From the admin area under **Settings > Advanced Search** check that the
   Advanced Search settings are checked.
 
   Those same settings there can be obtained from the Rails console if necessary:
@@ -994,7 +993,7 @@ Sometimes there may be issues with your Elasticsearch index data and as such
 GitLab will allow you to revert to "basic search" when there are no search
 results and assuming that basic search is supported in that scope. This "basic
 search" will behave as though you don't have Advanced Search enabled at all for
-your instance and search using other data sources (ie. PostgreSQL data and Git
+your instance and search using other data sources (such as PostgreSQL data and Git
 data).
 
 ### Data recovery: Elasticsearch is a secondary data store only

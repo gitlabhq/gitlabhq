@@ -16,7 +16,7 @@ describe('Actions TestReports Store', () => {
   const testReports = getJSONFixture('pipelines/test_report.json');
   const summary = { total_count: 1 };
 
-  const suiteEndpoint = `${TEST_HOST}/tests/:suite_name.json`;
+  const suiteEndpoint = `${TEST_HOST}/tests/suite.json`;
   const summaryEndpoint = `${TEST_HOST}/test_reports/summary.json`;
   const defaultState = {
     suiteEndpoint,
@@ -69,9 +69,8 @@ describe('Actions TestReports Store', () => {
     beforeEach(() => {
       const buildIds = [1];
       testReports.test_suites[0].build_ids = buildIds;
-      const endpoint = suiteEndpoint.replace(':suite_name', testReports.test_suites[0].name);
       mock
-        .onGet(endpoint, { params: { build_ids: buildIds } })
+        .onGet(suiteEndpoint, { params: { build_ids: buildIds } })
         .replyOnce(200, testReports.test_suites[0], {});
     });
 

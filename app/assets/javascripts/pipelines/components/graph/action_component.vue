@@ -3,6 +3,7 @@ import { GlTooltipDirective, GlButton, GlLoadingIcon, GlIcon } from '@gitlab/ui'
 import axios from '~/lib/utils/axios_utils';
 import { dasherize } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { reportToSentry } from './utils';
 
@@ -62,7 +63,7 @@ export default {
      *
      */
     onClickAction() {
-      this.$root.$emit('bv::hide::tooltip', `js-ci-action-${this.link}`);
+      this.$root.$emit(BV_HIDE_TOOLTIP, `js-ci-action-${this.link}`);
       this.isDisabled = true;
       this.isLoading = true;
 

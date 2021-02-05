@@ -4,22 +4,20 @@
 
 .sub-section{ data: { qa_selector: 'export_project_content' } }
   %h4= _('Export project')
-  %p= _('Export this project with all its related data in order to move your project to a new GitLab instance. Once the export is finished, you can import the file from the "New Project" page.')
-
-  .bs-callout.bs-callout-info
-    %p.gl-mb-0
-      %p= _('The following items will be exported:')
-      %ul
-        - project_export_descriptions.each do |desc|
-          %li= desc
-      %p= _('The following items will NOT be exported:')
-      %ul
-        %li= _('Job logs and artifacts')
-        %li= _('Container registry images')
-        %li= _('CI variables')
-        %li= _('Webhooks')
-        %li= _('Any encrypted tokens')
-  %p= _('Once the exported file is ready, you will receive a notification email with a download link, or you can download it from this page.')
+  - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/settings/import_export') }
+  %p= _('Export this project with all its related data in order to move it to a new GitLab instance. When the exported file is ready, you can download it from this page or from the download link in the email notification you will receive. You can then import it when creating a new project. %{link_start}Learn more.%{link_end}').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+  %p.gl-mb-0
+    %p= _('The following items will be exported:')
+    %ul
+      - project_export_descriptions.each do |desc|
+        %li= desc
+    %p= _('The following items will NOT be exported:')
+    %ul
+      %li= _('Job logs and artifacts')
+      %li= _('Container registry images')
+      %li= _('CI variables')
+      %li= _('Webhooks')
+      %li= _('Any encrypted tokens')
   - if project.export_status == :finished
     = link_to _('Download export'), download_export_project_path(project),
             rel: 'nofollow', download: '', method: :get, class: "btn btn-default", data: { qa_selector: 'download_export_link' }

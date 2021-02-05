@@ -1,6 +1,9 @@
 import commitState from '~/ide/stores/modules/commit/state';
 import * as getters from '~/ide/stores/modules/commit/getters';
-import consts from '~/ide/stores/modules/commit/constants';
+import {
+  COMMIT_TO_CURRENT_BRANCH,
+  COMMIT_TO_NEW_BRANCH,
+} from '~/ide/stores/modules/commit/constants';
 
 describe('IDE commit module getters', () => {
   let state;
@@ -147,13 +150,13 @@ describe('IDE commit module getters', () => {
 
   describe('isCreatingNewBranch', () => {
     it('returns false if NOT creating a new branch', () => {
-      state.commitAction = consts.COMMIT_TO_CURRENT_BRANCH;
+      state.commitAction = COMMIT_TO_CURRENT_BRANCH;
 
       expect(getters.isCreatingNewBranch(state)).toBeFalsy();
     });
 
     it('returns true if creating a new branch', () => {
-      state.commitAction = consts.COMMIT_TO_NEW_BRANCH;
+      state.commitAction = COMMIT_TO_NEW_BRANCH;
 
       expect(getters.isCreatingNewBranch(state)).toBeTruthy();
     });

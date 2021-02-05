@@ -118,5 +118,10 @@ RSpec.describe Autocomplete::UsersFinder do
 
       it { is_expected.to match_array([user1, external_user, omniauth_user, current_user]) }
     end
+
+    it 'preloads the status association' do
+      associations = subject.map { |user| user.association(:status) }
+      expect(associations).to all(be_loaded)
+    end
   end
 end

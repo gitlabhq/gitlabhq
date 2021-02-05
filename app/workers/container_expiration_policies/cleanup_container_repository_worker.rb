@@ -25,6 +25,7 @@ module ContainerExpirationPolicies
       return unless container_repository
 
       log_extra_metadata_on_done(:container_repository_id, container_repository.id)
+      log_extra_metadata_on_done(:project_id, project.id)
 
       unless allowed_to_run?(container_repository)
         container_repository.cleanup_unscheduled!
@@ -78,7 +79,7 @@ module ContainerExpirationPolicies
     end
 
     def project
-      container_repository&.project
+      container_repository.project
     end
 
     def container_repository

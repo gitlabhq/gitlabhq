@@ -1,5 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
 import Api from '~/api';
+import httpStatus from '~/lib/utils/http_status';
+import axios from '~/lib/utils/axios_utils';
+import { resolvers } from '~/pipeline_editor/graphql/resolvers';
 import {
   mockCiConfigPath,
   mockCiYml,
@@ -7,9 +10,6 @@ import {
   mockLintResponse,
   mockProjectFullPath,
 } from '../mock_data';
-import httpStatus from '~/lib/utils/http_status';
-import axios from '~/lib/utils/axios_utils';
-import { resolvers } from '~/pipeline_editor/graphql/resolvers';
 
 jest.mock('~/api', () => {
   return {

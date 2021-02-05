@@ -5,7 +5,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# SAML OmniAuth Provider **(CORE ONLY)**
+# SAML OmniAuth Provider **(FREE SELF)**
 
 This page describes instance-wide SAML for self-managed GitLab instances. For SAML on GitLab.com, see [SAML SSO for GitLab.com groups](../user/group/saml_sso/index.md).
 
@@ -17,7 +17,7 @@ You should also reference the [OmniAuth documentation](omniauth.md) for general 
 |------|-------------|
 | Identity Provider (IdP) | The service which manages your user identities such as ADFS, Okta, Onelogin, or Ping Identity. |
 | Service Provider (SP) | SAML considers GitLab to be a service provider. |
-| Assertion | A piece of information about a user's identity, such as their name or role. Also know as claims or attributes. |
+| Assertion | A piece of information about a user's identity, such as their name or role. Also known as claims or attributes. |
 | SSO | Single Sign-On. |
 | Assertion consumer service URL | The callback on GitLab where users will be redirected after successfully authenticating with the identity provider. |
 | Issuer | How GitLab identifies itself to the identity provider. Also known as a "Relying party trust identifier". |
@@ -163,8 +163,20 @@ will be returned to GitLab and will be signed in.
 
 ## SAML Groups
 
-You can require users to be members of a certain group, or assign users `external`, `admin` or `auditor` roles based on group membership. This feature **does not** allow you to
+You can require users to be members of a certain group, or assign users [external](../user/permissions.md#external-users), admin or [auditor](../user/permissions.md#auditor-users) roles based on group membership.
+These groups are checked on each SAML login and user attributes updated as necessary.
+This feature **does not** allow you to
 automatically add users to GitLab [Groups](../user/group/index.md).
+
+Support for these groups depends on your [subscription](https://about.gitlab.com/pricing/)
+and whether you've installed [GitLab Enterprise Edition (EE)](https://about.gitlab.com/install/).
+
+| Group                        | Tier               | GitLab Enterprise Edition (EE) Only? |
+|------------------------------|--------------------|--------------------------------------|
+| [Required](#required-groups) | **(FREE SELF)**    | Yes                                  |
+| [External](#external-groups) | **(FREE SELF)**    | No                                   |
+| [Admin](#admin-groups)       | **(FREE SELF)**    | Yes                                  |
+| [Auditor](#auditor-groups)   | **(PREMIUM SELF)** | Yes                                  |
 
 ### Requirements
 
@@ -187,7 +199,7 @@ The name of the attribute can be anything you like, but it must contain the grou
 to which a user belongs. In order to tell GitLab where to find these groups, you need
 to add a `groups_attribute:` element to your SAML settings.
 
-### Required groups **(STARTER ONLY)**
+### Required groups **(FREE SELF)**
 
 Your IdP passes Group Information to the SP (GitLab) in the SAML Response. You need to configure GitLab to identify:
 
@@ -213,9 +225,9 @@ Example:
   } }
 ```
 
-### External Groups **(STARTER ONLY)**
+### External groups **(FREE SELF)**
 
-SAML login supports automatic identification on whether a user should be considered an [external](../user/permissions.md) user. This is based on the user's group membership in the SAML identity provider.
+SAML login supports automatic identification on whether a user should be considered an [external user](../user/permissions.md#external-users). This is based on the user's group membership in the SAML identity provider.
 
 ```yaml
 { name: 'saml',
@@ -231,7 +243,7 @@ SAML login supports automatic identification on whether a user should be conside
   } }
 ```
 
-### Admin Groups **(STARTER ONLY)**
+### Admin groups **(FREE SELF)**
 
 The requirements are the same as the previous settings, your IdP needs to pass Group information to GitLab, you need to tell
 GitLab where to look for the groups in the SAML response, and which group(s) should be
@@ -251,13 +263,13 @@ considered admin users.
   } }
 ```
 
-### Auditor Groups **(STARTER ONLY)**
+### Auditor groups **(PREMIUM SELF)**
 
 > Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 11.4.
 
 The requirements are the same as the previous settings, your IdP needs to pass Group information to GitLab, you need to tell
 GitLab where to look for the groups in the SAML response, and which group(s) should be
-considered auditor users.
+considered [auditor users](../user/permissions.md#auditor-users).
 
 ```yaml
 { name: 'saml',
@@ -385,7 +397,7 @@ This setting should be used only to map attributes that are part of the OmniAuth
 `attribute_statements` is used to map Attribute Names in a SAMLResponse to entries
 in the OmniAuth [`info` hash](https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema#schema-10-and-later).
 
-For example, if your SAMLResponse contains an Attribute called 'EmailAddress',
+For example, if your SAMLResponse contains an Attribute called `EmailAddress`,
 specify `{ email: ['EmailAddress'] }` to map the Attribute to the
 corresponding key in the `info` hash. URI-named Attributes are also supported, e.g.
 `{ email: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] }`.
@@ -582,8 +594,8 @@ GitLab will sign the request with the provided private key. GitLab will include 
 
 Avoid user control of the following attributes:
 
-- [`*NameID*`](../user/group/saml_sso/index.md#nameid)
-- *Email* when used with `omniauth_auto_link_saml_user`
+- [`NameID`](../user/group/saml_sso/index.md#nameid)
+- `Email` when used with `omniauth_auto_link_saml_user`
 
 These attributes define the SAML user. If users can change these attributes, they can impersonate others.
 
@@ -593,7 +605,7 @@ Refer to the documentation for your SAML Identity Provider for information on ho
 
 The [Generated passwords for users created through integrated authentication](../security/passwords_for_integrated_authentication_methods.md) guide provides an overview of how GitLab generates and sets passwords for users created via SAML.
 
-## Configuring Group SAML on a self-managed GitLab instance **(PREMIUM ONLY)**
+## Configuring Group SAML on a self-managed GitLab instance **(PREMIUM SELF)**
 
 For information on the GitLab.com implementation, please see the [SAML SSO for GitLab.com groups page](../user/group/saml_sso).
 

@@ -256,6 +256,15 @@ class Wiki
   def after_post_receive
   end
 
+  override :git_garbage_collect_worker_klass
+  def git_garbage_collect_worker_klass
+    Wikis::GitGarbageCollectWorker
+  end
+
+  def cleanup
+    @repository = nil
+  end
+
   private
 
   def commit_details(action, message = nil, title = nil)

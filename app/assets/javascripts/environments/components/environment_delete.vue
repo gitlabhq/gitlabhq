@@ -6,6 +6,7 @@
 
 import { GlTooltipDirective, GlButton, GlModalDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import eventHub from '../event_hub';
 
 export default {
@@ -40,7 +41,7 @@ export default {
   },
   methods: {
     onClick() {
-      this.$root.$emit('bv::hide::tooltip', this.$options.deleteEnvironmentTooltipId);
+      this.$root.$emit(BV_HIDE_TOOLTIP, this.$options.deleteEnvironmentTooltipId);
       eventHub.$emit('requestDeleteEnvironment', this.environment);
     },
     onDeleteEnvironment(environment) {
@@ -59,7 +60,7 @@ export default {
     :loading="isLoading"
     :title="title"
     :aria-label="title"
-    class="gl-display-none gl-display-md-block"
+    class="gl-display-none gl-md-display-block"
     variant="danger"
     category="primary"
     icon="remove"

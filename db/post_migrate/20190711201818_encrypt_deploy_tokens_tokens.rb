@@ -10,7 +10,7 @@ class EncryptDeployTokensTokens < ActiveRecord::Migration[5.1]
   def up
     say_with_time("Encrypting tokens from deploy_tokens") do
       DeploymentTokens.where('token_encrypted is NULL AND token IS NOT NULL').find_each(batch_size: 10000) do |deploy_token|
-        token_encrypted = Gitlab::CryptoHelper.aes256_gcm_encrypt(deploy_token.token)
+        token_encrypted = Gitlab::CryptoHelper.aes256_gcm_encrypt(deploy_token.token, nonce: Gitlab::CryptoHelper::AES256_GCM_IV_STATIC)
         deploy_token.update!(token_encrypted: token_encrypted)
       end
     end

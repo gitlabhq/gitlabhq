@@ -1,13 +1,20 @@
 # frozen_string_literal: true
 
-class ApplicationExperiment < Gitlab::Experiment
+class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/NamespacedClass
+  def enabled?
+    return false if Feature::Definition.get(feature_flag_name).nil? # there has to be a feature flag yaml file
+    return false unless Gitlab.dev_env_or_com? # we're in an environment that allows experiments
+
+    Feature.get(feature_flag_name).state != :off # rubocop:disable Gitlab/AvoidFeatureGet
+  end
+
   def publish(_result)
     track(:assignment) # track that we've assigned a variant for this context
     Gon.global.push({ experiment: { name => signature } }, true) # push to client
   end
 
   def track(action, **event_args)
-    return if excluded? # no events for opted out actors or excluded subjects
+    return unless should_track? # no events for opted out actors or excluded subjects
 
     Gitlab::Tracking.event(name, action.to_s, **event_args.merge(
       context: (event_args[:context] || []) << SnowplowTracker::SelfDescribingJson.new(
@@ -19,9 +26,13 @@ class ApplicationExperiment < Gitlab::Experiment
   private
 
   def resolve_variant_name
-    return variant_names.first if Feature.enabled?(name, self, type: :experiment)
+    return variant_names.first if Feature.enabled?(feature_flag_name, self, type: :experiment, default_enabled: :yaml)
 
     nil # Returning nil vs. :control is important for not caching and rollouts.
+  end
+
+  def feature_flag_name
+    name.tr('/', '_')
   end
 
   # Cache is an implementation on top of Gitlab::Redis::SharedState that also
@@ -41,7 +52,7 @@ class ApplicationExperiment < Gitlab::Experiment
   # default cache key strategy. So running `cache.fetch("foo:bar", "value")`
   # would create/update a hash with the key of "foo", with a field named
   # "bar" that has "value" assigned to it.
-  class Cache < ActiveSupport::Cache::Store
+  class Cache < ActiveSupport::Cache::Store # rubocop:disable Gitlab/NamespacedClass
     # Clears the entire cache for a given experiment. Be careful with this
     # since it would reset all resolved variants for the entire experiment.
     def clear(key:)

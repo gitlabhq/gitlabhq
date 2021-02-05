@@ -54,6 +54,10 @@ RSpec.describe Gitlab::Database::WithLockRetries do
         lock_fiber.resume # start the transaction and lock the table
       end
 
+      after do
+        lock_fiber.resume if lock_fiber.alive?
+      end
+
       context 'lock_fiber' do
         it 'acquires lock successfully' do
           check_exclusive_lock_query = """

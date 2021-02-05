@@ -3,7 +3,7 @@
 module Mutations
   module MergeRequests
     class Create < BaseMutation
-      include ResolvesProject
+      include FindsProject
 
       graphql_name 'MergeRequestCreate'
 
@@ -39,7 +39,7 @@ module Mutations
       authorize :create_merge_request_from
 
       def resolve(project_path:, **attributes)
-        project = authorized_find!(full_path: project_path)
+        project = authorized_find!(project_path)
         params = attributes.merge(author_id: current_user.id)
 
         merge_request = ::MergeRequests::CreateService.new(project, current_user, params).execute
@@ -48,12 +48,6 @@ module Mutations
           merge_request: merge_request.valid? ? merge_request : nil,
           errors: errors_on_object(merge_request)
         }
-      end
-
-      private
-
-      def find_object(full_path:)
-        resolve_project(full_path: full_path)
       end
     end
   end

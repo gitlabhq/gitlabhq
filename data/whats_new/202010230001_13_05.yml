@@ -39,7 +39,7 @@
   stage: Create
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/snippets.html#multiple-files-by-snippet
   image_url: https://about.gitlab.com/images/13_5/phikai-snippets-multiple-files.png
   published_at: 2020-10-22
@@ -52,7 +52,7 @@
   stage: Verify
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/ci/runners/README.html#disable-shared-runners
   image_url: https://about.gitlab.com/images/13_5/enable_shared_runners_v2.png
   published_at: 2020-10-22
@@ -65,7 +65,7 @@
   stage: Release
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/operations/feature_flags.html#percent-rollout
   image_url: https://about.gitlab.com/images/13_5/percent-rollout.png
   published_at: 2020-10-22
@@ -78,7 +78,7 @@
   stage: Secure
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/application_security/sast/#supported-languages-and-frameworks
   image_url: https://about.gitlab.com/images/13_5/sast-gitlab-mobile.png
   published_at: 2020-10-22

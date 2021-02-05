@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Deploying AWS Lambda function using GitLab CI/CD
+# Deploying AWS Lambda function using GitLab CI/CD **(CORE)**
 
 GitLab allows users to easily deploy AWS Lambda functions and create rich serverless applications.
 
@@ -74,7 +74,7 @@ Place this code in the file `src/handler.js`.
 
 In our case, `module.exports.hello` defines the `hello` handler to reference later in the `serverless.yml`.
 
-You can learn more about the AWS Lambda Node.js function handler and all its various options here: <https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html>
+You can learn more about the [AWS Lambda Node.js function handler](https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html) and all its various options in its documentation.
 
 #### Creating a `serverless.yml` file
 

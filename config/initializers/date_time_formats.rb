@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # :short  - 10 Nov
 # :medium - Nov 10, 2007
 # :long   - November 10, 2007

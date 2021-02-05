@@ -9,22 +9,22 @@ module Types
     description 'Represents a list for an issue board'
 
     field :id, GraphQL::ID_TYPE, null: false,
-          description: 'ID (global ID) of the list'
+          description: 'ID (global ID) of the list.'
     field :title, GraphQL::STRING_TYPE, null: false,
-          description: 'Title of the list'
+          description: 'Title of the list.'
     field :list_type, GraphQL::STRING_TYPE, null: false,
-          description: 'Type of the list'
+          description: 'Type of the list.'
     field :position, GraphQL::INT_TYPE, null: true,
-          description: 'Position of list within the board'
+          description: 'Position of list within the board.'
     field :label, Types::LabelType, null: true,
-          description: 'Label of the list'
+          description: 'Label of the list.'
     field :collapsed, GraphQL::BOOLEAN_TYPE, null: true,
-          description: 'Indicates if list is collapsed for this user'
+          description: 'Indicates if list is collapsed for this user.'
     field :issues_count, GraphQL::INT_TYPE, null: true,
-          description: 'Count of issues in the list'
+          description: 'Count of issues in the list.'
 
     field :issues, ::Types::IssueType.connection_type, null: true,
-          description: 'Board issues',
+          description: 'Board issues.',
           resolver: ::Resolvers::BoardListIssuesResolver
 
     def issues_count

@@ -5,8 +5,6 @@ require 'rubocop'
 require_relative '../../../../rubocop/cop/lint/last_keyword_argument'
 
 RSpec.describe RuboCop::Cop::Lint::LastKeywordArgument do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   before do

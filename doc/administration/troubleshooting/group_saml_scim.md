@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Troubleshooting Group SAML and SCIM **(SILVER ONLY)**
+# Troubleshooting Group SAML and SCIM **(PREMIUM SAAS)**
 
 These are notes and screenshots regarding Group SAML and SCIM that the GitLab Support Team sometimes uses while troubleshooting, but which do not fit into the official documentation. GitLab is making this public, so that anyone can make use of the Support team’s collected knowledge.
 

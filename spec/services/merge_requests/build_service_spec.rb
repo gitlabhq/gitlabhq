@@ -252,6 +252,7 @@ RSpec.describe MergeRequests::BuildService do
               issue.update!(iid: 123)
             else
               create(:"#{issue_tracker}_service", project: project)
+              project.reload
             end
           end
 
@@ -351,6 +352,7 @@ RSpec.describe MergeRequests::BuildService do
               issue.update!(iid: 123)
             else
               create(:"#{issue_tracker}_service", project: project)
+              project.reload
             end
           end
 

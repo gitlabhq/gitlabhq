@@ -33,7 +33,7 @@ RSpec.shared_examples 'handles repository moves' do
       subject { build(repository_storage_factory_key, container: container) }
 
       it "does not allow the container to be read-only on create" do
-        container.update!(repository_read_only: true)
+        container.set_repository_read_only!
 
         expect(subject).not_to be_valid
         expect(subject.errors[error_key].first).to match(/is read only/)
@@ -45,8 +45,8 @@ RSpec.shared_examples 'handles repository moves' do
     context 'destination_storage_name' do
       subject { build(repository_storage_factory_key) }
 
-      it 'picks storage from ApplicationSetting' do
-        expect(Gitlab::CurrentSettings).to receive(:pick_repository_storage).and_return('picked').at_least(:once)
+      it 'can pick new storage' do
+        expect(Repository).to receive(:pick_storage_shard).and_return('picked').at_least(:once)
 
         expect(subject.destination_storage_name).to eq('picked')
       end

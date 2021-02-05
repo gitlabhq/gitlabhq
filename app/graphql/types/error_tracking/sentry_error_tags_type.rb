@@ -9,10 +9,10 @@ module Types
 
       field :level, GraphQL::STRING_TYPE,
         null: true,
-        description: "Severity level of the Sentry Error"
+        description: "Severity level of the Sentry Error."
       field :logger, GraphQL::STRING_TYPE,
         null: true,
-        description: "Logger of the Sentry Error"
+        description: "Logger of the Sentry Error."
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

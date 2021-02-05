@@ -59,7 +59,14 @@ RSpec.describe Import::BulkImportsController do
               parsed_response: [
                 { 'id' => 1, 'full_name' => 'group1', 'full_path' => 'full/path/group1', 'web_url' => 'http://demo.host/full/path/group1' },
                 { 'id' => 2, 'full_name' => 'group2', 'full_path' => 'full/path/group2', 'web_url' => 'http://demo.host/full/path/group1' }
-              ]
+              ],
+              headers: {
+                'x-next-page' => '2',
+                'x-page' => '1',
+                'x-per-page' => '20',
+                'x-total' => '37',
+                'x-total-pages' => '2'
+              }
             )
           end
 
@@ -79,6 +86,17 @@ RSpec.describe Import::BulkImportsController do
             get :status, format: :json
 
             expect(json_response).to eq({ importable_data: client_response.parsed_response }.as_json)
+          end
+
+          it 'forwards pagination headers' do
+            get :status, format: :json
+
+            expect(response.headers['x-per-page']).to eq client_response.headers['x-per-page']
+            expect(response.headers['x-page']).to eq client_response.headers['x-page']
+            expect(response.headers['x-next-page']).to eq client_response.headers['x-next-page']
+            expect(response.headers['x-prev-page']).to eq client_response.headers['x-prev-page']
+            expect(response.headers['x-total']).to eq client_response.headers['x-total']
+            expect(response.headers['x-total-pages']).to eq client_response.headers['x-total-pages']
           end
 
           context 'when filtering' do

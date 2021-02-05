@@ -22,7 +22,7 @@ RSpec.describe Banzai::Filter::TruncateSourceFilter do
 
   it 'truncates UTF-8 text by bytes, on a character boundary' do
     utf8_text = '日本語の文字が大きい'
-    truncated = '日…'
+    truncated = '日...'
 
     expect(filter(utf8_text, limit: truncated.bytesize)).to eq(truncated)
     expect(filter(utf8_text, limit: utf8_text.bytesize)).to eq(utf8_text)

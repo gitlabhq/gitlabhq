@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import { defaults } from 'lodash';
 import ToolbarItem from '../toolbar_item.vue';
+import { TOOLBAR_ITEM_CONFIGS, VIDEO_ATTRIBUTES } from '../constants';
 import buildHtmlToMarkdownRenderer from './build_html_to_markdown_renderer';
 import buildCustomHTMLRenderer from './build_custom_renderer';
-import { TOOLBAR_ITEM_CONFIGS, VIDEO_ATTRIBUTES } from '../constants';
 import sanitizeHTML from './sanitize_html';
 
 const buildWrapper = (propsData) => {

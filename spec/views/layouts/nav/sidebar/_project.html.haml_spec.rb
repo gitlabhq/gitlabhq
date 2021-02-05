@@ -48,7 +48,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
   end
 
   describe 'Packages' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     let_it_be(:package_menu_name) { 'Packages & Registries' }
     let_it_be(:package_entry_name) { 'Package Registry' }

@@ -91,7 +91,7 @@ _The artifacts are stored by default in
 >   [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
 > - Since version 9.5, artifacts are [browsable](../ci/pipelines/job_artifacts.md#browsing-artifacts),
 >   when object storage is enabled. 9.4 lacks this feature.
-> - Since version 10.6, available in [GitLab Core](https://about.gitlab.com/pricing/)
+> - Since version 10.6, available in [GitLab Free](https://about.gitlab.com/pricing/).
 > - Since version 11.0, we support `direct_upload` to S3.
 
 If you don't want to use the local disk where GitLab is installed to store the
@@ -375,7 +375,7 @@ default artifacts expiration setting, which you can find in the [CI/CD Admin set
 > Introduced in GitLab 10.3.
 
 To disable [the dependencies validation](../ci/yaml/README.md#when-a-dependent-job-fails),
-you can enable the `ci_disable_validates_dependencies` feature flag from a Rails console.
+you can enable the `ci_validate_build_dependencies_override` feature flag from a Rails console.
 
 **In Omnibus installations:**
 
@@ -388,7 +388,7 @@ you can enable the `ci_disable_validates_dependencies` feature flag from a Rails
 1. Enable the feature flag to disable the validation:
 
    ```ruby
-   Feature.enable(:ci_disable_validates_dependencies)
+   Feature.enable(:ci_validate_build_dependencies_override)
    ```
 
 **In installations from source:**
@@ -403,7 +403,7 @@ you can enable the `ci_disable_validates_dependencies` feature flag from a Rails
 1. Enable the feature flag to disable the validation:
 
    ```ruby
-   Feature.enable(:ci_disable_validates_dependencies)
+   Feature.enable(:ci_validate_build_dependencies_override)
    ```
 
 ## Set the maximum file size of the artifacts

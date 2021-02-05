@@ -1,6 +1,8 @@
 import sidebarDetailsQuery from 'ee_else_ce/sidebar/queries/sidebarDetails.query.graphql';
 import axios from '~/lib/utils/axios_utils';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import reviewerRereviewMutation from '../queries/reviewer_rereview.mutation.graphql';
 
 export const gqClient = createGqClient(
   {},
@@ -68,6 +70,17 @@ export default class SidebarService {
   moveIssue(moveToProjectId) {
     return axios.post(this.moveIssueEndpoint, {
       move_to_project_id: moveToProjectId,
+    });
+  }
+
+  requestReview(userId) {
+    return gqClient.mutate({
+      mutation: reviewerRereviewMutation,
+      variables: {
+        userId: convertToGraphQLId('User', `${userId}`), // eslint-disable-line @gitlab/require-i18n-strings
+        projectPath: this.fullPath,
+        iid: this.iid.toString(),
+      },
     });
   }
 }

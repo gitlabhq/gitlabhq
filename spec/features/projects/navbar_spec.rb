@@ -67,23 +67,4 @@ RSpec.describe 'Project navbar' do
 
     it_behaves_like 'verified navigation bar'
   end
-
-  context 'when invite team members is not available' do
-    it 'does not display the js-invite-members-trigger' do
-      visit project_path(project)
-
-      expect(page).not_to have_selector('.js-invite-members-trigger')
-    end
-  end
-
-  context 'when invite team members is available' do
-    it 'includes the div for js-invite-members-trigger' do
-      stub_feature_flags(invite_members_group_modal: true)
-      allow_any_instance_of(InviteMembersHelper).to receive(:invite_members_allowed?).and_return(true)
-
-      visit project_path(project)
-
-      expect(page).to have_selector('.js-invite-members-trigger')
-    end
-  end
 end

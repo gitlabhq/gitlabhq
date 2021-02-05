@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 if Rails.env.development? || ENV['GITLAB_LEGACY_PATH_LOG_MESSAGE']
   deprecator = ActiveSupport::Deprecation.new('11.0', 'GitLab')
 

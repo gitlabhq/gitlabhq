@@ -3,8 +3,8 @@ import Vuex from 'vuex';
 import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon, GlPagination } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
-import { TEST_HOST } from 'spec/test_constants';
 import Mousetrap from 'mousetrap';
+import { TEST_HOST } from 'spec/test_constants';
 import App from '~/diffs/components/app.vue';
 import NoChanges from '~/diffs/components/no_changes.vue';
 import DiffFile from '~/diffs/components/diff_file.vue';
@@ -13,14 +13,14 @@ import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
 import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vue';
 import CommitWidget from '~/diffs/components/commit_widget.vue';
 import TreeList from '~/diffs/components/tree_list.vue';
-import createDiffsStore from '../create_diffs_store';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
-import diffsMockData from '../mock_data/merge_request_diffs';
 
 import { EVT_VIEW_FILE_BY_FILE } from '~/diffs/constants';
 
 import eventHub from '~/diffs/event_hub';
+import diffsMockData from '../mock_data/merge_request_diffs';
+import createDiffsStore from '../create_diffs_store';
 
 const mergeRequestDiff = { version_index: 1 };
 const TEST_ENDPOINT = `${TEST_HOST}/diff/endpoint`;

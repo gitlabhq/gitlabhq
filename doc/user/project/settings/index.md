@@ -40,6 +40,26 @@ You can select a framework label to identify that your project has certain compl
 NOTE:
 Compliance framework labels do not affect your project settings.
 
+#### Custom compliance frameworks
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276221) in GitLab 13.9.
+> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-custom-compliance-frameworks). **(PREMIUM ONLY)**
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+GitLab 13.8 introduces custom compliance frameworks at the group-level. A group owner can create a compliance framework label
+and assign it to any number of projects within that group or sub-groups. When this feature is enabled, projects can only
+be assigned compliance framework labels that already exist within that group.
+
+If existing [Compliance frameworks](#compliance-framework) are not sufficient, you can now create
+your own.
+
+New compliance framework labels can be created and updated using GraphQL.
+
 ### Sharing and permissions
 
 For your repository, you can set up features such as public access, repository features,
@@ -120,7 +140,7 @@ Set up your project's merge request settings:
 
 - Set up the merge request method (merge commit, [fast-forward merge](../merge_requests/fast_forward_merge.md)).
 - Add merge request [description templates](../description_templates.md#description-templates).
-- Enable [merge request approvals](../merge_requests/merge_request_approvals.md). **(STARTER)**
+- Enable [merge request approvals](../merge_requests/merge_request_approvals.md).
 - Enable [merge only if pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
 - Enable [merge only when all threads are resolved](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-threads-are-resolved).
 - Enable [`delete source branch after merge` option by default](../merge_requests/getting_started.md#deleting-the-source-branch)
@@ -128,7 +148,7 @@ Set up your project's merge request settings:
 
 ![project's merge request settings](img/merge_requests_settings.png)
 
-### Service Desk **(STARTER)**
+### Service Desk
 
 Enable [Service Desk](../service_desk.md) for your project to offer customer support.
 
@@ -245,8 +265,8 @@ To delete a project:
 This action:
 
 - Deletes a project including all associated resources (issues, merge requests etc).
-- From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers,
-group administrators can [configure](../../group/index.md#enabling-delayed-project-removal) projects within a group
+- From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on [Premium](https://about.gitlab.com/pricing/) or higher tiers,
+group owners can [configure](../../group/index.md#enabling-delayed-project-removal) projects within a group
 to be deleted after a delayed period.
 When enabled, actual deletion happens after number of days
 specified in [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
@@ -299,3 +319,22 @@ Add the URL of a Jaeger server to allow your users to [easily access the Jaeger 
 
 [Add Storage credentials](../../../operations/incident_management/status_page.md#sync-incidents-to-the-status-page)
 to enable the syncing of public Issues to a [deployed status page](../../../operations/incident_management/status_page.md#create-a-status-page-project).
+
+### Enable or disable custom compliance frameworks **(PREMIUM ONLY)**
+
+Enabling or disabling custom compliance frameworks is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:ff_custom_compliance_frameworks)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:ff_custom_compliance_frameworks)
+```

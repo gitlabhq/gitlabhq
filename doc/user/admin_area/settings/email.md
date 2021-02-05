@@ -5,7 +5,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Email **(CORE ONLY)**
+# Email **(FREE SELF)**
 
 You can customize some of the content in emails sent from your GitLab instance.
 
@@ -13,7 +13,7 @@ You can customize some of the content in emails sent from your GitLab instance.
 
 The logo in the header of some emails can be customized, see the [logo customization section](../appearance.md#navigation-bar).
 
-## Custom additional text **(PREMIUM ONLY)**
+## Custom additional text **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5031) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.7.
 
@@ -40,7 +40,7 @@ In order to change this option:
 1. Select **Save changes**.
 
 NOTE:
-Once the hostname gets configured, every private commit email using the previous hostname, will not get
+After the hostname gets configured, every private commit email using the previous hostname is not
 recognized by GitLab. This can directly conflict with certain [Push rules](../../../push_rules/push_rules.md) such as
 `Check whether author is a GitLab user` and `Check whether committer is the current authenticated user`.
 

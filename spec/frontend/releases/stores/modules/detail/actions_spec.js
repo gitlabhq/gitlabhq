@@ -1,8 +1,8 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { cloneDeep } from 'lodash';
 import testAction from 'helpers/vuex_action_helper';
 import { getJSONFixture } from 'helpers/fixtures';
-import { cloneDeep } from 'lodash';
 import * as actions from '~/releases/stores/modules/detail/actions';
 import * as types from '~/releases/stores/modules/detail/mutation_types';
 import createState from '~/releases/stores/modules/detail/state';

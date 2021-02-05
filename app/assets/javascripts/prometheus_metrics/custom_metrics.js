@@ -1,10 +1,10 @@
 import $ from 'jquery';
 import { escape, sortBy } from 'lodash';
-import PrometheusMetrics from './prometheus_metrics';
-import PANEL_STATE from './constants';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import PANEL_STATE from './constants';
+import PrometheusMetrics from './prometheus_metrics';
 
 export default class CustomMetrics extends PrometheusMetrics {
   constructor(wrapperSelector) {

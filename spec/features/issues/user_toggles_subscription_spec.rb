@@ -15,13 +15,13 @@ RSpec.describe "User toggles subscription", :js do
   end
 
   it "unsubscribes from issue" do
-    subscription_button = find(".js-issuable-subscribe-button")
+    subscription_button = find('[data-testid="subscription-toggle"]')
 
     # Check we're subscribed.
     expect(subscription_button).to have_css("button.is-checked")
 
     # Toggle subscription.
-    find(".js-issuable-subscribe-button button").click
+    find('[data-testid="subscription-toggle"]').click
     wait_for_requests
 
     # Check we're unsubscribed.
@@ -33,7 +33,7 @@ RSpec.describe "User toggles subscription", :js do
 
     it 'is disabled' do
       expect(page).to have_content('Notifications have been disabled by the project or group owner')
-      expect(page).not_to have_selector('.js-issuable-subscribe-button')
+      expect(page).not_to have_selector('[data-testid="subscription-toggle"]')
     end
   end
 end

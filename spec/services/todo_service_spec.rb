@@ -1193,6 +1193,17 @@ RSpec.describe TodoService do
     end
   end
 
+  describe '#create_request_review_todo' do
+    let(:target) { create(:merge_request, author: author, source_project: project) }
+    let(:reviewer) { create(:user) }
+
+    it 'creates a todo for reviewer' do
+      service.create_request_review_todo(target, author, reviewer)
+
+      should_create_todo(user: reviewer, target: target, action: Todo::REVIEW_REQUESTED)
+    end
+  end
+
   def should_create_todo(attributes = {})
     attributes.reverse_merge!(
       project: project,

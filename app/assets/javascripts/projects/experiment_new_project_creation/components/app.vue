@@ -1,14 +1,14 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { GlBreadcrumb, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
-import WelcomePage from './welcome.vue';
-import LegacyContainer from './legacy_container.vue';
 import { __, s__ } from '~/locale';
 
 import blankProjectIllustration from '../illustrations/blank-project.svg';
 import createFromTemplateIllustration from '../illustrations/create-from-template.svg';
 import importProjectIllustration from '../illustrations/import-project.svg';
 import ciCdProjectIllustration from '../illustrations/ci-cd-project.svg';
+import LegacyContainer from './legacy_container.vue';
+import WelcomePage from './welcome.vue';
 
 const BLANK_PANEL = 'blank_project';
 const CI_CD_PANEL = 'cicd_for_external_repo';

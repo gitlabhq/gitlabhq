@@ -52,6 +52,6 @@ module WaitForRequests
   end
 
   def finished_all_ajax_requests?
-    Capybara.page.evaluate_script('window.pendingRequests || window.pendingRailsUJSRequests || 0').zero? # rubocop:disable Style/NumericPredicate
+    Capybara.page.evaluate_script('window.pendingRequests || window.pendingApolloRequests || window.pendingRailsUJSRequests || 0').zero? # rubocop:disable Style/NumericPredicate
   end
 end

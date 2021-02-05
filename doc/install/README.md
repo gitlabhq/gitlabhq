@@ -7,7 +7,7 @@ description: Read through the GitLab installation methods.
 type: index
 ---
 
-# Installation **(CORE ONLY)**
+# Installation **(FREE SELF)**
 
 GitLab can be installed in most GNU/Linux distributions and with several
 cloud providers. To get the best experience from GitLab, you must balance
@@ -24,7 +24,7 @@ install GitLab:
   The cloud native Helm chart for installing GitLab and all of its components
   on Kubernetes.
 - [_Docker_](#installing-gitlab-with-docker): The Omnibus GitLab packages,
-  dockerized.
+  Dockerized.
 - [_Source_](#installing-gitlab-from-source): Install GitLab and all of its
   components from scratch.
 - [_Cloud provider_](#installing-gitlab-on-cloud-providers): Install directly

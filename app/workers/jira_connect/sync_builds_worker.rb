@@ -14,7 +14,6 @@ module JiraConnect
       pipeline = Ci::Pipeline.find_by_id(pipeline_id)
 
       return unless pipeline
-      return unless Feature.enabled?(:jira_sync_builds, pipeline.project)
 
       ::JiraConnect::SyncService
         .new(pipeline.project)

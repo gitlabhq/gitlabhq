@@ -18,6 +18,7 @@ query getState($projectPath: ID!, $iid: String!) {
       }
       shouldBeRebased
       sourceBranchExists
+      state
       targetBranchExists
       userPermissions {
         canMerge

@@ -44,11 +44,6 @@ export default {
       type: Object,
       required: true,
     },
-    deployBoardsHelpPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
     isLoading: {
       type: Boolean,
       required: true,

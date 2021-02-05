@@ -52,6 +52,8 @@ module API
 
         def check_agent_token
           forbidden! unless agent_token
+
+          forbidden! unless Gitlab::Kas.included_in_gitlab_com_rollout?(agent.project)
         end
       end
 

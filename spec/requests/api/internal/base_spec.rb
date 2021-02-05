@@ -1094,6 +1094,104 @@ RSpec.describe API::Internal::Base do
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
+
+    context 'admin mode' do
+      shared_examples 'pushes succeed for ssh and http' do
+        it 'accepts the SSH push' do
+          push(key, project)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it 'accepts the HTTP push' do
+          push(key, project, 'http')
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      shared_examples 'pushes fail for ssh and http' do
+        it 'rejects the SSH push' do
+          push(key, project)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it 'rejects the HTTP push' do
+          push(key, project, 'http')
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'feature flag :user_mode_in_session is enabled' do
+        context 'with an admin user' do
+          let(:user) { create(:admin) }
+
+          context 'is member of the project' do
+            before do
+              project.add_developer(user)
+            end
+
+            it_behaves_like 'pushes succeed for ssh and http'
+          end
+
+          context 'is not member of the project' do
+            it_behaves_like 'pushes succeed for ssh and http'
+          end
+        end
+
+        context 'with a regular user' do
+          context 'is member of the project' do
+            before do
+              project.add_developer(user)
+            end
+
+            it_behaves_like 'pushes succeed for ssh and http'
+          end
+
+          context 'is not member of the project' do
+            it_behaves_like 'pushes fail for ssh and http'
+          end
+        end
+      end
+
+      context 'feature flag :user_mode_in_session is disabled' do
+        before do
+          stub_feature_flags(user_mode_in_session: false)
+        end
+
+        context 'with an admin user' do
+          let(:user) { create(:admin) }
+
+          context 'is member of the project' do
+            before do
+              project.add_developer(user)
+            end
+
+            it_behaves_like 'pushes succeed for ssh and http'
+          end
+
+          context 'is not member of the project' do
+            it_behaves_like 'pushes succeed for ssh and http'
+          end
+        end
+
+        context 'with a regular user' do
+          context 'is member of the project' do
+            before do
+              project.add_developer(user)
+            end
+
+            it_behaves_like 'pushes succeed for ssh and http'
+          end
+
+          context 'is not member of the project' do
+            it_behaves_like 'pushes fail for ssh and http'
+          end
+        end
+      end
+    end
   end
 
   describe 'POST /internal/post_receive', :clean_gitlab_redis_shared_state do

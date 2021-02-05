@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# User and IP rate limits **(CORE ONLY)**
+# User and IP rate limits **(FREE SELF)**
 
 Rate limiting is a common technique used to improve the security and durability
 of a web application. For more details, see

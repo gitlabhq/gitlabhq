@@ -20,6 +20,10 @@ module Gitlab
       rescue KeyError
         raise ParserNotFoundError, "Cannot find any parser matching file type '#{file_type}'"
       end
+
+      def self.instrument!
+        parsers.values.each { |parser_class| parser_class.prepend(Parsers::Instrumentation) }
+      end
     end
   end
 end

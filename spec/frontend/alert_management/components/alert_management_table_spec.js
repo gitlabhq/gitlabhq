@@ -2,11 +2,11 @@ import { mount } from '@vue/test-utils';
 import { GlTable, GlAlert, GlLoadingIcon, GlDropdown, GlIcon, GlAvatar } from '@gitlab/ui';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import mockAlerts from 'jest/vue_shared/alert_details/mocks/alerts.json';
 import { visitUrl } from '~/lib/utils/url_utility';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import AlertManagementTable from '~/alert_management/components/alert_management_table.vue';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
-import mockAlerts from '../mocks/alerts.json';
 import defaultProvideValues from '../mocks/alerts_provide_config.json';
 
 jest.mock('~/lib/utils/url_utility', () => ({

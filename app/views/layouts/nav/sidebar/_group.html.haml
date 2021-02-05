@@ -1,7 +1,9 @@
-- issues_count = group_issues_count(state: 'opened')
+- issues_count = group_open_issues_count(@group)
 - merge_requests_count = group_merge_requests_count(state: 'opened')
+- aside_title = @group.subgroup? ? _('Subgroup navigation') : _('Group navigation')
+- overview_title = @group.subgroup? ? _('Subgroup overview') : _('Group overview')
 
-.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), **tracking_attrs('groups_side_navigation', 'render', 'groups_side_navigation') }
+%aside.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), **tracking_attrs('groups_side_navigation', 'render', 'groups_side_navigation'), 'aria-label': aside_title }
   .nav-sidebar-inner-scroll
     .context-header
       = link_to group_path(@group), title: @group.name do
@@ -19,19 +21,13 @@
             .nav-icon-container
               = sprite_icon('home')
             %span.nav-item-name
-              - if @group.subgroup?
-                = _('Subgroup overview')
-              - else
-                = _('Group overview')
+              = overview_title
 
           %ul.sidebar-sub-level-items
             = nav_link(path: ['groups#show', 'groups#details', 'groups#activity', 'groups#subgroups'], html_options: { class: "fly-out-top-item" } ) do
               = link_to group_path(@group) do
                 %strong.fly-out-top-item-name
-                  - if @group.subgroup?
-                    = _('Subgroup overview')
-                  - else
-                    = _('Group overview')
+                  = overview_title
             %li.divider.fly-out-top-item
 
             = nav_link(path: ['groups#show', 'groups#details', 'groups#subgroups'], html_options: { class: 'home' }) do
@@ -54,14 +50,14 @@
               = sprite_icon('issues')
             %span.nav-item-name
               = _('Issues')
-            %span.badge.badge-pill.count= number_with_delimiter(issues_count)
+            %span.badge.badge-pill.count= issues_count
 
           %ul.sidebar-sub-level-items{ data: { qa_selector: 'group_issues_sidebar_submenu'} }
             = nav_link(path: ['groups#issues', 'labels#index', 'milestones#index', 'iterations#index'], html_options: { class: "fly-out-top-item" } ) do
               = link_to issues_group_path(@group) do
                 %strong.fly-out-top-item-name
                   = _('Issues')
-                %span.badge.badge-pill.count.issue_counter.fly-out-badge= number_with_delimiter(issues_count)
+                %span.badge.badge-pill.count.issue_counter.fly-out-badge= issues_count
 
             %li.divider.fly-out-top-item
             = nav_link(path: 'groups#issues', html_options: { class: 'home' }) do
@@ -141,7 +137,7 @@
                 %strong.fly-out-top-item-name
                   = _('Members')
 
-      = render_if_exists 'groups/invite_members_side_nav_link', group: @group
+      = content_for :invite_members_sidebar
 
       - if group_sidebar_link?(:settings)
         = nav_link(path: group_settings_nav_link_paths) do

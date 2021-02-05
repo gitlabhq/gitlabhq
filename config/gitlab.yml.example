@@ -165,6 +165,9 @@ production: &base
     ## Disable jQuery and CSS animations
     # disable_animations: true
 
+    ## Application settings cache expiry in seconds (default: 60)
+    # application_settings_cache_seconds: 60
+
   ## Reply by email
   # Allow users to comment on issues and merge requests by replying to notification emails.
   # For documentation on how to set this up, see http://doc.gitlab.com/ce/administration/reply_by_email.html
@@ -432,7 +435,7 @@ production: &base
       cron: "0 * * * *"
     # Execute scheduled triggers
     pipeline_schedule_worker:
-      cron: "19 * * * *"
+      cron: "3-59/10 * * * *"
     # Remove expired build artifacts
     expire_build_artifacts_worker:
       cron: "*/7 * * * *"
@@ -1239,6 +1242,7 @@ production: &base
     ## Matomo analytics.
     # matomo_url: '_your_matomo_url'
     # matomo_site_id: '_your_matomo_site_id'
+    # matomo_disable_cookies: false
 
   rack_attack:
     git_basic_auth:

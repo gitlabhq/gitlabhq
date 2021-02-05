@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Geo data types support **(PREMIUM ONLY)**
+# Geo data types support **(PREMIUM SELF)**
 
 A Geo data type is a specific class of data that is required by one or more GitLab features to
 store relevant information.
@@ -35,21 +35,21 @@ verification methods:
 | Git      | Object pools for forked project deduplication   | Geo with Gitaly                       | _Not implemented_      |
 | Git      | Project Snippets                                | Geo with Gitaly                       | _Not implemented_      |
 | Git      | Personal Snippets                               | Geo with Gitaly                       | _Not implemented_      |
-| Blobs    | User uploads _(filesystem)_                     | Geo with API                          | _Not implemented_      |
+| Blobs    | User uploads _(file system)_                    | Geo with API                          | _Not implemented_      |
 | Blobs    | User uploads _(object storage)_                 | Geo with API/Managed (*2*)            | _Not implemented_      |
-| Blobs    | LFS objects _(filesystem)_                      | Geo with API                          | _Not implemented_      |
+| Blobs    | LFS objects _(file system)_                     | Geo with API                          | _Not implemented_      |
 | Blobs    | LFS objects _(object storage)_                  | Geo with API/Managed (*2*)            | _Not implemented_      |
-| Blobs    | CI job artifacts _(filesystem)_                 | Geo with API                          | _Not implemented_      |
+| Blobs    | CI job artifacts _(file system)_                | Geo with API                          | _Not implemented_      |
 | Blobs    | CI job artifacts _(object storage)_             | Geo with API/Managed (*2*)            | _Not implemented_      |
-| Blobs    | Archived CI build traces _(filesystem)_         | Geo with API                          | _Not implemented_      |
+| Blobs    | Archived CI build traces _(file system)_        | Geo with API                          | _Not implemented_      |
 | Blobs    | Archived CI build traces _(object storage)_     | Geo with API/Managed (*2*)            | _Not implemented_      |
-| Blobs    | Container registry _(filesystem)_               | Geo with API/Docker API               | _Not implemented_      |
+| Blobs    | Container registry _(file system)_              | Geo with API/Docker API               | _Not implemented_      |
 | Blobs    | Container registry _(object storage)_           | Geo with API/Managed/Docker API (*2*) | _Not implemented_      |
-| Blobs    | Package registry _(filesystem)_                 | Geo with API                          | _Not implemented_      |
+| Blobs    | Package registry _(file system)_                | Geo with API                          | _Not implemented_      |
 | Blobs    | Package registry _(object storage)_             | Geo with API/Managed (*2*)            | _Not implemented_      |
-| Blobs    | Versioned Terraform State _(filesystem)_        | Geo with API                          | _Not implemented_      |
+| Blobs    | Versioned Terraform State _(file system)_       | Geo with API                          | _Not implemented_      |
 | Blobs    | Versioned Terraform State _(object storage)_    | Geo with API/Managed (*2*)            | _Not implemented_      |
-| Blobs    | External Merge Request Diffs _(filesystem)_     | Geo with API                          | _Not implemented_      |
+| Blobs    | External Merge Request Diffs _(file system)_    | Geo with API                          | _Not implemented_      |
 | Blobs    | External Merge Request Diffs _(object storage)_ | Geo with API/Managed (*2*)            | _Not implemented_      |
 
 - (*1*): Redis replication can be used as part of HA with Redis sentinel. It's not used between Geo nodes.
@@ -63,8 +63,8 @@ is responsible for allowing access and operations on the locally stored Git repo
 on a machine with a single disk, multiple disks mounted as a single mount-point (like with a RAID array),
 or using LVM.
 
-It requires no special filesystem and can work with NFS or a mounted Storage Appliance (there may be
-performance limitations when using a remote filesystem).
+It requires no special file system and can work with NFS or a mounted Storage Appliance (there may be
+performance limitations when using a remote file system).
 
 Communication is done via Gitaly's own gRPC API. There are three possible ways of synchronization:
 
@@ -88,13 +88,13 @@ Both types will be synced to a secondary node.
 
 GitLab stores files and blobs such as Issue attachments or LFS objects into either:
 
-- The filesystem in a specific location.
+- The file system in a specific location.
 - An [Object Storage](../../object_storage.md) solution. Object Storage solutions can be:
   - Cloud based like Amazon S3 Google Cloud Storage.
   - Hosted by you (like MinIO).
   - A Storage Appliance that exposes an Object Storage-compatible API.
 
-When using the filesystem store instead of Object Storage, you need to use network mounted filesystems
+When using the file system store instead of Object Storage, you need to use network mounted file systems
 to run GitLab when using more than one server.
 
 With respect to replication and verification:
@@ -144,9 +144,9 @@ The replication for some data types is behind a corresponding feature flag:
 > - They're enabled on GitLab.com.
 > - They can't be enabled or disabled per-project.
 > - They are recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable them](#enable-or-disable-replication-for-some-data-types). **(CORE ONLY)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable them](#enable-or-disable-replication-for-some-data-types). **(FREE SELF)**
 
-#### Enable or disable replication (for some data types) **(CORE ONLY)**
+#### Enable or disable replication (for some data types)
 
 Replication for some data types are released behind feature flags that are **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../feature_flags.md) can opt to disable it for your instance. You can find feature flag names of each of those data types in the notes column of the table below.
@@ -173,7 +173,7 @@ successfully, you must replicate their data using some other means.
 | Feature                                                                                                        | Replicated (added in GitLab version)                                               | Verified (added in GitLab version)                        | Object Storage replication (see [Geo with Object Storage](object_storage.md)) | Notes                                                                                                                                                                                                                                                                                                                      |
 |:---------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------|:----------------------------------------------------------|:-------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [Application data in PostgreSQL](../../postgresql/index.md)                                                    | **Yes** (10.2)                                                                     | **Yes** (10.2)                                            | No                                                                                   |                                                                                                                                                                                                                                                                                                                            |
-| [Project repository](../../..//user/project/repository/)                                                       | **Yes** (10.2)                                                                     | **Yes** (10.7)                                            | No                                                                                   |                                                                                                                                                                                                                                                                                                                            |
+| [Project repository](../../../user/project/repository/)                                                       | **Yes** (10.2)                                                                     | **Yes** (10.7)                                            | No                                                                                   |                                                                                                                                                                                                                                                                                                                            |
 | [Project wiki repository](../../../user/project/wiki/)                                                         | **Yes** (10.2)                                                                     | **Yes** (10.7)                                            | No                                                                                   |
 | [Group wiki repository](../../../user/group/index.md#group-wikis)     | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/208147)                                                                  | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/208147)           | No                                                                                   |                                                                                                                                                                                                                                                                                                                                 |
 | [Uploads](../../uploads.md)                                                                                    | **Yes** (10.2)                                                                     | [No](https://gitlab.com/groups/gitlab-org/-/epics/1817)   | No                                                                                   | Verified only on transfer or manually using [Integrity Check Rake Task](../../raketasks/check.md) on both nodes and comparing the output between them.                                                                                                                                                                     |
@@ -201,4 +201,4 @@ successfully, you must replicate their data using some other means.
 | [GitLab Pages](../../pages/index.md)                                                                           | [No](https://gitlab.com/groups/gitlab-org/-/epics/589)                             | No                                                        | No                                                                                   |                                                                                                                                                                                                                                                                                                                            |
 | [CI Pipeline Artifacts](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/ci/pipeline_artifact.rb) | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/238464)                         | No                                                        | Via Object Storage provider if supported. Native Geo support (Beta).                 | Persists additional artifacts after a pipeline completes                                                                                                                                                                                                                                                                   |
 | [Dependency proxy images](../../../user/packages/dependency_proxy/index.md)                                    | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/259694)                         | No                                                        | No                                                                                   | Blocked on [Geo: Secondary Mimicry](https://gitlab.com/groups/gitlab-org/-/epics/1528). Note that replication of this cache is not needed for Disaster Recovery purposes because it can be recreated from external sources.                                                                                                |
-| [Vulnerability Export](../../../user/application_security/security_dashboard/#export-vulnerabilities)          | [Not planned](https://gitlab.com/groups/gitlab-org/-/epics/3111)                   | No                                                        | Via Object Storage provider if supported. Native Geo support (Beta).                 | Not planned because they are ephemeral and sensitive. They can be regenerated on demand.                                                                                                                                                                                                                                   |
+| [Vulnerability Export](../../../user/application_security/vulnerability_report/#export-vulnerabilities)          | [Not planned](https://gitlab.com/groups/gitlab-org/-/epics/3111)                   | No                                                        | Via Object Storage provider if supported. Native Geo support (Beta).                 | Not planned because they are ephemeral and sensitive. They can be regenerated on demand.                                                                                                                                                                                                                                   |

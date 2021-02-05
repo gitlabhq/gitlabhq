@@ -1,11 +1,11 @@
 <script>
 import { GlButton, GlIcon, GlLink, GlSprintf, GlTooltipDirective, GlTruncate } from '@gitlab/ui';
+import timeagoMixin from '~/vue_shared/mixins/timeago';
+import ListItem from '~/vue_shared/components/registry/list_item.vue';
+import { getPackageTypeLabel } from '../utils';
 import PackageTags from './package_tags.vue';
 import PackagePath from './package_path.vue';
 import PublishMethod from './publish_method.vue';
-import { getPackageTypeLabel } from '../utils';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
-import ListItem from '~/vue_shared/components/registry/list_item.vue';
 
 export default {
   name: 'PackageListRow',
@@ -88,7 +88,7 @@ export default {
       <div class="gl-display-flex">
         <span>{{ packageEntity.version }}</span>
 
-        <div v-if="hasPipeline" class="gl-display-none gl-display-sm-flex gl-ml-2">
+        <div v-if="hasPipeline" class="gl-display-none gl-sm-display-flex gl-ml-2">
           <gl-sprintf :message="s__('PackageRegistry|published by %{author}')">
             <template #author>{{ packageEntity.pipeline.user.name }}</template>
           </gl-sprintf>

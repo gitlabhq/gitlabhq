@@ -1,5 +1,5 @@
-import mountComponent from 'helpers/vue_mount_component_helper';
 import Vue from 'vue';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 
 describe('GlCountdown', () => {

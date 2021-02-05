@@ -55,6 +55,15 @@ RSpec.describe Projects::UpdatePagesService do
         end
       end
 
+      it "doesn't deploy to legacy storage if it's disabled" do
+        stub_feature_flags(pages_update_legacy_storage: false)
+
+        expect(execute).to eq(:success)
+        expect(project.pages_deployed?).to be_truthy
+
+        expect(File.exist?(File.join(project.pages_path, 'public', 'index.html'))).to eq(false)
+      end
+
       it 'creates pages_deployment and saves it in the metadata' do
         expect do
           expect(execute).to eq(:success)

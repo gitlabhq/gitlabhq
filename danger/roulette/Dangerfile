@@ -35,7 +35,7 @@ UNKNOWN_FILES_MESSAGE = <<MARKDOWN
 
 These files couldn't be categorised, so Danger was unable to suggest a reviewer.
 Please consider creating a merge request to
-[add support](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/danger/helper.rb)
+[add support](https://gitlab.com/gitlab-org/gitlab/blob/master/tooling/danger/helper.rb)
 for them.
 MARKDOWN
 

@@ -131,48 +131,46 @@ export default {
       :title="modalTitle"
       kind="danger"
     >
-      <template>
-        <p>{{ warningMessage }}</p>
-        <div v-if="confirmCleanup">
-          {{ s__('ClusterIntegration|This will permanently delete the following resources:') }}
-          <ul>
-            <li>
-              {{ s__('ClusterIntegration|All installed applications and related resources') }}
-            </li>
-            <li>
-              <gl-sprintf :message="s__('ClusterIntegration|The %{gitlabNamespace} namespace')">
-                <template #gitlabNamespace>
-                  <!-- eslint-disable-next-line @gitlab/vue-require-i18n-strings -->
-                  <code>{{ 'gitlab-managed-apps' }}</code>
-                </template>
-              </gl-sprintf>
-            </li>
-            <li>{{ s__('ClusterIntegration|Any project namespaces') }}</li>
-            <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
-            <li><code>clusterroles</code></li>
-            <li><code>clusterrolebindings</code></li>
-            <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
-          </ul>
-        </div>
-        <strong v-html="confirmationTextLabel"></strong>
-        <form ref="form" :action="clusterPath" method="post" class="gl-mb-5">
-          <input ref="method" type="hidden" name="_method" value="delete" />
-          <input :value="csrfToken" type="hidden" name="authenticity_token" />
-          <input ref="cleanup" type="hidden" name="cleanup" value="true" />
-          <gl-form-input
-            v-model="enteredClusterName"
-            autofocus
-            type="text"
-            name="confirm_cluster_name_input"
-            autocomplete="off"
-          />
-        </form>
-        <span v-if="confirmCleanup">{{
-          s__(
-            'ClusterIntegration|If you do not wish to delete all associated GitLab resources, you can simply remove the integration.',
-          )
-        }}</span>
-      </template>
+      <p>{{ warningMessage }}</p>
+      <div v-if="confirmCleanup">
+        {{ s__('ClusterIntegration|This will permanently delete the following resources:') }}
+        <ul>
+          <li>
+            {{ s__('ClusterIntegration|All installed applications and related resources') }}
+          </li>
+          <li>
+            <gl-sprintf :message="s__('ClusterIntegration|The %{gitlabNamespace} namespace')">
+              <template #gitlabNamespace>
+                <!-- eslint-disable-next-line @gitlab/vue-require-i18n-strings -->
+                <code>{{ 'gitlab-managed-apps' }}</code>
+              </template>
+            </gl-sprintf>
+          </li>
+          <li>{{ s__('ClusterIntegration|Any project namespaces') }}</li>
+          <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
+          <li><code>clusterroles</code></li>
+          <li><code>clusterrolebindings</code></li>
+          <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
+        </ul>
+      </div>
+      <strong v-html="confirmationTextLabel"></strong>
+      <form ref="form" :action="clusterPath" method="post" class="gl-mb-5">
+        <input ref="method" type="hidden" name="_method" value="delete" />
+        <input :value="csrfToken" type="hidden" name="authenticity_token" />
+        <input ref="cleanup" type="hidden" name="cleanup" value="true" />
+        <gl-form-input
+          v-model="enteredClusterName"
+          autofocus
+          type="text"
+          name="confirm_cluster_name_input"
+          autocomplete="off"
+        />
+      </form>
+      <span v-if="confirmCleanup">{{
+        s__(
+          'ClusterIntegration|If you do not wish to delete all associated GitLab resources, you can simply remove the integration.',
+        )
+      }}</span>
       <template #modal-footer>
         <gl-button variant="secondary" @click="handleCancel">{{ s__('Cancel') }}</gl-button>
         <template v-if="confirmCleanup">

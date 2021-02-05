@@ -123,9 +123,12 @@
   - ".gitlab/route-map.yml"
   - "doc/**/*"
   - ".markdownlint.json"
+  - "scripts/lint-doc.sh"
 
 .frontend-dependency-patterns: &frontend-dependency-patterns
   - "{package.json,yarn.lock}"
+  - "config/webpack.config.js"
+  - "config/helpers/*.js"
 
 .frontend-patterns: &frontend-patterns
   - "{package.json,yarn.lock}"
@@ -523,6 +526,13 @@
       changes: *db-patterns
     - <<: *if-merge-request-title-run-all-rspec
 
+.rails:rules:db:gitlabcom-database-testing:
+  rules:
+    - if: '$GITLABCOM_DATABASE_TESTING_TRIGGER_TOKEN == null'
+      when: never
+    - <<: *if-merge-request
+      changes: *db-patterns
+
 .rails:rules:ee-and-foss-unit:
   rules:
     - changes: *backend-patterns
@@ -869,6 +879,7 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-master-schedule-2-hourly
+      allow_failure: true
     - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:master-schedule-nightly--code-backstage:

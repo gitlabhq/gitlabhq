@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SystemHooksService
-  BUILDER_DRIVEN_EVENT_DATA_AVAILABLE_FOR_CLASSES = [GroupMember].freeze
+  BUILDER_DRIVEN_EVENT_DATA_AVAILABLE_FOR_CLASSES = [GroupMember, Group].freeze
 
   def execute_hooks_for(model, event)
     data = build_event_data(model, event)
@@ -58,15 +58,6 @@ class SystemHooksService
       end
     when ProjectMember
       data.merge!(project_member_data(model))
-    when Group
-      data.merge!(group_data(model))
-
-      if event == :rename
-        data.merge!(
-          old_path: model.path_before_last_save,
-          old_full_path: model.full_path_before_last_save
-        )
-      end
     end
 
     data
@@ -114,19 +105,6 @@ class SystemHooksService
     }
   end
 
-  def group_data(model)
-    owner = model.owner
-
-    {
-      name: model.name,
-      path: model.path,
-      full_path: model.full_path,
-      group_id: model.id,
-      owner_name: owner.try(:name),
-      owner_email: owner.try(:email)
-    }
-  end
-
   def user_data(model)
     {
       name: model.name,
@@ -141,10 +119,14 @@ class SystemHooksService
   end
 
   def builder_driven_event_data(model, event)
-    case model
-    when GroupMember
-      Gitlab::HookData::GroupMemberBuilder.new(model).build(event)
-    end
+    builder_class = case model
+                    when GroupMember
+                      Gitlab::HookData::GroupMemberBuilder
+                    when Group
+                      Gitlab::HookData::GroupBuilder
+                    end
+
+    builder_class.new(model).build(event)
   end
 end
 

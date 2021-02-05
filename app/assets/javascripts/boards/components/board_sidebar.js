@@ -1,4 +1,7 @@
-/* eslint-disable no-new */
+// This is a true violation of @gitlab/no-runtime-template-compiler, as it
+// relies on app/views/shared/boards/components/_sidebar.html.haml for its
+// template.
+/* eslint-disable no-new, @gitlab/no-runtime-template-compiler */
 
 import $ from 'jquery';
 import Vue from 'vue';
@@ -15,9 +18,9 @@ import Assignees from '~/sidebar/components/assignees/assignees.vue';
 import Subscriptions from '~/sidebar/components/subscriptions/subscriptions.vue';
 import TimeTracker from '~/sidebar/components/time_tracking/time_tracker.vue';
 import MilestoneSelect from '~/milestone_select';
-import RemoveBtn from './sidebar/remove_issue.vue';
-import boardsStore from '../stores/boards_store';
 import { isScopedLabel } from '~/lib/utils/common_utils';
+import boardsStore from '../stores/boards_store';
+import RemoveBtn from './sidebar/remove_issue.vue';
 
 export default Vue.extend({
   components: {

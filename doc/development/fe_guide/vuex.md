@@ -146,7 +146,7 @@ The only way to change state in a Vuex store is by committing a mutation.
 Most mutations are committed from an action using `commit`. If you don't have any
 asynchronous operations, you can call mutations from a component using the `mapMutations` helper.
 
-See the Vuex docs for examples of [committing mutations from components](https://vuex.vuejs.org/guide/mutations.html#committing-mutations-in-components).
+See the Vuex documentation for examples of [committing mutations from components](https://vuex.vuejs.org/guide/mutations.html#committing-mutations-in-components).
 
 #### Naming Pattern: `REQUEST` and `RECEIVE` namespaces
 
@@ -271,7 +271,7 @@ import { mapGetters } from 'vuex';
 
 ### `mutation_types.js`
 
-From [vuex mutations docs](https://vuex.vuejs.org/guide/mutations.html):
+From [Vuex mutations documentation](https://vuex.vuejs.org/guide/mutations.html):
 > It is a commonly seen pattern to use constants for mutation types in various Flux implementations.
 > This allows the code to take advantage of tooling like linters, and putting all constants in a
 > single file allows your collaborators to get an at-a-glance view of what mutations are possible
@@ -429,7 +429,7 @@ export default {
 
 #### Testing Vuex concerns
 
-Refer to [Vuex docs](https://vuex.vuejs.org/guide/testing.html) regarding testing Actions, Getters and Mutations.
+Refer to [Vuex documentation](https://vuex.vuejs.org/guide/testing.html) regarding testing Actions, Getters and Mutations.
 
 #### Testing components that need a store
 

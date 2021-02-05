@@ -40,7 +40,7 @@ To unlock a locked user:
    user.unlock_access!
    ```
 
-1. Exit the console with <kbd>Ctrl</kbd>+<kbd>d</kbd>
+1. Exit the console with <kbd>Control</kbd>+<kbd>d</kbd>
 
 The user should now be able to log in.
 

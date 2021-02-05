@@ -41,5 +41,11 @@ RSpec.shared_examples 'can housekeep repository' do
         expect(resource.send(:pushes_since_gc_redis_shared_state_key)).to eq("#{resource_key}/#{resource.id}/pushes_since_gc")
       end
     end
+
+    describe '#git_garbage_collect_worker_klass' do
+      it 'defines a git gargabe collect worker' do
+        expect(resource.git_garbage_collect_worker_klass).to eq(expected_worker_class)
+      end
+    end
   end
 end

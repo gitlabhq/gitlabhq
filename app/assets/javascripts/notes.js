@@ -904,18 +904,7 @@ export default class Notes {
     // DiffNote
     form.find('#note_position').val(dataHolder.attr('data-position'));
 
-    form
-      .prepend(
-        `<a href="${escape(
-          gon.current_username,
-        )}" class="user-avatar-link d-none d-sm-block"><img class="avatar s40" src="${encodeURI(
-          gon.current_user_avatar_url || gon.default_avatar_url,
-        )}" alt="${escape(gon.current_user_fullname)}" /></a>`,
-      )
-      .append('</div>')
-      .find('.js-close-discussion-note-form')
-      .show()
-      .removeClass('hide');
+    form.append('</div>').find('.js-close-discussion-note-form').show().removeClass('hide');
     form.find('.js-note-target-close').remove();
     form.find('.js-note-new-discussion').remove();
     this.setupNoteForm(form);

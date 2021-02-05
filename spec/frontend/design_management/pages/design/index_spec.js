@@ -18,15 +18,15 @@ import { DESIGNS_ROUTE_NAME, DESIGN_ROUTE_NAME } from '~/design_management/route
 import createRouter from '~/design_management/router';
 import * as utils from '~/design_management/utils/design_management_utils';
 import { DESIGN_DETAIL_LAYOUT_CLASSLIST } from '~/design_management/constants';
-import design from '../../mock_data/design';
-import mockResponseWithDesigns from '../../mock_data/designs';
-import mockResponseNoDesigns from '../../mock_data/no_designs';
-import mockAllVersions from '../../mock_data/all_versions';
 import {
   DESIGN_TRACKING_PAGE_NAME,
   DESIGN_SNOWPLOW_EVENT_TYPES,
   DESIGN_USAGE_PING_EVENT_TYPES,
 } from '~/design_management/utils/tracking';
+import design from '../../mock_data/design';
+import mockResponseWithDesigns from '../../mock_data/designs';
+import mockResponseNoDesigns from '../../mock_data/no_designs';
+import mockAllVersions from '../../mock_data/all_versions';
 
 jest.mock('~/flash');
 jest.mock('~/api.js');

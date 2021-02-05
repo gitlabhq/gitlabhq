@@ -7,8 +7,8 @@ import '~/boards/models/issue';
 import '~/boards/models/list';
 import { GlLabel } from '@gitlab/ui';
 import IssueCardInner from '~/boards/components/issue_card_inner_deprecated.vue';
-import { listObj } from './mock_data';
 import store from '~/boards/stores';
+import { listObj } from './mock_data';
 
 describe('Issue card component', () => {
   const user = new ListAssignee({

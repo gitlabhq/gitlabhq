@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import * as types from './mutation_types';
 import { parseDiff } from '../../utils';
+import * as types from './mutation_types';
 
 export default {
   [types.SET_DIFF_ENDPOINT](state, path) {

@@ -1,8 +1,8 @@
-import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import Api from '~/api';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __ } from '~/locale';
+import * as types from './mutation_types';
 import { prepareDataForApi, prepareDataForDisplay, prepareEnvironments } from './utils';
 
 export const toggleValues = ({ commit }, valueState) => {

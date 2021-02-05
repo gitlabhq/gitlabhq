@@ -73,6 +73,18 @@ RSpec.describe RegistrationsController do
             end
           end
         end
+
+        context 'audit events' do
+          context 'when not licensed' do
+            before do
+              stub_licensed_features(admin_audit_log: false)
+            end
+
+            it 'does not log any audit event' do
+              expect { subject }.not_to change(AuditEvent, :count)
+            end
+          end
+        end
       end
 
       context 'when the `require_admin_approval_after_user_signup` setting is turned off' do

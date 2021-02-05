@@ -6,8 +6,6 @@ import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
 import createDiffsStore from '~/diffs/store/modules';
 import createNotesStore from '~/notes/stores/modules';
-import diffFileMockDataReadable from '../mock_data/diff_file';
-import diffFileMockDataUnreadable from '../mock_data/diff_file_unreadable';
 
 import DiffFileComponent from '~/diffs/components/diff_file.vue';
 import DiffFileHeaderComponent from '~/diffs/components/diff_file_header.vue';
@@ -21,6 +19,8 @@ import {
 } from '~/diffs/constants';
 
 import { diffViewerModes, diffViewerErrors } from '~/ide/constants';
+import diffFileMockDataUnreadable from '../mock_data/diff_file_unreadable';
+import diffFileMockDataReadable from '../mock_data/diff_file';
 
 function changeViewer(store, index, { automaticallyCollapsed, manuallyCollapsed, name }) {
   const file = store.state.diffs.diffFiles[index];
@@ -66,7 +66,7 @@ function markFileToBeRendered(store, index = 0) {
   });
 }
 
-function createComponent({ file, first = false, last = false }) {
+function createComponent({ file, first = false, last = false, options = {}, props = {} }) {
   const localVue = createLocalVue();
 
   localVue.use(Vuex);
@@ -89,7 +89,9 @@ function createComponent({ file, first = false, last = false }) {
       viewDiffsFileByFile: false,
       isFirstFile: first,
       isLastFile: last,
+      ...props,
     },
+    ...options,
   });
 
   return {
@@ -217,6 +219,53 @@ describe('DiffFile', () => {
       await wrapper.vm.$nextTick();
 
       expect(wrapper.find(DiffContentComponent).exists()).toBe(true);
+    });
+  });
+
+  describe('computed', () => {
+    describe('showLocalFileReviews', () => {
+      let gon;
+
+      function setLoggedIn(bool) {
+        window.gon.current_user_id = bool;
+      }
+
+      beforeAll(() => {
+        gon = window.gon;
+        window.gon = {};
+      });
+
+      afterEach(() => {
+        window.gon = gon;
+      });
+
+      it.each`
+        loggedIn | featureOn | bool
+        ${true}  | ${true}   | ${true}
+        ${false} | ${true}   | ${false}
+        ${true}  | ${false}  | ${false}
+        ${false} | ${false}  | ${false}
+      `(
+        'should be $bool when { userIsLoggedIn: $loggedIn, featureEnabled: $featureOn }',
+        ({ loggedIn, featureOn, bool }) => {
+          setLoggedIn(loggedIn);
+
+          ({ wrapper } = createComponent({
+            options: {
+              provide: {
+                glFeatures: {
+                  localFileReviews: featureOn,
+                },
+              },
+            },
+            props: {
+              file: store.state.diffs.diffFiles[0],
+            },
+          }));
+
+          expect(wrapper.vm.showLocalFileReviews).toBe(bool);
+        },
+      );
     });
   });
 
@@ -422,9 +471,11 @@ describe('DiffFile', () => {
 
       await wrapper.vm.$nextTick();
 
-      expect(wrapper.vm.$el.innerText).toContain(
-        'This source diff could not be displayed because it is too large',
-      );
+      const button = wrapper.find('[data-testid="blob-button"]');
+
+      expect(wrapper.text()).toContain('Changes are too large to be shown.');
+      expect(button.html()).toContain('View file @');
+      expect(button.attributes('href')).toBe('/file/view/path');
     });
   });
 });

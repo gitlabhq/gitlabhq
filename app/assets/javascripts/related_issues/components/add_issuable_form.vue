@@ -1,7 +1,6 @@
 <script>
 import { GlFormGroup, GlFormRadioGroup, GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
-import RelatedIssuableInput from './related_issuable_input.vue';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 
 import {
@@ -11,6 +10,7 @@ import {
   addRelatedIssueErrorMap,
   addRelatedItemErrorMap,
 } from '../constants';
+import RelatedIssuableInput from './related_issuable_input.vue';
 
 export default {
   name: 'AddIssuableForm',

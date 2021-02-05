@@ -6,7 +6,7 @@ module QA
       module Overview
         module Users
           class Index < QA::Page::Base
-            view 'app/views/admin/users/index.html.haml' do
+            view 'app/views/admin/users/_users.html.haml' do
               element :user_search_field
               element :pending_approval_tab
             end

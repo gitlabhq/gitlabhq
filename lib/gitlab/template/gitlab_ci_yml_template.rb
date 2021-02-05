@@ -25,6 +25,12 @@ module Gitlab
           }
         end
 
+        def include_categories_for_file
+          {
+            "SAST#{self.extension}" => { 'Security' => 'Security' }
+          }
+        end
+
         def excluded_patterns
           strong_memoize(:excluded_patterns) do
             BASE_EXCLUDED_PATTERNS + additional_excluded_patterns
@@ -41,7 +47,11 @@ module Gitlab
 
         def finder(project = nil)
           Gitlab::Template::Finders::GlobalTemplateFinder.new(
-            self.base_dir, self.extension, self.categories, excluded_patterns: self.excluded_patterns
+            self.base_dir,
+            self.extension,
+            self.categories,
+            self.include_categories_for_file,
+            excluded_patterns: self.excluded_patterns
           )
         end
       end

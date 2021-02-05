@@ -48,6 +48,10 @@ module Gitlab
     Gitlab.config.gitlab.url == COM_URL || gl_subdomain?
   end
 
+  def self.com
+    yield if com?
+  end
+
   def self.staging?
     Gitlab.config.gitlab.url == STAGING_COM_URL
   end
@@ -118,6 +122,7 @@ module Gitlab
 
   def self.maintenance_mode?
     return false unless ::Feature.enabled?(:maintenance_mode)
+    return false unless ::Gitlab::CurrentSettings.current_application_settings?
 
     ::Gitlab::CurrentSettings.maintenance_mode
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Doorkeeper::OpenidConnect.configure do
   issuer Gitlab.config.gitlab.url
 

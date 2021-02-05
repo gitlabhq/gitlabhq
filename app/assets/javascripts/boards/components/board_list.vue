@@ -4,10 +4,10 @@ import { mapActions, mapState } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
 import defaultSortableConfig from '~/sortable/sortable_config';
 import { sortableStart, sortableEnd } from '~/boards/mixins/sortable_default_options';
+import { sprintf, __ } from '~/locale';
+import eventHub from '../eventhub';
 import BoardNewIssue from './board_new_issue.vue';
 import BoardCard from './board_card.vue';
-import eventHub from '../eventhub';
-import { sprintf, __ } from '~/locale';
 
 export default {
   name: 'BoardList',

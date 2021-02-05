@@ -176,6 +176,24 @@ FactoryBot.define do
     composer_json { { name: 'foo' } }
   end
 
+  factory :composer_cache_file, class: 'Packages::Composer::CacheFile' do
+    group
+
+    file_sha256 { '1' * 64 }
+
+    transient do
+      file_fixture { 'spec/fixtures/packages/composer/package.json' }
+    end
+
+    after(:build) do |cache_file, evaluator|
+      cache_file.file = fixture_file_upload(evaluator.file_fixture)
+    end
+
+    trait(:object_storage) do
+      file_store { Packages::Composer::CacheUploader::Store::REMOTE }
+    end
+  end
+
   factory :maven_metadatum, class: 'Packages::Maven::Metadatum' do
     association :package, package_type: :maven
     path { 'my/company/app/my-app/1.0-SNAPSHOT' }

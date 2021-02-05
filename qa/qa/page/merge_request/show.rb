@@ -58,6 +58,9 @@ module QA
 
         view 'app/assets/javascripts/diffs/components/diff_file_header.vue' do
           element :file_name_content
+          element :file_title_container
+          element :dropdown_button
+          element :edit_in_ide_button
         end
 
         view 'app/assets/javascripts/diffs/components/inline_diff_table_row.vue' do
@@ -85,6 +88,15 @@ module QA
 
         view 'app/assets/javascripts/batch_comments/components/preview_dropdown.vue' do
           element :review_preview_toggle
+        end
+
+        view 'app/assets/javascripts/vue_shared/components/markdown/suggestion_diff_header.vue' do
+          element :apply_suggestions_batch_button
+          element :add_suggestion_batch_button
+        end
+
+        view 'app/assets/javascripts/vue_shared/components/markdown/header.vue' do
+          element :suggestion_button
         end
 
         def start_review
@@ -150,15 +162,12 @@ module QA
         def click_discussions_tab
           click_element(:notes_tab)
 
-          wait_for_loading
+          wait_for_requests
         end
 
         def click_diffs_tab
           click_element(:diffs_tab)
-
-          wait_for_loading
-
-          click_element(:dismiss_popover_button) if has_element?(:dismiss_popover_button)
+          click_element(:dismiss_popover_button) if has_element?(:dismiss_popover_button, wait: 1)
         end
 
         def click_pipeline_link
@@ -295,6 +304,31 @@ module QA
         def click_open_in_web_ide
           click_element(:open_in_web_ide_button)
           wait_for_requests
+        end
+
+        def edit_file_in_web_ide(file_name)
+          within_element(:file_title_container, file_name: file_name) do
+            click_element(:dropdown_button)
+            click_element(:edit_in_ide_button)
+          end
+        end
+
+        def add_suggestion_to_diff(suggestion, line)
+          find("a[data-linenumber='#{line}']").hover
+          click_element(:diff_comment)
+          click_element(:suggestion_button)
+          initial_content = find_element(:reply_field).value
+          fill_element(:reply_field, '')
+          fill_element(:reply_field, initial_content.gsub(/(```suggestion:-0\+0\n).*(\n```)/, "\\1#{suggestion}\\2"))
+          click_element(:comment_now_button)
+        end
+
+        def add_suggestion_to_batch
+          all_elements(:add_suggestion_batch_button, minimum: 1).first.click
+        end
+
+        def apply_suggestions_batch
+          all_elements(:apply_suggestions_batch_button, minimum: 1).first.click
         end
       end
     end

@@ -31,6 +31,7 @@ module API
       expose :password_authentication_enabled_for_web, as: :password_authentication_enabled
       expose :password_authentication_enabled_for_web, as: :signin_enabled
       expose :allow_local_requests_from_web_hooks_and_services, as: :allow_local_requests_from_hooks_and_services
+      expose :asset_proxy_allowlist, as: :asset_proxy_whitelist
     end
   end
 end

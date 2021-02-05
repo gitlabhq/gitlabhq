@@ -1,6 +1,6 @@
 import createSanitizer from 'dompurify';
-import { ALLOWED_VIDEO_ORIGINS } from '../constants';
 import { getURLOrigin } from '~/lib/utils/url_utility';
+import { ALLOWED_VIDEO_ORIGINS } from '../constants';
 
 const sanitizer = createSanitizer(window);
 const ADD_TAGS = ['iframe'];

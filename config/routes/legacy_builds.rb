@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
   collection do
     resources :artifacts, only: [], controller: 'build_artifacts' do

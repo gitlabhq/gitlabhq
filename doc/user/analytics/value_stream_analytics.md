@@ -4,7 +4,7 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Value Stream Analytics **(CORE)**
+# Value Stream Analytics **(FREE)**
 
 > - Introduced as Cycle Analytics prior to GitLab 12.3 at the project level.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12077) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3 at the group level.

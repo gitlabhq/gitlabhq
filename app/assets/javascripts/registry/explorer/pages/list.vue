@@ -14,9 +14,9 @@ import getContainerRepositoriesQuery from 'shared_queries/container_registry/get
 import Tracking from '~/tracking';
 import createFlash from '~/flash';
 import RegistryHeader from '../components/list_page/registry_header.vue';
+import DeleteImage from '../components/delete_image.vue';
 
 import getContainerRepositoriesDetails from '../graphql/queries/get_container_repositories_details.query.graphql';
-import deleteContainerRepositoryMutation from '../graphql/mutations/delete_container_repository.mutation.graphql';
 
 import {
   DELETE_IMAGE_SUCCESS_MESSAGE,
@@ -60,6 +60,7 @@ export default {
     GlSkeletonLoader,
     GlSearchBoxByClick,
     RegistryHeader,
+    DeleteImage,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -179,30 +180,6 @@ export default {
       this.itemToDelete = item;
       this.$refs.deleteModal.show();
     },
-    handleDeleteImage() {
-      this.track('confirm_delete');
-      this.mutationLoading = true;
-      return this.$apollo
-        .mutate({
-          mutation: deleteContainerRepositoryMutation,
-          variables: {
-            id: this.itemToDelete.id,
-          },
-        })
-        .then(({ data }) => {
-          if (data?.destroyContainerRepository?.errors[0]) {
-            this.deleteAlertType = 'danger';
-          } else {
-            this.deleteAlertType = 'success';
-          }
-        })
-        .catch(() => {
-          this.deleteAlertType = 'danger';
-        })
-        .finally(() => {
-          this.mutationLoading = false;
-        });
-    },
     dismissDeleteAlert() {
       this.deleteAlertType = null;
       this.itemToDelete = {};
@@ -249,6 +226,10 @@ export default {
           updateQuery: this.updateQuery,
         });
       }
+    },
+    startDelete() {
+      this.track('confirm_delete');
+      this.mutationLoading = true;
     },
   },
 };
@@ -358,23 +339,32 @@ export default {
         </template>
       </template>
 
-      <gl-modal
-        ref="deleteModal"
-        modal-id="delete-image-modal"
-        ok-variant="danger"
-        @ok="handleDeleteImage"
-        @cancel="track('cancel_delete')"
+      <delete-image
+        :id="itemToDelete.id"
+        @start="startDelete"
+        @error="deleteAlertType = 'danger'"
+        @success="deleteAlertType = 'success'"
+        @end="mutationLoading = false"
       >
-        <template #modal-title>{{ $options.i18n.REMOVE_REPOSITORY_LABEL }}</template>
-        <p>
-          <gl-sprintf :message="$options.i18n.REMOVE_REPOSITORY_MODAL_TEXT">
-            <template #title>
-              <b>{{ itemToDelete.path }}</b>
-            </template>
-          </gl-sprintf>
-        </p>
-        <template #modal-ok>{{ __('Remove') }}</template>
-      </gl-modal>
+        <template #default="{ doDelete }">
+          <gl-modal
+            ref="deleteModal"
+            modal-id="delete-image-modal"
+            :action-primary="{ text: __('Remove'), attributes: { variant: 'danger' } }"
+            @primary="doDelete"
+            @cancel="track('cancel_delete')"
+          >
+            <template #modal-title>{{ $options.i18n.REMOVE_REPOSITORY_LABEL }}</template>
+            <p>
+              <gl-sprintf :message="$options.i18n.REMOVE_REPOSITORY_MODAL_TEXT">
+                <template #title>
+                  <b>{{ itemToDelete.path }}</b>
+                </template>
+              </gl-sprintf>
+            </p>
+          </gl-modal>
+        </template>
+      </delete-image>
     </template>
   </div>
 </template>

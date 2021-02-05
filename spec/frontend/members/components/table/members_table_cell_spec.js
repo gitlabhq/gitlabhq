@@ -1,8 +1,15 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { MEMBER_TYPES } from '~/members/constants';
-import { member as memberMock, group, invite, accessRequest } from '../../mock_data';
 import MembersTableCell from '~/members/components/table/members_table_cell.vue';
+import {
+  member as memberMock,
+  directMember,
+  inheritedMember,
+  group,
+  invite,
+  accessRequest,
+} from '../../mock_data';
 
 describe('MembersTableCell', () => {
   const WrappedComponent = {
@@ -31,7 +38,7 @@ describe('MembersTableCell', () => {
 
   const localVue = createLocalVue();
   localVue.use(Vuex);
-  localVue.component('wrapped-component', WrappedComponent);
+  localVue.component('WrappedComponent', WrappedComponent);
 
   const createStore = (state = {}) => {
     return new Vuex.Store({
@@ -75,19 +82,12 @@ describe('MembersTableCell', () => {
 
   const createComponentWithDirectMember = (member = {}) => {
     createComponent({
-      member: {
-        ...memberMock,
-        source: {
-          ...memberMock.source,
-          id: 1,
-        },
-        ...member,
-      },
+      member: { ...directMember, ...member },
     });
   };
   const createComponentWithInheritedMember = (member = {}) => {
     createComponent({
-      member: { ...memberMock, ...member },
+      member: { ...inheritedMember, ...member },
     });
   };
 

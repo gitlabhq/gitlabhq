@@ -147,7 +147,7 @@ Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
-`8.11.x` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` - > `13.5.3`
+`8.11.x` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` - > `13.x (latest)`
 
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.

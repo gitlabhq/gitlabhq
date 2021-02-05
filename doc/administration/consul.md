@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# How to set up Consul **(PREMIUM ONLY)**
+# How to set up Consul **(PREMIUM SELF)**
 
 A Consul cluster consists of both
 [server and client agents](https://www.consul.io/docs/agent).

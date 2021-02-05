@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # See https://github.com/fphilipe/premailer-rails#configuration
 Premailer::Rails.config.merge!(
   generate_text_part: false,

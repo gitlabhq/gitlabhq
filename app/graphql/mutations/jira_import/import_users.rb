@@ -3,9 +3,11 @@
 module Mutations
   module JiraImport
     class ImportUsers < BaseMutation
-      include ResolvesProject
+      include FindsProject
 
       graphql_name 'JiraImportUsers'
+
+      authorize :admin_project
 
       field :jira_users,
             [Types::JiraUserType],
@@ -20,7 +22,7 @@ module Mutations
                description: 'The index of the record the import should started at, default 0 (50 records returned).'
 
       def resolve(project_path:, start_at: 0)
-        project = authorized_find!(full_path: project_path)
+        project = authorized_find!(project_path)
 
         service_response = ::JiraImport::UsersImporter.new(context[:current_user], project, start_at.to_i).execute
 
@@ -28,16 +30,6 @@ module Mutations
           jira_users: service_response.payload,
           errors: service_response.errors
         }
-      end
-
-      private
-
-      def find_object(full_path:)
-        resolve_project(full_path: full_path)
-      end
-
-      def authorized_resource?(project)
-        Ability.allowed?(context[:current_user], :admin_project, project)
       end
     end
   end

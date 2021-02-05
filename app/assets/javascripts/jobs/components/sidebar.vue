@@ -3,6 +3,7 @@ import { isEmpty } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlButton, GlIcon, GlLink } from '@gitlab/ui';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import { JOB_SIDEBAR } from '../constants';
 import ArtifactsBlock from './artifacts_block.vue';
 import JobSidebarRetryButton from './job_sidebar_retry_button.vue';
 import JobRetryForwardDeploymentModal from './job_retry_forward_deployment_modal.vue';
@@ -11,7 +12,6 @@ import CommitBlock from './commit_block.vue';
 import StagesDropdown from './stages_dropdown.vue';
 import JobsContainer from './jobs_container.vue';
 import JobSidebarDetailsContainer from './sidebar_job_details_container.vue';
-import { JOB_SIDEBAR } from '../constants';
 
 export const forwardDeploymentFailureModalId = 'forward-deployment-failure';
 
@@ -37,11 +37,6 @@ export default {
   },
   props: {
     artifactHelpUrl: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    runnerHelpUrl: {
       type: String,
       required: false,
       default: '',
@@ -110,7 +105,7 @@ export default {
           <gl-button
             :aria-label="$options.i18n.toggleSidebar"
             category="tertiary"
-            class="gl-display-md-none gl-ml-2 js-sidebar-build-toggle"
+            class="gl-md-display-none gl-ml-2 js-sidebar-build-toggle"
             icon="chevron-double-lg-right"
             @click="toggleSidebar"
           />
@@ -135,7 +130,7 @@ export default {
             <gl-icon :size="14" name="external-link" />
           </gl-link>
         </div>
-        <job-sidebar-details-container :runner-help-url="runnerHelpUrl" />
+        <job-sidebar-details-container />
         <artifacts-block v-if="hasArtifact" :artifact="job.artifact" :help-url="artifactHelpUrl" />
         <trigger-block v-if="hasTriggers" :trigger="job.trigger" />
         <commit-block

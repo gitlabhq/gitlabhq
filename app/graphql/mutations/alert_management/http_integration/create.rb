@@ -4,7 +4,7 @@ module Mutations
   module AlertManagement
     module HttpIntegration
       class Create < HttpIntegrationBase
-        include ResolvesProject
+        include FindsProject
 
         graphql_name 'HttpIntegrationCreate'
 
@@ -21,26 +21,13 @@ module Mutations
                  description: 'Whether the integration is receiving alerts.'
 
         def resolve(args)
-          @project = authorized_find!(full_path: args[:project_path])
+          project = authorized_find!(args[:project_path])
 
           response ::AlertManagement::HttpIntegrations::CreateService.new(
             project,
             current_user,
-            http_integration_params(args)
+            http_integration_params(project, args)
           ).execute
-        end
-
-        private
-
-        attr_reader :project
-
-        def find_object(full_path:)
-          resolve_project(full_path: full_path)
-        end
-
-        # overriden in EE
-        def http_integration_params(args)
-          args.slice(:name, :active)
         end
       end
     end

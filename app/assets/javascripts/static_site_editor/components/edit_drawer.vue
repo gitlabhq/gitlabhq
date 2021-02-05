@@ -22,11 +22,6 @@ export default {
 <template>
   <gl-drawer class="gl-pt-8" :open="isOpen" @close="$emit('close')">
     <template #header>{{ __('Page settings') }}</template>
-    <template>
-      <front-matter-controls
-        :settings="settings"
-        @updateSettings="$emit('updateSettings', $event)"
-      />
-    </template>
+    <front-matter-controls :settings="settings" @updateSettings="$emit('updateSettings', $event)" />
   </gl-drawer>
 </template>

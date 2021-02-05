@@ -3,12 +3,12 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
+import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
+import autosave from '../mixins/autosave';
 import noteEditedText from './note_edited_text.vue';
 import noteAwardsList from './note_awards_list.vue';
 import noteAttachment from './note_attachment.vue';
 import noteForm from './note_form.vue';
-import autosave from '../mixins/autosave';
-import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 
 export default {
   components: {
@@ -156,6 +156,7 @@ export default {
       @handleFormUpdate="handleFormUpdate"
       @cancelForm="formCancelHandler"
     />
+    <!-- eslint-disable vue/no-mutating-props -->
     <textarea
       v-if="canEdit"
       v-model="note.note"
@@ -163,6 +164,7 @@ export default {
       class="hidden js-task-list-field"
       dir="auto"
     ></textarea>
+    <!-- eslint-enable vue/no-mutating-props -->
     <note-edited-text
       v-if="note.last_edited_at"
       :edited-at="note.last_edited_at"

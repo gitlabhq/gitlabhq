@@ -4,8 +4,8 @@ import { GlToggle, GlLoadingIcon } from '@gitlab/ui';
 import BoardSidebarSubscription from '~/boards/components/sidebar/board_sidebar_subscription.vue';
 import * as types from '~/boards/stores/mutation_types';
 import { createStore } from '~/boards/stores';
-import { mockActiveIssue } from '../../mock_data';
 import createFlash from '~/flash';
+import { mockActiveIssue } from '../../mock_data';
 
 jest.mock('~/flash.js');
 

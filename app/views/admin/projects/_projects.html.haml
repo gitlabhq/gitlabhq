@@ -4,8 +4,8 @@
       - @projects.each_with_index do |project|
         %li.project-row{ class: ('no-description' if project.description.blank?) }
           .controls
-            = link_to 'Edit', edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn"
-            %button.delete-project-button.btn.btn-danger{ data: { delete_project_url: admin_project_path(project), project_name: project.name } }
+            = link_to 'Edit', edit_project_path(project), id: "edit_#{dom_id(project)}", class: "gl-button btn"
+            %button.delete-project-button.gl-button.btn.btn-danger{ data: { delete_project_url: admin_project_path(project), project_name: project.name } }
               = s_('AdminProjects|Delete')
 
           .stats

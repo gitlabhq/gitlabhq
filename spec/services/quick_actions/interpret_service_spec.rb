@@ -945,6 +945,12 @@ RSpec.describe QuickActions::InterpretService do
           it_behaves_like 'assign_reviewer command'
         end
 
+        context 'with the "request_review" alias' do
+          let(:content) { "/request_review @#{developer.username}" }
+
+          it_behaves_like 'assign_reviewer command'
+        end
+
         context 'with no user' do
           let(:content) { '/assign_reviewer' }
 
@@ -1785,6 +1791,24 @@ RSpec.describe QuickActions::InterpretService do
       text, _ = service.execute(content, issue)
 
       expect(text).to eq(" - list\n\ntest")
+    end
+
+    it 'tracks MAU for commands' do
+      content = "/shrug test\n/assign me\n/milestone %4"
+
+      expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
+        .to receive(:track_unique_action)
+        .with('shrug', args: 'test', user: developer)
+
+      expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
+        .to receive(:track_unique_action)
+        .with('assign', args: 'me', user: developer)
+
+      expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
+        .to receive(:track_unique_action)
+        .with('milestone', args: '%4', user: developer)
+
+      service.execute(content, issue)
     end
 
     context '/create_merge_request command' do

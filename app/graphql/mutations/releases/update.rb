@@ -47,7 +47,7 @@ module Mutations
       end
 
       def resolve(project_path:, **scalars)
-        project = authorized_find!(full_path: project_path)
+        project = authorized_find!(project_path)
 
         params = scalars.with_indifferent_access
 

@@ -437,19 +437,6 @@
   }
 }
 
-.btn-missing {
-  color: $gl-text-color-secondary;
-  border: 1px dashed $border-gray-normal-dashed;
-  border-radius: $border-radius-default;
-
-  &:hover,
-  &:active,
-  &:focus {
-    color: $gl-text-color-secondary;
-    background-color: $white-normal;
-  }
-}
-
 // The .btn-svg class is available for legacy icon buttons to
 // preserve a 34px height and have 16x16 icons at the same time.
 // Once a button is migrated (to the current 32px height)

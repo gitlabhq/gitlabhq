@@ -1,7 +1,7 @@
 <script>
 import { isFunction } from 'lodash';
-import tooltip from '../directives/tooltip';
 import { hasHorizontalOverflow } from '~/lib/utils/dom_utils';
+import tooltip from '../directives/tooltip';
 
 export default {
   directives: {

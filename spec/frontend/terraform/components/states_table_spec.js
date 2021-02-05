@@ -11,6 +11,8 @@ describe('StatesTable', () => {
   const defaultProps = {
     states: [
       {
+        _showDetails: true,
+        errorMessages: ['State 1 has errored'],
         name: 'state-1',
         lockedAt: '2020-10-13T00:00:00Z',
         lockedByUser: {
@@ -20,6 +22,8 @@ describe('StatesTable', () => {
         latestVersion: null,
       },
       {
+        _showDetails: false,
+        errorMessages: [],
         name: 'state-2',
         lockedAt: null,
         lockedByUser: null,
@@ -27,6 +31,8 @@ describe('StatesTable', () => {
         latestVersion: null,
       },
       {
+        _showDetails: false,
+        errorMessages: [],
         name: 'state-3',
         lockedAt: '2020-10-10T00:00:00Z',
         lockedByUser: {
@@ -54,6 +60,8 @@ describe('StatesTable', () => {
         },
       },
       {
+        _showDetails: true,
+        errorMessages: ['State 4 has errored'],
         name: 'state-4',
         lockedAt: '2020-10-10T00:00:00Z',
         lockedByUser: null,
@@ -152,6 +160,17 @@ describe('StatesTable', () => {
 
   it('displays no actions dropdown', () => {
     expect(findActions().length).toEqual(0);
+  });
+
+  it.each`
+    errorMessage                               | lineNumber
+    ${defaultProps.states[0].errorMessages[0]} | ${0}
+    ${defaultProps.states[3].errorMessages[0]} | ${1}
+  `('displays table error message "$errorMessage"', ({ errorMessage, lineNumber }) => {
+    const states = wrapper.findAll('[data-testid="terraform-states-table-error"]');
+    const state = states.at(lineNumber);
+
+    expect(state.text()).toBe(errorMessage);
   });
 
   describe('when user is a terraform administrator', () => {

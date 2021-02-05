@@ -12,21 +12,21 @@ import {
   WEBIDE_MEASURE_FILE_AFTER_INTERACTION,
 } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
-import eventHub from '../eventhub';
+import { __ } from '~/locale';
+import Editor from '../lib/editor';
 import {
   leftSidebarViews,
   viewerTypes,
   FILE_VIEW_MODE_EDITOR,
   FILE_VIEW_MODE_PREVIEW,
 } from '../constants';
-import Editor from '../lib/editor';
-import FileTemplatesBar from './file_templates/bar.vue';
-import { __ } from '~/locale';
+import eventHub from '../eventhub';
 import { extractMarkdownImagesFromEntries } from '../stores/utils';
 import { getFileEditorOrDefault } from '../stores/modules/editor/utils';
 import { getPathParent, readFileAsDataURL, registerSchema, isTextFile } from '../utils';
 import { getRulesWithTraversal } from '../lib/editorconfig/parser';
 import mapRulesToMonaco from '../lib/editorconfig/rules_mapper';
+import FileTemplatesBar from './file_templates/bar.vue';
 
 export default {
   name: 'RepoEditor',

@@ -29,7 +29,14 @@ export default () => {
     return null;
   }
 
-  const { endpoint, expirationPolicy, isGroupPage, isAdmin, ...config } = el.dataset;
+  const {
+    endpoint,
+    expirationPolicy,
+    isGroupPage,
+    isAdmin,
+    showUnfinishedTagCleanupCallout,
+    ...config
+  } = el.dataset;
 
   // This is a mini state to help the breadcrumb have the correct name in the details page
   const breadCrumbState = Vue.observable({
@@ -57,6 +64,7 @@ export default () => {
             expirationPolicy: expirationPolicy ? JSON.parse(expirationPolicy) : undefined,
             isGroupPage: parseBoolean(isGroupPage),
             isAdmin: parseBoolean(isAdmin),
+            showUnfinishedTagCleanupCallout: parseBoolean(showUnfinishedTagCleanupCallout),
           },
           /* eslint-disable @gitlab/require-i18n-strings */
           dockerBuildCommand: `docker build -t ${config.repositoryUrl} .`,

@@ -155,7 +155,9 @@ describe('Pipelines Table Row', () => {
 
     it('should render an icon for each stage', () => {
       expect(
-        wrapper.findAll('.table-section:nth-child(4) .js-builds-dropdown-button').length,
+        wrapper.findAll(
+          '.table-section:nth-child(4) [data-testid="mini-pipeline-graph-dropdown-toggle"]',
+        ).length,
       ).toEqual(pipeline.details.stages.length);
     });
   });

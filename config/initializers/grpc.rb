@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'logger'
 
 GRPC_LOGGER = Logger.new(Rails.root.join('log/grpc.log'))

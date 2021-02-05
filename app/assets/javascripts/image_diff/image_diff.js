@@ -1,7 +1,7 @@
 import $ from 'jquery';
+import { isImageLoaded } from '../lib/utils/image_utility';
 import imageDiffHelper from './helpers/index';
 import ImageBadge from './image_badge';
-import { isImageLoaded } from '../lib/utils/image_utility';
 
 export default class ImageDiff {
   constructor(el, options) {

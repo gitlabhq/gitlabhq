@@ -27,6 +27,4 @@
         = s_('Profiles|Created%{time_ago}'.html_safe) % { time_ago: time_ago_with_tooltip(key.created_at, html_class: 'gl-ml-2')}
         - if key.can_delete?
           .gl-ml-3
-            = button_to '#', class: "btn btn-default gl-button btn-default-tertiary js-confirm-modal-button", data: ssh_key_delete_modal_data(key, path_to_key(key, is_admin)) do
-              %span.sr-only= _('Delete')
-              = sprite_icon('remove')
+            = render 'shared/ssh_keys/key_delete', html_class: "btn btn-default gl-button btn-default-tertiary js-confirm-modal-button", button_data: ssh_key_delete_modal_data(key, path_to_key(key, is_admin))

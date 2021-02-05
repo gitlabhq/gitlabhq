@@ -1,9 +1,9 @@
 import $ from 'jquery';
+import { parseBoolean } from '~/lib/utils/common_utils';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import Api from './api';
 import { mergeUrlParams } from './lib/utils/url_utility';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { __ } from './locale';
-import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 export default class NamespaceSelect {
   constructor(opts) {

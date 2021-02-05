@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Rails/Output
 if Gitlab::Runtime.console?
   # note that this will not print out when using `spring`

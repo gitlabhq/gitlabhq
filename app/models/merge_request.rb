@@ -50,12 +50,15 @@ class MergeRequest < ApplicationRecord
       end
     end
 
-  has_many :merge_request_diffs
+  has_many :merge_request_diffs,
+    -> { regular }, inverse_of: :merge_request
   has_many :merge_request_context_commits, inverse_of: :merge_request
   has_many :merge_request_context_commit_diff_files, through: :merge_request_context_commits, source: :diff_files
 
   has_one :merge_request_diff,
-    -> { order('merge_request_diffs.id DESC') }, inverse_of: :merge_request
+    -> { regular.order('merge_request_diffs.id DESC') }, inverse_of: :merge_request
+  has_one :merge_head_diff,
+    -> { merge_head }, inverse_of: :merge_request, class_name: 'MergeRequestDiff'
   has_one :cleanup_schedule, inverse_of: :merge_request
 
   belongs_to :latest_merge_request_diff, class_name: 'MergeRequestDiff'
@@ -270,8 +273,7 @@ class MergeRequest < ApplicationRecord
         by_commit_sha(sha),
         by_squash_commit_sha(sha),
         by_merge_commit_sha(sha)
-      ],
-      remove_duplicates: false
+      ]
     )
   end
   scope :by_cherry_pick_sha, -> (sha) do
@@ -477,13 +479,17 @@ class MergeRequest < ApplicationRecord
   # This is used after project import, to reset the IDs to the correct
   # values. It is not intended to be called without having already scoped the
   # relation.
+  #
+  # Only set `regular` merge request diffs as latest so `merge_head` diff
+  # won't be considered as `MergeRequest#merge_request_diff`.
   def self.set_latest_merge_request_diff_ids!
-    update = '
+    update = "
       latest_merge_request_diff_id = (
         SELECT MAX(id)
         FROM merge_request_diffs
         WHERE merge_requests.id = merge_request_diffs.merge_request_id
-      )'.squish
+        AND merge_request_diffs.diff_type = #{MergeRequestDiff.diff_types[:regular]}
+      )".squish
 
     self.each_batch do |batch|
       batch.update_all(update)
@@ -922,7 +928,7 @@ class MergeRequest < ApplicationRecord
   def create_merge_request_diff
     fetch_ref!
 
-    # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/37435
+    # n+1: https://gitlab.com/gitlab-org/gitlab/-/issues/19377
     Gitlab::GitalyClient.allow_n_plus_1_calls do
       merge_request_diffs.create!
       reload_merge_request_diff
@@ -996,7 +1002,7 @@ class MergeRequest < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def diffable_merge_ref?
-    open? && merge_ref_head.present? && (Feature.enabled?(:display_merge_conflicts_in_diff, project) || can_be_merged?)
+    open? && merge_head_diff.present? && (Feature.enabled?(:display_merge_conflicts_in_diff, project) || can_be_merged?)
   end
 
   # Returns boolean indicating the merge_status should be rechecked in order to
@@ -1478,8 +1484,26 @@ class MergeRequest < ApplicationRecord
     compare_reports(Ci::GenerateCoverageReportsService)
   end
 
+  def has_codequality_mr_diff_report?
+    return false unless ::Gitlab::Ci::Features.display_quality_on_mr_diff?(project)
+
+    actual_head_pipeline&.has_codequality_mr_diff_report?
+  end
+
+  # TODO: this method and compare_test_reports use the same
+  # result type, which is handled by the controller's #reports_response.
+  # we should minimize mistakes by isolating the common parts.
+  # issue: https://gitlab.com/gitlab-org/gitlab/issues/34224
+  def find_codequality_mr_diff_reports
+    unless has_codequality_mr_diff_report?
+      return { status: :error, status_reason: 'This merge request does not have codequality mr diff reports' }
+    end
+
+    compare_reports(Ci::GenerateCodequalityMrDiffReportService)
+  end
+
   def has_codequality_reports?
-    return false unless Feature.enabled?(:codequality_mr_diff, project)
+    return false unless ::Gitlab::Ci::Features.display_codequality_backend_comparison?(project)
 
     actual_head_pipeline&.has_reports?(Ci::JobArtifact.codequality_reports)
   end
@@ -1769,6 +1793,10 @@ class MergeRequest < ApplicationRecord
 
   def supports_assignee?
     true
+  end
+
+  def find_reviewer(user)
+    merge_request_reviewers.find_by(user_id: user.id)
   end
 
   private

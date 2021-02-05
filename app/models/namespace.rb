@@ -103,6 +103,10 @@ class Namespace < ApplicationRecord
       )
   end
 
+  # Make sure that the name is same as strong_memoize name in root_ancestor
+  # method
+  attr_writer :root_ancestor
+
   class << self
     def by_path(path)
       find_by('lower(path) = :value', value: path.downcase)
@@ -315,6 +319,8 @@ class Namespace < ApplicationRecord
   def root_ancestor
     return self if persisted? && parent_id.nil?
 
+    # Make sure that strong_memoize name is in sync with root_ancestor's
+    # attr_writer name
     strong_memoize(:root_ancestor) do
       self_and_ancestors.reorder(nil).find_by(parent_id: nil)
     end

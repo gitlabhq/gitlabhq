@@ -101,7 +101,7 @@ export default {
         @keydown.enter.stop="resetDropdown"
         @click.stop="resetDropdown"
       >
-        <gl-icon name="clear" class="gl-text-gray-200! gl-hover-text-blue-800!" />
+        <gl-icon name="clear" />
       </gl-button>
       <gl-icon name="chevron-down" />
     </template>

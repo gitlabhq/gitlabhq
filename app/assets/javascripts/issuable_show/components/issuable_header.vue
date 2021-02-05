@@ -112,7 +112,7 @@ export default {
     </div>
     <div
       data-testid="header-actions"
-      class="detail-page-header-actions gl-display-flex gl-display-md-block"
+      class="detail-page-header-actions gl-display-flex gl-md-display-block"
     >
       <slot name="header-actions"></slot>
     </div>

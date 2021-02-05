@@ -17,5 +17,7 @@
   = render partial: 'ci/runner/how_to_setup_runner',
            locals: { registration_token: @group.runners_token,
                      type: 'group',
-                     reset_token_url: reset_registration_token_group_settings_ci_cd_path }
+                     reset_token_url: reset_registration_token_group_settings_ci_cd_path,
+                     project_path: '',
+                     group_path: @group.path }
   %br

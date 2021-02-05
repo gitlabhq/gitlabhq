@@ -1,11 +1,11 @@
 ---
 stage: Create
-group: Knowledge
+group: Editor
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference, how-to
 ---
 
-# Wiki **(CORE)**
+# Wiki **(FREE)**
 
 A separate system for documentation called Wiki, is built right into each
 GitLab project. It is enabled by default on all new projects and you can find

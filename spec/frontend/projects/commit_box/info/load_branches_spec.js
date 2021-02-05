@@ -1,6 +1,6 @@
 import axios from 'axios';
-import waitForPromises from 'helpers/wait_for_promises';
 import MockAdapter from 'axios-mock-adapter';
+import waitForPromises from 'helpers/wait_for_promises';
 import { loadBranches } from '~/projects/commit_box/info/load_branches';
 
 const mockCommitPath = '/commit/abcd/branches';

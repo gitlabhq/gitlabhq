@@ -37,7 +37,11 @@ RSpec.describe Gitlab::InstrumentationHelper do
         :redis_shared_state_write_bytes,
         :db_count,
         :db_write_count,
-        :db_cached_count
+        :db_cached_count,
+        :external_http_count,
+        :external_http_duration_s,
+        :rack_attack_redis_count,
+        :rack_attack_redis_duration_s
       ]
 
       expect(described_class.keys).to eq(expected_keys)

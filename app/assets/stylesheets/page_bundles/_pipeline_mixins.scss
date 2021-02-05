@@ -98,7 +98,6 @@
     @include mini-pipeline-graph-color(var(--white, $white), $orange-50, $orange-100, $orange-500, $orange-600, $orange-700);
   }
 
-  &.ci-status-icon-preparing,
   &.ci-status-icon-running {
     @include mini-pipeline-graph-color(var(--white, $white), $blue-100, $blue-200, $blue-500, $blue-600, $blue-700);
   }
@@ -106,14 +105,15 @@
   &.ci-status-icon-canceled,
   &.ci-status-icon-scheduled,
   &.ci-status-icon-disabled,
-  &.ci-status-icon-not-found,
   &.ci-status-icon-manual {
     @include mini-pipeline-graph-color(var(--white, $white), $gray-500, $gray-700, $gray-900, $gray-950, $black);
   }
 
+  &.ci-status-icon-preparing,
   &.ci-status-icon-created,
+  &.ci-status-icon-not-found,
   &.ci-status-icon-skipped {
-    @include mini-pipeline-graph-color(var(--white, $white), $gray-100, $gray-200, $gray-300, $gray-400, $gray-500);
+    @include mini-pipeline-graph-color(var(--white, $white), var(--gray-100, $gray-100), var(--gray-200, $gray-200), var(--gray-400, $gray-400), var(--gray-500, $gray-500), var(--gray-600, $gray-600));
   }
 }
 

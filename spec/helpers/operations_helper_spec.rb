@@ -30,7 +30,7 @@ RSpec.describe OperationsHelper do
 
       it 'returns the correct values' do
         expect(subject).to eq(
-          'alerts_setup_url' => help_page_path('operations/incident_management/alert_integrations.md', anchor: 'generic-http-endpoint'),
+          'alerts_setup_url' => help_page_path('operations/incident_management/integrations.md', anchor: 'configuration'),
           'alerts_usage_url' => project_alert_management_index_path(project),
           'prometheus_form_path' => project_service_path(project, prometheus_service),
           'prometheus_reset_key_path' => reset_alerting_token_project_settings_operations_path(project),

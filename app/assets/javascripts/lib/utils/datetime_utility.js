@@ -4,7 +4,9 @@ import * as timeago from 'timeago.js';
 import dateFormat from 'dateformat';
 import { languageCode, s__, __, n__ } from '../../locale';
 
-const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000;
+const MILLISECONDS_IN_HOUR = 60 * 60 * 1000;
+const MILLISECONDS_IN_DAY = 24 * MILLISECONDS_IN_HOUR;
+const DAYS_IN_WEEK = 7;
 
 window.timeago = timeago;
 
@@ -674,50 +676,127 @@ export const secondsToHours = (offset) => {
 };
 
 /**
- * Returns the date n days after the date provided
+ * Returns the date `n` days after the date provided
  *
  * @param {Date} date the initial date
  * @param {Number} numberOfDays number of days after
- * @return {Date} the date following the date provided
+ * @param {Object} [options={}] Additional options for this calculation
+ * @param {boolean} [options.utc=false] Performs the calculation using UTC dates.
+ * This will cause Daylight Saving Time to be ignored. Defaults to `false`
+ * if not provided, which causes the calculation to be performed in the
+ * user's timezone.
+ *
+ * @return {Date} A `Date` object `n` days after the provided `Date`
  */
-export const nDaysAfter = (date, numberOfDays) =>
-  new Date(newDate(date)).setDate(date.getDate() + numberOfDays);
+export const nDaysAfter = (date, numberOfDays, { utc = false } = {}) => {
+  const clone = newDate(date);
+
+  const cloneValue = utc
+    ? clone.setUTCDate(date.getUTCDate() + numberOfDays)
+    : clone.setDate(date.getDate() + numberOfDays);
+
+  return new Date(cloneValue);
+};
 
 /**
- * Returns the date n days before the date provided
+ * Returns the date `n` days before the date provided
  *
  * @param {Date} date the initial date
  * @param {Number} numberOfDays number of days before
- * @return {Date} the date preceding the date provided
+ * @param {Object} [options={}] Additional options for this calculation
+ * @param {boolean} [options.utc=false] Performs the calculation using UTC dates.
+ * This will cause Daylight Saving Time to be ignored. Defaults to `false`
+ * if not provided, which causes the calculation to be performed in the
+ * user's timezone.
+ * @return {Date} A `Date` object `n` days before the provided `Date`
  */
-export const nDaysBefore = (date, numberOfDays) => nDaysAfter(date, -numberOfDays);
+export const nDaysBefore = (date, numberOfDays, options) =>
+  nDaysAfter(date, -numberOfDays, options);
 
 /**
- * Returns the date n months after the date provided
+ * Returns the date `n` weeks after the date provided
+ *
+ * @param {Date} date the initial date
+ * @param {Number} numberOfWeeks number of weeks after
+ * @param {Object} [options={}] Additional options for this calculation
+ * @param {boolean} [options.utc=false] Performs the calculation using UTC dates.
+ * This will cause Daylight Saving Time to be ignored. Defaults to `false`
+ * if not provided, which causes the calculation to be performed in the
+ * user's timezone.
+ *
+ * @return {Date} A `Date` object `n` weeks after the provided `Date`
+ */
+export const nWeeksAfter = (date, numberOfWeeks, options) =>
+  nDaysAfter(date, DAYS_IN_WEEK * numberOfWeeks, options);
+
+/**
+ * Returns the date `n` weeks before the date provided
+ *
+ * @param {Date} date the initial date
+ * @param {Number} numberOfWeeks number of weeks before
+ * @param {Object} [options={}] Additional options for this calculation
+ * @param {boolean} [options.utc=false] Performs the calculation using UTC dates.
+ * This will cause Daylight Saving Time to be ignored. Defaults to `false`
+ * if not provided, which causes the calculation to be performed in the
+ * user's timezone.
+ *
+ * @return {Date} A `Date` object `n` weeks before the provided `Date`
+ */
+export const nWeeksBefore = (date, numberOfWeeks, options) =>
+  nWeeksAfter(date, -numberOfWeeks, options);
+
+/**
+ * Returns the date `n` months after the date provided
  *
  * @param {Date} date the initial date
  * @param {Number} numberOfMonths number of months after
- * @return {Date} the date following the date provided
+ * @param {Object} [options={}] Additional options for this calculation
+ * @param {boolean} [options.utc=false] Performs the calculation using UTC dates.
+ * This will cause Daylight Saving Time to be ignored. Defaults to `false`
+ * if not provided, which causes the calculation to be performed in the
+ * user's timezone.
+ *
+ * @return {Date} A `Date` object `n` months after the provided `Date`
  */
-export const nMonthsAfter = (date, numberOfMonths) =>
-  new Date(newDate(date)).setMonth(date.getMonth() + numberOfMonths);
+export const nMonthsAfter = (date, numberOfMonths, { utc = false } = {}) => {
+  const clone = newDate(date);
+
+  const cloneValue = utc
+    ? clone.setUTCMonth(date.getUTCMonth() + numberOfMonths)
+    : clone.setMonth(date.getMonth() + numberOfMonths);
+
+  return new Date(cloneValue);
+};
 
 /**
- * Returns the date n months before the date provided
+ * Returns the date `n` months before the date provided
  *
  * @param {Date} date the initial date
  * @param {Number} numberOfMonths number of months before
- * @return {Date} the date preceding the date provided
+ * @param {Object} [options={}] Additional options for this calculation
+ * @param {boolean} [options.utc=false] Performs the calculation using UTC dates.
+ * This will cause Daylight Saving Time to be ignored. Defaults to `false`
+ * if not provided, which causes the calculation to be performed in the
+ * user's timezone.
+ *
+ * @return {Date} A `Date` object `n` months before the provided `Date`
  */
-export const nMonthsBefore = (date, numberOfMonths) => nMonthsAfter(date, -numberOfMonths);
+export const nMonthsBefore = (date, numberOfMonths, options) =>
+  nMonthsAfter(date, -numberOfMonths, options);
 
 /**
  * Returns the date after the date provided
  *
  * @param {Date} date the initial date
+ * @param {Object} [options={}] Additional options for this calculation
+ * @param {boolean} [options.utc=false] Performs the calculation using UTC dates.
+ * This will cause Daylight Saving Time to be ignored. Defaults to `false`
+ * if not provided, which causes the calculation to be performed in the
+ * user's timezone.
+ *
  * @return {Date} the date following the date provided
  */
-export const dayAfter = (date) => new Date(newDate(date).setDate(date.getDate() + 1));
+export const dayAfter = (date, options) => nDaysAfter(date, 1, options);
 
 /**
  * Mimics the behaviour of the rails distance_of_time_in_words function
@@ -859,17 +938,17 @@ export const format24HourTimeStringFromInt = (time) => {
  *
  * @param {Object} givenPeriodLeft - the first period to compare.
  * @param {Object} givenPeriodRight - the second period to compare.
- * @returns {Object} { overlap: number of days the overlap is present, overlapStartDate: the start date of the overlap in time format, overlapEndDate: the end date of the overlap in time format }
+ * @returns {Object} { daysOverlap: number of days the overlap is present, hoursOverlap: number of hours the overlap is present, overlapStartDate: the start date of the overlap in time format, overlapEndDate: the end date of the overlap in time format }
  * @throws {Error} Uncaught Error: Invalid period
  *
  * @example
- * getOverlappingDaysInPeriods(
+ * getOverlapDateInPeriods(
  *   { start: new Date(2021, 0, 11), end: new Date(2021, 0, 13) },
  *   { start: new Date(2021, 0, 11), end: new Date(2021, 0, 14) }
- * ) => { daysOverlap: 2, overlapStartDate: 1610323200000, overlapEndDate: 1610496000000 }
+ * ) => { daysOverlap: 2, hoursOverlap: 48, overlapStartDate: 1610323200000, overlapEndDate: 1610496000000 }
  *
  */
-export const getOverlappingDaysInPeriods = (givenPeriodLeft = {}, givenPeriodRight = {}) => {
+export const getOverlapDateInPeriods = (givenPeriodLeft = {}, givenPeriodRight = {}) => {
   const leftStartTime = new Date(givenPeriodLeft.start).getTime();
   const leftEndTime = new Date(givenPeriodLeft.end).getTime();
   const rightStartTime = new Date(givenPeriodRight.start).getTime();
@@ -890,8 +969,44 @@ export const getOverlappingDaysInPeriods = (givenPeriodLeft = {}, givenPeriodRig
   const differenceInMs = overlapEndDate - overlapStartDate;
 
   return {
+    hoursOverlap: Math.ceil(differenceInMs / MILLISECONDS_IN_HOUR),
     daysOverlap: Math.ceil(differenceInMs / MILLISECONDS_IN_DAY),
     overlapStartDate,
     overlapEndDate,
   };
+};
+
+/**
+ * A utility function that checks that the date is today
+ *
+ * @param {Date} date
+ *
+ * @return {Boolean} true if provided date is today
+ */
+export const isToday = (date) => {
+  const today = new Date();
+  return (
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
+  );
+};
+
+/**
+ * Returns the start of the provided day
+ *
+ * @param {Object} [options={}] Additional options for this calculation
+ * @param {boolean} [options.utc=false] Performs the calculation using UTC time.
+ * If `true`, the time returned will be midnight UTC. If `false` (the default)
+ * the time returned will be midnight in the user's local time.
+ *
+ * @returns {Date} A new `Date` object that represents the start of the day
+ * of the provided date
+ */
+export const getStartOfDay = (date, { utc = false } = {}) => {
+  const clone = newDate(date);
+
+  const cloneValue = utc ? clone.setUTCHours(0, 0, 0, 0) : clone.setHours(0, 0, 0, 0);
+
+  return new Date(cloneValue);
 };

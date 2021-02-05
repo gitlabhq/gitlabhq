@@ -15,14 +15,13 @@ import {
   slugifyWithUnderscore,
 } from '~/lib/utils/text_utility';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
+import markdownField from '~/vue_shared/components/markdown/field.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
-import markdownField from '~/vue_shared/components/markdown/field.vue';
-import userAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import issuableStateMixin from '../mixins/issuable_state';
 import noteSignedOutWidget from './note_signed_out_widget.vue';
 import discussionLockedWidget from './discussion_locked_widget.vue';
-import issuableStateMixin from '../mixins/issuable_state';
 import CommentFieldLayout from './comment_field_layout.vue';
 
 export default {
@@ -31,7 +30,6 @@ export default {
     noteSignedOutWidget,
     discussionLockedWidget,
     markdownField,
-    userAvatarLink,
     GlButton,
     TimelineEntryItem,
     GlIcon,
@@ -144,6 +142,9 @@ export default {
     },
     trackingLabel() {
       return slugifyWithUnderscore(`${this.commentButtonTitle} button`);
+    },
+    hasCloseAndCommentButton() {
+      return !this.glFeatures.removeCommentCloseReopen;
     },
   },
   watch: {
@@ -301,15 +302,6 @@ export default {
     <ul v-else-if="canCreateNote" class="notes notes-form timeline">
       <timeline-entry-item class="note-form">
         <div class="flash-container error-alert timeline-content"></div>
-        <div class="timeline-icon d-none d-md-block">
-          <user-avatar-link
-            v-if="author"
-            :link-href="author.path"
-            :img-src="author.avatar_url"
-            :img-alt="author.name"
-            :img-size="40"
-          />
-        </div>
         <div class="timeline-content timeline-content-form">
           <form ref="commentForm" class="new-note common-note-form gfm-form js-main-target-form">
             <comment-field-layout
@@ -384,7 +376,7 @@ export default {
                       class="btn btn-transparent"
                       @click.prevent="setNoteType('comment')"
                     >
-                      <gl-icon name="check" class="icon" />
+                      <gl-icon name="check" class="icon gl-flex-shrink-0" />
                       <div class="description">
                         <strong>{{ __('Comment') }}</strong>
                         <p>
@@ -400,10 +392,12 @@ export default {
                   <li class="divider droplab-item-ignore"></li>
                   <li :class="{ 'droplab-item-selected': noteType === 'discussion' }">
                     <button
+                      type="button"
+                      class="btn btn-transparent"
                       data-qa-selector="discussion_menu_item"
                       @click.prevent="setNoteType('discussion')"
                     >
-                      <gl-icon name="check" class="icon" />
+                      <gl-icon name="check" class="icon gl-flex-shrink-0" />
                       <div class="description">
                         <strong>{{ __('Start thread') }}</strong>
                         <p>{{ startDiscussionDescription }}</p>
@@ -414,7 +408,7 @@ export default {
               </div>
 
               <gl-button
-                v-if="canToggleIssueState"
+                v-if="hasCloseAndCommentButton && canToggleIssueState"
                 :loading="isToggleStateButtonLoading"
                 category="secondary"
                 :variant="buttonVariant"

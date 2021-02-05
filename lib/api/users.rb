@@ -6,7 +6,7 @@ module API
     include APIGuard
     include Helpers::CustomAttributes
 
-    allow_access_with_scope :read_user, if: -> (request) { request.get? }
+    allow_access_with_scope :read_user, if: -> (request) { request.get? || request.head? }
 
     feature_category :users, ['/users/:id/custom_attributes', '/users/:id/custom_attributes/:key']
 

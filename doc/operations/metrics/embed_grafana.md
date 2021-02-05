@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Embedding Grafana charts **(CORE)**
+# Embedding Grafana charts **(FREE)**
 
 Grafana metrics can be embedded in [GitLab Flavored Markdown](../../user/markdown.md).
 

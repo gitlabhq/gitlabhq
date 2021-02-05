@@ -1,5 +1,10 @@
 <script>
+import { GlBadge } from '@gitlab/ui';
+
 export default {
+  components: {
+    GlBadge,
+  },
   props: {
     duration: {
       type: String,
@@ -9,7 +14,7 @@ export default {
 };
 </script>
 <template>
-  <div class="log-duration-badge rounded align-self-start px-2 ml-2 flex-shrink-0 ws-normal">
+  <gl-badge>
     {{ duration }}
-  </div>
+  </gl-badge>
 </template>

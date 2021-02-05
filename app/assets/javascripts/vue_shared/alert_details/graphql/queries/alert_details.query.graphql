@@ -1,0 +1,11 @@
+#import "../fragments/alert_detail_item.fragment.graphql"
+
+query alertDetails($fullPath: ID!, $alertId: String) {
+  project(fullPath: $fullPath) {
+    alertManagementAlerts(iid: $alertId) {
+      nodes {
+        ...AlertDetailItem
+      }
+    }
+  }
+}

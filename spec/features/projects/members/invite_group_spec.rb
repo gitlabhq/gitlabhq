@@ -8,6 +8,11 @@ RSpec.describe 'Project > Members > Invite group', :js do
 
   let(:maintainer) { create(:user) }
 
+  before do
+    stub_feature_flags(invite_members_group_modal: false)
+    stub_feature_flags(vue_project_members_list: false)
+  end
+
   describe 'Share with group lock' do
     shared_examples 'the project can be shared with groups' do
       it 'the "Invite group" tab exists' do

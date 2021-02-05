@@ -109,8 +109,7 @@ RSpec.describe 'gitlab:cleanup rake tasks' do
       it 'passes dry_run correctly' do
         expect(Gitlab::Cleanup::OrphanJobArtifactFiles)
           .to receive(:new)
-          .with(limit: anything,
-                dry_run: false,
+          .with(dry_run: false,
                 niceness: anything,
                 logger: anything)
           .and_call_original
@@ -145,26 +144,7 @@ RSpec.describe 'gitlab:cleanup rake tasks' do
         expect(Gitlab::Cleanup::OrphanLfsFileReferences)
           .to receive(:new)
           .with(project,
-                limit: anything,
                 dry_run: false,
-                logger: anything)
-          .and_call_original
-
-        rake_task
-      end
-    end
-
-    context 'with LIMIT set to 100' do
-      before do
-        stub_env('LIMIT', '100')
-      end
-
-      it 'passes limit as integer' do
-        expect(Gitlab::Cleanup::OrphanLfsFileReferences)
-          .to receive(:new)
-          .with(project,
-                limit: 100,
-                dry_run: true,
                 logger: anything)
           .and_call_original
 

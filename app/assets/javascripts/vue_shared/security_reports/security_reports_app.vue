@@ -1,13 +1,10 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { GlLink, GlSprintf } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ReportSection from '~/reports/components/report_section.vue';
-import { LOADING, ERROR, SLOT_SUCCESS, SLOT_LOADING, SLOT_ERROR } from '~/reports/constants';
+import { ERROR, SLOT_SUCCESS, SLOT_LOADING, SLOT_ERROR } from '~/reports/constants';
 import { s__ } from '~/locale';
-import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
 import createFlash from '~/flash';
-import Api from '~/api';
 import HelpIcon from './components/help_icon.vue';
 import SecurityReportDownloadDropdown from './components/security_report_download_dropdown.vue';
 import SecuritySummary from './components/security_summary.vue';
@@ -24,8 +21,6 @@ import { extractSecurityReportArtifacts } from './utils';
 export default {
   store,
   components: {
-    GlLink,
-    GlSprintf,
     ReportSection,
     HelpIcon,
     SecurityReportDownloadDropdown,
@@ -101,9 +96,6 @@ export default {
           ),
         };
       },
-      skip() {
-        return !this.canShowDownloads;
-      },
       update(data) {
         return extractSecurityReportArtifacts(this.$options.reportTypes, data);
       },
@@ -124,9 +116,6 @@ export default {
   },
   computed: {
     ...mapGetters(['groupedSummaryText', 'summaryStatus']),
-    canShowDownloads() {
-      return this.glFeatures.coreSecurityMrWidgetDownloads;
-    },
     hasSecurityReports() {
       return this.availableSecurityReports.length > 0;
     },
@@ -139,23 +128,6 @@ export default {
     isLoadingReportArtifacts() {
       return this.$apollo.queries.reportArtifacts.loading;
     },
-    shouldShowDownloadGuidance() {
-      return !this.canShowDownloads && this.summaryStatus !== LOADING;
-    },
-    scansHaveRunMessage() {
-      return this.canShowDownloads
-        ? this.$options.i18n.scansHaveRun
-        : this.$options.i18n.scansHaveRunWithDownloadGuidance;
-    },
-  },
-  created() {
-    if (!this.canShowDownloads) {
-      this.checkAvailableSecurityReports(this.$options.reportTypes)
-        .then((availableSecurityReports) => {
-          this.onCheckingAvailableSecurityReports(Array.from(availableSecurityReports));
-        })
-        .catch(this.showError);
-    }
   },
   methods: {
     ...mapActions(MODULE_SAST, {
@@ -166,36 +138,6 @@ export default {
       setSecretDetectionDiffEndpoint: 'setDiffEndpoint',
       fetchSecretDetectionDiff: 'fetchDiff',
     }),
-    async checkAvailableSecurityReports(reportTypes) {
-      const reportTypesSet = new Set(reportTypes);
-      const availableReportTypes = new Set();
-
-      let page = 1;
-      while (page) {
-        // eslint-disable-next-line no-await-in-loop
-        const { data: jobs, headers } = await Api.pipelineJobs(this.projectId, this.pipelineId, {
-          per_page: 100,
-          page,
-        });
-
-        jobs.forEach(({ artifacts = [] }) => {
-          artifacts.forEach(({ file_type }) => {
-            if (reportTypesSet.has(file_type)) {
-              availableReportTypes.add(file_type);
-            }
-          });
-        });
-
-        // If we've found artifacts for all the report types, stop looking!
-        if (availableReportTypes.size === reportTypesSet.size) {
-          return availableReportTypes;
-        }
-
-        page = parseIntPagination(normalizeHeaders(headers)).nextPage;
-      }
-
-      return availableReportTypes;
-    },
     fetchCounts() {
       if (!this.glFeatures.coreSecurityMrWidgetCounts) {
         return;
@@ -211,11 +153,6 @@ export default {
         this.setSecretDetectionDiffEndpoint(this.secretScanningComparisonPath);
         this.fetchSecretDetectionDiff();
         this.canShowCounts = true;
-      }
-    },
-    activatePipelinesTab() {
-      if (window.mrTabs) {
-        window.mrTabs.tabShown('pipelines');
       }
     },
     onCheckingAvailableSecurityReports(availableSecurityReports) {
@@ -236,12 +173,6 @@ export default {
       'SecurityReports|Failed to get security report information. Please reload the page or try again later.',
     ),
     scansHaveRun: s__('SecurityReports|Security scans have run'),
-    scansHaveRunWithDownloadGuidance: s__(
-      'SecurityReports|Security scans have run. Go to the %{linkStart}pipelines tab%{linkEnd} to download the security reports',
-    ),
-    downloadFromPipelineTab: s__(
-      'SecurityReports|Go to the %{linkStart}pipelines tab%{linkEnd} to download the security reports',
-    ),
   },
   summarySlots: [SLOT_SUCCESS, SLOT_LOADING, SLOT_ERROR],
 };
@@ -265,22 +196,7 @@ export default {
       </span>
     </template>
 
-    <template v-if="shouldShowDownloadGuidance" #sub-heading>
-      <span class="gl-font-sm">
-        <gl-sprintf :message="$options.i18n.downloadFromPipelineTab">
-          <template #link="{ content }">
-            <gl-link
-              class="gl-font-sm"
-              data-testid="show-pipelines"
-              @click="activatePipelinesTab"
-              >{{ content }}</gl-link
-            >
-          </template>
-        </gl-sprintf>
-      </span>
-    </template>
-
-    <template v-if="canShowDownloads" #action-buttons>
+    <template #action-buttons>
       <security-report-download-dropdown
         :artifacts="reportArtifacts"
         :loading="isLoadingReportArtifacts"
@@ -298,13 +214,7 @@ export default {
     data-testid="security-mr-widget"
   >
     <template #error>
-      <gl-sprintf :message="scansHaveRunMessage">
-        <template #link="{ content }">
-          <gl-link data-testid="show-pipelines" @click="activatePipelinesTab">{{
-            content
-          }}</gl-link>
-        </template>
-      </gl-sprintf>
+      {{ $options.i18n.scansHaveRun }}
 
       <help-icon
         :help-path="securityReportsDocsPath"
@@ -312,7 +222,7 @@ export default {
       />
     </template>
 
-    <template v-if="canShowDownloads" #action-buttons>
+    <template #action-buttons>
       <security-report-download-dropdown
         :artifacts="reportArtifacts"
         :loading="isLoadingReportArtifacts"

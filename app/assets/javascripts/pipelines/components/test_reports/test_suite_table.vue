@@ -114,7 +114,7 @@ export default {
           <div role="rowheader" class="table-mobile-header">{{ __('Status') }}</div>
           <div class="table-mobile-content text-center">
             <div
-              class="add-border ci-status-icon d-flex align-items-center justify-content-end justify-content-md-center"
+              class="ci-status-icon d-flex align-items-center justify-content-end justify-content-md-center"
               :class="`ci-status-icon-${testCase.status}`"
             >
               <gl-icon :size="24" :name="testCase.icon" />

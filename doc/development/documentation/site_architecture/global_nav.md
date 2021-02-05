@@ -283,8 +283,8 @@ and the following syntax rules.
 - As convention, always wrap URLs in single quotes `'url'`.
 - Always use relative paths against the home of CE and EE. Examples:
   - For `https://docs.gitlab.com/ee/README.html`, the relative URL is `README.html`.
-  - For `https://docs.gitlab.com/ee/user/project/cycle_analytics.html`, the relative
-    URL is `user/project/cycle_analytics.html`.
+  - For `https://docs.gitlab.com/ee/user/analytics/value_stream_analytics.md`, the relative
+    URL is `user/analytics/value_stream_analytics.html`.
 - For `README.html` files, add the complete path `path/to/README.html`.
 - For `index.html` files, use the clean (canonical) URL: `path/to/`.
 - For EE-only docs, use the same relative path, but add the attribute `ee_only: true` below
@@ -328,7 +328,7 @@ There are three main considerations on the logic built for the nav:
   - `https://docs.gitlab.com/*`
 - [EE-only](#ee-only-docs): documentation only available in `/ee/`, not on `/ce/`, e.g.:
   - `https://docs.gitlab.com/ee/user/group/epics/`
-  - `https://docs.gitlab.com/ee/user/project/security_dashboard.html`
+  - `https://docs.gitlab.com/ee/user/application_security/security_dashboard/index.html`
 - [Default URL](#default-url): between CE and EE docs, the default is `ee`, therefore, all docs
   should link to `/ee/` unless if on `/ce/` linking internally to `ce`.
 

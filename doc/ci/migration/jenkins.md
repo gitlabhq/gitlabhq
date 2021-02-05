@@ -209,7 +209,7 @@ as well as encourage inner sourcing.
 
 In self-managed GitLab instances, you can build an [Instance Template Repository](../../user/admin_area/settings/instance_template_repository.md).
 Development teams across the whole organization can select templates from a dropdown menu.
-A group administrator is able to set a group to use as the source for the
+A group maintainer or a group owner is able to set a group to use as the source for the
 [custom project templates](../../user/admin_area/custom_project_templates.md), which can
 be used by all projects in the group. An instance administrator can set a group as
 the source for [instance project templates](../../user/group/custom_project_templates.md),

@@ -114,6 +114,7 @@ module MergeRequests
 
       merge_to_ref_success = merge_to_ref
 
+      reload_merge_head_diff
       update_diff_discussion_positions! if merge_to_ref_success
 
       if merge_to_ref_success && can_git_merge?
@@ -121,6 +122,10 @@ module MergeRequests
       else
         merge_request.mark_as_unmergeable
       end
+    end
+
+    def reload_merge_head_diff
+      MergeRequests::ReloadMergeHeadDiffService.new(merge_request).execute
     end
 
     def update_diff_discussion_positions!
@@ -153,6 +158,7 @@ module MergeRequests
     def merge_to_ref
       params = { allow_conflicts: Feature.enabled?(:display_merge_conflicts_in_diff, project) }
       result = MergeRequests::MergeToRefService.new(project, merge_request.author, params).execute(merge_request)
+
       result[:status] == :success
     end
 

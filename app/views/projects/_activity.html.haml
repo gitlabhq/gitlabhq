@@ -1,15 +1,14 @@
 - is_project_overview = local_assigns.fetch(:is_project_overview, false)
 
-%div{ class: container_class }
-  .nav-block.d-none.d-sm-flex.activities.gl-static
-    = render 'shared/event_filter'
-    .controls.gl-display-flex
-      = link_to project_path(@project, rss_url_options), title: s_("ProjectActivityRSS|Subscribe"), class: 'btn gl-button btn-default btn-icon d-none d-sm-inline-flex has-tooltip' do
-        = sprite_icon('rss', css_class: 'qa-rss-icon gl-icon')
-      - if is_project_overview && can?(current_user, :download_code, @project)
-        .project-clone-holder.d-none.d-md-inline-flex.gl-ml-2
-          = render "projects/buttons/clone", dropdown_class: 'dropdown-menu-right'
+.nav-block.d-none.d-sm-flex.activities.gl-static
+  = render 'shared/event_filter'
+  .controls.gl-display-flex
+    = link_to project_path(@project, rss_url_options), title: s_("ProjectActivityRSS|Subscribe"), class: 'btn gl-button btn-default btn-icon d-none d-sm-inline-flex has-tooltip' do
+      = sprite_icon('rss', css_class: 'qa-rss-icon gl-icon')
+    - if is_project_overview && can?(current_user, :download_code, @project)
+      .project-clone-holder.d-none.d-md-inline-flex.gl-ml-2
+        = render "projects/buttons/clone", dropdown_class: 'dropdown-menu-right'
 
-  .content_list.project-activity{ :"data-href" => activity_project_path(@project) }
-  .loading
-    .spinner.spinner-md
+.content_list.project-activity{ :"data-href" => activity_project_path(@project) }
+.loading
+  .spinner.spinner-md

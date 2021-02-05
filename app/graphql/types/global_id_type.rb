@@ -46,7 +46,7 @@ module Types
 
       @id_types[model_class] ||= Class.new(self) do
         graphql_name "#{model_class.name.gsub(/::/, '')}ID"
-        description "Identifier of #{model_class.name}"
+        description "Identifier of #{model_class.name}."
 
         self.define_singleton_method(:to_s) do
           graphql_name

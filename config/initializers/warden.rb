@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.configure do |config|
   Warden::Manager.after_set_user(scope: :user) do |user, auth, opts|
     Gitlab::Auth::UniqueIpsLimiter.limit_user!(user)

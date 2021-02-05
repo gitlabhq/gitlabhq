@@ -122,7 +122,7 @@ RSpec.describe ApplicationSettings::UpdateService do
     it_behaves_like 'invalidates markdown cache', { asset_proxy_enabled: true }
     it_behaves_like 'invalidates markdown cache', { asset_proxy_url: 'http://test.com' }
     it_behaves_like 'invalidates markdown cache', { asset_proxy_secret_key: 'another secret' }
-    it_behaves_like 'invalidates markdown cache', { asset_proxy_whitelist: ['domain.com'] }
+    it_behaves_like 'invalidates markdown cache', { asset_proxy_allowlist: ['domain.com'] }
 
     context 'when also setting the local_markdown_version' do
       let(:params) { { asset_proxy_enabled: true, local_markdown_version: 12 } }

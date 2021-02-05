@@ -1,12 +1,12 @@
 <script>
 import $ from 'jquery';
+import Autosave from '~/autosave';
+import eventHub from '../event_hub';
 import lockedWarning from './locked_warning.vue';
 import titleField from './fields/title.vue';
 import descriptionField from './fields/description.vue';
 import editActions from './edit_actions.vue';
 import descriptionTemplate from './fields/description_template.vue';
-import Autosave from '~/autosave';
-import eventHub from '../event_hub';
 
 export default {
   components: {

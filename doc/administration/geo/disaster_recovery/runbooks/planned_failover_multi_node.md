@@ -9,7 +9,7 @@ WARNING:
 This runbook is in **alpha**. For complete, production-ready documentation, see the
 [disaster recovery documentation](../index.md).
 
-# Disaster Recovery (Geo) promotion runbooks **(PREMIUM ONLY)**
+# Disaster Recovery (Geo) promotion runbooks **(PREMIUM SELF)**
 
 ## Geo planned failover for a multi-node configuration
 

@@ -4,8 +4,8 @@ module Types
   module Packages
     module Composer
       class MetadatumType < BaseObject
-        graphql_name 'PackageComposerMetadatumType'
-        description 'Composer metadatum'
+        graphql_name 'ComposerMetadata'
+        description 'Composer metadata'
 
         authorize :read_package
 

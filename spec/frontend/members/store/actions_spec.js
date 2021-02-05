@@ -57,15 +57,17 @@ describe('Vuex members actions', () => {
 
       describe('unsuccessful request', () => {
         it(`commits ${types.RECEIVE_MEMBER_ROLE_ERROR} mutation and throws error`, async () => {
-          mock.onPut().networkError();
+          const error = new Error('Network Error');
+          mock.onPut().reply(() => Promise.reject(error));
 
           await expect(
             testAction(updateMemberRole, payload, state, [
               {
                 type: types.RECEIVE_MEMBER_ROLE_ERROR,
+                payload: { error },
               },
             ]),
-          ).rejects.toThrowError(new Error('Network Error'));
+          ).rejects.toThrowError(error);
         });
       });
     });
@@ -108,15 +110,17 @@ describe('Vuex members actions', () => {
 
       describe('unsuccessful request', () => {
         it(`commits ${types.RECEIVE_MEMBER_EXPIRATION_ERROR} mutation and throws error`, async () => {
-          mock.onPut().networkError();
+          const error = new Error('Network Error');
+          mock.onPut().reply(() => Promise.reject(error));
 
           await expect(
             testAction(updateMemberExpiration, { memberId, expiresAt }, state, [
               {
                 type: types.RECEIVE_MEMBER_EXPIRATION_ERROR,
+                payload: { error },
               },
             ]),
-          ).rejects.toThrowError(new Error('Network Error'));
+          ).rejects.toThrowError(error);
         });
       });
     });

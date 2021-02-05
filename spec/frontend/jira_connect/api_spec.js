@@ -14,7 +14,7 @@ describe('JiraConnect API', () => {
   const mockJwt = 'jwt';
   const mockResponse = { success: true };
 
-  const tokenSpy = jest.fn().mockReturnValue(mockJwt);
+  const tokenSpy = jest.fn((callback) => callback(mockJwt));
 
   window.AP = {
     context: {

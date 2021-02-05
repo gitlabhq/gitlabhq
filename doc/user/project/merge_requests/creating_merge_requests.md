@@ -178,7 +178,7 @@ fork from its upstream project in the **Settings > Advanced Settings** section b
 
 For further details, [see the forking workflow documentation](../repository/forking_workflow.md).
 
-## New merge request by email **(CORE ONLY)**
+## New merge request by email **(FREE SELF)**
 
 _This feature needs [incoming email](../../../administration/incoming_email.md)
 to be configured by a GitLab administrator to be available._ It isn't

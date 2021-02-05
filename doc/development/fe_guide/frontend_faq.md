@@ -21,7 +21,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## FAQ
 
-### 1. How do I find the Rails route for a page?
+### 1. How does one find the Rails route for a page?
 
 #### Check the 'page' data attribute
 
@@ -36,7 +36,7 @@ Find here the [source code setting the attribute](https://gitlab.com/gitlab-org/
 
 #### Rails routes
 
-The `rake routes` command can be used to list all the routes available in the application, piping the output into `grep`, we can perform a search through the list of available routes.
+The `rake routes` command can be used to list all the routes available in the application. Piping the output into `grep`, we can perform a search through the list of available routes.
 The output includes the request types available, route parameters and the relevant controller.
 
 ```shell
@@ -46,13 +46,13 @@ bundle exec rake routes | grep "issues"
 ### 2. `modal_copy_button` vs `clipboard_button`
 
 The `clipboard_button` uses the `copy_to_clipboard.js` behavior, which is
-initialized on page load, so if there are vue-based clipboard buttons that
-don't exist at page load (such as ones in a `GlModal`), they do not have the
+initialized on page load. Vue clipboard buttons that
+don't exist at page load (such as ones in a `GlModal`) do not have
 click handlers associated with the clipboard package.
 
-`modal_copy_button` was added that manages an instance of the
+`modal_copy_button` manages an instance of the
 [`clipboard` plugin](https://www.npmjs.com/package/clipboard) specific to
-the instance of that component, which means that clipboard events are
+the instance of that component. This means that clipboard events are
 bound on mounting and destroyed when the button is, mitigating the above
 issue. It also has bindings to a particular container or modal ID
 available, to work with the focus trap created by our GlModal.
@@ -60,7 +60,7 @@ available, to work with the focus trap created by our GlModal.
 ### 3. A `gitlab-ui` component not conforming to [Pajamas Design System](https://design.gitlab.com/)
 
 Some [Pajamas Design System](https://design.gitlab.com/) components implemented in
-`gitlab-ui` do not conform with the design system specs because they lack some
+`gitlab-ui` do not conform with the design system specs. This is because they lack some
 planned features or are not correctly styled yet. In the Pajamas website, a
 banner on top of the component examples indicates that:
 
@@ -77,18 +77,17 @@ It makes codebase unified and more comfortable to maintain/refactor in the futur
 
 Ensure a [Product Designer](https://about.gitlab.com/company/team/?department=ux-department)
 reviews the use of the non-conforming component as part of the MR review. Make a
-follow up issue and attach it to the component implementation epic found within the
+follow up issue and attach it to the component implementation epic found in the
 [Components of Pajamas Design System epic](https://gitlab.com/groups/gitlab-org/-/epics/973).
 
 ### 4. My submit form button becomes disabled after submitting
 
-If you are using a submit button inside a form and you attach an `onSubmit` event listener on the form element, [this piece of code](https://gitlab.com/gitlab-org/gitlab/blob/794c247a910e2759ce9b401356432a38a4535d49/app/assets/javascripts/main.js#L225) adds a `disabled` class selector to the submit button when the form is submitted.
-To avoid this behavior, add the class `js-no-auto-disable` to the button.
+A Submit button inside of a form attaches an `onSubmit` event listener on the form element. [This code](https://gitlab.com/gitlab-org/gitlab/blob/794c247a910e2759ce9b401356432a38a4535d49/app/assets/javascripts/main.js#L225) adds a `disabled` class selector to the submit button when the form is submitted. To avoid this behavior, add the class `js-no-auto-disable` to the button.
 
-### 5. Should I use a full URL (i.e. `gon.gitlab_url`) or a full path (i.e. `gon.relative_url_root`) when referencing backend endpoints?
+### 5. Should one use a full URL (for example `gon.gitlab_url`) or a full path (for example `gon.relative_url_root`) when referencing backend endpoints?
 
-It's preferred to use a **full path** over a **full URL** because the URL uses the hostname configured with
-GitLab which may not match the request. This causes [CORS issues like this Web IDE one](https://gitlab.com/gitlab-org/gitlab/-/issues/36810).
+It's preferred to use a **full path** over a **full URL**. This is because the URL uses the hostname configured with
+GitLab which may not match the request. This causes [cross-origin resource sharing issues like this Web IDE example](https://gitlab.com/gitlab-org/gitlab/-/issues/36810).
 
 Example:
 
@@ -117,7 +116,7 @@ Example:
 
 ### 6. How should the Frontend reference Backend paths?
 
-We prefer not to add extra coupling by hardcoding paths. If possible,
+We prefer not to add extra coupling by hard-coding paths. If possible,
 add these paths as data attributes to the DOM element being referenced in the JavaScript.
 
 Example:
@@ -153,7 +152,7 @@ export const fetchFoos = ({ state }) => {
 };
 ```
 
-### 7. How can I test the production build locally?
+### 7. How can one test the production build locally?
 
 Sometimes it's necessary to test locally what the frontend production build would produce, to do so the steps are:
 
@@ -161,7 +160,7 @@ Sometimes it's necessary to test locally what the frontend production build woul
 1. Open `gitlab.yaml` located in your `gitlab` installation folder, scroll down to the `webpack` section and change `dev_server` to `enabled: false`.
 1. Run `yarn webpack-prod && gdk restart rails-web`.
 
-The production build takes a few minutes to be completed; any code changes at this point are
+The production build takes a few minutes to be completed. Any code changes at this point are
 displayed only after executing the item 3 above again.
 
 To return to the normal development mode:
@@ -176,8 +175,8 @@ To return to the normal development mode:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/28837) in GitLab 12.8.
 
 GitLab has enabled the Babel `preset-env` option
-[`useBuiltIns: 'usage'`](https://babeljs.io/docs/en/babel-preset-env#usebuiltins-usage),
-which adds the appropriate `core-js` polyfills once for each JavaScript feature
+[`useBuiltIns: 'usage'`](https://babeljs.io/docs/en/babel-preset-env#usebuiltins-usage).
+This adds the appropriate `core-js` polyfills once for each JavaScript feature
 we're using that our target browsers don't support. You don't need to add `core-js`
 polyfills manually.
 

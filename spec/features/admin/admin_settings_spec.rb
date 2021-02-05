@@ -315,50 +315,59 @@ RSpec.describe 'Admin updates settings' do
       end
 
       context 'Container Registry' do
-        context 'delete tags service execution timeout' do
-          let(:feature_flag_enabled) { true }
-          let(:client_support) { true }
+        let(:feature_flag_enabled) { true }
+        let(:client_support) { true }
+        let(:settings_titles) do
+          {
+            container_registry_delete_tags_service_timeout: 'Container Registry delete tags service execution timeout',
+            container_registry_expiration_policies_worker_capacity: 'Cleanup policy maximum workers running concurrently',
+            container_registry_cleanup_tags_service_max_list_size: 'Cleanup policy maximum number of tags to be deleted'
+          }
+        end
 
-          before do
-            stub_container_registry_config(enabled: true)
-            stub_feature_flags(container_registry_expiration_policies_throttling: feature_flag_enabled)
-            allow(ContainerRegistry::Client).to receive(:supports_tag_delete?).and_return(client_support)
+        before do
+          stub_container_registry_config(enabled: true)
+          stub_feature_flags(container_registry_expiration_policies_throttling: feature_flag_enabled)
+          allow(ContainerRegistry::Client).to receive(:supports_tag_delete?).and_return(client_support)
+        end
+
+        shared_examples 'not having container registry setting' do |registry_setting|
+          it "lacks the container setting #{registry_setting}" do
+            visit ci_cd_admin_application_settings_path
+
+            expect(page).not_to have_content(settings_titles[registry_setting])
           end
+        end
 
-          RSpec.shared_examples 'not having service timeout settings' do
-            it 'lacks the timeout settings' do
-              visit ci_cd_admin_application_settings_path
+        %i[container_registry_delete_tags_service_timeout container_registry_expiration_policies_worker_capacity container_registry_cleanup_tags_service_max_list_size].each do |setting|
+          context "for container registry setting #{setting}" do
+            context 'with feature flag enabled' do
+              context 'with client supporting tag delete' do
+                it 'changes the setting' do
+                  visit ci_cd_admin_application_settings_path
 
-              expect(page).not_to have_content "Container Registry delete tags service execution timeout"
-            end
-          end
+                  page.within('.as-registry') do
+                    fill_in "application_setting_#{setting}", with: 400
+                    click_button 'Save changes'
+                  end
 
-          context 'with feature flag enabled' do
-            context 'with client supporting tag delete' do
-              it 'changes the timeout' do
-                visit ci_cd_admin_application_settings_path
-
-                page.within('.as-registry') do
-                  fill_in 'application_setting_container_registry_delete_tags_service_timeout', with: 400
-                  click_button 'Save changes'
+                  expect(current_settings.public_send(setting)).to eq(400)
+                  expect(page).to have_content "Application settings saved successfully"
                 end
+              end
 
-                expect(current_settings.container_registry_delete_tags_service_timeout).to eq(400)
-                expect(page).to have_content "Application settings saved successfully"
+              context 'with client not supporting tag delete' do
+                let(:client_support) { false }
+
+                it_behaves_like 'not having container registry setting', setting
               end
             end
 
-            context 'with client not supporting tag delete' do
-              let(:client_support) { false }
+            context 'with feature flag disabled' do
+              let(:feature_flag_enabled) { false }
 
-              it_behaves_like 'not having service timeout settings'
+              it_behaves_like 'not having container registry setting', setting
             end
-          end
-
-          context 'with feature flag disabled' do
-            let(:feature_flag_enabled) { false }
-
-            it_behaves_like 'not having service timeout settings'
           end
         end
       end

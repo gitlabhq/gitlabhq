@@ -179,7 +179,7 @@ export default {
         id="badge-link-url"
         v-model="linkUrl"
         type="URL"
-        class="form-control"
+        class="form-control gl-form-input"
         required
         @input="debouncedPreview"
       />
@@ -194,7 +194,7 @@ export default {
         id="badge-image-url"
         v-model="imageUrl"
         type="URL"
-        class="form-control"
+        class="form-control gl-form-input"
         required
         @input="debouncedPreview"
       />

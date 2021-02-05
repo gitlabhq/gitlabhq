@@ -14,19 +14,9 @@ import { updateHistory } from '~/lib/utils/url_utility';
 import notesEventHub from '../../notes/event_hub';
 import eventHub from '../event_hub';
 
-import CompareVersions from './compare_versions.vue';
-import DiffFile from './diff_file.vue';
-import NoChanges from './no_changes.vue';
-import CommitWidget from './commit_widget.vue';
-import TreeList from './tree_list.vue';
-
-import HiddenFilesWarning from './hidden_files_warning.vue';
-import MergeConflictWarning from './merge_conflict_warning.vue';
-import CollapsedFilesWarning from './collapsed_files_warning.vue';
-
 import { diffsApp } from '../utils/performance';
 import { fileByFile } from '../utils/preferences';
-
+import { reviewStatuses } from '../utils/file_reviews';
 import {
   TREE_LIST_WIDTH_STORAGE_KEY,
   INITIAL_TREE_WIDTH,
@@ -40,6 +30,15 @@ import {
   ALERT_COLLAPSED_FILES,
   EVT_VIEW_FILE_BY_FILE,
 } from '../constants';
+import CompareVersions from './compare_versions.vue';
+import DiffFile from './diff_file.vue';
+import NoChanges from './no_changes.vue';
+import CommitWidget from './commit_widget.vue';
+import TreeList from './tree_list.vue';
+
+import HiddenFilesWarning from './hidden_files_warning.vue';
+import MergeConflictWarning from './merge_conflict_warning.vue';
+import CollapsedFilesWarning from './collapsed_files_warning.vue';
 
 export default {
   name: 'DiffsApp',
@@ -169,12 +168,7 @@ export default {
       'hasConflicts',
       'viewDiffsFileByFile',
     ]),
-    ...mapGetters('diffs', [
-      'whichCollapsedTypes',
-      'isParallelView',
-      'currentDiffIndex',
-      'fileReviews',
-    ]),
+    ...mapGetters('diffs', ['whichCollapsedTypes', 'isParallelView', 'currentDiffIndex']),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
     diffs() {
       if (!this.viewDiffsFileByFile) {
@@ -231,6 +225,9 @@ export default {
       }
 
       return visible;
+    },
+    fileReviews() {
+      return reviewStatuses(this.diffFiles, this.mrReviews);
     },
   },
   watch: {

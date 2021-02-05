@@ -1,8 +1,8 @@
 import Vue from 'vue';
 
-import { TEST_HOST } from 'helpers/test_constants';
 import { merge } from 'lodash';
 import { mount } from '@vue/test-utils';
+import { TEST_HOST } from 'helpers/test_constants';
 import deleteAccountModal from '~/profile/account/components/delete_account_modal.vue';
 
 const GlModalStub = {

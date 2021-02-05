@@ -1,8 +1,8 @@
 <script>
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
-import LinkedPipeline from './linked_pipeline.vue';
 import { LOAD_FAILURE } from '../../constants';
-import { UPSTREAM } from './constants';
+import LinkedPipeline from './linked_pipeline.vue';
+import { ONE_COL_WIDTH, UPSTREAM } from './constants';
 import { unwrapPipelineData, toggleQueryPollingByVisibility, reportToSentry } from './utils';
 
 export default {
@@ -39,6 +39,7 @@ export default {
     'gl-pl-3',
     'gl-mb-5',
   ],
+  minWidth: `${ONE_COL_WIDTH}px`,
   computed: {
     columnClass() {
       const positionValues = {
@@ -47,18 +48,18 @@ export default {
       };
       return `graph-position-${this.graphPosition} ${positionValues[this.graphPosition]}`;
     },
-    graphPosition() {
-      return this.isUpstream ? 'left' : 'right';
-    },
-    isUpstream() {
-      return this.type === UPSTREAM;
-    },
     computedTitleClasses() {
       const positionalClasses = this.isUpstream
         ? ['gl-w-full', 'gl-text-right', 'gl-linked-pipeline-padding']
         : [];
 
       return [...this.$options.titleClasses, ...positionalClasses];
+    },
+    graphPosition() {
+      return this.isUpstream ? 'left' : 'right';
+    },
+    isUpstream() {
+      return this.type === UPSTREAM;
     },
   },
   methods: {
@@ -79,6 +80,7 @@ export default {
         },
         result() {
           this.loadingPipelineId = null;
+          this.$emit('scrollContainer');
         },
         error(err, _vm, _key, type) {
           this.$emit('error', LOAD_FAILURE);
@@ -130,6 +132,9 @@ export default {
 
       this.$emit('pipelineExpandToggle', jobName, expanded);
     },
+    showDownstreamContainer(id) {
+      return !this.isUpstream && (this.isExpanded(id) || this.isLoadingPipeline(id));
+    },
   },
 };
 </script>
@@ -158,9 +163,13 @@ export default {
             @pipelineClicked="onPipelineClick(pipeline)"
             @pipelineExpandToggle="onPipelineExpandToggle"
           />
-          <div v-if="isExpanded(pipeline.id)" class="gl-display-inline-block">
+          <div
+            v-if="showDownstreamContainer(pipeline.id)"
+            :style="{ minWidth: $options.minWidth }"
+            class="gl-display-inline-block"
+          >
             <pipeline-graph
-              v-if="currentPipeline"
+              v-if="isExpanded(pipeline.id)"
               :type="type"
               class="d-inline-block gl-mt-n2"
               :pipeline="currentPipeline"

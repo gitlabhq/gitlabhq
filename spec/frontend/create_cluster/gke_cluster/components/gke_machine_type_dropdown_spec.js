@@ -1,10 +1,10 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { selectedMachineTypeMock, gapiMachineTypesResponseMock } from '../mock_data';
 import createState from '~/create_cluster/gke_cluster/store/state';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
 import GkeMachineTypeDropdown from '~/create_cluster/gke_cluster/components/gke_machine_type_dropdown.vue';
+import { selectedMachineTypeMock, gapiMachineTypesResponseMock } from '../mock_data';
 
 const componentConfig = {
   fieldId: 'cluster_provider_gcp_attributes_gcp_machine_type',

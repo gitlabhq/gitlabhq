@@ -140,7 +140,7 @@ your server in `/etc/init.d/gitlab`.
 
 ---
 
-If you are using other init systems, like systemd, you can check the
+If you are using other init systems, like `systemd`, you can check the
 [GitLab Recipes](https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/init) repository for some unofficial services. These are
 **not** officially supported so use them at your own risk.
 

@@ -18,7 +18,7 @@
             = f.label :kroki_enabled, _('Enable Kroki'), class: 'form-check-label'
         .form-group
           = f.label :kroki_url, 'Kroki URL', class: 'label-bold'
-          = f.text_field :kroki_url, class: 'form-control', placeholder: 'http://your-kroki-instance:8000'
+          = f.text_field :kroki_url, class: 'form-control gl-form-input', placeholder: 'http://your-kroki-instance:8000'
           .form-text.text-muted
             = (_('When Kroki is enabled, GitLab sends diagrams to an instance of Kroki to display them as images. You can use the free public cloud instance %{kroki_public_url} or you can %{install_link} on your own infrastructure. Once you\'ve installed Kroki, make sure to update the server URL to point to your instance.') % { kroki_public_url: '<code>https://kroki.io</code>', install_link: link_to('install Kroki', 'https://docs.kroki.io/kroki/setup/install/', target: '_blank') }).html_safe
 

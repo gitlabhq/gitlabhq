@@ -1,6 +1,6 @@
 import { escape } from 'lodash';
 import { __ } from '~/locale';
-import consts from '../stores/modules/commit/constants';
+import { COMMIT_TO_NEW_BRANCH } from '../stores/modules/commit/constants';
 
 const CODEOWNERS_REGEX = /Push.*protected branches.*CODEOWNERS/;
 const BRANCH_CHANGED_REGEX = /changed.*since.*start.*edit/;
@@ -8,7 +8,7 @@ const BRANCH_ALREADY_EXISTS = /branch.*already.*exists/;
 
 const createNewBranchAndCommit = (store) =>
   store
-    .dispatch('commit/updateCommitAction', consts.COMMIT_TO_NEW_BRANCH)
+    .dispatch('commit/updateCommitAction', COMMIT_TO_NEW_BRANCH)
     .then(() => store.dispatch('commit/commitChanges'));
 
 export const createUnexpectedCommitError = (message) => ({

@@ -309,10 +309,7 @@ RSpec.describe 'Creation of a new release' do
         let(:asset_link_2) { { name: 'My link', url: 'https://example.com/2' } }
         let(:assets) { { links: [asset_link_1, asset_link_2] } }
 
-        # Right now the raw Postgres error message is sent to the user as the validation message.
-        # We should catch this validation error and return a nicer message:
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/277087
-        it_behaves_like 'errors-as-data with message', 'PG::UniqueViolation'
+        it_behaves_like 'errors-as-data with message', %r{Validation failed: Links have duplicate values \(My link\)}
       end
 
       context 'when two release assets share the same URL' do
@@ -320,8 +317,7 @@ RSpec.describe 'Creation of a new release' do
         let(:asset_link_2) { { name: 'My second link', url: 'https://example.com' } }
         let(:assets) { { links: [asset_link_1, asset_link_2] } }
 
-        # Same note as above about the ugly error message
-        it_behaves_like 'errors-as-data with message', 'PG::UniqueViolation'
+        it_behaves_like 'errors-as-data with message', %r{Validation failed: Links have duplicate values \(https://example.com\)}
       end
 
       context 'when the provided tag name is HEAD' do

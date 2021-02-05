@@ -36,7 +36,7 @@ class Commit
   LINK_EXTENSION_PATTERN = /(patch)/.freeze
 
   cache_markdown_field :title, pipeline: :single_line
-  cache_markdown_field :full_title, pipeline: :single_line
+  cache_markdown_field :full_title, pipeline: :single_line, limit: 1.kilobyte
   cache_markdown_field :description, pipeline: :commit_description, limit: 1.megabyte
 
   class << self

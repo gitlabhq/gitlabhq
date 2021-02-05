@@ -2,8 +2,8 @@
 import Vue from 'vue';
 import Cookies from 'js-cookie';
 import { GlButton } from '@gitlab/ui';
-import Translate from '../../../../../vue_shared/translate';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import Translate from '../../../../../vue_shared/translate';
 
 Vue.use(Translate);
 

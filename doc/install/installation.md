@@ -172,7 +172,11 @@ sudo apt-get install -y postfix
 
 Then select 'Internet Site' and press enter to confirm the hostname.
 
+<!-- vale gitlab.Spelling = NO -->
+
 ### Exiftool
+
+<!-- vale gitlab.Spelling = YES -->
 
 [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse#dependencies)
 requires `exiftool` to remove EXIF data from uploaded images.
@@ -187,7 +191,7 @@ The Ruby interpreter is required to run GitLab.
 See the [requirements page](requirements.md#ruby-versions) for the minimum
 Ruby requirements.
 
-The use of Ruby version managers such as [RVM](https://rvm.io/), [rbenv](https://github.com/rbenv/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab
+The use of Ruby version managers such as [`RVM`](https://rvm.io/), [`rbenv`](https://github.com/rbenv/rbenv) or [`chruby`](https://github.com/postmodern/chruby) with GitLab
 in production, frequently leads to hard to diagnose problems. Version managers
 are not supported and we strongly advise everyone to follow the instructions
 below to use a system Ruby.
@@ -205,7 +209,7 @@ Download Ruby and compile it:
 
 ```shell
 mkdir /tmp/ruby && cd /tmp/ruby
-curl --remote-name --progress "https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.2.tar.gz"
+curl --remote-name --progress-bar "https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.2.tar.gz"
 echo 'cb9731a17487e0ad84037490a6baf8bfa31a09e8  ruby-2.7.2.tar.gz' | shasum -c - && tar xzf ruby-2.7.2.tar.gz
 cd ruby-2.7.2
 
@@ -225,7 +229,7 @@ page](https://golang.org/dl).
 # Remove former Go installation folder
 sudo rm -rf /usr/local/go
 
-curl --remote-name --progress "https://dl.google.com/go/go1.13.5.linux-amd64.tar.gz"
+curl --remote-name --progress-bar "https://dl.google.com/go/go1.13.5.linux-amd64.tar.gz"
 echo '512103d7ad296467814a6e3f635631bd35574cab3369a97a323c9a585ccaa569  go1.13.5.linux-amd64.tar.gz' | shasum -a256 -c - && \
   sudo tar -C /usr/local -xzf go1.13.5.linux-amd64.tar.gz
 sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
@@ -238,16 +242,16 @@ In GitLab 8.17 and later, GitLab requires the use of Node to compile JavaScript
 assets, and Yarn to manage JavaScript dependencies. The current minimum
 requirements for these are:
 
-- `node` >= v10.13.0. (We recommend node 12.x as it is faster)
+- `node` >= v10.14.2. (We recommend node 14.x as it is faster)
 - `yarn` >= v1.10.0.
 
-In many distros,
+In many distributions,
 the versions provided by the official package repositories are out of date, so
 we need to install through the following commands:
 
 ```shell
-# install node v12.x
-curl --location "https://deb.nodesource.com/setup_12.x" | sudo bash -
+# install node v14.x
+curl --location "https://deb.nodesource.com/setup_14.x" | sudo bash -
 sudo apt-get install -y nodejs
 
 curl --silent --show-error "https://dl.yarnpkg.com/debian/pubkey.gpg" | sudo apt-key add -
@@ -603,7 +607,7 @@ You can specify a different Git repository by providing it as an extra parameter
 sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse,https://example.com/gitlab-workhorse.git]" RAILS_ENV=production
 ```
 
-### Install GitLab-Elasticsearch-indexer on Enterprise Edition **(STARTER ONLY)**
+### Install GitLab-Elasticsearch-indexer on Enterprise Edition **(PREMIUM SELF)**
 
 GitLab-Elasticsearch-Indexer uses [GNU Make](https://www.gnu.org/software/make/). The
 following command-line installs GitLab-Elasticsearch-Indexer in `/home/git/gitlab-elasticsearch-indexer`
@@ -935,7 +939,7 @@ production:
   url: redis://redis.example.tld:6379
 ```
 
-If you want to connect the Redis server via socket, use the "unix:" URL scheme and the path to the Redis socket file in the `config/resque.yml` file.
+If you want to connect the Redis server via socket, use the `unix:` URL scheme and the path to the Redis socket file in the `config/resque.yml` file.
 
 ```yaml
 # example

@@ -159,7 +159,11 @@ module Gitlab
               next {} unless @using_rules
 
               if ::Gitlab::Ci::Features.rules_variables_enabled?(@pipeline.project)
-                rules_result.build_attributes(@seed_attributes)
+                rules_variables_result = ::Gitlab::Ci::Variables::Helpers.merge_variables(
+                  @seed_attributes[:yaml_variables], rules_result.variables
+                )
+
+                rules_result.build_attributes.merge(yaml_variables: rules_variables_result)
               else
                 rules_result.build_attributes
               end
@@ -188,7 +192,6 @@ module Gitlab
           # we need to prevent the exit codes from being persisted because they
           # would break the behavior defined by `rules:allow_failure`.
           def allow_failure_criteria_attributes
-            return {} unless ::Gitlab::Ci::Features.allow_failure_with_exit_codes_enabled?
             return {} if rules_attributes[:allow_failure].nil?
             return {} unless @seed_attributes.dig(:options, :allow_failure_criteria)
 

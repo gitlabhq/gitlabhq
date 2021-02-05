@@ -5,14 +5,14 @@
     .col-sm-2.col-form-label
       = f.label :name
     .col-sm-10
-      = f.text_field :name, class: 'form-control'
+      = f.text_field :name, class: 'form-control gl-form-input'
       = doorkeeper_errors_for application, :name
 
   = content_tag :div, class: 'form-group row' do
     .col-sm-2.col-form-label
       = f.label :redirect_uri
     .col-sm-10
-      = f.text_area :redirect_uri, class: 'form-control'
+      = f.text_area :redirect_uri, class: 'form-control gl-form-input'
       = doorkeeper_errors_for application, :redirect_uri
       %span.form-text.text-muted
         Use one line per URI
@@ -23,7 +23,7 @@
     .col-sm-10
       = f.check_box :trusted
       %span.form-text.text-muted
-        Trusted applications are automatically authorized on GitLab OAuth flow.
+        Trusted applications are automatically authorized on GitLab OAuth flow. It's highly recommended for the security of users that trusted applications have the confidential setting set to true.
 
   = content_tag :div, class: 'form-group row' do
     .col-sm-2.col-form-label.pt-0

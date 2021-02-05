@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Sign into GitLab with (almost) any OAuth2 provider
 
-The `omniauth-oauth2-generic` gem allows Single Sign On between GitLab and your own OAuth2 provider
+The `omniauth-oauth2-generic` gem allows Single Sign-On between GitLab and your own OAuth2 provider
 (or any OAuth2 provider compatible with this gem)
 
 This strategy is designed to allow configuration of the simple OmniAuth SSO process outlined below:

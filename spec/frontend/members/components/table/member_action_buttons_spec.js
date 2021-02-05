@@ -1,11 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
 import { MEMBER_TYPES } from '~/members/constants';
-import { member as memberMock, group, invite, accessRequest } from '../../mock_data';
 import MemberActionButtons from '~/members/components/table/member_action_buttons.vue';
 import UserActionButtons from '~/members/components/action_buttons/user_action_buttons.vue';
 import GroupActionButtons from '~/members/components/action_buttons/group_action_buttons.vue';
 import InviteActionButtons from '~/members/components/action_buttons/invite_action_buttons.vue';
 import AccessRequestActionButtons from '~/members/components/action_buttons/access_request_action_buttons.vue';
+import { member as memberMock, group, invite, accessRequest } from '../../mock_data';
 
 describe('MemberActionButtons', () => {
   let wrapper;

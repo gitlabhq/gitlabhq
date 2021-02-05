@@ -103,3 +103,7 @@ module Gitlab
 end
 
 Gitlab::ImportExport.prepend_if_ee('EE::Gitlab::ImportExport')
+
+# The methods in `Gitlab::ImportExport::GroupHelper` should be available as both
+# instance and class methods.
+Gitlab::ImportExport.extend_if_ee('Gitlab::ImportExport::GroupHelper')

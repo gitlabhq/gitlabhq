@@ -69,7 +69,7 @@ For more details on the specific data persisted in a group export, see the
 
    ![Export group panel](img/export_panel_v13_0.png)
 
-1. Once the export is generated, you should receive an e-mail with a link to the [exported contents](#exported-contents)
+1. After the export is generated, you should receive an e-mail with a link to the [exported contents](#exported-contents)
    in a compressed tar archive, with contents in JSON format.
 
 1. Alternatively, you can come back to the project settings and download the
@@ -77,7 +77,7 @@ For more details on the specific data persisted in a group export, see the
 
 NOTE:
 The maximum import file size can be set by the Administrator, default is `0` (unlimited).
-As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings) or the [Admin UI](../../admin_area/settings/account_and_limit_settings.md).
+As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings) or the [Admin UI](../../admin_area/settings/account_and_limit_settings.md). Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to 0 in GitLab 13.8.
 
 ### Between CE and EE
 

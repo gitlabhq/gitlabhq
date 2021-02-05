@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# IBM Engineering Workflow Management (EWM) Integration **(CORE)**
+# IBM Engineering Workflow Management (EWM) Integration **(FREE)**
 
 This service allows you to navigate from GitLab to EWM work items mentioned in merge request descriptions and commit messages. Each work item reference is automatically converted to a link back to the work item.
 

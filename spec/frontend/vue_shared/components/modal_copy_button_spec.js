@@ -1,5 +1,6 @@
 import { shallowMount, createWrapper } from '@vue/test-utils';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 
 describe('modal copy button', () => {
   let wrapper;
@@ -31,7 +32,7 @@ describe('modal copy button', () => {
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.emitted().success).not.toBeEmpty();
         expect(document.execCommand).toHaveBeenCalledWith('copy');
-        expect(root.emitted('bv::hide::tooltip')).toEqual([['test-id']]);
+        expect(root.emitted(BV_HIDE_TOOLTIP)).toEqual([['test-id']]);
       });
     });
     it("should propagate the clipboard error event if execCommand doesn't work", () => {

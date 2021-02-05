@@ -2,8 +2,9 @@
 
 module Suggestions
   class ApplyService < ::BaseService
-    def initialize(current_user, *suggestions)
+    def initialize(current_user, *suggestions, message: nil)
       @current_user = current_user
+      @message = message
       @suggestion_set = Gitlab::Suggestions::SuggestionSet.new(suggestions)
     end
 
@@ -30,6 +31,9 @@ module Suggestions
 
       Suggestion.id_in(suggestion_set.suggestions)
         .update_all(commit_id: result[:result], applied: true)
+
+      Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
+        .track_apply_suggestion_action(user: current_user)
     end
 
     def multi_service
@@ -44,7 +48,7 @@ module Suggestions
     end
 
     def commit_message
-      Gitlab::Suggestions::CommitMessage.new(current_user, suggestion_set).message
+      Gitlab::Suggestions::CommitMessage.new(current_user, suggestion_set, @message).message
     end
   end
 end

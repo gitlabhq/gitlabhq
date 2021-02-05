@@ -8,10 +8,10 @@ type: reference
 # Invalidate Markdown Cache
 
 For performance reasons, GitLab caches the HTML version of Markdown text
-(e.g. issue and merge request descriptions, comments). It's possible
-that these cached versions become outdated, for example
-when the `external_url` configuration option is changed - causing links
-in the cached text to refer to the old URL.
+in fields like comments, issue descriptions, and merge request descriptions. These
+cached versions can become outdated, such as
+when the `external_url` configuration option is changed. Links
+in the cached text would still refer to the old URL.
 
 To avoid this problem, the administrator can invalidate the existing cache by
 increasing the `local_markdown_version` setting in application settings. This can

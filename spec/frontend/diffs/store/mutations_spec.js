@@ -2,8 +2,8 @@ import createState from '~/diffs/store/modules/diff_state';
 import mutations from '~/diffs/store/mutations';
 import * as types from '~/diffs/store/mutation_types';
 import { INLINE_DIFF_VIEW_TYPE, INLINE_DIFF_LINES_KEY } from '~/diffs/constants';
-import diffFileMockData from '../mock_data/diff_file';
 import * as utils from '~/diffs/store/utils';
+import diffFileMockData from '../mock_data/diff_file';
 
 describe('DiffsStoreMutations', () => {
   describe('SET_BASE_CONFIG', () => {

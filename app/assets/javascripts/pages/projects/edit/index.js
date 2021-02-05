@@ -5,12 +5,12 @@ import initConfirmDangerModal from '~/confirm_danger_modal';
 import mountBadgeSettings from '~/pages/shared/mount_badge_settings';
 import dirtySubmitFactory from '~/dirty_submit/dirty_submit_factory';
 import initFilePickers from '~/file_pickers';
-import initProjectLoadingSpinner from '../shared/save_project_loader';
-import initProjectPermissionsSettings from '../shared/permissions';
 import initProjectDeleteButton from '~/projects/project_delete_button';
 import UserCallout from '~/user_callout';
 import initServiceDesk from '~/projects/settings_service_desk';
-import mountSearchSettings from './mount_search_settings';
+import initSearchSettings from '~/search_settings';
+import initProjectPermissionsSettings from '../shared/permissions';
+import initProjectLoadingSpinner from '../shared/save_project_loader';
 
 document.addEventListener('DOMContentLoaded', () => {
   initFilePickers();
@@ -32,5 +32,5 @@ document.addEventListener('DOMContentLoaded', () => {
     ),
   );
 
-  mountSearchSettings();
+  initSearchSettings();
 });

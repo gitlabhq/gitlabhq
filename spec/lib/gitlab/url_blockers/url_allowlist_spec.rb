@@ -37,19 +37,19 @@ RSpec.describe Gitlab::UrlBlockers::UrlAllowlist do
       let(:allowlist) { ['example.io:3000'] }
 
       it 'returns true if domain and ports present in allowlist' do
-        parsed_allowlist = [['example.io', { port: 3000 }]]
+        parsed_allowlist = [['example.io', 3000]]
         not_allowed = [
           'example.io',
-          ['example.io', { port: 3001 }]
+          ['example.io', 3001]
         ]
 
         aggregate_failures do
-          parsed_allowlist.each do |domain_and_port|
-            expect(described_class).to be_domain_allowed(*domain_and_port)
+          parsed_allowlist.each do |domain, port|
+            expect(described_class).to be_domain_allowed(domain, port: port)
           end
 
-          not_allowed.each do |domain_and_port|
-            expect(described_class).not_to be_domain_allowed(*domain_and_port)
+          not_allowed.each do |domain, port|
+            expect(described_class).not_to be_domain_allowed(domain, port: port)
           end
         end
       end
@@ -139,23 +139,23 @@ RSpec.describe Gitlab::UrlBlockers::UrlAllowlist do
 
       it 'returns true if ip and ports present in allowlist' do
         parsed_allowlist = [
-          ['127.0.0.9', { port: 3000 }],
-          ['[2001:db8:85a3:8d3:1319:8a2e:370:7348]', { port: 443 }]
+          ['127.0.0.9', 3000],
+          ['[2001:db8:85a3:8d3:1319:8a2e:370:7348]', 443]
         ]
         not_allowed = [
           '127.0.0.9',
-          ['127.0.0.9', { port: 3001 }],
+          ['127.0.0.9', 3001],
           '[2001:db8:85a3:8d3:1319:8a2e:370:7348]',
-          ['[2001:db8:85a3:8d3:1319:8a2e:370:7348]', { port: 3001 }]
+          ['[2001:db8:85a3:8d3:1319:8a2e:370:7348]', 3001]
         ]
 
         aggregate_failures do
-          parsed_allowlist.each do |ip_and_port|
-            expect(described_class).to be_ip_allowed(*ip_and_port)
+          parsed_allowlist.each do |ip, port|
+            expect(described_class).to be_ip_allowed(ip, port: port)
           end
 
-          not_allowed.each do |ip_and_port|
-            expect(described_class).not_to be_ip_allowed(*ip_and_port)
+          not_allowed.each do |ip, port|
+            expect(described_class).not_to be_ip_allowed(ip, port: port)
           end
         end
       end

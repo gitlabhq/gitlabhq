@@ -1,6 +1,8 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlTooltipDirective, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import {
   CONTEXT_LINE_CLASS_NAME,
   PARALLEL_DIFF_VIEW_TYPE,
@@ -10,7 +12,6 @@ import {
   CONFLICT_THEIR,
   CONFLICT_MARKER,
 } from '../constants';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DiffGutterAvatars from './diff_gutter_avatars.vue';
 import * as utils from './diff_row_utils';
 
@@ -99,10 +100,10 @@ export default {
       });
     },
     addCommentTooltipLeft() {
-      return utils.addCommentTooltip(this.line.left);
+      return utils.addCommentTooltip(this.line.left, this.glFeatures.dragCommentSelection);
     },
     addCommentTooltipRight() {
-      return utils.addCommentTooltip(this.line.right);
+      return utils.addCommentTooltip(this.line.right, this.glFeatures.dragCommentSelection);
     },
     emptyCellRightClassMap() {
       return { conflict_their: this.line.left?.type === CONFLICT_OUR };
@@ -111,13 +112,7 @@ export default {
       return { conflict_our: this.line.right?.type === CONFLICT_THEIR };
     },
     shouldRenderCommentButton() {
-      return (
-        this.isLoggedIn &&
-        !this.line.isContextLineLeft &&
-        !this.line.isMetaLineLeft &&
-        !this.line.hasDiscussionsLeft &&
-        !this.line.hasDiscussionsRight
-      );
+      return this.isLoggedIn && !this.line.isContextLineLeft && !this.line.isMetaLineLeft;
     },
     isLeftConflictMarker() {
       return [CONFLICT_MARKER_OUR, CONFLICT_MARKER_THEIR].includes(this.line.left?.type);
@@ -168,7 +163,7 @@ export default {
       this.$emit('enterdragging', { ...line, index });
     },
     onDragStart(line) {
-      this.$root.$emit('bv::hide::tooltip');
+      this.$root.$emit(BV_HIDE_TOOLTIP);
       this.dragging = true;
       this.$emit('startdragging', line);
     },
@@ -199,7 +194,7 @@ export default {
         >
           <template v-if="!isLeftConflictMarker">
             <span
-              v-if="shouldRenderCommentButton"
+              v-if="shouldRenderCommentButton && !line.hasDiscussionsLeft"
               v-gl-tooltip
               data-testid="leftCommentButton"
               class="add-diff-note tooltip-wrapper"
@@ -301,7 +296,7 @@ export default {
         <div :class="classNameMapCellRight" class="diff-td diff-line-num new_line">
           <template v-if="line.right.type !== $options.CONFLICT_MARKER_THEIR">
             <span
-              v-if="shouldRenderCommentButton"
+              v-if="shouldRenderCommentButton && !line.hasDiscussionsRight"
               v-gl-tooltip
               data-testid="rightCommentButton"
               class="add-diff-note tooltip-wrapper"

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Starting with Rails 5, Rails tries to determine the request format based on
 # the extension of the full URL path if no explicit `format` param or `Accept`
 # header is provided, like when simply browsing to a page in your browser.

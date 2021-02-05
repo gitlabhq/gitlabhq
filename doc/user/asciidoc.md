@@ -40,7 +40,7 @@ Notice how line breaks are now preserved.
 
 An indented (literal) paragraph disables text formatting,
 preserves spaces and line breaks, and is displayed in a
-monospaced font:
+fixed-width font:
 
 ```plaintext
  This literal paragraph is indented with one space.
@@ -186,7 +186,11 @@ Attach a block or paragraph to a list item using a list continuation (which you 
 * [ ] not checked
 ```
 
+<!-- vale gitlab.Spelling = NO -->
+
 #### Callout
+
+<!-- vale gitlab.Spelling = YES -->
 
 ```plaintext
 // enable callout bubbles by adding `:icons: font` to the document header

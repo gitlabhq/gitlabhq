@@ -1,7 +1,7 @@
 import { pick } from 'lodash';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
-import * as types from './mutation_types';
 import { projectKeys } from '../utils';
+import * as types from './mutation_types';
 
 export default {
   [types.CLEAR_PROJECTS](state) {

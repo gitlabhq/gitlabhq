@@ -10,12 +10,12 @@ module Types
     present_using Releases::EvidencePresenter
 
     field :id, GraphQL::ID_TYPE, null: false,
-          description: 'ID of the evidence'
+          description: 'ID of the evidence.'
     field :sha, GraphQL::STRING_TYPE, null: true,
-          description: 'SHA1 ID of the evidence hash'
+          description: 'SHA1 ID of the evidence hash.'
     field :filepath, GraphQL::STRING_TYPE, null: true,
-          description: 'URL from where the evidence can be downloaded'
+          description: 'URL from where the evidence can be downloaded.'
     field :collected_at, Types::TimeType, null: true,
-          description: 'Timestamp when the evidence was collected'
+          description: 'Timestamp when the evidence was collected.'
   end
 end

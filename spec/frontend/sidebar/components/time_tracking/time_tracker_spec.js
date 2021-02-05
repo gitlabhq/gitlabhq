@@ -1,5 +1,5 @@
-import { createMockDirective } from 'helpers/vue_mock_directive';
 import { mount } from '@vue/test-utils';
+import { createMockDirective } from 'helpers/vue_mock_directive';
 import { stubTransition } from 'helpers/stub_transition';
 import TimeTracker from '~/sidebar/components/time_tracking/time_tracker.vue';
 

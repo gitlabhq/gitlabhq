@@ -170,6 +170,67 @@ module API
           not_found!("Merge Base")
         end
       end
+
+      desc 'Generates a changelog section for a release' do
+        detail 'This feature was introduced in GitLab 13.9'
+      end
+      params do
+        requires :version,
+          type: String,
+          regexp: Gitlab::Regex.unbounded_semver_regex,
+          desc: 'The version of the release, using the semantic versioning format'
+
+        requires :from,
+          type: String,
+          desc: 'The first commit in the range of commits to use for the changelog'
+
+        requires :to,
+          type: String,
+          desc: 'The last commit in the range of commits to use for the changelog'
+
+        optional :date,
+          type: DateTime,
+          desc: 'The date and time of the release'
+
+        optional :branch,
+          type: String,
+          desc: 'The branch to commit the changelog changes to'
+
+        optional :trailer,
+          type: String,
+          desc: 'The Git trailer to use for determining if commits are to be included in the changelog',
+          default: ::Repositories::ChangelogService::DEFAULT_TRAILER
+
+        optional :file,
+          type: String,
+          desc: 'The file to commit the changelog changes to',
+          default: ::Repositories::ChangelogService::DEFAULT_FILE
+
+        optional :message,
+          type: String,
+          desc: 'The commit message to use when committing the changelog'
+      end
+      post ':id/repository/changelog' do
+        not_found! unless Feature.enabled?(:changelog_api, user_project)
+
+        branch = params[:branch] || user_project.default_branch_or_master
+        access = Gitlab::UserAccess.new(current_user, container: user_project)
+
+        unless access.can_push_to_branch?(branch)
+          forbidden!("You are not allowed to commit a changelog on this branch")
+        end
+
+        service = ::Repositories::ChangelogService.new(
+          user_project,
+          current_user,
+          **declared_params(include_missing: false)
+        )
+
+        service.execute
+        status(200)
+      rescue => ex
+        render_api_error!("Failed to generate the changelog: #{ex.message}", 500)
+      end
     end
   end
 end

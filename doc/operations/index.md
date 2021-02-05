@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Project operations **(CORE)**
+# Project operations **(FREE)**
 
 GitLab provides a variety of tools to help operate and maintain
 your applications:

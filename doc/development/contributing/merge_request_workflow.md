@@ -212,7 +212,7 @@ the contribution acceptance criteria below:
 1. Changes do not degrade performance:
    - Avoid repeated polling of endpoints that require a significant amount of overhead.
    - Check for N+1 queries via the SQL log or [`QueryRecorder`](../merge_request_performance_guidelines.md).
-   - Avoid repeated access of the filesystem.
+   - Avoid repeated access of the file system.
    - Use [polling with ETag caching](../polling.md) if needed to support real-time features.
 1. If the merge request adds any new libraries (gems, JavaScript libraries, etc.),
    they should conform to our [Licensing guidelines](../licensing.md). See those

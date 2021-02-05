@@ -127,6 +127,15 @@ It's possible that this limit will be changed to a lower number in the future.
 
 - **Max size:** ~1 million characters / ~1 MB
 
+## Size of commit titles and descriptions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292039) in GitLab 13.9
+
+Commits with arbitrarily large messages may be pushed to GitLab, but when
+displaying commits, titles (the first line of the commit message) will be
+limited to 1KiB, and descriptions (the rest of the message) will be limited to
+1MiB.
+
 ## Number of issues in the milestone overview
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39453) in GitLab 12.10.

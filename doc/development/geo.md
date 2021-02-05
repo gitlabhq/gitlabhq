@@ -4,7 +4,7 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Geo (development) **(PREMIUM ONLY)**
+# Geo (development) **(PREMIUM SELF)**
 
 Geo connects GitLab instances together. One GitLab instance is
 designated as a **primary** node and can be run with multiple
@@ -305,7 +305,7 @@ events include:
 - Repositories Changed event
 - Repository Created event
 - Hashed Storage Migrated event
-- Lfs Object Deleted event
+- LFS Object Deleted event
 - Hashed Storage Attachments event
 - Job Artifact Deleted event
 - Upload Deleted event

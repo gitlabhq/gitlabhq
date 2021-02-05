@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Troubleshooting Geo **(PREMIUM ONLY)**
+# Troubleshooting Geo **(PREMIUM SELF)**
 
 Setting up Geo requires careful attention to details and sometimes it's easy to
 miss a step.
@@ -678,19 +678,19 @@ sudo /opt/gitlab/embedded/bin/gitlab-pg-ctl promote
 
 GitLab 12.9 and later are [unaffected by this error](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5147).
 
-### Two-factor authentication is broken after a failover
+### Message: `ERROR - Replication is not up-to-date` during `gitlab-ctl promotion-preflight-checks`
 
-The setup instructions for Geo prior to 10.5 failed to replicate the
-`otp_key_base` secret, which is used to encrypt the two-factor authentication
-secrets stored in the database. If it differs between **primary** and **secondary**
-nodes, users with two-factor authentication enabled won't be able to log in
-after a failover.
+In GitLab 13.7 and earlier, if you have a data type with zero items to sync,
+this command reports `ERROR - Replication is not up-to-date` even if
+replication is actually up-to-date. This bug was fixed in GitLab 13.8 and
+later.
 
-If you still have access to the old **primary** node, you can follow the
-instructions in the
-[Upgrading to GitLab 10.5](../replication/version_specific_updates.md#updating-to-gitlab-105)
-section to resolve the error. Otherwise, the secret is lost and you'll need to
-[reset two-factor authentication for all users](../../../security/two_factor_authentication.md#disabling-2fa-for-everyone).
+### Message: `ERROR - Replication is not up-to-date` during `gitlab-ctl promote-to-primary-node`
+
+In GitLab 13.7 and earlier, if you have a data type with zero items to sync,
+this command reports `ERROR - Replication is not up-to-date` even if
+replication is actually up-to-date. If replication and verification output
+shows that it is complete, you can add `--skip-preflight-checks` to make the command complete promotion. This bug was fixed in GitLab 13.8 and later.
 
 ## Expired artifacts
 

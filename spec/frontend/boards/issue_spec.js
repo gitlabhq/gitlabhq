@@ -41,7 +41,7 @@ describe('Issue model', () => {
     });
 
     expect(issue.labels.length).toBe(1);
-    expect(issue.labels[0].color).toBe('red');
+    expect(issue.labels[0].color).toBe('#F0AD4E');
   });
 
   it('adds other label with same title', () => {

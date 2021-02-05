@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Uploads administration **(CORE ONLY)**
+# Uploads administration **(FREE SELF)**
 
 Uploads represent all user data that may be sent to GitLab as a single file. As an example, avatars and notes' attachments are uploads. Uploads are integral to GitLab functionality, and therefore cannot be disabled.
 
@@ -49,12 +49,12 @@ _The uploads are stored by default in
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-## Using object storage **(CORE ONLY)**
+## Using object storage **(FREE SELF)**
 
 > **Notes:**
 >
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3867) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.5.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17358) in [GitLab Core](https://about.gitlab.com/pricing/) 10.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17358) in [GitLab Free](https://about.gitlab.com/pricing/) 10.7.
 > - Since version 11.1, we support direct_upload to S3.
 
 If you don't want to use the local disk where GitLab is installed to store the
@@ -112,7 +112,24 @@ _The uploads are stored by default in
    ```
 
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate:all` Rake task](raketasks/uploads/migrate.md).
+1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate` Rake task](raketasks/uploads/migrate.md).
+1. Optional: Verify all files migrated properly.
+   From [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database)
+   (`sudo gitlab-psql -d gitlabhq_production`) verify `objectstg` below (where `store=2`) has count of all artifacts:
+
+   ```shell
+   gitlabhq_production=# SELECT count(*) AS total, sum(case when store = '1' then 1 else 0 end) AS filesystem, sum(case when store = '2' then 1 else 0 end) AS objectstg FROM uploads;
+
+   total | filesystem | objectstg
+   ------+------------+-----------
+    2409 |          0 |      2409
+   ```
+
+   Verify no files on disk in `artifacts` folder:
+
+   ```shell
+   sudo find /var/opt/gitlab/gitlab-rails/uploads -type f | grep -v tmp | wc -l
+   ```
 
 **In installations from source:**
 
@@ -136,6 +153,22 @@ _The uploads are stored by default in
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate:all` Rake task](raketasks/uploads/migrate.md).
+1. Optional: Verify all files migrated properly.
+   From PostgreSQL console (`sudo -u git -H psql -d gitlabhq_production`) verify `objectstg` below (where `file_store=2`) has count of all artifacts:
+
+   ```shell
+   gitlabhq_production=# SELECT count(*) AS total, sum(case when store = '1' then 1 else 0 end) AS filesystem, sum(case when store = '2' then 1 else 0 end) AS objectstg FROM uploads;
+
+   total | filesystem | objectstg
+   ------+------------+-----------
+    2409 |          0 |      2409
+   ```
+
+   Verify no files on disk in `artifacts` folder:
+
+   ```shell
+   sudo find /var/opt/gitlab/gitlab-rails/uploads -type f | grep -v tmp | wc -l
+   ```
 
 #### OpenStack example
 
@@ -162,6 +195,23 @@ _The uploads are stored by default in
 
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate:all` Rake task](raketasks/uploads/migrate.md).
+1. Optional: Verify all files migrated properly.
+   From [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database)
+   (`sudo gitlab-psql -d gitlabhq_production`) verify `objectstg` below (where `store=2`) has count of all artifacts:
+
+   ```shell
+   gitlabhq_production=# SELECT count(*) AS total, sum(case when store = '1' then 1 else 0 end) AS filesystem, sum(case when store = '2' then 1 else 0 end) AS objectstg FROM uploads;
+
+   total | filesystem | objectstg
+   ------+------------+-----------
+    2409 |          0 |      2409
+   ```
+
+   Verify no files on disk in `artifacts` folder:
+
+   ```shell
+   sudo find /var/opt/gitlab/gitlab-rails/uploads -type f | grep -v tmp | wc -l
+   ```
 
 ---
 
@@ -193,3 +243,19 @@ _The uploads are stored by default in
 
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate:all` Rake task](raketasks/uploads/migrate.md).
+1. Optional: Verify all files migrated properly.
+   From PostgreSQL console (`sudo -u git -H psql -d gitlabhq_production`) verify `objectstg` below (where `file_store=2`) has count of all artifacts:
+
+   ```shell
+   gitlabhq_production=# SELECT count(*) AS total, sum(case when store = '1' then 1 else 0 end) AS filesystem, sum(case when store = '2' then 1 else 0 end) AS objectstg FROM uploads;
+
+   total | filesystem | objectstg
+   ------+------------+-----------
+    2409 |          0 |      2409
+   ```
+
+   Verify no files on disk in `artifacts` folder:
+
+   ```shell
+   sudo find /var/opt/gitlab/gitlab-rails/uploads -type f | grep -v tmp | wc -l
+   ```

@@ -1,8 +1,8 @@
 ---
 name: unlink_fork_network_upon_visibility_decrease
-introduced_by_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20466
 rollout_issue_url: 
-milestone: 
+milestone: '12.6'
 type: development
-group: 
+group: group::source code
 default_enabled: true

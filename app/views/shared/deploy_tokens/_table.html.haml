@@ -24,7 +24,7 @@
               - else
                 %span.token-never-expires-label= _('Never')
             %td= token.scopes.present? ? token.scopes.join(', ') : _('no scopes selected')
-            %td= link_to s_('DeployTokens|Revoke'), "#", class: "btn btn-danger float-right", data: { toggle: "modal", target: "#revoke-modal-#{token.id}"}
+            %td= link_to s_('DeployTokens|Revoke'), "#", class: "gl-button btn btn-danger float-right", data: { toggle: "modal", target: "#revoke-modal-#{token.id}"}
             = render 'shared/deploy_tokens/revoke_modal', token: token, group_or_project: group_or_project
 - else
   .settings-message.text-center

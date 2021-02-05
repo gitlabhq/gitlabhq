@@ -39,9 +39,6 @@ module Registrations
     def process_gitlab_com_tracking
       return false unless ::Gitlab.com?
       return false unless show_onboarding_issues_experiment?
-
-      track_experiment_event(:onboarding_issues, 'signed_up')
-      record_experiment_user(:onboarding_issues)
     end
 
     def update_params

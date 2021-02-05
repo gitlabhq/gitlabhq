@@ -1,6 +1,11 @@
 import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import {
+  DIFF_FILE_MANUAL_COLLAPSE,
+  DIFF_FILE_AUTOMATIC_COLLAPSE,
+  INLINE_DIFF_LINES_KEY,
+} from '../constants';
+import {
   findDiffFile,
   addLineReferences,
   removeMatchLine,
@@ -9,11 +14,6 @@ import {
   isDiscussionApplicableToLine,
   updateLineInFile,
 } from './utils';
-import {
-  DIFF_FILE_MANUAL_COLLAPSE,
-  DIFF_FILE_AUTOMATIC_COLLAPSE,
-  INLINE_DIFF_LINES_KEY,
-} from '../constants';
 import * as types from './mutation_types';
 
 function updateDiffFilesInState(state, files) {
@@ -159,7 +159,12 @@ export default {
   [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { discussion, diffPositionByLineCode, hash }) {
     const { latestDiff } = state;
 
-    const discussionLineCodes = [discussion.line_code, ...(discussion.line_codes || [])];
+    const originalStartLineCode = discussion.original_position?.line_range?.start?.line_code;
+    const discussionLineCodes = [
+      discussion.line_code,
+      originalStartLineCode,
+      ...(discussion.line_codes || []),
+    ];
     const fileHash = discussion.diff_file.file_hash;
     const lineCheck = (line) =>
       discussionLineCodes.some(

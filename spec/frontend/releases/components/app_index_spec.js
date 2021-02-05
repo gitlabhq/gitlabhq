@@ -7,9 +7,9 @@ import ReleasesApp from '~/releases/components/app_index.vue';
 import createStore from '~/releases/stores';
 import createListModule from '~/releases/stores/modules/list';
 import api from '~/api';
-import { pageInfoHeadersWithoutPagination, pageInfoHeadersWithPagination } from '../mock_data';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import ReleasesPagination from '~/releases/components/releases_pagination.vue';
+import { pageInfoHeadersWithoutPagination, pageInfoHeadersWithPagination } from '../mock_data';
 
 jest.mock('~/lib/utils/common_utils', () => ({
   ...jest.requireActual('~/lib/utils/common_utils'),

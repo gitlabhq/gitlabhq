@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Integrity check Rake task **(CORE ONLY)**
+# Integrity check Rake task **(FREE SELF)**
 
 GitLab provides Rake tasks to check the integrity of various components.
 

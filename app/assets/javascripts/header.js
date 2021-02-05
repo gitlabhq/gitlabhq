@@ -106,7 +106,5 @@ export function initNavUserDropdownTracking() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  requestIdleCallback(initStatusTriggers);
-  requestIdleCallback(initNavUserDropdownTracking);
-});
+requestIdleCallback(initStatusTriggers);
+requestIdleCallback(initNavUserDropdownTracking);

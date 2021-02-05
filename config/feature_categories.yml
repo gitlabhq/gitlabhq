@@ -66,6 +66,7 @@
 - jenkins_importer
 - jira_importer
 - kubernetes_management
+- license
 - license_compliance
 - live_preview
 - load_testing
@@ -84,7 +85,6 @@
 - privacy_control_center
 - product_analytics
 - projects
-- provision
 - purchase
 - quality_management
 - release_evidence
@@ -113,6 +113,7 @@
 - usability_testing
 - usage_ping
 - users
+- utilization
 - value_stream_management
 - vulnerability_database
 - vulnerability_management

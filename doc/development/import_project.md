@@ -170,7 +170,7 @@ The last option is to import a project using a Rails console:
 
    Gitlab::ImportExport::RepoRestorer.new(path_to_bundle: repo_path,
                                           shared: shared,
-                                          project: project).restore
+                                          importable: project).restore
    ```
 
    We are storing all import failures in the `import_failures` data table.

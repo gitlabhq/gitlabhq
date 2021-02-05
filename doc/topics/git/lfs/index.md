@@ -14,13 +14,13 @@ larger than 1GB to preserve performance.
 
 ![Git LFS tracking status](img/lfs-icon.png)
 
-An LFS icon is shown on files tracked by Git LFS to denote if a file is stored
-as a blob or as an LFS pointer.
+Files tracked by Git LFS display an icon to indicate if the file is stored as a
+blob or an LFS pointer.
 
 ## How it works
 
 Git LFS client talks with the GitLab server over HTTPS. It uses HTTP Basic Authentication
-to authorize client requests. Once the request is authorized, Git LFS client receives
+to authorize client requests. After the request is authorized, Git LFS client receives
 instructions from where to fetch or where to push the large file.
 
 ## GitLab server configuration
@@ -35,18 +35,18 @@ Documentation for GitLab instance administrators is under [LFS administration do
 
 ## Known limitations
 
-- Git LFS v1 original API is not supported since it was deprecated early in LFS
-  development
-- When SSH is set as a remote, Git LFS objects still go through HTTPS
-- Any Git LFS request will ask for HTTPS credentials to be provided so a good Git
-  credentials store is recommended
-- Git LFS always assumes HTTPS so if you have GitLab server on HTTP you will have
-  to add the URL to Git configuration manually (see [troubleshooting](#troubleshooting))
+- Git LFS v1 original API is not supported, because it was deprecated early in LFS
+  development.
+- When SSH is set as a remote, Git LFS objects still go through HTTPS.
+- Any Git LFS request asks for HTTPS credentials to be provided so a good Git
+  credentials store is recommended.
+- Git LFS always assumes HTTPS so if you have GitLab server on HTTP you must
+  [add the URL to Git configuration manually](#troubleshooting).
 
 NOTE:
 With 8.12 GitLab added LFS support to SSH. The Git LFS communication
 still goes over HTTP, but now the SSH client passes the correct credentials
-to the Git LFS client, so no action is required by the user.
+to the Git LFS client. No action is required by the user.
 
 ## Using Git LFS
 
@@ -60,8 +60,8 @@ git lfs install                       # initialize the Git LFS project
 git lfs track "*.iso"                 # select the file extensions that you want to treat as large files
 ```
 
-Once a certain file extension is marked for tracking as a LFS object you can use
-Git as usual without having to redo the command to track a file with the same extension:
+After you mark a file extension for tracking as a LFS object you can use
+Git as usual without redoing the command to track a file with the same extension:
 
 ```shell
 cp ~/tmp/debian.iso ./                # copy a large file into the current directory
@@ -71,7 +71,7 @@ git push origin master                # sync the git repo and large file to the 
 ```
 
 **Make sure** that `.gitattributes` is tracked by Git. Otherwise Git
-LFS will not be working properly for people cloning the project:
+LFS doesn't work properly for people cloning the project:
 
 ```shell
 git add .gitattributes
@@ -93,8 +93,8 @@ that are on the remote repository, such as for a branch from origin:
 git lfs fetch origin master
 ```
 
-Make sure your files aren't listed in `.gitignore`, otherwise, they will be ignored by Git thus will not
-be pushed to the remote repository.
+Make sure your files aren't listed in `.gitignore`, otherwise, they are ignored by Git
+and are not pushed to the remote repository.
 
 ### Migrate an existing repository to Git LFS
 
@@ -178,7 +178,7 @@ available to the project anymore. Probably the object was removed from the serve
 
 ### Invalid status for `<url>` : 501
 
-Git LFS will log the failures into a log file.
+Git LFS logs the failures into a log file.
 To view this log file, while in project directory:
 
 ```shell
@@ -201,12 +201,19 @@ If the status `error 501` is shown, it is because:
   remove the line and try to update your Git LFS client. Only version 1.0.1 and
   newer are supported.
 
+<!-- vale gitlab.Spelling = NO -->
+
 ### getsockopt: connection refused
 
-If you push a LFS object to a project and you receive an error similar to:
-`Post <URL>/info/lfs/objects/batch: dial tcp IP: getsockopt: connection refused`,
+<!-- vale gitlab.Spelling = YES -->
+
+If you push an LFS object to a project and receive an error like this,
 the LFS client is trying to reach GitLab through HTTPS. However, your GitLab
-instance is being served on HTTP.
+instance is being served on HTTP:
+
+```plaintext
+Post <URL>/info/lfs/objects/batch: dial tcp IP: getsockopt: connection refused
+```
 
 This behavior is caused by Git LFS using HTTPS connections by default when a
 `lfsurl` is not set in the Git configuration.
@@ -222,10 +229,10 @@ git config --add lfs.url "http://gitlab.example.com/group/project.git/info/lfs"
 NOTE:
 With 8.12 GitLab added LFS support to SSH. The Git LFS communication
 still goes over HTTP, but now the SSH client passes the correct credentials
-to the Git LFS client, so no action is required by the user.
+to the Git LFS client. No action is required by the user.
 
-Given that Git LFS uses HTTP Basic Authentication to authenticate the user pushing
-the LFS object on every push for every object, user HTTPS credentials are required.
+Git LFS authenticates the user with HTTP Basic Authentication on every push for
+every object, so user HTTPS credentials are required.
 
 By default, Git has support for remembering the credentials for each repository
 you use. This is described in [Git credentials man pages](https://git-scm.com/docs/gitcredentials).
@@ -237,7 +244,7 @@ which you expect to push the objects:
 git config --global credential.helper 'cache --timeout=3600'
 ```
 
-This will remember the credentials for an hour after which Git operations will
+This remembers the credentials for an hour, after which Git operations
 require re-authentication.
 
 If you are using OS X you can use `osxkeychain` to store and encrypt your credentials.
@@ -258,7 +265,7 @@ If you are storing LFS files outside of GitLab you can disable LFS on the projec
 
 It is possible to host LFS objects externally by setting a custom LFS URL with `git config -f .lfsconfig lfs.url https://example.com/<project>.git/info/lfs`.
 
-You might choose to do this if you are using an appliance like a Sonatype Nexus to store LFS data. If you choose to use an external LFS store,
-GitLab will not be able to verify LFS objects which means that pushes will fail if you have GitLab LFS support enabled.
+You might choose to do this if you are using an appliance like a <!-- vale gitlab.Spelling = NO --> Sonatype Nexus <!-- vale gitlab.Spelling = YES --> to store LFS data. If you choose to use an external LFS store,
+GitLab can't verify LFS objects. Pushes then fail if you have GitLab LFS support enabled.
 
-To stop push failure, LFS support can be disabled in the [Project settings](../../../user/project/settings/index.md). This means you will lose GitLab LFS value-adds (Verifying LFS objects, UI integration for LFS).
+To stop push failure, LFS support can be disabled in the [Project settings](../../../user/project/settings/index.md), which also disables GitLab LFS value-adds (Verifying LFS objects, UI integration for LFS).

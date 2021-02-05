@@ -26,7 +26,7 @@ describe('SidebarTodo', () => {
 
   it.each`
     state    | classes
-    ${false} | ${['btn', 'btn-default', 'btn-todo', 'issuable-header-btn', 'float-right']}
+    ${false} | ${['gl-button', 'btn', 'btn-default', 'btn-todo', 'issuable-header-btn', 'float-right']}
     ${true}  | ${['btn-blank', 'btn-todo', 'sidebar-collapsed-icon', 'dont-change-state']}
   `('returns todo button classes for when `collapsed` prop is `$state`', ({ state, classes }) => {
     createComponent({ collapsed: state });
@@ -35,7 +35,7 @@ describe('SidebarTodo', () => {
 
   it.each`
     isTodo   | iconClass        | label             | icon
-    ${false} | ${''}            | ${'Add a To-Do'}  | ${'todo-add'}
+    ${false} | ${''}            | ${'Add a to do'}  | ${'todo-add'}
     ${true}  | ${'todo-undone'} | ${'Mark as done'} | ${'todo-done'}
   `(
     'renders proper button when `isTodo` prop is `$isTodo`',

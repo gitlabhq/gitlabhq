@@ -98,3 +98,8 @@ export const REMOVE_GROUP_LINK_MODAL_ID = 'remove-group-link-modal-id';
 export const SEARCH_TOKEN_TYPE = 'filtered-search-term';
 
 export const SORT_PARAM = 'sort';
+
+export const MEMBER_ACCESS_LEVEL_PROPERTY_NAME = 'access_level';
+
+export const GROUP_LINK_BASE_PROPERTY_NAME = 'group_link';
+export const GROUP_LINK_ACCESS_LEVEL_PROPERTY_NAME = 'group_access';

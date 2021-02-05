@@ -58,77 +58,75 @@ describe('Repository last commit component', () => {
     loading  | label
     ${true}  | ${'shows'}
     ${false} | ${'hides'}
-  `('$label when loading icon $loading is true', ({ loading }) => {
+  `('$label when loading icon $loading is true', async ({ loading }) => {
     factory(createCommitData(), loading);
 
-    return vm.vm.$nextTick(() => {
-      expect(vm.find(GlLoadingIcon).exists()).toBe(loading);
-    });
+    await vm.vm.$nextTick();
+
+    expect(vm.find(GlLoadingIcon).exists()).toBe(loading);
   });
 
-  it('renders commit widget', () => {
+  it('renders commit widget', async () => {
     factory();
 
-    return vm.vm.$nextTick(() => {
-      expect(vm.element).toMatchSnapshot();
-    });
+    await vm.vm.$nextTick();
+
+    expect(vm.element).toMatchSnapshot();
   });
 
-  it('renders short commit ID', () => {
+  it('renders short commit ID', async () => {
     factory();
 
-    return vm.vm.$nextTick(() => {
-      expect(vm.find('[data-testid="last-commit-id-label"]').text()).toEqual('12345678');
-    });
+    await vm.vm.$nextTick();
+
+    expect(vm.find('[data-testid="last-commit-id-label"]').text()).toEqual('12345678');
   });
 
-  it('hides pipeline components when pipeline does not exist', () => {
+  it('hides pipeline components when pipeline does not exist', async () => {
     factory(createCommitData({ pipeline: null }));
 
-    return vm.vm.$nextTick(() => {
-      expect(vm.find('.js-commit-pipeline').exists()).toBe(false);
-    });
+    await vm.vm.$nextTick();
+
+    expect(vm.find('.js-commit-pipeline').exists()).toBe(false);
   });
 
-  it('renders pipeline components', () => {
+  it('renders pipeline components', async () => {
     factory();
 
-    return vm.vm.$nextTick(() => {
-      expect(vm.find('.js-commit-pipeline').exists()).toBe(true);
-    });
+    await vm.vm.$nextTick();
+
+    expect(vm.find('.js-commit-pipeline').exists()).toBe(true);
   });
 
-  it('hides author component when author does not exist', () => {
+  it('hides author component when author does not exist', async () => {
     factory(createCommitData({ author: null }));
 
-    return vm.vm.$nextTick(() => {
-      expect(vm.find('.js-user-link').exists()).toBe(false);
-      expect(vm.find(UserAvatarLink).exists()).toBe(false);
-    });
+    await vm.vm.$nextTick();
+
+    expect(vm.find('.js-user-link').exists()).toBe(false);
+    expect(vm.find(UserAvatarLink).exists()).toBe(false);
   });
 
-  it('does not render description expander when description is null', () => {
+  it('does not render description expander when description is null', async () => {
     factory(createCommitData({ descriptionHtml: null }));
 
-    return vm.vm.$nextTick(() => {
-      expect(vm.find('.text-expander').exists()).toBe(false);
-      expect(vm.find('.commit-row-description').exists()).toBe(false);
-    });
+    await vm.vm.$nextTick();
+
+    expect(vm.find('.text-expander').exists()).toBe(false);
+    expect(vm.find('.commit-row-description').exists()).toBe(false);
   });
 
-  it('expands commit description when clicking expander', () => {
+  it('expands commit description when clicking expander', async () => {
     factory(createCommitData({ descriptionHtml: 'Test description' }));
 
-    return vm.vm
-      .$nextTick()
-      .then(() => {
-        vm.find('.text-expander').vm.$emit('click');
-        return vm.vm.$nextTick();
-      })
-      .then(() => {
-        expect(vm.find('.commit-row-description').isVisible()).toBe(true);
-        expect(vm.find('.text-expander').classes('open')).toBe(true);
-      });
+    await vm.vm.$nextTick();
+
+    vm.find('.text-expander').vm.$emit('click');
+
+    await vm.vm.$nextTick();
+
+    expect(vm.find('.commit-row-description').isVisible()).toBe(true);
+    expect(vm.find('.text-expander').classes('open')).toBe(true);
   });
 
   it('strips the first newline of the description', async () => {
@@ -141,19 +139,19 @@ describe('Repository last commit component', () => {
     );
   });
 
-  it('renders the signature HTML as returned by the backend', () => {
+  it('renders the signature HTML as returned by the backend', async () => {
     factory(createCommitData({ signatureHtml: '<button>Verified</button>' }));
 
-    return vm.vm.$nextTick().then(() => {
-      expect(vm.element).toMatchSnapshot();
-    });
+    await vm.vm.$nextTick();
+
+    expect(vm.element).toMatchSnapshot();
   });
 
-  it('sets correct CSS class if the commit message is empty', () => {
+  it('sets correct CSS class if the commit message is empty', async () => {
     factory(createCommitData({ message: '' }));
 
-    return vm.vm.$nextTick().then(() => {
-      expect(vm.find('.item-title').classes()).toContain(emptyMessageClass);
-    });
+    await vm.vm.$nextTick();
+
+    expect(vm.find('.item-title').classes()).toContain(emptyMessageClass);
   });
 });

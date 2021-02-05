@@ -1,4 +1,4 @@
-.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), **tracking_attrs('projects_side_navigation', 'render', 'projects_side_navigation') }
+%aside.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), **tracking_attrs('projects_side_navigation', 'render', 'projects_side_navigation'), 'aria-label': _('Project navigation') }
   .nav-sidebar-inner-scroll
     .context-header
       = link_to project_path(@project), title: @project.name do
@@ -212,7 +212,8 @@
 
             = render_if_exists "layouts/nav/test_cases_link", project: @project
 
-      = render_if_exists 'layouts/nav/sidebar/project_security_link' # EE-specific
+      - if project_nav_tab? :security_and_compliance
+        = render_if_exists 'layouts/nav/sidebar/project_security_link' # EE-specific
 
       - if project_nav_tab? :operations
         = nav_link(controller: sidebar_operations_paths) do
@@ -383,7 +384,7 @@
               %strong.fly-out-top-item-name
                 = _('Members')
 
-      = render_if_exists 'projects/invite_members_side_nav_link', project: @project
+      = content_for :invite_members_sidebar
 
       - if project_nav_tab? :settings
         = nav_link(path: sidebar_settings_paths) do

@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import { pick } from 'lodash';
-import * as types from './mutation_types';
-import { mapToDashboardViewModel, mapPanelToViewModel, normalizeQueryResponseData } from './utils';
 import httpStatusCodes from '~/lib/utils/http_status';
 import { BACKOFF_TIMEOUT } from '~/lib/utils/common_utils';
 import { dashboardEmptyStates, endpointKeys, initialStateKeys, metricStates } from '../constants';
+import { mapToDashboardViewModel, mapPanelToViewModel, normalizeQueryResponseData } from './utils';
+import * as types from './mutation_types';
 import { optionsFromSeriesData } from './variable_mapping';
 
 /**

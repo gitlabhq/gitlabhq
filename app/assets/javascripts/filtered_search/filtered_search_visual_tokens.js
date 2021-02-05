@@ -1,5 +1,5 @@
-import VisualTokenValue from './visual_token_value';
 import { objectToQueryString, spriteIcon } from '~/lib/utils/common_utils';
+import VisualTokenValue from './visual_token_value';
 import FilteredSearchContainer from './container';
 
 export default class FilteredSearchVisualTokens {

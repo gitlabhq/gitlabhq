@@ -10,7 +10,7 @@ We have developed a number of utilities to help ease development:
 
 ## `MergeHash`
 
-Refer to: <https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/utils/merge_hash.rb>:
+Refer to [`merge_hash.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/utils/merge_hash.rb):
 
 - Deep merges an array of hashes:
 
@@ -109,9 +109,50 @@ Refer to [`override.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gi
     Because only a class or prepended module can actually override a method.
     Including or extending a module into another cannot override anything.
 
+### Interactions with `ActiveSupport::Concern`, `prepend`, and `class_methods`
+
+When you use `ActiveSupport::Concern` that includes class methods, you do not
+get expected results because `ActiveSupport::Concern` doesn't work like a
+regular Ruby module.
+
+Since we already have `Prependable` as a patch for `ActiveSupport::Concern`
+to enable `prepend`, it has consequences with how it would interact with
+`override` and `class_methods`. As a workaround, `extend` `ClassMethods`
+into the defining `Prependable` module.
+
+This allows us to use `override` to verify `class_methods` used in the
+context mentioned above. This workaround only applies when we run the
+verification, not when running the application itself.
+
+Here are example code blocks that demonstrate the effect of this workaround:
+following codes:
+
+```ruby
+module Base
+  extend ActiveSupport::Concern
+
+  class_methods do
+    def f
+    end
+  end
+end
+
+module Derived
+  include Base
+end
+
+# Without the workaround
+Base.f    # => NoMethodError
+Derived.f # => nil
+
+# With the workaround
+Base.f    # => nil
+Derived.f # => nil
+```
+
 ## `StrongMemoize`
 
-Refer to <https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/utils/strong_memoize.rb>:
+Refer to [`strong_memoize.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/utils/strong_memoize.rb):
 
 - Memoize the value even if it is `nil` or `false`.
 

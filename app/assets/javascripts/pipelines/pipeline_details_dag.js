@@ -12,7 +12,7 @@ const apolloProvider = new VueApollo({
 const createDagApp = () => {
   const el = document.querySelector('#js-pipeline-dag-vue');
 
-  if (!window.gon?.features?.dagPipelineTab || !el) {
+  if (!el) {
     return;
   }
 

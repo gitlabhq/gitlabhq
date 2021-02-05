@@ -116,14 +116,5 @@ describe('Job Sidebar Details Container', () => {
 
       expect(findJobTimeout().exists()).toBe(false);
     });
-
-    it('should pass the help URL', async () => {
-      const helpUrl = 'fakeUrl';
-      const props = { runnerHelpUrl: helpUrl };
-      createWrapper({ props });
-      await store.dispatch('receiveJobSuccess', { metadata: { timeout_human_readable } });
-
-      expect(findJobTimeout().props('helpUrl')).toBe(helpUrl);
-    });
   });
 });

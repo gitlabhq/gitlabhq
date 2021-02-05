@@ -18,6 +18,10 @@ RSpec.describe Ci::BuildDependencies do
   let!(:rubocop_test) { create(:ci_build, pipeline: pipeline, name: 'rubocop', stage_idx: 1, stage: 'test') }
   let!(:staging) { create(:ci_build, pipeline: pipeline, name: 'staging', stage_idx: 2, stage: 'deploy') }
 
+  before do
+    stub_feature_flags(ci_validate_build_dependencies_override: false)
+  end
+
   describe '#local' do
     subject { described_class.new(job).local }
 
@@ -358,6 +362,30 @@ RSpec.describe Ci::BuildDependencies do
       expect(dependencies).to receive(:cross_project).and_return([3, 4])
 
       expect(subject).to contain_exactly(1, 2, 3, 4)
+    end
+  end
+
+  describe '#valid?' do
+    subject { described_class.new(job).valid? }
+
+    let(:job) { rspec_test }
+
+    it { is_expected.to eq(true) }
+
+    context 'when a local dependency is invalid' do
+      before do
+        build.update_column(:erased_at, Time.current)
+      end
+
+      it { is_expected.to eq(false) }
+
+      context 'when ci_validate_build_dependencies_override feature flag is enabled' do
+        before do
+          stub_feature_flags(ci_validate_build_dependencies_override: job.project)
+        end
+
+        it { is_expected.to eq(true) }
+      end
     end
   end
 end

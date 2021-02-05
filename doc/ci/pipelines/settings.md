@@ -63,12 +63,12 @@ if the job surpasses the threshold, it is marked as failed.
 Project defined timeout (either specific timeout set by user or the default
 60 minutes timeout) may be [overridden for runners](../runners/README.md#set-maximum-job-timeout-for-a-runner).
 
-## Maximum artifacts size **(CORE ONLY)**
+## Maximum artifacts size **(FREE SELF)**
 
 For information about setting a maximum artifact size for a project, see
 [Maximum artifacts size](../../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size).
 
-## Custom CI configuration path
+## Custom CI/CD configuration path
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12509) in GitLab 9.4.
 > - [Support for external `.gitlab-ci.yml` locations](https://gitlab.com/gitlab-org/gitlab/-/issues/14376) introduced in GitLab 12.6.
@@ -80,7 +80,7 @@ To customize the path:
 
 1. Go to the project's **Settings > CI / CD**.
 1. Expand the **General pipelines** section.
-1. Provide a value in the **Custom CI configuration path** field.
+1. Provide a value in the **CI/CD configuration file** field.
 1. Click **Save changes**.
 
 If the CI configuration is stored within the repository in a non-default
@@ -131,8 +131,23 @@ averaged.
 
 ![Build status coverage](img/pipelines_test_coverage_build.png)
 
-A few examples of known coverage tools for a variety of languages can be found
-in the pipelines settings page.
+<!-- vale gitlab.Spelling = NO -->
+
+| Coverage Tool                                  | Sample regular expression |
+|------------------------------------------------|---------------------------|
+| Simplecov (Ruby)                               | `\(\d+.\d+\%\) covered` |
+| pytest-cov (Python)                            | `^TOTAL.+?(\d+\%)$` |
+| Scoverage (Scala)                              | `Statement coverage[A-Za-z\.*]\s*:\s*([^%]+)` |
+| `phpunit --coverage-text --colors=never` (PHP) | `^\s*Lines:\s*\d+.\d+\%` |
+| gcovr (C/C++)                                  | `^TOTAL.*\s+(\d+\%)$` |
+| `tap --coverage-report=text-summary` (NodeJS)  | `^Statements\s*:\s*([^%]+)` |
+| `nyc npm test` (NodeJS)                        | `All files[^|]*\|[^|]*\s+([\d\.]+)` |
+| excoveralls (Elixir)                           | `\[TOTAL\]\s+(\d+\.\d+)%` |
+| `mix test --cover` (Elixir)                    | `\d+.\d+\%\s+\|\s+Total` |
+| JaCoCo (Java/Kotlin)                           | `Total.*?([0-9]{1,3})%` |
+| `go test -cover` (Go)                          | `coverage: \d+.\d+% of statements` |
+
+<!-- vale gitlab.Spelling = YES -->
 
 ### Code Coverage history
 
@@ -143,7 +158,7 @@ To see the evolution of your project code coverage over time,
 you can view a graph or download a CSV file with this data. From your project:
 
 1. Go to **{chart}** **Project Analytics > Repository** to see the historic data for each job listed in the dropdown above the graph.
-1. If you want a CSV file of that data, click **Download raw data (.csv)**
+1. If you want a CSV file of that data, click **Download raw data (`.csv`)**
 
 ![Code coverage graph of a project over time](img/code_coverage_graph_v13_1.png)
 
@@ -198,7 +213,7 @@ If **Public pipelines** is disabled:
 - For **private** projects, only project members (reporter or higher)
   can view the pipelines or access the related features.
 
-## Auto-cancel pending pipelines
+## Auto-cancel redundant pipelines
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9362) in GitLab 9.1.
 
@@ -206,7 +221,7 @@ You can set pending or running pipelines to cancel automatically when a new pipe
 
 1. Go to **Settings > CI / CD**.
 1. Expand **General Pipelines**.
-1. Check the **Auto-cancel redundant, pending pipelines** checkbox.
+1. Check the **Auto-cancel redundant pipelines** checkbox.
 1. Click **Save changes**.
 
 Use the [`interruptible`](../yaml/README.md#interruptible) keyword to indicate if a

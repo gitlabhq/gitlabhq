@@ -173,7 +173,7 @@ In most of the below cases, the notification is sent to:
 - Custom: Users with notification level "custom" who turned on notifications for any of the events present in the table below
 
 NOTE:
-To minimize the number of notifications that do not require any action, from [GitLab 12.9 onwards](https://gitlab.com/gitlab-org/gitlab/-/issues/616), eligible approvers are no longer notified for all the activities in their projects. To receive them they have to change their user notification settings to **Watch** instead.
+To minimize the number of notifications that do not require any action, in [GitLab versions 12.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/616), eligible approvers are no longer notified for all the activities in their projects. To receive them they have to change their user notification settings to **Watch** instead.
 
 | Event                  | Sent to |
 |------------------------|---------|

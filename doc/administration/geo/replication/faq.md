@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Geo Frequently Asked Questions **(PREMIUM ONLY)**
+# Geo Frequently Asked Questions **(PREMIUM SELF)**
 
 ## What are the minimum requirements to run Geo?
 

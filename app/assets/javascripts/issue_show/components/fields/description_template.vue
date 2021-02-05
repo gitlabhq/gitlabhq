@@ -35,6 +35,7 @@ export default {
     // Create the editor for the template
     const editor = document.querySelector('.detail-page-description .note-textarea') || {};
     editor.setValue = (val) => {
+      // eslint-disable-next-line vue/no-mutating-props
       this.formState.description = val;
     };
     editor.getValue = () => this.formState.description;

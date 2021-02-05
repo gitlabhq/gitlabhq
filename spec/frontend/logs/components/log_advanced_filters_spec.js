@@ -4,9 +4,8 @@ import { defaultTimeRange } from '~/vue_shared/constants';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import { createStore } from '~/logs/stores';
 import { TOKEN_TYPE_POD_NAME } from '~/logs/constants';
-import { mockPods, mockSearch } from '../mock_data';
-
 import LogAdvancedFilters from '~/logs/components/log_advanced_filters.vue';
+import { mockPods, mockSearch } from '../mock_data';
 
 const module = 'environmentLogs';
 

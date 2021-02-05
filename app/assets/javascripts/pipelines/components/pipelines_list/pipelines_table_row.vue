@@ -1,16 +1,16 @@
 <script>
 import { GlButton, GlTooltipDirective, GlModalDirective } from '@gitlab/ui';
-import eventHub from '../../event_hub';
 import { __ } from '~/locale';
+import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
+import CommitComponent from '~/vue_shared/components/commit.vue';
+import eventHub from '../../event_hub';
+import { PIPELINES_TABLE } from '../../constants';
 import PipelinesActionsComponent from './pipelines_actions.vue';
 import PipelinesArtifactsComponent from './pipelines_artifacts.vue';
-import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
 import PipelineStage from './stage.vue';
 import PipelineUrl from './pipeline_url.vue';
 import PipelineTriggerer from './pipeline_triggerer.vue';
 import PipelinesTimeago from './time_ago.vue';
-import CommitComponent from '~/vue_shared/components/commit.vue';
-import { PIPELINES_TABLE } from '../../constants';
 
 /**
  * Pipeline table row.

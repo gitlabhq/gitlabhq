@@ -146,7 +146,7 @@ func (c *ObjectStorageConfig) IsGoCloud() bool {
 
 func (c *ObjectStorageConfig) IsValid() bool {
 	if c.IsAWS() {
-		return c.S3Config.Bucket != "" && c.S3Config.Region != "" && c.s3CredentialsValid()
+		return c.S3Config.Bucket != "" && c.s3CredentialsValid()
 	} else if c.IsGoCloud() {
 		// We could parse and validate the URL, but GoCloud providers
 		// such as AzureRM don't have a fallback to normal HTTP, so we

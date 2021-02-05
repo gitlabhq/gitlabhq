@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - It's disabled for GitLab.com.
 > - It's not recommended for production use.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-the-go-proxy).
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
 With the Go proxy for GitLab, every project in GitLab can be fetched with the
 [Go proxy protocol](https://proxy.golang.org/).

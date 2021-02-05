@@ -195,11 +195,11 @@ RSpec.describe Resolvers::IssuesResolver do
           let_it_be(:priority_issue4) { create(:issue, project: project) }
 
           it 'sorts issues ascending' do
-            expect(resolve_issues(sort: :priority_asc).items).to eq([priority_issue3, priority_issue1, priority_issue2, priority_issue4])
+            expect(resolve_issues(sort: :priority_asc).to_a).to eq([priority_issue3, priority_issue1, priority_issue2, priority_issue4])
           end
 
           it 'sorts issues descending' do
-            expect(resolve_issues(sort: :priority_desc).items).to eq([priority_issue1, priority_issue3, priority_issue2, priority_issue4])
+            expect(resolve_issues(sort: :priority_desc).to_a).to eq([priority_issue1, priority_issue3, priority_issue2, priority_issue4])
           end
         end
 
@@ -214,11 +214,11 @@ RSpec.describe Resolvers::IssuesResolver do
           let_it_be(:label_issue4) { create(:issue, project: project) }
 
           it 'sorts issues ascending' do
-            expect(resolve_issues(sort: :label_priority_asc).items).to eq([label_issue3, label_issue1, label_issue2, label_issue4])
+            expect(resolve_issues(sort: :label_priority_asc).to_a).to eq([label_issue3, label_issue1, label_issue2, label_issue4])
           end
 
           it 'sorts issues descending' do
-            expect(resolve_issues(sort: :label_priority_desc).items).to eq([label_issue2, label_issue3, label_issue1, label_issue4])
+            expect(resolve_issues(sort: :label_priority_desc).to_a).to eq([label_issue2, label_issue3, label_issue1, label_issue4])
           end
         end
 
@@ -231,11 +231,11 @@ RSpec.describe Resolvers::IssuesResolver do
           let_it_be(:milestone_issue3) { create(:issue, project: project, milestone: late_milestone) }
 
           it 'sorts issues ascending' do
-            expect(resolve_issues(sort: :milestone_due_asc).items).to eq([milestone_issue2, milestone_issue3, milestone_issue1])
+            expect(resolve_issues(sort: :milestone_due_asc).to_a).to eq([milestone_issue2, milestone_issue3, milestone_issue1])
           end
 
           it 'sorts issues descending' do
-            expect(resolve_issues(sort: :milestone_due_desc).items).to eq([milestone_issue3, milestone_issue2, milestone_issue1])
+            expect(resolve_issues(sort: :milestone_due_desc).to_a).to eq([milestone_issue3, milestone_issue2, milestone_issue1])
           end
         end
 

@@ -96,7 +96,7 @@ sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
 sudo -u git -H make
 ```
 
-### 8. Install/Update `gitlab-elasticsearch-indexer` **(STARTER ONLY)**
+### 8. Install/Update `gitlab-elasticsearch-indexer` **(PREMIUM SELF)**
 
 Please follow the [install instruction](../integration/elasticsearch.md#installing-elasticsearch).
 

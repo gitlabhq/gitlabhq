@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User closes/reopens a merge request', :js do
+RSpec.describe 'User closes/reopens a merge request', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/297500' do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
@@ -12,9 +12,15 @@ RSpec.describe 'User closes/reopens a merge request', :js do
   end
 
   describe 'when open' do
-    context 'when clicking the top `Close merge request` link', :aggregate_failures do
-      let(:open_merge_request) { create(:merge_request, source_project: project, target_project: project) }
+    let(:open_merge_request) { create(:merge_request, source_project: project, target_project: project) }
 
+    it_behaves_like 'page with comment and close button', 'Close merge request' do
+      def setup
+        visit merge_request_path(open_merge_request)
+      end
+    end
+
+    context 'when clicking the top `Close merge request` link', :aggregate_failures do
       before do
         visit merge_request_path(open_merge_request)
       end
@@ -34,9 +40,8 @@ RSpec.describe 'User closes/reopens a merge request', :js do
     end
 
     context 'when clicking the bottom `Close merge request` button', :aggregate_failures do
-      let(:open_merge_request) { create(:merge_request, source_project: project, target_project: project) }
-
       before do
+        stub_feature_flags(remove_comment_close_reopen: false)
         visit merge_request_path(open_merge_request)
       end
 
@@ -55,10 +60,23 @@ RSpec.describe 'User closes/reopens a merge request', :js do
     end
   end
 
-  describe 'when closed', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/297500' do
-    context 'when clicking the top `Reopen merge request` link', :aggregate_failures do
-      let(:closed_merge_request) { create(:merge_request, source_project: project, target_project: project, state: 'closed') }
+  describe 'when closed' do
+    let(:closed_merge_request) { create(:merge_request, source_project: project, target_project: project, state: 'closed') }
 
+    it_behaves_like 'page with comment and close button', 'Close merge request' do
+      def setup
+        visit merge_request_path(closed_merge_request)
+
+        within '.detail-page-header' do
+          click_button 'Toggle dropdown'
+          click_link 'Reopen merge request'
+        end
+
+        wait_for_requests
+      end
+    end
+
+    context 'when clicking the top `Reopen merge request` link', :aggregate_failures do
       before do
         visit merge_request_path(closed_merge_request)
       end
@@ -78,9 +96,8 @@ RSpec.describe 'User closes/reopens a merge request', :js do
     end
 
     context 'when clicking the bottom `Reopen merge request` button', :aggregate_failures do
-      let(:closed_merge_request) { create(:merge_request, source_project: project, target_project: project, state: 'closed') }
-
       before do
+        stub_feature_flags(remove_comment_close_reopen: false)
         visit merge_request_path(closed_merge_request)
       end
 

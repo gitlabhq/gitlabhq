@@ -40,9 +40,9 @@ storage2:
 
 ## Configure GitLab
 
-In order for [backups](../raketasks/backup_restore.md) to work correctly, the storage path must **not** be a
-mount point and the GitLab user should have correct permissions for the parent
-directory of the path. In Omnibus GitLab this is taken care of automatically,
+For [backups](../raketasks/backup_restore.md) to work correctly, the storage path cannot be a
+mount point, and the GitLab user must have correct permissions for the parent
+directory of the path. Omnibus GitLab takes care of these issues for you,
 but for source installations you should be extra careful.
 
 The thing is that for compatibility reasons `gitlab.yml` has a different
@@ -52,22 +52,26 @@ indicate `git_data_dirs`, which for the example above would be `/home/git`.
 Then, Omnibus creates a `repositories` directory under that path to use with
 `gitlab.yml`.
 
-This little detail matters because while restoring a backup, the current
-contents of `/home/git/repositories` [are moved to](https://gitlab.com/gitlab-org/gitlab/blob/033e5423a2594e08a7ebcd2379bd2331f4c39032/lib/backup/repository.rb#L54-56) `/home/git/repositories.old`,
-so if `/home/git/repositories` is the mount point, then `mv` would be moving
+WARNING:
+This detail matters because while restoring a backup, the current
+contents of `/home/git/repositories`
+[are moved to](https://gitlab.com/gitlab-org/gitlab/blob/033e5423a2594e08a7ebcd2379bd2331f4c39032/lib/backup/repository.rb#L54-56)
+`/home/git/repositories.old`.
+If `/home/git/repositories` is the mount point, then `mv` would be moving
 things between mount points, and bad things could happen. Ideally,
-`/home/git` would be the mount point, so then things would be moving within the
-same mount point. This is guaranteed with Omnibus installations (because they
-don't specify the full repository path but the parent path), but not for source
-installations.
+`/home/git` would be the mount point, so things would remain inside the
+same mount point. Omnibus installations guarantee this, because they
+don't specify the full repository path but instead the parent path, but source
+installations do not.
 
-Now that you've read that big fat warning above, let's edit the configuration
-files and add the full paths of the alternative repository storage paths. In
+Next, edit the configuration
+files, and add the full paths of the alternative repository storage paths. In
 the example below, we add two more mount points that are named `nfs_1` and `nfs_2`
 respectively.
 
 NOTE:
-This example uses NFS. We do not recommend using EFS for storage as it may impact GitLab performance. See the [relevant documentation](nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
+This example uses NFS. We do not recommend using EFS for storage as it may impact GitLab performance. Read
+the [relevant documentation](nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
 
 **For installations from source**
 
@@ -112,7 +116,7 @@ working, you can remove the `repos_path` line.
 
 ## Choose where new repositories are stored
 
-Once you set the multiple storage paths, you can choose where new repositories
+After you set the multiple storage paths, you can choose where new repositories
 are stored in the Admin Area under **Settings > Repository > Repository storage > Storage nodes for new repositories**.
 
 Each storage can be assigned a weight from 0-100. When a new project is created, these

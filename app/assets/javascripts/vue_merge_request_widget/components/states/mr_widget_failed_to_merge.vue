@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { n__ } from '~/locale';
+import { sprintf, s__, n__ } from '~/locale';
 import { stripHtml } from '~/lib/utils/text_utility';
 import statusIcon from '../mr_widget_status_icon.vue';
 import eventHub from '../../event_hub';
@@ -31,7 +31,15 @@ export default {
 
   computed: {
     mergeError() {
-      return this.mr.mergeError ? stripHtml(this.mr.mergeError, ' ').trim() : '';
+      const mergeError = this.mr.mergeError ? stripHtml(this.mr.mergeError, ' ').trim() : '';
+
+      return sprintf(
+        s__('mrWidget|%{mergeError}.'),
+        {
+          mergeError,
+        },
+        false,
+      );
     },
     timerText() {
       return n__(

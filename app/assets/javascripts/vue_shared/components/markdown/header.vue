@@ -172,6 +172,7 @@ export default {
               :cursor-offset="4"
               :tag-content="lineContent"
               icon="doc-code"
+              data-qa-selector="suggestion_button"
               class="js-suggestion-btn"
               @click="handleSuggestDismissed"
             />

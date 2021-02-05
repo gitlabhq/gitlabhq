@@ -2,4 +2,4 @@
 - page_title _('Packages & Registries')
 - @content_class = 'limit-container-width' unless fluid_layout
 
-%section#js-packages-and-registries-settings
+%section#js-packages-and-registries-settings{ data: { default_expanded: expanded_by_default?.to_s, group_path: @group.path } }

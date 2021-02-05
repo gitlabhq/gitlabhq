@@ -1,0 +1,406 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AlertsSettingsForm with default values renders the initial template 1`] = `
+<form
+  class="gl-mt-6"
+>
+  <h5
+    class="gl-font-lg gl-my-5"
+  >
+    Add new integrations
+  </h5>
+   
+  <div
+    class="form-group gl-form-group"
+    id="integration-type"
+    role="group"
+  >
+    <label
+      class="d-block col-form-label"
+      for="integration-type"
+      id="integration-type__BV_label_"
+    >
+      1. Select integration type
+    </label>
+    <div
+      class="bv-no-focus-ring"
+    >
+      <select
+        class="gl-form-select mw-100 custom-select"
+        id="__BVID__8"
+      >
+        <option
+          value=""
+        >
+          Select integration type
+        </option>
+        <option
+          value="HTTP"
+        >
+          HTTP Endpoint
+        </option>
+        <option
+          value="PROMETHEUS"
+        >
+          External Prometheus
+        </option>
+      </select>
+       
+      <!---->
+      <!---->
+      <!---->
+      <!---->
+    </div>
+  </div>
+   
+  <transition-stub
+    class="gl-mt-3"
+    css="true"
+    enteractiveclass="collapsing"
+    enterclass=""
+    entertoclass="collapse show"
+    leaveactiveclass="collapsing"
+    leaveclass="collapse show"
+    leavetoclass="collapse"
+  >
+    <div
+      class="collapse"
+      id="__BVID__10"
+      style="display: none;"
+    >
+      <div>
+        <div
+          class="form-group gl-form-group"
+          id="name-integration"
+          role="group"
+        >
+          <label
+            class="d-block col-form-label"
+            for="name-integration"
+            id="name-integration__BV_label_"
+          >
+            2. Name integration
+          </label>
+          <div
+            class="bv-no-focus-ring"
+          >
+            <input
+              class="gl-form-input form-control"
+              id="__BVID__15"
+              placeholder="Enter integration name"
+              type="text"
+            />
+            <!---->
+            <!---->
+            <!---->
+          </div>
+        </div>
+         
+        <div
+          class="form-group gl-form-group"
+          id="integration-webhook"
+          role="group"
+        >
+          <label
+            class="d-block col-form-label"
+            for="integration-webhook"
+            id="integration-webhook__BV_label_"
+          >
+            3. Set up webhook
+          </label>
+          <div
+            class="bv-no-focus-ring"
+          >
+            <span>
+              Utilize the URL and authorization key below to authorize an external service to send alerts to GitLab. Review your external service's documentation to learn where to add these details, and the 
+              <a
+                class="gl-link gl-display-inline-block"
+                href="https://docs.gitlab.com/ee/operations/incident_management/alert_integrations.html"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                GitLab documentation
+              </a>
+               to learn more about configuring your endpoint.
+            </span>
+             
+            <label
+              class="gl-display-flex gl-flex-direction-column gl-mb-0 gl-w-max-content gl-my-4 gl-font-weight-normal"
+            >
+              <span
+                class="gl-toggle-wrapper"
+              >
+                <span
+                  class="gl-toggle-label"
+                  data-testid="toggle-label"
+                >
+                  Active
+                </span>
+                 
+                <!---->
+                 
+                <button
+                  aria-label="Active"
+                  class="gl-toggle"
+                  role="switch"
+                  type="button"
+                >
+                  <span
+                    class="toggle-icon"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="gl-icon s16"
+                      data-testid="close-icon"
+                    >
+                      <use
+                        href="#close"
+                      />
+                    </svg>
+                  </span>
+                </button>
+              </span>
+               
+              <!---->
+            </label>
+             
+            <!---->
+             
+            <div
+              class="gl-my-4"
+            >
+              <span
+                class="gl-font-weight-bold"
+              >
+                
+            Webhook URL
+          
+              </span>
+               
+              <div
+                id="url"
+                readonly="readonly"
+              >
+                <div
+                  class="input-group"
+                  role="group"
+                >
+                  <!---->
+                  <!---->
+                   
+                  <input
+                    class="gl-form-input form-control"
+                    id="url"
+                    readonly="readonly"
+                    type="text"
+                  />
+                   
+                  <div
+                    class="input-group-append"
+                  >
+                    <button
+                      aria-label="Copy this value"
+                      class="btn gl-m-0! btn-default btn-md gl-button btn-default-secondary btn-icon"
+                      data-clipboard-text=""
+                      title="Copy"
+                      type="button"
+                    >
+                      <!---->
+                       
+                      <svg
+                        aria-hidden="true"
+                        class="gl-button-icon gl-icon s16"
+                        data-testid="copy-to-clipboard-icon"
+                      >
+                        <use
+                          href="#copy-to-clipboard"
+                        />
+                      </svg>
+                        
+                      <!---->
+                    </button>
+                  </div>
+                  <!---->
+                </div>
+              </div>
+            </div>
+             
+            <div
+              class="gl-my-4"
+            >
+              <span
+                class="gl-font-weight-bold"
+              >
+                
+            Authorization key
+          
+              </span>
+               
+              <div
+                class="gl-mb-3"
+                id="authorization-key"
+                readonly="readonly"
+              >
+                <div
+                  class="input-group"
+                  role="group"
+                >
+                  <!---->
+                  <!---->
+                   
+                  <input
+                    class="gl-form-input form-control"
+                    id="authorization-key"
+                    readonly="readonly"
+                    type="text"
+                  />
+                   
+                  <div
+                    class="input-group-append"
+                  >
+                    <button
+                      aria-label="Copy this value"
+                      class="btn gl-m-0! btn-default btn-md gl-button btn-default-secondary btn-icon"
+                      data-clipboard-text=""
+                      title="Copy"
+                      type="button"
+                    >
+                      <!---->
+                       
+                      <svg
+                        aria-hidden="true"
+                        class="gl-button-icon gl-icon s16"
+                        data-testid="copy-to-clipboard-icon"
+                      >
+                        <use
+                          href="#copy-to-clipboard"
+                        />
+                      </svg>
+                        
+                      <!---->
+                    </button>
+                  </div>
+                  <!---->
+                </div>
+              </div>
+               
+              <button
+                class="btn btn-default btn-md disabled gl-button"
+                disabled="disabled"
+                type="button"
+              >
+                <!---->
+                 
+                <!---->
+                  
+                <span
+                  class="gl-button-text"
+                >
+                  
+            Reset Key
+          
+                </span>
+              </button>
+               
+              <!---->
+            </div>
+            <!---->
+            <!---->
+            <!---->
+          </div>
+        </div>
+         
+        <div
+          class="form-group gl-form-group"
+          id="test-integration"
+          role="group"
+        >
+          <label
+            class="d-block col-form-label"
+            for="test-integration"
+            id="test-integration__BV_label_"
+          >
+            4. Sample alert payload (optional)
+          </label>
+          <div
+            class="bv-no-focus-ring"
+          >
+            <span>
+              Provide an example payload from the monitoring tool you intend to integrate with. This payload can be used to test the integration (optional).
+            </span>
+             
+            <textarea
+              class="gl-form-input gl-form-textarea gl-my-3 form-control is-valid"
+              disabled="disabled"
+              id="test-payload"
+              placeholder="{ \\"events\\": [{ \\"application\\": \\"Name of application\\" }] }"
+              style="resize: none; overflow-y: scroll;"
+              wrap="soft"
+            />
+            <!---->
+            <!---->
+            <!---->
+          </div>
+        </div>
+         
+        <!---->
+         
+        <!---->
+      </div>
+       
+      <div
+        class="gl-display-flex gl-justify-content-start gl-py-3"
+      >
+        <button
+          class="btn js-no-auto-disable btn-success btn-md gl-button"
+          data-testid="integration-form-submit"
+          type="submit"
+        >
+          <!---->
+           
+          <!---->
+            
+          <span
+            class="gl-button-text"
+          >
+            Save integration
+      
+          </span>
+        </button>
+         
+        <button
+          class="btn gl-mx-3 js-no-auto-disable btn-success btn-md disabled gl-button btn-success-secondary"
+          data-testid="integration-test-and-submit"
+          disabled="disabled"
+          type="button"
+        >
+          <!---->
+           
+          <!---->
+            
+          <span
+            class="gl-button-text"
+          >
+            Save and test payload
+          </span>
+        </button>
+         
+        <button
+          class="btn js-no-auto-disable btn-default btn-md gl-button"
+          type="reset"
+        >
+          <!---->
+           
+          <!---->
+            
+          <span
+            class="gl-button-text"
+          >
+            Cancel
+          </span>
+        </button>
+      </div>
+    </div>
+  </transition-stub>
+</form>
+`;

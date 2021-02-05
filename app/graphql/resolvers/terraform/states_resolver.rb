@@ -3,20 +3,20 @@
 module Resolvers
   module Terraform
     class StatesResolver < BaseResolver
-      type Types::Terraform::StateType, null: true
+      type Types::Terraform::StateType.connection_type, null: true
 
       alias_method :project, :object
 
-      def resolve(**args)
-        return ::Terraform::State.none unless can_read_terraform_states?
-
-        project.terraform_states.ordered_by_name
+      when_single do
+        argument :name, GraphQL::STRING_TYPE,
+            required: true,
+            description: 'Name of the Terraform state.'
       end
 
-      private
-
-      def can_read_terraform_states?
-        current_user.can?(:read_terraform_state, project)
+      def resolve(**args)
+        ::Terraform::StatesFinder
+          .new(project, current_user, params: args)
+          .execute
       end
     end
   end

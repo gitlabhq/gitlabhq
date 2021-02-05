@@ -1139,7 +1139,7 @@ RSpec.describe API::Projects do
     let!(:public_project) { create(:project, :public, name: 'public_project', creator_id: user4.id, namespace: user4.namespace) }
 
     it 'returns error when user not found' do
-      get api('/users/0/projects/')
+      get api("/users/#{non_existing_record_id}/projects/")
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
@@ -1687,7 +1687,7 @@ RSpec.describe API::Projects do
       end
 
       it 'returns a 404 error if not found' do
-        get api('/projects/42', user)
+        get api("/projects/#{non_existing_record_id}", user)
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Project Not Found')
       end
@@ -2048,7 +2048,7 @@ RSpec.describe API::Projects do
       end
 
       it 'returns a 404 error if not found' do
-        get api('/projects/42/users', user)
+        get api("/projects/#{non_existing_record_id}/users", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Project Not Found')
@@ -2154,7 +2154,7 @@ RSpec.describe API::Projects do
         end
 
         it 'fails if forked_from project which does not exist' do
-          post api("/projects/#{project_fork_target.id}/fork/0", admin)
+          post api("/projects/#{project_fork_target.id}/fork/#{non_existing_record_id}", admin)
           expect(response).to have_gitlab_http_status(:not_found)
         end
 
@@ -2398,7 +2398,7 @@ RSpec.describe API::Projects do
     end
 
     it 'returns a 404 error when project does not exist' do
-      delete api("/projects/123/share/#{non_existing_record_id}", user)
+      delete api("/projects/#{non_existing_record_id}/share/#{non_existing_record_id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -2955,7 +2955,7 @@ RSpec.describe API::Projects do
       end
 
       it 'returns the proper security headers' do
-        get api('/projects/1/starrers', current_user)
+        get api("/projects/#{public_project.id}/starrers", current_user)
 
         expect(response).to include_security_headers
       end
@@ -3028,7 +3028,7 @@ RSpec.describe API::Projects do
       end
 
       it 'returns not_found(404) for not existing project' do
-        get api("/projects/0/languages", user)
+        get api("/projects/#{non_existing_record_id}/languages", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -3079,7 +3079,7 @@ RSpec.describe API::Projects do
       end
 
       it 'does not remove a non existing project' do
-        delete api('/projects/1328', user)
+        delete api("/projects/#{non_existing_record_id}", user)
         expect(response).to have_gitlab_http_status(:not_found)
       end
 
@@ -3098,7 +3098,7 @@ RSpec.describe API::Projects do
       end
 
       it 'does not remove a non existing project' do
-        delete api('/projects/1328', admin)
+        delete api("/projects/#{non_existing_record_id}", admin)
         expect(response).to have_gitlab_http_status(:not_found)
       end
 
@@ -3177,7 +3177,7 @@ RSpec.describe API::Projects do
       end
 
       it 'fails if project to fork from does not exist' do
-        post api('/projects/424242/fork', user)
+        post api("/projects/#{non_existing_record_id}/fork", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Project Not Found')
@@ -3211,7 +3211,7 @@ RSpec.describe API::Projects do
       end
 
       it 'fails if trying to fork to non-existent namespace' do
-        post api("/projects/#{project.id}/fork", user2), params: { namespace: 42424242 }
+        post api("/projects/#{project.id}/fork", user2), params: { namespace: non_existing_record_id }
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Namespace Not Found')
@@ -3328,8 +3328,8 @@ RSpec.describe API::Projects do
         expect(json_response['message']['path']).to eq(['has already been taken'])
       end
 
-      it 'accepts a name for the target project' do
-        post api("/projects/#{project.id}/fork", user2), params: { name: 'My Random Project' }
+      it 'accepts custom parameters for the target project' do
+        post api("/projects/#{project.id}/fork", user2), params: { name: 'My Random Project', description: 'A description', visibility: 'private' }
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq('My Random Project')
@@ -3337,6 +3337,8 @@ RSpec.describe API::Projects do
         expect(json_response['owner']['id']).to eq(user2.id)
         expect(json_response['namespace']['id']).to eq(user2.namespace.id)
         expect(json_response['forked_from_project']['id']).to eq(project.id)
+        expect(json_response['description']).to eq('A description')
+        expect(json_response['visibility']).to eq('private')
         expect(json_response['import_status']).to eq('scheduled')
         expect(json_response).to include("import_error")
       end
@@ -3367,6 +3369,13 @@ RSpec.describe API::Projects do
         expect(response).to have_gitlab_http_status(:conflict)
         expect(json_response['message']['path']).to eq(['has already been taken'])
         expect(json_response['message']['name']).to eq(['has already been taken'])
+      end
+
+      it 'fails to fork with an unknown visibility level' do
+        post api("/projects/#{project.id}/fork", user2), params: { visibility: 'something' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('visibility does not have a valid value')
       end
     end
 

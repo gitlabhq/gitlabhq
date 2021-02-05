@@ -4,7 +4,7 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Doctor Rake tasks **(CORE ONLY)**
+# Doctor Rake tasks **(FREE SELF)**
 
 This is a collection of tasks to help investigate and repair
 problems caused by data integrity issues.

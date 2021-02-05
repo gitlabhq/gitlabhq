@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Slack application **(FREE ONLY)**
+# GitLab Slack application **(FREE SAAS)**
 
 > - Introduced in GitLab 9.4.
 > - Distributed to Slack App Directory in GitLab 10.2.

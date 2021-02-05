@@ -5,8 +5,8 @@ import { __ } from '~/locale';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
 import { getParameterByName } from '~/lib/utils/common_utils';
-import AssetLinksForm from './asset_links_form.vue';
 import MilestoneCombobox from '~/milestones/components/milestone_combobox.vue';
+import AssetLinksForm from './asset_links_form.vue';
 import TagField from './tag_field.vue';
 
 export default {

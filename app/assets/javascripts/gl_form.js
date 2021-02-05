@@ -1,9 +1,9 @@
 import $ from 'jquery';
 import autosize from 'autosize';
 import GfmAutoComplete, { defaultAutocompleteConfig } from 'ee_else_ce/gfm_auto_complete';
+import { disableButtonIfEmptyField } from '~/lib/utils/common_utils';
 import dropzoneInput from './dropzone_input';
 import { addMarkdownListeners, removeMarkdownListeners } from './lib/utils/text_markdown';
-import { disableButtonIfEmptyField } from '~/lib/utils/common_utils';
 
 export default class GLForm {
   /**

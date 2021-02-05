@@ -16,7 +16,7 @@ long, on average, it takes to deliver features is an enormous endeavor.
 While [Value Stream Analytics](../analytics/value_stream_analytics.md) focuses on the entire
 Software Development Life Cycle (SDLC) process, Productivity Analytics provides a way for Engineering Management to drill down in a systematic way to uncover patterns and causes for success or failure at an individual, project, or group level.
 
-Productivity can slow down for many reasons ranging from degrading code base to quickly growing teams. In order to investigate, department or team leaders can start by visualizing the time it takes for merge requests to be merged.
+Productivity can slow down for many reasons ranging from degrading codebase to quickly growing teams. In order to investigate, department or team leaders can start by visualizing the time it takes for merge requests to be merged.
 
 ## Supported features
 
@@ -60,5 +60,5 @@ GitLab has the ability to filter analytics based on a date range. To filter resu
 
 The **Productivity Analytics** dashboard can be accessed only:
 
-- On [Premium or Silver tier](https://about.gitlab.com/pricing/) and above.
+- On the [Premium tier](https://about.gitlab.com/pricing/) and above.
 - By users with [Reporter access](../permissions.md) and above.

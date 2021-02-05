@@ -1,5 +1,5 @@
-import FileTemplateSelector from '../file_template_selector';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import FileTemplateSelector from '../file_template_selector';
 
 export default class BlobLicenseSelector extends FileTemplateSelector {
   constructor({ mediator }) {

@@ -7,7 +7,7 @@ class AddDelayedProjectRemovalToNamespaces < ActiveRecord::Migration[6.0]
 
   def up
     with_lock_retries do
-      add_column :namespaces, :delayed_project_removal, :boolean, default: false, null: false
+      add_column :namespaces, :delayed_project_removal, :boolean, default: false, null: false # rubocop:disable Migration/AddColumnsToWideTables
     end
   end
 

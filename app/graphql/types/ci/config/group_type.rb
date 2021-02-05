@@ -8,11 +8,11 @@ module Types
         graphql_name 'CiConfigGroup'
 
         field :name, GraphQL::STRING_TYPE, null: true,
-              description: 'Name of the job group'
+              description: 'Name of the job group.'
         field :jobs, Types::Ci::Config::JobType.connection_type, null: true,
-              description: 'Jobs in group'
+              description: 'Jobs in group.'
         field :size, GraphQL::INT_TYPE, null: true,
-              description: 'Size of the job group'
+              description: 'Size of the job group.'
       end
     end
   end

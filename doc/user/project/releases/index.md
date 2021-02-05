@@ -407,7 +407,7 @@ Here is an example of a release evidence object:
 }
 ```
 
-### Collect release evidence **(PREMIUM ONLY)**
+### Collect release evidence **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
 

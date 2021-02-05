@@ -10,12 +10,12 @@ gem 'responders', '~> 3.0'
 gem 'sprockets', '~> 3.7.0'
 
 # Default values for AR models
-gem 'default_value_for', '~> 3.3.0'
+gem 'default_value_for', '~> 3.4.0'
 
 # Supported DBs
 gem 'pg', '~> 1.1'
 
-gem 'rugged', '~> 0.28'
+gem 'rugged', '~> 1.0.1'
 gem 'grape-path-helpers', '~> 1.6.1'
 
 gem 'faraday', '~> 1.0'
@@ -25,8 +25,8 @@ gem 'marginalia', '~> 1.10.0'
 gem 'devise', '~> 4.7.2'
 # TODO: verify ARM compile issue on 3.1.13+ version (see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18828)
 gem 'bcrypt', '3.1.12'
-gem 'doorkeeper', '~> 5.3.0'
-gem 'doorkeeper-openid_connect', '~> 1.7.4'
+gem 'doorkeeper', '~> 5.5.0.rc2'
+gem 'doorkeeper-openid_connect', '~> 1.7.5'
 gem 'omniauth', '~> 1.8'
 gem 'omniauth-auth0', '~> 2.0.0'
 gem 'omniauth-azure-oauth2', '~> 0.0.9'
@@ -103,7 +103,7 @@ gem 'hashie-forbidden_attributes'
 gem 'kaminari', '~> 1.0'
 
 # HAML
-gem 'hamlit', '~> 2.11.0'
+gem 'hamlit', '~> 2.14.4'
 
 # Files attachments
 gem 'carrierwave', '~> 1.3'
@@ -266,7 +266,7 @@ gem 'babosa', '~> 1.0.2'
 gem 'loofah', '~> 2.2'
 
 # Working with license
-gem 'licensee', '~> 8.9'
+gem 'licensee', '~> 9.14.1'
 
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.7'
@@ -284,6 +284,7 @@ gem 'gitlab_chronic_duration', '~> 0.10.6.2'
 gem 'rack-proxy', '~> 0.6.0'
 
 gem 'sassc-rails', '~> 2.1.0'
+gem 'autoprefixer-rails', '10.2.0.0'
 gem 'terser', '1.0.2'
 
 gem 'addressable', '~> 2.7'
@@ -336,6 +337,7 @@ end
 group :development do
   gem 'brakeman', '~> 4.2', require: false
   gem 'danger', '~> 8.0.6', require: false
+  gem 'lefthook', '~> 0.7', require: false
 
   gem 'letter_opener_web', '~> 1.3.4'
 
@@ -348,7 +350,7 @@ end
 
 group :development, :test do
   gem 'deprecation_toolkit', '~> 1.5.1', require: false
-  gem 'bullet', '~> 6.1.0'
+  gem 'bullet', '~> 6.1.3'
   gem 'gitlab-pry-byebug', platform: :mri, require: ['pry-byebug', 'pry-byebug/pry_remote_ext']
   gem 'pry-rails', '~> 0.3.9'
   gem 'pry-remote'
@@ -357,7 +359,7 @@ group :development, :test do
 
   gem 'database_cleaner', '~> 1.7.0'
   gem 'factory_bot_rails', '~> 6.1.0'
-  gem 'rspec-rails', '~> 4.0.1'
+  gem 'rspec-rails', '~> 4.0.2'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.11.0'
@@ -372,7 +374,7 @@ group :development, :test do
 
   gem 'scss_lint', '~> 0.59.0', require: false
   gem 'haml_lint', '~> 0.36.0', require: false
-  gem 'bundler-audit', '~> 0.6.1', require: false
+  gem 'bundler-audit', '~> 0.7.0.1', require: false
 
   gem 'benchmark-ips', '~> 2.3.0', require: false
 
@@ -462,7 +464,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 13.8.0.pre.rc2'
+gem 'gitaly', '~> 13.8.0.pre.rc3'
 
 gem 'grpc', '~> 1.30.2'
 
@@ -475,7 +477,7 @@ gem 'flipper', '~> 0.17.1'
 gem 'flipper-active_record', '~> 0.17.1'
 gem 'flipper-active_support_cache_store', '~> 0.17.1'
 gem 'unleash', '~> 0.1.5'
-gem 'gitlab-experiment', '~> 0.4.5'
+gem 'gitlab-experiment', '~> 0.4.8'
 
 # Structured logging
 gem 'lograge', '~> 0.5'

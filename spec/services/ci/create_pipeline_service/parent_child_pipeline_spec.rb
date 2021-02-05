@@ -76,6 +76,31 @@ RSpec.describe Ci::CreatePipelineService, '#execute' do
         }
       end
     end
+
+    context 'with resource group' do
+      let(:config) do
+        <<~YAML
+        instrumentation_test:
+          stage: test
+          resource_group: iOS
+          trigger:
+            include:
+              - local: path/to/child.yml
+        YAML
+      end
+
+      # TODO: This test will be properly implemented in the next MR
+      # for https://gitlab.com/gitlab-org/gitlab/-/issues/39057.
+      it 'creates bridge job but still resource group is no-op', :aggregate_failures do
+        pipeline = create_pipeline!
+
+        test = pipeline.statuses.find_by(name: 'instrumentation_test')
+
+        expect(pipeline).to be_persisted
+        expect(test).to be_a Ci::Bridge
+        expect(project.resource_groups.count).to eq(0)
+      end
+    end
   end
 
   describe 'child pipeline triggers' do

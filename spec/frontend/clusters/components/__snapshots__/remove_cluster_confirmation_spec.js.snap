@@ -60,8 +60,8 @@ exports[`Remove cluster confirmation modal renders splitbutton with modal includ
             >
               <svg
                 aria-hidden="true"
-                class="gl-icon s16 gl-new-dropdown-item-check-icon"
-                data-testid="mobile-issue-close-icon"
+                class="gl-icon s16 gl-new-dropdown-item-check-icon gl-mt-3 gl-align-self-start"
+                data-testid="dropdown-item-checkbox"
               >
                 <use
                   href="#mobile-issue-close"
@@ -115,8 +115,8 @@ exports[`Remove cluster confirmation modal renders splitbutton with modal includ
             >
               <svg
                 aria-hidden="true"
-                class="gl-icon s16 gl-new-dropdown-item-check-icon gl-visibility-hidden"
-                data-testid="mobile-issue-close-icon"
+                class="gl-icon s16 gl-new-dropdown-item-check-icon gl-visibility-hidden gl-mt-3 gl-align-self-start"
+                data-testid="dropdown-item-checkbox"
               >
                 <use
                   href="#mobile-issue-close"

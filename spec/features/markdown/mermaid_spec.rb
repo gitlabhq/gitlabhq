@@ -108,7 +108,7 @@ RSpec.describe 'Mermaid rendering', :js do
 
       expect(svg[:style]).to match(/max-width/)
       expect(svg[:width].to_i).to eq(100)
-      expect(svg[:height].to_i).to eq(0)
+      expect(svg[:height].to_i).to be_within(5).of(220)
     end
   end
 

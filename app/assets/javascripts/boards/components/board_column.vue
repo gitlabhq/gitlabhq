@@ -1,8 +1,8 @@
 <script>
 import { mapGetters, mapActions, mapState } from 'vuex';
 import BoardListHeader from 'ee_else_ce/boards/components/board_list_header.vue';
-import BoardList from './board_list.vue';
 import { isListDraggable } from '../boards_util';
+import BoardList from './board_list.vue';
 
 export default {
   components: {

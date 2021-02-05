@@ -37,7 +37,10 @@ RSpec.describe 'Admin disables Git access protocol', :js do
       it 'shows only the SSH clone information' do
         resize_screen_xs
         visit_project
-        find('.dropdown-toggle').click
+
+        within('.js-mobile-git-clone') do
+          find('.dropdown-toggle').click
+        end
 
         expect(page).to have_content('Copy SSH clone URL')
         expect(page).not_to have_content('Copy HTTP clone URL')
@@ -66,7 +69,10 @@ RSpec.describe 'Admin disables Git access protocol', :js do
       it 'shows only the HTTP clone information' do
         resize_screen_xs
         visit_project
-        find('.dropdown-toggle').click
+
+        within('.js-mobile-git-clone') do
+          find('.dropdown-toggle').click
+        end
 
         expect(page).to have_content('Copy HTTP clone URL')
         expect(page).not_to have_content('Copy SSH clone URL')
@@ -97,7 +103,10 @@ RSpec.describe 'Admin disables Git access protocol', :js do
       it 'shows both SSH and HTTP clone information' do
         resize_screen_xs
         visit_project
-        find('.dropdown-toggle').click
+
+        within('.js-mobile-git-clone') do
+          find('.dropdown-toggle').click
+        end
 
         expect(page).to have_content('Copy HTTP clone URL')
         expect(page).to have_content('Copy SSH clone URL')

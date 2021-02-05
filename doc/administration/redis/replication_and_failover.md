@@ -5,7 +5,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Redis replication and failover with Omnibus GitLab **(PREMIUM ONLY)**
+# Redis replication and failover with Omnibus GitLab **(PREMIUM SELF)**
 
 NOTE:
 This is the documentation for the Omnibus GitLab packages. For using your own

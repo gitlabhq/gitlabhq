@@ -2,10 +2,10 @@
 
 import $ from 'jquery';
 import Cookies from 'js-cookie';
+import { fixTitle, hide } from '~/tooltips';
 import { deprecatedCreateFlash as flash } from './flash';
 import axios from './lib/utils/axios_utils';
 import { sprintf, s__, __ } from './locale';
-import { fixTitle, hide } from '~/tooltips';
 
 function Sidebar() {
   this.toggleTodo = this.toggleTodo.bind(this);

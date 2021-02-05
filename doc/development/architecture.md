@@ -91,6 +91,8 @@ The simplest way to ensure this, is to add support for your feature or service t
 [the official GitLab Helm chart](https://docs.gitlab.com/charts/) or reach out to
 [the Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/distribution/#how-to-work-with-distribution).
 
+Refer to the [process for adding new service components](adding_service_component.md) for more details.
+
 ### Simplified component overview
 
 This is a simplified architecture diagram that can be used to
@@ -934,7 +936,7 @@ ps aux | grep '^git'
 ```
 
 GitLab has several components to operate. It requires a persistent database
-(PostgreSQL) and Redis database, and uses Apache `httpd` or NGINX to proxypass
+(PostgreSQL) and Redis database, and uses Apache `httpd` or NGINX to `proxypass`
 Puma. All these components should run as different system users to GitLab
 (for example, `postgres`, `redis`, and `www-data`, instead of `git`).
 

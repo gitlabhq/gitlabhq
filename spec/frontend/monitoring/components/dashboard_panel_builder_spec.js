@@ -3,11 +3,10 @@ import { GlCard, GlForm, GlFormTextarea, GlAlert } from '@gitlab/ui';
 import { createStore } from '~/monitoring/stores';
 import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
 import * as types from '~/monitoring/stores/mutation_types';
-import { metricsDashboardResponse } from '../fixture_data';
-import { mockTimeRange } from '../mock_data';
-
 import DashboardPanelBuilder from '~/monitoring/components/dashboard_panel_builder.vue';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
+import { metricsDashboardResponse } from '../fixture_data';
+import { mockTimeRange } from '../mock_data';
 
 const mockPanel = metricsDashboardResponse.dashboard.panel_groups[0].panels[0];
 

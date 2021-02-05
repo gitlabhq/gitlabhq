@@ -9,6 +9,7 @@ RSpec.describe 'projects/_home_panel' do
     let(:project) { create(:project) }
 
     before do
+      stub_feature_flags(vue_notification_dropdown: false)
       assign(:project, project)
 
       allow(view).to receive(:current_user).and_return(user)

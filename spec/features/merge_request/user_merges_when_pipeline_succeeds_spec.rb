@@ -68,7 +68,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
 
           wait_for_requests
 
-          expect(page).to have_content 'Merge when pipeline succeeds', wait: 0
+          expect(page).to have_content 'Merge when pipeline succeeds'
         end
 
         it_behaves_like 'Merge when pipeline succeeds activator'
@@ -145,7 +145,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
       before do
         merge_request.update!(
           merge_user: merge_request.author,
-          merge_error: 'Something went wrong.'
+          merge_error: 'Something went wrong'
         )
         refresh
       end
@@ -155,7 +155,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
         wait_for_requests
 
         page.within('.mr-section-container') do
-          expect(page).to have_content('Merge failed: Something went wrong. Please try again.')
+          expect(page).to have_content('Something went wrong. Try again.')
         end
       end
     end
@@ -174,7 +174,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
         wait_for_requests
 
         page.within('.mr-section-container') do
-          expect(page).to have_content('Merge failed: Something went wrong. Please try again.')
+          expect(page).to have_content('Something went wrong. Try again.')
         end
       end
     end

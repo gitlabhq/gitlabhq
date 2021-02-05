@@ -30,10 +30,10 @@ You can get a CSV of the code coverage data for all of the projects in your grou
 To get the report:
 
 1. Go to your group's **Analytics > Repositories** page
-1. Click **Download historic test coverage data (.csv)**,
+1. Click **Download historic test coverage data (`.csv`)**,
 1. In the popup, select the projects you want to include in the report.
 1. Select the date range for the report from the preset options.
-1. Click **Download test coverage data (.csv)**.
+1. Click **Download test coverage data (`.csv`)**.
 
 The projects dropdown shows up to 100 projects from your group. If the project you want to check is not in the dropdown list, you can select **All projects** to download the report for all projects in your group, including any projects that are not listed. There is a plan to improve this behavior in this [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/250684).
 

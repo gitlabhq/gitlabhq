@@ -22,9 +22,9 @@ import * as Sentry from '~/sentry/wrapper';
 import { s__, __, n__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { redirectTo } from '~/lib/utils/url_utility';
-import { VARIABLE_TYPE, FILE_TYPE, CONFIG_VARIABLES_TIMEOUT } from '../constants';
 import { backOff } from '~/lib/utils/common_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
+import { VARIABLE_TYPE, FILE_TYPE, CONFIG_VARIABLES_TIMEOUT } from '../constants';
 
 export default {
   typeOptions: [
@@ -116,6 +116,7 @@ export default {
       totalWarnings: 0,
       isWarningDismissed: false,
       isLoading: false,
+      submitted: false,
     };
   },
   computed: {
@@ -251,10 +252,6 @@ export default {
       return index < this.variables.length - 1;
     },
     fetchConfigVariables(refValue) {
-      if (!gon?.features?.newPipelineFormPrefilledVars) {
-        return Promise.resolve({ params: {}, descriptions: {} });
-      }
-
       this.isLoading = true;
 
       return backOff((next, stop) => {
@@ -298,6 +295,7 @@ export default {
         });
     },
     createPipeline() {
+      this.submitted = true;
       const filteredVariables = this.variables
         .filter(({ key, value }) => key !== '' && value !== '')
         .map(({ variable_type, key, value }) => ({
@@ -317,8 +315,16 @@ export default {
           redirectTo(`${this.pipelinesPath}/${data.id}`);
         })
         .catch((err) => {
-          const { errors, warnings, total_warnings: totalWarnings } = err.response.data;
+          // always re-enable submit button
+          this.submitted = false;
+
+          const {
+            errors = [],
+            warnings = [],
+            total_warnings: totalWarnings = 0,
+          } = err?.response?.data;
           const [error] = errors;
+
           this.error = error;
           this.warnings = warnings;
           this.totalWarnings = totalWarnings;
@@ -436,12 +442,12 @@ export default {
               category="secondary"
               @click="removeVariable(index)"
             >
-              <gl-icon class="gl-mr-0! gl-display-none gl-display-md-block" name="clear" />
-              <span class="gl-display-md-none">{{ s__('CiVariables|Remove variable') }}</span>
+              <gl-icon class="gl-mr-0! gl-display-none gl-md-display-block" name="clear" />
+              <span class="gl-md-display-none">{{ s__('CiVariables|Remove variable') }}</span>
             </gl-button>
             <gl-button
               v-else
-              class="gl-md-ml-3 gl-mb-3 gl-display-none gl-display-md-block gl-visibility-hidden"
+              class="gl-md-ml-3 gl-mb-3 gl-display-none gl-md-display-block gl-visibility-hidden"
               icon="clear"
             />
           </template>
@@ -468,6 +474,8 @@ export default {
         variant="success"
         class="js-no-auto-disable"
         data-qa-selector="run_pipeline_button"
+        data-testid="run_pipeline_button"
+        :disabled="submitted"
         >{{ s__('Pipeline|Run Pipeline') }}</gl-button
       >
       <gl-button :href="pipelinesPath">{{ __('Cancel') }}</gl-button>

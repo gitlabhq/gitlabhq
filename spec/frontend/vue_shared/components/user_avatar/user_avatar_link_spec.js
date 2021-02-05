@@ -1,7 +1,7 @@
 import { each } from 'lodash';
-import { trimText } from 'helpers/text_helper';
 import { shallowMount } from '@vue/test-utils';
 import { GlLink } from '@gitlab/ui';
+import { trimText } from 'helpers/text_helper';
 import { TEST_HOST } from 'spec/test_constants';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';

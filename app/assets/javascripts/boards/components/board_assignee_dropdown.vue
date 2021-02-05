@@ -39,50 +39,51 @@ export default {
   data() {
     return {
       search: '',
-      participants: [],
+      issueParticipants: [],
       selected: [],
     };
   },
   apollo: {
-    participants: {
-      query() {
-        return this.isSearchEmpty ? getIssueParticipants : searchUsers;
-      },
+    issueParticipants: {
+      query: getIssueParticipants,
       variables() {
-        if (this.isSearchEmpty) {
-          return {
-            id: `gid://gitlab/Issue/${this.activeIssue.iid}`,
-          };
-        }
-
+        return {
+          id: `gid://gitlab/Issue/${this.activeIssue.iid}`,
+        };
+      },
+      update(data) {
+        return data.issue?.participants?.nodes || [];
+      },
+    },
+    searchUsers: {
+      query: searchUsers,
+      variables() {
         return {
           search: this.search,
         };
       },
-      update(data) {
-        if (this.isSearchEmpty) {
-          return data.issue?.participants?.nodes || [];
-        }
-
-        return data.users?.nodes || [];
+      update: (data) => data.users?.nodes || [],
+      skip() {
+        return this.isSearchEmpty;
       },
-      debounce() {
-        const { noSearchDelay, searchDelay } = this.$options;
-
-        return this.isSearchEmpty ? noSearchDelay : searchDelay;
-      },
+      debounce: 250,
     },
   },
   computed: {
     ...mapGetters(['activeIssue']),
     ...mapState(['isSettingAssignees']),
+    participants() {
+      return this.isSearchEmpty ? this.issueParticipants : this.searchUsers;
+    },
     assigneeText() {
       return n__('Assignee', '%d Assignees', this.selected.length);
     },
     unSelectedFiltered() {
-      return this.participants.filter(({ username }) => {
-        return !this.selectedUserNames.includes(username);
-      });
+      return (
+        this.participants?.filter(({ username }) => {
+          return !this.selectedUserNames.includes(username);
+        }) || []
+      );
     },
     selectedIsEmpty() {
       return this.selected.length === 0;
@@ -95,6 +96,11 @@ export default {
     },
     currentUser() {
       return gon?.current_username;
+    },
+    isLoading() {
+      return (
+        this.$apollo.queries.issueParticipants?.loading || this.$apollo.queries.searchUsers?.loading
+      );
     },
   },
   created() {
@@ -147,7 +153,7 @@ export default {
           <gl-search-box-by-type v-model.trim="search" />
         </template>
         <template #items>
-          <gl-loading-icon v-if="$apollo.queries.participants.loading" size="lg" />
+          <gl-loading-icon v-if="isLoading" size="lg" />
           <template v-else>
             <gl-dropdown-item
               :is-checked="selectedIsEmpty"

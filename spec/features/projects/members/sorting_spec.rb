@@ -8,6 +8,8 @@ RSpec.describe 'Projects > Members > Sorting' do
   let(:project) { create(:project, namespace: maintainer.namespace, creator: maintainer) }
 
   before do
+    stub_feature_flags(vue_project_members_list: false)
+
     create(:project_member, :developer, user: developer, project: project, created_at: 3.days.ago)
 
     sign_in(maintainer)

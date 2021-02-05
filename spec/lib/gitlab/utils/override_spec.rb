@@ -2,6 +2,9 @@
 
 require 'fast_spec_helper'
 
+# Patching ActiveSupport::Concern
+require_relative '../../../../config/initializers/0_as_concern'
+
 RSpec.describe Gitlab::Utils::Override do
   let(:base) do
     Struct.new(:good) do
@@ -163,6 +166,70 @@ RSpec.describe Gitlab::Utils::Override do
           let(:klass) { including_class }
 
           it_behaves_like 'checking as intended, nothing was overridden'
+        end
+
+        context 'when ActiveSupport::Concern and class_methods are used' do
+          # We need to give module names before using Override
+          let(:base) { stub_const('Base', Module.new) }
+          let(:extension) { stub_const('Extension', Module.new) }
+
+          def define_base(method_name:)
+            base.module_eval do
+              extend ActiveSupport::Concern
+
+              class_methods do
+                define_method(method_name) do
+                  :f
+                end
+              end
+            end
+          end
+
+          def define_extension(method_name:)
+            extension.module_eval do
+              extend ActiveSupport::Concern
+
+              class_methods do
+                extend Gitlab::Utils::Override
+
+                override method_name
+                define_method(method_name) do
+                  :g
+                end
+              end
+            end
+          end
+
+          context 'when it is defining a overriding method' do
+            before do
+              define_base(method_name: :f)
+              define_extension(method_name: :f)
+
+              base.prepend(extension)
+            end
+
+            it 'verifies' do
+              expect(base.f).to eq(:g)
+
+              described_class.verify!
+            end
+          end
+
+          context 'when it is not defining a overriding method' do
+            before do
+              define_base(method_name: :f)
+              define_extension(method_name: :g)
+
+              base.prepend(extension)
+            end
+
+            it 'raises NotImplementedError' do
+              expect(base.f).to eq(:f)
+
+              expect { described_class.verify! }
+                .to raise_error(NotImplementedError)
+            end
+          end
         end
       end
 

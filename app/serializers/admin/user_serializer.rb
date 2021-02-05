@@ -2,6 +2,6 @@
 
 module Admin
   class UserSerializer < BaseSerializer
-    entity UserEntity
+    entity Admin::UserEntity
   end
 end

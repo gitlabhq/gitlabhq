@@ -59,6 +59,8 @@ The MVC Avatar resizing implementation is integrated into Workhorse. With the ex
 
 Proposal:
 
+<!-- vale gitlab.Spelling = NO -->
+
 | Role                         | Who
 |------------------------------|-------------------------|
 | Author                       |    Craig Gomes          |
@@ -67,10 +69,16 @@ Proposal:
 | Domain Expert                |    Matthias Kaeppler    |
 | Domain Expert                |    Aleksei Lipniagov    |
 
+<!-- vale gitlab.Spelling = YES -->
+
 DRIs:
+
+<!-- vale gitlab.Spelling = NO -->
 
 | Role                         | Who
 |------------------------------|------------------------|
 | Product                      |    Josh Lambert        |
 | Leadership                   |    Craig Gomes         |
 | Engineering                  |    Matthias Kaeppler   |
+
+<!-- vale gitlab.Spelling = YES -->

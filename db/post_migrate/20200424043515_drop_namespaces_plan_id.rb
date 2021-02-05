@@ -16,7 +16,7 @@ class DropNamespacesPlanId < ActiveRecord::Migration[6.0]
   def down
     unless column_exists?(:namespaces, :plan_id)
       with_lock_retries do
-        add_column :namespaces, :plan_id, :integer
+        add_column :namespaces, :plan_id, :integer # rubocop:disable Migration/AddColumnsToWideTables
       end
     end
 

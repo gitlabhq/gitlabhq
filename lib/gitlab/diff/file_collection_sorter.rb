@@ -3,6 +3,10 @@
 module Gitlab
   module Diff
     class FileCollectionSorter
+      B_FOLLOWS_A = 1
+      A_FOLLOWS_B = -1
+      EQUIVALENT = 0
+
       attr_reader :diffs
 
       def initialize(diffs)
@@ -29,14 +33,16 @@ module Gitlab
         a_part = a_parts.shift
         b_part = b_parts.shift
 
-        return 1 if a_parts.size < b_parts.size && a_parts.empty?
-        return -1 if a_parts.size > b_parts.size && b_parts.empty?
+        return B_FOLLOWS_A if a_parts.size < b_parts.size && a_parts.empty?
+        return A_FOLLOWS_B if a_parts.size > b_parts.size && b_parts.empty?
 
         comparison = a_part <=> b_part
 
-        return comparison unless comparison == 0
+        return comparison unless comparison == EQUIVALENT
+        return compare_path_parts(a_parts, b_parts) if a_parts.any? && b_parts.any?
 
-        compare_path_parts(a_parts, b_parts)
+        # If A and B have the same name (e.g. symlink change), they are identical so return 0
+        EQUIVALENT
       end
     end
   end

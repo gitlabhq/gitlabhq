@@ -1,0 +1,5 @@
+---
+title: Introduce a rendering limit for commit titles
+merge_request: 52904
+author:
+type: performance

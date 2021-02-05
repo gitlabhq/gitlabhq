@@ -6,6 +6,7 @@ import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import RoleDropdown from '~/members/components/table/role_dropdown.vue';
+import { BV_DROPDOWN_SHOW } from '~/lib/utils/constants';
 import { member } from '../../mock_data';
 
 const localVue = createLocalVue();
@@ -67,7 +68,7 @@ describe('RoleDropdown', () => {
       createComponent();
 
       findDropdownToggle().trigger('click');
-      wrapper.vm.$root.$on('bv::dropdown::shown', () => {
+      wrapper.vm.$root.$on(BV_DROPDOWN_SHOW, () => {
         done();
       });
     });

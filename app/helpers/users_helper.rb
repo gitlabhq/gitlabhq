@@ -299,6 +299,27 @@ module UsersHelper
 
     html_escape(s_('Profile|%{job_title} at %{organization}')) % { job_title: job_title, organization: organization }
   end
+
+  def user_table_headers
+    [
+      {
+        section_class_name: 'section-40',
+        header_text: _('Name')
+      },
+      {
+        section_class_name: 'section-10',
+        header_text: _('Projects')
+      },
+      {
+        section_class_name: 'section-15',
+        header_text: _('Created on')
+      },
+      {
+        section_class_name: 'section-15',
+        header_text: _('Last activity')
+      }
+    ]
+  end
 end
 
 UsersHelper.prepend_if_ee('EE::UsersHelper')

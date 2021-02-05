@@ -161,7 +161,7 @@ RSpec.describe 'Merge request > User posts notes', :js do
           fill_in 'note[note]', with: 'Some new content'
 
           accept_confirm do
-            find('.btn-cancel').click
+            find('[data-testid="cancel"]').click
           end
         end
         expect(find('.js-note-text').text).to eq ''

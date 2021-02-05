@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::SearchResults do
   include ProjectForksHelper
   include SearchHelpers
+  using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, name: 'foo') }
@@ -41,8 +42,6 @@ RSpec.describe Gitlab::SearchResults do
     end
 
     describe '#formatted_count' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:scope, :count_method, :expected) do
         'projects'       | :limited_projects_count       | max_limited_count
         'issues'         | :limited_issues_count         | max_limited_count
@@ -61,8 +60,6 @@ RSpec.describe Gitlab::SearchResults do
     end
 
     describe '#highlight_map' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:scope, :expected) do
         'projects'       | {}
         'issues'         | {}
@@ -80,8 +77,6 @@ RSpec.describe Gitlab::SearchResults do
     end
 
     describe '#formatted_limited_count' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:count, :expected) do
         23   | '23'
         99   | '99'

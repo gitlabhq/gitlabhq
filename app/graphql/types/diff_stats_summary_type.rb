@@ -9,13 +9,13 @@ module Types
     description 'Aggregated summary of changes'
 
     field :additions, GraphQL::INT_TYPE, null: false,
-          description: 'Number of lines added'
+          description: 'Number of lines added.'
     field :deletions, GraphQL::INT_TYPE, null: false,
-          description: 'Number of lines deleted'
+          description: 'Number of lines deleted.'
     field :changes, GraphQL::INT_TYPE, null: false,
-          description: 'Number of lines changed'
+          description: 'Number of lines changed.'
     field :file_count, GraphQL::INT_TYPE, null: false,
-          description: 'Number of files changed'
+          description: 'Number of files changed.'
 
     def changes
       object[:additions] + object[:deletions]

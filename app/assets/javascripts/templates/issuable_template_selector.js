@@ -1,9 +1,9 @@
 /* eslint-disable no-useless-return */
 
 import $ from 'jquery';
+import { __ } from '~/locale';
 import Api from '../api';
 import TemplateSelector from '../blob/template_selector';
-import { __ } from '~/locale';
 
 export default class IssuableTemplateSelector extends TemplateSelector {
   constructor(...args) {

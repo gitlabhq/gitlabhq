@@ -24,6 +24,20 @@ RSpec.describe BulkImports::EntityWorker do
 
         expect(entity.reload.jid).to eq(jid)
       end
+
+      context 'when exception occurs' do
+        it 'tracks the exception & marks entity as failed' do
+          allow(BulkImports::Importers::GroupImporter).to receive(:new) { raise StandardError }
+
+          expect(Gitlab::ErrorTracking)
+            .to receive(:track_exception)
+            .with(kind_of(StandardError), bulk_import_id: bulk_import.id, entity_id: entity.id)
+
+          subject.perform(entity.id)
+
+          expect(entity.reload.failed?).to eq(true)
+        end
+      end
     end
 
     context 'when started entity does not exist' do

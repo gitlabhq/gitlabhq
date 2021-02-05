@@ -9,6 +9,7 @@ const MonacoWebpackPlugin = require('./plugins/monaco_webpack');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const vendorDllHash = require('./helpers/vendor_dll_hash');
+const createIncrementalWebpackCompiler = require('./helpers/incremental_webpack_compiler');
 
 const ROOT_PATH = path.resolve(__dirname, '..');
 const VENDOR_DLL = process.env.WEBPACK_VENDOR_DLL && process.env.WEBPACK_VENDOR_DLL !== 'false';
@@ -23,6 +24,10 @@ const DEV_SERVER_ALLOWED_HOSTS =
   process.env.DEV_SERVER_ALLOWED_HOSTS && process.env.DEV_SERVER_ALLOWED_HOSTS.split(',');
 const DEV_SERVER_HTTPS = process.env.DEV_SERVER_HTTPS && process.env.DEV_SERVER_HTTPS !== 'false';
 const DEV_SERVER_LIVERELOAD = IS_DEV_SERVER && process.env.DEV_SERVER_LIVERELOAD !== 'false';
+const INCREMENTAL_COMPILER_ENABLED =
+  IS_DEV_SERVER &&
+  process.env.DEV_SERVER_INCREMENTAL &&
+  process.env.DEV_SERVER_INCREMENTAL !== 'false';
 const WEBPACK_REPORT = process.env.WEBPACK_REPORT && process.env.WEBPACK_REPORT !== 'false';
 const WEBPACK_MEMORY_TEST =
   process.env.WEBPACK_MEMORY_TEST && process.env.WEBPACK_MEMORY_TEST !== 'false';
@@ -47,6 +52,11 @@ const devtool = IS_PRODUCTION ? 'source-map' : 'cheap-module-eval-source-map';
 let autoEntriesCount = 0;
 let watchAutoEntries = [];
 const defaultEntries = ['./main'];
+
+const incrementalCompiler = createIncrementalWebpackCompiler(
+  INCREMENTAL_COMPILER_ENABLED,
+  path.join(CACHE_PATH, 'incremental-webpack-compiler-history.json'),
+);
 
 function generateEntries() {
   // generate automatic entry points
@@ -97,7 +107,7 @@ function generateEntries() {
     jira_connect_app: './jira_connect/index.js',
   };
 
-  return Object.assign(manualEntries, autoEntries);
+  return Object.assign(manualEntries, incrementalCompiler.filterEntryPoints(autoEntries));
 }
 
 const alias = {
@@ -495,9 +505,13 @@ module.exports = {
           watchAutoEntries.forEach((watchPath) => compilation.contextDependencies.add(watchPath));
 
           // report our auto-generated bundle count
-          console.log(
-            `${autoEntriesCount} entries from '/pages' automatically added to webpack output.`,
-          );
+          if (incrementalCompiler.enabled) {
+            incrementalCompiler.logStatus(autoEntriesCount);
+          } else {
+            console.log(
+              `${autoEntriesCount} entries from '/pages' automatically added to webpack output.`,
+            );
+          }
 
           callback();
         });
@@ -576,8 +590,10 @@ module.exports = {
     */
     new webpack.IgnorePlugin(/moment/, /pikaday/),
   ].filter(Boolean),
-
   devServer: {
+    before(app, server) {
+      incrementalCompiler.setupMiddleware(app, server);
+    },
     host: DEV_SERVER_HOST,
     port: DEV_SERVER_PORT,
     public: DEV_SERVER_PUBLIC_ADDR,

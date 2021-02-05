@@ -2,19 +2,18 @@
 
 %h4
   = _('Variables')
-  = link_to sprite_icon('question-o', css_class: 'gl-vertical-align-baseline!'), help_page_path('ci/variables/README', anchor: 'custom-environment-variables'), target: '_blank', rel: 'noopener noreferrer'
 
 %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
   = expanded ? _('Collapse') : _('Expand')
 
 %p
-  = html_escape(_('Environment variables are applied to environments via the Runner. You can use environment variables for passwords, secret keys, etc. Make variables available to the running application by prepending the variable key with %{code_open}K8S_SECRET_%{code_close}. You can set variables to be:')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-
+  = _('Variables store information, like passwords and secret keys, that you can use in job scripts. All projects on the instance can use these variables.')
+  = link_to s_('Learn more.'), help_page_path('ci/variables/README', anchor: 'instance-level-cicd-environment-variables'), target: '_blank', rel: 'noopener noreferrer'
+%p
+  = _('Variables can be:')
 %ul
   %li
-    = html_escape(_('%{code_open}Protected%{code_close} variables are only exposed to protected branches or tags.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+    = html_escape(_('%{code_open}Protected:%{code_close} Only exposed to protected branches or tags.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
   %li
-    = html_escape(_('%{code_open}Masked%{code_close} variables are hidden in job logs (though they must match certain regexp requirements to do so).')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-
-%p
-  = link_to _('More information'), help_page_path('ci/variables/README', anchor: 'instance-level-cicd-environment-variables')
+    = html_escape(_('%{code_open}Masked:%{code_close} Hidden in job logs. Must match masking requirements.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+    = link_to _('Learn more.'), help_page_path('ci/variables/README', anchor: 'masked-variable-requirements'), target: '_blank', rel: 'noopener noreferrer'

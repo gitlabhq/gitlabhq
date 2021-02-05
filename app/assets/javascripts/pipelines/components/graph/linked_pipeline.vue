@@ -2,6 +2,7 @@
 import { GlTooltipDirective, GlButton, GlLink, GlLoadingIcon, GlBadge } from '@gitlab/ui';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
 import { __, sprintf } from '~/locale';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { accessValue } from './accessors';
 import { DOWNSTREAM, REST, UPSTREAM } from './constants';
 import { reportToSentry } from './utils';
@@ -126,7 +127,7 @@ export default {
       this.$emit('pipelineExpandToggle', this.sourceJobName, !this.expanded);
     },
     hideTooltips() {
-      this.$root.$emit('bv::hide::tooltip');
+      this.$root.$emit(BV_HIDE_TOOLTIP);
     },
     onDownstreamHovered() {
       this.$emit('downstreamHovered', this.sourceJobName);

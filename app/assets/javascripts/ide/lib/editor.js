@@ -1,5 +1,7 @@
 import { debounce } from 'lodash';
 import { editor as monacoEditor, KeyCode, KeyMod, Range } from 'monaco-editor';
+import { clearDomElement } from '~/editor/utils';
+import { registerLanguages } from '../utils';
 import DecorationsController from './decorations/controller';
 import DirtyDiffController from './diff/controller';
 import Disposable from './common/disposable';
@@ -8,8 +10,6 @@ import { editorOptions, defaultEditorOptions, defaultDiffEditorOptions } from '.
 import { themes } from './themes';
 import languages from './languages';
 import keymap from './keymap.json';
-import { clearDomElement } from '~/editor/utils';
-import { registerLanguages } from '../utils';
 
 function setupThemes() {
   themes.forEach((theme) => {

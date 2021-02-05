@@ -1,17 +1,13 @@
 <script>
-import { mapActions, mapGetters } from 'vuex';
-import IssueCardInner from './issue_card_inner.vue';
-import IssueCardInnerDeprecated from './issue_card_inner_deprecated.vue';
-import boardsStore from '../stores/boards_store';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { ISSUABLE } from '~/boards/constants';
+import IssueCardInner from './issue_card_inner.vue';
 
 export default {
   name: 'BoardCardLayout',
   components: {
-    IssueCardInner: gon.features?.graphqlBoardLists ? IssueCardInner : IssueCardInnerDeprecated,
+    IssueCardInner,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     list: {
       type: Object,
@@ -42,17 +38,17 @@ export default {
   data() {
     return {
       showDetail: false,
-      multiSelect: boardsStore.multiSelect,
     };
   },
   computed: {
+    ...mapState(['selectedBoardItems']),
     ...mapGetters(['isSwimlanesOn']),
     multiSelectVisible() {
-      return this.multiSelect.list.findIndex((issue) => issue.id === this.issue.id) > -1;
+      return this.selectedBoardItems.findIndex((boardItem) => boardItem.id === this.issue.id) > -1;
     },
   },
   methods: {
-    ...mapActions(['setActiveId']),
+    ...mapActions(['setActiveId', 'toggleBoardItemMultiSelection']),
     mouseDown() {
       this.showDetail = true;
     },
@@ -63,16 +59,16 @@ export default {
       // Don't do anything if this happened on a no trigger element
       if (e.target.classList.contains('js-no-trigger')) return;
 
-      if (this.glFeatures.graphqlBoardLists || this.isSwimlanesOn) {
-        this.setActiveId({ id: this.issue.id, sidebarType: ISSUABLE });
-        return;
-      }
-
       const isMultiSelect = e.ctrlKey || e.metaKey;
+
+      if (!isMultiSelect) {
+        this.setActiveId({ id: this.issue.id, sidebarType: ISSUABLE });
+      } else {
+        this.toggleBoardItemMultiSelection(this.issue);
+      }
 
       if (this.showDetail || isMultiSelect) {
         this.showDetail = false;
-        this.$emit('show', { event: e, isMultiSelect });
       }
     },
   },

@@ -39,9 +39,14 @@ module Gitlab
       def class_methods
         super
 
+        class_methods_module = const_get(:ClassMethods, false)
+
         if instance_variable_defined?(:@_prepended_class_methods)
-          const_get(:ClassMethods, false).prepend @_prepended_class_methods
+          class_methods_module.prepend @_prepended_class_methods
         end
+
+        # Hack to resolve https://gitlab.com/gitlab-org/gitlab/-/issues/23932
+        extend class_methods_module if ENV['STATIC_VERIFICATION']
       end
 
       def prepended(base = nil, &block)

@@ -181,7 +181,7 @@ module ApplicationSettingsHelper
       :asset_proxy_enabled,
       :asset_proxy_secret_key,
       :asset_proxy_url,
-      :asset_proxy_whitelist,
+      :asset_proxy_allowlist,
       :static_objects_external_storage_auth_token,
       :static_objects_external_storage_url,
       :authorized_keys_enabled,
@@ -337,7 +337,9 @@ module ApplicationSettingsHelper
       :group_download_export_limit,
       :wiki_page_max_content_bytes,
       :container_registry_delete_tags_service_timeout,
-      :rate_limiting_response_text
+      :rate_limiting_response_text,
+      :container_registry_expiration_policies_worker_capacity,
+      :container_registry_cleanup_tags_service_max_list_size
     ]
   end
 
@@ -353,9 +355,11 @@ module ApplicationSettingsHelper
     ]
   end
 
+  # ok to remove in REST API v5
   def deprecated_attributes
     [
-      :admin_notification_email # ok to remove in REST API v5
+      :admin_notification_email,
+      :asset_proxy_whitelist
     ]
   end
 

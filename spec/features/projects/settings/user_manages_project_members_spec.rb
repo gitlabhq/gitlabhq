@@ -11,6 +11,8 @@ RSpec.describe 'Projects > Settings > User manages project members' do
   let(:user_mike) { create(:user, name: 'Mike') }
 
   before do
+    stub_feature_flags(vue_project_members_list: false)
+
     project.add_maintainer(user)
     project.add_developer(user_dmitriy)
     sign_in(user)
@@ -37,6 +39,8 @@ RSpec.describe 'Projects > Settings > User manages project members' do
   end
 
   it 'imports a team from another project' do
+    stub_feature_flags(invite_members_group_modal: false)
+
     project2.add_maintainer(user)
     project2.add_reporter(user_mike)
 

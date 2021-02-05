@@ -4,13 +4,13 @@ module RuboCop
   module Cop
     module Gitlab
       class HTTParty < RuboCop::Cop::Cop
-        MSG_SEND = <<~EOL.freeze
+        MSG_SEND = <<~EOL
           Avoid calling `HTTParty` directly. Instead, use the Gitlab::HTTP
           wrapper. To allow request to localhost or the private network set
           the option :allow_local_requests in the request call.
         EOL
 
-        MSG_INCLUDE = <<~EOL.freeze
+        MSG_INCLUDE = <<~EOL
           Avoid including `HTTParty` directly. Instead, use the Gitlab::HTTP
           wrapper. To allow request to localhost or the private network set
           the option :allow_local_requests in the request call.

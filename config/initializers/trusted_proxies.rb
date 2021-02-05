@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Override Rack::Request to make use of the same list of trusted_proxies
 # as the ActionDispatch::Request object. This is necessary for libraries
 # like rack_attack where they don't use ActionDispatch, and we want them

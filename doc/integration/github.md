@@ -6,9 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Integrate your GitLab instance with GitHub
 
-You can integrate your GitLab instance with GitHub.com and GitHub Enterprise to
-enable users to import projects from GitHub or sign in to your GitLab instance
-with your GitHub account.
+You can integrate your GitLab instance with GitHub.com and GitHub Enterprise. This integration
+enables users to import projects from GitHub, or sign in to your GitLab instance
+with their GitHub account.
 
 ## Enabling GitHub OAuth
 
@@ -24,7 +24,7 @@ To prevent an [OAuth2 covert redirect](https://oauth.net/advisories/2014-1-cover
 
 See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for initial settings.
 
-After you have configured the GitHub provider, you need the following information, which you must substitute in the GitLab configuration file, in the steps shown next.
+After you have configured the GitHub provider, you need the following information. You must substitute that information in the GitLab configuration file in these next steps.
 
 | Setting from GitHub  | Substitute in the GitLab configuration file  | Description |
 |:---------------------|:---------------------------------------------|:------------|

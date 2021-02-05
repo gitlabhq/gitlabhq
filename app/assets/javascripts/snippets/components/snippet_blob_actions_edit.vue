@@ -2,9 +2,9 @@
 import { GlButton } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
 import { s__, sprintf } from '~/locale';
-import SnippetBlobEdit from './snippet_blob_edit.vue';
 import { SNIPPET_MAX_BLOBS } from '../constants';
 import { createBlob, decorateBlob, diffAll } from '../utils/blob';
+import SnippetBlobEdit from './snippet_blob_edit.vue';
 
 export default {
   components: {

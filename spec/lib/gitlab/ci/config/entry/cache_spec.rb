@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Cache do
+  using RSpec::Parameterized::TableSyntax
+
   subject(:entry) { described_class.new(config) }
 
   describe 'validations' do
@@ -56,8 +58,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
         end
 
         context 'with `policy`' do
-          using RSpec::Parameterized::TableSyntax
-
           where(:policy, :result) do
             'pull-push' | 'pull-push'
             'push'      | 'push'
@@ -77,8 +77,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
         end
 
         context 'with `when`' do
-          using RSpec::Parameterized::TableSyntax
-
           where(:when_config, :result) do
             'on_success' | 'on_success'
             'on_failure' | 'on_failure'
@@ -109,8 +107,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
       end
 
       context 'with `policy`' do
-        using RSpec::Parameterized::TableSyntax
-
         where(:policy, :valid) do
           'pull-push' | true
           'push'      | true
@@ -126,8 +122,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
       end
 
       context 'with `when`' do
-        using RSpec::Parameterized::TableSyntax
-
         where(:when_config, :valid) do
           'on_success' | true
           'on_failure' | true

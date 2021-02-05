@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Auto DevOps development guide
+# Auto DevOps development guide **(CORE)**
 
 This document provides a development guide for contributors to
 [Auto DevOps](../topics/autodevops/index.md).

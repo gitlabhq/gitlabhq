@@ -16,8 +16,8 @@ class JobFinder
 
   def initialize(options)
     @project = options.delete(:project)
-    @pipeline_query = options.delete(:pipeline_query)
-    @job_query = options.delete(:job_query)
+    @pipeline_query = options.delete(:pipeline_query) || DEFAULT_OPTIONS[:pipeline_query]
+    @job_query = options.delete(:job_query) || DEFAULT_OPTIONS[:job_query]
     @pipeline_id = options.delete(:pipeline_id)
     @job_name = options.delete(:job_name)
     @artifact_path = options.delete(:artifact_path)

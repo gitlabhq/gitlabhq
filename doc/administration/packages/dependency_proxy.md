@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # GitLab Dependency Proxy administration
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7934) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.11.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/273655) to [GitLab Core](https://about.gitlab.com/pricing/) in GitLab 13.6.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/273655) to [GitLab Free](https://about.gitlab.com/pricing/) in GitLab 13.6.
 
 GitLab can be used as a dependency proxy for a variety of common package managers.
 

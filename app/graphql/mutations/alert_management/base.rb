@@ -21,7 +21,7 @@ module Mutations
       field :todo,
             Types::TodoType,
             null: true,
-            description: "The todo after mutation."
+            description: "The to-do item after mutation."
 
       field :issue,
             Types::IssueType,

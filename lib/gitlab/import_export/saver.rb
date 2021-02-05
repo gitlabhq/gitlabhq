@@ -31,7 +31,7 @@ module Gitlab
         @shared.error(e)
         false
       ensure
-        remove_base_tmp_dir
+        remove_archive_tmp_dir
       end
 
       private
@@ -40,8 +40,8 @@ module Gitlab
         tar_czf(archive: archive_file, dir: @shared.export_path)
       end
 
-      def remove_base_tmp_dir
-        FileUtils.rm_rf(@shared.base_path)
+      def remove_archive_tmp_dir
+        FileUtils.rm_rf(@shared.archive_path)
       end
 
       def archive_file

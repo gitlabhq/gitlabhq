@@ -1,7 +1,8 @@
 <script>
 import { GlModal, GlLink } from '@gitlab/ui';
-import eventHub from '../event_hub';
 import { s__, __ } from '~/locale';
+import { BV_SHOW_MODAL } from '~/lib/utils/constants';
+import eventHub from '../event_hub';
 import { OPEN_MODAL, MODAL_ID } from '../constants';
 
 export default {
@@ -38,7 +39,7 @@ export default {
   },
   methods: {
     openModal() {
-      this.$root.$emit('bv::show::modal', MODAL_ID);
+      this.$root.$emit(BV_SHOW_MODAL, MODAL_ID);
     },
   },
 };

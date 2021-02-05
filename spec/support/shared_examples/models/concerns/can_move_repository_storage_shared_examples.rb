@@ -2,11 +2,12 @@
 
 RSpec.shared_examples 'can move repository storage' do
   let(:container) { raise NotImplementedError }
+  let(:repository) { container.repository }
 
   describe '#set_repository_read_only!' do
     it 'makes the repository read-only' do
       expect { container.set_repository_read_only! }
-        .to change(container, :repository_read_only?)
+        .to change { container.repository_read_only? }
         .from(false)
         .to(true)
     end
@@ -28,7 +29,7 @@ RSpec.shared_examples 'can move repository storage' do
         allow(container).to receive(:git_transfer_in_progress?) { true }
 
         expect { container.set_repository_read_only!(skip_git_transfer_check: true) }
-          .to change(container, :repository_read_only?)
+          .to change { container.repository_read_only? }
           .from(false)
           .to(true)
       end
@@ -38,16 +39,16 @@ RSpec.shared_examples 'can move repository storage' do
   describe '#set_repository_writable!' do
     it 'sets repository_read_only to false' do
       expect { container.set_repository_writable! }
-        .to change(container, :repository_read_only)
+        .to change { container.repository_read_only? }
         .from(true).to(false)
     end
   end
 
   describe '#reference_counter' do
     it 'returns a Gitlab::ReferenceCounter object' do
-      expect(Gitlab::ReferenceCounter).to receive(:new).with(container.repository.gl_repository).and_call_original
+      expect(Gitlab::ReferenceCounter).to receive(:new).with(repository.gl_repository).and_call_original
 
-      result = container.reference_counter(type: container.repository.repo_type)
+      result = container.reference_counter(type: repository.repo_type)
 
       expect(result).to be_a Gitlab::ReferenceCounter
     end

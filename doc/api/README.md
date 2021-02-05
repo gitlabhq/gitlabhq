@@ -21,7 +21,7 @@ Contributions are welcome.
 For a list of the available resources and their endpoints, see
 [API resources](api_resources.md).
 
-## SCIM **(SILVER ONLY)**
+## SCIM **(PREMIUM SAAS)**
 
 GitLab provides an [SCIM API](scim.md) that both implements
 [the RFC7644 protocol](https://tools.ietf.org/html/rfc7644) and provides the
@@ -124,7 +124,7 @@ There are several methods you can use to authenticate with the GitLab API:
 - [GitLab CI/CD job token](#gitlab-ci-job-token) **(Specific endpoints only)**
 
 NOTE:
-Project access tokens are supported for self-managed instances on Core and
+Project access tokens are supported for self-managed instances on Free and
 higher. They're also supported on GitLab.com Bronze and higher.
 
 For administrators who want to authenticate with the API as a specific user, or who want
@@ -207,7 +207,7 @@ to authenticate with the API:
   - [Go Proxy](../user/packages/go_proxy/index.md)
   - [Maven Repository](../user/packages/maven_repository/index.md#authenticate-with-a-ci-job-token-in-maven)
   - [NPM Repository](../user/packages/npm_registry/index.md#authenticate-with-a-ci-job-token)
-  - [Nuget Repository](../user/packages/nuget_repository/index.md)
+  - [NuGet Repository](../user/packages/nuget_repository/index.md)
   - [PyPI Repository](../user/packages/pypi_repository/index.md#authenticate-with-a-ci-job-token)
   - [Generic packages](../user/packages/generic_packages/index.md#publish-a-generic-package-by-using-cicd)
 - [Get job artifacts](job_artifacts.md#get-job-artifacts)
@@ -744,3 +744,15 @@ For administrator documentation on rate limit settings, see
 [Rate limits](../security/rate_limits.md). To find the settings that are
 specifically used by GitLab.com, see
 [GitLab.com-specific rate limits](../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
+
+## Content type
+
+The GitLab API supports the `application/json` content type by default, though
+some API endpoints also support `text/plain`.
+
+In [GitLab 13.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/250342),
+API endpoints do not support `text/plain` by default, unless it's explicitly documented.
+
+This change is deployed behind the `:api_always_use_application_json` [feature flag](../user/feature_flags.md),
+enabled by default. On GitLab self-managed instances, GitLab administrators can choose
+to [disable it](../administration/feature_flags.md). **(FREE SELF)**

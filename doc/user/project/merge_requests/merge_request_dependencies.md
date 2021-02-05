@@ -17,7 +17,7 @@ then it cannot be merged until its dependency is itself merged.
 
 NOTE:
 Merge requests dependencies are a **PREMIUM** feature, but this restriction is
-only enforced for the dependent merge request. A merge request in a **CORE** or
+only enforced for the dependent merge request. A merge request in a **FREE** or
 **STARTER** project can be a dependency of a **PREMIUM** merge request, but not
 vice-versa.
 

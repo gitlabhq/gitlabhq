@@ -26,20 +26,31 @@
 module AtomicInternalId
   extend ActiveSupport::Concern
 
+  MissingValueError = Class.new(StandardError)
+
   class_methods do
     def has_internal_id( # rubocop:disable Naming/PredicateName
-      column, scope:, init: :not_given, ensure_if: nil, track_if: nil,
-      presence: true, backfill: false, hook_names: :create)
+      column, scope:, init: :not_given, ensure_if: nil, track_if: nil, presence: true, hook_names: :create)
       raise "has_internal_id init must not be nil if given." if init.nil?
       raise "has_internal_id needs to be defined on association." unless self.reflect_on_association(scope)
 
       init = infer_init(scope) if init == :not_given
-      before_validation :"track_#{scope}_#{column}!", on: hook_names, if: track_if
-      before_validation :"ensure_#{scope}_#{column}!", on: hook_names, if: ensure_if
-      validates column, presence: presence
+      callback_names = Array.wrap(hook_names).map { |hook_name| :"before_#{hook_name}" }
+      callback_names.each do |callback_name|
+        # rubocop:disable GitlabSecurity/PublicSend
+        public_send(callback_name, :"track_#{scope}_#{column}!", if: track_if)
+        public_send(callback_name, :"ensure_#{scope}_#{column}!", if: ensure_if)
+        # rubocop:enable GitlabSecurity/PublicSend
+      end
+      after_rollback :"clear_#{scope}_#{column}!", on: hook_names, if: ensure_if
+
+      if presence
+        before_create :"validate_#{column}_exists!"
+        before_update :"validate_#{column}_exists!"
+      end
 
       define_singleton_internal_id_methods(scope, column, init)
-      define_instance_internal_id_methods(scope, column, init, backfill)
+      define_instance_internal_id_methods(scope, column, init)
     end
 
     private
@@ -62,10 +73,8 @@ module AtomicInternalId
     #   - track_{scope}_{column}!
     #   - reset_{scope}_{column}
     #   - {column}=
-    def define_instance_internal_id_methods(scope, column, init, backfill)
+    def define_instance_internal_id_methods(scope, column, init)
       define_method("ensure_#{scope}_#{column}!") do
-        return if backfill && self.class.where(column => nil).exists?
-
         scope_value = internal_id_read_scope(scope)
         value = read_attribute(column)
         return value unless scope_value
@@ -79,6 +88,8 @@ module AtomicInternalId
             internal_id_scope_usage,
             init)
           write_attribute(column, value)
+
+          @internal_id_set_manually = false
         end
 
         value
@@ -110,6 +121,7 @@ module AtomicInternalId
         super(value).tap do |v|
           # Indicate the iid was set from externally
           @internal_id_needs_tracking = true
+          @internal_id_set_manually = true
         end
       end
 
@@ -127,6 +139,20 @@ module AtomicInternalId
         end
 
         read_attribute(column)
+      end
+
+      define_method("clear_#{scope}_#{column}!") do
+        return if @internal_id_set_manually
+
+        return unless public_send(:"#{column}_previously_changed?") # rubocop:disable GitlabSecurity/PublicSend
+
+        write_attribute(column, nil)
+      end
+
+      define_method("validate_#{column}_exists!") do
+        value = read_attribute(column)
+
+        raise MissingValueError, "#{column} was unexpectedly blank!" if value.blank?
       end
     end
 

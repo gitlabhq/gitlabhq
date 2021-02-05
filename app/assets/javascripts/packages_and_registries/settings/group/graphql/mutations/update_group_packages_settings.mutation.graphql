@@ -1,0 +1,9 @@
+mutation updateNamespacePackageSettings($input: UpdateNamespacePackageSettingsInput!) {
+  updateNamespacePackageSettings(input: $input) {
+    packageSettings {
+      mavenDuplicatesAllowed
+      mavenDuplicateExceptionRegex
+    }
+    errors
+  }
+}

@@ -4,7 +4,7 @@ group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Elasticsearch knowledge **(STARTER ONLY)**
+# Elasticsearch knowledge **(PREMIUM SELF)**
 
 This area is to maintain a compendium of useful information when working with Elasticsearch.
 
@@ -13,9 +13,9 @@ the [Elasticsearch integration documentation](../integration/elasticsearch.md#en
 
 ## Deep Dive
 
-In June 2019, Mario de la Ossa hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`) on the GitLab [Elasticsearch integration](../integration/elasticsearch.md) to share his domain specific knowledge with anyone who may work in this part of the codebase in the future. You can find the [recording on YouTube](https://www.youtube.com/watch?v=vrvl-tN2EaA), and the slides on [Google Slides](https://docs.google.com/presentation/d/1H-pCzI_LNrgrL5pJAIQgvLX8Ji0-jIKOg1QeJQzChug/edit) and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/c5aa32b6b07476fa8b597004899ec538/Elasticsearch_Deep_Dive.pdf). Everything covered in this deep dive was accurate as of GitLab 12.0, and while specific details may have changed since then, it should still serve as a good introduction.
+In June 2019, Mario de la Ossa hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`) on the GitLab [Elasticsearch integration](../integration/elasticsearch.md) to share his domain specific knowledge with anyone who may work in this part of the codebase in the future. You can find the <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [recording on YouTube](https://www.youtube.com/watch?v=vrvl-tN2EaA), and the slides on [Google Slides](https://docs.google.com/presentation/d/1H-pCzI_LNrgrL5pJAIQgvLX8Ji0-jIKOg1QeJQzChug/edit) and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/c5aa32b6b07476fa8b597004899ec538/Elasticsearch_Deep_Dive.pdf). Everything covered in this deep dive was accurate as of GitLab 12.0, and while specific details may have changed since then, it should still serve as a good introduction.
 
-In August 2020, a second Deep Dive was hosted, focusing on [GitLab-specific architecture for multi-indices support](#zero-downtime-reindexing-with-multiple-indices). The [recording on YouTube](https://www.youtube.com/watch?v=0WdPR9oB2fg) and the [slides](https://lulalala.gitlab.io/gitlab-elasticsearch-deepdive/) are available. Everything covered in this deep dive was accurate as of GitLab 13.3.
+In August 2020, a second Deep Dive was hosted, focusing on [GitLab-specific architecture for multi-indices support](#zero-downtime-reindexing-with-multiple-indices). The <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [recording on YouTube](https://www.youtube.com/watch?v=0WdPR9oB2fg) and the [slides](https://lulalala.gitlab.io/gitlab-elasticsearch-deepdive/) are available. Everything covered in this deep dive was accurate as of GitLab 13.3.
 
 ## Supported Versions
 
@@ -210,7 +210,7 @@ class MigrationName < Elastic::Migration
 end
 ```
 
-Applied migrations are stored in `gitlab-#{RAILS_ENV}-migrations` index. All unexecuted migrations
+Applied migrations are stored in `gitlab-#{RAILS_ENV}-migrations` index. All migrations not executed
 are applied by the [`Elastic::MigrationWorker`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/workers/elastic/migration_worker.rb)
 cron worker sequentially.
 
@@ -337,7 +337,7 @@ cluster.routing.allocation.disk.watermark.low: 15gb
 cluster.routing.allocation.disk.watermark.high: 10gb
 ```
 
-Restart Elasticsearch, and the `read_only_allow_delete` will clear on it's own.
+Restart Elasticsearch, and the `read_only_allow_delete` will clear on its own.
 
 _from "Disk-based Shard Allocation | Elasticsearch Reference" [5.6](https://www.elastic.co/guide/en/elasticsearch/reference/5.6/disk-allocator.html#disk-allocator) and [6.x](https://www.elastic.co/guide/en/elasticsearch/reference/6.7/disk-allocator.html)_
 
@@ -351,7 +351,7 @@ simply reindex everything from scratch.
 
 If your Elasticsearch index is incredibly large it may be too time consuming or
 cause too much downtime to reindex from scratch. There aren't any built in
-mechanisms for automatically finding discrepencies and resyncing an
+mechanisms for automatically finding discrepancies and resyncing an
 Elasticsearch index if it gets out of sync but one tool that may be useful is
 looking at the logs for all the updates that occurred in a time range you
 believe may have been missed. This information is very low level and only

@@ -53,33 +53,23 @@ RSpec.describe Gitlab::Utils::Markdown do
     end
 
     context 'when string has a product suffix' do
-      let(:string) { 'My Header (ULTIMATE)' }
+      %w[CORE STARTER PREMIUM ULTIMATE FREE BRONZE SILVER GOLD].each do |tier|
+        ['', ' ONLY', ' SELF', ' SASS'].each do |modifier|
+          context "#{tier}#{modifier}" do
+            let(:string) { "My Header (#{tier}#{modifier})" }
 
-      it 'ignores a product suffix' do
-        is_expected.to eq 'my-header'
-      end
+            it 'ignores a product suffix' do
+              is_expected.to eq 'my-header'
+            end
 
-      context 'with only modifier' do
-        let(:string) { 'My Header (STARTER ONLY)' }
+            context 'with "*" around a product suffix' do
+              let(:string) { "My Header **(#{tier}#{modifier})**" }
 
-        it 'ignores a product suffix' do
-          is_expected.to eq 'my-header'
-        end
-      end
-
-      context 'with "*" around a product suffix' do
-        let(:string) { 'My Header **(STARTER)**' }
-
-        it 'ignores a product suffix' do
-          is_expected.to eq 'my-header'
-        end
-      end
-
-      context 'with "*" around a product suffix and only modifier' do
-        let(:string) { 'My Header **(STARTER ONLY)**' }
-
-        it 'ignores a product suffix' do
-          is_expected.to eq 'my-header'
+              it 'ignores a product suffix' do
+                is_expected.to eq 'my-header'
+              end
+            end
+          end
         end
       end
     end

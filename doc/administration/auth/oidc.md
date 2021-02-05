@@ -175,6 +175,6 @@ If you're having trouble, here are some tips:
    OAuth2 access token if `client_auth_method` is not defined or if set to `basic`.
    If you are seeing 401 errors upon retrieving the `userinfo` endpoint, you may
    want to check your OpenID Web server configuration. For example, for
-   [oauth2-server-php](https://github.com/bshaffer/oauth2-server-php), you
+   [`oauth2-server-php`](https://github.com/bshaffer/oauth2-server-php), you
    may need to [add a configuration parameter to
    Apache](https://github.com/bshaffer/oauth2-server-php/issues/926#issuecomment-387502778).

@@ -1,0 +1,38 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "created_at",
+    "expires_at",
+    "access_level",
+    "valid_roles"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "created_at": { "type": "date-time" },
+    "expires_at": { "type": ["date-time", "null"] },
+    "access_level": {
+      "type": "object",
+      "required": ["integer_value", "string_value"],
+      "properties": {
+        "integer_value": { "type": "integer" },
+        "string_value": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "valid_roles": { "type": "object" },
+    "shared_with_group": {
+      "type": "object",
+      "required": ["id", "name", "full_name", "full_path", "avatar_url", "web_url"],
+      "properties": {
+        "id": { "type": "integer" },
+        "name": { "type": "string" },
+        "full_name": { "type": "string" },
+        "full_path": { "type": "string" },
+        "avatar_url": { "type": ["string", "null"] },
+        "web_url": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

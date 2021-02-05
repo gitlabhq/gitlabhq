@@ -35,7 +35,7 @@ def check_changelog_yaml(path)
   elsif yaml["merge_request"] != gitlab.mr_json["iid"] && !cherry_pick_against_stable_branch
     fail "Merge request ID was not set to #{gitlab.mr_json["iid"]}! #{SEE_DOC}"
   end
-rescue Psych::SyntaxError, Psych::DisallowedClass, Psych::BadAlias
+rescue Psych::Exception
   # YAML could not be parsed, fail the build.
   fail "#{gitlab.html_link(path)} isn't valid YAML! #{SEE_DOC}"
 rescue StandardError => e

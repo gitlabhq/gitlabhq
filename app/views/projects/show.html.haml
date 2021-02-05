@@ -6,6 +6,9 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_path(@project, rss_url_options), title: "#{@project.name} activity")
 
+= content_for :invite_members_sidebar do
+  = render partial: 'projects/invite_members_link'
+
 = render partial: 'flash_messages', locals: { project: @project }
 
 = render "projects/last_push"

@@ -3,11 +3,11 @@ import Draggable from 'vuedraggable';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { sortBy } from 'lodash';
 import { GlAlert } from '@gitlab/ui';
-import BoardColumnDeprecated from './board_column_deprecated.vue';
-import BoardColumn from './board_column.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import defaultSortableConfig from '~/sortable/sortable_config';
 import { sortableEnd, sortableStart } from '~/boards/mixins/sortable_default_options';
+import BoardColumn from './board_column.vue';
+import BoardColumnDeprecated from './board_column_deprecated.vue';
 
 export default {
   components: {

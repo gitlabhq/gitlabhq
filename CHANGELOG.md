@@ -2,14 +2,6 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
-## 13.8.3 (2021-02-05)
-
-### Fixed (2 changes)
-
-- Revert multipart URL optimization for AWS S3. !52561
-- Fix regression with old wiki image uploads. !52656
-
-
 ## 13.8.2 (2021-02-01)
 
 ### Security (5 changes)
@@ -385,6 +377,25 @@ entry.
 - Remove unneeded group label index. !51676
 - Apply GitLab UI button styles to buttons in project wiki. !51780 (Yogi (@yo))
 - Add verbiage + link sast to show it's in core. !51935
+
+
+## 13.7.6 (2021-02-01)
+
+### Security (5 changes)
+
+- Filter sensitive GraphQL variables from logs.
+- Avoid exposing release links when the user cannot read git-tag/repository.
+- Sanitize target branch on MR page.
+- Fix DNS rebinding protection bypass when allowing an IP address in Outbound Requests setting.
+- Add routes for unmatched url for not-get requests.
+
+
+## 13.7.5 (2021-01-25)
+
+### Fixed (2 changes, 1 of them is from the community)
+
+- New project guidelines are no longer displayed. !50736 (Roger Meier)
+- Fix LFS not working with S3 specific-storage settings. !52296
 
 
 ## 13.7.4 (2021-01-13)
@@ -887,6 +898,17 @@ entry.
 - Add feed_token specs to spec/features/profiles/personal_access_tokens_spec.rb. !50059
 - Replace spec/controllers/ide_controller_spec.rb with request spec. !50075 (Takuya Noguchi)
 - Update GitLab Workhorse to v8.57.0.
+
+
+## 13.6.6 (2021-02-01)
+
+### Security (5 changes)
+
+- Filter sensitive GraphQL variables from logs.
+- Avoid exposing release links when the user cannot read git-tag/repository.
+- Sanitize target branch on MR page.
+- Fix DNS rebinding protection bypass when allowing an IP address in Outbound Requests setting.
+- Add routes for unmatched url for not-get requests.
 
 
 ## 13.6.5 (2021-01-13)

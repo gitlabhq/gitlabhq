@@ -1,6 +1,5 @@
 $system-note-icon-size: 32px;
 $system-note-svg-size: 16px;
-$note-form-margin-left: 72px;
 
 @mixin vertical-line($left) {
   &::before {
@@ -54,16 +53,6 @@ $note-form-margin-left: 72px;
     &.note-form {
       margin-left: 0;
 
-      @include notes-media('min', map-get($grid-breakpoints, md)) {
-        margin-left: $note-form-margin-left;
-      }
-
-      .timeline-icon {
-        @include notes-media('min', map-get($grid-breakpoints, sm)) {
-          margin-left: -$note-icon-gutter-width;
-        }
-      }
-
       .timeline-content {
         margin-left: 0;
       }
@@ -84,35 +73,16 @@ $note-form-margin-left: 72px;
   .replies-toggle {
     background-color: $gray-light;
     padding: $gl-padding-8 $gl-padding;
-    border-top: 1px solid $gray-50;
-    border-bottom: 1px solid $gray-50;
+    border-top: 1px solid $gray-100;
+    border-bottom: 1px solid $gray-100;
 
     .collapse-replies-btn:hover {
       color: $blue-600;
     }
 
-    &.expanded {
-      span {
-        cursor: pointer;
-      }
-
-      svg {
-        position: relative;
-        top: 3px;
-      }
-    }
-
     &.collapsed {
       color: $gl-text-color-secondary;
       border-radius: 0 0 $border-radius-default $border-radius-default;
-
-      svg {
-        float: left;
-        position: relative;
-        top: $gl-padding-4;
-        margin-right: $gl-padding-8;
-        cursor: pointer;
-      }
 
       img {
         margin: -2px 4px 0 0;
@@ -178,7 +148,6 @@ $note-form-margin-left: 72px;
   > li {
     display: block;
     position: relative;
-    border-bottom: 0;
 
     &.being-posted {
       pointer-events: none;
@@ -549,21 +518,6 @@ $note-form-margin-left: 72px;
 .code-commit .notes-content,
 .diff-viewer > .image ~ .note-container {
   background-color: $white;
-
-  .avatar-note-form-holder {
-    .user-avatar-link img {
-      margin: 13px $gl-padding $gl-padding;
-    }
-
-    form,
-    ~ .discussion-form-container {
-      padding: $gl-padding;
-
-      @include media-breakpoint-up(sm) {
-        margin-left: $note-icon-gutter-width;
-      }
-    }
-  }
 }
 
 .diff-viewer > .image ~ .note-container form.new-note {

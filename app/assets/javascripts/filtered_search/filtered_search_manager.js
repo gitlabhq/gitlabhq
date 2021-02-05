@@ -2,18 +2,6 @@ import { last } from 'lodash';
 import recentSearchesStorageKeys from 'ee_else_ce/filtered_search/recent_searches_storage_keys';
 import { getParameterByName, getUrlParamsArray } from '~/lib/utils/common_utils';
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
-import { visitUrl } from '../lib/utils/url_utility';
-import { deprecatedCreateFlash as Flash } from '../flash';
-import FilteredSearchContainer from './container';
-import RecentSearchesRoot from './recent_searches_root';
-import RecentSearchesStore from './stores/recent_searches_store';
-import RecentSearchesService from './services/recent_searches_service';
-import eventHub from './event_hub';
-import { addClassIfElementExists } from '../lib/utils/dom_utils';
-import FilteredSearchTokenizer from './filtered_search_tokenizer';
-import FilteredSearchDropdownManager from './filtered_search_dropdown_manager';
-import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
-import DropdownUtils from './dropdown_utils';
 import {
   ENTER_KEY_CODE,
   BACKSPACE_KEY_CODE,
@@ -22,6 +10,18 @@ import {
   DOWN_KEY_CODE,
 } from '~/lib/utils/keycodes';
 import { __ } from '~/locale';
+import { visitUrl } from '../lib/utils/url_utility';
+import { deprecatedCreateFlash as Flash } from '../flash';
+import { addClassIfElementExists } from '../lib/utils/dom_utils';
+import FilteredSearchContainer from './container';
+import RecentSearchesRoot from './recent_searches_root';
+import RecentSearchesStore from './stores/recent_searches_store';
+import RecentSearchesService from './services/recent_searches_service';
+import eventHub from './event_hub';
+import FilteredSearchTokenizer from './filtered_search_tokenizer';
+import FilteredSearchDropdownManager from './filtered_search_dropdown_manager';
+import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
+import DropdownUtils from './dropdown_utils';
 
 export default class FilteredSearchManager {
   constructor({

@@ -74,8 +74,10 @@ which is enabled for the `cache` and `shared_state`
 
 ## Redis in structured logging
 
-For GitLab Team Members: There are [basic](https://www.youtube.com/watch?v=Uhdj19Dc6vU) and
-[advanced](https://youtu.be/jw1Wv2IJxzs) videos that show how you can work with the Redis
+For GitLab Team Members: There are <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+[basic](https://www.youtube.com/watch?v=Uhdj19Dc6vU) and
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [advanced](https://youtu.be/jw1Wv2IJxzs)
+videos that show how you can work with the Redis
 structured logging fields on GitLab.com.
 
 Our [structured logging](logging.md#use-structured-json-logging) for web

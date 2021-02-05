@@ -1,0 +1,25 @@
+- source_link = link_to(member_source.human_name, member_source.web_url, target: '_blank', rel: 'noopener noreferrer', class: :highlight)
+- confirmation_link = confirmation_url(@user, confirmation_token: @user.confirmation_token)
+
+%tr
+  %td.text-content
+    %p
+      = _('An Enterprise User GitLab account has been created for you by your organization:')
+    %p
+      = _('Username: %{username}') % { username: @user.username }
+      %br
+      = _('Email: %{email}') % { email: @user.email }
+      %br
+      = _('GitLab group: %{source_link}').html_safe % { source_link: source_link }
+
+%tr
+  %td.text-content
+    %p
+      = _('By authenticating with an account tied to an Enterprise e-mail address, it is understood that this account is an Enterprise User. ')
+      = _('To ensure no loss of personal content, this account should only be used for matters related to %{group_name}.') % { group_name: member_source.human_name }
+      = _('For individual use, create a separate account under your personal email address, not tied to the Enterprise email domain or group.')
+    - unless @user.confirmed?
+      %p
+        = _('To get started, click the link below to confirm your account.')
+      %p
+        = link_to 'Confirm your account', confirmation_link

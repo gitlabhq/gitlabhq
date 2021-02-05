@@ -6,11 +6,11 @@
   .select-wrapper
     = f.select :auth_method,
         options_for_select(auth_options, mirror.auth_method),
-        {}, { class: "form-control select-control js-mirror-auth-type qa-authentication-method" }
+        {}, { class: "form-control gl-form-input select-control js-mirror-auth-type qa-authentication-method" }
     = sprite_icon('chevron-down', css_class: "gl-icon gl-absolute gl-top-3 gl-right-3 gl-text-gray-200")
     = f.hidden_field :auth_method, value: "password", class: "js-hidden-mirror-auth-type"
 
 .form-group
   .well-password-auth.collapse.js-well-password-auth
     = f.label :password, _("Password"), class: "label-bold"
-    = f.password_field :password, value: mirror.password, class: 'form-control qa-password', autocomplete: 'new-password'
+    = f.password_field :password, value: mirror.password, class: 'form-control gl-form-input qa-password', autocomplete: 'new-password'

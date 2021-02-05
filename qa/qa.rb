@@ -156,6 +156,7 @@ module QA
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
         autoload :ObjectStorage, 'qa/scenario/test/integration/object_storage'
         autoload :SMTP, 'qa/scenario/test/integration/smtp'
+        autoload :SSHTunnel, 'qa/scenario/test/integration/ssh_tunnel'
       end
 
       module Sanity

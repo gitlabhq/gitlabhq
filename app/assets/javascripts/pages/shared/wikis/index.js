@@ -3,9 +3,9 @@ import Vue from 'vue';
 import Translate from '~/vue_shared/translate';
 import csrf from '~/lib/utils/csrf';
 import ShortcutsWiki from '~/behaviors/shortcuts/shortcuts_wiki';
-import Wikis from './wikis';
 import ZenMode from '../../../zen_mode';
 import GLForm from '../../../gl_form';
+import Wikis from './wikis';
 import deleteWikiModal from './components/delete_wiki_modal.vue';
 
 export default () => {

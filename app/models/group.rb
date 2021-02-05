@@ -84,7 +84,7 @@ class Group < Namespace
   validate :visibility_level_allowed_by_sub_groups
   validate :visibility_level_allowed_by_parent
   validate :two_factor_authentication_allowed
-  validates :variables, variable_duplicates: true
+  validates :variables, nested_attributes_duplicates: true
 
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
@@ -167,6 +167,15 @@ class Group < Namespace
         .where(type: integration.type)
 
       where('NOT EXISTS (?)', services)
+    end
+
+    # This method can be used only if all groups have the same top-level
+    # group
+    def preset_root_ancestor_for(groups)
+      return groups if groups.size < 2
+
+      root = groups.first.root_ancestor
+      groups.drop(1).each { |group| group.root_ancestor = root }
     end
 
     private

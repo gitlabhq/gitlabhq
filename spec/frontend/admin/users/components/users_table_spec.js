@@ -3,6 +3,9 @@ import { mount } from '@vue/test-utils';
 
 import AdminUsersTable from '~/admin/users/components/users_table.vue';
 import AdminUserAvatar from '~/admin/users/components/user_avatar.vue';
+import AdminUserDate from '~/admin/users/components/user_date.vue';
+import AdminUserActions from '~/admin/users/components/user_actions.vue';
+
 import { users, paths } from '../mock_data';
 
 describe('AdminUsersTable component', () => {
@@ -39,18 +42,21 @@ describe('AdminUsersTable component', () => {
       initComponent();
     });
 
-    it.each`
-      key                 | label
-      ${'name'}           | ${'Name'}
-      ${'projectsCount'}  | ${'Projects'}
-      ${'createdAt'}      | ${'Created on'}
-      ${'lastActivityOn'} | ${'Last activity'}
-    `('renders users.$key in column $label', ({ key, label }) => {
-      expect(getCellByLabel(0, label).text()).toContain(`${user[key]}`);
+    it('renders the projects count', () => {
+      expect(getCellByLabel(0, 'Projects').text()).toContain(`${user.projectsCount}`);
     });
 
-    it('renders an AdminUserAvatar component', () => {
-      expect(getCellByLabel(0, 'Name').find(AdminUserAvatar).exists()).toBe(true);
+    it('renders the user actions', () => {
+      expect(wrapper.find(AdminUserActions).exists()).toBe(true);
+    });
+
+    it.each`
+      component          | label
+      ${AdminUserAvatar} | ${'Name'}
+      ${AdminUserDate}   | ${'Created on'}
+      ${AdminUserDate}   | ${'Last activity'}
+    `('renders the component for column $label', ({ component, label }) => {
+      expect(getCellByLabel(0, label).find(component).exists()).toBe(true);
     });
   });
 

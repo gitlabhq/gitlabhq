@@ -3,13 +3,19 @@
 require 'spec_helper'
 
 RSpec.describe API::GroupLabels do
+  let_it_be(:valid_group_label_title_1) { 'Label foo & bar:subgroup::v.1' }
+  let_it_be(:valid_group_label_title_1_esc) { ERB::Util.url_encode(valid_group_label_title_1) }
+  let_it_be(:valid_group_label_title_2) { 'Bar & foo:subgroup::v.2' }
+  let_it_be(:valid_subgroup_label_title_1) { 'Support label foobar:sub::v.1' }
+  let_it_be(:valid_new_label_title) { 'New & foo:feature::v.3' }
+
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:subgroup) { create(:group, parent: group) }
   let!(:group_member) { create(:group_member, group: group, user: user) }
-  let!(:group_label1) { create(:group_label, title: 'feature-label', group: group) }
-  let!(:group_label2) { create(:group_label, title: 'bug', group: group) }
-  let!(:subgroup_label) { create(:group_label, title: 'support-label', group: subgroup) }
+  let!(:group_label1) { create(:group_label, title: valid_group_label_title_1, group: group) }
+  let!(:group_label2) { create(:group_label, title: valid_group_label_title_2, group: group) }
+  let!(:subgroup_label) { create(:group_label, title: valid_subgroup_label_title_1, group: subgroup) }
 
   describe 'GET :id/labels' do
     context 'get current group labels' do
@@ -104,7 +110,7 @@ RSpec.describe API::GroupLabels do
 
   describe 'GET :id/labels/:label_id' do
     it 'returns a single label for the group' do
-      get api("/groups/#{group.id}/labels/#{group_label1.name}", user)
+      get api("/groups/#{group.id}/labels/#{valid_group_label_title_1_esc}", user)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['name']).to eq(group_label1.name)
@@ -117,13 +123,13 @@ RSpec.describe API::GroupLabels do
     it 'returns created label when all params are given' do
       post api("/groups/#{group.id}/labels", user),
            params: {
-             name: 'Foo',
+             name: valid_new_label_title,
              color: '#FFAABB',
              description: 'test'
            }
 
       expect(response).to have_gitlab_http_status(:created)
-      expect(json_response['name']).to eq('Foo')
+      expect(json_response['name']).to eq(valid_new_label_title)
       expect(json_response['color']).to eq('#FFAABB')
       expect(json_response['description']).to eq('test')
     end
@@ -131,12 +137,12 @@ RSpec.describe API::GroupLabels do
     it 'returns created label when only required params are given' do
       post api("/groups/#{group.id}/labels", user),
            params: {
-             name: 'Foo & Bar',
+             name: valid_new_label_title,
              color: '#FFAABB'
            }
 
       expect(response).to have_gitlab_http_status(:created)
-      expect(json_response['name']).to eq('Foo & Bar')
+      expect(json_response['name']).to eq(valid_new_label_title)
       expect(json_response['color']).to eq('#FFAABB')
       expect(json_response['description']).to be_nil
     end
@@ -204,7 +210,7 @@ RSpec.describe API::GroupLabels do
 
   describe 'DELETE /groups/:id/labels/:label_id' do
     it 'returns 204 for existing label' do
-      delete api("/groups/#{group.id}/labels/#{group_label1.name}", user)
+      delete api("/groups/#{group.id}/labels/#{valid_group_label_title_1_esc}", user)
 
       expect(response).to have_gitlab_http_status(:no_content)
     end
@@ -228,7 +234,7 @@ RSpec.describe API::GroupLabels do
     end
 
     it_behaves_like '412 response' do
-      let(:request) { api("/groups/#{group.id}/labels/#{group_label1.name}", user) }
+      let(:request) { api("/groups/#{group.id}/labels/#{valid_group_label_title_1_esc}", user) }
     end
   end
 
@@ -237,13 +243,13 @@ RSpec.describe API::GroupLabels do
       put api("/groups/#{group.id}/labels", user),
           params: {
             name: group_label1.name,
-            new_name: 'New Label',
+            new_name: valid_new_label_title,
             color: '#FFFFFF',
             description: 'test'
           }
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['name']).to eq('New Label')
+      expect(json_response['name']).to eq(valid_new_label_title)
       expect(json_response['color']).to eq('#FFFFFF')
       expect(json_response['description']).to eq('test')
     end
@@ -255,11 +261,11 @@ RSpec.describe API::GroupLabels do
       put api("/groups/#{subgroup.id}/labels", user),
           params: {
             name: subgroup_label.name,
-            new_name: 'New Label'
+            new_name: valid_new_label_title
           }
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(subgroup.labels[0].name).to eq('New Label')
+      expect(subgroup.labels[0].name).to eq(valid_new_label_title)
       expect(group_label1.name).to eq(group_label1.title)
     end
 
@@ -267,7 +273,7 @@ RSpec.describe API::GroupLabels do
       put api("/groups/#{group.id}/labels", user),
           params: {
             name: 'not_exists',
-            new_name: 'label3'
+            new_name: valid_new_label_title
           }
 
       expect(response).to have_gitlab_http_status(:not_found)
@@ -291,15 +297,15 @@ RSpec.describe API::GroupLabels do
 
   describe 'PUT /groups/:id/labels/:label_id' do
     it 'returns 200 if name and colors and description are changed' do
-      put api("/groups/#{group.id}/labels/#{group_label1.name}", user),
+      put api("/groups/#{group.id}/labels/#{valid_group_label_title_1_esc}", user),
           params: {
-            new_name: 'New Label',
+            new_name: valid_new_label_title,
             color: '#FFFFFF',
             description: 'test'
           }
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['name']).to eq('New Label')
+      expect(json_response['name']).to eq(valid_new_label_title)
       expect(json_response['color']).to eq('#FFFFFF')
       expect(json_response['description']).to eq('test')
     end
@@ -310,25 +316,25 @@ RSpec.describe API::GroupLabels do
 
       put api("/groups/#{subgroup.id}/labels/#{subgroup_label.name}", user),
           params: {
-            new_name: 'New Label'
+            new_name: valid_new_label_title
           }
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(subgroup.labels[0].name).to eq('New Label')
+      expect(subgroup.labels[0].name).to eq(valid_new_label_title)
       expect(group_label1.name).to eq(group_label1.title)
     end
 
     it 'returns 404 if label does not exist' do
       put api("/groups/#{group.id}/labels/not_exists", user),
           params: {
-            new_name: 'label3'
+            new_name: valid_new_label_title
           }
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'returns 400 if no new parameters given' do
-      put api("/groups/#{group.id}/labels/#{group_label1.name}", user)
+      put api("/groups/#{group.id}/labels/#{valid_group_label_title_1_esc}", user)
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('new_name, color, description are missing, '\
@@ -339,7 +345,7 @@ RSpec.describe API::GroupLabels do
   describe 'POST /groups/:id/labels/:label_id/subscribe' do
     context 'when label_id is a label title' do
       it 'subscribes to the label' do
-        post api("/groups/#{group.id}/labels/#{group_label1.title}/subscribe", user)
+        post api("/groups/#{group.id}/labels/#{valid_group_label_title_1_esc}/subscribe", user)
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(group_label1.title)
@@ -385,7 +391,7 @@ RSpec.describe API::GroupLabels do
 
     context 'when label_id is a label title' do
       it 'unsubscribes from the label' do
-        post api("/groups/#{group.id}/labels/#{group_label1.title}/unsubscribe", user)
+        post api("/groups/#{group.id}/labels/#{valid_group_label_title_1_esc}/unsubscribe", user)
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(group_label1.title)

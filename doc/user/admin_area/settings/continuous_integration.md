@@ -5,14 +5,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Continuous Integration and Deployment Admin settings **(CORE ONLY)**
+# Continuous Integration and Deployment Admin settings **(FREE SELF)**
 
 In this area, you will find settings for Auto DevOps, runners, and job artifacts.
 You can find it in the **Admin Area > Settings > CI/CD**.
 
 ![Admin Area settings button](../img/admin_area_settings_button.png)
 
-## Auto DevOps **(CORE ONLY)**
+## Auto DevOps **(FREE SELF)**
 
 To enable (or disable) [Auto DevOps](../../../topics/autodevops/index.md)
 for all projects:
@@ -29,7 +29,7 @@ From now on, every existing project and newly created ones that don't have a
 If you want to disable it for a specific project, you can do so in
 [its settings](../../../topics/autodevops/index.md#enablingdisabling-auto-devops).
 
-## Maximum artifacts size **(CORE ONLY)**
+## Maximum artifacts size **(FREE SELF)**
 
 The maximum size of the [job artifacts](../../../administration/job_artifacts.md)
 can be set at:
@@ -65,7 +65,7 @@ To change it at the:
 NOTE:
 The setting at all levels is only available to GitLab administrators.
 
-## Default artifacts expiration **(CORE ONLY)**
+## Default artifacts expiration **(FREE SELF)**
 
 The default expiration time of the [job artifacts](../../../administration/job_artifacts.md)
 can be set in the Admin Area of your GitLab instance. The syntax of duration is
@@ -86,9 +86,9 @@ be updated for artifacts created before this setting was changed.
 The administrator may need to manually search for and expire previously-created
 artifacts, as described in the [troubleshooting documentation](../../../administration/troubleshooting/gitlab_rails_cheat_sheet.md#remove-artifacts-more-than-a-week-old).
 
-## Shared runners pipeline minutes quota **(STARTER ONLY)**
+## Shared runners pipeline minutes quota **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1078) in GitLab Starter 8.16.
+> [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
 
 If you have enabled shared runners for your GitLab instance, you can limit their
 usage by setting a maximum number of pipeline minutes that a group can use on
@@ -126,7 +126,7 @@ a group in the **Usage Quotas** page available to the group page settings list.
 
 ![Group pipelines quota](img/group_pipelines_quota.png)
 
-## Archive jobs **(CORE ONLY)**
+## Archive jobs **(FREE SELF)**
 
 Archiving jobs is useful for reducing the CI/CD footprint on the system by
 removing some of the capabilities of the jobs (metadata needed to run the job),
@@ -156,21 +156,9 @@ Area of your GitLab instance (`.gitlab-ci.yml` if not set):
 1. Input the new path in the **Default CI configuration path** field.
 1. Hit **Save changes** for the changes to take effect.
 
-It is also possible to specify a [custom CI configuration path for a specific project](../../../ci/pipelines/settings.md#custom-ci-configuration-path).
+It is also possible to specify a [custom CI/CD configuration path for a specific project](../../../ci/pipelines/settings.md#custom-cicd-configuration-path).
 
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
-
-## Required pipeline configuration **(PREMIUM ONLY)**
+## Required pipeline configuration **(PREMIUM SELF)**
 
 WARNING:
 This feature is being re-evaluated in favor of a different
@@ -204,7 +192,7 @@ To set required pipeline configuration:
 
 ## Package Registry configuration
 
-### NPM Forwarding **(PREMIUM ONLY)**
+### NPM Forwarding **(PREMIUM SELF)**
 
 GitLab administrators can disable the forwarding of NPM requests to [npmjs.com](https://www.npmjs.com/).
 
@@ -228,3 +216,15 @@ To set the maximum file size:
 1. Find the package type you would like to adjust.
 1. Enter the maximum file size, in bytes.
 1. Click **Save size limits**.
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

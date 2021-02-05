@@ -187,7 +187,7 @@ module Gitlab
         parse_params do |reviewer_param|
           extract_users(reviewer_param)
         end
-        command :assign_reviewer, :reviewer do |users|
+        command :assign_reviewer, :reviewer, :request_review do |users|
           next if users.empty?
 
           if quick_action_target.allows_multiple_reviewers?

@@ -5,8 +5,8 @@ import Draggable from 'vuedraggable';
 import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
 import getters from 'ee_else_ce/boards/stores/getters';
 import BoardColumnDeprecated from '~/boards/components/board_column_deprecated.vue';
-import { mockLists, mockListsWithModel } from '../mock_data';
 import BoardContent from '~/boards/components/board_content.vue';
+import { mockLists, mockListsWithModel } from '../mock_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

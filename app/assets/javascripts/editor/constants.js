@@ -11,6 +11,11 @@ export const ERROR_INSTANCE_REQUIRED_FOR_EXTENSION = __(
   'Editor Lite instance is required to set up an extension.',
 );
 
+export const EDITOR_READY_EVENT = 'editor-ready';
+
+export const EDITOR_TYPE_CODE = 'vs.editor.ICodeEditor';
+export const EDITOR_TYPE_DIFF = 'vs.editor.IDiffEditor';
+
 //
 // EXTENSIONS' CONSTANTS
 //

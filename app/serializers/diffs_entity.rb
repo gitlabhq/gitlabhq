@@ -79,7 +79,9 @@ class DiffsEntity < Grape::Entity
   end
 
   expose :definition_path_prefix do |diffs|
-    project_blob_path(merge_request.project, diffs.diff_refs&.head_sha)
+    next unless merge_request.diff_head_sha
+
+    project_blob_path(merge_request.project, merge_request.diff_head_sha)
   end
 
   def merge_request

@@ -52,7 +52,9 @@ module API
           actor.update_last_used_at!
 
           check_result = begin
-                           access_check!(actor, params)
+                           Gitlab::Auth::CurrentUserMode.bypass_session!(actor.user&.id) do
+                             access_check!(actor, params)
+                           end
                          rescue Gitlab::GitAccess::ForbiddenError => e
                            # The return code needs to be 401. If we return 403
                            # the custom message we return won't be shown to the user

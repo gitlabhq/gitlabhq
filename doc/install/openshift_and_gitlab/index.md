@@ -15,7 +15,7 @@ for details.
 
 ## Introduction
 
-[OpenShift Origin](https://www.okd.io/) (**Note:** renamed to OKD in Aug 2018) is an open source container application
+[OpenShift Origin](https://www.okd.io/) (**Note:** renamed to OKD in August 2018) is an open source container application
 platform created by [RedHat](https://www.redhat.com/en), based on [Kubernetes](https://kubernetes.io/) and [Docker](https://www.docker.com). That means
 you can host your own PaaS for free and almost with no hassle.
 
@@ -44,7 +44,7 @@ test OpenShift easily:
 It is also important to mention that for the purposes of this tutorial, the
 latest Origin release is used:
 
-- **oc** `v1.3.0` (must be [installed](https://github.com/openshift/origin/releases/tag/v1.3.0) locally on your computer)
+- **`oc`** `v1.3.0` (must be [installed](https://github.com/openshift/origin/releases/tag/v1.3.0) locally on your computer)
 - **OpenShift** `v1.3.0` (is pre-installed in the [VM image](https://app.vagrantup.com/openshift/boxes/origin-all-in-one))
 - **Kubernetes** `v1.3.0` (is pre-installed in the [VM image](https://app.vagrantup.com/openshift/boxes/origin-all-in-one))
 
@@ -59,8 +59,8 @@ on your computer.
 
 ## Getting familiar with OpenShift Origin
 
-The environment we are about to use is based on CentOS 7 which comes with all
-the tools needed pre-installed: Docker, Kubernetes, OpenShift, etcd.
+The environment we are about to use is based on CentOS 7, which comes with all
+the tools needed pre-installed, including Docker, Kubernetes, and OpenShift.
 
 ### Test OpenShift using Vagrant
 
@@ -100,14 +100,14 @@ order to proceed.
 Let's login as admin with username/password `admin/admin`. This is what the
 landing page looks like:
 
-![openshift web console](img/web-console.png)
+![OpenShift web console](img/web-console.png)
 
 You can see that a number of [projects](https://docs.okd.io/3.11/dev_guide/projects.html) are already created for testing purposes.
 
 If you head over the `openshift-infra` project, a number of services with their
 respective pods are there to explore.
 
-![openshift web console](img/openshift-infra-project.png)
+![OpenShift web console](img/openshift-infra-project.png)
 
 We are not going to explore the whole interface, but if you want to learn about
 the key concepts of OpenShift, read the [core concepts reference](https://docs.okd.io/3.11/architecture/core_concepts/index.html)
@@ -318,7 +318,7 @@ NOTE:
 The `gitlab.apps.10.2.2.2.nip.io` hostname that is used by default will
 resolve to the host with IP `10.2.2.2` which is the IP our VM uses. It is a
 trick to have distinct FQDNs pointing to services that are on our local network.
-Read more on how this works in <https://nip.io>.
+Read more on how this works at [nip.io](https://nip.io).
 
 Now that we configured this, let's see how to manage and scale GitLab.
 
@@ -343,7 +343,7 @@ created the GitLab app? This is where you can see them in action.
 
 ![Running pods](img/running-pods.png)
 
-You can see GitLab being reconfigured by taking look at the logs in realtime.
+You can see GitLab being reconfigured by taking look at the logs in real time.
 Click on `gitlab-ce-2-j7ioe` (your ID will be different) and go to the **Logs**
 tab.
 
@@ -464,7 +464,7 @@ OpenShift's website about [autoscaling](https://docs.okd.io/3.11/dev_guide/pod_a
 As stated in the [all-in-one VM](https://www.okd.io/minishift/) page:
 
 > By default, OpenShift will not allow a container to run as root or even a
-non-random container assigned userid. Most Docker images in Docker Hub do not
+non-random container assigned user ID. Most Docker images in Docker Hub do not
 follow this best practice and instead run as root.
 
 The all-in-one VM we are using has this security turned off so it will not

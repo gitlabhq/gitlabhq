@@ -9,7 +9,7 @@ class BuildDetailsEntity < JobEntity
   expose :user, using: UserEntity
   expose :runner, using: RunnerEntity
   expose :metadata, using: BuildMetadataEntity
-  expose :pipeline, using: PipelineEntity
+  expose :pipeline, using: Ci::PipelineEntity
 
   expose :deployment_status, if: -> (*) { build.starts_environment? } do
     expose :deployment_status, as: :status

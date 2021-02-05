@@ -11,59 +11,59 @@ module Types
 
       field :id, GraphQL::ID_TYPE,
             null: false,
-            description: 'ID (global ID) of the error'
+            description: 'ID (global ID) of the error.'
       field :sentry_id, GraphQL::STRING_TYPE,
             method: :id,
             null: false,
-            description: 'ID (Sentry ID) of the error'
+            description: 'ID (Sentry ID) of the error.'
       field :first_seen, Types::TimeType,
             null: false,
-            description: 'Timestamp when the error was first seen'
+            description: 'Timestamp when the error was first seen.'
       field :last_seen, Types::TimeType,
             null: false,
-            description: 'Timestamp when the error was last seen'
+            description: 'Timestamp when the error was last seen.'
       field :title, GraphQL::STRING_TYPE,
             null: false,
-            description: 'Title of the error'
+            description: 'Title of the error.'
       field :type, GraphQL::STRING_TYPE,
             null: false,
-            description: 'Type of the error'
+            description: 'Type of the error.'
       field :user_count, GraphQL::INT_TYPE,
             null: false,
-            description: 'Count of users affected by the error'
+            description: 'Count of users affected by the error.'
       field :count, GraphQL::INT_TYPE,
             null: false,
-            description: 'Count of occurrences'
+            description: 'Count of occurrences.'
       field :message, GraphQL::STRING_TYPE,
             null: true,
-            description: 'Sentry metadata message of the error'
+            description: 'Sentry metadata message of the error.'
       field :culprit, GraphQL::STRING_TYPE,
             null: false,
-            description: 'Culprit of the error'
+            description: 'Culprit of the error.'
       field :external_url, GraphQL::STRING_TYPE,
             null: false,
-            description: 'External URL of the error'
+            description: 'External URL of the error.'
       field :short_id, GraphQL::STRING_TYPE,
             null: false,
-            description: 'Short ID (Sentry ID) of the error'
+            description: 'Short ID (Sentry ID) of the error.'
       field :status, Types::ErrorTracking::SentryErrorStatusEnum,
             null: false,
-            description: 'Status of the error'
+            description: 'Status of the error.'
       field :frequency, [Types::ErrorTracking::SentryErrorFrequencyType],
             null: false,
-            description: 'Last 24hr stats of the error'
+            description: 'Last 24hr stats of the error.'
       field :sentry_project_id, GraphQL::ID_TYPE,
             method: :project_id,
             null: false,
-            description: 'ID of the project (Sentry project)'
+            description: 'ID of the project (Sentry project).'
       field :sentry_project_name, GraphQL::STRING_TYPE,
             method: :project_name,
             null: false,
-            description: 'Name of the project affected by the error'
+            description: 'Name of the project affected by the error.'
       field :sentry_project_slug, GraphQL::STRING_TYPE,
             method: :project_slug,
             null: false,
-            description: 'Slug of the project affected by the error'
+            description: 'Slug of the project affected by the error.'
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

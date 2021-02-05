@@ -50,7 +50,7 @@ GitLab provides built-in tools to help improve performance and availability:
 - [Service measurement](service_measurement.md) for measuring and logging service execution.
 
 GitLab team members can use [GitLab.com's performance monitoring systems](https://about.gitlab.com/handbook/engineering/monitoring/) located at
-<https://dashboards.gitlab.net>, this requires you to log in using your
+[`dashboards.gitlab.net`](https://dashboards.gitlab.net), this requires you to log in using your
 `@gitlab.com` email address. Non-GitLab team-members are advised to set up their
 own Prometheus and Grafana stack.
 
@@ -176,7 +176,7 @@ stackprof tmp/project_policy_spec.rb.dump --graphviz > project_policy_spec.dot
 dot -Tsvg project_policy_spec.dot > project_policy_spec.svg
 ```
 
-To load the profile in [kcachegrind](https://kcachegrind.github.io/):
+To load the profile in [KCachegrind](https://kcachegrind.github.io/):
 
 ```shell
 stackprof tmp/project_policy_spec.rb.dump --callgrind > project_policy_spec.callgrind
@@ -184,7 +184,7 @@ kcachegrind project_policy_spec.callgrind # Linux
 qcachegrind project_policy_spec.callgrind # Mac
 ```
 
-For flamegraphs, enable raw collection first. Note that raw
+For flame graphs, enable raw collection first. Note that raw
 collection can generate a very large file, so increase the `INTERVAL`, or
 run on a smaller number of specs for smaller file size:
 
@@ -192,7 +192,7 @@ run on a smaller number of specs for smaller file size:
 RAW=true bin/rspec-stackprof spec/policies/group_member_policy_spec.rb
 ```
 
-You can then generate, and view the resultant flamegraph. It might take a
+You can then generate, and view the resultant flame graph. It might take a
 while to generate based on the output file size:
 
 ```shell
@@ -251,7 +251,7 @@ In order to enable production profiling for Ruby processes, you can set the `STA
 
 The following configuration options can be configured:
 
-- `STACKPROF_ENABLED`: Enables stackprof signal handler on SIGUSR2 signal.
+- `STACKPROF_ENABLED`: Enables Stackprof signal handler on SIGUSR2 signal.
   Defaults to `false`.
 - `STACKPROF_MODE`: See [sampling modes](https://github.com/tmm1/stackprof#sampling).
   Defaults to `cpu`.
@@ -264,7 +264,7 @@ The following configuration options can be configured:
 - `STACKPROF_TIMEOUT_S`: Profiling timeout in seconds. Profiling will
   automatically stop after this time has elapsed. Defaults to `30`.
 - `STACKPROF_RAW`: Whether to collect raw samples or only aggregates. Raw
-  samples are needed to generate flamegraphs, but they do have a higher memory
+  samples are needed to generate flame graphs, but they do have a higher memory
   and disk overhead. Defaults to `true`.
 
 Once enabled, profiling can be triggered by sending a `SIGUSR2` signal to the
@@ -287,7 +287,7 @@ The Puma master process is not supported. Neither is Unicorn.
 Sending SIGUSR2 to either of those triggers restarts. In the case of Puma,
 take care to only send the signal to Puma workers.
 
-This can be done via `pkill -USR2 puma:`. The `:` disambiguates between `puma
+This can be done via `pkill -USR2 puma:`. The `:` distinguishes between `puma
 4.3.3.gitlab.2 ...` (the master process) from `puma: cluster worker 0: ...` (the
 worker processes), selecting the latter.
 
@@ -296,7 +296,7 @@ For Sidekiq, the signal can be sent to the `sidekiq-cluster` process via `pkill
 children. Alternatively, you can also select a specific pid of interest.
 
 Production profiles can be especially noisy. It can be helpful to visualize them
-as a [flamegraph](https://github.com/brendangregg/FlameGraph). This can be done
+as a [flame graph](https://github.com/brendangregg/FlameGraph). This can be done
 via:
 
 ```shell
@@ -543,6 +543,88 @@ test += " world"
 When adding new Ruby files, please check that you can add the above header,
 as omitting it may lead to style check failures.
 
+## Banzai pipelines and filters
+
+When writing or updating [Banzai filters and pipelines](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/banzai),
+it can be difficult to understand what the performance of the filter is, and what effect it might
+have on the overall pipeline performance.
+
+To perform benchmarks run:
+
+```shell
+bin/rake benchmark:banzai
+```
+
+This command generates output like this:
+
+```plaintext
+--> Benchmarking Full, Wiki, and Plain pipelines
+Calculating -------------------------------------
+       Full pipeline     1.000  i/100ms
+       Wiki pipeline     1.000  i/100ms
+      Plain pipeline     1.000  i/100ms
+-------------------------------------------------
+       Full pipeline      3.357  (±29.8%) i/s -     31.000
+       Wiki pipeline      2.893  (±34.6%) i/s -     25.000  in  10.677014s
+      Plain pipeline     15.447  (±32.4%) i/s -    119.000
+
+Comparison:
+      Plain pipeline:       15.4 i/s
+       Full pipeline:        3.4 i/s - 4.60x slower
+       Wiki pipeline:        2.9 i/s - 5.34x slower
+
+.
+--> Benchmarking FullPipeline filters
+Calculating -------------------------------------
+            Markdown    24.000  i/100ms
+            Plantuml     8.000  i/100ms
+          SpacedLink    22.000  i/100ms
+
+...
+
+            TaskList    49.000  i/100ms
+          InlineDiff     9.000  i/100ms
+        SetDirection   369.000  i/100ms
+-------------------------------------------------
+            Markdown    237.796  (±16.4%) i/s -      2.304k
+            Plantuml     80.415  (±36.1%) i/s -    520.000
+          SpacedLink    168.188  (±10.1%) i/s -      1.672k
+
+...
+
+            TaskList    101.145  (± 6.9%) i/s -      1.029k
+          InlineDiff     52.925  (±15.1%) i/s -    522.000
+        SetDirection      3.728k (±17.2%) i/s -     34.317k in  10.617882s
+
+Comparison:
+          Suggestion:   739616.9 i/s
+               Kroki:   306449.0 i/s - 2.41x slower
+InlineGrafanaMetrics:   156535.6 i/s - 4.72x slower
+        SetDirection:     3728.3 i/s - 198.38x slower
+
+...
+
+       UserReference:        2.1 i/s - 360365.80x slower
+        ExternalLink:        1.6 i/s - 470400.67x slower
+    ProjectReference:        0.7 i/s - 1128756.09x slower
+
+.
+--> Benchmarking PlainMarkdownPipeline filters
+Calculating -------------------------------------
+            Markdown    19.000  i/100ms
+-------------------------------------------------
+            Markdown    241.476  (±15.3%) i/s -      2.356k
+
+```
+
+This can give you an idea how various filters perform, and which ones might be performing the slowest.
+
+The test data has a lot to do with how well a filter performs. If there is nothing in the test data
+that specifically triggers the filter, it might look like it's running incredibly fast.
+Make sure that you have relevant test data for your filter in the
+[`spec/fixtures/markdown.md.erb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/fixtures/markdown.md.erb)
+file.
+
 ## Reading from files and other data sources
 
 Ruby offers several convenience functions that deal with file contents specifically
@@ -665,5 +747,4 @@ Assuming you are working with ActiveRecord models, you might also find these lin
 
 ### Examples
 
-You may find some useful examples in this snippet:
-<https://gitlab.com/gitlab-org/gitlab-foss/snippets/33946>
+You may find some useful examples in [this snippet](https://gitlab.com/gitlab-org/gitlab-foss/snippets/33946).

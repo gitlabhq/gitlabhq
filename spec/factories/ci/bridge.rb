@@ -53,6 +53,11 @@ FactoryBot.define do
       finished_at { '2013-10-29 09:53:28 CET' }
     end
 
+    trait :success do
+      finished
+      status { 'success' }
+    end
+
     trait :failed do
       finished
       status { 'failed' }
@@ -74,6 +79,10 @@ FactoryBot.define do
 
     trait :playable do
       manual
+    end
+
+    trait :allowed_to_fail do
+      allow_failure { true }
     end
   end
 end

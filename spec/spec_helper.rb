@@ -13,6 +13,7 @@ end
 Warning[:deprecated] = true unless ENV.key?('SILENCE_DEPRECATIONS')
 
 require './spec/deprecation_toolkit_env'
+DeprecationToolkitEnv.configure!
 
 require './spec/simplecov_env'
 SimpleCovEnv.start!
@@ -174,6 +175,7 @@ RSpec.configure do |config|
   if ENV['CI'] || ENV['RETRIES']
     # This includes the first try, i.e. tests will be run 4 times before failing.
     config.default_retry_count = ENV.fetch('RETRIES', 3).to_i + 1
+    config.exceptions_to_hard_fail = [DeprecationToolkitEnv::DeprecationBehaviors::SelectiveRaise::RaiseDisallowedDeprecation]
   end
 
   if ENV['FLAKY_RSPEC_GENERATE_REPORT']
@@ -216,16 +218,9 @@ RSpec.configure do |config|
       # (ie. ApplicationSetting#auto_devops_enabled)
       stub_feature_flags(force_autodevops_on_by_default: false)
 
-      # The following can be removed once Vue Issuable Sidebar
-      # is feature-complete and can be made default in place
-      # of older sidebar.
-      # See https://gitlab.com/groups/gitlab-org/-/epics/1863
-      stub_feature_flags(vue_issuable_sidebar: false)
-      stub_feature_flags(vue_issuable_epic_sidebar: false)
-
       # Merge request widget GraphQL requests are disabled in the tests
       # for now whilst we migrate as much as we can over the GraphQL
-      stub_feature_flags(merge_request_widget_graphql: false)
+      # stub_feature_flags(merge_request_widget_graphql: false)
 
       # Using FortiAuthenticator as OTP provider is disabled by default in
       # tests, until we introduce it in user settings
@@ -289,6 +284,8 @@ RSpec.configure do |config|
         current_user_mode.send(:user)&.admin?
       end
     end
+
+    allow(Gitlab::CurrentSettings).to receive(:current_application_settings?).and_return(false)
   end
 
   config.around(:example, :quarantine) do |example|

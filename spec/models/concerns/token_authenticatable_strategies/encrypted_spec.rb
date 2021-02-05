@@ -68,6 +68,10 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
     context 'when using optional strategy' do
       let(:options) { { encrypted: :optional } }
 
+      before do
+        stub_feature_flags(dynamic_nonce_creation: false)
+      end
+
       it 'returns decrypted token when an encrypted token is present' do
         allow(instance).to receive(:read_attribute)
           .with('some_field_encrypted')
@@ -124,7 +128,7 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
 
       it 'writes encrypted token and removes plaintext token and returns it' do
         expect(instance).to receive(:[]=)
-          .with('some_field_encrypted', encrypted)
+          .with('some_field_encrypted', any_args)
         expect(instance).to receive(:[]=)
           .with('some_field', nil)
 
@@ -137,7 +141,7 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
 
       it 'writes encrypted token and writes plaintext token' do
         expect(instance).to receive(:[]=)
-          .with('some_field_encrypted', encrypted)
+          .with('some_field_encrypted', any_args)
         expect(instance).to receive(:[]=)
           .with('some_field', 'my-value')
 

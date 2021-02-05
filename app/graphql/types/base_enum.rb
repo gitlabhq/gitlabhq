@@ -21,7 +21,7 @@ module Types
         graphql_name(enum_mod.name) if use_name
         description(enum_mod.description) if use_description
 
-        enum_mod.definition.each { |key, content| value(key.to_s.upcase, content) }
+        enum_mod.definition.each { |key, content| value(key.to_s.upcase, **content) }
       end
 
       def value(*args, **kwargs, &block)

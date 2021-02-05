@@ -1,7 +1,7 @@
 import $ from 'jquery';
+import { s__ } from '~/locale';
 import Autosave from '../../autosave';
 import { capitalizeFirstCharacter } from '../../lib/utils/text_utility';
-import { s__ } from '~/locale';
 
 export default {
   methods: {

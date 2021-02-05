@@ -16,13 +16,15 @@ to them.
 
 > - The New Epic form [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211533) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
 > - In [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/229621) and later, the New Epic button on the Epics list opens the New Epic form.
+> - In [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45948) and later, you can create a new epic from an empty Roadmap.
 
 To create an epic in the group you're in:
 
 1. Get to the New Epic form:
-   - From the **Epics** list in your group, select the **New Epic** button.
-   - From an epic in your group, select the **New Epic** button.
+   - From the **Epics** list in your group, select **New epic**.
+   - From an epic in your group, select **New epic**.
    - From anywhere, in the top menu, select **New...** (**{plus-square}**) **> New epic**.
+   - In an empty [roadmap](../roadmap/index.md), select **New epic**.
 
      ![New epic from an open epic](img/new_epic_from_groups_v13.7.png)
 
@@ -39,7 +41,7 @@ To create an epic in the group you're in:
 
 ## Edit an epic
 
-After you create an epic, you can edit change the following details:
+After you create an epic, you can edit the following details:
 
 - Title
 - Description
@@ -152,6 +154,9 @@ To make an epic confidential:
 
 ## Manage issues assigned to an epic
 
+This section collects instructions for all the things you can do with [issues](../../project/issues/index.md)
+in relation to epics.
+
 ### Add a new issue to an epic
 
 You can add an existing issue to an epic, or create a new issue that's
@@ -176,7 +181,7 @@ To add a new issue to an epic:
    - Search for the desired issue by entering part of the issue's title, then selecting the desired
      match (introduced in [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/9126)).
 
-   If there are multiple issues to be added, press <kbd>Spacebar</kbd> and repeat this step.
+   If there are multiple issues to be added, press <kbd>Space</kbd> and repeat this step.
 1. Select **Add**.
 
 #### Create an issue from an epic
@@ -278,7 +283,7 @@ To add a child epic to an epic:
    - Search for the desired issue by entering part of the epic's title, then selecting the desired
      match (introduced in [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/9126)).
 
-   If there are multiple epics to be added, press <kbd>Spacebar</kbd> and repeat this step.
+   If there are multiple epics to be added, press <kbd>Space</kbd> and repeat this step.
 1. Select **Add**.
 
 ### Move child epics between epics

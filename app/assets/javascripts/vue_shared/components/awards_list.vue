@@ -2,8 +2,8 @@
 /* eslint-disable vue/no-v-html */
 import { groupBy } from 'lodash';
 import { GlIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { glEmojiTag } from '../../emoji';
 import { __, sprintf } from '~/locale';
+import { glEmojiTag } from '../../emoji';
 
 // Internal constant, specific to this component, used when no `currentUserId` is given
 const NO_USER_ID = -1;

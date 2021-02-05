@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26247
 rollout_issue_url: 
 milestone: '12.9'
 type: development
-group: group::progressive delivery
+group: group::release
 default_enabled: true

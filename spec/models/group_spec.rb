@@ -410,7 +410,7 @@ RSpec.describe Group do
 
     it "is false if avatar is html page" do
       group.update_attribute(:avatar, 'uploads/avatar.html')
-      expect(group.avatar_type).to eq(["file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico"])
+      expect(group.avatar_type).to eq(["file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico, webp"])
     end
   end
 
@@ -1489,6 +1489,28 @@ RSpec.describe Group do
       groups = described_class.groups_including_descendants_by([parent_group2.id, parent_group1.id])
 
       expect(groups).to contain_exactly(parent_group1, parent_group2, child_group1, child_group2, child_group3)
+    end
+  end
+
+  describe '.preset_root_ancestor_for' do
+    let_it_be(:rootgroup, reload: true) { create(:group) }
+    let_it_be(:subgroup, reload: true) { create(:group, parent: rootgroup) }
+    let_it_be(:subgroup2, reload: true) { create(:group, parent: subgroup) }
+
+    it 'does noting for single group' do
+      expect(subgroup).not_to receive(:self_and_ancestors)
+
+      described_class.preset_root_ancestor_for([subgroup])
+    end
+
+    it 'sets the same root_ancestor for multiple groups' do
+      expect(subgroup).not_to receive(:self_and_ancestors)
+      expect(subgroup2).not_to receive(:self_and_ancestors)
+
+      described_class.preset_root_ancestor_for([rootgroup, subgroup, subgroup2])
+
+      expect(subgroup.root_ancestor).to eq(rootgroup)
+      expect(subgroup2.root_ancestor).to eq(rootgroup)
     end
   end
 

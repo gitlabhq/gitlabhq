@@ -13,6 +13,7 @@ RSpec.describe 'Pipelines', :js do
     before do
       sign_in(user)
       stub_feature_flags(graphql_pipeline_details: false)
+      stub_feature_flags(graphql_pipeline_details_users: false)
       project.add_developer(user)
       project.update!(auto_devops_attributes: { enabled: false })
     end
@@ -287,23 +288,23 @@ RSpec.describe 'Pipelines', :js do
         end
 
         it 'has a dropdown with play button' do
-          expect(page).to have_selector('.dropdown-new.btn.btn-default .icon-play')
+          expect(page).to have_selector('[data-testid="pipelines-manual-actions-dropdown"] [data-testid="play-icon"]')
         end
 
         it 'has link to the manual action' do
-          find('.js-pipeline-dropdown-manual-actions').click
+          find('[data-testid="pipelines-manual-actions-dropdown"]').click
 
           expect(page).to have_button('manual build')
         end
 
         context 'when manual action was played' do
           before do
-            find('.js-pipeline-dropdown-manual-actions').click
+            find('[data-testid="pipelines-manual-actions-dropdown"]').click
             click_button('manual build')
           end
 
           it 'enqueues manual action job' do
-            expect(page).to have_selector('.js-pipeline-dropdown-manual-actions:disabled')
+            expect(page).to have_selector('[data-testid="pipelines-manual-actions-dropdown"] .gl-dropdown-toggle:disabled')
           end
         end
       end
@@ -321,11 +322,11 @@ RSpec.describe 'Pipelines', :js do
         end
 
         it 'has a dropdown for actionable jobs' do
-          expect(page).to have_selector('.dropdown-new.btn.btn-default .icon-play')
+          expect(page).to have_selector('[data-testid="pipelines-manual-actions-dropdown"] [data-testid="play-icon"]')
         end
 
         it "has link to the delayed job's action" do
-          find('.js-pipeline-dropdown-manual-actions').click
+          find('[data-testid="pipelines-manual-actions-dropdown"]').click
 
           time_diff = [0, delayed_job.scheduled_at - Time.now].max
           expect(page).to have_button('delayed job 1')
@@ -341,7 +342,7 @@ RSpec.describe 'Pipelines', :js do
           end
 
           it "shows 00:00:00 as the remaining time" do
-            find('.js-pipeline-dropdown-manual-actions').click
+            find('[data-testid="pipelines-manual-actions-dropdown"]').click
 
             expect(page).to have_content("00:00:00")
           end
@@ -349,7 +350,7 @@ RSpec.describe 'Pipelines', :js do
 
         context 'when user played a delayed job immediately' do
           before do
-            find('.js-pipeline-dropdown-manual-actions').click
+            find('[data-testid="pipelines-manual-actions-dropdown"]').click
             page.accept_confirm { click_button('delayed job 1') }
             wait_for_requests
           end
@@ -517,54 +518,73 @@ RSpec.describe 'Pipelines', :js do
         end
       end
 
-      context 'mini pipeline graph' do
-        let!(:build) do
-          create(:ci_build, :pending, pipeline: pipeline,
-                                      stage: 'build',
-                                      name: 'build')
-        end
-
-        before do
-          visit_project_pipelines
-        end
-
-        it 'renders a mini pipeline graph' do
-          expect(page).to have_selector('[data-testid="widget-mini-pipeline-graph"]')
-          expect(page).to have_selector('.js-builds-dropdown-button')
-        end
-
-        context 'when clicking a stage badge' do
-          it 'opens a dropdown' do
-            find('.js-builds-dropdown-button').click
-
-            expect(page).to have_link build.name
-          end
-
-          it 'is possible to cancel pending build' do
-            find('.js-builds-dropdown-button').click
-            find('.js-ci-action').click
-            wait_for_requests
-
-            expect(build.reload).to be_canceled
-          end
-        end
-
-        context 'for a failed pipeline' do
+      shared_examples 'mini pipeline renders' do |ci_mini_pipeline_gl_dropdown_enabled|
+        context 'mini pipeline graph' do
           let!(:build) do
-            create(:ci_build, :failed, pipeline: pipeline,
-                                       stage: 'build',
-                                       name: 'build')
+            create(:ci_build, :pending, pipeline: pipeline,
+                                        stage: 'build',
+                                        name: 'build')
           end
 
-          it 'displays the failure reason' do
-            find('.js-builds-dropdown-button').click
+          before do
+            stub_feature_flags(ci_mini_pipeline_gl_dropdown: ci_mini_pipeline_gl_dropdown_enabled)
+            visit_project_pipelines
+          end
 
-            within('.js-builds-dropdown-list') do
-              build_element = page.find('.mini-pipeline-graph-dropdown-item')
-              expect(build_element['title']).to eq('build - failed - (unknown failure)')
+          let_it_be(:dropdown_toggle_selector) do
+            if ci_mini_pipeline_gl_dropdown_enabled
+              '[data-testid="mini-pipeline-graph-dropdown"] .dropdown-toggle'
+            else
+              '[data-testid="mini-pipeline-graph-dropdown-toggle"]'
+            end
+          end
+
+          it 'renders a mini pipeline graph' do
+            expect(page).to have_selector('[data-testid="widget-mini-pipeline-graph"]')
+            expect(page).to have_selector(dropdown_toggle_selector)
+          end
+
+          context 'when clicking a stage badge' do
+            it 'opens a dropdown' do
+              find(dropdown_toggle_selector).click
+
+              expect(page).to have_link build.name
+            end
+
+            it 'is possible to cancel pending build' do
+              find(dropdown_toggle_selector).click
+              find('.js-ci-action').click
+              wait_for_requests
+
+              expect(build.reload).to be_canceled
+            end
+          end
+
+          context 'for a failed pipeline' do
+            let!(:build) do
+              create(:ci_build, :failed, pipeline: pipeline,
+                                        stage: 'build',
+                                        name: 'build')
+            end
+
+            it 'displays the failure reason' do
+              find(dropdown_toggle_selector).click
+
+              within('.js-builds-dropdown-list') do
+                build_element = page.find('.mini-pipeline-graph-dropdown-item')
+                expect(build_element['title']).to eq('build - failed - (unknown failure)')
+              end
             end
           end
         end
+      end
+
+      context 'with ci_mini_pipeline_gl_dropdown disabled' do
+        it_behaves_like "mini pipeline renders", false
+      end
+
+      context 'with ci_mini_pipeline_gl_dropdown enabled' do
+        it_behaves_like "mini pipeline renders", true
       end
 
       context 'with pagination' do

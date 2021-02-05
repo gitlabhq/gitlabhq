@@ -150,7 +150,7 @@
 
           .form-group.row
             .offset-sm-3.col-sm-9
-              = f.submit _('Transfer'), class: 'gl-button btn btn-primary'
+              = f.submit _('Transfer'), class: 'gl-button btn btn-confirm'
 
     .card.repository-check
       .card-header
@@ -170,7 +170,7 @@
             = link_to sprite_icon('question-o'), help_page_path('administration/repository_checks')
 
           .form-group
-            = f.submit _('Trigger repository check'), class: 'gl-button btn btn-primary'
+            = f.submit _('Trigger repository check'), class: 'gl-button btn btn-confirm'
 
   .col-md-6
     - if @group

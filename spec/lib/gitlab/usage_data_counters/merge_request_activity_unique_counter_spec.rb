@@ -73,6 +73,22 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
     end
   end
 
+  describe '.track_resolve_thread_action' do
+    subject { described_class.track_resolve_thread_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_RESOLVE_THREAD_ACTION }
+    end
+  end
+
+  describe '.track_unresolve_thread_action' do
+    subject { described_class.track_unresolve_thread_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_UNRESOLVE_THREAD_ACTION }
+    end
+  end
+
   describe '.track_create_comment_action' do
     subject { described_class.track_create_comment_action(note: note) }
 
@@ -146,6 +162,38 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
 
     it_behaves_like 'a tracked merge request unique event' do
       let(:action) { described_class::MR_PUBLISH_REVIEW_ACTION }
+    end
+  end
+
+  describe '.track_add_suggestion_action' do
+    subject { described_class.track_add_suggestion_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_ADD_SUGGESTION_ACTION }
+    end
+  end
+
+  describe '.track_apply_suggestion_action' do
+    subject { described_class.track_apply_suggestion_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_APPLY_SUGGESTION_ACTION }
+    end
+  end
+
+  describe '.track_users_assigned_to_mr' do
+    subject { described_class.track_users_assigned_to_mr(users: [user]) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_ASSIGNED_USERS_ACTION }
+    end
+  end
+
+  describe '.track_users_review_requested' do
+    subject { described_class.track_users_review_requested(users: [user]) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_REVIEW_REQUESTED_USERS_ACTION }
     end
   end
 end

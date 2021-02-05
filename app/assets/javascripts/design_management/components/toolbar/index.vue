@@ -3,9 +3,9 @@ import { GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
 import { __, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import DesignNavigation from './design_navigation.vue';
 import DeleteButton from '../delete_button.vue';
 import { DESIGNS_ROUTE_NAME } from '../../router/constants';
+import DesignNavigation from './design_navigation.vue';
 
 export default {
   components: {

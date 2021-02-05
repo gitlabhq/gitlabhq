@@ -323,20 +323,6 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
           expect { subject }.to raise_error(described_class::AmbigiousSpecificationError)
         end
       end
-
-      context 'when feature flag is turned off' do
-        let(:values) do
-          { include: full_local_file_path }
-        end
-
-        before do
-          stub_feature_flags(variables_in_include_section_ci: false)
-        end
-
-        it 'does not expand the variables' do
-          expect(subject[0].location).to eq('$CI_PROJECT_PATH' + local_file)
-        end
-      end
     end
   end
 end

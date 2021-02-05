@@ -82,6 +82,13 @@ module Emails
       mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
     end
 
+    def request_review_merge_request_email(recipient_id, merge_request_id, updated_by_user_id, reason = nil)
+      setup_merge_request_mail(merge_request_id, recipient_id)
+
+      @updated_by = User.find(updated_by_user_id)
+      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
+    end
+
     def merge_request_status_email(recipient_id, merge_request_id, status, updated_by_user_id, reason = nil)
       setup_merge_request_mail(merge_request_id, recipient_id)
 

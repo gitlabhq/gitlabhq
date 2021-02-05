@@ -1,6 +1,6 @@
-import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import { formatDate } from '~/lib/utils/datetime_utility';
+import * as types from './mutation_types';
 
 export const updateMemberRole = async ({ state, commit }, { memberId, accessLevel }) => {
   try {
@@ -11,7 +11,7 @@ export const updateMemberRole = async ({ state, commit }, { memberId, accessLeve
 
     commit(types.RECEIVE_MEMBER_ROLE_SUCCESS, { memberId, accessLevel });
   } catch (error) {
-    commit(types.RECEIVE_MEMBER_ROLE_ERROR);
+    commit(types.RECEIVE_MEMBER_ROLE_ERROR, { error });
 
     throw error;
   }
@@ -37,7 +37,7 @@ export const updateMemberExpiration = async ({ state, commit }, { memberId, expi
       expiresAt: expiresAt ? formatDate(expiresAt, 'isoUtcDateTime') : null,
     });
   } catch (error) {
-    commit(types.RECEIVE_MEMBER_EXPIRATION_ERROR);
+    commit(types.RECEIVE_MEMBER_EXPIRATION_ERROR, { error });
 
     throw error;
   }

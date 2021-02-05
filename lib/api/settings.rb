@@ -42,7 +42,8 @@ module API
       optional :asset_proxy_enabled, type: Boolean, desc: 'Enable proxying of assets'
       optional :asset_proxy_url, type: String, desc: 'URL of the asset proxy server'
       optional :asset_proxy_secret_key, type: String, desc: 'Shared secret with the asset proxy server'
-      optional :asset_proxy_whitelist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Assets that match these domain(s) will NOT be proxied. Wildcards allowed. Your GitLab installation URL is automatically whitelisted.'
+      optional :asset_proxy_whitelist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Deprecated: Use :asset_proxy_allowlist instead. Assets that match these domain(s) will NOT be proxied. Wildcards allowed. Your GitLab installation URL is automatically whitelisted.'
+      optional :asset_proxy_allowlist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Assets that match these domain(s) will NOT be proxied. Wildcards allowed. Your GitLab installation URL is automatically allowed.'
       optional :container_registry_token_expire_delay, type: Integer, desc: 'Authorization token duration (minutes)'
       optional :default_artifacts_expire_in, type: String, desc: "Set the default expiration time for each job's artifacts"
       optional :default_ci_config_path, type: String, desc: 'The instance default CI configuration path for new projects'
@@ -209,6 +210,11 @@ module API
       # support legacy names, can be removed in v5
       if attrs.has_key?(:admin_notification_email)
         attrs[:abuse_notification_email] = attrs.delete(:admin_notification_email)
+      end
+
+      # support legacy names, can be removed in v5
+      if attrs.has_key?(:asset_proxy_whitelist)
+        attrs[:asset_proxy_allowlist] = attrs.delete(:asset_proxy_whitelist)
       end
 
       # since 13.0 it's not possible to disable hashed storage - support can be removed in 14.0

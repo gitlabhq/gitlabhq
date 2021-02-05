@@ -14,7 +14,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'creates a project milestone', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/901' do
+      it 'creates a project milestone', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1165' do
         project_milestone = Resource::ProjectMilestone.fabricate_via_browser_ui! do |milestone|
           milestone.title = title
           milestone.description = description

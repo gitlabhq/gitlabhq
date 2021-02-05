@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Cluster Environments **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13392) for group-level clusters in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14809) for instance-level clusters in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13392) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3 for group-level clusters.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14809) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4 for instance-level clusters.
 
 Cluster environments provide a consolidated view of which CI [environments](../../ci/environments/index.md) are
 deployed to the Kubernetes cluster and it:
@@ -38,7 +38,7 @@ In order to:
 - Show pod usage correctly, you must
   [enable Deploy Boards](../project/deploy_boards.md#enabling-deploy-boards).
 
-Once you have successful deployments to your group-level or instance-level cluster:
+After you have successful deployments to your group-level or instance-level cluster:
 
 1. Navigate to your group's **Kubernetes** page.
 1. Click on the **Environments** tab.

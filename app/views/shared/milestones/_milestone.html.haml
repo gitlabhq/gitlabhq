@@ -29,10 +29,10 @@
       %div
         = render('shared/milestone_expired', milestone: milestone)
         - if milestone.group_milestone?
-          .label-badge.gl-bg-blue-50.d-inline-block
+          .gl-badge.badge-info.badge-pill
             = milestone.group.full_name
         - if milestone.project_milestone?
-          .label-badge.gl-bg-gray-50.d-inline-block
+          .gl-badge.badge-muted.badge-pill
             = milestone.project.full_name
 
     .col-sm-4.milestone-progress

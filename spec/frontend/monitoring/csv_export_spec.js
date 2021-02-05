@@ -1,5 +1,5 @@
-import { timeSeriesGraphData } from './graph_data';
 import { graphDataToCsv } from '~/monitoring/csv_export';
+import { timeSeriesGraphData } from './graph_data';
 
 describe('monitoring export_csv', () => {
   describe('graphDataToCsv', () => {

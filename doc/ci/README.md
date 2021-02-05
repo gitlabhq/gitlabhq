@@ -71,7 +71,7 @@ available through the UI. You can use them by creating a new file,
 choosing a template that suits your application, and adjusting it
 to your needs:
 
-![Use a `.gitlab-ci.yml` template](img/add_file_template_11_10.png)
+![Use a YAML template](img/add_file_template_11_10.png)
 
 While building your `.gitlab-ci.yml`, you can use the [CI/CD configuration visualization](pipeline_editor/index.md#visualize-ci-configuration) to facilitate your writing experience.
 
@@ -105,7 +105,7 @@ GitLab CI/CD supports numerous configuration options:
 | Configuration                                                                           | Description                                                                               |
 |:----------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------|
 | [Schedule pipelines](pipelines/schedules.md)                                            | Schedule pipelines to run as often as you need.                                           |
-| [Custom path for `.gitlab-ci.yml`](pipelines/settings.md#custom-ci-configuration-path)  | Define a custom path for the CI/CD configuration file.                                    |
+| [Custom path for `.gitlab-ci.yml`](pipelines/settings.md#custom-cicd-configuration-path) | Define a custom path for the CI/CD configuration file.                                   |
 | [Git submodules for CI/CD](git_submodules.md)                                           | Configure jobs for using Git submodules.                                                  |
 | [SSH keys for CI/CD](ssh_keys/README.md)                                                | Using SSH keys in your CI pipelines.                                                      |
 | [Pipeline triggers](triggers/README.md)                                                 | Trigger pipelines through the API.                                                        |
@@ -134,7 +134,7 @@ Its feature set is listed on the table below according to DevOps stages.
 | [CI services](services/README.md)                                                               | Link Docker containers with your base image.                                                                                   |
 | [Code Quality](../user/project/merge_requests/code_quality.md)                                  | Analyze your source code quality.                                                                                              |
 | [GitLab CI/CD for external repositories](ci_cd_for_external_repos/index.md) **(PREMIUM)**       | Get the benefits of GitLab CI/CD combined with repositories in GitHub and Bitbucket Cloud.                                     |
-| [Interactive Web Terminals](interactive_web_terminal/index.md) **(CORE ONLY)**                  | Open an interactive web terminal to debug the running jobs.                                                                    |
+| [Interactive Web Terminals](interactive_web_terminal/index.md) **(FREE SELF)**                  | Open an interactive web terminal to debug the running jobs.                                                                    |
 | [Unit test reports](unit_test_reports.md)                                                       | Identify script failures directly on merge requests.                                                                           |
 | [Using Docker images](docker/using_docker_images.md)                                            | Use GitLab and GitLab Runner with Docker to build and test applications.                                                       |
 |-------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------|
@@ -160,9 +160,7 @@ Its feature set is listed on the table below according to DevOps stages.
 Find example project code and tutorials for using GitLab CI/CD with a variety of app frameworks, languages, and platforms
 on the [CI Examples](examples/README.md) page.
 
-GitLab also provides [example projects](https://gitlab.com/gitlab-examples) pre-configured to use GitLab CI/CD.
-
-## Administration **(CORE ONLY)**
+## Administration **(FREE SELF)**
 
 As a GitLab administrator, you can change the default behavior
 of GitLab CI/CD for:
@@ -206,7 +204,7 @@ been necessary. These are:
 
 #### 12.0
 
-- [Use refspec to clone/fetch Git repository](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4069).
+- [Use `refspec` to clone/fetch Git repository](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4069).
 - [Old cache configuration](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4070).
 - [Old metrics server configuration](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4072).
 - [Remove `FF_K8S_USE_ENTRYPOINT_OVER_COMMAND`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4073).

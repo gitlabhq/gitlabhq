@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
-import TableRow from './table_row';
 import { HIGHER_PARSE_RULE_PRIORITY } from '../constants';
+import TableRow from './table_row';
 
 const CENTER_ALIGN = 'center';
 

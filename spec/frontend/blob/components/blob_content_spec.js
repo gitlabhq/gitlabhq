@@ -7,6 +7,7 @@ import {
   BLOB_RENDER_EVENT_SHOW_SOURCE,
   BLOB_RENDER_ERRORS,
 } from '~/blob/components/constants';
+import { RichViewer, SimpleViewer } from '~/vue_shared/components/blob_viewers';
 import {
   Blob,
   RichViewerMock,
@@ -14,7 +15,6 @@ import {
   RichBlobContentMock,
   SimpleBlobContentMock,
 } from './mock_data';
-import { RichViewer, SimpleViewer } from '~/vue_shared/components/blob_viewers';
 
 describe('Blob Content component', () => {
   let wrapper;

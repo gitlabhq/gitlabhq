@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import * as types from './mutation_types';
 import { STATUSES } from '../../constants';
+import * as types from './mutation_types';
 
 const makeNewImportedProject = (importedProject) => ({
   importSource: {

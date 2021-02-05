@@ -1,6 +1,6 @@
 import Api from '~/api';
-import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
+import * as types from './mutation_types';
 
 export const setFeatureFlagsOptions = ({ commit }, options) =>
   commit(types.SET_FEATURE_FLAGS_OPTIONS, options);

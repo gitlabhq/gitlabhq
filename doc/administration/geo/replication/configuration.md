@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Geo configuration **(PREMIUM ONLY)**
+# Geo configuration **(PREMIUM SELF)**
 
 ## Configuring a new **secondary** node
 

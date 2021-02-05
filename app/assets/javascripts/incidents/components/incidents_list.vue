@@ -22,10 +22,10 @@ import {
 import { convertToSnakeCase } from '~/lib/utils/text_utility';
 import { s__ } from '~/locale';
 import { visitUrl, mergeUrlParams, joinPaths } from '~/lib/utils/url_utility';
-import getIncidents from '../graphql/queries/get_incidents.query.graphql';
-import getIncidentsCountByStatus from '../graphql/queries/get_count_by_status.query.graphql';
 import SeverityToken from '~/sidebar/components/severity/severity.vue';
 import { INCIDENT_SEVERITY } from '~/sidebar/components/severity/constants';
+import getIncidents from '../graphql/queries/get_incidents.query.graphql';
+import getIncidentsCountByStatus from '../graphql/queries/get_count_by_status.query.graphql';
 import {
   I18N,
   INCIDENT_STATUS_TABS,
@@ -102,7 +102,7 @@ export default {
     GlIcon,
     PublishedCell: () => import('ee_component/incidents/components/published_cell.vue'),
     ServiceLevelAgreementCell: () =>
-      import('ee_component/incidents/components/service_level_agreement_cell.vue'),
+      import('ee_component/vue_shared/components/incidents/service_level_agreement.vue'),
     GlEmptyState,
     SeverityToken,
     PaginatedTableWithSearchAndTabs,

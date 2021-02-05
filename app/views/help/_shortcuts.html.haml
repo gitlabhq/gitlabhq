@@ -60,6 +60,12 @@
                     %kbd p
                     %kbd b
                   %td= _('Toggle the Performance Bar')
+                - if Gitlab.com?
+                  %tr
+                    %td.shortcut
+                      %kbd g
+                      %kbd x
+                    %td= _('Toggle GitLab Next')
               %tbody
                 %tr
                   %th

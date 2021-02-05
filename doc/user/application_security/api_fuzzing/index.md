@@ -69,7 +69,7 @@ Examples of both configurations can be found here:
 The [OpenAPI Specification](https://www.openapis.org/) (formerly the Swagger Specification) is an
 API description format for REST APIs. This section shows you how to configure API fuzzing by using
 an OpenAPI specification to provide information about the target API to test. OpenAPI specifications
-are provided as a filesystem resource or URL.
+are provided as a file system resource or URL.
 
 Follow these steps to configure API fuzzing in GitLab with an OpenAPI specification:
 
@@ -519,7 +519,7 @@ increases as the numbers go up. To use a configuration file, add it to your repo
 ### Overrides
 
 API Fuzzing provides a method to add or override headers and cookies for all outbound HTTP requests
-made. You can use this to inject semver headers, authentication, and so on. The
+made. You can use this to inject semantic version headers, authentication, and so on. The
 [authentication section](#authentication) includes examples of using overrides for that purpose.
 
 Overrides uses a JSON document to define the headers and cookies:

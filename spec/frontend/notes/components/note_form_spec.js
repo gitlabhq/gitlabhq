@@ -4,9 +4,8 @@ import createStore from '~/notes/stores';
 import NoteForm from '~/notes/components/note_form.vue';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
-import { noteableDataMock, notesDataMock, discussionMock } from '../mock_data';
-
 import { getDraft, updateDraft } from '~/lib/utils/autosave';
+import { noteableDataMock, notesDataMock, discussionMock } from '../mock_data';
 
 jest.mock('~/lib/utils/autosave');
 
@@ -24,6 +23,8 @@ describe('issue_note_form component', () => {
       propsData: props,
     });
   };
+
+  const findCancelButton = () => wrapper.find('[data-testid="cancel"]');
 
   beforeEach(() => {
     getDraft.mockImplementation((key) => {
@@ -160,8 +161,8 @@ describe('issue_note_form component', () => {
         });
         await nextTick();
 
-        const cancelButton = wrapper.find('[data-testid="cancel"]');
-        cancelButton.trigger('click');
+        const cancelButton = findCancelButton();
+        cancelButton.vm.$emit('click');
         await nextTick();
 
         expect(wrapper.emitted().cancelForm).toHaveLength(1);
@@ -177,7 +178,7 @@ describe('issue_note_form component', () => {
         const textarea = wrapper.find('textarea');
         textarea.setValue('Foo');
         const saveButton = wrapper.find('.js-vue-issue-save');
-        saveButton.trigger('click');
+        saveButton.vm.$emit('click');
 
         expect(wrapper.vm.isSubmitting).toBe(true);
       });
@@ -272,7 +273,7 @@ describe('issue_note_form component', () => {
 
       await nextTick();
       const cancelButton = wrapper.find('[data-testid="cancelBatchCommentsEnabled"]');
-      cancelButton.trigger('click');
+      cancelButton.vm.$emit('click');
 
       expect(wrapper.vm.cancelHandler).toHaveBeenCalledWith(true);
     });
@@ -302,16 +303,16 @@ describe('issue_note_form component', () => {
       expect(wrapper.find('.js-resolve-checkbox').exists()).toBe(false);
     });
 
-    it('hides actions for commits', () => {
+    it('hides actions for commits', async () => {
       wrapper.setProps({ discussion: { for_commit: true } });
 
-      return nextTick(() => {
-        expect(wrapper.find('.note-form-actions').text()).not.toContain('Start a review');
-      });
+      await nextTick();
+
+      expect(wrapper.find('.note-form-actions').text()).not.toContain('Start a review');
     });
 
     describe('on enter', () => {
-      it('should start review or add to review when cmd+enter is pressed', () => {
+      it('should start review or add to review when cmd+enter is pressed', async () => {
         const textarea = wrapper.find('textarea');
 
         jest.spyOn(wrapper.vm, 'handleAddToReview');
@@ -319,9 +320,8 @@ describe('issue_note_form component', () => {
         textarea.setValue('Foo');
         textarea.trigger('keydown.enter', { metaKey: true });
 
-        return nextTick(() => {
-          expect(wrapper.vm.handleAddToReview).toHaveBeenCalled();
-        });
+        await nextTick();
+        expect(wrapper.vm.handleAddToReview).toHaveBeenCalled();
       });
     });
   });

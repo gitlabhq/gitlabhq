@@ -12,9 +12,9 @@ You can find more about the organization of the frontend team in the [handbook](
 
 The idea is to remind us about specific topics during the time we build a new feature or start something. This is a common practice in other industries (like pilots) that also use standardized checklists to reduce problems early on.
 
-Copy the content over to your issue or merge request and if something doesn't apply simply remove it from your current list.
+Copy the content over to your issue or merge request and if something doesn't apply, remove it from your current list.
 
-This checklist is intended to help us during development of bigger features/refactorings, it's not a "use it always and every point always matches" list.
+This checklist is intended to help us during development of bigger features/refactorings. It is not a "use it always and every point always matches" list.
 
 Please use your best judgment when to use it and please contribute new points through merge requests if something comes to your mind.
 
@@ -77,7 +77,7 @@ With the purpose of being [respectful of others' time](https://about.gitlab.com/
   - includes tests
   - includes a changelog entry (when necessary)
 - Before assigning to a maintainer, assign to a reviewer.
-- If you assigned a merge request or pinged someone directly, be patient because we work in different timezones and asynchronously. Unless the merge request is urgent (like fixing a broken master), please don't DM or reassign the merge request before waiting for a 24-hour window.
+- If you assigned a merge request or pinged someone directly, be patient because we work in different timezones and asynchronously. Unless the merge request is urgent (like fixing a broken default branch), please don't DM or reassign the merge request before waiting for a 24-hour window.
 - If you have a question regarding your merge request/issue, make it on the merge request/issue. When we DM each other, we no longer have a SSOT and [no one else is able to contribute](https://about.gitlab.com/handbook/values/#public-by-default).
 - When you have a big **Draft** merge request with many changes, you're advised to get the review started before adding/removing significant code. Make sure it is assigned well before the release cut-off, as the reviewer(s)/maintainer(s) would always prioritize reviewing finished MRs before the **Draft** ones.
 - Make sure to remove the `Draft:` title before the last round of review.

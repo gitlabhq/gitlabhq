@@ -29,6 +29,7 @@ export const customizations = parsedCustomizations;
 
 // All available commands
 export const TOGGLE_PERFORMANCE_BAR = 'globalShortcuts.togglePerformanceBar';
+export const TOGGLE_CANARY = 'globalShortcuts.toggleCanary';
 
 /** All keybindings, grouped and ordered with descriptions */
 export const keybindingGroups = [
@@ -41,6 +42,12 @@ export const keybindingGroups = [
         command: TOGGLE_PERFORMANCE_BAR,
         // eslint-disable-next-line @gitlab/require-i18n-strings
         defaultKeys: ['p b'],
+      },
+      {
+        description: s__('KeyboardShortcuts|Toggle GitLab Next'),
+        command: TOGGLE_CANARY,
+        // eslint-disable-next-line @gitlab/require-i18n-strings
+        defaultKeys: ['g x'],
       },
     ],
   },

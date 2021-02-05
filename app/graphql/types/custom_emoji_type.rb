@@ -9,19 +9,19 @@ module Types
 
     field :id, ::Types::GlobalIDType[::CustomEmoji],
           null: false,
-          description: 'The ID of the emoji'
+          description: 'The ID of the emoji.'
 
     field :name, GraphQL::STRING_TYPE,
           null: false,
-          description: 'The name of the emoji'
+          description: 'The name of the emoji.'
 
     field :url, GraphQL::STRING_TYPE,
           null: false,
           method: :file,
-          description: 'The link to file of the emoji'
+          description: 'The link to file of the emoji.'
 
     field :external, GraphQL::BOOLEAN_TYPE,
           null: false,
-          description: 'Whether the emoji is an external link'
+          description: 'Whether the emoji is an external link.'
   end
 end

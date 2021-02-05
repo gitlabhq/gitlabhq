@@ -54,10 +54,10 @@
     .col-lg-8
       .form-group
         = f.label :title, class: 'col-form-label label-bold'
-        = f.text_field :title, class: "form-control"
+        = f.text_field :title, class: "form-control gl-form-input"
       .form-group
         = f.label :description, class: 'col-form-label label-bold'
-        = f.text_area :description, class: "form-control", rows: 10
+        = f.text_area :description, class: "form-control gl-form-input", rows: 10
         .hint
           = parsed_with_gfm
       .form-group
@@ -83,7 +83,7 @@
       .form-group
         = f.label :new_project_guidelines, class: 'col-form-label label-bold'
         %p
-          = f.text_area :new_project_guidelines, class: "form-control", rows: 10
+          = f.text_area :new_project_guidelines, class: "form-control gl-form-input", rows: 10
           .hint
             = parsed_with_gfm
 
@@ -96,7 +96,7 @@
       .form-group
         = f.label :profile_image_guidelines, class: 'col-form-label label-bold'
         %p
-          = f.text_area :profile_image_guidelines, class: "form-control", rows: 10
+          = f.text_area :profile_image_guidelines, class: "form-control gl-form-input", rows: 10
           .hint
             = parsed_with_gfm
 

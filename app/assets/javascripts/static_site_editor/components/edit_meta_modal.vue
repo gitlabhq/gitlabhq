@@ -4,9 +4,8 @@ import { __, s__, sprintf } from '~/locale';
 import Api from '~/api';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
-import EditMetaControls from './edit_meta_controls.vue';
-
 import { ISSUABLE_TYPE, MR_META_LOCAL_STORAGE_KEY } from '../constants';
+import EditMetaControls from './edit_meta_controls.vue';
 
 export default {
   components: {

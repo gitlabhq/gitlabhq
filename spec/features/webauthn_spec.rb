@@ -129,6 +129,10 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js do
       end
 
       it 'falls back to U2F' do
+        # WebAuthn registration is automatically created with the U2fRegistration because of the after_create callback
+        # so we need to delete it
+        WebauthnRegistration.delete_all
+
         gitlab_sign_in(user)
 
         u2f_device.respond_to_u2f_authentication

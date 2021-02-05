@@ -4,13 +4,14 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Tracking from '~/tracking';
+import axios from '~/lib/utils/axios_utils';
 import component from '~/registry/explorer/pages/details.vue';
 import DeleteAlert from '~/registry/explorer/components/details_page/delete_alert.vue';
 import PartialCleanupAlert from '~/registry/explorer/components/details_page/partial_cleanup_alert.vue';
 import DetailsHeader from '~/registry/explorer/components/details_page/details_header.vue';
 import TagsLoader from '~/registry/explorer/components/details_page/tags_loader.vue';
 import TagsList from '~/registry/explorer/components/details_page/tags_list.vue';
-import EmptyTagsState from '~/registry/explorer/components/details_page/empty_tags_state.vue';
+import EmptyTagsState from '~/registry/explorer/components/details_page/empty_state.vue';
 
 import getContainerRepositoryDetailsQuery from '~/registry/explorer/graphql/queries/get_container_repository_details.query.graphql';
 import deleteContainerRepositoryTagsMutation from '~/registry/explorer/graphql/mutations/delete_container_repository_tags.mutation.graphql';
@@ -22,6 +23,7 @@ import {
   graphQLImageDetailsEmptyTagsMock,
   graphQLDeleteImageRepositoryTagsMock,
   containerRepositoryMock,
+  graphQLEmptyImageDetailsMock,
   tagsMock,
   tagsPageInfo,
 } from '../mock_data';
@@ -39,7 +41,7 @@ describe('Details Page', () => {
   const findTagsList = () => wrapper.find(TagsList);
   const findDeleteAlert = () => wrapper.find(DeleteAlert);
   const findDetailsHeader = () => wrapper.find(DetailsHeader);
-  const findEmptyTagsState = () => wrapper.find(EmptyTagsState);
+  const findEmptyState = () => wrapper.find(EmptyTagsState);
   const findPartialCleanupAlert = () => wrapper.find(PartialCleanupAlert);
 
   const routeId = 1;
@@ -133,6 +135,27 @@ describe('Details Page', () => {
     });
   });
 
+  describe('when the image does not exist', () => {
+    it('does not show the default ui', async () => {
+      mountComponent({ resolver: jest.fn().mockResolvedValue(graphQLEmptyImageDetailsMock) });
+
+      await waitForApolloRequestRender();
+
+      expect(findTagsLoader().exists()).toBe(false);
+      expect(findDetailsHeader().exists()).toBe(false);
+      expect(findTagsList().exists()).toBe(false);
+      expect(findPagination().exists()).toBe(false);
+    });
+
+    it('shows an empty state message', async () => {
+      mountComponent({ resolver: jest.fn().mockResolvedValue(graphQLEmptyImageDetailsMock) });
+
+      await waitForApolloRequestRender();
+
+      expect(findEmptyState().exists()).toBe(true);
+    });
+  });
+
   describe('when the list of tags is empty', () => {
     const resolver = jest.fn().mockResolvedValue(graphQLImageDetailsEmptyTagsMock);
 
@@ -141,7 +164,7 @@ describe('Details Page', () => {
 
       await waitForApolloRequestRender();
 
-      expect(findEmptyTagsState().exists()).toBe(true);
+      expect(findEmptyState().exists()).toBe(true);
     });
 
     it('does not show the loader', async () => {
@@ -401,6 +424,9 @@ describe('Details Page', () => {
     const config = {
       runCleanupPoliciesHelpPagePath: 'foo',
       cleanupPoliciesHelpPagePath: 'bar',
+      userCalloutsPath: 'call_out_path',
+      userCalloutId: 'call_out_id',
+      showUnfinishedTagCleanupCallout: true,
     };
 
     describe(`when expirationPolicyCleanupStatus is ${UNFINISHED_STATUS}`, () => {
@@ -413,8 +439,9 @@ describe('Details Page', () => {
           }),
         );
       });
+
       it('exists', async () => {
-        mountComponent({ resolver });
+        mountComponent({ resolver, config });
 
         await waitForApolloRequestRender();
 
@@ -426,11 +453,16 @@ describe('Details Page', () => {
 
         await waitForApolloRequestRender();
 
-        expect(findPartialCleanupAlert().props()).toEqual({ ...config });
+        expect(findPartialCleanupAlert().props()).toEqual({
+          runCleanupPoliciesHelpPagePath: config.runCleanupPoliciesHelpPagePath,
+          cleanupPoliciesHelpPagePath: config.cleanupPoliciesHelpPagePath,
+        });
       });
 
       it('dismiss hides the component', async () => {
-        mountComponent({ resolver });
+        jest.spyOn(axios, 'post').mockReturnValue();
+
+        mountComponent({ resolver, config });
 
         await waitForApolloRequestRender();
 
@@ -440,13 +472,25 @@ describe('Details Page', () => {
 
         await wrapper.vm.$nextTick();
 
+        expect(axios.post).toHaveBeenCalledWith(config.userCalloutsPath, {
+          feature_name: config.userCalloutId,
+        });
+        expect(findPartialCleanupAlert().exists()).toBe(false);
+      });
+
+      it('is hidden if the callout is dismissed', async () => {
+        mountComponent({ resolver });
+
+        await waitForApolloRequestRender();
+
         expect(findPartialCleanupAlert().exists()).toBe(false);
       });
     });
 
     describe(`when expirationPolicyCleanupStatus is not ${UNFINISHED_STATUS}`, () => {
       it('the component is hidden', async () => {
-        mountComponent();
+        mountComponent({ config });
+
         await waitForApolloRequestRender();
 
         expect(findPartialCleanupAlert().exists()).toBe(false);

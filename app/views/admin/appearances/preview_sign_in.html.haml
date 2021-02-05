@@ -3,10 +3,10 @@
   %form.gl-show-field-errors
     .form-group
       = label_tag :login
-      = text_field_tag :login, nil, class: "form-control top", title: 'Please provide your username or email address.'
+      = text_field_tag :login, nil, class: "form-control gl-form-input top", title: 'Please provide your username or email address.'
     .form-group
       = label_tag :password
-      = password_field_tag :password, nil, class: "form-control bottom", title: 'This field is required.'
+      = password_field_tag :password, nil, class: "form-control gl-form-input bottom", title: 'This field is required.'
     .form-group
       = button_tag "Sign in", class: "btn gl-button btn-success"
 

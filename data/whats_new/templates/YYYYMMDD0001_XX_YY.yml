@@ -1,0 +1,32 @@
+# This is a template for a "Whats New" release.
+# A release typically contains multiple entries of features that we'd like to highlight.
+#
+# Below is an example of what a single entry should look like, it's required attributes,
+# and what types we expect those attribute values to be. All attributes are required.
+#
+# For more information please refer to the handbook documentation here:
+# https://about.gitlab.com/handbook/marketing/blog/release-posts/index.html#create-mr-for-whats-new-entries
+#
+# Please delete this line and above before submitting your Merge Request.
+
+- title: # Match the release post entry
+  body: | # Do not modify this line, instead modify the lines below.
+    <!-- START OF BODY COMMENT
+
+    This area supports markdown.
+
+    It is recommended to copy and paste the release post entry content here.
+
+    You can shorten it if needed, but remember that the entry itself has already been reviewed by Tech Writing so don't feel like you need to reword anything.
+
+    Delete this entire comment and replace it with your markdown content.
+
+    END OF BODY COMMENT -->
+  stage: # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: # Boolean value (true or false)
+  gitlab-com: # Boolean value (true or false)
+  packages: # Array of strings. The Array brackets are required here. e.g., [Core, Starter, Premium, Ultimate]
+  url: # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: # YYYY-MM-DD
+  release: # XX.Y

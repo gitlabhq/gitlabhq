@@ -161,7 +161,7 @@ Try to find which jobs don't need to run in all situations, and use pipeline con
 to stop them from running:
 
 - Use the [`interruptible`](../yaml/README.md#interruptible) keyword to stop old pipelines
-  when they are superceded by a newer pipeline.
+  when they are superseded by a newer pipeline.
 - Use [`rules`](../yaml/README.md#rules) to skip tests that aren't needed. For example,
   skip backend tests when only the frontend code is changed.
 - Run non-essential [scheduled pipelines](schedules.md) less frequently.

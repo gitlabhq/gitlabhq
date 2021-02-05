@@ -31,7 +31,7 @@ RSpec.describe API::Applications, :api do
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response).to be_a Hash
-        expect(json_response['message']['redirect_uri'][0]).to eq('must be an absolute URI.')
+        expect(json_response['message']['redirect_uri'][0]).to eq('must be a valid URI.')
       end
 
       it 'does not allow creating an application with a forbidden URI format' do

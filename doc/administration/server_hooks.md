@@ -6,7 +6,7 @@ type: reference, howto
 disqus_identifier: 'https://docs.gitlab.com/ee/administration/custom_hooks.html'
 ---
 
-# Server hooks **(CORE ONLY)**
+# Server hooks **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196051) in GitLab 12.8 replacing Custom Hooks.
 

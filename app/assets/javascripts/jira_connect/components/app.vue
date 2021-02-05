@@ -3,6 +3,8 @@ import { mapState } from 'vuex';
 import { GlAlert, GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+
+import { getLocation } from '~/jira_connect/api';
 import GroupsList from './groups_list.vue';
 
 export default {
@@ -17,15 +19,40 @@ export default {
     GlModalDirective,
   },
   mixins: [glFeatureFlagsMixin()],
+  inject: {
+    usersPath: {
+      default: '',
+    },
+  },
+  data() {
+    return {
+      location: '',
+    };
+  },
   computed: {
     ...mapState(['errorMessage']),
     showNewUI() {
       return this.glFeatures.newJiraConnectUi;
     },
+    usersPathWithReturnTo() {
+      if (this.location) {
+        return `${this.usersPath}?return_to=${this.location}`;
+      }
+
+      return this.usersPath;
+    },
   },
   modal: {
     cancelProps: {
       text: __('Cancel'),
+    },
+  },
+  created() {
+    this.setLocation();
+  },
+  methods: {
+    async setLocation() {
+      this.location = await getLocation();
     },
   },
 };
@@ -37,27 +64,40 @@ export default {
       {{ errorMessage }}
     </gl-alert>
 
-    <h1>GitLab for Jira Configuration</h1>
+    <h2>{{ s__('JiraService|GitLab for Jira Configuration') }}</h2>
 
     <div
       v-if="showNewUI"
-      class="gl-display-flex gl-justify-content-space-between gl-my-5 gl-pb-4 gl-border-b-solid gl-border-b-1 gl-border-b-gray-200"
+      class="gl-display-flex gl-justify-content-space-between gl-my-7 gl-pb-4 gl-border-b-solid gl-border-b-1 gl-border-b-gray-200"
     >
-      <h3 data-testid="new-jira-connect-ui-heading">{{ s__('Integrations|Linked namespaces') }}</h3>
+      <h5 class="gl-align-self-center gl-mb-0" data-testid="new-jira-connect-ui-heading">
+        {{ s__('Integrations|Linked namespaces') }}
+      </h5>
       <gl-button
-        v-gl-modal-directive="'add-namespace-modal'"
+        v-if="usersPath"
         category="primary"
         variant="info"
         class="gl-align-self-center"
-        >{{ s__('Integrations|Add namespace') }}</gl-button
+        :href="usersPathWithReturnTo"
+        target="_blank"
+        >{{ s__('Integrations|Sign in to add namespaces') }}</gl-button
       >
-      <gl-modal
-        modal-id="add-namespace-modal"
-        :title="s__('Integrations|Link namespaces')"
-        :action-cancel="$options.modal.cancelProps"
-      >
-        <groups-list />
-      </gl-modal>
+      <template v-else>
+        <gl-button
+          v-gl-modal-directive="'add-namespace-modal'"
+          category="primary"
+          variant="info"
+          class="gl-align-self-center"
+          >{{ s__('Integrations|Add namespace') }}</gl-button
+        >
+        <gl-modal
+          modal-id="add-namespace-modal"
+          :title="s__('Integrations|Link namespaces')"
+          :action-cancel="$options.modal.cancelProps"
+        >
+          <groups-list />
+        </gl-modal>
+      </template>
     </div>
   </div>
 </template>

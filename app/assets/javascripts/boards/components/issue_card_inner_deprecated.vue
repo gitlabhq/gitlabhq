@@ -5,11 +5,11 @@ import { GlLabel, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import issueCardInner from 'ee_else_ce/boards/mixins/issue_card_inner';
 import { sprintf, __, n__ } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import { isScopedLabel } from '~/lib/utils/common_utils';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import boardsStore from '../stores/boards_store';
 import IssueDueDate from './issue_due_date.vue';
 import IssueTimeEstimate from './issue_time_estimate_deprecated.vue';
-import boardsStore from '../stores/boards_store';
-import { isScopedLabel } from '~/lib/utils/common_utils';
 
 export default {
   components: {

@@ -11,6 +11,7 @@ import GroupEmptyState from '~/registry/explorer/components/list_page/group_empt
 import ProjectEmptyState from '~/registry/explorer/components/list_page/project_empty_state.vue';
 import RegistryHeader from '~/registry/explorer/components/list_page/registry_header.vue';
 import ImageList from '~/registry/explorer/components/list_page/image_list.vue';
+import DeleteImage from '~/registry/explorer/components/delete_image.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 
 import {
@@ -27,7 +28,6 @@ import {
   graphQLImageListMock,
   graphQLImageDeleteMock,
   deletedContainerRepository,
-  graphQLImageDeleteMockError,
   graphQLEmptyImageListMock,
   graphQLEmptyGroupImageListMock,
   pageInfo,
@@ -58,6 +58,7 @@ describe('List Page', () => {
   const findListHeader = () => wrapper.find('[data-testid="listHeader"]');
   const findSearchBox = () => wrapper.find(GlSearchBoxByClick);
   const findEmptySearchMessage = () => wrapper.find('[data-testid="emptySearch"]');
+  const findDeleteImage = () => wrapper.find(DeleteImage);
 
   const waitForApolloRequestRender = async () => {
     jest.runOnlyPendingTimers();
@@ -91,6 +92,7 @@ describe('List Page', () => {
         GlSprintf,
         RegistryHeader,
         TitleArea,
+        DeleteImage,
       },
       mocks: {
         $toast,
@@ -300,23 +302,22 @@ describe('List Page', () => {
       });
 
       describe('delete image', () => {
-        const deleteImage = async () => {
-          await wrapper.vm.$nextTick();
+        const selectImageForDeletion = async () => {
+          await waitForApolloRequestRender();
 
           findImageList().vm.$emit('delete', deletedContainerRepository);
-          findDeleteModal().vm.$emit('ok');
-
-          await waitForApolloRequestRender();
         };
 
         it('should call deleteItem when confirming deletion', async () => {
           const mutationResolver = jest.fn().mockResolvedValue(graphQLImageDeleteMock);
           mountComponent({ mutationResolver });
 
-          await deleteImage();
+          await selectImageForDeletion();
+
+          findDeleteModal().vm.$emit('primary');
+          await waitForApolloRequestRender();
 
           expect(wrapper.vm.itemToDelete).toEqual(deletedContainerRepository);
-          expect(mutationResolver).toHaveBeenCalledWith({ id: deletedContainerRepository.id });
 
           const updatedImage = findImageList()
             .props('images')
@@ -326,10 +327,12 @@ describe('List Page', () => {
         });
 
         it('should show a success alert when delete request is successful', async () => {
-          const mutationResolver = jest.fn().mockResolvedValue(graphQLImageDeleteMock);
-          mountComponent({ mutationResolver });
+          mountComponent();
 
-          await deleteImage();
+          await selectImageForDeletion();
+
+          findDeleteImage().vm.$emit('success');
+          await wrapper.vm.$nextTick();
 
           const alert = findDeleteAlert();
           expect(alert.exists()).toBe(true);
@@ -340,23 +343,12 @@ describe('List Page', () => {
 
         describe('when delete request fails it shows an alert', () => {
           it('user recoverable error', async () => {
-            const mutationResolver = jest.fn().mockResolvedValue(graphQLImageDeleteMockError);
-            mountComponent({ mutationResolver });
+            mountComponent();
 
-            await deleteImage();
+            await selectImageForDeletion();
 
-            const alert = findDeleteAlert();
-            expect(alert.exists()).toBe(true);
-            expect(alert.text().replace(/\s\s+/gm, ' ')).toBe(
-              DELETE_IMAGE_ERROR_MESSAGE.replace('%{title}', wrapper.vm.itemToDelete.path),
-            );
-          });
-
-          it('network error', async () => {
-            const mutationResolver = jest.fn().mockRejectedValue();
-            mountComponent({ mutationResolver });
-
-            await deleteImage();
+            findDeleteImage().vm.$emit('error');
+            await wrapper.vm.$nextTick();
 
             const alert = findDeleteAlert();
             expect(alert.exists()).toBe(true);
@@ -499,9 +491,8 @@ describe('List Page', () => {
       testTrackingCall('cancel_delete');
     });
 
-    it('send an event when confirm is clicked on modal', () => {
-      const deleteModal = findDeleteModal();
-      deleteModal.vm.$emit('ok');
+    it('send an event when the deletion starts', () => {
+      findDeleteImage().vm.$emit('start');
       testTrackingCall('confirm_delete');
     });
   });

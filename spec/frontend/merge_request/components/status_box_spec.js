@@ -18,6 +18,12 @@ const testCases = [
     icon: 'issue-open-m',
   },
   {
+    name: 'Open',
+    state: 'locked',
+    class: 'status-box-open',
+    icon: 'issue-open-m',
+  },
+  {
     name: 'Closed',
     state: 'closed',
     class: 'status-box-mr-closed',

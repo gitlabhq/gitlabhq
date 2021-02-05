@@ -50,7 +50,7 @@ Now navigate to GitLab services page and activate Jenkins
 
 ![screen](img/jenkins_gitlab_service.png)
 
-Done! Now when you push to GitLab - it creates a build for Jenkins, and you can view the merge request build status with a link to the Jenkins build.
+Done! When you push to GitLab, it creates a build for Jenkins. You can view the merge request build status with a link to the Jenkins build.
 
 ### Multi-project Configuration
 

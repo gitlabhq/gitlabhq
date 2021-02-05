@@ -8,7 +8,7 @@ type: reference, howto
 # Static Application Security Testing (SAST)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3775) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.3.
-> - All open source (OSS) analyzers were moved to GitLab Core in GitLab 13.3.
+> - All open source (OSS) analyzers were moved to GitLab Free in GitLab 13.3.
 
 NOTE:
 The whitepaper ["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)
@@ -117,18 +117,18 @@ The following analyzers have multi-project support:
 #### Enable multi-project support for Security Code Scan
 
 Multi-project support in the Security Code Scan requires a Solution (`.sln`) file in the root of
-the repository. For details on the Solution format, see the Microsoft reference [Solution (.sln) file](https://docs.microsoft.com/en-us/visualstudio/extensibility/internals/solution-dot-sln-file?view=vs-2019).
+the repository. For details on the Solution format, see the Microsoft reference [Solution (`.sln`) file](https://docs.microsoft.com/en-us/visualstudio/extensibility/internals/solution-dot-sln-file?view=vs-2019).
 
 ### Making SAST analyzers available to all GitLab tiers
 
-All open source (OSS) analyzers have been moved to the GitLab Core tier as of GitLab 13.3.
+All open source (OSS) analyzers have been moved to the GitLab Free tier as of GitLab 13.3.
 
 #### Summary of features per tier
 
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
 
-| Capability                                                                         | In Core             | In Ultimate        |
+| Capability                                                                         | In Free             | In Ultimate        |
 |:-----------------------------------------------------------------------------------|:--------------------|:-------------------|
 | [Configure SAST Scanners](#configuration)                                          | **{check-circle}**  | **{check-circle}** |
 | [Customize SAST Settings](#customizing-the-sast-settings)                          | **{check-circle}**  | **{check-circle}** |
@@ -335,7 +335,7 @@ it via [custom environment variables](#custom-environment-variables).
 If your private Maven repository requires login credentials,
 you can use the `MAVEN_CLI_OPTS` environment variable.
 
-Read more on [how to use private Maven repositories](../index.md#using-private-maven-repos).
+Read more on [how to use private Maven repositories](../index.md#using-private-maven-repositories).
 
 ### Enabling Kubesec analyzer
 
@@ -720,6 +720,10 @@ affected. Read more in
 
 For information on this, see the [general Application Security troubleshooting section](../../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload).
 
+### Error: `sast is used for configuration only, and its script should not be executed`
+
+For information on this, see the [GitLab Secure troubleshooting section](../index.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
+
 ### Limitation when using rules:exists
 
 The [SAST CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)
@@ -750,3 +754,7 @@ For Maven builds, add the following to your `pom.xml` file:
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 </properties>
 ```
+
+### Flawfinder encoding error
+
+This occurs when Flawfinder encounters an invalid UTF-8 character. To fix this, convert all source code in your project to UTF-8 character encoding. This can be done with [`cvt2utf`](https://github.com/x1angli/cvt2utf) or [`iconv`](https://www.gnu.org/software/libiconv/documentation/libiconv-1.13/iconv.1.html) either over the entire project or per job using the [`before_script`](../../../ci/yaml/README.md#before_script) feature.

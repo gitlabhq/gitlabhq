@@ -11,6 +11,8 @@ RSpec.describe 'Projects > Members > Maintainer adds member with expiration date
   let(:new_member) { create(:user) }
 
   before do
+    stub_feature_flags(vue_project_members_list: false)
+
     travel_to Time.now.utc.beginning_of_day
 
     project.add_maintainer(maintainer)
@@ -18,6 +20,8 @@ RSpec.describe 'Projects > Members > Maintainer adds member with expiration date
   end
 
   it 'expiration date is displayed in the members list' do
+    stub_feature_flags(invite_members_group_modal: false)
+
     visit project_project_members_path(project)
 
     page.within '.invite-users-form' do

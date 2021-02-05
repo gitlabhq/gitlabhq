@@ -60,8 +60,8 @@ describe('AppComponent', () => {
   beforeEach(() => {
     mock = new AxiosMockAdapter(axios);
     mock.onGet('/dashboard/groups.json').reply(200, mockGroups);
-    Vue.component('group-folder', groupFolderComponent);
-    Vue.component('group-item', groupItemComponent);
+    Vue.component('GroupFolder', groupFolderComponent);
+    Vue.component('GroupItem', groupItemComponent);
 
     createShallowComponent();
     getGroupsSpy = jest.spyOn(vm.service, 'getGroups');

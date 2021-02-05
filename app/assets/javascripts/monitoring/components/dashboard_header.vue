@@ -16,13 +16,12 @@ import { mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 
+import { timeRanges } from '~/vue_shared/constants';
+import { timeRangeToUrl } from '../utils';
+import { timezones } from '../format_date';
 import DashboardsDropdown from './dashboards_dropdown.vue';
 import RefreshButton from './refresh_button.vue';
 import ActionsMenu from './dashboard_actions_menu.vue';
-
-import { timeRangeToUrl } from '../utils';
-import { timeRanges } from '~/vue_shared/constants';
-import { timezones } from '../format_date';
 
 export default {
   components: {

@@ -2,9 +2,9 @@
 // This component is being replaced in favor of './board_column.vue' for GraphQL boards
 import Sortable from 'sortablejs';
 import BoardListHeader from 'ee_else_ce/boards/components/board_list_header_deprecated.vue';
-import BoardList from './board_list_deprecated.vue';
 import boardsStore from '../stores/boards_store';
 import { getBoardSortableDefaultOptions, sortableEnd } from '../mixins/sortable_default_options';
+import BoardList from './board_list_deprecated.vue';
 
 export default {
   components: {
@@ -46,6 +46,7 @@ export default {
   watch: {
     filter: {
       handler() {
+        // eslint-disable-next-line vue/no-mutating-props
         this.list.page = 1;
         this.list.getIssues(true).catch(() => {
           // TODO: handle request error

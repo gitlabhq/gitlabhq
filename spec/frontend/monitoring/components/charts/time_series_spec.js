@@ -1,14 +1,14 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import { setTestTimeout } from 'helpers/timeout';
 import timezoneMock from 'timezone-mock';
 import { GlLink } from '@gitlab/ui';
-import { TEST_HOST } from 'helpers/test_constants';
 import {
   GlAreaChart,
   GlLineChart,
   GlChartSeriesLabel,
   GlChartLegend,
 } from '@gitlab/ui/dist/charts';
+import { TEST_HOST } from 'helpers/test_constants';
+import { setTestTimeout } from 'helpers/timeout';
 import { shallowWrapperContainsSlotText } from 'helpers/vue_test_utils_helper';
 import { panelTypes, chartHeight } from '~/monitoring/constants';
 import TimeSeries from '~/monitoring/components/charts/time_series.vue';

@@ -1,8 +1,8 @@
 <script>
+import { s__, sprintf } from '~/locale';
 import ActionButtonGroup from './action_button_group.vue';
 import RemoveMemberButton from './remove_member_button.vue';
 import ResendInviteButton from './resend_invite_button.vue';
-import { s__, sprintf } from '~/locale';
 
 export default {
   name: 'InviteActionButtons',

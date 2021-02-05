@@ -18,6 +18,9 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :define_commit_vars, only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]
   before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
+  before_action only: [:pipelines] do
+    push_frontend_feature_flag(:ci_mini_pipeline_gl_dropdown, @project, type: :development, default_enabled: :yaml)
+  end
 
   BRANCH_SEARCH_LIMIT = 1000
 

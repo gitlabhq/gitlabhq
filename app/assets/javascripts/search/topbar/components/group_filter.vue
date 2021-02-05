@@ -2,8 +2,8 @@
 import { mapState, mapActions } from 'vuex';
 import { isEmpty } from 'lodash';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
-import SearchableDropdown from './searchable_dropdown.vue';
 import { ANY_OPTION, GROUP_DATA, PROJECT_DATA } from '../constants';
+import SearchableDropdown from './searchable_dropdown.vue';
 
 export default {
   name: 'GroupFilter',
@@ -37,6 +37,7 @@ export default {
 
 <template>
   <searchable-dropdown
+    data-testid="group-filter"
     :header-text="$options.GROUP_DATA.headerText"
     :selected-display-value="$options.GROUP_DATA.selectedDisplayValue"
     :items-display-value="$options.GROUP_DATA.itemsDisplayValue"

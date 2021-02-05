@@ -64,7 +64,7 @@ module BlobHelper
   def edit_blob_button(project = @project, ref = @ref, path = @path, options = {})
     return unless blob = readable_blob(options, path, project, ref)
 
-    common_classes = "btn btn-primary js-edit-blob gl-mr-3 #{options[:extra_class]}"
+    common_classes = "btn gl-button btn-confirm js-edit-blob gl-mr-3 #{options[:extra_class]}"
     data = { track_event: 'click_edit', track_label: 'Edit' }
 
     if Feature.enabled?(:web_ide_primary_edit, project.group)
@@ -84,7 +84,7 @@ module BlobHelper
   def ide_edit_button(project = @project, ref = @ref, path = @path, blob:)
     return unless blob
 
-    common_classes = 'btn btn-primary ide-edit-button gl-mr-3'
+    common_classes = 'btn gl-button btn-confirm ide-edit-button gl-mr-3'
     data = { track_event: 'click_edit_ide', track_label: 'Web IDE' }
 
     unless Feature.enabled?(:web_ide_primary_edit, project.group)
@@ -105,7 +105,7 @@ module BlobHelper
     return unless current_user
     return unless blob
 
-    common_classes = "btn btn-#{btn_class}"
+    common_classes = "btn gl-button btn-default btn-#{btn_class}"
     base_button = button_tag(label, class: "#{common_classes} disabled", disabled: true)
 
     if !on_top_of_branch?(project, ref)
@@ -247,7 +247,7 @@ module BlobHelper
   def copy_blob_source_button(blob)
     return unless blob.rendered_as_text?(ignore_errors: false)
 
-    clipboard_button(target: ".blob-content[data-blob-id='#{blob.id}'] > pre", class: "btn btn-sm js-copy-blob-source-btn", title: _("Copy file contents"))
+    clipboard_button(target: ".blob-content[data-blob-id='#{blob.id}'] > pre", class: "btn gl-button btn-default btn-sm js-copy-blob-source-btn", title: _("Copy file contents"))
   end
 
   def open_raw_blob_button(blob)
@@ -257,7 +257,7 @@ module BlobHelper
     title = _('Open raw')
     link_to sprite_icon('doc-code'),
       external_storage_url_or_path(blob_raw_path),
-      class: 'btn btn-sm has-tooltip',
+      class: 'btn gl-button btn-default btn-sm has-tooltip',
       target: '_blank',
       rel: 'noopener noreferrer',
       aria: { label: title },
@@ -272,7 +272,7 @@ module BlobHelper
     link_to sprite_icon('download'),
       external_storage_url_or_path(blob_raw_path(inline: false)),
       download: @path,
-      class: 'btn btn-sm has-tooltip',
+      class: 'btn gl-button btn-default btn-sm has-tooltip',
       target: '_blank',
       rel: 'noopener noreferrer',
       aria: { label: title },

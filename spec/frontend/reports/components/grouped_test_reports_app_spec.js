@@ -18,12 +18,11 @@ localVue.use(Vuex);
 describe('Grouped test reports app', () => {
   const endpoint = 'endpoint.json';
   const pipelinePath = '/path/to/pipeline';
-  const Component = localVue.extend(GroupedTestReportsApp);
   let wrapper;
   let mockStore;
 
   const mountComponent = ({ props = { pipelinePath } } = {}) => {
-    wrapper = mount(Component, {
+    wrapper = mount(GroupedTestReportsApp, {
       store: mockStore,
       localVue,
       propsData: {

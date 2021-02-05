@@ -1,9 +1,9 @@
 import { format } from 'timeago.js';
 import getStateKey from 'ee_else_ce/vue_merge_request_widget/stores/get_state_key';
 import mrEventHub from '~/merge_request/eventhub';
-import { stateKey } from './state_maps';
 import { formatDate } from '../../lib/utils/datetime_utility';
 import { MTWPS_MERGE_STRATEGY, MT_MERGE_STRATEGY, MWPS_MERGE_STRATEGY } from '../constants';
+import { stateKey } from './state_maps';
 
 export default class MergeRequestStore {
   constructor(data) {
@@ -156,9 +156,9 @@ export default class MergeRequestStore {
 
     this.setState();
 
-    mrEventHub.$emit('mr.state.updated', {
-      state: this.mergeRequestState,
-    });
+    if (!window.gon?.features?.mergeRequestWidgetGraphql) {
+      this.emitUpdatedState();
+    }
   }
 
   setGraphqlData(project) {
@@ -182,7 +182,9 @@ export default class MergeRequestStore {
     this.isSHAMismatch = this.sha !== mergeRequest.diffHeadSha;
     this.shouldBeRebased = mergeRequest.shouldBeRebased;
     this.workInProgress = mergeRequest.workInProgress;
+    this.mergeRequestState = mergeRequest.state;
 
+    this.emitUpdatedState();
     this.setState();
   }
 
@@ -206,6 +208,12 @@ export default class MergeRequestStore {
           this.state = null;
       }
     }
+  }
+
+  emitUpdatedState() {
+    mrEventHub.$emit('mr.state.updated', {
+      state: this.mergeRequestState,
+    });
   }
 
   setPaths(data) {
@@ -241,10 +249,11 @@ export default class MergeRequestStore {
     this.isDismissedSuggestPipeline = data.is_dismissed_suggest_pipeline;
     this.securityReportsDocsPath = data.security_reports_docs_path;
 
-    // codeclimate
+    // code quality
     const blobPath = data.blob_path || {};
     this.headBlobPath = blobPath.head_path || '';
     this.baseBlobPath = blobPath.base_path || '';
+    this.codequalityReportsPath = data.codequality_reports_path;
     this.codequalityHelpPath = data.codequality_help_path;
     this.codeclimate = data.codeclimate;
 

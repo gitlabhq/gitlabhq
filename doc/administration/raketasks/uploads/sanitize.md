@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Uploads sanitize Rake tasks **(CORE ONLY)**
+# Uploads sanitize Rake tasks **(FREE SELF)**
 
 In GitLab 11.9 and later, EXIF data is automatically stripped from JPG or TIFF image uploads.
 

@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 WARNING:
 This [Closed Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#sts=Closed%20Beta) feature is being re-evaluated in favor of a different
 [identity model](https://gitlab.com/groups/gitlab-org/-/epics/4345) that does not require separate accounts.
-We recommend that group administrators who haven't yet implemented this feature wait for
+We recommend that group owners who haven't yet implemented this feature wait for
 the new solution.
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/709) in GitLab 12.1.
@@ -50,7 +50,7 @@ assertions to be able to create a user.
 | First Name      | `first_name`, `firstname`, `firstName` |
 | Last Name       | `last_name`, `lastname`, `lastName` |
 
-## Feature flag **(PREMIUM ONLY)**
+## Feature flag **(PREMIUM SELF)**
 
 The group-managed accounts feature is behind these feature flags: `group_managed_accounts`, `sign_up_on_sso` and `convert_user_to_group_managed_accounts`. The flags are disabled by default.
 To activate the feature, ask a GitLab administrator with Rails console access to run:

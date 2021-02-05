@@ -15,11 +15,13 @@ This feature evolved out of [protected branches](protected_branches.md)
 
 ## Overview
 
-Protected tags will prevent anyone from updating or deleting the tag, and will prevent creation of matching tags based on the permissions you have selected. By default, anyone without Maintainer permission will be prevented from creating tags.
+Protected tags prevent anyone from updating or deleting the tag, and prevent
+creation of matching tags based on the permissions you have selected. By default,
+anyone without Maintainer [permissions](../permissions.md) is prevented from creating tags.
 
 ## Configuring protected tags
 
-To protect a tag, you need to have at least Maintainer permission level.
+To protect a tag, you need to have at least Maintainer [permissions](../permissions.md).
 
 1. Navigate to the project's **Settings > Repository**:
 
@@ -29,17 +31,18 @@ To protect a tag, you need to have at least Maintainer permission level.
 
    ![Protected tags page](img/protected_tags_page_v12_3.png)
 
-1. From the **Allowed to create** dropdown, select who will have permission to create matching tags and then click **Protect**:
+1. From the **Allowed to create** dropdown, select users with permission to create
+   matching tags, and click **Protect**:
 
    ![Allowed to create tags dropdown](img/protected_tags_permissions_dropdown_v12_3.png)
 
-1. Once done, the protected tag will appear in the **Protected tags** list:
+1. After done, the protected tag displays in the **Protected tags** list:
 
    ![Protected tags list](img/protected_tags_list_v12_3.png)
 
 ## Wildcard protected tags
 
-You can specify a wildcard protected tag, which will protect all tags
+You can specify a wildcard protected tag, which protects all tags
 matching the wildcard. For example:
 
 | Wildcard Protected Tag | Matching Tags                 |
@@ -52,9 +55,9 @@ matching the wildcard. For example:
 Two different wildcards can potentially match the same tag. For example,
 `*-stable` and `production-*` would both match a `production-stable` tag.
 In that case, if _any_ of these protected tags have a setting like
-**Allowed to create**, then `production-stable` will also inherit this setting.
+**Allowed to create**, then `production-stable` also inherit this setting.
 
-If you click on a protected tag's name, you will be presented with a list of
+If you click on a protected tag's name, GitLab displays a list of
 all matching tags:
 
 ![Protected tag matches](img/protected_tag_matches.png)

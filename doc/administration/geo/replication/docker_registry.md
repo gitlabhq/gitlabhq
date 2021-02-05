@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Docker Registry for a secondary node **(PREMIUM ONLY)**
+# Docker Registry for a secondary node **(PREMIUM SELF)**
 
 You can set up a [Docker Registry](https://docs.docker.com/registry/) on your
 **secondary** Geo node that mirrors the one on the **primary** Geo node.

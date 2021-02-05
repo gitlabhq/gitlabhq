@@ -1,6 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
 import { shallowMount } from '@vue/test-utils';
+import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
 import SnippetApp from '~/snippets/components/show.vue';
 import EmbedDropdown from '~/snippets/components/embed_dropdown.vue';
 import SnippetHeader from '~/snippets/components/snippet_header.vue';

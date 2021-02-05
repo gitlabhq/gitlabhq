@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Namespaces API
 
-Usernames and groupnames fall under a special category called namespaces.
+Usernames and group names fall under a special category called namespaces.
 
 For users and groups supported API calls see the [users](users.md) and
 [groups](groups.md) documentation respectively.

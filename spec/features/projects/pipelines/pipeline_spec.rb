@@ -15,6 +15,7 @@ RSpec.describe 'Pipeline', :js do
     sign_in(user)
     project.add_role(user, role)
     stub_feature_flags(graphql_pipeline_details: false)
+    stub_feature_flags(graphql_pipeline_details_users: false)
   end
 
   shared_context 'pipeline builds' do
@@ -623,20 +624,6 @@ RSpec.describe 'Pipeline', :js do
               href: project_commits_path(merge_request.target_project, merge_request.target_branch))
           end
         end
-      end
-    end
-
-    context 'when FF dag_pipeline_tab is disabled' do
-      before do
-        stub_feature_flags(dag_pipeline_tab: false)
-        visit_pipeline
-      end
-
-      it 'does not show DAG link' do
-        expect(page).to have_link('Pipeline')
-        expect(page).to have_link('Jobs')
-        expect(page).not_to have_link('DAG')
-        expect(page).to have_link('Failed Jobs')
       end
     end
   end

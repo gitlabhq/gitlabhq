@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 
 
-# Code Review Analytics **(STARTER)**
+# Code Review Analytics **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38062) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.7.
 

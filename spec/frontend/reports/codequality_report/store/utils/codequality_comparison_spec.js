@@ -2,7 +2,13 @@ import {
   parseCodeclimateMetrics,
   doCodeClimateComparison,
 } from '~/reports/codequality_report/store/utils/codequality_comparison';
-import { baseIssues, mockParsedHeadIssues, mockParsedBaseIssues } from '../../mock_data';
+import {
+  baseIssues,
+  mockParsedHeadIssues,
+  mockParsedBaseIssues,
+  reportIssues,
+  parsedReportIssues,
+} from '../../mock_data';
 
 jest.mock('~/reports/codequality_report/workers/codequality_comparison_worker', () => {
   let mockPostMessageCallback;
@@ -34,12 +40,20 @@ describe('Codequality report store utils', () => {
   let result;
 
   describe('parseCodeclimateMetrics', () => {
-    it('should parse the received issues', () => {
+    it('should parse the issues from codeclimate artifacts', () => {
       [result] = parseCodeclimateMetrics(baseIssues, 'path');
 
       expect(result.name).toEqual(baseIssues[0].check_name);
       expect(result.path).toEqual(baseIssues[0].location.path);
       expect(result.line).toEqual(baseIssues[0].location.lines.begin);
+    });
+
+    it('should parse the issues from backend codequality diff', () => {
+      [result] = parseCodeclimateMetrics(reportIssues.new_errors, 'path');
+
+      expect(result.name).toEqual(parsedReportIssues.newIssues[0].name);
+      expect(result.path).toEqual(parsedReportIssues.newIssues[0].path);
+      expect(result.line).toEqual(parsedReportIssues.newIssues[0].line);
     });
 
     describe('when an issue has no location or path', () => {

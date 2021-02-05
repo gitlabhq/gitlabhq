@@ -78,17 +78,10 @@ describe('Mutations Registry Store', () => {
     });
   });
 
-  describe('SET_SELECTED_TYPE', () => {
-    it('should set the selected type', () => {
-      mutations[types.SET_SELECTED_TYPE](mockState, { type: 'maven' });
-      expect(mockState.selectedType).toEqual({ type: 'maven' });
-    });
-  });
-
   describe('SET_FILTER', () => {
     it('should set the filter query', () => {
       mutations[types.SET_FILTER](mockState, 'foo');
-      expect(mockState.filterQuery).toEqual('foo');
+      expect(mockState.filter).toEqual('foo');
     });
   });
 });

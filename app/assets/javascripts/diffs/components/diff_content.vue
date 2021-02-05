@@ -8,17 +8,17 @@ import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import NotDiffableViewer from '~/vue_shared/components/diff_viewer/viewers/not_diffable.vue';
 import NoPreviewViewer from '~/vue_shared/components/diff_viewer/viewers/no_preview.vue';
 import DiffFileDrafts from '~/batch_comments/components/diff_file_drafts.vue';
-import InlineDiffView from './inline_diff_view.vue';
-import ParallelDiffView from './parallel_diff_view.vue';
-import DiffView from './diff_view.vue';
+import { diffViewerModes } from '~/ide/constants';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import NoteForm from '../../notes/components/note_form.vue';
-import ImageDiffOverlay from './image_diff_overlay.vue';
-import DiffDiscussions from './diff_discussions.vue';
 import eventHub from '../../notes/event_hub';
 import { IMAGE_DIFF_POSITION_TYPE } from '../constants';
 import { getDiffMode } from '../store/utils';
-import { diffViewerModes } from '~/ide/constants';
+import InlineDiffView from './inline_diff_view.vue';
+import ParallelDiffView from './parallel_diff_view.vue';
+import DiffView from './diff_view.vue';
+import ImageDiffOverlay from './image_diff_overlay.vue';
+import DiffDiscussions from './diff_discussions.vue';
 import { mapInline, mapParallel } from './diff_row_utils';
 
 export default {

@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import { GlModal } from '@gitlab/ui';
 import GlModalVuex from '~/vue_shared/components/gl_modal_vuex.vue';
 import createState from '~/vuex_shared/modules/modal/state';
+import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -129,7 +130,7 @@ describe('GlModalVuex', () => {
     wrapper.vm
       .$nextTick()
       .then(() => {
-        expect(rootEmit).toHaveBeenCalledWith('bv::show::modal', TEST_MODAL_ID);
+        expect(rootEmit).toHaveBeenCalledWith(BV_SHOW_MODAL, TEST_MODAL_ID);
       })
       .then(done)
       .catch(done.fail);
@@ -146,7 +147,7 @@ describe('GlModalVuex', () => {
     wrapper.vm
       .$nextTick()
       .then(() => {
-        expect(rootEmit).toHaveBeenCalledWith('bv::hide::modal', TEST_MODAL_ID);
+        expect(rootEmit).toHaveBeenCalledWith(BV_HIDE_MODAL, TEST_MODAL_ID);
       })
       .then(done)
       .catch(done.fail);

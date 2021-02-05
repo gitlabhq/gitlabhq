@@ -7,4 +7,5 @@
   = form_for @project, url: remove_fork_project_path(@project), method: :delete, remote: true, html: { class: 'transfer-project' } do |f|
     %p
       %strong= _('Once removed, the fork relationship cannot be restored. This project will no longer be able to receive or send merge requests to the source project or other forks.')
+      = link_to _('Learn more.'), help_page_path('user/project/settings/index', anchor: 'removing-a-fork-relationship'), target: '_blank', rel: 'noopener noreferrer'
     = button_to _('Remove fork relationship'), '#', class: "gl-button btn btn-danger js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_warning_message(@project) }

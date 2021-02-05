@@ -46,4 +46,22 @@ RSpec.describe Gitlab::Search::Query do
       expect(subject.filters).to all(include(negated: true))
     end
   end
+
+  context 'with filter value in quotes' do
+    let(:query) { '"foo bar" name:"my test script.txt"' }
+
+    it 'does not break the filter value in quotes' do
+      expect(subject.term).to eq('"foo bar"')
+      expect(subject.filters[0]).to include(name: :name, negated: false, value: "MY TEST SCRIPT.TXT")
+    end
+  end
+
+  context 'with extra white spaces between the query words' do
+    let(:query) { ' foo = bar  name:"my test.txt"' }
+
+    it 'removes the extra whitespace between tokens' do
+      expect(subject.term).to eq('foo = bar')
+      expect(subject.filters[0]).to include(name: :name, negated: false, value: "MY TEST.TXT")
+    end
+  end
 end

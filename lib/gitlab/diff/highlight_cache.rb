@@ -8,6 +8,7 @@ module Gitlab
 
       EXPIRATION = 1.week
       VERSION = 1
+      NEXT_VERSION = 2
 
       delegate :diffable,     to: :@diff_collection
       delegate :diff_options, to: :@diff_collection
@@ -69,11 +70,19 @@ module Gitlab
 
       def key
         strong_memoize(:redis_key) do
-          ['highlighted-diff-files', diffable.cache_key, VERSION, diff_options].join(":")
+          ['highlighted-diff-files', diffable.cache_key, version, diff_options].join(":")
         end
       end
 
       private
+
+      def version
+        if Feature.enabled?(:improved_merge_diff_highlighting, diffable.project)
+          NEXT_VERSION
+        else
+          VERSION
+        end
+      end
 
       def set_highlighted_diff_lines(diff_file, content)
         diff_file.highlighted_diff_lines = content.map do |line|

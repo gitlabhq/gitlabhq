@@ -2,10 +2,10 @@ import $ from 'jquery';
 import Vue from 'vue';
 import Translate from '../../../../vue_shared/translate';
 import GlFieldErrors from '../../../../gl_field_errors';
+import setupNativeFormVariableList from '../../../../ci_variable_list/native_form_variable_list';
 import intervalPatternInput from './components/interval_pattern_input.vue';
 import TimezoneDropdown from './components/timezone_dropdown';
 import TargetBranchDropdown from './components/target_branch_dropdown';
-import setupNativeFormVariableList from '../../../../ci_variable_list/native_form_variable_list';
 
 Vue.use(Translate);
 

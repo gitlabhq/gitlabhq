@@ -3,10 +3,10 @@
 import $ from 'jquery';
 import Sortable from 'sortablejs';
 
+import { hide, dispose } from '~/tooltips';
 import { deprecatedCreateFlash as flash } from './flash';
 import axios from './lib/utils/axios_utils';
 import { __ } from './locale';
-import { hide, dispose } from '~/tooltips';
 
 export default class LabelManager {
   constructor({ togglePriorityButton, prioritizedLabels, otherLabels } = {}) {

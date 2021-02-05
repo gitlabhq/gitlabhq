@@ -138,10 +138,10 @@
   .col-md-6
     - unless @user == current_user
       - if can_force_email_confirmation?(@user)
-        .card.border-info
-          .card-header.bg-info.text-white
+        .gl-card.border-info.gl-mb-5
+          .gl-card-header.bg-info.text-white
             Confirm user
-          .card-body
+          .gl-card-body
             - if @user.unconfirmed_email.present?
               - email = " (#{@user.unconfirmed_email})"
             %p This user has an unconfirmed email address#{email}. You may force a confirmation.
@@ -152,19 +152,19 @@
 
       - unless @user.internal?
         - if @user.deactivated?
-          .card.border-info
-            .card-header.bg-info.text-white
+          .gl-card.border-info.gl-mb-5
+            .gl-card-header.bg-info.text-white
               Reactivate this user
-            .card-body
+            .gl-card-body
               = render partial: 'admin/users/user_activation_effects'
               %br
               %button.btn.gl-button.btn-info.js-confirm-modal-button{ data: user_activation_data(@user) }
                 = s_('AdminUsers|Activate user')
         - elsif @user.can_be_deactivated?
-          .card.border-warning
-            .card-header.bg-warning.text-white
+          .gl-card.border-warning.gl-mb-5
+            .gl-card-header.bg-warning.text-white
               Deactivate this user
-            .card-body
+            .gl-card-body
               = user_deactivation_effects
               %br
               %button.btn.gl-button.btn-warning.js-confirm-modal-button{ data: user_deactivation_data(@user, s_('AdminUsers|You can always re-activate their account, their data will remain intact.')) }
@@ -174,10 +174,10 @@
           = render 'admin/users/approve_user', user: @user
           = render 'admin/users/reject_pending_user', user: @user
         - else
-          .card.border-info
-            .card-header.gl-bg-blue-500.gl-text-white
+          .gl-card.border-info.gl-mb-5
+            .gl-card-header.gl-bg-blue-500.gl-text-white
               This user is blocked
-            .card-body
+            .gl-card-body
               %p A blocked user cannot:
               %ul
                 %li Log in
@@ -189,7 +189,7 @@
         = render 'admin/users/block_user', user: @user
 
       - if @user.access_locked?
-        .card.border-info
+        .card.border-info.gl-mb-5
           .card-header.bg-info.text-white
             This account has been locked
           .card-body
@@ -197,10 +197,10 @@
             %br
             = link_to 'Unlock user', unlock_admin_user_path(@user), method: :put, class: "btn gl-button btn-info", data: { confirm: 'Are you sure?' }
       - if !@user.blocked_pending_approval?
-        .card.border-danger
-          .card-header.bg-danger.text-white
+        .gl-card.border-danger.gl-mb-5
+          .gl-card-header.bg-danger.text-white
             = s_('AdminUsers|Delete user')
-          .card-body
+          .gl-card-body
             - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
               %p Deleting a user has the following effects:
               = render 'users/deletion_guidance', user: @user
@@ -221,10 +221,10 @@
                 %p
                   You don't have access to delete this user.
 
-        .card.border-danger
-          .card-header.bg-danger.text-white
+        .gl-card.border-danger
+          .gl-card-header.bg-danger.text-white
             = s_('AdminUsers|Delete user and contributions')
-          .card-body
+          .gl-card-body
             - if can?(current_user, :destroy_user, @user)
               %p
                 This option deletes the user and any contributions that

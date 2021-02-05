@@ -146,9 +146,11 @@ RSpec.describe Ci::ProcessBuildService, '#execute' do
       end
     end
 
-    context 'when FF skip_dag_manual_and_delayed_jobs is disabled' do
+    context 'when FF skip_dag_manual_and_delayed_jobs is disabled on the project' do
+      let_it_be(:other_project) { create(:project) }
+
       before do
-        stub_feature_flags(skip_dag_manual_and_delayed_jobs: false)
+        stub_feature_flags(skip_dag_manual_and_delayed_jobs: other_project)
       end
 
       where(:build_when, :current_status, :after_status) do

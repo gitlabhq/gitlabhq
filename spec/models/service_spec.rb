@@ -39,35 +39,29 @@ RSpec.describe Service do
       end
     end
 
-    context 'with an existing service template' do
-      before do
+    context 'with existing services' do
+      before_all do
         create(:service, :template)
+        create(:service, :instance)
+        create(:service, project: project)
+        create(:service, group: group, project: nil)
       end
 
-      it 'validates only one service template per type' do
+      it 'allows only one service template per type' do
         expect(build(:service, :template)).to be_invalid
       end
-    end
 
-    context 'with an existing instance service' do
-      before do
-        create(:service, :instance)
-      end
-
-      it 'validates only one service instance per type' do
+      it 'allows only one instance service per type' do
         expect(build(:service, :instance)).to be_invalid
       end
-    end
 
-    it 'validates uniqueness of type and project_id on create' do
-      expect(create(:service, project: project, type: 'Service')).to be_valid
-      expect(build(:service, project: project, type: 'Service').valid?(:create)).to eq(false)
-      expect(build(:service, project: project, type: 'Service').valid?(:update)).to eq(true)
-    end
+      it 'allows only one project service per type' do
+        expect(build(:service, project: project)).to be_invalid
+      end
 
-    it 'validates uniqueness of type and group_id' do
-      expect(create(:service, group_id: group.id, project_id: nil, type: 'Service')).to be_valid
-      expect(build(:service, group_id: group.id, project_id: nil, type: 'Service')).to be_invalid
+      it 'allows only one group service per type' do
+        expect(build(:service, group: group, project: nil)).to be_invalid
+      end
     end
   end
 
@@ -753,38 +747,6 @@ RSpec.describe Service do
     end
   end
 
-  describe "callbacks" do
-    let!(:service) do
-      RedmineService.new(
-        project: project,
-        active: true,
-        properties: {
-          project_url: 'http://redmine/projects/project_name_in_redmine',
-          issues_url: "http://redmine/#{project.id}/project_name_in_redmine/:id",
-          new_issue_url: 'http://redmine/projects/project_name_in_redmine/issues/new'
-        }
-      )
-    end
-
-    describe "on create" do
-      it "updates the has_external_issue_tracker boolean" do
-        expect do
-          service.save!
-        end.to change { service.project.has_external_issue_tracker }.from(false).to(true)
-      end
-    end
-
-    describe "on update" do
-      it "updates the has_external_issue_tracker boolean" do
-        service.save!
-
-        expect do
-          service.update(active: false)
-        end.to change { service.project.has_external_issue_tracker }.from(true).to(false)
-      end
-    end
-  end
-
   describe '#api_field_names' do
     let(:fake_service) do
       Class.new(Service) do
@@ -860,20 +822,6 @@ RSpec.describe Service do
         expect(Gitlab::JsonLogger).to receive(:info).with(arguments)
 
         service.log_info(test_message, additional_argument: 'some argument')
-      end
-    end
-  end
-
-  describe '#external_issue_tracker?' do
-    where(:category, :active, :result) do
-      :issue_tracker | true  | true
-      :issue_tracker | false | false
-      :common        | true  | false
-    end
-
-    with_them do
-      it 'returns the right result' do
-        expect(build(:service, category: category, active: active).external_issue_tracker?).to eq(result)
       end
     end
   end

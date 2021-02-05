@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import CommitFormModal from './components/form_modal.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import CommitFormModal from './components/form_modal.vue';
 import createStore from './store';
 import {
   I18N_MODAL,

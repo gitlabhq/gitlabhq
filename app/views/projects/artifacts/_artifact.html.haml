@@ -50,10 +50,10 @@
     .table-action-buttons
       .btn-group
         - if can?(current_user, :read_build, @project)
-          = link_to download_project_job_artifacts_path(@project, artifact.job), rel: 'nofollow', download: '', title: _('Download artifacts'), data: { placement: 'top', container: 'body' }, ref: 'tooltip', aria: { label: _('Download artifacts') }, class: 'gl-button btn btn-build has-tooltip ml-0' do
+          = link_to download_project_job_artifacts_path(@project, artifact.job), rel: 'nofollow', download: '', title: _('Download artifacts'), data: { placement: 'top', container: 'body' }, ref: 'tooltip', aria: { label: _('Download artifacts') }, class: 'gl-button btn btn-default btn-build has-tooltip ml-0' do
             = sprite_icon('download')
 
-          = link_to browse_project_job_artifacts_path(@project, artifact.job), rel: 'nofollow', title: _('Browse artifacts'), data: { placement: 'top', container: 'body' }, ref: 'tooltip', aria: { label: _('Browse artifacts') }, class: 'gl-button btn btn-build has-tooltip' do
+          = link_to browse_project_job_artifacts_path(@project, artifact.job), rel: 'nofollow', title: _('Browse artifacts'), data: { placement: 'top', container: 'body' }, ref: 'tooltip', aria: { label: _('Browse artifacts') }, class: 'gl-button btn btn-default btn-build has-tooltip' do
             = sprite_icon('folder-open')
 
         - if can?(current_user, :destroy_artifacts, @project)

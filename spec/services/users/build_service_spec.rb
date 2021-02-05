@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Users::BuildService do
+  using RSpec::Parameterized::TableSyntax
+
   describe '#execute' do
     let(:params) { build_stubbed(:user).slice(:first_name, :last_name, :username, :email, :password) }
 
@@ -72,8 +74,6 @@ RSpec.describe Users::BuildService do
       end
 
       context 'with "user_default_external" application setting' do
-        using RSpec::Parameterized::TableSyntax
-
         where(:user_default_external, :external, :email, :user_default_internal_regex, :result) do
           true  | nil   | 'fl@example.com'        | nil                     | true
           true  | true  | 'fl@example.com'        | nil                     | true
@@ -192,8 +192,6 @@ RSpec.describe Users::BuildService do
       end
 
       context 'with "user_default_external" application setting' do
-        using RSpec::Parameterized::TableSyntax
-
         where(:user_default_external, :external, :email, :user_default_internal_regex, :result) do
           true  | nil   | 'fl@example.com'        | nil                     | true
           true  | true  | 'fl@example.com'        | nil                     | true

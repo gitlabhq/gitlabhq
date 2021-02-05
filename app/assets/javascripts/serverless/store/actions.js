@@ -1,10 +1,10 @@
-import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import statusCodes from '~/lib/utils/http_status';
 import { backOff } from '~/lib/utils/common_utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __ } from '~/locale';
 import { MAX_REQUESTS, CHECKING_INSTALLED, TIMEOUT } from '../constants';
+import * as types from './mutation_types';
 
 export const requestFunctionsLoading = ({ commit }) => commit(types.REQUEST_FUNCTIONS_LOADING);
 export const receiveFunctionsSuccess = ({ commit }, data) =>

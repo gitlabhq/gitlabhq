@@ -30,6 +30,6 @@ RSpec.describe Banzai::Pipeline::PreProcessPipeline do
 
     result = described_class.call(text, limit: 12)
 
-    expect(result[:output]).to eq('foo foo f…')
+    expect(result[:output]).to eq('foo foo f...')
   end
 end

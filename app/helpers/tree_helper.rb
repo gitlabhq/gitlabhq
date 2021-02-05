@@ -6,28 +6,6 @@ module TreeHelper
 
   FILE_LIMIT = 1_000
 
-  # Sorts a repository's tree so that folders are before files and renders
-  # their corresponding partials
-  #
-  # tree - A `Tree` object for the current tree
-  # rubocop: disable CodeReuse/ActiveRecord
-  def render_tree(tree)
-    # Sort submodules and folders together by name ahead of files
-    folders, files, submodules = tree.trees, tree.blobs, tree.submodules
-    tree = []
-    items = (folders + submodules).sort_by(&:name) + files
-
-    if items.size > FILE_LIMIT
-      tree << render(partial: 'projects/tree/truncated_notice_tree_row',
-                     locals: { limit: FILE_LIMIT, total: items.size })
-      items = items.take(FILE_LIMIT)
-    end
-
-    tree << render(partial: 'projects/tree/tree_row', collection: items) if items.present?
-    tree.join.html_safe
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
   # Return an image icon depending on the file type and mode
   #
   # type - String type of the tree item; either 'folder' or 'file'
@@ -35,20 +13,6 @@ module TreeHelper
   # name - File name
   def tree_icon(type, mode, name)
     sprite_icon(file_type_icon_class(type, mode, name))
-  end
-
-  # Using Rails `*_path` methods can be slow, especially when generating
-  # many paths, as with a repository tree that has thousands of items.
-  def fast_project_blob_path(project, blob_path)
-    ActionDispatch::Journey::Router::Utils.escape_path(
-      File.join(relative_url_root, project.path_with_namespace, '-', 'blob', blob_path)
-    )
-  end
-
-  def fast_project_tree_path(project, tree_path)
-    ActionDispatch::Journey::Router::Utils.escape_path(
-      File.join(relative_url_root, project.path_with_namespace, '-', 'tree', tree_path)
-    )
   end
 
   # Simple shortcut to File.join
@@ -165,13 +129,6 @@ module TreeHelper
 
   def relative_url_root
     Gitlab.config.gitlab.relative_url_root.presence || '/'
-  end
-
-  # project and path are used on the EE version
-  def tree_content_data(logs_path, project, path)
-    {
-      "logs-path" => logs_path
-    }
   end
 
   def breadcrumb_data_attributes

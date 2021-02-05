@@ -8,14 +8,14 @@ import {
   AJAX_USERS_SELECT_OPTIONS_MAP,
   AJAX_USERS_SELECT_PARAMS_MAP,
 } from 'ee_else_ce/users_select/constants';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import { fixTitle, dispose } from '~/tooltips';
 import axios from '../lib/utils/axios_utils';
 import { s__, __, sprintf } from '../locale';
 import ModalStore from '../boards/stores/modal_store';
 import { parseBoolean, spriteIcon } from '../lib/utils/common_utils';
-import { getAjaxUsersSelectOptions, getAjaxUsersSelectParams } from './utils';
-import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
-import { fixTitle, dispose } from '~/tooltips';
 import { loadCSSFile } from '../lib/utils/css_utils';
+import { getAjaxUsersSelectOptions, getAjaxUsersSelectParams } from './utils';
 
 // TODO: remove eventHub hack after code splitting refactor
 window.emitSidebarEvent = window.emitSidebarEvent || $.noop;

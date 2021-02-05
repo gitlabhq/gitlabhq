@@ -31,9 +31,9 @@ module NotesActions
     # We know there's more data, so tell the frontend to poll again after 1ms
     set_polling_interval_header(interval: 1) if meta[:more]
 
-    # Only present an ETag for the empty response to ensure pagination works
-    # as expected
-    ::Gitlab::EtagCaching::Middleware.skip!(response) if notes.present?
+    # We might still want to investigate further adjusting ETag caching with paginated notes, but
+    # let's avoid ETag caching for now until we confirm the viability of paginated notes.
+    ::Gitlab::EtagCaching::Middleware.skip!(response)
 
     render json: meta.merge(notes: notes)
   end

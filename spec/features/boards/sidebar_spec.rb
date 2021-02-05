@@ -411,10 +411,10 @@ RSpec.describe 'Issue Boards', :js do
       wait_for_requests
 
       page.within('.subscriptions') do
-        find('.js-issuable-subscribe-button button:not(.is-checked)').click
+        find('[data-testid="subscription-toggle"] button:not(.is-checked)').click
         wait_for_requests
 
-        expect(page).to have_css('.js-issuable-subscribe-button button.is-checked')
+        expect(page).to have_css('[data-testid="subscription-toggle"] button.is-checked')
       end
     end
 
@@ -427,10 +427,10 @@ RSpec.describe 'Issue Boards', :js do
       wait_for_requests
 
       page.within('.subscriptions') do
-        find('.js-issuable-subscribe-button button.is-checked').click
+        find('[data-testid="subscription-toggle"] button.is-checked').click
         wait_for_requests
 
-        expect(page).to have_css('.js-issuable-subscribe-button button:not(.is-checked)')
+        expect(page).to have_css('[data-testid="subscription-toggle"] button:not(.is-checked)')
       end
     end
   end

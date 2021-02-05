@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../utils' # Gitlab::Utils
+
 module Gitlab
   module Cluster
     #
@@ -64,6 +66,10 @@ module Gitlab
     # Blocks will be executed in the order in which they are registered.
     #
     class LifecycleEvents
+      FatalError = Class.new(Exception) # rubocop:disable Lint/InheritException
+
+      USE_FATAL_LIFECYCLE_EVENTS = Gitlab::Utils.to_boolean(ENV.fetch('GITLAB_FATAL_LIFECYCLE_EVENTS', 'true'))
+
       class << self
         #
         # Hook registration methods (called from initializers)
@@ -111,24 +117,24 @@ module Gitlab
         # Lifecycle integration methods (called from unicorn.rb, puma.rb, etc.)
         #
         def do_worker_start
-          call(@worker_start_hooks)
+          call(:worker_start_hooks, @worker_start_hooks)
         end
 
         def do_before_fork
-          call(@before_fork_hooks)
+          call(:before_fork_hooks, @before_fork_hooks)
         end
 
         def do_before_graceful_shutdown
-          call(@master_blackout_period)
+          call(:master_blackout_period, @master_blackout_period)
 
           blackout_seconds = ::Settings.shutdown.blackout_seconds.to_i
           sleep(blackout_seconds) if blackout_seconds > 0
 
-          call(@master_graceful_shutdown)
+          call(:master_graceful_shutdown, @master_graceful_shutdown)
         end
 
         def do_before_master_restart
-          call(@master_restart_hooks)
+          call(:master_restart_hooks, @master_restart_hooks)
         end
 
         # DEPRECATED
@@ -143,8 +149,18 @@ module Gitlab
 
         private
 
-        def call(hooks)
-          hooks&.each(&:call)
+        def call(name, hooks)
+          return unless hooks
+
+          hooks.each do |hook|
+            hook.call
+          rescue => e
+            Gitlab::ErrorTracking.track_exception(e, type: 'LifecycleEvents', hook: hook)
+            warn("ERROR: The hook #{name} failed with exception (#{e.class}) \"#{e.message}\".")
+
+            # we consider lifecycle hooks to be fatal errors
+            raise FatalError, e if USE_FATAL_LIFECYCLE_EVENTS
+          end
         end
 
         def in_clustered_environment?

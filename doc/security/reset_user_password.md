@@ -7,70 +7,91 @@ type: howto
 
 # How to reset user password
 
-To reset the password of a user, first log into your server with root privileges.
+There are a few ways to reset the password of a user.
 
-Start a Ruby on Rails console with this command:
+## Rake Task
 
-```shell
-gitlab-rails console -e production
-```
-
-Wait until the console has loaded.
-
-## Find the user
-
-There are multiple ways to find your user. You can search by email or user ID number.
+GitLab provides a Rake Task to reset passwords of users using their usernames,
+which can be invoked by the following command:
 
 ```shell
-user = User.where(id: 7).first
+sudo gitlab-rake "gitlab:password:reset"
 ```
 
-or
+You will be asked for username, password, and password confirmation. Upon giving
+proper values for them, the password of the specified user will be updated.
+
+The Rake task also takes the username as an argument, as shown in the example
+below:
 
 ```shell
-user = User.find_by(email: 'user@example.com')
+sudo gitlab-rake "gitlab:password:reset[johndoe]"
 ```
 
-## Reset the password
+NOTE:
+To reset the default admin password, run this Rake task with the username
+`root`, which is the default username of that admin account.
 
-Now you can change your password:
+## Rails console
 
-```shell
-user.password = 'secret_pass'
-user.password_confirmation = 'secret_pass'
-```
+The Rake task is capable of finding users via their usernames. However, if only
+user ID or email ID of the user is known, Rails console can be used to find user
+using user ID and then change password of the user manually.
 
-It's important that you change both password and password_confirmation to make it work.
+1. Start a Rails console
 
-When using this method instead of the [Users API](../api/users.md#user-modification), GitLab sends an email to the user stating that the user changed their password.
+    ```shell
+    sudo gitlab-rails console -e production
+    ```
 
-If the password was changed by an administrator, execute the following command to notify the user by email:
+1. Find the user either by user ID or email ID:
 
-```shell
-user.send_only_admin_changed_your_password_notification!
-```
+    ```ruby
+    user = User.find(123)
 
-Don't forget to save the changes.
+    #or
 
-```shell
-user.save!
-```
+    user = User.find_by(email: 'user@example.com')
+    ```
 
-Exit the console, and then try to sign in with your new password.
+1. Reset the password
+
+    ```ruby
+    user.password = 'secret_pass'
+    user.password_confirmation = 'secret_pass'
+    ```
+
+1. When using this method instead of the [Users API](../api/users.md#user-modification),
+   GitLab sends an email to the user stating that the user changed their
+   password. If the password was changed by an administrator, execute the
+   following command to notify the user by email:
+
+    ```ruby
+    user.send_only_admin_changed_your_password_notification!
+    ```
+
+1. Save the changes:
+
+    ```ruby
+    user.save!
+    ```
+
+1. Exit the console, and then try to sign in with your new password.
 
 NOTE:
 You can also reset passwords by using the [Users API](../api/users.md#user-modification).
 
-### Reset your root password
+## Reset your root password
 
-The previously described steps can also be used to reset the root password. First,
-identify the root user, with an `id` of `1`. To do so, run the following command:
+The previously described steps can also be used to reset the root password.
 
-```shell
-user = User.where(id: 1).first
-```
+In normal installations where the username of root account hasn't been changed
+manually, the Rake task can be used with username `root` to reset the root
+password.
 
-After finding the user, follow the steps mentioned in the [Reset the password](#reset-the-password) section to reset the password of the root user.
+If the username was changed to something else and has been forgotten, one
+possible way is to reset the password using Rails console with user ID `1` (in
+almost all the cases, the first user will be the default admin account).
 
 <!-- ## Troubleshooting
 

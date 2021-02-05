@@ -1,92 +1,17 @@
 - page_title _("Users")
 
-.top-area.scrolling-tabs-container.inner-page-scroll-tabs
-  .fade-left
-    = sprite_icon('chevron-lg-left', size: 12)
-  .fade-right
-    = sprite_icon('chevron-lg-right', size: 12)
-  %ul.nav-links.nav.nav-tabs.scrolling-tabs
-    = nav_link(html_options: { class: active_when(params[:filter].nil?) }) do
-      = link_to admin_users_path do
-        = s_('AdminUsers|Active')
-        %small.badge.badge-pill= limited_counter_with_delimiter(User.active_without_ghosts)
-    = nav_link(html_options: { class: active_when(params[:filter] == 'admins') }) do
-      = link_to admin_users_path(filter: "admins") do
-        = s_('AdminUsers|Admins')
-        %small.badge.badge-pill= limited_counter_with_delimiter(User.admins)
-    = nav_link(html_options: { class: "#{active_when(params[:filter] == 'two_factor_enabled')} filter-two-factor-enabled" }) do
-      = link_to admin_users_path(filter: 'two_factor_enabled') do
-        = s_('AdminUsers|2FA Enabled')
-        %small.badge.badge-pill= limited_counter_with_delimiter(User.with_two_factor)
-    = nav_link(html_options: { class: "#{active_when(params[:filter] == 'two_factor_disabled')} filter-two-factor-disabled" }) do
-      = link_to admin_users_path(filter: 'two_factor_disabled') do
-        = s_('AdminUsers|2FA Disabled')
-        %small.badge.badge-pill= limited_counter_with_delimiter(User.without_two_factor)
-    = nav_link(html_options: { class: active_when(params[:filter] == 'external') }) do
-      = link_to admin_users_path(filter: 'external') do
-        = s_('AdminUsers|External')
-        %small.badge.badge-pill= limited_counter_with_delimiter(User.external)
-    = nav_link(html_options: { class: active_when(params[:filter] == 'blocked') }) do
-      = link_to admin_users_path(filter: "blocked") do
-        = s_('AdminUsers|Blocked')
-        %small.badge.badge-pill= limited_counter_with_delimiter(User.blocked)
-    = nav_link(html_options: { class: "#{active_when(params[:filter] == 'blocked_pending_approval')} filter-blocked-pending-approval" }) do
-      = link_to admin_users_path(filter: "blocked_pending_approval"), data: { qa_selector: 'pending_approval_tab' } do
-        = s_('AdminUsers|Pending approval')
-        %small.badge.badge-pill= limited_counter_with_delimiter(User.blocked_pending_approval)
-    = nav_link(html_options: { class: active_when(params[:filter] == 'deactivated') }) do
-      = link_to admin_users_path(filter: "deactivated") do
-        = s_('AdminUsers|Deactivated')
-        %small.badge.badge-pill= limited_counter_with_delimiter(User.deactivated)
-    = nav_link(html_options: { class: active_when(params[:filter] == 'wop') }) do
-      = link_to admin_users_path(filter: "wop") do
-        = s_('AdminUsers|Without projects')
-        %small.badge.badge-pill= limited_counter_with_delimiter(User.without_projects)
-  .nav-controls
-    = render_if_exists 'admin/users/admin_email_users'
-    = render_if_exists 'admin/users/admin_export_user_permissions'
-    = link_to s_('AdminUsers|New user'), new_admin_user_path, class: 'btn gl-button btn-success btn-search float-right'
+%ul.nav-links.nav-tabs.nav.js-users-tabs{ role: 'tablist' }
+  %li.nav-item.js-users-tab-item{ role: 'presentation' }
+    %a.nav-link{ href: '#users', class: active_when(params[:tab] != 'cohorts'), data: { toggle: 'tab' }, role: 'tab' }
+      = s_('AdminUsers|Users')
+  %li.nav-item.js-users-tab-item{ role: 'presentation' }
+    %a.nav-link{ href: '#cohorts', class: active_when(params[:tab] == 'cohorts'), data: { toggle: 'tab', track: { event: 'i_analytics_cohorts', action: 'click_tab' } }, role: 'tab' }
+      = s_('AdminUsers|Cohorts')
 
-.filtered-search-block.row-content-block.border-top-0
-  = form_tag admin_users_path, method: :get do
-    - if params[:filter].present?
-      = hidden_field_tag "filter", h(params[:filter])
-    .search-holder
-      .search-field-holder.gl-mb-4
-        = search_field_tag :search_query, params[:search_query], placeholder: s_('AdminUsers|Search by name, email or username'), class: 'form-control search-text-input js-search-input', spellcheck: false, data: { qa_selector: 'user_search_field' }
-        - if @sort.present?
-          = hidden_field_tag :sort, @sort
-        = sprite_icon('search', css_class: 'search-icon')
-        = button_tag s_('AdminUsers|Search users') if Rails.env.test?
-      .dropdown.user-sort-dropdown
-        = label_tag 'Sort by', nil, class: 'label-bold'
-        - toggle_text = @sort.present? ? users_sort_options_hash[@sort] : sort_title_name
-        = dropdown_toggle(toggle_text, { toggle: 'dropdown' })
-        %ul.dropdown-menu.dropdown-menu-right
-          %li.dropdown-header
-            = s_('AdminUsers|Sort by')
-          %li
-            - users_sort_options_hash.each do |value, title|
-              = link_to admin_users_path(sort: value, filter: params[:filter], search_query: params[:search_query]) do
-                = title
+.tab-content
+  .tab-pane{ id: 'users', class: ('active' if params[:tab] != 'cohorts') }
+    = render 'users'
+  .tab-pane{ id: 'cohorts', class: ('active' if params[:tab] == 'cohorts') }
+    = render 'cohorts'
 
-- if Feature.enabled?(:vue_admin_users)
-  #js-admin-users-app{ data: admin_users_data_attributes(@users) }
-    .gl-spinner-container.gl-my-7
-      %span.gl-vertical-align-bottom.gl-spinner.gl-spinner-dark.gl-spinner-lg{ aria: { label: _('Loading') } }
-- elsif @users.empty?
-  .nothing-here-block.border-top-0
-    = s_('AdminUsers|No users found')
-- else
-  .table-holder
-    .thead-white.text-nowrap.gl-responsive-table-row.table-row-header{ role: 'row' }
-      .table-section.section-40{ role: 'rowheader' }= _('Name')
-      .table-section.section-10{ role: 'rowheader' }= _('Projects')
-      .table-section.section-15{ role: 'rowheader' }= _('Created on')
-      .table-section.section-15{ role: 'rowheader' }= _('Last activity')
 
-    = render partial: 'admin/users/user', collection: @users
-
-= paginate @users, theme: "gitlab"
-
-= render partial: 'admin/users/modals'

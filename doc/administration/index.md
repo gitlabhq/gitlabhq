@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 description: 'Learn how to install, configure, update, and maintain your GitLab instance.'
 ---
 
-# Administrator documentation **(CORE ONLY)**
+# Administrator documentation **(FREE SELF)**
 
 Learn how to administer your self-managed GitLab instance.
 
@@ -17,7 +17,7 @@ GitLab has two product distributions available through [different subscriptions]
 You can [install either GitLab CE or GitLab EE](https://about.gitlab.com/install/ce-or-ee/).
 However, the features you have access to depend on your chosen [subscription](https://about.gitlab.com/pricing/).
 
-GitLab Community Edition installations have access only to Core features.
+GitLab Community Edition installations have access only to Free features.
 
 Non-administrator users can't access GitLab administration tools and settings.
 
@@ -80,6 +80,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   emails with S/MIME.
 - [Enabling and disabling features flags](feature_flags.md): how to enable and
   disable GitLab features deployed behind feature flags.
+- [Application settings cache expiry interval](application_settings_cache.md)
 
 #### Customizing GitLab appearance
 
@@ -101,6 +102,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 #### Updating GitLab
 
 - [GitLab versions and maintenance policy](../policy/maintenance.md): Understand GitLab versions and releases (Major, Minor, Patch, Security), as well as update recommendations.
+- [GitLab in maintenance mode](maintenance_mode/index.md): Put GitLab in maintenance mode.
 - [Update GitLab](../update/README.md): Update guides to upgrade your installation to a new version.
 - [Upgrading without downtime](../update/README.md#upgrading-without-downtime): Upgrade to a newer major, minor, or patch version of GitLab without taking your GitLab instance offline.
 - [Migrate your GitLab CI/CD data to another version of GitLab](../migrate_ci_to_ce/README.md): If you have an old GitLab installation (older than 8.0), follow this guide to migrate your existing GitLab CI/CD data to another version of GitLab.
@@ -186,7 +188,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ## Git configuration options
 
-- [Server hooks](server_hooks.md): Server hooks (on the filesystem) for when webhooks aren't enough.
+- [Server hooks](server_hooks.md): Server hooks (on the file system) for when webhooks aren't enough.
 - [Git LFS configuration](lfs/index.md): Learn how to configure LFS for GitLab.
 - [Housekeeping](housekeeping.md): Keep your Git repositories tidy and fast.
 - [Configuring Git Protocol v2](git_protocol.md): Git protocol version 2 support.

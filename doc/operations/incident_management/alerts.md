@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Alerts
+# Alerts **(FREE)**
 
 Alerts are a critical entity in your incident management workflow. They represent a notable event that might indicate a service outage or disruption. GitLab provides a list view for triage and detail view for deeper investigation of what happened.
 
@@ -102,8 +102,9 @@ To view the metrics for an alert:
 
 #### View an alert's logs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201846) in GitLab Ultimate 12.8. and [improved](https://gitlab.com/gitlab-org/gitlab/-/issues/217768) in GitLab 13.3.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25455) to [GitLab Core](https://about.gitlab.com/pricing/) 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201846) in GitLab Ultimate 12.8.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/217768) in GitLab 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25455) to GitLab Free 12.9.
 
 Viewing logs from a metrics panel can be useful if you're triaging an
 application incident and need to [explore logs](../metrics/dashboards/index.md#chart-context-menu)
@@ -196,9 +197,9 @@ add a to-do item:
 
 1. To display the list of current alerts, navigate to **Operations > Alerts**.
 1. Select your desired alert to display its **Alert Management Details View**.
-1. Select the **Add a To-Do** button in the right sidebar:
+1. Select the **Add a to do** button in the right sidebar:
 
-   ![Alert Details Add a To-Do](img/alert_detail_add_todo_v13_1.png)
+   ![Alert Details Add a to do](img/alert_detail_add_todo_v13_9.png)
 
 Select the **To-Do List** **{todo-done}** in the navigation bar to view your current to-do list.
 

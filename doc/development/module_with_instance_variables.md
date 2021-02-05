@@ -121,71 +121,7 @@ module Gitlab
 end
 ```
 
-Now the cop doesn't complain. Here's a bad example which we could rewrite:
-
-``` ruby
-module SpamCheckService
-  def filter_spam_check_params
-    @request            = params.delete(:request)
-    @api                = params.delete(:api)
-    @recaptcha_verified = params.delete(:recaptcha_verified)
-    @spam_log_id        = params.delete(:spam_log_id)
-  end
-
-  def spam_check(spammable, user)
-    spam_service = SpamService.new(spammable, @request)
-
-    spam_service.when_recaptcha_verified(@recaptcha_verified, @api) do
-      user.spam_logs.find_by(id: @spam_log_id)&.update!(recaptcha_verified: true)
-    end
-  end
-end
-```
-
-There are several implicit dependencies here. First, `params` should be
-defined before use. Second, `filter_spam_check_params` should be called
-before `spam_check`. These are all implicit and the includer could be using
-those instance variables without awareness.
-
-This should be rewritten like:
-
-``` ruby
-class SpamCheckService
-  def initialize(request:, api:, recaptcha_verified:, spam_log_id:)
-    @request            = request
-    @api                = api
-    @recaptcha_verified = recaptcha_verified
-    @spam_log_id        = spam_log_id
-  end
-
-  def spam_check(spammable, user)
-    spam_service = SpamService.new(spammable, @request)
-
-    spam_service.when_recaptcha_verified(@recaptcha_verified, @api) do
-      user.spam_logs.find_by(id: @spam_log_id)&.update!(recaptcha_verified: true)
-    end
-  end
-end
-```
-
-And use it like:
-
-``` ruby
-class UpdateSnippetService < BaseService
-  def execute
-    # ...
-    spam = SpamCheckService.new(params.slice!(:request, :api, :recaptcha_verified, :spam_log_id))
-
-    spam.check(snippet, current_user)
-    # ...
-  end
-end
-```
-
-This way, all those instance variables are isolated in `SpamCheckService`
-rather than whatever includes the module, and those modules which were also
-included, making it much easier to track down any issues,
-and reducing the chance of having name conflicts.
+Now the cop doesn't complain.
 
 ## How to disable this cop
 

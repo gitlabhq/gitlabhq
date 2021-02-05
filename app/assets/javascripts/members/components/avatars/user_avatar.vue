@@ -7,8 +7,8 @@ import {
 } from '@gitlab/ui';
 import { generateBadges } from 'ee_else_ce/members/utils';
 import { __ } from '~/locale';
-import { AVATAR_SIZE } from '../../constants';
 import { glEmojiTag } from '~/emoji';
+import { AVATAR_SIZE } from '../../constants';
 
 export default {
   name: 'UserAvatar',
@@ -69,7 +69,10 @@ export default {
     >
       <template #meta>
         <div v-if="statusEmoji" class="gl-p-1">
-          <span v-safe-html:[$options.safeHtmlConfig]="glEmojiTag(statusEmoji)"></span>
+          <span
+            v-safe-html:[$options.safeHtmlConfig]="glEmojiTag(statusEmoji)"
+            class="user-status-emoji gl-mr-0"
+          ></span>
         </div>
         <div v-for="badge in badges" :key="badge.text" class="gl-p-1">
           <gl-badge size="sm" :variant="badge.variant">

@@ -1,5 +1,3 @@
-import { PACKAGE_REGISTRY_TABS } from '../constants';
-
 export default () => ({
   /**
    * Determine if the component is loading data from the API
@@ -49,9 +47,8 @@ export default () => ({
   /**
    * The search query that is used to filter packages by name
    */
-  filterQuery: '',
+  filter: [],
   /**
    * The selected TAB of the package types tabs
    */
-  selectedType: PACKAGE_REGISTRY_TABS[0],
 });

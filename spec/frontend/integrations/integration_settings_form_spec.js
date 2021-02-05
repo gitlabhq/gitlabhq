@@ -132,4 +132,83 @@ describe('IntegrationSettingsForm', () => {
       expect(dispatchSpy).toHaveBeenCalledWith('setIsTesting', false);
     });
   });
+
+  describe('getJiraIssueTypes', () => {
+    let integrationSettingsForm;
+    let formData;
+    let mock;
+
+    beforeEach(() => {
+      mock = new MockAdaptor(axios);
+
+      jest.spyOn(axios, 'put');
+
+      integrationSettingsForm = new IntegrationSettingsForm('.js-integration-settings-form');
+      integrationSettingsForm.init();
+
+      // eslint-disable-next-line no-jquery/no-serialize
+      formData = integrationSettingsForm.$form.serialize();
+    });
+
+    afterEach(() => {
+      mock.restore();
+    });
+
+    it('should always dispatch `requestJiraIssueTypes`', async () => {
+      const dispatchSpy = jest.fn();
+
+      mock.onPut(integrationSettingsForm.testEndPoint).networkError();
+
+      integrationSettingsForm.vue.$store = { dispatch: dispatchSpy };
+
+      await integrationSettingsForm.getJiraIssueTypes();
+
+      expect(dispatchSpy).toHaveBeenCalledWith('requestJiraIssueTypes');
+    });
+
+    it('should make an ajax request with provided `formData`', async () => {
+      await integrationSettingsForm.getJiraIssueTypes(formData);
+
+      expect(axios.put).toHaveBeenCalledWith(integrationSettingsForm.testEndPoint, formData);
+    });
+
+    it('should dispatch `receiveJiraIssueTypesSuccess` with the correct payload if ajax request is successful', async () => {
+      const mockData = ['ISSUE', 'EPIC'];
+      const dispatchSpy = jest.fn();
+
+      mock.onPut(integrationSettingsForm.testEndPoint).reply(200, {
+        error: false,
+        issuetypes: mockData,
+      });
+
+      integrationSettingsForm.vue.$store = { dispatch: dispatchSpy };
+
+      await integrationSettingsForm.getJiraIssueTypes(formData);
+
+      expect(dispatchSpy).toHaveBeenCalledWith('receiveJiraIssueTypesSuccess', mockData);
+    });
+
+    it.each(['something went wrong', undefined])(
+      'should dispatch "receiveJiraIssueTypesError" with a message if the backend responds with error',
+      async (responseErrorMessage) => {
+        const defaultErrorMessage = 'Connection failed. Please check your settings.';
+        const expectedErrorMessage = responseErrorMessage || defaultErrorMessage;
+        const dispatchSpy = jest.fn();
+
+        mock.onPut(integrationSettingsForm.testEndPoint).reply(200, {
+          error: true,
+          message: responseErrorMessage,
+        });
+
+        integrationSettingsForm.vue.$store = { dispatch: dispatchSpy };
+
+        await integrationSettingsForm.getJiraIssueTypes(formData);
+
+        expect(dispatchSpy).toHaveBeenCalledWith(
+          'receiveJiraIssueTypesError',
+          expectedErrorMessage,
+        );
+      },
+    );
+  });
 });

@@ -6,7 +6,7 @@ class AddGroupCreationLevelToNamespaces < ActiveRecord::Migration[5.1]
   DOWNTIME = false
 
   def up
-    add_column(:namespaces, :subgroup_creation_level, :integer)
+    add_column(:namespaces, :subgroup_creation_level, :integer) # rubocop:disable Migration/AddColumnsToWideTables
     change_column_default(:namespaces,
                           :subgroup_creation_level,
                           ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)

@@ -43,7 +43,6 @@ module Gitlab
 
       # Initialize gon.features with any flags that should be
       # made globally available to the frontend
-      push_frontend_feature_flag(:webperf_experiment, default_enabled: false)
       push_frontend_feature_flag(:snippets_binary_blob, default_enabled: false)
       push_frontend_feature_flag(:usage_data_api, default_enabled: true)
       push_frontend_feature_flag(:security_auto_fix, default_enabled: false)

@@ -11,12 +11,17 @@ describe('Test case details', () => {
     classname: 'spec.test_spec',
     name: 'Test#something cool',
     formattedTime: '10.04ms',
+    recent_failures: {
+      count: 2,
+      base_branch: 'master',
+    },
     system_output: 'Line 42 is broken',
   };
 
   const findModal = () => wrapper.find(GlModal);
   const findName = () => wrapper.find('[data-testid="test-case-name"]');
   const findDuration = () => wrapper.find('[data-testid="test-case-duration"]');
+  const findRecentFailures = () => wrapper.find('[data-testid="test-case-recent-failures"]');
   const findSystemOutput = () => wrapper.find('[data-testid="test-case-trace"]');
 
   const createComponent = (testCase = {}) => {
@@ -53,6 +58,36 @@ describe('Test case details', () => {
 
     it('renders the test case duration', () => {
       expect(findDuration().text()).toBe(defaultTestCase.formattedTime);
+    });
+  });
+
+  describe('when test case has recent failures', () => {
+    describe('has only 1 recent failure', () => {
+      it('renders the recent failure', () => {
+        createComponent({ recent_failures: { ...defaultTestCase.recent_failures, count: 1 } });
+
+        expect(findRecentFailures().text()).toContain(
+          `Failed 1 time in ${defaultTestCase.recent_failures.base_branch} in the last 14 days`,
+        );
+      });
+    });
+
+    describe('has more than 1 recent failure', () => {
+      it('renders the recent failures', () => {
+        createComponent();
+
+        expect(findRecentFailures().text()).toContain(
+          `Failed ${defaultTestCase.recent_failures.count} times in ${defaultTestCase.recent_failures.base_branch} in the last 14 days`,
+        );
+      });
+    });
+  });
+
+  describe('when test case does not have recent failures', () => {
+    it('does not render the recent failures', () => {
+      createComponent({ recent_failures: null });
+
+      expect(findRecentFailures().exists()).toBe(false);
     });
   });
 

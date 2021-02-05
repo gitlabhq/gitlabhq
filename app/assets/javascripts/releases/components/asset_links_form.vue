@@ -10,8 +10,8 @@ import {
   GlFormInput,
   GlFormSelect,
 } from '@gitlab/ui';
-import { DEFAULT_ASSET_LINK_TYPE, ASSET_LINK_TYPE } from '../constants';
 import { s__ } from '~/locale';
+import { DEFAULT_ASSET_LINK_TYPE, ASSET_LINK_TYPE } from '../constants';
 
 export default {
   name: 'AssetLinksForm',

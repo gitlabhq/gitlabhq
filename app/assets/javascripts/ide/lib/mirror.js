@@ -1,6 +1,6 @@
-import createDiff from './create_diff';
 import { getWebSocketUrl, mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
+import createDiff from './create_diff';
 
 export const SERVICE_NAME = 'webide-file-sync';
 export const PROTOCOL = 'webfilesync.gitlab.com';

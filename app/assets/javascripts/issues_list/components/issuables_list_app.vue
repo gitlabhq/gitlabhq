@@ -16,8 +16,8 @@ import {
 } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import initManualOrdering from '~/manual_ordering';
-import Issuable from './issuable.vue';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
+import { setUrlParams } from '~/lib/utils/url_utility';
 import {
   sortOrderMap,
   availableSortOptionsJira,
@@ -26,9 +26,9 @@ import {
   PAGE_SIZE_MANUAL,
   LOADING_LIST_ITEMS_LENGTH,
 } from '../constants';
-import { setUrlParams } from '~/lib/utils/url_utility';
 import issueableEventHub from '../eventhub';
 import { emptyStateHelper } from '../service_desk_helper';
+import Issuable from './issuable.vue';
 
 export default {
   LOADING_LIST_ITEMS_LENGTH,

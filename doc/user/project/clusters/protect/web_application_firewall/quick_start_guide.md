@@ -43,7 +43,7 @@ Google Kubernetes Engine integration. All you have to do is [follow this link](h
 ## Creating a new project from a template
 
 We use a GitLab project templates to get started. As the name suggests,
-those projects provide a barebones application built on some well-known frameworks.
+those projects provide a bare-bones application built on some well-known frameworks.
 
 1. In GitLab, click the plus icon (**+**) at the top of the navigation bar and select
    **New project**.
@@ -55,7 +55,7 @@ those projects provide a barebones application built on some well-known framewor
 
 1. Give your project a name, optionally a description, and make it public so that
    you can take advantage of the features available in the
-   [GitLab Gold plan](https://about.gitlab.com/pricing/#gitlab-com).
+   [GitLab Ultimate plan](https://about.gitlab.com/pricing/).
 
    ![Create project](../../../../../topics/autodevops/img/guide_create_project_v12_3.png)
 

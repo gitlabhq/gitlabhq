@@ -4,7 +4,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Appearance API **(CORE ONLY)**
+# Appearance API **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16647) in GitLab 12.7.
 

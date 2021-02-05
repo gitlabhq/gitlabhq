@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # NuGet packages in the Package Registry
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20050) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
 Publish NuGet packages in your project’s Package Registry. Then, install the
 packages whenever you need to use them as a dependency.
@@ -62,11 +62,13 @@ NuGet CLI.
 
 ## Use the GitLab endpoint for NuGet Packages
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36423) group-level endpoint in GitLab 13.8.
+
 To use the GitLab endpoint for NuGet Packages, choose an option:
 
 - **Project-level**: Use when you have few NuGet packages and they are not in
   the same GitLab group.
-- **Group-level**: Use when you have many NuGet packages in different within the
+- **Group-level**: Use when you have many NuGet packages in different projects within the
   same GitLab group.
 
 Some features such as [publishing](#publish-a-nuget-package) a package are only available on the project-level endpoint.
@@ -104,6 +106,9 @@ You can now add a new source to NuGet with:
 
 #### Project-level endpoint
 
+A project-level endpoint is required to publish NuGet packages to the Package Registry.
+A project-level endpoint is also required to install NuGet packages from a project.
+
 To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endpoint, add the Package Registry as a source with `nuget`:
 
 ```shell
@@ -119,6 +124,8 @@ nuget source Add -Name "GitLab" -Source "https://gitlab.example.com/api/v4/proje
 ```
 
 #### Group-level endpoint
+
+To install a NuGet package from a group, use a group-level endpoint.
 
 To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endpoint, add the Package Registry as a source with `nuget`:
 
@@ -137,6 +144,9 @@ nuget source Add -Name "GitLab" -Source "https://gitlab.example.com/api/v4/group
 ### Add a source with Visual Studio
 
 #### Project-level endpoint
+
+A project-level endpoint is required to publish NuGet packages to the Package Registry.
+A project-level endpoint is also required to install NuGet packages from a project.
 
 To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endpoint, add the Package Registry as a source with Visual Studio:
 
@@ -164,6 +174,8 @@ If you get a warning, ensure that the **Location**, **Username**, and
 **Password** are correct.
 
 #### Group-level endpoint
+
+To install a package from a group, use a group-level endpoint.
 
 To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endpoint, add the Package Registry as a source with Visual Studio:
 
@@ -194,6 +206,9 @@ If you get a warning, ensure that the **Location**, **Username**, and
 
 #### Project-level endpoint
 
+A project-level endpoint is required to publish NuGet packages to the Package Registry.
+A project-level endpoint is also required to install NuGet packages from a project.
+
 To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) Package Registry as a source for .NET:
 
 1. In the root of your project, create a file named `nuget.config`.
@@ -216,6 +231,8 @@ To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) Package 
    ```
 
 #### Group-level endpoint
+
+To install a package from a group, use a group-level endpoint.
 
 To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) Package Registry as a source for .NET:
 
@@ -324,7 +341,18 @@ updated:
 
 1. Commit the changes and push it to your GitLab repository to trigger a new CI/CD build.
 
+### Publishing a package with the same name or version
+
+When you publish a package with the same name or version as an existing package,
+the existing package is overwritten.
+
 ## Install packages
+
+To install a NuGet package from the Package Registry, you must first
+[add a project-level or group-level endpoint](#add-the-package-registry-as-a-source-for-nuget-packages).
+
+If multiple packages have the same name and version, when you install
+a package, the most recently-published package is retrieved.
 
 ### Install a package with the NuGet CLI
 

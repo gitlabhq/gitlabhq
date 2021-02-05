@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module UpdateRepositoryStorageMethods
+  include Gitlab::Utils::StrongMemoize
+
   Error = Class.new(StandardError)
-  SameFilesystemError = Class.new(Error)
 
   attr_reader :repository_storage_move
   delegate :container, :source_storage_name, :destination_storage_name, to: :repository_storage_move
@@ -18,9 +19,7 @@ module UpdateRepositoryStorageMethods
       repository_storage_move.start!
     end
 
-    raise SameFilesystemError if same_filesystem?(source_storage_name, destination_storage_name)
-
-    mirror_repositories
+    mirror_repositories unless same_filesystem?
 
     repository_storage_move.transaction do
       repository_storage_move.finish_replication!
@@ -28,8 +27,10 @@ module UpdateRepositoryStorageMethods
       track_repository(destination_storage_name)
     end
 
-    remove_old_paths
-    enqueue_housekeeping
+    unless same_filesystem?
+      remove_old_paths
+      enqueue_housekeeping
+    end
 
     repository_storage_move.finish_cleanup!
 
@@ -80,8 +81,10 @@ module UpdateRepositoryStorageMethods
     end
   end
 
-  def same_filesystem?(old_storage, new_storage)
-    Gitlab::GitalyClient.filesystem_id(old_storage) == Gitlab::GitalyClient.filesystem_id(new_storage)
+  def same_filesystem?
+    strong_memoize(:same_filesystem) do
+      Gitlab::GitalyClient.filesystem_id(source_storage_name) == Gitlab::GitalyClient.filesystem_id(destination_storage_name)
+    end
   end
 
   def remove_old_paths

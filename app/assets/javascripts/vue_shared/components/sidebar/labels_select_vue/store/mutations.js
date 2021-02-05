@@ -1,5 +1,5 @@
-import * as types from './mutation_types';
 import { DropdownVariant } from '../constants';
+import * as types from './mutation_types';
 
 export default {
   [types.SET_INITIAL_STATE](state, props) {

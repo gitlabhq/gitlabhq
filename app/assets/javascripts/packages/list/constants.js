@@ -55,11 +55,7 @@ export const SORT_FIELDS = [
   },
 ];
 
-export const PACKAGE_REGISTRY_TABS = [
-  {
-    title: __('All'),
-    type: null,
-  },
+export const PACKAGE_TYPES = [
   {
     title: s__('PackageRegistry|Composer'),
     type: PackageType.COMPOSER,

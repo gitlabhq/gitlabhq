@@ -251,6 +251,14 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:namespaces_in_product_marketing_emails
+  :feature_category: :subgroups
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: cronjob:namespaces_prune_aggregation_schedules
   :feature_category: :source_code_management
   :has_external_dependencies:
@@ -1102,6 +1110,14 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_background:ci_pipeline_artifacts_coverage_report
+  :feature_category: :code_testing
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: pipeline_background:ci_pipeline_artifacts_create_quality_report
   :feature_category: :code_testing
   :has_external_dependencies:
   :urgency: :low
@@ -1999,6 +2015,14 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: projects_git_garbage_collect
+  :feature_category: :gitaly
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: prometheus_create_default_alerts
   :feature_category: :incident_management
   :has_external_dependencies:
@@ -2222,6 +2246,14 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
+  :tags: []
+- :name: wikis_git_garbage_collect
+  :feature_category: :gitaly
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
   :tags: []
 - :name: x509_certificate_revoke
   :feature_category: :source_code_management

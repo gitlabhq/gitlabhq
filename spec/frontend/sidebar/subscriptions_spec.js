@@ -1,17 +1,20 @@
+import { GlToggle } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import Subscriptions from '~/sidebar/components/subscriptions/subscriptions.vue';
 import eventHub from '~/sidebar/event_hub';
-import ToggleButton from '~/vue_shared/components/toggle_button.vue';
 
 describe('Subscriptions', () => {
   let wrapper;
 
-  const findToggleButton = () => wrapper.find(ToggleButton);
+  const findToggleButton = () => wrapper.findComponent(GlToggle);
 
   const mountComponent = (propsData) =>
-    shallowMount(Subscriptions, {
-      propsData,
-    });
+    extendedWrapper(
+      shallowMount(Subscriptions, {
+        propsData,
+      }),
+    );
 
   afterEach(() => {
     wrapper.destroy();
@@ -24,7 +27,7 @@ describe('Subscriptions', () => {
       subscribed: undefined,
     });
 
-    expect(findToggleButton().attributes('isloading')).toBe('true');
+    expect(findToggleButton().props('isLoading')).toBe(true);
   });
 
   it('is toggled "off" when currently not subscribed', () => {
@@ -32,7 +35,7 @@ describe('Subscriptions', () => {
       subscribed: false,
     });
 
-    expect(findToggleButton().attributes('value')).toBeFalsy();
+    expect(findToggleButton().props('value')).toBe(false);
   });
 
   it('is toggled "on" when currently subscribed', () => {
@@ -40,7 +43,7 @@ describe('Subscriptions', () => {
       subscribed: true,
     });
 
-    expect(findToggleButton().attributes('value')).toBe('true');
+    expect(findToggleButton().props('value')).toBe(true);
   });
 
   it('toggleSubscription method emits `toggleSubscription` event on eventHub and Component', () => {
@@ -93,14 +96,16 @@ describe('Subscriptions', () => {
     });
 
     it('sets the correct display text', () => {
-      expect(wrapper.find('.issuable-header-text').text()).toContain(subscribeDisabledDescription);
+      expect(wrapper.findByTestId('subscription-title').text()).toContain(
+        subscribeDisabledDescription,
+      );
       expect(wrapper.find({ ref: 'tooltip' }).attributes('title')).toBe(
         subscribeDisabledDescription,
       );
     });
 
     it('does not render the toggle button', () => {
-      expect(wrapper.find('.js-issuable-subscribe-button').exists()).toBe(false);
+      expect(findToggleButton().exists()).toBe(false);
     });
   });
 });

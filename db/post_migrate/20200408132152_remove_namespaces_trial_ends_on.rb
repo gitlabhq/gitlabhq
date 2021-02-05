@@ -18,7 +18,7 @@ class RemoveNamespacesTrialEndsOn < ActiveRecord::Migration[6.0]
   def down
     unless column_exists?(:namespaces, :trial_ends_on)
       with_lock_retries do
-        add_column :namespaces, :trial_ends_on, :datetime_with_timezone
+        add_column :namespaces, :trial_ends_on, :datetime_with_timezone # rubocop:disable Migration/AddColumnsToWideTables
       end
     end
 

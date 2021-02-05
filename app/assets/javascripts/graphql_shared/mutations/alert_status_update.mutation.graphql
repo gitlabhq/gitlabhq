@@ -1,0 +1,17 @@
+#import "../fragments/alert_note.fragment.graphql"
+
+mutation updateAlertStatus($projectPath: ID!, $status: AlertManagementStatus!, $iid: String!) {
+  updateAlertStatus(input: { iid: $iid, status: $status, projectPath: $projectPath }) {
+    errors
+    alert {
+      iid
+      status
+      endedAt
+      notes {
+        nodes {
+          ...AlertNote
+        }
+      }
+    }
+  }
+}

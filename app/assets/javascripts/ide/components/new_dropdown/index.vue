@@ -1,9 +1,9 @@
 <script>
 import { mapActions } from 'vuex';
 import { GlIcon } from '@gitlab/ui';
+import { modalTypes } from '../../constants';
 import upload from './upload.vue';
 import ItemButton from './button.vue';
-import { modalTypes } from '../../constants';
 import NewModal from './modal.vue';
 
 export default {
@@ -108,6 +108,7 @@ export default {
             class="d-flex"
             icon="remove"
             icon-classes="mr-2"
+            data-qa-selector="delete_button"
             @click="deleteEntry(path)"
           />
         </li>

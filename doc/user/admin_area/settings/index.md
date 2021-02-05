@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index
 ---
 
-# Admin Area settings **(CORE ONLY)**
+# Admin Area settings **(FREE SELF)**
 
 As an administrator of a GitLab self-managed instance, you can manage the behavior of your deployment. To do so, select **Admin Area > Settings**.
 
@@ -36,7 +36,7 @@ Access the default page for admin area settings by navigating to **Admin Area > 
 | [Elasticsearch](../../../integration/elasticsearch.md#enabling-advanced-search) | Elasticsearch integration. Elasticsearch AWS IAM. |
 | [Kroki](../../../administration/integration/kroki.md#enable-kroki-in-gitlab) | Allow rendering of diagrams in AsciiDoc and Markdown documents using [kroki.io](https://kroki.io). |
 | [PlantUML](../../../administration/integration/plantuml.md#gitlab) | Allow rendering of PlantUML diagrams in AsciiDoc and Markdown documents. |
-| [Slack application](../../../user/project/integrations/gitlab_slack_application.md#configuration) **(FREE ONLY)** | Slack integration allows you to interact with GitLab via slash commands in a chat window. This option is only available on GitLab.com, though it may be [available for self-managed instances in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/28164). |
+| [Slack application](../../../user/project/integrations/gitlab_slack_application.md#configuration) **(FREE SAAS)** | Slack integration allows you to interact with GitLab via slash commands in a chat window. This option is only available on GitLab.com, though it may be [available for self-managed instances in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/28164). |
 | [Third party offers](third_party_offers.md) | Control the display of third party offers. |
 | [Snowplow](../../../development/snowplow.md) | Configure the Snowplow integration. |
 | [Google GKE](../../project/clusters/add_gke_clusters.md) | Google GKE integration allows you to provision GKE clusters from GitLab. |
@@ -52,7 +52,7 @@ Access the default page for admin area settings by navigating to **Admin Area > 
 | Repository maintenance | ([Repository checks](../../../administration/repository_checks.md) and [Housekeeping](../../../administration/housekeeping.md)). Configure automatic Git checks and housekeeping on repositories. |
 | [Repository static objects](../../../administration/static_objects_external_storage.md) | Serve repository static objects (for example, archives, blobs, ...) from an external storage (for example, a CDN). |
 
-## Templates **(PREMIUM ONLY)**
+## Templates **(PREMIUM SELF)**
 
 | Option | Description |
 | ------ | ----------- |
@@ -64,7 +64,7 @@ Access the default page for admin area settings by navigating to **Admin Area > 
 | Option | Description |
 | ------ | ----------- |
 | [Continuous Integration and Deployment](continuous_integration.md) | Auto DevOps, runners and job artifacts. |
-| [Required pipeline configuration](continuous_integration.md#required-pipeline-configuration) **(PREMIUM ONLY)** | Set an instance-wide auto included [pipeline configuration](../../../ci/yaml/README.md). This pipeline configuration is run after the project's own configuration. |
+| [Required pipeline configuration](continuous_integration.md#required-pipeline-configuration) **(PREMIUM SELF)** | Set an instance-wide auto included [pipeline configuration](../../../ci/yaml/README.md). This pipeline configuration is run after the project's own configuration. |
 | [Package Registry](continuous_integration.md#package-registry-configuration) | Settings related to the use and experience of using the GitLab Package Registry. Note there are [risks involved](../../packages/container_registry/index.md#use-with-external-container-registries) in enabling some of these settings. |
 
 ## Reporting

@@ -2,12 +2,12 @@ import $ from 'jquery';
 import Dropzone from 'dropzone';
 import { escape } from 'lodash';
 import './behaviors/preview_markdown';
-import PasteMarkdownTable from './behaviors/markdown/paste_markdown_table';
-import csrf from './lib/utils/csrf';
-import axios from './lib/utils/axios_utils';
 import { n__, __ } from '~/locale';
 import { getFilename } from '~/lib/utils/file_upload';
 import { spriteIcon } from '~/lib/utils/common_utils';
+import PasteMarkdownTable from './behaviors/markdown/paste_markdown_table';
+import csrf from './lib/utils/csrf';
+import axios from './lib/utils/axios_utils';
 
 Dropzone.autoDiscover = false;
 

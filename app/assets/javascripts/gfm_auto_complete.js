@@ -4,14 +4,18 @@ import { escape, template } from 'lodash';
 import { s__ } from '~/locale';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import { isUserBusy } from '~/set_status_modal/utils';
+import axios from '~/lib/utils/axios_utils';
+import * as Emoji from '~/emoji';
 import glRegexp from './lib/utils/regexp';
 import AjaxCache from './lib/utils/ajax_cache';
-import axios from '~/lib/utils/axios_utils';
 import { spriteIcon } from './lib/utils/common_utils';
-import * as Emoji from '~/emoji';
 
 function sanitize(str) {
   return str.replace(/<(?:.|\n)*?>/gm, '');
+}
+
+function createMemberSearchString(member) {
+  return `${member.name.replace(/ /g, '')} ${member.username}`;
 }
 
 export function membersBeforeSave(members) {
@@ -40,7 +44,7 @@ export function membersBeforeSave(members) {
       username: member.username,
       avatarTag: autoCompleteAvatar.length === 1 ? txtAvatar : imgAvatar,
       title: sanitize(title),
-      search: sanitize(`${member.username} ${member.name}`),
+      search: sanitize(createMemberSearchString(member)),
       icon: avatarIcon,
       availability: member?.availability,
     };
@@ -298,9 +302,7 @@ class GfmAutoComplete {
 
           // Cache assignees list for easier filtering later
           assignees =
-            SidebarMediator.singleton?.store?.assignees?.map(
-              (assignee) => `${assignee.username} ${assignee.name}`,
-            ) || [];
+            SidebarMediator.singleton?.store?.assignees?.map(createMemberSearchString) || [];
 
           const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
           return match && match.length ? match[1] : null;

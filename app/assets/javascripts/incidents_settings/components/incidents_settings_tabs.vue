@@ -1,8 +1,8 @@
 <script>
 import { GlButton, GlTabs, GlTab } from '@gitlab/ui';
+import { INTEGRATION_TABS_CONFIG, I18N_INTEGRATION_TABS } from '../constants';
 import AlertsSettingsForm from './alerts_form.vue';
 import PagerDutySettingsForm from './pagerduty_form.vue';
-import { INTEGRATION_TABS_CONFIG, I18N_INTEGRATION_TABS } from '../constants';
 
 export default {
   components: {
@@ -26,7 +26,7 @@ export default {
     class="settings no-animate qa-incident-management-settings"
   >
     <div class="settings-header">
-      <h4 ref="sectionHeader" class="gl-my-3! gl-py-1">
+      <h4 ref="sectionHeader">
         {{ $options.i18n.headerText }}
       </h4>
       <gl-button ref="toggleBtn" class="js-settings-toggle">{{

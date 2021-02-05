@@ -13,6 +13,9 @@ RSpec.shared_examples 'resolvable discussions API' do |parent_type, noteable_typ
     end
 
     it "unresolves discussion if resolved is false" do
+      expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+        .to receive(:track_unresolve_thread_action).with(user: user)
+
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
               "discussions/#{note.discussion_id}", user), params: { resolved: false }
 

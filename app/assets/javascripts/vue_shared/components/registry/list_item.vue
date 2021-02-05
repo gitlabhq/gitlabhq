@@ -54,19 +54,17 @@ export default {
     class="gl-display-flex gl-flex-direction-column gl-border-b-solid gl-border-t-solid gl-border-t-1 gl-border-b-1"
     :class="optionalClasses"
   >
-    <div class="gl-display-flex gl-align-items-center gl-py-5">
+    <div class="gl-display-flex gl-align-items-center gl-py-3">
       <div
         v-if="$slots['left-action']"
-        class="gl-w-7 gl-display-none gl-display-sm-flex gl-justify-content-start gl-pl-2"
+        class="gl-w-7 gl-display-none gl-sm-display-flex gl-justify-content-start gl-pl-2"
       >
         <slot name="left-action"></slot>
       </div>
       <div
         class="gl-display-flex gl-xs-flex-direction-column gl-justify-content-space-between gl-align-items-stretch gl-flex-fill-1"
       >
-        <div
-          class="gl-display-flex gl-flex-direction-column gl-justify-content-space-between gl-xs-mb-3 gl-min-w-0 gl-flex-grow-1"
-        >
+        <div class="gl-display-flex gl-flex-direction-column gl-xs-mb-3 gl-min-w-0 gl-flex-grow-1">
           <div
             v-if="$slots['left-primary']"
             class="gl-display-flex gl-align-items-center gl-text-body gl-font-weight-bold gl-min-h-6 gl-min-w-0"
@@ -77,13 +75,13 @@ export default {
               :selected="isDetailsShown"
               icon="ellipsis_h"
               size="small"
-              class="gl-ml-2 gl-display-none gl-display-sm-block"
+              class="gl-ml-2 gl-display-none gl-sm-display-block"
               @click="toggleDetails"
             />
           </div>
           <div
             v-if="$slots['left-secondary']"
-            class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-mt-1 gl-min-h-6 gl-min-w-0 gl-flex-fill-1"
+            class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-min-h-6 gl-min-w-0 gl-flex-fill-1"
           >
             <slot name="left-secondary"></slot>
           </div>
@@ -99,7 +97,7 @@ export default {
           </div>
           <div
             v-if="$slots['right-secondary']"
-            class="gl-display-flex gl-align-items-center gl-mt-1 gl-min-h-6"
+            class="gl-display-flex gl-align-items-center gl-min-h-6"
           >
             <slot name="right-secondary"></slot>
           </div>
@@ -107,7 +105,7 @@ export default {
       </div>
       <div
         v-if="$slots['right-action']"
-        class="gl-w-9 gl-display-none gl-display-sm-flex gl-justify-content-end gl-pr-1"
+        class="gl-w-9 gl-display-none gl-sm-display-flex gl-justify-content-end gl-pr-1"
       >
         <slot name="right-action"></slot>
       </div>

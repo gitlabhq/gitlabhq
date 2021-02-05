@@ -138,6 +138,13 @@
   }
 }
 
+.social-provider-btn-image {
+  > img {
+    width: 16px;
+    vertical-align: inherit;
+  }
+}
+
 .provider-btn-image {
   display: inline-block;
   padding: 5px 10px;
@@ -377,19 +384,6 @@ table.u2f-registrations,
   .email-badge-email {
     display: inline;
     margin-right: $gl-padding / 4;
-  }
-
-  .badge-verification-status {
-    border-width: 1px;
-    border-style: solid;
-
-    &.verified {
-      @include green-status-color;
-    }
-
-    &.unverified {
-      @include status-color($gray-dark, color('gray'), $common-gray-dark);
-    }
   }
 }
 

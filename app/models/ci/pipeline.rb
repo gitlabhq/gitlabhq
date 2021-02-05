@@ -250,6 +250,7 @@ module Ci
       after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
         pipeline.run_after_commit do
           ::Ci::PipelineArtifacts::CoverageReportWorker.perform_async(pipeline.id)
+          ::Ci::PipelineArtifacts::CreateQualityReportWorker.perform_async(pipeline.id)
         end
       end
 
@@ -262,8 +263,6 @@ module Ci
       end
 
       after_transition any => any do |pipeline|
-        next unless Feature.enabled?(:jira_sync_builds, pipeline.project)
-
         pipeline.run_after_commit do
           # Passing the seq-id ensures this is idempotent
           seq_id = ::Atlassian::JiraConnect::Client.generate_update_sequence_id
@@ -677,7 +676,7 @@ module Ci
 
     def number_of_warnings
       BatchLoader.for(id).batch(default_value: 0) do |pipeline_ids, loader|
-        ::Ci::Build.where(commit_id: pipeline_ids)
+        ::CommitStatus.where(commit_id: pipeline_ids)
           .latest
           .failed_but_allowed
           .group(:commit_id)
@@ -804,7 +803,7 @@ module Ci
           variables.concat(merge_request.predefined_variables)
         end
 
-        if Gitlab::Ci::Features.pipeline_open_merge_requests?(project) && open_merge_requests_refs.any?
+        if open_merge_requests_refs.any?
           variables.append(key: 'CI_OPEN_MERGE_REQUESTS', value: open_merge_requests_refs.join(','))
         end
 
@@ -961,7 +960,7 @@ module Ci
 
     def detailed_status(current_user)
       Gitlab::Ci::Status::Pipeline::Factory
-        .new(self, current_user)
+        .new(self.present, current_user)
         .fabricate!
     end
 
@@ -997,11 +996,21 @@ module Ci
     end
 
     def has_coverage_reports?
-      pipeline_artifacts&.has_code_coverage?
+      pipeline_artifacts&.has_report?(:code_coverage)
     end
 
     def can_generate_coverage_reports?
       has_reports?(Ci::JobArtifact.coverage_reports)
+    end
+
+    def has_codequality_mr_diff_report?
+      pipeline_artifacts&.has_report?(:code_quality_mr_diff)
+    end
+
+    def can_generate_codequality_reports?
+      return false unless ::Gitlab::Ci::Features.display_quality_on_mr_diff?(project)
+
+      has_reports?(Ci::JobArtifact.codequality_reports)
     end
 
     def test_report_summary
@@ -1204,6 +1213,11 @@ module Ci
       end
     end
     # rubocop:enable Rails/FindEach
+
+    # EE-only
+    def merge_train_pipeline?
+      false
+    end
 
     private
 

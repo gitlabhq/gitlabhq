@@ -10,13 +10,13 @@ type: reference, howto
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8537) in GitLab 8.16.
 
 When [PlantUML](https://plantuml.com) integration is enabled and configured in
-GitLab we are able to create simple diagrams in AsciiDoc and Markdown documents
+GitLab you can create diagrams in AsciiDoc and Markdown documents
 created in snippets, wikis, and repositories.
 
 ## PlantUML Server
 
-Before you can enable PlantUML in GitLab; you need to set up your own PlantUML
-server that will generate the diagrams.
+Before you can enable PlantUML in GitLab; set up your own PlantUML
+server to generate the diagrams.
 
 ### Docker
 
@@ -26,12 +26,11 @@ With Docker, you can just run a container like this:
 docker run -d --name plantuml -p 8080:8080 plantuml/plantuml-server:tomcat
 ```
 
-The **PlantUML URL** will be the hostname of the server running the container.
+The **PlantUML URL** is the hostname of the server running the container.
 
-When running GitLab in Docker, it will need to have access to the PlantUML container.
-The easiest way to achieve that is by using [Docker Compose](https://docs.docker.com/compose/).
-
-A simple `docker-compose.yml` file would be:
+When running GitLab in Docker, it must have access to the PlantUML container.
+You can achieve that by using [Docker Compose](https://docs.docker.com/compose/).
+A basic `docker-compose.yml` file could contain:
 
 ```yaml
 version: "3"
@@ -47,13 +46,12 @@ services:
     container_name: plantuml
 ```
 
-In this scenario, PlantUML will be accessible for GitLab at the URL
+In this scenario, PlantUML is accessible to GitLab at the URL
 `http://plantuml:8080/`.
 
 ### Debian/Ubuntu
 
-Installing and configuring your
-own PlantUML server is easy in Debian/Ubuntu distributions using Tomcat.
+You can also install and configure a PlantUML server in Debian/Ubuntu distributions using Tomcat.
 
 First you need to create a `plantuml.war` file from the source code:
 
@@ -64,8 +62,7 @@ cd plantuml-server
 mvn package
 ```
 
-The above sequence of commands will generate a WAR file that can be deployed
-using Tomcat:
+The above sequence of commands generates a `.war` file you can deploy with Tomcat:
 
 ```shell
 sudo apt-get install tomcat8
@@ -74,17 +71,18 @@ sudo chown tomcat8:tomcat8 /var/lib/tomcat8/webapps/plantuml.war
 sudo service tomcat8 restart
 ```
 
-Once the Tomcat service restarts the PlantUML service will be ready and
+After the Tomcat service restarts, the PlantUML service is ready and
 listening for requests on port 8080:
 
 ```plaintext
 http://localhost:8080/plantuml
 ```
 
-you can change these defaults by editing the `/etc/tomcat8/server.xml` file.
+To change these defaults, edit the `/etc/tomcat8/server.xml` file.
 
-Note that the default URL is different than when using the Docker-based image,
-where the service is available at the root of URL with no relative path. Adjust
+NOTE:
+The default URL is different when using this approach. The Docker-based image
+makes the service available at the root URL, with no relative path. Adjust
 the configuration below accordingly.
 
 ### Making local PlantUML accessible using custom GitLab setup
@@ -112,7 +110,7 @@ To activate the changes, run the following command:
 sudo gitlab-ctl reconfigure
 ```
 
-Note that the redirection through GitLab **must** be configured
+Note that the redirection through GitLab must be configured
 when running [GitLab with TLS](https://docs.gitlab.com/omnibus/settings/ssl.html)
 due to PlantUML's use of the insecure HTTP protocol. Newer browsers such
 as [Google Chrome 86+](https://www.chromestatus.com/feature/4926989725073408)
@@ -120,7 +118,7 @@ do not load insecure HTTP resources on a page served over HTTPS.
 
 ### Security
 
-PlantUML has features that allows fetching network resources.
+PlantUML has features that allow fetching network resources.
 
 ```plaintext
 @startuml
@@ -136,18 +134,18 @@ stop;
 ## GitLab
 
 You need to enable PlantUML integration from Settings under Admin Area. To do
-that, login with an Admin account and do following:
+that, sign in with an Administrator account, and then do following:
 
-- In GitLab, go to **Admin Area > Settings > General**.
-- Expand the **PlantUML** section.
-- Check **Enable PlantUML** checkbox.
-- Set the PlantUML instance as `https://gitlab.example.com/-/plantuml/`.
+1. In GitLab, go to **Admin Area > Settings > General**.
+1. Expand the **PlantUML** section.
+1. Select the **Enable PlantUML** check box.
+1. Set the PlantUML instance as `https://gitlab.example.com/-/plantuml/`.
 
 NOTE:
 If you are using a PlantUML server running v1.2020.9 and
 above (for example, [plantuml.com](https://plantuml.com)), set the `PLANTUML_ENCODING`
-environment variable to enable the `deflate` compression. On Omnibus,
-this can be done set in `/etc/gitlab.rb`:
+environment variable to enable the `deflate` compression. On Omnibus GitLab,
+this can be set in `/etc/gitlab.rb`:
 
 ```ruby
 gitlab_rails['env'] = { 'PLANTUML_ENCODING' => 'deflate' }
@@ -191,9 +189,11 @@ our AsciiDoc snippets, wikis, and repositories using delimited blocks:
      Alice -> Bob: hi
   ```
 
-   You can also use the `uml::` directive for compatibility with [`sphinxcontrib-plantuml`](https://pypi.org/project/sphinxcontrib-plantuml/), but please note that we currently only support the `caption` option.
+   You can also use the `uml::` directive for compatibility with
+   [`sphinxcontrib-plantuml`](https://pypi.org/project/sphinxcontrib-plantuml/),
+   but GitLab only supports the `caption` option.
 
-The above blocks will be converted to an HTML image tag with source pointing to the
+The above blocks are converted to an HTML image tag with source pointing to the
 PlantUML instance. If the PlantUML server is correctly configured, this should
 render a nice diagram instead of the block:
 
@@ -202,12 +202,18 @@ Bob -> Alice : hello
 Alice -> Bob : hi
 ```
 
-Inside the block you can add any of the supported diagrams by PlantUML such as
-[Sequence](https://plantuml.com/sequence-diagram), [Use Case](https://plantuml.com/use-case-diagram),
-[Class](https://plantuml.com/class-diagram), [Activity](https://plantuml.com/activity-diagram-legacy),
-[Component](https://plantuml.com/component-diagram), [State](https://plantuml.com/state-diagram),
-and [Object](https://plantuml.com/object-diagram) diagrams. You do not need to use the PlantUML
-diagram delimiters `@startuml`/`@enduml` as these are replaced by the AsciiDoc `plantuml` block.
+Inside the block you can add any of the diagrams PlantUML supports, such as:
+
+- [Sequence](https://plantuml.com/sequence-diagram)
+- [Use Case](https://plantuml.com/use-case-diagram)
+- [Class](https://plantuml.com/class-diagram)
+- [Activity](https://plantuml.com/activity-diagram-legacy)
+- [Component](https://plantuml.com/component-diagram)
+- [State](https://plantuml.com/state-diagram),
+- [Object](https://plantuml.com/object-diagram)
+
+You do not need to use the PlantUML
+diagram delimiters `@startuml`/`@enduml`, as these are replaced by the AsciiDoc `plantuml` block.
 
 Some parameters can be added to the AsciiDoc block definition:
 
@@ -217,4 +223,4 @@ Some parameters can be added to the AsciiDoc block definition:
 - `width`: Width attribute added to the image tag.
 - `height`: Height attribute added to the image tag.
 
-Markdown does not support any parameters and will always use PNG format.
+Markdown does not support any parameters and always uses PNG format.

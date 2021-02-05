@@ -126,7 +126,7 @@ an SMTP server, but you're not seeing mail delivered. Here's how to check the se
 
 For more advanced issues, `gdb` is a must-have tool for debugging issues.
 
-### The GNU Project Debugger (gdb)
+### The GNU Project Debugger (GDB)
 
 To install on Ubuntu/Debian:
 
@@ -140,9 +140,13 @@ On CentOS:
 sudo yum install gdb
 ```
 
+<!-- vale gitlab.Spelling = NO -->
+
 ### rbtrace
 
-GitLab 11.2 ships with [rbtrace](https://github.com/tmm1/rbtrace), which
+<!-- vale gitlab.Spelling = YES -->
+
+GitLab 11.2 ships with [`rbtrace`](https://github.com/tmm1/rbtrace), which
 allows you to trace Ruby code, view all running threads, take memory dumps,
 and more. However, this is not enabled by default. To enable it, define the
 `ENABLE_RBTRACE` variable to the environment. For example, in Omnibus:
@@ -175,7 +179,7 @@ downtime. Otherwise skip to the next section.
 
 1. Load the problematic URL
 1. Run `sudo gdb -p <PID>` to attach to the Unicorn process.
-1. In the gdb window, type:
+1. In the GDB window, type:
 
    ```plaintext
    call (void) rb_backtrace()
@@ -210,7 +214,7 @@ downtime. Otherwise skip to the next section.
    ```
 
 Note that if the Unicorn process terminates before you are able to run these
-commands, gdb will report an error. To buy more time, you can always raise the
+commands, GDB will report an error. To buy more time, you can always raise the
 Unicorn timeout. For omnibus users, you can edit `/etc/gitlab/gitlab.rb` and
 increase it from 60 seconds to 300:
 
@@ -246,7 +250,7 @@ separate Rails process to debug the issue:
    ```
 
 1. In a new window, run `top`. It should show this Ruby process using 100% CPU. Write down the PID.
-1. Follow step 2 from the previous section on using gdb.
+1. Follow step 2 from the previous section on using GDB.
 
 ### GitLab: API is not accessible
 
@@ -279,4 +283,4 @@ The output in `/tmp/unicorn.txt` may help diagnose the root cause.
 ## More information
 
 - [Debugging Stuck Ruby Processes](https://blog.newrelic.com/engineering/debugging-stuck-ruby-processes-what-to-do-before-you-kill-9/)
-- [Cheatsheet of using gdb and Ruby processes](gdb-stuck-ruby.txt)
+- [Cheat sheet of using GDB and Ruby processes](gdb-stuck-ruby.txt)

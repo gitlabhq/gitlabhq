@@ -1,6 +1,6 @@
 import axios from '~/lib/utils/axios_utils';
-import types from './mutation_types';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import types from './mutation_types';
 
 export const transformBackendBadge = (badge) => ({
   ...convertObjectPropsToCamelCase(badge, true),

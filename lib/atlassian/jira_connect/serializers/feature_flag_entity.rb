@@ -50,7 +50,7 @@ module Atlassian
         # edit path as an interim solution.
         def summary(strategies = flag.strategies)
           {
-            url: project_url(flag.project) + "/-/feature_flags/#{flag.id}/edit",
+            url: edit_project_feature_flag_url(flag.project, flag),
             lastUpdated: flag.updated_at.iso8601,
             status: {
               enabled: flag.active,

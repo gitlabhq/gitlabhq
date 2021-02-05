@@ -42,9 +42,13 @@ module Projects
       end
 
       def test_suite
-        builds.map do |build|
+        suite = builds.map do |build|
           build.collect_test_reports!(Gitlab::Ci::Reports::TestReports.new)
         end.sum
+
+        Gitlab::Ci::Reports::TestFailureHistory.new(suite.failed.values, project).load!
+
+        suite
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end

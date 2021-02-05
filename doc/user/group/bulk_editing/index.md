@@ -20,19 +20,21 @@ Only the items visible on the current page are selected for bulk editing (up to 
 
 ## Bulk edit issues at the group level
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7249) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7249) in GitLab 12.1.
+> - Assigning epic ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
+> - Editing health status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218395) in GitLab 13.2.
+> - Editing iteration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196806) in GitLab 13.9.
 
 NOTE:
 You need a permission level of [Reporter or higher](../../permissions.md) to manage issues.
 
 When bulk editing issues in a group, you can edit the following attributes:
 
-- Epic ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in
-   [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.) **(PREMIUM)**
-- Milestone
-- Labels
-- Health status ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218395) in
-   [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.2.) **(ULTIMATE)**
+- [Epic](../epics/index.md)
+- [Milestone](../../project/milestones/index.md)
+- [Labels](../../project/labels.md)
+- [Health status](../../project/issues/index.md#health-status)
+- [Iteration](../iterations/index.md)
 
 To update multiple project issues at the same time:
 

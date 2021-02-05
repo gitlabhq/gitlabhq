@@ -226,11 +226,7 @@ RSpec.describe Projects::MergeRequests::DiffsController do
         let(:diffable_merge_ref) { true }
 
         it 'compares diffs with the head' do
-          MergeRequests::MergeToRefService.new(project, merge_request.author).execute(merge_request)
-
-          expect(CompareService).to receive(:new).with(
-            project, merge_request.merge_ref_head.sha
-          ).and_call_original
+          create(:merge_request_diff, :merge_head, merge_request: merge_request)
 
           go(diff_head: true)
 
@@ -242,8 +238,6 @@ RSpec.describe Projects::MergeRequests::DiffsController do
         let(:diffable_merge_ref) { false }
 
         it 'compares diffs with the base' do
-          expect(CompareService).not_to receive(:new)
-
           go(diff_head: true)
 
           expect(response).to have_gitlab_http_status(:ok)

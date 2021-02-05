@@ -9,6 +9,7 @@ RSpec.describe 'Thread Comments Merge Request', :js do
 
   before do
     stub_feature_flags(remove_resolve_note: false)
+    stub_feature_flags(remove_comment_close_reopen: false)
 
     project.add_maintainer(user)
     sign_in(user)

@@ -4,7 +4,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# LDAP Rake tasks **(CORE ONLY)**
+# LDAP Rake tasks **(FREE SELF)**
 
 The following are LDAP-related Rake tasks.
 
@@ -34,7 +34,7 @@ limit by passing a number to the check task:
 rake gitlab:ldap:check[50]
 ```
 
-## Run a group sync **(STARTER ONLY)**
+## Run a group sync **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14735) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.2.
 
@@ -233,9 +233,9 @@ It can also be used as a receiving application for content encrypted with a KMS:
 gcloud kms decrypt --key my-key --keyring my-test-kms --plaintext-file=- --ciphertext-file=my-file --location=us-west1 | sudo gitlab-rake gitlab:ldap:secret:write
 ```
 
-**gcloud secret integration example**
+**Google Cloud secret integration example**
 
-It can also be used as a receiving application for secrets out of gcloud:
+It can also be used as a receiving application for secrets out of Google Cloud:
 
 ```shell
 gcloud secrets versions access latest --secret="my-test-secret" > $1 | sudo gitlab-rake gitlab:ldap:secret:write

@@ -57,4 +57,4 @@ If you continue to type, `@le`, the popup list changes to the following. The
 popup now only includes users where `le` appears in their username, or a word in
 their name.
 
-![Popup list which includes users whose username or name contains the string `le`](img/autocomplete_characters_example2_v12_0.png)
+![Popup list which includes users whose username or name contains the string](img/autocomplete_characters_example2_v12_0.png)

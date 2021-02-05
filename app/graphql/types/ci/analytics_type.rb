@@ -7,27 +7,27 @@ module Types
       graphql_name 'PipelineAnalytics'
 
       field :week_pipelines_totals, [GraphQL::INT_TYPE], null: true,
-            description: 'Total weekly pipeline count'
+            description: 'Total weekly pipeline count.'
       field :week_pipelines_successful, [GraphQL::INT_TYPE], null: true,
-            description: 'Total weekly successful pipeline count'
+            description: 'Total weekly successful pipeline count.'
       field :week_pipelines_labels, [GraphQL::STRING_TYPE], null: true,
-            description: 'Labels for the weekly pipeline count'
+            description: 'Labels for the weekly pipeline count.'
       field :month_pipelines_totals, [GraphQL::INT_TYPE], null: true,
-            description: 'Total monthly pipeline count'
+            description: 'Total monthly pipeline count.'
       field :month_pipelines_successful, [GraphQL::INT_TYPE], null: true,
-            description: 'Total monthly successful pipeline count'
+            description: 'Total monthly successful pipeline count.'
       field :month_pipelines_labels, [GraphQL::STRING_TYPE], null: true,
-            description: 'Labels for the monthly pipeline count'
+            description: 'Labels for the monthly pipeline count.'
       field :year_pipelines_totals, [GraphQL::INT_TYPE], null: true,
-            description: 'Total yearly pipeline count'
+            description: 'Total yearly pipeline count.'
       field :year_pipelines_successful, [GraphQL::INT_TYPE], null: true,
-            description: 'Total yearly successful pipeline count'
+            description: 'Total yearly successful pipeline count.'
       field :year_pipelines_labels, [GraphQL::STRING_TYPE], null: true,
-            description: 'Labels for the yearly pipeline count'
+            description: 'Labels for the yearly pipeline count.'
       field :pipeline_times_values, [GraphQL::INT_TYPE], null: true,
-            description: 'Pipeline times'
+            description: 'Pipeline times.'
       field :pipeline_times_labels, [GraphQL::STRING_TYPE], null: true,
-            description: 'Pipeline times labels'
+            description: 'Pipeline times labels.'
     end
   end
 end

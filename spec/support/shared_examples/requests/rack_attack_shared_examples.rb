@@ -112,7 +112,7 @@ RSpec.shared_examples 'rate-limited token-authenticated requests' do
         expect(response).not_to have_gitlab_http_status(:too_many_requests)
       end
 
-      arguments = {
+      arguments = a_hash_including({
         message: 'Rack_Attack',
         env: :throttle,
         remote_ip: '127.0.0.1',
@@ -121,7 +121,7 @@ RSpec.shared_examples 'rate-limited token-authenticated requests' do
         user_id: user.id,
         'meta.user' => user.username,
         matched: throttle_types[throttle_setting_prefix]
-      }
+      })
 
       expect(Gitlab::AuthLogger).to receive(:error).with(arguments).once
 
@@ -278,7 +278,7 @@ RSpec.shared_examples 'rate-limited web authenticated requests' do
         expect(response).not_to have_gitlab_http_status(:too_many_requests)
       end
 
-      arguments = {
+      arguments = a_hash_including({
         message: 'Rack_Attack',
         env: :throttle,
         remote_ip: '127.0.0.1',
@@ -287,7 +287,7 @@ RSpec.shared_examples 'rate-limited web authenticated requests' do
         user_id: user.id,
         'meta.user' => user.username,
         matched: throttle_types[throttle_setting_prefix]
-      }
+      })
 
       expect(Gitlab::AuthLogger).to receive(:error).with(arguments).once
       expect { request_authenticated_web_url }.not_to exceed_query_limit(control_count)

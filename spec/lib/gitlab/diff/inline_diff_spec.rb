@@ -37,6 +37,33 @@ RSpec.describe Gitlab::Diff::InlineDiff do
     it 'can handle unchanged empty lines' do
       expect { described_class.for_lines(['- bar', '+ baz', '']) }.not_to raise_error
     end
+
+    context 'when lines have multiple changes' do
+      let(:diff) do
+        <<~EOF
+        - Hello, how are you?
+        + Hi, how are you doing?
+        EOF
+      end
+
+      let(:subject) { described_class.for_lines(diff.lines) }
+
+      it 'finds all inline diffs' do
+        expect(subject[0]).to eq([3..6])
+        expect(subject[1]).to eq([3..3, 17..22])
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(improved_merge_diff_highlighting: false)
+        end
+
+        it 'finds all inline diffs' do
+          expect(subject[0]).to eq([3..19])
+          expect(subject[1]).to eq([3..22])
+        end
+      end
+    end
   end
 
   describe "#inline_diffs" do

@@ -5,9 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Enforce accepting Terms of Service **(CORE ONLY)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18570) in [GitLab Core](https://about.gitlab.com/pricing/) 10.8.
+# Enforce accepting Terms of Service **(FREE SELF)**
 
 An admin can enforce acceptance of a terms of service and privacy policy. When this option is enabled, new and existing users must accept the terms.
 

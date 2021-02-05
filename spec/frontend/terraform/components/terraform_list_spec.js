@@ -1,7 +1,7 @@
 import { GlAlert, GlBadge, GlKeysetPagination, GlLoadingIcon, GlTab } from '@gitlab/ui';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import createMockApollo from 'helpers/mock_apollo_helper';
 import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import EmptyState from '~/terraform/components/empty_state.vue';
 import StatesTable from '~/terraform/components/states_table.vue';
 import TerraformList from '~/terraform/components/terraform_list.vue';
@@ -26,6 +26,15 @@ describe('TerraformList', () => {
         },
       },
     };
+
+    // Override @client  _showDetails
+    getStatesQuery.getStates.definitions[1].selectionSet.selections[0].directives = [];
+
+    // Override @client errorMessages
+    getStatesQuery.getStates.definitions[1].selectionSet.selections[1].directives = [];
+
+    // Override @client loadingActions
+    getStatesQuery.getStates.definitions[1].selectionSet.selections[2].directives = [];
 
     const statsQueryResponse = queryResponse || jest.fn().mockResolvedValue(apolloQueryResponse);
     const apolloProvider = createMockApollo([[getStatesQuery, statsQueryResponse]]);
@@ -52,20 +61,26 @@ describe('TerraformList', () => {
     describe('when there is a list of terraform states', () => {
       const states = [
         {
+          _showDetails: false,
+          errorMessages: [],
           id: 'gid://gitlab/Terraform::State/1',
           name: 'state-1',
-          lockedAt: null,
-          updatedAt: null,
-          lockedByUser: null,
           latestVersion: null,
+          loadingActions: false,
+          lockedAt: null,
+          lockedByUser: null,
+          updatedAt: null,
         },
         {
+          _showDetails: false,
+          errorMessages: [],
           id: 'gid://gitlab/Terraform::State/2',
           name: 'state-2',
-          lockedAt: null,
-          updatedAt: null,
-          lockedByUser: null,
           latestVersion: null,
+          loadingActions: false,
+          lockedAt: null,
+          lockedByUser: null,
+          updatedAt: null,
         },
       ];
 
