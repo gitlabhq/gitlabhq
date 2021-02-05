@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.8.3 (2021-02-05)
+
+### Fixed (2 changes)
+
+- Revert multipart URL optimization for AWS S3. !52561
+- Fix regression with old wiki image uploads. !52656
+
+
 ## 13.8.2 (2021-02-01)
 
 ### Security (5 changes)
