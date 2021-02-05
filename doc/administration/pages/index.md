@@ -216,7 +216,7 @@ control over how the Pages daemon runs and serves content in your environment.
 
 | Setting | Description |
 | ------- | ----------- |
-| `pages_external_url` | The URL where GitLab Pages is accessible, including protocol (HTTP / HTTPS). If `https://` is used, you must also set `gitlab_pages['ssl_certificate']` and `gitlab_pages['ssl_certificate_key']`.
+| `pages_external_url` | The URL where GitLab Pages is accessible, including protocol (HTTP / HTTPS). If `https://` is used, additional configuration is required. See [Wildcard domains with TLS support](#wildcard-domains-with-tls-support) and [Custom domains with TLS support](#custom-domains-with-tls-support) for details.
 | `gitlab_pages[]` | |
 | `access_control` |  Whether to enable [access control](index.md#access-control).
 | `api_secret_key`  | Full path to file with secret key used to authenticate with the GitLab API. Auto-generated when left unset.

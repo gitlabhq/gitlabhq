@@ -12,11 +12,17 @@ import DetailsHeader from '~/registry/explorer/components/details_page/details_h
 import TagsLoader from '~/registry/explorer/components/details_page/tags_loader.vue';
 import TagsList from '~/registry/explorer/components/details_page/tags_list.vue';
 import EmptyTagsState from '~/registry/explorer/components/details_page/empty_state.vue';
+import StatusAlert from '~/registry/explorer/components/details_page/status_alert.vue';
+import DeleteImage from '~/registry/explorer/components/delete_image.vue';
 
 import getContainerRepositoryDetailsQuery from '~/registry/explorer/graphql/queries/get_container_repository_details.query.graphql';
 import deleteContainerRepositoryTagsMutation from '~/registry/explorer/graphql/mutations/delete_container_repository_tags.mutation.graphql';
 
-import { UNFINISHED_STATUS } from '~/registry/explorer/constants/index';
+import {
+  UNFINISHED_STATUS,
+  DELETE_SCHEDULED,
+  ALERT_DANGER_IMAGE,
+} from '~/registry/explorer/constants';
 
 import {
   graphQLImageDetailsMock,
@@ -43,6 +49,8 @@ describe('Details Page', () => {
   const findDetailsHeader = () => wrapper.find(DetailsHeader);
   const findEmptyState = () => wrapper.find(EmptyTagsState);
   const findPartialCleanupAlert = () => wrapper.find(PartialCleanupAlert);
+  const findStatusAlert = () => wrapper.find(StatusAlert);
+  const findDeleteImage = () => wrapper.find(DeleteImage);
 
   const routeId = 1;
 
@@ -88,6 +96,7 @@ describe('Details Page', () => {
       apolloProvider,
       stubs: {
         DeleteModal,
+        DeleteImage,
       },
       mocks: {
         $route: {
@@ -505,6 +514,85 @@ describe('Details Page', () => {
       await waitForApolloRequestRender();
 
       expect(breadCrumbState.updateName).toHaveBeenCalledWith(containerRepositoryMock.name);
+    });
+  });
+
+  describe('when the image has a status different from null', () => {
+    const resolver = jest
+      .fn()
+      .mockResolvedValue(graphQLImageDetailsMock({ status: DELETE_SCHEDULED }));
+    it('disables all the actions', async () => {
+      mountComponent({ resolver });
+
+      await waitForApolloRequestRender();
+
+      expect(findDetailsHeader().props('disabled')).toBe(true);
+      expect(findTagsList().props('disabled')).toBe(true);
+    });
+
+    it('shows a status alert', async () => {
+      mountComponent({ resolver });
+
+      await waitForApolloRequestRender();
+
+      expect(findStatusAlert().exists()).toBe(true);
+      expect(findStatusAlert().props()).toMatchObject({
+        status: DELETE_SCHEDULED,
+      });
+    });
+  });
+
+  describe('delete the image', () => {
+    const mountComponentAndDeleteImage = async () => {
+      mountComponent();
+
+      await waitForApolloRequestRender();
+      findDetailsHeader().vm.$emit('delete');
+
+      await wrapper.vm.$nextTick();
+    };
+
+    it('on delete event it deletes the image', async () => {
+      await mountComponentAndDeleteImage();
+
+      findDeleteModal().vm.$emit('confirmDelete');
+
+      expect(findDeleteImage().emitted('start')).toEqual([[]]);
+    });
+
+    it('binds the correct props to the modal', async () => {
+      await mountComponentAndDeleteImage();
+
+      expect(findDeleteModal().props()).toMatchObject({
+        itemsToBeDeleted: [{ path: 'gitlab-org/gitlab-test/rails-12009' }],
+        deleteImage: true,
+      });
+    });
+
+    it('binds correctly to delete-image start and end events', async () => {
+      mountComponent();
+
+      findDeleteImage().vm.$emit('start');
+
+      await wrapper.vm.$nextTick();
+
+      expect(findTagsLoader().exists()).toBe(true);
+
+      findDeleteImage().vm.$emit('end');
+
+      await wrapper.vm.$nextTick();
+
+      expect(findTagsLoader().exists()).toBe(false);
+    });
+
+    it('binds correctly to delete-image error event', async () => {
+      mountComponent();
+
+      findDeleteImage().vm.$emit('error');
+
+      await wrapper.vm.$nextTick();
+
+      expect(findDeleteAlert().props('deleteAlertType')).toBe(ALERT_DANGER_IMAGE);
     });
   });
 });

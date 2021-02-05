@@ -217,7 +217,9 @@ For example:
 GET /users?extern_uid=1234567&provider=github
 ```
 
-You can search for users who are external with: `/users?external=true`
+Instance administrators can search for users who are external with: `/users?external=true`
+
+You cannot search for external users if you are not an instance administrator. 
 
 You can search users by creation date time range with:
 

@@ -20,6 +20,11 @@ export default {
       default: true,
       required: false,
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
   },
   i18n: {
     REMOVE_TAGS_BUTTON_TITLE,
@@ -36,6 +41,9 @@ export default {
     },
     showMultiDeleteButton() {
       return this.tags.some((tag) => tag.canDelete) && !this.isMobile;
+    },
+    multiDeleteButtonIsDisabled() {
+      return !this.hasSelectedItems || this.disabled;
     },
   },
   methods: {
@@ -55,7 +63,7 @@ export default {
 
       <gl-button
         v-if="showMultiDeleteButton"
-        :disabled="!hasSelectedItems"
+        :disabled="multiDeleteButtonIsDisabled"
         category="secondary"
         variant="danger"
         @click="$emit('delete', selectedItems)"
@@ -70,6 +78,7 @@ export default {
       :first="index === 0"
       :selected="selectedItems[tag.name]"
       :is-mobile="isMobile"
+      :disabled="disabled"
       @select="updateSelectedItems(tag.name)"
       @delete="$emit('delete', { [tag.name]: true })"
     />

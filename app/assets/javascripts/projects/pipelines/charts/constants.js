@@ -10,6 +10,8 @@ export const ONE_WEEK_AGO_DAYS = 7;
 
 export const ONE_MONTH_AGO_DAYS = 31;
 
+export const ONE_YEAR_AGO_DAYS = 365;
+
 export const CHART_DATE_FORMAT = 'dd mmm';
 
 export const DEFAULT = 'default';

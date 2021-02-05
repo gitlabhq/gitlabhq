@@ -13,6 +13,7 @@ import {
   INNER_CHART_HEIGHT,
   ONE_WEEK_AGO_DAYS,
   ONE_MONTH_AGO_DAYS,
+  ONE_YEAR_AGO_DAYS,
   X_AXIS_LABEL_ROTATION,
   X_AXIS_TITLE_OFFSET,
   PARSE_FAILURE,
@@ -21,7 +22,7 @@ import {
   UNSUPPORTED_DATA,
 } from '../constants';
 import StatisticsList from './statistics_list.vue';
-import CiCdAnalyticsAreaChart from './ci_cd_analytics_area_chart.vue';
+import CiCdAnalyticsCharts from './ci_cd_analytics_charts.vue';
 
 const defaultAnalyticsValues = {
   weekPipelinesTotals: [],
@@ -52,7 +53,7 @@ export default {
     GlColumnChart,
     GlSkeletonLoader,
     StatisticsList,
-    CiCdAnalyticsAreaChart,
+    CiCdAnalyticsCharts,
   },
   inject: {
     projectPath: {
@@ -173,10 +174,11 @@ export default {
     },
     areaCharts() {
       const { lastWeek, lastMonth, lastYear } = this.$options.chartTitles;
+      const { lastWeekRange, lastMonthRange, lastYearRange } = this.$options.chartRanges;
       const charts = [
-        { title: lastWeek, data: this.lastWeekChartData },
-        { title: lastMonth, data: this.lastMonthChartData },
-        { title: lastYear, data: this.lastYearChartData },
+        { title: lastWeek, range: lastWeekRange, data: this.lastWeekChartData },
+        { title: lastMonth, range: lastMonthRange, data: this.lastMonthChartData },
+        { title: lastYear, range: lastYearRange, data: this.lastYearChartData },
       ];
       let areaChartsData = [];
 
@@ -209,11 +211,12 @@ export default {
     mergeLabelsAndValues(labels, values) {
       return labels.map((label, index) => [label, values[index]]);
     },
-    buildAreaChartData({ title, data }) {
+    buildAreaChartData({ title, data, range }) {
       const { labels, totals, success } = data;
 
       return {
         title,
+        range,
         data: [
           {
             name: 'all',
@@ -257,20 +260,28 @@ export default {
     [PARSE_FAILURE]: s__('PipelineCharts|There was an error parsing the data for the charts.'),
     [DEFAULT]: s__('PipelineCharts|An unknown error occurred while processing CI/CD analytics.'),
   },
-  get chartTitles() {
+  chartTitles: {
+    lastWeek: __('Last week'),
+    lastMonth: __('Last month'),
+    lastYear: __('Last year'),
+  },
+  get chartRanges() {
     const today = dateFormat(new Date(), CHART_DATE_FORMAT);
     const pastDate = (timeScale) =>
       dateFormat(getDateInPast(new Date(), timeScale), CHART_DATE_FORMAT);
     return {
-      lastWeek: sprintf(__('Pipelines for last week (%{oneWeekAgo} - %{today})'), {
+      lastWeekRange: sprintf(__('%{oneWeekAgo} - %{today}'), {
         oneWeekAgo: pastDate(ONE_WEEK_AGO_DAYS),
         today,
       }),
-      lastMonth: sprintf(__('Pipelines for last month (%{oneMonthAgo} - %{today})'), {
+      lastMonthRange: sprintf(__('%{oneMonthAgo} - %{today}'), {
         oneMonthAgo: pastDate(ONE_MONTH_AGO_DAYS),
         today,
       }),
-      lastYear: __('Pipelines for last year'),
+      lastYearRange: sprintf(__('%{oneYearAgo} - %{today}'), {
+        oneYearAgo: pastDate(ONE_YEAR_AGO_DAYS),
+        today,
+      }),
     };
   },
 };
@@ -304,13 +315,7 @@ export default {
     <template v-if="!loading">
       <hr />
       <h4 class="gl-my-4">{{ __('Pipelines charts') }}</h4>
-      <ci-cd-analytics-area-chart
-        v-for="(chart, index) in areaCharts"
-        :key="index"
-        :chart-data="chart.data"
-        :area-chart-options="$options.areaChartOptions"
-        >{{ chart.title }}</ci-cd-analytics-area-chart
-      >
+      <ci-cd-analytics-charts :charts="areaCharts" :chart-options="$options.areaChartOptions" />
     </template>
   </div>
 </template>

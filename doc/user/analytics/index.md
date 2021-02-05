@@ -40,11 +40,12 @@ in one place.
 
 ## Group-level analytics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195979) in GitLab 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195979) in GitLab 12.8.
+> - Moved to [GitLab Premium](https://about.gitlab.com/pricing/) due to Starter/Bronze being [discontinued](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) in 13.9.
 
 The following analytics features are available at the group level:
 
-- [Contribution](../group/contribution_analytics/index.md). **(STARTER)**
+- [Contribution](../group/contribution_analytics/index.md). **(PREMIUM)**
 - [Insights](../group/insights/index.md). **(ULTIMATE)**
 - [Issue](../group/issues_analytics/index.md). **(PREMIUM)**
 - [Productivity](productivity_analytics.md) **(PREMIUM)**
@@ -56,10 +57,10 @@ The following analytics features are available at the group level:
 The following analytics features are available at the project level:
 
 - [CI/CD](ci_cd_analytics.md). **(FREE)**
-- [Code Review](code_review_analytics.md). **(STARTER)**
+- [Code Review](code_review_analytics.md). **(PREMIUM)**
 - [Insights](../project/insights/index.md). **(ULTIMATE)**
 - [Issue](../group/issues_analytics/index.md). **(PREMIUM)**
 - [Merge Request](merge_request_analytics.md), enabled with the `project_merge_request_analytics`
-  [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-locally-in-development). **(STARTER)**
+  [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-locally-in-development). **(PREMIUM)**
 - [Repository](repository_analytics.md). **(FREE)**
 - [Value Stream](value_stream_analytics.md). **(FREE)**

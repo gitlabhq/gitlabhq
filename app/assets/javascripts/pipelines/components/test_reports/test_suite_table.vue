@@ -97,8 +97,13 @@ export default {
         <div class="table-section section-10 section-wrap">
           <div role="rowheader" class="table-mobile-header">{{ __('Filename') }}</div>
           <div class="table-mobile-content gl-md-pr-2 gl-overflow-wrap-break">
-            <gl-friendly-wrap :symbols="$options.wrapSymbols" :text="testCase.file" />
+            <gl-friendly-wrap
+              v-if="testCase.file"
+              :symbols="$options.wrapSymbols"
+              :text="testCase.file"
+            />
             <gl-button
+              v-if="testCase.file"
               v-gl-tooltip
               size="small"
               category="tertiary"

@@ -682,6 +682,15 @@ msgstr[1] ""
 msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
 msgstr ""
 
+msgid "%{oneMonthAgo} - %{today}"
+msgstr ""
+
+msgid "%{oneWeekAgo} - %{today}"
+msgstr ""
+
+msgid "%{oneYearAgo} - %{today}"
+msgstr ""
+
 msgid "%{openOrClose} %{noteable}"
 msgstr ""
 
@@ -773,6 +782,9 @@ msgid "%{spanStart}at line%{spanEnd} %{errorLine}%{errorColumn}"
 msgstr ""
 
 msgid "%{spanStart}in%{spanEnd} %{errorFn}"
+msgstr ""
+
+msgid "%{startDate} - %{endDate}"
 msgstr ""
 
 msgid "%{start} to %{end}"
@@ -5700,6 +5712,9 @@ msgstr ""
 msgid "Choose your framework"
 msgstr ""
 
+msgid "CiCdAnalytics|Date range: %{range}"
+msgstr ""
+
 msgid "CiStatusLabel|canceled"
 msgstr ""
 
@@ -9822,6 +9837,9 @@ msgstr ""
 msgid "Deployment Frequency"
 msgstr ""
 
+msgid "DeploymentFrequencyCharts|%{startDate} - %{endDate}"
+msgstr ""
+
 msgid "DeploymentFrequencyCharts|Date"
 msgstr ""
 
@@ -9829,15 +9847,6 @@ msgid "DeploymentFrequencyCharts|Deployments"
 msgstr ""
 
 msgid "DeploymentFrequencyCharts|Deployments charts"
-msgstr ""
-
-msgid "DeploymentFrequencyCharts|Deployments to production for last month (%{startDate} - %{endDate})"
-msgstr ""
-
-msgid "DeploymentFrequencyCharts|Deployments to production for last week (%{startDate} - %{endDate})"
-msgstr ""
-
-msgid "DeploymentFrequencyCharts|Deployments to production for the last 90 days (%{startDate} - %{endDate})"
 msgstr ""
 
 msgid "DeploymentFrequencyCharts|Something went wrong while getting deployment frequency data"
@@ -17073,6 +17082,9 @@ msgstr ""
 msgid "Last item before this page loaded in your browser:"
 msgstr ""
 
+msgid "Last month"
+msgstr ""
+
 msgid "Last name"
 msgstr ""
 
@@ -17119,6 +17131,9 @@ msgid "Last used on:"
 msgstr ""
 
 msgid "Last week"
+msgstr ""
+
+msgid "Last year"
 msgstr ""
 
 msgid "LastCommit|authored"
@@ -21444,15 +21459,6 @@ msgid "Pipelines charts"
 msgstr ""
 
 msgid "Pipelines emails"
-msgstr ""
-
-msgid "Pipelines for last month (%{oneMonthAgo} - %{today})"
-msgstr ""
-
-msgid "Pipelines for last week (%{oneWeekAgo} - %{today})"
-msgstr ""
-
-msgid "Pipelines for last year"
 msgstr ""
 
 msgid "Pipelines for merge requests are configured. A detached pipeline runs in the context of the merge request, and not against the merged result. Learn more in the documentation for Pipelines for Merged Results."

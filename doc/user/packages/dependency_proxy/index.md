@@ -221,3 +221,19 @@ RateLimit-Remaining: 98;w=21600
 ```
 
 This example shows the total limit of 100 pulls in six hours, with 98 pulls remaining.
+
+#### Check the rate limit in a CI/CD job
+
+This example shows a GitLab CI/CD job that uses an image with `jq` and `curl` installed:
+
+```yaml
+hub_docker_quota_check:
+    stage: build
+    image: alpine:latest
+    tags:
+        - <optional_runner_tag>
+    before_script: apk add curl jq
+    script:
+      - |
+        TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq --raw-output .token) && curl --head --header "Authorization: Bearer $TOKEN" "https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest" 2>&1
+```

@@ -151,7 +151,7 @@ export const linkTypes = {
  * chart legend layout.
  *
  * Currently defined in
- * https://gitlab.com/gitlab-org/gitlab-ui/-/blob/master/src/utils/charts/constants.js
+ * https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/src/utils/charts/constants.js
  *
  */
 export const legendLayoutTypes = {

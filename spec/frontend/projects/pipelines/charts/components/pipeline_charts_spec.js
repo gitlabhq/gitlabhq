@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import { GlColumnChart } from '@gitlab/ui/dist/charts';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import StatisticsList from '~/projects/pipelines/charts/components/statistics_list.vue';
-import CiCdAnalyticsAreaChart from '~/projects/pipelines/charts/components/ci_cd_analytics_area_chart.vue';
+import CiCdAnalyticsCharts from '~/projects/pipelines/charts/components/ci_cd_analytics_charts.vue';
 import PipelineCharts from '~/projects/pipelines/charts/components/pipeline_charts.vue';
 import getPipelineCountByStatus from '~/projects/pipelines/charts/graphql/queries/get_pipeline_count_by_status.query.graphql';
 import getProjectPipelineStatistics from '~/projects/pipelines/charts/graphql/queries/get_project_pipeline_statistics.query.graphql';
@@ -65,20 +65,17 @@ describe('~/projects/pipelines/charts/components/pipeline_charts.vue', () => {
   });
 
   describe('pipelines charts', () => {
-    it('displays 3 area charts', () => {
-      expect(wrapper.findAll(CiCdAnalyticsAreaChart)).toHaveLength(3);
+    it('displays the charts components', () => {
+      expect(wrapper.find(CiCdAnalyticsCharts).exists()).toBe(true);
     });
 
     describe('displays individual correctly', () => {
       it('renders with the correct data', () => {
-        const charts = wrapper.findAll(CiCdAnalyticsAreaChart);
-        for (let i = 0; i < charts.length; i += 1) {
-          const chart = charts.at(i);
-
-          expect(chart.exists()).toBeTruthy();
-          expect(chart.props('chartData')).toBe(wrapper.vm.areaCharts[i].data);
-          expect(chart.text()).toBe(wrapper.vm.areaCharts[i].title);
-        }
+        const charts = wrapper.find(CiCdAnalyticsCharts);
+        expect(charts.props()).toEqual({
+          charts: wrapper.vm.areaCharts,
+          chartOptions: wrapper.vm.$options.areaChartOptions,
+        });
       });
     });
   });
