@@ -75,17 +75,17 @@ When all the containers are running, the output of the `docker ps` command shows
 
 ```plaintext
 CONTAINER ID   ...     PORTS                                    NAMES
-d15d3386a0a8   ...     22/tcp, 443/tcp, 0.0.0.0:32772->80/tcp   gitlab-gitaly-ha
+d15d3386a0a8   ...     22/tcp, 443/tcp, 0.0.0.0:32772->80/tcp   gitlab-gitaly-cluster
 ```
 
-That shows that the GitLab instance running in the `gitlab-gitaly-ha` container can be reached via `http://localhost:32772`. However, Git operations like cloning and pushing are performed against the URL revealed via the UI as the clone URL. It uses the hostname configured for the GitLab instance, which in this case matches the Docker container name and network, `gitlab-gitaly-ha.test`. Before you can run the tests you need to configure your computer to access the container via that address. One option is to [use Caddy server as described for running tests against GDK](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/run_qa_against_gdk.md#workarounds).
+That shows that the GitLab instance running in the `gitlab-gitaly-cluster` container can be reached via `http://localhost:32772`. However, Git operations like cloning and pushing are performed against the URL revealed via the UI as the clone URL. It uses the hostname configured for the GitLab instance, which in this case matches the Docker container name and network, `gitlab-gitaly-cluster.test`. Before you can run the tests you need to configure your computer to access the container via that address. One option is to [use Caddy server as described for running tests against GDK](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/run_qa_against_gdk.md#workarounds).
 
 Another option is to use NGINX.
 
-In both cases you must configure your machine to translate `gitlab-gitlab-ha.test` into an appropriate IP address:
+In both cases you must configure your machine to translate `gitlab-gitaly-cluster.test` into an appropriate IP address:
 
 ```shell
-echo '127.0.0.1 gitlab-gitaly-ha.test' | sudo tee -a /etc/hosts
+echo '127.0.0.1 gitlab-gitaly-cluster.test' | sudo tee -a /etc/hosts
 ```
 
 Then install NGINX:
@@ -101,19 +101,19 @@ apt install nginx
 yum install nginx
 ```
 
-Finally, configure NGINX to pass requests for `gitlab-gitaly-ha.test` to the GitLab instance:
+Finally, configure NGINX to pass requests for `gitlab-gitaly-cluster.test` to the GitLab instance:
 
 ```plaintext
 # On Debian/Ubuntu, in /etc/nginx/sites-enabled/gitlab-cluster
 # On macOS, in /usr/local/etc/nginx/nginx.conf
 
 server {
-  server_name gitlab-gitaly-ha.test;
+  server_name gitlab-gitaly-cluster.test;
   client_max_body_size 500m;
 
   location / {
     proxy_pass http://127.0.0.1:32772;
-    proxy_set_header Host gitlab-gitaly-ha.test;
+    proxy_set_header Host gitlab-gitaly-cluster.test;
   }
 }
 ```
@@ -131,14 +131,14 @@ sudo nginx -s reload
 You could then run the tests from the `/qa` directory:
 
 ```shell
-CHROME_HEADLESS=false bin/qa Test::Instance::All http://gitlab-gitaly-ha.test -- --tag gitaly_ha
+CHROME_HEADLESS=false bin/qa Test::Instance::All http://gitlab-gitaly-cluster.test -- --tag gitaly_cluster
 ```
 
 Once you have finished testing you can stop and remove the Docker containers:
 
 ```shell
-docker stop gitlab-gitaly-ha praefect postgres gitaly3 gitaly2 gitaly1
-docker rm gitlab-gitaly-ha praefect postgres gitaly3 gitaly2 gitaly1
+docker stop gitlab-gitaly-cluster praefect postgres gitaly3 gitaly2 gitaly1
+docker rm gitlab-gitaly-cluster praefect postgres gitaly3 gitaly2 gitaly1
 ```
 
 ## Guide to run and debug Monitor tests

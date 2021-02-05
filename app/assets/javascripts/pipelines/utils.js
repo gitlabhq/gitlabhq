@@ -49,10 +49,10 @@ export const generateJobNeedsDict = (jobs = {}) => {
           // to the list of `needs` to ensure we can properly reference it.
           const group = jobs[job];
           if (group.size > 1) {
-            return [job, group.name, ...newNeeds];
+            return [job, group.name, newNeeds];
           }
 
-          return [job, ...newNeeds];
+          return [job, newNeeds];
         })
         .flat(Infinity);
     };

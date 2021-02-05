@@ -19,13 +19,13 @@ The following guidance is based on this Okta article, on adding a [SAML Applicat
 1. On Okta admin section, make sure to select Classic UI view in the top left corner. From there, choose to **Add an App**.
 1. When the app screen comes up you see another button to **Create an App** and
    choose SAML 2.0 on the next screen.
-1. Now, very important, add a logo
+1. Optionally you can add a logo
    (you can choose it from <https://about.gitlab.com/press/>). You'll have to
    crop and resize it.
-1. Next, you'll need the to fill in the SAML general configuration. Here's an example
+1. Next, you'll need the to fill in the SAML general configuration. Here's an example (showing the required URLs and attribute mapping):
    image.
 
-   ![Okta admin panel view](img/okta_admin_panel.png)
+   ![Okta admin panel view](img/okta_admin_panel_v13_9.png)
 
 1. The last part of the configuration is the feedback section where you can
    just say you're a customer and creating an app for internal use.

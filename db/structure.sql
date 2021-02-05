@@ -21025,8 +21025,6 @@ CREATE INDEX backup_labels_group_id_title_idx ON backup_labels USING btree (grou
 
 CREATE INDEX backup_labels_project_id_idx ON backup_labels USING btree (project_id);
 
-CREATE UNIQUE INDEX backup_labels_project_id_title_idx ON backup_labels USING btree (project_id, title) WHERE (group_id = NULL::integer);
-
 CREATE INDEX backup_labels_template_idx ON backup_labels USING btree (template) WHERE template;
 
 CREATE INDEX backup_labels_title_idx ON backup_labels USING btree (title);
