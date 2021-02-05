@@ -12,43 +12,43 @@ module Types
       implements(Types::ResolvableInterface)
 
       field :id, ::Types::GlobalIDType[::Note], null: false,
-            description: 'ID of the note'
+            description: 'ID of the note.'
 
       field :project, Types::ProjectType,
             null: true,
-            description: 'Project associated with the note'
+            description: 'Project associated with the note.'
 
       field :author, Types::UserType,
             null: false,
-            description: 'User who wrote this note'
+            description: 'User who wrote this note.'
 
       field :system, GraphQL::BOOLEAN_TYPE,
             null: false,
-            description: 'Indicates whether this note was created by the system or by a user'
+            description: 'Indicates whether this note was created by the system or by a user.'
       field :system_note_icon_name, GraphQL::STRING_TYPE, null: true,
-            description: 'Name of the icon corresponding to a system note'
+            description: 'Name of the icon corresponding to a system note.'
 
       field :body, GraphQL::STRING_TYPE,
             null: false,
             method: :note,
-            description: 'Content of the note'
+            description: 'Content of the note.'
 
       markdown_field :body_html, null: true, method: :note
 
       field :created_at, Types::TimeType, null: false,
-            description: 'Timestamp of the note creation'
+            description: 'Timestamp of the note creation.'
       field :updated_at, Types::TimeType, null: false,
-            description: "Timestamp of the note's last activity"
+            description: "Timestamp of the note's last activity."
       field :discussion, Types::Notes::DiscussionType, null: true,
-            description: 'The discussion this note is a part of'
+            description: 'The discussion this note is a part of.'
       field :position, Types::Notes::DiffPositionType, null: true,
-            description: 'The position of this note on a diff'
+            description: 'The position of this note on a diff.'
       field :confidential, GraphQL::BOOLEAN_TYPE, null: true,
-            description: 'Indicates if this note is confidential',
+            description: 'Indicates if this note is confidential.',
             method: :confidential?
       field :url, GraphQL::STRING_TYPE,
             null: true,
-            description: 'URL to view this Note in the Web UI'
+            description: 'URL to view this Note in the Web UI.'
 
       def url
         ::Gitlab::UrlBuilder.build(object)

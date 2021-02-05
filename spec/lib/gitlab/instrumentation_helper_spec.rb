@@ -9,12 +9,16 @@ RSpec.describe Gitlab::InstrumentationHelper do
   describe '.keys' do
     it 'returns all available payload keys' do
       expected_keys = [
+        :cpu_s,
         :gitaly_calls,
         :gitaly_duration_s,
         :rugged_calls,
         :rugged_duration_s,
         :elasticsearch_calls,
         :elasticsearch_duration_s,
+        :mem_objects,
+        :mem_bytes,
+        :mem_mallocs,
         :redis_calls,
         :redis_duration_s,
         :redis_read_bytes,
@@ -53,10 +57,14 @@ RSpec.describe Gitlab::InstrumentationHelper do
 
     subject { described_class.add_instrumentation_data(payload) }
 
-    it 'adds only DB counts by default' do
+    before do
+      described_class.init_instrumentation_data
+    end
+
+    it 'includes DB counts' do
       subject
 
-      expect(payload).to eq(db_count: 0, db_cached_count: 0, db_write_count: 0)
+      expect(payload).to include(db_count: 0, db_cached_count: 0, db_write_count: 0)
     end
 
     context 'when Gitaly calls are made' do
@@ -112,6 +120,47 @@ RSpec.describe Gitlab::InstrumentationHelper do
         subject
 
         expect(payload[:throttle_safelist]).to eq('foobar')
+      end
+    end
+
+    it 'logs cpu_s duration' do
+      subject
+
+      expect(payload).to include(:cpu_s)
+    end
+
+    context 'when logging memory allocations' do
+      include MemoryInstrumentationHelper
+
+      before do
+        skip_memory_instrumentation!
+      end
+
+      it 'logs memory usage metrics' do
+        subject
+
+        expect(payload).to include(
+          :mem_objects,
+          :mem_bytes,
+          :mem_mallocs
+        )
+      end
+
+      context 'when trace_memory_allocations is disabled' do
+        before do
+          stub_feature_flags(trace_memory_allocations: false)
+          Gitlab::Memory::Instrumentation.ensure_feature_flag!
+        end
+
+        it 'does not log memory usage metrics' do
+          subject
+
+          expect(payload).not_to include(
+            :mem_objects,
+            :mem_bytes,
+            :mem_mallocs
+          )
+        end
       end
     end
   end

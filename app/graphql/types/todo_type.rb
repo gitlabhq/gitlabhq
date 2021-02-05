@@ -10,42 +10,42 @@ module Types
     authorize :read_todo
 
     field :id, GraphQL::ID_TYPE,
-          description: 'ID of the to-do item',
+          description: 'ID of the to-do item.',
           null: false
 
     field :project, Types::ProjectType,
-          description: 'The project this to-do item is associated with',
+          description: 'The project this to-do item is associated with.',
           null: true,
           authorize: :read_project
 
     field :group, Types::GroupType,
-          description: 'Group this to-do item is associated with',
+          description: 'Group this to-do item is associated with.',
           null: true,
           authorize: :read_group
 
     field :author, Types::UserType,
-          description: 'The author of this to-do item',
+          description: 'The author of this to-do item.',
           null: false
 
     field :action, Types::TodoActionEnum,
-          description: 'Action of the to-do item',
+          description: 'Action of the to-do item.',
           null: false
 
     field :target_type, Types::TodoTargetEnum,
-          description: 'Target type of the to-do item',
+          description: 'Target type of the to-do item.',
           null: false
 
     field :body, GraphQL::STRING_TYPE,
-          description: 'Body of the to-do item',
+          description: 'Body of the to-do item.',
           null: false,
           calls_gitaly: true # TODO This is only true when `target_type` is `Commit`. See https://gitlab.com/gitlab-org/gitlab/issues/34757#note_234752665
 
     field :state, Types::TodoStateEnum,
-          description: 'State of the to-do item',
+          description: 'State of the to-do item.',
           null: false
 
     field :created_at, Types::TimeType,
-          description: 'Timestamp this to-do item was created',
+          description: 'Timestamp this to-do item was created.',
           null: false
 
     def project

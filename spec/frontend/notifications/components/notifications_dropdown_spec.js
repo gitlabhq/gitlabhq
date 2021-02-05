@@ -7,6 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import httpStatus from '~/lib/utils/http_status';
 import NotificationsDropdown from '~/notifications/components/notifications_dropdown.vue';
 import NotificationsDropdownItem from '~/notifications/components/notifications_dropdown_item.vue';
+import CustomNotificationsModal from '~/notifications/components/custom_notifications_modal.vue';
 
 const mockDropdownItems = ['global', 'watch', 'participating', 'mention', 'disabled'];
 const mockToastShow = jest.fn();
@@ -14,17 +15,26 @@ const mockToastShow = jest.fn();
 describe('NotificationsDropdown', () => {
   let wrapper;
   let mockAxios;
+  let glModalDirective;
 
   function createComponent(injectedProperties = {}) {
+    glModalDirective = jest.fn();
+
     return shallowMount(NotificationsDropdown, {
       stubs: {
         GlButtonGroup,
         GlDropdown,
         GlDropdownItem,
         NotificationsDropdownItem,
+        CustomNotificationsModal,
       },
       directives: {
         GlTooltip: createMockDirective(),
+        glModal: {
+          bind(_, { value }) {
+            glModalDirective(value);
+          },
+        },
       },
       provide: {
         dropdownItems: mockDropdownItems,
@@ -93,6 +103,19 @@ describe('NotificationsDropdown', () => {
         });
 
         expect(findButton().text()).toBe('');
+      });
+
+      it('opens the modal when the user clicks the button', async () => {
+        jest.spyOn(axios, 'put');
+        mockAxios.onPut('/api/v4/notification_settings').reply(httpStatus.OK, {});
+
+        wrapper = createComponent({
+          initialNotificationLevel: 'custom',
+        });
+
+        findButton().vm.$emit('click');
+
+        expect(glModalDirective).toHaveBeenCalled();
       });
     });
 
@@ -235,6 +258,17 @@ describe('NotificationsDropdown', () => {
         'An error occured while updating the notification settings. Please try again.',
         { type: 'error' },
       );
+    });
+
+    it('opens the modal when the user clicks on the "Custom" dropdown item', async () => {
+      mockAxios.onPut('/api/v4/notification_settings').reply(httpStatus.OK, {});
+      wrapper = createComponent();
+
+      const mockModalShow = jest.spyOn(wrapper.vm.$refs.customNotificationsModal, 'open');
+
+      await clickDropdownItemAt(5);
+
+      expect(mockModalShow).toHaveBeenCalled();
     });
   });
 });

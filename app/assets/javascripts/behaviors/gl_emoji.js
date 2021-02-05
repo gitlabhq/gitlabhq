@@ -17,6 +17,10 @@ class GlEmoji extends HTMLElement {
 
         if (emojiInfo) {
           if (name !== emojiInfo.name) {
+            if (emojiInfo.fallback && this.innerHTML) {
+              return; // When fallback emoji is used, but there is a <img> provided, use the <img> instead
+            }
+
             ({ name } = emojiInfo);
             this.dataset.name = emojiInfo.name;
           }

@@ -7,7 +7,7 @@ module Gitlab
 
     RequestDeadlineExceeded = Class.new(StandardError)
 
-    attr_accessor :client_ip, :start_thread_cpu_time, :request_start_time
+    attr_accessor :client_ip, :start_thread_cpu_time, :request_start_time, :thread_memory_allocations
 
     class << self
       def instance

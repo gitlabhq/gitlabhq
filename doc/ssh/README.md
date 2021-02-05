@@ -379,7 +379,7 @@ git remote set-url origin git@<user_1.gitlab.com>:gitlab-org/gitlab.git
 
 ## Deploy keys
 
-Read the [documentation on Deploy Keys](../user/project/deploy_keys/index.md).
+Read the [documentation on deploy keys](../user/project/deploy_keys/index.md).
 
 ## Applications
 

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto, reference
 ---
 
-# Deploy Keys
+# Deploy keys
 
 Deploy keys allow read-only or read-write access to your
 repositories by importing an SSH public key into your GitLab instance.
@@ -21,7 +21,7 @@ There are two types of deploy keys:
 
 ## Key details on deploy keys
 
-Deploy Keys allow a remote machine (VM, physical, and so on) to access a GitLab
+Deploy keys allow a remote machine (VM, physical, and so on) to access a GitLab
 repository with just a few steps. If you want a remote machine to interact with a GitLab
 repository in automation, it's a simple solution.
 
@@ -35,7 +35,7 @@ If this security implication is a concern for your organization,
 [Deploy Tokens](../deploy_tokens/index.md) works as an alternative, but with more
 security control.
 
-## Deploy Keys Permissions
+## Deploy keys permissions
 
 You can choose the access level of a deploy key when you enable it on a project:
 
@@ -72,7 +72,7 @@ help you access a repository, but there are some notables differences between th
   on it, but this [is possible with deploy tokens](../deploy_tokens/index.md#gitlab-deploy-token).
 - You need an SSH key pair to use deploy keys, but not deploy tokens.
 
-## How to enable Deploy Keys
+## How to enable deploy keys
 
 ### Project deploy keys
 
@@ -80,17 +80,17 @@ help you access a repository, but there are some notables differences between th
 can add or enable a deploy key for a project repository:
 
 1. Navigate to the project's **Settings > Repository** page.
-1. Expand the **Deploy Keys** section.
+1. Expand the **Deploy keys** section.
 1. Specify a title for the new deploy key and paste your public SSH key.
 1. (Optional) Check **Grant write permissions to this key** to allow `read-write` access. Leave it unchecked for `read-only` access.
 
-There are three lists of Project Deploy Keys:
+There are three lists of project deploy keys:
 
 - Enabled deploy keys
 - Privately accessible deploy keys
 - Public accessible deploy keys
 
-![Deploy Keys section](img/deploy_keys_v13_0.png)
+![Deploy keys section](img/deploy_keys_v13_0.png)
 
 After you add a key, it's enabled for this project by default and it appears
 in the **Enabled deploy keys** tab.
@@ -129,7 +129,7 @@ Instance administrators can add public deploy keys:
    if the key gives access to a SaaS CI/CD instance, use the name of that service
    in the key name if that is all the key is used for.
 
-![Public Deploy Keys section](img/public_deploy_key_v13_0.png)
+![Public deploy keys section](img/public_deploy_key_v13_0.png)
 
 After adding a key, it's available to any shared systems. Project maintainers
 or higher can [authorize a public deploy key](#project-deploy-keys) to start using it with the project.
@@ -153,7 +153,7 @@ until a project maintainer chooses to make use of it.
 
 ## Troubleshooting
 
-### Deploy Key cannot push to a protected branch
+### Deploy key cannot push to a protected branch
 
 If the owner of this deploy key doesn't have access to a [protected
 branch](../protected_branches.md), then this deploy key doesn't have access to

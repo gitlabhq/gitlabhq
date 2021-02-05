@@ -51,8 +51,49 @@ from any job in any stage in the pipeline. The coverage will be displayed for ea
 Hovering over the coverage bar will provide further information, such as the number
 of times the line was checked by tests.
 
+### Automatic class path correction
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217664) in GitLab 13.8.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284822) in GitLab 13.9.
+
+For the coverage report to properly match the files displayed on a merge request diff, the `filename` of a `class` element
+must contain the full path relative to the project root. But in some coverage analysis frameworks, the generated
+Cobertura XML has the `filename` path relative to the class package directory instead.
+
+To make an intelligent guess on the project root relative `class` path, the Cobertura XML parser will attempt to build the
+full path by doing following:
+
+1. Extract a portion of the `source` paths from the `sources` element and combine them with the class `filename` path.
+1. Check if the candidate path exists in the project.
+1. Use the first candidate that matches as the class full path.
+
+As an example scenario, given the project's full path is `test-org/test-project`, and has the following file tree relative
+to the project root:
+
+```shell
+Auth/User.cs
+Lib/Utils/User.cs
+```
+
+And the `sources` from Cobertura XML with paths in the format of `<CI_BUILDS_DIR>/<PROJECT_FULL_PATH>/...`:
+
+```xml
+<sources>
+  <source>/builds/test-org/test-project/Auth</source>
+  <source>/builds/test-org/test-project/Lib/Utils</source>
+</sources>
+```
+
+The parser will extract `Auth` and `Lib/Utils` from the sources and use these as basis to determine the class path relative to
+the project root, combining these extracted sources and the class filename.
+
+If for example there is a `class` element with the `filename` value of `User.cs`, the parser will take the first candidate path
+that matches which is `Auth/User.cs`.
+
+For each `class` element, the parser will attempt to look for a match for each extracted `source` path up to `100` iterations. If it reaches this limit without finding a matching path in the file tree, the class will not be included in the final coverage report.
+
 NOTE:
-The Cobertura XML parser currently does not support the `sources` element and ignores it. It is assumed that
+The automatic class path correction only works on `source` paths in the format of `<CI_BUILDS_DIR>/<PROJECT_FULL_PATH>/...`. If `source` will be ignored if the path does not follow this pattern. The parser will assume that
 the `filename` of a `class` element contains the full path relative to the project root.
 
 ## Example test coverage configurations

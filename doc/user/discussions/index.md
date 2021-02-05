@@ -377,10 +377,11 @@ from any device you're logged into.
 ## Suggest Changes
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/18008) in GitLab 11.6.
-> - Custom commit messages for suggestions were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25381) in GitLab 13.9.
-> - Custom commit messages for suggestions is disabled on GitLab.com and not recommended for production use.
+> - Custom commit messages for suggestions was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25381) in GitLab 13.9.
 > - Custom commit messages for suggestions was deployed behind a [feature flag](../feature_flags.md), disabled by default.
-> - To use custom commit messages for suggestions in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-custom-commit-messages-for-suggestions). **(FREE SELF)**
+> - Custom commit messages for suggestions became enabled by default on GitLab 13.9.
+> - Custom commit messages for suggestions is enabled on GitLab.com and is recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disabled it](#enable-or-disable-custom-commit-messages-for-suggestions). **(FREE SELF)**
 
 As a reviewer, you're able to suggest code changes with a simple
 Markdown syntax in Merge Request Diff threads. Then, the
@@ -419,21 +420,21 @@ branch. [Developer permission](../permissions.md) is required to do so.
 
 ### Enable or disable Custom commit messages for suggestions **(FREE SELF)**
 
-Custom commit messages for suggestions is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
+Custom commit messages for suggestions is under development but ready for production use. It is
+deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
-
-To enable custom commit messages for suggestions:
-
-```ruby
-Feature.enable(:suggestions_custom_commit)
-```
+can opt to disable it.
 
 To disable custom commit messages for suggestions:
 
 ```ruby
 Feature.disable(:suggestions_custom_commit)
+```
+
+To enable custom commit messages for suggestions:
+
+```ruby
+Feature.enable(:suggestions_custom_commit)
 ```
 
 ### Multi-line Suggestions

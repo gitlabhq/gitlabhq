@@ -181,6 +181,11 @@ export function searchEmoji(query, opts) {
   } = opts || {};
 
   const fallbackEmoji = emojiMap.grey_question;
+
+  if (fallbackEmoji) {
+    fallbackEmoji.fallback = true;
+  }
+
   if (!query) {
     if (fallback) {
       return raw ? [{ emoji: fallbackEmoji }] : [fallbackEmoji];

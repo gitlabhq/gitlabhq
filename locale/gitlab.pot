@@ -3050,6 +3050,9 @@ msgstr ""
 msgid "An error has occurred"
 msgstr ""
 
+msgid "An error occured while loading the notification settings. Please try again."
+msgstr ""
+
 msgid "An error occured while saving changes: %{error}"
 msgstr ""
 
@@ -8663,6 +8666,9 @@ msgid "Custom metrics"
 msgstr ""
 
 msgid "Custom notification events"
+msgstr ""
+
+msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notificationLinkStart} notification emails%{notificationLinkEnd}."
 msgstr ""
 
 msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}."

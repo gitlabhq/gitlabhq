@@ -34,6 +34,7 @@ module Banzai
           Filter::FootnoteFilter,
           *reference_filters,
           Filter::EmojiFilter,
+          Filter::CustomEmojiFilter,
           Filter::TaskListFilter,
           Filter::InlineDiffFilter,
           Filter::SetDirectionFilter

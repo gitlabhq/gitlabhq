@@ -1084,15 +1084,6 @@
   :idempotent:
   :tags:
   - :requires_disk_io
-- :name: pipeline_background:ci_build_report_result
-  :feature_category: :continuous_integration
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags:
-  - :requires_disk_io
 - :name: pipeline_background:ci_build_trace_chunk_flush
   :feature_category: :continuous_integration
   :has_external_dependencies:
@@ -1181,24 +1172,6 @@
   :weight: 4
   :idempotent:
   :tags: []
-- :name: pipeline_default:build_coverage
-  :feature_category: :continuous_integration
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 3
-  :idempotent:
-  :tags:
-  - :requires_disk_io
-- :name: pipeline_default:build_trace_sections
-  :feature_category: :continuous_integration
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 3
-  :idempotent:
-  :tags:
-  - :requires_disk_io
 - :name: pipeline_default:ci_create_cross_project_pipeline
   :feature_category: :continuous_integration
   :has_external_dependencies:

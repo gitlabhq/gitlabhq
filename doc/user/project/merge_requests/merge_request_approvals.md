@@ -124,7 +124,7 @@ users with Developer or higher permissions, as well as by Code Owners,
 indistinguishably.
 
 Alternatively, you can **require**
-[Code Owner's approvals for Protected Branches](../protected_branches.md#protected-branches-approval-by-code-owners). **(PREMIUM)**
+[Code Owner's approvals for protected branches](../protected_branches.md#protected-branches-approval-by-code-owners). **(PREMIUM)**
 
 #### Merge Request approval segregation of duties
 
@@ -227,7 +227,7 @@ reduces the number of approvals left for all rules that the approver belongs to.
 
 ![Approvals premium merge request widget](img/approvals_premium_mr_widget_v13_3.png)
 
-#### Scoped to Protected Branch **(PREMIUM)**
+#### Scoped to protected branch **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8.
 
@@ -239,7 +239,7 @@ the **Target branch** dropdown.
 
 Alternatively, you can select a very specific protected branch from the **Target branch** dropdown:
 
-![Scoped to Protected Branch](img/scoped_to_protected_branch_v12_8.png)
+![Scoped to protected branch](img/scoped_to_protected_branch_v12_8.png)
 
 To enable this configuration, see [Code Owner’s approvals for protected branches](../protected_branches.md#protected-branches-approval-by-code-owners).
 

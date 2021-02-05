@@ -10,7 +10,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 To invoke the debugger, place `binding.pry` somewhere in your
 code. When the Ruby interpreter hits that code, execution stops,
-and you can type in commands to debug the state of the program
+and you can type in commands to debug the state of the program.
+
+When debugging code in another process like Puma or Sidekiq, you can use `binding.remote_pry`.
+You can then connect to this session by running `pry-remote` from your terminal.
 
 ## `byebug` vs `binding.pry`
 

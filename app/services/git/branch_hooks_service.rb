@@ -2,6 +2,8 @@
 
 module Git
   class BranchHooksService < ::Git::BaseHooksService
+    extend ::Gitlab::Utils::Override
+
     def execute
       execute_branch_hooks
 
@@ -41,9 +43,14 @@ module Git
       super
     end
 
+    override :invalidated_file_types
     def invalidated_file_types
       return super unless default_branch? && !creating_branch?
 
+      modified_file_types
+    end
+
+    def modified_file_types
       paths = commit_paths.values.reduce(&:merge) || Set.new
 
       Gitlab::FileDetector.types_in_paths(paths)
@@ -82,6 +89,7 @@ module Git
 
     def enqueue_metrics_dashboard_sync
       return unless default_branch?
+      return unless modified_file_types.include?(:metrics_dashboard)
 
       ::Metrics::Dashboard::SyncDashboardsWorker.perform_async(project.id)
     end
@@ -210,10 +218,10 @@ module Git
 
     def commit_paths
       strong_memoize(:commit_paths) do
-        limited_commits.map do |commit|
+        limited_commits.to_h do |commit|
           paths = Set.new(commit.raw_deltas.map(&:new_path))
           [commit, paths]
-        end.to_h
+        end
       end
     end
   end

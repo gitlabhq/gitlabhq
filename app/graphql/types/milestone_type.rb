@@ -12,46 +12,46 @@ module Types
     alias_method :milestone, :object
 
     field :id, GraphQL::ID_TYPE, null: false,
-          description: 'ID of the milestone'
+          description: 'ID of the milestone.'
 
     field :title, GraphQL::STRING_TYPE, null: false,
-          description: 'Title of the milestone'
+          description: 'Title of the milestone.'
 
     field :description, GraphQL::STRING_TYPE, null: true,
-          description: 'Description of the milestone'
+          description: 'Description of the milestone.'
 
     field :state, Types::MilestoneStateEnum, null: false,
-          description: 'State of the milestone'
+          description: 'State of the milestone.'
 
     field :web_path, GraphQL::STRING_TYPE, null: false, method: :milestone_path,
-          description: 'Web path of the milestone'
+          description: 'Web path of the milestone.'
 
     field :due_date, Types::TimeType, null: true,
-          description: 'Timestamp of the milestone due date'
+          description: 'Timestamp of the milestone due date.'
 
     field :start_date, Types::TimeType, null: true,
-          description: 'Timestamp of the milestone start date'
+          description: 'Timestamp of the milestone start date.'
 
     field :created_at, Types::TimeType, null: false,
-          description: 'Timestamp of milestone creation'
+          description: 'Timestamp of milestone creation.'
 
     field :updated_at, Types::TimeType, null: false,
-          description: 'Timestamp of last milestone update'
+          description: 'Timestamp of last milestone update.'
 
     field :project_milestone, GraphQL::BOOLEAN_TYPE, null: false,
-          description: 'Indicates if milestone is at project level',
+          description: 'Indicates if milestone is at project level.',
           method: :project_milestone?
 
     field :group_milestone, GraphQL::BOOLEAN_TYPE, null: false,
-          description: 'Indicates if milestone is at group level',
+          description: 'Indicates if milestone is at group level.',
           method: :group_milestone?
 
     field :subgroup_milestone, GraphQL::BOOLEAN_TYPE, null: false,
-          description: 'Indicates if milestone is at subgroup level',
+          description: 'Indicates if milestone is at subgroup level.',
           method: :subgroup_milestone?
 
     field :stats, Types::MilestoneStatsType, null: true,
-          description: 'Milestone statistics'
+          description: 'Milestone statistics.'
 
     def stats
       return unless Feature.enabled?(:graphql_milestone_stats, milestone.project || milestone.group, default_enabled: true)

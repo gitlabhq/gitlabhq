@@ -97,7 +97,7 @@ without using [Approval Rules](merge_requests/merge_request_approvals.md#approva
 1. Use [the syntax of Code Owners files](code_owners.md#the-syntax-of-code-owners-files)
    to specify the actual owners and granular permissions.
 
-Using Code Owners in conjunction with [Protected Branches](protected_branches.md#protected-branches-approval-by-code-owners)
+Using Code Owners in conjunction with [protected branches](protected_branches.md#protected-branches-approval-by-code-owners)
 prevents any user who is not specified in the `CODEOWNERS` file from pushing
 changes for the specified files/paths, except those included in the
 **Allowed to push** column. This allows for a more inclusive push strategy, as

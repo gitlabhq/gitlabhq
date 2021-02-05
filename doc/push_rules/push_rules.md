@@ -80,7 +80,7 @@ GitLab administrators can set push rules globally under
 **Admin Area > Push Rules** that all new projects inherit. You can later
 override them in a project's settings. They can be also set on a [group level](../user/group/index.md#group-push-rules).
 
-1. Navigate to your project's **Settings > Repository** and expand **Push Rules**
+1. Navigate to your project's **Settings > Repository** and expand **Push rules**
 1. Set the rule you want
 1. Click **Save Push Rules** for the changes to take effect
 

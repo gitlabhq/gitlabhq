@@ -12,6 +12,7 @@ class Namespace < ApplicationRecord
   include FromUnion
   include Gitlab::Utils::StrongMemoize
   include IgnorableColumns
+  include Namespaces::Traversal::Recursive
 
   # Prevent users from creating unreasonably deep level of nesting.
   # The number 20 was taken based on maximum nesting level of
@@ -247,50 +248,6 @@ class Namespace < ApplicationRecord
     projects.with_shared_runners.any?
   end
 
-  # Returns all ancestors, self, and descendants of the current namespace.
-  def self_and_hierarchy
-    Gitlab::ObjectHierarchy
-      .new(self.class.where(id: id))
-      .all_objects
-  end
-
-  # Returns all the ancestors of the current namespaces.
-  def ancestors
-    return self.class.none unless parent_id
-
-    Gitlab::ObjectHierarchy
-      .new(self.class.where(id: parent_id))
-      .base_and_ancestors
-  end
-
-  # returns all ancestors upto but excluding the given namespace
-  # when no namespace is given, all ancestors upto the top are returned
-  def ancestors_upto(top = nil, hierarchy_order: nil)
-    Gitlab::ObjectHierarchy.new(self.class.where(id: id))
-      .ancestors(upto: top, hierarchy_order: hierarchy_order)
-  end
-
-  def self_and_ancestors(hierarchy_order: nil)
-    return self.class.where(id: id) unless parent_id
-
-    Gitlab::ObjectHierarchy
-      .new(self.class.where(id: id))
-      .base_and_ancestors(hierarchy_order: hierarchy_order)
-  end
-
-  # Returns all the descendants of the current namespace.
-  def descendants
-    Gitlab::ObjectHierarchy
-      .new(self.class.where(parent_id: id))
-      .base_and_descendants
-  end
-
-  def self_and_descendants
-    Gitlab::ObjectHierarchy
-      .new(self.class.where(id: id))
-      .base_and_descendants
-  end
-
   def user_ids_for_project_authorizations
     [owner_id]
   end
@@ -314,16 +271,6 @@ class Namespace < ApplicationRecord
 
   def has_parent?
     parent_id.present? || parent.present?
-  end
-
-  def root_ancestor
-    return self if persisted? && parent_id.nil?
-
-    # Make sure that strong_memoize name is in sync with root_ancestor's
-    # attr_writer name
-    strong_memoize(:root_ancestor) do
-      self_and_ancestors.reorder(nil).find_by(parent_id: nil)
-    end
   end
 
   def subgroup?

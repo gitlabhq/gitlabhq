@@ -53,14 +53,10 @@ module Gitlab
       end
 
       def with_gc_stats
-        GC.start # perform a full mark-and-sweep
-        stats_before = GC.stat
+        stats = ::Gitlab::Memory::Instrumentation.start_thread_memory_allocations
         yield
-        stats_after = GC.stat
-        @gc_stats = stats_after.map do |key, after_value|
-          before_value = stats_before[key]
-          [key, before: before_value, after: after_value, diff: after_value - before_value]
-        end.to_h
+      ensure
+        @gc_stats = ::Gitlab::Memory::Instrumentation.measure_thread_memory_allocations(stats)
       end
 
       def with_measure_time

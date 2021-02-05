@@ -459,6 +459,7 @@ export default {
                 :variant="mergeButtonVariant"
                 :disabled="isMergeButtonDisabled"
                 :loading="isMakingRequest"
+                data-qa-selector="merge_button"
                 @click="handleMergeButtonClick(isAutoMergeAvailable)"
                 >{{ mergeButtonText }}</gl-button
               >

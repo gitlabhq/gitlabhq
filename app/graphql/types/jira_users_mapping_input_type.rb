@@ -8,11 +8,11 @@ module Types
     argument :jira_account_id,
                GraphQL::STRING_TYPE,
                required: true,
-               description: 'Jira account ID of the user'
+               description: 'Jira account ID of the user.'
     argument :gitlab_id,
                GraphQL::INT_TYPE,
                required: false,
-               description: 'Id of the GitLab user'
+               description: 'Id of the GitLab user.'
   end
   # rubocop: enable Graphql/AuthorizeTypes
 end

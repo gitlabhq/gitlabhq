@@ -11,7 +11,8 @@ RSpec.describe Git::BranchHooksService do
 
   let(:branch) { project.default_branch }
   let(:ref) { "refs/heads/#{branch}" }
-  let(:commit) { project.commit(sample_commit.id) }
+  let(:commit_id) { sample_commit.id }
+  let(:commit) { project.commit(commit_id) }
   let(:oldrev) { commit.parent_id }
   let(:newrev) { commit.id }
 
@@ -227,7 +228,6 @@ RSpec.describe Git::BranchHooksService do
       )
     end
 
-    let(:commit) { project.repository.commit(commit_id) }
     let(:blank_sha) { Gitlab::Git::BLANK_SHA }
 
     def clears_cache(extended: [])
@@ -508,11 +508,7 @@ RSpec.describe Git::BranchHooksService do
   end
 
   describe 'Metrics dashboard sync' do
-    context 'with feature flag enabled' do
-      before do
-        Feature.enable(:metrics_dashboards_sync)
-      end
-
+    shared_examples 'trigger dashboard sync' do
       it 'imports metrics to database' do
         expect(Metrics::Dashboard::SyncDashboardsWorker).to receive(:perform_async)
 
@@ -520,12 +516,95 @@ RSpec.describe Git::BranchHooksService do
       end
     end
 
-    context 'with feature flag disabled' do
-      it 'imports metrics to database' do
-        expect(Metrics::Dashboard::SyncDashboardsWorker).to receive(:perform_async)
+    shared_examples 'no dashboard sync' do
+      it 'does not sync metrics to database' do
+        expect(Metrics::Dashboard::SyncDashboardsWorker).not_to receive(:perform_async)
 
         service.execute
       end
+    end
+
+    def change_repository(**changes)
+      actions = changes.flat_map do |(action, paths)|
+        Array(paths).flat_map do |file_path|
+          { action: action, file_path: file_path, content: SecureRandom.hex }
+        end
+      end
+
+      project.repository.multi_action(
+        user, message: 'message', branch_name: branch, actions: actions
+      )
+    end
+
+    let(:charts) { '.gitlab/dashboards/charts.yml' }
+    let(:readme) { 'README.md' }
+    let(:commit_id) { change_repository(**commit_changes) }
+
+    context 'with default branch' do
+      context 'when adding files' do
+        let(:new_file) { 'somenewfile.md' }
+
+        context 'also related' do
+          let(:commit_changes) { { create: [charts, new_file] } }
+
+          include_examples 'trigger dashboard sync'
+        end
+
+        context 'only unrelated' do
+          let(:commit_changes) { { create: new_file } }
+
+          include_examples 'no dashboard sync'
+        end
+      end
+
+      context 'when deleting files' do
+        before do
+          change_repository(create: charts)
+        end
+
+        context 'also related' do
+          let(:commit_changes) { { delete: [charts, readme] } }
+
+          include_examples 'trigger dashboard sync'
+        end
+
+        context 'only unrelated' do
+          let(:commit_changes) { { delete: readme } }
+
+          include_examples 'no dashboard sync'
+        end
+      end
+
+      context 'when updating files' do
+        before do
+          change_repository(create: charts)
+        end
+
+        context 'also related' do
+          let(:commit_changes) { { update: [charts, readme] } }
+
+          include_examples 'trigger dashboard sync'
+        end
+
+        context 'only unrelated' do
+          let(:commit_changes) { { update: readme } }
+
+          include_examples 'no dashboard sync'
+        end
+      end
+
+      context 'without changes' do
+        let(:commit_changes) { {} }
+
+        include_examples 'no dashboard sync'
+      end
+    end
+
+    context 'with other branch' do
+      let(:branch) { 'fix' }
+      let(:commit_changes) { { create: charts } }
+
+      include_examples 'no dashboard sync'
     end
   end
 end

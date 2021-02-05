@@ -76,13 +76,13 @@ dropdown list in the **Already protected** area.
 If you don't choose any of those options while creating a protected branch,
 they are set to Maintainers by default.
 
-### Allow Deploy Keys to push to a protected branch
+### Allow deploy keys to push to a protected branch
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30769) in GitLab 13.7.
 > - This feature is being selectively deployed in GitLab.com 13.7, and may not be available for all users.
 
 You can allow specific machines to access protected branches in your repository with
-[Deploy Keys](deploy_keys/index.md). This can be useful for your CI/CD workflow,
+[deploy keys](deploy_keys/index.md). This can be useful for your CI/CD workflow,
 for example.
 
 Deploy keys can be selected in the **Allowed to push** dropdown when:
@@ -99,9 +99,9 @@ For a deploy key to be selectable:
 - It must be [enabled for your project](deploy_keys/index.md#how-to-enable-deploy-keys).
 - It must have [write access](deploy_keys/index.md#deploy-keys-permissions) to your project repository.
 
-Deploy Keys are not available in the **Allowed to merge** dropdown.
+Deploy keys are not available in the **Allowed to merge** dropdown.
 
-![Deploy Keys on protected branches](img/protected_branches_deploy_keys_v13_5.png)
+![Deploy keys on protected branches](img/protected_branches_deploy_keys_v13_5.png)
 
 ## Restricting push and merge access to certain users **(PREMIUM)**
 
@@ -176,7 +176,7 @@ Deleting a protected branch is allowed only by using the web interface; not from
 This means that you can't accidentally delete a protected branch from your
 command line or a Git client application.
 
-## Protected Branches approval by Code Owners **(PREMIUM)**
+## Protected branches approval by Code Owners **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13251) in GitLab Premium 12.4.
 

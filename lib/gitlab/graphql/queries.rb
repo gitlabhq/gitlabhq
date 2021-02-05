@@ -145,6 +145,20 @@ module Gitlab
           return redacted if printer.fields_printed > 0
         end
 
+        def complexity(schema)
+          # See BaseResolver::resolver_complexity
+          # we want to see the max possible complexity.
+          fake_args = Struct
+            .new(:if, :keyword_arguments)
+            .new(nil, { sort: true, search: true })
+
+          query = GraphQL::Query.new(schema, text)
+          # We have no arguments, so fake them.
+          query.define_singleton_method(:arguments_for) { |_x, _y| fake_args }
+
+          GraphQL::Analysis::AST.analyze_query(query, [GraphQL::Analysis::AST::QueryComplexity]).first
+        end
+
         def query
           return @query if defined?(@query)
 

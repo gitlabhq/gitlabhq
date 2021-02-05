@@ -5,11 +5,13 @@ import {
   GlDropdown,
   GlDropdownDivider,
   GlTooltipDirective,
+  GlModalDirective,
 } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import Api from '~/api';
 import { CUSTOM_LEVEL, i18n } from '../constants';
 import NotificationsDropdownItem from './notifications_dropdown_item.vue';
+import CustomNotificationsModal from './custom_notifications_modal.vue';
 
 export default {
   name: 'NotificationsDropdown',
@@ -19,9 +21,11 @@ export default {
     GlDropdown,
     GlDropdownDivider,
     NotificationsDropdownItem,
+    CustomNotificationsModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    'gl-modal': GlModalDirective,
   },
   inject: {
     containerClass: {
@@ -102,6 +106,10 @@ export default {
       try {
         await Api.updateNotificationSettings(this.projectId, this.groupId, { level });
         this.selectedNotificationLevel = level;
+
+        if (level === CUSTOM_LEVEL) {
+          this.$refs.customNotificationsModal.open();
+        }
       } catch (error) {
         this.$toast.show(this.$options.i18n.updateNotificationLevelErrorMessage, { type: 'error' });
       } finally {
@@ -111,6 +119,7 @@ export default {
   },
   customLevel: CUSTOM_LEVEL,
   i18n,
+  modalId: 'custom-notifications-modal',
 };
 </script>
 
@@ -122,7 +131,13 @@ export default {
       data-testid="notificationButton"
       :size="buttonSize"
     >
-      <gl-button :size="buttonSize" :icon="buttonIcon" :loading="isLoading" :disabled="disabled">
+      <gl-button
+        v-gl-modal="$options.modalId"
+        :size="buttonSize"
+        :icon="buttonIcon"
+        :loading="isLoading"
+        :disabled="disabled"
+      >
         <template v-if="buttonText">{{ buttonText }}</template>
       </gl-button>
       <gl-dropdown :size="buttonSize" :disabled="disabled">
@@ -176,5 +191,6 @@ export default {
         @item-selected="selectItem"
       />
     </gl-dropdown>
+    <custom-notifications-modal ref="customNotificationsModal" :modal-id="$options.modalId" />
   </div>
 </template>

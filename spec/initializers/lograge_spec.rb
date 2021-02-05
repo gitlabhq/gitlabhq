@@ -64,11 +64,11 @@ RSpec.describe 'lograge', type: :request do
         )
 
       expect(Lograge.formatter).to receive(:call)
-        .with(a_hash_including(cpu_s: 0.11))
+        .with(a_hash_including(cpu_s: 0.111112))
         .and_call_original
 
       expect(Lograge.logger).to receive(:send)
-        .with(anything, include('"cpu_s":0.11'))
+        .with(anything, include('"cpu_s":0.111112'))
         .and_call_original
 
       subject
@@ -87,6 +87,26 @@ RSpec.describe 'lograge', type: :request do
         .and_call_original
 
       subject
+    end
+
+    context 'when logging memory allocations' do
+      include MemoryInstrumentationHelper
+
+      before do
+        skip_memory_instrumentation!
+      end
+
+      it 'logs memory usage metrics' do
+        expect(Lograge.formatter).to receive(:call)
+          .with(a_hash_including(:mem_objects))
+          .and_call_original
+
+        expect(Lograge.logger).to receive(:send)
+          .with(anything, include('"mem_objects":'))
+          .and_call_original
+
+        subject
+      end
     end
 
     it 'limits param size' do

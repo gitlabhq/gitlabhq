@@ -189,11 +189,6 @@ For example, to add support for files referenced by a `Widget` model with a
 
      mount_uploader :file, WidgetUploader
 
-     def local?
-       # Must to be implemented, Check the uploader's storage types
-       file_store == ObjectStorage::Store::LOCAL
-     end
-
      # @param primary_key_in [Range, Widget] arg to pass to primary_key_in scope
      # @return [ActiveRecord::Relation<Widget>] everything that should be synced to this node, restricted by primary key
      def self.replicables_for_current_secondary(primary_key_in)

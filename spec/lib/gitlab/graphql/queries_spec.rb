@@ -151,6 +151,10 @@ RSpec.describe Gitlab::Graphql::Queries do
       let(:path) { 'post_by_slug.graphql' }
 
       it_behaves_like 'a valid GraphQL query for the blog schema'
+
+      it 'has a complexity' do
+        expect(subject.complexity(schema)).to be < 10
+      end
     end
 
     context 'a query with an import' do

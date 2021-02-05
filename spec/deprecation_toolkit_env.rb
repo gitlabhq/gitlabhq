@@ -62,7 +62,6 @@ module DeprecationToolkitEnv
       grape-1.5.1/lib/grape/validations/validators/coerce.rb
       grape_logging-1.8.3/lib/grape_logging/middleware/request_logger.rb
       activesupport-6.0.3.4/lib/active_support/cache.rb
-      factory_bot-6.1.0/lib/factory_bot/decorator.rb
       batch-loader-1.4.0/lib/batch_loader/graphql.rb
       carrierwave-1.3.1/lib/carrierwave/sanitized_file.rb
       activerecord-6.0.3.4/lib/active_record/relation.rb

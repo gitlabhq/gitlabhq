@@ -24,7 +24,7 @@ FactoryBot.define do
     head_sha  { diff_refs&.head_sha }
     start_sha { diff_refs&.start_sha }
 
-    initialize_with { new(attributes) }
+    initialize_with { new(**attributes) }
 
     trait :moved do
       new_path { 'path/to/new.file' }

@@ -11,6 +11,7 @@ module Gitlab
       def call(job, queue)
         started_time = get_time
         base_payload = parse_job(job)
+
         ActiveRecord::LogSubscriber.reset_runtime
 
         Sidekiq.logger.info log_job_start(job, base_payload)
@@ -38,17 +39,15 @@ module Gitlab
       private
 
       def add_instrumentation_keys!(job, output_payload)
-        output_payload.merge!(job.slice(*::Gitlab::InstrumentationHelper.keys))
+        instrumentation_values = job.slice(*::Gitlab::InstrumentationHelper.keys).stringify_keys
+
+        output_payload.merge!(instrumentation_values)
       end
 
       def add_logging_extras!(job, output_payload)
         output_payload.merge!(
           job.select { |key, _| key.to_s.start_with?("#{ApplicationWorker::LOGGING_EXTRA_KEY}.") }
         )
-      end
-
-      def add_db_counters!(job, output_payload)
-        output_payload.merge!(job.slice(*::Gitlab::Metrics::Subscribers::ActiveRecord::DB_COUNTERS))
       end
 
       def log_job_start(job, payload)
@@ -67,7 +66,6 @@ module Gitlab
         payload = payload.dup
         add_instrumentation_keys!(job, payload)
         add_logging_extras!(job, payload)
-        add_db_counters!(job, payload)
 
         elapsed_time = elapsed(started_time)
         add_time_keys!(elapsed_time, payload)
@@ -93,10 +91,6 @@ module Gitlab
 
       def add_time_keys!(time, payload)
         payload['duration_s'] = time[:duration].round(Gitlab::InstrumentationHelper::DURATION_PRECISION)
-
-        # ignore `cpu_s` if the platform does not support Process::CLOCK_THREAD_CPUTIME_ID (time[:cputime] == 0)
-        # supported OS version can be found at: https://www.rubydoc.info/stdlib/core/2.1.6/Process:clock_gettime
-        payload['cpu_s'] = time[:cputime].round(Gitlab::InstrumentationHelper::DURATION_PRECISION) if time[:cputime] > 0
         payload['completed_at'] = Time.now.utc.to_f
       end
 
@@ -108,17 +102,11 @@ module Gitlab
 
       def elapsed(t0)
         t1 = get_time
-        {
-          duration: t1[:now] - t0[:now],
-          cputime: t1[:thread_cputime] - t0[:thread_cputime]
-        }
+        { duration: t1[:now] - t0[:now] }
       end
 
       def get_time
-        {
-          now: current_time,
-          thread_cputime: defined?(Process::CLOCK_THREAD_CPUTIME_ID) ? Process.clock_gettime(Process::CLOCK_THREAD_CPUTIME_ID) : 0
-        }
+        { now: current_time }
       end
 
       def current_time

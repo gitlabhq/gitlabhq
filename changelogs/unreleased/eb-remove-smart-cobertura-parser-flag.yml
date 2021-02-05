@@ -1,0 +1,5 @@
+---
+title: Introduce automatic class path correction in Cobertura parser
+merge_request: 53236
+author:
+type: changed

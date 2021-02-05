@@ -357,7 +357,7 @@ By default, anyone who can create a deployment job can access any CI variable in
 an environment's deployment job. This includes `KUBECONFIG`, which gives access to
 any secret available to the associated service account in your cluster.
 To keep your production credentials safe, consider using
-[Protected Environments](../../../ci/environments/protected_environments.md),
+[protected environments](../../../ci/environments/protected_environments.md),
 combined with either
 
 - a GitLab-managed cluster and namespace per environment,

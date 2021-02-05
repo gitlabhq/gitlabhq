@@ -29,10 +29,6 @@ module Gitlab
         payload[:etag_route] = event.payload[:etag_route] if event.payload[:etag_route]
         payload[Labkit::Correlation::CorrelationId::LOG_KEY] = event.payload[Labkit::Correlation::CorrelationId::LOG_KEY] || Labkit::Correlation::CorrelationId.current_id
 
-        if cpu_s = Gitlab::Metrics::System.thread_cpu_duration(::Gitlab::RequestContext.instance.start_thread_cpu_time)
-          payload[:cpu_s] = cpu_s.round(2)
-        end
-
         CLOUDFLARE_CUSTOM_HEADERS.each do |_, value|
           payload[value] = event.payload[value] if event.payload[value]
         end

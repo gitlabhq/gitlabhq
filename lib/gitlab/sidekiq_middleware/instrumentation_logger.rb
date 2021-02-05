@@ -4,8 +4,11 @@ module Gitlab
   module SidekiqMiddleware
     class InstrumentationLogger
       def call(worker, job, queue)
+        ::Gitlab::InstrumentationHelper.init_instrumentation_data
+
         yield
 
+      ensure
         # The Sidekiq logger is called outside the middleware block, so
         # we need to modify the job hash to pass along this information
         # since RequestStore is only active in the Sidekiq middleware.

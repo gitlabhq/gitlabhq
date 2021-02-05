@@ -3,7 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
-  describe '#call' do
+  before do
+    # We disable a memory instrumentation feature
+    # as this requires a special patched Ruby
+    allow(Gitlab::Memory::Instrumentation).to receive(:available?) { false }
+  end
+
+  describe '#call', :request_store do
     let(:timestamp) { Time.iso8601('2018-01-01T12:00:00.000Z') }
     let(:created_at) { timestamp - 1.second }
     let(:scheduling_latency_s) { 1.0 }
@@ -21,14 +27,13 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         "correlation_id" => 'cid',
         "error_message" => "wrong number of arguments (2 for 3)",
         "error_class" => "ArgumentError",
-        "error_backtrace" => [],
-        "db_count" => 1,
-        "db_write_count" => 0,
-        "db_cached_count" => 0
+        "error_backtrace" => []
       }
     end
 
     let(:logger) { double }
+    let(:clock_realtime_start) { 0.222222299 }
+    let(:clock_realtime_end) { 1.333333799 }
     let(:clock_thread_cputime_start) { 0.222222299 }
     let(:clock_thread_cputime_end) { 1.333333799 }
     let(:start_payload) do
@@ -50,7 +55,10 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         'duration_s' => 0.0,
         'completed_at' => timestamp.to_f,
         'cpu_s' => 1.111112,
-        'db_duration_s' => 0.0
+        'db_duration_s' => 0.0,
+        'db_cached_count' => 0,
+        'db_count' => 0,
+        'db_write_count' => 0
       )
     end
 
@@ -69,7 +77,10 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
 
       allow(subject).to receive(:current_time).and_return(timestamp.to_f)
 
-      allow(Process).to receive(:clock_gettime).with(Process::CLOCK_THREAD_CPUTIME_ID).and_return(clock_thread_cputime_start, clock_thread_cputime_end)
+      allow(Process).to receive(:clock_gettime).with(Process::CLOCK_REALTIME, :float_second)
+        .and_return(clock_realtime_start, clock_realtime_end)
+      allow(Process).to receive(:clock_gettime).with(Process::CLOCK_THREAD_CPUTIME_ID, :float_second)
+        .and_return(clock_thread_cputime_start, clock_thread_cputime_end)
     end
 
     subject { described_class.new }
@@ -86,7 +97,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect(subject).to receive(:log_job_start).and_call_original
           expect(subject).to receive(:log_job_done).and_call_original
 
-          subject.call(job, 'test_queue') { }
+          call_subject(job, 'test_queue') { }
         end
       end
 
@@ -95,13 +106,14 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           "class" => "ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper",
           "wrapped" => "TestWorker"
         )
+
         Timecop.freeze(timestamp) do
           expect(logger).to receive(:info).with(start_payload).ordered
           expect(logger).to receive(:info).with(end_payload).ordered
           expect(subject).to receive(:log_job_start).and_call_original
           expect(subject).to receive(:log_job_done).and_call_original
 
-          subject.call(wrapped_job, 'test_queue') {}
+          call_subject(wrapped_job, 'test_queue') { }
         end
       end
 
@@ -113,7 +125,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect(subject).to receive(:log_job_done).and_call_original
 
           expect do
-            subject.call(job, 'test_queue') do
+            call_subject(job, 'test_queue') do
               raise ArgumentError, 'Something went wrong'
             end
           end.to raise_error(ArgumentError)
@@ -128,7 +140,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect(subject).to receive(:log_job_done).and_call_original
 
           expect do
-            subject.call(job, 'test_queue') do
+            call_subject(job, 'test_queue') do
               raise ArgumentError, 'Something went wrong'
             rescue
               raise Sidekiq::JobRetry::Skip
@@ -145,7 +157,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect(subject).to receive(:log_job_done).and_call_original
 
           expect do
-            subject.call(job, 'test_queue') do
+            call_subject(job, 'test_queue') do
               raise ArgumentError, 'Something went wrong'
             rescue
               raise Sidekiq::JobRetry::Handled
@@ -169,7 +181,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect(subject).to receive(:log_job_done).and_call_original
 
           expect do
-            subject.call(job, 'test_queue') do
+            call_subject(job, 'test_queue') do
               raise Sidekiq::JobRetry::Skip
             end
           end.to raise_error(Sidekiq::JobRetry::Skip)
@@ -184,7 +196,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           allow(subject).to receive(:log_job_start).and_call_original
           allow(subject).to receive(:log_job_done).and_call_original
 
-          subject.call(job, 'test_queue') do
+          call_subject(job, 'test_queue') do
             expect(job).to eq(job_copy)
           end
         end
@@ -202,7 +214,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           allow(subject).to receive(:log_job_start).and_call_original
           allow(subject).to receive(:log_job_done).and_call_original
 
-          subject.call(wrapped_job, 'test_queue') do
+          call_subject(wrapped_job, 'test_queue') do
             expect(wrapped_job).to eq(job_copy)
           end
         end
@@ -221,7 +233,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect(subject).to receive(:log_job_start).and_call_original
           expect(subject).to receive(:log_job_done).and_call_original
 
-          subject.call(job, 'test_queue') { }
+          call_subject(job, 'test_queue') { }
         end
       end
 
@@ -234,7 +246,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect(subject).to receive(:log_job_start).and_call_original
           expect(subject).to receive(:log_job_done).and_call_original
 
-          subject.call(job.except("created_at", "enqueued_at"), 'test_queue') { }
+          call_subject(job.except("created_at", "enqueued_at"), 'test_queue') { }
         end
       end
     end
@@ -250,7 +262,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect(subject).to receive(:log_job_start).and_call_original
           expect(subject).to receive(:log_job_done).and_call_original
 
-          subject.call(job, 'test_queue') { }
+          call_subject(job, 'test_queue') { }
         end
       end
     end
@@ -268,7 +280,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
       end
 
       let(:expected_end_payload) do
-        end_payload.merge(timing_data)
+        end_payload.merge(timing_data.stringify_keys)
       end
 
       it 'logs with Gitaly and Rugged timing data' do
@@ -276,7 +288,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect(logger).to receive(:info).with(start_payload).ordered
           expect(logger).to receive(:info).with(expected_end_payload).ordered
 
-          subject.call(job, 'test_queue') do
+          call_subject(job, 'test_queue') do
             job.merge!(timing_data)
           end
         end
@@ -298,7 +310,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
       let(:expected_end_payload_with_db) do
         expected_end_payload.merge(
           'db_duration_s' => a_value >= 0.1,
-          'db_count' => 1,
+          'db_count' => a_value >= 1,
           'db_cached_count' => 0,
           'db_write_count' => 0
         )
@@ -308,7 +320,9 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         expect(logger).to receive(:info).with(expected_start_payload).ordered
         expect(logger).to receive(:info).with(expected_end_payload_with_db).ordered
 
-        subject.call(job, 'test_queue') { ActiveRecord::Base.connection.execute('SELECT pg_sleep(0.1);') }
+        call_subject(job, 'test_queue') do
+          ActiveRecord::Base.connection.execute('SELECT pg_sleep(0.1);')
+        end
       end
 
       it 'prevents database time from leaking to the next job' do
@@ -317,8 +331,13 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         expect(logger).to receive(:info).with(expected_start_payload).ordered
         expect(logger).to receive(:info).with(expected_end_payload).ordered
 
-        subject.call(job, 'test_queue') { ActiveRecord::Base.connection.execute('SELECT pg_sleep(0.1);') }
-        subject.call(job, 'test_queue') { }
+        call_subject(job.dup, 'test_queue') do
+          ActiveRecord::Base.connection.execute('SELECT pg_sleep(0.1);')
+        end
+
+        Gitlab::SafeRequestStore.clear!
+
+        call_subject(job.dup, 'test_queue') { }
       end
     end
 
@@ -334,7 +353,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect(logger).to receive(:info).with(expected_start_payload).ordered
           expect(logger).to receive(:info).with(expected_end_payload).ordered
 
-          subject.call(job, 'test_queue') do
+          call_subject(job, 'test_queue') do
             job["#{ApplicationWorker::LOGGING_EXTRA_KEY}.key1"] = 15
             job["#{ApplicationWorker::LOGGING_EXTRA_KEY}.key2"] = 16
             job['key that will be ignored because it does not start with extra.'] = 17
@@ -342,13 +361,29 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         end
       end
     end
+
+    def call_subject(job, queue)
+      # This structured logger strongly depends on execution of `InstrumentationLogger`
+      subject.call(job, queue) do
+        ::Gitlab::SidekiqMiddleware::InstrumentationLogger.new.call('worker', job, queue) do
+          yield
+        end
+      end
+    end
   end
 
   describe '#add_time_keys!' do
-    let(:time) { { duration: 0.1231234, cputime: 1.2342345 } }
+    let(:time) { { duration: 0.1231234 } }
     let(:payload) { { 'class' => 'my-class', 'message' => 'my-message', 'job_status' => 'my-job-status' } }
     let(:current_utc_time) { Time.now.utc }
-    let(:payload_with_time_keys) { { 'class' => 'my-class', 'message' => 'my-message', 'job_status' => 'my-job-status', 'duration_s' => 0.123123, 'cpu_s' => 1.234235, 'completed_at' => current_utc_time.to_f } }
+
+    let(:payload_with_time_keys) do
+      { 'class' => 'my-class',
+        'message' => 'my-message',
+        'job_status' => 'my-job-status',
+        'duration_s' => 0.123123,
+        'completed_at' => current_utc_time.to_f }
+    end
 
     subject { described_class.new }
 

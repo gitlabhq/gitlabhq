@@ -29,9 +29,9 @@ class BuildFinishedWorker # rubocop:disable Scalability/IdempotentWorker
   # @param [Ci::Build] build The build to process.
   def process_build(build)
     # We execute these in sync to reduce IO.
-    BuildTraceSectionsWorker.new.perform(build.id)
-    BuildCoverageWorker.new.perform(build.id)
-    Ci::BuildReportResultWorker.new.perform(build.id)
+    build.parse_trace_sections!
+    build.update_coverage
+    Ci::BuildReportResultService.new.execute(build)
 
     # We execute these async as these are independent operations.
     BuildHooksWorker.perform_async(build.id)

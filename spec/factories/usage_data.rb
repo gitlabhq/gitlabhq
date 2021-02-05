@@ -121,8 +121,8 @@ FactoryBot.define do
       env = create(:environment, project: projects[3])
       [3, 31].each do |n|
         deployment_options = { created_at: n.days.ago, project: env.project, environment: env }
-        create(:deployment, :failed, deployment_options)
-        create(:deployment, :success, deployment_options)
+        create(:deployment, :failed, **deployment_options)
+        create(:deployment, :success, **deployment_options)
         create_list(:project_snippet, 2, project: projects[0], created_at: n.days.ago)
         create(:personal_snippet, created_at: n.days.ago)
       end

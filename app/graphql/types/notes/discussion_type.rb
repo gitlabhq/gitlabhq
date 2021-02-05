@@ -12,13 +12,13 @@ module Types
       implements(Types::ResolvableInterface)
 
       field :id, DiscussionID, null: false,
-            description: "ID of this discussion"
+            description: "ID of this discussion."
       field :reply_id, DiscussionID, null: false,
-            description: 'ID used to reply to this discussion'
+            description: 'ID used to reply to this discussion.'
       field :created_at, Types::TimeType, null: false,
-            description: "Timestamp of the discussion's creation"
+            description: "Timestamp of the discussion's creation."
       field :notes, Types::Notes::NoteType.connection_type, null: false,
-            description: 'All notes in the discussion'
+            description: 'All notes in the discussion.'
 
       # DiscussionID.coerce_result is suitable here, but will always mark this
       # as being a 'Discussion'. Using `GlobalId.build` guarantees that we get

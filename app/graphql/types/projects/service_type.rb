@@ -9,9 +9,9 @@ module Types
       # TODO: Add all the fields that we want to expose for the project services integrations
       # https://gitlab.com/gitlab-org/gitlab/-/issues/213088
       field :type, GraphQL::STRING_TYPE, null: true,
-            description: 'Class name of the service'
+            description: 'Class name of the service.'
       field :active, GraphQL::BOOLEAN_TYPE, null: true,
-            description: 'Indicates if the service is active'
+            description: 'Indicates if the service is active.'
 
       definition_methods do
         def resolve_type(object, context)

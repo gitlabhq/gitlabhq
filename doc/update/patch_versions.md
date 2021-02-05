@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 comments: false
 ---
 
-# Universal update guide for patch versions
+# Universal update guide for patch versions of source installations
 
 ## Select Version to Install
 
