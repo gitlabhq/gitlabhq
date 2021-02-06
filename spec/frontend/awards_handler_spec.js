@@ -53,6 +53,12 @@ describe('AwardsHandler', () => {
       d: 'smiling face with sunglasses',
       u: '6.0',
     },
+    grey_question: {
+      c: 'symbols',
+      e: '❔',
+      d: 'white question mark ornament',
+      u: '6.0',
+    },
   };
   preloadFixtures('snippets/show.html');
 
@@ -283,16 +289,6 @@ describe('AwardsHandler', () => {
       expect($('[data-name=anger]').is(':visible')).toBe(true);
       expect($('[data-name=alien]').is(':visible')).toBe(true);
       expect($('.js-emoji-menu-search').val()).toBe('');
-    });
-
-    it('should fuzzy filter the emoji', async () => {
-      await openAndWaitForEmojiMenu();
-
-      awardsHandler.searchEmojis('sgls');
-
-      expect($('[data-name=angel]').is(':visible')).toBe(false);
-      expect($('[data-name=anger]').is(':visible')).toBe(false);
-      expect($('[data-name=sunglasses]').is(':visible')).toBe(true);
     });
 
     it('should filter by emoji description', async () => {

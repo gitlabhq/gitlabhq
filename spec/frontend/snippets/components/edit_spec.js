@@ -1,12 +1,15 @@
 import VueApollo, { ApolloMutation } from 'vue-apollo';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { stubComponent } from 'helpers/stub_component';
 import GetSnippetQuery from 'shared_queries/snippet/snippet.query.graphql';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import * as urlUtils from '~/lib/utils/url_utility';
 import SnippetEditApp from '~/snippets/components/edit.vue';
+import CaptchaModal from '~/captcha/captcha_modal.vue';
 import SnippetDescriptionEdit from '~/snippets/components/snippet_description_edit.vue';
 import SnippetVisibilityEdit from '~/snippets/components/snippet_visibility_edit.vue';
 import SnippetBlobActionsEdit from '~/snippets/components/snippet_blob_actions_edit.vue';
@@ -54,6 +57,7 @@ const createTestSnippet = () => ({
 describe('Snippet Edit app', () => {
   let wrapper;
   let fakeApollo;
+  const captchaSiteKey = 'abc123';
   const relativeUrlRoot = '/foo/';
   const originalRelativeUrlRoot = gon.relative_url_root;
   const GetSnippetQuerySpy = jest.fn().mockResolvedValue({
@@ -66,6 +70,8 @@ describe('Snippet Edit app', () => {
         updateSnippet: {
           errors: [],
           snippet: createTestSnippet(),
+          needsCaptchaResponse: null,
+          captchaSiteKey: null,
         },
       },
     }),
@@ -74,13 +80,51 @@ describe('Snippet Edit app', () => {
         updateSnippet: {
           errors: [TEST_MUTATION_ERROR],
           snippet: createTestSnippet(),
+          needsCaptchaResponse: null,
+          captchaSiteKey: null,
         },
         createSnippet: {
           errors: [TEST_MUTATION_ERROR],
           snippet: null,
+          needsCaptchaResponse: null,
+          captchaSiteKey: null,
         },
       },
     }),
+    // TODO: QUESTION - This has to be wrapped in a factory function in order for the mock to have
+    //   the `mockResolvedValueOnce` counter properly cleared/reset between test `it` examples, by
+    //   ensuring each one gets a fresh mock instance.  It's apparently impossible/hard to manually
+    //   clear/reset them (see https://github.com/facebook/jest/issues/7136). So, should
+    //   we convert all the others to factory functions too, to be consistent?  And/or move the whole
+    //   `mutationTypes` declaration into a `beforeEach`? (not sure if that will still solve the
+    //   mock reset problem though).
+    RESOLVE_WITH_NEEDS_CAPTCHA_RESPONSE: () =>
+      jest
+        .fn()
+        // NOTE: There may be a captcha-related error, but it is not used in the GraphQL/Vue flow,
+        //    only a truthy 'needsCaptchaResponse' value is used to trigger the captcha modal showing.
+        .mockResolvedValueOnce({
+          data: {
+            createSnippet: {
+              errors: ['ignored captcha error message'],
+              snippet: null,
+              needsCaptchaResponse: true,
+              captchaSiteKey,
+            },
+          },
+        })
+        // After the captcha is solved and the modal is closed, the second form submission should
+        //   be successful and return needsCaptchaResponse = false.
+        .mockResolvedValueOnce({
+          data: {
+            createSnippet: {
+              errors: ['ignored captcha error message'],
+              snippet: createTestSnippet(),
+              needsCaptchaResponse: false,
+              captchaSiteKey: null,
+            },
+          },
+        }),
     REJECT: jest.fn().mockRejectedValue(TEST_API_ERROR),
   };
 
@@ -119,6 +163,7 @@ describe('Snippet Edit app', () => {
       stubs: {
         ApolloMutation,
         FormFooterActions,
+        CaptchaModal: stubComponent(CaptchaModal),
       },
       provide: {
         selectedLevel,
@@ -144,6 +189,7 @@ describe('Snippet Edit app', () => {
   });
 
   const findBlobActions = () => wrapper.find(SnippetBlobActionsEdit);
+  const findCaptchaModal = () => wrapper.find(CaptchaModal);
   const findSubmitButton = () => wrapper.find('[data-testid="snippet-submit-btn"]');
   const findCancelButton = () => wrapper.find('[data-testid="snippet-cancel-btn"]');
   const hasDisabledSubmit = () => Boolean(findSubmitButton().attributes('disabled'));
@@ -167,6 +213,8 @@ describe('Snippet Edit app', () => {
     visibilityLevel,
     blobActions: [],
   });
+  const setTitle = (val) => wrapper.find(TitleField).vm.$emit('input', val);
+  const setDescription = (val) => wrapper.find(SnippetDescriptionEdit).vm.$emit('input', val);
 
   // Ideally we wouldn't call this method directly, but we don't have a way to trigger
   // apollo responses yet.
@@ -194,6 +242,7 @@ describe('Snippet Edit app', () => {
       (props) => {
         createComponent(props);
 
+        expect(wrapper.find(CaptchaModal).exists()).toBe(true);
         expect(wrapper.find(TitleField).exists()).toBe(true);
         expect(wrapper.find(SnippetDescriptionEdit).exists()).toBe(true);
         expect(wrapper.find(SnippetVisibilityEdit).exists()).toBe(true);
@@ -218,7 +267,7 @@ describe('Snippet Edit app', () => {
         loadSnippet({ title });
         triggerBlobActions(actions);
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(hasDisabledSubmit()).toBe(shouldDisable);
       },
@@ -239,7 +288,7 @@ describe('Snippet Edit app', () => {
 
         loadSnippet(...snippetArg);
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findCancelButton().attributes('href')).toBe(expectation);
       },
@@ -251,7 +300,7 @@ describe('Snippet Edit app', () => {
       createComponent({ props: { snippetGid: '' }, withApollo: true });
 
       jest.runOnlyPendingTimers();
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(GetSnippetQuerySpy).not.toHaveBeenCalled();
     });
@@ -288,7 +337,7 @@ describe('Snippet Edit app', () => {
           loadSnippet(...snippetArg);
           setUploadFilesHtml(uploadedFiles);
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           clickSubmitBtn();
 
@@ -338,14 +387,109 @@ describe('Snippet Edit app', () => {
           expect(Flash).toHaveBeenCalledWith(expectMessage);
         },
       );
+
+      describe('when needsCaptchaResponse is true', () => {
+        let modal;
+        let captchaResponse;
+        let mutationRes;
+
+        beforeEach(async () => {
+          mutationRes = mutationTypes.RESOLVE_WITH_NEEDS_CAPTCHA_RESPONSE();
+          createComponent({
+            props: {
+              snippetGid: '',
+              projectPath: '',
+            },
+            mutationRes,
+          });
+          // await waitForPromises();
+          modal = findCaptchaModal();
+
+          loadSnippet();
+
+          clickSubmitBtn();
+          await waitForPromises();
+        });
+
+        it('should display captcha modal', () => {
+          expect(urlUtils.redirectTo).not.toHaveBeenCalled();
+          expect(modal.props('needsCaptchaResponse')).toEqual(true);
+          expect(modal.props('captchaSiteKey')).toEqual(captchaSiteKey);
+        });
+
+        describe('when a non-empty captcha response is received', () => {
+          beforeEach(() => {
+            captchaResponse = 'xyz123';
+          });
+
+          it('sets needsCaptchaResponse to false', async () => {
+            modal.vm.$emit('receivedCaptchaResponse', captchaResponse);
+            await nextTick();
+            expect(modal.props('needsCaptchaResponse')).toEqual(false);
+          });
+
+          it('resubmits form with captchaResponse', async () => {
+            modal.vm.$emit('receivedCaptchaResponse', captchaResponse);
+            await nextTick();
+            expect(mutationRes.mock.calls[1][0]).toEqual({
+              mutation: CreateSnippetMutation,
+              variables: {
+                input: {
+                  ...getApiData(),
+                  captchaResponse,
+                  projectPath: '',
+                  uploadedFiles: [],
+                },
+              },
+            });
+          });
+        });
+
+        describe('when an empty captcha response is received ', () => {
+          beforeEach(() => {
+            captchaResponse = '';
+          });
+
+          it('sets needsCaptchaResponse to false', async () => {
+            modal.vm.$emit('receivedCaptchaResponse', captchaResponse);
+            await nextTick();
+            expect(modal.props('needsCaptchaResponse')).toEqual(false);
+          });
+
+          it('does not resubmit form', async () => {
+            modal.vm.$emit('receivedCaptchaResponse', captchaResponse);
+            await nextTick();
+            expect(mutationRes.mock.calls.length).toEqual(1);
+          });
+        });
+      });
     });
 
     describe('on before unload', () => {
+      const caseNoActions = () => triggerBlobActions([]);
+      const caseEmptyAction = () => triggerBlobActions([testEntries.empty.diff]);
+      const caseSomeActions = () => triggerBlobActions([testEntries.updated.diff]);
+      const caseTitleIsSet = () => {
+        caseEmptyAction();
+        setTitle('test');
+      };
+      const caseDescriptionIsSet = () => {
+        caseEmptyAction();
+        setDescription('test');
+      };
+      const caseClickSubmitBtn = () => {
+        caseSomeActions();
+        clickSubmitBtn();
+      };
+
       it.each`
         condition                       | expectPrevented | action
-        ${'there are no actions'}       | ${false}        | ${() => triggerBlobActions([])}
-        ${'there are actions'}          | ${true}         | ${() => triggerBlobActions([testEntries.updated.diff])}
-        ${'the snippet is being saved'} | ${false}        | ${() => clickSubmitBtn()}
+        ${'there are no actions'}       | ${false}        | ${caseNoActions}
+        ${'there is an empty action'}   | ${false}        | ${caseEmptyAction}
+        ${'there are actions'}          | ${true}         | ${caseSomeActions}
+        ${'the title is set'}           | ${true}         | ${caseTitleIsSet}
+        ${'the description is set'}     | ${true}         | ${caseDescriptionIsSet}
+        ${'the snippet is being saved'} | ${false}        | ${caseClickSubmitBtn}
       `(
         'handles before unload prevent when $condition (expectPrevented=$expectPrevented)',
         ({ expectPrevented, action }) => {

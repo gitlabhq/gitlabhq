@@ -28,11 +28,11 @@ export const initRecaptchaScript = memoize(() => {
 
   return new Promise((resolve) => {
     // This global callback resolves the Promise and is passed by name to the reCAPTCHA script.
-    window[RECAPTCHA_ONLOAD_CALLBACK_NAME] = (val) => {
+    window[RECAPTCHA_ONLOAD_CALLBACK_NAME] = () => {
       // Let's clean up after ourselves. This is also important for testing, because `window` is NOT cleared between tests.
       // https://github.com/facebook/jest/issues/1224#issuecomment-444586798.
       delete window[RECAPTCHA_ONLOAD_CALLBACK_NAME];
-      resolve(val);
+      resolve(window.grecaptcha);
     };
     appendRecaptchaScript();
   });

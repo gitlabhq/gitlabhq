@@ -56,6 +56,15 @@ export const testEntries = {
       content: CONTENT_2,
     },
   },
+  empty: {
+    id: 'empty',
+    diff: {
+      action: SNIPPET_BLOB_ACTION_CREATE,
+      filePath: '',
+      previousPath: '',
+      content: '',
+    },
+  },
 };
 
 export const createBlobFromTestEntry = ({ diff, origContent }, isOrig = false) => ({

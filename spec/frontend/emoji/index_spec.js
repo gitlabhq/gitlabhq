@@ -1,6 +1,6 @@
 import { trimText } from 'helpers/text_helper';
-import { emojiFixtureMap, initEmojiMock, describeEmojiFields } from 'helpers/emoji';
-import { glEmojiTag, searchEmoji, getEmoji } from '~/emoji';
+import { emojiFixtureMap, mockEmojiData, initEmojiMock } from 'helpers/emoji';
+import { glEmojiTag, searchEmoji, getEmojiInfo, sortEmoji } from '~/emoji';
 import isEmojiUnicodeSupported, {
   isFlagEmoji,
   isRainbowFlagEmoji,
@@ -29,7 +29,7 @@ const emptySupportMap = {
   1.1: false,
 };
 
-describe('gl_emoji', () => {
+describe('emoji', () => {
   let mock;
 
   beforeEach(async () => {
@@ -43,7 +43,7 @@ describe('gl_emoji', () => {
   describe('glEmojiTag', () => {
     it('bomb emoji', () => {
       const emojiKey = 'bomb';
-      const markup = glEmojiTag(emojiFixtureMap[emojiKey].name);
+      const markup = glEmojiTag(emojiKey);
 
       expect(trimText(markup)).toMatchInlineSnapshot(
         `"<gl-emoji data-name=\\"bomb\\"></gl-emoji>"`,
@@ -52,7 +52,7 @@ describe('gl_emoji', () => {
 
     it('bomb emoji with sprite fallback readiness', () => {
       const emojiKey = 'bomb';
-      const markup = glEmojiTag(emojiFixtureMap[emojiKey].name, {
+      const markup = glEmojiTag(emojiKey, {
         sprite: true,
       });
       expect(trimText(markup)).toMatchInlineSnapshot(
@@ -352,125 +352,272 @@ describe('gl_emoji', () => {
     });
   });
 
-  describe('getEmoji', () => {
-    const { grey_question } = emojiFixtureMap;
+  describe('getEmojiInfo', () => {
+    it.each(['atom', 'five', 'black_heart'])("should return a correct emoji for '%s'", (name) => {
+      expect(getEmojiInfo(name)).toEqual(mockEmojiData[name]);
+    });
+
+    it('should return fallback emoji by default', () => {
+      expect(getEmojiInfo('atjs')).toEqual(mockEmojiData.grey_question);
+    });
+
+    it('should return null when fallback is false', () => {
+      expect(getEmojiInfo('atjs', false)).toBe(null);
+    });
 
     describe('when query is undefined', () => {
-      it('should return null by default', () => {
-        expect(getEmoji()).toBe(null);
+      it('should return fallback emoji by default', () => {
+        expect(getEmojiInfo()).toEqual(mockEmojiData.grey_question);
       });
 
-      it('should return fallback emoji when fallback is true', () => {
-        expect(getEmoji(undefined, true).name).toEqual(grey_question.name);
+      it('should return null when fallback is false', () => {
+        expect(getEmojiInfo(undefined, false)).toBe(null);
       });
     });
   });
 
   describe('searchEmoji', () => {
-    const { atom, grey_question } = emojiFixtureMap;
-    const search = (query, opts) => searchEmoji(query, opts).map(({ name }) => name);
-    const mangle = (str) => str.slice(0, 1) + str.slice(-1);
-    const partial = (str) => str.slice(0, 2);
+    const emojiFixture = Object.keys(mockEmojiData).reduce((acc, k) => {
+      const { name, e, u, d } = mockEmojiData[k];
+      acc[k] = { name, e, u, d };
 
-    describe('with default options', () => {
-      const subject = (query) => search(query);
+      return acc;
+    }, {});
 
-      describeEmojiFields('with $field', ({ accessor }) => {
-        it(`should match by lower case: ${accessor(atom)}`, () => {
-          expect(subject(accessor(atom))).toContain(atom.name);
-        });
+    it.each([undefined, null, ''])("should return all emoji when the input is '%s'", (input) => {
+      const search = searchEmoji(input);
 
-        it(`should match by upper case: ${accessor(atom).toUpperCase()}`, () => {
-          expect(subject(accessor(atom).toUpperCase())).toContain(atom.name);
-        });
-
-        it(`should not match by partial: ${mangle(accessor(atom))}`, () => {
-          expect(subject(mangle(accessor(atom)))).not.toContain(atom.name);
-        });
+      const expected = [
+        'atom',
+        'bomb',
+        'construction_worker_tone5',
+        'five',
+        'grey_question',
+        'black_heart',
+        'heart',
+        'custard',
+        'star',
+      ].map((name) => {
+        return {
+          emoji: emojiFixture[name],
+          field: 'd',
+          fieldValue: emojiFixture[name].d,
+          score: 0,
+        };
       });
 
-      it(`should match by unicode value: ${atom.moji}`, () => {
-        expect(subject(atom.moji)).toContain(atom.name);
-      });
-
-      it('should not return a fallback value', () => {
-        expect(subject('foo bar baz')).toHaveLength(0);
-      });
-
-      it('should not return a fallback value when query is falsey', () => {
-        expect(subject()).toHaveLength(0);
-      });
+      expect(search).toEqual(expected);
     });
 
-    describe('with fuzzy match', () => {
-      const subject = (query) => search(query, { match: 'fuzzy' });
+    it.each([
+      [
+        'searching by unicode value',
+        '⚛',
+        [
+          {
+            name: 'atom',
+            field: 'e',
+            fieldValue: 'atom',
+            score: 0,
+          },
+        ],
+      ],
+      [
+        'searching by partial alias',
+        '_symbol',
+        [
+          {
+            name: 'atom',
+            field: 'alias',
+            fieldValue: 'atom_symbol',
+            score: 4,
+          },
+        ],
+      ],
+      [
+        'searching by full alias',
+        'atom_symbol',
+        [
+          {
+            name: 'atom',
+            field: 'alias',
+            fieldValue: 'atom_symbol',
+            score: 0,
+          },
+        ],
+      ],
+    ])('should return a correct result when %s', (_, query, searchResult) => {
+      const expected = searchResult.map((item) => {
+        const { field, score, fieldValue, name } = item;
 
-      describeEmojiFields('with $field', ({ accessor }) => {
-        it(`should match by lower case: ${accessor(atom)}`, () => {
-          expect(subject(accessor(atom))).toContain(atom.name);
-        });
-
-        it(`should match by upper case: ${accessor(atom).toUpperCase()}`, () => {
-          expect(subject(accessor(atom).toUpperCase())).toContain(atom.name);
-        });
-
-        it(`should match by partial: ${mangle(accessor(atom))}`, () => {
-          expect(subject(mangle(accessor(atom)))).toContain(atom.name);
-        });
+        return {
+          emoji: emojiFixture[name],
+          field,
+          fieldValue,
+          score,
+        };
       });
+
+      expect(searchEmoji(query)).toEqual(expected);
     });
 
-    describe('with contains match', () => {
-      const subject = (query) => search(query, { match: 'contains' });
+    it.each([
+      ['searching with a non-existing emoji name', 'asdf', []],
+      [
+        'searching by full name',
+        'atom',
+        [
+          {
+            name: 'atom',
+            field: 'd',
+            score: 0,
+          },
+        ],
+      ],
 
-      describeEmojiFields('with $field', ({ accessor }) => {
-        it(`should match by lower case: ${accessor(atom)}`, () => {
-          expect(subject(accessor(atom))).toContain(atom.name);
-        });
+      [
+        'searching by full description',
+        'atom symbol',
+        [
+          {
+            name: 'atom',
+            field: 'd',
+            score: 0,
+          },
+        ],
+      ],
 
-        it(`should match by upper case: ${accessor(atom).toUpperCase()}`, () => {
-          expect(subject(accessor(atom).toUpperCase())).toContain(atom.name);
-        });
+      [
+        'searching by partial name',
+        'question',
+        [
+          {
+            name: 'grey_question',
+            field: 'name',
+            score: 5,
+          },
+        ],
+      ],
+      [
+        'searching by partial description',
+        'ment',
+        [
+          {
+            name: 'grey_question',
+            field: 'd',
+            score: 24,
+          },
+        ],
+      ],
+      [
+        'searching with query "heart"',
+        'heart',
+        [
+          {
+            name: 'black_heart',
+            field: 'd',
+            score: 6,
+          },
+          {
+            name: 'heart',
+            field: 'name',
+            score: 0,
+          },
+        ],
+      ],
+      [
+        'searching with query "HEART"',
+        'HEART',
+        [
+          {
+            name: 'black_heart',
+            field: 'd',
+            score: 6,
+          },
+          {
+            name: 'heart',
+            field: 'name',
+            score: 0,
+          },
+        ],
+      ],
+      [
+        'searching with query "star"',
+        'star',
+        [
+          {
+            name: 'custard',
+            field: 'd',
+            score: 2,
+          },
+          {
+            name: 'star',
+            field: 'name',
+            score: 0,
+          },
+        ],
+      ],
+    ])('should return a correct result when %s', (_, query, searchResult) => {
+      const expected = searchResult.map((item) => {
+        const { field, score, name } = item;
 
-        it(`should match by partial: ${partial(accessor(atom))}`, () => {
-          expect(subject(partial(accessor(atom)))).toContain(atom.name);
-        });
-
-        it(`should not match by mangled: ${mangle(accessor(atom))}`, () => {
-          expect(subject(mangle(accessor(atom)))).not.toContain(atom.name);
-        });
+        return {
+          emoji: emojiFixture[name],
+          field,
+          fieldValue: emojiFixture[name][field],
+          score,
+        };
       });
+
+      expect(searchEmoji(query)).toEqual(expected);
     });
+  });
 
-    describe('with fallback', () => {
-      const subject = (query) => search(query, { fallback: true });
+  describe('sortEmoji', () => {
+    const testCases = [
+      [
+        'should correctly sort by score',
+        [
+          { score: 10, fieldValue: '', emoji: { name: 'a' } },
+          { score: 5, fieldValue: '', emoji: { name: 'b' } },
+          { score: 0, fieldValue: '', emoji: { name: 'c' } },
+        ],
+        [
+          { score: 0, fieldValue: '', emoji: { name: 'c' } },
+          { score: 5, fieldValue: '', emoji: { name: 'b' } },
+          { score: 10, fieldValue: '', emoji: { name: 'a' } },
+        ],
+      ],
+      [
+        'should correctly sort by fieldValue',
+        [
+          { score: 0, fieldValue: 'y', emoji: { name: 'b' } },
+          { score: 0, fieldValue: 'x', emoji: { name: 'a' } },
+          { score: 0, fieldValue: 'z', emoji: { name: 'c' } },
+        ],
+        [
+          { score: 0, fieldValue: 'x', emoji: { name: 'a' } },
+          { score: 0, fieldValue: 'y', emoji: { name: 'b' } },
+          { score: 0, fieldValue: 'z', emoji: { name: 'c' } },
+        ],
+      ],
+      [
+        'should correctly sort by score and then by fieldValue (in order)',
+        [
+          { score: 5, fieldValue: 'y', emoji: { name: 'c' } },
+          { score: 0, fieldValue: 'z', emoji: { name: 'a' } },
+          { score: 5, fieldValue: 'x', emoji: { name: 'b' } },
+        ],
+        [
+          { score: 0, fieldValue: 'z', emoji: { name: 'a' } },
+          { score: 5, fieldValue: 'x', emoji: { name: 'b' } },
+          { score: 5, fieldValue: 'y', emoji: { name: 'c' } },
+        ],
+      ],
+    ];
 
-      it.each`
-        query
-        ${'foo bar baz'} | ${undefined}
-      `('should return a fallback value when given $query', ({ query }) => {
-        expect(subject(query)).toContain(grey_question.name);
-      });
-    });
-
-    describe('with name and alias fields', () => {
-      const subject = (query) => search(query, { fields: ['name', 'alias'] });
-
-      it(`should match by name: ${atom.name}`, () => {
-        expect(subject(atom.name)).toContain(atom.name);
-      });
-
-      it(`should match by alias: ${atom.aliases[0]}`, () => {
-        expect(subject(atom.aliases[0])).toContain(atom.name);
-      });
-
-      it(`should not match by description: ${atom.description}`, () => {
-        expect(subject(atom.description)).not.toContain(atom.name);
-      });
-
-      it(`should not match by unicode value: ${atom.moji}`, () => {
-        expect(subject(atom.moji)).not.toContain(atom.name);
-      });
+    it.each(testCases)('%s', (_, scoredItems, expected) => {
+      expect(sortEmoji(scoredItems)).toEqual(expected);
     });
   });
 });

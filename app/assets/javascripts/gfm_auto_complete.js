@@ -190,59 +190,43 @@ class GfmAutoComplete {
   }
 
   setupEmoji($input) {
-    const self = this;
-    const { filter, ...defaults } = this.getDefaultCallbacks();
+    const fetchData = this.fetchData.bind(this);
 
     // Emoji
     $input.atwho({
       at: ':',
-      displayTpl(value) {
-        let tmpl = GfmAutoComplete.Loading.template;
-        if (value && value.name) {
-          tmpl = GfmAutoComplete.Emoji.templateFunction(value.name);
-        }
-        return tmpl;
-      },
+      displayTpl: GfmAutoComplete.Emoji.templateFunction,
       insertTpl: GfmAutoComplete.Emoji.insertTemplateFunction,
       skipSpecialCharacterTest: true,
       data: GfmAutoComplete.defaultLoadingData,
       callbacks: {
-        ...defaults,
+        ...this.getDefaultCallbacks(),
         matcher(flag, subtext) {
           const regexp = new RegExp(`(?:[^${glRegexp.unicodeLetters}0-9:]|\n|^):([^:]*)$`, 'gi');
           const match = regexp.exec(subtext);
 
           return match && match.length ? match[1] : null;
         },
-        filter(query, items, searchKey) {
-          const filtered = filter.call(this, query, items, searchKey);
-          if (query.length === 0 || GfmAutoComplete.isLoading(items)) {
-            return filtered;
+        filter(query, items) {
+          if (GfmAutoComplete.isLoading(items)) {
+            fetchData(this.$inputor, this.at);
+            return items;
           }
 
-          // map from value to "<value> is <field> of <emoji>", arranged by emoji
-          const emojis = {};
-          filtered.forEach(({ name: value }) => {
-            self.emojiLookup[value].forEach(({ emoji: { name }, kind }) => {
-              let entry = emojis[name];
-              if (!entry) {
-                entry = {};
-                emojis[name] = entry;
-              }
-              if (!(kind in entry) || value.localeCompare(entry[kind]) < 0) {
-                entry[kind] = value;
-              }
-            });
-          });
+          return GfmAutoComplete.Emoji.filter(query);
+        },
+        sorter(query, items) {
+          this.setting.highlightFirst = this.setting.alwaysHighlightFirst || query.length > 0;
+          if (GfmAutoComplete.isLoading(items)) {
+            this.setting.highlightFirst = false;
+            return items;
+          }
 
-          // collate results to list, prefering name > unicode > alias > description
-          const results = [];
-          Object.values(emojis).forEach(({ name, unicode, alias, description }) => {
-            results.push(name || unicode || alias || description);
-          });
+          if (query.length === 0) {
+            return items;
+          }
 
-          // return to the form atwho wants
-          return results.map((name) => ({ name }));
+          return GfmAutoComplete.Emoji.sorter(items);
         },
       },
     });
@@ -674,32 +658,7 @@ class GfmAutoComplete {
   async loadEmojiData($input, at) {
     await Emoji.initEmojiMap();
 
-    // All the emoji
-    const emojis = Emoji.getAllEmoji();
-
-    // Add all of the fields to atwho's database
-    this.loadData($input, at, [
-      ...Object.keys(emojis), // Names
-      ...Object.values(emojis).flatMap(({ aliases }) => aliases), // Aliases
-      ...Object.values(emojis).map(({ e }) => e), // Unicode values
-      ...Object.values(emojis).map(({ d }) => d), // Descriptions
-    ]);
-
-    // Construct a lookup that can correlate a value to "<value> is the <field> of <emoji>"
-    const lookup = {};
-    const add = (key, kind, emoji) => {
-      if (!(key in lookup)) {
-        lookup[key] = [];
-      }
-      lookup[key].push({ kind, emoji });
-    };
-    Object.values(emojis).forEach((emoji) => {
-      add(emoji.name, 'name', emoji);
-      add(emoji.d, 'description', emoji);
-      add(emoji.e, 'unicode', emoji);
-      emoji.aliases.forEach((a) => add(a, 'alias', emoji));
-    });
-    this.emojiLookup = lookup;
+    this.loadData($input, at, ['loaded']);
 
     GfmAutoComplete.glEmojiTag = Emoji.glEmojiTag;
   }
@@ -772,36 +731,38 @@ GfmAutoComplete.typesWithBackendFiltering = ['vulnerabilities'];
 GfmAutoComplete.isTypeWithBackendFiltering = (type) =>
   GfmAutoComplete.typesWithBackendFiltering.includes(GfmAutoComplete.atTypeMap[type]);
 
-function findEmoji(name) {
-  return Emoji.searchEmoji(name, { match: 'contains', raw: true }).sort((a, b) => {
-    if (a.index !== b.index) {
-      return a.index - b.index;
-    }
-    return a.field.localeCompare(b.field);
-  });
-}
-
 // Emoji
 GfmAutoComplete.glEmojiTag = null;
 GfmAutoComplete.Emoji = {
   insertTemplateFunction(value) {
-    const results = findEmoji(value.name);
-    if (results.length) {
-      return `:${results[0].emoji.name}:`;
-    }
-    return `:${value.name}:`;
+    return `:${value.emoji.name}:`;
   },
-  templateFunction(name) {
-    // glEmojiTag helper is loaded on-demand in fetchData()
-    if (!GfmAutoComplete.glEmojiTag) return `<li>${name}</li>`;
-
-    const results = findEmoji(name);
-    if (!results.length) {
-      return `<li>${name} ${GfmAutoComplete.glEmojiTag(name)}</li>`;
+  templateFunction(item) {
+    if (GfmAutoComplete.isLoading(item)) {
+      return GfmAutoComplete.Loading.template;
     }
 
-    const { field, emoji } = results[0];
-    return `<li>${field} ${GfmAutoComplete.glEmojiTag(emoji.name)}</li>`;
+    const escapedFieldValue = escape(item.fieldValue);
+    if (!GfmAutoComplete.glEmojiTag) {
+      return `<li>${escapedFieldValue}</li>`;
+    }
+
+    return `<li>${escapedFieldValue} ${GfmAutoComplete.glEmojiTag(item.emoji.name)}</li>`;
+  },
+  filter(query) {
+    if (query.length === 0) {
+      return Object.values(Emoji.getAllEmoji())
+        .map((emoji) => ({
+          emoji,
+          fieldValue: emoji.name,
+        }))
+        .slice(0, 20);
+    }
+
+    return Emoji.searchEmoji(query);
+  },
+  sorter(items) {
+    return Emoji.sortEmoji(items);
   },
 };
 // Team Members

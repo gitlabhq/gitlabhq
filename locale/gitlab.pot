@@ -21934,6 +21934,9 @@ msgstr ""
 msgid "Please share your feedback about %{featureName} %{linkStart}in this issue%{linkEnd} to help us improve the experience."
 msgstr ""
 
+msgid "Please solve the captcha"
+msgstr ""
+
 msgid "Please solve the reCAPTCHA"
 msgstr ""
 

@@ -215,6 +215,10 @@ ul.related-merge-requests > li {
 
   .reverse-sort-btn {
     color: $gl-text-color-secondary;
+
+    &.disabled {
+      color: $gl-text-color-disabled;
+    }
   }
 }
 

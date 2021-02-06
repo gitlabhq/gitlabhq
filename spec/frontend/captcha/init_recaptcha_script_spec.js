@@ -12,7 +12,7 @@ describe('initRecaptchaScript', () => {
   });
 
   const getScriptOnload = () => window[RECAPTCHA_ONLOAD_CALLBACK_NAME];
-  const triggerScriptOnload = (...args) => window[RECAPTCHA_ONLOAD_CALLBACK_NAME](...args);
+  const triggerScriptOnload = () => window[RECAPTCHA_ONLOAD_CALLBACK_NAME]();
 
   describe('when called', () => {
     let result;
@@ -37,13 +37,23 @@ describe('initRecaptchaScript', () => {
       expect(document.head.querySelectorAll('script').length).toBe(1);
     });
 
-    it('when onload is triggered, resolves promise', async () => {
-      const instance = {};
+    describe('when onload is triggered', () => {
+      beforeEach(() => {
+        window.grecaptcha = 'fake grecaptcha';
+        triggerScriptOnload();
+      });
 
-      triggerScriptOnload(instance);
+      afterEach(() => {
+        window.grecaptcha = undefined;
+      });
 
-      await expect(result).resolves.toBe(instance);
-      expect(getScriptOnload()).toBeUndefined();
+      it('resolves promise with window.grecaptcha as argument', async () => {
+        await expect(result).resolves.toBe(window.grecaptcha);
+      });
+
+      it('sets window[RECAPTCHA_ONLOAD_CALLBACK_NAME] to undefined', async () => {
+        expect(getScriptOnload()).toBeUndefined();
+      });
     });
   });
 });
