@@ -559,16 +559,22 @@ Here are examples of regex patterns you may want to use:
   v.+
   ```
 
-- Match tags that contain `master`:
+- Match only the tag named `master`:
 
   ```plaintext
   master
   ```
 
-- Match tags that either start with `v`, contain `master`, or contain `release`:
+- Match tags that are either named or start with `release`:
 
   ```plaintext
-  (?:v.+|master|release)
+  release.*
+  ```
+
+- Match tags that either start with `v`, are named `master`, or begin with `release`:
+
+  ```plaintext
+  (?:v.+|master|release.*)
   ```
 
 ### Set cleanup limits to conserve resources 
@@ -649,7 +655,7 @@ If you see the following message:
 
 Check the regex patterns to ensure they are valid.
 
-You can use [Rubular](https://rubular.com/) to check your regex.
+GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions in the cleanup policy. You can test them with the [regex101 regex tester](https://regex101.com/).
 View some common [regex pattern examples](#regex-pattern-examples).
 
 ## Use the Container Registry to store Helm Charts

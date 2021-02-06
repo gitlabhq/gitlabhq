@@ -89,6 +89,22 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
     end
   end
 
+  describe '.track_title_edit_action' do
+    subject { described_class.track_title_edit_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_EDIT_MR_TITLE_ACTION }
+    end
+  end
+
+  describe '.track_description_edit_action' do
+    subject { described_class.track_description_edit_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_EDIT_MR_DESC_ACTION }
+    end
+  end
+
   describe '.track_create_comment_action' do
     subject { described_class.track_create_comment_action(note: note) }
 

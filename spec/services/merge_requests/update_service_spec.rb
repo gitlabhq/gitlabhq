@@ -87,6 +87,19 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
         expect(@merge_request.discussion_locked).to be_truthy
       end
 
+      context 'usage counters' do
+        let(:merge_request2) { create(:merge_request) }
+
+        it 'update as expected' do
+          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+            .to receive(:track_title_edit_action).once.with(user: user)
+          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+            .to receive(:track_description_edit_action).once.with(user: user)
+
+          MergeRequests::UpdateService.new(project, user, opts).execute(merge_request2)
+        end
+      end
+
       context 'updating milestone' do
         RSpec.shared_examples 'updates milestone' do
           it 'sets milestone' do

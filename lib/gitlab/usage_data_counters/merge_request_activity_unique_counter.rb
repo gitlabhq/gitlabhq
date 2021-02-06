@@ -24,6 +24,8 @@ module Gitlab
       MR_UNRESOLVE_THREAD_ACTION = 'i_code_review_user_unresolve_thread'
       MR_ASSIGNED_USERS_ACTION = 'i_code_review_user_assigned'
       MR_REVIEW_REQUESTED_USERS_ACTION = 'i_code_review_user_review_requested'
+      MR_EDIT_MR_TITLE_ACTION = 'i_code_review_edit_mr_title'
+      MR_EDIT_MR_DESC_ACTION = 'i_code_review_edit_mr_desc'
 
       class << self
         def track_mr_diffs_action(merge_request:)
@@ -96,6 +98,14 @@ module Gitlab
 
         def track_users_review_requested(users:)
           track_unique_action_by_users(MR_REVIEW_REQUESTED_USERS_ACTION, users)
+        end
+
+        def track_title_edit_action(user:)
+          track_unique_action_by_user(MR_EDIT_MR_TITLE_ACTION, user)
+        end
+
+        def track_description_edit_action(user:)
+          track_unique_action_by_user(MR_EDIT_MR_DESC_ACTION, user)
         end
 
         private
