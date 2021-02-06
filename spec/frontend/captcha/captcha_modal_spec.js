@@ -1,7 +1,7 @@
 import { GlModal } from '@gitlab/ui';
-import { stubComponent } from 'helpers/stub_component';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { stubComponent } from 'helpers/stub_component';
 import CaptchaModal from '~/captcha/captcha_modal.vue';
 import { initRecaptchaScript } from '~/captcha/init_recaptcha_script';
 
