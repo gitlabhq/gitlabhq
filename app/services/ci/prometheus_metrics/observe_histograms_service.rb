@@ -40,7 +40,7 @@ module Ci
 
       def observe(data)
         histogram = find_histogram(data[:name])
-        histogram.observe({ project: project.full_path }, data[:value].to_f)
+        histogram.observe({}, data[:value].to_f)
       end
 
       def find_histogram(name)
