@@ -34,10 +34,6 @@
 module Gitlab
   module Experimentation
     EXPERIMENTS = {
-      onboarding_issues: {
-        tracking_category: 'Growth::Conversion::Experiment::OnboardingIssues',
-        use_backwards_compatible_subject_index: true
-      },
       ci_notification_dot: {
         tracking_category: 'Growth::Expansion::Experiment::CiNotificationDot',
         use_backwards_compatible_subject_index: true

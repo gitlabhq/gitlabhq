@@ -21,20 +21,11 @@ RSpec.describe Registrations::ExperienceLevelsController do
     context 'with an authenticated user' do
       before do
         sign_in(user)
-        stub_experiment_for_subject(onboarding_issues: true)
       end
 
       it { is_expected.to have_gitlab_http_status(:ok) }
-      it { is_expected.to render_template('layouts/devise_experimental_onboarding_issues') }
+      it { is_expected.to render_template('layouts/signup_onboarding') }
       it { is_expected.to render_template(:show) }
-
-      context 'when not part of the onboarding issues experiment' do
-        before do
-          stub_experiment_for_subject(onboarding_issues: false)
-        end
-
-        it { is_expected.to have_gitlab_http_status(:not_found) }
-      end
     end
   end
 
@@ -52,15 +43,6 @@ RSpec.describe Registrations::ExperienceLevelsController do
 
       before do
         sign_in(user)
-        stub_experiment_for_subject(onboarding_issues: true)
-      end
-
-      context 'when not part of the onboarding issues experiment' do
-        before do
-          stub_experiment_for_subject(onboarding_issues: false)
-        end
-
-        it { is_expected.to have_gitlab_http_status(:not_found) }
       end
 
       context 'when user is successfully updated' do

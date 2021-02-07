@@ -1,8 +1,0 @@
----
-name: onboarding_issues_experiment_percentage
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31656/
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/224515
-milestone: '13.0'
-type: experiment
-group: group::conversion
-default_enabled: true

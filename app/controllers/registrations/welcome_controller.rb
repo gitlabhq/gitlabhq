@@ -16,9 +16,7 @@ module Registrations
       result = ::Users::SignupService.new(current_user, update_params).execute
 
       if result[:status] == :success
-        process_gitlab_com_tracking
-
-        return redirect_to new_users_sign_up_group_path if experiment_enabled?(:onboarding_issues) && show_onboarding_issues_experiment?
+        return redirect_to new_users_sign_up_group_path if show_signup_onboarding?
 
         redirect_to path_for_signed_in_user(current_user)
       else
@@ -34,11 +32,6 @@ module Registrations
 
     def completed_welcome_step?
       current_user.role.present? && !current_user.setup_for_company.nil?
-    end
-
-    def process_gitlab_com_tracking
-      return false unless ::Gitlab.com?
-      return false unless show_onboarding_issues_experiment?
     end
 
     def update_params
@@ -58,11 +51,8 @@ module Registrations
       stored_location_for(user) || dashboard_projects_path
     end
 
-    def show_onboarding_issues_experiment?
-      !helpers.in_subscription_flow? &&
-        !helpers.in_invitation_flow? &&
-        !helpers.in_oauth_flow? &&
-        !helpers.in_trial_flow?
+    def show_signup_onboarding?
+      false
     end
   end
 end

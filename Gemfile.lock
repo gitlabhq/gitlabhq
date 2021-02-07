@@ -495,7 +495,7 @@ GEM
       signet (~> 0.14)
     gpgme (2.0.20)
       mini_portile2 (~> 2.3)
-    grape (1.5.1)
+    grape (1.5.2)
       activesupport
       builder
       dry-types (>= 1.1)
@@ -1387,7 +1387,7 @@ DEPENDENCIES
   google-api-client (~> 0.33)
   google-protobuf (~> 3.12)
   gpgme (~> 2.0.19)
-  grape (~> 1.5.1)
+  grape (~> 1.5.2)
   grape-entity (~> 0.7.1)
   grape-path-helpers (~> 1.6.1)
   grape_logging (~> 1.7)

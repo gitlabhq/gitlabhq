@@ -13,7 +13,6 @@ RSpec.describe 'registrations/welcome/show' do
     allow(view).to receive(:in_trial_flow?).and_return(false)
     allow(view).to receive(:in_invitation_flow?).and_return(false)
     allow(view).to receive(:in_oauth_flow?).and_return(false)
-    allow(view).to receive(:experiment_enabled?).with(:onboarding_issues).and_return(false)
     allow(Gitlab).to receive(:com?).and_return(false)
 
     render

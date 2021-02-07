@@ -2,9 +2,8 @@
 
 module Registrations
   class ExperienceLevelsController < ApplicationController
-    layout 'devise_experimental_onboarding_issues'
+    layout 'signup_onboarding'
 
-    before_action :check_experiment_enabled
     before_action :ensure_namespace_path_param
 
     feature_category :navigation
@@ -26,10 +25,6 @@ module Registrations
     end
 
     private
-
-    def check_experiment_enabled
-      access_denied! unless experiment_enabled?(:onboarding_issues)
-    end
 
     def ensure_namespace_path_param
       redirect_to root_path unless params[:namespace_path].present?
