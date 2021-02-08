@@ -9290,6 +9290,9 @@ msgstr ""
 msgid "Dear Administrator,"
 msgstr ""
 
+msgid "Debian package already exists in Distribution"
+msgstr ""
+
 msgid "Debug"
 msgstr ""
 
@@ -21509,9 +21512,6 @@ msgid "Pipelines|Editor"
 msgstr ""
 
 msgid "Pipelines|Get started with CI/CD"
-msgstr ""
-
-msgid "Pipelines|Get started with Pipelines"
 msgstr ""
 
 msgid "Pipelines|GitLab CI/CD can automatically build, test, and deploy your code. Let GitLab take care of time consuming tasks, so you can spend more time creating."
@@ -34940,6 +34940,9 @@ msgstr ""
 msgid "mrWidget|to start a merge train when the pipeline succeeds"
 msgstr ""
 
+msgid "must be a Debian package"
+msgstr ""
+
 msgid "must be a boolean value"
 msgstr ""
 
@@ -35314,6 +35317,9 @@ msgid "triggered"
 msgstr ""
 
 msgid "two-factor authentication settings"
+msgstr ""
+
+msgid "type must be Debian"
 msgstr ""
 
 msgid "unicode domains should use IDNA encoding"

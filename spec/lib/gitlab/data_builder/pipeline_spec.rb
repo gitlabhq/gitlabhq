@@ -104,5 +104,16 @@ RSpec.describe Gitlab::DataBuilder::Pipeline do
         expect(merge_request_attrs[:url]).to eq("http://localhost/#{merge_request.target_project.full_path}/-/merge_requests/#{merge_request.iid}")
       end
     end
+
+    context 'when pipeline has retried builds' do
+      before do
+        create(:ci_build, :retried, pipeline: pipeline)
+      end
+
+      it 'does not contain retried builds in payload' do
+        expect(data[:builds].count).to eq(1)
+        expect(build_data[:id]).to eq(build.id)
+      end
+    end
   end
 end

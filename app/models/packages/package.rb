@@ -19,11 +19,15 @@ class Packages::Package < ApplicationRecord
   has_one :composer_metadatum, inverse_of: :package, class_name: 'Packages::Composer::Metadatum'
   has_many :build_infos, inverse_of: :package
   has_many :pipelines, through: :build_infos
+  has_one :debian_publication, inverse_of: :package, class_name: 'Packages::Debian::Publication'
+  has_one :debian_distribution, through: :debian_publication, source: :distribution, inverse_of: :packages, class_name: 'Packages::Debian::ProjectDistribution'
 
   accepts_nested_attributes_for :conan_metadatum
+  accepts_nested_attributes_for :debian_publication
   accepts_nested_attributes_for :maven_metadatum
 
   delegate :recipe, :recipe_path, to: :conan_metadatum, prefix: :conan
+  delegate :codename, :suite, to: :debian_distribution, prefix: :debian_distribution
 
   validates :project, presence: true
   validates :name, presence: true
@@ -31,7 +35,8 @@ class Packages::Package < ApplicationRecord
   validates :name, format: { with: Gitlab::Regex.package_name_regex }, unless: -> { conan? || generic? || debian? }
 
   validates :name,
-    uniqueness: { scope: %i[project_id version package_type] }, unless: :conan?
+    uniqueness: { scope: %i[project_id version package_type] }, unless: -> { conan? || debian_package? }
+  validate :unique_debian_package_name, if: :debian_package?
 
   validate :valid_conan_package_recipe, if: :conan?
   validate :valid_npm_package_name, if: :npm?
@@ -249,6 +254,18 @@ class Packages::Package < ApplicationRecord
     if project.package_already_taken?(name)
       errors.add(:base, _('Package already exists'))
     end
+  end
+
+  def unique_debian_package_name
+    return unless debian_publication&.distribution
+
+    package_exists = debian_publication.distribution.packages
+                            .with_name(name)
+                            .with_version(version)
+                            .id_not_in(id)
+                            .exists?
+
+    errors.add(:base, _('Debian package already exists in Distribution')) if package_exists
   end
 
   def forbidden_debian_changes

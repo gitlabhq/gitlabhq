@@ -126,6 +126,20 @@ describe('JiraIssuesFields', () => {
         },
       );
 
+      it('passes down the correct initial-issue-type-id value when value is empty', async () => {
+        await setEnableCheckbox(true);
+        expect(findJiraForVulnerabilities().attributes('initial-issue-type-id')).toBeUndefined();
+      });
+
+      it('passes down the correct initial-issue-type-id value when value is not empty', async () => {
+        const jiraIssueType = 'some-jira-issue-type';
+        wrapper.setProps({ initialVulnerabilitiesIssuetype: jiraIssueType });
+        await setEnableCheckbox(true);
+        expect(findJiraForVulnerabilities().attributes('initial-issue-type-id')).toBe(
+          jiraIssueType,
+        );
+      });
+
       it('emits "getJiraIssueTypes" to the eventHub when the jira-vulnerabilities component requests to fetch issue types', async () => {
         const eventHubEmitSpy = jest.spyOn(eventHub, '$emit');
 

@@ -13,7 +13,7 @@ module Gitlab
           user: pipeline.user.try(:hook_attrs),
           project: pipeline.project.hook_attrs(backward: false),
           commit: pipeline.commit.try(:hook_attrs),
-          builds: pipeline.builds.map(&method(:build_hook_attrs))
+          builds: pipeline.builds.latest.map(&method(:build_hook_attrs))
         }
       end
 

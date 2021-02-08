@@ -19,6 +19,11 @@ RSpec.shared_examples 'Debian Distribution' do |factory, container, can_freeze|
 
     it { is_expected.to have_many(:components).class_name("Packages::Debian::#{container.capitalize}Component").inverse_of(:distribution) }
     it { is_expected.to have_many(:architectures).class_name("Packages::Debian::#{container.capitalize}Architecture").inverse_of(:distribution) }
+
+    if container != :group
+      it { is_expected.to have_many(:publications).class_name('Packages::Debian::Publication').inverse_of(:distribution).with_foreign_key(:distribution_id) }
+      it { is_expected.to have_many(:packages).class_name('Packages::Package').through(:publications) }
+    end
   end
 
   describe 'validations' do

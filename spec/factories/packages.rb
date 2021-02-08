@@ -29,6 +29,15 @@ FactoryBot.define do
       transient do
         without_package_files { false }
         file_metadatum_trait { :keep }
+        published_in { :create }
+      end
+
+      after :build do |package, evaluator|
+        if evaluator.published_in == :create
+          create(:debian_publication, package: package)
+        elsif !evaluator.published_in.nil?
+          create(:debian_publication, package: package, distribution: evaluator.published_in)
+        end
       end
 
       after :create do |package, evaluator|
@@ -50,6 +59,7 @@ FactoryBot.define do
         transient do
           without_package_files { false }
           file_metadatum_trait { :unknown }
+          published_in { nil }
         end
       end
     end

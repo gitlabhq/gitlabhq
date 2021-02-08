@@ -27,40 +27,12 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
   describe "GET /:project/jobs" do
     context 'with no jobs' do
       before do
-        stub_experiment(jobs_empty_state: experiment_active)
-        stub_experiment_for_subject(jobs_empty_state: in_experiment_group)
-
         visit project_jobs_path(project)
       end
 
-      context 'when experiment not active' do
-        let(:experiment_active) { false }
-        let(:in_experiment_group) { false }
-
-        it 'shows the empty state control page' do
-          expect(page).to have_content('No jobs to show')
-          expect(page).to have_link('Get started with Pipelines')
-        end
-      end
-
-      context 'when experiment active and user in control group' do
-        let(:experiment_active) { true }
-        let(:in_experiment_group) { false }
-
-        it 'shows the empty state control page' do
-          expect(page).to have_content('No jobs to show')
-          expect(page).to have_link('Get started with Pipelines')
-        end
-      end
-
-      context 'when experiment active and user in experimental group' do
-        let(:experiment_active) { true }
-        let(:in_experiment_group) { true }
-
-        it 'shows the empty state experiment page' do
-          expect(page).to have_content('Use jobs to automate your tasks')
-          expect(page).to have_link('Create CI/CD configuration file')
-        end
+      it 'shows the empty state page' do
+        expect(page).to have_content('Use jobs to automate your tasks')
+        expect(page).to have_link('Create CI/CD configuration file', href: project.present(current_user: user).add_ci_yml_path)
       end
     end
 
@@ -102,7 +74,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         it "shows Finished tab jobs" do
           expect(page).to have_selector('.nav-links li.active', text: 'Finished')
-          expect(page).to have_content 'No jobs to show'
+          expect(page).to have_content('Use jobs to automate your tasks')
         end
       end
 

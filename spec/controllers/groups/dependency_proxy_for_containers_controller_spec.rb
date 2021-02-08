@@ -130,7 +130,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
           }
         end
 
-        it 'proxies status from the remote token request', :aggregate_failures do
+        it 'proxies status from the remote token request' do
           subject
 
           expect(response).to have_gitlab_http_status(:service_unavailable)
@@ -147,7 +147,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
           }
         end
 
-        it 'proxies status from the remote manifest request', :aggregate_failures do
+        it 'proxies status from the remote manifest request' do
           subject
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -156,19 +156,15 @@ RSpec.describe Groups::DependencyProxyForContainersController do
       end
 
       it 'sends a file' do
-        expect(controller).to receive(:send_file).with(manifest.file.path, type: manifest.content_type)
+        expect(controller).to receive(:send_file).with(manifest.file.path, {})
 
         subject
       end
 
-      it 'returns Content-Disposition: attachment', :aggregate_failures do
+      it 'returns Content-Disposition: attachment' do
         subject
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response.headers['Docker-Content-Digest']).to eq(manifest.digest)
-        expect(response.headers['Content-Length']).to eq(manifest.size)
-        expect(response.headers['Docker-Distribution-Api-Version']).to eq(DependencyProxy::DISTRIBUTION_API_VERSION)
-        expect(response.headers['Etag']).to eq("\"#{manifest.digest}\"")
         expect(response.headers['Content-Disposition']).to match(/^attachment/)
       end
     end
@@ -211,7 +207,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
           }
         end
 
-        it 'proxies status from the remote blob request', :aggregate_failures do
+        it 'proxies status from the remote blob request' do
           subject
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -225,7 +221,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
         subject
       end
 
-      it 'returns Content-Disposition: attachment', :aggregate_failures do
+      it 'returns Content-Disposition: attachment' do
         subject
 
         expect(response).to have_gitlab_http_status(:ok)

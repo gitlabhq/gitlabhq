@@ -1029,6 +1029,9 @@ X-Gitlab-Event: Wiki Page Hook
 
 ### Pipeline events
 
+In [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53159)
+and later, the pipeline webhook returns only the latest jobs.
+
 Triggered on status change of Pipeline.
 
 **Request Header**:

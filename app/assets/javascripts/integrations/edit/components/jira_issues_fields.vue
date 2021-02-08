@@ -49,7 +49,7 @@ export default {
     initialVulnerabilitiesIssuetype: {
       type: String,
       required: false,
-      default: '',
+      default: undefined,
     },
     initialProjectKey: {
       type: String,

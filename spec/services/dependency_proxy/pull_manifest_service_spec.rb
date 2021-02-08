@@ -9,10 +9,7 @@ RSpec.describe DependencyProxy::PullManifestService do
   let(:token) { Digest::SHA256.hexdigest('123') }
   let(:manifest) { { foo: 'bar' }.to_json }
   let(:digest) { '12345' }
-  let(:content_type) { 'foo' }
-  let(:headers) do
-    { 'docker-content-digest' => digest, 'content-type' => content_type }
-  end
+  let(:headers) { { 'docker-content-digest' => digest } }
 
   subject { described_class.new(image, tag, token).execute_with_manifest(&method(:check_response)) }
 
@@ -28,7 +25,6 @@ RSpec.describe DependencyProxy::PullManifestService do
         expect(response[:status]).to eq(:success)
         expect(response[:file].read).to eq(manifest)
         expect(response[:digest]).to eq(digest)
-        expect(response[:content_type]).to eq(content_type)
       end
 
       subject

@@ -11,7 +11,7 @@ module DependencyProxy
     def execute_with_manifest
       raise ArgumentError, 'Block must be provided' unless block_given?
 
-      response = Gitlab::HTTP.get(manifest_url, headers: auth_headers.merge(Accept: ::ContainerRegistry::Client::ACCEPTED_TYPES.join(',')))
+      response = Gitlab::HTTP.get(manifest_url, headers: auth_headers)
 
       if response.success?
         file = Tempfile.new
@@ -20,7 +20,7 @@ module DependencyProxy
           file.write(response)
           file.flush
 
-          yield(success(file: file, digest: response.headers['docker-content-digest'], content_type: response.headers['content-type']))
+          yield(success(file: file, digest: response.headers['docker-content-digest']))
         ensure
           file.close
           file.unlink
