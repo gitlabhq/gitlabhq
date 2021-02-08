@@ -8,7 +8,7 @@ FactoryBot.define do
   factory :note do
     project
     note { generate(:title) }
-    author { project&.creator || create(:user) }
+    author { project&.creator || association(:user) }
     on_issue
 
     factory :note_on_commit,             traits: [:on_commit]
@@ -55,7 +55,7 @@ FactoryBot.define do
       end
 
       position do
-        build(:text_diff_position,
+        association(:text_diff_position,
               file: "files/ruby/popen.rb",
               old_line: nil,
               new_line: line_number,
@@ -64,7 +64,7 @@ FactoryBot.define do
 
       trait :folded_position do
         position do
-          build(:text_diff_position,
+          association(:text_diff_position,
                 file: "files/ruby/popen.rb",
                 old_line: 1,
                 new_line: 1,
@@ -74,7 +74,7 @@ FactoryBot.define do
 
       factory :image_diff_note_on_merge_request do
         position do
-          build(:image_diff_position,
+          association(:image_diff_position,
                 file: "files/images/any_image.png",
                 diff_refs: diff_refs)
         end
@@ -90,7 +90,7 @@ FactoryBot.define do
       end
 
       position do
-        build(:text_diff_position,
+        association(:text_diff_position,
           file: "files/ruby/popen.rb",
           old_line: nil,
           new_line: line_number,
@@ -100,7 +100,11 @@ FactoryBot.define do
     end
 
     factory :diff_note_on_design, parent: :note, traits: [:on_design], class: 'DiffNote' do
-      position { build(:image_diff_position, file: noteable.full_path, diff_refs: noteable.diff_refs) }
+      position do
+        association(:image_diff_position,
+              file: noteable.full_path,
+              diff_refs: noteable.diff_refs)
+      end
     end
 
     trait :on_commit do
