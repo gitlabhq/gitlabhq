@@ -52,12 +52,15 @@ def message_for_feature_flag_with_group!(feature_flag:, mr_group_label:)
   end
 end
 
+def feature_flag_file_added_or_removed?
+  feature_flag.feature_flag_files(change_type: :added).any? || feature_flag.feature_flag_files(change_type: :deleted).any?
+end
+
 feature_flag.feature_flag_files(change_type: :added).each do |feature_flag|
   check_feature_flag_yaml(feature_flag)
 end
 
-if feature_flag.feature_flag_files(change_type: :added).any? ||
-  feature_flag.feature_flag_files(change_type: :deleted).any?
+if feature_flag_file_added_or_removed?
   new_mr_title = helper.mr_title.dup
   new_mr_title << ' [RUN ALL RSPEC]' unless helper.run_all_rspec_mr?
   new_mr_title << ' [RUN AS-IF-FOSS]' unless helper.run_as_if_foss_mr?
@@ -69,6 +72,7 @@ if feature_flag.feature_flag_files(change_type: :added).any? ||
       title: new_mr_title
     )
     gitlab.api.post("/projects/#{gitlab.mr_json['project_id']}/merge_requests/#{gitlab.mr_json['iid']}/pipelines")
-    message %(You're adding or removing a feature flag, and your MR title didn't include `[RUN ALL RSPEC] [RUN AS-IF-FOSS]`, so we've updated it and started a new MR pipeline to ensure everything is covered.)
+  else
+    message "You're adding or removing a feature flag, your MR title needs to include `[RUN ALL RSPEC] [RUN AS-IF-FOSS]` (we may have updated it automatically for you and started a new MR pipeline) to ensure everything is covered."
   end
 end

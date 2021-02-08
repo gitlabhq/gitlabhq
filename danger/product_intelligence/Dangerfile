@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:disable Style/SignalException
 
 CHANGED_FILES_MESSAGE = <<~MSG
 For the following files, a review from the [Data team and Product Intelligence team](https://gitlab.com/groups/gitlab-org/growth/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) is recommended
@@ -16,6 +17,16 @@ MSG
 
 ENGINEERS_GROUP = '@gitlab-org/growth/product-intelligence/engineers'
 
+UPDATE_DICTIONARY_MESSAGE = <<~MSG
+  When updating metrics definitions, please update [Metrics Dictionary](https://docs.gitlab.com/ee/development/usage_ping/dictionary.html)
+
+  ```shell
+  bundle exec rake gitlab:usage_data:generate_metrics_dictionary
+  ```
+MSG
+
+all_changed_files = helper.all_changed_files
+
 tracking_files = [
   'lib/gitlab/tracking.rb',
   'spec/lib/gitlab/tracking_spec.rb',
@@ -25,15 +36,18 @@ tracking_files = [
   'spec/frontend/tracking_spec.js',
   'generator_templates/usage_metric_definition/metric_definition.yml',
   'lib/generators/rails/usage_metric_definition_generator.rb',
-  'spec/lib/generators/usage_metric_definition_generator_spec.rb'
+  'spec/lib/generators/usage_metric_definition_generator_spec.rb',
+  'config/metrics/schema.json'
 ]
 
-usage_data_changed_files = helper.changed_files(%r{(usage_data)|(config/metrics)|(ee/config/metrics)})
-snowplow_events_changed_files = git.modified_files & tracking_files
+tracking_changed_files   = all_changed_files & tracking_files
+usage_data_changed_files = all_changed_files.grep(%r{(usage_data)})
+metrics_changed_files    = all_changed_files.grep(%r{((ee/)?config/metrics/.*\.yml)})
+dictionary_changed_file  = all_changed_files.grep(%r{(doc/developmet/usage_ping/dictionary.md)})
 
-changed_files = (usage_data_changed_files + snowplow_events_changed_files)
+usage_changed_files = usage_data_changed_files + tracking_changed_files + metrics_changed_files + dictionary_changed_file
 
-if changed_files.any?
+if usage_changed_files.any?
 
   mention = if helper.draft_mr?
               "`#{ENGINEERS_GROUP}`"
@@ -41,8 +55,10 @@ if changed_files.any?
               ENGINEERS_GROUP
             end
 
-  warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(changed_files), engineers_group: mention)
-  warn format(UPDATE_METRICS_DEFINITIONS_MESSAGE) unless helper.changed_files(/usage_ping\.md/).any?
+  warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(usage_changed_files), engineers_group: mention)
+  warn format(UPDATE_METRICS_DEFINITIONS_MESSAGE) if usage_data_changed_files.any?
+
+  fail format(UPDATE_DICTIONARY_MESSAGE) if metrics_changed_files.any? && dictionary_changed_file.empty?
 
   labels = ['product intelligence']
   labels << 'product intelligence::review pending' unless helper.mr_has_labels?('product intelligence::approved')
