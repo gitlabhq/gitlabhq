@@ -36,7 +36,7 @@ module API
       get ':id/deployments' do
         authorize! :read_deployment, user_project
 
-        deployments = DeploymentsFinder.new(user_project, params).execute
+        deployments = DeploymentsFinder.new(params.merge(project: user_project)).execute
 
         present paginate(deployments), with: Entities::Deployment
       end

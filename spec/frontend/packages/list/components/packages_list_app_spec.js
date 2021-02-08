@@ -93,6 +93,7 @@ describe('packages_list_app', () => {
 
   it('call requestPackagesList on page:changed', () => {
     mountComponent();
+    store.dispatch.mockClear();
 
     const list = findListComponent();
     list.vm.$emit('page:changed', 1);
@@ -105,14 +106,6 @@ describe('packages_list_app', () => {
     const list = findListComponent();
     list.vm.$emit('package:delete', 'foo');
     expect(store.dispatch).toHaveBeenCalledWith('requestDeletePackage', 'foo');
-  });
-
-  it('calls requestPackagesList on sort:changed', () => {
-    mountComponent();
-
-    const list = findListComponent();
-    list.vm.$emit('sort:changed');
-    expect(store.dispatch).toHaveBeenCalledWith('requestPackagesList');
   });
 
   it('does not call requestPackagesList two times on render', () => {
@@ -142,10 +135,11 @@ describe('packages_list_app', () => {
       expect(findPackageSearch().exists()).toBe(true);
     });
 
-    it.each(['sort:changed', 'filter:changed'])('on %p fetches data from the store', (event) => {
+    it('on update fetches data from the store', () => {
       mountComponent();
+      store.dispatch.mockClear();
 
-      findPackageSearch().vm.$emit(event);
+      findPackageSearch().vm.$emit('update');
 
       expect(store.dispatch).toHaveBeenCalledWith('requestPackagesList');
     });

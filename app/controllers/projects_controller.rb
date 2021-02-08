@@ -397,6 +397,14 @@ class ProjectsController < Projects::ApplicationController
     ]
   end
 
+  def project_setting_attributes
+    %i[
+      show_default_award_emojis
+      squash_option
+      allow_editing_commit_messages
+    ]
+  end
+
   def project_params_attributes
     [
       :allow_merge_on_skipped_pipeline,
@@ -434,11 +442,7 @@ class ProjectsController < Projects::ApplicationController
       :suggestion_commit_message,
       :packages_enabled,
       :service_desk_enabled,
-      project_setting_attributes: %i[
-        show_default_award_emojis
-        squash_option
-        allow_editing_commit_messages
-      ]
+      project_setting_attributes: project_setting_attributes
     ] + [project_feature_attributes: project_feature_attributes]
   end
 

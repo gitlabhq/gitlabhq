@@ -13,7 +13,7 @@ type: reference
 
 This document lists the configuration options for your GitLab `.gitlab-ci.yml` file.
 
-- For a quick introduction to GitLab CI/CD, follow the [quick start guide](../quick_start/README.md).
+- For a quick introduction to GitLab CI/CD, follow the [quick start guide](../quick_start/index.md).
 - For a collection of examples, see [GitLab CI/CD Examples](../examples/README.md).
 - To view a large `.gitlab-ci.yml` file used in an enterprise, see the [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml).
 
@@ -543,7 +543,7 @@ Used to specify [a Docker image](../docker/using_docker_images.md#what-is-an-ima
 For:
 
 - Usage examples, see [Define `image` and `services` from `.gitlab-ci.yml`](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml).
-- Detailed usage information, refer to [Docker integration](../docker/README.md) documentation.
+- Detailed usage information, refer to [Docker integration](../docker/index.md) documentation.
 
 #### `image:name`
 
@@ -564,8 +564,8 @@ Used to specify a [service Docker image](../docker/using_docker_images.md#what-i
 For:
 
 - Usage examples, see [Define `image` and `services` from `.gitlab-ci.yml`](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml).
-- Detailed usage information, refer to [Docker integration](../docker/README.md) documentation.
-- For example services, see [GitLab CI/CD Services](../services/README.md).
+- Detailed usage information, refer to [Docker integration](../docker/index.md) documentation.
+- For example services, see [GitLab CI/CD Services](../services/index.md).
 
 ##### `services:name`
 
@@ -1253,7 +1253,7 @@ check the value of the `$CI_PIPELINE_SOURCE` variable:
 | Value                         | Description                                                                                                                                                                                                                      |
 |-------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `api`                         | For pipelines triggered by the [pipelines API](../../api/pipelines.md#create-a-new-pipeline).                                                                                                                                    |
-| `chat`                        | For pipelines created by using a [GitLab ChatOps](../chatops/README.md) command.                                                                                                                                                 |
+| `chat`                        | For pipelines created by using a [GitLab ChatOps](../chatops/index.md) command.                                                                                                                                                 |
 | `external`                    | When you use CI services other than GitLab.                                                                                                                                                                                        |
 | `external_pull_request_event` | When an external pull request on GitHub is created or updated. See [Pipelines for external pull requests](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests).                                            |
 | `merge_request_event`         | For pipelines created when a merge request is created or updated. Required to enable [merge request pipelines](../merge_request_pipelines/index.md), [merged results pipelines](../merge_request_pipelines/pipelines_for_merged_results/index.md), and [merge trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md). |
@@ -1553,7 +1553,7 @@ In addition, `only` and `except` can use special keywords:
 |--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `api`                    | For pipelines triggered by the [pipelines API](../../api/pipelines.md#create-a-new-pipeline).                                                                                                                                    |
 | `branches`               | When the Git reference for a pipeline is a branch.                                                                                                                                                                               |
-| `chat`                   | For pipelines created by using a [GitLab ChatOps](../chatops/README.md) command.                                                                                                                                                 |
+| `chat`                   | For pipelines created by using a [GitLab ChatOps](../chatops/index.md) command.                                                                                                                                                 |
 | `external`               | When you use CI services other than GitLab.                                                                                                                                                                                        |
 | `external_pull_requests` | When an external pull request on GitHub is created or updated (See [Pipelines for external pull requests](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests)).                                           |
 | `merge_requests`         | For pipelines created when a merge request is created or updated. Enables [merge request pipelines](../merge_request_pipelines/index.md), [merged results pipelines](../merge_request_pipelines/pipelines_for_merged_results/index.md), and [merge trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md). |

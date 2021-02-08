@@ -4,8 +4,6 @@ module TreeHelper
   include BlobHelper
   include WebIdeButtonHelper
 
-  FILE_LIMIT = 1_000
-
   # Return an image icon depending on the file type and mode
   #
   # type - String type of the tree item; either 'folder' or 'file'

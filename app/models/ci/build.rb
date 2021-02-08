@@ -228,7 +228,7 @@ module Ci
       end
 
       def with_preloads
-        preload(:job_artifacts_archive, :job_artifacts, project: [:namespace])
+        preload(:job_artifacts_archive, :job_artifacts, :tags, project: [:namespace])
       end
     end
 

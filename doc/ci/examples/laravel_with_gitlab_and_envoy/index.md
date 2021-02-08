@@ -544,7 +544,7 @@ services:
 ...
 ```
 
-If you wish to test your app with different PHP versions and [database management systems](../../services/README.md), you can define different `image` and `services` keywords for each test job.
+If you wish to test your app with different PHP versions and [database management systems](../../services/index.md), you can define different `image` and `services` keywords for each test job.
 
 #### Variables
 
@@ -589,7 +589,7 @@ unit_test:
 #### Deploy to production
 
 The job `deploy_production` will deploy the app to the production server.
-To deploy our app with Envoy, we had to set up the `$SSH_PRIVATE_KEY` variable as an [SSH private key](../../ssh_keys/README.md#ssh-keys-when-using-the-docker-executor).
+To deploy our app with Envoy, we had to set up the `$SSH_PRIVATE_KEY` variable as an [SSH private key](../../ssh_keys/index.md#ssh-keys-when-using-the-docker-executor).
 If the SSH keys have added successfully, we can run Envoy.
 
 As mentioned before, GitLab supports [Continuous Delivery](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#continuous-delivery) methods as well.

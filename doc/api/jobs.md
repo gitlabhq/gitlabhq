@@ -54,6 +54,9 @@ Example of response
       {"file_type": "junit", "size": 750, "filename": "junit.xml.gz", "file_format": "gzip"}
     ],
     "artifacts_expire_at": "2016-01-23T17:54:27.895Z",
+    "tag_list": [
+      "docker runner", "ubuntu18"
+    ],
     "id": 7,
     "name": "teaspoon",
     "pipeline": {
@@ -104,6 +107,9 @@ Example of response
     "finished_at": "2015-12-24T17:54:24.921Z",
     "duration": 0.192,
     "artifacts_expire_at": "2016-01-23T17:54:24.921Z",
+    "tag_list": [
+      "docker runner", "win10-2004"
+    ],
     "id": 6,
     "name": "rspec:other",
     "pipeline": {
@@ -179,6 +185,9 @@ Example of response
     "finished_at": "2015-12-24T17:54:24.921Z",
     "duration": 0.192,
     "artifacts_expire_at": "2016-01-23T17:54:24.921Z",
+    "tag_list": [
+      "docker runner", "ubuntu18"
+    ],
     "id": 6,
     "name": "rspec:other",
     "pipeline": {
@@ -239,6 +248,9 @@ Example of response
       {"file_type": "junit", "size": 750, "filename": "junit.xml.gz", "file_format": "gzip"}
     ],
     "artifacts_expire_at": "2016-01-23T17:54:27.895Z",
+    "tag_list": [
+      "docker runner", "ubuntu18"
+    ],
     "id": 7,
     "name": "teaspoon",
     "pipeline": {
@@ -399,6 +411,9 @@ Example of response
   "finished_at": "2015-12-24T17:54:31.198Z",
   "duration": 0.465,
   "artifacts_expire_at": "2016-01-23T17:54:31.198Z",
+  "tag_list": [
+      "docker runner", "macos-10.15"
+    ],
   "id": 8,
   "name": "rubocop",
   "pipeline": {

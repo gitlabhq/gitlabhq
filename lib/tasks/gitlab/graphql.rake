@@ -48,9 +48,21 @@ namespace :gitlab do
         if summary == :client_query
           $stdout.puts " - client query"
         elsif errs.present?
-          $stdout.puts " - invalid query"
+          $stdout.puts " - invalid query".color(:red)
         else
-          $stdout.puts " - complexity: #{defn.complexity(GitlabSchema)}"
+          complexity = defn.complexity(GitlabSchema)
+          color = case complexity
+                  when 0..GitlabSchema::DEFAULT_MAX_COMPLEXITY
+                    :green
+                  when GitlabSchema::DEFAULT_MAX_COMPLEXITY..GitlabSchema::AUTHENTICATED_COMPLEXITY
+                    :yellow
+                  when GitlabSchema::AUTHENTICATED_COMPLEXITY..GitlabSchema::ADMIN_COMPLEXITY
+                    :orange
+                  else
+                    :red
+                  end
+
+          $stdout.puts " - complexity: #{complexity}".color(color)
         end
 
         $stdout.puts ""
@@ -72,10 +84,10 @@ namespace :gitlab do
         when :client_query
           warn("SKIP  #{defn.file}: client query")
         else
-          warn("OK    #{defn.file}") if errs.empty?
+          warn("#{'OK'.color(:green)}    #{defn.file}") if errs.empty?
           errs.each do |err|
             warn(<<~MSG)
-            ERROR #{defn.file}: #{err.message} (at #{err.path.join('.')})
+            #{'ERROR'.color(:red)} #{defn.file}: #{err.message} (at #{err.path.join('.')})
             MSG
           end
         end

@@ -325,7 +325,7 @@ Note that the use of this method requires that we have first [recorded the user 
 
 ### Enable the experiment
 
-After all merge requests have been merged, use [`chatops`](../../ci/chatops/README.md) in the
+After all merge requests have been merged, use [`chatops`](../../ci/chatops/index.md) in the
 [appropriate channel](../feature_flags/controls.md#communicate-the-change) to start the experiment for 10% of the users.
 The feature flag should have the name of the experiment with the `_experiment_percentage` suffix appended.
 For visibility, please also share any commands run against production in the `#s_growth` channel:

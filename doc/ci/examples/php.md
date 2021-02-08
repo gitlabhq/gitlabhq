@@ -241,7 +241,7 @@ before_script:
 ## Access private packages or dependencies
 
 If your test suite needs to access a private repository, you need to configure
-the [SSH keys](../ssh_keys/README.md) to be able to clone it.
+the [SSH keys](../ssh_keys/index.md) to be able to clone it.
 
 ## Use databases or other services
 
@@ -250,7 +250,7 @@ run. If you're using the Docker executor, you can leverage Docker's ability to
 link to other containers. With GitLab Runner, this can be achieved by defining
 a `service`.
 
-This functionality is covered in [the CI services](../services/README.md)
+This functionality is covered in [the CI services](../services/index.md)
 documentation.
 
 ## Testing things locally

@@ -288,16 +288,6 @@ RSpec.describe Git::WikiPushService, services: true do
 
         expect { subject }.not_to raise_error
       end
-
-      context 'when feature flag :wiki_housekeeping is disabled' do
-        it 'does not perform housekeeping' do
-          stub_feature_flags(wiki_housekeeping: false)
-
-          expect(housekeeping).not_to receive(:execute)
-
-          subject
-        end
-      end
     end
 
     it 'increments the push counter' do

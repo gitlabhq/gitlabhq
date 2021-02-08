@@ -17,179 +17,145 @@ GitLab remote server without supplying your username or password each time.
 This page can help you configure secure SSH keys which you can use to help secure
 connections to GitLab repositories.
 
-- If you need information on creating SSH keys, start with our [options for SSH keys](#options-for-ssh-keys).
+- If you need information on creating SSH keys, start with our [options for SSH keys](#supported-ssh-key-types).
 - If you have SSH keys dedicated for your GitLab account, you may be interested in [Working with non-default SSH key pair paths](#working-with-non-default-ssh-key-pair-paths).
-- If you already have an SSH key pair, you can go to how you can [add an SSH key to your GitLab account](#adding-an-ssh-key-to-your-gitlab-account).
+- If you already have an SSH key pair, you can go to how you can [add an SSH key to your GitLab account](#add-an-ssh-key-to-your-gitlab-account).
 
-## Requirements
+## Prerequisites
 
-To support SSH, GitLab requires the installation of the OpenSSH client, which
-comes pre-installed on GNU/Linux and macOS, as well as on Windows 10.
+To use SSH to communicate with GitLab, you need:
 
-Make sure that your system includes SSH version 6.5 or newer, as that excludes
-the now insecure MD5 signature scheme. The following command returns the version of
-SSH installed on your system:
+- The OpenSSH client, which comes pre-installed on GNU/Linux, macOS, and Windows 10.
+- SSH version 6.5 or later. Earlier versions used an MD5 signature, which is not secure.
 
-```shell
-ssh -V
-```
+To view the version of SSH installed on your system, run `ssh -V`.
 
-While GitLab does [not support installation on Microsoft Windows](../install/requirements.md#microsoft-windows),
-you can set up SSH keys to set up Windows [as a client](#options-for-microsoft-windows).
+GitLab does [not support installation on Microsoft Windows](../install/requirements.md#microsoft-windows),
+but you can set up SSH keys on the Windows [client](#options-for-microsoft-windows).
 
-## Options for SSH keys
+## Supported SSH key types
 
-GitLab supports the use of RSA, DSA, ECDSA, and ED25519 keys.
+To communicate with GitLab, you can use the following SSH key types:
 
-- GitLab has [deprecated](https://about.gitlab.com/releases/2018/06/22/gitlab-11-0-released/#support-for-dsa-ssh-keys) DSA keys in GitLab 11.0.
-- As noted in [Practical Cryptography With Go](https://leanpub.com/gocrypto/read#leanpub-auto-ecdsa), the security issues related to DSA also apply to ECDSA.
+- [ED25519](#ed25519-ssh-keys)
+- [RSA](#rsa-ssh-keys)
+- DSA ([Deprecated](https://about.gitlab.com/releases/2018/06/22/gitlab-11-0-released/#support-for-dsa-ssh-keys) in GitLab 11.0.)
+- ECDSA (As noted in [Practical Cryptography With Go](https://leanpub.com/gocrypto/read#leanpub-auto-ecdsa), the security issues related to DSA also apply to ECDSA.)
 
-NOTE:
-Available documentation suggests that ED25519 is more secure. If you use an RSA key, the US National Institute of Science and Technology in [Publication 800-57 Part 3 (PDF)](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57Pt3r1.pdf) recommends a key size of at least 2048 bits.
-
-Therefore, our documentation focuses on the use of ED25519 and RSA keys.
-
-Administrators can [restrict which keys should be permitted and their minimum lengths](../security/ssh_keys_restrictions.md).
-
-## Review existing SSH keys
-
-If you have existing SSH keys, you may be able to use them to help secure connections with GitLab
-repositories. By default, SSH keys on Linux and macOS systems are stored in the user's home directory,
-in the `.ssh/` subdirectory. The following table includes default filenames for each SSH key algorithm:
-
-| Algorithm | Public key | Private key |
-| --------- | ---------- | ----------- |
-|  ED25519 (preferred)  | `id_ed25519.pub` | `id_ed25519` |
-|  RSA (at least 2048-bit key size)     | `id_rsa.pub` | `id_rsa` |
-|  DSA (deprecated)      | `id_dsa.pub` | `id_dsa` |
-|  ECDSA    | `id_ecdsa.pub` | `id_ecdsa` |
-
-For recommendations, see [options for SSH keys](#options-for-ssh-keys).
-
-## Generating a new SSH key pair
-
-If you want to create:
-
-- An ED25519 key, read [ED25519 SSH keys](#ed25519-ssh-keys).
-- An RSA key, read [RSA SSH keys](#rsa-ssh-keys).
+Administrators can [restrict which keys are permitted and their minimum lengths](../security/ssh_keys_restrictions.md).
 
 ### ED25519 SSH keys
 
 The book [Practical Cryptography With Go](https://leanpub.com/gocrypto/read#leanpub-auto-chapter-5-digital-signatures)
 suggests that [ED25519](https://ed25519.cr.yp.to/) keys are more secure and performant than RSA keys.
 
-As OpenSSH 6.5 introduced ED25519 SSH keys in 2014, they should be available on any current
-operating system.
-
-You can create and configure an ED25519 key with the following command:
-
-```shell
-ssh-keygen -t ed25519 -C "<comment>"
-```
-
-The `-C` flag, with a quoted comment such as an email address, is an optional way to label your SSH keys.
-
-You'll see a response similar to:
-
-```plaintext
-Generating public/private ed25519 key pair.
-Enter file in which to save the key (/home/user/.ssh/id_ed25519):
-```
-
-For guidance, proceed to the [common steps](#common-steps-for-generating-an-ssh-key-pair).
+OpenSSH 6.5 introduced ED25519 SSH keys in 2014 and they should be available on most
+operating systems.
 
 ### RSA SSH keys
 
-If you use RSA keys for SSH, the US National Institute of Standards and Technology recommends
-that you use a key size of [at least 2048 bits](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57Pt3r1.pdf).
-By default, the `ssh-keygen` command creates an 1024-bit RSA key.
+Available documentation suggests that ED25519 is more secure than RSA.
 
-You can create and configure an RSA key with the following command, substituting if desired for the minimum recommended key size of `2048`:
+If you use an RSA key, the US National Institute of Science and Technology in
+[Publication 800-57 Part 3 (PDF)](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57Pt3r1.pdf)
+recommends a key size of at least 2048 bits. The default key size depends on your version of `ssh-keygen`.
+Review the `man` page for your installed `ssh-keygen` command for details.
 
-```shell
-ssh-keygen -t rsa -b 2048 -C "email@example.com"
-```
+## See if you have an existing SSH key pair
 
-The `-C` flag, with a quoted comment such as an email address, is an optional way to label your SSH keys.
+Before you create a key pair, see if a key pair already exists.
 
-You'll see a response similar to:
+1. On Linux or macOS, go to your home directory.
+1. Go to the `.ssh/` subdirectory.
+1. See if a file with one of the following formats exists:
 
-```plaintext
-Generating public/private rsa key pair.
-Enter file in which to save the key (/home/user/.ssh/id_rsa):
-```
+   | Algorithm | Public key | Private key |
+   | --------- | ---------- | ----------- |
+   |  ED25519 (preferred)  | `id_ed25519.pub` | `id_ed25519` |
+   |  RSA (at least 2048-bit key size)     | `id_rsa.pub` | `id_rsa` |
+   |  DSA (deprecated)      | `id_dsa.pub` | `id_dsa` |
+   |  ECDSA    | `id_ecdsa.pub` | `id_ecdsa` |
 
-For guidance, proceed to the [common steps](#common-steps-for-generating-an-ssh-key-pair).
+## Generate an SSH key pair
 
-NOTE:
-If you have OpenSSH version 7.8 or below, consider the problems associated
-with [encoding](#rsa-keys-and-openssh-from-versions-65-to-78).
+If you do not have an existing SSH key pair, generate a new one.
 
-### Common steps for generating an SSH key pair
+1. Open a terminal.
+1. Type `ssh-keygen -t` followed by the key type and an optional comment.
+   This comment is included in the `.pub` file that's created.
+   You may want to use an email address for the comment.
+  
+   For example, for ED25519:
 
-Whether you're creating a [ED25519](#ed25519-ssh-keys) or an [RSA](#rsa-ssh-keys) key, you've started with the `ssh-keygen` command.
-At this point, you'll see the following message in the command line (for ED25519 keys):
+   ```shell
+   ssh-keygen -t ed25519 -C "<comment>"
+   ```
 
-```plaintext
-Generating public/private ed25519 key pair.
-Enter file in which to save the key (/home/user/.ssh/id_ed25519):
-```
+   For 2048-bit RSA:
 
-If you don't already have an SSH key pair and are not generating a [deploy key](#deploy-keys),
-accept the suggested file and directory. Your SSH client uses
-the resulting SSH key pair with no additional configuration.
+   ```shell
+   ssh-keygen -t rsa -b 2048 -C "<comment>"
+   ```
 
-Alternatively, you can save the new SSH key pair in a different location.
-You can assign the directory and filename of your choice.
-You can also dedicate that SSH key pair to a [specific host](#working-with-non-default-ssh-key-pair-paths).
+1. Press Enter. Output similar to the following is displayed:
 
-After assigning a file to save your SSH key, you can set up
-a [passphrase](https://www.ssh.com/ssh/passphrase/) for your SSH key:
+   ```plaintext
+   Generating public/private ed25519 key pair.
+   Enter file in which to save the key (/home/user/.ssh/id_ed25519):
+   ```
 
-```plaintext
-Enter passphrase (empty for no passphrase):
-Enter same passphrase again:
-```
+1. Accept the suggested filename and directory, unless you are generating a [deploy key](#deploy-keys)
+   or want to save in a specific directory where you store other keys.
 
-If successful, you'll see confirmation of where the `ssh-keygen` command
-saved your identification and private key.
+   You can also dedicate the SSH key pair to a [specific host](#working-with-non-default-ssh-key-pair-paths).
 
-When needed, you can update the passphrase with the following command:
+1. Specify a [passphrase](https://www.ssh.com/ssh/passphrase/):
 
-```shell
-ssh-keygen -p -f /path/to/ssh_key
-```
+   ```plaintext
+   Enter passphrase (empty for no passphrase):
+   Enter same passphrase again:
+   ```
 
-### RSA keys and OpenSSH from versions 6.5 to 7.8
+1. A confirmation is displayed, including information about where your files are stored.
 
-Before OpenSSH 7.8, the default public key fingerprint for RSA keys was based on MD5,
-and is therefore insecure.
+A public and private key are generated. 
+[Add the public SSH key to your GitLab account](#add-an-ssh-key-to-your-gitlab-account) and keep
+the private key secure.
 
-If your version of OpenSSH lies between version 6.5 to version 7.8 (inclusive),
-run `ssh-keygen` with the `-o` option to save your private SSH keys in the more secure
+### Update your SSH key passphrase
+
+You can update the passphrase for your SSH key.
+
+1. Open a terminal and type this command:
+
+   ```shell
+   ssh-keygen -p -f /path/to/ssh_key
+   ```
+
+1. At the prompts, type the passphrase and press Enter.
+
+### Upgrade your RSA key pair to a more secure format
+
+If your version of OpenSSH is between 6.5 and 7.8,
+you can save your private RSA SSH keys in a more secure
 OpenSSH format.
 
-If you already have an RSA SSH key pair to use with GitLab, consider upgrading it
-to use the more secure password encryption format. You can do so with the following command:
+1. Open a terminal and type this command:
 
-```shell
-ssh-keygen -o -f ~/.ssh/id_rsa
-```
+   ```shell
+   ssh-keygen -o -f ~/.ssh/id_rsa
+   ```
 
-Alternatively, you can generate a new RSA key with the more secure encryption format with
-the following command:
+   Alternatively, you can generate a new RSA key with the more secure encryption format with
+   the following command:
 
-```shell
-ssh-keygen -o -t rsa -b 4096 -C "email@example.com"
-```
+   ```shell
+   ssh-keygen -o -t rsa -b 4096 -C "<comment>"
+   ```
 
-NOTE:
-As noted in the `ssh-keygen` man page, ED25519 already encrypts keys to the more secure
-OpenSSH format.
+## Add an SSH key to your GitLab account
 
-## Adding an SSH key to your GitLab account
-
-Now you can copy the SSH key you created to your GitLab account. To do so, follow these steps:
+Now you can copy the SSH key you created to your GitLab account.
 
 1. Copy your **public** SSH key to a location that saves information in text format.
    The following options saves information for ED25519 keys to the clipboard

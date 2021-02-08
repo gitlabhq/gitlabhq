@@ -128,12 +128,9 @@ export default {
       </template>
 
       <template #content>
-        <terraform-plan
-          v-for="(plan, key) in plansObject"
-          :key="key"
-          :plan="plan"
-          class="mr-widget-body"
-        />
+        <div class="mr-widget-body gl-pb-1">
+          <terraform-plan v-for="(plan, key) in plansObject" :key="key" :plan="plan" />
+        </div>
       </template>
     </mr-widget-expanable-section>
   </section>

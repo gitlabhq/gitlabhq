@@ -4604,7 +4604,7 @@ eslint-import-resolver-node@^0.3.4:
     debug "^2.6.9"
     resolve "^1.13.1"
 
-eslint-import-resolver-webpack@^0.12.1:
+eslint-import-resolver-webpack@0.12.1:
   version "0.12.1"
   resolved "https://registry.yarnpkg.com/eslint-import-resolver-webpack/-/eslint-import-resolver-webpack-0.12.1.tgz#771ae561e887ca4e53ee87605fbb36c5e290b0f5"
   integrity sha512-O/sUAXk6GWrICiN8JUkkjdt9uZpqZHP+FVnTxtEILL6EZMaPSrnP4lGPSFwcKsv7O211maqq4Nz60+dh236hVg==
@@ -4664,7 +4664,7 @@ eslint-plugin-import@^2.22.1:
     resolve "^1.17.0"
     tsconfig-paths "^3.9.0"
 
-eslint-plugin-jasmine@^4.1.0:
+eslint-plugin-jasmine@4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-jasmine/-/eslint-plugin-jasmine-4.1.0.tgz#4f6d41b1a8622348c97559cbcd29badffa74dbfa"
   integrity sha512-Vfuk2Sm1ULR7MqGjVIOOEdQWyoFBfSwvwUeo9MrajVGJB3C24c9Mmj1Cgf8Qwmf3aS2bezPt1sckpKXWpd74Dw==
@@ -4676,7 +4676,7 @@ eslint-plugin-jest@^23.8.2:
   dependencies:
     "@typescript-eslint/experimental-utils" "^2.5.0"
 
-eslint-plugin-no-jquery@^2.3.0:
+eslint-plugin-no-jquery@2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/eslint-plugin-no-jquery/-/eslint-plugin-no-jquery-2.3.1.tgz#1c364cb863a38cc1570c8020155b6004cca62178"
   integrity sha512-/fiQUBSOMUETnfBuiK5ewvtRbek1IRTy5ov/6RZ6nlybvZ337vyGaNPWM1KgaIoIeN7dairNrPfq0h7A0tpT3A==

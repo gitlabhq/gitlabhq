@@ -5737,7 +5737,7 @@ type DastProfileCreatePayload {
   """
   The URL of the pipeline that was created. Requires `runAfterCreate` to be set to `true`.
   """
-  pipelineUrl: String!
+  pipelineUrl: String
 }
 
 """

@@ -1,18 +1,8 @@
 ---
-stage: Verify
-group: Continuous Integration
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-comments: false
-type: index
+redirect_to: 'index.md'
 ---
 
-# Docker integration
+This document was moved to [another location](index.md).
 
-GitLab CI/CD can be combined with [Docker](https://www.docker.com) to enable
-integration between the two.
-
-The following documentation is available for using GitLab CI/CD with Docker:
-
-- [Building Docker images with GitLab CI/CD](using_docker_build.md).
-- [Using Docker images](using_docker_images.md).
-- [Building images with kaniko and GitLab CI/CD](using_kaniko.md).
+<!-- This redirect file can be deleted after 2021-05-01. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/#move-or-rename-a-page -->

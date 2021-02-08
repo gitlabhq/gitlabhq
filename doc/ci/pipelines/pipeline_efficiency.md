@@ -20,7 +20,7 @@ to use pipeline features that improve efficiency right away, and get a faster so
 development lifecycle earlier.
 
 First ensure you are familiar with [GitLab CI/CD fundamentals](../introduction/index.md)
-and understand the [quick start guide](../quick_start/README.md).
+and understand the [quick start guide](../quick_start/index.md).
 
 ## Identify bottlenecks and common failures
 
@@ -235,7 +235,7 @@ Methods to reduce Docker image size:
   to analyze and shrink images.
 
 To simplify Docker image management, you can create a dedicated group for managing
-[Docker images](../docker/README.md) and test, build and publish them with CI/CD pipelines.
+[Docker images](../docker/index.md) and test, build and publish them with CI/CD pipelines.
 
 ## Test, document, and learn
 

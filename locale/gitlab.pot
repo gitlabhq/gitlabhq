@@ -9194,6 +9194,9 @@ msgstr ""
 msgid "DastSiteValidation|Could not create validation token. Please try again."
 msgstr ""
 
+msgid "DastSiteValidation|Could not revoke validation. Please try again."
+msgstr ""
+
 msgid "DastSiteValidation|Download validation text file"
 msgstr ""
 
@@ -9201,6 +9204,9 @@ msgid "DastSiteValidation|Header validation"
 msgstr ""
 
 msgid "DastSiteValidation|Retry validation"
+msgstr ""
+
+msgid "DastSiteValidation|Revoke validation"
 msgstr ""
 
 msgid "DastSiteValidation|Step 1 - Choose site validation method"
@@ -9227,6 +9233,11 @@ msgstr ""
 msgid "DastSiteValidation|The validation is in progress. Please wait..."
 msgstr ""
 
+msgid "DastSiteValidation|This will affect %d other profile targeting the same URL."
+msgid_plural "DastSiteValidation|This will affect %d other profiles targeting the same URL."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "DastSiteValidation|Validate"
 msgstr ""
 
@@ -9243,6 +9254,9 @@ msgid "DastSiteValidation|Validation failed"
 msgstr ""
 
 msgid "DastSiteValidation|Validation succeeded. Both active and passive scans can be run against the target site."
+msgstr ""
+
+msgid "DastSiteValidation|You will not be able to run active scans against %{url}."
 msgstr ""
 
 msgid "Data is still calculating..."
@@ -23045,6 +23059,9 @@ msgid "ProjectSettings|Repository"
 msgstr ""
 
 msgid "ProjectSettings|Require"
+msgstr ""
+
+msgid "ProjectSettings|Require an associated issue from Jira"
 msgstr ""
 
 msgid "ProjectSettings|Requirements"

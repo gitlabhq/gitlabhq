@@ -64,16 +64,16 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex">
+  <div class="gl-display-flex gl-pb-3">
     <span
-      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-mr-3 gl-align-self-start gl-mt-1"
+      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-align-self-start gl-px-2"
     >
-      <gl-icon :name="iconType" :size="18" data-testid="change-type-icon" />
+      <gl-icon :name="iconType" :size="16" data-testid="change-type-icon" />
     </span>
 
-    <div class="gl-display-flex gl-flex-fill-1 gl-flex-direction-column flex-md-row">
-      <div class="gl-flex-fill-1 gl-display-flex gl-flex-direction-column">
-        <p class="gl-m-0 gl-pr-1">
+    <div class="gl-display-flex gl-flex-fill-1 gl-flex-direction-column flex-md-row gl-pl-3">
+      <div class="gl-flex-fill-1 gl-display-flex gl-flex-direction-column gl-pr-3">
+        <p class="gl-mb-3 gl-line-height-normal">
           <gl-sprintf :message="reportHeaderText">
             <template #name>
               <strong>{{ plan.job_name }}</strong>
@@ -81,7 +81,7 @@ export default {
           </gl-sprintf>
         </p>
 
-        <p class="gl-m-0">
+        <p class="gl-mb-3 gl-line-height-normal">
           <gl-sprintf :message="reportChangeText">
             <template #addNum>
               <strong>{{ addNum }}</strong>

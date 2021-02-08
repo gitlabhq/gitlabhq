@@ -3,6 +3,32 @@
 module CycleAnalyticsHelpers
   include GitHelpers
 
+  def wait_for_stages_to_load
+    expect(page).to have_selector '.js-stage-table'
+    wait_for_requests
+  end
+
+  def select_group(target_group)
+    visit group_analytics_cycle_analytics_path(target_group)
+
+    wait_for_stages_to_load
+  end
+
+  def toggle_dropdown(field)
+    page.within("[data-testid='#{field}']") do
+      find('.dropdown-toggle').click
+
+      wait_for_requests
+
+      expect(find('.dropdown-menu')).to have_selector('.dropdown-item')
+    end
+  end
+
+  def select_dropdown_option_by_value(name, value, elem = '.dropdown-item')
+    toggle_dropdown name
+    page.find("[data-testid='#{name}'] .dropdown-menu").find("#{elem}[value='#{value}']").click
+  end
+
   def create_commit_referencing_issue(issue, branch_name: generate(:branch))
     project.repository.add_branch(user, branch_name, 'master')
     create_commit("Commit for ##{issue.iid}", issue.project, user, branch_name)

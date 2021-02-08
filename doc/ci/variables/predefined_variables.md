@@ -22,8 +22,8 @@ Kubernetes-specific environment variables are detailed in the
 
 | Variable                                      | GitLab | Runner | Description |
 |-----------------------------------------------|--------|--------|-------------|
-| `CHAT_CHANNEL`                                | 10.6   | all    | Source chat channel which triggered the [ChatOps](../chatops/README.md) command. |
-| `CHAT_INPUT`                                  | 10.6   | all    | Additional arguments passed in the [ChatOps](../chatops/README.md) command. |
+| `CHAT_CHANNEL`                                | 10.6   | all    | Source chat channel which triggered the [ChatOps](../chatops/index.md) command. |
+| `CHAT_INPUT`                                  | 10.6   | all    | Additional arguments passed in the [ChatOps](../chatops/index.md) command. |
 | `CI`                                          | all    | 0.4    | Mark that job is executed in CI environment. |
 | `CI_API_V4_URL`                               | 11.7   | all    | The GitLab API v4 root URL. |
 | `CI_BUILDS_DIR`                               | all    | 11.10  | Top-level directory where builds are executed. |

@@ -37,7 +37,7 @@ easier to measure the impact of both separately.
 The GitLab feature library (using
 [Flipper](https://github.com/jnunemaker/flipper), and covered in the [Feature
 Flags process](process.md) guide) supports rolling out changes to a percentage of
-time to users. This in turn can be controlled using [GitLab ChatOps](../../ci/chatops/README.md).
+time to users. This in turn can be controlled using [GitLab ChatOps](../../ci/chatops/index.md).
 
 For an up to date list of feature flag commands please see [the source
 code](https://gitlab.com/gitlab-com/chatops/blob/master/lib/chatops/commands/feature.rb).

@@ -13,7 +13,7 @@ type: reference
 >   are encouraged to upgrade your GitLab instance if you haven't done already.
 >   If you are **not** using GitLab 8.12 or higher, you would need to work your way
 >   around submodules in order to access the sources of e.g., `gitlab.com/group/project`
->   with the use of [SSH keys](ssh_keys/README.md).
+>   with the use of [SSH keys](ssh_keys/index.md).
 > - With GitLab 8.12 onward, your permissions are used to evaluate what a CI job
 >   can access. More information about how this system works can be found in the
 >   [Jobs permissions model](../user/permissions.md#job-permissions).

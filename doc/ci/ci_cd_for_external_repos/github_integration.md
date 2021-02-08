@@ -41,7 +41,7 @@ repositories:
 1. Paste the token into the **Personal access token** field and click **List
    Repositories**. Click **Connect** to select the repository.
 
-1. In GitHub, add a `.gitlab-ci.yml` to [configure GitLab CI/CD](../quick_start/README.md).
+1. In GitHub, add a `.gitlab-ci.yml` to [configure GitLab CI/CD](../quick_start/index.md).
 
 GitLab:
 

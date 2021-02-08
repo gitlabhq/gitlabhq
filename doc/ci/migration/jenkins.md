@@ -15,11 +15,11 @@ before diving in. Think of this page as a "GitLab CI/CD for Jenkins Users" guide
 The following list of recommended steps was created after observing organizations
 that were able to quickly complete this migration:
 
-1. Start by reading the GitLab CI/CD [Quick Start Guide](../quick_start/README.md) and [important product differences](#important-product-differences).
+1. Start by reading the GitLab CI/CD [Quick Start Guide](../quick_start/index.md) and [important product differences](#important-product-differences).
 1. Learn the importance of [managing the organizational transition](#managing-the-organizational-transition).
 1. [Add runners](../runners/README.md) to your GitLab instance.
 1. Educate and enable your developers to independently perform the following steps in their projects:
-   1. Review the [Quick Start Guide](../quick_start/README.md) and [Pipeline Configuration Reference](../yaml/README.md).
+   1. Review the [Quick Start Guide](../quick_start/index.md) and [Pipeline Configuration Reference](../yaml/README.md).
    1. Use the [Jenkins Wrapper](#jenkinsfile-wrapper) to temporarily maintain fragile Jenkins jobs.
    1. Migrate the build and CI jobs and configure them to show results directly in your merge requests. They can use [Auto DevOps](../../topics/autodevops/index.md) as a starting point, and [customize](../../topics/autodevops/customize.md) or [decompose](../../topics/autodevops/customize.md#using-components-of-auto-devops) the configuration as needed.
    1. Add [Review Apps](../review_apps/index.md).
@@ -79,7 +79,7 @@ There are some high level differences between the products worth mentioning:
   - from the [GitLab UI](../pipelines/index.md#run-a-pipeline-manually)
   - by [API call](../triggers/README.md)
   - by [webhook](../triggers/README.md#triggering-a-pipeline-from-a-webhook)
-  - by [ChatOps](../chatops/README.md)
+  - by [ChatOps](../chatops/index.md)
 
 - You can control which jobs run in which cases, depending on how they are triggered,
   with the [`rules` syntax](../yaml/README.md#rules).

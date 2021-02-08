@@ -38,7 +38,7 @@ Create merge requests and review code.
 
 Use the built-in continuous integration in GitLab.
 
-- [Get started with GitLab CI/CD](../ci/quick_start/README.md)
+- [Get started with GitLab CI/CD](../ci/quick_start/index.md)
 
 ## Install and Update
 

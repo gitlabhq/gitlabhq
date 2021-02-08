@@ -16,7 +16,7 @@ module Git
       wiki.after_post_receive
 
       process_changes
-      perform_housekeeping if Feature.enabled?(:wiki_housekeeping, wiki.container)
+      perform_housekeeping
     end
 
     private

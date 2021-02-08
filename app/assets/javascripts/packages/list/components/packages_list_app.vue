@@ -75,7 +75,7 @@ export default {
 <template>
   <div>
     <package-title :package-help-url="packageHelpUrl" :packages-count="packagesCount" />
-    <package-search @sort:changed="requestPackagesList" @filter:changed="requestPackagesList" />
+    <package-search @update="requestPackagesList" />
 
     <package-list @page:changed="onPageChanged" @package:delete="onPackageDeleteRequest">
       <template #empty-state>

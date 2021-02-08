@@ -842,6 +842,17 @@ The site is validated and an active scan can run against it.
 
 If a validated site profile's target URL is edited, the site is no longer validated.
 
+### Revoke a site validation
+
+To revoke validation from a site profile:
+
+1. From your project's home page, go to **Security & Compliance > Configuration**.
+1. Select **Manage** in the **DAST Profiles** row.
+1. Select **Revoke validation** beside the validated profile.
+1. Select **Revoke validation**.
+
+The site profile's validation is revoked. An active scan cannot be run against it or any other profile with the same URL.
+
 #### Validated site profile headers
 
 The following are code samples of how you could provide the required site profile header in your
