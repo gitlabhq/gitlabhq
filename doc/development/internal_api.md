@@ -467,3 +467,153 @@ Example Request:
 ```shell
 curl --request POST   --header "Gitlab-Kas-Api-Request: <JWT token>" --header "Authorization: Bearer <agent token>" --header "Content-Type: application/json" --data '"{\"alert\":{\"title\":\"minimal\",\"message\":\"network problem\",\"evalMatches\":[{\"value\":1,\"metric\":\"Count\",\"tags\":{}}]}}"' "http://localhost:3000/api/v4/internal/kubernetes/modules/cilium_alert"
 ```
+
+## Subscriptions
+
+The subscriptions endpoint is used by `[customers.gitlab.com](https://gitlab.com/gitlab-org/customers-gitlab-com)` (CustomersDot)
+in order to apply subscriptions including trials, and add-on purchases, for personal namespaces or top-level groups within GitLab.com.
+
+### Creating a subscription
+
+Use a POST to create a subscription.
+
+```plaintext
+POST /namespaces/:id/gitlab_subscription
+```
+
+| Attribute   | Type    | Required | Description |
+|:------------|:--------|:---------|:------------|
+| `start_date` | date   | yes      | Start date of subscription |
+| `end_date`  | date    | no       | End date of subscription |
+| `plan_code` | string  | no       | Subscription tier code |
+| `seats`     | integer | no       | Number of seats in subscription |
+| `max_seats_used` | integer | no  | Highest number of active users in the last month |
+| `auto_renew` | boolean | no      | Whether subscription will auto renew on end date |
+| `trial`     | boolean | no       | Whether subscription is a trial |
+| `trial_starts_on` | date | no    | Start date of trial |
+| `trial_ends_on` | date | no      | End date of trial |
+
+Example request:
+
+```shell
+curl --request POST --header "TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/gitlab_subscription?start_date="2020-07-15"&plan="silver"&seats=10"
+```
+
+Example response:
+
+```json
+{
+  "plan": {
+    "code":"silver",
+    "name":"Silver",
+    "trial":false,
+    "auto_renew":null,
+    "upgradable":false
+  },
+  "usage": {
+    "seats_in_subscription":10,
+    "seats_in_use":1,
+    "max_seats_used":0,
+    "seats_owed":0
+  },
+  "billing": {
+    "subscription_start_date":"2020-07-15",
+    "subscription_end_date":null,
+    "trial_ends_on":null
+  }
+}
+```
+
+### Updating a subscription
+
+Use a PUT command to update an existing subscription.
+
+```plaintext
+PUT /namespaces/:id/gitlab_subscription
+```
+
+| Attribute   | Type    | Required | Description |
+|:------------|:--------|:---------|:------------|
+| `start_date` | date   | no       | Start date of subscription |
+| `end_date`  | date    | no       | End date of subscription |
+| `plan_code` | string  | no       | Subscription tier code |
+| `seats`     | integer | no       | Number of seats in subscription |
+| `max_seats_used` | integer | no  | Highest number of active users in the last month |
+| `auto_renew` | boolean | no      | Whether subscription will auto renew on end date |
+| `trial`     | boolean | no       | Whether subscription is a trial |
+| `trial_starts_on` | date | no    | Start date of trial. Required if trial is true. |
+| `trial_ends_on` | date | no      | End date of trial |
+
+Example request:
+
+```shell
+curl --request PUT --header "TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/gitlab_subscription?max_seats_used=0"
+```
+
+Example response:
+
+```json
+{
+  "plan": {
+    "code":"silver",
+    "name":"Silver",
+    "trial":false,
+    "auto_renew":null,
+    "upgradable":false
+  },
+  "usage": {
+    "seats_in_subscription":80,
+    "seats_in_use":82,
+    "max_seats_used":0,
+    "seats_owed":2
+  },
+  "billing": {
+    "subscription_start_date":"2020-07-15",
+    "subscription_end_date":"2021-07-15",
+    "trial_ends_on":null
+  }
+}
+```
+
+### Retrieving a subscription
+
+Use a GET command to view an existing subscription.
+
+```plaintext
+GET /namespaces/:id/gitlab_subscription
+```
+
+Example request:
+
+```shell
+curl --header "TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/gitlab_subscription"
+```
+
+Example response:
+
+```json
+{
+  "plan": {
+    "code":"silver",
+    "name":"Silver",
+    "trial":false,
+    "auto_renew":null,
+    "upgradable":false
+  },
+  "usage": {
+    "seats_in_subscription":80,
+    "seats_in_use":82,
+    "max_seats_used":82,
+    "seats_owed":2
+  },
+  "billing": {
+    "subscription_start_date":"2020-07-15",
+    "subscription_end_date":"2021-07-15",
+    "trial_ends_on":null
+  }
+}
+```
+
+### Known consumers
+
+- CustomersDot

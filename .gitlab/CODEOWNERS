@@ -6,137 +6,122 @@
 *.rb @gitlab-org/maintainers/rails-backend
 *.rake @gitlab-org/maintainers/rails-backend
 
-[Documentation]
+[Documentation Directories]
 /doc/ @gl-docsteam
-/doc/administration/monitoring/ @aqualls
+/doc/.vale/ @marcel.amirault @eread @aqualls @cnorris
+/doc/administration/geo/ @axil
+/doc/administration/gitaly/ @eread
+/doc/administration/integration/ @aqualls
+/doc/administration/lfs/ @aqualls
+/doc/administration/monitoring/ @ngaskill
+/doc/administration/operations/ @axil @eread @marcia
+/doc/administration/packages/ @ngaskill
+/doc/administration/postgresql/ @marcia
+/doc/administration/raketasks/ @axil @eread @mjang1
+/doc/administration/redis/ @axil
+/doc/administration/reference_architectures/ @axil
+/doc/administration/snippets/ @aqualls
+/doc/administration/troubleshooting @axil @marcia @mjang1
+/doc/ci/ @marcel.amirault @sselhorn
+/doc/ci/release/ @axil
+/doc/ci/environments/ @axil
+/doc/ci/services/ @sselhorn
 /doc/development/ @marcia @mjang1
 /doc/development/documentation/ @cnorris
-/doc/ci @marcel.amirault @sselhorn
-/doc/operations @aqualls @eread
-/doc/user/clusters @aqualls
-/doc/user/infrastructure @aqualls
-/doc/user/project/clusters @aqualls
-/doc/.vale/ @marcel.amirault @eread @aqualls @cnorris
+/doc/gitlab-basics/ @marcia
+/doc/install/ @axil
+/doc/integration/ @aqualls @mjang1
+/doc/operations/ @ngaskill @axil
+/doc/push_rules/ @aqualls
+/doc/ssh/ @mjang1
+/doc/subscriptions/ @sselhorn
+/doc/topics/autodevops/ @ngaskill @marcia
+/doc/topics/git/ @aqualls
+/doc/update/ @axil @marcia
+/doc/user/analytics/ @mjang1 @ngaskill
+/doc/user/application_security @rdickenson
+/doc/user/clusters/ @marcia
+/doc/user/compliance/ @mjang1 @rdickenson
+/doc/user/group/ @mjang1 @msedlakjakubowski
+/doc/user/infrastructure/ @marcia
+/doc/user/packages/ @ngaskill
+/doc/user/profile/ @mjang1 @msedlakjakubowski
+/doc/user/project/clusters/ @ngaskill
+/doc/user/project/import/ @mjang1 @msedlakjakubowski
+/doc/user/project/integrations/ @aqualls
+/doc/user/project/integrations/prometheus_library/ @ngaskill
+/doc/user/project/issues/ @msedlakjakubowski
+/doc/user/project/merge_requests/ @aqualls @eread
+/doc/user/project/milestones/ @msedlakjakubowski
+/doc/user/project/pages/ @axil
+/doc/user/project/repository/ @aqualls
+/doc/user/project/settings/ @mjang1 @aqualls
+/doc/user/project/static_site_editor/index.md @aqualls
+/doc/user/project/web_ide/index.md @aqualls
+/doc/user/project/wiki/index.md @aqualls
+/doc/user/search/ @marcia @aqualls
 
 [Docs Create]
-/doc/user/project/merge_requests/allow_collaboration.md @marcia
-/doc/user/project/merge_requests/authorization_for_merge_requests.md @marcia
-/doc/user/project/merge_requests/cherry_pick_changes.md @marcia
-/doc/user/project/merge_requests/creating_merge_requests.md @marcia
-/doc/user/project/merge_requests/fast_forward_merge.md @marcia
-/doc/user/project/merge_requests/getting_started.md @marcia
-/doc/user/project/merge_requests/index.md @marcia
-/doc/user/project/merge_requests/merge_request_approvals.md @marcia
-/doc/user/project/merge_requests/merge_request_dependencies.md @marcia
-/doc/user/project/merge_requests/resolve_conflicts.md @marcia
-/doc/user/project/merge_requests/revert_changes.md @marcia
-/doc/user/project/merge_requests/reviewing_and_managing_merge_requests.md @marcia
-/doc/user/project/merge_requests/squash_and_merge.md @marcia
-/doc/user/project/merge_requests/work_in_progress_merge_requests.md @marcia
-/doc/user/project/repository/file_finder.md @marcia
-/doc/user/project/repository/forking_workflow.md @marcia
-/doc/user/project/repository/git_blame.md @marcia
-/doc/user/project/repository/git_history.md @marcia
-/doc/user/project/repository/index.md @marcia
-/doc/user/project/repository/repository_mirroring.md @marcia
-/doc/user/project/repository/web_editor.md @marcia
-/doc/user/project/autocomplete_characters.md @marcia
-/doc/user/project/badges.md @marcia
-/doc/user/project/code_intelligence.md @marcia
-/doc/user/project/code_owners.md @marcia
-/doc/user/project/file_lock.md @marcia
-/doc/user/project/git_attributes.md @marcia
-/doc/user/project/highlighting.md @marcia
-/doc/user/project/index.md @marcia
-/doc/user/project/protected_branches.md @marcia
-/doc/user/project/protected_tags.md @marcia
-/doc/user/project/push_options.md @marcia
-/doc/user/project/repository/branches/index.md @marcia
-/doc/user/project/repository/gpg_signed_commits/index.md @marcia
-/doc/user/project/repository/jupyter_notebooks/index.md @marcia
-/doc/user/project/repository/x509_signed_commits/index.md @marcia
-/doc/user/project/settings/import_export.md @marcia
-/doc/user/project/settings/index.md @marcia
-/doc/user/project/settings/project_access_tokens.md @marcia
-/doc/user/project/static_site_editor/index.md @marcia
-/doc/user/project/web_ide/index.md @marcia
-/doc/user/project/wiki/index.md @marcia
-/doc/gitlab-basics/README.md @marcia
-/doc/gitlab-basics/add-file.md @marcia
-/doc/gitlab-basics/command-line-commands.md @marcia
-/doc/gitlab-basics/create-branch.md @marcia
-/doc/gitlab-basics/create-project.md @marcia
-/doc/gitlab-basics/create-your-ssh-keys.md @marcia
-/doc/gitlab-basics/feature_branch_workflow.md @marcia
-/doc/gitlab-basics/fork-project.md @marcia
-/doc/gitlab-basics/start-using-git.md @marcia
-/doc/integration/sourcegraph.md @marcia
-/doc/intro/README.md @marcia
-/doc/push_rules/push_rules.md @marcia
-/doc/ssh/README.md @marcia
-/doc/topics/git/feature_branch_development.md @marcia
-/doc/topics/git/how_to_install_git/index.md @marcia
-/doc/topics/git/index.md @marcia
-/doc/topics/git/lfs/index.md @marcia
-/doc/topics/git/lfs/migrate_from_git_annex_to_git_lfs.md @marcia
-/doc/topics/git/numerous_undo_possibilities_in_git/index.md @marcia
-/doc/topics/git/partial_clone.md @marcia
-/doc/topics/git/troubleshooting_git.md @marcia
-/doc/topics/git/useful_git_commands.md @marcia
-/doc/topics/gitlab_flow.md @marcia
-/doc/user/index.md @marcia
-/doc/user/snippets.md @marcia
-/doc/administration/issue_closing_pattern.md @marcia
-/doc/user/asciidoc.md @marcia
-/doc/user/markdown.md @marcia
-/doc/user/search/advanced_global_search.md @marcia
-/doc/user/search/advanced_search_syntax.md @marcia
-/doc/user/search/index.md @marcia
-/doc/administration/file_hooks.md @marcia
-/doc/administration/git_annex.md @marcia
-/doc/administration/git_protocol.md @marcia
-/doc/administration/integration/plantuml.md @marcia
-/doc/administration/invalidate_markdown_cache.md @marcia
-/doc/administration/issue_closing_pattern.md @marcia
-/doc/administration/lfs/index.md @marcia
-/doc/administration/merge_request_diffs.md @marcia
-/doc/administration/repository_checks.md @marcia
-/doc/administration/snippets/index.md @marcia
-/doc/administration/static_objects_external_storage.md @marcia
-/doc/api/access_requests.md @marcia
-/doc/api/branches.md @marcia
-/doc/api/commits.md @marcia
-/doc/api/discussions.md @marcia
-/doc/api/group_wikis.md @marcia
-/doc/api/keys.md @marcia
-/doc/api/markdown.md @marcia
-/doc/api/merge_request_approvals.md @marcia
-/doc/api/merge_request_context_commits.md @marcia
-/doc/api/merge_requests.md @marcia
-/doc/api/project_aliases.md @marcia
-/doc/api/project_badges.md @marcia
-/doc/api/project_import_export.md @marcia
-/doc/api/project_level_variables.md @marcia
-/doc/api/project_snippets.md @marcia
-/doc/api/project_statistics.md @marcia
-/doc/api/project_templates.md @marcia
-/doc/api/project_vulnerabilities.md @marcia
-/doc/api/protected_branches.md @marcia
-/doc/api/protected_tags.md @marcia
-/doc/api/remote_mirrors.md @marcia
-/doc/api/repositories.md @marcia
-/doc/api/repository_files.md @marcia
-/doc/api/repository_submodules.md @marcia
-/doc/api/search.md @marcia
-/doc/api/snippets.md @marcia
-/doc/api/suggestions.md @marcia
-/doc/api/tags.md @marcia
-/doc/api/visual_review_discussions.md @marcia
-/doc/api/wikis.md @marcia
-/doc/user/admin_area/settings/account_and_limit_settings.md @marcia
-/doc/user/admin_area/settings/instance_template_repository.md @marcia
-/doc/user/admin_area/settings/push_event_activities_limit.md @marcia
-/doc/user/admin_area/settings/visibility_and_access_controls.md @marcia
+/doc/administration/file_hooks.md @aqualls
+/doc/administration/git_annex.md @aqualls
+/doc/administration/git_protocol.md @aqualls
+/doc/administration/invalidate_markdown_cache.md @aqualls
+/doc/administration/issue_closing_pattern.md @aqualls
+/doc/administration/merge_request_diffs.md @aqualls
+/doc/administration/repository_checks.md @aqualls
+/doc/administration/static_objects_external_storage.md @aqualls
+/doc/api/access_requests.md @aqualls
+/doc/api/branches.md @aqualls
+/doc/api/commits.md @aqualls
+/doc/api/discussions.md @aqualls
+/doc/api/group_wikis.md @aqualls
+/doc/api/keys.md @aqualls
+/doc/api/markdown.md @aqualls
+/doc/api/merge_request_approvals.md @aqualls
+/doc/api/merge_request_context_commits.md @aqualls
+/doc/api/merge_requests.md @aqualls
+/doc/api/project_aliases.md @aqualls
+/doc/api/project_badges.md @aqualls
+/doc/api/project_import_export.md @aqualls
+/doc/api/project_level_variables.md @aqualls
+/doc/api/project_snippets.md @aqualls
+/doc/api/project_statistics.md @aqualls
+/doc/api/project_templates.md @aqualls
+/doc/api/project_vulnerabilities.md @aqualls
+/doc/api/protected_branches.md @aqualls
+/doc/api/protected_tags.md @aqualls
+/doc/api/remote_mirrors.md @aqualls
+/doc/api/repositories.md @aqualls
+/doc/api/repository_files.md @aqualls
+/doc/api/repository_submodules.md @aqualls
+/doc/api/search.md @aqualls
+/doc/api/snippets.md @aqualls
+/doc/api/suggestions.md @aqualls
+/doc/api/tags.md @aqualls
+/doc/api/visual_review_discussions.md @aqualls
+/doc/api/wikis.md @aqualls
+/doc/intro/README.md @aqualls
+/doc/topics/gitlab_flow.md @aqualls
+/doc/user/admin_area/settings/account_and_limit_settings.md @aqualls
+/doc/user/admin_area/settings/instance_template_repository.md @aqualls
+/doc/user/admin_area/settings/push_event_activities_limit.md @aqualls
+/doc/user/admin_area/settings/visibility_and_access_controls.md @aqualls
+/doc/user/asciidoc.md @aqualls
+/doc/user/index.md @aqualls
+/doc/user/markdown.md @aqualls
+/doc/user/project/autocomplete_characters.md @aqualls
+/doc/user/project/badges.md @aqualls
+/doc/user/project/code_intelligence.md @aqualls
+/doc/user/project/code_owners.md @aqualls
+/doc/user/project/file_lock.md @aqualls
+/doc/user/project/git_attributes.md @aqualls
+/doc/user/project/highlighting.md @aqualls
+/doc/user/project/index.md @aqualls
+/doc/user/project/protected_branches.md @aqualls
+/doc/user/project/protected_tags.md @aqualls
+/doc/user/project/push_options.md @aqualls
+/doc/user/project/settings/import_export.md @aqualls
+/doc/user/snippets.md @aqualls
 
 [Frontend]
 *.scss @annabeldunstone @gitlab-org/maintainers/frontend
