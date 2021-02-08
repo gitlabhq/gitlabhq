@@ -65,13 +65,15 @@ To update GitLab documentation:
 NOTE:
 Work in a fork if you do not have Developer access to the GitLab project.
 
-Request help from the Technical Writing team if you:
+### Ask for help
+
+Ask for help from the Technical Writing team if you:
 
 - Need help to choose the correct place for documentation.
 - Want to discuss a documentation idea or outline.
 - Want to request any other help.
 
-To request help:
+To identify someone who can help you:
 
 1. Locate the Technical Writer for the relevant
    [DevOps stage group](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments).

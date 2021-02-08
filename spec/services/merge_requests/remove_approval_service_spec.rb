@@ -32,12 +32,26 @@ RSpec.describe MergeRequests::RemoveApprovalService do
 
         execute!
       end
+
+      it 'tracks merge request unapprove action' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .to receive(:track_unapprove_mr_action).with(user: user)
+
+        execute!
+      end
     end
 
     context 'with a user who has not approved' do
       it 'does not create an unapproval note and triggers web hook' do
         expect(service).not_to receive(:execute_hooks)
         expect(SystemNoteService).not_to receive(:unapprove_mr)
+
+        execute!
+      end
+
+      it 'does not track merge request unapprove action' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .not_to receive(:track_unapprove_mr_action).with(user: user)
 
         execute!
       end

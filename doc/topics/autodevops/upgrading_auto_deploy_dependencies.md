@@ -181,7 +181,7 @@ the latest Auto Deploy template into your `.gitlab-ci.yml`:
 ```yaml
 include:
   - template: Auto-DevOps.gitlab-ci.yml
-  - remote: https://gitlab.com/gitlab-org/gitlab/-/raw/master/lib/gitlab/ci/templates/Jobs/Deploy.latest.gitlab-ci.yml
+  - template: Jobs/Deploy.latest.gitlab-ci.yml
 ```
 
 WARNING:

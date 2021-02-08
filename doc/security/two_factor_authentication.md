@@ -149,3 +149,8 @@ To disable it:
 ```ruby
 Feature.disable(:two_factor_for_cli)
 ```
+
+The feature flag affects these features:
+
+- [Two-factor Authentication (2FA) for Git over SSH operations](#two-factor-authentication-2fa-for-git-over-ssh-operations).
+- [Customize session duration for Git Operations when 2FA is enabled](../user/admin_area/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).

@@ -177,10 +177,8 @@ class Projects::BranchesController < Projects::ApplicationController
   def fetch_branches_by_mode
     return fetch_branches_for_overview if @mode == 'overview'
 
-    # active/stale/all view mode
-    @branches = BranchesFinder.new(@repository, params.merge(sort: @sort)).execute
-    @branches = @branches.select { |b| b.state.to_s == @mode } if %w[active stale].include?(@mode)
-    @branches = Kaminari.paginate_array(@branches).page(params[:page])
+    @branches, @prev_path, @next_path =
+      Projects::BranchesByModeService.new(@project, params.merge(sort: @sort, mode: @mode)).execute
   end
 
   def fetch_branches_for_overview

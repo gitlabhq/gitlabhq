@@ -31,6 +31,13 @@ RSpec.describe MergeRequests::ApprovalService do
 
         expect(todo.reload).to be_pending
       end
+
+      it 'does not track merge request approve action' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .not_to receive(:track_approve_mr_action).with(user: user)
+
+        service.execute(merge_request)
+      end
     end
 
     context 'with valid approval' do
@@ -58,6 +65,13 @@ RSpec.describe MergeRequests::ApprovalService do
 
           service.execute(merge_request)
         end
+      end
+
+      it 'tracks merge request approve action' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .to receive(:track_approve_mr_action).with(user: user)
+
+        service.execute(merge_request)
       end
     end
 

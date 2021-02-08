@@ -8,12 +8,13 @@ RSpec.shared_examples 'verified navigation bar' do
   end
 
   it 'renders correctly' do
-    current_structure = page.all('.sidebar-top-level-items > li', class: ['!hidden']).map do |item|
+    # we are using * here in the selectors to prevent a regression where we added a non 'li' inside an 'ul'
+    current_structure = page.all('.sidebar-top-level-items > *', class: ['!hidden']).map do |item|
       next if item.find_all('a').empty?
 
       nav_item = item.find_all('a').first.text.gsub(/\s+\d+$/, '') # remove counts at the end
 
-      nav_sub_items = item.all('.sidebar-sub-level-items > li', class: ['!fly-out-top-item']).map do |list_item|
+      nav_sub_items = item.all('.sidebar-sub-level-items > *', class: ['!fly-out-top-item']).map do |list_item|
         list_item.all('a').first.text
       end
 

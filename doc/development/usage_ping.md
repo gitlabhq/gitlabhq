@@ -638,7 +638,7 @@ Next, get the unique events for the current week.
    ```ruby
    # Get unique events for metric for current_week
    Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: 'g_compliance_audit_events',
-   start_date: Date.current.beginning_of_week, end_date: Date.current.end_of_week)
+   start_date: Date.current.beginning_of_week, end_date: Date.current.next_week)
    ```
 
 ##### Recommendations

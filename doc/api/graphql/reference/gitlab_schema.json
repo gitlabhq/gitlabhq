@@ -68885,217 +68885,217 @@
           "enumValues": [
             {
               "name": "ASANA_SERVICE",
-              "description": null,
+              "description": "AsanaService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "ASSEMBLA_SERVICE",
-              "description": null,
+              "description": "AssemblaService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "BAMBOO_SERVICE",
-              "description": null,
+              "description": "BambooService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "BUGZILLA_SERVICE",
-              "description": null,
+              "description": "BugzillaService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "BUILDKITE_SERVICE",
-              "description": null,
+              "description": "BuildkiteService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "CAMPFIRE_SERVICE",
-              "description": null,
+              "description": "CampfireService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "CONFLUENCE_SERVICE",
-              "description": null,
+              "description": "ConfluenceService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "CUSTOM_ISSUE_TRACKER_SERVICE",
-              "description": null,
+              "description": "CustomIssueTrackerService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "DATADOG_SERVICE",
-              "description": null,
+              "description": "DatadogService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "DISCORD_SERVICE",
-              "description": null,
+              "description": "DiscordService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "DRONE_CI_SERVICE",
-              "description": null,
+              "description": "DroneCiService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "EMAILS_ON_PUSH_SERVICE",
-              "description": null,
+              "description": "EmailsOnPushService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "EWM_SERVICE",
-              "description": null,
+              "description": "EwmService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "EXTERNAL_WIKI_SERVICE",
-              "description": null,
+              "description": "ExternalWikiService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "FLOWDOCK_SERVICE",
-              "description": null,
+              "description": "FlowdockService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "GITHUB_SERVICE",
-              "description": null,
+              "description": "GithubService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "HANGOUTS_CHAT_SERVICE",
-              "description": null,
+              "description": "HangoutsChatService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "HIPCHAT_SERVICE",
-              "description": null,
+              "description": "HipchatService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "IRKER_SERVICE",
-              "description": null,
+              "description": "IrkerService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "JENKINS_SERVICE",
-              "description": null,
+              "description": "JenkinsService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "JIRA_SERVICE",
-              "description": null,
+              "description": "JiraService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "MATTERMOST_SERVICE",
-              "description": null,
+              "description": "MattermostService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "MATTERMOST_SLASH_COMMANDS_SERVICE",
-              "description": null,
+              "description": "MattermostSlashCommandsService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "MICROSOFT_TEAMS_SERVICE",
-              "description": null,
+              "description": "MicrosoftTeamsService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "PACKAGIST_SERVICE",
-              "description": null,
+              "description": "PackagistService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "PIPELINES_EMAIL_SERVICE",
-              "description": null,
+              "description": "PipelinesEmailService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "PIVOTALTRACKER_SERVICE",
-              "description": null,
+              "description": "PivotaltrackerService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "PROMETHEUS_SERVICE",
-              "description": null,
+              "description": "PrometheusService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "PUSHOVER_SERVICE",
-              "description": null,
+              "description": "PushoverService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "REDMINE_SERVICE",
-              "description": null,
+              "description": "RedmineService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "SLACK_SERVICE",
-              "description": null,
+              "description": "SlackService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "SLACK_SLASH_COMMANDS_SERVICE",
-              "description": null,
+              "description": "SlackSlashCommandsService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "TEAMCITY_SERVICE",
-              "description": null,
+              "description": "TeamcityService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "UNIFY_CIRCUIT_SERVICE",
-              "description": null,
+              "description": "UnifyCircuitService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "WEBEX_TEAMS_SERVICE",
-              "description": null,
+              "description": "WebexTeamsService type",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "YOUTRACK_SERVICE",
-              "description": null,
+              "description": "YoutrackService type",
               "isDeprecated": false,
               "deprecationReason": null
             }

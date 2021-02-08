@@ -132,7 +132,7 @@ To request it, open the **Reviewers** drop-down box to search for the user you w
 
 #### Approval Rule information for Reviewers **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233736) in GitLab 13.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233736) in GitLab 13.8. For this version only, GitLab administrators can opt to [enable it](#enable-or-disable-approval-rule-information).
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/293742) in GitLab 13.9.
 
 When editing the **Reviewers** field in a new or existing merge request, GitLab
@@ -146,6 +146,21 @@ This example shows reviewers and approval rules when creating a new merge reques
 This example shows reviewers and approval rules in a merge request sidebar:
 
 ![Reviewer approval rules in sidebar](img/reviewer_approval_rules_sidebar_v13_8.png)
+
+#### Requesting a new review
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293933) in GitLab 13.9.
+
+After a reviewer completes their [merge request reviews](../../discussions/index.md),
+the author of the merge request can request a new review from the reviewer:
+
+1. If the right sidebar in the merge request is collapsed, click the
+   **{chevron-double-lg-left}** **Expand Sidebar** icon to expand it.
+1. In the **Reviewers** section, click the **Re-request a review** icon (**{redo}**)
+   next to the reviewer's name.
+
+GitLab creates a new [to-do item](../../todos.md) for the reviewer, and sends
+them a notification email.
 
 ### Merge requests to close issues
 
@@ -188,3 +203,30 @@ is set for deletion, the merge request widget displays the
 - Take one thing at a time and ship the smallest changes possible. By doing so,
   reviews are faster and your changes are less prone to errors.
 - Do not use capital letters nor special chars in branch names.
+
+## Enable or disable Approval Rule information **(PREMIUM SELF)**
+
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/293742) in GitLab 13.9.
+
+Merge Request Reviewers is under development and ready for production use.
+It is deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can opt to disable it.
+
+To enable it:
+
+```ruby
+# For the instance
+Feature.enable(:reviewer_approval_rules)
+# For a single project
+Feature.enable(:reviewer_approval_rules, Project.find(<project id>))
+```
+
+To disable it:
+
+```ruby
+# For the instance
+Feature.disable(:reviewer_approval_rules)
+# For a single project
+Feature.disable(:reviewer_approval_rules, Project.find(<project id>))
+```

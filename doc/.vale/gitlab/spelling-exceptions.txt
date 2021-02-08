@@ -396,6 +396,7 @@ Poedit
 polyfill
 polyfills
 pooler
+postgres.ai
 PostgreSQL
 precompile
 preconfigure

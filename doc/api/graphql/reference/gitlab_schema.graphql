@@ -23796,41 +23796,184 @@ type ServiceEdge {
 }
 
 enum ServiceType {
+  """
+  AsanaService type
+  """
   ASANA_SERVICE
+
+  """
+  AssemblaService type
+  """
   ASSEMBLA_SERVICE
+
+  """
+  BambooService type
+  """
   BAMBOO_SERVICE
+
+  """
+  BugzillaService type
+  """
   BUGZILLA_SERVICE
+
+  """
+  BuildkiteService type
+  """
   BUILDKITE_SERVICE
+
+  """
+  CampfireService type
+  """
   CAMPFIRE_SERVICE
+
+  """
+  ConfluenceService type
+  """
   CONFLUENCE_SERVICE
+
+  """
+  CustomIssueTrackerService type
+  """
   CUSTOM_ISSUE_TRACKER_SERVICE
+
+  """
+  DatadogService type
+  """
   DATADOG_SERVICE
+
+  """
+  DiscordService type
+  """
   DISCORD_SERVICE
+
+  """
+  DroneCiService type
+  """
   DRONE_CI_SERVICE
+
+  """
+  EmailsOnPushService type
+  """
   EMAILS_ON_PUSH_SERVICE
+
+  """
+  EwmService type
+  """
   EWM_SERVICE
+
+  """
+  ExternalWikiService type
+  """
   EXTERNAL_WIKI_SERVICE
+
+  """
+  FlowdockService type
+  """
   FLOWDOCK_SERVICE
+
+  """
+  GithubService type
+  """
   GITHUB_SERVICE
+
+  """
+  HangoutsChatService type
+  """
   HANGOUTS_CHAT_SERVICE
+
+  """
+  HipchatService type
+  """
   HIPCHAT_SERVICE
+
+  """
+  IrkerService type
+  """
   IRKER_SERVICE
+
+  """
+  JenkinsService type
+  """
   JENKINS_SERVICE
+
+  """
+  JiraService type
+  """
   JIRA_SERVICE
+
+  """
+  MattermostService type
+  """
   MATTERMOST_SERVICE
+
+  """
+  MattermostSlashCommandsService type
+  """
   MATTERMOST_SLASH_COMMANDS_SERVICE
+
+  """
+  MicrosoftTeamsService type
+  """
   MICROSOFT_TEAMS_SERVICE
+
+  """
+  PackagistService type
+  """
   PACKAGIST_SERVICE
+
+  """
+  PipelinesEmailService type
+  """
   PIPELINES_EMAIL_SERVICE
+
+  """
+  PivotaltrackerService type
+  """
   PIVOTALTRACKER_SERVICE
+
+  """
+  PrometheusService type
+  """
   PROMETHEUS_SERVICE
+
+  """
+  PushoverService type
+  """
   PUSHOVER_SERVICE
+
+  """
+  RedmineService type
+  """
   REDMINE_SERVICE
+
+  """
+  SlackService type
+  """
   SLACK_SERVICE
+
+  """
+  SlackSlashCommandsService type
+  """
   SLACK_SLASH_COMMANDS_SERVICE
+
+  """
+  TeamcityService type
+  """
   TEAMCITY_SERVICE
+
+  """
+  UnifyCircuitService type
+  """
   UNIFY_CIRCUIT_SERVICE
+
+  """
+  WebexTeamsService type
+  """
   WEBEX_TEAMS_SERVICE
+
+  """
+  YoutrackService type
+  """
   YOUTRACK_SERVICE
 }
 

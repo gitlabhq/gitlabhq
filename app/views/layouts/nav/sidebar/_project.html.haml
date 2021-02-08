@@ -439,8 +439,6 @@
                     %span
                       = _('Pages')
 
-      = render 'shared/sidebar_toggle_button'
-
       -# Shortcut to Project > Activity
       %li.hidden
         = link_to activity_project_path(@project), title: _('Activity'), class: 'shortcuts-project-activity' do
@@ -475,3 +473,5 @@
       - if project_nav_tab?(:issues)
         %li.hidden
           = link_to _('Issue Boards'), project_boards_path(@project), title: _('Issue Boards'), class: 'shortcuts-issue-boards'
+
+    = render 'shared/sidebar_toggle_button'

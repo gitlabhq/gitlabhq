@@ -5210,42 +5210,42 @@ State of a Sentry error.
 
 | Value | Description |
 | ----- | ----------- |
-| `ASANA_SERVICE` |  |
-| `ASSEMBLA_SERVICE` |  |
-| `BAMBOO_SERVICE` |  |
-| `BUGZILLA_SERVICE` |  |
-| `BUILDKITE_SERVICE` |  |
-| `CAMPFIRE_SERVICE` |  |
-| `CONFLUENCE_SERVICE` |  |
-| `CUSTOM_ISSUE_TRACKER_SERVICE` |  |
-| `DATADOG_SERVICE` |  |
-| `DISCORD_SERVICE` |  |
-| `DRONE_CI_SERVICE` |  |
-| `EMAILS_ON_PUSH_SERVICE` |  |
-| `EWM_SERVICE` |  |
-| `EXTERNAL_WIKI_SERVICE` |  |
-| `FLOWDOCK_SERVICE` |  |
-| `GITHUB_SERVICE` |  |
-| `HANGOUTS_CHAT_SERVICE` |  |
-| `HIPCHAT_SERVICE` |  |
-| `IRKER_SERVICE` |  |
-| `JENKINS_SERVICE` |  |
-| `JIRA_SERVICE` |  |
-| `MATTERMOST_SERVICE` |  |
-| `MATTERMOST_SLASH_COMMANDS_SERVICE` |  |
-| `MICROSOFT_TEAMS_SERVICE` |  |
-| `PACKAGIST_SERVICE` |  |
-| `PIPELINES_EMAIL_SERVICE` |  |
-| `PIVOTALTRACKER_SERVICE` |  |
-| `PROMETHEUS_SERVICE` |  |
-| `PUSHOVER_SERVICE` |  |
-| `REDMINE_SERVICE` |  |
-| `SLACK_SERVICE` |  |
-| `SLACK_SLASH_COMMANDS_SERVICE` |  |
-| `TEAMCITY_SERVICE` |  |
-| `UNIFY_CIRCUIT_SERVICE` |  |
-| `WEBEX_TEAMS_SERVICE` |  |
-| `YOUTRACK_SERVICE` |  |
+| `ASANA_SERVICE` | AsanaService type |
+| `ASSEMBLA_SERVICE` | AssemblaService type |
+| `BAMBOO_SERVICE` | BambooService type |
+| `BUGZILLA_SERVICE` | BugzillaService type |
+| `BUILDKITE_SERVICE` | BuildkiteService type |
+| `CAMPFIRE_SERVICE` | CampfireService type |
+| `CONFLUENCE_SERVICE` | ConfluenceService type |
+| `CUSTOM_ISSUE_TRACKER_SERVICE` | CustomIssueTrackerService type |
+| `DATADOG_SERVICE` | DatadogService type |
+| `DISCORD_SERVICE` | DiscordService type |
+| `DRONE_CI_SERVICE` | DroneCiService type |
+| `EMAILS_ON_PUSH_SERVICE` | EmailsOnPushService type |
+| `EWM_SERVICE` | EwmService type |
+| `EXTERNAL_WIKI_SERVICE` | ExternalWikiService type |
+| `FLOWDOCK_SERVICE` | FlowdockService type |
+| `GITHUB_SERVICE` | GithubService type |
+| `HANGOUTS_CHAT_SERVICE` | HangoutsChatService type |
+| `HIPCHAT_SERVICE` | HipchatService type |
+| `IRKER_SERVICE` | IrkerService type |
+| `JENKINS_SERVICE` | JenkinsService type |
+| `JIRA_SERVICE` | JiraService type |
+| `MATTERMOST_SERVICE` | MattermostService type |
+| `MATTERMOST_SLASH_COMMANDS_SERVICE` | MattermostSlashCommandsService type |
+| `MICROSOFT_TEAMS_SERVICE` | MicrosoftTeamsService type |
+| `PACKAGIST_SERVICE` | PackagistService type |
+| `PIPELINES_EMAIL_SERVICE` | PipelinesEmailService type |
+| `PIVOTALTRACKER_SERVICE` | PivotaltrackerService type |
+| `PROMETHEUS_SERVICE` | PrometheusService type |
+| `PUSHOVER_SERVICE` | PushoverService type |
+| `REDMINE_SERVICE` | RedmineService type |
+| `SLACK_SERVICE` | SlackService type |
+| `SLACK_SLASH_COMMANDS_SERVICE` | SlackSlashCommandsService type |
+| `TEAMCITY_SERVICE` | TeamcityService type |
+| `UNIFY_CIRCUIT_SERVICE` | UnifyCircuitService type |
+| `WEBEX_TEAMS_SERVICE` | WebexTeamsService type |
+| `YOUTRACK_SERVICE` | YoutrackService type |
 
 ### SnippetBlobActionEnum
 

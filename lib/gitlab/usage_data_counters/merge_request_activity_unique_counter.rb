@@ -10,6 +10,8 @@ module Gitlab
       MR_CLOSE_ACTION = 'i_code_review_user_close_mr'
       MR_REOPEN_ACTION = 'i_code_review_user_reopen_mr'
       MR_MERGE_ACTION = 'i_code_review_user_merge_mr'
+      MR_APPROVE_ACTION = 'i_code_review_user_approve_mr'
+      MR_UNAPPROVE_ACTION = 'i_code_review_user_unapprove_mr'
       MR_CREATE_COMMENT_ACTION = 'i_code_review_user_create_mr_comment'
       MR_EDIT_COMMENT_ACTION = 'i_code_review_user_edit_mr_comment'
       MR_REMOVE_COMMENT_ACTION = 'i_code_review_user_remove_mr_comment'
@@ -51,6 +53,14 @@ module Gitlab
 
         def track_reopen_mr_action(user:)
           track_unique_action_by_user(MR_REOPEN_ACTION, user)
+        end
+
+        def track_approve_mr_action(user:)
+          track_unique_action_by_user(MR_APPROVE_ACTION, user)
+        end
+
+        def track_unapprove_mr_action(user:)
+          track_unique_action_by_user(MR_UNAPPROVE_ACTION, user)
         end
 
         def track_resolve_thread_action(user:)

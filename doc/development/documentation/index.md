@@ -96,17 +96,17 @@ belongs to, as well as an information block as described below:
   https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
   ```
 
-For example, the following metadata would be at the beginning of a product
-documentation page whose content is primarily associated with the Audit Events
-feature:
+For example:
 
 ```yaml
 ---
-stage: Monitor
-group: APM
+stage: Example Stage
+group: Example Group
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 ```
+
+If you need help determining the correct stage, read [Ask for help](workflow.md#ask-for-help).
 
 ### Document type metadata
 
