@@ -21,6 +21,18 @@ class TemplateFinder
         new(type, project, params)
       end
     end
+
+    def all_template_names(project, type)
+      return {} if !VENDORED_TEMPLATES.key?(type.to_s) && type.to_s != 'licenses'
+
+      build(type, project).template_names
+    end
+
+    # This is issues and merge requests description templates only.
+    # This will be removed once we introduce group level inherited templates
+    def all_template_names_array(project, type)
+      all_template_names(project, type).values.flatten.uniq
+    end
   end
 
   attr_reader :type, :project, :params
@@ -42,6 +54,10 @@ class TemplateFinder
     else
       vendored_templates.all(project)
     end
+  end
+
+  def template_names
+    vendored_templates.template_names(project)
   end
 end
 

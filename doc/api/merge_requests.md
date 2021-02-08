@@ -1183,7 +1183,7 @@ POST /projects/:id/merge_requests
 }
 ```
 
-Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) also see
+Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
 the `approvals_before_merge` parameter:
 
 ```json

@@ -67,6 +67,10 @@ Complexity is explained [on our client-facing API page](../api/graphql/index.md#
 Fields default to adding `1` to a query's complexity score, but developers can
 [specify a custom complexity](#field-complexity) when defining a field.
 
+To estimate the complexity of a query, you can run the
+[`gitlab:graphql:analyze`](rake_tasks.md#analyze-graphql-queries)
+Rake task.
+
 ### Request timeout
 
 Requests time out at 30 seconds.

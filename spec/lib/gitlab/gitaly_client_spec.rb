@@ -296,6 +296,32 @@ RSpec.describe Gitlab::GitalyClient do
       end
     end
 
+    context 'gitlab_git_env' do
+      let(:policy) { 'gitaly-route-repository-accessor-policy' }
+
+      context 'when RequestStore is disabled' do
+        it 'does not force-route to primary' do
+          expect(described_class.request_kwargs('default', timeout: 1)[:metadata][policy]).to be_nil
+        end
+      end
+
+      context 'when RequestStore is enabled without git_env', :request_store do
+        it 'does not force-orute to primary' do
+          expect(described_class.request_kwargs('default', timeout: 1)[:metadata][policy]).to be_nil
+        end
+      end
+
+      context 'when RequestStore is enabled with git_env', :request_store do
+        before do
+          Gitlab::SafeRequestStore[:gitlab_git_env] = true
+        end
+
+        it 'enables force-routing to primary' do
+          expect(described_class.request_kwargs('default', timeout: 1)[:metadata][policy]).to eq('primary-only')
+        end
+      end
+    end
+
     context 'deadlines', :request_store do
       let(:request_deadline) { real_time + 10.0 }
 

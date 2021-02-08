@@ -228,7 +228,7 @@ module API
 
         service.execute
         status(200)
-      rescue => ex
+      rescue Gitlab::Changelog::Error => ex
         render_api_error!("Failed to generate the changelog: #{ex.message}", 500)
       end
     end

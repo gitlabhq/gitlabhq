@@ -287,9 +287,9 @@ editing it and clicking on the delete button.
 
 ## Promote an issue to an epic **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3777) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.6.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) to [GitLab Premium](https://about.gitlab.com/pricing/) in 12.8.
-> - Promoting issues to epics via the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233974) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3777) in GitLab Ultimate 11.6.
+> - Moved to GitLab Premium in 12.8.
+> - Promoting issues to epics via the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233974) in GitLab Premium 13.6.
 
 You can promote an issue to an epic in the immediate parent group.
 
@@ -302,9 +302,10 @@ Alternatively, you can use the `/promote` [quick action](../quick_actions.md#qui
 
 Read more about promoting an issue to an epic on the [Manage epics page](../../group/epics/manage_epics.md#promote-an-issue-to-an-epic).
 
-## Add an issue to an iteration **(STARTER)**
+## Add an issue to an iteration **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216158) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216158) in GitLab 13.2.
+> - Moved to GitLab Premium in 13.9.
 
 To add an issue to an [iteration](../../group/iterations/index.md):
 

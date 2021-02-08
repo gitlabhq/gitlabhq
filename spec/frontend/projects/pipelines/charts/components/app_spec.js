@@ -87,6 +87,22 @@ describe('ProjectsPipelinesChartsApp', () => {
 
       expect(tabs.attributes('value')).toBe('1');
     });
+
+    it('should not try to push history if the tab does not change', async () => {
+      setWindowLocation(`${TEST_HOST}/gitlab-org/gitlab-test/-/pipelines/charts`);
+
+      mergeUrlParams.mockImplementation(({ chart }, path) => `${path}?chart=${chart}`);
+
+      const tabs = findGlTabs();
+
+      expect(tabs.attributes('value')).toBe('0');
+
+      tabs.vm.$emit('input', 0);
+
+      await wrapper.vm.$nextTick();
+
+      expect(updateHistory).not.toHaveBeenCalled();
+    });
   });
 
   describe('when provided with a query param', () => {
@@ -104,6 +120,38 @@ describe('ProjectsPipelinesChartsApp', () => {
       });
       createComponent({ provide: { shouldRenderDeploymentFrequencyCharts: true } });
       expect(findGlTabs().attributes('value')).toBe(tab);
+    });
+
+    it('should set the tab when the back button is clicked', async () => {
+      let popstateHandler;
+
+      window.addEventListener = jest.fn();
+
+      window.addEventListener.mockImplementation((event, handler) => {
+        if (event === 'popstate') {
+          popstateHandler = handler;
+        }
+      });
+
+      getParameterValues.mockImplementation((name) => {
+        expect(name).toBe('chart');
+        return [];
+      });
+
+      createComponent({ provide: { shouldRenderDeploymentFrequencyCharts: true } });
+
+      expect(findGlTabs().attributes('value')).toBe('0');
+
+      getParameterValues.mockImplementationOnce((name) => {
+        expect(name).toBe('chart');
+        return ['deployments'];
+      });
+
+      popstateHandler();
+
+      await wrapper.vm.$nextTick();
+
+      expect(findGlTabs().attributes('value')).toBe('1');
     });
   });
 

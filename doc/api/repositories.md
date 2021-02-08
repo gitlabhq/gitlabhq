@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, api
 ---
 
-# Repositories API **(CORE)**
+# Repositories API **(FREE)**
 
 ## List repository tree
 
@@ -410,6 +410,7 @@ follows:
 - [{{ title }}]({{ commit.reference }})\
 {% if author.contributor %} by {{ author.reference }}{% end %}\
 {% if merge_request %} ([merge request]({{ merge_request.reference }})){% end %}
+
 {% end %}
 
 {% end %}
@@ -457,11 +458,40 @@ If a line ends in a backslash, the next newline is ignored. This allows you to
 wrap code across multiple lines, without introducing unnecessary newlines in the
 Markdown output.
 
+Tags that use `{%` and `%}` (known as expression tags) consume the newline that
+directly follows them, if any. This means that this:
+
+```plaintext
+---
+{% if foo %}
+bar
+{% end %}
+---
+```
+
+Compiles into this:
+
+```plaintext
+---
+bar
+---
+```
+
+Instead of this:
+
+```plaintext
+---
+
+bar
+
+---
+```
+
 You can specify a custom template in your configuration like so:
 
 ```yaml
 ---
-template: >
+template: |
   {% if categories %}
   {% each categories %}
   ### {{ title }}
@@ -469,6 +499,7 @@ template: >
   {% each entries %}
   - [{{ title }}]({{ commit.reference }})\
   {% if author.contributor %} by {{ author.reference }}{% end %}
+
   {% end %}
 
   {% end %}
@@ -476,6 +507,9 @@ template: >
   No changes.
   {% end %}
 ```
+
+Note that when specifying the template you should use `template: |` and not
+`template: >`, as the latter doesn't preserve newlines in the template.
 
 ### Template data
 

@@ -27,6 +27,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'deploy_token_packages',
         'user_packages',
         'compliance',
+        'ecosystem',
         'analytics',
         'ide_edit',
         'search',

@@ -16,7 +16,7 @@ RSpec.describe Projects::UpdatePagesService do
   subject { described_class.new(project, build) }
 
   before do
-    project.remove_pages
+    project.legacy_remove_pages
   end
 
   context '::TMP_EXTRACT_PATH' do

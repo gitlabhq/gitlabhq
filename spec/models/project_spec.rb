@@ -4117,7 +4117,7 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '#remove_pages' do
+  describe '#legacy_remove_pages' do
     let(:project) { create(:project).tap { |project| project.mark_pages_as_deployed } }
     let(:pages_metadatum) { project.pages_metadatum }
     let(:namespace) { project.namespace }
@@ -4136,34 +4136,22 @@ RSpec.describe Project, factory_default: :keep do
       expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project).and_return(true)
       expect(PagesWorker).to receive(:perform_in).with(5.minutes, :remove, namespace.full_path, anything)
 
-      expect { project.remove_pages }.to change { pages_metadatum.reload.deployed }.from(true).to(false)
+      expect { project.legacy_remove_pages }.to change { pages_metadatum.reload.deployed }.from(true).to(false)
+    end
+
+    it 'does nothing if updates on legacy storage are disabled' do
+      stub_feature_flags(pages_update_legacy_storage: false)
+
+      expect(Gitlab::PagesTransfer).not_to receive(:new)
+      expect(PagesWorker).not_to receive(:perform_in)
+
+      project.legacy_remove_pages
     end
 
     it 'is run when the project is destroyed' do
-      expect(project).to receive(:remove_pages).and_call_original
+      expect(project).to receive(:legacy_remove_pages).and_call_original
 
       expect { project.destroy }.not_to raise_error
-    end
-
-    context 'when there is an old pages deployment' do
-      let!(:old_deployment_from_another_project) { create(:pages_deployment) }
-      let!(:old_deployment) { create(:pages_deployment, project: project) }
-
-      it 'schedules a destruction of pages deployments' do
-        expect(DestroyPagesDeploymentsWorker).to(
-          receive(:perform_async).with(project.id)
-        )
-
-        project.remove_pages
-      end
-
-      it 'removes pages deployments', :sidekiq_inline do
-        expect do
-          project.remove_pages
-        end.to change { PagesDeployment.count }.by(-1)
-
-        expect(PagesDeployment.find_by_id(old_deployment.id)).to be_nil
-      end
     end
   end
 

@@ -23,13 +23,13 @@ The numbers in the image correspond to the following features:
 - **1.** [Issue actions](#issue-actions)
 - **2.** [To Do](#to-do)
 - **3.** [Assignee](#assignee)
-  - **3.1.** [Multiple Assignees **(STARTER)**](#multiple-assignees)
-- **4.** [Epic **(PREMIUM)**](#epic)
+  - **3.1.** [Multiple Assignees](#multiple-assignees)
+- **4.** [Epic](#epic)
 - **5.** [Milestone](#milestone)
 - **6.** [Time tracking](#time-tracking)
 - **7.** [Due date](#due-date)
 - **8.** [Labels](#labels)
-- **9.** [Weight **(STARTER)**](#weight)
+- **9.** [Weight](#weight)
 - **10.** [Confidentiality](#confidentiality)
 - **11.** [Lock issue](#lock-issue)
 - **12.** [Participants](#participants)
@@ -86,7 +86,7 @@ An issue can be assigned to:
 
 - Yourself.
 - Another person.
-- [Many people](#multiple-assignees). **(STARTER)**
+- [Many people](#multiple-assignees). **(PREMIUM)**
 
 The assignees can be changed as often as needed. The idea is that the assignees are
 responsible for that issue until it's reassigned to someone else to take it from there.
@@ -96,7 +96,7 @@ NOTE:
 If a user is not member of that project, it can only be
 assigned to them if they created the issue themselves.
 
-#### Multiple Assignees **(STARTER)**
+#### Multiple Assignees **(PREMIUM)**
 
 Often, multiple people work on the same issue together. This can be difficult
 to track in large teams where there is shared ownership of an issue.
@@ -138,7 +138,7 @@ available to all projects in the group.
 If a label doesn't exist yet, you can create one by clicking **Edit**
 followed by **Create new label** in the dropdown menu.
 
-### Weight **(STARTER)**
+### Weight **(PREMIUM)**
 
 [Assign a weight](issue_weight.md) to an issue.
 Larger values are used to indicate more effort is required to complete the issue. Only
@@ -194,7 +194,8 @@ The plain text title and description of the issue fill the top center of the iss
 The description fully supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm),
 allowing many formatting options.
 
-> [In GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/10103) and later, changes to an issue's description are listed in the [issue history](#issue-history). **(STARTER)**
+[In GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/10103) and later, changes to an
+issue's description are listed in the [issue history](#issue-history). **(PREMIUM)**
 
 ### Mentions
 

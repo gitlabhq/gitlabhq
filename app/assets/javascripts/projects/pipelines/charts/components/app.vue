@@ -20,18 +20,26 @@ export default {
     },
   },
   data() {
-    const [chart] = getParameterValues('chart') || charts;
-    const tab = charts.indexOf(chart);
     return {
-      chart,
-      selectedTab: tab >= 0 ? tab : 0,
+      selectedTab: 0,
     };
   },
+  created() {
+    this.selectTab();
+    window.addEventListener('popstate', this.selectTab);
+  },
   methods: {
+    selectTab() {
+      const [chart] = getParameterValues('chart') || charts;
+      const tab = charts.indexOf(chart);
+      this.selectedTab = tab >= 0 ? tab : 0;
+    },
     onTabChange(index) {
-      this.selectedTab = index;
-      const path = mergeUrlParams({ chart: charts[index] }, window.location.pathname);
-      updateHistory({ url: path });
+      if (index !== this.selectedTab) {
+        this.selectedTab = index;
+        const path = mergeUrlParams({ chart: charts[index] }, window.location.pathname);
+        updateHistory({ url: path, title: window.title });
+      }
     },
   },
 };

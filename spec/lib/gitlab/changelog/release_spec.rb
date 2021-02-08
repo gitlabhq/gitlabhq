@@ -93,6 +93,28 @@ RSpec.describe Gitlab::Changelog::Release do
         OUT
       end
     end
+
+    context 'when a category has no entries' do
+      it "isn't included in the output" do
+        config.categories['kittens'] = 'Kittens'
+        config.categories['fixed'] = 'Bug fixes'
+
+        release.add_entry(
+          title: 'Entry title',
+          commit: commit,
+          category: 'fixed'
+        )
+
+        expect(release.to_markdown).to eq(<<~OUT)
+          ## 1.0.0 (2021-01-05)
+
+          ### Bug fixes (1 change)
+
+          - [Entry title](#{commit.to_reference(full: true)})
+
+        OUT
+      end
+    end
   end
 
   describe '#header_start_position' do

@@ -4,8 +4,6 @@ module Gitlab
   module Changelog
     # Configuration settings used when generating changelogs.
     class Config
-      ConfigError = Class.new(StandardError)
-
       # When rendering changelog entries, authors are not included.
       AUTHORS_NONE = 'none'
 
@@ -37,17 +35,14 @@ module Gitlab
         end
 
         if (template = hash['template'])
-          # We use the full namespace here (and further down) as otherwise Rails
-          # may use the wrong constant when autoloading is used.
-          config.template =
-            ::Gitlab::Changelog::Template::Compiler.new.compile(template)
+          config.template = Parser.new.parse_and_transform(template)
         end
 
         if (categories = hash['categories'])
           if categories.is_a?(Hash)
             config.categories = categories
           else
-            raise ConfigError, 'The "categories" configuration key must be a Hash'
+            raise Error, 'The "categories" configuration key must be a Hash'
           end
         end
 
@@ -57,8 +52,7 @@ module Gitlab
       def initialize(project)
         @project = project
         @date_format = DEFAULT_DATE_FORMAT
-        @template =
-          ::Gitlab::Changelog::Template::Compiler.new.compile(DEFAULT_TEMPLATE)
+        @template = Parser.new.parse_and_transform(DEFAULT_TEMPLATE)
         @categories = {}
       end
 

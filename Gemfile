@@ -519,3 +519,5 @@ gem 'webauthn', '~> 2.3'
 
 # IPAddress utilities
 gem 'ipaddress', '~> 0.8.3'
+
+gem 'parslet', '~> 1.8'

@@ -123,10 +123,16 @@ From the project and group issue/merge request list pages, you can [filter](../.
 
 ### Filtering in issue boards
 
-- From [project issue boards](../issue_board.md), you can filter by both group milestones and project milestones in the [search and filter bar](../../search/index.md#issue-boards).
-- From [group issue boards](../issue_board.md#group-issue-boards), you can filter by only group milestones in the [search and filter bar](../../search/index.md#issue-boards). **(PREMIUM)**
-- From [project issue boards](../issue_board.md), you can filter by both group milestones and project milestones in the [issue board configuration](../issue_board.md#configurable-issue-boards). **(STARTER)**
-- From [group issue boards](../issue_board.md#group-issue-boards) you can filter by only group milestones in the [issue board configuration](../issue_board.md#configurable-issue-boards). **(STARTER)**
+From [project issue boards](../issue_board.md), you can filter by both group milestones and project
+milestones in:
+
+- [Search and filter bar](../../search/index.md#issue-boards)
+- [Issue board configuration](../issue_board.md#configurable-issue-boards)
+
+From [group issue boards](../issue_board.md#group-issue-boards), you can filter by only group milestones in:
+
+- [Search and filter bar](../../search/index.md#issue-boards)
+- [Issue board configuration](../issue_board.md#configurable-issue-boards)
 
 ### Special milestone filters
 
@@ -155,15 +161,17 @@ There are also tabs below these that show the following:
 - **Participants**: Shows all assignees of issues assigned to the milestone.
 - **Labels**: Shows all labels that are used in issues assigned to the milestone.
 
-### Project Burndown Charts **(STARTER)**
+### Project Burndown Charts
 
-For project milestones in [GitLab Starter](https://about.gitlab.com/pricing/), a [burndown chart](burndown_and_burnup_charts.md) is in the milestone view, showing the progress of completing a milestone.
+For project milestones, a [burndown chart](burndown_and_burnup_charts.md) is in the milestone view,
+showing the progress of completing a milestone.
 
 ![burndown chart](img/burndown_chart_v13_6.png)
 
-### Group Burndown Charts **(STARTER)**
+### Group Burndown Charts
 
-For group milestones in [GitLab Starter](https://about.gitlab.com/pricing/), a [burndown chart](burndown_and_burnup_charts.md) is in the milestone view, showing the progress of completing a milestone.
+For group milestones, a [burndown chart](burndown_and_burnup_charts.md) is in the milestone view,
+showing the progress of completing a milestone.
 
 ### Milestone sidebar
 

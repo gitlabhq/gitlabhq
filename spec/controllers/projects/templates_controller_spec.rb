@@ -165,7 +165,8 @@ RSpec.describe Projects::TemplatesController do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.size).to eq(2)
-        expect(json_response).to match(expected_template_names)
+        expect(json_response.size).to eq(2)
+        expect(json_response.map { |x| x.slice('name') }).to match(expected_template_names)
       end
 
       it 'fails for user with no access' do

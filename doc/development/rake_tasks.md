@@ -261,6 +261,48 @@ bundle exec rake db:obsolete_ignored_columns
 
 Feel free to remove their definitions from their `ignored_columns` definitions.
 
+## Validate GraphQL queries
+
+To check the validity of one or more of our front-end GraphQL queries,
+run:
+
+```shell
+# Validate all queries
+bundle exec rake gitlab::graphql:validate
+# Validate one query
+bundle exec rake gitlab::graphql:validate[path/to/query.graphql]
+# Validate a directory
+bundle exec rake gitlab::graphql:validate[path/to/queries]
+```
+
+This prints out a report with an entry for each query, explaining why
+each query is invalid if it fails to pass validation.
+
+We strip out `@client` fields during validation so it is important to mark
+client fields with the `@client` directive to avoid false positives.
+
+## Analyze GraphQL queries
+
+Analogous to `ANALYZE` in SQL, we can run `gitlab:graphql:analyze` to
+estimate the of the cost of running a query.
+
+Usage:
+
+```shell
+# Analyze all queries
+bundle exec rake gitlab::graphql:analyze
+# Analyze one query
+bundle exec rake gitlab::graphql:analyze[path/to/query.graphql]
+# Analyze a directory
+bundle exec rake gitlab::graphql:analyze[path/to/queries]
+```
+
+This prints out a report for each query, including the complexity
+of the query if it is valid.
+
+The complexity depends on the arguments in some cases, so the reported
+complexity is a best-effort assessment of the upper bound.
+
 ## Update GraphQL documentation and schema definitions
 
 To generate GraphQL documentation based on the GitLab schema, run:

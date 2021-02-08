@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Accessible as Project#external_issue_tracker
 class JiraService < IssueTrackerService
   extend ::Gitlab::Utils::Override
   include Gitlab::Routing
@@ -162,7 +163,7 @@ class JiraService < IssueTrackerService
     jira_request { client.Issue.find(issue_key) }
   end
 
-  def close_issue(entity, external_issue)
+  def close_issue(entity, external_issue, current_user)
     issue = find_issue(external_issue.iid)
 
     return if issue.nil? || has_resolution?(issue) || !jira_issue_transition_id.present?
@@ -179,6 +180,7 @@ class JiraService < IssueTrackerService
     # if it is closed, so we don't have one comment for every commit.
     issue = find_issue(issue.key) if transition_issue(issue)
     add_issue_solved_comment(issue, commit_id, commit_url) if has_resolution?(issue)
+    log_usage(:close_issue, current_user)
   end
 
   def create_cross_reference_note(mentioned, noteable, author)
@@ -214,7 +216,7 @@ class JiraService < IssueTrackerService
       }
     }
 
-    add_comment(data, jira_issue)
+    add_comment(data, jira_issue).tap { log_usage(:cross_reference, author) }
   end
 
   def valid_connection?
@@ -273,6 +275,12 @@ class JiraService < IssueTrackerService
       )
       return false
     end
+  end
+
+  def log_usage(action, user)
+    key = "i_ecosystem_jira_service_#{action}"
+
+    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(key, values: user.id)
   end
 
   def add_issue_solved_comment(issue, commit_id, commit_url)

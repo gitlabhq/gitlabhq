@@ -130,7 +130,7 @@ GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com you 
 For outgoing connections from CI/CD runners we are not providing static IP addresses.
 All our runners are deployed into Google Cloud Platform (GCP) - any IP based
 firewall can be configured by looking up all
-[IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#where_can_i_find_product_name_short_ip_ranges).
+[IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#find_ip_range).
 
 ## Hostname list
 

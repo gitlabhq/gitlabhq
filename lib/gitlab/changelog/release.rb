@@ -54,14 +54,16 @@ module Gitlab
       end
 
       def to_markdown
+        state = EvalState.new
+        data = { 'categories' => entries_for_template }
+
         # While not critical, we would like release sections to be separated by
         # an empty line in the changelog; ensuring it's readable even in its
         # raw form.
         #
-        # Since it can be a bit tricky to get this right using Liquid, we
+        # Since it can be a bit tricky to get this right in a template, we
         # enforce an empty line separator ourselves.
-        markdown =
-          @config.template.render('categories' => entries_for_template).strip
+        markdown = @config.template.evaluate(state, data).strip
 
         # The release header can't be changed using the Liquid template, as we
         # need this to be in a known format. Without this restriction, we won't
@@ -80,14 +82,20 @@ module Gitlab
       end
 
       def entries_for_template
-        @entries.map do |category, entries|
-          {
+        rows = []
+
+        @entries.each do |category, entries|
+          next if entries.empty?
+
+          rows << {
             'title' => category,
             'count' => entries.length,
             'single_change' => entries.length == 1,
             'entries' => entries
           }
         end
+
+        rows
       end
     end
   end

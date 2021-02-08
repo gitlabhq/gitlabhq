@@ -4,8 +4,6 @@ module Gitlab
   module Changelog
     # A class used for committing a release's changelog to a Git repository.
     class Committer
-      CommitError = Class.new(StandardError)
-
       def initialize(project, user)
         @project = project
         @user = user
@@ -25,7 +23,7 @@ module Gitlab
         # When retrying, we need to reprocess the existing changelog from
         # scratch, otherwise we may end up throwing away changes. As such, all
         # the logic is contained within the retry block.
-        Retriable.retriable(on: CommitError) do
+        Retriable.retriable(on: Error) do
           commit = Gitlab::Git::Commit.last_for_path(
             @project.repository,
             branch,
@@ -57,7 +55,7 @@ module Gitlab
 
           result = service.execute
 
-          raise CommitError.new(result[:message]) if result[:status] != :success
+          raise Error.new(result[:message]) if result[:status] != :success
         end
       end
 

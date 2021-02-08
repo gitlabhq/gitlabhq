@@ -19648,6 +19648,9 @@ msgstr ""
 msgid "New User"
 msgstr ""
 
+msgid "New application"
+msgstr ""
+
 msgid "New branch"
 msgstr ""
 
@@ -28293,6 +28296,12 @@ msgstr ""
 msgid "System Info"
 msgstr ""
 
+msgid "System OAuth applications"
+msgstr ""
+
+msgid "System OAuth applications don't belong to any user and can only be managed by admins"
+msgstr ""
+
 msgid "System default (%{default})"
 msgstr ""
 
@@ -30875,6 +30884,9 @@ msgid "Triggers|To pass variables to the triggered pipeline, add %{code_start}va
 msgstr ""
 
 msgid "Troubleshoot and monitor your application with tracing"
+msgstr ""
+
+msgid "Trusted"
 msgstr ""
 
 msgid "Try again"
@@ -35307,6 +35319,12 @@ msgid "the following issue(s)"
 msgstr ""
 
 msgid "this document"
+msgstr ""
+
+msgid "this issue cannot be assigned to a confidential epic since it is public"
+msgstr ""
+
+msgid "this issue cannot be made public since it belongs to a confidential epic"
 msgstr ""
 
 msgid "time summary"

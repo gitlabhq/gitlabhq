@@ -194,40 +194,28 @@ module BlobHelper
     @ref_project ||= @target_project || @project
   end
 
-  def template_dropdown_names(items)
-    grouped = items.group_by(&:category)
-    categories = grouped.keys
-
-    categories.each_with_object({}) do |category, hash|
-      hash[category] = grouped[category].map do |item|
-        { name: item.name, id: item.key }
-      end
-    end
-  end
-  private :template_dropdown_names
-
   def licenses_for_select(project)
-    @licenses_for_select ||= template_dropdown_names(TemplateFinder.build(:licenses, project).execute)
+    @licenses_for_select ||= TemplateFinder.all_template_names(project, :licenses)
   end
 
   def gitignore_names(project)
-    @gitignore_names ||= template_dropdown_names(TemplateFinder.build(:gitignores, project).execute)
+    @gitignore_names ||= TemplateFinder.all_template_names(project, :gitignores)
   end
 
   def gitlab_ci_ymls(project)
-    @gitlab_ci_ymls ||= template_dropdown_names(TemplateFinder.build(:gitlab_ci_ymls, project).execute)
+    @gitlab_ci_ymls ||= TemplateFinder.all_template_names(project, :gitlab_ci_ymls)
   end
 
   def gitlab_ci_syntax_ymls(project)
-    @gitlab_ci_syntax_ymls ||= template_dropdown_names(TemplateFinder.build(:gitlab_ci_syntax_ymls, project).execute)
+    @gitlab_ci_syntax_ymls ||= TemplateFinder.all_template_names(project, :gitlab_ci_syntax_ymls)
   end
 
   def metrics_dashboard_ymls(project)
-    @metrics_dashboard_ymls ||= template_dropdown_names(TemplateFinder.build(:metrics_dashboard_ymls, project).execute)
+    @metrics_dashboard_ymls ||= TemplateFinder.all_template_names(project, :metrics_dashboard_ymls)
   end
 
   def dockerfile_names(project)
-    @dockerfile_names ||= template_dropdown_names(TemplateFinder.build(:dockerfiles, project).execute)
+    @dockerfile_names ||= TemplateFinder.all_template_names(project, :dockerfiles)
   end
 
   def blob_editor_paths(project)

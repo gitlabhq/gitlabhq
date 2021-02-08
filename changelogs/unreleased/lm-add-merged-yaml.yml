@@ -1,0 +1,5 @@
+---
+title: 'GraphQL: Add mergedYaml to CiConfigResolver response'
+merge_request: 53081
+author:
+type: changed

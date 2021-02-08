@@ -117,7 +117,7 @@ class Project < ApplicationRecord
 
   use_fast_destroy :build_trace_chunks
 
-  after_destroy -> { run_after_commit { remove_pages } }
+  after_destroy -> { run_after_commit { legacy_remove_pages } }
   after_destroy :remove_exports
 
   after_validation :check_pending_delete
@@ -1788,15 +1788,15 @@ class Project < ApplicationRecord
                .delete_all
   end
 
-  # TODO: what to do here when not using Legacy Storage? Do we still need to rename and delay removal?
+  # TODO: remove this method https://gitlab.com/gitlab-org/gitlab/-/issues/320775
   # rubocop: disable CodeReuse/ServiceClass
-  def remove_pages
+  def legacy_remove_pages
+    return unless Feature.enabled?(:pages_update_legacy_storage, default_enabled: true)
+
     # Projects with a missing namespace cannot have their pages removed
     return unless namespace
 
     mark_pages_as_not_deployed unless destroyed?
-
-    DestroyPagesDeploymentsWorker.perform_async(id)
 
     # 1. We rename pages to temporary directory
     # 2. We wait 5 minutes, due to NFS caching

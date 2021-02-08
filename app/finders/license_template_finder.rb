@@ -28,6 +28,10 @@ class LicenseTemplateFinder
     end
   end
 
+  def template_names
+    ::Gitlab::Template::BaseTemplate.template_names_by_category(vendored_licenses)
+  end
+
   private
 
   def vendored_licenses

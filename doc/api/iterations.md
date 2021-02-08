@@ -4,9 +4,10 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Project iterations API **(STARTER)**
+# Project iterations API **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.5.
+> - Moved to GitLab Premium in 13.9.
 
 This page describes the project iterations API.
 There's a separate [group iterations API](group_iterations.md) page.

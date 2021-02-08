@@ -5,15 +5,15 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Issue weight **(STARTER)**
+# Issue weight **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76) in [GitLab Starter](https://about.gitlab.com/pricing/) 8.3.
+> - Moved to GitLab Premium in 13.9.
 
 When you have a lot of issues, it can be hard to get an overview.
 By adding a weight to each issue, you can get a better idea of how much time,
 value or complexity a given issue has or costs.
 
-You can set the weight of an issue during its creation, by simply changing the
+You can set the weight of an issue during its creation, by changing the
 value in the dropdown menu. You can set it to a non-negative integer
 value from 0, 1, 2, and so on. (The database stores a 4-byte value, so the
 upper bound is essentially limitless).

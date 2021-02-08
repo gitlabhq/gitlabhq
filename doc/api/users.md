@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Manage
+group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -171,7 +171,7 @@ GET /users
 ]
 ```
 
-Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, and `using_license_seat` parameters.
+Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, and `using_license_seat` parameters.
 
 ```json
 [
@@ -340,7 +340,7 @@ Example Responses:
 NOTE:
 The `plan` and `trial` parameters are only available on GitLab Enterprise Edition.
 
-Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) also see
+Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see
 the `shared_runners_minutes_limit`, and `extra_shared_runners_minutes_limit` parameters.
 
 ```json

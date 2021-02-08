@@ -672,7 +672,7 @@ RSpec.describe API::Repositories do
 
         allow(spy)
           .to receive(:execute)
-          .and_raise(Gitlab::Changelog::Committer::CommitError.new('oops'))
+          .and_raise(Gitlab::Changelog::Error.new('oops'))
 
         post(
           api("/projects/#{project.id}/repository/changelog", user),

@@ -4,9 +4,9 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Multiple Assignees for Issues **(STARTER)**
+# Multiple Assignees for Issues **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1904) in [GitLab Starter 9.2](https://about.gitlab.com/releases/2017/05/22/gitlab-9-2-released/#multiple-assignees-for-issues).
+> - Moved to GitLab Premium in 13.9.
 
 In large teams, where there is shared ownership of an issue, it can be difficult
 to track who is working on it, who already completed their contributions, who
@@ -40,4 +40,4 @@ to assign the issue to.
 
 ![adding multiple assignees](img/multiple_assignees.gif)
 
-An assignee can be easily removed by deselecting them from the same dropdown menu.
+To remove an assignee, deselect them from the same dropdown menu.

@@ -298,11 +298,11 @@ When the user is authenticated and `simple` is not set this returns something li
 ```
 
 NOTE:
-For users of GitLab [Premium or higher](https://about.gitlab.com/pricing/),
+For users of [GitLab Premium or higher](https://about.gitlab.com/pricing/),
 the `marked_for_deletion_at` attribute has been deprecated, and is removed
 in API v5 in favor of the `marked_for_deletion_on` attribute.
 
-Users of GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/)
+Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/)
 can also see the `approvals_before_merge` parameter:
 
 ```json
@@ -933,7 +933,7 @@ GET /projects/:id
 }
 ```
 
-Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/)
+Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/)
 can also see the `approvals_before_merge` parameter:
 
 ```json
@@ -1053,7 +1053,7 @@ POST /projects
 |-------------------------------------------------------------|---------|------------------------|-------------|
 | `allow_merge_on_skipped_pipeline`                           | boolean | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
 | `analytics_access_level`                                    | string  | no                     | One of `disabled`, `private` or `enabled` |
-| `approvals_before_merge` **(STARTER)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. |
+| `approvals_before_merge` **(PREMIUM)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. |
 | `auto_cancel_pending_pipelines`                             | string  | **{dotted-circle}** No | Auto-cancel pending pipelines. This isn't a boolean, but enabled/disabled. |
 | `auto_devops_deploy_strategy`                               | string  | **{dotted-circle}** No | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`). |
 | `auto_devops_enabled`                                       | boolean | **{dotted-circle}** No | Enable Auto DevOps for this project. |
@@ -1081,8 +1081,8 @@ POST /projects
 | `merge_method`                                              | string  | **{dotted-circle}** No | Set the [merge method](#project-merge-method) used. |
 | `merge_requests_access_level`                               | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `merge_requests_enabled`                                    | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
-| `mirror_trigger_builds` **(STARTER)**                       | boolean | **{dotted-circle}** No | Pull mirroring triggers builds. |
-| `mirror` **(STARTER)**                                      | boolean | **{dotted-circle}** No | Enables pull mirroring in a project. |
+| `mirror_trigger_builds` **(PREMIUM)**                       | boolean | **{dotted-circle}** No | Pull mirroring triggers builds. |
+| `mirror` **(PREMIUM)**                                      | boolean | **{dotted-circle}** No | Enables pull mirroring in a project. |
 | `name`                                                      | string  | **{check-circle}** Yes (if path isn't provided) | The name of the new project. Equals path if not provided. |
 | `namespace_id`                                              | integer | **{dotted-circle}** No | Namespace for the new project (defaults to the current user's namespace). |
 | `operations_access_level`                                   | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
@@ -1127,7 +1127,7 @@ POST /projects/user/:user_id
 |-------------------------------------------------------------|---------|------------------------|-------------|
 | `allow_merge_on_skipped_pipeline`                           | boolean | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
 | `analytics_access_level`                                    | string  | no                     | One of `disabled`, `private` or `enabled` |
-| `approvals_before_merge` **(STARTER)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. |
+| `approvals_before_merge` **(PREMIUM)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. |
 | `auto_cancel_pending_pipelines`                             | string  | **{dotted-circle}** No | Auto-cancel pending pipelines. This isn't a boolean, but enabled/disabled. |
 | `auto_devops_deploy_strategy`                               | string  | **{dotted-circle}** No | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`). |
 | `auto_devops_enabled`                                       | boolean | **{dotted-circle}** No | Enable Auto DevOps for this project. |
@@ -1153,8 +1153,8 @@ POST /projects/user/:user_id
 | `merge_method`                                              | string  | **{dotted-circle}** No | Set the [merge method](#project-merge-method) used. |
 | `merge_requests_access_level`                               | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `merge_requests_enabled`                                    | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
-| `mirror_trigger_builds` **(STARTER)**                       | boolean | **{dotted-circle}** No | Pull mirroring triggers builds. |
-| `mirror` **(STARTER)**                                      | boolean | **{dotted-circle}** No | Enables pull mirroring in a project. |
+| `mirror_trigger_builds` **(PREMIUM)**                       | boolean | **{dotted-circle}** No | Pull mirroring triggers builds. |
+| `mirror` **(PREMIUM)**                                      | boolean | **{dotted-circle}** No | Enables pull mirroring in a project. |
 | `name`                                                      | string  | **{check-circle}** Yes | The name of the new project. |
 | `namespace_id`                                              | integer | **{dotted-circle}** No | Namespace for the new project (defaults to the current user's namespace). |
 | `operations_access_level`                                   | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
@@ -1200,7 +1200,7 @@ PUT /projects/:id
 |-------------------------------------------------------------|----------------|------------------------|-------------|
 | `allow_merge_on_skipped_pipeline`                           | boolean        | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
 | `analytics_access_level`                                    | string         | no                     | One of `disabled`, `private` or `enabled` |
-| `approvals_before_merge` **(STARTER)**                      | integer        | **{dotted-circle}** No | How many approvers should approve merge request by default. |
+| `approvals_before_merge` **(PREMIUM)**                      | integer        | **{dotted-circle}** No | How many approvers should approve merge request by default. |
 | `auto_cancel_pending_pipelines`                             | string         | **{dotted-circle}** No | Auto-cancel pending pipelines. This isn't a boolean, but enabled/disabled. |
 | `auto_devops_deploy_strategy`                               | string         | **{dotted-circle}** No | Auto Deploy strategy (`continuous`, `manual`, or `timed_incremental`). |
 | `auto_devops_enabled`                                       | boolean        | **{dotted-circle}** No | Enable Auto DevOps for this project. |
@@ -1229,15 +1229,15 @@ PUT /projects/:id
 | `merge_method`                                              | string         | **{dotted-circle}** No | Set the [merge method](#project-merge-method) used. |
 | `merge_requests_access_level`                               | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `merge_requests_enabled`                                    | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
-| `mirror_overwrites_diverged_branches` **(STARTER)**         | boolean        | **{dotted-circle}** No | Pull mirror overwrites diverged branches. |
-| `mirror_trigger_builds` **(STARTER)**                       | boolean        | **{dotted-circle}** No | Pull mirroring triggers builds. |
-| `mirror_user_id` **(STARTER)**                              | integer        | **{dotted-circle}** No | User responsible for all the activity surrounding a pull mirror event. _(admins only)_ |
-| `mirror` **(STARTER)**                                      | boolean        | **{dotted-circle}** No | Enables pull mirroring in a project. |
+| `mirror_overwrites_diverged_branches` **(PREMIUM)**         | boolean        | **{dotted-circle}** No | Pull mirror overwrites diverged branches. |
+| `mirror_trigger_builds` **(PREMIUM)**                       | boolean        | **{dotted-circle}** No | Pull mirroring triggers builds. |
+| `mirror_user_id` **(PREMIUM)**                              | integer        | **{dotted-circle}** No | User responsible for all the activity surrounding a pull mirror event. _(admins only)_ |
+| `mirror` **(PREMIUM)**                                      | boolean        | **{dotted-circle}** No | Enables pull mirroring in a project. |
 | `name`                                                      | string         | **{dotted-circle}** No | The name of the project. |
 | `operations_access_level`                                   | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `only_allow_merge_if_all_discussions_are_resolved`          | boolean        | **{dotted-circle}** No | Set whether merge requests can only be merged when all the discussions are resolved. |
 | `only_allow_merge_if_pipeline_succeeds`                     | boolean        | **{dotted-circle}** No | Set whether merge requests can only be merged with successful jobs. |
-| `only_mirror_protected_branches` **(STARTER)**              | boolean        | **{dotted-circle}** No | Only mirror protected branches. |
+| `only_mirror_protected_branches` **(PREMIUM)**              | boolean        | **{dotted-circle}** No | Only mirror protected branches. |
 | `packages_enabled`                                          | boolean        | **{dotted-circle}** No | Enable or disable packages repository feature. |
 | `pages_access_level`                                        | string         | **{dotted-circle}** No | One of `disabled`, `private`, `enabled`, or `public`. |
 | `requirements_access_level`                                 | string         | **{dotted-circle}** No | One of `disabled`, `private`, `enabled` or `public` |
@@ -1877,7 +1877,7 @@ This endpoint:
 - Deletes a project including all associated resources (including issues and
   merge requests).
 - From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on
-  [Premium](https://about.gitlab.com/pricing/) or higher tiers, group
+  [Premium or higher](https://about.gitlab.com/pricing/) tiers, group
   admins can [configure](../user/group/index.md#enabling-delayed-project-removal)
   projects within a group to be deleted after a delayed period. When enabled,
   actual deletion happens after the number of days specified in the
@@ -2187,8 +2187,6 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Start the Housekeeping task for a project
 
-> Introduced in GitLab 9.0.
-
 ```plaintext
 POST /projects/:id/housekeeping
 ```
@@ -2197,9 +2195,9 @@ POST /projects/:id/housekeeping
 |-----------|----------------|------------------------|-------------|
 | `id`      | integer/string | **{check-circle}** Yes | The ID of the project or NAMESPACE/PROJECT_NAME. |
 
-## Push Rules **(STARTER)**
+## Push Rules **(PREMIUM)**
 
-### Get project push rules **(STARTER)**
+### Get project push rules **(PREMIUM)**
 
 Get the [push rules](../push_rules/push_rules.md#enabling-push-rules) of a
 project.
@@ -2231,7 +2229,7 @@ GET /projects/:id/push_rule
 }
 ```
 
-Users of GitLab [Premium or higher](https://about.gitlab.com/pricing/)
+Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/)
 can also see the `commit_committer_check` and `reject_unsigned_commits`
 parameters:
 
@@ -2245,7 +2243,7 @@ parameters:
 }
 ```
 
-### Add project push rule **(STARTER)**
+### Add project push rule **(PREMIUM)**
 
 Adds a push rule to a specified project.
 
@@ -2268,7 +2266,7 @@ POST /projects/:id/push_rule
 | `prevent_secrets`                       | boolean        | **{dotted-circle}** No | GitLab rejects any files that are likely to contain secrets. |
 | `reject_unsigned_commits` **(PREMIUM)** | boolean        | **{dotted-circle}** No | Reject commit when it's not signed through GPG. |
 
-### Edit project push rule **(STARTER)**
+### Edit project push rule **(PREMIUM)**
 
 Edits a push rule for a specified project.
 
@@ -2293,7 +2291,7 @@ PUT /projects/:id/push_rule
 
 ### Delete project push rule
 
-> Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 9.0.
+> - Moved to GitLab Premium in 13.9.
 
 Removes a push rule from a project. This is an idempotent method and can be
 called multiple times. Either the push rule is available or not.
@@ -2440,9 +2438,10 @@ Read more in the [Project import/export](project_import_export.md) documentation
 
 Read more in the [Project members](members.md) documentation.
 
-## Configure pull mirroring for a project **(STARTER)**
+## Configure pull mirroring for a project **(PREMIUM)**
 
-> Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 11.2.
+> - Introduced in GitLab 11.
+> - Moved to GitLab Premium in 13.9.
 
 Configure pull mirroring while [creating a new project](#create-project) or [updating an existing project](#edit-project) using the API if the remote repository is publicly accessible or via `username/password` authentication. In case your HTTP repository is not publicly accessible, you can add the authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`, where password is a [personal access token](../user/profile/personal_access_tokens.md) with the API scope enabled.
 
@@ -2452,9 +2451,9 @@ The relevant API parameters to update are:
 - `mirror`: Enables pull mirroring on project when set to `true`.
 - `only_mirror_protected_branches`: Set to `true` for protected branches.
 
-## Start the pull mirroring process for a Project **(STARTER)**
+## Start the pull mirroring process for a Project **(PREMIUM)**
 
-> Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
+> - Moved to GitLab Premium in 13.9.
 
 ```plaintext
 POST /projects/:id/mirror/pull

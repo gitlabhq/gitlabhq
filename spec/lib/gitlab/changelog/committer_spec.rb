@@ -88,7 +88,7 @@ RSpec.describe Gitlab::Changelog::Committer do
     end
 
     context "when the changelog changes before saving the changes" do
-      it 'raises a CommitError' do
+      it 'raises a Error' do
         release1 = Gitlab::Changelog::Release
           .new(version: '1.0.0', date: Time.utc(2020, 1, 1), config: config)
 
@@ -121,7 +121,7 @@ RSpec.describe Gitlab::Changelog::Committer do
             branch: 'master',
             message: 'Test commit'
           )
-        end.to raise_error(described_class::CommitError)
+        end.to raise_error(Gitlab::Changelog::Error)
       end
     end
   end
