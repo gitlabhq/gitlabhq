@@ -15,8 +15,9 @@ Notifications are sent via email.
 
 You receive notifications for one of the following reasons:
 
-- You participate in an issue, merge request, epic or design. In this context, _participate_ means comment, or edit.
-- You enable notifications in an issue, merge request, or epic. To enable notifications, click the **Notifications** toggle in the sidebar to _on_.
+- You participate in an issue, merge request, epic, or design. In this context, _participate_ means comment, or edit.
+- You [enable notifications in an issue, merge request, or epic](#notifications-on-issues-merge-requests-and-epics).
+- You configured notifications at the [project](#project-notifications) and/or [group](#group-notifications) level.
 
 While notifications are enabled, you receive notification of actions occurring in that issue, merge request, or epic.
 
@@ -25,7 +26,9 @@ Notifications can be blocked by an administrator, preventing them from being sen
 
 ## Tuning your notifications
 
-The quantity of notifications can be overwhelming. GitLab allows you to tune the notifications you receive. For example, you may want to be notified about all activity in a specific project, but for others, only be notified when you are mentioned by name.
+The number of notifications can be overwhelming. GitLab allows you to tune the notifications you receive.
+For example, you might want to be notified about all activity in a specific project.
+For other projects, you only need to be notified when you are mentioned by name.
 
 You can tune the notifications you receive by combining your notification settings:
 
@@ -159,49 +162,64 @@ Users are notified of the following events:
 | Project moved                | Project members (1) | (1) not disabled             |
 | New release                  | Project members     | Custom notification          |
 
-## Issue / Epics / Merge request events
+## Notifications on issues, merge requests, and epics
 
-In most of the below cases, the notification is sent to:
+To enable notifications on one specific issue, merge request or epic, you need to enable the **Notifications** toggle in the right sidebar.
+
+- **Enable**: If you are not a participant in the discussion on that issue, but
+  want to receive notifications on each update, subscribe to it.
+- **Disable**: If you are receiving notifications for updates to that issue but no
+  longer want to receive them, unsubscribe from it.
+
+Configuring this notification on an epic doesn't make you automatically subscribed to the issue that are linked to the epic.
+
+For most events, the notification is sent to:
 
 - Participants:
-  - the author and assignee of the issue/merge request
-  - authors of comments on the issue/merge request
-  - anyone mentioned by `@username` in the title or description of the issue, merge request or epic **(ULTIMATE)**
-  - anyone with notification level "Participating" or higher that is mentioned by `@username` in any of the comments on the issue, merge request, or epic **(ULTIMATE)**
-- Watchers: users with notification level "Watch"
-- Subscribers: anyone who manually subscribed to the issue, merge request, or epic **(ULTIMATE)**
-- Custom: Users with notification level "custom" who turned on notifications for any of the events present in the table below
+  - The author and assignee of the issue/merge request.
+  - Authors of comments on the issue/merge request.
+  - Anyone mentioned by `@username` in the title or description of the issue, merge request or epic.
+  - Anyone with notification level "Participating" or higher that is mentioned by `@username` in any of the comments on the issue, merge request, or epic.
+- Watchers: users with notification level "Watch".
+- Subscribers: anyone who manually subscribed to the issue, merge request, or epic.
+- Custom: Users with notification level "custom" who turned on notifications for any of the events present in the table below.
 
 NOTE:
-To minimize the number of notifications that do not require any action, in [GitLab versions 12.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/616), eligible approvers are no longer notified for all the activities in their projects. To receive them they have to change their user notification settings to **Watch** instead.
+To minimize the number of notifications that do not require any action, in
+[GitLab versions 12.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/616), eligible
+approvers are no longer notified for all the activities in their projects. To receive them they have
+to change their user notification settings to **Watch** instead.
+
+The following table presents the events that generate notifications for issues, merge requests, and
+epics:
 
 | Event                  | Sent to |
 |------------------------|---------|
-| New issue              |         |
-| Close issue            |         |
-| Reassign issue         | The above, plus the old assignee |
-| Reopen issue           |         |
-| Due issue              | Participants and Custom notification level with this event selected |
 | Change milestone issue | Subscribers, participants mentioned, and Custom notification level with this event selected |
-| Remove milestone issue | Subscribers, participants mentioned, and Custom notification level with this event selected |
+| Change milestone merge request | Subscribers, participants mentioned, and Custom notification level with this event selected |
+| Close epic             |         |
+| Close issue            |         |
+| Close merge request    |         |
+| Due issue              | Participants and Custom notification level with this event selected |
+| Failed pipeline        | The author of the pipeline |
+| Fixed pipeline ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24309) in GitLab 13.1.)    | The author of the pipeline. Enabled by default. |
+| Merge merge request    |         |
+| Merge when pipeline succeeds ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211961) in GitLab 13.4) |     |
+| New comment            | Participants, Watchers, Subscribers, and Custom notification level with this event selected, plus anyone mentioned by `@username` in the comment, with notification level "Mention" or higher |
+| New epic               |         |
+| New issue              |         |
 | New merge request      |         |
 | Push to merge request  | Participants and Custom notification level with this event selected |
-| Reassign merge request | The above, plus the old assignee |
-| Close merge request    |         |
-| Reopen merge request   |         |
-| Merge merge request    |         |
-| Merge when pipeline succeeds ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211961) in GitLab 13.4) |     |
-| Change milestone merge request | Subscribers, participants mentioned, and Custom notification level with this event selected |
+| Reassign issue         | Participants, Watchers, Subscribers, and Custom notification level with this event selected, plus the old assignee |
+| Reassign merge request | Participants, Watchers, Subscribers, and Custom notification level with this event selected, plus the old assignee |
+| Remove milestone issue | Subscribers, participants mentioned, and Custom notification level with this event selected |
 | Remove milestone merge request | Subscribers, participants mentioned, and Custom notification level with this event selected |
-| New comment            | The above, plus anyone mentioned by `@username` in the comment, with notification level "Mention" or higher |
-| Failed pipeline        | The author of the pipeline |
-| Fixed pipeline    | The author of the pipeline. Enabled by default. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24309) in GitLab 13.1. |
+| Reopen epic            |         |
+| Reopen issue           |         |
+| Reopen merge request   |         |
 | Successful pipeline    | The author of the pipeline, if they have the custom notification setting for successful pipelines set. If the pipeline failed previously, a `Fixed pipeline` message is sent for the first successful pipeline after the failure, then a `Successful pipeline` message for any further successful pipelines. |
-| New epic **(ULTIMATE)** |        |
-| Close epic **(ULTIMATE)** |      |
-| Reopen epic **(ULTIMATE)** |     |
 
-In addition, if the title or description of an Issue or Merge Request is
+If the title or description of an issue or merge request is
 changed, notifications are sent to any **new** mentions by `@username` as
 if they had been mentioned in the original text.
 

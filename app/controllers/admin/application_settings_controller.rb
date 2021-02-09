@@ -243,6 +243,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :domain_denylist_file,
       :raw_blob_request_limit,
       :issues_create_limit,
+      :notes_create_limit,
       :default_branch_name,
       disabled_oauth_sign_in_sources: [],
       import_sources: [],

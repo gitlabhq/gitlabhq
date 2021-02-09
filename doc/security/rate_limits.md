@@ -25,11 +25,14 @@ similarly mitigated by a rate limit.
 
 ## Admin Area settings
 
-- [Issues rate limits](../user/admin_area/settings/rate_limit_on_issues_creation.md).
-- [User and IP rate limits](../user/admin_area/settings/user_and_ip_rate_limits.md).
-- [Raw endpoints rate limits](../user/admin_area/settings/rate_limits_on_raw_endpoints.md).
-- [Protected paths](../user/admin_area/settings/protected_paths.md).
-- [Import/Export rate limits](../user/admin_area/settings/import_export_rate_limits.md).
+These are rate limits you can set in the Admin Area of your instance:
+
+- [Import/Export rate limits](../user/admin_area/settings/import_export_rate_limits.md)
+- [Issues rate limits](../user/admin_area/settings/rate_limit_on_issues_creation.md)
+- [Notes rate limits](../user/admin_area/settings/rate_limit_on_notes_creation.md)
+- [Protected paths](../user/admin_area/settings/protected_paths.md)
+- [Raw endpoints rate limits](../user/admin_area/settings/rate_limits_on_raw_endpoints.md)
+- [User and IP rate limits](../user/admin_area/settings/user_and_ip_rate_limits.md)
 
 ## Non-configurable limits
 

@@ -43,6 +43,8 @@ RSpec.describe 'Adding a DiffNote' do
 
     it_behaves_like 'a Note mutation when there are active record validation errors', model: DiffNote
 
+    it_behaves_like 'a Note mutation when there are rate limit validation errors'
+
     context do
       let(:diff_refs) { build(:commit).diff_refs } # Allow fake diff refs so arguments are valid
 

@@ -4,6 +4,7 @@ import {
   INLINE_DIFF_VIEW_TYPE,
   INLINE_DIFF_LINES_KEY,
 } from '../constants';
+import { computeSuggestionCommitMessage } from '../utils/suggestions';
 import { parallelizeDiffLines } from './utils';
 
 export * from './getters_versions_dropdowns';
@@ -154,3 +155,18 @@ export const diffLines = (state) => (file, unifiedDiffComponents) => {
     state.diffViewType === INLINE_DIFF_VIEW_TYPE,
   );
 };
+
+export function suggestionCommitMessage(state) {
+  return (values = {}) =>
+    computeSuggestionCommitMessage({
+      message: state.defaultSuggestionCommitMessage,
+      values: {
+        branch_name: state.branchName,
+        project_path: state.projectPath,
+        project_name: state.projectName,
+        username: state.username,
+        user_full_name: state.userFullName,
+        ...values,
+      },
+    });
+}

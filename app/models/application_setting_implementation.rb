@@ -93,6 +93,7 @@ module ApplicationSettingImplementation
         import_sources: Settings.gitlab['import_sources'],
         invisible_captcha_enabled: false,
         issues_create_limit: 300,
+        notes_create_limit: 300,
         local_markdown_version: 0,
         login_recaptcha_protection_enabled: false,
         max_artifacts_size: Settings.artifacts['max_size'],

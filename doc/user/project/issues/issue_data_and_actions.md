@@ -161,13 +161,8 @@ or were mentioned in the description or threads.
 
 ### Notifications
 
-Click on the icon to enable/disable [notifications](../../profile/notifications.md#issue--epics--merge-request-events)
+Select the toggle to enable or disable [notifications](../../profile/notifications.md#notifications-on-issues-merge-requests-and-epics)
 for the issue. Notifications are automatically enabled after you participate in the issue in any way.
-
-- **Enable**: If you are not a participant in the discussion on that issue, but
-  want to receive notifications on each update, subscribe to it.
-- **Disable**: If you are receiving notifications for updates to that issue but no
-  longer want to receive them, unsubscribe from it.
 
 ### Reference
 

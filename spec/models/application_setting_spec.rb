@@ -114,6 +114,12 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to allow_value(nil).for(:repository_storages_weighted_default) }
     it { is_expected.not_to allow_value({ default: 100, shouldntexist: 50 }).for(:repository_storages_weighted) }
 
+    it { is_expected.to allow_value(400).for(:notes_create_limit) }
+    it { is_expected.not_to allow_value('two').for(:notes_create_limit) }
+    it { is_expected.not_to allow_value(nil).for(:notes_create_limit) }
+    it { is_expected.not_to allow_value(5.5).for(:notes_create_limit) }
+    it { is_expected.not_to allow_value(-2).for(:notes_create_limit) }
+
     context 'help_page_documentation_base_url validations' do
       it { is_expected.to allow_value(nil).for(:help_page_documentation_base_url) }
       it { is_expected.to allow_value('https://docs.gitlab.com').for(:help_page_documentation_base_url) }

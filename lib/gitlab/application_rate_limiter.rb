@@ -20,6 +20,7 @@ module Gitlab
       def rate_limits
         {
           issues_create:                { threshold: -> { application_settings.issues_create_limit }, interval: 1.minute },
+          notes_create:                 { threshold: -> { application_settings.notes_create_limit }, interval: 1.minute },
           project_export:               { threshold: -> { application_settings.project_export_limit }, interval: 1.minute },
           project_download_export:      { threshold: -> { application_settings.project_download_export_limit }, interval: 1.minute },
           project_repositories_archive: { threshold: 5, interval: 1.minute },

@@ -274,6 +274,19 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    context 'when request exceeds the rate limit' do
+      before do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+      end
+
+      it 'prevents users from creating more notes' do
+        post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params: { body: 'hi!' }
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
+      end
+    end
   end
 
   describe "PUT /#{parent_type}/:id/#{noteable_type}/:noteable_id/notes/:note_id" do

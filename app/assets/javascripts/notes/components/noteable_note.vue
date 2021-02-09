@@ -431,6 +431,7 @@ export default {
           ref="noteBody"
           :note="note"
           :line="line"
+          :file="diffFile"
           :can-edit="note.current_user.can_edit"
           :is-editing="isEditing"
           :help-page-path="helpPagePath"

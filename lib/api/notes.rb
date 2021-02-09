@@ -4,6 +4,7 @@ module API
   class Notes < ::API::Base
     include PaginationParams
     helpers ::API::Helpers::NotesHelpers
+    helpers Helpers::RateLimiter
 
     before { authenticate! }
 
@@ -72,6 +73,7 @@ module API
           optional :created_at, type: String, desc: 'The creation date of the note'
         end
         post ":id/#{noteables_str}/:noteable_id/notes", feature_category: feature_category do
+          check_rate_limit! :notes_create, [current_user]
           noteable = find_noteable(noteable_type, params[:noteable_id])
 
           opts = {

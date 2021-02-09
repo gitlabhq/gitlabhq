@@ -10,6 +10,7 @@ class Projects::NotesController < Projects::ApplicationController
   before_action :authorize_read_note!
   before_action :authorize_create_note!, only: [:create]
   before_action :authorize_resolve_note!, only: [:resolve, :unresolve]
+  before_action :create_rate_limit, only: [:create]
 
   feature_category :issue_tracking
 
@@ -89,5 +90,18 @@ class Projects::NotesController < Projects::ApplicationController
 
   def whitelist_query_limiting
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42383')
+  end
+
+  def create_rate_limit
+    key = :notes_create
+
+    return unless rate_limiter.throttled?(key, scope: [current_user])
+
+    rate_limiter.log_request(request, "#{key}_request_limit".to_sym, current_user)
+    render plain: _('This endpoint has been requested too many times. Try again later.'), status: :too_many_requests
+  end
+
+  def rate_limiter
+    ::Gitlab::ApplicationRateLimiter
   end
 end

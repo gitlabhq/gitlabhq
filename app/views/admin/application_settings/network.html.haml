@@ -61,6 +61,17 @@
   .settings-content
     = render 'issue_limits'
 
+%section.settings.as-note-limits.no-animate#js-note-limits-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4
+      = _('Notes Rate Limits')
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Configure limit for notes created per minute by web and API requests.')
+  .settings-content
+    = render 'note_limits'
+
 %section.settings.as-import-export-limits.no-animate#js-import-export-limits-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4

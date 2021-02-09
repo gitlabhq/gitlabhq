@@ -727,6 +727,42 @@ RSpec.describe Projects::NotesController do
         end
       end
     end
+
+    context 'when the endpoint receives requests above the limit' do
+      before do
+        stub_application_setting(notes_create_limit: 5)
+      end
+
+      it 'prevents from creating more notes', :request_store do
+        5.times { create! }
+
+        expect { create! }
+          .to change { Gitlab::GitalyClient.get_request_count }.by(0)
+
+        create!
+        expect(response.body).to eq(_('This endpoint has been requested too many times. Try again later.'))
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+      end
+
+      it 'logs the event in auth.log' do
+        attributes = {
+          message: 'Application_Rate_Limiter_Request',
+          env: :notes_create_request_limit,
+          remote_ip: '0.0.0.0',
+          request_method: 'POST',
+          path: "/#{project.full_path}/notes",
+          user_id: user.id,
+          username: user.username
+        }
+
+        expect(Gitlab::AuthLogger).to receive(:error).with(attributes).once
+
+        project.add_developer(user)
+        sign_in(user)
+
+        6.times { create! }
+      end
+    end
   end
 
   describe 'PUT update' do
