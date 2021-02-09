@@ -5,8 +5,6 @@ require 'rubocop'
 require_relative '../../../../rubocop/cop/rspec/top_level_describe_path'
 
 RSpec.describe RuboCop::Cop::RSpec::TopLevelDescribePath do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   context 'when the file ends in _spec.rb' do

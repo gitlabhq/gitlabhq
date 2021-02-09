@@ -5,19 +5,21 @@ require 'rubocop'
 require_relative '../../../../rubocop/cop/performance/readlines_each'
 
 RSpec.describe RuboCop::Cop::Performance::ReadlinesEach do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   let(:message) { 'Avoid `IO.readlines.each`, since it reads contents into memory in full. Use `IO.each_line` or `IO.each` instead.' }
 
   shared_examples_for(:class_read) do |klass|
     context "and it is called as a class method on #{klass}" do
-      # We can't use `expect_offense` here because indentation changes based on `klass`
       it 'flags it as an offense' do
-        inspect_source "#{klass}.readlines(file_path).each { |line| puts line }"
+        leading_readline = "#{klass}.readlines(file_path)."
+        padding = " " * leading_readline.length
+        node = "#{leading_readline}each { |line| puts line }"
 
-        expect(cop.offenses.map(&:cop_name)).to contain_exactly('Performance/ReadlinesEach')
+        expect_offense(<<~CODE, node: node)
+          %{node}
+          #{padding}^^^^ Avoid `IO.readlines.each`, since it reads contents into memory in full. [...]
+        CODE
       end
     end
 
@@ -62,9 +64,14 @@ RSpec.describe RuboCop::Cop::Performance::ReadlinesEach do
     end
 
     it 'autocorrects `readlines.each` to `each_line`' do
-      expect(autocorrect_source('obj.readlines.each { |line| line }')).to(
-        eq('obj.each_line { |line| line }')
-      )
+      expect_offense(<<~CODE)
+        obj.readlines.each { |line| line }
+                      ^^^^ Avoid `IO.readlines.each`, since it reads contents into memory in full. [...]
+      CODE
+
+      expect_correction(<<~CODE)
+        obj.each_line { |line| line }
+      CODE
     end
   end
 

@@ -5,8 +5,6 @@ require 'rubocop'
 require_relative '../../../../rubocop/cop/performance/ar_exists_and_present_blank.rb'
 
 RSpec.describe RuboCop::Cop::Performance::ARExistsAndPresentBlank do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   context 'when it is not haml file' do
@@ -32,8 +30,6 @@ RSpec.describe RuboCop::Cop::Performance::ARExistsAndPresentBlank do
         show @users if @users.present?
                        ^^^^^^^^^^^^^^^ Avoid `@users.present?`, because it will generate database query 'Select TABLE.*' which is expensive. Suggest to use `@users.any?` to replace `@users.present?`
         SOURCE
-
-        expect(cop.offenses.map(&:cop_name)).to contain_exactly('Performance/ARExistsAndPresentBlank')
       end
     end
 
@@ -44,8 +40,6 @@ RSpec.describe RuboCop::Cop::Performance::ARExistsAndPresentBlank do
         show @users if @users.blank?
                        ^^^^^^^^^^^^^ Avoid `@users.blank?`, because it will generate database query 'Select TABLE.*' which is expensive. Suggest to use `@users.empty?` to replace `@users.blank?`
         SOURCE
-
-        expect(cop.offenses.map(&:cop_name)).to contain_exactly('Performance/ARExistsAndPresentBlank')
       end
     end
 
@@ -58,8 +52,6 @@ RSpec.describe RuboCop::Cop::Performance::ARExistsAndPresentBlank do
         show @users if @users.present?
                        ^^^^^^^^^^^^^^^ Avoid `@users.present?`, because it will generate database query 'Select TABLE.*' which is expensive. Suggest to use `@users.any?` to replace `@users.present?`
         SOURCE
-
-        expect(cop.offenses.map(&:cop_name)).to contain_exactly('Performance/ARExistsAndPresentBlank', 'Performance/ARExistsAndPresentBlank')
       end
     end
 

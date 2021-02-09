@@ -3,13 +3,9 @@
 require 'fast_spec_helper'
 
 require 'rubocop'
-require 'rubocop/rspec/support'
-
 require_relative '../../../../rubocop/cop/rspec/factories_in_migration_specs'
 
 RSpec.describe RuboCop::Cop::RSpec::FactoriesInMigrationSpecs do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   shared_examples 'an offensive factory call' do |namespace|
