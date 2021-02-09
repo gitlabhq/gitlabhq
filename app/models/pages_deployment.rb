@@ -4,12 +4,15 @@
 class PagesDeployment < ApplicationRecord
   include FileStoreMounter
 
+  MIGRATED_FILE_NAME = "_migrated.zip"
+
   attribute :file_store, :integer, default: -> { ::Pages::DeploymentUploader.default_store }
 
   belongs_to :project, optional: false
   belongs_to :ci_build, class_name: 'Ci::Build', optional: true
 
   scope :older_than, -> (id) { where('id < ?', id) }
+  scope :migrated_from_legacy_storage, -> { where(file: MIGRATED_FILE_NAME) }
 
   validates :file, presence: true
   validates :file_store, presence: true, inclusion: { in: ObjectStorage::SUPPORTED_STORES }
@@ -23,6 +26,10 @@ class PagesDeployment < ApplicationRecord
 
   def log_geo_deleted_event
     # this is to be adressed in https://gitlab.com/groups/gitlab-org/-/epics/589
+  end
+
+  def migrated?
+    file.filename == MIGRATED_FILE_NAME
   end
 
   private

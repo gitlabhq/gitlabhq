@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, how-to
 ---
 
-# Sourcegraph integration
+# Sourcegraph integration **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16556) in GitLab 12.5.
 > - Note that this integration is in BETA and deployed [behind a feature flag](#enable-the-sourcegraph-feature-flag) disabled by default. Self-managed instances can opt to enable it.

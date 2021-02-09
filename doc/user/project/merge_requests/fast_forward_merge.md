@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, concepts
 ---
 
-# Fast-forward merge requests
+# Fast-forward merge requests **(FREE)**
 
 Sometimes, a workflow policy might mandate a clean commit history without
 merge commits. In such cases, the fast-forward merge is the perfect candidate.

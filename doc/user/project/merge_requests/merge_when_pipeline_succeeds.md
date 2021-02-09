@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, concepts
 ---
 
-# Merge when pipeline succeeds
+# Merge when pipeline succeeds **(FREE)**
 
 When reviewing a merge request that looks ready to merge but still has a
 pipeline running, you can set it to merge automatically when the

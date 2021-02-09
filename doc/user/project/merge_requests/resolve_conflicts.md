@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, concepts
 ---
 
-# Merge request conflict resolution
+# Merge request conflict resolution **(FREE)**
 
 Merge conflicts occur when two branches have different changes that cannot be
 merged automatically.

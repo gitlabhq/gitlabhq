@@ -12063,6 +12063,77 @@
         },
         {
           "kind": "ENUM",
+          "name": "ContainerRepositorySort",
+          "description": "Values for sorting container repositories",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "updated_desc",
+              "description": "Updated at descending order",
+              "isDeprecated": true,
+              "deprecationReason": "Use UPDATED_DESC. Deprecated in 13.5."
+            },
+            {
+              "name": "updated_asc",
+              "description": "Updated at ascending order",
+              "isDeprecated": true,
+              "deprecationReason": "Use UPDATED_ASC. Deprecated in 13.5."
+            },
+            {
+              "name": "created_desc",
+              "description": "Created at descending order",
+              "isDeprecated": true,
+              "deprecationReason": "Use CREATED_DESC. Deprecated in 13.5."
+            },
+            {
+              "name": "created_asc",
+              "description": "Created at ascending order",
+              "isDeprecated": true,
+              "deprecationReason": "Use CREATED_ASC. Deprecated in 13.5."
+            },
+            {
+              "name": "UPDATED_DESC",
+              "description": "Updated at descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UPDATED_ASC",
+              "description": "Updated at ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATED_DESC",
+              "description": "Created at descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATED_ASC",
+              "description": "Created at ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "NAME_ASC",
+              "description": "Name by ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "NAME_DESC",
+              "description": "Name by descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
           "name": "ContainerRepositoryStatus",
           "description": "Status of a container repository",
           "fields": null,
@@ -29329,6 +29400,16 @@
                     "ofType": null
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "sort",
+                  "description": "Sort container repositories by this criteria.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ContainerRepositorySort",
+                    "ofType": null
+                  },
+                  "defaultValue": "created_desc"
                 },
                 {
                   "name": "after",
@@ -54962,6 +55043,16 @@
                     "ofType": null
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "sort",
+                  "description": "Sort container repositories by this criteria.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ContainerRepositorySort",
+                    "ofType": null
+                  },
+                  "defaultValue": "created_desc"
                 },
                 {
                   "name": "after",

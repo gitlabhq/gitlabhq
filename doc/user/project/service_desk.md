@@ -72,7 +72,7 @@ If you have project maintainer access you have the option to set up Service Desk
 
    WARNING:
    This email address can be used by anyone to create an issue on this project, regardless
-   of their access level to your GitLab instance. We recommend **putting this behind an alias** so it can be
+   of their access level to your GitLab instance. We recommend **putting this behind an alias on your email system** so it can be
    changed if needed. We also recommend **[enabling Akismet](../../integration/akismet.md)** on your GitLab
    instance to add spam checking to this service. Unblocked email spam would result in many spam
    issues being created.

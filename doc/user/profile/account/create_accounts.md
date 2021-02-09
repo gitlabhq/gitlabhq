@@ -37,3 +37,5 @@ Users will be:
 
 - Automatically created upon first sign in with the [LDAP integration](../../../administration/auth/ldap/index.md).
 - Created when first signing in via an [OmniAuth provider](../../../integration/omniauth.md) if the `allow_single_sign_on` setting is present.
+- Created when first signing with [Group SAML](../../group/saml_sso/index.md)
+- Automatically created by [SCIM](../../group/saml_sso/scim_setup.md) when the user is created in the identity provider.

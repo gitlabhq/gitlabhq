@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Merge requests
+# Merge requests **(FREE)**
 
 A Merge Request (**MR**) is a _request_ to _merge_ one branch into another.
 

@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, howto
 ---
 
-# Protected branches
+# Protected branches **(FREE)**
 
 [Permissions](../permissions.md) in GitLab are fundamentally defined around the
 idea of having read or write permission to the repository and branches. To impose

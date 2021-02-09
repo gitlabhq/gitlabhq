@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, howto
 ---
 
-# GitLab Markdown
+# GitLab Markdown **(FREE)**
 
 This Markdown guide is **valid only for the GitLab internal Markdown rendering system for entries and files**.
 It is **not** valid for the [GitLab documentation website](https://docs.gitlab.com)

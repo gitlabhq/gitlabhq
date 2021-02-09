@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Projects
+# Projects **(FREE)**
 
 In GitLab, you can create projects for hosting
 your codebase, use it as an issue tracker, collaborate on code, and continuously

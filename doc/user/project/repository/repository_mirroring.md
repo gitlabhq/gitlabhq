@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/repository_mirroring.html'
 ---
 
-# Repository mirroring
+# Repository mirroring **(FREE)**
 
 Repository mirroring allows for mirroring of repositories to and from external sources. It can be
 used to mirror branches, tags, and commits between repositories. It is useful when you want to use

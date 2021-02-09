@@ -6,7 +6,7 @@ type: howto, tutorial
 description: "Introduction to using Git through the command line."
 ---
 
-# Start using Git on the command line
+# Start using Git on the command line **(FREE)**
 
 [Git](https://git-scm.com/) is an open-source distributed version control system designed to
 handle everything from small to very large projects with speed and efficiency. GitLab is built

@@ -6,7 +6,7 @@ type: reference
 description: "Autocomplete chars in Markdown fields."
 ---
 
-# Autocomplete characters
+# Autocomplete characters **(FREE)**
 
 The autocomplete characters provide a quick way of entering field values into
 Markdown fields. When you start typing a word in a Markdown field with one of

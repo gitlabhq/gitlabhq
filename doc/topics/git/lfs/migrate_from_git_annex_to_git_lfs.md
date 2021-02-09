@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, howto
 ---
 
-# Migration guide from Git Annex to Git LFS
+# Migration guide from Git Annex to Git LFS **(FREE)**
 
 WARNING:
 Git Annex support [has been removed](https://gitlab.com/gitlab-org/gitlab/-/issues/1648) in GitLab Enterprise

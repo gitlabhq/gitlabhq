@@ -6,7 +6,7 @@ type: index, reference
 description: "Getting started with Merge Requests."
 ---
 
-# Getting started with Merge Requests
+# Getting started with Merge Requests **(FREE)**
 
 A Merge Request (**MR**) is the basis of GitLab as a code
 collaboration and version control.

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, concepts
 ---
 
-# Squash and merge
+# Squash and merge **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1024) in [GitLab Starter](https://about.gitlab.com/pricing/) 8.17.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18956) from [GitLab Starter](https://about.gitlab.com/pricing/)to GitLab Free in 11.0.

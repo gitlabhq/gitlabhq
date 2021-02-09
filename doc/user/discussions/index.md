@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, howto
 ---
 
-# Threads
+# Threads **(FREE)**
 
 The ability to contribute conversationally is offered throughout GitLab.
 
@@ -408,7 +408,7 @@ the merge request authored by the user that applied them.
 
 1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25381) in GitLab 13.9,
    you can opt to add a custom commit message to describe your change. If you don't
-   specify it, the default commit message will be used. Note that [this feature may not be available to you](#enable-or-disable-custom-commit-messages-for-suggestions). 
+   specify it, the default commit message will be used. Note that [this feature may not be available to you](#enable-or-disable-custom-commit-messages-for-suggestions).
    Also, it is not supported for [batch suggestions](#batch-suggestions).
 
    ![Custom commit](img/custom_commit_v13_9.png)

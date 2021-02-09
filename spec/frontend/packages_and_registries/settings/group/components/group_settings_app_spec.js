@@ -1,9 +1,8 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { GlSprintf, GlLink } from '@gitlab/ui';
+import { GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import component from '~/packages_and_registries/settings/group/components/group_settings_app.vue';
 import MavenSettings from '~/packages_and_registries/settings/group/components/maven_settings.vue';
@@ -30,6 +29,7 @@ const localVue = createLocalVue();
 describe('Group Settings App', () => {
   let wrapper;
   let apolloProvider;
+  let show;
 
   const defaultProvide = {
     defaultExpanded: false,
@@ -40,6 +40,7 @@ describe('Group Settings App', () => {
     provide = defaultProvide,
     resolver = jest.fn().mockResolvedValue(groupPackageSettingsMock),
     mutationResolver = jest.fn().mockResolvedValue(groupPackageSettingsMutationMock()),
+    data = {},
   } = {}) => {
     localVue.use(VueApollo);
 
@@ -54,12 +55,26 @@ describe('Group Settings App', () => {
       localVue,
       apolloProvider,
       provide,
+      data() {
+        return {
+          ...data,
+        };
+      },
       stubs: {
         GlSprintf,
         SettingsBlock,
       },
+      mocks: {
+        $toast: {
+          show,
+        },
+      },
     });
   };
+
+  beforeEach(() => {
+    show = jest.fn();
+  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -70,6 +85,7 @@ describe('Group Settings App', () => {
   const findDescription = () => wrapper.find('[data-testid="description"');
   const findLink = () => wrapper.find(GlLink);
   const findMavenSettings = () => wrapper.find(MavenSettings);
+  const findAlert = () => wrapper.find(GlAlert);
 
   const waitForApolloQueryAndRender = async () => {
     await waitForPromises();
@@ -178,8 +194,7 @@ describe('Group Settings App', () => {
 
         await waitForPromises();
 
-        expect(createFlash).toHaveBeenCalledWith({
-          message: SUCCESS_UPDATING_SETTINGS,
+        expect(show).toHaveBeenCalledWith(SUCCESS_UPDATING_SETTINGS, {
           type: 'success',
         });
       });
@@ -211,6 +226,12 @@ describe('Group Settings App', () => {
     });
 
     describe('errors', () => {
+      const verifyAlert = () => {
+        expect(findAlert().exists()).toBe(true);
+        expect(findAlert().text()).toBe(ERROR_UPDATING_SETTINGS);
+        expect(findAlert().props('variant')).toBe('warning');
+      };
+
       it('mutation payload with root level errors', async () => {
         // note this is a complex test that covers all the path around errors that are shown in the form
         // it's one single it case, due to the expensive preparation and execution
@@ -229,10 +250,8 @@ describe('Group Settings App', () => {
         );
 
         // general error message is shown
-        expect(createFlash).toHaveBeenCalledWith({
-          message: ERROR_UPDATING_SETTINGS,
-          type: 'warning',
-        });
+
+        verifyAlert();
 
         emitSettingsUpdate();
 
@@ -242,11 +261,11 @@ describe('Group Settings App', () => {
         expect(findMavenSettings().props('mavenDuplicateExceptionRegexError')).toBe('');
       });
 
-      it('mutation payload with local errors', async () => {
-        const mutationResolver = jest
-          .fn()
-          .mockResolvedValue(groupPackageSettingsMutationMock({ errors: ['foo'] }));
-
+      it.each`
+        type         | mutationResolver
+        ${'local'}   | ${jest.fn().mockResolvedValue(groupPackageSettingsMutationMock({ errors: ['foo'] }))}
+        ${'network'} | ${jest.fn().mockRejectedValue()}
+      `('mutation payload with $type error', async ({ mutationResolver }) => {
         mountComponent({ mutationResolver });
 
         await waitForApolloQueryAndRender();
@@ -255,26 +274,35 @@ describe('Group Settings App', () => {
 
         await waitForPromises();
 
-        expect(createFlash).toHaveBeenCalledWith({
-          message: ERROR_UPDATING_SETTINGS,
-          type: 'warning',
-        });
+        verifyAlert();
       });
 
-      it('shows an error in case of network error', async () => {
-        const mutationResolver = jest.fn().mockRejectedValue();
-        mountComponent({ mutationResolver });
+      it('a successful request dismisses the alert', async () => {
+        mountComponent({ data: { alertMessage: 'foo' } });
 
         await waitForApolloQueryAndRender();
+
+        expect(findAlert().exists()).toBe(true);
 
         emitSettingsUpdate();
 
         await waitForPromises();
 
-        expect(createFlash).toHaveBeenCalledWith({
-          message: ERROR_UPDATING_SETTINGS,
-          type: 'warning',
-        });
+        expect(findAlert().exists()).toBe(false);
+      });
+
+      it('dismiss event from alert dismiss it from the page', async () => {
+        mountComponent({ data: { alertMessage: 'foo' } });
+
+        await waitForApolloQueryAndRender();
+
+        expect(findAlert().exists()).toBe(true);
+
+        findAlert().vm.$emit('dismiss');
+
+        await wrapper.vm.$nextTick();
+
+        expect(findAlert().exists()).toBe(false);
       });
     });
   });

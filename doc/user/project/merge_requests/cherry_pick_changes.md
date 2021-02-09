@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, concepts
 ---
 
-# Cherry-pick changes
+# Cherry-pick changes **(FREE)**
 
 GitLab implements Git's powerful feature to
 [cherry-pick any commit](https://git-scm.com/docs/git-cherry-pick "Git cherry-pick documentation")

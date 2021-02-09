@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, api
 ---
 
-# Branches API
+# Branches API **(FREE)**
 
 This API operates on [repository branches](../user/project/repository/branches/index.md).
 

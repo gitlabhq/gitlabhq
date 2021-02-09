@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Invalidate Markdown Cache
+# Invalidate Markdown Cache **(FREE)**
 
 For performance reasons, GitLab caches the HTML version of Markdown text
 in fields like comments, issue descriptions, and merge request descriptions. These

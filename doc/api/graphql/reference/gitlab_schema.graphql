@@ -4428,6 +4428,61 @@ Identifier of ContainerRepository.
 scalar ContainerRepositoryID
 
 """
+Values for sorting container repositories
+"""
+enum ContainerRepositorySort {
+  """
+  Created at ascending order
+  """
+  CREATED_ASC
+
+  """
+  Created at descending order
+  """
+  CREATED_DESC
+
+  """
+  Name by ascending order
+  """
+  NAME_ASC
+
+  """
+  Name by descending order
+  """
+  NAME_DESC
+
+  """
+  Updated at ascending order
+  """
+  UPDATED_ASC
+
+  """
+  Updated at descending order
+  """
+  UPDATED_DESC
+
+  """
+  Created at ascending order
+  """
+  created_asc @deprecated(reason: "Use CREATED_ASC. Deprecated in 13.5.")
+
+  """
+  Created at descending order
+  """
+  created_desc @deprecated(reason: "Use CREATED_DESC. Deprecated in 13.5.")
+
+  """
+  Updated at ascending order
+  """
+  updated_asc @deprecated(reason: "Use UPDATED_ASC. Deprecated in 13.5.")
+
+  """
+  Updated at descending order
+  """
+  updated_desc @deprecated(reason: "Use UPDATED_DESC. Deprecated in 13.5.")
+}
+
+"""
 Status of a container repository
 """
 enum ContainerRepositoryStatus {
@@ -10650,6 +10705,11 @@ type Group {
     Filter the container repositories by their name.
     """
     name: String
+
+    """
+    Sort container repositories by this criteria.
+    """
+    sort: ContainerRepositorySort = created_desc
   ): ContainerRepositoryConnection
 
   """
@@ -18690,6 +18750,11 @@ type Project {
     Filter the container repositories by their name.
     """
     name: String
+
+    """
+    Sort container repositories by this criteria.
+    """
+    sort: ContainerRepositorySort = created_desc
   ): ContainerRepositoryConnection
 
   """

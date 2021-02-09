@@ -27,6 +27,34 @@ RSpec.describe Resolvers::ContainerRepositoriesResolver do
 
         it { is_expected.to contain_exactly(named_container_repository) }
       end
+
+      context 'with a sort argument' do
+        let_it_be(:group) { create(:group) }
+        let_it_be(:project) { create(:project, group: group) }
+        let_it_be(:sort_repository) do
+          create(:container_repository, name: 'bar', project: project, created_at: 1.day.ago)
+        end
+
+        let_it_be(:sort_repository2) do
+          create(:container_repository, name: 'foo', project: project, created_at: 1.hour.ago, updated_at: 1.hour.ago)
+        end
+
+        [:created_desc, :updated_asc, :name_desc].each do |order|
+          context "#{order}" do
+            let(:args) { { sort: order } }
+
+            it { is_expected.to eq([sort_repository2, sort_repository]) }
+          end
+        end
+
+        [:created_asc, :updated_desc, :name_asc].each do |order|
+          context "#{order}" do
+            let(:args) { { sort: order } }
+
+            it { is_expected.to eq([sort_repository, sort_repository2]) }
+          end
+        end
+      end
     end
 
     context 'with authorized user' do

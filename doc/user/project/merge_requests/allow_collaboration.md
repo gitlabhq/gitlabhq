@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Allow collaboration on merge requests across forks
+# Allow collaboration on merge requests across forks **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17395) in GitLab 10.6.
 

@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, api
 ---
 
-# Protected branches API
+# Protected branches API **(FREE)**
 
 > Introduced in GitLab 9.5.
 

@@ -4,6 +4,7 @@ class ContainerRepository < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include Gitlab::SQL::Pattern
   include EachBatch
+  include Sortable
 
   WAITING_CLEANUP_STATUSES = %i[cleanup_scheduled cleanup_unfinished].freeze
 

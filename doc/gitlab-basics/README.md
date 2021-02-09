@@ -6,7 +6,7 @@ comments: false
 type: index
 ---
 
-# GitLab basics guides
+# GitLab basics guides **(FREE)**
 
 This section provides resources to help you start working with GitLab and Git by focusing
 on the basic features that you will need to use.

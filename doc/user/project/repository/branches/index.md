@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: concepts, howto
 ---
 
-# Branches
+# Branches **(FREE)**
 
 A branch is a version of a project's working tree. You create a branch for each
 set of related changes you make. This keeps each set of changes separate from

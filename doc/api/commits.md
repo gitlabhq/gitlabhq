@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, api
 ---
 
-# Commits API
+# Commits API **(FREE)**
 
 ## List repository commits
 

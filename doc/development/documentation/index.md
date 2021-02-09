@@ -207,7 +207,7 @@ To add a redirect:
    1. Assign the MR to a technical writer for review and merge.
 1. If the redirect is to one of the 4 internal docs projects (not an external URL),
    create an MR in [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs):
-   1. Update [`redirects.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/content/_data/redirects.yaml)
+   1. Update [`content/_data/redirects.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/content/_data/redirects.yaml)
       with one redirect entry for each renamed or moved file. This code works for
       <https://docs.gitlab.com> links only. Keep them alphabetically sorted:
 

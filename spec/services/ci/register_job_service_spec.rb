@@ -474,6 +474,22 @@ module Ci
           end
 
           it_behaves_like 'validation is active'
+
+          context 'when the main feature flag is enabled for a specific project' do
+            before do
+              stub_feature_flags(ci_validate_build_dependencies: pipeline.project)
+            end
+
+            it_behaves_like 'validation is active'
+          end
+
+          context 'when the main feature flag is enabled for a different project' do
+            before do
+              stub_feature_flags(ci_validate_build_dependencies: create(:project))
+            end
+
+            it_behaves_like 'validation is not active'
+          end
         end
 
         context 'when validates for dependencies is disabled' do

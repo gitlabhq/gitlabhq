@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: howto, reference
 ---
 
-# Edit files through the command line
+# Edit files through the command line **(FREE)**
 
 When [working with Git from the command line](start-using-git.md), you need to
 use more than just the Git commands. There are several basic commands that you should

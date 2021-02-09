@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 comments: false
 ---
 
-# Get started with GitLab
+# Get started with GitLab **(FREE)**
 
 ## Organize
 

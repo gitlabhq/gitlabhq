@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Numerous undo possibilities in Git
+# Numerous undo possibilities in Git **(FREE)**
 
 This tutorial shows you different ways of undoing your work in Git.
 We assume you have a basic working knowledge of Git. Check the GitLab

@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/gitlab_flow.html'
 ---
 
-# Introduction to GitLab Flow
+# Introduction to GitLab Flow **(FREE)**
 
 ![GitLab Flow](img/gitlab_flow.png)
 

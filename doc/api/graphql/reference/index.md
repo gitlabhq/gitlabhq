@@ -4698,6 +4698,23 @@ Status of the tags cleanup of a container repository.
 | `UNFINISHED` | The tags cleanup has been partially executed. There are still remaining tags to delete. |
 | `UNSCHEDULED` | The tags cleanup is not scheduled. This is the default state. |
 
+### ContainerRepositorySort
+
+Values for sorting container repositories.
+
+| Value | Description |
+| ----- | ----------- |
+| `CREATED_ASC` | Created at ascending order |
+| `CREATED_DESC` | Created at descending order |
+| `NAME_ASC` | Name by ascending order |
+| `NAME_DESC` | Name by descending order |
+| `UPDATED_ASC` | Updated at ascending order |
+| `UPDATED_DESC` | Updated at descending order |
+| `created_asc` **{warning-solid}** | **Deprecated:** Use CREATED_ASC. Deprecated in 13.5. |
+| `created_desc` **{warning-solid}** | **Deprecated:** Use CREATED_DESC. Deprecated in 13.5. |
+| `updated_asc` **{warning-solid}** | **Deprecated:** Use UPDATED_ASC. Deprecated in 13.5. |
+| `updated_desc` **{warning-solid}** | **Deprecated:** Use UPDATED_DESC. Deprecated in 13.5. |
+
 ### ContainerRepositoryStatus
 
 Status of a container repository.

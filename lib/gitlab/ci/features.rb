@@ -64,7 +64,7 @@ module Gitlab
       end
 
       def self.validate_build_dependencies?(project)
-        ::Feature.enabled?(:ci_validate_build_dependencies, default_enabled: :yaml) &&
+        ::Feature.enabled?(:ci_validate_build_dependencies, project, default_enabled: :yaml) &&
           ::Feature.disabled?(:ci_validate_build_dependencies_override, project)
       end
 

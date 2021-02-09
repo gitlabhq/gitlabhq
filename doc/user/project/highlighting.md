@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Syntax Highlighting
+# Syntax Highlighting **(FREE)**
 
 GitLab provides syntax highlighting on all files through the [Rouge](https://rubygems.org/gems/rouge) Ruby gem. It attempts to guess what language to use based on the file extension, which most of the time is sufficient.
 

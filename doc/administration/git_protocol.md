@@ -6,7 +6,7 @@ type: reference
 description: "Set and configure Git protocol v2"
 ---
 
-# Configuring Git Protocol v2
+# Configuring Git Protocol v2 **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/46555) in GitLab 11.4.
 > - [Temporarily disabled](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55769) in GitLab 11.5.8, 11.6.6, 11.7.1, and 11.8+.

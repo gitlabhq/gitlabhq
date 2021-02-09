@@ -10,8 +10,13 @@ module Resolvers
               required: false,
               description: 'Filter the container repositories by their name.'
 
-    def resolve(name: nil)
-      ContainerRepositoriesFinder.new(user: current_user, subject: object, params: { name: name })
+    argument :sort, Types::ContainerRepositorySortEnum,
+             description: 'Sort container repositories by this criteria.',
+             required: false,
+             default_value: :created_desc
+
+    def resolve(name: nil, sort: nil)
+      ContainerRepositoriesFinder.new(user: current_user, subject: object, params: { name: name, sort: sort })
                                  .execute
                                  .tap { track_event(:list_repositories, :container) }
     end

@@ -7,7 +7,7 @@ description: "How to create Merge Requests in GitLab."
 disqus_identifier: 'https://docs.gitlab.com/ee/gitlab-basics/add-merge-request.html'
 ---
 
-# How to create a merge request
+# How to create a merge request **(FREE)**
 
 Before creating a merge request, read through an
 [introduction to Merge Requests](getting_started.md)

@@ -42,7 +42,7 @@
             - if project_select_button
               = render 'shared/new_project_item_select', path: 'issues/new', label: _('New issue'), type: :issues, with_feature_enabled: 'issues'
             - else
-              = link_to _('New issue'), button_path, class: 'btn btn-success', id: 'new_issue_link'
+              = link_to _('New issue'), button_path, class: 'btn gl-button btn-success', id: 'new_issue_link'
 
             - if show_import_button
               = render 'projects/issues/import_csv/button', type: :text

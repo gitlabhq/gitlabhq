@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, api
 ---
 
-# Project templates API
+# Project templates API **(FREE)**
 
 This API is a project-specific version of these endpoints:
 

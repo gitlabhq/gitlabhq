@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, index, howto
 ---
 
-# Project settings
+# Project settings **(FREE)**
 
 NOTE:
 Only project maintainers and administrators have the [permissions](../../permissions.md#project-members-permissions)

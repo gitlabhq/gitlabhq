@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, api
 ---
 
-# Internal API
+# Internal API **(FREE)**
 
 The internal API is used by different GitLab components, it can not be
 used by other consumers. This documentation is intended for people

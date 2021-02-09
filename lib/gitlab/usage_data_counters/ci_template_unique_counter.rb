@@ -5,6 +5,7 @@ module Gitlab::UsageDataCounters
     REDIS_SLOT = 'ci_templates'.freeze
 
     TEMPLATE_TO_EVENT = {
+      '5-Minute-Production-App.gitlab-ci.yml' => '5_min_production_app',
       'Auto-DevOps.gitlab-ci.yml' => 'auto_devops',
       'AWS/CF-Provision-and-Deploy-EC2.gitlab-ci.yml' => 'aws_cf_deploy_ec2',
       'AWS/Deploy-ECS.gitlab-ci.yml' => 'aws_deploy_ecs',
