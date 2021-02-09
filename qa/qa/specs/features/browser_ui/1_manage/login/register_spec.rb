@@ -58,7 +58,7 @@ module QA
             # this is the only test that exercise this UI.
             # Other tests should use the API for this purpose.
             Flow::Login.sign_in(as: user)
-            Page::Main::Menu.perform(&:click_settings_link)
+            Page::Main::Menu.perform(&:click_edit_profile_link)
             Page::Profile::Menu.perform(&:click_account)
             Page::Profile::Accounts::Show.perform do |show|
               show.delete_account(user.password)

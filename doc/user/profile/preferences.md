@@ -12,9 +12,8 @@ of GitLab to their liking.
 
 To navigate to your profile's preferences:
 
-1. Click your avatar.
-1. Select **Settings**.
-1. Click **Preferences** in the sidebar.
+1. In the top-right corner, select your avatar.
+1. Select **Preferences**.
 
 ## Navigation theme
 
@@ -36,8 +35,7 @@ The default theme is Indigo. You can choose between 10 themes:
 - Light Red
 - Dark
 - Light
-
-![Profile preferences navigation themes](img/profil-preferences-navigation-theme.png)
+- [Dark Mode](#dark-mode)
 
 ## Dark mode
 
@@ -47,7 +45,8 @@ GitLab has started work on dark mode! The dark mode Alpha release is available i
 spirit of iteration and the lower expectations of
 [Alpha versions](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha).
 
-Progress on dark mode is tracked in the [Dark theme epic](https://gitlab.com/groups/gitlab-org/-/epics/2902). See the epic for:
+Progress on dark mode is tracked in the [Dark theme epic](https://gitlab.com/groups/gitlab-org/-/epics/2902).
+See the epic for:
 
 - A list of known issues.
 - Our planned direction and next steps.
@@ -60,14 +59,15 @@ the future, we plan to make it configurable in its own section along with suppor
 [different navigation themes](https://gitlab.com/gitlab-org/gitlab/-/issues/219512).
 
 NOTE:
-Dark theme currently only works with the 'Dark' syntax highlighting.
+Dark theme only works with the **Dark** syntax highlighting theme.
 
 ## Syntax highlighting theme
 
 NOTE:
 GitLab uses the [rouge Ruby library](http://rouge.jneen.net/ "Rouge website")
 for syntax highlighting outside of any Editor context. The WebIDE (like Snippets)
-uses [Monaco Editor](https://microsoft.github.io/monaco-editor/) and it's provided [Monarch](https://microsoft.github.io/monaco-editor/monarch.html) library for
+uses [Monaco Editor](https://microsoft.github.io/monaco-editor/) and it's provided
+[Monarch](https://microsoft.github.io/monaco-editor/monarch.html) library for
 syntax highlighting. For a list of supported languages, visit the documentation of
 the respective libraries.
 
@@ -121,7 +121,7 @@ You have 8 options here that you can use for your default dashboard view:
 - Your projects' activity
 - Starred projects' activity
 - Your groups
-- Your [to-dos](../todos.md)
+- Your [To-Do List](../todos.md)
 - Assigned Issues
 - Assigned Merge Requests
 - Operations Dashboard **(PREMIUM)**

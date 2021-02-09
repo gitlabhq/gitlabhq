@@ -1,7 +1,7 @@
 - breadcrumb_title _("Graph")
 - page_title _("Graph"), @ref
 = render "head"
-%div{ class: container_class }
+.gl-mt-5
   .project-network.gl-border-1.gl-border-solid.gl-border-gray-300
     .controls.gl-bg-gray-50.gl-p-2.gl-font-base.gl-text-gray-400.gl-border-b-1.gl-border-b-solid.gl-border-b-gray-300
       = form_tag project_network_path(@project, @id), method: :get, class: 'form-inline network-form' do |f|

@@ -1,0 +1,12 @@
+.gl-font-weight-bold
+  = current_user.name
+  - if current_user&.status && user_status_set_to_busy?(current_user.status)
+    %span.gl-font-weight-normal.gl-text-gray-500= s_("UserProfile|(Busy)")
+= current_user.to_reference
+- if current_user.status
+  .user-status.d-flex.align-items-center.gl-mt-2.gl-mr-0.gl-font-sm.has-tooltip{ title: current_user.status.message_html, data: { html: 'true', placement: 'bottom' } }
+    - if show_status_emoji?(current_user.status)
+      .user-status-emoji.d-flex.align-items-center
+        = emoji_icon current_user.status.emoji
+    %span.user-status-message.str-truncated
+      = current_user.status.message_html.html_safe

@@ -82,11 +82,10 @@ Click **Expand file** on any file to view the changes for that file.
 
 For larger merge requests, consider reviewing one file at a time. To enable this feature:
 
-1. In the top right corner of the navigation bar, click your user avatar.
-1. Click **Settings**.
-1. In the left sidebar, go to **Preferences**.
+1. In the top-right corner, select your avatar.
+1. Select **Preferences**.
 1. Scroll to the **Behavior** section and select **Show one file at a time on merge request's Changes tab**.
-1. Click **Save changes** to apply.
+1. Select **Save changes**.
 
 After you enable this setting, GitLab displays only one file at a time in the **Changes** tab when you review merge requests. You can click **Prev** and **Next** to view other changed files.
 
@@ -97,7 +96,7 @@ this behavior, you can do so from your **User preferences** (as explained above)
 merge request:
 
 1. Go to the merge request's **Changes** tab.
-1. Click the cog icon (**{settings}**) to reveal the merge request's settings dropdown.
+1. Select the cog icon (**{settings}**) to reveal the merge request's settings dropdown.
 1. Select or deselect the checkbox **Show one file at a time** to change the setting accordingly.
 
 This change overrides the choice you made in your user preferences and persists until you clear your
@@ -109,11 +108,11 @@ browser's cookies or change this behavior again.
 
 To seamlessly navigate among commits in a merge request:
 
-1. Click the **Commits** tab.
-1. Click a commit to open it in the single-commit view.
+1. Select the **Commits** tab.
+1. Select a commit to open it in the single-commit view.
 1. Navigate through the commits by either:
 
-   - Clicking **Prev** and **Next** buttons on the top-right of the page.
+   - Selecting **Prev** and **Next** buttons on the top-right of the page.
    - Using the <kbd>X</kbd> and <kbd>C</kbd> keyboard shortcuts.
 
 ![Merge requests commit navigation](img/commit_nav_v13_4.png)

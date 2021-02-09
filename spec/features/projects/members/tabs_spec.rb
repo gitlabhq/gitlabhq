@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Members > Tabs' do
+  include Spec::Support::Helpers::Features::MembersHelpers
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
@@ -19,56 +20,93 @@ RSpec.describe 'Projects > Members > Tabs' do
     end
   end
 
-  before do
-    stub_feature_flags(vue_project_members_list: false)
-    allow(Kaminari.config).to receive(:default_per_page).and_return(1)
-
-    sign_in(user)
-    visit project_project_members_path(project)
-  end
-
-  where(:tab, :count) do
-    'Members'         | 3
-    'Invited'         | 2
-    'Groups'          | 2
-    'Access requests' | 2
-  end
-
-  with_them do
-    it "renders #{params[:tab]} tab" do
-      expect(page).to have_selector('.nav-link', text: "#{tab} #{count}")
-    end
-  end
-
-  context 'displays "Members" tab by default' do
-    it_behaves_like 'active "Members" tab'
-  end
-
-  context 'when searching "Groups"', :js do
+  context 'tabs' do
     before do
-      click_link 'Groups'
+      sign_in(user)
+      visit project_project_members_path(project)
+    end
 
-      page.within '[data-testid="group-link-search-form"]' do
-        fill_in 'search_groups', with: 'group'
-        find('button[type="submit"]').click
+    where(:tab, :count) do
+      'Members'         | 3
+      'Invited'         | 2
+      'Groups'          | 2
+      'Access requests' | 2
+    end
+
+    with_them do
+      it "renders #{params[:tab]} tab" do
+        expect(page).to have_selector('.nav-link', text: "#{tab} #{count}")
       end
     end
 
-    it 'displays "Groups" tab' do
-      expect(page).to have_selector('.nav-link.active', text: 'Groups')
+    context 'displays "Members" tab by default' do
+      it_behaves_like 'active "Members" tab'
+    end
+  end
+
+  context 'when `vue_project_members_list` feature flag is enabled' do
+    before do
+      sign_in(user)
+      visit project_project_members_path(project)
     end
 
-    context 'and then searching "Members"' do
+    context 'when searching "Groups"', :js do
       before do
-        click_link 'Members 3'
+        click_link 'Groups'
 
-        page.within '[data-testid="user-search-form"]' do
-          fill_in 'search', with: 'user'
+        fill_in_filtered_search 'Search groups', with: 'group'
+      end
+
+      it 'displays "Groups" tab' do
+        expect(page).to have_selector('.nav-link.active', text: 'Groups')
+      end
+
+      context 'and then searching "Members"' do
+        before do
+          click_link 'Members 3'
+
+          fill_in_filtered_search 'Filter members', with: 'user'
+        end
+
+        it_behaves_like 'active "Members" tab'
+      end
+    end
+  end
+
+  context 'when `vue_project_members_list` feature flag is disabled' do
+    before do
+      stub_feature_flags(vue_project_members_list: false)
+
+      sign_in(user)
+      visit project_project_members_path(project)
+    end
+
+    context 'when searching "Groups"', :js do
+      before do
+        click_link 'Groups'
+
+        page.within '[data-testid="group-link-search-form"]' do
+          fill_in 'search_groups', with: 'group'
           find('button[type="submit"]').click
         end
       end
 
-      it_behaves_like 'active "Members" tab'
+      it 'displays "Groups" tab' do
+        expect(page).to have_selector('.nav-link.active', text: 'Groups')
+      end
+
+      context 'and then searching "Members"' do
+        before do
+          click_link 'Members 3'
+
+          page.within '[data-testid="user-search-form"]' do
+            fill_in 'search', with: 'user'
+            find('button[type="submit"]').click
+          end
+        end
+
+        it_behaves_like 'active "Members" tab'
+      end
     end
   end
 end

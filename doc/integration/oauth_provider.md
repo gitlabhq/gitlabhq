@@ -43,16 +43,17 @@ levels. The default callback URL is `http://your-gitlab.example.com/users/auth/g
 
 ## Add an application through the profile
 
-To add a new application via your profile, select your avatar in the top right, and then select
-**Settings > Applications**. You can then enter a **Name**, **Redirect URI** and
-OAuth 2 scopes as defined in [Authorized Applications](#authorized-applications).
+To add a new application via your profile:
 
-- The **Redirect URI** is the URL where users are sent after they authorize with GitLab.
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the left sidebar, select **Applications**.
+1. Enter a **Name**, **Redirect URI** and OAuth 2 scopes as defined in [Authorized Applications](#authorized-applications).
+   The **Redirect URI** is the URL where users are sent after they authorize with GitLab.
+1. Select **Save application**. GitLab displays:
 
-When you select **Save application**, GitLab displays:
-
-- Application ID: OAuth 2 Client ID.
-- Secret: OAuth 2 Client Secret.
+   - Application ID: OAuth 2 Client ID.
+   - Secret: OAuth 2 Client Secret.
 
 ## OAuth applications in the Admin Area
 

@@ -5,65 +5,120 @@ require 'spec_helper'
 RSpec.describe 'Projects > Members > Maintainer adds member with expiration date', :js do
   include Select2Helper
   include ActiveSupport::Testing::TimeHelpers
+  include Spec::Support::Helpers::Features::MembersHelpers
 
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:project) { create(:project) }
   let(:new_member) { create(:user) }
 
   before do
-    stub_feature_flags(vue_project_members_list: false)
-
     travel_to Time.now.utc.beginning_of_day
 
     project.add_maintainer(maintainer)
     sign_in(maintainer)
   end
 
-  it 'expiration date is displayed in the members list' do
-    stub_feature_flags(invite_members_group_modal: false)
+  context 'when `vue_project_members_list` feature flag is enabled' do
+    it 'expiration date is displayed in the members list' do
+      stub_feature_flags(invite_members_group_modal: false)
 
-    visit project_project_members_path(project)
+      visit project_project_members_path(project)
 
-    page.within '.invite-users-form' do
-      select2(new_member.id, from: '#user_ids', multiple: true)
+      page.within '.invite-users-form' do
+        select2(new_member.id, from: '#user_ids', multiple: true)
 
-      fill_in 'expires_at', with: 3.days.from_now.to_date
-      find_field('expires_at').native.send_keys :enter
+        fill_in 'expires_at', with: 5.days.from_now.to_date
+        find_field('expires_at').native.send_keys :enter
 
-      click_on 'Invite'
+        click_on 'Invite'
+      end
+
+      page.within find_member_row(new_member) do
+        expect(page).to have_content(/in \d days/)
+      end
     end
 
-    page.within "#project_member_#{project_member_id}" do
-      expect(page).to have_content('Expires in 3 days')
+    it 'changes expiration date' do
+      project.team.add_users([new_member.id], :developer, expires_at: 3.days.from_now.to_date)
+      visit project_project_members_path(project)
+
+      page.within find_member_row(new_member) do
+        fill_in 'Expiration date', with: 5.days.from_now.to_date
+        find_field('Expiration date').native.send_keys :enter
+
+        wait_for_requests
+
+        expect(page).to have_content(/in \d days/)
+      end
+    end
+
+    it 'clears expiration date' do
+      project.team.add_users([new_member.id], :developer, expires_at: 5.days.from_now.to_date)
+      visit project_project_members_path(project)
+
+      page.within find_member_row(new_member) do
+        expect(page).to have_content(/in \d days/)
+
+        find('[data-testid="clear-button"]').click
+
+        wait_for_requests
+
+        expect(page).to have_content('No expiration set')
+      end
     end
   end
 
-  it 'changes expiration date' do
-    project.team.add_users([new_member.id], :developer, expires_at: Date.today.to_date)
-    visit project_project_members_path(project)
-
-    page.within "#project_member_#{project_member_id}" do
-      fill_in 'Expiration date', with: 3.days.from_now.to_date
-      find_field('Expiration date').native.send_keys :enter
-
-      wait_for_requests
-
-      expect(page).to have_content('Expires in 3 days')
+  context 'when `vue_project_members_list` feature flag is disabled' do
+    before do
+      stub_feature_flags(vue_project_members_list: false)
     end
-  end
 
-  it 'clears expiration date' do
-    project.team.add_users([new_member.id], :developer, expires_at: 3.days.from_now.to_date)
-    visit project_project_members_path(project)
+    it 'expiration date is displayed in the members list' do
+      stub_feature_flags(invite_members_group_modal: false)
 
-    page.within "#project_member_#{project_member_id}" do
-      expect(page).to have_content('Expires in 3 days')
+      visit project_project_members_path(project)
 
-      find('.js-clear-input').click
+      page.within '.invite-users-form' do
+        select2(new_member.id, from: '#user_ids', multiple: true)
 
-      wait_for_requests
+        fill_in 'expires_at', with: 3.days.from_now.to_date
+        find_field('expires_at').native.send_keys :enter
 
-      expect(page).not_to have_content('Expires in')
+        click_on 'Invite'
+      end
+
+      page.within "#project_member_#{project_member_id}" do
+        expect(page).to have_content('Expires in 3 days')
+      end
+    end
+
+    it 'changes expiration date' do
+      project.team.add_users([new_member.id], :developer, expires_at: 1.day.from_now.to_date)
+      visit project_project_members_path(project)
+
+      page.within "#project_member_#{project_member_id}" do
+        fill_in 'Expiration date', with: 3.days.from_now.to_date
+        find_field('Expiration date').native.send_keys :enter
+
+        wait_for_requests
+
+        expect(page).to have_content('Expires in 3 days')
+      end
+    end
+
+    it 'clears expiration date' do
+      project.team.add_users([new_member.id], :developer, expires_at: 3.days.from_now.to_date)
+      visit project_project_members_path(project)
+
+      page.within "#project_member_#{project_member_id}" do
+        expect(page).to have_content('Expires in 3 days')
+
+        find('.js-clear-input').click
+
+        wait_for_requests
+
+        expect(page).not_to have_content('Expires in')
+      end
     end
   end
 

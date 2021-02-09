@@ -2,18 +2,12 @@
 
 %ul
   %li.current-user
-    .user-name.gl-font-weight-bold
-      = current_user.name
-      - if current_user&.status && user_status_set_to_busy?(current_user.status)
-        %span.gl-font-weight-normal.gl-text-gray-500= s_("UserProfile|(Busy)")
-    = current_user.to_reference
-    - if current_user.status
-      .user-status.d-flex.align-items-center.gl-mt-2.has-tooltip{ title: current_user.status.message_html, data: { html: 'true', placement: 'bottom' } }
-        - if show_status_emoji?(current_user.status)
-          .user-status-emoji.d-flex.align-items-center
-            = emoji_icon current_user.status.emoji
-        %span.user-status-message.str-truncated
-          = current_user.status.message_html.html_safe
+    - if current_user_menu?(:profile)
+      = link_to current_user, class: 'gl-line-height-20!', data: { user: current_user.username, testid: 'user-profile-link' } do
+        = render 'layouts/header/current_user_dropdown_item'
+    - else
+      .gl-py-3.gl-px-4
+        = render 'layouts/header/current_user_dropdown_item'
   %li.divider
   - if can?(current_user, :update_user_status, current_user)
     %li
@@ -22,9 +16,6 @@
           = s_('SetStatusModal|Edit status')
         - else
           = s_('SetStatusModal|Set status')
-  - if current_user_menu?(:profile)
-    %li
-      = link_to s_("CurrentUser|Profile"), current_user, class: 'profile-link', data: { user: current_user.username }
   - if current_user_menu?(:start_trial)
     %li
       %a.trial-link{ href: trials_link_url }
@@ -32,7 +23,9 @@
         = emoji_icon('rocket')
   - if current_user_menu?(:settings)
     %li
-      = link_to s_("CurrentUser|Settings"), profile_path, data: { qa_selector: 'settings_link' }
+      = link_to s_("CurrentUser|Edit profile"), profile_path, data: { qa_selector: 'edit_profile_link' }
+    %li
+      = link_to s_("CurrentUser|Preferences"), profile_preferences_path
   = render_if_exists 'layouts/header/buy_pipeline_minutes', project: @project, namespace: @group
   = render_if_exists 'layouts/header/upgrade'
 

@@ -33,13 +33,14 @@ You can create as many personal access tokens as you like from your GitLab
 profile.
 
 1. Sign in to GitLab.
-1. In the upper-right corner, click your avatar and select **Settings**.
-1. On the  **User Settings** menu, select **Access Tokens**.
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the left sidebar, select **Access Tokens**.
 1. Choose a name and optional expiry date for the token.
 1. Choose the [desired scopes](#limiting-scopes-of-a-personal-access-token).
-1. Click the **Create personal access token** button.
+1. Select **Create personal access token**.
 1. Save the personal access token somewhere safe. If you navigate away or refresh
-your page, and you did not save the token, you must create a new one.
+   your page, and you did not save the token, you must create a new one.
 
 ### Revoking a personal access token
 

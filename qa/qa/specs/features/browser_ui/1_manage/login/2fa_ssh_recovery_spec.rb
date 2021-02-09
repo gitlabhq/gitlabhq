@@ -48,7 +48,7 @@ module QA
 
       def enable_2fa_for_user(user)
         Flow::Login.while_signed_in(as: user) do
-          Page::Main::Menu.perform(&:click_settings_link)
+          Page::Main::Menu.perform(&:click_edit_profile_link)
           Page::Profile::Menu.perform(&:click_account)
           Page::Profile::Accounts::Show.perform(&:click_enable_2fa_button)
 

@@ -50,41 +50,6 @@ RSpec.describe API::Internal::Base do
     end
   end
 
-  shared_examples 'actor key validations' do
-    context 'key id is not provided' do
-      let(:key_id) { nil }
-
-      it 'returns an error message' do
-        subject
-
-        expect(json_response['success']).to be_falsey
-        expect(json_response['message']).to eq('Could not find a user without a key')
-      end
-    end
-
-    context 'key does not exist' do
-      let(:key_id) { non_existing_record_id }
-
-      it 'returns an error message' do
-        subject
-
-        expect(json_response['success']).to be_falsey
-        expect(json_response['message']).to eq('Could not find the given key')
-      end
-    end
-
-    context 'key without user' do
-      let(:key_id) { create(:key, user: nil).id }
-
-      it 'returns an error message' do
-        subject
-
-        expect(json_response['success']).to be_falsey
-        expect(json_response['message']).to eq('Could not find a user for the given key')
-      end
-    end
-  end
-
   describe 'GET /internal/two_factor_recovery_codes' do
     let(:key_id) { key.id }
 
@@ -1406,10 +1371,6 @@ RSpec.describe API::Internal::Base do
     let(:key_id) { key.id }
     let(:otp) { '123456'}
 
-    before do
-      stub_feature_flags(two_factor_for_cli: true)
-    end
-
     subject do
       post api('/internal/two_factor_otp_check'),
            params: {
@@ -1419,76 +1380,10 @@ RSpec.describe API::Internal::Base do
            }
     end
 
-    it_behaves_like 'actor key validations'
+    it 'is not available' do
+      subject
 
-    context 'when the key is a deploy key' do
-      let(:key_id) { create(:deploy_key).id }
-
-      it 'returns an error message' do
-        subject
-
-        expect(json_response['success']).to be_falsey
-        expect(json_response['message']).to eq('Deploy keys cannot be used for Two Factor')
-      end
-    end
-
-    context 'when the two factor is enabled' do
-      before do
-        allow_any_instance_of(User).to receive(:two_factor_enabled?).and_return(true)
-      end
-
-      context 'when the OTP is valid' do
-        it 'registers a new OTP session and returns success' do
-          allow_any_instance_of(Users::ValidateOtpService).to receive(:execute).with(otp).and_return(status: :success)
-
-          expect_next_instance_of(::Gitlab::Auth::Otp::SessionEnforcer) do |session_enforcer|
-            expect(session_enforcer).to receive(:update_session).once
-          end
-
-          subject
-
-          expect(json_response['success']).to be_truthy
-        end
-      end
-
-      context 'when the OTP is invalid' do
-        it 'is not success' do
-          allow_any_instance_of(Users::ValidateOtpService).to receive(:execute).with(otp).and_return(status: :error)
-
-          subject
-
-          expect(json_response['success']).to be_falsey
-        end
-      end
-    end
-
-    context 'when the two factor is disabled' do
-      before do
-        allow_any_instance_of(User).to receive(:two_factor_enabled?).and_return(false)
-      end
-
-      it 'returns an error message' do
-        subject
-
-        expect(json_response['success']).to be_falsey
-        expect(json_response['message']).to eq 'Two-factor authentication is not enabled for this user'
-      end
-    end
-
-    context 'two_factor_for_cli feature is disabled' do
-      before do
-        stub_feature_flags(two_factor_for_cli: false)
-      end
-
-      context 'when two-factor is enabled for the user' do
-        it 'returns user two factor config' do
-          allow_any_instance_of(User).to receive(:two_factor_enabled?).and_return(true)
-
-          subject
-
-          expect(json_response['success']).to be_falsey
-        end
-      end
+      expect(json_response['success']).to be_falsey
     end
   end
 

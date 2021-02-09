@@ -74,14 +74,10 @@
     justify-content: flex-end;
   }
 
-  .encoding-selector,
   .soft-wrap-toggle {
     display: inline-block;
     vertical-align: top;
     font-family: $regular-font;
-  }
-
-  .soft-wrap-toggle {
     margin: 0 $btn-side-margin;
 
     .soft-wrap {
@@ -126,15 +122,6 @@
       .soft-wrap-toggle {
         width: 100%;
         margin: 3px 0;
-      }
-
-      .encoding-selector {
-        display: block;
-        margin: 3px 0;
-
-        button {
-          width: 100%;
-        }
       }
 
       @media(max-width: map-get($grid-breakpoints, md)-1) {

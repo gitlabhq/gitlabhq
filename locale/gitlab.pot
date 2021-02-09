@@ -8664,13 +8664,13 @@ msgstr ""
 msgid "CurrentUser|Buy Pipeline minutes"
 msgstr ""
 
+msgid "CurrentUser|Edit profile"
+msgstr ""
+
 msgid "CurrentUser|One of your groups is running out"
 msgstr ""
 
-msgid "CurrentUser|Profile"
-msgstr ""
-
-msgid "CurrentUser|Settings"
+msgid "CurrentUser|Preferences"
 msgstr ""
 
 msgid "CurrentUser|Start an Ultimate trial"

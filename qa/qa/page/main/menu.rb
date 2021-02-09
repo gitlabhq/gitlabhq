@@ -6,7 +6,7 @@ module QA
       class Menu < Page::Base
         view 'app/views/layouts/header/_current_user_dropdown.html.haml' do
           element :sign_out_link
-          element :settings_link
+          element :edit_profile_link
         end
 
         view 'app/views/layouts/header/_default.html.haml' do
@@ -115,10 +115,10 @@ module QA
           sign_out if signed_in?
         end
 
-        def click_settings_link
+        def click_edit_profile_link
           retry_until(reload: false) do
             within_user_menu do
-              click_link 'Settings'
+              click_element(:edit_profile_link)
             end
 
             has_text?('User Settings')

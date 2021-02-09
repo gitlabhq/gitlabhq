@@ -87,9 +87,12 @@ You can skip this step if you already have your GitLab repositories searchable i
 
 If a GitLab administrator has enabled Sourcegraph, you can enable this feature in your user preferences.
 
-1. In GitLab, click your avatar in the top-right corner, then click **Settings**. On the left-hand nav, click **Preferences**.
-1. Under **Integrations**, find the **Sourcegraph** section.
-1. Check **Enable Sourcegraph**.
+In GitLab:
+
+1. In the top-right corner, select your avatar.
+1. Select **Preferences**.
+1. In the **Integrations** section, select the checkbox under **Sourcegraph**.
+1. Select **Save changes**.
 
 ![Sourcegraph user preferences](img/sourcegraph_user_preferences_v12_5.png)
 

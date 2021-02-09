@@ -22,7 +22,7 @@ module QA
       end
 
       def fabricate!
-        Page::Main::Menu.perform(&:click_settings_link)
+        Page::Main::Menu.perform(&:click_edit_profile_link)
         Page::Profile::Menu.perform(&:click_ssh_keys)
 
         Page::Profile::SSHKeys.perform do |profile_page|

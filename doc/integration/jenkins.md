@@ -70,9 +70,10 @@ Grant a GitLab user access to the select GitLab projects.
 
 Create a personal access token to authorize Jenkins' access to GitLab.
 
-1. Log in to GitLab as the user to be used with Jenkins.
-1. Click your avatar, then **Settings**.
-1. Click **Access Tokens** in the sidebar.
+1. Sign in to GitLab as the user to be used with Jenkins.
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the left sidebar, select **Access Tokens**.
 1. Create a personal access token with the **API** scope checkbox checked. For more details, see
    [Personal access tokens](../user/profile/personal_access_tokens.md).
 1. Record the personal access token's value, because it's required in [Configure the Jenkins server](#configure-the-jenkins-server) section.

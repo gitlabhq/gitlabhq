@@ -13,7 +13,7 @@ functionality to GitLab.
 ## Accessing integrations
 
 You can find the available integrations under your project's
-**Settings ➔ Integrations** page.
+**Settings > Integrations** page.
 
 There are more than 20 integrations to integrate with. Click on the one that you
 want to configure.

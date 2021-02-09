@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # User account
 
 Each GitLab account has a user profile, and settings. Your [profile](#user-profile)
-contains information about you, and your GitLab activity. Your [settings](#profile-settings)
+contains information about you, and your GitLab activity. Your [settings](#user-settings)
 allow you to customize some aspects of GitLab to suit yourself.
 
 ## Creating users
@@ -29,8 +29,8 @@ See [Unknown Sign-In Notification](unknown_sign_in_notification.md) for more det
 
 To access your profile:
 
-1. Click on your avatar.
-1. Select **Profile**.
+1. In the top-right corner, select your avatar.
+1. Select your name or username.
 
 On your profile page, you can see the following information:
 
@@ -42,12 +42,12 @@ On your profile page, you can see the following information:
 - Starred projects: projects you starred
 - Snippets: your personal code [snippets](../snippets.md#personal-snippets)
 
-## Profile settings
+## User settings
 
-To access your profile settings:
+To access your user settings:
 
-1. Click on your avatar.
-1. Select **Settings**.
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
 
 From there, you can:
 
@@ -78,11 +78,12 @@ From there, you can:
 
 ## Changing your password
 
-1. Navigate to your [profile's](#profile-settings) **Settings > Password**.
-1. Enter your current password in the 'Current password' field.
-1. Enter your desired new password twice, once in the 'New password' field and
-   once in the 'Password confirmation' field.
-1. Click the 'Save password' button.
+1. Go to your [user settings](#user-settings).
+1. In the left sidebar, select **Password**.
+1. Enter your current password in the **Current password** field.
+1. Enter your desired new password twice, once in the **New password** field and
+   once in the **Password confirmation** field.
+1. Select **Save password**.
 
 If you don't know your current password, select the 'I forgot my password' link.
 
@@ -97,12 +98,13 @@ before proceeding.
 
 To change your `username`:
 
-1. Navigate to your [profile's](#profile-settings) **Settings > Account**.
+1. Navigate to your [user settings](#user-settings).
+1. In the left sidebar, select **Account**.
 1. Enter a new username under **Change username**.
-1. Click **Update username**.
+1. Select **Update username**.
 
 WARNING:
-It is currently not possible to change your username if it contains a
+It is not possible to change your username if it contains a
 project with [Container Registry](../packages/container_registry/index.md) tags,
 because the project cannot be moved.
 
@@ -127,33 +129,31 @@ The following information is hidden from the user profile page (`https://gitlab.
 - Starred projects tab
 - Snippets tab
 
-To enable private profile:
+To make your profile private:
 
-1. Click your avatar.
-1. Select **Profile**.
-1. Click **Edit profile** (pencil icon).
-1. Check the **Private profile** option in the **Main settings** section.
-1. Click **Update profile settings**.
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. Select the **Private profile** checkbox.
+1. Select **Update profile settings**.
 
 NOTE:
-All your profile information can be seen by yourself, and GitLab admins, even if
+All your profile information can be seen by yourself and GitLab administrators even if
 the **Private profile** option is enabled.
 
 ## Add details of external accounts
 
-GitLab allows you to add links to certain other external accounts you might have, like Skype and Twitter. They can help other users connect with you on other platforms.
+You can add links to certain other external accounts you might have, like Skype and Twitter.
+They can help other users connect with you on other platforms.
 
 To add links to other accounts:
 
-1. Click your avatar.
-1. Select **Profile**.
-1. Click **Edit profile** (pencil icon).
-1. Complete the desired fields for external accounts, in the **Main settings**
-   section:
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. Edit the desired fields for external accounts:
    - Skype
-   - Twitter
    - LinkedIn
-1. Click **Update profile settings**.
+   - Twitter
+1. Select **Update profile settings**.
 
 ## Private contributions
 
@@ -163,11 +163,10 @@ Enabling private contributions includes contributions to private projects, in th
 
 To enable private contributions:
 
-1. Click on your avatar.
-1. Select **Profile**.
-1. Click **Edit profile** (pencil icon).
-1. Check the **Private contributions** option.
-1. Click **Update profile settings**.
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. Select the **Private contributions** checkbox.
+1. Select **Update profile settings**.
 
 ## Current status
 
@@ -183,23 +182,23 @@ They may however contain emoji codes such as `I'm on vacation :palm_tree:`.
 
 To set your current status:
 
-1. Click your avatar.
-1. Click **Set status**, or **Edit status** if you have already set a status.
-1. Set the desired emoji and/or status message.
-1. Click **Set status**. Alternatively, you can click **Remove status** to remove your user status entirely.
+1. In the top-right corner, select your avatar.
+1. Select **Set status**, or **Edit status** if you have already set a status.
+1. Set the desired emoji and status message.
+1. Select **Set status**. Alternatively, you can select **Remove status** to remove your user status entirely.
 
 or
 
-1. Click your avatar.
-1. Select **Profile**.
-1. Click **Edit profile** (pencil icon).
+1. In the top-right corner, select your avatar.
+1. Select your name or username.
+1. Select the Edit profile icon (**{pencil}**).
 1. Enter your status message in the **Your status** text field.
-1. Click **Add status emoji** (smiley face), and select the desired emoji.
-1. Click **Update profile settings**.
+1. Select Add status emoji icon (**{slight-smile}**), and select the desired emoji.
+1. Select **Update profile settings**.
 
 You can also set your current status [using the API](../../api/users.md#user-status).
 
-If you previously selected the "Busy" checkbox, remember to deselect it when you become available again.
+If you previously selected the **Busy** checkbox, remember to deselect it when you become available again.
 
 ## Busy status indicator
 
@@ -210,7 +209,7 @@ If you previously selected the "Busy" checkbox, remember to deselect it when you
 > - It's not recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#disable-busy-status-feature).
 
-To indicate to others that you are busy, you can set an indicator
+To indicate to others that you are busy, you can set an indicator.
 
 ![Busy status indicator](img/busy_status_indicator_v13_6.png)
 
@@ -218,16 +217,15 @@ To set the busy status indicator, either:
 
 - Set it directly:
 
-  1. Click your avatar.
-  1. Click **Set status**, or **Edit status** if you have already set a status.
-  1. Select the **Busy** checkbox
+  1. In the top-right corner, select your avatar.
+  1. Select **Set status**, or **Edit status** if you have already set a status.
+  1. Select the **Busy** checkbox.
 
 - Set it on your profile:
 
-  1. Click your avatar.
-  1. Select **Profile**.
-  1. Click **Edit profile** (**{pencil}**).
-  1. Select the **Busy** checkbox
+  1. In the top-right corner, select your avatar.
+  1. Select **Edit profile**.
+  1. Select the **Busy** checkbox.
 
 ### Disable busy status feature
 
@@ -256,12 +254,11 @@ Any of your own verified email addresses can be used as the commit email.
 
 To change your commit email:
 
-1. Click your avatar.
-1. Select **Profile**.
-1. Click **Edit profile** (pencil icon).
-1. Click **Commit email** dropdown.
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. Select the **Commit email** dropdown.
 1. Select any of the verified emails.
-1. Click **Update profile settings**.
+1. Select **Update profile settings**.
 
 ### Private commit email
 
@@ -272,14 +269,13 @@ which allows the user to keep their email information private.
 
 To enable this option:
 
-1. Click your avatar.
-1. Select **Profile**.
-1. Click **Edit profile** (pencil icon).
-1. Click **Commit email** dropdown.
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. Select the **Commit email** dropdown.
 1. Select **Use a private email** option.
-1. Click **Update profile settings**.
+1. Select **Update profile settings**.
 
-Once this option is enabled, every Git-related action is performed using the private commit email.
+After this option is enabled, every Git-related action is performed using the private commit email.
 
 To stay fully anonymous, you can also copy this private commit email
 and configure it on your local machine using the following command:
@@ -298,7 +294,7 @@ and expires after "Application settings -> Session duration (minutes)"/`session_
 (defaults to `10080` minutes = 7 days) of no activity.
 
 When signing in to the main GitLab application, you can also check the
-"Remember me" option which sets the `remember_user_token`
+**Remember me** option which sets the `remember_user_token`
 cookie (via [`devise`](https://github.com/heartcombo/devise)).
 `remember_user_token` expires after
 `config/initializers/devise.rb` -> `config.remember_for` (defaults to 2 weeks).
@@ -326,7 +322,8 @@ GitLab uses both session and persistent cookies:
 - Session cookie: Session cookies are normally removed at the end of the browser session when
   the browser is closed. The `_gitlab_session` cookie has no fixed expiration date. However,
   it expires based on its [`session_expire_delay`](#why-do-i-keep-getting-signed-out).
-- Persistent cookie: The `remember_user_token` is a cookie with an expiration date of two weeks. GitLab activates this cookie if you click Remember Me when you sign in.
+- Persistent cookie: The `remember_user_token` is a cookie with an expiration date of two weeks.
+  GitLab activates this cookie if you select **Remember Me** when you sign in.
 
 By default, the server sets a time-to-live (TTL) of 1-week on any session that is used.
 
@@ -336,15 +333,3 @@ The server continues to reset the TTL for that session, independent of whether 2
 If you close your browser and open it up again, the `remember_user_token` cookie allows your user to reauthenticate itself.
 
 Without the `config.extend_remember_period` flag, you would be forced to sign in again after two weeks.
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->

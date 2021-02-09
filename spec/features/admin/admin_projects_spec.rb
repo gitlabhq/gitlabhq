@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe "Admin::Projects" do
+  include Spec::Support::Helpers::Features::MembersHelpers
   include Select2Helper
 
   let(:user) { create :user }
@@ -10,8 +11,6 @@ RSpec.describe "Admin::Projects" do
   let(:current_user) { create(:admin) }
 
   before do
-    stub_feature_flags(vue_project_members_list: false)
-
     sign_in(current_user)
     gitlab_enable_admin_mode_sign_in(current_user)
   end
@@ -93,46 +92,97 @@ RSpec.describe "Admin::Projects" do
     end
   end
 
-  describe 'add admin himself to a project' do
-    before do
-      project.add_maintainer(user)
-      stub_feature_flags(invite_members_group_modal: false)
-    end
-
-    it 'adds admin a to a project as developer', :js do
-      visit project_project_members_path(project)
-
-      page.within '.invite-users-form' do
-        select2(current_user.id, from: '#user_ids', multiple: true)
-        select 'Developer', from: 'access_level'
+  context 'when `vue_project_members_list` feature flag is enabled', :js do
+    describe 'admin adds themselves to the project' do
+      before do
+        project.add_maintainer(user)
+        stub_feature_flags(invite_members_group_modal: false)
       end
 
-      click_button 'Invite'
+      it 'adds admin to the project as developer', :js do
+        visit project_project_members_path(project)
 
-      page.within '.content-list' do
-        expect(page).to have_content(current_user.name)
-        expect(page).to have_content('Developer')
+        page.within '.invite-users-form' do
+          select2(current_user.id, from: '#user_ids', multiple: true)
+          select 'Developer', from: 'access_level'
+        end
+
+        click_button 'Invite'
+
+        expect(find_member_row(current_user)).to have_content('Developer')
+      end
+    end
+
+    describe 'admin removes themselves from the project' do
+      before do
+        project.add_maintainer(user)
+        project.add_developer(current_user)
+      end
+
+      it 'removes admin from the project' do
+        visit project_project_members_path(project)
+
+        expect(find_member_row(current_user)).to have_content('Developer')
+
+        page.within find_member_row(current_user) do
+          click_button 'Leave'
+        end
+
+        page.within('[role="dialog"]') do
+          click_button('Leave')
+        end
+
+        expect(current_path).to match dashboard_projects_path
       end
     end
   end
 
-  describe 'admin remove himself from a project' do
+  context 'when `vue_project_members_list` feature flag is disabled' do
     before do
-      project.add_maintainer(user)
-      project.add_developer(current_user)
+      stub_feature_flags(vue_project_members_list: false)
     end
 
-    it 'removes admin from the project' do
-      visit project_project_members_path(project)
-
-      page.within '.content-list' do
-        expect(page).to have_content(current_user.name)
-        expect(page).to have_content('Developer')
+    describe 'admin adds themselves to the project' do
+      before do
+        project.add_maintainer(user)
+        stub_feature_flags(invite_members_group_modal: false)
       end
 
-      find(:css, '.content-list li', text: current_user.name).find(:css, 'a.btn-danger').click
+      it 'adds admin to the project as developer', :js do
+        visit project_project_members_path(project)
 
-      expect(page).not_to have_selector(:css, '.content-list')
+        page.within '.invite-users-form' do
+          select2(current_user.id, from: '#user_ids', multiple: true)
+          select 'Developer', from: 'access_level'
+        end
+
+        click_button 'Invite'
+
+        page.within '.content-list' do
+          expect(page).to have_content(current_user.name)
+          expect(page).to have_content('Developer')
+        end
+      end
+    end
+
+    describe 'admin removes themselves from the project' do
+      before do
+        project.add_maintainer(user)
+        project.add_developer(current_user)
+      end
+
+      it 'removes admin from the project' do
+        visit project_project_members_path(project)
+
+        page.within '.content-list' do
+          expect(page).to have_content(current_user.name)
+          expect(page).to have_content('Developer')
+        end
+
+        find(:css, '.content-list li', text: current_user.name).find(:css, 'a.btn-danger').click
+
+        expect(page).not_to have_selector(:css, '.content-list')
+      end
     end
   end
 end

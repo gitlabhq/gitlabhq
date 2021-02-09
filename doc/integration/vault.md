@@ -18,12 +18,15 @@ The following assumes you already have Vault installed and running.
 
 1. **Get the OpenID Connect client ID and secret from GitLab:**
 
-   First you must create a GitLab application to obtain an application ID and secret for authenticating into Vault. To do this, sign in to GitLab and follow these steps:
+   First you must create a GitLab application to obtain an application ID and secret for authenticating into Vault.
+   To do this, sign in to GitLab and follow these steps:
 
-   1. On GitLab, click your avatar on the top-right corner, and select your user **Settings > Applications**.
-   1. Fill out the application **Name** and [**Redirect URI**](https://www.vaultproject.io/docs/auth/jwt#redirect-uris),
-      making sure to select the **OpenID** scope.
-   1. Save application.
+   1. In the top-right corner, select your avatar.
+   1. Select **Edit profile**.
+   1. In the left sidebar, select **Applications**.
+   1. Fill out the application **Name** and [**Redirect URI**](https://www.vaultproject.io/docs/auth/jwt#redirect-uris).
+   1. Select the **OpenID** scope.
+   1. Select **Save application**.
    1. Copy client ID and secret, or keep the page open for reference.
 
    ![GitLab OAuth provider](img/gitlab_oauth_vault_v12_6.png)

@@ -339,7 +339,7 @@ an expiry for the artifacts, they are marked for deletion right after that date 
 Otherwise, they expire per the [default artifacts expiration setting](../user/admin_area/settings/continuous_integration.md).
 
 Artifacts are cleaned up by the `expire_build_artifacts_worker` cron job which Sidekiq
-runs every hour at 50 minutes (`50 * * * *`).
+runs every 7 minutes (`*/7 * * * *`).
 
 To change the default schedule on which the artifacts are expired, follow the
 steps below.
@@ -350,7 +350,7 @@ steps below.
    your schedule in cron syntax:
 
    ```ruby
-   gitlab_rails['expire_build_artifacts_worker_cron'] = "50 * * * *"
+   gitlab_rails['expire_build_artifacts_worker_cron'] = "*/7 * * * *"
    ```
 
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
@@ -362,7 +362,7 @@ steps below.
 
    ```yaml
    expire_build_artifacts_worker:
-     cron: "50 * * * *"
+     cron: "*/7 * * * *"
    ```
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.

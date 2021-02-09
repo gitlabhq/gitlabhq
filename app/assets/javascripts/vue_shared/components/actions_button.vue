@@ -76,14 +76,13 @@ export default {
     <template v-for="(action, index) in actions">
       <gl-dropdown-item
         :key="action.key"
-        class="gl-dropdown-item-deprecated-adapter"
         :is-check-item="true"
         :is-checked="action.key === selectedAction.key"
         :secondary-text="action.secondaryText"
         :data-testid="`action_${action.key}`"
         @click="handleItemClick(action)"
       >
-        {{ action.text }}
+        <span class="gl-font-weight-bold">{{ action.text }}</span>
       </gl-dropdown-item>
       <gl-dropdown-divider v-if="index != actions.length - 1" :key="action.key + '_divider'" />
     </template>

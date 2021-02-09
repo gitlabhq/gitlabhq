@@ -93,7 +93,7 @@ The **Seat usage** page lists all users occupying seats. Details for each user i
 
 - Full name
 - Username
-- Public email address (if they have provided one in their [profile settings](../../user/profile/index.md#profile-settings))
+- Public email address (if they have provided one in their [user settings](../../user/profile/index.md#user-settings))
 
 The Seat usage listing is updated live, but the usage statistics on the billing page are updated
 only once per day. For this reason there can be a minor difference between the seat usage listing
@@ -247,8 +247,11 @@ Quotas apply to:
   subgroups, and nested projects. To view the group's usage, navigate to the group,
   then **Settings > Usage Quotas**.
 - Your personal account, where the minutes are available for your personal projects.
-  To view and buy personal minutes, click your avatar, then
-  **Settings > [Usage Quotas](https://gitlab.com/profile/usage_quotas#pipelines-quota-tab)**.
+  To view and buy personal minutes:
+
+  1. In the top-right corner, select your avatar.
+  1. Select **Edit profile**.
+  1. In the left sidebar, select **[Usage Quotas](https://gitlab.com/profile/usage_quotas#pipelines-quota-tab)**.
 
 Only pipeline minutes for GitLab shared runners are restricted. If you have a
 specific runner set up for your projects, there is no limit to your build time on GitLab SaaS.
@@ -282,10 +285,12 @@ To purchase additional minutes for your group on GitLab SaaS:
 
 To purchase additional minutes for your personal namespace:
 
-1. Click your avatar, then go to **Settings > Usage Quotas**.
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the left sidebar, select **Usage Quotas**.
 1. Select **Buy additional minutes** and GitLab redirects you to the Customers Portal.
 1. Locate the subscription card that's linked to your personal namespace on GitLab SaaS, click **Buy more CI minutes**, and complete the details about the transaction. Once we have processed your payment, the extra CI minutes are synced to your personal namespace.
-1. To confirm the available CI minutes for your personal projects, click your avatar, then go to **Settings > Usage Quotas**.
+1. To confirm the available CI minutes for your personal projects, go to the **Usage Quotas** settings again.
 
    The **Additional minutes** displayed now includes the purchased additional CI minutes, plus any minutes rolled over from last month.
 

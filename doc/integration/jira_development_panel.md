@@ -77,10 +77,10 @@ To ensure that regular user account maintenance doesn't impact your integration,
 create and use a single-purpose `jira` user in GitLab.
 
 1. In GitLab, create a new application to allow Jira to connect with your GitLab account.
-
 1. Sign in to the GitLab account that you want Jira to use to connect to GitLab.
-1. In the top right corner, click your profile avatar.
-1. Click **Settings > Applications** to display the form to create a new application.
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the left sidebar, select **Applications**.
 1. In the **Name** field, enter a descriptive name for the integration, such as `Jira`.
 1. In the **Redirect URI** field, enter `https://<gitlab.example.com>/login/oauth/callback`,
    replacing `<gitlab.example.com>` with your GitLab instance domain. For example, if you are using GitLab.com,
@@ -94,8 +94,7 @@ create and use a single-purpose `jira` user in GitLab.
 
    ![GitLab application setup](img/jira_dev_panel_gl_setup_1.png)
 
-1. Check **API** in the Scopes section, and uncheck any other checkboxes.
-
+1. Check **API** in the **Scopes** section, and clear any other checkboxes.
 1. Click **Save application**. GitLab displays the generated **Application ID**
    and **Secret** values. Copy these values, which you use in Jira.
 
