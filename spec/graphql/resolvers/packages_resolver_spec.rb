@@ -6,7 +6,7 @@ RSpec.describe Resolvers::PackagesResolver do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, :public) }
   let_it_be(:package) { create(:package, project: project) }
 
   describe '#resolve' do

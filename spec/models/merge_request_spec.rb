@@ -365,7 +365,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
   describe '.by_commit_sha' do
     subject(:by_commit_sha) { described_class.by_commit_sha(sha) }
 
-    let!(:merge_request) { create(:merge_request, :with_diffs) }
+    let!(:merge_request) { create(:merge_request) }
 
     context 'with sha contained in latest merge request diff' do
       let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
@@ -431,7 +431,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     context 'when commit is a part of the merge request' do
-      let!(:merge_request) { create(:merge_request, :with_diffs) }
+      let!(:merge_request) { create(:merge_request) }
       let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
 
       it { is_expected.to eq([merge_request]) }
@@ -451,7 +451,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     context 'when commit is part of the merge request and a squash commit at the same time' do
-      let!(:merge_request) { create(:merge_request, :with_diffs) }
+      let!(:merge_request) { create(:merge_request) }
       let(:sha) { merge_request.commits.first.id }
 
       before do
@@ -825,7 +825,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     let(:last_branch_commit) { subject.source_project.repository.commit(Gitlab::Git::BRANCH_REF_PREFIX + subject.source_branch) }
 
     context 'with diffs' do
-      subject { create(:merge_request, :with_diffs) }
+      subject { create(:merge_request) }
 
       it 'returns the sha of the source branch last commit' do
         expect(subject.source_branch_sha).to eq(last_branch_commit.sha)
@@ -892,7 +892,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     let(:options) { { paths: ['a/b', 'b/a', 'c/*'] } }
 
     context 'when there are MR diffs' do
-      let(:merge_request) { create(:merge_request, :with_diffs) }
+      let(:merge_request) { create(:merge_request) }
 
       it 'delegates to the MR diffs' do
         expect(merge_request.merge_request_diff).to receive(:raw_diffs).with(options)
@@ -941,7 +941,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
   describe '#note_positions_for_paths' do
     let(:user) { create(:user) }
-    let(:merge_request) { create(:merge_request, :with_diffs) }
+    let(:merge_request) { create(:merge_request) }
     let(:project) { merge_request.project }
     let!(:diff_note) do
       create(:diff_note_on_merge_request, project: project, noteable: merge_request)

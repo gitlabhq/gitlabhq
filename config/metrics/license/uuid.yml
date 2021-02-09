@@ -2,11 +2,11 @@ key_path: uuid
 description: GitLab instance unique identifier
 value_type: string
 product_category: collection
-stage: growth
+product_stage: growth
 status: data_available
 milestone: 9.1
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1521
-group: group::product analytics
+product_group: group::product intelligence
 time_frame: none
 data_source: database
 distribution: [ee, ce]

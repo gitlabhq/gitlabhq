@@ -7,7 +7,7 @@ RSpec.describe ::API::Entities::MergeRequestBasic do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:merge_request) { create(:merge_request) }
   let_it_be(:labels) { create_list(:label, 3) }
-  let_it_be(:merge_requests) { create_list(:labeled_merge_request, 10, :unique_branches, :with_diffs, labels: labels) }
+  let_it_be(:merge_requests) { create_list(:labeled_merge_request, 10, :unique_branches, labels: labels) }
 
   # This mimics the behavior of the `Grape::Entity` serializer
   def present(obj)

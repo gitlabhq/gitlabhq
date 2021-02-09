@@ -207,19 +207,41 @@ To add a redirect:
    1. Assign the MR to a technical writer for review and merge.
 1. If the redirect is to one of the 4 internal docs projects (not an external URL),
    create an MR in [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs):
-   1. Update [`_redirects`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/content/_redirects)
+   1. Update [`redirects.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/content/_data/redirects.yaml)
       with one redirect entry for each renamed or moved file. This code works for
-      <https://docs.gitlab.com> links only:
+      <https://docs.gitlab.com> links only. Keep them alphabetically sorted:
 
-      ```plaintext
-      /ee/path/to/old_file.html /ee/path/to/new_file 302 # To be removed after YYYY-MM-DD
+      ```yaml
+      - from: /ee/path/to/old_file.html
+        to: /ee/path/to/new_file.html
+        remove_date: YYYY-MM-DD
       ```
 
-      The path must start with the internal project directory `/ee` for `gitlab`,
-      `/gitlab-runner`, `/omnibus-gitlab` or `charts`, and must end with `.html`.
+      The path must start with the internal project directory `/ee`,
+      `/runner`, `/omnibus` or `/charts`, and end with either `.html` or `/`
+      for a clean URL.
 
-      `_redirects` entries can be removed after one year.
+      If the `from:` redirect is an `index.html` file, add a duplicate entry for
+      the `/` URL (without `index.html). For example:
 
+      ```yaml
+      - from: /ee/user/project/operations/index.html
+        to: /ee/operations/index.html
+        remove_date: 2021-11-01
+      - from: /ee/user/project/operations/
+        to: /ee/operations/index.html
+        remove_date: 2021-11-01
+      ```
+
+      The `remove_date` should be one year after the redirect is submitted.
+
+   1. Run the Rake task in the `gitlab-docs` project to populate the `_redirects` file:
+
+      ```shell
+      bundle exec rake redirects
+      ```
+
+   1. Add both `content/_redirects` and `content/_data/redirects.yaml` to your MR.
 1. Search for links to the old file. You must find and update all links to the old file:
 
    - In <https://gitlab.com/gitlab-com/www-gitlab-com>, search for full URLs:

@@ -1,11 +1,11 @@
 key_path: counts_monthly.deployments
 description: Total deployments count for recent 28 days
 value_type: integer
-stage: release
+product_stage: release
 status: data_available
 milestone: 13.2
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35493
-group: 'group::ops release'
+product_group: 'group::ops release'
 time_frame: 28d
 data_source: database
 distribution: [ee, ce]

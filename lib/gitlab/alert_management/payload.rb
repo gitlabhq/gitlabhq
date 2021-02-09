@@ -17,13 +17,14 @@ module Gitlab
         # @param project [Project]
         # @param payload [Hash]
         # @param monitoring_tool [String]
-        def parse(project, payload, monitoring_tool: nil)
+        # @param integration [AlertManagement::HttpIntegration]
+        def parse(project, payload, monitoring_tool: nil, integration: nil)
           payload_class = payload_class_for(
             monitoring_tool: monitoring_tool || payload&.dig('monitoring_tool'),
             payload: payload
           )
 
-          payload_class.new(project: project, payload: payload)
+          payload_class.new(project: project, payload: payload, integration: integration)
         end
 
         private

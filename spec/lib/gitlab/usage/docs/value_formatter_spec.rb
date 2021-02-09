@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Usage::Docs::ValueFormatter do
   describe '.format' do
     using RSpec::Parameterized::TableSyntax
     where(:key, :value, :expected_value) do
-      :group             | 'growth::product intelligence' | '`growth::product intelligence`'
+      :product_group     | 'growth::product intelligence' | '`growth::product intelligence`'
       :data_source       | 'redis'                        | 'Redis'
       :data_source       | 'ruby'                         | 'Ruby'
       :introduced_by_url | 'http://test.com'              | '[Introduced by](http://test.com)'

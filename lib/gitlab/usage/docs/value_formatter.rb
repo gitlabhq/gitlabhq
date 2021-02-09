@@ -10,7 +10,7 @@ module Gitlab
             "**#{value}**"
           when :data_source
             value.capitalize
-          when :group
+          when :product_group
             "`#{value}`"
           when :introduced_by_url
             "[Introduced by](#{value})"

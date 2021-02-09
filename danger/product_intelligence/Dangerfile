@@ -43,7 +43,7 @@ tracking_files = [
 tracking_changed_files   = all_changed_files & tracking_files
 usage_data_changed_files = all_changed_files.grep(%r{(usage_data)})
 metrics_changed_files    = all_changed_files.grep(%r{((ee/)?config/metrics/.*\.yml)})
-dictionary_changed_file  = all_changed_files.grep(%r{(doc/developmet/usage_ping/dictionary.md)})
+dictionary_changed_file  = all_changed_files.grep(%r{(doc/development/usage_ping/dictionary.md)})
 
 usage_changed_files = usage_data_changed_files + tracking_changed_files + metrics_changed_files + dictionary_changed_file
 

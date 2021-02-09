@@ -2,6 +2,7 @@ $search-dropdown-max-height: 400px;
 $search-avatar-size: 16px;
 $search-sidebar-min-width: 240px;
 $search-sidebar-max-width: 300px;
+$search-topbar-min-height: 111px;
 
 .search-results {
   .search-result-row {
@@ -19,11 +20,22 @@ $search-sidebar-max-width: 300px;
   }
 }
 
+.search-topbar {
+  @include media-breakpoint-up(md) {
+    min-height: $search-topbar-min-height;
+  }
+}
+
 .search-sidebar {
   @include media-breakpoint-up(md) {
     min-width: $search-sidebar-min-width;
     max-width: $search-sidebar-max-width;
   }
+}
+
+.search-nav-tabs {
+  overflow-y: hidden;
+  flex-wrap: nowrap;
 }
 
 .search form:hover,

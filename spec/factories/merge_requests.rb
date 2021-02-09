@@ -21,9 +21,6 @@ FactoryBot.define do
 
     merge_status { "can_be_merged" }
 
-    trait :with_diffs do
-    end
-
     trait :jira_title do
       title { generate(:jira_title) }
     end
@@ -306,7 +303,7 @@ FactoryBot.define do
     factory :closed_merge_request, traits: [:closed]
     factory :reopened_merge_request, traits: [:opened]
     factory :invalid_merge_request, traits: [:invalid]
-    factory :merge_request_with_diffs, traits: [:with_diffs]
+    factory :merge_request_with_diffs
     factory :merge_request_with_diff_notes do
       after(:create) do |mr|
         create(:diff_note_on_merge_request, noteable: mr, project: mr.source_project)

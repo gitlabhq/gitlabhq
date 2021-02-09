@@ -4,7 +4,7 @@ module QA
   module Page
     module Search
       class Results < QA::Page::Base
-        view 'app/views/search/_category.html.haml' do
+        view 'app/assets/javascripts/search/topbar/constants.js' do
           element :code_tab
           element :projects_tab
         end

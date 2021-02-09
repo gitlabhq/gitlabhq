@@ -7,34 +7,14 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
   let(:entity2) { '1dd9afb2-a3ee-4de1-8ae3-a405579c8584' }
   let(:entity3) { '34rfjuuy-ce56-sa35-ds34-dfer567dfrf2' }
   let(:entity4) { '8b9a2671-2abf-4bec-a682-22f6a8f7bf31' }
+  let(:end_date) { Date.current }
+  let(:sources) { Gitlab::Usage::Metrics::Aggregates::Sources }
 
-  around do |example|
-    # We need to freeze to a reference time
-    # because visits are grouped by the week number in the year
-    # Without freezing the time, the test may behave inconsistently
-    # depending on which day of the week test is run.
-    # Monday 6th of June
-    reference_time = Time.utc(2020, 6, 1)
-    travel_to(reference_time) { example.run }
-  end
+  let_it_be(:recorded_at) { Time.current.to_i }
 
   context 'aggregated_metrics_data' do
-    let(:known_events) do
-      [
-        { name: 'event1_slot', redis_slot: "slot", category: 'category1', aggregation: "weekly" },
-        { name: 'event2_slot', redis_slot: "slot", category: 'category2', aggregation: "weekly" },
-        { name: 'event3_slot', redis_slot: "slot", category: 'category3', aggregation: "weekly" },
-        { name: 'event5_slot', redis_slot: "slot", category: 'category4', aggregation: "weekly" },
-        { name: 'event4', category: 'category2', aggregation: "weekly" }
-      ].map(&:with_indifferent_access)
-    end
-
-    before do
-      allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:known_events).and_return(known_events)
-    end
-
     shared_examples 'aggregated_metrics_data' do
-      context 'no aggregated metrics is defined' do
+      context 'no aggregated metric is defined' do
         it 'returns empty hash' do
           allow_next_instance_of(described_class) do |instance|
             allow(instance).to receive(:aggregated_metrics).and_return([])
@@ -51,23 +31,75 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
           end
         end
 
-        context 'with AND operator' do
+        context 'with disabled database_sourced_aggregated_metrics feature flag' do
+          before do
+            stub_feature_flags(database_sourced_aggregated_metrics: false)
+          end
+
           let(:aggregated_metrics) do
             [
-              { name: 'gmau_1', events: %w[event1_slot event2_slot], operator: "AND" },
-              { name: 'gmau_2', events: %w[event1_slot event2_slot event3_slot], operator: "AND" },
-              { name: 'gmau_3', events: %w[event1_slot event2_slot event3_slot event5_slot], operator: "AND" },
-              { name: 'gmau_4', events: %w[event4], operator: "AND" }
+              { name: 'gmau_1', source: 'redis', events: %w[event3 event5], operator: "OR" },
+              { name: 'gmau_2', source: 'database', events: %w[event1 event2 event3], operator: "OR" }
             ].map(&:with_indifferent_access)
           end
 
-          it 'returns the number of unique events for all known events' do
+          it 'skips database sourced metrics', :aggregate_failures do
             results = {
-              'gmau_1' => 3,
-              'gmau_2' => 2,
-              'gmau_3' => 1,
-              'gmau_4' => 3
+              'gmau_1' => 5
             }
+
+            params = { start_date: start_date, end_date: end_date, recorded_at: recorded_at }
+
+            expect(sources::RedisHll).to receive(:calculate_metrics_union).with(params.merge(metric_names: %w[event3 event5])).and_return(5)
+            expect(sources::PostgresHll).not_to receive(:calculate_metrics_union).with(params.merge(metric_names: %w[event1 event2 event3]))
+            expect(aggregated_metrics_data).to eq(results)
+          end
+        end
+
+        context 'with AND operator' do
+          let(:aggregated_metrics) do
+            [
+              { name: 'gmau_1', source: 'redis', events: %w[event3 event5], operator: "AND" },
+              { name: 'gmau_2', source: 'database', events: %w[event1 event2 event3], operator: "AND" }
+            ].map(&:with_indifferent_access)
+          end
+
+          it 'returns the number of unique events recorded for every metric in aggregate', :aggregate_failures do
+            results = {
+              'gmau_1' => 2,
+              'gmau_2' => 1
+            }
+            params = { start_date: start_date, end_date: end_date, recorded_at: recorded_at }
+
+            # gmau_1 data is as follow
+            # |A| => 4
+            expect(sources::RedisHll).to receive(:calculate_metrics_union).with(params.merge(metric_names: 'event3')).and_return(4)
+            # |B| => 6
+            expect(sources::RedisHll).to receive(:calculate_metrics_union).with(params.merge(metric_names: 'event5')).and_return(6)
+            # |A + B| => 8
+            expect(sources::RedisHll).to receive(:calculate_metrics_union).with(params.merge(metric_names: %w[event3 event5])).and_return(8)
+            # Exclusion inclusion principle formula to calculate intersection of 2 sets
+            # |A & B| = (|A| + |B|) - |A + B| => (4 + 6) - 8 => 2
+
+            # gmau_2 data is as follow:
+            # |A| => 2
+            expect(sources::PostgresHll).to receive(:calculate_metrics_union).with(params.merge(metric_names: 'event1')).and_return(2)
+            # |B| => 3
+            expect(sources::PostgresHll).to receive(:calculate_metrics_union).with(params.merge(metric_names: 'event2')).and_return(3)
+            # |C| => 5
+            expect(sources::PostgresHll).to receive(:calculate_metrics_union).with(params.merge(metric_names: 'event3')).and_return(5)
+
+            # |A + B| => 4 therefore |A & B| = (|A| + |B|) - |A + B| =>  2 + 3 - 4 => 1
+            expect(sources::PostgresHll).to receive(:calculate_metrics_union).with(params.merge(metric_names: %w[event1 event2])).and_return(4)
+            # |A + C| => 6 therefore |A & C| = (|A| + |C|) - |A + C| =>  2 + 5 - 6  => 1
+            expect(sources::PostgresHll).to receive(:calculate_metrics_union).with(params.merge(metric_names: %w[event1 event3])).and_return(6)
+            # |B + C| => 7 therefore |B & C| = (|B| + |C|) - |B + C| => 3 + 5 - 7 => 1
+            expect(sources::PostgresHll).to receive(:calculate_metrics_union).with(params.merge(metric_names: %w[event2 event3])).and_return(7)
+            # |A + B + C| => 8
+            expect(sources::PostgresHll).to receive(:calculate_metrics_union).with(params.merge(metric_names: %w[event1 event2 event3])).and_return(8)
+            # Exclusion inclusion principle formula to calculate intersection of 3 sets
+            # |A & B & C| = (|A & B| + |A & C| + |B & C|) - (|A| + |B| + |C|)  + |A + B + C|
+            # (1 + 1 + 1) - (2 + 3 + 5) + 8 => 1
 
             expect(aggregated_metrics_data).to eq(results)
           end
@@ -76,19 +108,20 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
         context 'with OR operator' do
           let(:aggregated_metrics) do
             [
-              { name: 'gmau_1', events: %w[event3_slot event5_slot], operator: "OR" },
-              { name: 'gmau_2', events: %w[event1_slot event2_slot event3_slot event5_slot], operator: "OR" },
-              { name: 'gmau_3', events: %w[event4], operator: "OR" }
+              { name: 'gmau_1', source: 'redis', events: %w[event3 event5], operator: "OR" },
+              { name: 'gmau_2', source: 'database', events: %w[event1 event2 event3], operator: "OR" }
             ].map(&:with_indifferent_access)
           end
 
-          it 'returns the number of unique events for all known events' do
+          it 'returns the number of unique events occurred for any metric in aggregate', :aggregate_failures do
             results = {
-              'gmau_1' => 2,
-              'gmau_2' => 3,
-              'gmau_3' => 3
+              'gmau_1' => 5,
+              'gmau_2' => 3
             }
+            params = { start_date: start_date, end_date: end_date, recorded_at: recorded_at }
 
+            expect(sources::RedisHll).to receive(:calculate_metrics_union).with(params.merge(metric_names: %w[event3 event5])).and_return(5)
+            expect(sources::PostgresHll).to receive(:calculate_metrics_union).with(params.merge(metric_names: %w[event1 event2 event3])).and_return(3)
             expect(aggregated_metrics_data).to eq(results)
           end
         end
@@ -99,19 +132,20 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
           let(:aggregated_metrics) do
             [
               # represents stable aggregated metrics that has been fully released
-              { name: 'gmau_without_ff', events: %w[event3_slot event5_slot], operator: "OR" },
+              { name: 'gmau_without_ff', source: 'redis', events: %w[event3_slot event5_slot], operator: "OR" },
               # represents new aggregated metric that is under performance testing on gitlab.com
-              { name: 'gmau_enabled', events: %w[event4], operator: "AND", feature_flag: enabled_feature_flag },
+              { name: 'gmau_enabled', source: 'redis', events: %w[event4], operator: "OR", feature_flag: enabled_feature_flag },
               # represents aggregated metric that is under development and shouldn't be yet collected even on gitlab.com
-              { name: 'gmau_disabled', events: %w[event4], operator: "AND", feature_flag: disabled_feature_flag }
+              { name: 'gmau_disabled', source: 'redis', events: %w[event4], operator: "OR", feature_flag: disabled_feature_flag }
             ].map(&:with_indifferent_access)
           end
 
-          it 'returns the number of unique events for all known events' do
+          it 'does not calculate data for aggregates with ff turned off' do
             skip_feature_flags_yaml_validation
             stub_feature_flags(enabled_feature_flag => true, disabled_feature_flag => false)
+            allow(sources::RedisHll).to receive(:calculate_metrics_union).and_return(6)
 
-            expect(aggregated_metrics_data).to eq('gmau_without_ff' => 2, 'gmau_enabled' => 3)
+            expect(aggregated_metrics_data).to eq('gmau_without_ff' => 6, 'gmau_enabled' => 6)
           end
         end
       end
@@ -121,10 +155,19 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
           it 'raises error when unknown aggregation operator is used' do
             allow_next_instance_of(described_class) do |instance|
               allow(instance).to receive(:aggregated_metrics)
-                                   .and_return([{ name: 'gmau_1', events: %w[event1_slot], operator: "SUM" }])
+                                   .and_return([{ name: 'gmau_1', source: 'redis', events: %w[event1_slot], operator: "SUM" }])
             end
 
             expect { aggregated_metrics_data }.to raise_error Gitlab::Usage::Metrics::Aggregates::UnknownAggregationOperator
+          end
+
+          it 'raises error when unknown aggregation source is used' do
+            allow_next_instance_of(described_class) do |instance|
+              allow(instance).to receive(:aggregated_metrics)
+                                   .and_return([{ name: 'gmau_1', source: 'whoami', events: %w[event1_slot], operator: "AND" }])
+            end
+
+            expect { aggregated_metrics_data }.to raise_error Gitlab::Usage::Metrics::Aggregates::UnknownAggregationSource
           end
 
           it 're raises Gitlab::UsageDataCounters::HLLRedisCounter::EventError' do
@@ -133,7 +176,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
 
             allow_next_instance_of(described_class) do |instance|
               allow(instance).to receive(:aggregated_metrics)
-                                   .and_return([{ name: 'gmau_1', events: %w[event1_slot], operator: "OR" }])
+                                   .and_return([{ name: 'gmau_1', source: 'redis', events: %w[event1_slot], operator: "OR" }])
             end
 
             expect { aggregated_metrics_data }.to raise_error error
@@ -148,7 +191,16 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
           it 'rescues unknown aggregation operator error' do
             allow_next_instance_of(described_class) do |instance|
               allow(instance).to receive(:aggregated_metrics)
-                                   .and_return([{ name: 'gmau_1', events: %w[event1_slot], operator: "SUM" }])
+                                   .and_return([{ name: 'gmau_1', source: 'redis', events: %w[event1_slot], operator: "SUM" }])
+            end
+
+            expect(aggregated_metrics_data).to eq('gmau_1' => -1)
+          end
+
+          it 'rescues unknown aggregation source error' do
+            allow_next_instance_of(described_class) do |instance|
+              allow(instance).to receive(:aggregated_metrics)
+                                   .and_return([{ name: 'gmau_1', source: 'whoami', events: %w[event1_slot], operator: "AND" }])
             end
 
             expect(aggregated_metrics_data).to eq('gmau_1' => -1)
@@ -160,7 +212,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
 
             allow_next_instance_of(described_class) do |instance|
               allow(instance).to receive(:aggregated_metrics)
-                                   .and_return([{ name: 'gmau_1', events: %w[event1_slot], operator: "OR" }])
+                                   .and_return([{ name: 'gmau_1', source: 'redis', events: %w[event1_slot], operator: "OR" }])
             end
 
             expect(aggregated_metrics_data).to eq('gmau_1' => -1)
@@ -170,81 +222,47 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
     end
 
     describe '.aggregated_metrics_weekly_data' do
-      subject(:aggregated_metrics_data) { described_class.new.weekly_data }
+      subject(:aggregated_metrics_data) { described_class.new(recorded_at).weekly_data }
 
-      before do
-        Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event1_slot', values: entity1, time: 2.days.ago)
-        Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event1_slot', values: entity2, time: 2.days.ago)
-        Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event1_slot', values: entity3, time: 2.days.ago)
-        Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event2_slot', values: entity1, time: 2.days.ago)
-        Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event2_slot', values: entity2, time: 3.days.ago)
-        Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event2_slot', values: entity3, time: 3.days.ago)
-        Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event3_slot', values: entity1, time: 3.days.ago)
-        Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event3_slot', values: entity2, time: 3.days.ago)
-        Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event5_slot', values: entity2, time: 3.days.ago)
-
-        # events out of time scope
-        Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event2_slot', values: entity3, time: 8.days.ago)
-
-        # events in different slots
-        Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event4', values: entity1, time: 2.days.ago)
-        Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event4', values: entity2, time: 2.days.ago)
-        Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event4', values: entity4, time: 2.days.ago)
-      end
+      let(:start_date) { 7.days.ago.to_date }
 
       it_behaves_like 'aggregated_metrics_data'
     end
 
     describe '.aggregated_metrics_monthly_data' do
-      subject(:aggregated_metrics_data) { described_class.new.monthly_data }
+      subject(:aggregated_metrics_data) { described_class.new(recorded_at).monthly_data }
 
-      it_behaves_like 'aggregated_metrics_data' do
-        before do
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event1_slot', values: entity1, time: 2.days.ago)
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event1_slot', values: entity2, time: 2.days.ago)
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event1_slot', values: entity3, time: 2.days.ago)
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event2_slot', values: entity1, time: 2.days.ago)
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event2_slot', values: entity2, time: 3.days.ago)
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event2_slot', values: entity3, time: 3.days.ago)
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event3_slot', values: entity1, time: 3.days.ago)
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event3_slot', values: entity2, time: 10.days.ago)
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event5_slot', values: entity2, time: 4.weeks.ago.advance(days: 1))
+      let(:start_date) { 4.weeks.ago.to_date }
 
-          # events out of time scope
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event5_slot', values: entity1, time: 4.weeks.ago.advance(days: -1))
+      it_behaves_like 'aggregated_metrics_data'
 
-          # events in different slots
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event4', values: entity1, time: 2.days.ago)
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event4', values: entity2, time: 2.days.ago)
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event('event4', values: entity4, time: 2.days.ago)
-        end
-      end
-
-      context 'Redis calls' do
+      context 'metrics union calls' do
         let(:aggregated_metrics) do
           [
-            { name: 'gmau_3', events: %w[event1_slot event2_slot event3_slot event5_slot], operator: "AND" }
+            { name: 'gmau_3', source: 'redis', events: %w[event1_slot event2_slot event3_slot event5_slot], operator: "AND" }
           ].map(&:with_indifferent_access)
         end
 
-        it 'caches intermediate operations' do
+        it 'caches intermediate operations', :aggregate_failures do
           allow_next_instance_of(described_class) do |instance|
             allow(instance).to receive(:aggregated_metrics).and_return(aggregated_metrics)
           end
 
+          params = { start_date: start_date, end_date: end_date, recorded_at: recorded_at }
+
           aggregated_metrics[0][:events].each do |event|
-            expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:calculate_events_union)
-                                                                    .with(event_names: event, start_date: 4.weeks.ago.to_date, end_date: Date.current)
-                                                                    .once
-                                                                    .and_return(0)
+            expect(sources::RedisHll).to receive(:calculate_metrics_union)
+                                           .with(params.merge(metric_names: event))
+                                           .once
+                                           .and_return(0)
           end
 
           2.upto(4) do |subset_size|
             aggregated_metrics[0][:events].combination(subset_size).each do |events|
-              expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:calculate_events_union)
-                                                                      .with(event_names: events, start_date: 4.weeks.ago.to_date, end_date: Date.current)
-                                                                      .once
-                                                                      .and_return(0)
+              expect(sources::RedisHll).to receive(:calculate_metrics_union)
+                                             .with(params.merge(metric_names: events))
+                                             .once
+                                             .and_return(0)
             end
           end
 

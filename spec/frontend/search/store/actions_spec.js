@@ -7,7 +7,15 @@ import * as urlUtils from '~/lib/utils/url_utility';
 import createState from '~/search/store/state';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
-import { MOCK_QUERY, MOCK_GROUPS, MOCK_PROJECT, MOCK_PROJECTS } from '../mock_data';
+import {
+  MOCK_QUERY,
+  MOCK_GROUPS,
+  MOCK_PROJECT,
+  MOCK_PROJECTS,
+  MOCK_SEARCH_COUNT,
+  MOCK_SEARCH_COUNTS_SUCCESS,
+  MOCK_SEARCH_COUNTS_INPUT,
+} from '../mock_data';
 
 jest.mock('~/flash');
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -37,19 +45,21 @@ describe('Global Search Store Actions', () => {
   });
 
   describe.each`
-    action                   | axiosMock                                             | type         | expectedMutations                                                                                       | callback
-    ${actions.fetchGroups}   | ${{ method: 'onGet', code: 200, res: MOCK_GROUPS }}   | ${'success'} | ${[{ type: types.REQUEST_GROUPS }, { type: types.RECEIVE_GROUPS_SUCCESS, payload: MOCK_GROUPS }]}       | ${noCallback}
-    ${actions.fetchGroups}   | ${{ method: 'onGet', code: 500, res: null }}          | ${'error'}   | ${[{ type: types.REQUEST_GROUPS }, { type: types.RECEIVE_GROUPS_ERROR }]}                               | ${flashCallback}
-    ${actions.fetchProjects} | ${{ method: 'onGet', code: 200, res: MOCK_PROJECTS }} | ${'success'} | ${[{ type: types.REQUEST_PROJECTS }, { type: types.RECEIVE_PROJECTS_SUCCESS, payload: MOCK_PROJECTS }]} | ${noCallback}
-    ${actions.fetchProjects} | ${{ method: 'onGet', code: 500, res: null }}          | ${'error'}   | ${[{ type: types.REQUEST_PROJECTS }, { type: types.RECEIVE_PROJECTS_ERROR }]}                           | ${flashCallback}
-  `(`axios calls`, ({ action, axiosMock, type, expectedMutations, callback }) => {
+    action                       | axiosMock                                                 | payload                     | type         | expectedMutations                                                                                                                                                 | callback
+    ${actions.fetchGroups}       | ${{ method: 'onGet', code: 200, res: MOCK_GROUPS }}       | ${null}                     | ${'success'} | ${[{ type: types.REQUEST_GROUPS }, { type: types.RECEIVE_GROUPS_SUCCESS, payload: MOCK_GROUPS }]}                                                                 | ${noCallback}
+    ${actions.fetchGroups}       | ${{ method: 'onGet', code: 500, res: null }}              | ${null}                     | ${'error'}   | ${[{ type: types.REQUEST_GROUPS }, { type: types.RECEIVE_GROUPS_ERROR }]}                                                                                         | ${flashCallback}
+    ${actions.fetchProjects}     | ${{ method: 'onGet', code: 200, res: MOCK_PROJECTS }}     | ${null}                     | ${'success'} | ${[{ type: types.REQUEST_PROJECTS }, { type: types.RECEIVE_PROJECTS_SUCCESS, payload: MOCK_PROJECTS }]}                                                           | ${noCallback}
+    ${actions.fetchProjects}     | ${{ method: 'onGet', code: 500, res: null }}              | ${null}                     | ${'error'}   | ${[{ type: types.REQUEST_PROJECTS }, { type: types.RECEIVE_PROJECTS_ERROR }]}                                                                                     | ${flashCallback}
+    ${actions.fetchSearchCounts} | ${{ method: 'onGet', code: 200, res: MOCK_SEARCH_COUNT }} | ${MOCK_SEARCH_COUNTS_INPUT} | ${'success'} | ${[{ type: types.REQUEST_SEARCH_COUNTS, payload: MOCK_SEARCH_COUNTS_INPUT }, { type: types.RECEIVE_SEARCH_COUNTS_SUCCESS, payload: MOCK_SEARCH_COUNTS_SUCCESS }]} | ${noCallback}
+    ${actions.fetchSearchCounts} | ${{ method: 'onGet', code: 500, res: null }}              | ${MOCK_SEARCH_COUNTS_INPUT} | ${'error'}   | ${[{ type: types.REQUEST_SEARCH_COUNTS, payload: MOCK_SEARCH_COUNTS_INPUT }]}                                                                                     | ${flashCallback}
+  `(`axios calls`, ({ action, axiosMock, payload, type, expectedMutations, callback }) => {
     describe(action.name, () => {
       describe(`on ${type}`, () => {
         beforeEach(() => {
-          mock[axiosMock.method]().replyOnce(axiosMock.code, axiosMock.res);
+          mock[axiosMock.method]().reply(axiosMock.code, axiosMock.res);
         });
         it(`should dispatch the correct mutations`, () => {
-          return testAction({ action, state, expectedMutations }).then(() => callback());
+          return testAction({ action, payload, state, expectedMutations }).then(() => callback());
         });
       });
     });
@@ -115,8 +125,24 @@ describe('Global Search Store Actions', () => {
           page: null,
           state: null,
           confidential: null,
+          nav_source: null,
         });
         expect(urlUtils.visitUrl).toHaveBeenCalled();
+      });
+    });
+  });
+
+  it('calls setUrlParams with snippets, group_id, and project_id when snippets param is true', () => {
+    return testAction(actions.resetQuery, true, state, [], [], () => {
+      expect(urlUtils.setUrlParams).toHaveBeenCalledWith({
+        ...state.query,
+        page: null,
+        state: null,
+        confidential: null,
+        nav_source: null,
+        group_id: null,
+        project_id: null,
+        snippets: true,
       });
     });
   });

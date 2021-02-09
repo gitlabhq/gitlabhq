@@ -392,63 +392,6 @@ RSpec.describe SearchHelper do
     end
   end
 
-  describe 'search_filter_link' do
-    it 'renders a search filter link for the current scope' do
-      @scope = 'projects'
-      @search_results = double
-
-      expect(@search_results).to receive(:formatted_count).with('projects').and_return('23')
-
-      link = search_filter_link('projects', 'Projects')
-
-      expect(link).to have_css('li.active')
-      expect(link).to have_link('Projects', href: search_path(scope: 'projects'))
-      expect(link).to have_css('span.badge.badge-pill:not(.js-search-count):not(.hidden):not([data-url])', text: '23')
-    end
-
-    it 'renders a search filter link for another scope' do
-      link = search_filter_link('projects', 'Projects')
-      count_path = search_count_path(scope: 'projects')
-
-      expect(link).to have_css('li:not([class="active"])')
-      expect(link).to have_link('Projects', href: search_path(scope: 'projects'))
-      expect(link).to have_css("span.badge.badge-pill.js-search-count.hidden[data-url='#{count_path}']", text: '')
-    end
-
-    it 'merges in the current search params and given params' do
-      expect(self).to receive(:params).and_return(
-        ActionController::Parameters.new(
-          search: 'hello',
-          scope: 'ignored',
-          other_param: 'ignored'
-        )
-      )
-
-      link = search_filter_link('projects', 'Projects', search: { project_id: 23 })
-
-      expect(link).to have_link('Projects', href: search_path(scope: 'projects', search: 'hello', project_id: 23))
-    end
-
-    it 'restricts the params' do
-      expect(self).to receive(:params).and_return(
-        ActionController::Parameters.new(
-          search: 'hello',
-          unknown: 42
-        )
-      )
-
-      link = search_filter_link('projects', 'Projects')
-
-      expect(link).to have_link('Projects', href: search_path(scope: 'projects', search: 'hello'))
-    end
-
-    it 'assigns given data attributes on the list container' do
-      link = search_filter_link('projects', 'Projects', data: { foo: 'bar' })
-
-      expect(link).to have_css('li[data-foo="bar"]')
-    end
-  end
-
   describe '#show_user_search_tab?' do
     subject { show_user_search_tab? }
 
@@ -629,6 +572,88 @@ RSpec.describe SearchHelper do
 
     it 'returns the correct data' do
       expect(search_sort_options).to eq([mock_created_sort])
+    end
+  end
+
+  describe '#search_nav_tabs' do
+    subject { search_nav_tabs }
+
+    let(:current_user) { nil }
+
+    before do
+      allow(self).to receive(:current_user).and_return(current_user)
+    end
+
+    context 'when @show_snippets is present' do
+      before do
+        @show_snippets = 1
+      end
+
+      it { is_expected.to eq([:snippet_titles]) }
+
+      context 'and @project is present' do
+        before do
+          @project = 1
+          allow(self).to receive(:project_search_tabs?).with(anything).and_return(true)
+        end
+
+        it { is_expected.to eq([:blobs, :issues, :merge_requests, :milestones, :notes, :wiki_blobs, :commits, :users]) }
+      end
+    end
+
+    context 'when @project is present' do
+      before do
+        @project = 1
+      end
+
+      context 'when user has access to project' do
+        before do
+          allow(self).to receive(:project_search_tabs?).with(anything).and_return(true)
+        end
+
+        it { is_expected.to eq([:blobs, :issues, :merge_requests, :milestones, :notes, :wiki_blobs, :commits, :users]) }
+      end
+
+      context 'when user does not have access to project' do
+        before do
+          allow(self).to receive(:project_search_tabs?).with(anything).and_return(false)
+        end
+
+        it { is_expected.to eq([]) }
+      end
+
+      context 'when user does not have access to read members for project' do
+        before do
+          allow(self).to receive(:project_search_tabs?).with(:members).and_return(false)
+          allow(self).to receive(:project_search_tabs?).with(:merge_requests).and_return(true)
+          allow(self).to receive(:project_search_tabs?).with(:milestones).and_return(true)
+          allow(self).to receive(:project_search_tabs?).with(:wiki_blobs).and_return(true)
+          allow(self).to receive(:project_search_tabs?).with(:issues).and_return(true)
+          allow(self).to receive(:project_search_tabs?).with(:blobs).and_return(true)
+          allow(self).to receive(:project_search_tabs?).with(:notes).and_return(true)
+          allow(self).to receive(:project_search_tabs?).with(:commits).and_return(true)
+        end
+
+        it { is_expected.to eq([:blobs, :issues, :merge_requests, :milestones, :notes, :wiki_blobs, :commits]) }
+      end
+    end
+
+    context 'when @show_snippets and @project are not present' do
+      context 'when user has access to read users' do
+        before do
+          allow(self).to receive(:can?).with(current_user, :read_users_list).and_return(true)
+        end
+
+        it { is_expected.to eq([:projects, :issues, :merge_requests, :milestones, :users]) }
+      end
+
+      context 'when user does not have access to read users' do
+        before do
+          allow(self).to receive(:can?).with(current_user, :read_users_list).and_return(false)
+        end
+
+        it { is_expected.to eq([:projects, :issues, :merge_requests, :milestones]) }
+      end
     end
   end
 end

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User reverts a merge request', :js do
-  let(:merge_request) { create(:merge_request, :with_diffs, :simple, source_project: project) }
+  let(:merge_request) { create(:merge_request, :simple, source_project: project) }
   let(:project) { create(:project, :public, :repository) }
   let(:user) { create(:user) }
 

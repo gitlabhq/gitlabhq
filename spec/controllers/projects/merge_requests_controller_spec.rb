@@ -1371,7 +1371,6 @@ RSpec.describe Projects::MergeRequestsController do
   describe 'GET test_reports' do
     let_it_be(:merge_request) do
       create(:merge_request,
-        :with_diffs,
         :with_merge_request_pipeline,
         target_project: project,
         source_project: project
@@ -1482,7 +1481,6 @@ RSpec.describe Projects::MergeRequestsController do
   describe 'GET accessibility_reports' do
     let_it_be(:merge_request) do
       create(:merge_request,
-        :with_diffs,
         :with_merge_request_pipeline,
         target_project: project,
         source_project: project
@@ -1603,7 +1601,6 @@ RSpec.describe Projects::MergeRequestsController do
   describe 'GET codequality_reports' do
     let_it_be(:merge_request) do
       create(:merge_request,
-        :with_diffs,
         :with_merge_request_pipeline,
         target_project: project,
         source_project: project

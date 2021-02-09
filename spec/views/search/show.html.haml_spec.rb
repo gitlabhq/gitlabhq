@@ -6,7 +6,6 @@ RSpec.describe 'search/show' do
   let(:search_term) { nil }
 
   before do
-    stub_template "search/_category.html.haml" => 'Category Partial'
     stub_template "search/_results.html.haml" => 'Results Partial'
 
     @search_term = search_term
@@ -21,7 +20,6 @@ RSpec.describe 'search/show' do
     end
 
     it 'does not render partials' do
-      expect(rendered).not_to render_template('search/_category')
       expect(rendered).not_to render_template('search/_results')
     end
   end
@@ -30,7 +28,6 @@ RSpec.describe 'search/show' do
     let(:search_term) { 'Search Foo' }
 
     it 'renders partials' do
-      expect(rendered).to render_template('search/_category')
       expect(rendered).to render_template('search/_results')
     end
 

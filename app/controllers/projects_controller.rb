@@ -502,13 +502,15 @@ class ProjectsController < Projects::ApplicationController
     render_404 unless Gitlab::CurrentSettings.project_export_enabled?
   end
 
+  # Redirect from localhost/group/project.git to localhost/group/project
   def redirect_git_extension
-    # Redirect from
-    #   localhost/group/project.git
-    # to
-    #   localhost/group/project
-    #
-    redirect_to request.original_url.sub(%r{\.git/?\Z}, '') if params[:format] == 'git'
+    return unless params[:format] == 'git'
+
+    # `project` calls `find_routable!`, so this will trigger the usual not-found
+    # behaviour when the user isn't authorized to see the project
+    return unless project
+
+    redirect_to(request.original_url.sub(%r{\.git/?\Z}, ''))
   end
 
   def whitelist_query_limiting

@@ -22,7 +22,6 @@ RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type:
   let(:merge_request) do
     create(
       :merge_request,
-      :with_diffs,
       source_project: project,
       target_project: project,
       description: description

@@ -3,6 +3,7 @@ import { mapState, mapActions } from 'vuex';
 import { GlForm, GlSearchBoxByType, GlButton } from '@gitlab/ui';
 import GroupFilter from './group_filter.vue';
 import ProjectFilter from './project_filter.vue';
+import ScopeTabs from './scope_tabs.vue';
 
 export default {
   name: 'GlobalSearchTopbar',
@@ -12,6 +13,7 @@ export default {
     GroupFilter,
     ProjectFilter,
     GlButton,
+    ScopeTabs,
   },
   props: {
     groupInitialData: {
@@ -23,6 +25,16 @@ export default {
       type: Object,
       required: false,
       default: () => ({}),
+    },
+    scopeTabs: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    count: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   computed: {
@@ -38,6 +50,9 @@ export default {
     showFilters() {
       return !this.query.snippets || this.query.snippets === 'false';
     },
+    showScopeTabs() {
+      return this.query.search;
+    },
   },
   methods: {
     ...mapActions(['applyQuery', 'setQuery']),
@@ -46,28 +61,31 @@ export default {
 </script>
 
 <template>
-  <gl-form class="search-page-form" @submit.prevent="applyQuery">
-    <section class="gl-lg-display-flex gl-align-items-flex-end">
-      <div class="gl-flex-fill-1 gl-mb-4 gl-lg-mb-0 gl-lg-mr-2">
-        <label>{{ __('What are you searching for?') }}</label>
-        <gl-search-box-by-type
-          id="dashboard_search"
-          v-model="search"
-          name="search"
-          :placeholder="__(`Search for projects, issues, etc.`)"
-        />
-      </div>
-      <div v-if="showFilters" class="gl-mb-4 gl-lg-mb-0 gl-lg-mx-2">
-        <label class="gl-display-block">{{ __('Group') }}</label>
-        <group-filter :initial-data="groupInitialData" />
-      </div>
-      <div v-if="showFilters" class="gl-mb-4 gl-lg-mb-0 gl-lg-mx-2">
-        <label class="gl-display-block">{{ __('Project') }}</label>
-        <project-filter :initial-data="projectInitialData" />
-      </div>
-      <gl-button class="btn-search gl-lg-ml-2" variant="success" type="submit">{{
-        __('Search')
-      }}</gl-button>
-    </section>
-  </gl-form>
+  <section>
+    <gl-form class="search-page-form" @submit.prevent="applyQuery">
+      <section class="gl-lg-display-flex gl-align-items-flex-end">
+        <div class="gl-flex-fill-1 gl-mb-4 gl-lg-mb-0 gl-lg-mr-2">
+          <label>{{ __('What are you searching for?') }}</label>
+          <gl-search-box-by-type
+            id="dashboard_search"
+            v-model="search"
+            name="search"
+            :placeholder="__(`Search for projects, issues, etc.`)"
+          />
+        </div>
+        <div v-if="showFilters" class="gl-mb-4 gl-lg-mb-0 gl-lg-mx-2">
+          <label class="gl-display-block">{{ __('Group') }}</label>
+          <group-filter :initial-data="groupInitialData" />
+        </div>
+        <div v-if="showFilters" class="gl-mb-4 gl-lg-mb-0 gl-lg-mx-2">
+          <label class="gl-display-block">{{ __('Project') }}</label>
+          <project-filter :initial-data="projectInitialData" />
+        </div>
+        <gl-button class="btn-search gl-lg-ml-2" variant="success" type="submit">{{
+          __('Search')
+        }}</gl-button>
+      </section>
+    </gl-form>
+    <scope-tabs v-if="showScopeTabs" :scope-tabs="scopeTabs" :count="count" />
+  </section>
 </template>

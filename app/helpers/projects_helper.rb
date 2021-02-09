@@ -511,7 +511,8 @@ module ProjectsHelper
       commits:        :download_code,
       merge_requests: :read_merge_request,
       notes:          [:read_merge_request, :download_code, :read_issue, :read_snippet],
-      members:        :read_project_member
+      members:        :read_project_member,
+      wiki_blobs:     :read_wiki
     )
   end
 

@@ -8,11 +8,11 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       description: 'GitLab instance unique identifier',
       value_type: 'string',
       product_category: 'collection',
-      stage: 'growth',
+      product_stage: 'growth',
       status: 'data_available',
       default_generation: 'generation_1',
       key_path: 'uuid',
-      group: 'group::product analytics',
+      product_group: 'group::product analytics',
       time_frame: 'none',
       data_source: 'database',
       distribution: %w(ee ce),
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       :value_type         | 'test'
       :status             | nil
       :key_path           | nil
-      :group              | nil
+      :product_group      | nil
       :time_frame         | nil
       :time_frame         | '29d'
       :data_source        | 'other'

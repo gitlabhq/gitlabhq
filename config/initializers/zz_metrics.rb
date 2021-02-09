@@ -90,6 +90,7 @@ def instrument_classes(instrumentation)
 
   instrumentation.instrument_methods(Gitlab::Highlight)
   instrumentation.instrument_instance_methods(Gitlab::Highlight)
+  instrumentation.instrument_instance_method(Gitlab::Ci::Config::Yaml::Tags::Resolver, :to_hash)
 
   Gitlab.ee do
     instrumentation.instrument_instance_methods(Elastic::Latest::GitInstanceProxy)

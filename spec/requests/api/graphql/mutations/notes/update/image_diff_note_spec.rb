@@ -6,7 +6,7 @@ RSpec.describe 'Updating an image DiffNote' do
   include GraphqlHelpers
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:noteable) { create(:merge_request, :with_diffs) }
+  let_it_be(:noteable) { create(:merge_request) }
   let_it_be(:original_body) { 'Original body' }
   let_it_be(:original_position) do
     Gitlab::Diff::Position.new(

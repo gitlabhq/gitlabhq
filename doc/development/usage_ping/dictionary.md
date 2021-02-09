@@ -37,11 +37,11 @@ Total deployments count
 | --- | --- |
 | `key_path` | **counts.deployments** |
 | `value_type` | integer |
-| `stage` | release |
+| `product_stage` | release |
 | `status` | data_available |
 | `milestone` | 8.12 |
 | `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/735) |
-| `group` | `group::ops release` |
+| `product_group` | `group::ops release` |
 | `time_frame` | all |
 | `data_source` | Database |
 | `distribution` | ee, ce |
@@ -56,10 +56,10 @@ Total number of sites in a Geo deployment
 | `key_path` | **counts.geo_nodes** |
 | `value_type` | integer |
 | `product_category` | disaster_recovery |
-| `stage` | enablement |
+| `product_stage` | enablement |
 | `status` | data_available |
 | `milestone` | 11.2 |
-| `group` | `group::geo` |
+| `product_group` | `group::geo` |
 | `time_frame` | all |
 | `data_source` | Database |
 | `distribution` | ee |
@@ -73,11 +73,11 @@ Total deployments count for recent 28 days
 | --- | --- |
 | `key_path` | **counts_monthly.deployments** |
 | `value_type` | integer |
-| `stage` | release |
+| `product_stage` | release |
 | `status` | data_available |
 | `milestone` | 13.2 |
 | `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35493) |
-| `group` | `group::ops release` |
+| `product_group` | `group::ops release` |
 | `time_frame` | 28d |
 | `data_source` | Database |
 | `distribution` | ee, ce |
@@ -92,9 +92,9 @@ This metric only returns a value of PostgreSQL in supported versions of GitLab. 
 | `key_path` | **database.adapter** |
 | `value_type` | string |
 | `product_category` | collection |
-| `stage` | growth |
+| `product_stage` | growth |
 | `status` | data_available |
-| `group` | `group::enablement distribution` |
+| `product_group` | `group::enablement distribution` |
 | `time_frame` | none |
 | `data_source` | Database |
 | `distribution` | ee, ce |
@@ -109,11 +109,11 @@ When the Usage Ping computation was started
 | `key_path` | **recorded_at** |
 | `value_type` | string |
 | `product_category` | collection |
-| `stage` | growth |
+| `product_stage` | growth |
 | `status` | data_available |
 | `milestone` | 8.1 |
 | `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/557) |
-| `group` | `group::product analytics` |
+| `product_group` | `group::product intelligence` |
 | `time_frame` | none |
 | `data_source` | Ruby |
 | `distribution` | ee, ce |
@@ -128,11 +128,11 @@ Distinct users count that changed issue title in a group for last recent week
 | `key_path` | **redis_hll_counters.issues_edit.g_project_management_issue_title_changed_weekly** |
 | `value_type` | integer |
 | `product_category` | issue_tracking |
-| `stage` | plan |
+| `product_stage` | plan |
 | `status` | data_available |
 | `milestone` | 13.6 |
 | `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/issues/229918) |
-| `group` | `group::project management` |
+| `product_group` | `group::project management` |
 | `time_frame` | 7d |
 | `data_source` | Redis_hll |
 | `distribution` | ee, ce |
@@ -147,11 +147,11 @@ GitLab instance unique identifier
 | `key_path` | **uuid** |
 | `value_type` | string |
 | `product_category` | collection |
-| `stage` | growth |
+| `product_stage` | growth |
 | `status` | data_available |
 | `milestone` | 9.1 |
 | `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1521) |
-| `group` | `group::product analytics` |
+| `product_group` | `group::product intelligence` |
 | `time_frame` | none |
 | `data_source` | Database |
 | `distribution` | ee, ce |

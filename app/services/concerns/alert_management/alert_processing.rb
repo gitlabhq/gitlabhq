@@ -92,7 +92,7 @@ module AlertManagement
 
     def incoming_payload
       strong_memoize(:incoming_payload) do
-        Gitlab::AlertManagement::Payload.parse(project, payload.to_h)
+        Gitlab::AlertManagement::Payload.parse(project, payload.to_h, integration: integration)
       end
     end
 

@@ -263,6 +263,26 @@ RSpec.describe Gitlab::Ci::Config do
         end
       end
     end
+
+    context 'when yaml uses circular !reference' do
+      let(:yml) do
+        <<~YAML
+        job-1:
+          script:
+            - !reference [job-2, before_script]
+
+        job-2:
+          before_script: !reference [job-1, script]
+        YAML
+      end
+
+      it 'raises error' do
+        expect { config }.to raise_error(
+          described_class::ConfigError,
+          /\!reference \["job-2", "before_script"\] is part of a circular chain/
+        )
+      end
+    end
   end
 
   context "when using 'include' directive" do

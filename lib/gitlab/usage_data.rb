@@ -13,6 +13,7 @@
 module Gitlab
   class UsageData
     DEPRECATED_VALUE = -1000
+    MAX_GENERATION_TIME_FOR_SAAS = 40.hours
 
     CE_MEMOIZED_VALUES = %i(
         issue_minimum_id
@@ -754,7 +755,7 @@ module Gitlab
       private
 
       def aggregated_metrics
-        @aggregated_metrics ||= ::Gitlab::Usage::Metrics::Aggregates::Aggregate.new
+        @aggregated_metrics ||= ::Gitlab::Usage::Metrics::Aggregates::Aggregate.new(recorded_at)
       end
 
       def event_monthly_active_users(date_range)

@@ -80,7 +80,7 @@ RSpec.describe MergeRequestDiff do
   describe '.by_commit_sha' do
     subject(:by_commit_sha) { described_class.by_commit_sha(sha) }
 
-    let!(:merge_request) { create(:merge_request, :with_diffs) }
+    let!(:merge_request) { create(:merge_request) }
 
     context 'with sha contained in' do
       let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
@@ -358,7 +358,7 @@ RSpec.describe MergeRequestDiff do
   end
 
   describe '#latest?' do
-    let!(:mr) { create(:merge_request, :with_diffs) }
+    let!(:mr) { create(:merge_request) }
     let!(:first_diff) { mr.merge_request_diff }
     let!(:last_diff) { mr.create_merge_request_diff }
 
@@ -367,7 +367,7 @@ RSpec.describe MergeRequestDiff do
   end
 
   shared_examples_for 'merge request diffs' do
-    let(:merge_request) { create(:merge_request, :with_diffs) }
+    let(:merge_request) { create(:merge_request) }
     let!(:diff) { merge_request.merge_request_diff.reload }
 
     context 'when it was not cleaned by the system' do

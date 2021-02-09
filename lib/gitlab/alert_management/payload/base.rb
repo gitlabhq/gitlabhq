@@ -12,7 +12,7 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
         include Gitlab::Routing
 
-        attr_accessor :project, :payload
+        attr_accessor :project, :payload, :integration
 
         # Any attribute expected to be specifically read from
         # or derived from an alert payload should be defined.
@@ -147,6 +147,7 @@ module Gitlab
           end
         end
 
+        # Overriden in EE::Gitlab::AlertManagement::Payload::Generic
         def value_for_paths(paths)
           target_path = paths.find { |path| payload&.dig(*path) }
 

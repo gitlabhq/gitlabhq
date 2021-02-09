@@ -11,7 +11,7 @@ const mountSearch = ({ el }) =>
         ref: 'searchSettings',
         props: {
           searchRoot: document.querySelector('#content-body'),
-          sectionSelector: 'section.settings',
+          sectionSelector: '.js-search-settings-section, section.settings',
         },
         on: {
           collapse: (section) => closeSection($(section)),

@@ -11,10 +11,12 @@ export const initTopbar = (store) => {
     return false;
   }
 
-  let { groupInitialData, projectInitialData } = el.dataset;
+  let { groupInitialData, projectInitialData, scopeTabs } = el.dataset;
+  const { count } = el.dataset;
 
   groupInitialData = JSON.parse(groupInitialData);
   projectInitialData = JSON.parse(projectInitialData);
+  scopeTabs = JSON.parse(scopeTabs);
 
   return new Vue({
     el,
@@ -24,6 +26,8 @@ export const initTopbar = (store) => {
         props: {
           groupInitialData,
           projectInitialData,
+          scopeTabs,
+          count,
         },
       });
     },

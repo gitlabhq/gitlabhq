@@ -1,6 +1,5 @@
 import setHighlightClass from 'ee_else_ce/search/highlight_blob_search_result';
 import Project from '~/pages/projects/project';
-import refreshCounts from '~/pages/search/show/refresh_counts';
 import { queryToObject } from '~/lib/utils/url_utility';
 import createStore from './store';
 import { initTopbar } from './topbar';
@@ -20,6 +19,5 @@ export const initSearchApp = () => {
   initSearchSort(store);
 
   setHighlightClass(query.search); // Code Highlighting
-  refreshCounts(); // Other Scope Tab Counts
   Project.initRefSwitcher(); // Code Search Branch Picker
 };

@@ -5,6 +5,7 @@ import { MOCK_QUERY } from 'jest/search/mock_data';
 import GlobalSearchTopbar from '~/search/topbar/components/app.vue';
 import GroupFilter from '~/search/topbar/components/group_filter.vue';
 import ProjectFilter from '~/search/topbar/components/project_filter.vue';
+import ScopeTabs from '~/search/topbar/components/scope_tabs.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -42,6 +43,7 @@ describe('GlobalSearchTopbar', () => {
   const findGroupFilter = () => wrapper.find(GroupFilter);
   const findProjectFilter = () => wrapper.find(ProjectFilter);
   const findSearchButton = () => wrapper.find(GlButton);
+  const findScopeTabs = () => wrapper.find(ScopeTabs);
 
   describe('template', () => {
     beforeEach(() => {
@@ -50,6 +52,18 @@ describe('GlobalSearchTopbar', () => {
 
     it('renders Topbar Form always', () => {
       expect(findTopbarForm().exists()).toBe(true);
+    });
+
+    describe('Scope Tabs', () => {
+      it('renders when search param is set', () => {
+        createComponent({ query: { search: 'test' } });
+        expect(findScopeTabs().exists()).toBe(true);
+      });
+      it('does not render search param is blank', () => {
+        createComponent({ query: {} });
+
+        expect(findScopeTabs().exists()).toBe(false);
+      });
     });
 
     describe('Search box', () => {

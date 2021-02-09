@@ -13,7 +13,7 @@ class NewNoteWorker # rubocop:disable Scalability/IdempotentWorker
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(note_id, _params = {})
     if note = Note.find_by(id: note_id)
-      NotificationService.new.new_note(note) unless note.skip_notification?
+      NotificationService.new.new_note(note) unless note.skip_notification? || note.author.ghost?
       Notes::PostProcessService.new(note).execute
     else
       Gitlab::AppLogger.error("NewNoteWorker: couldn't find note with ID=#{note_id}, skipping job")

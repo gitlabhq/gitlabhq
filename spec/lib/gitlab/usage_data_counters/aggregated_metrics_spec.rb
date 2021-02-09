@@ -13,18 +13,32 @@ RSpec.describe 'aggregated metrics' do
     end
   end
 
+  RSpec::Matchers.define :has_known_source do
+    match do |aggregate|
+      Gitlab::Usage::Metrics::Aggregates::SOURCES.include?(aggregate[:source])
+    end
+
+    failure_message do |aggregate|
+      "Aggregate with name: `#{aggregate[:name]}` uses not allowed source `#{aggregate[:source]}`"
+    end
+  end
+
   let_it_be(:known_events) do
     Gitlab::UsageDataCounters::HLLRedisCounter.known_events
   end
 
-  Gitlab::Usage::Metrics::Aggregates::Aggregate.new.send(:aggregated_metrics).tap do |aggregated_metrics|
+  Gitlab::Usage::Metrics::Aggregates::Aggregate.new(Time.current).send(:aggregated_metrics).tap do |aggregated_metrics|
     it 'all events has unique name' do
       event_names = aggregated_metrics&.map { |event| event[:name] }
 
       expect(event_names).to eq(event_names&.uniq)
     end
 
-    aggregated_metrics&.each do |aggregate|
+    it 'all aggregated metrics has known source' do
+      expect(aggregated_metrics).to all has_known_source
+    end
+
+    aggregated_metrics&.select { |agg| agg[:source] == Gitlab::Usage::Metrics::Aggregates::REDIS_SOURCE }&.each do |aggregate|
       context "for #{aggregate[:name]} aggregate of #{aggregate[:events].join(' ')}" do
         let_it_be(:events_records) { known_events.select { |event| aggregate[:events].include?(event[:name]) } }
 

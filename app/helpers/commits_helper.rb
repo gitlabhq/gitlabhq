@@ -166,7 +166,7 @@ module CommitsHelper
     path = project_blob_path(project, tree_join(commit_sha, diff_new_path))
     title = replaced ? _('View replaced file @ ') : _('View file @ ')
 
-    link_to(path, class: 'btn') do
+    link_to(path, class: 'btn gl-button btn-default') do
       raw(title) + content_tag(:span, truncate_sha(commit_sha), class: 'commit-sha')
     end
   end

@@ -1,0 +1,5 @@
+---
+title: Don't expose project existence by redirecting from its .git URL
+merge_request: 52818
+author:
+type: fixed

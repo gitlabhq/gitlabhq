@@ -8,9 +8,11 @@ RSpec.describe 'Query.project.mergeRequests.pipelines' do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:author) { create(:user) }
   let_it_be(:merge_requests) do
-    %i[with_diffs with_image_diffs conflict].map do |trait|
-      create(:merge_request, trait, author: author, source_project: project)
-    end
+    [
+      create(:merge_request, author: author, source_project: project),
+      create(:merge_request, :with_image_diffs, author: author, source_project: project),
+      create(:merge_request, :conflict, author: author, source_project: project)
+    ]
   end
 
   describe '.count' do
