@@ -10,8 +10,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Get a list of to dos
 
-Returns a list of to dos. When no filter is applied, it returns all pending to dos
-for the current user. Different filters allow the user to precise the request.
+Returns a list of [to-do items](../user/todos.md). When no filter is applied, it
+returns all pending to-do items for the current user. Different filters allow the
+user to refine the request.
 
 ```plaintext
 GET /todos
