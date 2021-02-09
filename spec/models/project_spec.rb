@@ -6376,20 +6376,7 @@ RSpec.describe Project, factory_default: :keep do
   describe 'with Debian Distributions' do
     subject { create(:project) }
 
-    let!(:distributions) { create_list(:debian_project_distribution, 2, :with_file, container: subject) }
-
-    it 'removes distribution files on removal' do
-      distribution_file_paths = distributions.map do |distribution|
-        distribution.file.path
-      end
-
-      expect { subject.destroy }
-        .to change {
-          distribution_file_paths.select do |path|
-            File.exist? path
-          end.length
-        }.from(distribution_file_paths.length).to(0)
-    end
+    it_behaves_like 'model with Debian distributions'
   end
 
   describe '#environments_for_scope' do

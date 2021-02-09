@@ -16,6 +16,35 @@ RSpec.describe Operations::FeatureFlag do
     it { is_expected.to have_many(:scopes) }
   end
 
+  describe '.reference_pattern' do
+    subject { described_class.reference_pattern }
+
+    it { is_expected.to match('[feature_flag:123]') }
+    it { is_expected.to match('[feature_flag:gitlab-org/gitlab/123]') }
+  end
+
+  describe '.link_reference_pattern' do
+    subject { described_class.link_reference_pattern }
+
+    it { is_expected.to match("#{Gitlab.config.gitlab.url}/gitlab-org/gitlab/-/feature_flags/123/edit") }
+    it { is_expected.not_to match("#{Gitlab.config.gitlab.url}/gitlab-org/gitlab/issues/123/edit") }
+    it { is_expected.not_to match("gitlab-org/gitlab/-/feature_flags/123/edit") }
+  end
+
+  describe '#to_reference' do
+    let(:namespace) { build(:namespace, path: 'sample-namespace') }
+    let(:project) { build(:project, name: 'sample-project', namespace: namespace) }
+    let(:feature_flag) { build(:operations_feature_flag, iid: 1, project: project) }
+
+    it 'returns feature flag id' do
+      expect(feature_flag.to_reference).to eq '[feature_flag:1]'
+    end
+
+    it 'returns complete path to the feature flag with full: true' do
+      expect(feature_flag.to_reference(full: true)).to eq '[feature_flag:sample-namespace/sample-project/1]'
+    end
+  end
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:name) }

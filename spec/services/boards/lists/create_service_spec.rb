@@ -3,99 +3,23 @@
 require 'spec_helper'
 
 RSpec.describe Boards::Lists::CreateService do
-  describe '#execute' do
-    shared_examples 'creating board lists' do
-      let_it_be(:user) { create(:user) }
+  context 'when board parent is a project' do
+    let_it_be(:parent) { create(:project) }
+    let_it_be(:board) { create(:board, project: parent) }
+    let_it_be(:label) { create(:label, project: parent, name: 'in-progress') }
 
-      before_all do
-        parent.add_developer(user)
-      end
+    it_behaves_like 'board lists create service'
+  end
 
-      subject(:service) { described_class.new(parent, user, label_id: label.id) }
+  context 'when board parent is a group' do
+    let_it_be(:parent) { create(:group) }
+    let_it_be(:board) { create(:board, group: parent) }
+    let_it_be(:label) { create(:group_label, group: parent, name: 'in-progress') }
 
-      context 'when board lists is empty' do
-        it 'creates a new list at beginning of the list' do
-          response = service.execute(board)
+    it_behaves_like 'board lists create service'
+  end
 
-          expect(response.success?).to eq(true)
-          expect(response.payload[:list].position).to eq 0
-        end
-      end
-
-      context 'when board lists has the done list' do
-        it 'creates a new list at beginning of the list' do
-          response = service.execute(board)
-
-          expect(response.success?).to eq(true)
-          expect(response.payload[:list].position).to eq 0
-        end
-      end
-
-      context 'when board lists has labels lists' do
-        it 'creates a new list at end of the lists' do
-          create(:list, board: board, position: 0)
-          create(:list, board: board, position: 1)
-
-          response = service.execute(board)
-
-          expect(response.success?).to eq(true)
-          expect(response.payload[:list].position).to eq 2
-        end
-      end
-
-      context 'when board lists has label and done lists' do
-        it 'creates a new list at end of the label lists' do
-          list1 = create(:list, board: board, position: 0)
-
-          list2 = service.execute(board).payload[:list]
-
-          expect(list1.reload.position).to eq 0
-          expect(list2.reload.position).to eq 1
-        end
-      end
-
-      context 'when provided label does not belong to the parent' do
-        it 'returns an error' do
-          label = create(:label, name: 'in-development')
-          service = described_class.new(parent, user, label_id: label.id)
-
-          response = service.execute(board)
-
-          expect(response.success?).to eq(false)
-          expect(response.errors).to include('Label not found')
-        end
-      end
-
-      context 'when backlog param is sent' do
-        it 'creates one and only one backlog list' do
-          service = described_class.new(parent, user, 'backlog' => true)
-          list = service.execute(board).payload[:list]
-
-          expect(list.list_type).to eq('backlog')
-          expect(list.position).to be_nil
-          expect(list).to be_valid
-
-          another_backlog = service.execute(board).payload[:list]
-
-          expect(another_backlog).to eq list
-        end
-      end
-    end
-
-    context 'when board parent is a project' do
-      let_it_be(:parent) { create(:project) }
-      let_it_be(:board) { create(:board, project: parent) }
-      let_it_be(:label) { create(:label, project: parent, name: 'in-progress') }
-
-      it_behaves_like 'creating board lists'
-    end
-
-    context 'when board parent is a group' do
-      let_it_be(:parent) { create(:group) }
-      let_it_be(:board) { create(:board, group: parent) }
-      let_it_be(:label) { create(:group_label, group: parent, name: 'in-progress') }
-
-      it_behaves_like 'creating board lists'
-    end
+  def create_list(params)
+    create(:list, params.merge(board: board))
   end
 end

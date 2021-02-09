@@ -122,7 +122,7 @@ Do not run `git prune` or `git gc` in pool repositories! This can
 cause data loss in "real" repositories that depend on the pool in
 question.
 
-Forks of public projects are deduplicated by creating a third repository, the
+Forks of public and internal projects are deduplicated by creating a third repository, the
 object pool, containing the objects from the source project. Using
 `objects/info/alternates`, the source project and forks use the object pool for
 shared objects. Objects are moved from the source project to the object pool

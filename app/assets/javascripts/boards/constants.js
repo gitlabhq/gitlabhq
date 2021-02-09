@@ -21,6 +21,12 @@ export const ListTypeTitles = {
   label: __('Label'),
 };
 
+export const formType = {
+  new: 'new',
+  delete: 'delete',
+  edit: 'edit',
+};
+
 export const inactiveId = 0;
 
 export const ISSUABLE = 'issuable';

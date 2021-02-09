@@ -15,12 +15,15 @@ RSpec.describe Packages::Debian::DestroyDistributionService do
           .from(2).to(0)
           .and change { architecture1.class.all.count }
           .from(3).to(0)
+          .and change { component_file1.class.all.count }
+          .from(4).to(0)
       else
         expect { response }
           .to not_change { container.debian_distributions.klass.all.count }
           .and not_change { container.debian_distributions.count }
           .and not_change { component1.class.all.count }
           .and not_change { architecture1.class.all.count }
+          .and not_change { component_file1.class.all.count }
       end
 
       expect(response).to be_a(ServiceResponse)
@@ -45,6 +48,10 @@ RSpec.describe Packages::Debian::DestroyDistributionService do
       let_it_be(:architecture0, freeze: true) { create("debian_#{container_type}_architecture", distribution: distribution, name: 'all') }
       let_it_be(:architecture1, freeze: can_freeze) { create("debian_#{container_type}_architecture", distribution: distribution, name: 'architecture1') }
       let_it_be(:architecture2, freeze: can_freeze) { create("debian_#{container_type}_architecture", distribution: distribution, name: 'architecture2') }
+      let_it_be(:component_file1, freeze: can_freeze) { create("debian_#{container_type}_component_file", :source, component: component1) }
+      let_it_be(:component_file2, freeze: can_freeze) { create("debian_#{container_type}_component_file", component: component1, architecture: architecture1) }
+      let_it_be(:component_file3, freeze: can_freeze) { create("debian_#{container_type}_component_file", :source, component: component2) }
+      let_it_be(:component_file4, freeze: can_freeze) { create("debian_#{container_type}_component_file", component: component2, architecture: architecture2) }
 
       subject { described_class.new(distribution) }
 

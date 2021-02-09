@@ -6,6 +6,7 @@ module Operations
     include AtomicInternalId
     include IidRoutes
     include Limitable
+    include Referable
 
     self.table_name = 'operations_feature_flags'
     self.limit_scope = :project
@@ -65,6 +66,31 @@ module Operations
           .reorder(:id)
           .references(:operations_scopes)
       end
+
+      def reference_prefix
+        '[feature_flag:'
+      end
+
+      def reference_pattern
+        @reference_pattern ||= %r{
+          #{Regexp.escape(reference_prefix)}(#{::Project.reference_pattern}\/)?(?<feature_flag>\d+)#{Regexp.escape(reference_postfix)}
+        }x
+      end
+
+      def link_reference_pattern
+        @link_reference_pattern ||= super("feature_flags", /(?<feature_flag>\d+)\/edit/)
+      end
+
+      def reference_postfix
+        ']'
+      end
+    end
+
+    def to_reference(from = nil, full: false)
+      project
+        .to_reference_base(from, full: full)
+        .then { |reference_base| reference_base.present? ? "#{reference_base}/" : nil }
+        .then { |reference_base| "#{self.class.reference_prefix}#{reference_base}#{iid}#{self.class.reference_postfix}" }
     end
 
     def related_issues(current_user, preload:)

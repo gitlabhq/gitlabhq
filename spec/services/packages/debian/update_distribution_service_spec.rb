@@ -3,15 +3,26 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Debian::UpdateDistributionService do
-  RSpec.shared_examples 'Update Debian Distribution' do |expected_message, expected_components, expected_architectures|
+  RSpec.shared_examples 'Update Debian Distribution' do |expected_message, expected_components, expected_architectures, component_file_delta = 0|
     it 'returns ServiceResponse', :aggregate_failures do
       expect(distribution).to receive(:update).with(simple_params).and_call_original if expected_message.nil?
 
-      expect { response }
-        .to not_change { container.debian_distributions.klass.all.count }
-        .and not_change { container.debian_distributions.count }
-        .and not_change { component1.class.all.count }
-        .and not_change { architecture1.class.all.count }
+      if component_file_delta.zero?
+        expect { response }
+          .to not_change { container.debian_distributions.klass.all.count }
+          .and not_change { container.debian_distributions.count }
+          .and not_change { component1.class.all.count }
+          .and not_change { architecture1.class.all.count }
+          .and not_change { component_file1.class.all.count }
+      else
+        expect { response }
+          .to not_change { container.debian_distributions.klass.all.count }
+          .and not_change { container.debian_distributions.count }
+          .and not_change { component1.class.all.count }
+          .and not_change { architecture1.class.all.count }
+          .and change { component_file1.class.all.count }
+          .from(4).to(4 + component_file_delta)
+      end
 
       expect(response).to be_a(ServiceResponse)
       expect(response.success?).to eq(expected_message.nil?)
@@ -48,6 +59,10 @@ RSpec.describe Packages::Debian::UpdateDistributionService do
       let_it_be(:architecture0) { create("debian_#{container_type}_architecture", distribution: distribution, name: 'all') }
       let_it_be(:architecture1) { create("debian_#{container_type}_architecture", distribution: distribution, name: 'architecture1') }
       let_it_be(:architecture2) { create("debian_#{container_type}_architecture", distribution: distribution, name: 'architecture2') }
+      let_it_be(:component_file1) { create("debian_#{container_type}_component_file", :source, component: component1) }
+      let_it_be(:component_file2) { create("debian_#{container_type}_component_file", component: component1, architecture: architecture1) }
+      let_it_be(:component_file3) { create("debian_#{container_type}_component_file", :source, component: component2) }
+      let_it_be(:component_file4) { create("debian_#{container_type}_component_file", component: component2, architecture: architecture2) }
 
       let(:original_params) do
         {
@@ -110,7 +125,7 @@ RSpec.describe Packages::Debian::UpdateDistributionService do
           }
         end
 
-        it_behaves_like 'Update Debian Distribution', nil, %w[component2 component3], %w[all architecture2 architecture3]
+        it_behaves_like 'Update Debian Distribution', nil, %w[component2 component3], %w[all architecture2 architecture3], -2
       end
 
       context 'with invalid components' do

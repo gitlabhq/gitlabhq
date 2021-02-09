@@ -345,7 +345,7 @@ group :development do
   gem 'better_errors', '~> 2.7.1'
 
   # thin instead webrick
-  gem 'thin', '~> 1.7.0'
+  gem 'thin', '~> 1.8.0'
 end
 
 group :development, :test do

@@ -200,7 +200,7 @@ class Project < ApplicationRecord
   # Packages
   has_many :packages, class_name: 'Packages::Package'
   has_many :package_files, through: :packages, class_name: 'Packages::PackageFile'
-  # debian_distributions must be destroyed by ruby code in order to properly remove carrierwave uploads
+  # debian_distributions and associated component_files must be destroyed by ruby code in order to properly remove carrierwave uploads
   has_many :debian_distributions, class_name: 'Packages::Debian::ProjectDistribution', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project

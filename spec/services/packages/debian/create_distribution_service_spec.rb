@@ -15,6 +15,8 @@ RSpec.describe Packages::Debian::CreateDistributionService do
           .from(nil).to(expected_components.count)
           .and change { container.debian_distributions.first&.architectures&.count }
           .from(nil).to(expected_architectures.count)
+          .and not_change { Packages::Debian::ProjectComponentFile.count }
+          .and not_change { Packages::Debian::GroupComponentFile.count }
       else
         expect { response }
           .to not_change { container.debian_distributions.klass.all.count }
@@ -23,6 +25,8 @@ RSpec.describe Packages::Debian::CreateDistributionService do
           .and not_change { Packages::Debian::GroupComponent.count }
           .and not_change { Packages::Debian::ProjectArchitecture.count }
           .and not_change { Packages::Debian::GroupArchitecture.count }
+          .and not_change { Packages::Debian::ProjectComponentFile.count }
+          .and not_change { Packages::Debian::GroupComponentFile.count }
       end
 
       expect(response).to be_a(ServiceResponse)

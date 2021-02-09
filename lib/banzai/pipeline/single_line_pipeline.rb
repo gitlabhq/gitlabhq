@@ -24,7 +24,8 @@ module Banzai
           Filter::SnippetReferenceFilter,
           Filter::CommitRangeReferenceFilter,
           Filter::CommitReferenceFilter,
-          Filter::AlertReferenceFilter
+          Filter::AlertReferenceFilter,
+          Filter::FeatureFlagReferenceFilter
         ]
       end
 

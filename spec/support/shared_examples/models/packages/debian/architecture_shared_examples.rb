@@ -11,6 +11,7 @@ RSpec.shared_examples 'Debian Distribution Architecture' do |factory, container,
 
   describe 'relationships' do
     it { is_expected.to belong_to(:distribution).class_name("Packages::Debian::#{container.capitalize}Distribution").inverse_of(:architectures) }
+    it { is_expected.to have_many(:files).class_name("Packages::Debian::#{container.capitalize}ComponentFile").inverse_of(:architecture) }
   end
 
   describe 'validations' do

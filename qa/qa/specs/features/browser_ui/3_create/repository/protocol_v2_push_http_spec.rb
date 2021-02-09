@@ -26,6 +26,8 @@ module QA
           repository.use_default_credentials
           repository.clone
           repository.configure_identity(username, email)
+          repository.default_branch = project.default_branch
+          repository.checkout(project.default_branch, new_branch: true)
 
           git_protocol_reported = repository.push_with_git_protocol(
             git_protocol,

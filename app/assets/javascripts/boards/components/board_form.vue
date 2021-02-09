@@ -5,8 +5,8 @@ import { deprecatedCreateFlash as Flash } from '~/flash';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { getParameterByName } from '~/lib/utils/common_utils';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import boardsStore from '~/boards/stores/boards_store';
 import { fullLabelId, fullBoardId } from '../boards_util';
+import { formType } from '../constants';
 
 import updateBoardMutation from '../graphql/board_update.mutation.graphql';
 import createBoardMutation from '../graphql/board_create.mutation.graphql';
@@ -24,12 +24,6 @@ const boardDefaults = {
   weight: null,
   hide_backlog_list: false,
   hide_closed_list: false,
-};
-
-const formType = {
-  new: 'new',
-  delete: 'delete',
-  edit: 'edit',
 };
 
 export default {
@@ -100,11 +94,14 @@ export default {
       type: Object,
       required: true,
     },
+    currentPage: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
       board: { ...boardDefaults, ...this.currentBoard },
-      currentPage: boardsStore.state.currentPage,
       isLoading: false,
     };
   },
@@ -256,7 +253,7 @@ export default {
       }
     },
     cancel() {
-      boardsStore.showPage('');
+      this.$emit('cancel');
     },
     resetFormState() {
       if (this.isNewForm) {
