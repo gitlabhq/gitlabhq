@@ -17,8 +17,7 @@ the number of private projects you create.
 
 ## Project features
 
-When you create a project in GitLab, you receive access to a large number of
-[features](https://about.gitlab.com/features/):
+Projects include the following [features](https://about.gitlab.com/features/):
 
 **Repositories:**
 
@@ -115,62 +114,10 @@ When you create a project in GitLab, you receive access to a large number of
 - [Static Site Editor](static_site_editor/index.md): quickly edit content on static websites without prior knowledge of the codebase or Git commands.
 - [Code Intelligence](code_intelligence.md): code navigation features.
 
-### Project integrations
+## Project integrations
 
 [Integrate your project](integrations/index.md) with Jira, Mattermost,
 Kubernetes, Slack, and a lot more.
-
-## New project
-
-Learn how to [create a new project](../../gitlab-basics/create-project.md) in GitLab.
-
-### Fork a project
-
-You can [fork a project](repository/forking_workflow.md) in order to:
-
-- Collaborate on code by forking a project and creating a merge request
-  from your fork to the upstream project
-- Fork a sample project to work on the top of that
-
-### Star a project
-
-You can star a project to make it easier to find projects you frequently use.
-The number of stars a project has can indicate its popularity.
-
-To star a project:
-
-1. Go to the home page of the project you want to star.
-1. In the upper right corner of the page, click **Star**.
-
-To view your starred projects:
-
-1. Click **Projects** in the navigation bar.
-1. Click **Starred Projects**.
-1. GitLab displays information about your starred projects, including:
-
-   - Project description, including name, description, and icon
-   - Number of times this project has been starred
-   - Number of times this project has been forked
-   - Number of open merge requests
-   - Number of open issues
-
-### Explore projects
-
-You can explore other popular projects available on GitLab. To explore projects:
-
-1. Click **Projects** in the navigation bar.
-1. Click **Explore Projects**.
-
-GitLab displays a list of projects, sorted by last updated date. To view
-projects with the most [stars](#star-a-project), click **Most stars**. To view
-projects with the largest number of comments in the past month, click **Trending**.
-
-## Project settings
-
-Set the project's visibility level and the access levels to its various pages
-and perform actions like archiving, renaming or transferring a project.
-
-Read through the documentation on [project settings](settings/index.md).
 
 ## Import or export a project
 
@@ -182,63 +129,12 @@ Read through the documentation on [project settings](settings/index.md).
 - [Export a project from GitLab](settings/import_export.md#exporting-a-project-and-its-data)
 - [Importing and exporting projects between GitLab instances](settings/import_export.md)
 
-## Delete a project
-
-To delete a project, first navigate to the home page for that project.
-
-1. Navigate to **Settings > General**.
-1. Expand the **Advanced** section.
-1. Scroll down to the **Delete project** section.
-1. Click **Delete project**
-1. Confirm this action by typing in the expected text.
-
-Projects in personal namespaces are deleted immediately on request. For information on delayed deletion of projects in a group, please see [Enabling delayed project removal](../group/index.md#enabling-delayed-project-removal).
-
 ## CI/CD for external repositories **(PREMIUM)**
 
 Instead of importing a repository directly to GitLab, you can connect your repository
 as a CI/CD project.
 
 Read through the documentation on [CI/CD for external repositories](../../ci/ci_cd_for_external_repos/index.md).
-
-## Project members
-
-Learn how to [add members to your projects](members/index.md).
-
-## Project activity
-
-To view the activity of a project, navigate to **Project overview > Activity**.
-From there, you can click on the tabs to see **All** the activity, or see it
-filtered by **Push events**, **Merge events**, **Issue events**, **Comments**,
-**Team**, and **Wiki**.
-
-### Leave a project
-
-**Leave project** only displays on the project's dashboard
-when a project is part of a group (under a
-[group namespace](../group/index.md#namespaces)).
-If you choose to leave a project you are no longer a project
-member, and cannot contribute.
-
-## Project's landing page
-
-The project's landing page shows different information depending on
-the project's visibility settings and user permissions.
-
-For public projects, and to members of internal and private projects
-with [permissions to view the project's code](../permissions.md#project-members-permissions):
-
-- The content of a
-  [`README` or an index file](repository/#repository-readme-and-index-files)
-  is displayed (if any), followed by the list of directories in the
-  project's repository.
-- If the project doesn't contain either of these files, the
-  visitor sees the list of files and directories of the repository.
-
-For users without permissions to view the project's code, GitLab displays:
-
-- The wiki homepage, if any.
-- The list of issues in the project.
 
 ## GitLab Workflow - VS Code extension
 
@@ -247,144 +143,6 @@ the [VS Code](https://code.visualstudio.com/) editor with GitLab through the
 [GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
 
 To review or contribute to the extension's code, visit [its codebase in GitLab](https://gitlab.com/gitlab-org/gitlab-vscode-extension/).
-
-## Redirects when changing repository paths
-
-When a repository path changes, it is essential to smoothly transition from the
-old location to the new one. GitLab provides two kinds of redirects: the web UI
-and Git push/pull redirects.
-
-Depending on the situation, different things apply.
-
-When [renaming a user](../profile/index.md#changing-your-username),
-[changing a group path](../group/index.md#changing-a-groups-path) or [renaming a repository](settings/index.md#renaming-a-repository):
-
-- Existing web URLs for the namespace and anything under it (such as projects) will
-  redirect to the new URLs.
-- Starting with GitLab 10.3, existing Git remote URLs for projects under the
-  namespace redirect to the new remote URL. Every time you push/pull to a
-  repository that has changed its location, a warning message to update
-  your remote is displayed instead of rejecting your action.
-  This means that any automation scripts, or Git clients continue to
-  work after a rename, making any transition a lot smoother.
-- The redirects are available as long as the original path is not claimed by
-  another group, user or project.
-
-## Use your project as a Go package
-
-Any project can be used as a Go package. GitLab responds correctly to `go get`
-and `godoc.org` discovery requests, including the
-[`go-import`](https://golang.org/cmd/go/#hdr-Remote_import_paths) and
-[`go-source`](https://github.com/golang/gddo/wiki/Source-Code-Links) meta tags.
-
-Private projects, including projects in subgroups, can be used as a Go package,
-but may require configuration to work correctly. GitLab responds correctly
-to `go get` discovery requests for projects that *are not* in subgroups,
-regardless of authentication or authorization.
-[Authentication](#authenticate-go-requests) is required to use a private project
-in a subgroup as a Go package. Otherwise, GitLab truncates the path for
-private projects in subgroups to the first two segments, causing `go get` to
-fail.
-
-GitLab implements its own Go proxy. This feature must be enabled by an
-administrator and requires additional configuration. See [GitLab Go
-Proxy](../packages/go_proxy/index.md).
-
-### Disable Go module features for private projects
-
-In Go 1.12 and later, Go queries module proxies and checksum databases in the
-process of [fetching a
-module](../../development/go_guide/dependencies.md#fetching). This can be
-selectively disabled with `GOPRIVATE` (disable both),
-[`GONOPROXY`](../../development/go_guide/dependencies.md#proxies) (disable proxy
-queries), and [`GONOSUMDB`](../../development/go_guide/dependencies.md#fetching)
-(disable checksum queries).
-
-`GOPRIVATE`, `GONOPROXY`, and `GONOSUMDB` are comma-separated lists of Go
-modules and Go module prefixes. For example,
-`GOPRIVATE=gitlab.example.com/my/private/project` disables queries for that
-one project, but `GOPRIVATE=gitlab.example.com` disables queries for *all*
-projects on GitLab.com. Go does not query module proxies if the module name or a
-prefix of it appears in `GOPRIVATE` or `GONOPROXY`. Go does not query checksum
-databases if the module name or a prefix of it appears in `GONOPRIVATE` or
-`GONOSUMDB`.
-
-### Authenticate Go requests
-
-To authenticate requests to private projects made by Go, use a [`.netrc`
-file](https://ec.haxx.se/usingcurl-netrc.html) and a [personal access
-token](../profile/personal_access_tokens.md) in the password field. **This only
-works if your GitLab instance can be accessed with HTTPS.** The `go` command
-does not transmit credentials over insecure connections. This authenticates
-all HTTPS requests made directly by Go, but does not authenticate requests made
-through Git.
-
-For example:
-
-```plaintext
-machine gitlab.example.com
-login <gitlab_user_name>
-password <personal_access_token>
-```
-
-NOTE:
-On Windows, Go reads `~/_netrc` instead of `~/.netrc`.
-
-### Authenticate Git fetches
-
-If a module cannot be fetched from a proxy, Go falls back to using Git (for
-GitLab projects). Git uses `.netrc` to authenticate requests. You can also
-configure Git to either:
-
-- Embed specific credentials in the request URL.
-- Use SSH instead of HTTPS, as Go always uses HTTPS to fetch Git repositories.
-
-```shell
-# Embed credentials in any request to GitLab.com:
-git config --global url."https://${user}:${personal_access_token}@gitlab.example.com".insteadOf "https://gitlab.example.com"
-
-# Use SSH instead of HTTPS:
-git config --global url."git@gitlab.example.com".insteadOf "https://gitlab.example.com"
-```
-
-## Access project page with project ID
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53671) in GitLab 11.8.
-
-To quickly access a project from the GitLab UI using the project ID,
-visit the `/projects/:id` URL in your browser or other tool accessing the project.
-
-## Project aliases **(PREMIUM SELF)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3264) in GitLab Premium 12.1.
-
-When migrating repositories to GitLab and they are being accessed by other systems,
-it's very useful to be able to access them using the same name especially when
-they are a lot. It reduces the risk of changing significant number of Git URLs in
-a large number of systems.
-
-GitLab provides a functionality to help with this. In GitLab, repositories are
-usually accessed with a namespace and project name. It is also possible to access
-them via a project alias. This feature is only available on Git over SSH.
-
-A project alias can be only created via API and only by GitLab administrators.
-Follow the [Project Aliases API documentation](../../api/project_aliases.md) for
-more details.
-
-After an alias has been created for a project (such as an alias `gitlab` for the
-project `https://gitlab.com/gitlab-org/gitlab`), you can clone the repository
-with the alias (e.g `git clone git@gitlab.com:gitlab.git` instead of
-`git clone git@gitlab.com:gitlab-org/gitlab.git`).
-
-## Project activity analytics overview **(ULTIMATE SELF)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/279039) in GitLab [Ultimate](https://about.gitlab.com/pricing/) 13.7 as a [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta).
-
-Project details include the following analytics:
-
-- Deployment Frequency
-
-For more information, see [Project Analytics API](../../api/project_analytics.md).
 
 ## Project APIs
 
@@ -407,3 +165,13 @@ There are numerous [APIs](../../api/README.md) to use with your projects:
 - [Variables](../../api/project_level_variables.md)
 - [Aliases](../../api/project_aliases.md)
 - [Analytics](../../api/project_analytics.md)
+
+## Project activity analytics overview **(ULTIMATE SELF)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/279039) in GitLab [Ultimate](https://about.gitlab.com/pricing/) 13.7 as a [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta).
+
+Project details include the following analytics:
+
+- Deployment Frequency
+
+For more information, see [Project Analytics API](../../api/project_analytics.md).

@@ -74,3 +74,25 @@ In the event of merging two GitLab instances together (for example, both instanc
 refer to the instructions in [Migrating from self-managed GitLab to GitLab.com](#migrating-from-self-managed-gitlab-to-gitlabcom).
 
 Additionally, you can migrate users using the [Users API](../../../api/users.md) with an administrator user.
+
+## Project aliases **(PREMIUM SELF)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3264) in GitLab Premium 12.1.
+
+When migrating repositories to GitLab and they are being accessed by other systems,
+it's very useful to be able to access them using the same name especially when
+they are a lot. It reduces the risk of changing significant number of Git URLs in
+a large number of systems.
+
+GitLab provides a functionality to help with this. In GitLab, repositories are
+usually accessed with a namespace and project name. It is also possible to access
+them via a project alias. This feature is only available on Git over SSH.
+
+A project alias can be only created via API and only by GitLab administrators.
+Follow the [Project Aliases API documentation](../../../api/project_aliases.md) for
+more details.
+
+After an alias has been created for a project (such as an alias `gitlab` for the
+project `https://gitlab.com/gitlab-org/gitlab`), you can clone the repository
+with the alias (e.g `git clone git@gitlab.com:gitlab.git` instead of
+`git clone git@gitlab.com:gitlab-org/gitlab.git`).

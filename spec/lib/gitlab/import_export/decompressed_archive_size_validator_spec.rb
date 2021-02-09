@@ -27,25 +27,55 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator do
     end
 
     context 'when file exceeds allowed decompressed size' do
-      it 'returns false' do
+      it 'logs error message returns false' do
+        expect(Gitlab::Import::Logger)
+          .to receive(:info)
+          .with(
+            import_upload_archive_path: filepath,
+            import_upload_archive_size: File.size(filepath),
+            message: 'Decompressed archive size limit reached'
+          )
         expect(subject.valid?).to eq(false)
       end
     end
 
-    context 'when something goes wrong during decompression' do
-      before do
-        allow(subject.archive_file).to receive(:eof?).and_raise(StandardError)
+    context 'when exception occurs during decompression' do
+      shared_examples 'logs raised exception and terminates validator process group' do
+        let(:std) { double(:std, close: nil, value: nil) }
+        let(:wait_thr) { double }
+
+        before do
+          allow(Process).to receive(:getpgid).and_return(2)
+          allow(Open3).to receive(:popen3).and_return([std, std, std, wait_thr])
+          allow(wait_thr).to receive(:[]).with(:pid).and_return(1)
+          allow(wait_thr).to receive(:value).and_raise(exception)
+        end
+
+        it 'logs raised exception and terminates validator process group' do
+          expect(Gitlab::Import::Logger)
+            .to receive(:info)
+            .with(
+              import_upload_archive_path: filepath,
+              import_upload_archive_size: File.size(filepath),
+              message: error_message
+            )
+          expect(Process).to receive(:kill).with(-1, 2)
+          expect(subject.valid?).to eq(false)
+        end
       end
 
-      it 'logs and tracks raised exception' do
-        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(instance_of(StandardError))
-        expect(Gitlab::Import::Logger).to receive(:info).with(hash_including(message: 'Decompressed archive size validation failed.'))
+      context 'when timeout occurs' do
+        let(:error_message) { 'Timeout reached during archive decompression' }
+        let(:exception) { Timeout::Error }
 
-        subject.valid?
+        include_examples 'logs raised exception and terminates validator process group'
       end
 
-      it 'returns false' do
-        expect(subject.valid?).to eq(false)
+      context 'when exception occurs' do
+        let(:error_message) { 'Error!' }
+        let(:exception) { StandardError.new(error_message) }
+
+        include_examples 'logs raised exception and terminates validator process group'
       end
     end
   end

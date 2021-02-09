@@ -15,7 +15,7 @@ RSpec.describe 'package details' do
   end
 
   let(:depth) { 3 }
-  let(:excluded) { ['metadata'] }
+  let(:excluded) { %w[metadata apiFuzzingCiConfiguration] }
 
   let(:query) do
     graphql_query_for(:package, { id: package_global_id }, <<~FIELDS)

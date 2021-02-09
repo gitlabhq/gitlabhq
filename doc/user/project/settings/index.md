@@ -79,7 +79,7 @@ Use the switches to enable or disable the following features:
 | **Issues**                        | ✓                         | Activates the GitLab issues tracker                                                                                                                                                            |
 | **Repository**                    | ✓                         | Enables [repository](../repository/) functionality                                                                                                                                             |
 | **Merge Requests**                | ✓                         | Enables [merge request](../merge_requests/) functionality; also see [Merge request settings](#merge-request-settings)                                                                          |
-| **Forks**                         | ✓                         | Enables [forking](../index.md#fork-a-project) functionality                                                                                                                                    |
+| **Forks**                         | ✓                         | Enables [forking](../working_with_projects.md#fork-a-project) functionality                                                                                                                                    |
 | **Pipelines**                     | ✓                         | Enables [CI/CD](../../../ci/README.md) functionality                                                                                                                                           |
 | **Container Registry**            |                           | Activates a [registry](../../packages/container_registry/) for your Docker images                                                                                                              |
 | **Git Large File Storage**        |                           | Enables the use of [large files](../../../topics/git/lfs/index.md#git-large-file-storage-lfs)                                                                                    |
@@ -221,7 +221,7 @@ To rename a repository:
 
 Remember that this can have unintended side effects since everyone with the
 old URL won't be able to push or pull. Read more about what happens with the
-[redirects when renaming repositories](../index.md#redirects-when-changing-repository-paths).
+[redirects when renaming repositories](../repository/index.md#redirects-when-changing-repository-paths).
 
 #### Transferring an existing project into another namespace
 
@@ -245,7 +245,7 @@ To transfer a project:
 
 Once done, you will be taken to the new project's namespace. At this point,
 read what happens with the
-[redirects from the old project to the new one](../index.md#redirects-when-changing-repository-paths).
+[redirects from the old project to the new one](../repository/index.md#redirects-when-changing-repository-paths).
 
 NOTE:
 GitLab administrators can use the administration interface to move any project to any

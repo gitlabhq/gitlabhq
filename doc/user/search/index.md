@@ -193,7 +193,7 @@ You can search through your projects from the left menu, by clicking the menu ba
 On the field **Filter by name**, type the project or group name you want to find, and GitLab
 filters them for you as you type.
 
-You can also look for the projects you [starred](../project/index.md#star-a-project) (**Starred projects**).
+You can also look for the projects you [starred](../project/working_with_projects.md#star-a-project) (**Starred projects**).
 You can **Explore** all public and internal projects available in GitLab.com, from which you can filter by visibility,
 through **Trending**, best rated with **Most stars**, or **All** of them.
 

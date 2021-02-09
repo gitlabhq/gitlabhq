@@ -525,6 +525,10 @@ class ApplicationSetting < ApplicationRecord
     current_without_cache
   end
 
+  def self.find_or_create_without_cache
+    current_without_cache || create_from_defaults
+  end
+
   # Due to the frequency with which settings are accessed, it is
   # likely that during a backup restore a running GitLab process
   # will insert a new `application_settings` row before the

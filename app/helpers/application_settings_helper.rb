@@ -339,7 +339,8 @@ module ApplicationSettingsHelper
       :container_registry_delete_tags_service_timeout,
       :rate_limiting_response_text,
       :container_registry_expiration_policies_worker_capacity,
-      :container_registry_cleanup_tags_service_max_list_size
+      :container_registry_cleanup_tags_service_max_list_size,
+      :keep_latest_artifact
     ]
   end
 

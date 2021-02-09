@@ -385,9 +385,12 @@ When ready to merge:
 - Consider using the [Squash and
   merge](../user/project/merge_requests/squash_and_merge.md#squash-and-merge)
   feature when the merge request has a lot of commits.
-  When merging code a maintainer should only use the squash feature if the
-  author has already set this option or if the merge request clearly contains a
-  messy commit history that is intended to be squashed.
+  When merging code, a maintainer should only use the squash feature if the
+  author has already set this option, or if the merge request clearly contains a
+  messy commit history, it will be more efficient to squash commits instead of
+  circling back with the author about that. Otherwise, if the MR only has a few commits, we'll
+  be respecting the author's setting by not squashing them.
+
 - **Start a new merge request pipeline with the `Run Pipeline` button in the merge
   request's "Pipelines" tab, and enable "Merge When Pipeline Succeeds" (MWPS).** Note that:
   - If the **latest [Pipeline for Merged Results](../ci/merge_request_pipelines/pipelines_for_merged_results/#pipelines-for-merged-results)** finished less than 2 hours ago, you

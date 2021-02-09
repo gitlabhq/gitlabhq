@@ -1078,6 +1078,56 @@ Identifier of Analytics::DevopsAdoption::Segment.
 scalar AnalyticsDevopsAdoptionSegmentID
 
 """
+Data associated with configuring API fuzzing scans in GitLab CI
+"""
+type ApiFuzzingCiConfiguration {
+  """
+  All available scan modes.
+  """
+  scanModes: [ApiFuzzingScanMode!]
+
+  """
+  All default scan profiles.
+  """
+  scanProfiles: [ApiFuzzingScanProfile!]
+}
+
+"""
+All possible ways to specify the API surface for an API fuzzing scan
+"""
+enum ApiFuzzingScanMode {
+  """
+  The API surface is specified by a HAR file.
+  """
+  HAR
+
+  """
+  The API surface is specified by a OPENAPI file.
+  """
+  OPENAPI
+}
+
+"""
+An API Fuzzing scan profile.
+"""
+type ApiFuzzingScanProfile {
+  """
+  A short description of the profile.
+  """
+  description: String
+
+  """
+  The unique name of the profile.
+  """
+  name: String
+
+  """
+  A syntax highlit HTML representation of the YAML.
+  """
+  yaml: String
+}
+
+"""
 User availability status
 """
 enum AvailabilityEnum {
@@ -2481,6 +2531,13 @@ type BurnupChartDailyTotals {
   Total weight of issues as of this day
   """
   scopeWeight: Int!
+}
+
+type CiApplicationSettings {
+  """
+  Whether to keep the latest jobs artifacts.
+  """
+  keepLatestArtifact: Boolean
 }
 
 type CiBuildNeed {
@@ -18466,6 +18523,11 @@ type Project {
   allowMergeOnSkippedPipeline: Boolean
 
   """
+  API fuzzing configuration for the project. Available only when feature flag `api_fuzzing_configuration_ui` is enabled.
+  """
+  apiFuzzingCiConfiguration: ApiFuzzingCiConfiguration
+
+  """
   Indicates the archived status of the project.
   """
   archived: Boolean
@@ -20843,6 +20905,11 @@ type PromoteToEpicPayload {
 }
 
 type Query {
+  """
+  CI related settings that apply to the entire instance.
+  """
+  ciApplicationSettings: CiApplicationSettings
+
   """
   Get linted and processed contents of a CI config. Should not be requested more than once per request.
   """

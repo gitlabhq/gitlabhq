@@ -67,6 +67,8 @@ tier: ['free', 'starter', 'premium', 'ultimate', 'bronze', 'silver', 'gold']
 
 The GitLab codebase provides a dedicated [generator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/generators/gitlab/usage_metric_definition_generator.rb) to create new metric definitions.
 
+For uniqueness, the generated file includes a timestamp prefix, in ISO 8601 format.
+
 The generator takes the key path argument and 2 options and creates the metric YAML definition in corresponding location:
 
 - `--ee`, `--no-ee` Indicates if metric is for EE.

@@ -184,7 +184,7 @@ Similar to versioned diff file views, you can see the changes made in a given Wi
 Wiki events (creation, deletion, and updates) are tracked by GitLab and
 displayed on the [user profile](../../profile/index.md#user-profile),
 [group](../../group/index.md#view-group-activity),
-and [project](../index.md#project-activity) activity pages.
+and [project](../working_with_projects.md#project-activity) activity pages.
 
 ## Adding and editing wiki pages locally
 

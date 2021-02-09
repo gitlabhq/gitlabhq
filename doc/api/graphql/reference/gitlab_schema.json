@@ -2679,6 +2679,141 @@
           "possibleTypes": null
         },
         {
+          "kind": "OBJECT",
+          "name": "ApiFuzzingCiConfiguration",
+          "description": "Data associated with configuring API fuzzing scans in GitLab CI",
+          "fields": [
+            {
+              "name": "scanModes",
+              "description": "All available scan modes.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "ApiFuzzingScanMode",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "scanProfiles",
+              "description": "All default scan profiles.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "ApiFuzzingScanProfile",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "ApiFuzzingScanMode",
+          "description": "All possible ways to specify the API surface for an API fuzzing scan",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "HAR",
+              "description": "The API surface is specified by a HAR file.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "OPENAPI",
+              "description": "The API surface is specified by a OPENAPI file.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ApiFuzzingScanProfile",
+          "description": "An API Fuzzing scan profile.",
+          "fields": [
+            {
+              "name": "description",
+              "description": "A short description of the profile.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "The unique name of the profile.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "yaml",
+              "description": "A syntax highlit HTML representation of the YAML.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "ENUM",
           "name": "AvailabilityEnum",
           "description": "User availability status",
@@ -6534,6 +6669,33 @@
                   "name": "Int",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CiApplicationSettings",
+          "description": null,
+          "fields": [
+            {
+              "name": "keepLatestArtifact",
+              "description": "Whether to keep the latest jobs artifacts.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -54453,6 +54615,20 @@
               "deprecationReason": null
             },
             {
+              "name": "apiFuzzingCiConfiguration",
+              "description": "API fuzzing configuration for the project. Available only when feature flag `api_fuzzing_configuration_ui` is enabled.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ApiFuzzingCiConfiguration",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "archived",
               "description": "Indicates the archived status of the project.",
               "args": [
@@ -60658,6 +60834,20 @@
           "name": "Query",
           "description": null,
           "fields": [
+            {
+              "name": "ciApplicationSettings",
+              "description": "CI related settings that apply to the entire instance.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CiApplicationSettings",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "ciConfig",
               "description": "Get linted and processed contents of a CI config. Should not be requested more than once per request.",

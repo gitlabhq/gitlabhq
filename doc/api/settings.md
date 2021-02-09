@@ -85,7 +85,8 @@ Example response:
   "wiki_page_max_content_bytes": 52428800,
   "require_admin_approval_after_user_signup": false,
   "personal_access_token_prefix": "GL-",
-  "rate_limiting_response_text": null
+  "rate_limiting_response_text": null,
+  "keep_latest_artifact": true
 }
 ```
 
@@ -179,7 +180,8 @@ Example response:
   "wiki_page_max_content_bytes": 52428800,
   "require_admin_approval_after_user_signup": false,
   "personal_access_token_prefix": "GL-",
-  "rate_limiting_response_text": null
+  "rate_limiting_response_text": null,
+  "keep_latest_artifact": true
 }
 ```
 

@@ -92,7 +92,7 @@ If you don't know your current password, select the 'I forgot my password' link.
 
 Your `username` is a unique [`namespace`](../group/index.md#namespaces)
 related to your user ID. Changing it can have unintended side effects, read
-[how redirects behave](../project/index.md#redirects-when-changing-repository-paths)
+[how redirects behave](../project/repository/index.md#redirects-when-changing-repository-paths)
 before proceeding.
 
 To change your `username`:

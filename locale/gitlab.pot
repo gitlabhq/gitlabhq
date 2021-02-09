@@ -2070,6 +2070,9 @@ msgstr ""
 msgid "AdminSettings|Integrations configured here will automatically apply to all projects on this instance."
 msgstr ""
 
+msgid "AdminSettings|Keep the latest artifacts for all jobs in the latest successful pipelines"
+msgstr ""
+
 msgid "AdminSettings|Maximum duration of a session for Git operations when 2FA is enabled."
 msgstr ""
 
@@ -2107,6 +2110,9 @@ msgid "AdminSettings|Some settings have moved"
 msgstr ""
 
 msgid "AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages."
+msgstr ""
+
+msgid "AdminSettings|The latest artifacts for all jobs in the most recent successful pipelines in each project are stored and do not expire."
 msgstr ""
 
 msgid "AdminSettings|The required pipeline configuration can be selected from the %{code_start}gitlab-ci%{code_end} directory inside of the configured %{link_start}instance template repository%{link_end} or from GitLab provided configurations."
@@ -29320,7 +29326,7 @@ msgstr ""
 msgid "There was a problem fetching project users."
 msgstr ""
 
-msgid "There was a problem fetching the keep latest artifact setting."
+msgid "There was a problem fetching the keep latest artifacts setting."
 msgstr ""
 
 msgid "There was a problem fetching users."
@@ -29335,7 +29341,7 @@ msgstr ""
 msgid "There was a problem sending the confirmation email"
 msgstr ""
 
-msgid "There was a problem updating the keep latest artifact setting."
+msgid "There was a problem updating the keep latest artifacts setting."
 msgstr ""
 
 msgid "There was an error %{message} todo."
@@ -29687,6 +29693,9 @@ msgid "This epic already has the maximum number of child epics."
 msgstr ""
 
 msgid "This epic does not exist or you don't have sufficient permission."
+msgstr ""
+
+msgid "This feature is disabled at the instance level."
 msgstr ""
 
 msgid "This feature requires local storage to be enabled"

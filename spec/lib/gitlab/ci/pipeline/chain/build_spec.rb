@@ -235,7 +235,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build do
 
     with_them do
       before do
-        project.update!(ci_keep_latest_artifact: keep_latest_artifact)
+        project.update!(keep_latest_artifact: keep_latest_artifact)
       end
 
       it 'builds a pipeline with appropriate locked value' do

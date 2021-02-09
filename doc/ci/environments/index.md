@@ -57,7 +57,7 @@ Configuring environments involves:
 The rest of this section illustrates how to configure environments and deployments using
 an example scenario. It assumes you have already:
 
-- Created a [project](../../gitlab-basics/create-project.md) in GitLab.
+- Created a [project](../../user/project/working_with_projects.md#create-a-project) in GitLab.
 - Set up [a runner](../runners/README.md).
 
 In the scenario:

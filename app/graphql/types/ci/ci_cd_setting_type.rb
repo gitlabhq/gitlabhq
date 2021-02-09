@@ -14,7 +14,8 @@ module Types
         description: 'Whether merge trains are enabled.',
         method: :merge_trains_enabled?
       field :keep_latest_artifact, GraphQL::BOOLEAN_TYPE, null: true,
-        description: 'Whether to keep the latest builds artifacts.'
+        description: 'Whether to keep the latest builds artifacts.',
+        method: :keep_latest_artifacts_available?
       field :project, Types::ProjectType, null: true,
         description: 'Project the CI/CD settings belong to.'
     end

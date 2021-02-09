@@ -9,7 +9,7 @@
   .settings-header
     %h4
       = _("General pipelines")
-    %button.btn.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded ? _('Collapse') : _('Expand')
     %p
       = _("Customize your pipeline configuration and coverage report.")
@@ -20,7 +20,7 @@
   .settings-header
     %h4
       = s_('CICD|Auto DevOps')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded ? _('Collapse') : _('Expand')
     %p
       - auto_devops_url = help_page_path('topics/autodevops/index')
@@ -37,7 +37,7 @@
   .settings-header
     %h4
       = _("Runners")
-    %button.btn.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded ? _('Collapse') : _('Expand')
     %p
       = _("Runners are processes that pick up and execute CI/CD jobs for GitLab.")
@@ -49,7 +49,7 @@
   .settings-header
     %h4
       = _("Artifacts")
-    %button.btn.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded ? _('Collapse') : _('Expand')
     %p
       = _("A job artifact is an archive of files and directories saved by a job when it finishes.")
@@ -66,7 +66,7 @@
   .settings-header
     %h4
       = _("Pipeline triggers")
-    %button.btn.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded ? _('Collapse') : _('Expand')
     %p
       = _("Trigger a pipeline for a branch or tag by generating a trigger token and using it with an API call. The token impersonates a user's project access and permissions.")
@@ -79,7 +79,7 @@
     .settings-header
       %h4
         = _("Clean up image tags")
-      %button.btn.js-settings-toggle{ type: 'button' }
+      %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
         = expanded ? _('Collapse') : _('Expand')
       %p
         = _("Save space and find images in the Container Registry. Remove unneeded tags and keep only the ones you want.")
@@ -94,7 +94,7 @@
     .settings-header
       %h4
         = _("Deploy freezes")
-      %button.btn.js-settings-toggle{ type: 'button' }
+      %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
         = expanded ? _('Collapse') : _('Expand')
       %p
         - freeze_period_docs = help_page_path('user/project/releases/index', anchor: 'prevent-unintentional-releases-by-setting-a-deploy-freeze')

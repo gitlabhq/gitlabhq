@@ -3331,7 +3331,9 @@ job:
 The latest artifacts for refs are locked against deletion, and kept regardless of
 the expiry time. [Introduced in](https://gitlab.com/gitlab-org/gitlab/-/issues/16267)
 GitLab 13.0 behind a disabled feature flag, and [made the default behavior](https://gitlab.com/gitlab-org/gitlab/-/issues/229936)
-in GitLab 13.4. In [GitLab 13.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/241026), you can [disable this behavior in the CI/CD settings](../pipelines/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
+in GitLab 13.4.
+
+In [GitLab 13.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/241026), you can [disable this behavior at the project level in the CI/CD settings](../pipelines/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs). In [GitLab 13.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/276583), you can [disable this behavior instance-wide](../../user/admin_area/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
 
 #### `artifacts:reports`
 

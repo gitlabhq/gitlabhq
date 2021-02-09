@@ -67,8 +67,11 @@ module Gitlab
       options[:dir]
     end
 
+    # Example of file name
+    #
+    # 20210201124931_g_project_management_issue_title_changed_weekly.yml
     def file_name
-      key_path.split('.').last
+      "#{Time.now.utc.strftime("%Y%m%d%H%M%S")}_#{key_path.split('.').last}"
     end
 
     def directory

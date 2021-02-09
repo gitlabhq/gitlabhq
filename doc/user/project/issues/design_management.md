@@ -259,4 +259,4 @@ This will be rendered as:
 User activity events on designs (creation, deletion, and updates) are tracked by GitLab and
 displayed on the [user profile](../../profile/index.md#user-profile),
 [group](../../group/index.md#view-group-activity),
-and [project](../index.md#project-activity) activity pages.
+and [project](../working_with_projects.md#project-activity) activity pages.

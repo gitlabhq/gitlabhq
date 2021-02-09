@@ -2,12 +2,22 @@
 import { GlAlert, GlFormCheckbox, GlLink } from '@gitlab/ui';
 import { __ } from '~/locale';
 import GetKeepLatestArtifactProjectSetting from './graphql/queries/get_keep_latest_artifact_project_setting.query.graphql';
+import GetKeepLatestArtifactApplicationSetting from './graphql/queries/get_keep_latest_artifact_application_setting.query.graphql';
 import UpdateKeepLatestArtifactProjectSetting from './graphql/mutations/update_keep_latest_artifact_project_setting.mutation.graphql';
 
-const FETCH_ERROR = __('There was a problem fetching the keep latest artifact setting.');
-const UPDATE_ERROR = __('There was a problem updating the keep latest artifact setting.');
-
 export default {
+  errors: {
+    fetchError: __('There was a problem fetching the keep latest artifacts setting.'),
+    updateError: __('There was a problem updating the keep latest artifacts setting.'),
+  },
+  i18n: {
+    enabledHelpText: __(
+      'The latest artifacts created by jobs in the most recent successful pipeline will be stored.',
+    ),
+    disabledHelpText: __('This feature is disabled at the instance level.'),
+    helpLinkText: __('More information'),
+    checkboxText: __('Keep artifacts from most recent successful jobs'),
+  },
   components: {
     GlAlert,
     GlFormCheckbox,
@@ -33,20 +43,32 @@ export default {
         return data.project?.ciCdSettings?.keepLatestArtifact;
       },
       error() {
-        this.reportError(FETCH_ERROR);
+        this.reportError(this.$options.errors.fetchError);
+      },
+    },
+    projectSettingDisabled: {
+      query: GetKeepLatestArtifactApplicationSetting,
+      update(data) {
+        return !data.ciApplicationSettings?.keepLatestArtifact;
       },
     },
   },
   data() {
     return {
-      keepLatestArtifact: true,
+      keepLatestArtifact: null,
       errorMessage: '',
       isAlertDismissed: false,
+      projectSettingDisabled: true,
     };
   },
   computed: {
     shouldShowAlert() {
       return this.errorMessage && !this.isAlertDismissed;
+    },
+    helpText() {
+      return this.projectSettingDisabled
+        ? this.$options.i18n.disabledHelpText
+        : this.$options.i18n.enabledHelpText;
     },
   },
   methods: {
@@ -65,10 +87,10 @@ export default {
         });
 
         if (data.ciCdSettingsUpdate.errors.length) {
-          this.reportError(UPDATE_ERROR);
+          this.reportError(this.$options.errors.updateError);
         }
       } catch (error) {
-        this.reportError(UPDATE_ERROR);
+        this.reportError(this.$options.errors.updateError);
       }
     },
   },
@@ -84,16 +106,13 @@ export default {
       @dismiss="isAlertDismissed = true"
       >{{ errorMessage }}</gl-alert
     >
-    <gl-form-checkbox v-model="keepLatestArtifact" @change="updateSetting"
-      ><b class="gl-mr-3">{{ __('Keep artifacts from most recent successful jobs') }}</b>
-      <gl-link :href="helpPagePath">{{ __('More information') }}</gl-link></gl-form-checkbox
-    >
-    <p>
-      {{
-        __(
-          'The latest artifacts created by jobs in the most recent successful pipeline will be stored.',
-        )
-      }}
-    </p>
+    <gl-form-checkbox
+      v-model="keepLatestArtifact"
+      :disabled="projectSettingDisabled"
+      @change="updateSetting"
+      ><strong class="gl-mr-3">{{ $options.i18n.checkboxText }}</strong>
+      <gl-link :href="helpPagePath">{{ $options.i18n.helpLinkText }}</gl-link>
+      <template v-if="!$apollo.loading" #help>{{ helpText }}</template>
+    </gl-form-checkbox>
   </div>
 </template>

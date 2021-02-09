@@ -87,7 +87,7 @@ module Gitlab
       end
 
       def validate_decompressed_archive_size
-        raise ImporterError.new(size_validator.error) unless size_validator.valid?
+        raise ImporterError.new(_('Decompressed archive size validation failed.')) unless size_validator.valid?
       end
 
       def size_validator

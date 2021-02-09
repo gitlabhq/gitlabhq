@@ -522,4 +522,4 @@ Read through the documentation on [LDAP users permissions](group/index.md#manage
 ## Project aliases
 
 Project aliases can only be read, created and deleted by a GitLab administrator.
-Read through the documentation on [Project aliases](../user/project/index.md#project-aliases) to learn more.
+Read through the documentation on [Project aliases](../user/project/import/index.md#project-aliases) to learn more.

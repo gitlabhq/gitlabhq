@@ -14,7 +14,7 @@ A repository is part of a [project](../index.md), which has a lot of other featu
 ## Create a repository
 
 To create a new repository, all you need to do is
-[create a new project](../../../gitlab-basics/create-project.md) or
+[create a new project](../../../user/project/working_with_projects.md#create-a-project) or
 [fork an existing project](forking_workflow.md).
 
 Once you create a new project, you can add new files via UI
@@ -269,6 +269,28 @@ By clicking the download icon, a dropdown will open with links to download the f
   `tar`, `tar.gz`, and `tar.bz2`.
 - **Artifacts:**
   allows users to download the artifacts of the latest CI build.
+
+## Redirects when changing repository paths
+
+When a repository path changes, it is essential to smoothly transition from the
+old location to the new one. GitLab provides two kinds of redirects: the web UI
+and Git push/pull redirects.
+
+Depending on the situation, different things apply.
+
+When [renaming a user](../../profile/index.md#changing-your-username),
+[changing a group path](../../group/index.md#changing-a-groups-path) or [renaming a repository](../settings/index.md#renaming-a-repository):
+
+- Existing web URLs for the namespace and anything under it (such as projects) will
+  redirect to the new URLs.
+- Starting with GitLab 10.3, existing Git remote URLs for projects under the
+  namespace redirect to the new remote URL. Every time you push/pull to a
+  repository that has changed its location, a warning message to update
+  your remote is displayed instead of rejecting your action.
+  This means that any automation scripts, or Git clients continue to
+  work after a rename, making any transition a lot smoother.
+- The redirects are available as long as the original path is not claimed by
+  another group, user or project.
 
 <!-- ## Troubleshooting
 

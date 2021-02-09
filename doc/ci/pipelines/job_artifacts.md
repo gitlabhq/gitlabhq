@@ -484,6 +484,9 @@ a project, you can disable this behavior to save space:
 1. Navigate to **Settings > CI/CD > Artifacts**.
 1. Uncheck **Keep artifacts from most recent successful jobs**.
 
+You can disable this behavior for all projects on a self-managed instance in the
+[instance's CI/CD settings](../../user/admin_area/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines). **(CORE ONLY)**
+
 When you disable the feature, the latest artifacts do not immediately expire.
 A new pipeline must run before the latest artifacts can expire and be deleted.
 

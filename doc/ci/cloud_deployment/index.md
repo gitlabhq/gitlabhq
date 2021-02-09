@@ -299,7 +299,7 @@ include:
   - template: Auto-DevOps.gitlab-ci.yml
 
 variables:
-  - AUTO_DEVOPS_PLATFORM_TARGET: EC2
+  AUTO_DEVOPS_PLATFORM_TARGET: EC2
 
 build_artifact:
   stage: build

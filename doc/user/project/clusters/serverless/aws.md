@@ -25,7 +25,7 @@ Additionally, in the [How To section](#how-to), you can read about different use
 - Working with secrets.
 - Setting up CORS.
 
-Alternatively, you can quickly [create a new project with a template](../../../../gitlab-basics/create-project.md#project-templates). The [`Serverless Framework/JS` template](https://gitlab.com/gitlab-org/project-templates/serverless-framework/) already includes all parts described below.
+Alternatively, you can quickly [create a new project with a template](../../working_with_projects.md#create-a-project). The [`Serverless Framework/JS` template](https://gitlab.com/gitlab-org/project-templates/serverless-framework/) already includes all parts described below.
 
 ### Example
 
@@ -290,7 +290,7 @@ The example code is available:
 - As a [clonable repository](https://gitlab.com/gitlab-org/serverless/examples/serverless-framework-js).
 - In a version with [tests and secret variables](https://gitlab.com/gitlab-org/project-templates/serverless-framework/).
 
-You can also use a [template](../../../../gitlab-basics/create-project.md#project-templates)
+You can also use a [template](../../working_with_projects.md#project-templates)
 (based on the version with tests and secret variables) from within the GitLab UI (see
 the `Serverless Framework/JS` template).
 

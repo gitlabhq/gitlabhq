@@ -10,8 +10,7 @@ module API
 
     helpers do
       def current_settings
-        @current_setting ||=
-          (ApplicationSetting.current_without_cache || ApplicationSetting.create_from_defaults)
+        @current_setting ||= ApplicationSetting.find_or_create_without_cache
       end
 
       def filter_attributes_using_license(attrs)

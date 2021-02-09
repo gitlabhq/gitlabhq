@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'CiCdSettingsUpdate' do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, ci_keep_latest_artifact: true) }
+  let_it_be(:project) { create(:project, keep_latest_artifact: true) }
   let(:variables) { { full_path: project.full_path, keep_latest_artifact: false } }
   let(:mutation) { graphql_mutation(:ci_cd_settings_update, variables) }
 
@@ -42,7 +42,7 @@ RSpec.describe 'CiCdSettingsUpdate' do
       project.reload
 
       expect(response).to have_gitlab_http_status(:success)
-      expect(project.ci_keep_latest_artifact).to eq(false)
+      expect(project.keep_latest_artifact).to eq(false)
     end
 
     context 'when bad arguments are provided' do
