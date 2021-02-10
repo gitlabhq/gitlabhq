@@ -209,6 +209,7 @@ RSpec.describe PlanLimits do
         ci_pipeline_size
         ci_active_jobs
         storage_size_limit
+        daily_invites
       ] + disabled_max_artifact_size_columns
     end
 

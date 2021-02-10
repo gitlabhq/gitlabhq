@@ -1762,6 +1762,9 @@ msgstr ""
 msgid "AddContextCommits|Add/remove"
 msgstr ""
 
+msgid "AddMember|Invite limit of %{daily_invites} per day exceeded"
+msgstr ""
+
 msgid "AddMember|No users specified."
 msgstr ""
 

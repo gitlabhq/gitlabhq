@@ -2,12 +2,12 @@
 
 module Members
   class CreateService < Members::BaseService
+    include Gitlab::Utils::StrongMemoize
+
     DEFAULT_LIMIT = 100
 
     def execute(source)
-      return error(s_('AddMember|No users specified.')) if params[:user_ids].blank?
-
-      user_ids = params[:user_ids].split(',').uniq.flatten
+      return error(s_('AddMember|No users specified.')) if user_ids.blank?
 
       return error(s_("AddMember|Too many users specified (limit is %{user_limit})") % { user_limit: user_limit }) if
         user_limit && user_ids.size > user_limit
@@ -44,6 +44,13 @@ module Members
     end
 
     private
+
+    def user_ids
+      strong_memoize(:user_ids) do
+        ids = params[:user_ids] || ''
+        ids.split(',').uniq.flatten
+      end
+    end
 
     def user_limit
       limit = params.fetch(:limit, DEFAULT_LIMIT)

@@ -96,6 +96,13 @@ Read more on the [Rack Attack initializer](../security/rack_attack.md) method of
 
 - **Default rate limit** - Disabled
 
+### Member Invitations
+
+Limit the maximum daily member invitations allowed per group hierarchy.
+
+- GitLab.com: Free members may invite 20 members per day.
+- Self-managed: Invites are not limited.
+
 ## Gitaly concurrency limit
 
 Clone traffic can put a large strain on your Gitaly service. To prevent such workloads from overwhelming your Gitaly server, you can set concurrency limits in Gitaly’s configuration file.
