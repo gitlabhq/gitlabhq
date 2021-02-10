@@ -269,6 +269,7 @@ module API
       mount ::API::RemoteMirrors
       mount ::API::Repositories
       mount ::API::ResourceAccessTokens
+      mount ::API::RubygemPackages
       mount ::API::Search
       mount ::API::Services
       mount ::API::Settings

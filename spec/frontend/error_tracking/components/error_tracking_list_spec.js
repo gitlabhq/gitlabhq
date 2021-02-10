@@ -298,9 +298,7 @@ describe('ErrorTrackingList', () => {
     });
 
     it('shows empty state', () => {
-      expect(wrapper.find('a').attributes('href')).toBe(
-        '/help/user/project/operations/error_tracking.html',
-      );
+      expect(wrapper.find(GlEmptyState).isVisible()).toBe(true);
     });
   });
 

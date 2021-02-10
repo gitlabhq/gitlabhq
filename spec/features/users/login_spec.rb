@@ -765,7 +765,7 @@ RSpec.describe 'Login' do
           click_link 'Proceed'
 
           expect(current_path).to eq(profile_account_path)
-          expect(page).to have_content('Congratulations! You have enabled Two-factor Authentication!')
+          expect(page).to have_content('You have set up 2FA for your account! If you lose access to your 2FA device, you can use your recovery codes to access your account. Alternatively, if you upload an SSH key, you can use that key to generate additional recovery codes.')
         end
       end
 

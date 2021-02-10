@@ -69,7 +69,7 @@ describe('CompareDropdownLayout', () => {
       expect(findListItemsData()).toEqual([
         {
           href: 'version/1',
-          text: 'version 1 (base) abcdef1 1 commit 2 years ago',
+          text: 'version 1 (base) abcdef1 1 commit 1 year ago',
           createdAt: TEST_CREATED_AT,
           isActive: true,
         },

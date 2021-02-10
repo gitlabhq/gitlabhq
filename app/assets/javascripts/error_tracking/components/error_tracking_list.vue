@@ -15,6 +15,7 @@ import {
   GlPagination,
 } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import AccessorUtils from '~/lib/utils/accessor';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { __ } from '~/locale';
@@ -137,6 +138,9 @@ export default {
     ]),
     paginationRequired() {
       return !isEmpty(this.pagination);
+    },
+    errorTrackingHelpUrl() {
+      return helpPagePath('operations/error_tracking');
     },
   },
   watch: {
@@ -404,7 +408,7 @@ export default {
         <template #description>
           <div>
             <span>{{ __('Monitor your errors by integrating with Sentry.') }}</span>
-            <gl-link target="_blank" href="/help/user/project/operations/error_tracking.html">{{
+            <gl-link target="_blank" :href="errorTrackingHelpUrl">{{
               __('More information')
             }}</gl-link>
           </div>

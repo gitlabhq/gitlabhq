@@ -1,4 +1,4 @@
-# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/license_compliance/
+# Read more about this feature here: https://docs.gitlab.com/ee/user/compliance/license_compliance/index.html
 #
 # Configure the scanning tool through the environment variables.
 # List of the variables: https://gitlab.com/gitlab-org/security-products/analyzers/license-finder#settings

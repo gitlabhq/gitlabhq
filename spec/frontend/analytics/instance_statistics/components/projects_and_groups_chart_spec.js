@@ -3,7 +3,6 @@ import { GlLineChart } from '@gitlab/ui/dist/charts';
 import { GlAlert } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { useFakeDate } from 'helpers/fake_date';
 import ProjectsAndGroupChart from '~/analytics/instance_statistics/components/projects_and_groups_chart.vue';
 import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';
 import projectsQuery from '~/analytics/instance_statistics/graphql/queries/projects.query.graphql';
@@ -45,8 +44,8 @@ describe('ProjectsAndGroupChart', () => {
 
     return shallowMount(ProjectsAndGroupChart, {
       props: {
-        startDate: useFakeDate(2020, 9, 26),
-        endDate: useFakeDate(2020, 10, 1),
+        startDate: new Date(2020, 9, 26),
+        endDate: new Date(2020, 10, 1),
         totalDataPoints: mockCountsData2.length,
       },
       localVue,

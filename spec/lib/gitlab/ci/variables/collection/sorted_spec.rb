@@ -5,8 +5,11 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Variables::Collection::Sorted do
   describe '#errors' do
     context 'when FF :variable_inside_variable is disabled' do
+      let_it_be(:project_with_flag_disabled) { create(:project) }
+      let_it_be(:project_with_flag_enabled) { create(:project) }
+
       before do
-        stub_feature_flags(variable_inside_variable: false)
+        stub_feature_flags(variable_inside_variable: [project_with_flag_enabled])
       end
 
       context 'table tests' do
@@ -53,7 +56,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Sorted do
         end
 
         with_them do
-          subject { Gitlab::Ci::Variables::Collection::Sorted.new(variables) }
+          subject { Gitlab::Ci::Variables::Collection::Sorted.new(variables, project_with_flag_disabled) }
 
           it 'does not report error' do
             expect(subject.errors).to eq(nil)
@@ -67,8 +70,11 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Sorted do
     end
 
     context 'when FF :variable_inside_variable is enabled' do
+      let_it_be(:project_with_flag_disabled) { create(:project) }
+      let_it_be(:project_with_flag_enabled) { create(:project) }
+
       before do
-        stub_feature_flags(variable_inside_variable: true)
+        stub_feature_flags(variable_inside_variable: [project_with_flag_enabled])
       end
 
       context 'table tests' do
@@ -100,7 +106,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Sorted do
         end
 
         with_them do
-          subject { Gitlab::Ci::Variables::Collection::Sorted.new(variables) }
+          subject { Gitlab::Ci::Variables::Collection::Sorted.new(variables, project_with_flag_enabled) }
 
           it 'errors matches expected validation result' do
             expect(subject.errors).to eq(validation_result)
@@ -164,7 +170,8 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Sorted do
         end
 
         with_them do
-          subject { Gitlab::Ci::Variables::Collection::Sorted.new(variables) }
+          let_it_be(:project) { create(:project) }
+          subject { Gitlab::Ci::Variables::Collection::Sorted.new(variables, project) }
 
           it 'does not expand variables' do
             expect(subject.sort).to eq(variables)
@@ -239,7 +246,8 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Sorted do
         end
 
         with_them do
-          subject { Gitlab::Ci::Variables::Collection::Sorted.new(variables) }
+          let_it_be(:project) { create(:project) }
+          subject { Gitlab::Ci::Variables::Collection::Sorted.new(variables, project) }
 
           it 'sort returns correctly sorted variables' do
             expect(subject.sort.map { |var| var[:key] }).to eq(result)

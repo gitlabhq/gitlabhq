@@ -1,0 +1,8 @@
+---
+name: rubygem_packages
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52147
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/299383
+milestone: '13.9'
+type: development
+group: group::package
+default_enabled: false

@@ -655,15 +655,41 @@ Non-determinism is the breeding ground for flaky and brittle specs. Such specs e
 
 ### Faking `Date` for determinism
 
-Consider using `useFakeDate` to ensure a consistent value is returned with every `new Date()` or `Date.now()`.
+`Date` is faked by default in our Jest environment. This means every call to `Date()` or `Date.now()` returns a fixed deterministic value.
+
+If you really need to change the default fake date, you can call `useFakeDate` within any `describe` block, and
+the date will be replaced for that specs within that `describe` context only:
 
 ```javascript
 import { useFakeDate } from 'helpers/fake_date';
 
 describe('cool/component', () => {
-  useFakeDate();
+  // Default fake `Date`
+  const TODAY = new Date();
 
-  // ...
+  // NOTE: `useFakeDate` cannot be called during test execution (i.e. inside `it`, `beforeEach`, `beforeAll`, etc.).
+  describe("on Ada Lovelace's Birthday", () => {
+    useFakeDate(1815, 11, 10)
+
+    it('Date is no longer default', () => {
+      expect(new Date()).not.toEqual(TODAY);
+    });
+  });
+
+  it('Date is still default in this scope', () => {
+    expect(new Date()).toEqual(TODAY)
+  });
+})
+```
+
+Similarly, if you really need to use the real `Date` class, then you can import and call `useRealDate` within any `describe` block:
+
+```javascript
+import { useRealDate } from 'helpers/fake_date';
+
+// NOTE: `useRealDate` cannot be called during test execution (i.e. inside `it`, `beforeEach`, `beforeAll`, etc.). 
+describe('with real date', () => {
+  useRealDate();
 });
 ```
 

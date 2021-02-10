@@ -3,6 +3,7 @@ import 'jquery';
 
 import * as jqueryMatchers from 'custom-jquery-matchers';
 import { config as testUtilsConfig } from '@vue/test-utils';
+import { setGlobalDateToFakeDate } from 'helpers/fake_date';
 import Translate from '~/vue_shared/translate';
 import { initializeTestTimeout } from './__helpers__/timeout';
 import { getJSONFixture, loadHTMLFixture, setHTMLFixture } from './__helpers__/fixtures';
@@ -19,6 +20,10 @@ jest.mock('@gitlab/favicon-overlay');
 process.on('unhandledRejection', global.promiseRejectionHandler);
 
 setupManualMocks();
+
+// Fake the `Date` for the rest of the jest spec runtime environment.
+// https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39496#note_503084332
+setGlobalDateToFakeDate();
 
 afterEach(() =>
   // give Promises a bit more time so they fail the right test

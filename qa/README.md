@@ -216,7 +216,7 @@ run all the tests in the `Test::Instance::All` scenario, and then enable the
 feature flag again if it was enabled earlier.
 
 Note: the QA framework doesn't currently allow you to easily toggle a feature
-flag during a single test, [as you can in unit tests](https://docs.gitlab.com/ee/development/feature_flags.html#specs),
+flag during a single test, [as you can in unit tests](https://docs.gitlab.com/ee/development/feature_flags/index.html),
 but [that capability is planned](https://gitlab.com/gitlab-org/quality/team-tasks/issues/77).
 
 Note also that the `--` separator isn't used because `--enable-feature` and `--disable-feature`

@@ -33,6 +33,7 @@ module Gitlab
       gon.suggested_label_colors = LabelsHelper.suggested_colors
       gon.first_day_of_week      = current_user&.first_day_of_week || Gitlab::CurrentSettings.first_day_of_week
       gon.ee                     = Gitlab.ee?
+      gon.dot_com                = Gitlab.com?
 
       if current_user
         gon.current_user_id = current_user.id

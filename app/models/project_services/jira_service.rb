@@ -159,7 +159,10 @@ class JiraService < IssueTrackerService
     # support any events.
   end
 
-  def find_issue(issue_key, options = {})
+  def find_issue(issue_key, rendered_fields: false)
+    options = {}
+    options = options.merge(expand: 'renderedFields') if rendered_fields
+
     jira_request { client.Issue.find(issue_key, options) }
   end
 

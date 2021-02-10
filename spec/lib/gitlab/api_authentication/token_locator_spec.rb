@@ -51,5 +51,26 @@ RSpec.describe Gitlab::APIAuthentication::TokenLocator do
         end
       end
     end
+
+    context 'with :http_token' do
+      let(:type) { :http_token }
+
+      context 'without credentials' do
+        let(:request) { double(headers: {}) }
+
+        it 'returns nil' do
+          expect(subject).to be(nil)
+        end
+      end
+
+      context 'with credentials' do
+        let(:password) { 'bar' }
+        let(:request) { double(headers: { "Authorization" => password }) }
+
+        it 'returns the credentials' do
+          expect(subject.password).to eq(password)
+        end
+      end
+    end
   end
 end

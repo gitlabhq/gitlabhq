@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlLink, GlLabel, GlIcon, GlFormCheckbox } from '@gitlab/ui';
-
+import { useFakeDate } from 'helpers/fake_date';
 import IssuableItem from '~/issuable_list/components/issuable_item.vue';
 import IssuableAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
 
@@ -19,6 +19,9 @@ const createComponent = ({ issuableSymbol = '#', issuable = mockIssuable, slots 
   });
 
 describe('IssuableItem', () => {
+  // The mock data is dependent that this is after our default date
+  useFakeDate(2020, 11, 11);
+
   const mockLabels = mockIssuable.labels.nodes;
   const mockAuthor = mockIssuable.author;
   const originalUrl = gon.gitlab_url;

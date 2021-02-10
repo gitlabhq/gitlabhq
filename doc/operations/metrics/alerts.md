@@ -110,6 +110,14 @@ values extracted from the [`alerts` field in webhook payload](https://prometheus
   - `full_query`: Alert query extracted from the payload's `generatorURL` field
   - Optional list of attached annotations extracted from `annotations/*`
 - Alert [GFM](../../user/markdown.md): GitLab Flavored Markdown from the payload's `annotations/gitlab_incident_markdown` field.
+- Alert Severity (introduced in GitLab version [13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50871):
+  Extracted from the alert payload field `labels/severity`. Maps case-insensitive
+  value to [Alert's severity](../incident_management/alerts.md#alert-severity):
+  - **Critical**: `critical`, `s1`, `p1`, `emergency`, `fatal`, or any value not in this list
+  - **High**: `high`, `s2`, `p2`, `major`, `page`
+  - **Medium**: `medium`, `s3`, `p3`, `error`, `alert`
+  - **Low**: `low`, `s4`, `p4`, `warn`, `warning`
+  - **Info**: `info`, `s5`, `p5`, `debug`, `information`, `notice`
 
 When GitLab receives a **Recovery Alert**, it closes the associated issue.
 This action is recorded as a system message on the issue indicating that it

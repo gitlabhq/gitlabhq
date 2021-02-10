@@ -463,7 +463,7 @@ RSpec.describe JiraService do
       let(:issue_url) { "#{url}/rest/api/2/issue/#{issue_key}?expand=renderedFields" }
 
       it 'calls the Jira API with the options to get the issue' do
-        jira_service.find_issue(issue_key, { expand: 'renderedFields' })
+        jira_service.find_issue(issue_key, rendered_fields: true)
 
         expect(WebMock).to have_requested(:get, issue_url)
       end

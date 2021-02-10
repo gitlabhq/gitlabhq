@@ -17,7 +17,7 @@ RSpec.describe Ci::BuildRunnerPresenter do
 
   describe '#artifacts' do
     context "when option contains archive-type artifacts" do
-      let(:build) { create(:ci_build, options: { artifacts: archive } ) }
+      let(:build) { create(:ci_build, options: { artifacts: archive }) }
 
       it 'presents correct hash' do
         expect(presenter.artifacts.first).to include(archive_expectation)
@@ -249,7 +249,7 @@ RSpec.describe Ci::BuildRunnerPresenter do
 
         it 'returns the correct refspecs' do
           is_expected.to contain_exactly("+#{pipeline.sha}:refs/pipelines/#{pipeline.id}",
-                                          "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}")
+                                         "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}")
         end
       end
     end

@@ -73,7 +73,7 @@ Consider adding checkboxes and expectations of users with certain levels of memb
 
  See the Feature Change Documentation Workflow https://docs.gitlab.com/ee/development/documentation/workflow.html#for-a-product-change
 
-* Add all known Documentation Requirements in this section. See https://docs.gitlab.com/ee/development/documentation/feature-change-workflow.html#documentation-requirements
+* Add all known Documentation Requirements in this section. See https://docs.gitlab.com/ee/development/documentation/workflow.html
 * If this feature requires changing permissions, update the permissions document. See https://docs.gitlab.com/ee/user/permissions.html 
 
 ### Availability & Testing

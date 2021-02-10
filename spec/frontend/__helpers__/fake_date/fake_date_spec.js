@@ -1,15 +1,11 @@
-import { createFakeDateClass, DEFAULT_ARGS, useRealDate } from './fake_date';
+import { createFakeDateClass } from './fake_date';
 
 describe('spec/helpers/fake_date', () => {
   describe('createFakeDateClass', () => {
     let FakeDate;
 
-    beforeAll(() => {
-      useRealDate();
-    });
-
     beforeEach(() => {
-      FakeDate = createFakeDateClass(DEFAULT_ARGS);
+      FakeDate = createFakeDateClass();
     });
 
     it('should use default args', () => {
