@@ -557,21 +557,31 @@ RSpec.describe SearchHelper do
   describe '#search_sort_options' do
     let(:user) { create(:user) }
 
-    mock_created_sort = {
-      title: _('Created date'),
-      sortable: true,
-      sortParam: {
-        asc: 'created_asc',
-        desc: 'created_desc'
+    mock_created_sort = [
+      {
+        title: _('Created date'),
+        sortable: true,
+        sortParam: {
+          asc: 'created_asc',
+          desc: 'created_desc'
+        }
+      },
+      {
+        title: _('Last updated'),
+        sortable: true,
+        sortParam: {
+          asc: 'updated_asc',
+          desc: 'updated_desc'
+        }
       }
-    }
+    ]
 
     before do
       allow(self).to receive(:current_user).and_return(user)
     end
 
     it 'returns the correct data' do
-      expect(search_sort_options).to eq([mock_created_sort])
+      expect(search_sort_options).to eq(mock_created_sort)
     end
   end
 

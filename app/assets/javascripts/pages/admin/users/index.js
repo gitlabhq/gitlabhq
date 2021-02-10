@@ -34,6 +34,8 @@ function loadModalsConfigurationFromHtml(modalsElement) {
 document.addEventListener('DOMContentLoaded', () => {
   Vue.use(Translate);
 
+  initAdminUsersApp();
+
   const modalConfiguration = loadModalsConfigurationFromHtml(
     document.querySelector(MODAL_TEXTS_CONTAINER_SELECTOR),
   );
@@ -60,7 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   initConfirmModal();
-  initAdminUsersApp();
   initCohortsEmptyState();
   initTabs();
 });

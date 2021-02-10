@@ -3,6 +3,7 @@ import { GlIcon, GlButton, GlTooltipDirective, GlAvatarLink, GlAvatarLabeled } f
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { isExternal } from '~/lib/utils/url_utility';
 
 export default {
   components: {
@@ -48,6 +49,9 @@ export default {
   computed: {
     authorId() {
       return getIdFromGraphQLId(`${this.author.id}`);
+    },
+    isAuthorExternal() {
+      return isExternal(this.author.webUrl);
     },
   },
   mounted() {
@@ -98,7 +102,11 @@ export default {
             :src="author.avatarUrl"
             :label="author.name"
             class="d-none d-sm-inline-flex gl-ml-1"
-          />
+          >
+            <template #meta>
+              <gl-icon v-if="isAuthorExternal" name="external-link" />
+            </template>
+          </gl-avatar-labeled>
           <strong class="author d-sm-none d-inline">@{{ author.username }}</strong>
         </gl-avatar-link>
       </div>

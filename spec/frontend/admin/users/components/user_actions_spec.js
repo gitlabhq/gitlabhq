@@ -2,14 +2,12 @@ import { shallowMount } from '@vue/test-utils';
 import { GlDropdownDivider } from '@gitlab/ui';
 import AdminUserActions from '~/admin/users/components/user_actions.vue';
 import { generateUserPaths } from '~/admin/users/utils';
+import { I18N_USER_ACTIONS } from '~/admin/users/constants';
+import Actions from '~/admin/users/components/actions';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
 import { users, paths } from '../mock_data';
-
-const BLOCK = 'block';
-const EDIT = 'edit';
-const LDAP = 'ldapBlocked';
-const DELETE = 'delete';
-const DELETE_WITH_CONTRIBUTIONS = 'deleteWithContributions';
+import { CONFIRMATION_ACTIONS, DELETE_ACTIONS, LINK_ACTIONS, LDAP, EDIT } from '../constants';
 
 describe('AdminUserActions component', () => {
   let wrapper;
@@ -62,7 +60,7 @@ describe('AdminUserActions component', () => {
 
   describe('actions dropdown', () => {
     describe('when there are actions', () => {
-      const actions = [EDIT, BLOCK];
+      const actions = [EDIT, ...LINK_ACTIONS];
 
       beforeEach(() => {
         initComponent({ actions });
@@ -72,10 +70,31 @@ describe('AdminUserActions component', () => {
         expect(findActionsDropdown().exists()).toBe(true);
       });
 
-      it.each(actions)('renders a dropdown item for %s', (action) => {
-        const dropdownAction = wrapper.find(`[data-testid="${action}"]`);
-        expect(dropdownAction.exists()).toBe(true);
-        expect(dropdownAction.attributes('href')).toBe(userPaths[action]);
+      describe('when there are actions that should render as links', () => {
+        beforeEach(() => {
+          initComponent({ actions: LINK_ACTIONS });
+        });
+
+        it.each(LINK_ACTIONS)('renders an action component item for "%s"', (action) => {
+          const component = wrapper.find(Actions[capitalizeFirstCharacter(action)]);
+
+          expect(component.props('path')).toBe(userPaths[action]);
+          expect(component.text()).toBe(I18N_USER_ACTIONS[action]);
+        });
+      });
+
+      describe('when there are actions that require confirmation', () => {
+        beforeEach(() => {
+          initComponent({ actions: CONFIRMATION_ACTIONS });
+        });
+
+        it.each(CONFIRMATION_ACTIONS)('renders an action component item for "%s"', (action) => {
+          const component = wrapper.find(Actions[capitalizeFirstCharacter(action)]);
+
+          expect(component.props('username')).toBe(user.name);
+          expect(component.props('path')).toBe(userPaths[action]);
+          expect(component.text()).toBe(I18N_USER_ACTIONS[action]);
+        });
       });
 
       describe('when there is a LDAP action', () => {
@@ -87,14 +106,13 @@ describe('AdminUserActions component', () => {
           const dropdownAction = wrapper.find(`[data-testid="${LDAP}"]`);
           expect(dropdownAction.exists()).toBe(true);
           expect(dropdownAction.attributes('href')).toBe(undefined);
+          expect(dropdownAction.text()).toBe(I18N_USER_ACTIONS[LDAP]);
         });
       });
 
       describe('when there is a delete action', () => {
-        const deleteActions = [DELETE, DELETE_WITH_CONTRIBUTIONS];
-
         beforeEach(() => {
-          initComponent({ actions: [BLOCK, ...deleteActions] });
+          initComponent({ actions: [LDAP, ...DELETE_ACTIONS] });
         });
 
         it('renders a dropdown divider', () => {
@@ -103,13 +121,15 @@ describe('AdminUserActions component', () => {
 
         it('only renders delete dropdown items for actions containing the word "delete"', () => {
           const { length } = wrapper.findAll(`[data-testid*="delete-"]`);
-          expect(length).toBe(deleteActions.length);
+          expect(length).toBe(DELETE_ACTIONS.length);
         });
 
-        it.each(deleteActions)('renders a delete dropdown item for %s', (action) => {
-          const deleteAction = wrapper.find(`[data-testid="delete-${action}"]`);
-          expect(deleteAction.exists()).toBe(true);
-          expect(deleteAction.attributes('href')).toBe(userPaths[action]);
+        it.each(DELETE_ACTIONS)('renders a delete action component item for "%s"', (action) => {
+          const component = wrapper.find(Actions[capitalizeFirstCharacter(action)]);
+
+          expect(component.props('username')).toBe(user.name);
+          expect(component.props('paths')).toEqual(userPaths);
+          expect(component.text()).toBe(I18N_USER_ACTIONS[action]);
         });
       });
 

@@ -51,7 +51,7 @@ export default {
       v-gl-tooltip
       :href="job.status.details_path"
       :title="tooltipText"
-      class="js-job-link d-flex"
+      class="js-job-link gl-display-flex gl-align-items-center"
     >
       <gl-icon
         v-if="isActive"

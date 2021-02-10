@@ -310,6 +310,20 @@ export function isAbsoluteOrRootRelative(url) {
 }
 
 /**
+ * Returns true if url is an external URL
+ *
+ * @param {String} url
+ * @returns {Boolean}
+ */
+export function isExternal(url) {
+  if (isRootRelative(url)) {
+    return false;
+  }
+
+  return !url.includes(gon.gitlab_url);
+}
+
+/**
  * Converts a relative path to an absolute or a root relative path depending
  * on what is passed as a basePath.
  *

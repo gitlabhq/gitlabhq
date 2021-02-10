@@ -86,11 +86,15 @@ module Peek
         uri.hostname = call[:host]
         uri.port = call[:port]
         uri.path = call[:path]
-        uri.query = call[:query]
+        uri.query = generate_query(call[:query])
 
         uri.to_s
-      rescue URI::Error
+      rescue StandardError
         'unknown'
+      end
+
+      def generate_query(query_string)
+        query_string.is_a?(Hash) ? query_string.to_query : query_string.to_s
       end
     end
   end

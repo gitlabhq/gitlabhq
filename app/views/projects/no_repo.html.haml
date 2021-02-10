@@ -15,14 +15,14 @@
 = render 'projects/invite_members_modal', project: @project
 
 .no-repo-actions
-  = link_to project_repository_path(@project), method: :post, class: 'btn btn-primary' do
+  = link_to project_repository_path(@project), method: :post, class: 'btn gl-button btn-confirm' do
     #{ _('Create empty repository') }
 
   %strong.gl-ml-3.gl-mr-3 or
 
-  = link_to new_project_import_path(@project), class: 'btn' do
+  = link_to new_project_import_path(@project), class: 'btn gl-button btn-default' do
     #{ _('Import repository') }
 
 - if can? current_user, :remove_project, @project
   .prepend-top-20
-    = link_to _('Delete project'), project_path(@project), data: { confirm: remove_project_message(@project)}, method: :delete, class: "gl-button btn btn-danger btn-danger-secondary float-right"
+    = link_to _('Delete project'), project_path(@project), data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn gl-button btn-danger float-right"

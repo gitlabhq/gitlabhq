@@ -2,6 +2,7 @@
 
 # PagesDeployment stores a zip archive containing GitLab Pages web-site
 class PagesDeployment < ApplicationRecord
+  include EachBatch
   include FileStoreMounter
 
   MIGRATED_FILE_NAME = "_migrated.zip"

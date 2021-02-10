@@ -136,6 +136,10 @@ module Gitlab
         scope.reorder('created_at ASC')
       when :created_at_desc
         scope.reorder('created_at DESC')
+      when :updated_at_asc
+        scope.reorder('updated_at ASC')
+      when :updated_at_desc
+        scope.reorder('updated_at DESC')
       else
         scope.reorder('created_at DESC')
       end

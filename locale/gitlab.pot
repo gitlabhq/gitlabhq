@@ -2376,6 +2376,12 @@ msgstr ""
 msgid "AdminUsers|Unblock user %{username}?"
 msgstr ""
 
+msgid "AdminUsers|Unlock"
+msgstr ""
+
+msgid "AdminUsers|Unlock user %{username}?"
+msgstr ""
+
 msgid "AdminUsers|User will not be able to access git repositories"
 msgstr ""
 
@@ -34147,6 +34153,9 @@ msgid "ciReport|Coverage Fuzzing"
 msgstr ""
 
 msgid "ciReport|Coverage fuzzing"
+msgstr ""
+
+msgid "ciReport|Create Jira issue"
 msgstr ""
 
 msgid "ciReport|Create a merge request to implement this solution, or download and apply the patch manually."

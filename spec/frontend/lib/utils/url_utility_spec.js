@@ -492,6 +492,28 @@ describe('URL utility', () => {
     });
   });
 
+  describe('isExternal', () => {
+    const gitlabUrl = 'https://gitlab.com/';
+
+    beforeEach(() => {
+      gon.gitlab_url = gitlabUrl;
+    });
+
+    afterEach(() => {
+      gon.gitlab_url = '';
+    });
+
+    it.each`
+      url                                        | urlType                    | external
+      ${'/gitlab-org/gitlab-test/-/issues/2'}    | ${'relative'}              | ${false}
+      ${gitlabUrl}                               | ${'absolute and internal'} | ${false}
+      ${`${gitlabUrl}/gitlab-org/gitlab-test`}   | ${'absolute and internal'} | ${false}
+      ${'http://jira.atlassian.net/browse/IG-1'} | ${'absolute and external'} | ${true}
+    `('returns $external for $url ($urlType)', ({ url, external }) => {
+      expect(urlUtils.isExternal(url)).toBe(external);
+    });
+  });
+
   describe('isBase64DataUrl', () => {
     it.each`
       url                                                      | valid

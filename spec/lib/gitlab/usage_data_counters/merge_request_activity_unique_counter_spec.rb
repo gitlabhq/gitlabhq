@@ -228,4 +228,28 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
       let(:action) { described_class::MR_REVIEW_REQUESTED_USERS_ACTION }
     end
   end
+
+  describe '.track_approval_rule_added_action' do
+    subject { described_class.track_approval_rule_added_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_APPROVAL_RULE_ADDED_USERS_ACTION }
+    end
+  end
+
+  describe '.track_approval_rule_edited_action' do
+    subject { described_class.track_approval_rule_edited_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_APPROVAL_RULE_EDITED_USERS_ACTION }
+    end
+  end
+
+  describe '.track_approval_rule_deleted_action' do
+    subject { described_class.track_approval_rule_deleted_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_APPROVAL_RULE_DELETED_USERS_ACTION }
+    end
+  end
 end

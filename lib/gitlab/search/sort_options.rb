@@ -11,6 +11,10 @@ module Gitlab
           :created_at_asc
         when %w[created_at desc], [nil, 'created_desc']
           :created_at_desc
+        when %w[updated_at asc], [nil, 'updated_asc']
+          :updated_at_asc
+        when %w[updated_at desc], [nil, 'updated_desc']
+          :updated_at_desc
         else
           :unknown
         end

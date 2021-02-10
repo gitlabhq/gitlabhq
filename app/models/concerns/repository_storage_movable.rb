@@ -68,6 +68,18 @@ module RepositoryStorageMovable
         storage_move.update_repository_storage(storage_move.destination_storage_name)
       end
 
+      after_transition started: :replicated do |storage_move|
+        # We have several scripts in place that replicate some statistics information
+        # to other databases. Some of them depend on the updated_at column
+        # to identify the models they need to extract.
+        #
+        # If we don't update the `updated_at` of the container after a repository storage move,
+        # the scripts won't know that they need to sync them.
+        #
+        # See https://gitlab.com/gitlab-data/analytics/-/issues/7868
+        storage_move.container.touch
+      end
+
       before_transition started: :failed do |storage_move|
         storage_move.container.set_repository_writable!
       end

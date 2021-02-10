@@ -6,9 +6,11 @@ import {
   GlDropdownSectionHeader,
   GlDropdownDivider,
 } from '@gitlab/ui';
-import { s__, __ } from '~/locale';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { convertArrayToCamelCase } from '~/lib/utils/common_utils';
 import { generateUserPaths } from '../utils';
+import { I18N_USER_ACTIONS } from '../constants';
+import Actions from './actions';
 
 export default {
   components: {
@@ -17,6 +19,7 @@ export default {
     GlDropdownItem,
     GlDropdownSectionHeader,
     GlDropdownDivider,
+    ...Actions,
   },
   props: {
     user: {
@@ -58,21 +61,11 @@ export default {
     isLdapAction(action) {
       return action === 'ldapBlocked';
     },
+    getActionComponent(action) {
+      return Actions[capitalizeFirstCharacter(action)];
+    },
   },
-  i18n: {
-    edit: __('Edit'),
-    settings: __('Settings'),
-    unlock: __('Unlock'),
-    block: s__('AdminUsers|Block'),
-    unblock: s__('AdminUsers|Unblock'),
-    approve: s__('AdminUsers|Approve'),
-    reject: s__('AdminUsers|Reject'),
-    deactivate: s__('AdminUsers|Deactivate'),
-    activate: s__('AdminUsers|Activate'),
-    ldapBlocked: s__('AdminUsers|Cannot unblock LDAP blocked users'),
-    delete: s__('AdminUsers|Delete user'),
-    deleteWithContributions: s__('AdminUsers|Delete user and contributions'),
-  },
+  i18n: I18N_USER_ACTIONS,
 };
 </script>
 
@@ -92,24 +85,35 @@ export default {
       <gl-dropdown-section-header>{{ $options.i18n.settings }}</gl-dropdown-section-header>
 
       <template v-for="action in dropdownSafeActions">
-        <gl-dropdown-item v-if="isLdapAction(action)" :key="action" :data-testid="action">
-          {{ $options.i18n.ldap }}
-        </gl-dropdown-item>
-        <gl-dropdown-item v-else :key="action" :href="userPaths[action]" :data-testid="action">
+        <component
+          :is="getActionComponent(action)"
+          v-if="getActionComponent(action)"
+          :key="action"
+          :path="userPaths[action]"
+          :username="user.name"
+          :data-testid="action"
+        >
+          {{ $options.i18n[action] }}
+        </component>
+        <gl-dropdown-item v-else-if="isLdapAction(action)" :key="action" :data-testid="action">
           {{ $options.i18n[action] }}
         </gl-dropdown-item>
       </template>
 
       <gl-dropdown-divider v-if="hasDeleteActions" />
 
-      <gl-dropdown-item
-        v-for="action in dropdownDeleteActions"
-        :key="action"
-        :href="userPaths[action]"
-        :data-testid="`delete-${action}`"
-      >
-        <span class="gl-text-red-500">{{ $options.i18n[action] }}</span>
-      </gl-dropdown-item>
+      <template v-for="action in dropdownDeleteActions">
+        <component
+          :is="getActionComponent(action)"
+          v-if="getActionComponent(action)"
+          :key="action"
+          :paths="userPaths"
+          :username="user.name"
+          :data-testid="`delete-${action}`"
+        >
+          {{ $options.i18n[action] }}
+        </component>
+      </template>
     </gl-dropdown>
   </div>
 </template>
