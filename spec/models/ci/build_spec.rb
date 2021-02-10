@@ -1860,7 +1860,7 @@ RSpec.describe Ci::Build do
     subject { build.artifacts_file_for_type(file_type) }
 
     it 'queries artifacts for type' do
-      expect(build).to receive_message_chain(:job_artifacts, :find_by).with(file_type: Ci::JobArtifact.file_types[file_type])
+      expect(build).to receive_message_chain(:job_artifacts, :find_by).with(file_type: [Ci::JobArtifact.file_types[file_type]])
 
       subject
     end

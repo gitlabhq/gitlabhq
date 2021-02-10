@@ -176,4 +176,77 @@ RSpec.describe CommitsHelper do
       expect(helper.commit_path(project, commit)).to eq(project_commit_path(project, commit))
     end
   end
+
+  describe "#conditionally_paginate_diff_files" do
+    let(:diffs_collection) { instance_double(Gitlab::Diff::FileCollection::Commit, diff_files: diff_files) }
+    let(:diff_files) { Gitlab::Git::DiffCollection.new(files) }
+    let(:page) { nil }
+
+    let(:files) do
+      Array.new(85).map do
+        { too_large: false, diff: "" }
+      end
+    end
+
+    let(:params) do
+      {
+        page: page
+      }
+    end
+
+    subject { helper.conditionally_paginate_diff_files(diffs_collection, paginate: paginate) }
+
+    before do
+      allow(helper).to receive(:params).and_return(params)
+    end
+
+    context "pagination is enabled" do
+      let(:paginate) { true }
+
+      it "has been paginated" do
+        expect(subject).to be_an(Array)
+      end
+
+      it "can change the number of items per page" do
+        commits = helper.conditionally_paginate_diff_files(diffs_collection, paginate: paginate, per: 10)
+
+        expect(commits).to be_an(Array)
+        expect(commits.size).to eq(10)
+      end
+
+      context "page 1" do
+        let(:page) { 1 }
+
+        it "has 20 diffs" do
+          expect(subject.size).to eq(75)
+        end
+      end
+
+      context "page 2" do
+        let(:page) { 2 }
+
+        it "has the remaining 10 diffs" do
+          expect(subject.size).to eq(10)
+        end
+      end
+    end
+
+    context "pagination is disabled" do
+      let(:paginate) { false }
+
+      it "returns a standard DiffCollection" do
+        expect(subject).to be_a(Gitlab::Git::DiffCollection)
+      end
+    end
+
+    context "feature flag is disabled" do
+      let(:paginate) { true }
+
+      it "returns a standard DiffCollection" do
+        stub_feature_flags(paginate_commit_view: false)
+
+        expect(subject).to be_a(Gitlab::Git::DiffCollection)
+      end
+    end
+  end
 end

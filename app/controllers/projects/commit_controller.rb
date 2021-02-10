@@ -23,6 +23,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   BRANCH_SEARCH_LIMIT = 1000
+  COMMIT_DIFFS_PER_PAGE = 75
 
   feature_category :source_code_management
 

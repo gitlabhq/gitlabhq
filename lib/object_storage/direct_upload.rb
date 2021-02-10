@@ -80,7 +80,7 @@ module ObjectStorage
           S3Config: {
             Bucket: bucket_name,
             Region: credentials[:region],
-            Endpoint: credentials[:endpoint],
+            Endpoint: config.s3_endpoint,
             PathStyle: config.use_path_style?,
             UseIamProfile: config.use_iam_profile?,
             ServerSideEncryption: config.server_side_encryption,
@@ -229,7 +229,7 @@ module ObjectStorage
     end
 
     def connection
-      @connection ||= ::Fog::Storage.new(credentials)
+      config.fog_connection
     end
   end
 end

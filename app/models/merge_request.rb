@@ -1554,6 +1554,26 @@ class MergeRequest < ApplicationRecord
     end || { status: :parsing }
   end
 
+  def has_sast_reports?
+    !!actual_head_pipeline&.has_reports?(::Ci::JobArtifact.sast_reports)
+  end
+
+  def has_secret_detection_reports?
+    !!actual_head_pipeline&.has_reports?(::Ci::JobArtifact.secret_detection_reports)
+  end
+
+  def compare_sast_reports(current_user)
+    return missing_report_error("SAST") unless has_sast_reports?
+
+    compare_reports(::Ci::CompareSecurityReportsService, current_user, 'sast')
+  end
+
+  def compare_secret_detection_reports(current_user)
+    return missing_report_error("secret detection") unless has_secret_detection_reports?
+
+    compare_reports(::Ci::CompareSecurityReportsService, current_user, 'secret_detection')
+  end
+
   def calculate_reactive_cache(identifier, current_user_id = nil, report_type = nil, *args)
     service_class = identifier.constantize
 
@@ -1799,7 +1819,18 @@ class MergeRequest < ApplicationRecord
     merge_request_reviewers.find_by(user_id: user.id)
   end
 
+  def enabled_reports
+    {
+      sast: report_type_enabled?(:sast),
+      secret_detection: report_type_enabled?(:secret_detection)
+    }
+  end
+
   private
+
+  def missing_report_error(report_type)
+    { status: :error, status_reason: "This merge request does not have #{report_type} reports" }
+  end
 
   def with_rebase_lock
     if Feature.enabled?(:merge_request_rebase_nowait_lock, default_enabled: true)
@@ -1841,6 +1872,10 @@ class MergeRequest < ApplicationRecord
 
     key = Gitlab::Routing.url_helpers.cached_widget_project_json_merge_request_path(project, self, format: :json)
     Gitlab::EtagCaching::Store.new.touch(key)
+  end
+
+  def report_type_enabled?(report_type)
+    !!actual_head_pipeline&.batch_lookup_report_artifact_for_file_type(report_type)
   end
 end
 

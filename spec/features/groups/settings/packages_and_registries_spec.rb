@@ -7,9 +7,11 @@ RSpec.describe 'Group Packages & Registries settings' do
 
   let(:user) { create(:user) }
   let(:group) { create(:group) }
+  let(:sub_group) { create(:group, parent: group) }
 
   before do
     group.add_owner(user)
+    sub_group.add_owner(user)
     sign_in(user)
   end
 
@@ -85,6 +87,18 @@ RSpec.describe 'Group Packages & Registries settings' do
 
       expect(page).to have_content('is an invalid regexp')
     end
+
+    context 'in a sub group' do
+      it 'works correctly', :js do
+        visit_sub_group_settings_page
+
+        expect(page).to have_content('Allow duplicates')
+
+        find('.gl-toggle').click
+
+        expect(page).to have_content('Do not allow duplicates')
+      end
+    end
   end
 
   def find_settings_menu
@@ -93,5 +107,9 @@ RSpec.describe 'Group Packages & Registries settings' do
 
   def visit_settings_page
     visit group_settings_packages_and_registries_path(group)
+  end
+
+  def visit_sub_group_settings_page
+    visit group_settings_packages_and_registries_path(sub_group)
   end
 end

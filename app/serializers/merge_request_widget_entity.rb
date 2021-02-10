@@ -133,6 +133,10 @@ class MergeRequestWidgetEntity < Grape::Entity
     help_page_path('user/application_security/index.md', anchor: 'viewing-security-scan-information-in-merge-requests')
   end
 
+  expose :enabled_reports do |merge_request|
+    merge_request.enabled_reports
+  end
+
   private
 
   delegate :current_user, to: :request

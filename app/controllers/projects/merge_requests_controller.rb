@@ -168,6 +168,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     }
   end
 
+  def sast_reports
+    reports_response(merge_request.compare_sast_reports(current_user), head_pipeline)
+  end
+
+  def secret_detection_reports
+    reports_response(merge_request.compare_secret_detection_reports(current_user), head_pipeline)
+  end
+
   def context_commits
     return render_404 unless project.context_commits_enabled?
 
