@@ -21,10 +21,13 @@ module Projects
     def execute
       return false unless can?(current_user, :remove_project, project)
 
+      project.update_attribute(:pending_delete, true)
       # Flush the cache for both repositories. This has to be done _before_
       # removing the physical repositories as some expiration code depends on
       # Git data (e.g. a list of branch names).
       flush_caches(project)
+
+      ::Ci::AbortProjectPipelinesService.new.execute(project)
 
       Projects::UnlinkForkService.new(project, current_user).execute
 
