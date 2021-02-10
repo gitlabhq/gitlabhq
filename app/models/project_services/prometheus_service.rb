@@ -183,7 +183,17 @@ class PrometheusService < MonitoringService
     manual_configuration? && google_iap_audience_client_id.present? && google_iap_service_account_json.present?
   end
 
+  def clean_google_iap_service_account
+    return unless google_iap_service_account_json
+
+    google_iap_service_account_json
+      .then { |json| Gitlab::Json.parse(json) }
+      .except('token_credential_uri')
+  end
+
   def iap_client
-    @iap_client ||= Google::Auth::Credentials.new(Gitlab::Json.parse(google_iap_service_account_json), target_audience: google_iap_audience_client_id).client
+    @iap_client ||= Google::Auth::Credentials
+      .new(clean_google_iap_service_account, target_audience: google_iap_audience_client_id)
+      .client
   end
 end
