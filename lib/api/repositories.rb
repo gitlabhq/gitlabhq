@@ -180,7 +180,7 @@ module API
           regexp: Gitlab::Regex.unbounded_semver_regex,
           desc: 'The version of the release, using the semantic versioning format'
 
-        requires :from,
+        optional :from,
           type: String,
           desc: 'The first commit in the range of commits to use for the changelog'
 

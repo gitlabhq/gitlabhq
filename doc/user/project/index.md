@@ -7,13 +7,13 @@ type: reference
 
 # Projects **(FREE)**
 
-In GitLab, you can create projects for hosting
-your codebase, use it as an issue tracker, collaborate on code, and continuously
-build, test, and deploy your app with built-in GitLab CI/CD.
+In GitLab, you can create projects to host
+your codebase. You can also use projects to track issues, plan work,
+collaborate on code, and continuously build, test, and use
+built-in CI/CD to deploy your app.
 
-Your projects can be [available](../../public_access/public_access.md)
-publicly, internally, or privately, at your choice. GitLab does not limit
-the number of private projects you create.
+Projects can be available [publicly, internally, or privately](../../public_access/public_access.md).
+GitLab does not limit the number of private projects you can create.
 
 ## Project features
 
@@ -21,46 +21,43 @@ Projects include the following [features](https://about.gitlab.com/features/):
 
 **Repositories:**
 
-- [Issue tracker](issues/index.md): Discuss implementations with your team in issues
-  - [Issue Boards](issue_board.md): Organize and prioritize your workflow
-  - [Multiple Issue Boards](issue_board.md#multiple-issue-boards): Allow your teams to create their own workflows (Issue Boards) for the same project
-- [Repositories](repository/index.md): Host your code in a fully
-  integrated platform
-  - [Branches](repository/branches/index.md): use Git branching strategies to
-  collaborate on code
+- [Issue tracker](issues/index.md): Discuss implementations with your team.
+  - [Issue Boards](issue_board.md): Organize and prioritize your workflow.
+  - [Multiple Issue Boards](issue_board.md#multiple-issue-boards): Create team-specific workflows (Issue Boards) for a project.
+- [Repositories](repository/index.md): Host your code in a fully-integrated platform.
+  - [Branches](repository/branches/index.md): Use Git branching strategies to
+  collaborate on code.
   - [Protected branches](protected_branches.md): Prevent collaborators
-  from messing with history or pushing code without review
-  - [Protected tags](protected_tags.md): Control over who has
-  permission to create tags, and prevent accidental update or deletion
+  from changing history or pushing code without review.
+  - [Protected tags](protected_tags.md): Control who has
+  permission to create tags and prevent accidental updates or deletions.
   - [Repository mirroring](repository/repository_mirroring.md)
-  - [Signing commits](repository/gpg_signed_commits/index.md): use GPG to sign your commits
-  - [Deploy tokens](deploy_tokens/index.md): Manage project-based deploy tokens that allow permanent access to the repository and Container Registry.
+  - [Signing commits](repository/gpg_signed_commits/index.md): Use GNU Privacy Guard (GPG) to sign your commits.
+  - [Deploy tokens](deploy_tokens/index.md): Manage access to the repository and Container Registry.
 - [Web IDE](web_ide/index.md)
 - [CVE ID Requests](../application_security/cve_id_request.md): Request a CVE identifier to track a
   vulnerability in your project.
 
 **Issues and merge requests:**
 
-- [Issue tracker](issues/index.md): Discuss implementations with your team in issues
-  - [Issue Boards](issue_board.md): Organize and prioritize your workflow
-  - [Multiple Issue Boards](issue_board.md#multiple-issue-boards): Allow your teams to create their own workflows (Issue Boards) for the same project
-- [Merge Requests](merge_requests/index.md): Apply your branching
-  strategy and get reviewed by your team
+- [Issue tracker](issues/index.md): Discuss implementations with your team.
+  - [Issue Boards](issue_board.md): Organize and prioritize your workflow.
+  - [Multiple Issue Boards](issue_board.md#multiple-issue-boards): Create team-specific workflows (Issue Boards) for a project.
+- [Merge Requests](merge_requests/index.md): Apply a branching
+  strategy and get reviewed by your team.
   - [Merge Request Approvals](merge_requests/merge_request_approvals.md): Ask for approval before
-  implementing a change
-  - [Fix merge conflicts from the UI](merge_requests/resolve_conflicts.md):
-  Your Git diff tool right from the GitLab UI
-  - [Review Apps](../../ci/review_apps/index.md): Live preview the results
-  of the changes proposed in a merge request in a per-branch basis
-- [Labels](labels.md): Organize issues and merge requests by labels
-- [Time Tracking](time_tracking.md): Track estimate time
-  and time spent on
-  the conclusion of an issue or merge request
-- [Milestones](milestones/index.md): Work towards a target date
+  implementing a change.
+  - [Fix merge conflicts from the UI](merge_requests/resolve_conflicts.md): View Git diffs from the GitLab UI.
+  - [Review Apps](../../ci/review_apps/index.md): By branch, preview the results
+  of the changes proposed in a merge request.
+- [Labels](labels.md): Organize issues and merge requests by labels.
+- [Time Tracking](time_tracking.md): Track time estimated and
+  spent on issues and merge requests.
+- [Milestones](milestones/index.md): Work toward a target date.
 - [Description templates](description_templates.md): Define context-specific
-  templates for issue and merge request description fields for your project
-- [Slash commands (quick actions)](quick_actions.md): Textual shortcuts for
-  common actions on issues or merge requests
+  templates for issue and merge request description fields.
+- [Slash commands (quick actions)](quick_actions.md): Create text shortcuts for
+  common actions.
 - [Autocomplete characters](autocomplete_characters.md): Autocomplete
   references to users, groups, issues, merge requests, and other GitLab
   elements.
@@ -68,51 +65,49 @@ Projects include the following [features](https://about.gitlab.com/features/):
 
 **GitLab CI/CD:**
 
-- [GitLab CI/CD](../../ci/README.md): the GitLab built-in [Continuous Integration, Delivery, and Deployment](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/) tool
+- [GitLab CI/CD](../../ci/README.md): Use the built-in [Continuous Integration, Delivery, and Deployment](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/) tool.
   - [Container Registry](../packages/container_registry/index.md): Build and push Docker
-  images out-of-the-box
+  images.
   - [Auto Deploy](../../topics/autodevops/stages.md#auto-deploy): Configure GitLab CI/CD
-  to automatically set up your app's deployment
+  to automatically set up your app's deployment.
   - [Enable and disable GitLab CI/CD](../../ci/enable_or_disable_ci.md)
   - [Pipelines](../../ci/pipelines/index.md): Configure and visualize
-    your GitLab CI/CD pipelines from the UI
+    your GitLab CI/CD pipelines from the UI.
     - [Scheduled Pipelines](../../ci/pipelines/schedules.md): Schedule a pipeline
-      to start at a chosen time
+      to start at a chosen time.
     - [Pipeline Graphs](../../ci/pipelines/index.md#visualize-pipelines): View your
-      entire pipeline from the UI
+      pipeline from the UI.
     - [Job artifacts](../../ci/pipelines/job_artifacts.md): Define,
-      browse, and download job artifacts
-    - [Pipeline settings](../../ci/pipelines/settings.md): Set up Git strategy (choose the default way your repository is fetched from GitLab in a job),
-      timeout (defines the maximum amount of time in minutes that a job is able run), custom path for `.gitlab-ci.yml`, test coverage parsing, pipeline's visibility, and much more
-  - [Kubernetes cluster integration](clusters/index.md): Connecting your GitLab project
-    with a Kubernetes cluster
-  - [Feature Flags](../../operations/feature_flags.md): Feature flags allow you to ship a project in
-    different flavors by dynamically toggling certain functionality **(PREMIUM)**
+      browse, and download job artifacts.
+    - [Pipeline settings](../../ci/pipelines/settings.md): Set up Git strategy (how jobs fetch your repository),
+      timeout (the maximum amount of time a job can run), custom path for `.gitlab-ci.yml`, test coverage parsing, pipeline visibility, and more.
+  - [Kubernetes cluster integration](clusters/index.md): Connect your GitLab project
+    with a Kubernetes cluster.
+  - [Feature Flags](../../operations/feature_flags.md): Ship different features
+    by dynamically toggling functionality. **(PREMIUM)**
 - [GitLab Pages](pages/index.md): Build, test, and deploy your static
-  website with GitLab Pages
+  website.
 
 **Other features:**
 
-- [Wiki](wiki/index.md): document your GitLab project in an integrated Wiki.
-- [Snippets](../snippets.md): store, share and collaborate on code snippets.
-- [Value Stream Analytics](../analytics/value_stream_analytics.md): review your development lifecycle.
-- [Insights](insights/index.md): configure the Insights that matter for your projects. **(ULTIMATE)**
-- [Security Dashboard](../application_security/security_dashboard/index.md): Security Dashboard. **(ULTIMATE)**
-- [Syntax highlighting](highlighting.md): an alternative to customize
-  your code blocks, overriding the GitLab default choice of language.
-- [Badges](badges.md): badges for the project overview.
-- [Releases](releases/index.md): a way to track deliverables in your project as snapshot in time of
-  the source, build output, other metadata, and other artifacts
+- [Wiki](wiki/index.md): Document your GitLab project in an integrated Wiki.
+- [Snippets](../snippets.md): Store, share and collaborate on code snippets.
+- [Value Stream Analytics](../analytics/value_stream_analytics.md): Review your development lifecycle.
+- [Insights](insights/index.md): Configure the insights that matter for your projects. **(ULTIMATE)**
+- [Security Dashboard](../application_security/security_dashboard/index.md) **(ULTIMATE)**
+- [Syntax highlighting](highlighting.md): Customize
+  your code blocks, overriding the default language choice.
+- [Badges](badges.md): Add an image to the project overview.
+- [Releases](releases/index.md): Take a snapshot of
+  the source, build output, metadata, and artifacts
   associated with a released version of your code.
-- [Conan packages](../packages/conan_repository/index.md): your private Conan repository in GitLab.
-- [Maven packages](../packages/maven_repository/index.md): your private Maven repository in GitLab.
-- [NPM packages](../packages/npm_registry/index.md): your private NPM package registry in GitLab.
-- [Code owners](code_owners.md): specify code owners for certain files
-- [License Compliance](../compliance/license_compliance/index.md): approve and deny licenses for projects. **(ULTIMATE)**
-- [Dependency List](../application_security/dependency_list/index.md): view project dependencies. **(ULTIMATE)**
-- [Requirements](requirements/index.md): Requirements allow you to create criteria to check your products against. **(ULTIMATE)**
-- [Static Site Editor](static_site_editor/index.md): quickly edit content on static websites without prior knowledge of the codebase or Git commands.
-- [Code Intelligence](code_intelligence.md): code navigation features.
+- [Package Registry](../packages/package_registry/index.md): Publish and install packages.
+- [Code owners](code_owners.md): Specify code owners for specific files.
+- [License Compliance](../compliance/license_compliance/index.md): Approve and deny licenses for projects. **(ULTIMATE)**
+- [Dependency List](../application_security/dependency_list/index.md): View project dependencies. **(ULTIMATE)**
+- [Requirements](requirements/index.md): Create criteria to check your products against. **(ULTIMATE)**
+- [Static Site Editor](static_site_editor/index.md): Edit content on static websites without prior knowledge of the codebase or Git commands.
+- [Code Intelligence](code_intelligence.md): Navigate code.
 
 ## Project integrations
 
@@ -128,13 +123,6 @@ Kubernetes, Slack, and a lot more.
   - [FogBugz to GitLab](import/fogbugz.md)
 - [Export a project from GitLab](settings/import_export.md#exporting-a-project-and-its-data)
 - [Importing and exporting projects between GitLab instances](settings/import_export.md)
-
-## CI/CD for external repositories **(PREMIUM)**
-
-Instead of importing a repository directly to GitLab, you can connect your repository
-as a CI/CD project.
-
-Read through the documentation on [CI/CD for external repositories](../../ci/ci_cd_for_external_repos/index.md).
 
 ## GitLab Workflow - VS Code extension
 

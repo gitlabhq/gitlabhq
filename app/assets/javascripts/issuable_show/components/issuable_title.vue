@@ -54,7 +54,7 @@ export default {
 <template>
   <div>
     <div class="title-container">
-      <h2 v-safe-html="issuable.titleHtml" class="title qa-title" dir="auto"></h2>
+      <h2 v-safe-html="issuable.titleHtml || issuable.title" class="title qa-title" dir="auto"></h2>
       <gl-button
         v-if="enableEdit"
         v-gl-tooltip.bottom

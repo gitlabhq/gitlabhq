@@ -45,8 +45,8 @@ RSpec.describe Search::GroupService do
     let(:scope) { 'issues' }
 
     context 'sorting' do
-      let!(:group) { create(:group) }
-      let!(:project) { create(:project, :public, group: group) }
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, :public, group: group) }
 
       let!(:old_result) { create(:issue, project: project, title: 'sorted old', created_at: 1.month.ago) }
       let!(:new_result) { create(:issue, project: project, title: 'sorted recent', created_at: 1.day.ago) }

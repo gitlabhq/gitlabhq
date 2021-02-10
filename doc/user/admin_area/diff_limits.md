@@ -13,24 +13,24 @@ For details about diff files, [View changes between files](../project/merge_requ
 
 ## Maximum diff patch size
 
-Diff files which exceed this value will be presented as 'too large' and won't
-be expandable. Instead of an expandable view, a link to the blob view will be
+Diff files which exceed this value are presented as 'too large' and cannot
+be expandable. Instead of an expandable view, a link to the blob view is
 shown.
 
-Patches greater than 10% of this size will be automatically collapsed, and a
-link to expand the diff will be presented.
+Patches greater than 10% of this size are automatically collapsed, and a
+link to expand the diff is presented.
+This affects merge requests and branch comparison views.
 
-NOTE:
-Merge requests and branch comparison views will be affected.
-
-WARNING:
-This setting is experimental. An increased maximum will increase resource
-consumption of your instance. Keep this in mind when adjusting the maximum.
+To set the maximum diff patch size:
 
 1. Go to **Admin Area > Settings > General**.
 1. Expand **Diff limits**.
 1. Enter a value for **Maximum diff patch size**, measured in bytes.
 1. Click on **Save changes**.
+
+WARNING:
+This setting is experimental. An increased maximum increases resource
+consumption of your instance. Keep this in mind when adjusting the maximum.
 
 <!-- ## Troubleshooting
 

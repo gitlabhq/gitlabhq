@@ -3829,7 +3829,7 @@
           "fields": [
             {
               "name": "assignee",
-              "description": "The board assignee",
+              "description": "The board assignee.",
               "args": [
 
               ],
@@ -3843,7 +3843,7 @@
             },
             {
               "name": "epics",
-              "description": "Epics associated with board issues",
+              "description": "Epics associated with board issues.",
               "args": [
                 {
                   "name": "issueFilters",
@@ -3966,7 +3966,7 @@
             },
             {
               "name": "labels",
-              "description": "Labels of the board",
+              "description": "Labels of the board.",
               "args": [
                 {
                   "name": "after",
@@ -4092,7 +4092,7 @@
             },
             {
               "name": "milestone",
-              "description": "The board milestone",
+              "description": "The board milestone.",
               "args": [
 
               ],
@@ -4156,7 +4156,7 @@
             },
             {
               "name": "weight",
-              "description": "Weight of the board",
+              "description": "Weight of the board.",
               "args": [
 
               ],
@@ -5456,7 +5456,7 @@
             },
             {
               "name": "userPreferences",
-              "description": "User preferences for the epic on the issue board",
+              "description": "User preferences for the epic on the issue board.",
               "args": [
 
               ],
@@ -5640,7 +5640,7 @@
           "fields": [
             {
               "name": "collapsed",
-              "description": "Indicates epic should be displayed as collapsed",
+              "description": "Indicates epic should be displayed as collapsed.",
               "args": [
 
               ],
@@ -5750,7 +5750,7 @@
             },
             {
               "name": "epicId",
-              "description": "Filter by epic ID. Incompatible with epicWildcardId",
+              "description": "Filter by epic ID. Incompatible with epicWildcardId.",
               "type": {
                 "kind": "SCALAR",
                 "name": "EpicID",
@@ -5760,7 +5760,7 @@
             },
             {
               "name": "iterationTitle",
-              "description": "Filter by iteration title",
+              "description": "Filter by iteration title.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -5770,7 +5770,7 @@
             },
             {
               "name": "weight",
-              "description": "Filter by weight",
+              "description": "Filter by weight.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -5800,7 +5800,7 @@
             },
             {
               "name": "epicWildcardId",
-              "description": "Filter by epic ID wildcard. Incompatible with epicId",
+              "description": "Filter by epic ID wildcard. Incompatible with epicId.",
               "type": {
                 "kind": "ENUM",
                 "name": "EpicWildcardId",
@@ -5810,7 +5810,7 @@
             },
             {
               "name": "iterationWildcardId",
-              "description": "Filter by iteration ID wildcard",
+              "description": "Filter by iteration ID wildcard.",
               "type": {
                 "kind": "ENUM",
                 "name": "IterationWildcardId",
@@ -5830,7 +5830,7 @@
           "fields": [
             {
               "name": "assignee",
-              "description": "Assignee in the list",
+              "description": "Assignee in the list.",
               "args": [
 
               ],
@@ -5953,7 +5953,7 @@
             },
             {
               "name": "iteration",
-              "description": "Iteration of the list",
+              "description": "Iteration of the list.",
               "args": [
 
               ],
@@ -5981,7 +5981,7 @@
             },
             {
               "name": "limitMetric",
-              "description": "The current limit metric for the list",
+              "description": "The current limit metric for the list.",
               "args": [
 
               ],
@@ -6013,7 +6013,7 @@
             },
             {
               "name": "maxIssueCount",
-              "description": "Maximum number of issues in the list",
+              "description": "Maximum number of issues in the list.",
               "args": [
 
               ],
@@ -6027,7 +6027,7 @@
             },
             {
               "name": "maxIssueWeight",
-              "description": "Maximum weight of issues in the list",
+              "description": "Maximum weight of issues in the list.",
               "args": [
 
               ],
@@ -6041,7 +6041,7 @@
             },
             {
               "name": "milestone",
-              "description": "Milestone of the list",
+              "description": "Milestone of the list.",
               "args": [
 
               ],
@@ -6087,7 +6087,7 @@
             },
             {
               "name": "totalWeight",
-              "description": "Total weight of all issues in the list",
+              "description": "Total weight of all issues in the list.",
               "args": [
 
               ],
@@ -6585,7 +6585,7 @@
           "fields": [
             {
               "name": "completedCount",
-              "description": "Number of closed issues as of this day",
+              "description": "Number of closed issues as of this day.",
               "args": [
 
               ],
@@ -6603,7 +6603,7 @@
             },
             {
               "name": "completedWeight",
-              "description": "Total weight of closed issues as of this day",
+              "description": "Total weight of closed issues as of this day.",
               "args": [
 
               ],
@@ -6621,7 +6621,7 @@
             },
             {
               "name": "date",
-              "description": "Date for burnup totals",
+              "description": "Date for burnup totals.",
               "args": [
 
               ],
@@ -6639,7 +6639,7 @@
             },
             {
               "name": "scopeCount",
-              "description": "Number of issues as of this day",
+              "description": "Number of issues as of this day.",
               "args": [
 
               ],
@@ -6657,7 +6657,7 @@
             },
             {
               "name": "scopeWeight",
-              "description": "Total weight of issues as of this day",
+              "description": "Total weight of issues as of this day.",
               "args": [
 
               ],
@@ -8917,7 +8917,7 @@
           "fields": [
             {
               "name": "createdAt",
-              "description": "Timestamp the cluster agent was created",
+              "description": "Timestamp the cluster agent was created.",
               "args": [
 
               ],
@@ -8931,7 +8931,7 @@
             },
             {
               "name": "id",
-              "description": "ID of the cluster agent",
+              "description": "ID of the cluster agent.",
               "args": [
 
               ],
@@ -8949,7 +8949,7 @@
             },
             {
               "name": "name",
-              "description": "Name of the cluster agent",
+              "description": "Name of the cluster agent.",
               "args": [
 
               ],
@@ -8963,7 +8963,7 @@
             },
             {
               "name": "project",
-              "description": "The project this cluster agent is associated with",
+              "description": "The project this cluster agent is associated with.",
               "args": [
 
               ],
@@ -8977,7 +8977,7 @@
             },
             {
               "name": "tokens",
-              "description": "Tokens associated with the cluster agent",
+              "description": "Tokens associated with the cluster agent.",
               "args": [
                 {
                   "name": "after",
@@ -9030,7 +9030,7 @@
             },
             {
               "name": "updatedAt",
-              "description": "Timestamp the cluster agent was updated",
+              "description": "Timestamp the cluster agent was updated.",
               "args": [
 
               ],
@@ -9275,7 +9275,7 @@
           "fields": [
             {
               "name": "clusterAgent",
-              "description": "Cluster agent this token is associated with",
+              "description": "Cluster agent this token is associated with.",
               "args": [
 
               ],
@@ -9289,7 +9289,7 @@
             },
             {
               "name": "createdAt",
-              "description": "Timestamp the token was created",
+              "description": "Timestamp the token was created.",
               "args": [
 
               ],
@@ -9303,7 +9303,7 @@
             },
             {
               "name": "id",
-              "description": "Global ID of the token",
+              "description": "Global ID of the token.",
               "args": [
 
               ],
@@ -10691,7 +10691,7 @@
           "fields": [
             {
               "name": "color",
-              "description": "Hexadecimal representation of compliance framework's label color",
+              "description": "Hexadecimal representation of compliance framework's label color.",
               "args": [
 
               ],
@@ -10709,7 +10709,7 @@
             },
             {
               "name": "description",
-              "description": "Description of the compliance framework",
+              "description": "Description of the compliance framework.",
               "args": [
 
               ],
@@ -10727,7 +10727,7 @@
             },
             {
               "name": "id",
-              "description": "Compliance framework ID",
+              "description": "Compliance framework ID.",
               "args": [
 
               ],
@@ -10745,7 +10745,7 @@
             },
             {
               "name": "name",
-              "description": "Name of the compliance framework",
+              "description": "Name of the compliance framework.",
               "args": [
 
               ],
@@ -16001,7 +16001,7 @@
           "fields": [
             {
               "name": "editPath",
-              "description": "Relative web path to the edit page of a scanner profile",
+              "description": "Relative web path to the edit page of a scanner profile.",
               "args": [
 
               ],
@@ -16015,7 +16015,7 @@
             },
             {
               "name": "globalId",
-              "description": "ID of the DAST scanner profile Deprecated in 13.6: Use `id`.",
+              "description": "ID of the DAST scanner profile. Deprecated in 13.6: Use `id`.",
               "args": [
 
               ],
@@ -16033,7 +16033,7 @@
             },
             {
               "name": "id",
-              "description": "ID of the DAST scanner profile",
+              "description": "ID of the DAST scanner profile.",
               "args": [
 
               ],
@@ -16051,7 +16051,7 @@
             },
             {
               "name": "profileName",
-              "description": "Name of the DAST scanner profile",
+              "description": "Name of the DAST scanner profile.",
               "args": [
 
               ],
@@ -16097,7 +16097,7 @@
             },
             {
               "name": "spiderTimeout",
-              "description": "The maximum number of minutes allowed for the spider to traverse the site",
+              "description": "The maximum number of minutes allowed for the spider to traverse the site.",
               "args": [
 
               ],
@@ -16111,7 +16111,7 @@
             },
             {
               "name": "targetTimeout",
-              "description": "The maximum number of seconds allowed for the site under test to respond to a request",
+              "description": "The maximum number of seconds allowed for the site under test to respond to a request.",
               "args": [
 
               ],
@@ -16748,7 +16748,7 @@
           "fields": [
             {
               "name": "editPath",
-              "description": "Relative web path to the edit page of a site profile",
+              "description": "Relative web path to the edit page of a site profile.",
               "args": [
 
               ],
@@ -16762,7 +16762,7 @@
             },
             {
               "name": "id",
-              "description": "ID of the site profile",
+              "description": "ID of the site profile.",
               "args": [
 
               ],
@@ -16780,7 +16780,7 @@
             },
             {
               "name": "normalizedTargetUrl",
-              "description": "Normalized URL of the target to be scanned",
+              "description": "Normalized URL of the target to be scanned.",
               "args": [
 
               ],
@@ -16794,7 +16794,7 @@
             },
             {
               "name": "profileName",
-              "description": "The name of the site profile",
+              "description": "The name of the site profile.",
               "args": [
 
               ],
@@ -16808,7 +16808,7 @@
             },
             {
               "name": "targetUrl",
-              "description": "The URL of the target to be scanned",
+              "description": "The URL of the target to be scanned.",
               "args": [
 
               ],
@@ -16840,7 +16840,7 @@
             },
             {
               "name": "validationStatus",
-              "description": "The current validation status of the site profile",
+              "description": "The current validation status of the site profile.",
               "args": [
 
               ],
@@ -17579,7 +17579,7 @@
           "fields": [
             {
               "name": "id",
-              "description": "Global ID of the site validation",
+              "description": "Global ID of the site validation.",
               "args": [
 
               ],
@@ -17597,7 +17597,7 @@
             },
             {
               "name": "normalizedTargetUrl",
-              "description": "Normalized URL of the target to be validated",
+              "description": "Normalized URL of the target to be validated.",
               "args": [
 
               ],
@@ -17611,7 +17611,7 @@
             },
             {
               "name": "status",
-              "description": "Status of the site validation",
+              "description": "Status of the site validation.",
               "args": [
 
               ],
@@ -21682,7 +21682,7 @@
           "fields": [
             {
               "name": "groups",
-              "description": "Assigned groups",
+              "description": "Assigned groups.",
               "args": [
 
               ],
@@ -21704,7 +21704,7 @@
             },
             {
               "name": "id",
-              "description": "ID of the segment",
+              "description": "ID of the segment.",
               "args": [
 
               ],
@@ -21722,7 +21722,7 @@
             },
             {
               "name": "latestSnapshot",
-              "description": "The latest adoption metrics for the segment",
+              "description": "The latest adoption metrics for the segment.",
               "args": [
 
               ],
@@ -21736,7 +21736,7 @@
             },
             {
               "name": "name",
-              "description": "Name of the segment",
+              "description": "Name of the segment.",
               "args": [
 
               ],
@@ -21879,7 +21879,7 @@
           "fields": [
             {
               "name": "deploySucceeded",
-              "description": "At least one deployment succeeded",
+              "description": "At least one deployment succeeded.",
               "args": [
 
               ],
@@ -21897,7 +21897,7 @@
             },
             {
               "name": "endTime",
-              "description": "The end time for the snapshot where the data points were collected",
+              "description": "The end time for the snapshot where the data points were collected.",
               "args": [
 
               ],
@@ -21915,7 +21915,7 @@
             },
             {
               "name": "issueOpened",
-              "description": "At least one issue was opened",
+              "description": "At least one issue was opened.",
               "args": [
 
               ],
@@ -21933,7 +21933,7 @@
             },
             {
               "name": "mergeRequestApproved",
-              "description": "At least one merge request was approved",
+              "description": "At least one merge request was approved.",
               "args": [
 
               ],
@@ -21951,7 +21951,7 @@
             },
             {
               "name": "mergeRequestOpened",
-              "description": "At least one merge request was opened",
+              "description": "At least one merge request was opened.",
               "args": [
 
               ],
@@ -21969,7 +21969,7 @@
             },
             {
               "name": "pipelineSucceeded",
-              "description": "At least one pipeline succeeded",
+              "description": "At least one pipeline succeeded.",
               "args": [
 
               ],
@@ -21987,7 +21987,7 @@
             },
             {
               "name": "recordedAt",
-              "description": "The time the snapshot was recorded",
+              "description": "The time the snapshot was recorded.",
               "args": [
 
               ],
@@ -22005,7 +22005,7 @@
             },
             {
               "name": "runnerConfigured",
-              "description": "At least one runner was used",
+              "description": "At least one runner was used.",
               "args": [
 
               ],
@@ -22023,7 +22023,7 @@
             },
             {
               "name": "securityScanSucceeded",
-              "description": "At least one security scan succeeded",
+              "description": "At least one security scan succeeded.",
               "args": [
 
               ],
@@ -22041,7 +22041,7 @@
             },
             {
               "name": "startTime",
-              "description": "The start time for the snapshot where the data points were collected",
+              "description": "The start time for the snapshot where the data points were collected.",
               "args": [
 
               ],
@@ -25716,7 +25716,7 @@
           "fields": [
             {
               "name": "closedEpics",
-              "description": "Number of closed child epics",
+              "description": "Number of closed child epics.",
               "args": [
 
               ],
@@ -25730,7 +25730,7 @@
             },
             {
               "name": "closedIssues",
-              "description": "Number of closed epic issues",
+              "description": "Number of closed epic issues.",
               "args": [
 
               ],
@@ -25744,7 +25744,7 @@
             },
             {
               "name": "openedEpics",
-              "description": "Number of opened child epics",
+              "description": "Number of opened child epics.",
               "args": [
 
               ],
@@ -25758,7 +25758,7 @@
             },
             {
               "name": "openedIssues",
-              "description": "Number of opened epic issues",
+              "description": "Number of opened epic issues.",
               "args": [
 
               ],
@@ -25785,7 +25785,7 @@
           "fields": [
             {
               "name": "closedIssues",
-              "description": "Total weight of completed (closed) issues in this epic, including epic descendants",
+              "description": "Total weight of completed (closed) issues in this epic, including epic descendants.",
               "args": [
 
               ],
@@ -25799,7 +25799,7 @@
             },
             {
               "name": "openedIssues",
-              "description": "Total weight of opened issues in this epic, including epic descendants",
+              "description": "Total weight of opened issues in this epic, including epic descendants.",
               "args": [
 
               ],
@@ -25871,7 +25871,7 @@
           "fields": [
             {
               "name": "issuesAtRisk",
-              "description": "Number of issues at risk",
+              "description": "Number of issues at risk.",
               "args": [
 
               ],
@@ -25885,7 +25885,7 @@
             },
             {
               "name": "issuesNeedingAttention",
-              "description": "Number of issues that need attention",
+              "description": "Number of issues that need attention.",
               "args": [
 
               ],
@@ -25899,7 +25899,7 @@
             },
             {
               "name": "issuesOnTrack",
-              "description": "Number of issues on track",
+              "description": "Number of issues on track.",
               "args": [
 
               ],
@@ -26365,7 +26365,7 @@
             },
             {
               "name": "epicIssueId",
-              "description": "ID of the epic-issue relation",
+              "description": "ID of the epic-issue relation.",
               "args": [
 
               ],
@@ -26425,7 +26425,7 @@
             },
             {
               "name": "id",
-              "description": "Global ID of the epic-issue relation",
+              "description": "Global ID of the epic-issue relation.",
               "args": [
 
               ],
@@ -26725,7 +26725,7 @@
             },
             {
               "name": "relationPath",
-              "description": "URI path of the epic-issue relation",
+              "description": "URI path of the epic-issue relation.",
               "args": [
 
               ],
@@ -27179,7 +27179,7 @@
             },
             {
               "name": "weight",
-              "description": "Total weight of issues collection",
+              "description": "Total weight of issues collection.",
               "args": [
 
               ],
@@ -29113,7 +29113,7 @@
           "fields": [
             {
               "name": "actualRepositorySizeLimit",
-              "description": "Size limit for repositories in the namespace in bytes",
+              "description": "Size limit for repositories in the namespace in bytes.",
               "args": [
 
               ],
@@ -29127,7 +29127,7 @@
             },
             {
               "name": "additionalPurchasedStorageSize",
-              "description": "Additional storage purchased for the root namespace in bytes",
+              "description": "Additional storage purchased for the root namespace in bytes.",
               "args": [
 
               ],
@@ -29259,7 +29259,7 @@
             },
             {
               "name": "codeCoverageActivities",
-              "description": "Represents the code coverage activity for this group",
+              "description": "Represents the code coverage activity for this group.",
               "args": [
                 {
                   "name": "startDate",
@@ -29480,7 +29480,7 @@
             },
             {
               "name": "containsLockedProjects",
-              "description": "Includes at least one project where the repository size exceeds the limit",
+              "description": "Includes at least one project where the repository size exceeds the limit.",
               "args": [
 
               ],
@@ -29593,7 +29593,7 @@
             },
             {
               "name": "epic",
-              "description": "Find a single epic",
+              "description": "Find a single epic.",
               "args": [
                 {
                   "name": "startDate",
@@ -29762,7 +29762,7 @@
             },
             {
               "name": "epicBoard",
-              "description": "Find a single epic board",
+              "description": "Find a single epic board.",
               "args": [
                 {
                   "name": "id",
@@ -29789,7 +29789,7 @@
             },
             {
               "name": "epicBoards",
-              "description": "Find epic boards",
+              "description": "Find epic boards.",
               "args": [
                 {
                   "name": "after",
@@ -29842,7 +29842,7 @@
             },
             {
               "name": "epics",
-              "description": "Find epics",
+              "description": "Find epics.",
               "args": [
                 {
                   "name": "startDate",
@@ -30214,7 +30214,7 @@
             },
             {
               "name": "isTemporaryStorageIncreaseEnabled",
-              "description": "Status of the temporary storage increase",
+              "description": "Status of the temporary storage increase.",
               "args": [
 
               ],
@@ -30531,7 +30531,7 @@
             },
             {
               "name": "iterations",
-              "description": "Find iterations",
+              "description": "Find iterations.",
               "args": [
                 {
                   "name": "startDate",
@@ -31313,7 +31313,7 @@
             },
             {
               "name": "repositorySizeExcessProjectCount",
-              "description": "Number of projects in the root namespace where the repository size exceeds the limit",
+              "description": "Number of projects in the root namespace where the repository size exceeds the limit.",
               "args": [
 
               ],
@@ -31387,7 +31387,7 @@
             },
             {
               "name": "stats",
-              "description": "Group statistics",
+              "description": "Group statistics.",
               "args": [
 
               ],
@@ -31401,7 +31401,7 @@
             },
             {
               "name": "storageSizeLimit",
-              "description": "Total storage limit of the root namespace in bytes",
+              "description": "Total storage limit of the root namespace in bytes.",
               "args": [
 
               ],
@@ -31429,7 +31429,7 @@
             },
             {
               "name": "temporaryStorageIncreaseEndsOn",
-              "description": "Date until the temporary storage increase is active",
+              "description": "Date until the temporary storage increase is active.",
               "args": [
 
               ],
@@ -31443,7 +31443,7 @@
             },
             {
               "name": "timelogs",
-              "description": "Time logged in issues by group members",
+              "description": "Time logged in issues by group members.",
               "args": [
                 {
                   "name": "startDate",
@@ -31540,7 +31540,7 @@
             },
             {
               "name": "totalRepositorySize",
-              "description": "Total repository size of all projects in the root namespace in bytes",
+              "description": "Total repository size of all projects in the root namespace in bytes.",
               "args": [
 
               ],
@@ -31554,7 +31554,7 @@
             },
             {
               "name": "totalRepositorySizeExcess",
-              "description": "Total excess repository size of all projects in the root namespace in bytes",
+              "description": "Total excess repository size of all projects in the root namespace in bytes.",
               "args": [
 
               ],
@@ -31614,7 +31614,7 @@
             },
             {
               "name": "vulnerabilities",
-              "description": "Vulnerabilities reported on the projects in the group and its subgroups",
+              "description": "Vulnerabilities reported on the projects in the group and its subgroups.",
               "args": [
                 {
                   "name": "projectId",
@@ -31787,7 +31787,7 @@
             },
             {
               "name": "vulnerabilitiesCountByDay",
-              "description": "Number of vulnerabilities per day for the projects in the group and its subgroups",
+              "description": "Number of vulnerabilities per day for the projects in the group and its subgroups.",
               "args": [
                 {
                   "name": "startDate",
@@ -31868,7 +31868,7 @@
             },
             {
               "name": "vulnerabilitiesCountByDayAndSeverity",
-              "description": "Number of vulnerabilities per severity level, per day, for the projects in the group and its subgroups Deprecated in 13.3: Use `vulnerabilitiesCountByDay`.",
+              "description": "Number of vulnerabilities per severity level, per day, for the projects in the group and its subgroups. Deprecated in 13.3: Use `vulnerabilitiesCountByDay`.",
               "args": [
                 {
                   "name": "startDate",
@@ -31949,7 +31949,7 @@
             },
             {
               "name": "vulnerabilityGrades",
-              "description": "Represents vulnerable project counts for each grade",
+              "description": "Represents vulnerable project counts for each grade.",
               "args": [
                 {
                   "name": "includeSubgroups",
@@ -31984,7 +31984,7 @@
             },
             {
               "name": "vulnerabilityScanners",
-              "description": "Vulnerability scanners reported on the project vulnerabilities of the group and its subgroups",
+              "description": "Vulnerability scanners reported on the project vulnerabilities of the group and its subgroups.",
               "args": [
                 {
                   "name": "after",
@@ -32037,7 +32037,7 @@
             },
             {
               "name": "vulnerabilitySeveritiesCount",
-              "description": "Counts for each vulnerability severity in the group and its subgroups",
+              "description": "Counts for each vulnerability severity in the group and its subgroups.",
               "args": [
                 {
                   "name": "projectId",
@@ -35639,7 +35639,7 @@
             },
             {
               "name": "weight",
-              "description": "Total weight of issues collection",
+              "description": "Total weight of issues collection.",
               "args": [
 
               ],
@@ -40106,7 +40106,7 @@
             },
             {
               "name": "approvalsLeft",
-              "description": "Number of approvals left",
+              "description": "Number of approvals left.",
               "args": [
 
               ],
@@ -40120,7 +40120,7 @@
             },
             {
               "name": "approvalsRequired",
-              "description": "Number of approvals required",
+              "description": "Number of approvals required.",
               "args": [
 
               ],
@@ -40941,7 +40941,7 @@
             },
             {
               "name": "mergeTrainsCount",
-              "description": "",
+              "description": "Number of merge requests in the merge train.",
               "args": [
 
               ],
@@ -48754,7 +48754,7 @@
           "fields": [
             {
               "name": "actualRepositorySizeLimit",
-              "description": "Size limit for repositories in the namespace in bytes",
+              "description": "Size limit for repositories in the namespace in bytes.",
               "args": [
 
               ],
@@ -48768,7 +48768,7 @@
             },
             {
               "name": "additionalPurchasedStorageSize",
-              "description": "Additional storage purchased for the root namespace in bytes",
+              "description": "Additional storage purchased for the root namespace in bytes.",
               "args": [
 
               ],
@@ -48845,7 +48845,7 @@
             },
             {
               "name": "containsLockedProjects",
-              "description": "Includes at least one project where the repository size exceeds the limit",
+              "description": "Includes at least one project where the repository size exceeds the limit.",
               "args": [
 
               ],
@@ -48945,7 +48945,7 @@
             },
             {
               "name": "isTemporaryStorageIncreaseEnabled",
-              "description": "Status of the temporary storage increase",
+              "description": "Status of the temporary storage increase.",
               "args": [
 
               ],
@@ -49124,7 +49124,7 @@
             },
             {
               "name": "repositorySizeExcessProjectCount",
-              "description": "Number of projects in the root namespace where the repository size exceeds the limit",
+              "description": "Number of projects in the root namespace where the repository size exceeds the limit.",
               "args": [
 
               ],
@@ -49170,7 +49170,7 @@
             },
             {
               "name": "storageSizeLimit",
-              "description": "Total storage limit of the root namespace in bytes",
+              "description": "Total storage limit of the root namespace in bytes.",
               "args": [
 
               ],
@@ -49184,7 +49184,7 @@
             },
             {
               "name": "temporaryStorageIncreaseEndsOn",
-              "description": "Date until the temporary storage increase is active",
+              "description": "Date until the temporary storage increase is active.",
               "args": [
 
               ],
@@ -49198,7 +49198,7 @@
             },
             {
               "name": "totalRepositorySize",
-              "description": "Total repository size of all projects in the root namespace in bytes",
+              "description": "Total repository size of all projects in the root namespace in bytes.",
               "args": [
 
               ],
@@ -49212,7 +49212,7 @@
             },
             {
               "name": "totalRepositorySizeExcess",
-              "description": "Total excess repository size of all projects in the root namespace in bytes",
+              "description": "Total excess repository size of all projects in the root namespace in bytes.",
               "args": [
 
               ],
@@ -49569,7 +49569,7 @@
             },
             {
               "name": "epicId",
-              "description": "Filter by epic ID. Incompatible with epicWildcardId",
+              "description": "Filter by epic ID. Incompatible with epicWildcardId.",
               "type": {
                 "kind": "SCALAR",
                 "name": "EpicID",
@@ -49579,7 +49579,7 @@
             },
             {
               "name": "iterationTitle",
-              "description": "Filter by iteration title",
+              "description": "Filter by iteration title.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -49589,7 +49589,7 @@
             },
             {
               "name": "weight",
-              "description": "Filter by weight",
+              "description": "Filter by weight.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -53270,7 +53270,7 @@
             },
             {
               "name": "securityReportSummary",
-              "description": "Vulnerability and scanned resource counts for each security scanner of the pipeline",
+              "description": "Vulnerability and scanned resource counts for each security scanner of the pipeline.",
               "args": [
 
               ],
@@ -54344,7 +54344,7 @@
           "fields": [
             {
               "name": "actualRepositorySizeLimit",
-              "description": "Size limit for the repository in bytes",
+              "description": "Size limit for the repository in bytes.",
               "args": [
 
               ],
@@ -54654,7 +54654,7 @@
             },
             {
               "name": "alertManagementPayloadFields",
-              "description": "Extract alert fields from payload for custom mapping",
+              "description": "Extract alert fields from payload for custom mapping.",
               "args": [
                 {
                   "name": "payloadExample",
@@ -54863,7 +54863,7 @@
             },
             {
               "name": "clusterAgent",
-              "description": "Find a single cluster agent by name",
+              "description": "Find a single cluster agent by name.",
               "args": [
                 {
                   "name": "name",
@@ -54890,7 +54890,7 @@
             },
             {
               "name": "clusterAgents",
-              "description": "Cluster agents associated with the project",
+              "description": "Cluster agents associated with the project.",
               "args": [
                 {
                   "name": "after",
@@ -54943,7 +54943,7 @@
             },
             {
               "name": "codeCoverageSummary",
-              "description": "Code coverage summary associated with the project",
+              "description": "Code coverage summary associated with the project.",
               "args": [
 
               ],
@@ -54957,7 +54957,7 @@
             },
             {
               "name": "complianceFrameworks",
-              "description": "Compliance frameworks associated with the project",
+              "description": "Compliance frameworks associated with the project.",
               "args": [
                 {
                   "name": "after",
@@ -55680,7 +55680,7 @@
             },
             {
               "name": "incidentManagementOncallSchedules",
-              "description": "Incident Management On-call schedules of the project",
+              "description": "Incident Management On-call schedules of the project.",
               "args": [
                 {
                   "name": "after",
@@ -56490,7 +56490,7 @@
             },
             {
               "name": "iterations",
-              "description": "Find iterations",
+              "description": "Find iterations.",
               "args": [
                 {
                   "name": "startDate",
@@ -57747,7 +57747,7 @@
             },
             {
               "name": "repositorySizeExcess",
-              "description": "Size of repository that exceeds the limit in bytes",
+              "description": "Size of repository that exceeds the limit in bytes.",
               "args": [
 
               ],
@@ -57775,7 +57775,7 @@
             },
             {
               "name": "requirement",
-              "description": "Find a single requirement",
+              "description": "Find a single requirement.",
               "args": [
                 {
                   "name": "sort",
@@ -57864,7 +57864,7 @@
             },
             {
               "name": "requirementStatesCount",
-              "description": "Number of requirements for the project by their state",
+              "description": "Number of requirements for the project by their state.",
               "args": [
 
               ],
@@ -57878,7 +57878,7 @@
             },
             {
               "name": "requirements",
-              "description": "Find requirements",
+              "description": "Find requirements.",
               "args": [
                 {
                   "name": "sort",
@@ -58021,7 +58021,7 @@
             },
             {
               "name": "securityDashboardPath",
-              "description": "Path to project's security dashboard",
+              "description": "Path to project's security dashboard.",
               "args": [
 
               ],
@@ -58035,7 +58035,7 @@
             },
             {
               "name": "securityScanners",
-              "description": "Information about security analyzers used in the project",
+              "description": "Information about security analyzers used in the project.",
               "args": [
 
               ],
@@ -58504,7 +58504,7 @@
             },
             {
               "name": "vulnerabilities",
-              "description": "Vulnerabilities reported on the project",
+              "description": "Vulnerabilities reported on the project.",
               "args": [
                 {
                   "name": "projectId",
@@ -58677,7 +58677,7 @@
             },
             {
               "name": "vulnerabilitiesCountByDay",
-              "description": "Number of vulnerabilities per day for the project",
+              "description": "Number of vulnerabilities per day for the project.",
               "args": [
                 {
                   "name": "startDate",
@@ -58758,7 +58758,7 @@
             },
             {
               "name": "vulnerabilityScanners",
-              "description": "Vulnerability scanners reported on the project vulnerabilities",
+              "description": "Vulnerability scanners reported on the project vulnerabilities.",
               "args": [
                 {
                   "name": "after",
@@ -58811,7 +58811,7 @@
             },
             {
               "name": "vulnerabilitySeveritiesCount",
-              "description": "Counts for each vulnerability severity in the project",
+              "description": "Counts for each vulnerability severity in the project.",
               "args": [
                 {
                   "name": "projectId",
@@ -61057,7 +61057,7 @@
             },
             {
               "name": "devopsAdoptionSegments",
-              "description": "Get configured DevOps adoption segments on the instance",
+              "description": "Get configured DevOps adoption segments on the instance.",
               "args": [
                 {
                   "name": "after",
@@ -61141,7 +61141,7 @@
             },
             {
               "name": "geoNode",
-              "description": "Find a Geo node",
+              "description": "Find a Geo node.",
               "args": [
                 {
                   "name": "name",
@@ -61191,7 +61191,7 @@
             },
             {
               "name": "instanceSecurityDashboard",
-              "description": "Fields related to Instance Security Dashboard",
+              "description": "Fields related to Instance Security Dashboard.",
               "args": [
 
               ],
@@ -61319,11 +61319,11 @@
             },
             {
               "name": "iteration",
-              "description": "Find an iteration",
+              "description": "Find an iteration.",
               "args": [
                 {
                   "name": "id",
-                  "description": "Find an iteration by its ID",
+                  "description": "Find an iteration by its ID.",
                   "type": {
                     "kind": "NON_NULL",
                     "name": null,
@@ -61966,7 +61966,7 @@
             },
             {
               "name": "vulnerabilities",
-              "description": "Vulnerabilities reported on projects on the current user's instance security dashboard",
+              "description": "Vulnerabilities reported on projects on the current user's instance security dashboard.",
               "args": [
                 {
                   "name": "projectId",
@@ -62139,7 +62139,7 @@
             },
             {
               "name": "vulnerabilitiesCountByDay",
-              "description": "Number of vulnerabilities per day for the projects on the current user's instance security dashboard",
+              "description": "Number of vulnerabilities per day for the projects on the current user's instance security dashboard.",
               "args": [
                 {
                   "name": "startDate",
@@ -62220,7 +62220,7 @@
             },
             {
               "name": "vulnerabilitiesCountByDayAndSeverity",
-              "description": "Number of vulnerabilities per severity level, per day, for the projects on the current user's instance security dashboard Deprecated in 13.3: Use `vulnerabilitiesCountByDay`.",
+              "description": "Number of vulnerabilities per severity level, per day, for the projects on the current user's instance security dashboard. Deprecated in 13.3: Use `vulnerabilitiesCountByDay`.",
               "args": [
                 {
                   "name": "startDate",
@@ -62301,11 +62301,11 @@
             },
             {
               "name": "vulnerability",
-              "description": "Find a vulnerability",
+              "description": "Find a vulnerability.",
               "args": [
                 {
                   "name": "id",
-                  "description": "The Global ID of the Vulnerability",
+                  "description": "The Global ID of the Vulnerability.",
                   "type": {
                     "kind": "NON_NULL",
                     "name": null,

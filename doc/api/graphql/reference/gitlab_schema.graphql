@@ -1461,12 +1461,12 @@ Represents a project or group board
 """
 type Board {
   """
-  The board assignee
+  The board assignee.
   """
   assignee: User
 
   """
-  Epics associated with board issues
+  Epics associated with board issues.
   """
   epics(
     """
@@ -1516,7 +1516,7 @@ type Board {
   iteration: Iteration
 
   """
-  Labels of the board
+  Labels of the board.
   """
   labels(
     """
@@ -1576,7 +1576,7 @@ type Board {
   ): BoardListConnection
 
   """
-  The board milestone
+  The board milestone.
   """
   milestone: Milestone
 
@@ -1596,7 +1596,7 @@ type Board {
   webUrl: String!
 
   """
-  Weight of the board
+  Weight of the board.
   """
   weight: Int
 }
@@ -2099,7 +2099,7 @@ type BoardEpic implements CurrentUserTodos & Noteable {
   userPermissions: EpicPermissions!
 
   """
-  User preferences for the epic on the issue board
+  User preferences for the epic on the issue board.
   """
   userPreferences: BoardEpicUserPreferences
 
@@ -2154,7 +2154,7 @@ Represents user preferences for a board epic
 """
 type BoardEpicUserPreferences {
   """
-  Indicates epic should be displayed as collapsed
+  Indicates epic should be displayed as collapsed.
   """
   collapsed: Boolean!
 }
@@ -2176,22 +2176,22 @@ input BoardIssueInput {
   authorUsername: String
 
   """
-  Filter by epic ID. Incompatible with epicWildcardId
+  Filter by epic ID. Incompatible with epicWildcardId.
   """
   epicId: EpicID
 
   """
-  Filter by epic ID wildcard. Incompatible with epicId
+  Filter by epic ID wildcard. Incompatible with epicId.
   """
   epicWildcardId: EpicWildcardId
 
   """
-  Filter by iteration title
+  Filter by iteration title.
   """
   iterationTitle: String
 
   """
-  Filter by iteration ID wildcard
+  Filter by iteration ID wildcard.
   """
   iterationWildcardId: IterationWildcardId
 
@@ -2226,7 +2226,7 @@ input BoardIssueInput {
   search: String
 
   """
-  Filter by weight
+  Filter by weight.
   """
   weight: String
 }
@@ -2236,7 +2236,7 @@ Represents a list for an issue board
 """
 type BoardList {
   """
-  Assignee in the list
+  Assignee in the list.
   """
   assignee: User
 
@@ -2286,7 +2286,7 @@ type BoardList {
   issuesCount: Int
 
   """
-  Iteration of the list
+  Iteration of the list.
   """
   iteration: Iteration
 
@@ -2296,7 +2296,7 @@ type BoardList {
   label: Label
 
   """
-  The current limit metric for the list
+  The current limit metric for the list.
   """
   limitMetric: ListLimitMetric
 
@@ -2306,17 +2306,17 @@ type BoardList {
   listType: String!
 
   """
-  Maximum number of issues in the list
+  Maximum number of issues in the list.
   """
   maxIssueCount: Int
 
   """
-  Maximum weight of issues in the list
+  Maximum weight of issues in the list.
   """
   maxIssueWeight: Int
 
   """
-  Milestone of the list
+  Milestone of the list.
   """
   milestone: Milestone
 
@@ -2331,7 +2331,7 @@ type BoardList {
   title: String!
 
   """
-  Total weight of all issues in the list
+  Total weight of all issues in the list.
   """
   totalWeight: Int
 }
@@ -2508,27 +2508,27 @@ Represents the total number of issues and their weights for a particular day
 """
 type BurnupChartDailyTotals {
   """
-  Number of closed issues as of this day
+  Number of closed issues as of this day.
   """
   completedCount: Int!
 
   """
-  Total weight of closed issues as of this day
+  Total weight of closed issues as of this day.
   """
   completedWeight: Int!
 
   """
-  Date for burnup totals
+  Date for burnup totals.
   """
   date: ISO8601Date!
 
   """
-  Number of issues as of this day
+  Number of issues as of this day.
   """
   scopeCount: Int!
 
   """
-  Total weight of issues as of this day
+  Total weight of issues as of this day.
   """
   scopeWeight: Int!
 }
@@ -3294,27 +3294,27 @@ type CiStageEdge {
 
 type ClusterAgent {
   """
-  Timestamp the cluster agent was created
+  Timestamp the cluster agent was created.
   """
   createdAt: Time
 
   """
-  ID of the cluster agent
+  ID of the cluster agent.
   """
   id: ID!
 
   """
-  Name of the cluster agent
+  Name of the cluster agent.
   """
   name: String
 
   """
-  The project this cluster agent is associated with
+  The project this cluster agent is associated with.
   """
   project: Project
 
   """
-  Tokens associated with the cluster agent
+  Tokens associated with the cluster agent.
   """
   tokens(
     """
@@ -3339,7 +3339,7 @@ type ClusterAgent {
   ): ClusterAgentTokenConnection
 
   """
-  Timestamp the cluster agent was updated
+  Timestamp the cluster agent was updated.
   """
   updatedAt: Time
 }
@@ -3416,17 +3416,17 @@ type ClusterAgentEdge {
 
 type ClusterAgentToken {
   """
-  Cluster agent this token is associated with
+  Cluster agent this token is associated with.
   """
   clusterAgent: ClusterAgent
 
   """
-  Timestamp the token was created
+  Timestamp the token was created.
   """
   createdAt: Time
 
   """
-  Global ID of the token
+  Global ID of the token.
   """
   id: ClustersAgentTokenID!
 }
@@ -3927,22 +3927,22 @@ Represents a ComplianceFramework associated with a Project
 """
 type ComplianceFramework {
   """
-  Hexadecimal representation of compliance framework's label color
+  Hexadecimal representation of compliance framework's label color.
   """
   color: String!
 
   """
-  Description of the compliance framework
+  Description of the compliance framework.
   """
   description: String!
 
   """
-  Compliance framework ID
+  Compliance framework ID.
   """
   id: ID!
 
   """
-  Name of the compliance framework
+  Name of the compliance framework.
   """
   name: String!
 
@@ -5889,22 +5889,22 @@ Represents a DAST scanner profile
 """
 type DastScannerProfile {
   """
-  Relative web path to the edit page of a scanner profile
+  Relative web path to the edit page of a scanner profile.
   """
   editPath: String
 
   """
-  ID of the DAST scanner profile Deprecated in 13.6: Use `id`.
+  ID of the DAST scanner profile. Deprecated in 13.6: Use `id`.
   """
   globalId: DastScannerProfileID! @deprecated(reason: "Use `id`. Deprecated in 13.6.")
 
   """
-  ID of the DAST scanner profile
+  ID of the DAST scanner profile.
   """
   id: DastScannerProfileID!
 
   """
-  Name of the DAST scanner profile
+  Name of the DAST scanner profile.
   """
   profileName: String
 
@@ -5919,12 +5919,12 @@ type DastScannerProfile {
   showDebugMessages: Boolean!
 
   """
-  The maximum number of minutes allowed for the spider to traverse the site
+  The maximum number of minutes allowed for the spider to traverse the site.
   """
   spiderTimeout: Int
 
   """
-  The maximum number of seconds allowed for the site under test to respond to a request
+  The maximum number of seconds allowed for the site under test to respond to a request.
   """
   targetTimeout: Int
 
@@ -6160,27 +6160,27 @@ Represents a DAST Site Profile
 """
 type DastSiteProfile {
   """
-  Relative web path to the edit page of a site profile
+  Relative web path to the edit page of a site profile.
   """
   editPath: String
 
   """
-  ID of the site profile
+  ID of the site profile.
   """
   id: DastSiteProfileID!
 
   """
-  Normalized URL of the target to be scanned
+  Normalized URL of the target to be scanned.
   """
   normalizedTargetUrl: String
 
   """
-  The name of the site profile
+  The name of the site profile.
   """
   profileName: String
 
   """
-  The URL of the target to be scanned
+  The URL of the target to be scanned.
   """
   targetUrl: String
 
@@ -6190,7 +6190,7 @@ type DastSiteProfile {
   userPermissions: DastSiteProfilePermissions!
 
   """
-  The current validation status of the site profile
+  The current validation status of the site profile.
   """
   validationStatus: DastSiteProfileValidationStatusEnum
 }
@@ -6462,17 +6462,17 @@ Represents a DAST Site Validation
 """
 type DastSiteValidation {
   """
-  Global ID of the site validation
+  Global ID of the site validation.
   """
   id: DastSiteValidationID!
 
   """
-  Normalized URL of the target to be validated
+  Normalized URL of the target to be validated.
   """
   normalizedTargetUrl: String
 
   """
-  Status of the site validation
+  Status of the site validation.
   """
   status: DastSiteProfileValidationStatusEnum!
 }
@@ -7936,22 +7936,22 @@ Segment
 """
 type DevopsAdoptionSegment {
   """
-  Assigned groups
+  Assigned groups.
   """
   groups: [Group!]
 
   """
-  ID of the segment
+  ID of the segment.
   """
   id: ID!
 
   """
-  The latest adoption metrics for the segment
+  The latest adoption metrics for the segment.
   """
   latestSnapshot: DevopsAdoptionSnapshot
 
   """
-  Name of the segment
+  Name of the segment.
   """
   name: String!
 }
@@ -7996,52 +7996,52 @@ Snapshot
 """
 type DevopsAdoptionSnapshot {
   """
-  At least one deployment succeeded
+  At least one deployment succeeded.
   """
   deploySucceeded: Boolean!
 
   """
-  The end time for the snapshot where the data points were collected
+  The end time for the snapshot where the data points were collected.
   """
   endTime: Time!
 
   """
-  At least one issue was opened
+  At least one issue was opened.
   """
   issueOpened: Boolean!
 
   """
-  At least one merge request was approved
+  At least one merge request was approved.
   """
   mergeRequestApproved: Boolean!
 
   """
-  At least one merge request was opened
+  At least one merge request was opened.
   """
   mergeRequestOpened: Boolean!
 
   """
-  At least one pipeline succeeded
+  At least one pipeline succeeded.
   """
   pipelineSucceeded: Boolean!
 
   """
-  The time the snapshot was recorded
+  The time the snapshot was recorded.
   """
   recordedAt: Time!
 
   """
-  At least one runner was used
+  At least one runner was used.
   """
   runnerConfigured: Boolean!
 
   """
-  At least one security scan succeeded
+  At least one security scan succeeded.
   """
   securityScanSucceeded: Boolean!
 
   """
-  The start time for the snapshot where the data points were collected
+  The start time for the snapshot where the data points were collected.
   """
   startTime: Time!
 }
@@ -9337,22 +9337,22 @@ Counts of descendent epics
 """
 type EpicDescendantCount {
   """
-  Number of closed child epics
+  Number of closed child epics.
   """
   closedEpics: Int
 
   """
-  Number of closed epic issues
+  Number of closed epic issues.
   """
   closedIssues: Int
 
   """
-  Number of opened child epics
+  Number of opened child epics.
   """
   openedEpics: Int
 
   """
-  Number of opened epic issues
+  Number of opened epic issues.
   """
   openedIssues: Int
 }
@@ -9362,12 +9362,12 @@ Total weight of open and closed descendant issues
 """
 type EpicDescendantWeights {
   """
-  Total weight of completed (closed) issues in this epic, including epic descendants
+  Total weight of completed (closed) issues in this epic, including epic descendants.
   """
   closedIssues: Int
 
   """
-  Total weight of opened issues in this epic, including epic descendants
+  Total weight of opened issues in this epic, including epic descendants.
   """
   openedIssues: Int
 }
@@ -9392,17 +9392,17 @@ Health status of child issues
 """
 type EpicHealthStatus {
   """
-  Number of issues at risk
+  Number of issues at risk.
   """
   issuesAtRisk: Int
 
   """
-  Number of issues that need attention
+  Number of issues that need attention.
   """
   issuesNeedingAttention: Int
 
   """
-  Number of issues on track
+  Number of issues on track.
   """
   issuesOnTrack: Int
 }
@@ -9577,7 +9577,7 @@ type EpicIssue implements CurrentUserTodos & Noteable {
   epic: Epic
 
   """
-  ID of the epic-issue relation
+  ID of the epic-issue relation.
   """
   epicIssueId: ID!
 
@@ -9597,7 +9597,7 @@ type EpicIssue implements CurrentUserTodos & Noteable {
   humanTotalTimeSpent: String
 
   """
-  Global ID of the epic-issue relation
+  Global ID of the epic-issue relation.
   """
   id: ID
 
@@ -9717,7 +9717,7 @@ type EpicIssue implements CurrentUserTodos & Noteable {
   ): String!
 
   """
-  URI path of the epic-issue relation
+  URI path of the epic-issue relation.
   """
   relationPath: String
 
@@ -9852,7 +9852,7 @@ type EpicIssueConnection {
   pageInfo: PageInfo!
 
   """
-  Total weight of issues collection
+  Total weight of issues collection.
   """
   weight: Int!
 }
@@ -10557,12 +10557,12 @@ type GrafanaIntegration {
 
 type Group {
   """
-  Size limit for repositories in the namespace in bytes
+  Size limit for repositories in the namespace in bytes.
   """
   actualRepositorySizeLimit: Float
 
   """
-  Additional storage purchased for the root namespace in bytes
+  Additional storage purchased for the root namespace in bytes.
   """
   additionalPurchasedStorageSize: Float
 
@@ -10617,7 +10617,7 @@ type Group {
   ): BoardConnection
 
   """
-  Represents the code coverage activity for this group
+  Represents the code coverage activity for this group.
   """
   codeCoverageActivities(
     """
@@ -10718,7 +10718,7 @@ type Group {
   containerRepositoriesCount: Int!
 
   """
-  Includes at least one project where the repository size exceeds the limit
+  Includes at least one project where the repository size exceeds the limit.
   """
   containsLockedProjects: Boolean!
 
@@ -10763,7 +10763,7 @@ type Group {
   emailsDisabled: Boolean
 
   """
-  Find a single epic
+  Find a single epic.
   """
   epic(
     """
@@ -10841,7 +10841,7 @@ type Group {
   ): Epic
 
   """
-  Find a single epic board
+  Find a single epic board.
   """
   epicBoard(
     """
@@ -10851,7 +10851,7 @@ type Group {
   ): EpicBoard
 
   """
-  Find epic boards
+  Find epic boards.
   """
   epicBoards(
     """
@@ -10876,7 +10876,7 @@ type Group {
   ): EpicBoardConnection
 
   """
-  Find epics
+  Find epics.
   """
   epics(
     """
@@ -11034,7 +11034,7 @@ type Group {
   id: ID!
 
   """
-  Status of the temporary storage increase
+  Status of the temporary storage increase.
   """
   isTemporaryStorageIncreaseEnabled: Boolean!
 
@@ -11169,7 +11169,7 @@ type Group {
   ): IssueConnection
 
   """
-  Find iterations
+  Find iterations.
   """
   iterations(
     """
@@ -11515,7 +11515,7 @@ type Group {
   ): ProjectConnection!
 
   """
-  Number of projects in the root namespace where the repository size exceeds the limit
+  Number of projects in the root namespace where the repository size exceeds the limit.
   """
   repositorySizeExcessProjectCount: Int!
 
@@ -11540,12 +11540,12 @@ type Group {
   shareWithGroupLock: Boolean
 
   """
-  Group statistics
+  Group statistics.
   """
   stats: GroupStats
 
   """
-  Total storage limit of the root namespace in bytes
+  Total storage limit of the root namespace in bytes.
   """
   storageSizeLimit: Float
 
@@ -11555,12 +11555,12 @@ type Group {
   subgroupCreationLevel: String
 
   """
-  Date until the temporary storage increase is active
+  Date until the temporary storage increase is active.
   """
   temporaryStorageIncreaseEndsOn: Time
 
   """
-  Time logged in issues by group members
+  Time logged in issues by group members.
   """
   timelogs(
     """
@@ -11605,12 +11605,12 @@ type Group {
   ): TimelogConnection!
 
   """
-  Total repository size of all projects in the root namespace in bytes
+  Total repository size of all projects in the root namespace in bytes.
   """
   totalRepositorySize: Float
 
   """
-  Total excess repository size of all projects in the root namespace in bytes
+  Total excess repository size of all projects in the root namespace in bytes.
   """
   totalRepositorySizeExcess: Float
 
@@ -11630,7 +11630,7 @@ type Group {
   visibility: String
 
   """
-  Vulnerabilities reported on the projects in the group and its subgroups
+  Vulnerabilities reported on the projects in the group and its subgroups.
   """
   vulnerabilities(
     """
@@ -11695,7 +11695,7 @@ type Group {
   ): VulnerabilityConnection
 
   """
-  Number of vulnerabilities per day for the projects in the group and its subgroups
+  Number of vulnerabilities per day for the projects in the group and its subgroups.
   """
   vulnerabilitiesCountByDay(
     """
@@ -11731,7 +11731,7 @@ type Group {
 
   """
   Number of vulnerabilities per severity level, per day, for the projects in the
-  group and its subgroups Deprecated in 13.3: Use `vulnerabilitiesCountByDay`.
+  group and its subgroups. Deprecated in 13.3: Use `vulnerabilitiesCountByDay`.
   """
   vulnerabilitiesCountByDayAndSeverity(
     """
@@ -11766,7 +11766,7 @@ type Group {
   ): VulnerabilitiesCountByDayAndSeverityConnection @deprecated(reason: "Use `vulnerabilitiesCountByDay`. Deprecated in 13.3.")
 
   """
-  Represents vulnerable project counts for each grade
+  Represents vulnerable project counts for each grade.
   """
   vulnerabilityGrades(
     """
@@ -11776,7 +11776,7 @@ type Group {
   ): [VulnerableProjectsByGrade!]!
 
   """
-  Vulnerability scanners reported on the project vulnerabilities of the group and its subgroups
+  Vulnerability scanners reported on the project vulnerabilities of the group and its subgroups.
   """
   vulnerabilityScanners(
     """
@@ -11801,7 +11801,7 @@ type Group {
   ): VulnerabilityScannerConnection
 
   """
-  Counts for each vulnerability severity in the group and its subgroups
+  Counts for each vulnerability severity in the group and its subgroups.
   """
   vulnerabilitySeveritiesCount(
     """
@@ -13058,7 +13058,7 @@ type IssueConnection {
   pageInfo: PageInfo!
 
   """
-  Total weight of issues collection
+  Total weight of issues collection.
   """
   weight: Int!
 }
@@ -14656,12 +14656,12 @@ type MergeRequest implements CurrentUserTodos & Noteable {
   allowCollaboration: Boolean
 
   """
-  Number of approvals left
+  Number of approvals left.
   """
   approvalsLeft: Int
 
   """
-  Number of approvals required
+  Number of approvals required.
   """
   approvalsRequired: Int
 
@@ -14971,6 +14971,7 @@ type MergeRequest implements CurrentUserTodos & Noteable {
   mergeStatus: String
 
   """
+  Number of merge requests in the merge train.
   """
   mergeTrainsCount: Int
 
@@ -16524,12 +16525,12 @@ enum MutationOperationMode {
 
 type Namespace {
   """
-  Size limit for repositories in the namespace in bytes
+  Size limit for repositories in the namespace in bytes.
   """
   actualRepositorySizeLimit: Float
 
   """
-  Additional storage purchased for the root namespace in bytes
+  Additional storage purchased for the root namespace in bytes.
   """
   additionalPurchasedStorageSize: Float
 
@@ -16565,7 +16566,7 @@ type Namespace {
   ): ComplianceFrameworkConnection
 
   """
-  Includes at least one project where the repository size exceeds the limit
+  Includes at least one project where the repository size exceeds the limit.
   """
   containsLockedProjects: Boolean!
 
@@ -16595,7 +16596,7 @@ type Namespace {
   id: ID!
 
   """
-  Status of the temporary storage increase
+  Status of the temporary storage increase.
   """
   isTemporaryStorageIncreaseEnabled: Boolean!
 
@@ -16665,7 +16666,7 @@ type Namespace {
   ): ProjectConnection!
 
   """
-  Number of projects in the root namespace where the repository size exceeds the limit
+  Number of projects in the root namespace where the repository size exceeds the limit.
   """
   repositorySizeExcessProjectCount: Int!
 
@@ -16680,22 +16681,22 @@ type Namespace {
   rootStorageStatistics: RootStorageStatistics
 
   """
-  Total storage limit of the root namespace in bytes
+  Total storage limit of the root namespace in bytes.
   """
   storageSizeLimit: Float
 
   """
-  Date until the temporary storage increase is active
+  Date until the temporary storage increase is active.
   """
   temporaryStorageIncreaseEndsOn: Time
 
   """
-  Total repository size of all projects in the root namespace in bytes
+  Total repository size of all projects in the root namespace in bytes.
   """
   totalRepositorySize: Float
 
   """
-  Total excess repository size of all projects in the root namespace in bytes
+  Total excess repository size of all projects in the root namespace in bytes.
   """
   totalRepositorySizeExcess: Float
 
@@ -16807,12 +16808,12 @@ input NegatedBoardIssueInput {
   authorUsername: String
 
   """
-  Filter by epic ID. Incompatible with epicWildcardId
+  Filter by epic ID. Incompatible with epicWildcardId.
   """
   epicId: EpicID
 
   """
-  Filter by iteration title
+  Filter by iteration title.
   """
   iterationTitle: String
 
@@ -16837,7 +16838,7 @@ input NegatedBoardIssueInput {
   releaseTag: String
 
   """
-  Filter by weight
+  Filter by weight.
   """
   weight: String
 }
@@ -18130,7 +18131,7 @@ type Pipeline {
   retryable: Boolean!
 
   """
-  Vulnerability and scanned resource counts for each security scanner of the pipeline
+  Vulnerability and scanned resource counts for each security scanner of the pipeline.
   """
   securityReportSummary: SecurityReportSummary
 
@@ -18437,7 +18438,7 @@ enum PipelineStatusEnum {
 
 type Project {
   """
-  Size limit for the repository in bytes
+  Size limit for the repository in bytes.
   """
   actualRepositorySizeLimit: Float
 
@@ -18572,7 +18573,7 @@ type Project {
   ): AlertManagementIntegrationConnection
 
   """
-  Extract alert fields from payload for custom mapping
+  Extract alert fields from payload for custom mapping.
   """
   alertManagementPayloadFields(
     """
@@ -18653,7 +18654,7 @@ type Project {
   ciCdSettings: ProjectCiCdSetting
 
   """
-  Find a single cluster agent by name
+  Find a single cluster agent by name.
   """
   clusterAgent(
     """
@@ -18663,7 +18664,7 @@ type Project {
   ): ClusterAgent
 
   """
-  Cluster agents associated with the project
+  Cluster agents associated with the project.
   """
   clusterAgents(
     """
@@ -18688,12 +18689,12 @@ type Project {
   ): ClusterAgentConnection
 
   """
-  Code coverage summary associated with the project
+  Code coverage summary associated with the project.
   """
   codeCoverageSummary: CodeCoverageSummary
 
   """
-  Compliance frameworks associated with the project
+  Compliance frameworks associated with the project.
   """
   complianceFrameworks(
     """
@@ -18994,7 +18995,7 @@ type Project {
   importStatus: String
 
   """
-  Incident Management On-call schedules of the project
+  Incident Management On-call schedules of the project.
   """
   incidentManagementOncallSchedules(
     """
@@ -19339,7 +19340,7 @@ type Project {
   issuesEnabled: Boolean
 
   """
-  Find iterations
+  Find iterations.
   """
   iterations(
     """
@@ -19883,7 +19884,7 @@ type Project {
   repository: Repository
 
   """
-  Size of repository that exceeds the limit in bytes
+  Size of repository that exceeds the limit in bytes.
   """
   repositorySizeExcess: Float
 
@@ -19893,7 +19894,7 @@ type Project {
   requestAccessEnabled: Boolean
 
   """
-  Find a single requirement
+  Find a single requirement.
   """
   requirement(
     """
@@ -19928,12 +19929,12 @@ type Project {
   ): Requirement
 
   """
-  Number of requirements for the project by their state
+  Number of requirements for the project by their state.
   """
   requirementStatesCount: RequirementStatesCount
 
   """
-  Find requirements
+  Find requirements.
   """
   requirements(
     """
@@ -19993,12 +19994,12 @@ type Project {
   sastCiConfiguration: SastCiConfiguration
 
   """
-  Path to project's security dashboard
+  Path to project's security dashboard.
   """
   securityDashboardPath: String
 
   """
-  Information about security analyzers used in the project
+  Information about security analyzers used in the project.
   """
   securityScanners: SecurityScanners
 
@@ -20183,7 +20184,7 @@ type Project {
   visibility: String
 
   """
-  Vulnerabilities reported on the project
+  Vulnerabilities reported on the project.
   """
   vulnerabilities(
     """
@@ -20248,7 +20249,7 @@ type Project {
   ): VulnerabilityConnection
 
   """
-  Number of vulnerabilities per day for the project
+  Number of vulnerabilities per day for the project.
   """
   vulnerabilitiesCountByDay(
     """
@@ -20283,7 +20284,7 @@ type Project {
   ): VulnerabilitiesCountByDayConnection
 
   """
-  Vulnerability scanners reported on the project vulnerabilities
+  Vulnerability scanners reported on the project vulnerabilities.
   """
   vulnerabilityScanners(
     """
@@ -20308,7 +20309,7 @@ type Project {
   ): VulnerabilityScannerConnection
 
   """
-  Counts for each vulnerability severity in the project
+  Counts for each vulnerability severity in the project.
   """
   vulnerabilitySeveritiesCount(
     """
@@ -21021,7 +21022,7 @@ type Query {
   designManagement: DesignManagement!
 
   """
-  Get configured DevOps adoption segments on the instance
+  Get configured DevOps adoption segments on the instance.
   """
   devopsAdoptionSegments(
     """
@@ -21056,7 +21057,7 @@ type Query {
   ): String!
 
   """
-  Find a Geo node
+  Find a Geo node.
   """
   geoNode(
     """
@@ -21076,7 +21077,7 @@ type Query {
   ): Group
 
   """
-  Fields related to Instance Security Dashboard
+  Fields related to Instance Security Dashboard.
   """
   instanceSecurityDashboard: InstanceSecurityDashboard
 
@@ -21131,11 +21132,11 @@ type Query {
   ): Issue
 
   """
-  Find an iteration
+  Find an iteration.
   """
   iteration(
     """
-    Find an iteration by its ID
+    Find an iteration by its ID.
     """
     id: IterationID!
   ): Iteration
@@ -21406,7 +21407,7 @@ type Query {
   ): UserConnection
 
   """
-  Vulnerabilities reported on projects on the current user's instance security dashboard
+  Vulnerabilities reported on projects on the current user's instance security dashboard.
   """
   vulnerabilities(
     """
@@ -21471,7 +21472,7 @@ type Query {
   ): VulnerabilityConnection
 
   """
-  Number of vulnerabilities per day for the projects on the current user's instance security dashboard
+  Number of vulnerabilities per day for the projects on the current user's instance security dashboard.
   """
   vulnerabilitiesCountByDay(
     """
@@ -21507,7 +21508,7 @@ type Query {
 
   """
   Number of vulnerabilities per severity level, per day, for the projects on the
-  current user's instance security dashboard Deprecated in 13.3: Use
+  current user's instance security dashboard. Deprecated in 13.3: Use
   `vulnerabilitiesCountByDay`.
   """
   vulnerabilitiesCountByDayAndSeverity(
@@ -21543,11 +21544,11 @@ type Query {
   ): VulnerabilitiesCountByDayAndSeverityConnection @deprecated(reason: "Use `vulnerabilitiesCountByDay`. Deprecated in 13.3.")
 
   """
-  Find a vulnerability
+  Find a vulnerability.
   """
   vulnerability(
     """
-    The Global ID of the Vulnerability
+    The Global ID of the Vulnerability.
     """
     id: VulnerabilityID!
   ): Vulnerability

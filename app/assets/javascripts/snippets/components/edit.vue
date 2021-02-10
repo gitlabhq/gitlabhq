@@ -18,6 +18,7 @@ import CreateSnippetMutation from '../mutations/createSnippet.mutation.graphql';
 import { getSnippetMixin } from '../mixins/snippets';
 import { SNIPPET_CREATE_MUTATION_ERROR, SNIPPET_UPDATE_MUTATION_ERROR } from '../constants';
 import { markBlobPerformance } from '../utils/blob';
+import { getErrorMessage } from '../utils/error';
 
 import SnippetBlobActionsEdit from './snippet_blob_actions_edit.vue';
 import SnippetVisibilityEdit from './snippet_visibility_edit.vue';
@@ -190,7 +191,10 @@ export default {
           }
         })
         .catch((e) => {
-          this.flashAPIFailure(e);
+          // eslint-disable-next-line no-console
+          console.error('[gitlab] unexpected error while updating snippet', e);
+
+          this.flashAPIFailure(getErrorMessage(e));
         });
     },
     updateActions(actions) {

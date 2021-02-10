@@ -172,9 +172,9 @@ To set a limit on how long personal access tokens are valid:
 1. Fill in the **Maximum allowable lifetime for personal access tokens (days)** field.
 1. Click **Save changes**.
 
-Once a lifetime for personal access tokens is set, GitLab will:
+Once a lifetime for personal access tokens is set, GitLab:
 
-- Apply the lifetime for new personal access tokens, and require users to set an expiration date
+- Applies the lifetime for new personal access tokens, and require users to set an expiration date
   and a date no later than the allowed lifetime.
 - After three hours, revoke old tokens with no expiration date or with a lifetime longer than the
   allowed lifetime. Three hours is given to allow administrators to change the allowed lifetime,

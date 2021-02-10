@@ -15,7 +15,7 @@ module Gitlab
         private
 
         def deployments_count
-          if Feature.enabled?(:query_deploymenys_via_finished_at_in_vsa)
+          if Feature.enabled?(:query_deploymenys_via_finished_at_in_vsa, default_enabled: :yaml)
             DeploymentsFinder
               .new(project: @project, finished_after: @from, finished_before: @to, status: :success)
               .execute

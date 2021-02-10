@@ -8,21 +8,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Code Review Analytics **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38062) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.7.
-> - Moved to [GitLab Premium](https://about.gitlab.com/pricing/) due to Starter/Bronze being [discontinued](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) in 13.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38062) in GitLab 12.7.
+> - Moved to GitLab Premium in 13.9.
 
-Code Review Analytics makes it easy to view the longest-running reviews among open merge requests and
-enables you to:
+Use Code Review Analytics to view the longest-running reviews among open merge
+requests, and:
 
-1. Take action on individual merge requests.
-1. Reduce overall cycle time.
+- Take action on individual merge requests.
+- Reduce overall cycle time.
 
 NOTE:
 Initially, no data appears. Data is populated as users comment on open merge requests.
 
 ## Overview
 
-Code Review Analytics displays a table of open merge requests that have at least one non-author comment. The review time is measured from the time the first non-author comment was submitted.
+Code Review Analytics is available to users with Reporter access and above, and displays a table of open merge requests that have at least one non-author comment. The review time is measured from the time the first non-author comment was submitted.
 
 To access Code Review Analytics, from your project's menu, go to **Project Analytics > Code Review**.
 
@@ -54,8 +54,3 @@ For example:
 - Lots of comments or commits? Maybe the code is too complex.
 - A particular author is involved? Maybe more training is required.
 - Few comments and approvers? Maybe your team is understaffed.
-
-## Permissions
-
-- On [Starter or Bronze tier](https://about.gitlab.com/pricing/) and above.
-- By users with Reporter access and above.

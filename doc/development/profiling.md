@@ -106,6 +106,8 @@ environment variable `ENABLE_SHERLOCK` to a non empty value. For example:
 ENABLE_SHERLOCK=1 bundle exec rails s
 ```
 
+Sherlock is also [available though the GitLab GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/howto/sherlock.md).
+
 Recorded transactions can be found by navigating to `/sherlock/transactions`.
 
 ## Bullet

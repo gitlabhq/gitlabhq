@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`AlertsServiceForm with default values renders "authorization-key" input 1`] = `"<gl-form-input-stub id=\\"authorization-key\\" readonly=\\"true\\" value=\\"abcedfg123\\"></gl-form-input-stub>"`;
-
-exports[`AlertsServiceForm with default values renders "url" input 1`] = `"<gl-form-input-stub id=\\"url\\" readonly=\\"true\\" value=\\"https://gitlab.com/endpoint-url\\"></gl-form-input-stub>"`;
-
-exports[`AlertsServiceForm with default values renders toggle button 1`] = `"<toggle-button-stub id=\\"activated\\"></toggle-button-stub>"`;
-
-exports[`AlertsServiceForm with default values shows description and docs links 1`] = `"<p><gl-sprintf-stub message=\\"You must provide this URL and authorization key to authorize an external service to send alerts to GitLab. You can provide this URL and key to multiple services. After configuring an external service, alerts from your service will display on the GitLab %{linkStart}Alerts%{linkEnd} page.\\"></gl-sprintf-stub></p><p><gl-sprintf-stub message=\\"Review your external service's documentation to learn where to provide this information to your external service, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint.\\"></gl-sprintf-stub></p>"`;

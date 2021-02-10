@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/textproto"
 	"net/url"
 	"strconv"
 	"strings"
@@ -188,6 +189,8 @@ func (api *API) newRequest(r *http.Request, suffix string) (*http.Request, error
 
 	authReq = authReq.WithContext(r.Context())
 
+	removeConnectionHeaders(authReq.Header)
+
 	// Clean some headers when issuing a new request without body
 	authReq.Header.Del("Content-Type")
 	authReq.Header.Del("Content-Encoding")
@@ -203,7 +206,9 @@ func (api *API) newRequest(r *http.Request, suffix string) (*http.Request, error
 	authReq.Header.Del("Proxy-Authenticate")
 	authReq.Header.Del("Proxy-Authorization")
 	authReq.Header.Del("Te")
-	authReq.Header.Del("Trailers")
+	// "Trailer", not "Trailers" as per rfc2616; See errata https://www.rfc-editor.org/errata_search.php?eid=4522
+	// See https://httpwg.org/http-core/draft-ietf-httpbis-semantics-latest.html#field.connection
+	authReq.Header.Del("Trailer")
 	authReq.Header.Del("Upgrade")
 
 	// Also forward the Host header, which is excluded from the Header map by the http library.
@@ -288,6 +293,18 @@ func (api *API) doRequestWithoutRedirects(authReq *http.Request) (*http.Response
 	signingTripper := secret.NewRoundTripper(api.Client.Transport, api.Version)
 
 	return signingTripper.RoundTrip(authReq)
+}
+
+// removeConnectionHeaders removes hop-by-hop headers listed in the "Connection" header of h.
+// See https://tools.ietf.org/html/rfc7230#section-6.1
+func removeConnectionHeaders(h http.Header) {
+	for _, f := range h["Connection"] {
+		for _, sf := range strings.Split(f, ",") {
+			if sf = textproto.TrimString(sf); sf != "" {
+				h.Del(sf)
+			}
+		}
+	}
 }
 
 func copyAuthHeader(httpResponse *http.Response, w http.ResponseWriter) {

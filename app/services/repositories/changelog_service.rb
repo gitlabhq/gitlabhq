@@ -39,8 +39,8 @@ module Repositories
       project,
       user,
       version:,
-      from:,
       to:,
+      from: nil,
       date: DateTime.now,
       branch: project.default_branch_or_master,
       trailer: DEFAULT_TRAILER,
@@ -61,6 +61,8 @@ module Repositories
     # rubocop: enable Metrics/ParameterLists
 
     def execute
+      from = start_of_commit_range
+
       # For every entry we want to only include the merge request that
       # originally introduced the commit, which is the oldest merge request that
       # contains the commit. We fetch there merge requests in batches, reducing
@@ -71,7 +73,7 @@ module Repositories
         .new(version: @version, date: @date, config: config)
 
       commits =
-        CommitsWithTrailerFinder.new(project: @project, from: @from, to: @to)
+        CommitsWithTrailerFinder.new(project: @project, from: from, to: @to)
 
       commits.each_page(@trailer) do |page|
         mrs = mrs_finder.execute(page)
@@ -94,6 +96,20 @@ module Repositories
       Gitlab::Changelog::Committer
         .new(@project, @user)
         .commit(release: release, file: @file, branch: @branch, message: @message)
+    end
+
+    def start_of_commit_range
+      return @from if @from
+
+      if (prev_tag = PreviousTagFinder.new(@project).execute(@version))
+        return prev_tag.target_commit.id
+      end
+
+      raise(
+        Gitlab::Changelog::Error,
+        'The commit start range is unspecified, and no previous tag ' \
+          'could be found to use instead'
+      )
     end
   end
 end

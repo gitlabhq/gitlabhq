@@ -23,7 +23,9 @@ module Gitlab
     end
 
     def self.verified?(env)
-      call(env)
+      minimal_env = env.slice('REQUEST_METHOD', 'rack.session', 'HTTP_X_CSRF_TOKEN')
+                      .merge('rack.input' => '')
+      call(minimal_env)
 
       true
     rescue ActionController::InvalidAuthenticityToken

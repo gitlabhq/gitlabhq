@@ -67,6 +67,62 @@ RSpec.describe Repositories::ChangelogService do
     end
   end
 
+  describe '#start_of_commit_range' do
+    let(:project) { build_stubbed(:project) }
+    let(:user) { build_stubbed(:user) }
+
+    context 'when the "from" argument is specified' do
+      it 'returns the value of the argument' do
+        service = described_class
+          .new(project, user, version: '1.0.0', from: 'foo', to: 'bar')
+
+        expect(service.start_of_commit_range).to eq('foo')
+      end
+    end
+
+    context 'when the "from" argument is unspecified' do
+      it 'returns the tag commit of the previous version' do
+        service = described_class
+          .new(project, user, version: '1.0.0', to: 'bar')
+
+        finder_spy = instance_spy(Repositories::PreviousTagFinder)
+        tag = double(:tag, target_commit: double(:commit, id: '123'))
+
+        allow(Repositories::PreviousTagFinder)
+          .to receive(:new)
+          .with(project)
+          .and_return(finder_spy)
+
+        allow(finder_spy)
+          .to receive(:execute)
+          .with('1.0.0')
+          .and_return(tag)
+
+        expect(service.start_of_commit_range).to eq('123')
+      end
+
+      it 'raises an error when no tag is found' do
+        service = described_class
+          .new(project, user, version: '1.0.0', to: 'bar')
+
+        finder_spy = instance_spy(Repositories::PreviousTagFinder)
+
+        allow(Repositories::PreviousTagFinder)
+          .to receive(:new)
+          .with(project)
+          .and_return(finder_spy)
+
+        allow(finder_spy)
+          .to receive(:execute)
+          .with('1.0.0')
+          .and_return(nil)
+
+        expect { service.start_of_commit_range }
+          .to raise_error(Gitlab::Changelog::Error)
+      end
+    end
+  end
+
   def create_commit(project, user, params)
     params = { start_branch: 'master', branch_name: 'master' }.merge(params)
     Files::MultiService.new(project, user, params).execute.fetch(:result)
