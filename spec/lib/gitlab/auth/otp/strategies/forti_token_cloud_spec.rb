@@ -13,6 +13,8 @@ RSpec.describe Gitlab::Auth::Otp::Strategies::FortiTokenCloud do
   let(:otp_verification_url) { url + '/auth' }
   let(:access_token) { 'an_access_token' }
   let(:access_token_create_response_body) { '' }
+  let(:access_token_request_body) { { client_id: client_id, client_secret: client_secret } }
+  let(:headers) { { 'Content-Type': 'application/json' } }
 
   subject(:validate) { described_class.new(user).validate(otp_code) }
 
@@ -27,11 +29,8 @@ RSpec.describe Gitlab::Auth::Otp::Strategies::FortiTokenCloud do
       client_secret: client_secret
     )
 
-    access_token_request_body = { client_id: client_id,
-                                  client_secret: client_secret }
-
     stub_request(:post, access_token_create_url)
-      .with(body: JSON(access_token_request_body), headers: { 'Content-Type' => 'application/json' })
+      .with(body: JSON(access_token_request_body), headers: headers)
       .to_return(
         status: access_token_create_response_status,
         body: Gitlab::Json.generate(access_token_create_response_body),
@@ -78,6 +77,20 @@ RSpec.describe Gitlab::Auth::Otp::Strategies::FortiTokenCloud do
 
     it 'returns error' do
       expect(validate[:status]).to eq(:error)
+    end
+  end
+
+  context 'SSL Verification' do
+    let(:access_token_create_response_status) { 400 }
+
+    context 'with `Gitlab::HTTP`' do
+      it 'does not use a `verify` argument,'\
+         'thereby always performing SSL verification while making API calls' do
+        expect(Gitlab::HTTP).to receive(:post)
+          .with(access_token_create_url, body: JSON(access_token_request_body), headers: headers).and_call_original
+
+        validate
+      end
     end
   end
 

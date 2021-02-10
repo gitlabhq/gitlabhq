@@ -886,6 +886,7 @@ RSpec.describe API::Projects do
         merge_method: 'ff'
       }).tap do |attrs|
         attrs[:operations_access_level] = 'disabled'
+        attrs[:analytics_access_level] = 'disabled'
       end
 
       post api('/projects', user), params: project
