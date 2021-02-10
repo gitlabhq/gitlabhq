@@ -16,6 +16,7 @@ module Ci
     include ShaAttribute
     include FromUnion
     include UpdatedAtFilterable
+    include EachBatch
 
     MAX_OPEN_MERGE_REQUESTS_REFS = 4
 
