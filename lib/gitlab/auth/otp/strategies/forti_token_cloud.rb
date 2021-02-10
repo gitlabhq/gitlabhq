@@ -61,8 +61,7 @@ module Gitlab
               headers: {
                 'Content-Type': 'application/json'
               }.merge(headers),
-              body: body,
-              verify: false # FTC API Docs specifically mentions to turn off SSL Verification while making requests.
+              body: body
             )
           end
         end

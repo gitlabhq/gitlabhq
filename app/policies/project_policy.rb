@@ -218,6 +218,7 @@ class ProjectPolicy < BasePolicy
     enable :read_pages_content
     enable :read_release
     enable :read_analytics
+    enable :read_insights
   end
 
   # These abilities are not allowed to admins that are not members of the project,
@@ -447,6 +448,9 @@ class ProjectPolicy < BasePolicy
 
   rule { analytics_disabled }.policy do
     prevent(:read_analytics)
+    prevent(:read_insights)
+    prevent(:read_cycle_analytics)
+    prevent(:read_repository_graphs)
   end
 
   rule { wiki_disabled }.policy do
@@ -520,6 +524,7 @@ class ProjectPolicy < BasePolicy
     enable :read_cycle_analytics
     enable :read_pages_content
     enable :read_analytics
+    enable :read_insights
 
     # NOTE: may be overridden by IssuePolicy
     enable :read_issue

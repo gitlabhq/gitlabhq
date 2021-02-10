@@ -1,0 +1,5 @@
+---
+title: Prevent Denial of Service Attack on gitlab-shell
+merge_request:
+author:
+type: security
