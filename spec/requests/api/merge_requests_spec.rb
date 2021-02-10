@@ -1226,6 +1226,12 @@ RSpec.describe API::MergeRequests do
       end
     end
 
+    context 'when merge request author has only guest access' do
+      it_behaves_like 'rejects user from accessing merge request info' do
+        let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}" }
+      end
+    end
+
     context 'merge_request_metrics' do
       let(:pipeline) { create(:ci_empty_pipeline) }
 
@@ -1402,6 +1408,12 @@ RSpec.describe API::MergeRequests do
     it_behaves_like 'issuable participants endpoint' do
       let(:entity) { create(:merge_request, :simple, milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
     end
+
+    context 'when merge request author has only guest access' do
+      it_behaves_like 'rejects user from accessing merge request info' do
+        let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/participants" }
+      end
+    end
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/commits' do
@@ -1426,6 +1438,12 @@ RSpec.describe API::MergeRequests do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/commits", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    context 'when merge request author has only guest access' do
+      it_behaves_like 'rejects user from accessing merge request info' do
+        let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/commits" }
+      end
     end
   end
 
@@ -1500,6 +1518,12 @@ RSpec.describe API::MergeRequests do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/changes", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    context 'when merge request author has only guest access' do
+      it_behaves_like 'rejects user from accessing merge request info' do
+        let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/changes" }
+      end
     end
 
     it_behaves_like 'find an existing merge request'
@@ -1589,6 +1613,12 @@ RSpec.describe API::MergeRequests do
         get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines", guest)
 
         expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when merge request author has only guest access' do
+      it_behaves_like 'rejects user from accessing merge request info' do
+        let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines" }
       end
     end
   end
