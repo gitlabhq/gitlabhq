@@ -9,6 +9,7 @@ allowlist
 allowlisted
 allowlisting
 allowlists
+anonymization
 anonymized
 Ansible
 Anthos
@@ -81,6 +82,7 @@ Caddy
 callstack
 callstacks
 Camo
+canonicalized
 CentOS
 Certbot
 changeset
@@ -359,6 +361,8 @@ Nanoc
 negatable
 Netlify
 Nokogiri
+noteable
+noteables
 npm
 nullability
 nullable
@@ -689,6 +693,7 @@ unreplicated
 unresolve
 unresolved
 unresolving
+unsanitized
 unschedule
 unscoped
 unshare
@@ -736,6 +741,7 @@ WebdriverIO
 Webex
 webpack
 webserver
+Webservice
 websocket
 websockets
 whitepaper

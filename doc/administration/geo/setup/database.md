@@ -474,31 +474,29 @@ information, see [High Availability with Omnibus GitLab](../../postgresql/replic
 Support for Patroni is intended to replace `repmgr` as a
 [highly available PostgreSQL solution](../../postgresql/replication_and_failover.md)
 on the primary node, but it can also be used for PostgreSQL HA on a secondary
-node.
+site.
 
 Starting with GitLab 13.5, Patroni is available for _experimental_ use with Geo
-primary and secondary nodes. Due to its experimental nature, Patroni support is
+primary and secondary sites. Due to its experimental nature, Patroni support is
 subject to change without notice.
 
 This experimental implementation has the following limitations:
 
-- Whenever a new Leader is elected, the PgBouncer instance must be reconfigured
-  to point to the new Leader.
-- Whenever a new Leader is elected on the primary node, the Standby Leader on
-  the secondary needs to be reconfigured to point to the new Leader.
 - Whenever `gitlab-ctl reconfigure` runs on a Patroni Leader instance, there's a
   chance the node will be demoted due to the required short-time restart. To
   avoid this, you can pause auto-failover by running `gitlab-ctl patroni pause`.
   After a reconfigure, it resumes on its own.
 
-For instructions about how to set up Patroni on the primary node, see the
+For instructions about how to set up Patroni on the primary site, see the
 [PostgreSQL replication and failover with Omnibus GitLab](../../postgresql/replication_and_failover.md#patroni) page.
 
-If you are currently using `repmgr` on your Geo primary, see [these instructions](#migrating-from-repmgr-to-patroni) for migrating from `repmgr` to Patroni.
+If you are currently using `repmgr` on your Geo primary site, see [these instructions](#migrating-from-repmgr-to-patroni) for migrating from `repmgr` to Patroni.
 
-A production-ready and secure setup requires at least three Patroni instances on
-the primary site, and a similar configuration on the secondary sites. Be sure to
-use password credentials and other database best practices.
+A production-ready and secure setup requires at least three Consul nodes, three
+Patroni nodes, one internal load-balancing node on the primary site, and a similar
+configuration for the secondary site. The internal load balancer provides a single
+endpoint for connecting to the Patroni cluster's leader whenever a new leader is
+elected. Be sure to use [password credentials](../..//postgresql/replication_and_failover.md#database-authorization-for-patroni) and other database best practices.
 
 Similar to `repmgr`, using Patroni on a secondary node is optional.
 
@@ -555,7 +553,51 @@ Leader instance**:
    gitlab-ctl reconfigure
    ```
 
-### Step 2. Configure a Standby cluster on the secondary site
+### Step 2. Configure the internal load balancer on the primary site
+
+To avoid reconfiguring the Standby Leader on the secondary site whenever a new
+Leader is elected on the primary site, we'll need to set up a TCP internal load
+balancer which will give a single endpoint for connecting to the Patroni
+cluster's Leader.
+
+The Omnibus GitLab packages do not include a Load Balancer. Here's how you
+could do it with [HAProxy](https://www.haproxy.org/).
+
+The following IPs and names will be used as an example:
+
+- `10.6.0.21`: Patroni 1 (`patroni1.internal`)
+- `10.6.0.21`: Patroni 2 (`patroni2.internal`)
+- `10.6.0.22`: Patroni 3 (`patroni3.internal`)
+
+```plaintext
+global
+    log /dev/log local0
+    log localhost local1 notice
+    log stdout format raw local0
+
+defaults
+    log global
+    default-server inter 3s fall 3 rise 2 on-marked-down shutdown-sessions
+
+frontend internal-postgresql-tcp-in
+    bind *:5000
+    mode tcp
+    option tcplog
+
+    default_backend postgresql
+
+backend postgresql
+    option httpchk
+    http-check expect status 200
+
+    server patroni1.internal 10.6.0.21:5432 maxconn 100 check port 8008
+    server patroni2.internal 10.6.0.22:5432 maxconn 100 check port 8008
+    server patroni3.internal 10.6.0.23.195:5432 maxconn 100 check port 8008
+```
+
+Refer to your preferred Load Balancer's documentation for further guidance.
+
+### Step 3. Configure a Standby cluster on the secondary site
 
 NOTE:
 If you are converting a secondary site to a Patroni Cluster, you must start
@@ -589,8 +631,8 @@ For each Patroni instance on the secondary site:
 
    patroni['enable'] = false
    patroni['standby_cluster']['enable'] = true
-   patroni['standby_cluster']['host'] = 'PATRONI_PRIMARY_LEADER_IP' # This needs to be changed anytime the primary Leader changes
-   patroni['standby_cluster']['port'] = 5432
+   patroni['standby_cluster']['host'] = 'INTERNAL_LOAD_BALANCER_PRIMARY_IP'
+   patroni['standby_cluster']['port'] = INTERNAL_LOAD_BALANCER_PRIMARY_PORT
    patroni['standby_cluster']['primary_slot_name'] = 'geo_secondary' # Or the unique replication slot name you setup before
    patroni['replication_password'] = 'PLAIN_TEXT_POSTGRESQL_REPLICATION_PASSWORD'
    patroni['use_pg_rewind'] = true
@@ -642,7 +684,8 @@ With Patroni it's now possible to support that. In order to migrate the existing
 
 1. Make sure you have a Consul cluster setup on the secondary (similar to how you set it up on the primary).
 1. [Configure a permanent replication slot](#step-1-configure-patroni-permanent-replication-slot-on-the-primary-site).
-1. [Configure a Standby Cluster](#step-2-configure-a-standby-cluster-on-the-secondary-site)
+1. [Configure the internal load balancer](#step-2-configure-the-internal-load-balancer-on-the-primary-site).
+1. [Configure a Standby Cluster](#step-3-configure-a-standby-cluster-on-the-secondary-site)
    on that single node machine.
 
 You will end up with a "Standby Cluster" with a single node. That allows you to later on add additional Patroni nodes

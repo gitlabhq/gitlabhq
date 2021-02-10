@@ -305,7 +305,7 @@ and Elasticsearch index alias feature to perform the operation. We set up an ind
 `primary` index which is used by GitLab for reads/writes. When reindexing process starts, we temporarily pause
 the writes to the `primary` index. Then, we create another index and invoke the Reindex API which migrates the
 index data onto the new index. Once the reindexing job is complete, we switch to the new index by connecting the
-index alias to it which becomes the new `primary` index. At the end, we unpause the writes and normal operation resumes.
+index alias to it which becomes the new `primary` index. At the end, we resume the writes and normal operation resumes.
 
 ### Trigger the reindex via the Advanced Search administration
 

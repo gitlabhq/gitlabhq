@@ -25,7 +25,7 @@ If your feature requires data from both, ensure that the two have finished loadi
 
 ### Simulate slower connections when testing manually
 
-Add a network condition template to your browser's dev tools to enable you to toggle between a slow and a fast connection.
+Add a network condition template to your browser's developer tools to enable you to toggle between a slow and a fast connection.
 
 **Example:**
 
@@ -40,7 +40,7 @@ When setting event listeners, if not possible to use event delegation, ensure al
 
 Including when that expanded content is:
 
-- **Invisible** (`display: none;`). Some JavaScript requires the element to be visible to work properly (eg.: when taking measurements).
+- **Invisible** (`display: none;`). Some JavaScript requires the element to be visible to work properly, such as when taking measurements.
 - **Dynamic content** (AJAX/DOM manipulation).
 
 ### Using assertions to detect transient bugs caused by unmet conditions

@@ -17,11 +17,11 @@ Developers are expected to test database migrations prior to deploying to any en
 
 The [code review phase](../../../development/database_review.md) involves Database Reviewers and Maintainers to manually check the migrations committed. This often involves knowing and spotting problematic patterns and their particular behavior on GitLab.com from experience. There is no large-scale environment available that allows us to test database migrations before they are being merged.
 
-Testing in CI is done on a very small database. We mainly check forward/backward migration consistency, evaluate rubocop rules to detect well-known problematic behaviors (static code checking) and have a few other, rather technical checks in place (adding the right files etc). That is, we typically find code or other rather simple errors, but cannot surface any data related errors - which are also typically not covered by unit tests either.
+Testing in CI is done on a very small database. We mainly check forward/backward migration consistency, evaluate Rubocop rules to detect well-known problematic behaviors (static code checking) and have a few other, rather technical checks in place (adding the right files etc). That is, we typically find code or other rather simple errors, but cannot surface any data related errors - which are also typically not covered by unit tests either.
 
 Once merged, migrations are being deployed to the staging environment. Its database size is less than 5% of the production database size as of January 2021 and its recent data distribution does not resemble the production site. Oftentimes, we see migrations succeed in staging but then fail in production due to query timeouts or other unexpected problems. Even if we caught problems in staging, this is still expensive to reconcile and ideally we want to catch those problems as early as possible in the development cycle.
 
-Today, we have gained experience with working on a thin-cloned production database (more on this below) and already use it to provide developers with access to production query plans, automated query feedback and suggestions with optimizations. This is built around [Database Lab](https://gitlab.com/postgres-ai/database-lab) and [Joe](https://gitlab.com/postgres-ai/joe), both available through Slack (using chatops) and [postgres.ai](https://postgres.ai/).
+Today, we have gained experience with working on a thin-cloned production database (more on this below) and already use it to provide developers with access to production query plans, automated query feedback and suggestions with optimizations. This is built around [Database Lab](https://gitlab.com/postgres-ai/database-lab) and [Joe](https://gitlab.com/postgres-ai/joe), both available through Slack (using ChatOps) and [postgres.ai](https://postgres.ai/).
 
 ## Vision
 
@@ -97,7 +97,7 @@ The short-term goal is detailed in [this epic](https://gitlab.com/groups/gitlab-
 
 ### Mid-term - Improved feedback, query testing and background migration testing
 
-Mid-term, we plan to expand the level of detail the testing pipeline reports back to the Merge Request and expand its scope to cover query testing, too. By doing so, we use our experience from database code reviews and using thin-clone technology and bring this back closer to the GitLab workflow. Instead of reaching out to different tools (postgres.ai, joe, Slack, plan visualizations etc.) we bring this back to GitLab and working directly on the Merge Request.
+Mid-term, we plan to expand the level of detail the testing pipeline reports back to the Merge Request and expand its scope to cover query testing, too. By doing so, we use our experience from database code reviews and using thin-clone technology and bring this back closer to the GitLab workflow. Instead of reaching out to different tools (`postgres.ai`, `joe`, Slack, plan visualizations etc.) we bring this back to GitLab and working directly on the Merge Request.
 
 Secondly, we plan to cover background migrations testing, too. These are typically data migrations that are scheduled to run over a long period of time. The success of both the scheduling phase and the job execution phase typically depends a lot on data distribution - which only surfaces when running these migrations on actual production data. In order to become confident about a background migration, we plan to provide the following feedback:
 
@@ -122,9 +122,9 @@ An alternative approach we have discussed and abandoned is to "scrub" and anonym
 
 ## Who
 
-This effort is owned and driven by the [GitLab Database Team](https://about.gitlab.com/handbook/engineering/development/enablement/database/) with support from the [GitLab.com Reliability Datastores](https://about.gitlab.com/handbook/engineering/infrastructure/team/reliability/datastores/) team.
-
 <!-- vale gitlab.Spelling = NO -->
+
+This effort is owned and driven by the [GitLab Database Team](https://about.gitlab.com/handbook/engineering/development/enablement/database/) with support from the [GitLab.com Reliability Datastores](https://about.gitlab.com/handbook/engineering/infrastructure/team/reliability/datastores/) team.
 
 | Role                         | Who
 |------------------------------|-------------------------|
