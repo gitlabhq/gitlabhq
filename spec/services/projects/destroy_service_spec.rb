@@ -69,6 +69,12 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
       destroy_project(project, user, {})
     end
 
+    it 'performs cancel for project ci pipelines' do
+      expect(::Ci::AbortProjectPipelinesService).to receive_message_chain(:new, :execute).with(project)
+
+      destroy_project(project, user, {})
+    end
+
     context 'when project has remote mirrors' do
       let!(:project) do
         create(:project, :repository, namespace: user.namespace).tap do |project|
