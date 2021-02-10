@@ -542,7 +542,7 @@ class Note < ApplicationRecord
   end
 
   def skip_notification?
-    review.present? || author.ghost?
+    review.present? || author.blocked? || author.ghost?
   end
 
   private

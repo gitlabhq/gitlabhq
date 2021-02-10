@@ -10,7 +10,7 @@ module Gitlab
 
       # env - A Hash containing Rack environment details.
       def call(env)
-        trans = WebTransaction.new(env)
+        trans = Gitlab::Metrics::WebTransaction.new(env)
 
         begin
           retval = trans.run { @app.call(env) }
