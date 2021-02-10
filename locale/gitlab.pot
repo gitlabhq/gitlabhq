@@ -12929,7 +12929,7 @@ msgstr ""
 msgid "Free Trial"
 msgstr ""
 
-msgid "Free Trial of GitLab.com Gold"
+msgid "Free Trial of GitLab.com Ultimate"
 msgstr ""
 
 msgid "Freeze end"

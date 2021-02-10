@@ -903,7 +903,7 @@ table a code {
   padding: 0;
   background-color: #4f4f4f;
 }
-.dropdown-menu .badge.badge-pill + span:not(.badge.badge-pill) {
+.dropdown-menu .badge.badge-pill + span:not(.badge):not(.badge-pill) {
   margin-right: 40px;
 }
 .dropdown-select {

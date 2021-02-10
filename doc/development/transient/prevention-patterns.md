@@ -8,6 +8,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This page will cover architectural patterns and tips for developers to follow to prevent [transient bugs.](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#transient-bugs)
 
+## Common root causes
+
+We've noticed a few root causes that come up frequently when addressing transient bugs. 
+
+- Needs better state management in the backend or frontend.
+- Frontend code needs improvements.
+- Lack of test coverage.
+- Race conditions.
+
 ## Frontend
 
 ### Don't rely on response order

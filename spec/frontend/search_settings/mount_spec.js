@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { setHTMLFixture } from 'helpers/fixtures';
 import mount from '~/search_settings/mount';
 import { expandSection, closeSection } from '~/settings_panels';
@@ -24,13 +23,13 @@ describe('search_settings/mount', () => {
     const section = { name: 'section' };
     app.$refs.searchSettings.$emit('expand', section);
 
-    expect(expandSection).toHaveBeenCalledWith($(section));
+    expect(expandSection).toHaveBeenCalledWith(section);
   });
 
   it('calls settings_panel.closeSection when collapse event is emitted', () => {
     const section = { name: 'section' };
     app.$refs.searchSettings.$emit('collapse', section);
 
-    expect(closeSection).toHaveBeenCalledWith($(section));
+    expect(closeSection).toHaveBeenCalledWith(section);
   });
 });

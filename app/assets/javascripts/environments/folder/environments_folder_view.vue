@@ -1,7 +1,7 @@
 <script>
 import { GlBadge, GlTab, GlTabs } from '@gitlab/ui';
 import environmentsMixin from '../mixins/environments_mixin';
-import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
+import EnvironmentsPaginationApiMixin from '../mixins/environments_pagination_api_mixin';
 import StopEnvironmentModal from '../components/stop_environment_modal.vue';
 import DeleteEnvironmentModal from '../components/delete_environment_modal.vue';
 
@@ -14,7 +14,7 @@ export default {
     StopEnvironmentModal,
   },
 
-  mixins: [environmentsMixin, CIPaginationMixin],
+  mixins: [environmentsMixin, EnvironmentsPaginationApiMixin],
 
   props: {
     endpoint: {

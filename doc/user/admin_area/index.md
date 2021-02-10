@@ -144,6 +144,19 @@ To search for users, enter your criteria in the search field. The user search is
 insensitive, and applies partial matching to name and username. To search for an email address,
 you must provide the complete email address.
 
+#### User impersonation
+
+An administrator can "impersonate" any other user, including other administrator users.
+This allows the administrator to "see what the user sees," and take actions on behalf of the user.
+You can impersonate a user in the following ways:
+
+- Through the UI, by selecting **Admin Area > Overview > Users > [Select a user] > Impersonate**.
+- With the API, using [impersonation tokens](../../api/README.md#impersonation-tokens).
+
+All impersonation activities are [captured with audit events](../../administration/audit_events.md#impersonation-data).
+
+![user impersonation button](img/impersonate_user_button_v13_8.png)
+
 #### Users statistics
 
 The **Users statistics** page provides an overview of user accounts by role. These statistics are

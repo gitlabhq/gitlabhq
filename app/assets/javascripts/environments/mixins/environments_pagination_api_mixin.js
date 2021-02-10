@@ -1,6 +1,5 @@
 /**
  * API callbacks for pagination and tabs
- * shared between Pipelines and Environments table.
  *
  * Components need to have `scope`, `page` and `requestData`
  */

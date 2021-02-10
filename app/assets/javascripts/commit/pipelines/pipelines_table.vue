@@ -6,7 +6,7 @@ import pipelinesMixin from '~/pipelines/mixins/pipelines';
 import eventHub from '~/pipelines/event_hub';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import { getParameterByName } from '~/lib/utils/common_utils';
-import CIPaginationMixin from '~/vue_shared/mixins/ci_pagination_api_mixin';
+import PipelinesPaginationApiMixin from '~/pipelines/mixins/pipelines_pagination_api_mixin';
 
 export default {
   components: {
@@ -16,7 +16,7 @@ export default {
     GlModal,
     GlLink,
   },
-  mixins: [pipelinesMixin, CIPaginationMixin],
+  mixins: [pipelinesMixin, PipelinesPaginationApiMixin],
   props: {
     endpoint: {
       type: String,

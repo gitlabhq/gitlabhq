@@ -475,6 +475,16 @@ terminal.
 Read the [Release CLI documentation](https://gitlab.com/gitlab-org/release-cli/-/blob/master/docs/index.md)
 for details.
 
+## Release Metrics **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259703) in GitLab Premium 13.9.
+
+Group-level release metrics are available by navigating to **Group > Analytics > CI/CD**.
+These metrics include:
+
+- Total number of releases in the group
+- Percentage of projects in the group that have at least one release
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

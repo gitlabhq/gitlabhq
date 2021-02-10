@@ -811,3 +811,38 @@ You can set them globally or per-job in the [`variables`](../yaml/README.md#vari
 ## System calls not available on GitLab.com shared runners
 
 GitLab.com shared runners run on CoreOS. This means that you cannot use some system calls, like `getlogin`, from the C standard library.
+
+## Artifact and cache settings
+
+> Introduced in GitLab Runner 13.9.
+
+Artifact and cache settings control the compression ratio of artifacts and caches.
+Use these settings to specify the size of the archive produced by a job.
+
+- On a slow network, uploads might be faster for smaller archives.
+- On a fast network where bandwidth and storage are not a concern, uploads might be faster using the fastest compression ratio, despite the archive produced being larger.
+
+For [GitLab Pages](../../user/project/pages/index.md) to serve
+[HTTP Range requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests), artifacts
+should use the `ARTIFACT_COMPRESSION_LEVEL: fastest` setting, as only uncompressed zip archives
+support this feature.
+
+A meter can also be enabled to provide the rate of transfer for uploads and downloads.
+
+```yaml
+variables:
+  # output upload and download progress every 2 seconds
+  TRANSFER_METER_FREQUENCY: "2s"
+
+  # Use fast compression for artifacts, resulting in larger archives
+  ARTIFACT_COMPRESSION_LEVEL: "fast"
+
+  # Use no compression for caches
+  CACHE_COMPRESSION_LEVEL: "fastest"
+```
+
+| Variable                        | Description                                            |
+|---------------------------------|--------------------------------------------------------|
+| `TRANSFER_METER_FREQUENCY`      | Specify how often to print the meter's transfer rate. It can be set to a duration (for example, `1s` or `1m30s`). A duration of `0` disables the meter (default). When a value is set, the pipeline shows a progress meter for artifact and cache uploads and downloads. |
+| `ARTIFACT_COMPRESSION_LEVEL`    | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) must also be enabled. |
+| `CACHE_COMPRESSION_LEVEL`       | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) must also be enabled. |

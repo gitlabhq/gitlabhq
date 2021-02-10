@@ -3,19 +3,36 @@ import { GlSearchBoxByType } from '@gitlab/ui';
 import { uniq } from 'lodash';
 import { EXCLUDED_NODES, HIDE_CLASS, HIGHLIGHT_CLASS, TYPING_DELAY } from '../constants';
 
+const origExpansions = new Map();
+
 const findSettingsSection = (sectionSelector, node) => {
   return node.parentElement.closest(sectionSelector);
 };
 
-const resetSections = ({ sectionSelector, expandSection, collapseSection }) => {
-  document.querySelectorAll(sectionSelector).forEach((section, index) => {
-    section.classList.remove(HIDE_CLASS);
-
-    if (index === 0) {
+const restoreExpansionState = ({ expandSection, collapseSection }) => {
+  origExpansions.forEach((isExpanded, section) => {
+    if (isExpanded) {
       expandSection(section);
     } else {
       collapseSection(section);
     }
+  });
+
+  origExpansions.clear();
+};
+
+const saveExpansionState = (sections, { isExpanded }) => {
+  // If we've saved expansions before, don't override it.
+  if (origExpansions.size > 0) {
+    return;
+  }
+
+  sections.forEach((section) => origExpansions.set(section, isExpanded(section)));
+};
+
+const resetSections = ({ sectionSelector }) => {
+  document.querySelectorAll(sectionSelector).forEach((section) => {
+    section.classList.remove(HIDE_CLASS);
   });
 };
 
@@ -85,6 +102,12 @@ export default {
       type: String,
       required: true,
     },
+    isExpandedFn: {
+      type: Function,
+      required: false,
+      // default to a function that returns false
+      default: () => () => false,
+    },
   },
   data() {
     return {
@@ -97,6 +120,7 @@ export default {
         sectionSelector: this.sectionSelector,
         expandSection: this.expandSection,
         collapseSection: this.collapseSection,
+        isExpanded: this.isExpandedFn,
       };
 
       this.searchTerm = value;
@@ -104,7 +128,11 @@ export default {
       clearResults(displayOptions);
 
       if (value.length) {
+        saveExpansionState(document.querySelectorAll(this.sectionSelector), displayOptions);
+
         displayResults(displayOptions, search(this.searchRoot, value));
+      } else {
+        restoreExpansionState(displayOptions);
       }
     },
     expandSection(section) {

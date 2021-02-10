@@ -776,7 +776,7 @@ A site profile contains the following:
 - **Profile name**: A name you assign to the site to be scanned.
 - **Target URL**: The URL that DAST runs against.
 
-## Site profile validation
+### Site profile validation
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233020) in GitLab 13.8.
 
@@ -799,37 +799,51 @@ To create a site profile:
 
 1. From your project's home page, go to **Security & Compliance > Configuration**.
 1. Select **Manage** in the **DAST Profiles** row.
-1. Select **New Profile > Site Profile**.
-1. Type in a unique **Profile name** and **Target URL** then select **Save profile**.
+1. Select **New > Site Profile**.
+1. Complete the fields then select **Save profile**.
+
+The site profile is created.
 
 ### Edit a site profile
 
 To edit an existing site profile:
 
 1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. Select **Manage** in the **DAST Profiles** row.
-1. Select **Edit** in the row of the profile to edit.
-1. Edit the **Profile name** and **Target URL**, then select **Save profile**.
+1. In the **DAST Profiles** row select **Manage**.
+1. Select the **Site Profiles** tab.
+1. In the profile's row select the **More actions** (**{ellipsis_v}**) menu, then select **Edit**.
+1. Edit the fields then select **Save profile**.
+
+The site profile is updated with the edited details.
 
 ### Delete a site profile
 
 To delete an existing site profile:
 
 1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. Select **Manage** in the **DAST Profiles** row.
-1. Select **{remove}** (Delete profile) in the row of the profile to delete.
+1. In the **DAST Profiles** row select **Manage**.
+1. Select the **Site Profiles** tab.
+1. In the profile's row select the **More actions** (**{ellipsis_v}**) menu, then select **Delete**.
+1. Select **Delete** to confirm the deletion.
+
+The site profile is deleted.
 
 ### Validate a site profile
+
+Prerequisites:
+
+- A site profile.
 
 To validate a site profile:
 
 1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. Select **Manage** in the **DAST Profiles** row.
-1. Select **Validate target site** beside the profile to validate.
+1. In the **DAST Profiles** row select **Manage**.
+1. Select the **Site Profiles** tab.
+1. In the profile's row select **Validate** or **Retry validation**.
 1. Select the validation method.
    1. For **Text file validation**:
       1. Download the validation file listed in **Step 2**.
-      1. Upload the validation file to the host. You can upload the file to the location in
+      1. Upload the validation file to the host. Upload the file to the location in
          **Step 3** or any location you prefer.
       1. Select **Validate**.
    1. For **Header validation**:
@@ -840,22 +854,23 @@ To validate a site profile:
 
 The site is validated and an active scan can run against it.
 
-If a validated site profile's target URL is edited, the site is no longer validated.
+If a validated site profile's target URL is edited, the site's validation status is revoked.
 
-### Revoke a site validation
+### Revoke a site profile's validation status
 
-To revoke validation from a site profile:
+Note that all site profiles with the same URL have their validation status revoked.
+
+To revoke a site profile's validation status:
 
 1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. Select **Manage** in the **DAST Profiles** row.
+1. In the **DAST Profiles** row select **Manage**.
 1. Select **Revoke validation** beside the validated profile.
-1. Select **Revoke validation**.
 
-The site profile's validation is revoked. An active scan cannot be run against it or any other profile with the same URL.
+The site profile's validation status is revoked.
 
 #### Validated site profile headers
 
-The following are code samples of how you could provide the required site profile header in your
+The following are code samples of how you can provide the required site profile header in your
 application.
 
 ##### Ruby on Rails example for on-demand scan
@@ -900,27 +915,26 @@ app.get('/dast-website-target', function(req, res) {
 ## Scanner profile
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222767) in GitLab 13.4.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/225804) in GitLab 13.5: scan mode, AJAX spider, debug messages.
 
 A scanner profile defines the scanner settings used to run an on-demand scan:
 
 - **Profile name:** A name you give the scanner profile. For example, "Spider_15".
+- **Scan mode:** A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities.
 - **Spider timeout:** The maximum number of minutes allowed for the spider to traverse the site.
 - **Target timeout:** The maximum number of seconds DAST waits for the site to be available before
   starting the scan.
-- **Scan mode:** A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities.
 - **AJAX spider:**  Run the AJAX spider, in addition to the traditional spider, to crawl the target site.
 - **Debug messages:** Include debug messages in the DAST console output.
-
-Scan mode, AJAX spider, Debug messages are [added in GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/225804)
 
 ### Create a scanner profile
 
 To create a scanner profile:
 
 1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. Click **Manage** in the **DAST Profiles** row.
-1. Click **New Profile > Scanner Profile**.
-1. Enter a unique **Profile name**, the desired **Spider timeout**, and the **Target timeout**.
+1. In the **DAST Profiles** row select **Manage**.
+1. Select **New > Scanner Profile**.
+1. Complete the form. For details of each field, see [Scanner profile](#scanner-profile).
 1. Click **Save profile**.
 
 ### Edit a scanner profile
@@ -929,7 +943,12 @@ To edit a scanner profile:
 
 1. From your project's home page, go to **Security & Compliance > Configuration**.
 1. Click **Manage** in the **DAST Profiles** row.
-1. Click **Edit** in the scanner profile's row.
+1. Select the **Scanner Profiles** tab.
+1. In the scanner's row select the **More actions** (**{ellipsis_v}**) menu, then select **Edit**.
+1. Edit the form.
+1. Select **Save profile**.
+
+The scanner profile is updated with the edited details.
 
 ### Delete a scanner profile
 
@@ -937,7 +956,11 @@ To delete a scanner profile:
 
 1. From your project's home page, go to **Security & Compliance > Configuration**.
 1. Click **Manage** in the **DAST Profiles** row.
-1. Click **{remove}** (Delete profile) in the scanner profile's row.
+1. Select the **Scanner Profiles** tab.
+1. In the scanner's row select the **More actions** (**{ellipsis_v}**) menu, then select **Delete**.
+1. Select **Delete**.
+
+The scanner profile is deleted.
 
 ## Reports
 

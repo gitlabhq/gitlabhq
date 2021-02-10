@@ -2,6 +2,7 @@ import { GlSearchBoxByType } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import SearchSettings from '~/search_settings/components/search_settings.vue';
 import { HIGHLIGHT_CLASS, HIDE_CLASS } from '~/search_settings/constants';
+import { isExpanded, expandSection, closeSection } from '~/settings_panels';
 
 describe('search_settings/components/search_settings.vue', () => {
   const ROOT_ID = 'content-body';
@@ -9,6 +10,8 @@ describe('search_settings/components/search_settings.vue', () => {
   const SEARCH_TERM = 'Delete project';
   const GENERAL_SETTINGS_ID = 'js-general-settings';
   const ADVANCED_SETTINGS_ID = 'js-advanced-settings';
+  const EXTRA_SETTINGS_ID = 'js-extra-settings';
+
   let wrapper;
 
   const buildWrapper = () => {
@@ -16,10 +19,15 @@ describe('search_settings/components/search_settings.vue', () => {
       propsData: {
         searchRoot: document.querySelector(`#${ROOT_ID}`),
         sectionSelector: SECTION_SELECTOR,
+        isExpandedFn: isExpanded,
+      },
+      // Add real listeners so we can simplify and strengthen some tests.
+      listeners: {
+        expand: expandSection,
+        collapse: closeSection,
       },
     });
   };
-
   const sections = () => Array.from(document.querySelectorAll(SECTION_SELECTOR));
   const sectionsCount = () => sections().length;
   const visibleSectionsCount = () =>
@@ -39,7 +47,10 @@ describe('search_settings/components/search_settings.vue', () => {
         <section id="${GENERAL_SETTINGS_ID}" class="settings">
           <span>General</span>
         </section>
-        <section id="${ADVANCED_SETTINGS_ID}" class="settings">
+        <section id="${ADVANCED_SETTINGS_ID}" class="settings expanded">
+          <span>Advanced</span>
+        </section>
+        <section id="${EXTRA_SETTINGS_ID}" class="settings">
           <span>${SEARCH_TERM}</span>
         </section>
       </div>
@@ -52,17 +63,6 @@ describe('search_settings/components/search_settings.vue', () => {
     wrapper.destroy();
   });
 
-  it('expands first section and collapses the rest', () => {
-    clearSearch();
-
-    const [firstSection, ...otherSections] = sections();
-
-    expect(wrapper.emitted()).toEqual({
-      expand: [[firstSection]],
-      collapse: otherSections.map((x) => [x]),
-    });
-  });
-
   it('hides sections that do not match the search term', () => {
     const hiddenSection = document.querySelector(`#${GENERAL_SETTINGS_ID}`);
     search(SEARCH_TERM);
@@ -72,12 +72,11 @@ describe('search_settings/components/search_settings.vue', () => {
   });
 
   it('expands section that matches the search term', () => {
-    const section = document.querySelector(`#${ADVANCED_SETTINGS_ID}`);
+    const section = document.querySelector(`#${EXTRA_SETTINGS_ID}`);
 
     search(SEARCH_TERM);
 
-    // Last called because expand is always called once to reset the page state
-    expect(wrapper.emitted().expand[1][0]).toBe(section);
+    expect(wrapper.emitted('expand')).toEqual([[section]]);
   });
 
   it('highlight elements that match the search term', () => {
@@ -86,21 +85,64 @@ describe('search_settings/components/search_settings.vue', () => {
     expect(highlightedElementsCount()).toBe(1);
   });
 
-  describe('when search term is cleared', () => {
-    beforeEach(() => {
-      search(SEARCH_TERM);
+  describe('default', () => {
+    it('test setup starts with expansion state', () => {
+      expect(sections().map(isExpanded)).toEqual([false, true, false]);
     });
 
-    it('displays all sections', () => {
-      expect(visibleSectionsCount()).toBe(1);
-      clearSearch();
-      expect(visibleSectionsCount()).toBe(sectionsCount());
-    });
+    describe('when searched and cleared', () => {
+      beforeEach(() => {
+        search('Test');
+        clearSearch();
+      });
 
-    it('removes the highlight from all elements', () => {
-      expect(highlightedElementsCount()).toBe(1);
-      clearSearch();
-      expect(highlightedElementsCount()).toBe(0);
+      it('displays all sections', () => {
+        expect(visibleSectionsCount()).toBe(sectionsCount());
+      });
+
+      it('removes the highlight from all elements', () => {
+        expect(highlightedElementsCount()).toBe(0);
+      });
+
+      it('should preserve original expansion state', () => {
+        expect(sections().map(isExpanded)).toEqual([false, true, false]);
+      });
+
+      it('should preserve state by emitting events', () => {
+        const [first, mid, last] = sections();
+
+        expect(wrapper.emitted()).toEqual({
+          expand: [[mid]],
+          collapse: [[first], [last]],
+        });
+      });
+
+      describe('after multiple searches and clear', () => {
+        beforeEach(() => {
+          search('Test');
+          search(SEARCH_TERM);
+          clearSearch();
+        });
+
+        it('should preserve last expansion state', () => {
+          expect(sections().map(isExpanded)).toEqual([false, true, false]);
+        });
+      });
+
+      describe('after user expands and collapses, search, and clear', () => {
+        beforeEach(() => {
+          const [first, mid] = sections();
+          closeSection(mid);
+          expandSection(first);
+
+          search(SEARCH_TERM);
+          clearSearch();
+        });
+
+        it('should preserve last expansion state', () => {
+          expect(sections().map(isExpanded)).toEqual([true, false, false]);
+        });
+      });
     });
   });
 });

@@ -1,6 +1,15 @@
 import { __, sprintf } from '../../../locale';
 import { TestStatus } from '../../constants';
 
+/**
+ * Removes `./` from the beginning of a file path so it can be appended onto a blob path
+ * @param {String} file
+ * @returns {String}  - formatted value
+ */
+export function formatFilePath(file) {
+  return file.replace(/^\.?\/*/, '');
+}
+
 export function iconForTestStatus(status) {
   switch (status) {
     case TestStatus.SUCCESS:

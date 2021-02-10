@@ -58,8 +58,9 @@ const createLegacyPipelinesDetailApp = (mediator) => {
 
 const createTestDetails = () => {
   const el = document.querySelector(SELECTORS.PIPELINE_TESTS);
-  const { summaryEndpoint, suiteEndpoint } = el?.dataset || {};
+  const { blobPath, summaryEndpoint, suiteEndpoint } = el?.dataset || {};
   const testReportsStore = createTestReportsStore({
+    blobPath,
     summaryEndpoint,
     suiteEndpoint,
   });

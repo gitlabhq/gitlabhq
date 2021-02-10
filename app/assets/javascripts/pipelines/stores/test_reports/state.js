@@ -1,4 +1,5 @@
-export default ({ summaryEndpoint = '', suiteEndpoint = '' }) => ({
+export default ({ blobPath = '', summaryEndpoint = '', suiteEndpoint = '' }) => ({
+  blobPath,
   summaryEndpoint,
   suiteEndpoint,
   testReports: {},

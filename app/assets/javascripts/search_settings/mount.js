@@ -1,6 +1,5 @@
 import Vue from 'vue';
-import $ from 'jquery';
-import { expandSection, closeSection } from '~/settings_panels';
+import { expandSection, closeSection, isExpanded } from '~/settings_panels';
 import SearchSettings from '~/search_settings/components/search_settings.vue';
 
 const mountSearch = ({ el }) =>
@@ -12,10 +11,11 @@ const mountSearch = ({ el }) =>
         props: {
           searchRoot: document.querySelector('#content-body'),
           sectionSelector: '.js-search-settings-section, section.settings',
+          isExpandedFn: isExpanded,
         },
         on: {
-          collapse: (section) => closeSection($(section)),
-          expand: (section) => expandSection($(section)),
+          collapse: closeSection,
+          expand: expandSection,
         },
       }),
   });

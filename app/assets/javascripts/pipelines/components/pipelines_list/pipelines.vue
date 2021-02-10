@@ -6,7 +6,7 @@ import { deprecatedCreateFlash as createFlash } from '~/flash';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import { getParameterByName } from '~/lib/utils/common_utils';
-import CIPaginationMixin from '~/vue_shared/mixins/ci_pagination_api_mixin';
+import PipelinesPaginationApiMixin from '../../mixins/pipelines_pagination_api_mixin';
 import pipelinesMixin from '../../mixins/pipelines';
 import PipelinesService from '../../services/pipelines_service';
 import { validateParams } from '../../utils';
@@ -22,7 +22,7 @@ export default {
     PipelinesFilteredSearch,
     GlIcon,
   },
-  mixins: [pipelinesMixin, CIPaginationMixin],
+  mixins: [pipelinesMixin, PipelinesPaginationApiMixin],
   props: {
     store: {
       type: Object,

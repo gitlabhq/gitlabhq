@@ -43,7 +43,7 @@ receive alert payloads in JSON format. You can always
 1. Toggle the **Active** alert setting to display the **URL** and **Authorization Key**
    for the webhook configuration.
 
-### HTTP Endpoints **PREMIUM**
+### HTTP Endpoints **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4442) in GitLab Premium 13.6.
 
@@ -72,7 +72,7 @@ side of the integrations list.
 
 ### External Prometheus integration
 
-For GitLab versions 13.1 and greater, please read
+For GitLab versions 13.1 and greater, read
 [External Prometheus Instances](../metrics/alerts.md#external-prometheus-instances)
 to configure alerts for this integration.
 

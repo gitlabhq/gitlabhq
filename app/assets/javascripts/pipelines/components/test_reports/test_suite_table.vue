@@ -5,6 +5,7 @@ import {
   GlTooltipDirective,
   GlFriendlyWrap,
   GlIcon,
+  GlLink,
   GlButton,
   GlPagination,
 } from '@gitlab/ui';
@@ -16,6 +17,7 @@ export default {
   components: {
     GlIcon,
     GlFriendlyWrap,
+    GlLink,
     GlButton,
     GlPagination,
     TestCaseDetails,
@@ -97,11 +99,9 @@ export default {
         <div class="table-section section-10 section-wrap">
           <div role="rowheader" class="table-mobile-header">{{ __('Filename') }}</div>
           <div class="table-mobile-content gl-md-pr-2 gl-overflow-wrap-break">
-            <gl-friendly-wrap
-              v-if="testCase.file"
-              :symbols="$options.wrapSymbols"
-              :text="testCase.file"
-            />
+            <gl-link v-if="testCase.file" :href="testCase.filePath" target="_blank">
+              <gl-friendly-wrap :symbols="$options.wrapSymbols" :text="testCase.file" />
+            </gl-link>
             <gl-button
               v-if="testCase.file"
               v-gl-tooltip
