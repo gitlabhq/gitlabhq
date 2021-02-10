@@ -12,6 +12,10 @@ export default {
       required: true,
       type: String,
     },
+    selector: {
+      required: true,
+      type: String,
+    },
   },
   data() {
     return {
@@ -34,22 +38,24 @@ export default {
   },
 
   mounted() {
-    document.addEventListener('click', this.handleClick);
-  },
+    /*
+     * Here we're looking for every button that needs to launch a modal
+     * on click, and then attaching a click event handler to show the modal
+     * if it's correctly configured.
+     *
+     * TODO: Replace this with integrated modal components https://gitlab.com/gitlab-org/gitlab/-/issues/320922
+     */
+    document.querySelectorAll(this.selector).forEach((button) => {
+      button.addEventListener('click', (e) => {
+        if (!button.dataset.glModalAction) return;
 
-  beforeDestroy() {
-    document.removeEventListener('click', this.handleClick);
+        e.preventDefault();
+        this.show(button.dataset);
+      });
+    });
   },
 
   methods: {
-    handleClick(e) {
-      const { glModalAction: action } = e.target.dataset;
-      if (!action) return;
-
-      this.show(e.target.dataset);
-      e.preventDefault();
-    },
-
     show(modalData) {
       const { glModalAction: requestedAction } = modalData;
 

@@ -52437,6 +52437,12 @@
               "description": "Packages from the Debian package manager",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "RUBYGEMS",
+              "description": "Packages from the Rubygems package manager",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

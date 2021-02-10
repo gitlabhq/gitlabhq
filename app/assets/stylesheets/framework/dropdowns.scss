@@ -525,7 +525,7 @@
 
       &.is-active {
         /* stylelint-disable-next-line function-url-quotes */
-        background: url(asset_path('checkmark.png')) no-repeat 14px 8px;
+        background: url(asset_path('checkmark.png')) no-repeat 14px center;
       }
     }
   }

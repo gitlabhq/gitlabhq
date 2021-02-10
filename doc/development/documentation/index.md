@@ -328,68 +328,51 @@ with GitLab 11.4. Meaning, it's available only with `/help` from GitLab
 
 ### Linking to `/help`
 
-When you're building a new feature, you may need to link the documentation
-from GitLab, the application. This is normally done in files inside the
-`app/views/` directory with the help of the `help_page_path` helper method.
+When you're building a new feature, you may need to link to the documentation
+from the GitLab application. This is normally done in files inside the
+`app/views/` directory, with the help of the `help_page_path` helper method.
 
-In its simplest form, the HAML code to generate a link to the `/help` page is:
+The `help_page_path` contains the path to the document you want to link to,
+with the following conventions:
 
-```haml
-= link_to 'Help page', help_page_path('user/permissions')
-```
+- It's relative to the `doc/` directory in the GitLab repository.
+- It omits the `.md` extension.
+- It doesn't end with a slash (`/`).
 
-The `help_page_path` contains the path to the document you want to link to with
-the following conventions:
+The help text follows the [Pajamas guidelines](https://design.gitlab.com/usability/helping-users/#formatting-help-content).
 
-- it is relative to the `doc/` directory in the GitLab repository
-- the `.md` extension must be omitted
-- it must not end with a slash (`/`)
+Use the following special cases depending on the context, ensuring all links
+are inside `_()` so they can be translated:
 
-Below are some special cases where should be used depending on the context.
-You can combine one or more of the following:
+- Linking to a doc page. In its most basic form, the HAML code to generate a
+  link to the `/help` page is:
 
-1. **Linking to an anchor link.** Use `anchor` as part of the `help_page_path`
-   method:
+  ```haml
+  = link_to _('Learn more.'), help_page_path('user/permissions'), target: '_blank', rel: 'noopener noreferrer'
+  ```
 
-   ```haml
-   = link_to 'Help page', help_page_path('user/permissions', anchor: 'anchor-link')
-   ```
+- Linking to an anchor link. Use `anchor` as part of the `help_page_path`
+  method:
 
-1. **Opening links in a new tab.** This should be the default behavior:
+  ```haml
+  = link_to _('Learn more.'), help_page_path('user/permissions', anchor: 'anchor-link'), target: '_blank', rel: 'noopener noreferrer'
+  ```
 
-   ```haml
-   = link_to 'Help page', help_page_path('user/permissions'), target: '_blank'
-   ```
+- Using links inline of some text. First, define the link, and then use it. In
+  this example, `link_start` is the name of the variable that contains the
+  link:
 
-1. **Using a question icon.** Usually used in settings where a long
-   description cannot be used, like near checkboxes. You can basically use
-   any GitLab SVG icon, but prefer the `question-o`:
+  ```haml
+  - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/permissions') }
+  %p= _("This is a text describing the option/feature in a sentence. %{link_start}Learn more.%{link_end}").html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+  ```
 
-   ```haml
-   = link_to sprite_icon('question-o'), help_page_path('user/permissions')
-   ```
+- Using a button link. Useful in places where text would be out of context with
+  the rest of the page layout:
 
-1. **Using a button link.** Useful in places where text would be out of context
-   with the rest of the page layout:
-
-   ```haml
-   = link_to 'Help page', help_page_path('user/permissions'),  class: 'btn btn-info'
-   ```
-
-1. **Using links inline of some text.**
-
-   ```haml
-   Description to #{link_to 'Help page', help_page_path('user/permissions')}.
-   ```
-
-1. **Adding a period at the end of the sentence.** Useful when you don't want
-   the period to be part of the link:
-
-   ```haml
-   = succeed '.' do
-     Learn more in the
-     = link_to 'Help page', help_page_path('user/permissions')
-   ```
+  ```haml
+  = link_to _('Learn more.'), help_page_path('user/permissions'),  class: 'btn btn-info', target: '_blank', rel: 'noopener noreferrer'
+  ```
 
 #### Linking to `/help` in JavaScript
 

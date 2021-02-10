@@ -612,3 +612,7 @@ Plan.default.actual_limits.update!(generic_packages_max_file_size: 100.megabytes
 ```
 
 Set the limit to `0` to allow any file size.
+
+### Package versions returned
+
+When asking for versions of a given NuGet package name, the GitLab Package Registry returns a maximum of 300 versions.

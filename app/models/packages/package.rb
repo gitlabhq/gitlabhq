@@ -17,6 +17,7 @@ class Packages::Package < ApplicationRecord
   has_one :maven_metadatum, inverse_of: :package, class_name: 'Packages::Maven::Metadatum'
   has_one :nuget_metadatum, inverse_of: :package, class_name: 'Packages::Nuget::Metadatum'
   has_one :composer_metadatum, inverse_of: :package, class_name: 'Packages::Composer::Metadatum'
+  has_one :rubygems_metadatum, inverse_of: :package, class_name: 'Packages::Rubygems::Metadatum'
   has_many :build_infos, inverse_of: :package
   has_many :pipelines, through: :build_infos
   has_one :debian_publication, inverse_of: :package, class_name: 'Packages::Debian::Publication'
@@ -64,7 +65,9 @@ class Packages::Package < ApplicationRecord
     if: :debian_package?
   validate :forbidden_debian_changes, if: :debian?
 
-  enum package_type: { maven: 1, npm: 2, conan: 3, nuget: 4, pypi: 5, composer: 6, generic: 7, golang: 8, debian: 9 }
+  enum package_type: { maven: 1, npm: 2, conan: 3, nuget: 4, pypi: 5,
+                       composer: 6, generic: 7, golang: 8, debian: 9,
+                       rubygems: 10 }
 
   scope :with_name, ->(name) { where(name: name) }
   scope :with_name_like, ->(name) { where(arel_table[:name].matches(name)) }

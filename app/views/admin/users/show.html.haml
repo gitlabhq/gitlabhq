@@ -205,7 +205,7 @@
               %p Deleting a user has the following effects:
               = render 'users/deletion_guidance', user: @user
               %br
-              %button.delete-user-button.btn.gl-button.btn-danger{ data: { 'gl-modal-action': 'delete',
+              %button.js-delete-user-modal-button.btn.gl-button.btn-danger{ data: { 'gl-modal-action': 'delete',
                 delete_user_url: admin_user_path(@user),
                 block_user_url: block_admin_user_path(@user),
                 username: sanitize_name(@user.name) } }
@@ -235,7 +235,7 @@
                 the user, and projects in them, will also be removed. Commits
                 to other projects are unaffected.
               %br
-                %button.delete-user-button.btn.gl-button.btn-danger{ data: { 'gl-modal-action': 'delete-with-contributions',
+                %button.js-delete-user-modal-button.btn.gl-button.btn-danger{ data: { 'gl-modal-action': 'delete-with-contributions',
                   delete_user_url: admin_user_path(@user, hard_delete: true),
                   block_user_url: block_admin_user_path(@user),
                   username: @user.name } }

@@ -9,11 +9,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 GitLab provides a comprehensive set of features for viewing and managing vulnerabilities:
 
-- Security dashboards: An overview of the security status in your instance, [groups](#group-security-dashboard), and
+- Security dashboards: An overview of the security status in your personal [Security Center](#security-center), [groups](#group-security-dashboard), and
   [projects](#project-security-dashboard).
-- [Vulnerability reports](../vulnerability_report/index.md): Detailed lists of all vulnerabilities for the instance, group, project, or
+- [Vulnerability reports](../vulnerability_report/index.md): Detailed lists of all vulnerabilities for the Security Center, group, project, or
   pipeline. This is where you triage and manage vulnerabilities.
-- [Security Center](#instance-security-center): A dedicated area for vulnerability management at the instance level. This
+- [Security Center](#security-center): A dedicated area for personalized vulnerability management. This
   includes a security dashboard, vulnerability report, and settings.
 
 You can also drill down into a vulnerability and get extra information on the
@@ -111,28 +111,28 @@ vulnerabilities are excluded.
 
 Navigate to the group's [vulnerability report](../vulnerability_report/index.md) to view the vulnerabilities found.
 
-## Instance Security Center
+## Security Center
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3426) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.4.
 
-The Security Center is where you manage vulnerabilities for your instance. It displays the
-vulnerabilities present in the default branches of all the projects you configure. It includes the
-following:
+The Security Center is personal space where you manage vulnerabilities across all your projects. It
+displays the vulnerabilities present in the default branches of all the projects you configure. It includes
+the following:
 
 - The [group security dashboard's](#group-security-dashboard) features.
 - A [vulnerability report](../vulnerability_report/index.md).
 - A dedicated settings area to configure which projects to display.
 
-![Instance Security Dashboard with projects](img/instance_security_dashboard_v13_4.png)
+![Security Center Dashboard with projects](img/security_center_dashboard_v13_4.png)
 
-You can access the Instance Security Center from the menu
+You can access the Security Center from the menu
 bar at the top of the page. Under **More**, select **Security**.
 
-![Instance Security Center navigation link](img/instance_security_dashboard_link_v12_4.png)
+![Security Center navigation link](img/security_center_dashboard_link_v12_4.png)
 
 The dashboard and vulnerability report are empty before you add projects.
 
-![Uninitialized Instance Security Center](img/instance_security_dashboard_empty_v13_4.png)
+![Uninitialized Security Center](img/security_center_dashboard_empty_v13_4.png)
 
 ### Adding projects to the Security Center
 
@@ -142,7 +142,7 @@ To add projects to the Security Center:
 1. Search for and add one or more projects using the **Search your projects** field.
 1. Click the **Add projects** button.
 
-![Adding projects to Instance Security Center](img/instance_security_center_settings_v13_4.png)
+![Adding projects to Security Center](img/security_center_settings_v13_4.png)
 
 After you add projects, the security dashboard and vulnerability report display the vulnerabilities
 found in those projects' default branches.

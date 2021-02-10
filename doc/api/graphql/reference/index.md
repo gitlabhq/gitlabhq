@@ -5138,6 +5138,7 @@ Rotation length unit of an on-call rotation.
 | `NPM` | Packages from the NPM package manager |
 | `NUGET` | Packages from the Nuget package manager |
 | `PYPI` | Packages from the PyPI package manager |
+| `RUBYGEMS` | Packages from the Rubygems package manager |
 
 ### PipelineConfigSourceEnum
 

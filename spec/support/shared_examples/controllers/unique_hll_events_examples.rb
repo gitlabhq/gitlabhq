@@ -7,7 +7,11 @@
 
 RSpec.shared_examples 'tracking unique hll events' do |feature_flag|
   it 'tracks unique event' do
-    expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).with(target_id, values: expected_type)
+    expect(Gitlab::UsageDataCounters::HLLRedisCounter).to(
+      receive(:track_event)
+        .with(target_id, values: expected_type)
+        .and_call_original # we call original to trigger additional validations; otherwise the method is stubbed
+    )
 
     request
   end

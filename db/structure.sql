@@ -15256,6 +15256,58 @@ CREATE TABLE packages_pypi_metadata (
     CONSTRAINT check_379019d5da CHECK ((char_length(required_python) <= 255))
 );
 
+CREATE TABLE packages_rubygems_metadata (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    package_id bigint NOT NULL,
+    authors text,
+    files text,
+    summary text,
+    description text,
+    email text,
+    homepage text,
+    licenses text,
+    metadata text,
+    author text,
+    bindir text,
+    cert_chain text,
+    executables text,
+    extensions text,
+    extra_rdoc_files text,
+    platform text,
+    post_install_message text,
+    rdoc_options text,
+    require_paths text,
+    required_ruby_version text,
+    required_rubygems_version text,
+    requirements text,
+    rubygems_version text,
+    signing_key text,
+    CONSTRAINT check_0154a18c82 CHECK ((char_length(description) <= 1024)),
+    CONSTRAINT check_22814c771b CHECK ((char_length(email) <= 255)),
+    CONSTRAINT check_242293030e CHECK ((char_length(extensions) <= 255)),
+    CONSTRAINT check_27619a7922 CHECK ((char_length(rubygems_version) <= 255)),
+    CONSTRAINT check_3d1b6f3a39 CHECK ((char_length(post_install_message) <= 255)),
+    CONSTRAINT check_545f7606f9 CHECK ((char_length(required_rubygems_version) <= 255)),
+    CONSTRAINT check_5988451714 CHECK ((char_length(executables) <= 255)),
+    CONSTRAINT check_5f9c84ea17 CHECK ((char_length(platform) <= 255)),
+    CONSTRAINT check_64f1cecf05 CHECK ((char_length(requirements) <= 255)),
+    CONSTRAINT check_6ac7043c50 CHECK ((char_length(extra_rdoc_files) <= 255)),
+    CONSTRAINT check_6ff3abe325 CHECK ((char_length(cert_chain) <= 255)),
+    CONSTRAINT check_7cb01436df CHECK ((char_length(licenses) <= 255)),
+    CONSTRAINT check_8be21d92e7 CHECK ((char_length(summary) <= 1024)),
+    CONSTRAINT check_946cb96acb CHECK ((char_length(homepage) <= 255)),
+    CONSTRAINT check_9824fc9efc CHECK ((char_length(bindir) <= 255)),
+    CONSTRAINT check_994b68eb64 CHECK ((char_length(authors) <= 255)),
+    CONSTRAINT check_9d42fa48ae CHECK ((char_length(signing_key) <= 255)),
+    CONSTRAINT check_b0f4f8c853 CHECK ((char_length(files) <= 255)),
+    CONSTRAINT check_b7b296b420 CHECK ((char_length(author) <= 255)),
+    CONSTRAINT check_bf16b21a47 CHECK ((char_length(rdoc_options) <= 255)),
+    CONSTRAINT check_ca641a3354 CHECK ((char_length(required_ruby_version) <= 255)),
+    CONSTRAINT check_ea02f4800f CHECK ((char_length(metadata) <= 255)),
+    CONSTRAINT check_f76bad1a9a CHECK ((char_length(require_paths) <= 255))
+);
+
 CREATE TABLE packages_tags (
     id bigint NOT NULL,
     package_id integer NOT NULL,
@@ -15467,7 +15519,8 @@ CREATE TABLE plan_limits (
     project_feature_flags integer DEFAULT 200 NOT NULL,
     ci_max_artifact_size_api_fuzzing integer DEFAULT 0 NOT NULL,
     ci_pipeline_deployments integer DEFAULT 500 NOT NULL,
-    pull_mirror_interval_seconds integer DEFAULT 300 NOT NULL
+    pull_mirror_interval_seconds integer DEFAULT 300 NOT NULL,
+    rubygems_max_file_size bigint DEFAULT '3221225472'::bigint NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq
@@ -20511,6 +20564,9 @@ ALTER TABLE ONLY packages_packages
 ALTER TABLE ONLY packages_pypi_metadata
     ADD CONSTRAINT packages_pypi_metadata_pkey PRIMARY KEY (package_id);
 
+ALTER TABLE ONLY packages_rubygems_metadata
+    ADD CONSTRAINT packages_rubygems_metadata_pkey PRIMARY KEY (package_id);
+
 ALTER TABLE ONLY packages_tags
     ADD CONSTRAINT packages_tags_pkey PRIMARY KEY (id);
 
@@ -25522,6 +25578,9 @@ ALTER TABLE ONLY scim_identities
 
 ALTER TABLE ONLY packages_debian_project_distributions
     ADD CONSTRAINT fk_rails_94b95e1f84 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY packages_rubygems_metadata
+    ADD CONSTRAINT fk_rails_95a3f5ce78 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_pypi_metadata
     ADD CONSTRAINT fk_rails_9698717cdd FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;

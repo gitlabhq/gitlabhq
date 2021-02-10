@@ -17829,6 +17829,11 @@ enum PackageTypeEnum {
   Packages from the PyPI package manager
   """
   PYPI
+
+  """
+  Packages from the Rubygems package manager
+  """
+  RUBYGEMS
 }
 
 """

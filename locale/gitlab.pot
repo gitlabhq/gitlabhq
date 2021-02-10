@@ -20862,6 +20862,9 @@ msgstr ""
 msgid "Package type must be PyPi"
 msgstr ""
 
+msgid "Package type must be RubyGems"
+msgstr ""
+
 msgid "PackageRegistry|%{boldStart}Allow duplicates%{boldEnd} - Packages with the same name and version are accepted."
 msgstr ""
 
