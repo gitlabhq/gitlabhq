@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.7.7 (2021-02-11)
+
+### Security (9 changes)
+
+- Cancel running and pending jobs when a project is deleted. !1220
+- Prevent Denial of Service Attack on gitlab-shell.
+- Prevent exposure of confidential issue titles in file browser.
+- Updates authorization for linting API.
+- Check user access on API merge request read actions.
+- Limit daily invitations to groups and projects.
+- Enforce the analytics enabled project setting for project-level analytics features.
+- Perform SSL verification for FortiTokenCloud Integration.
+- Prevent Server-side Request Forgery for Prometheus when secured by Google IAP.
+
+
 ## 13.7.6 (2021-02-01)
 
 ### Security (5 changes)
