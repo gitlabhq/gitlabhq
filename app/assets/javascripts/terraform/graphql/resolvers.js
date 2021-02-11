@@ -9,8 +9,11 @@ export default {
     errorMessages: (state) => {
       return state.errorMessages || [];
     },
-    loadingActions: (state) => {
-      return state.loadingActions || false;
+    loadingLock: (state) => {
+      return state.loadingLock || false;
+    },
+    loadingRemove: (state) => {
+      return state.loadingRemove || false;
     },
   },
   Mutation: {
@@ -32,7 +35,8 @@ export default {
             // eslint-disable-next-line no-underscore-dangle
             _showDetails: terraformState._showDetails,
             errorMessages: terraformState.errorMessages,
-            loadingActions: terraformState.loadingActions,
+            loadingLock: terraformState.loadingLock,
+            loadingRemove: terraformState.loadingRemove,
           },
         });
       }

@@ -2,6 +2,7 @@ import { GlAlert, GlBadge, GlKeysetPagination, GlLoadingIcon, GlTab } from '@git
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import EmptyState from '~/terraform/components/empty_state.vue';
 import StatesTable from '~/terraform/components/states_table.vue';
 import TerraformList from '~/terraform/components/terraform_list.vue';
@@ -27,17 +28,20 @@ describe('TerraformList', () => {
       },
     };
 
-    // Override @client  _showDetails
-    getStatesQuery.getStates.definitions[1].selectionSet.selections[0].directives = [];
-
-    // Override @client errorMessages
-    getStatesQuery.getStates.definitions[1].selectionSet.selections[1].directives = [];
-
-    // Override @client loadingActions
-    getStatesQuery.getStates.definitions[1].selectionSet.selections[2].directives = [];
+    const mockResolvers = {
+      TerraformState: {
+        _showDetails: jest.fn().mockResolvedValue(false),
+        errorMessages: jest.fn().mockResolvedValue([]),
+        loadingLock: jest.fn().mockResolvedValue(false),
+        loadingRemove: jest.fn().mockResolvedValue(false),
+      },
+      Mutation: {
+        addDataToTerraformState: jest.fn().mockResolvedValue({}),
+      },
+    };
 
     const statsQueryResponse = queryResponse || jest.fn().mockResolvedValue(apolloQueryResponse);
-    const apolloProvider = createMockApollo([[getStatesQuery, statsQueryResponse]]);
+    const apolloProvider = createMockApollo([[getStatesQuery, statsQueryResponse]], mockResolvers);
 
     wrapper = shallowMount(TerraformList, {
       localVue,
@@ -66,7 +70,8 @@ describe('TerraformList', () => {
           id: 'gid://gitlab/Terraform::State/1',
           name: 'state-1',
           latestVersion: null,
-          loadingActions: false,
+          loadingLock: false,
+          loadingRemove: false,
           lockedAt: null,
           lockedByUser: null,
           updatedAt: null,
@@ -77,7 +82,8 @@ describe('TerraformList', () => {
           id: 'gid://gitlab/Terraform::State/2',
           name: 'state-2',
           latestVersion: null,
-          loadingActions: false,
+          loadingLock: false,
+          loadingRemove: false,
           lockedAt: null,
           lockedByUser: null,
           updatedAt: null,
@@ -98,7 +104,7 @@ describe('TerraformList', () => {
           },
         });
 
-        return wrapper.vm.$nextTick();
+        return waitForPromises();
       });
 
       it('displays a states tab and count', () => {
@@ -126,7 +132,7 @@ describe('TerraformList', () => {
             },
           });
 
-          return wrapper.vm.$nextTick();
+          return waitForPromises();
         });
 
         it('renders the states table without pagination buttons', () => {
@@ -146,7 +152,7 @@ describe('TerraformList', () => {
           },
         });
 
-        return wrapper.vm.$nextTick();
+        return waitForPromises();
       });
 
       it('displays a states tab with no count', () => {
@@ -164,7 +170,7 @@ describe('TerraformList', () => {
     beforeEach(() => {
       createWrapper({ terraformStates: null, queryResponse: jest.fn().mockRejectedValue() });
 
-      return wrapper.vm.$nextTick();
+      return waitForPromises();
     });
 
     it('displays an alert message', () => {

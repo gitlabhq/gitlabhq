@@ -236,6 +236,18 @@ It can be set to:
     of specific users IDs to enable the feature for.
 - [User IDs](#user-ids)
 
+## Legacy feature flag migration
+
+Legacy feature flags became read-only in GitLab 13.4. GitLab 14.0 removes support for legacy feature
+flags. You must migrate your legacy feature flags to the new version. To do so, follow these steps:
+
+1. Take a screenshot of the legacy flag for tracking.
+1. Delete the flag through the API or UI (you don't need to alter the code).
+1. Create a new feature flag with the same name as the legacy flag you deleted. Make sure the
+   strategies and environments match the deleted flag.
+
+See [this video tutorial](https://www.youtube.com/watch?v=CAJY2IGep7Y) for help with this migration.
+
 ## Disable a feature flag for a specific environment
 
 In [GitLab 13.0 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/8621),

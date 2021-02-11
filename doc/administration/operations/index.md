@@ -13,7 +13,7 @@ Keep your GitLab instance up and running smoothly.
   you have been running a large GitLab server (thousands of users) since before
   GitLab 7.3 we recommend cleaning up stale sessions to compact the Redis
   database after you upgrade to GitLab 7.3.
-- [Rake tasks](../../raketasks/README.md): Tasks for common administration and operational processes such as
+- [Rake tasks](../../raketasks/index.md): Tasks for common administration and operational processes such as
   [cleaning up unneeded items from GitLab instance](../../raketasks/cleanup.md), integrity checks,
   and more.
 - [Moving repositories](moving_repositories.md): Moving all repositories managed

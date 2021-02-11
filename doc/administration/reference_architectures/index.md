@@ -33,7 +33,7 @@ per 1,000 users:
 
 For GitLab instances with less than 2,000 users, it's recommended that you use
 the [default setup](#automated-backups) by
-[installing GitLab](../../install/README.md) on a single machine to minimize
+[installing GitLab](../../install/index.md) on a single machine to minimize
 maintenance and resource costs.
 
 If your organization has more than 2,000 users, the recommendation is to scale the

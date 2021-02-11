@@ -22,7 +22,7 @@ as the hardware requirements that are needed to install and use GitLab.
 - Scientific Linux (please use the CentOS packages and instructions)
 - Oracle Linux (please use the CentOS packages and instructions)
 
-For the installation options, see [the main installation page](README.md).
+For the installation options, see [the main installation page](index.md).
 
 ### Unsupported Linux distributions and Unix-like operating systems
 

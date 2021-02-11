@@ -32,7 +32,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ### Installing GitLab
 
-- [Install](../install/README.md): Requirements, directory structures, and installation methods.
+- [Install](../install/index.md): Requirements, directory structures, and installation methods.
   - [Database load balancing](database_load_balancing.md): Distribute database queries among multiple database servers.
   - [Omnibus support for log forwarding](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only).
 - [Reference architectures](reference_architectures/index.md): Add additional resources to support more users.
@@ -92,7 +92,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ### Maintaining GitLab
 
-- [Rake tasks](../raketasks/README.md): Perform various tasks for maintenance, backups, automatic webhooks setup, and more.
+- [Rake tasks](../raketasks/index.md): Perform various tasks for maintenance, backups, automatic webhooks setup, and more.
   - [Backup and restore](../raketasks/backup_restore.md): Backup and restore your GitLab instance.
 - [Operations](operations/index.md): Keeping GitLab up and running (clean up Redis sessions, moving repositories, Sidekiq MemoryKiller, Puma).
 - [Restart GitLab](restart_gitlab.md): Learn how to restart GitLab and its components.
@@ -103,14 +103,14 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 - [GitLab versions and maintenance policy](../policy/maintenance.md): Understand GitLab versions and releases (Major, Minor, Patch, Security), as well as update recommendations.
 - [GitLab in maintenance mode](maintenance_mode/index.md): Put GitLab in maintenance mode.
-- [Update GitLab](../update/README.md): Update guides to upgrade your installation to a new version.
-- [Upgrading without downtime](../update/README.md#upgrading-without-downtime): Upgrade to a newer major, minor, or patch version of GitLab without taking your GitLab instance offline.
+- [Update GitLab](../update/index.md): Update guides to upgrade your installation to a new version.
+- [Upgrading without downtime](../update/index.md#upgrading-without-downtime): Upgrade to a newer major, minor, or patch version of GitLab without taking your GitLab instance offline.
 - [Migrate your GitLab CI/CD data to another version of GitLab](../migrate_ci_to_ce/README.md): If you have an old GitLab installation (older than 8.0), follow this guide to migrate your existing GitLab CI/CD data to another version of GitLab.
 
 ### Upgrading or downgrading GitLab
 
-- [Upgrade from GitLab CE to GitLab EE](../update/README.md#upgrading-between-editions): learn how to upgrade GitLab Community Edition to GitLab Enterprise Editions.
-- [Downgrade from GitLab EE to GitLab CE](../downgrade_ee_to_ce/README.md): Learn how to downgrade GitLab Enterprise Editions to Community Edition.
+- [Upgrade from GitLab CE to GitLab EE](../update/index.md#upgrading-between-editions): learn how to upgrade GitLab Community Edition to GitLab Enterprise Editions.
+- [Downgrade from GitLab EE to GitLab CE](../downgrade_ee_to_ce/index.md): Learn how to downgrade GitLab Enterprise Editions to Community Edition.
 
 ### GitLab platform integrations
 

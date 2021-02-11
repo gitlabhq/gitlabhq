@@ -89,17 +89,34 @@ describe('StatesTableActions', () => {
   });
 
   describe('when the state is loading', () => {
-    beforeEach(() => {
-      return createComponent({
-        state: {
-          ...defaultProps.state,
-          loadingActions: true,
-        },
+    describe('when lock/unlock is processing', () => {
+      beforeEach(() => {
+        return createComponent({
+          state: {
+            ...defaultProps.state,
+            loadingLock: true,
+          },
+        });
+      });
+
+      it('disables the actions dropdown', () => {
+        expect(findActionsDropdown().props('disabled')).toBe(true);
       });
     });
 
-    it('disables the actions dropdown', () => {
-      expect(findActionsDropdown().props('disabled')).toBe(true);
+    describe('when remove is processing', () => {
+      beforeEach(() => {
+        return createComponent({
+          state: {
+            ...defaultProps.state,
+            loadingRemove: true,
+          },
+        });
+      });
+
+      it('disables the actions dropdown', () => {
+        expect(findActionsDropdown().props('disabled')).toBe(true);
+      });
     });
   });
 
@@ -188,7 +205,8 @@ describe('StatesTableActions', () => {
               ...unlockedProps.state,
               _showDetails: false,
               errorMessages: [],
-              loadingActions: true,
+              loadingLock: true,
+              loadingRemove: false,
             },
           },
           // Apollo fields
@@ -205,7 +223,8 @@ describe('StatesTableActions', () => {
               ...unlockedProps.state,
               _showDetails: true,
               errorMessages: ['There was an error'],
-              loadingActions: false,
+              loadingLock: false,
+              loadingRemove: false,
             },
           },
           // Apollo fields

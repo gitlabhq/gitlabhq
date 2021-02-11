@@ -1024,7 +1024,7 @@ restoring a single project or group, you can use a workaround by restoring
 your backup to a separate, temporary GitLab instance, and then export your
 project or group from there:
 
-1. [Install a new GitLab](../install/README.md) instance at the same version as
+1. [Install a new GitLab](../install/index.md) instance at the same version as
    the backed-up instance from which you want to restore.
 1. [Restore the backup](#restore-gitlab) into this new instance, then
    export your [project](../user/project/settings/import_export.md)

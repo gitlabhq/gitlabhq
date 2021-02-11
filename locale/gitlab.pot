@@ -26121,13 +26121,13 @@ msgstr ""
 msgid "SecurityReports|Severity"
 msgstr ""
 
+msgid "SecurityReports|Sometimes a scanner can't determine a finding's severity. Those findings may still be a potential source of risk though. Please review these manually."
+msgstr ""
+
 msgid "SecurityReports|Sorry, your filter produced no results"
 msgstr ""
 
 msgid "SecurityReports|Status"
-msgstr ""
-
-msgid "SecurityReports|The rating \"unknown\" indicates that the underlying scanner doesn’t contain or provide a severity rating."
 msgstr ""
 
 msgid "SecurityReports|The security dashboard displays the latest security findings for projects you wish to monitor. Add projects to your group to view their vulnerabilities here."
@@ -28681,6 +28681,9 @@ msgstr ""
 msgid "Terraform|Locked by %{user} %{timeAgo}"
 msgstr ""
 
+msgid "Terraform|Locking state"
+msgstr ""
+
 msgid "Terraform|Name"
 msgstr ""
 
@@ -28712,6 +28715,9 @@ msgid "Terraform|Unknown User"
 msgstr ""
 
 msgid "Terraform|Unlock"
+msgstr ""
+
+msgid "Terraform|Unlocking state"
 msgstr ""
 
 msgid "Terraform|You are about to remove the State file %{name}. This will permanently delete all the State versions and history. The infrastructure provisioned previously\twill remain intact, only the state file with all its versions are to be removed. This action is non-revertible."

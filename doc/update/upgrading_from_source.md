@@ -35,7 +35,7 @@ to identify the ideal upgrade path.
 
 Before upgrading to a new major version, you should ensure that any background
 migration jobs from previous releases have been completed. To see the current size of the `background_migration` queue,
-[Check for background migrations before upgrading](README.md#checking-for-background-migrations-before-upgrading).
+[Check for background migrations before upgrading](index.md#checking-for-background-migrations-before-upgrading).
 
 ## Guidelines for all versions
 

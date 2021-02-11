@@ -13,7 +13,7 @@ you are running. To verify, sign in to GitLab and browse to `/help`. The GitLab 
 are listed at the top of the **Help** page.
 
 If you are running GitLab Community Edition (CE), upgrade your installation to
-GitLab Enterprise Edition (EE). For more details, see [Upgrading between editions](../../update/README.md#upgrading-between-editions).
+GitLab Enterprise Edition (EE). For more details, see [Upgrading between editions](../../update/index.md#upgrading-between-editions).
 If you have questions or need assistance upgrading from GitLab CE to EE please [contact GitLab Support](https://about.gitlab.com/support/#contact-support).
 
 The license is a base64-encoded ASCII text file with a `.gitlab-license`
@@ -133,7 +133,7 @@ The banner disappears after the new license becomes active.
 ### There is no License tab in the Admin Area
 
 If you originally installed Community Edition rather than Enterprise Edition you must
-[upgrade to Enterprise Edition](../../update/README.md#community-to-enterprise-edition)
+[upgrade to Enterprise Edition](../../update/index.md#community-to-enterprise-edition)
 before uploading your license.
 
 GitLab.com users can't upload and use a self-managed license. If you

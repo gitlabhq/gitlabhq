@@ -41,7 +41,7 @@ the swap available when needed.
 ## Setup instructions
 
 To install GitLab for this default reference architecture, use the standard
-[installation instructions](../../install/README.md).
+[installation instructions](../../install/index.md).
 
 You can also optionally configure GitLab to use an [external PostgreSQL service](../postgresql/external.md)
 or an [external object storage service](../object_storage.md) for added

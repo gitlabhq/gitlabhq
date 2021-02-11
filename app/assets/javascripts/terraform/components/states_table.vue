@@ -1,5 +1,14 @@
 <script>
-import { GlAlert, GlBadge, GlIcon, GlLink, GlSprintf, GlTable, GlTooltip } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlBadge,
+  GlIcon,
+  GlLink,
+  GlLoadingIcon,
+  GlSprintf,
+  GlTable,
+  GlTooltip,
+} from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
@@ -14,6 +23,7 @@ export default {
     GlBadge,
     GlIcon,
     GlLink,
+    GlLoadingIcon,
     GlSprintf,
     GlTable,
     GlTooltip,
@@ -67,14 +77,19 @@ export default {
     jobStatus: s__('Terraform|Job status'),
     locked: s__('Terraform|Locked'),
     lockedByUser: s__('Terraform|Locked by %{user} %{timeAgo}'),
+    lockingState: s__('Terraform|Locking state'),
     name: s__('Terraform|Name'),
     pipeline: s__('Terraform|Pipeline'),
     unknownUser: s__('Terraform|Unknown User'),
+    unlockingState: s__('Terraform|Unlocking state'),
     updatedUser: s__('Terraform|%{user} updated %{timeAgo}'),
   },
   methods: {
     createdByUserName(item) {
       return item.latestVersion?.createdByUser?.name;
+    },
+    loadingLockText(item) {
+      return item.lockedAt ? this.$options.i18n.unlockingState : this.$options.i18n.lockingState;
     },
     lockedByUserName(item) {
       return item.lockedByUser?.name || this.$options.i18n.unknownUser;
@@ -119,7 +134,18 @@ export default {
           {{ item.name }}
         </p>
 
-        <div v-if="item.lockedAt" :id="`terraformLockedBadgeContainer${item.name}`" class="gl-mx-2">
+        <div v-if="item.loadingLock" class="gl-mx-3">
+          <p class="gl-display-flex gl-justify-content-start gl-align-items-baseline gl-m-0">
+            <gl-loading-icon class="gl-pr-1" />
+            {{ loadingLockText(item) }}
+          </p>
+        </div>
+
+        <div
+          v-else-if="item.lockedAt"
+          :id="`terraformLockedBadgeContainer${item.name}`"
+          class="gl-mx-3"
+        >
           <gl-badge :id="`terraformLockedBadge${item.name}`">
             <gl-icon name="lock" />
             {{ $options.i18n.locked }}

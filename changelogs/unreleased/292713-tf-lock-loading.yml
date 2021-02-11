@@ -1,0 +1,5 @@
+---
+title: Add loading display to Terraform lock action
+merge_request: 53475
+author:
+type: changed

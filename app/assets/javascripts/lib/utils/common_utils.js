@@ -123,7 +123,7 @@ export const handleLocationHash = () => {
   }
 
   if (isInIssuePage()) {
-    adjustment -= fixedIssuableTitle.offsetHeight;
+    adjustment -= fixedIssuableTitle?.offsetHeight;
   }
 
   if (isInMRPage()) {

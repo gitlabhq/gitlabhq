@@ -64,6 +64,9 @@ export default {
     disableModalSubmit() {
       return this.removeConfirmText !== this.state.name;
     },
+    loading() {
+      return this.state.loadingLock || this.state.loadingRemove;
+    },
     primaryModalProps() {
       return {
         text: this.$options.i18n.modalRemove,
@@ -77,9 +80,23 @@ export default {
       this.removeConfirmText = '';
     },
     lock() {
+      this.updateStateCache({
+        _showDetails: false,
+        errorMessages: [],
+        loadingLock: true,
+        loadingRemove: false,
+      });
+
       this.stateActionMutation(lockState);
     },
     unlock() {
+      this.updateStateCache({
+        _showDetails: false,
+        errorMessages: [],
+        loadingLock: true,
+        loadingRemove: false,
+      });
+
       this.stateActionMutation(unlockState);
     },
     updateStateCache(newData) {
@@ -96,17 +113,19 @@ export default {
     remove() {
       if (!this.disableModalSubmit) {
         this.hideModal();
+
+        this.updateStateCache({
+          _showDetails: false,
+          errorMessages: [],
+          loadingLock: false,
+          loadingRemove: true,
+        });
+
         this.stateActionMutation(removeState);
       }
     },
     stateActionMutation(mutation) {
       let errorMessages = [];
-
-      this.updateStateCache({
-        _showDetails: false,
-        errorMessages,
-        loadingActions: true,
-      });
 
       this.$apollo
         .mutate({
@@ -132,7 +151,8 @@ export default {
           this.updateStateCache({
             _showDetails: Boolean(errorMessages.length),
             errorMessages,
-            loadingActions: false,
+            loadingLock: false,
+            loadingRemove: false,
           });
         });
     },
@@ -146,7 +166,7 @@ export default {
       icon="ellipsis_v"
       right
       :data-testid="`terraform-state-actions-${state.name}`"
-      :disabled="state.loadingActions"
+      :disabled="loading"
       toggle-class="gl-px-3! gl-shadow-none!"
     >
       <template #button-content>
