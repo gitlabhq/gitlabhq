@@ -44,7 +44,7 @@ module Gitlab
 
           def aggregated_metrics_data(start_date:, end_date:)
             aggregated_metrics.each_with_object({}) do |aggregation, data|
-              next if aggregation[:feature_flag] && Feature.disabled?(aggregation[:feature_flag], default_enabled: false, type: :development)
+              next if aggregation[:feature_flag] && Feature.disabled?(aggregation[:feature_flag], default_enabled: :yaml, type: :development)
 
               case aggregation[:source]
               when REDIS_SOURCE

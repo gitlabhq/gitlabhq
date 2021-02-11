@@ -142,6 +142,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
 
           it 'does not calculate data for aggregates with ff turned off' do
             skip_feature_flags_yaml_validation
+            skip_default_enabled_yaml_check
             stub_feature_flags(enabled_feature_flag => true, disabled_feature_flag => false)
             allow(sources::RedisHll).to receive(:calculate_metrics_union).and_return(6)
 
