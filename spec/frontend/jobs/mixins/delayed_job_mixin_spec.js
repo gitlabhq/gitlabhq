@@ -1,46 +1,42 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
+import { shallowMount } from '@vue/test-utils';
 import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 
 describe('DelayedJobMixin', () => {
+  let wrapper;
   const delayedJobFixture = getJSONFixture('jobs/delayed.json');
-  const dummyComponent = Vue.extend({
-    mixins: [delayedJobMixin],
+  const dummyComponent = {
     props: {
       job: {
         type: Object,
         required: true,
       },
     },
-    render(createElement) {
-      return createElement('div', this.remainingTime);
-    },
-  });
-
-  let vm;
+    mixins: [delayedJobMixin],
+    template: '<div>{{remainingTime}}</div>',
+  };
 
   afterEach(() => {
-    vm.$destroy();
-    jest.clearAllTimers();
+    wrapper.destroy();
+    wrapper = null;
   });
 
   describe('if job is empty object', () => {
     beforeEach(() => {
-      vm = mountComponent(dummyComponent, {
-        job: {},
+      wrapper = shallowMount(dummyComponent, {
+        propsData: {
+          job: {},
+        },
       });
     });
 
     it('sets remaining time to 00:00:00', () => {
-      expect(vm.$el.innerText).toBe('00:00:00');
+      expect(wrapper.text()).toBe('00:00:00');
     });
 
-    describe('after mounting', () => {
-      beforeEach(() => vm.$nextTick());
+    it('does not update remaining time after mounting', async () => {
+      await wrapper.vm.$nextTick();
 
-      it('does not update remaining time', () => {
-        expect(vm.$el.innerText).toBe('00:00:00');
-      });
+      expect(wrapper.text()).toBe('00:00:00');
     });
   });
 
@@ -48,33 +44,32 @@ describe('DelayedJobMixin', () => {
     describe('if job is delayed job', () => {
       let remainingTimeInMilliseconds = 42000;
 
-      beforeEach(() => {
+      beforeEach(async () => {
         jest
           .spyOn(Date, 'now')
           .mockImplementation(
             () => new Date(delayedJobFixture.scheduled_at).getTime() - remainingTimeInMilliseconds,
           );
 
-        vm = mountComponent(dummyComponent, {
-          job: delayedJobFixture,
+        wrapper = shallowMount(dummyComponent, {
+          propsData: {
+            job: delayedJobFixture,
+          },
         });
+
+        await wrapper.vm.$nextTick();
       });
 
-      describe('after mounting', () => {
-        beforeEach(() => vm.$nextTick());
+      it('sets remaining time', () => {
+        expect(wrapper.text()).toBe('00:00:42');
+      });
 
-        it('sets remaining time', () => {
-          expect(vm.$el.innerText).toBe('00:00:42');
-        });
+      it('updates remaining time', async () => {
+        remainingTimeInMilliseconds = 41000;
+        jest.advanceTimersByTime(1000);
 
-        it('updates remaining time', () => {
-          remainingTimeInMilliseconds = 41000;
-          jest.advanceTimersByTime(1000);
-
-          return vm.$nextTick().then(() => {
-            expect(vm.$el.innerText).toBe('00:00:41');
-          });
-        });
+        await wrapper.vm.$nextTick();
+        expect(wrapper.text()).toBe('00:00:41');
       });
     });
   });
@@ -96,33 +91,32 @@ describe('DelayedJobMixin', () => {
     describe('if job is delayed job', () => {
       let remainingTimeInMilliseconds = 42000;
 
-      beforeEach(() => {
+      beforeEach(async () => {
         jest
           .spyOn(Date, 'now')
           .mockImplementation(
             () => mockGraphQlJob.scheduledAt.getTime() - remainingTimeInMilliseconds,
           );
 
-        vm = mountComponent(dummyComponent, {
-          job: mockGraphQlJob,
+        wrapper = shallowMount(dummyComponent, {
+          propsData: {
+            job: mockGraphQlJob,
+          },
         });
+
+        await wrapper.vm.$nextTick();
       });
 
-      describe('after mounting', () => {
-        beforeEach(() => vm.$nextTick());
+      it('sets remaining time', () => {
+        expect(wrapper.text()).toBe('00:00:42');
+      });
 
-        it('sets remaining time', () => {
-          expect(vm.$el.innerText).toBe('00:00:42');
-        });
+      it('updates remaining time', async () => {
+        remainingTimeInMilliseconds = 41000;
+        jest.advanceTimersByTime(1000);
 
-        it('updates remaining time', () => {
-          remainingTimeInMilliseconds = 41000;
-          jest.advanceTimersByTime(1000);
-
-          return vm.$nextTick().then(() => {
-            expect(vm.$el.innerText).toBe('00:00:41');
-          });
-        });
+        await wrapper.vm.$nextTick();
+        expect(wrapper.text()).toBe('00:00:41');
       });
     });
   });

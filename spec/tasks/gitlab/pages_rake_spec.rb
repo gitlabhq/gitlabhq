@@ -11,7 +11,10 @@ RSpec.describe 'gitlab:pages' do
     subject { run_rake_task('gitlab:pages:migrate_legacy_storage') }
 
     it 'calls migration service' do
-      expect_next_instance_of(::Pages::MigrateFromLegacyStorageService, anything, 3, 10) do |service|
+      expect_next_instance_of(::Pages::MigrateFromLegacyStorageService, anything,
+                              migration_threads: 3,
+                              batch_size: 10,
+                              ignore_invalid_entries: false) do |service|
         expect(service).to receive(:execute).and_call_original
       end
 
@@ -21,7 +24,10 @@ RSpec.describe 'gitlab:pages' do
     it 'uses PAGES_MIGRATION_THREADS environment variable' do
       stub_env('PAGES_MIGRATION_THREADS', '5')
 
-      expect_next_instance_of(::Pages::MigrateFromLegacyStorageService, anything, 5, 10) do |service|
+      expect_next_instance_of(::Pages::MigrateFromLegacyStorageService, anything,
+                              migration_threads: 5,
+                              batch_size: 10,
+                              ignore_invalid_entries: false) do |service|
         expect(service).to receive(:execute).and_call_original
       end
 
@@ -31,7 +37,23 @@ RSpec.describe 'gitlab:pages' do
     it 'uses PAGES_MIGRATION_BATCH_SIZE environment variable' do
       stub_env('PAGES_MIGRATION_BATCH_SIZE', '100')
 
-      expect_next_instance_of(::Pages::MigrateFromLegacyStorageService, anything, 3, 100) do |service|
+      expect_next_instance_of(::Pages::MigrateFromLegacyStorageService, anything,
+                              migration_threads: 3,
+                              batch_size: 100,
+                              ignore_invalid_entries: false) do |service|
+        expect(service).to receive(:execute).and_call_original
+      end
+
+      subject
+    end
+
+    it 'uses PAGES_MIGRATION_IGNORE_INVALID_ENTRIES environment variable' do
+      stub_env('PAGES_MIGRATION_IGNORE_INVALID_ENTRIES', 'true')
+
+      expect_next_instance_of(::Pages::MigrateFromLegacyStorageService, anything,
+                              migration_threads: 3,
+                              batch_size: 10,
+                              ignore_invalid_entries: true) do |service|
         expect(service).to receive(:execute).and_call_original
       end
 

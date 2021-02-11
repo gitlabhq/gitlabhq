@@ -311,6 +311,13 @@ Settings.pages['storage_path']      = Settings.pages['path']
 Settings.pages['object_store']      = ObjectStoreSettings.legacy_parse(Settings.pages['object_store'])
 
 #
+# GitLab documentation
+#
+Settings['gitlab_docs'] ||= Settingslogic.new({})
+Settings.gitlab_docs['enabled'] ||= false
+Settings.gitlab_docs['host'] = nil unless Settings.gitlab_docs.enabled
+
+#
 # Geo
 #
 Gitlab.ee do

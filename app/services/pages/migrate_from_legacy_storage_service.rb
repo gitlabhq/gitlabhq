@@ -2,10 +2,11 @@
 
 module Pages
   class MigrateFromLegacyStorageService
-    def initialize(logger, migration_threads, batch_size)
+    def initialize(logger, migration_threads:, batch_size:, ignore_invalid_entries:)
       @logger = logger
       @migration_threads = migration_threads
       @batch_size = batch_size
+      @ignore_invalid_entries = ignore_invalid_entries
 
       @migrated = 0
       @errored = 0
@@ -59,19 +60,19 @@ module Pages
     def migrate_project(project)
       result = nil
       time = Benchmark.realtime do
-        result = ::Pages::MigrateLegacyStorageToDeploymentService.new(project).execute
+        result = ::Pages::MigrateLegacyStorageToDeploymentService.new(project, ignore_invalid_entries: @ignore_invalid_entries).execute
       end
 
       if result[:status] == :success
-        @logger.info("project_id: #{project.id} #{project.pages_path} has been migrated in #{time} seconds")
+        @logger.info("project_id: #{project.id} #{project.pages_path} has been migrated in #{time.round(2)} seconds")
         @counters_lock.synchronize { @migrated += 1 }
       else
-        @logger.error("project_id: #{project.id} #{project.pages_path} failed to be migrated in #{time} seconds: #{result[:message]}")
+        @logger.error("project_id: #{project.id} #{project.pages_path} failed to be migrated in #{time.round(2)} seconds: #{result[:message]}")
         @counters_lock.synchronize { @errored += 1 }
       end
     rescue => e
       @counters_lock.synchronize { @errored += 1 }
-      @logger.error("#{e.message} project_id: #{project&.id}")
+      @logger.error("project_id: #{project&.id} #{project&.pages_path} failed to be migrated: #{e.message}")
       Gitlab::ErrorTracking.track_exception(e, project_id: project&.id)
     end
   end

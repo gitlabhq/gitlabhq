@@ -8,7 +8,10 @@ namespace :gitlab do
     task migrate_legacy_storage: :gitlab_environment do
       logger.info('Starting to migrate legacy pages storage to zip deployments')
 
-      result = ::Pages::MigrateFromLegacyStorageService.new(logger, migration_threads, batch_size).execute
+      result = ::Pages::MigrateFromLegacyStorageService.new(logger,
+                                                            migration_threads: migration_threads,
+                                                            batch_size: batch_size,
+                                                            ignore_invalid_entries: ignore_invalid_entries).execute
 
       logger.info("A total of #{result[:migrated] + result[:errored]} projects were processed.")
       logger.info("- The #{result[:migrated]} projects migrated successfully")
@@ -41,6 +44,12 @@ namespace :gitlab do
 
     def batch_size
       ENV.fetch('PAGES_MIGRATION_BATCH_SIZE', '10').to_i
+    end
+
+    def ignore_invalid_entries
+      Gitlab::Utils.to_boolean(
+        ENV.fetch('PAGES_MIGRATION_IGNORE_INVALID_ENTRIES', 'false')
+      )
     end
   end
 end

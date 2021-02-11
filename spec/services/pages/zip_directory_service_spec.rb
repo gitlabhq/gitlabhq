@@ -10,8 +10,14 @@ RSpec.describe Pages::ZipDirectoryService do
     end
   end
 
+  let(:ignore_invalid_entries) { false }
+
+  let(:service) do
+    described_class.new(@work_dir, ignore_invalid_entries: ignore_invalid_entries)
+  end
+
   let(:result) do
-    described_class.new(@work_dir).execute
+    service.execute
   end
 
   let(:status) { result[:status] }
@@ -20,6 +26,8 @@ RSpec.describe Pages::ZipDirectoryService do
   let(:entries_count) { result[:entries_count] }
 
   it 'returns error if project pages dir does not exist' do
+    expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
     expect(
       described_class.new("/tmp/not/existing/dir").execute
     ).to eq(status: :error, message: "Can not find valid public dir in /tmp/not/existing/dir")
@@ -132,32 +140,69 @@ RSpec.describe Pages::ZipDirectoryService do
       end
     end
 
-    it 'ignores the symlink pointing outside of public directory' do
-      create_file("target.html", "hello")
-      create_link("public/link.html", "../target.html")
+    shared_examples "raises or ignores file" do |raised_exception, file|
+      it 'raises error' do
+        expect do
+          result
+        end.to raise_error(raised_exception)
+      end
 
-      with_zip_file do |zip_file|
-        expect { zip_file.get_entry("public/link.html") }.to raise_error(Errno::ENOENT)
+      context 'when errors are ignored' do
+        let(:ignore_invalid_entries) { true }
+
+        it 'does not create entry' do
+          with_zip_file do |zip_file|
+            expect { zip_file.get_entry(file) }.to raise_error(Errno::ENOENT)
+          end
+        end
       end
     end
 
-    it 'ignores the symlink if target is absent' do
-      create_link("public/link.html", "./target.html")
-
-      with_zip_file do |zip_file|
-        expect { zip_file.get_entry("public/link.html") }.to raise_error(Errno::ENOENT)
+    context 'when symlink points outside of public directory' do
+      before do
+        create_file("target.html", "hello")
+        create_link("public/link.html", "../target.html")
       end
+
+      include_examples "raises or ignores file", described_class::InvalidEntryError, "public/link.html"
     end
 
-    it 'ignores symlink if is absolute and points to outside of directory' do
-      target = File.join(@work_dir, "target")
-      FileUtils.touch(target)
-
-      create_link("public/link.html", target)
-
-      with_zip_file do |zip_file|
-        expect { zip_file.get_entry("public/link.html") }.to raise_error(Errno::ENOENT)
+    context 'when target of the symlink is absent' do
+      before do
+        create_link("public/link.html", "./target.html")
       end
+
+      include_examples "raises or ignores file", Errno::ENOENT, "public/link.html"
+    end
+
+    context 'when targets itself' do
+      before do
+        create_link("public/link.html", "./link.html")
+      end
+
+      include_examples "raises or ignores file", Errno::ELOOP, "public/link.html"
+    end
+
+    context 'when symlink is absolute and points to outside of directory' do
+      before do
+        target = File.join(@work_dir, "target")
+        FileUtils.touch(target)
+
+        create_link("public/link.html", target)
+      end
+
+      include_examples "raises or ignores file", described_class::InvalidEntryError, "public/link.html"
+    end
+
+    context 'when entry has unknown ftype' do
+      before do
+        file = create_file("public/index.html", "hello")
+
+        allow(File).to receive(:lstat).and_call_original
+        expect(File).to receive(:lstat).with(file) { double("lstat", ftype: "unknown") }
+      end
+
+      include_examples "raises or ignores file", described_class::InvalidEntryError, "public/index.html"
     end
 
     it "includes raw symlink if it's target is a valid directory" do
@@ -204,9 +249,13 @@ RSpec.describe Pages::ZipDirectoryService do
   end
 
   def create_file(name, content)
-    File.open(File.join(@work_dir, name), "w") do |f|
+    file_path = File.join(@work_dir, name)
+
+    File.open(file_path, "w") do |f|
       f.write(content)
     end
+
+    file_path
   end
 
   def create_dir(dir)

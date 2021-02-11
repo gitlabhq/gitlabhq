@@ -10,6 +10,9 @@ module Enums
           unknown_failure: 0,
           config_error: 1,
           external_validation_failure: 2,
+          activity_limit_exceeded: 20,
+          size_limit_exceeded: 21,
+          job_activity_limit_exceeded: 22,
           deployments_limit_exceeded: 23
         }
       end
@@ -77,5 +80,3 @@ module Enums
     end
   end
 end
-
-Enums::Ci::Pipeline.prepend_if_ee('EE::Enums::Ci::Pipeline')

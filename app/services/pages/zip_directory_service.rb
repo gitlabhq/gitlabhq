@@ -10,12 +10,17 @@ module Pages
 
     PUBLIC_DIR = 'public'
 
-    def initialize(input_dir)
+    attr_reader :public_dir, :real_dir
+
+    def initialize(input_dir, ignore_invalid_entries: false)
       @input_dir = input_dir
+      @ignore_invalid_entries = ignore_invalid_entries
     end
 
     def execute
-      return error("Can not find valid public dir in #{@input_dir}") unless valid_path?(public_dir)
+      unless resolve_public_dir
+        return error("Can not find valid public dir in #{@input_dir}")
+      end
 
       output_file = File.join(real_dir, "@migrated.zip") # '@' to avoid any name collision with groups or projects
 
@@ -35,24 +40,36 @@ module Pages
 
     private
 
+    def resolve_public_dir
+      @real_dir = File.realpath(@input_dir)
+      @public_dir = File.join(real_dir, PUBLIC_DIR)
+
+      valid_path?(public_dir)
+    rescue Errno::ENOENT
+      false
+    end
+
     def write_entry(zipfile, zipfile_path)
       disk_file_path = File.join(real_dir, zipfile_path)
 
       unless valid_path?(disk_file_path)
         # archive with invalid entry will just have this entry missing
-        raise InvalidEntryError
+        raise InvalidEntryError, "#{disk_file_path} is invalid, input_dir: #{@input_dir}"
       end
 
-      case File.lstat(disk_file_path).ftype
+      ftype = File.lstat(disk_file_path).ftype
+      case ftype
       when 'directory'
         recursively_zip_directory(zipfile, disk_file_path, zipfile_path)
       when 'file', 'link'
         zipfile.add(zipfile_path, disk_file_path)
       else
-        raise InvalidEntryError
+        raise InvalidEntryError, "#{disk_file_path} has invalid ftype: #{ftype}, input_dir: #{@input_dir}"
       end
-    rescue InvalidEntryError => e
+    rescue Errno::ENOENT, Errno::ELOOP, InvalidEntryError => e
       Gitlab::ErrorTracking.track_exception(e, input_dir: @input_dir, disk_file_path: disk_file_path)
+
+      raise e unless @ignore_invalid_entries
     end
 
     def recursively_zip_directory(zipfile, disk_file_path, zipfile_path)
@@ -70,31 +87,11 @@ module Pages
       end
     end
 
-    # that should never happen, but we want to be safer
-    # in theory without this we would allow to use symlinks
-    # to pack any directory on disk
-    # it isn't possible because SafeZip doesn't extract such archives
+    # SafeZip was introduced only recently,
+    # so we have invalid entries on disk
     def valid_path?(disk_file_path)
       realpath = File.realpath(disk_file_path)
-
       realpath == public_dir || realpath.start_with?(public_dir + "/")
-    # happens if target of symlink isn't there
-    rescue => e
-      Gitlab::ErrorTracking.track_exception(e, input_dir: real_dir, disk_file_path: disk_file_path)
-
-      false
-    end
-
-    def real_dir
-      strong_memoize(:real_dir) do
-        File.realpath(@input_dir) rescue nil
-      end
-    end
-
-    def public_dir
-      strong_memoize(:public_dir) do
-        File.join(real_dir, PUBLIC_DIR) rescue nil
-      end
     end
   end
 end

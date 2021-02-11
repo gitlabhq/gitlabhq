@@ -18,7 +18,6 @@ RSpec.configure do |config|
     stub_application_setting(snowplow_enabled: true)
 
     allow(SnowplowTracker::SelfDescribingJson).to receive(:new).and_call_original
-    allow(Gitlab::Tracking::StandardContext).to receive(:new).and_call_original
     allow(Gitlab::Tracking).to receive(:event).and_call_original # rubocop:disable RSpec/ExpectGitlabTracking
   end
 

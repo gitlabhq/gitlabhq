@@ -319,15 +319,24 @@ their own authors. To change this setting:
 
 Note that users can edit the approval rules in every merge request and override pre-defined settings unless it's set [**not to allow** overrides](#prevent-overriding-default-approvals).
 
+You can prevent authors from approving their own merge requests
+[at the instance level](../../admin_area/merge_requests_approvals.md). When enabled,
+this setting is disabled on the project level, and not editable.
+
 #### Prevent approval of merge requests by their committers **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10441) in GitLab 11.10.
 > - Moved to GitLab Premium in 13.9.
 
 You can prevent users who have committed to a merge request from approving it,
-though code authors can still approve. To enable this feature:
+though code authors can still approve. You can enable this feature
+[at the instance level](../../admin_area/merge_requests_approvals.md), which
+disables changes to this feature at the project level. If you prefer to manage
+this feature at the project level, you can:
 
 1. Check the **Prevent MR approvals from users who make commits to the MR.** checkbox.
+   If this check box is disabled, this feature has been disabled
+   [at the instance level](../../admin_area/merge_requests_approvals.md).
 1. Click **Save changes**.
 
 Read the official Git documentation for an explanation of the

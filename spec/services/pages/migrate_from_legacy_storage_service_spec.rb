@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Pages::MigrateFromLegacyStorageService do
-  let(:service) { described_class.new(Rails.logger, 3, 10) }
+  let(:service) { described_class.new(Rails.logger, migration_threads: 3, batch_size: 10, ignore_invalid_entries: false) }
 
   it 'does not try to migrate pages if pages are not deployed' do
     expect(::Pages::MigrateLegacyStorageToDeploymentService).not_to receive(:new)
@@ -22,7 +22,7 @@ RSpec.describe Pages::MigrateFromLegacyStorageService do
       end
     end
 
-    service = described_class.new(Rails.logger, 3, 2)
+    service = described_class.new(Rails.logger, migration_threads: 3, batch_size: 2, ignore_invalid_entries: false)
 
     threads = Concurrent::Set.new
 
@@ -49,7 +49,7 @@ RSpec.describe Pages::MigrateFromLegacyStorageService do
 
     context 'when pages directory does not exist' do
       it 'tries to migrate the project, but does not crash' do
-        expect_next_instance_of(::Pages::MigrateLegacyStorageToDeploymentService, project) do |service|
+        expect_next_instance_of(::Pages::MigrateLegacyStorageToDeploymentService, project, ignore_invalid_entries: false) do |service|
           expect(service).to receive(:execute).and_call_original
         end
 
@@ -66,7 +66,7 @@ RSpec.describe Pages::MigrateFromLegacyStorageService do
       end
 
       it 'migrates pages projects without deployments' do
-        expect_next_instance_of(::Pages::MigrateLegacyStorageToDeploymentService, project) do |service|
+        expect_next_instance_of(::Pages::MigrateLegacyStorageToDeploymentService, project, ignore_invalid_entries: false) do |service|
           expect(service).to receive(:execute).and_call_original
         end
 

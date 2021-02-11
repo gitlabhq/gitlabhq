@@ -311,6 +311,9 @@ Custom event tracking and instrumentation can be added by directly calling the `
 | `property` | String                    | nil           | As described in [Structured event taxonomy](#structured-event-taxonomy).                                                          |
 | `value`    | Numeric                   | nil           | As described in [Structured event taxonomy](#structured-event-taxonomy).                                                          |
 | `context`  | Array\[SelfDescribingJSON\] | nil           | An array of custom contexts to send with this event. Most events should not have any custom contexts.                             |
+| `project`  | Project                   | nil           | The project associated with the event |
+| `user`     | User                      | nil           | The user associated with the event |
+| `namespace` | Namespace                | nil           | The namespace associated with the event |
 
 Tracking can be viewed as either tracking user behavior, or can be used for instrumentation to monitor and visualize performance over time in an area or aspect of code.
 
@@ -321,10 +324,8 @@ class Projects::CreateService < BaseService
   def execute
     project = Project.create(params)
 
-    Gitlab::Tracking.event('Projects::CreateService', 'create_project',
-      label: project.errors.full_messages.to_sentence,
-      value: project.valid?
-    )
+    Gitlab::Tracking.event('Projects::CreateService', 'create_project', label: project.errors.full_messages.to_sentence,
+                           property: project.valid?.to_s, project: project, user: current_user, namespace: namespace)
   end
 end
 ```

@@ -42,36 +42,31 @@ RSpec.describe Gitlab::Tracking do
     end
 
     shared_examples 'delegates to destination' do |klass|
-      context 'with standard context' do
-        it "delegates to #{klass} destination" do
-          expect_any_instance_of(klass).to receive(:event) do |_, category, action, args|
-            expect(category).to eq('category')
-            expect(action).to eq('action')
-            expect(args[:label]).to eq('label')
-            expect(args[:property]).to eq('property')
-            expect(args[:value]).to eq(1.5)
-            expect(args[:context].length).to eq(1)
-            expect(args[:context].first.to_json[:schema]).to eq(Gitlab::Tracking::StandardContext::GITLAB_STANDARD_SCHEMA_URL)
-            expect(args[:context].first.to_json[:data]).to include(foo: 'bar')
-          end
+      it "delegates to #{klass} destination" do
+        other_context = double(:context)
 
-          described_class.event('category', 'action', label: 'label', property: 'property', value: 1.5,
-                                standard_context: Gitlab::Tracking::StandardContext.new(foo: 'bar'))
+        project = double(:project)
+        user = double(:user)
+        namespace = double(:namespace)
+
+        expect(Gitlab::Tracking::StandardContext)
+          .to receive(:new)
+          .with(project: project, user: user, namespace: namespace)
+          .and_call_original
+
+        expect_any_instance_of(klass).to receive(:event) do |_, category, action, args|
+          expect(category).to eq('category')
+          expect(action).to eq('action')
+          expect(args[:label]).to eq('label')
+          expect(args[:property]).to eq('property')
+          expect(args[:value]).to eq(1.5)
+          expect(args[:context].length).to eq(2)
+          expect(args[:context].first).to eq(other_context)
+          expect(args[:context].last.to_json[:schema]).to eq(Gitlab::Tracking::StandardContext::GITLAB_STANDARD_SCHEMA_URL)
         end
-      end
 
-      context 'without standard context' do
-        it "delegates to #{klass} destination" do
-          expect_any_instance_of(klass).to receive(:event) do |_, category, action, args|
-            expect(category).to eq('category')
-            expect(action).to eq('action')
-            expect(args[:label]).to eq('label')
-            expect(args[:property]).to eq('property')
-            expect(args[:value]).to eq(1.5)
-          end
-
-          described_class.event('category', 'action', label: 'label', property: 'property', value: 1.5)
-        end
+        described_class.event('category', 'action', label: 'label', property: 'property', value: 1.5,
+                              context: [other_context], project: project, user: user, namespace: namespace)
       end
     end
 

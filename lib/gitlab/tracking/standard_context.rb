@@ -29,11 +29,10 @@ module Gitlab
       private
 
       def to_h
-        public_methods(false).each_with_object({}) do |method, hash|
-          next if method == :to_context
-
-          hash[method] = public_send(method) # rubocop:disable GitlabSecurity/PublicSend
-        end.merge(@data)
+        {
+          environment: environment,
+          source: source
+        }.merge(@data)
       end
     end
   end

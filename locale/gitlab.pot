@@ -9224,6 +9224,9 @@ msgstr ""
 msgid "DastProfiles|Request headers"
 msgstr ""
 
+msgid "DastProfiles|Run scan"
+msgstr ""
+
 msgid "DastProfiles|Run the AJAX spider, in addition to the traditional spider, to crawl the target site."
 msgstr ""
 
@@ -21478,9 +21481,6 @@ msgid "PerformanceBar|Rugged calls"
 msgstr ""
 
 msgid "PerformanceBar|SQL queries"
-msgstr ""
-
-msgid "PerformanceBar|Stats"
 msgstr ""
 
 msgid "PerformanceBar|trace"

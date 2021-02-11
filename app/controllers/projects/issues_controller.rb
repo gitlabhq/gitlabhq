@@ -145,9 +145,6 @@ class Projects::IssuesController < Projects::ApplicationController
       format.html do
         recaptcha_check_with_fallback { render :new }
       end
-      format.js do
-        @link = @issue.attachment.url.to_js
-      end
     end
   end
 

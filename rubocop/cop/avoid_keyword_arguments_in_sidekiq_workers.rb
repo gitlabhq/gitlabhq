@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RuboCop
   module Cop
     # Cop that blacklists keyword arguments usage in Sidekiq workers

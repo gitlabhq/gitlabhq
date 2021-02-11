@@ -30,10 +30,6 @@ export default {
       type: String,
       required: true,
     },
-    statsUrl: {
-      type: String,
-      required: true,
-    },
   },
   detailedMetrics: [
     {
@@ -173,9 +169,6 @@ export default {
         class="ml-auto"
         @change-current-request="changeCurrentRequest"
       />
-      <div v-if="statsUrl" id="peek-stats" class="view">
-        <a class="gl-text-blue-300" :href="statsUrl">{{ s__('PerformanceBar|Stats') }}</a>
-      </div>
     </div>
   </div>
 </template>
