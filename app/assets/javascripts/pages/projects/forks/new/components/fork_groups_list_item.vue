@@ -10,7 +10,6 @@ import {
   GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '~/groups/constants';
-import { __ } from '~/locale';
 import csrf from '~/lib/utils/csrf';
 
 export default {
@@ -29,10 +28,6 @@ export default {
   props: {
     group: {
       type: Object,
-      required: true,
-    },
-    hasReachedProjectLimit: {
-      type: Boolean,
       required: true,
     },
   },
@@ -60,12 +55,7 @@ export default {
       return GROUP_VISIBILITY_TYPE[this.group.visibility];
     },
     isSelectButtonDisabled() {
-      return this.hasReachedProjectLimit || !this.group.can_create_project;
-    },
-    selectButtonDisabledTooltip() {
-      return this.hasReachedProjectLimit
-        ? this.$options.i18n.hasReachedProjectLimitMessage
-        : this.$options.i18n.insufficientPermissionsMessage;
+      return !this.group.can_create_project;
     },
   },
 
@@ -74,13 +64,6 @@ export default {
       this.isForking = true;
       this.$refs.form.submit();
     },
-  },
-
-  i18n: {
-    hasReachedProjectLimitMessage: __('You have reached your project limit'),
-    insufficientPermissionsMessage: __(
-      'You must have permission to create a project in a namespace before forking.',
-    ),
   },
 
   csrf,
@@ -149,7 +132,9 @@ export default {
               </form>
             </div>
             <gl-tooltip v-if="isSelectButtonDisabled" :target="() => $refs.selectButtonWrapper">
-              {{ selectButtonDisabledTooltip }}
+              {{
+                __('You must have permission to create a project in a namespace before forking.')
+              }}
             </gl-tooltip>
           </template>
         </div>

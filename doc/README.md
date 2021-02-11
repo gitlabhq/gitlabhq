@@ -66,7 +66,7 @@ We have the following documentation to rapidly uplift your GitLab knowledge:
 
 | Topic                                                                                             | Description |
 |:--------------------------------------------------------------------------------------------------|:------------|
-| [GitLab basics guides](gitlab-basics/README.md)                                                   | Start working on the command line and with GitLab. |
+| [GitLab basics guides](gitlab-basics/index.md)                                                   | Start working on the command line and with GitLab. |
 | [GitLab workflow overview](https://about.gitlab.com/blog/2016/10/25/gitlab-workflow-an-overview/) | Enhance your workflow with the best of GitLab Workflow. |
 | [Get started with GitLab CI/CD](ci/quick_start/index.md)                                         | Quickly implement GitLab CI/CD. |
 | [Auto DevOps](topics/autodevops/index.md)                                                         | Learn more about Auto DevOps in GitLab. |
@@ -122,5 +122,5 @@ Learn how to contribute to GitLab with the following resources:
 | Topic                                                       | Description |
 |:------------------------------------------------------------|:------------|
 | [Development](development/README.md)                        | How to contribute to GitLab development. |
-| [Legal](legal/README.md)                                    | Contributor license agreements. |
+| [Legal](legal/index.md)                                    | Contributor license agreements. |
 | [Writing documentation](development/documentation/index.md) | How to contribute to GitLab Docs. |

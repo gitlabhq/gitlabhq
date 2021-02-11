@@ -14,5 +14,5 @@
         %h5.gl-mt-0.gl-mb-0.gl-ml-3.gl-mr-3
           = _("Select a namespace to fork the project")
         = render 'fork_button', namespace: @own_namespace
-    #fork-groups-mount-element{ data: { endpoint: new_project_fork_path(@project, format: :json), can_create_project: current_user.can_create_project?.to_s } }
+    #fork-groups-mount-element{ data: { endpoint: new_project_fork_path(@project, format: :json) } }
 

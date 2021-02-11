@@ -49,6 +49,10 @@ RSpec.describe 'User can display performance bar', :js do
 
   let(:group) { create(:group) }
 
+  before do
+    allow(GitlabPerformanceBarStatsWorker).to receive(:perform_in)
+  end
+
   context 'when user is logged-out' do
     before do
       visit root_path
@@ -97,6 +101,28 @@ RSpec.describe 'User can display performance bar', :js do
 
       it_behaves_like 'performance bar is enabled by default in development'
       it_behaves_like 'performance bar can be displayed'
+
+      it 'does not show Stats link by default' do
+        find('body').native.send_keys('pb')
+        wait_for_requests
+
+        expect(page).not_to have_link('Stats')
+      end
+
+      context 'when GITLAB_PERFORMANCE_BAR_STATS_URL environment variable is set' do
+        let(:stats_url) { 'https://log.gprd.gitlab.net/app/dashboards#/view/' }
+
+        before do
+          stub_env('GITLAB_PERFORMANCE_BAR_STATS_URL', stats_url)
+        end
+
+        it 'shows Stats link' do
+          find('body').native.send_keys('pb')
+          wait_for_requests
+
+          expect(page).to have_link('Stats', href: stats_url)
+        end
+      end
     end
   end
 end

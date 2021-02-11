@@ -16,9 +16,7 @@ module IssuablesDescriptionTemplatesHelper
         data: issuable_templates(ref_project, issuable.to_ability_name),
         field_name: 'issuable_template',
         selected: selected_template(issuable),
-        project_id: ref_project.id,
-        project_path: ref_project.path,
-        namespace_path: ref_project.namespace.full_path
+        project_id: ref_project.id
       }
     }
 

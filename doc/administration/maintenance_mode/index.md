@@ -19,8 +19,8 @@ operations, such as `git clone` or `git pull`.
 There are three ways to enable maintenance mode as an administrator:
 
 - **Web UI**:
-  1. Navigate to the **Admin Area > Application settings > General** and toggle
-     the maintenance mode. You can optionally add a message for the banner as well.
+  1. Go to **Admin Area > Settings > General**, expand **Maintenance mode**, and toggle **Enable maintenance mode**. 
+     You can optionally add a message for the banner as well.
   1. Click **Save** for the changes to take effect.
 
 - **API**:
@@ -41,8 +41,7 @@ There are three ways to enable maintenance mode as an administrator:
 There are three ways to disable maintenance mode:
 
 - **Web UI**:
-  1. Navigate to the **Admin Area > Application settings > General** and toggle
-     the maintenance mode. You can optionally add a message for the banner as well.
+  1. Go to **Admin Area > Settings > General**, expand **Maintenance mode**, and toggle **Enable maintenance mode**.
   1. Click **Save** for the changes to take effect.
 
 - **API**:
@@ -85,8 +84,9 @@ All users can log in and out of the GitLab instance.
 
 In maintenance mode:
 
-- No new jobs are started. Already running jobs stay in 'running'
-  status but their logs are no longer updated.
+- No new jobs or pipelines, scheduled or otherwise, will start in maintenance mode.
+- Those jobs that were already running, will continue to show status as 'running' in the Web UI, even if they finish running on GitLab Runner.
+**Note** It is recommended that you restart already running pipelines after maintenance mode is turned off.
 - If the job has been in 'running' state for longer than the project's time limit,
   it will **not** time out.
 - Pipelines cannot be started, retried or canceled in maintenance mode.

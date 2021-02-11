@@ -9,22 +9,45 @@ RSpec.describe 'Project fork' do
   let(:project) { create(:project, :public, :repository) }
 
   before do
-    sign_in user
+    sign_in(user)
   end
 
-  it 'allows user to fork project' do
+  it 'allows user to fork project from the project page' do
     visit project_path(project)
 
-    expect(page).not_to have_css('a.disabled', text: 'Select')
+    expect(page).not_to have_css('a.disabled', text: 'Fork')
   end
 
-  it 'disables fork button when user has exceeded project limit' do
-    user.projects_limit = 0
-    user.save!
+  context 'user has exceeded personal project limit' do
+    before do
+      user.update!(projects_limit: 0)
+    end
 
-    visit project_path(project)
+    it 'disables fork button on project page' do
+      visit project_path(project)
 
-    expect(page).to have_css('a.disabled', text: 'Fork')
+      expect(page).to have_css('a.disabled', text: 'Fork')
+    end
+
+    context 'with a group to fork to' do
+      let!(:group) { create(:group).tap { |group| group.add_owner(user) } }
+
+      it 'enables fork button on project page' do
+        visit project_path(project)
+
+        expect(page).not_to have_css('a.disabled', text: 'Fork')
+      end
+
+      it 'allows user to fork only to the group on fork page', :js do
+        visit new_project_fork_path(project)
+
+        to_personal_namespace = find('[data-qa-selector=fork_namespace_button].disabled')
+        to_group = find(".fork-groups button[data-qa-name=#{group.name}]")
+
+        expect(to_personal_namespace).not_to be_nil
+        expect(to_group).not_to be_disabled
+      end
+    end
   end
 
   context 'forking enabled / disabled in project settings' do

@@ -46,6 +46,10 @@ export default {
       type: String,
       required: true,
     },
+    projectId: {
+      type: Number,
+      required: true,
+    },
     projectNamespace: {
       type: String,
       required: true,
@@ -127,6 +131,7 @@ export default {
           :form-state="formState"
           :issuable-templates="issuableTemplates"
           :project-path="projectPath"
+          :project-id="projectId"
           :project-namespace="projectNamespace"
         />
       </div>

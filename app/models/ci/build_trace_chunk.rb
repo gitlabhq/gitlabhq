@@ -89,7 +89,7 @@ module Ci
       end
 
       def consistent_reads_enabled?(build)
-        Feature.enabled?(:gitlab_ci_trace_read_consistency, build.project, type: :development, default_enabled: false)
+        Feature.enabled?(:gitlab_ci_trace_read_consistency, build.project, type: :development, default_enabled: true)
       end
 
       ##

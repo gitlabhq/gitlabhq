@@ -14,10 +14,6 @@ export default {
     ForkGroupsListItem,
   },
   props: {
-    hasReachedProjectLimit: {
-      type: Boolean,
-      required: true,
-    },
     endpoint: {
       type: String,
       required: true,
@@ -77,7 +73,6 @@ export default {
           v-for="(namespace, index) in filteredNamespaces"
           :key="index"
           :group="namespace"
-          :has-reached-project-limit="hasReachedProjectLimit"
         />
       </ul>
     </gl-tab>

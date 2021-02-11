@@ -117,7 +117,7 @@
                 %strong.fly-out-top-item-name
                   = _('Kubernetes')
 
-      = render_if_exists 'groups/sidebar/packages'
+      = render 'groups/sidebar/packages'
 
       = render 'layouts/nav/sidebar/analytics_links', links: group_analytics_navbar_links(@group, current_user)
 
@@ -177,11 +177,7 @@
                 %span
                   = _('CI / CD')
 
-            - if Feature.enabled?(:packages_and_registries_group_settings, @group)
-              = nav_link(controller: :packages_and_registries) do
-                = link_to group_settings_packages_and_registries_path(@group), title: _('Packages & Registries') do
-                  %span
-                    = _('Packages & Registries')
+            = render 'groups/sidebar/packages_settings'
 
             = render_if_exists "groups/ee/settings_nav"
 

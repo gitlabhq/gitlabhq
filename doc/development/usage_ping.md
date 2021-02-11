@@ -560,9 +560,9 @@ Use one of the following methods to track events:
 
    Example:
 
-   [Track usage event for incident created in service](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/issues/update_service.rb)
+   [Track usage event for incident created in service](https://gitlab.com/gitlab-org/gitlab/-/blob/v13.8.3-ee/app/services/issues/update_service.rb#L66)
 
-   [Track usage event for incident created in GraphQL](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/alert_management/update_alert_status.rb)
+   [Track usage event for incident created in GraphQL](https://gitlab.com/gitlab-org/gitlab/-/blob/v13.8.3-ee/app/graphql/mutations/alert_management/update_alert_status.rb#L16)
 
    ```ruby
      track_usage_event(:incident_management_incident_created, current_user.id)

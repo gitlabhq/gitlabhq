@@ -15,6 +15,7 @@ module Gitlab
         :rugged_duration_s,
         :elasticsearch_calls,
         :elasticsearch_duration_s,
+        :elasticsearch_timed_out_count,
         *::Gitlab::Memory::Instrumentation::KEY_MAPPING.values,
         *::Gitlab::Instrumentation::Redis.known_payload_keys,
         *::Gitlab::Metrics::Subscribers::ActiveRecord::DB_COUNTERS,
@@ -79,6 +80,7 @@ module Gitlab
 
       payload[:elasticsearch_calls] = elasticsearch_calls
       payload[:elasticsearch_duration_s] = Gitlab::Instrumentation::ElasticsearchTransport.query_time
+      payload[:elasticsearch_timed_out_count] = Gitlab::Instrumentation::ElasticsearchTransport.get_timed_out_count
     end
 
     def instrument_external_http(payload)

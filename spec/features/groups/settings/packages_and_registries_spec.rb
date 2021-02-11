@@ -15,9 +15,9 @@ RSpec.describe 'Group Packages & Registries settings' do
     sign_in(user)
   end
 
-  context 'when the feature flag is off' do
+  context 'when packges feature is disabled on the group' do
     before do
-      stub_feature_flags(packages_and_registries_group_settings: false)
+      stub_packages_setting(enabled: false)
     end
 
     it 'the menu item is not visible' do
@@ -27,9 +27,15 @@ RSpec.describe 'Group Packages & Registries settings' do
 
       expect(settings_menu).not_to have_content 'Packages & Registries'
     end
+
+    it 'renders 404 when navigating to page' do
+      visit_settings_page
+
+      expect(page).to have_content('Not Found')
+    end
   end
 
-  context 'when the feature flag is on' do
+  context 'when packages feature is enabled on the group' do
     it 'the menu item is visible' do
       visit group_path(group)
 

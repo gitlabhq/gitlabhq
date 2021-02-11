@@ -435,13 +435,13 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
     let_it_be_with_reload(:release) { create(:release, project: project) }
 
     let(:release_fields) do
-      query_graphql_field(%{
+      %{
         milestones {
           nodes {
             title
           }
         }
-      })
+      }
     end
 
     let(:actual_milestone_title_order) do

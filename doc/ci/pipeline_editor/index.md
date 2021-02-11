@@ -29,7 +29,7 @@ From the pipeline editor page you can:
 
 NOTE:
 You must already have [a `.gitlab-ci.yml` file](../quick_start/index.md#create-a-gitlab-ciyml-file)
-on the default branch (usually "master") of your project to use the editor.
+on the default branch (usually `master`) of your project to use the editor.
 
 ## Validate CI configuration
 
@@ -67,6 +67,7 @@ reflected in the CI lint. It displays the same results as the existing [CI Lint 
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
+It is not accessible if the [pipeline editor is disabled](#enable-or-disable-pipeline-editor).
 
 To see a visualization of your `gitlab-ci.yml` configuration, navigate to **CI/CD > Editor**
 and select the `visualization` tab. The visualization shows all stages and jobs.

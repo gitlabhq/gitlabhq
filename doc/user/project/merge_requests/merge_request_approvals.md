@@ -324,11 +324,14 @@ Note that users can edit the approval rules in every merge request and override 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10441) in GitLab 11.10.
 > - Moved to GitLab Premium in 13.9.
 
-You can prevent users that have committed to a merge request from approving it. To
-enable this feature:
+You can prevent users who have committed to a merge request from approving it,
+though code authors can still approve. To enable this feature:
 
 1. Check the **Prevent MR approvals from users who make commits to the MR.** checkbox.
 1. Click **Save changes**.
+
+Read the official Git documentation for an explanation of the
+[differences between authors and committers](https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History).
 
 #### Require authentication when approving a merge request
 

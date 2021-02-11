@@ -5,10 +5,6 @@ import ForkGroupsListItem from '~/pages/projects/forks/new/components/fork_group
 describe('Fork groups list item component', () => {
   let wrapper;
 
-  const DEFAULT_PROPS = {
-    hasReachedProjectLimit: false,
-  };
-
   const DEFAULT_GROUP_DATA = {
     id: 22,
     name: 'Gitlab Org',
@@ -33,7 +29,6 @@ describe('Fork groups list item component', () => {
   const createWrapper = (propsData) => {
     wrapper = shallowMount(ForkGroupsListItem, {
       propsData: {
-        ...DEFAULT_PROPS,
         ...propsData,
       },
     });

@@ -7,9 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Elasticsearch integration **(PREMIUM SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109 "Elasticsearch Merge Request") in GitLab 8.4.
-> - Support for [Amazon Elasticsearch](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-gsg.html) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1305) in GitLab [Starter](https://about.gitlab.com/pricing/) 9.0.
-> - [Moved](../subscriptions/bronze_starter.md) to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 This document describes how to enable Advanced Search. After
 Advanced Search is enabled, you'll have the benefit of fast search response times
@@ -179,7 +177,7 @@ To enable Advanced Search, you need to have admin access to GitLab:
 1. Navigate to **Admin Area**, then **Settings > Advanced Search**.
 
    NOTE:
-   To see the Advanced Search section, you need an active Starter
+   To see the Advanced Search section, you need an active GitLab Premium
    [license](../user/admin_area/license.md).
 
 1. Configure the [Advanced Search settings](#advanced-search-configuration) for
@@ -309,8 +307,8 @@ index alias to it which becomes the new `primary` index. At the end, we resume t
 
 ### Trigger the reindex via the Advanced Search administration
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34069) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.2.
-> - A scheduled index deletion and the ability to cancel it was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38914) in GitLab Starter 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34069) in GitLab 13.2.
+> - A scheduled index deletion and the ability to cancel it was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38914) in GitLab 13.3.
 
 Under **Admin Area > Settings > Advanced Search > Elasticsearch zero-downtime reindexing**, click on **Trigger cluster reindexing**.
 

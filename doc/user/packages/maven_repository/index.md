@@ -611,6 +611,21 @@ Now navigate to your project's **Packages & Registries** page and view the publi
 When you publish a package with the same name or version as an existing package,
 the existing package is overwritten.
 
+#### Do not allow duplicate Maven packages
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296895) in GitLab Free 13.9.
+
+To prevent users from publishing duplicate Maven packages, you can use the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings) or the UI.
+
+In the UI:
+
+1. For your group, go to **Settings > Packages & Registries**.
+1. Expand the **Package Registry** section.
+1. Turn on the **Reject duplicates** toggle.
+1. Optional. To allow some duplicate packages, in the **Exceptions** box, enter a regex pattern that matches the names of packages you want to allow.
+
+Your changes are automatically saved.
+
 ## Install a package
 
 To install a package from the GitLab Package Registry, you must configure

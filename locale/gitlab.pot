@@ -7199,6 +7199,9 @@ msgstr ""
 msgid "Code"
 msgstr ""
 
+msgid "Code Coverage: %{coveragePercentage}"
+msgstr ""
+
 msgid "Code Coverage: %{coveragePercentage}%{percentSymbol}"
 msgstr ""
 
@@ -20931,9 +20934,6 @@ msgstr ""
 msgid "Outdent"
 msgstr ""
 
-msgid "Overall Activity"
-msgstr ""
-
 msgid "Overridden"
 msgstr ""
 
@@ -21478,6 +21478,9 @@ msgid "PerformanceBar|Rugged calls"
 msgstr ""
 
 msgid "PerformanceBar|SQL queries"
+msgstr ""
+
+msgid "PerformanceBar|Stats"
 msgstr ""
 
 msgid "PerformanceBar|trace"
@@ -24831,6 +24834,12 @@ msgstr ""
 msgid "RepositoriesAnalytics|Average Coverage by Job"
 msgstr ""
 
+msgid "RepositoriesAnalytics|Average coverage"
+msgstr ""
+
+msgid "RepositoriesAnalytics|Average test coverage last 30 days"
+msgstr ""
+
 msgid "RepositoriesAnalytics|Coverage"
 msgstr ""
 
@@ -24856,6 +24865,12 @@ msgid "RepositoriesAnalytics|Last Update"
 msgstr ""
 
 msgid "RepositoriesAnalytics|Latest test coverage results"
+msgstr ""
+
+msgid "RepositoriesAnalytics|No test coverage to display"
+msgstr ""
+
+msgid "RepositoriesAnalytics|Overall activity"
 msgstr ""
 
 msgid "RepositoriesAnalytics|Please select a project or multiple projects to display their most recent test coverage data."
