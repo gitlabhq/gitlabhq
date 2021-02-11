@@ -222,6 +222,12 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
       end
     end
 
+    it 'allows for YAML aliases in aggregated metrics configs' do
+      expect(YAML).to receive(:safe_load).with(kind_of(String), aliases: true)
+
+      described_class.new(recorded_at)
+    end
+
     describe '.aggregated_metrics_weekly_data' do
       subject(:aggregated_metrics_data) { described_class.new(recorded_at).weekly_data }
 

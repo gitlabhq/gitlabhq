@@ -129,6 +129,8 @@ module Gitlab
           event = event_for(event_name)
           raise UnknownEvent, "Unknown event #{event_name}" unless event.present?
 
+          return unless feature_enabled?(event)
+
           Gitlab::Redis::HLL.add(key: redis_key(event, time, context), value: values, expiry: expiry(event))
         end
 
@@ -146,6 +148,12 @@ module Gitlab
 
           keys = keys_for_aggregation(aggregation, events: events, start_date: start_date, end_date: end_date, context: context)
           redis_usage_data { Gitlab::Redis::HLL.count(keys: keys) }
+        end
+
+        def feature_enabled?(event)
+          return true if event[:feature_flag].blank?
+
+          Feature.enabled?(event[:feature_flag], default_enabled: :yaml)
         end
 
         # Allow to add totals for events that are in the same redis slot, category and have the same aggregation level

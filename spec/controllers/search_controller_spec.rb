@@ -183,7 +183,7 @@ RSpec.describe SearchController do
           allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
         end
 
-        it_behaves_like 'tracking unique hll events', :search_track_unique_users do
+        it_behaves_like 'tracking unique hll events' do
           subject(:request) { get :show, params: { scope: 'projects', search: 'term' } }
 
           let(:target_id) { 'i_search_total' }

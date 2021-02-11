@@ -28,7 +28,7 @@
     = _('GPG Key ID:')
     %span.monospace= signature.gpg_key_primary_keyid
 
-    = link_to(_('Learn more about signing commits'), help_page_path('user/project/repository/gpg_signed_commits/index.md'), class: 'gpg-popover-help-link')
+    = link_to(_('Learn more about signing commits'), help_page_path('user/project/repository/gpg_signed_commits/index.md'), class: 'gpg-popover-help-link gl-display-block')
 
 %a{ role: 'button', tabindex: 0, class: css_classes, data: { toggle: 'popover', html: 'true', placement: 'top', title: title, content: content } }
   = label

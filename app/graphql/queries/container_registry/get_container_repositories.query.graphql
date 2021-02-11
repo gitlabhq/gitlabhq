@@ -6,11 +6,19 @@ query getProjectContainerRepositories(
   $after: String
   $before: String
   $isGroupPage: Boolean!
+  $sort: ContainerRepositorySort
 ) {
   project(fullPath: $fullPath) @skip(if: $isGroupPage) {
     __typename
     containerRepositoriesCount
-    containerRepositories(name: $name, after: $after, before: $before, first: $first, last: $last) {
+    containerRepositories(
+      name: $name
+      after: $after
+      before: $before
+      first: $first
+      last: $last
+      sort: $sort
+    ) {
       __typename
       nodes {
         id
@@ -35,7 +43,14 @@ query getProjectContainerRepositories(
   group(fullPath: $fullPath) @include(if: $isGroupPage) {
     __typename
     containerRepositoriesCount
-    containerRepositories(name: $name, after: $after, before: $before, first: $first, last: $last) {
+    containerRepositories(
+      name: $name
+      after: $after
+      before: $before
+      first: $first
+      last: $last
+      sort: $sort
+    ) {
       __typename
       nodes {
         id

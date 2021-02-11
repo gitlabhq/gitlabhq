@@ -495,18 +495,17 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
      aggregation.
    - `aggregation`: may be set to a `:daily` or `:weekly` key. Defines how counting data is stored in Redis.
      Aggregation on a `daily` basis does not pull more fine grained data.
-   - `feature_flag`: optional. For details, see our [GitLab internal Feature flags](feature_flags/) documentation. The feature flags are owned by the group adding the event tracking.
+   - `feature_flag`: optional `default_enabled: :yaml`. If no feature flag is set then the tracking is enabled. For details, see our [GitLab internal Feature flags](feature_flags/) documentation. The feature flags are owned by the group adding the event tracking.
 
 Use one of the following methods to track events:
 
-1. Track event in controller using `RedisTracking` module with `track_redis_hll_event(*controller_actions, name:, feature:, feature_default_enabled: false)`.
+1. Track event in controller using `RedisTracking` module with `track_redis_hll_event(*controller_actions, name:, if: nil)`.
 
    Arguments:
 
    - `controller_actions`: controller actions we want to track.
    - `name`: event name.
-   - `feature`: feature name, all metrics we track should be under feature flag.
-   - `feature_default_enabled`: feature flag is disabled by default, set to `true` for it to be enabled by default.
+   - `if`: optional custom conditions, using the same format as with Rails callbacks.
 
    Example usage:
 
@@ -516,7 +515,7 @@ Use one of the following methods to track events:
      include RedisTracking
 
      skip_before_action :authenticate_user!, only: :show
-     track_redis_hll_event :index, :show, name: 'g_compliance_example_feature_visitors', feature: :compliance_example_feature, feature_default_enabled: true
+     track_redis_hll_event :index, :show, name: 'g_compliance_example_feature_visitors'
 
      def index
        render html: 'index'

@@ -56,7 +56,10 @@ export default {
           mergeRequestsFfOnlyEnabled: data.project.mergeRequestsFfOnlyEnabled,
           onlyAllowMergeIfPipelineSucceeds: data.project.onlyAllowMergeIfPipelineSucceeds,
         };
-        this.removeSourceBranch = data.project.mergeRequest.shouldRemoveSourceBranch;
+        this.removeSourceBranch =
+          data.project.mergeRequest.shouldRemoveSourceBranch ||
+          data.project.mergeRequest.forceRemoveSourceBranch ||
+          false;
         this.commitMessage = data.project.mergeRequest.defaultMergeCommitMessage;
         this.squashBeforeMerge = data.project.mergeRequest.squashOnMerge;
         this.isSquashReadOnly = data.project.squashReadOnly;

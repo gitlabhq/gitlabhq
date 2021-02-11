@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.8.4 (2021-02-11)
+
+### Security (9 changes)
+
+- Cancel running and pending jobs when a project is deleted. !1220
+- Prevent Denial of Service Attack on gitlab-shell.
+- Prevent exposure of confidential issue titles in file browser.
+- Updates authorization for linting API.
+- Check user access on API merge request read actions.
+- Limit daily invitations to groups and projects.
+- Enforce the analytics enabled project setting for project-level analytics features.
+- Perform SSL verification for FortiTokenCloud Integration.
+- Prevent Server-side Request Forgery for Prometheus when secured by Google IAP.
+
+
 ## 13.8.3 (2021-02-05)
 
 ### Fixed (2 changes)
@@ -385,6 +400,21 @@ entry.
 - Remove unneeded group label index. !51676
 - Apply GitLab UI button styles to buttons in project wiki. !51780 (Yogi (@yo))
 - Add verbiage + link sast to show it's in core. !51935
+
+
+## 13.7.7 (2021-02-11)
+
+### Security (9 changes)
+
+- Cancel running and pending jobs when a project is deleted. !1220
+- Prevent Denial of Service Attack on gitlab-shell.
+- Prevent exposure of confidential issue titles in file browser.
+- Updates authorization for linting API.
+- Check user access on API merge request read actions.
+- Limit daily invitations to groups and projects.
+- Enforce the analytics enabled project setting for project-level analytics features.
+- Perform SSL verification for FortiTokenCloud Integration.
+- Prevent Server-side Request Forgery for Prometheus when secured by Google IAP.
 
 
 ## 13.7.6 (2021-02-01)
@@ -906,6 +936,19 @@ entry.
 - Add feed_token specs to spec/features/profiles/personal_access_tokens_spec.rb. !50059
 - Replace spec/controllers/ide_controller_spec.rb with request spec. !50075 (Takuya Noguchi)
 - Update GitLab Workhorse to v8.57.0.
+
+
+## 13.6.7 (2021-02-11)
+
+### Security (7 changes)
+
+- Cancel running and pending jobs when a project is deleted. !1220
+- Updates authorization for linting API.
+- Prevent exposure of confidential issue titles in file browser.
+- Check user access on API merge request read actions.
+- Prevent Denial of Service Attack on gitlab-shell.
+- Limit daily invitations to groups and projects.
+- Prevent Server-side Request Forgery for Prometheus when secured by Google IAP.
 
 
 ## 13.6.6 (2021-02-01)

@@ -21,6 +21,12 @@ RSpec.describe API::MergeRequestApprovals do
 
       expect(response).to have_gitlab_http_status(:ok)
     end
+
+    context 'when merge request author has only guest access' do
+      it_behaves_like 'rejects user from accessing merge request info' do
+        let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/approvals" }
+      end
+    end
   end
 
   describe 'POST :id/merge_requests/:merge_request_iid/approve' do

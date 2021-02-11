@@ -424,7 +424,7 @@ RSpec.describe Projects::BlobController do
       end
     end
 
-    it_behaves_like 'tracking unique hll events', :track_editor_edit_actions do
+    it_behaves_like 'tracking unique hll events' do
       subject(:request) { put :update, params: default_params }
 
       let(:target_id) { 'g_edit_by_sfe' }
@@ -540,7 +540,7 @@ RSpec.describe Projects::BlobController do
       sign_in(user)
     end
 
-    it_behaves_like 'tracking unique hll events', :track_editor_edit_actions do
+    it_behaves_like 'tracking unique hll events' do
       subject(:request) { post :create, params: default_params }
 
       let(:target_id) { 'g_edit_by_sfe' }

@@ -886,6 +886,7 @@ RSpec.describe API::Projects do
         merge_method: 'ff'
       }).tap do |attrs|
         attrs[:operations_access_level] = 'disabled'
+        attrs[:analytics_access_level] = 'disabled'
       end
 
       post api('/projects', user), params: project
@@ -1539,6 +1540,35 @@ RSpec.describe API::Projects do
     end
 
     context 'when authenticated as an admin' do
+      let(:project_attributes_file) { 'spec/requests/api/project_attributes.yml' }
+      let(:project_attributes) { YAML.load_file(project_attributes_file) }
+
+      let(:expected_keys) do
+        keys = project_attributes.map do |relation, relation_config|
+          begin
+            actual_keys = project.send(relation).attributes.keys
+          rescue NoMethodError
+            actual_keys = ["#{relation} is nil"]
+          end
+          unexposed_attributes = relation_config['unexposed_attributes'] || []
+          remapped_attributes = relation_config['remapped_attributes'] || {}
+          computed_attributes = relation_config['computed_attributes'] || []
+          actual_keys - unexposed_attributes - remapped_attributes.keys + remapped_attributes.values + computed_attributes
+        end.flatten
+
+        unless Gitlab.ee?
+          keys -= %w[
+            approvals_before_merge
+            compliance_frameworks
+            mirror
+            requirements_enabled
+            security_and_compliance_enabled
+          ]
+        end
+
+        keys
+      end
+
       it 'returns a project by id' do
         project
         project_member
@@ -1586,6 +1616,27 @@ RSpec.describe API::Projects do
         expect(json_response['restrict_user_defined_variables']).to eq(project.restrict_user_defined_variables?)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response['operations_access_level']).to be_present
+      end
+
+      it 'exposes all necessary attributes' do
+        create(:project_group_link, project: project)
+
+        get api("/projects/#{project.id}", admin)
+
+        diff = Set.new(json_response.keys) ^ Set.new(expected_keys)
+
+        expect(diff).to be_empty, failure_message(diff)
+      end
+
+      def failure_message(diff)
+        <<~MSG
+          It looks like project's set of exposed attributes is different from the expected set.
+
+          The following attributes are missing or newly added:
+          #{diff.to_a.to_sentence}
+
+          Please update #{project_attributes_file} file"
+        MSG
       end
     end
 

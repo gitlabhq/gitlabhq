@@ -109,7 +109,6 @@ linters:
       - 'app/views/groups/runners/edit.html.haml'
       - 'app/views/groups/settings/_advanced.html.haml'
       - 'app/views/groups/settings/_lfs.html.haml'
-      - 'app/views/help/_shortcuts.html.haml'
       - 'app/views/help/index.html.haml'
       - 'app/views/help/instance_configuration.html.haml'
       - 'app/views/help/instance_configuration/_gitlab_ci.html.haml'

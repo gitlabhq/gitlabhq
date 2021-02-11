@@ -27,14 +27,13 @@ RSpec.describe 'User uses shortcuts', :js do
 
       open_modal_shortcut_keys
 
-      # modal-shortcuts still in the DOM, but hidden
-      expect(find('#modal-shortcuts', visible: false)).not_to be_visible
+      expect(page).not_to have_selector('[data-testid="modal-shortcuts"]')
 
       page.refresh
       open_modal_shortcut_keys
 
       # after reload, shortcuts modal doesn't exist at all until we add it
-      expect(page).not_to have_selector('#modal-shortcuts')
+      expect(page).not_to have_selector('[data-testid="modal-shortcuts"]')
     end
 
     it 're-enables shortcuts' do
@@ -47,7 +46,7 @@ RSpec.describe 'User uses shortcuts', :js do
       close_modal
 
       open_modal_shortcut_keys
-      expect(find('#modal-shortcuts')).to be_visible
+      expect(find('[data-testid="modal-shortcuts"]')).to be_visible
     end
 
     def open_modal_shortcut_keys

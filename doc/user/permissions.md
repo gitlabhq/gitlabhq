@@ -183,6 +183,7 @@ The following table depicts the various user permission levels in a project.
 | Delete pipelines                                  |         |            |             |          | ✓      |
 | Delete merge request                              |         |            |             |          | ✓      |
 | Disable notification emails                       |         |            |             |          | ✓      |
+| Administer project compliance frameworks          |         |            |             |          | ✓      |
 | Force push to protected branches (*4*)            |         |            |             |          |        |
 | Remove protected branches (*4*)                   |         |            |             |          |        |
 
@@ -293,6 +294,7 @@ group.
 | View Billing **(FREE SAAS)**                           |       |          |           |            | ✓ (4) |
 | View Usage Quotas **(FREE SAAS)**                      |       |          |           |            | ✓ (4) |
 | Filter members by 2FA status                           |       |          |           |            | ✓     |
+| Administer project compliance frameworks               |       |          |           |            | ✓     |
 
 1. Groups can be set to [allow either Owners or Owners and
   Maintainers to create subgroups](group/subgroups/index.md#creating-a-subgroup)

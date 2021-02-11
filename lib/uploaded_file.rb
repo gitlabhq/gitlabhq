@@ -78,15 +78,9 @@ class UploadedFile
   def sanitize_filename(name)
     name = name.tr("\\", "/") # work-around for IE
     name = ::File.basename(name)
-
-    pre_sanitized_name = name
-
     name = name.gsub(CarrierWave::SanitizedFile.sanitize_regexp, "_")
     name = "_#{name}" if name =~ /\A\.+\z/
     name = "unnamed" if name.empty?
-
-    @filename_sanitized = name != pre_sanitized_name
-
     name.mb_chars.to_s
   end
 
@@ -96,10 +90,6 @@ class UploadedFile
 
   def close
     @tempfile&.close
-  end
-
-  def filename_sanitized?
-    @filename_sanitized
   end
 
   alias_method :local_path, :path

@@ -39,7 +39,7 @@ RSpec.describe API::Terraform::State do
     context 'with maintainer permissions' do
       let(:current_user) { maintainer }
 
-      it_behaves_like 'tracking unique hll events', :usage_data_p_terraform_state_api_unique_users do
+      it_behaves_like 'tracking unique hll events' do
         let(:target_id) { 'p_terraform_state_api_unique_users' }
         let(:expected_type) { instance_of(Integer) }
       end

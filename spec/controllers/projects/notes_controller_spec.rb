@@ -315,7 +315,7 @@ RSpec.describe Projects::NotesController do
     let(:note_text) { 'some note' }
     let(:request_params) do
       {
-        note: { note: note_text, noteable_id: merge_request.id, noteable_type: 'MergeRequest' },
+        note: { note: note_text, noteable_id: merge_request.id, noteable_type: 'MergeRequest' }.merge(extra_note_params),
         namespace_id: project.namespace,
         project_id: project,
         merge_request_diff_head_sha: 'sha',
@@ -325,6 +325,7 @@ RSpec.describe Projects::NotesController do
     end
 
     let(:extra_request_params) { {} }
+    let(:extra_note_params) { {} }
 
     let(:project_visibility) { Gitlab::VisibilityLevel::PUBLIC }
     let(:merge_requests_access_level) { ProjectFeature::ENABLED }
@@ -420,6 +421,41 @@ RSpec.describe Projects::NotesController do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to have_key 'discussion'
           expect(json_response.dig('discussion', 'notes', 0, 'note')).to eq(request_params[:note][:note])
+        end
+      end
+
+      context 'when creating a confidential note' do
+        let(:extra_request_params) { { format: :json } }
+
+        context 'when `confidential` parameter is not provided' do
+          it 'sets `confidential` to `false` in JSON response' do
+            create!
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['confidential']).to be false
+          end
+        end
+
+        context 'when `confidential` parameter is `false`' do
+          let(:extra_note_params) { { confidential: false } }
+
+          it 'sets `confidential` to `false` in JSON response' do
+            create!
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['confidential']).to be false
+          end
+        end
+
+        context 'when `confidential` parameter is `true`' do
+          let(:extra_note_params) { { confidential: true } }
+
+          it 'sets `confidential` to `true` in JSON response' do
+            create!
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['confidential']).to be true
+          end
         end
       end
 

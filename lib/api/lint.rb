@@ -11,6 +11,8 @@ module API
         optional :include_merged_yaml, type: Boolean, desc: 'Whether or not to include merged CI config yaml in the response'
       end
       post '/lint' do
+        unauthorized! unless Gitlab::CurrentSettings.signup_enabled? && current_user
+
         result = Gitlab::Ci::YamlProcessor.new(params[:content], user: current_user).execute
 
         status 200
@@ -55,7 +57,7 @@ module API
         optional :dry_run, type: Boolean, default: false, desc: 'Run pipeline creation simulation, or only do static check.'
       end
       post ':id/ci/lint' do
-        authorize! :download_code, user_project
+        authorize! :create_pipeline, user_project
 
         result = Gitlab::Ci::Lint
           .new(project: user_project, current_user: current_user)

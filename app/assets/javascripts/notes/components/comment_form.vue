@@ -1,9 +1,8 @@
 <script>
 import $ from 'jquery';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { isEmpty } from 'lodash';
 import Autosize from 'autosize';
-import { GlButton, GlIcon } from '@gitlab/ui';
+import { GlButton, GlIcon, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import { deprecatedCreateFlash as Flash } from '~/flash';
@@ -34,6 +33,10 @@ export default {
     TimelineEntryItem,
     GlIcon,
     CommentFieldLayout,
+    GlFormCheckbox,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagsMixin(), issuableStateMixin],
   props: {
@@ -46,8 +49,8 @@ export default {
     return {
       note: '',
       noteType: constants.COMMENT,
+      noteIsConfidential: false,
       isSubmitting: false,
-      isSubmitButtonDisabled: true,
     };
   },
   computed: {
@@ -79,6 +82,9 @@ export default {
     },
     canCreateNote() {
       return this.getNoteableData.current_user.can_create_note;
+    },
+    canSetConfidential() {
+      return this.getNoteableData.current_user.can_update;
     },
     issueActionButtonTitle() {
       const openOrClose = this.isOpen ? 'close' : 'reopen';
@@ -146,13 +152,11 @@ export default {
     hasCloseAndCommentButton() {
       return !this.glFeatures.removeCommentCloseReopen;
     },
-  },
-  watch: {
-    note(newNote) {
-      this.setIsSubmitButtonDisabled(newNote, this.isSubmitting);
+    confidentialNotesEnabled() {
+      return Boolean(this.glFeatures.confidentialNotes);
     },
-    isSubmitting(newValue) {
-      this.setIsSubmitButtonDisabled(this.note, newValue);
+    disableSubmitButton() {
+      return this.note.length === 0 || this.isSubmitting;
     },
   },
   mounted() {
@@ -173,13 +177,6 @@ export default {
       'reopenIssuable',
       'toggleIssueLocalState',
     ]),
-    setIsSubmitButtonDisabled(note, isSubmitting) {
-      if (!isEmpty(note) && !isSubmitting) {
-        this.isSubmitButtonDisabled = false;
-      } else {
-        this.isSubmitButtonDisabled = true;
-      }
-    },
     handleSave(withIssueAction) {
       if (this.note.length) {
         const noteData = {
@@ -189,6 +186,7 @@ export default {
             note: {
               noteable_type: this.noteableType,
               noteable_id: this.getNoteableData.id,
+              confidential: this.noteIsConfidential,
               note: this.note,
             },
             merge_request_diff_head_sha: this.getNoteableData.diff_head_sha,
@@ -252,6 +250,7 @@ export default {
 
       if (shouldClear) {
         this.note = '';
+        this.noteIsConfidential = false;
         this.resizeTextarea();
         this.$refs.markdownField.previewMarkdown = false;
       }
@@ -340,11 +339,26 @@ export default {
               </markdown-field>
             </comment-field-layout>
             <div class="note-form-actions">
+              <gl-form-checkbox
+                v-if="confidentialNotesEnabled && canSetConfidential"
+                v-model="noteIsConfidential"
+                class="gl-mb-6"
+                data-testid="confidential-note-checkbox"
+              >
+                {{ s__('Notes|Make this comment confidential') }}
+                <gl-icon
+                  v-gl-tooltip:tooltipcontainer.bottom
+                  name="question"
+                  :size="16"
+                  :title="s__('Notes|Confidential comments are only visible to project members')"
+                  class="gl-text-gray-500"
+                />
+              </gl-form-checkbox>
               <div
                 class="btn-group gl-mr-3 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
               >
                 <gl-button
-                  :disabled="isSubmitButtonDisabled"
+                  :disabled="disableSubmitButton"
                   class="js-comment-button js-comment-submit-button"
                   data-qa-selector="comment_button"
                   data-testid="comment-button"
@@ -357,7 +371,7 @@ export default {
                   >{{ commentButtonTitle }}</gl-button
                 >
                 <gl-button
-                  :disabled="isSubmitButtonDisabled"
+                  :disabled="disableSubmitButton"
                   name="button"
                   category="primary"
                   variant="success"

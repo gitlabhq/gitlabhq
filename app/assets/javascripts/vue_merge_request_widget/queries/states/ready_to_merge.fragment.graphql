@@ -5,6 +5,7 @@ fragment ReadyToMerge on Project {
   mergeRequest(iid: $iid) {
     autoMergeEnabled
     shouldRemoveSourceBranch
+    forceRemoveSourceBranch
     defaultMergeCommitMessage
     defaultMergeCommitMessageWithDescription
     defaultSquashCommitMessage

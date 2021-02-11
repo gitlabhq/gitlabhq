@@ -6,7 +6,7 @@ RSpec.describe API::NpmInstancePackages do
   include_context 'npm api setup'
 
   describe 'GET /api/v4/packages/npm/*package_name' do
-    it_behaves_like 'handling get metadata requests' do
+    it_behaves_like 'handling get metadata requests', scope: :instance do
       let(:url) { api("/packages/npm/#{package_name}") }
     end
   end

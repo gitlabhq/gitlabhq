@@ -23,6 +23,7 @@ module BulkImports
         [
           BulkImports::Groups::Pipelines::GroupPipeline,
           BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline,
+          BulkImports::Groups::Pipelines::MembersPipeline,
           BulkImports::Groups::Pipelines::LabelsPipeline
         ]
       end

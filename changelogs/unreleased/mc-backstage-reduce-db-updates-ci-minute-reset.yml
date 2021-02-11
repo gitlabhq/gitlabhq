@@ -1,0 +1,5 @@
+---
+title: Reset CI minutes only for namespaces that used minutes.
+merge_request: 53740
+author:
+type: changed

@@ -28,6 +28,7 @@ FactoryBot.define do
       forking_access_level { ProjectFeature::ENABLED }
       merge_requests_access_level { ProjectFeature::ENABLED }
       repository_access_level { ProjectFeature::ENABLED }
+      analytics_access_level { ProjectFeature::ENABLED }
       pages_access_level do
         visibility_level == Gitlab::VisibilityLevel::PUBLIC ? ProjectFeature::ENABLED : ProjectFeature::PRIVATE
       end
@@ -63,7 +64,8 @@ FactoryBot.define do
         repository_access_level: evaluator.repository_access_level,
         pages_access_level: evaluator.pages_access_level,
         metrics_dashboard_access_level: evaluator.metrics_dashboard_access_level,
-        operations_access_level: evaluator.operations_access_level
+        operations_access_level: evaluator.operations_access_level,
+        analytics_access_level: evaluator.analytics_access_level
       }
 
       project.build_project_feature(hash)
@@ -335,6 +337,9 @@ FactoryBot.define do
     trait(:operations_enabled)           { operations_access_level { ProjectFeature::ENABLED } }
     trait(:operations_disabled)          { operations_access_level { ProjectFeature::DISABLED } }
     trait(:operations_private)           { operations_access_level { ProjectFeature::PRIVATE } }
+    trait(:analytics_enabled)           { analytics_access_level { ProjectFeature::ENABLED } }
+    trait(:analytics_disabled)          { analytics_access_level { ProjectFeature::DISABLED } }
+    trait(:analytics_private)           { analytics_access_level { ProjectFeature::PRIVATE } }
 
     trait :auto_devops do
       association :auto_devops, factory: :project_auto_devops

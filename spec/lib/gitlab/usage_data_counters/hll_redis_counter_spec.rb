@@ -48,6 +48,8 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
   end
 
   describe 'known_events' do
+    let(:feature) { 'test_hll_redis_counter_ff_check' }
+
     let(:weekly_event) { 'g_analytics_contribution' }
     let(:daily_event) { 'g_analytics_search' }
     let(:analytics_slot_event) { 'g_analytics_contribution' }
@@ -67,7 +69,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
 
     let(:known_events) do
       [
-        { name: weekly_event, redis_slot: "analytics", category: analytics_category, expiry: 84, aggregation: "weekly" },
+        { name: weekly_event, redis_slot: "analytics", category: analytics_category, expiry: 84, aggregation: "weekly", feature_flag: feature },
         { name: daily_event, redis_slot: "analytics", category: analytics_category, expiry: 84, aggregation: "daily" },
         { name: category_productivity_event, redis_slot: "analytics", category: productivity_category, aggregation: "weekly" },
         { name: compliance_slot_event, redis_slot: "compliance", category: compliance_category, aggregation: "weekly" },
@@ -78,6 +80,8 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     end
 
     before do
+      skip_feature_flags_yaml_validation
+      skip_default_enabled_yaml_check
       allow(described_class).to receive(:known_events).and_return(known_events)
     end
 
@@ -88,6 +92,32 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     end
 
     describe '.track_event' do
+      context 'with feature flag set' do
+        it 'tracks the event when feature enabled' do
+          stub_feature_flags(feature => true)
+
+          expect(Gitlab::Redis::HLL).to receive(:add)
+
+          described_class.track_event(weekly_event, values: 1)
+        end
+
+        it 'does not track the event with feature flag disabled' do
+          stub_feature_flags(feature => false)
+
+          expect(Gitlab::Redis::HLL).not_to receive(:add)
+
+          described_class.track_event(weekly_event, values: 1)
+        end
+      end
+
+      context 'with no feature flag set' do
+        it 'tracks the event' do
+          expect(Gitlab::Redis::HLL).to receive(:add)
+
+          described_class.track_event(daily_event, values: 1)
+        end
+      end
+
       context 'when usage_ping is disabled' do
         it 'does not track the event' do
           stub_application_setting(usage_ping_enabled: false)

@@ -6,6 +6,38 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # HTML style guide
 
+## Semantic elements
+
+[Semantic elements](https://developer.mozilla.org/en-US/docs/Glossary/Semantics) are HTML tags that
+give semantic (rather than presentational) meaning to the data they contain. For example:
+
+- [`<article>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/article)
+- [`<nav>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/nav)
+- [`<strong>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/strong)
+
+Prefer using semantic tags, but only if the intention is truly accurate with the semantic meaning
+of the tag itself. View the [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Element)
+for a description on what each tag semantically means.
+
+```html
+<!-- bad - could use semantic tags instead of div's. -->
+<div class="...">
+  <p>
+    <!-- bad - this isn't what "strong" is meant for. -->
+    Simply visit your <strong>Settings</strong> to say hello to the world.
+  </p>
+  <div class="...">...</div>
+</div>
+
+<!-- good - prefer semantic classes used accurately -->
+<section class="...">
+  <p>
+    Simply visit your <span class="gl-font-weight-bold">Settings</span> to say hello to the world.
+  </p>
+  <footer class="...">...</footer>
+</section>
+```
+
 ## Buttons
 
 ### Button type

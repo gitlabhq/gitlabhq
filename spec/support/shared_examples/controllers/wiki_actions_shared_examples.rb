@@ -218,7 +218,7 @@ RSpec.shared_examples 'wiki controller actions' do
       end
 
       context 'page view tracking' do
-        it_behaves_like 'tracking unique hll events', :track_unique_wiki_page_views do
+        it_behaves_like 'tracking unique hll events' do
           let(:target_id) { 'wiki_action' }
           let(:expected_type) { instance_of(String) }
         end

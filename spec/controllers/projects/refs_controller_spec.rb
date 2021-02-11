@@ -56,18 +56,6 @@ RSpec.describe Projects::RefsController do
         expect(response).to be_successful
         expect(json_response).to be_kind_of(Array)
       end
-
-      it 'caches tree summary data', :use_clean_rails_memory_store_caching do
-        expect_next_instance_of(::Gitlab::TreeSummary) do |instance|
-          expect(instance).to receive_messages(summarize: ['logs'], next_offset: 50, more?: true)
-        end
-
-        xhr_get(:json, offset: 25)
-
-        cache_key = "projects/#{project.id}/logs/#{project.commit.id}/#{path}/25"
-        expect(Rails.cache.fetch(cache_key)).to eq(['logs', 50])
-        expect(response.headers['More-Logs-Offset']).to eq("50")
-      end
     end
   end
 end

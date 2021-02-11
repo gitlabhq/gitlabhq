@@ -148,7 +148,7 @@ module Gitlab
           end
 
           def load_yaml_from_path(path)
-            YAML.safe_load(File.read(path))&.map(&:with_indifferent_access)
+            YAML.safe_load(File.read(path), aliases: true)&.map(&:with_indifferent_access)
           end
         end
       end

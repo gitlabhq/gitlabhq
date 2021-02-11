@@ -10,6 +10,7 @@ RSpec.describe GitlabSchema.types['User'] do
   it 'has the expected fields' do
     expected_fields = %w[
       id
+      bot
       user_permissions
       snippets
       name

@@ -210,9 +210,9 @@ export default {
         v-gl-tooltip:tooltipcontainer.bottom
         data-testid="confidentialIndicator"
         name="eye-slash"
-        :size="14"
-        :title="s__('Notes|Private comments are accessible by internal staff only')"
-        class="gl-ml-1 gl-text-gray-700 align-middle"
+        :size="16"
+        :title="s__('Notes|This comment is confidential and only visible to project members')"
+        class="gl-ml-1 gl-text-orange-700 align-middle"
       />
       <slot name="extra-controls"></slot>
       <gl-loading-icon

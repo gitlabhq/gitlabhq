@@ -46,17 +46,17 @@ Compliance framework labels do not affect your project settings.
 > - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
 > - It's disabled on GitLab.com.
 > - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-custom-compliance-frameworks). **(PREMIUM ONLY)**
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-custom-compliance-frameworks). **(PREMIUM)**
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
-GitLab 13.8 introduces custom compliance frameworks at the group-level. A group owner can create a compliance framework label
+GitLab 13.9 introduces custom compliance frameworks at the group-level. A group owner can create a compliance framework label
 and assign it to any number of projects within that group or sub-groups. When this feature is enabled, projects can only
 be assigned compliance framework labels that already exist within that group.
 
-If existing [Compliance frameworks](#compliance-framework) are not sufficient, you can now create
-your own.
+If existing [Compliance frameworks](#compliance-framework) are not sufficient, project and group owners
+can now create their own.
 
 New compliance framework labels can be created and updated using GraphQL.
 
@@ -320,7 +320,7 @@ Add the URL of a Jaeger server to allow your users to [easily access the Jaeger 
 [Add Storage credentials](../../../operations/incident_management/status_page.md#sync-incidents-to-the-status-page)
 to enable the syncing of public Issues to a [deployed status page](../../../operations/incident_management/status_page.md#create-a-status-page-project).
 
-### Enable or disable custom compliance frameworks **(PREMIUM ONLY)**
+### Enable or disable custom compliance frameworks **(PREMIUM)**
 
 Enabling or disabling custom compliance frameworks is under development and not ready for production use. It is
 deployed behind a feature flag that is **disabled by default**.

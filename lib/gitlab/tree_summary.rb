@@ -40,21 +40,17 @@ module Gitlab
     #     - An Array of the unique ::Commit objects in the first value
     def summarize
       summary = contents
-        .map { |content| build_entry(content) }
         .tap { |summary| fill_last_commits!(summary) }
 
       [summary, commits]
     end
 
     def fetch_logs
-      cache_key = ['projects', project.id, 'logs', commit.id, path, offset]
-      Rails.cache.fetch(cache_key, expires_in: CACHE_EXPIRE_IN) do
-        logs, _ = summarize
+      logs, _ = summarize
 
-        new_offset = next_offset if more?
+      new_offset = next_offset if more?
 
-        [logs.as_json, new_offset]
-      end
+      [logs.as_json, new_offset]
     end
 
     # Does the tree contain more entries after the given offset + limit?
@@ -71,7 +67,7 @@ module Gitlab
     private
 
     def contents
-      all_contents[offset, limit]
+      all_contents[offset, limit] || []
     end
 
     def commits
@@ -82,22 +78,17 @@ module Gitlab
       project.repository
     end
 
+    # Ensure the path is in "path/" format
+    def ensured_path
+      File.join(*[path, ""]) if path
+    end
+
     def entry_path(entry)
       File.join(*[path, entry[:file_name]].compact).force_encoding(Encoding::ASCII_8BIT)
     end
 
-    def build_entry(entry)
-      { file_name: entry.name, type: entry.type }
-    end
-
     def fill_last_commits!(entries)
-      # Ensure the path is in "path/" format
-      ensured_path =
-        if path
-          File.join(*[path, ""])
-        end
-
-      commits_hsh = repository.list_last_commits_for_tree(commit.id, ensured_path, offset: offset, limit: limit, literal_pathspec: true)
+      commits_hsh = fetch_last_cached_commits_list
       prerender_commit_full_titles!(commits_hsh.values)
 
       entries.each do |entry|
@@ -112,6 +103,18 @@ module Gitlab
       end
     end
 
+    def fetch_last_cached_commits_list
+      cache_key = ['projects', project.id, 'last_commits_list', commit.id, ensured_path, offset, limit]
+
+      commits = Rails.cache.fetch(cache_key, expires_in: CACHE_EXPIRE_IN) do
+        repository
+          .list_last_commits_for_tree(commit.id, ensured_path, offset: offset, limit: limit, literal_pathspec: true)
+          .transform_values!(&:to_hash)
+      end
+
+      commits.transform_values! { |value| Commit.from_hash(value, project) }
+    end
+
     def cache_commit(commit)
       return unless commit.present?
 
@@ -123,12 +126,18 @@ module Gitlab
     end
 
     def all_contents
-      strong_memoize(:all_contents) do
+      strong_memoize(:all_contents) { cached_contents }
+    end
+
+    def cached_contents
+      cache_key = ['projects', project.id, 'content', commit.id, path]
+
+      Rails.cache.fetch(cache_key, expires_in: CACHE_EXPIRE_IN) do
         [
           *tree.trees,
           *tree.blobs,
           *tree.submodules
-        ]
+        ].map { |entry| { file_name: entry.name, type: entry.type } }
       end
     end
 

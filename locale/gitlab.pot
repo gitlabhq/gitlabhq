@@ -1027,9 +1027,6 @@ msgstr ""
 msgid "+ %{numberOfHiddenAssignees} more"
 msgstr ""
 
-msgid "+ %{numberOfHiddenReviewers} more"
-msgstr ""
-
 msgid "+%d more"
 msgid_plural "+%d more"
 msgstr[0] ""
@@ -1408,6 +1405,15 @@ msgstr ""
 msgid "APIFuzzing|Choose a profile"
 msgstr ""
 
+msgid "APIFuzzing|Code snippet for the API Fuzzing configuration"
+msgstr ""
+
+msgid "APIFuzzing|Copy code and open .gitlab-ci.yml file"
+msgstr ""
+
+msgid "APIFuzzing|Copy code only"
+msgstr ""
+
 msgid "APIFuzzing|Customize common API fuzzing settings to suit your requirements. For details of more advanced configuration options, see the %{docsLinkStart}GitLab API Fuzzing documentation%{docsLinkEnd}."
 msgstr ""
 
@@ -1454,6 +1460,9 @@ msgid "APIFuzzing|Show code snippet for the profile"
 msgstr ""
 
 msgid "APIFuzzing|Target URL"
+msgstr ""
+
+msgid "APIFuzzing|The configuration could not be saved, please try again later."
 msgstr ""
 
 msgid "APIFuzzing|There are two ways to perform scans."
@@ -1912,6 +1921,9 @@ msgid "AddContextCommits|Add previously merged commits"
 msgstr ""
 
 msgid "AddContextCommits|Add/remove"
+msgstr ""
+
+msgid "AddMember|Invite limit of %{daily_invites} per day exceeded"
 msgstr ""
 
 msgid "AddMember|No users specified."
@@ -7489,6 +7501,12 @@ msgstr ""
 msgid "Compliance Dashboard"
 msgstr ""
 
+msgid "Compliance framework"
+msgstr ""
+
+msgid "Compliance framework  (optional)"
+msgstr ""
+
 msgid "Compliance framework (optional)"
 msgstr ""
 
@@ -7829,13 +7847,7 @@ msgstr ""
 msgid "ContainerRegistry|Expiration policy will run in %{time}"
 msgstr ""
 
-msgid "ContainerRegistry|Filter by name"
-msgstr ""
-
 msgid "ContainerRegistry|If you are not already logged in, you need to authenticate to the Container Registry by using your GitLab username and password. If you have %{twofaDocLinkStart}Two-Factor Authentication%{twofaDocLinkEnd} enabled, use a %{personalAccessTokensDocLinkStart}Personal Access Token%{personalAccessTokensDocLinkEnd} instead of a password."
-msgstr ""
-
-msgid "ContainerRegistry|Image Repositories"
 msgstr ""
 
 msgid "ContainerRegistry|Image repository deletion failed"
@@ -8827,6 +8839,9 @@ msgid "Customer Portal"
 msgstr ""
 
 msgid "Customizable by an administrator."
+msgstr ""
+
+msgid "Customizable by owners."
 msgstr ""
 
 msgid "Customize colors"
@@ -19948,6 +19963,9 @@ msgstr ""
 msgid "No commits present here"
 msgstr ""
 
+msgid "No compliance frameworks are in use."
+msgstr ""
+
 msgid "No compliance frameworks are in use. Create one using the GraphQL API."
 msgstr ""
 
@@ -20254,7 +20272,10 @@ msgstr ""
 msgid "Notes|Collapse replies"
 msgstr ""
 
-msgid "Notes|Private comments are accessible by internal staff only"
+msgid "Notes|Confidential comments are only visible to project members"
+msgstr ""
+
+msgid "Notes|Make this comment confidential"
 msgstr ""
 
 msgid "Notes|Show all activity"
@@ -20267,6 +20288,9 @@ msgid "Notes|Show history only"
 msgstr ""
 
 msgid "Notes|This comment has changed since you started editing, please review the %{open_link}updated comment%{close_link} to ensure information is not lost"
+msgstr ""
+
+msgid "Notes|This comment is confidential and only visible to project members"
 msgstr ""
 
 msgid "Notes|You're only seeing %{boldStart}other activity%{boldEnd} in the feed. To add a comment, switch to one of the following options."
@@ -25905,10 +25929,16 @@ msgstr ""
 msgid "SecurityConfiguration|Available for on-demand DAST"
 msgstr ""
 
+msgid "SecurityConfiguration|Available with %{linkStart}upgrade or free trial%{linkEnd}"
+msgstr ""
+
 msgid "SecurityConfiguration|By default, all analyzers are applied in order to cover all languages across your project, and only run if the language is detected in the Merge Request."
 msgstr ""
 
 msgid "SecurityConfiguration|Configure"
+msgstr ""
+
+msgid "SecurityConfiguration|Configure via Merge Request"
 msgstr ""
 
 msgid "SecurityConfiguration|Could not retrieve configuration data. Please refresh the page, or try again later."
@@ -25948,6 +25978,9 @@ msgid "SecurityConfiguration|SAST Analyzers"
 msgstr ""
 
 msgid "SecurityConfiguration|SAST Configuration"
+msgstr ""
+
+msgid "SecurityConfiguration|SAST merge request creation mutation failed"
 msgstr ""
 
 msgid "SecurityConfiguration|Security Control"
@@ -26351,7 +26384,7 @@ msgstr ""
 msgid "Select projects"
 msgstr ""
 
-msgid "Select required regulatory standard"
+msgid "Select required regulatory standard."
 msgstr ""
 
 msgid "Select reviewer(s)"

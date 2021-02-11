@@ -58,9 +58,9 @@ export default class SidebarMediator {
       .then(() => {
         this.store.updateReviewer(userId);
         toast(__('Requested review'));
-        callback(true);
+        callback(userId, true);
       })
-      .catch(() => callback(false));
+      .catch(() => callback(userId, false));
   }
 
   setMoveToProjectId(projectId) {

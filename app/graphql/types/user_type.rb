@@ -12,6 +12,9 @@ module Types
 
     field :id, GraphQL::ID_TYPE, null: false,
           description: 'ID of the user.'
+    field :bot, GraphQL::BOOLEAN_TYPE, null: false,
+          description: 'Indicates if the user is a bot.',
+          method: :bot?
     field :username, GraphQL::STRING_TYPE, null: false,
           description: 'Username of the user. Unique within this instance of GitLab.'
     field :name, GraphQL::STRING_TYPE, null: false,

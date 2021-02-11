@@ -6,6 +6,7 @@ module Ci
     # This is a bug with CodeReuse/ActiveRecord cop
     # https://gitlab.com/gitlab-org/gitlab/issues/32332
     def execute(user)
+      # TODO: fix N+1 queries https://gitlab.com/gitlab-org/gitlab/-/issues/300685
       user.pipelines.cancelable.find_each(&:cancel_running)
 
       ServiceResponse.success(message: 'Pipeline canceled')

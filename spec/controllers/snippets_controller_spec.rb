@@ -173,7 +173,7 @@ RSpec.describe SnippetsController do
           expect(response).to have_gitlab_http_status(:ok)
         end
 
-        it_behaves_like 'tracking unique hll events', :usage_data_i_snippets_show do
+        it_behaves_like 'tracking unique hll events' do
           subject(:request) { get :show, params: { id: public_snippet.to_param } }
 
           let(:target_id) { 'i_snippets_show' }

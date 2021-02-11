@@ -18,9 +18,10 @@ RSpec.describe BulkImports::Importers::GroupImporter do
   describe '#execute' do
     it 'starts the entity and run its pipelines' do
       expect_to_run_pipeline BulkImports::Groups::Pipelines::GroupPipeline, context: context
+      expect_to_run_pipeline BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline, context: context
+      expect_to_run_pipeline BulkImports::Groups::Pipelines::MembersPipeline, context: context
       expect_to_run_pipeline BulkImports::Groups::Pipelines::LabelsPipeline, context: context
       expect_to_run_pipeline('EE::BulkImports::Groups::Pipelines::EpicsPipeline'.constantize, context: context) if Gitlab.ee?
-      expect_to_run_pipeline BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline, context: context
 
       subject.execute
 

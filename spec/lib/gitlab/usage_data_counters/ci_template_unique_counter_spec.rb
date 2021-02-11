@@ -8,7 +8,7 @@ RSpec.describe Gitlab::UsageDataCounters::CiTemplateUniqueCounter do
   describe '.track_unique_project_event' do
     described_class::TEMPLATE_TO_EVENT.keys.each do |template|
       context "when given template #{template}" do
-        it_behaves_like 'tracking unique hll events', :usage_data_track_ci_templates_unique_projects do
+        it_behaves_like 'tracking unique hll events' do
           subject(:request) { described_class.track_unique_project_event(project_id: project_id, template: template) }
 
           let(:target_id) { "p_ci_templates_#{described_class::TEMPLATE_TO_EVENT[template]}" }

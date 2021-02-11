@@ -1,0 +1,8 @@
+---
+name: confidential_notes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52949
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/207474
+milestone: '13.9'
+type: development
+group: group::product planning
+default_enabled: false

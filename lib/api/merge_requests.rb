@@ -248,6 +248,8 @@ module API
         success Entities::MergeRequest
       end
       get ':id/merge_requests/:merge_request_iid' do
+        not_found!("Merge Request") unless can?(current_user, :read_merge_request, user_project)
+
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
         present merge_request,
@@ -264,7 +266,10 @@ module API
         success Entities::UserBasic
       end
       get ':id/merge_requests/:merge_request_iid/participants' do
+        not_found!("Merge Request") unless can?(current_user, :read_merge_request, user_project)
+
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
+
         participants = ::Kaminari.paginate_array(merge_request.participants)
 
         present paginate(participants), with: Entities::UserBasic
@@ -274,6 +279,8 @@ module API
         success Entities::Commit
       end
       get ':id/merge_requests/:merge_request_iid/commits' do
+        not_found!("Merge Request") unless can?(current_user, :read_merge_request, user_project)
+
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
         commits =
@@ -355,6 +362,8 @@ module API
         success Entities::MergeRequestChanges
       end
       get ':id/merge_requests/:merge_request_iid/changes' do
+        not_found!("Merge Request") unless can?(current_user, :read_merge_request, user_project)
+
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
         present merge_request,
@@ -369,6 +378,8 @@ module API
       end
       get ':id/merge_requests/:merge_request_iid/pipelines' do
         pipelines = merge_request_pipelines_with_access
+
+        not_found!("Merge Request") unless can?(current_user, :read_merge_request, user_project)
 
         present paginate(pipelines), with: Entities::Ci::PipelineBasic
       end
