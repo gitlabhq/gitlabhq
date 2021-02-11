@@ -35,6 +35,12 @@ RSpec.describe API::MergeRequestDiffs, 'MergeRequestDiffs' do
       get api("/projects/#{project.id}/merge_requests/0/versions", user)
       expect(response).to have_gitlab_http_status(:not_found)
     end
+
+    context 'when merge request author has only guest access' do
+      it_behaves_like 'rejects user from accessing merge request info' do
+        let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/versions" }
+      end
+    end
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/versions/:version_id' do
@@ -62,6 +68,12 @@ RSpec.describe API::MergeRequestDiffs, 'MergeRequestDiffs' do
     it 'returns a 404 when merge_request_iid is not found' do
       get api("/projects/#{project.id}/merge_requests/#{non_existing_record_iid}/versions/#{merge_request_diff.id}", user)
       expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    context 'when merge request author has only guest access' do
+      it_behaves_like 'rejects user from accessing merge request info' do
+        let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/versions/#{merge_request_diff.id}" }
+      end
     end
   end
 end

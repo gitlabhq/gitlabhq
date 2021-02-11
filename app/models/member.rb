@@ -45,6 +45,19 @@ class Member < ApplicationRecord
     },
     if: :project_bot?
 
+  scope :in_hierarchy, ->(source) do
+    groups = source.root_ancestor.self_and_descendants
+    group_members = Member.default_scoped.where(source: groups)
+
+    projects = source.root_ancestor.all_projects
+    project_members = Member.default_scoped.where(source: projects)
+
+    Member.default_scoped.from_union([
+      group_members,
+      project_members
+    ]).merge(self)
+  end
+
   # This scope encapsulates (most of) the conditions a row in the member table
   # must satisfy if it is a valid permission. Of particular note:
   #
@@ -77,12 +90,18 @@ class Member < ApplicationRecord
 
   scope :invite, -> { where.not(invite_token: nil) }
   scope :non_invite, -> { where(invite_token: nil) }
+
   scope :request, -> { where.not(requested_at: nil) }
   scope :non_request, -> { where(requested_at: nil) }
 
   scope :not_accepted_invitations, -> { invite.where(invite_accepted_at: nil) }
   scope :not_accepted_invitations_by_user, -> (user) { not_accepted_invitations.where(created_by: user) }
   scope :not_expired, -> (today = Date.current) { where(arel_table[:expires_at].gt(today).or(arel_table[:expires_at].eq(nil))) }
+
+  scope :created_today, -> do
+    now = Date.current
+    where(created_at: now.beginning_of_day..now.end_of_day)
+  end
   scope :last_ten_days_excluding_today, -> (today = Date.current) { where(created_at: (today - 10).beginning_of_day..(today - 1).end_of_day) }
 
   scope :has_access, -> { active.where('access_level > 0') }
