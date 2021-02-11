@@ -74,6 +74,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities do
     it 'does not break the chain' do
       expect(step.break?).to eq false
     end
+
+    context 'when project is deleted' do
+      before do
+        project.update!(pending_delete: true)
+      end
+
+      specify { expect(step.perform!).to contain_exactly('Project is deleted!') }
+    end
   end
 
   describe '#allowed_to_write_ref?' do

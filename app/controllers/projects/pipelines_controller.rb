@@ -9,6 +9,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :set_pipeline_path, only: [:show]
   before_action :authorize_read_pipeline!
   before_action :authorize_read_build!, only: [:index]
+  before_action :authorize_read_analytics!, only: [:charts]
   before_action :authorize_create_pipeline!, only: [:new, :create, :config_variables]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action do

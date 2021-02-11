@@ -171,6 +171,43 @@ RSpec.describe Member do
       end
     end
 
+    describe '.in_hierarchy' do
+      let(:root_ancestor) { create(:group) }
+      let(:project) { create(:project, group: root_ancestor) }
+      let(:subgroup) { create(:group, parent: root_ancestor) }
+      let(:subgroup_project) { create(:project, group: subgroup) }
+
+      let!(:root_ancestor_member) { create(:group_member, group: root_ancestor) }
+      let!(:project_member) { create(:project_member, project: project) }
+      let!(:subgroup_member) { create(:group_member, group: subgroup) }
+      let!(:subgroup_project_member) { create(:project_member, project: subgroup_project) }
+
+      let(:hierarchy_members) do
+        [
+          root_ancestor_member,
+          project_member,
+          subgroup_member,
+          subgroup_project_member
+        ]
+      end
+
+      subject { Member.in_hierarchy(project) }
+
+      it { is_expected.to contain_exactly(*hierarchy_members) }
+
+      context 'with scope prefix' do
+        subject { Member.where.not(source: project).in_hierarchy(subgroup) }
+
+        it { is_expected.to contain_exactly(root_ancestor_member, subgroup_member, subgroup_project_member) }
+      end
+
+      context 'with scope suffix' do
+        subject { Member.in_hierarchy(project).where.not(source: project) }
+
+        it { is_expected.to contain_exactly(root_ancestor_member, subgroup_member, subgroup_project_member) }
+      end
+    end
+
     describe '.invite' do
       it { expect(described_class.invite).not_to include @maintainer }
       it { expect(described_class.invite).to include @invited_member }
@@ -249,6 +286,21 @@ RSpec.describe Member do
 
       it { is_expected.not_to include(expiring_yesterday, expiring_today) }
       it { is_expected.to include(expiring_tomorrow, not_expiring) }
+    end
+
+    describe '.created_today' do
+      let_it_be(:now) { Time.current }
+      let_it_be(:created_today) { create(:group_member, created_at: now.beginning_of_day) }
+      let_it_be(:created_yesterday) { create(:group_member, created_at: now - 1.day) }
+
+      before do
+        travel_to now
+      end
+
+      subject { described_class.created_today }
+
+      it { is_expected.not_to include(created_yesterday) }
+      it { is_expected.to include(created_today) }
     end
 
     describe '.last_ten_days_excluding_today' do

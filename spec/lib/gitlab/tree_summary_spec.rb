@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::TreeSummary do
+  include RepoHelpers
   using RSpec::Parameterized::TableSyntax
 
   let(:project) { create(:project, :empty_repo) }
@@ -42,6 +43,40 @@ RSpec.describe Gitlab::TreeSummary do
         )
 
         expect(commits).to match_array(entries.map { |entry| entry[:commit] })
+      end
+    end
+
+    context 'when offset is over the limit' do
+      let(:offset) { 100 }
+
+      it 'returns an empty array' do
+        expect(summarized).to eq([[], []])
+      end
+    end
+
+    context 'with caching', :use_clean_rails_memory_store_caching do
+      subject { Rails.cache.fetch(key) }
+
+      before do
+        summarized
+      end
+
+      context 'Repository tree cache' do
+        let(:key) { ['projects', project.id, 'content', commit.id, path] }
+
+        it 'creates a cache for repository content' do
+          is_expected.to eq([{ file_name: 'a.txt', type: :blob }])
+        end
+      end
+
+      context 'Commits list cache' do
+        let(:offset) { 0 }
+        let(:limit) { 25 }
+        let(:key) { ['projects', project.id, 'last_commits_list', commit.id, path, offset, limit] }
+
+        it 'creates a cache for commits list' do
+          is_expected.to eq('a.txt' => commit.to_hash)
+        end
       end
     end
   end
@@ -164,6 +199,46 @@ RSpec.describe Gitlab::TreeSummary do
 
         expect(queries.count).to be <= 3
       end
+    end
+  end
+
+  describe 'References in commit messages' do
+    let_it_be(:project) { create(:project, :empty_repo) }
+    let_it_be(:issue) { create(:issue, project: project) }
+    let(:entries) { summary.summarize.first }
+    let(:entry) { entries.find { |entry| entry[:file_name] == 'issue.txt' } }
+
+    before_all do
+      create_file_in_repo(project, 'master', 'master', 'issue.txt', '', commit_message: "Issue ##{issue.iid}")
+    end
+
+    where(:project_visibility, :user_role, :issue_confidential, :expected_result) do
+      'private'  | :guest    | false | true
+      'private'  | :guest    | true  | false
+      'private'  | :reporter | false | true
+      'private'  | :reporter | true  | true
+
+      'internal' | :guest    | false | true
+      'internal' | :guest    | true  | false
+      'internal' | :reporter | false | true
+      'internal' | :reporter | true  | true
+
+      'public'   | :guest    | false | true
+      'public'   | :guest    | true  | false
+      'public'   | :reporter | false | true
+      'public'   | :reporter | true  | true
+    end
+
+    with_them do
+      subject { entry[:commit_title_html].include?("title=\"#{issue.title}\"") }
+
+      before do
+        project.add_role(user, user_role)
+        project.update!(visibility_level: Gitlab::VisibilityLevel.level_value(project_visibility))
+        issue.update!(confidential: issue_confidential)
+      end
+
+      it { is_expected.to eq(expected_result) }
     end
   end
 
