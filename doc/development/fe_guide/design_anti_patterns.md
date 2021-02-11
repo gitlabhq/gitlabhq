@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Anti-patterns may seem like good approaches at first, but it has been shown that they bring more ills than benefits. These should
 generally be avoided.
 
-Throughout the GitLab codebase, there may be historic uses of these anti-patterns. Please [use descretion](https://about.gitlab.com/handbook/engineering/#balance-refactoring-and-velocity)
+Throughout the GitLab codebase, there may be historic uses of these anti-patterns. Please [use discretion](https://about.gitlab.com/handbook/engineering/#balance-refactoring-and-velocity)
 when figuring out whether or not to refactor, when touching code that uses one of these legacy patterns.
 
 **Please note:** For new features, anti-patterns are not necessarily prohibited, but it is **strongly suggested** to find another approach.
@@ -45,7 +45,7 @@ the convenience does not always outweigh their heavy cost:
 - **No access control.** When Shared Global Objects manage some state, this can create some very buggy and difficult
   coupling situations because there is no access control to this object.
 - **Possible circular references.** Shared Global Objects can also create some circular referencing situations since submodules
-  of the Shared Global Object can reference modules that reference itself (see 
+  of the Shared Global Object can reference modules that reference itself (see
   [this MR for an example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33366)).
 
 Here are some historic examples where this pattern was identified to be problematic:
@@ -72,7 +72,7 @@ To read more on this topic, check out the following references:
 
 ## Singleton (Anti-pattern)
 
-The classic [Singleton pattern](https://en.wikipedia.org/wiki/Singleton_pattern) is an approach to ensure that only one 
+The classic [Singleton pattern](https://en.wikipedia.org/wiki/Singleton_pattern) is an approach to ensure that only one
 instance of a thing exists.
 
 Here's an example of this pattern:
@@ -114,7 +114,7 @@ Here are some ills that Singletons often produce:
 
 1. **Non-deterministic tests.** Singletons encourage non-deterministic tests because the single instance is shared across
    individual tests, often causing the state of one test to bleed into another.
-1. **High coupling.** Under the hood, clients of a singleton class all share a single specific 
+1. **High coupling.** Under the hood, clients of a singleton class all share a single specific
    instance of an object, which means this pattern inherits all the [problems of Shared Global Object](#what-problems-do-shared-global-objects-cause)
    such as no clear ownership and no access control. These leads to high coupling situations that can
    be buggy and difficult to untangle.
@@ -174,13 +174,13 @@ export const fuzzify = (id) => { /* ... */ };
 #### Dependency Injection
 
 [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) is an approach which breaks
-coupling by declaring a module's dependencies to be injected from outside the module (e.g., through constructor parameters, a bon-a-fide Dependency Injection framework, and even Vue's `provide/inject`).
+coupling by declaring a module's dependencies to be injected from outside the module (e.g., through constructor parameters, a bona-fide Dependency Injection framework, and even Vue's `provide/inject`).
 
 ```javascript
 // bad - Vue component coupled to Singleton
 export default {
   created() {
-    this.mediator = MyFooMediator.getInstance();    
+    this.mediator = MyFooMediator.getInstance();
   },
 };
 
@@ -194,7 +194,7 @@ export default {
 // bad - We're not sure where the singleton is in it's lifecycle so we init it here.
 export class Foo {
   constructor() {
-    Bar.getInstance().init();    
+    Bar.getInstance().init();
   }
 
   stuff() {

@@ -26,7 +26,7 @@ Component's computed properties / methods or external helpers.
 
 **What to use instead**
 
-Vue documentation recommends using the [mitt](https://github.com/developit/mitt) library. It's relatively small (200 bytes gzipped) and has a clear API:
+Vue documentation recommends using the [mitt](https://github.com/developit/mitt) library. It's relatively small (200 bytes, compressed) and has a clear API:
 
 ```javascript
 import mitt from 'mitt'
@@ -51,7 +51,7 @@ emitter.off('foo', onFoo)  // unlisten
 
 **Event hub factory**
 
-We have created a factory that you can use to instantiate a new mitt-based event hub. 
+We have created a factory that you can use to instantiate a new mitt-based event hub.
 This makes it easier to migrate existing event hubs to the new recommended approach, or
 to create new ones.
 

@@ -20,7 +20,7 @@ What is described in the following sections can be found in these examples:
 
 All new features built with Vue.js must follow a [Flux architecture](https://facebook.github.io/flux/).
 The main goal we are trying to achieve is to have only one data flow and only one data entry.
-In order to achieve this goal we use [vuex](#vuex).
+In order to achieve this goal we use [Vuex](#vuex).
 
 You can also read about this architecture in Vue documentation about
 [state management](https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch)
@@ -345,12 +345,12 @@ component under test, with the `computed` property, for example). Remember to us
 
   ```javascript
   const checkbox = wrapper.findByTestId('checkboxTestId');
-  
+
   expect(checkbox.attributes('disabled')).not.toBeDefined();
-  
+
   findChildComponent().vm.$emit('primary');
   await nextTick();
-  
+
   expect(checkbox.attributes('disabled')).toBeDefined();
   ```
 
@@ -359,7 +359,7 @@ component under test, with the `computed` property, for example). Remember to us
   ```javascript
   // bad
   expect(findChildComponent().find('.error-alert').exists()).toBe(false);
-  
+
   // good
   expect(findChildComponent().props('withAlertContainer')).toBe(false);
   ```

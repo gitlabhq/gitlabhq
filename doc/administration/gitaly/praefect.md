@@ -199,12 +199,12 @@ You need the IP/host address for each node.
 1. `LOAD_BALANCER_SERVER_ADDRESS`: the IP/host address of the load balancer
 1. `POSTGRESQL_SERVER_ADDRESS`: the IP/host address of the PostgreSQL server
 1. `PRAEFECT_HOST`: the IP/host address of the Praefect server
-1. `GITALY_HOST`: the IP/host address of each Gitaly server
+1. `GITALY_HOST_*`: the IP or host address of each Gitaly server
 1. `GITLAB_HOST`: the IP/host address of the GitLab server
 
 If you are using a cloud provider, you can look up the addresses for each server through your cloud provider's management console.
 
-If you are using Google Cloud Platform, SoftLayer, or any other vendor that provides a virtual private cloud (VPC) you can use the private addresses for each cloud instance (corresponds to “internal address” for Google Cloud Platform) for `PRAEFECT_HOST`, `GITALY_HOST`, and `GITLAB_HOST`.
+If you are using Google Cloud Platform, SoftLayer, or any other vendor that provides a virtual private cloud (VPC) you can use the private addresses for each cloud instance (corresponds to “internal address” for Google Cloud Platform) for `PRAEFECT_HOST`, `GITALY_HOST_*`, and `GITLAB_HOST`.
 
 #### Secrets
 
@@ -465,10 +465,15 @@ application server, or a Gitaly node.
    Praefect when communicating with Gitaly nodes in the cluster. This token is
    distinct from the `PRAEFECT_EXTERNAL_TOKEN`.
 
-   Replace `GITALY_HOST` with the IP/host address of the each Gitaly node.
+   Replace `GITALY_HOST_*` with the IP or host address of the each Gitaly node.
 
    More Gitaly nodes can be added to the cluster to increase the number of
    replicas. More clusters can also be added for very large GitLab instances.
+
+   NOTE:
+   When adding additional Gitaly nodes to a virtual storage, all storage names
+   within that virtual storage must be unique. Additionally, all Gitaly node
+   addresses referenced in the Praefect configuration must be unique.
 
    ```ruby
    # Name of storage hash must match storage name in git_data_dirs on GitLab
@@ -476,15 +481,15 @@ application server, or a Gitaly node.
    praefect['virtual_storages'] = {
      'default' => {
        'gitaly-1' => {
-         'address' => 'tcp://GITALY_HOST:8075',
+         'address' => 'tcp://GITALY_HOST_1:8075',
          'token'   => 'PRAEFECT_INTERNAL_TOKEN',
        },
        'gitaly-2' => {
-         'address' => 'tcp://GITALY_HOST:8075',
+         'address' => 'tcp://GITALY_HOST_2:8075',
          'token'   => 'PRAEFECT_INTERNAL_TOKEN'
        },
        'gitaly-3' => {
-         'address' => 'tcp://GITALY_HOST:8075',
+         'address' => 'tcp://GITALY_HOST_3:8075',
          'token'   => 'PRAEFECT_INTERNAL_TOKEN'
        }
      }
@@ -919,7 +924,7 @@ Particular attention should be shown to:
    You need to replace:
 
    - `PRAEFECT_HOST` with the IP address or hostname of the Praefect node
-   - `GITALY_HOST` with the IP address or hostname of each Gitaly node
+   - `GITALY_HOST_*` with the IP address or hostname of each Gitaly node
 
    ```ruby
    prometheus['scrape_configs'] = [
@@ -937,9 +942,9 @@ Particular attention should be shown to:
        'job_name' => 'praefect-gitaly',
        'static_configs' => [
          'targets' => [
-           'GITALY_HOST:9236', # gitaly-1
-           'GITALY_HOST:9236', # gitaly-2
-           'GITALY_HOST:9236', # gitaly-3
+           'GITALY_HOST_1:9236', # gitaly-1
+           'GITALY_HOST_2:9236', # gitaly-2
+           'GITALY_HOST_3:9236', # gitaly-3
          ]
        ]
      }
@@ -1137,7 +1142,7 @@ You can configure:
       'default_replication_factor' => 1,
       # nodes...
       'gitaly-1' => {
-        'address' => 'tcp://GITALY_HOST:8075',
+        'address' => 'tcp://GITALY_HOST_1:8075',
         'token'   => 'PRAEFECT_INTERNAL_TOKEN',
       },
     }

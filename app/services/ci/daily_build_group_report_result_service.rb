@@ -14,7 +14,8 @@ module Ci
         ref_path: pipeline.source_ref_path,
         date: pipeline.created_at.to_date,
         last_pipeline_id: pipeline.id,
-        default_branch: pipeline.default_branch?
+        default_branch: pipeline.default_branch?,
+        group_id: pipeline.project&.group&.id
       }
 
       aggregate(pipeline.builds.with_coverage).map do |group_name, group|

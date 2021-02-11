@@ -51,6 +51,10 @@ from any job in any stage in the pipeline. The coverage will be displayed for ea
 Hovering over the coverage bar will provide further information, such as the number
 of times the line was checked by tests.
 
+NOTE:
+A limit of 100 `<source>` nodes for Cobertura format XML files applies. If your Cobertura report exceeds
+100 nodes, there can be mismatches or no matches in the Merge Request diff view.
+
 ### Automatic class path correction
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217664) in GitLab 13.8.

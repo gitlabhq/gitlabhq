@@ -71,21 +71,6 @@ RSpec.describe TestHooks::ProjectService do
         expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
         expect(service.execute).to include(success_result)
       end
-
-      context 'when the query optimization feature flag is disabled' do
-        before do
-          stub_feature_flags(integrations_test_webhook_optimizations: false)
-        end
-
-        it 'executes the old query' do
-          allow(Gitlab::DataBuilder::Note).to receive(:build).and_return(sample_data)
-
-          expect(NotesFinder).not_to receive(:new)
-          expect(project).to receive(:notes).and_return([Note.new])
-          expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
-          expect(service.execute).to include(success_result)
-        end
-      end
     end
 
     shared_examples_for 'a test webhook that operates on issues' do
@@ -104,21 +89,6 @@ RSpec.describe TestHooks::ProjectService do
 
         expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
         expect(service.execute).to include(success_result)
-      end
-
-      context 'when the query optimization feature flag is disabled' do
-        before do
-          stub_feature_flags(integrations_test_webhook_optimizations: false)
-        end
-
-        it 'executes the old query' do
-          allow(issue).to receive(:to_hook_data).and_return(sample_data)
-
-          expect(IssuesFinder).not_to receive(:new)
-          expect(project).to receive(:issues).and_return([issue])
-          expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
-          expect(service.execute).to include(success_result)
-        end
       end
     end
 
@@ -154,21 +124,6 @@ RSpec.describe TestHooks::ProjectService do
 
         expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
         expect(service.execute).to include(success_result)
-      end
-
-      context 'when the query optimization feature flag is disabled' do
-        before do
-          stub_feature_flags(integrations_test_webhook_optimizations: false)
-        end
-
-        it 'executes the old query' do
-          allow(merge_request).to receive(:to_hook_data).and_return(sample_data)
-
-          expect(MergeRequestsFinder).not_to receive(:new)
-          expect(project).to receive(:merge_requests).and_return([merge_request])
-          expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
-          expect(service.execute).to include(success_result)
-        end
       end
     end
 

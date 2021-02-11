@@ -16,6 +16,7 @@ Anthos
 approvers
 architected
 architecting
+archiver
 Arel
 Artifactory
 Asana
@@ -183,6 +184,7 @@ failsafe
 Falco
 falsy
 fastlane
+Fastzip
 favicon
 favorited
 Figma
@@ -200,6 +202,8 @@ fuzzer
 Gantt
 Gemnasium
 Gemojione
+Getter
+Getters
 gettext
 Git
 Gitaly

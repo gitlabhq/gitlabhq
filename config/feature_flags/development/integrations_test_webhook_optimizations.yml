@@ -1,8 +1,0 @@
----
-name: integrations_test_webhook_optimizations
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52646
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/300105
-milestone: '13.9'
-type: development
-group: group::ecosystem
-default_enabled: false

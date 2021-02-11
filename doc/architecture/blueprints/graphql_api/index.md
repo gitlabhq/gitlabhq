@@ -113,7 +113,7 @@ this knowledge onto GraphQL and make it performant and secure by default.
 - Design direct uploads for GraphQL
 - Build GraphQL query depth and complexity histograms
 - Visualize the amount of GraphQL queries reaching limits
-- Add support for GraphQL etags for existing features
+- Add support for GraphQL ETags for existing features
 
 ### Design GraphQL interoperability with REST API
 
@@ -138,7 +138,7 @@ state synchronization mechanisms and hooking into existing ones.
 
 - Design a scalable state synchronization mechanism
 - Evaluate state synchronization through pub/sub and websockets
-- Build a generic support for GraphQL feature correlation and feature etags
+- Build a generic support for GraphQL feature correlation and feature ETags
 - Redesign frontend code responsible for managing shared global state
 
 ## Iterations

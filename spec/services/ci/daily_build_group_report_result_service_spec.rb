@@ -7,7 +7,12 @@ RSpec.describe Ci::DailyBuildGroupReportResultService, '#execute' do
   let!(:rspec_job) { create(:ci_build, pipeline: pipeline, name: '3/3 rspec', coverage: 80) }
   let!(:karma_job) { create(:ci_build, pipeline: pipeline, name: '2/2 karma', coverage: 90) }
   let!(:extra_job) { create(:ci_build, pipeline: pipeline, name: 'extra', coverage: nil) }
+  let!(:group) { create(:group, :private) }
   let(:coverages) { Ci::DailyBuildGroupReportResult.all }
+
+  before do
+    pipeline.project.group = group
+  end
 
   it 'creates daily code coverage record for each job in the pipeline that has coverage value' do
     described_class.new.execute(pipeline)
@@ -19,7 +24,8 @@ RSpec.describe Ci::DailyBuildGroupReportResultService, '#execute' do
         ref_path: pipeline.source_ref_path,
         group_name: rspec_job.group_name,
         data: { 'coverage' => rspec_job.coverage },
-        date: pipeline.created_at.to_date
+        date: pipeline.created_at.to_date,
+        group_id: pipeline.project.group.id
       )
     end
 
@@ -30,7 +36,8 @@ RSpec.describe Ci::DailyBuildGroupReportResultService, '#execute' do
         ref_path: pipeline.source_ref_path,
         group_name: karma_job.group_name,
         data: { 'coverage' => karma_job.coverage },
-        date: pipeline.created_at.to_date
+        date: pipeline.created_at.to_date,
+        group_id: pipeline.project.group.id
       )
     end
 
@@ -154,6 +161,10 @@ RSpec.describe Ci::DailyBuildGroupReportResultService, '#execute' do
     end
 
     let!(:some_job) { create(:ci_build, pipeline: new_pipeline, name: 'foo') }
+
+    before do
+      new_pipeline.project.group = group
+    end
 
     it 'does nothing' do
       expect { described_class.new.execute(new_pipeline) }.not_to raise_error
