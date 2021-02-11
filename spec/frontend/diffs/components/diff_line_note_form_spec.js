@@ -17,6 +17,7 @@ describe('DiffLineNoteForm', () => {
     const store = createStore();
     store.state.notes.userData.id = 1;
     store.state.notes.noteableData = noteableDataMock;
+    store.state.diffs.diffFiles = [diffFile];
 
     store.replaceState({ ...store.state, ...args.state });
 

@@ -7,6 +7,8 @@ RSpec.describe Projects::Security::ConfigurationController do
   let(:user) { create(:user) }
 
   before do
+    allow(controller).to receive(:ensure_security_and_compliance_enabled!)
+
     sign_in(user)
   end
 

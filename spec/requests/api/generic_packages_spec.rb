@@ -6,6 +6,8 @@ RSpec.describe API::GenericPackages do
   include HttpBasicAuthHelpers
   using RSpec::Parameterized::TableSyntax
 
+  include_context 'workhorse headers'
+
   let_it_be(:personal_access_token) { create(:personal_access_token) }
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:deploy_token_rw) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
@@ -14,8 +16,6 @@ RSpec.describe API::GenericPackages do
   let_it_be(:project_deploy_token_ro) { create(:project_deploy_token, deploy_token: deploy_token_ro, project: project) }
   let_it_be(:deploy_token_wo) { create(:deploy_token, read_package_registry: false, write_package_registry: true) }
   let_it_be(:project_deploy_token_wo) { create(:project_deploy_token, deploy_token: deploy_token_wo, project: project) }
-  let(:workhorse_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
-  let(:workhorse_header) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => workhorse_token } }
   let(:user) { personal_access_token.user }
   let(:ci_build) { create(:ci_build, :running, user: user) }
 
@@ -129,7 +129,7 @@ RSpec.describe API::GenericPackages do
         end
 
         it "responds with #{params[:expected_status]}" do
-          authorize_upload_file(workhorse_header.merge(auth_header))
+          authorize_upload_file(workhorse_headers.merge(auth_header))
 
           expect(response).to have_gitlab_http_status(expected_status)
         end
@@ -144,7 +144,7 @@ RSpec.describe API::GenericPackages do
 
       with_them do
         it "responds with #{params[:expected_status]}" do
-          authorize_upload_file(workhorse_header.merge(deploy_token_auth_header))
+          authorize_upload_file(workhorse_headers.merge(deploy_token_auth_header))
 
           expect(response).to have_gitlab_http_status(expected_status)
         end
@@ -162,7 +162,7 @@ RSpec.describe API::GenericPackages do
       end
 
       with_them do
-        subject { authorize_upload_file(workhorse_header.merge(personal_access_token_header), param_name => param_value) }
+        subject { authorize_upload_file(workhorse_headers.merge(personal_access_token_header), param_name => param_value) }
 
         it_behaves_like 'secure endpoint'
       end
@@ -173,7 +173,7 @@ RSpec.describe API::GenericPackages do
         stub_feature_flags(generic_packages: false)
         project.add_developer(user)
 
-        authorize_upload_file(workhorse_header.merge(personal_access_token_header))
+        authorize_upload_file(workhorse_headers.merge(personal_access_token_header))
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -239,7 +239,7 @@ RSpec.describe API::GenericPackages do
         end
 
         it "responds with #{params[:expected_status]}" do
-          headers = workhorse_header.merge(auth_header)
+          headers = workhorse_headers.merge(auth_header)
 
           upload_file(params, headers)
 
@@ -254,7 +254,7 @@ RSpec.describe API::GenericPackages do
 
       with_them do
         it "responds with #{params[:expected_status]}" do
-          headers = workhorse_header.merge(deploy_token_auth_header)
+          headers = workhorse_headers.merge(deploy_token_auth_header)
 
           upload_file(params, headers)
 
@@ -270,7 +270,7 @@ RSpec.describe API::GenericPackages do
 
       shared_examples 'creates a package and package file' do
         it 'creates a package and package file' do
-          headers = workhorse_header.merge(auth_header)
+          headers = workhorse_headers.merge(auth_header)
 
           expect { upload_file(params, headers) }
             .to change { project.packages.generic.count }.by(1)
@@ -324,26 +324,26 @@ RSpec.describe API::GenericPackages do
       end
 
       context 'event tracking' do
-        subject { upload_file(params, workhorse_header.merge(personal_access_token_header)) }
+        subject { upload_file(params, workhorse_headers.merge(personal_access_token_header)) }
 
         it_behaves_like 'a gitlab tracking event', described_class.name, 'push_package'
       end
 
       it 'rejects request without a file from workhorse' do
-        headers = workhorse_header.merge(personal_access_token_header)
+        headers = workhorse_headers.merge(personal_access_token_header)
         upload_file({}, headers)
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'rejects request without an auth token' do
-        upload_file(params, workhorse_header)
+        upload_file(params, workhorse_headers)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
 
       it 'rejects request without workhorse rewritten fields' do
-        headers = workhorse_header.merge(personal_access_token_header)
+        headers = workhorse_headers.merge(personal_access_token_header)
         upload_file(params, headers, send_rewritten_field: false)
 
         expect(response).to have_gitlab_http_status(:bad_request)
@@ -354,7 +354,7 @@ RSpec.describe API::GenericPackages do
           allow(uploaded_file).to receive(:size).and_return(project.actual_limits.generic_packages_max_file_size + 1)
         end
 
-        headers = workhorse_header.merge(personal_access_token_header)
+        headers = workhorse_headers.merge(personal_access_token_header)
         upload_file(params, headers)
 
         expect(response).to have_gitlab_http_status(:bad_request)
@@ -378,7 +378,7 @@ RSpec.describe API::GenericPackages do
       end
 
       with_them do
-        subject { upload_file(params, workhorse_header.merge(personal_access_token_header), param_name => param_value) }
+        subject { upload_file(params, workhorse_headers.merge(personal_access_token_header), param_name => param_value) }
 
         it_behaves_like 'secure endpoint'
       end

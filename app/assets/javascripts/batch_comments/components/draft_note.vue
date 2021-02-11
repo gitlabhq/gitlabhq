@@ -3,7 +3,6 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlButton } from '@gitlab/ui';
 import NoteableNote from '~/notes/components/noteable_note.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PublishButton from './publish_button.vue';
 
 export default {
@@ -12,7 +11,6 @@ export default {
     PublishButton,
     GlButton,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     draft: {
       type: Object,
@@ -63,14 +61,14 @@ export default {
       this.isEditingDraft = false;
     },
     handleMouseEnter(draft) {
-      if (this.glFeatures.multilineComments && draft.position) {
+      if (draft.position) {
         this.setSelectedCommentPositionHover(draft.position.line_range);
       }
     },
     handleMouseLeave(draft) {
-      // Even though position isn't used here we still don't want to unecessarily call a mutation
+      // Even though position isn't used here we still don't want to unnecessarily call a mutation
       // The lack of position tells us that highlighting is irrelevant in this context
-      if (this.glFeatures.multilineComments && draft.position) {
+      if (draft.position) {
         this.setSelectedCommentPositionHover();
       }
     },

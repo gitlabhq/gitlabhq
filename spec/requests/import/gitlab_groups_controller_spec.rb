@@ -5,12 +5,10 @@ require 'spec_helper'
 RSpec.describe Import::GitlabGroupsController do
   include WorkhorseHelpers
 
+  include_context 'workhorse headers'
+
   let_it_be(:user) { create(:user) }
   let(:import_path) { "#{Dir.tmpdir}/gitlab_groups_controller_spec" }
-  let(:workhorse_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
-  let(:workhorse_headers) do
-    { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => workhorse_token }
-  end
 
   before do
     allow_next_instance_of(Gitlab::ImportExport) do |import_export|

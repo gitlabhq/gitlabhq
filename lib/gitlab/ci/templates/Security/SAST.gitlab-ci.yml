@@ -66,7 +66,8 @@ brakeman-sast:
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /brakeman/
       exists:
-        - 'config/routes.rb'
+        - '**/*.rb'
+        - '**/Gemfile'
 
 eslint-sast:
   extends: .sast-analyzer

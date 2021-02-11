@@ -1393,6 +1393,90 @@ msgstr ""
 msgid "API Token"
 msgstr ""
 
+msgid "APIFuzzing|API Fuzzing Configuration"
+msgstr ""
+
+msgid "APIFuzzing|Authentication is handled by providing HTTP basic authentication token as a header or cookie. %{linkStart}More information%{linkEnd}."
+msgstr ""
+
+msgid "APIFuzzing|Base URL of API fuzzing target."
+msgstr ""
+
+msgid "APIFuzzing|Choose a method"
+msgstr ""
+
+msgid "APIFuzzing|Choose a profile"
+msgstr ""
+
+msgid "APIFuzzing|Customize common API fuzzing settings to suit your requirements. For details of more advanced configuration options, see the %{docsLinkStart}GitLab API Fuzzing documentation%{docsLinkEnd}."
+msgstr ""
+
+msgid "APIFuzzing|Enable authentication"
+msgstr ""
+
+msgid "APIFuzzing|Ex: $TestPassword"
+msgstr ""
+
+msgid "APIFuzzing|Ex: $TestUsername"
+msgstr ""
+
+msgid "APIFuzzing|Ex: Project_Test/File/example_fuzz.har"
+msgstr ""
+
+msgid "APIFuzzing|Ex: Project_Test/File/example_fuzz.json"
+msgstr ""
+
+msgid "APIFuzzing|Generate code snippet"
+msgstr ""
+
+msgid "APIFuzzing|HAR files may contain sensitive information such as authentication tokens, API keys, and session cookies. We recommend that you review the HAR files' contents before adding them to a repository."
+msgstr ""
+
+msgid "APIFuzzing|Instead of entering the password directly, enter the key of the CI variable set to the password."
+msgstr ""
+
+msgid "APIFuzzing|Instead of entering the username directly, enter the key of the CI variable set to the username."
+msgstr ""
+
+msgid "APIFuzzing|Make sure your credentials are secured"
+msgstr ""
+
+msgid "APIFuzzing|Password for basic authentication"
+msgstr ""
+
+msgid "APIFuzzing|Scan mode"
+msgstr ""
+
+msgid "APIFuzzing|Scan profile"
+msgstr ""
+
+msgid "APIFuzzing|Show code snippet for the profile"
+msgstr ""
+
+msgid "APIFuzzing|Target URL"
+msgstr ""
+
+msgid "APIFuzzing|There are two ways to perform scans."
+msgstr ""
+
+msgid "APIFuzzing|To prevent a security leak, authentication info must be added as a %{ciVariablesLinkStart}CI variable%{ciVariablesLinkEnd}. A user with maintainer access rights can manage CI variables in the %{ciSettingsLinkStart}Settings%{ciSettingsLinkEnd} area. We detected that you are not a maintainer. Commit your changes and assign them to a maintainer to update the credentials before merging."
+msgstr ""
+
+msgid "APIFuzzing|To prevent a security leak, authentication info must be added as a %{ciVariablesLinkStart}CI variable%{ciVariablesLinkEnd}. As a user with maintainer access rights, you can manage CI variables in the %{ciSettingsLinkStart}Settings%{ciSettingsLinkEnd} area."
+msgstr ""
+
+msgid "APIFuzzing|Use this tool to generate API fuzzing configuration YAML to copy into your .gitlab-ci.yml file. This tool does not reflect or update your .gitlab-ci.yml file automatically."
+msgstr ""
+
+msgid "APIFuzzing|Username for basic authentication"
+msgstr ""
+
+msgid "APIFuzzing|We recommend that you review the JSON specifications file before adding it to a repository."
+msgstr ""
+
+msgid "APIFuzzing|You may need a maintainer's help to secure your credentials."
+msgstr ""
+
 msgid "AWS Access Key"
 msgstr ""
 
@@ -4136,6 +4220,9 @@ msgid "Authenticated web request rate limit"
 msgstr ""
 
 msgid "Authenticating"
+msgstr ""
+
+msgid "Authentication"
 msgstr ""
 
 msgid "Authentication Failure"
@@ -11850,6 +11937,9 @@ msgstr ""
 msgid "Evidence collection"
 msgstr ""
 
+msgid "Ex: Example.com"
+msgstr ""
+
 msgid "Exactly one of %{attributes} is required"
 msgstr ""
 
@@ -12295,9 +12385,6 @@ msgid "Failed to update issue status"
 msgstr ""
 
 msgid "Failed to update issues, please try again."
-msgstr ""
-
-msgid "Failed to update tag!"
 msgstr ""
 
 msgid "Failed to update the Canary Ingress."
@@ -14508,6 +14595,12 @@ msgid "GroupsTree|Search by name"
 msgstr ""
 
 msgid "Guideline"
+msgstr ""
+
+msgid "HAR (HTTP Archive)"
+msgstr ""
+
+msgid "HAR file path"
 msgstr ""
 
 msgid "HTTP Basic: Access denied\\nYou must use a personal access token with 'api' scope for Git over HTTP.\\nYou can generate one at %{profile_personal_access_tokens_url}"
@@ -20665,6 +20758,12 @@ msgid "Oops, are you sure?"
 msgstr ""
 
 msgid "Open"
+msgstr ""
+
+msgid "Open API"
+msgstr ""
+
+msgid "Open API specification file path"
 msgstr ""
 
 msgid "Open Selection"

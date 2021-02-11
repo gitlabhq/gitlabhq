@@ -56,17 +56,30 @@ describe('Batch comments draft preview item component', () => {
       createComponent(false, {
         file_path: 'index.js',
         file_hash: 'abc',
-        position: { new_line: 1 },
+        position: {
+          line_range: {
+            start: {
+              new_line: 1,
+              type: 'new',
+            },
+          },
+        },
       });
 
-      expect(vm.$el.querySelector('.bold').textContent).toContain(':1');
+      expect(vm.$el.querySelector('.bold').textContent).toContain(':+1');
     });
 
     it('renders old line position', () => {
       createComponent(false, {
         file_path: 'index.js',
         file_hash: 'abc',
-        position: { old_line: 2 },
+        position: {
+          line_range: {
+            start: {
+              old_line: 2,
+            },
+          },
+        },
       });
 
       expect(vm.$el.querySelector('.bold').textContent).toContain(':2');

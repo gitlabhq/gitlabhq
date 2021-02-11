@@ -8,15 +8,6 @@ import NoteActions from '~/notes/components/note_actions.vue';
 import NoteBody from '~/notes/components/note_body.vue';
 import { noteableDataMock, notesDataMock, note } from '../mock_data';
 
-jest.mock('~/vue_shared/mixins/gl_feature_flags_mixin', () => () => ({
-  inject: {
-    glFeatures: {
-      from: 'glFeatures',
-      default: () => ({ multilineComments: true }),
-    },
-  },
-}));
-
 describe('issue_note', () => {
   let store;
   let wrapper;

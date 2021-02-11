@@ -161,6 +161,7 @@ to be consider, but may be preferable depending on your use case.
      --locked="false" \
      --access-level="not_protected" \
      --docker-volumes "/cache"\
+     --docker-volumes "/builds:/builds"\
      --docker-volumes "/var/run/docker.sock:/var/run/docker.sock" \
      --registration-token="<project_token>" \
      --non-interactive
@@ -173,8 +174,8 @@ to be consider, but may be preferable depending on your use case.
   in the previous step.
 
    ```shell
-   --builds-dir /tmp/builds
-   --docker-volumes /tmp/builds:/tmp/builds
+   --builds-dir "/tmp/builds"
+   --docker-volumes "/tmp/builds:/tmp/builds" # Use this instead of --docker-volumes "/builds:/builds"
    ```
 
    The resulting configuration:
@@ -456,3 +457,32 @@ This can be due to multiple reasons:
 GitLab only uses the Code Quality artifact from the latest created job (with the largest job ID).
 If multiple jobs in a pipeline generate a code quality artifact, those of earlier jobs are ignored.
 To avoid confusion, configure only one job to generate a `gl-code-quality-report.json`.
+
+### Rubocop errors
+
+When using Code Quality jobs on a **Ruby** project, you can encounter problems running Rubocop.
+For example, the following error can appear when using either a very recent or very old version
+of Ruby:
+
+```plaintext
+/usr/local/bundle/gems/rubocop-0.52.1/lib/rubocop/config.rb:510:in `check_target_ruby':
+Unknown Ruby version 2.7 found in `.ruby-version`. (RuboCop::ValidationError)
+Supported versions: 2.1, 2.2, 2.3, 2.4, 2.5
+```
+
+This is caused by the default version of **rubocop** used by the check engine not covering
+support for the Ruby version in use.
+To use a custom version of **rubocop** that
+[supports the version of Ruby used by the project](https://docs.rubocop.org/rubocop/compatibility.html#support-matrix),
+you can [override the configuration through a `.codeclimate.yml` file](https://docs.codeclimate.com/docs/rubocop#using-rubocops-newer-versions)
+created in the project repository.
+
+For example, to specify using **rubocop** release **0.67**:
+
+```yaml
+version: "2"
+plugins:
+  rubocop:
+    enabled: true
+    channel: rubocop-0-67
+```

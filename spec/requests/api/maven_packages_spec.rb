@@ -4,6 +4,8 @@ require 'spec_helper'
 RSpec.describe API::MavenPackages do
   include WorkhorseHelpers
 
+  include_context 'workhorse headers'
+
   let_it_be_with_refind(:package_settings) { create(:namespace_package_setting, :group) }
   let_it_be(:group) { package_settings.namespace }
   let_it_be(:user) { create(:user) }
@@ -20,8 +22,7 @@ RSpec.describe API::MavenPackages do
   let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: deploy_token_for_group, group: group) }
 
   let(:package_name) { 'com/example/my-app' }
-  let(:workhorse_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
-  let(:headers) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => workhorse_token } }
+  let(:headers) { workhorse_headers }
   let(:headers_with_token) { headers.merge('Private-Token' => personal_access_token.token) }
   let(:group_deploy_token_headers) { { Gitlab::Auth::AuthFinders::DEPLOY_TOKEN_HEADER => deploy_token_for_group.token } }
 
@@ -548,8 +549,8 @@ RSpec.describe API::MavenPackages do
   end
 
   describe 'PUT /api/v4/projects/:id/packages/maven/*path/:file_name' do
-    let(:workhorse_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
-    let(:workhorse_header) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => workhorse_token } }
+    include_context 'workhorse headers'
+
     let(:send_rewritten_field) { true }
     let(:file_upload) { fixture_file_upload('spec/fixtures/packages/maven/my-app-1.0-20180724.124855-1.jar') }
 
@@ -602,7 +603,7 @@ RSpec.describe API::MavenPackages do
       end
 
       context 'without workhorse header' do
-        let(:workhorse_header) { {} }
+        let(:workhorse_headers) { {} }
 
         subject { upload_file_with_token(params: params) }
 

@@ -1,0 +1,8 @@
+---
+name: usage_data_i_testing_metrics_report_artifact_uploaders
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51670
+rollout_issue_url:
+milestone: '13.9'
+type: development
+group: group::testing
+default_enabled: true

@@ -3,7 +3,6 @@ import { mapGetters } from 'vuex';
 import { GlSprintf, GlIcon } from '@gitlab/ui';
 import { IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { sprintf, __ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   getStartLineNumber,
   getEndLineNumber,
@@ -16,7 +15,7 @@ export default {
     GlIcon,
     GlSprintf,
   },
-  mixins: [resolvedStatusMixin, glFeatureFlagsMixin()],
+  mixins: [resolvedStatusMixin],
   props: {
     draft: {
       type: Object,
@@ -71,6 +70,10 @@ export default {
       return this.draft.position || this.discussion.position;
     },
     startLineNumber() {
+      if (this.position?.position_type === IMAGE_DIFF_POSITION_TYPE) {
+        // eslint-disable-next-line @gitlab/require-i18n-strings
+        return `${this.position.x}x ${this.position.y}y`;
+      }
       return getStartLineNumber(this.position?.line_range);
     },
     endLineNumber() {
@@ -90,16 +93,12 @@ export default {
   <span>
     <span class="review-preview-item-header">
       <gl-icon class="flex-shrink-0" :name="iconName" />
-      <span
-        class="bold text-nowrap"
-        :class="{ 'gl-align-items-center': glFeatures.multilineComments }"
-      >
+      <span class="bold text-nowrap gl-align-items-center">
         <span class="review-preview-item-header-text block-truncated">
           {{ titleText }}
         </span>
         <template v-if="showLinePosition">
-          <template v-if="!glFeatures.multilineComments">:{{ linePosition }}</template>
-          <template v-else-if="startLineNumber === endLineNumber">
+          <template v-if="startLineNumber === endLineNumber">
             :<span :class="getLineClasses(startLineNumber)">{{ startLineNumber }}</span>
           </template>
           <gl-sprintf v-else :message="__(':%{startLine} to %{endLine}')">

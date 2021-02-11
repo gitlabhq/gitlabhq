@@ -278,6 +278,11 @@
   redis_slot: testing
   aggregation: weekly
   feature_flag: usage_data_i_testing_load_performance_widget_total
+- name: i_testing_metrics_report_artifact_uploaders
+  category: testing
+  redis_slot: testing
+  aggregation: weekly
+  feature_flag: usage_data_i_testing_metrics_report_artifact_uploaders
 # Project Management group
 - name: g_project_management_issue_title_changed
   category: issues_edit

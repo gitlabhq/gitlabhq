@@ -283,10 +283,7 @@ first time.
   you forget to remove any debugging code?
 - Consider providing instructions on how to test the merge request. This can be
   helpful for reviewers not familiar with the product feature or area of the codebase.
-<!-- vale gitlab.FutureTense = NO -->
-- Be grateful for the reviewer's suggestions. ("Good call. I'll make that
-  change.")
-<!-- vale gitlab.FutureTense = YES -->
+- Be grateful for the reviewer's suggestions. (`Good call. I'll make that change.`)
 - Don't take it personally. The review is of the code, not of you.
 - Explain why the code exists. ("It's like that because of these reasons. Would
   it be more clear if I rename this class/file/method/variable?")

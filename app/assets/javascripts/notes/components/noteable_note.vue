@@ -3,7 +3,6 @@ import $ from 'jquery';
 import { mapGetters, mapActions } from 'vuex';
 import { escape } from 'lodash';
 import { GlSprintf, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { truncateSha } from '~/lib/utils/text_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import httpStatusCodes from '~/lib/utils/http_status';
@@ -38,7 +37,7 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [noteable, resolvable, glFeatureFlagsMixin()],
+  mixins: [noteable, resolvable],
   props: {
     note: {
       type: Object,
@@ -160,7 +159,6 @@ export default {
     },
     showMultiLineComment() {
       if (
-        !this.glFeatures.multilineComments ||
         !this.discussionRoot ||
         this.startLineNumber.length === 0 ||
         this.endLineNumber.length === 0

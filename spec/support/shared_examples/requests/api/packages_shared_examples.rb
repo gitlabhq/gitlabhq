@@ -24,7 +24,7 @@ end
 
 RSpec.shared_examples 'deploy token for package uploads' do
   context 'with deploy token headers' do
-    let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_header) }
+    let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_headers) }
 
     before do
       project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
@@ -35,7 +35,7 @@ RSpec.shared_examples 'deploy token for package uploads' do
     end
 
     context 'invalid token' do
-      let(:headers) { basic_auth_header(deploy_token.username, 'bar').merge(workhorse_header) }
+      let(:headers) { basic_auth_header(deploy_token.username, 'bar').merge(workhorse_headers) }
 
       it_behaves_like 'returning response status', :unauthorized
     end
@@ -102,7 +102,7 @@ end
 
 RSpec.shared_examples 'job token for package uploads' do
   context 'with job token headers' do
-    let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, job.token).merge(workhorse_header) }
+    let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, job.token).merge(workhorse_headers) }
 
     before do
       project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
@@ -114,13 +114,13 @@ RSpec.shared_examples 'job token for package uploads' do
     end
 
     context 'invalid token' do
-      let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, 'bar').merge(workhorse_header) }
+      let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, 'bar').merge(workhorse_headers) }
 
       it_behaves_like 'returning response status', :unauthorized
     end
 
     context 'invalid user' do
-      let(:headers) { basic_auth_header('foo', job.token).merge(workhorse_header) }
+      let(:headers) { basic_auth_header('foo', job.token).merge(workhorse_headers) }
 
       it_behaves_like 'returning response status', :unauthorized
     end

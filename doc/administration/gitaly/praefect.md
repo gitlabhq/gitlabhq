@@ -1111,7 +1111,7 @@ replication factor offers better redundancy and distribution of read workload, b
 in a higher storage cost. By default, Praefect replicates repositories to every storage in a
 virtual storage.
 
-### Variable replication factor
+### Configure replication factors
 
 WARNING:
 The feature is not production ready yet. After you set a replication factor, you can't unset it
@@ -1122,36 +1122,50 @@ strategy is not production ready yet.
 Praefect supports configuring a replication factor on a per-repository basis, by assigning
 specific storage nodes to host a repository.
 
-[In an upcoming release](https://gitlab.com/gitlab-org/gitaly/-/issues/3362), we intend to
-support configuring a default replication factor for a virtual storage. The default replication factor
-is applied to every newly-created repository.
-
 Praefect does not store the actual replication factor, but assigns enough storages to host the repository
 so the desired replication factor is met. If a storage node is later removed from the virtual storage,
 the replication factor of repositories assigned to the storage is decreased accordingly.
 
-The only way to configure a repository's replication factor is the `set-replication-factor`
-sub-command. `set-replication-factor` automatically assigns or unassigns random storage nodes as necessary to
-reach the desired replication factor. The repository's primary node is always assigned
-first and is never unassigned.
+You can configure:
 
-```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage <virtual-storage> -repository <relative-path> -replication-factor <replication-factor>
-```
+- A default replication factor for each virtual storage that is applied to newly-created repositories.
+  The configuration is added to the `/etc/gitlab/gitlab.rb` file:
 
-- `-virtual-storage` is the virtual storage the repository is located in.
-- `-repository` is the repository's relative path in the storage.
-- `-replication-factor` is the desired replication factor of the repository. The minimum value is
-  `1`, as the primary needs a copy of the repository. The maximum replication factor is the number of
-  storages in the virtual storage.
+  ```ruby
+  praefect['virtual_storages'] = {
+    'default' => {
+      'default_replication_factor' => 1,
+      # nodes...
+      'gitaly-1' => {
+        'address' => 'tcp://GITALY_HOST:8075',
+        'token'   => 'PRAEFECT_INTERNAL_TOKEN',
+      },
+    }
+  }
+  ```
 
-On success, the assigned host storages are printed. For example:
+- A replication factor for an existing repository using the `set-replication-factor` sub-command.
+  `set-replication-factor` automatically assigns or unassigns random storage nodes as
+  necessary to reach the desired replication factor. The repository's primary node is
+  always assigned first and is never unassigned.
 
-```shell
-$ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage default -repository @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git -replication-factor 2
+  ```shell
+  sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage <virtual-storage> -repository <relative-path> -replication-factor <replication-factor>
+  ```
 
-current assignments: gitaly-1, gitaly-2
-```
+  - `-virtual-storage` is the virtual storage the repository is located in.
+  - `-repository` is the repository's relative path in the storage.
+  - `-replication-factor` is the desired replication factor of the repository. The minimum value is
+    `1`, as the primary needs a copy of the repository. The maximum replication factor is the number of
+    storages in the virtual storage.
+
+  On success, the assigned host storages are printed. For example:
+
+  ```shell
+  $ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage default -repository @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git -replication-factor 2
+
+  current assignments: gitaly-1, gitaly-2
+  ```
 
 ## Automatic failover and leader election
 

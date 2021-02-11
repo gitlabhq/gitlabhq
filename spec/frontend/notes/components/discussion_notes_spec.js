@@ -23,7 +23,7 @@ describe('DiscussionNotes', () => {
   let wrapper;
 
   const getList = () => getByRole(wrapper.element, 'list');
-  const createComponent = (props, features = {}) => {
+  const createComponent = (props) => {
     wrapper = shallowMount(DiscussionNotes, {
       store,
       propsData: {
@@ -37,9 +37,6 @@ describe('DiscussionNotes', () => {
       },
       slots: {
         'avatar-badge': '<span class="avatar-badge-slot-content" />',
-      },
-      provide: {
-        glFeatures: { multilineComments: true, ...features },
       },
     });
   };
@@ -177,16 +174,14 @@ describe('DiscussionNotes', () => {
   });
 
   describe.each`
-    desc                               | props                                         | features                        | event           | expectedCalls
-    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${{}}                           | ${'mouseenter'} | ${[['setSelectedCommentPositionHover', LINE_RANGE]]}
-    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${{}}                           | ${'mouseleave'} | ${[['setSelectedCommentPositionHover']]}
-    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${{ multilineComments: false }} | ${'mouseenter'} | ${[]}
-    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${{ multilineComments: false }} | ${'mouseleave'} | ${[]}
-    ${'without `discussion.position`'} | ${{}}                                         | ${{}}                           | ${'mouseenter'} | ${[]}
-    ${'without `discussion.position`'} | ${{}}                                         | ${{}}                           | ${'mouseleave'} | ${[]}
-  `('$desc and features $features', ({ props, event, features, expectedCalls }) => {
+    desc                               | props                                         | event           | expectedCalls
+    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${'mouseenter'} | ${[['setSelectedCommentPositionHover', LINE_RANGE]]}
+    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${'mouseleave'} | ${[['setSelectedCommentPositionHover']]}
+    ${'without `discussion.position`'} | ${{}}                                         | ${'mouseenter'} | ${[]}
+    ${'without `discussion.position`'} | ${{}}                                         | ${'mouseleave'} | ${[]}
+  `('$desc', ({ props, event, expectedCalls }) => {
     beforeEach(() => {
-      createComponent(props, features);
+      createComponent(props);
       jest.spyOn(store, 'dispatch');
     });
 
