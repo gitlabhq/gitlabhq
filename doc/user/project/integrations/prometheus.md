@@ -182,6 +182,8 @@ service account can be found at Google's documentation for
    Prometheus OAuth Client secured with Google IAP.
 1. (Optional) In **Google IAP Service Account JSON**, provide the contents of the
    Service Account credentials file that is authorized to access the Prometheus resource.
+   The JSON key `token_credential_uri` is discarded to prevent
+   [Server-side Request Forgery (SSRF)](https://www.hackerone.com/blog-How-To-Server-Side-Request-Forgery-SSRF).
 1. Click **Save changes**.
 
 ![Configure Prometheus Service](img/prometheus_manual_configuration_v13_2.png)

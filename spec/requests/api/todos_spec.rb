@@ -331,6 +331,14 @@ RSpec.describe API::Todos do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    it 'returns an error if the issuable author does not have access' do
+      project_1.add_guest(issuable.author)
+
+      post api("/projects/#{project_1.id}/#{issuable_type}/#{issuable.iid}/todo", issuable.author)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
   end
 
   describe 'POST :id/issuable_type/:issueable_id/todo' do

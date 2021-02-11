@@ -992,6 +992,78 @@ RSpec.describe ProjectPolicy do
       it { is_expected.to be_allowed(:read_analytics) }
     end
 
+    context 'with various analytics features' do
+      let_it_be(:project_with_analytics_disabled) { create(:project, :analytics_disabled) }
+      let_it_be(:project_with_analytics_private) { create(:project, :analytics_private) }
+      let_it_be(:project_with_analytics_enabled) { create(:project, :analytics_enabled) }
+
+      before do
+        project_with_analytics_disabled.add_developer(developer)
+        project_with_analytics_private.add_developer(developer)
+        project_with_analytics_enabled.add_developer(developer)
+      end
+
+      context 'when analytics is enabled for the project' do
+        let(:project) { project_with_analytics_disabled }
+
+        context 'for guest user' do
+          let(:current_user) { guest }
+
+          it { is_expected.to be_disallowed(:read_cycle_analytics) }
+          it { is_expected.to be_disallowed(:read_insights) }
+          it { is_expected.to be_disallowed(:read_repository_graphs) }
+        end
+
+        context 'for developer' do
+          let(:current_user) { developer }
+
+          it { is_expected.to be_disallowed(:read_cycle_analytics) }
+          it { is_expected.to be_disallowed(:read_insights) }
+          it { is_expected.to be_disallowed(:read_repository_graphs) }
+        end
+      end
+
+      context 'when analytics is private for the project' do
+        let(:project) { project_with_analytics_private }
+
+        context 'for guest user' do
+          let(:current_user) { guest }
+
+          it { is_expected.to be_disallowed(:read_cycle_analytics) }
+          it { is_expected.to be_disallowed(:read_insights) }
+          it { is_expected.to be_disallowed(:read_repository_graphs) }
+        end
+
+        context 'for developer' do
+          let(:current_user) { developer }
+
+          it { is_expected.to be_allowed(:read_cycle_analytics) }
+          it { is_expected.to be_allowed(:read_insights) }
+          it { is_expected.to be_allowed(:read_repository_graphs) }
+        end
+      end
+
+      context 'when analytics is enabled for the project' do
+        let(:project) { project_with_analytics_private }
+
+        context 'for guest user' do
+          let(:current_user) { guest }
+
+          it { is_expected.to be_disallowed(:read_cycle_analytics) }
+          it { is_expected.to be_disallowed(:read_insights) }
+          it { is_expected.to be_disallowed(:read_repository_graphs) }
+        end
+
+        context 'for developer' do
+          let(:current_user) { developer }
+
+          it { is_expected.to be_allowed(:read_cycle_analytics) }
+          it { is_expected.to be_allowed(:read_insights) }
+          it { is_expected.to be_allowed(:read_repository_graphs) }
+        end
+      end
+    end
+
     context 'project member' do
       let(:project) { private_project }
 

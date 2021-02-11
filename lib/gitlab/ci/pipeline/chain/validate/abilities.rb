@@ -10,6 +10,10 @@ module Gitlab
             include Chain::Helpers
 
             def perform!
+              if project.pending_delete?
+                return error('Project is deleted!')
+              end
+
               unless project.builds_enabled?
                 return error('Pipelines are disabled!')
               end
