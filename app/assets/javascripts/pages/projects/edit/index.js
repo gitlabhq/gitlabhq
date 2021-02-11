@@ -12,25 +12,23 @@ import initSearchSettings from '~/search_settings';
 import initProjectPermissionsSettings from '../shared/permissions';
 import initProjectLoadingSpinner from '../shared/save_project_loader';
 
-document.addEventListener('DOMContentLoaded', () => {
-  initFilePickers();
-  initConfirmDangerModal();
-  initSettingsPanels();
-  initProjectDeleteButton();
-  mountBadgeSettings(PROJECT_BADGE);
+initFilePickers();
+initConfirmDangerModal();
+initSettingsPanels();
+initProjectDeleteButton();
+mountBadgeSettings(PROJECT_BADGE);
 
-  new UserCallout({ className: 'js-service-desk-callout' }); // eslint-disable-line no-new
-  initServiceDesk();
+new UserCallout({ className: 'js-service-desk-callout' }); // eslint-disable-line no-new
+initServiceDesk();
 
-  initProjectLoadingSpinner();
-  initProjectPermissionsSettings();
-  setupTransferEdit('.js-project-transfer-form', 'select.select2');
+initProjectLoadingSpinner();
+initProjectPermissionsSettings();
+setupTransferEdit('.js-project-transfer-form', 'select.select2');
 
-  dirtySubmitFactory(
-    document.querySelectorAll(
-      '.js-general-settings-form, .js-mr-settings-form, .js-mr-approvals-form',
-    ),
-  );
+dirtySubmitFactory(
+  document.querySelectorAll(
+    '.js-general-settings-form, .js-mr-settings-form, .js-mr-approvals-form',
+  ),
+);
 
-  initSearchSettings();
-});
+initSearchSettings();

@@ -93,7 +93,6 @@ module ApplicationSettingImplementation
         import_sources: Settings.gitlab['import_sources'],
         invisible_captcha_enabled: false,
         issues_create_limit: 300,
-        notes_create_limit: 300,
         local_markdown_version: 0,
         login_recaptcha_protection_enabled: false,
         max_artifacts_size: Settings.artifacts['max_size'],
@@ -101,6 +100,8 @@ module ApplicationSettingImplementation
         max_import_size: 0,
         minimum_password_length: DEFAULT_MINIMUM_PASSWORD_LENGTH,
         mirror_available: true,
+        notes_create_limit: 300,
+        notes_create_limit_allowlist: [],
         notify_on_unknown_sign_in: true,
         outbound_local_requests_whitelist: [],
         password_authentication_enabled_for_git: true,
@@ -268,6 +269,14 @@ module ApplicationSettingImplementation
 
   def protected_paths_raw=(values)
     self.protected_paths = strings_to_array(values)
+  end
+
+  def notes_create_limit_allowlist_raw
+    array_to_string(self.notes_create_limit_allowlist)
+  end
+
+  def notes_create_limit_allowlist_raw=(values)
+    self.notes_create_limit_allowlist = strings_to_array(values).map(&:downcase)
   end
 
   def asset_proxy_allowlist=(values)

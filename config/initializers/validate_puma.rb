@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
-def allow_single_mode?
-  return false if Gitlab.com?
-
-  Gitlab::Utils.to_boolean(ENV['PUMA_SKIP_CLUSTER_VALIDATION'])
+def max_puma_workers
+  Puma.cli_config.options[:workers].to_i
 end
 
-if Gitlab::Runtime.puma? && ::Puma.cli_config.options[:workers].to_i == 0
-  return if allow_single_mode?
+if Gitlab::Runtime.puma? && max_puma_workers == 0
+  raise 'Puma is only supported in Clustered mode (workers > 0)' if Gitlab.com?
 
-  raise 'Puma is only supported in Cluster-mode: workers > 0'
+  warn 'WARNING: Puma is running in Single mode (workers = 0). Some features may not work. Please refer to https://gitlab.com/groups/gitlab-org/-/epics/5303 for info.'
 end

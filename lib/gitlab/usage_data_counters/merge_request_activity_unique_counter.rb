@@ -22,6 +22,8 @@ module Gitlab
       MR_REMOVE_MULTILINE_COMMENT_ACTION = 'i_code_review_user_remove_multiline_mr_comment'
       MR_ADD_SUGGESTION_ACTION = 'i_code_review_user_add_suggestion'
       MR_APPLY_SUGGESTION_ACTION = 'i_code_review_user_apply_suggestion'
+      MR_MARKED_AS_DRAFT_ACTION = 'i_code_review_user_marked_as_draft'
+      MR_UNMARKED_AS_DRAFT_ACTION = 'i_code_review_user_unmarked_as_draft'
       MR_RESOLVE_THREAD_ACTION = 'i_code_review_user_resolve_thread'
       MR_UNRESOLVE_THREAD_ACTION = 'i_code_review_user_unresolve_thread'
       MR_ASSIGNED_USERS_ACTION = 'i_code_review_user_assigned'
@@ -99,6 +101,14 @@ module Gitlab
 
         def track_add_suggestion_action(user:)
           track_unique_action_by_user(MR_ADD_SUGGESTION_ACTION, user)
+        end
+
+        def track_marked_as_draft_action(user:)
+          track_unique_action_by_user(MR_MARKED_AS_DRAFT_ACTION, user)
+        end
+
+        def track_unmarked_as_draft_action(user:)
+          track_unique_action_by_user(MR_UNMARKED_AS_DRAFT_ACTION, user)
         end
 
         def track_apply_suggestion_action(user:)

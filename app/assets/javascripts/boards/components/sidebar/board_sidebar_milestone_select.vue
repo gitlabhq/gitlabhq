@@ -10,7 +10,6 @@ import {
 } from '@gitlab/ui';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
 import createFlash from '~/flash';
-import { BV_DROPDOWN_HIDE } from '~/lib/utils/constants';
 import { __, s__ } from '~/locale';
 import projectMilestones from '../../graphql/project_milestones.query.graphql';
 
@@ -73,21 +72,20 @@ export default {
       return this.activeIssue.milestone?.title ?? this.$options.i18n.noMilestone;
     },
   },
-  mounted() {
-    this.$root.$on(BV_DROPDOWN_HIDE, () => {
-      this.$refs.sidebarItem.collapse();
-    });
-  },
   methods: {
     ...mapActions(['setActiveIssueMilestone']),
     handleOpen() {
       this.edit = true;
       this.$refs.dropdown.show();
     },
+    handleClose() {
+      this.edit = false;
+      this.$refs.sidebarItem.collapse();
+    },
     async setMilestone(milestoneId) {
       this.loading = true;
       this.searchTitle = '';
-      this.$refs.sidebarItem.collapse();
+      this.handleClose();
 
       try {
         const input = { milestoneId, projectPath: this.projectPath };
@@ -116,7 +114,7 @@ export default {
     :title="$options.i18n.milestone"
     :loading="loading"
     @open="handleOpen()"
-    @close="edit = false"
+    @close="handleClose"
   >
     <template v-if="hasMilestone" #collapsed>
       <strong class="gl-text-gray-900">{{ activeIssue.milestone.title }}</strong>
@@ -126,6 +124,7 @@ export default {
       :text="dropdownText"
       :header-text="$options.i18n.assignMilestone"
       block
+      @hide="handleClose"
     >
       <gl-search-box-by-type ref="search" v-model.trim="searchTitle" class="gl-m-3" />
       <gl-dropdown-item

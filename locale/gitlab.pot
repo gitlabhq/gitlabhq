@@ -17661,6 +17661,9 @@ msgstr ""
 msgid "List of all merge commits"
 msgstr ""
 
+msgid "List of users to be excluded from the limit"
+msgstr ""
+
 msgid "List options"
 msgstr ""
 

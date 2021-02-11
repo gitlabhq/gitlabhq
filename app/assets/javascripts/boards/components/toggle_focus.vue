@@ -1,11 +1,14 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { hide } from '~/tooltips';
 
 export default {
   components: {
-    GlIcon,
+    GlButton,
+  },
+  directives: {
+    GlTooltip,
   },
   props: {
     issueBoardsContentSelector: {
@@ -35,18 +38,15 @@ export default {
 </script>
 
 <template>
-  <div class="board-extra-actions">
-    <a
+  <div class="board-extra-actions gl-ml-3 gl-display-flex gl-align-items-center">
+    <gl-button
       ref="toggleFocusModeButton"
-      href="#"
-      class="btn btn-default has-tooltip gl-ml-3 js-focus-mode-btn"
+      v-gl-tooltip
+      :icon="isFullscreen ? 'minimize' : 'maximize'"
+      class="js-focus-mode-btn"
       data-qa-selector="focus_mode_button"
-      role="button"
-      :aria-label="$options.i18n.toggleFocusMode"
       :title="$options.i18n.toggleFocusMode"
       @click="toggleFocusMode"
-    >
-      <gl-icon :name="isFullscreen ? 'minimize' : 'maximize'" />
-    </a>
+    />
   </div>
 </template>

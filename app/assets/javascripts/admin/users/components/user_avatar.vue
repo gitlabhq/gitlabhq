@@ -1,5 +1,5 @@
 <script>
-import { GlAvatarLink, GlAvatarLabeled, GlBadge, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlAvatarLabeled, GlBadge, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { truncate } from '~/lib/utils/text_utility';
 import { USER_AVATAR_SIZE, LENGTH_OF_USER_NOTE_TOOLTIP } from '../constants';
 
@@ -8,7 +8,6 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    GlAvatarLink,
     GlAvatarLabeled,
     GlBadge,
     GlIcon,
@@ -27,6 +26,11 @@ export default {
     adminUserHref() {
       return this.adminUserPath.replace('id', this.user.username);
     },
+    adminUserMailto() {
+      // NOTE: 'mailto:' is a false positive: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26#possible-false-positives
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      return `mailto:${this.user.email}`;
+    },
     userNoteShort() {
       return truncate(this.user.note, LENGTH_OF_USER_NOTE_TOOLTIP);
     },
@@ -36,10 +40,9 @@ export default {
 </script>
 
 <template>
-  <gl-avatar-link
+  <div
     v-if="user"
-    class="js-user-link"
-    :href="adminUserHref"
+    class="js-user-link gl-display-inline-block"
     :data-user-id="user.id"
     :data-username="user.username"
   >
@@ -48,6 +51,8 @@ export default {
       :src="user.avatarUrl"
       :label="user.name"
       :sub-label="user.email"
+      :label-link="adminUserHref"
+      :sub-label-link="adminUserMailto"
     >
       <template #meta>
         <div v-if="user.note" class="gl-text-gray-500 gl-p-1">
@@ -60,5 +65,5 @@ export default {
         </div>
       </template>
     </gl-avatar-labeled>
-  </gl-avatar-link>
+  </div>
 </template>

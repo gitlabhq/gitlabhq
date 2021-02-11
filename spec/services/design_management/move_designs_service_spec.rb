@@ -76,18 +76,6 @@ RSpec.describe DesignManagement::MoveDesignsService do
       end
     end
 
-    context 'the designs are not adjacent' do
-      let(:current_design) { designs.first }
-      let(:previous_design) { designs.second }
-      let(:next_design) { designs.third }
-
-      it 'raises not_adjacent' do
-        create(:design, issue: issue, relative_position: next_design.relative_position - 1)
-
-        expect(subject).to be_error.and(have_attributes(message: :not_adjacent))
-      end
-    end
-
     context 'moving a design with neighbours' do
       let(:current_design) { designs.first }
       let(:previous_design) { designs.second }

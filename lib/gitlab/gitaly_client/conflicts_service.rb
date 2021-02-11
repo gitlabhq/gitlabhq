@@ -67,7 +67,8 @@ module Gitlab
           source_branch: encode_binary(source_branch),
           target_branch: encode_binary(target_branch),
           commit_message: encode_binary(resolution.commit_message),
-          user: Gitlab::Git::User.from_gitlab(resolution.user).to_gitaly
+          user: Gitlab::Git::User.from_gitlab(resolution.user).to_gitaly,
+          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
         )
       end
     end

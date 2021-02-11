@@ -1,6 +1,6 @@
 - page_title _("Members")
 - group = @project.group
-- vue_project_members_list_enabled = Feature.enabled?(:vue_project_members_list, @project)
+- vue_project_members_list_enabled = Feature.enabled?(:vue_project_members_list, @project, default_enabled: :yaml)
 
 .js-remove-member-modal
 .row.gl-mt-3

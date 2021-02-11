@@ -12,4 +12,4 @@
   data: todo_button_data }
   %span.issuable-todo-inner.js-issuable-todo-inner<
     = is_collapsed ? button_icon : button_title
-  = loading_icon
+  = loading_icon(css_class: is_collapsed ? '' : 'gl-ml-3')

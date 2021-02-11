@@ -13,8 +13,8 @@ export default {
 </script>
 
 <template>
-  <span class="gl-ml-4">
-    <gl-button variant="success" @click="setAddColumnFormVisibility(true)"
+  <span class="gl-ml-3 gl-display-flex gl-align-items-center">
+    <gl-button variant="confirm" @click="setAddColumnFormVisibility(true)"
       >{{ __('Create list') }}
     </gl-button>
   </span>

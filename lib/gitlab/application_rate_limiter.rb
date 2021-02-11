@@ -47,15 +47,17 @@ module Gitlab
       # @option scope [Array<ActiveRecord>] Array of ActiveRecord models to scope throttling to a specific request (e.g. per user per project)
       # @option threshold [Integer] Optional threshold value to override default one registered in `.rate_limits`
       # @option interval [Integer] Optional interval value to override default one registered in `.rate_limits`
+      # @option users_allowlist [Array<String>] Optional list of usernames to excepted from the limit. This param will only be functional if Scope includes a current user.
       #
       # @return [Boolean] Whether or not a request should be throttled
-      def throttled?(key, scope: nil, interval: nil, threshold: nil)
+      def throttled?(key, **options)
         return unless rate_limits[key]
 
-        threshold_value = threshold || threshold(key)
+        return if scoped_user_in_allowlist?(options)
 
+        threshold_value = options[:threshold] || threshold(key)
         threshold_value > 0 &&
-          increment(key, scope, interval) > threshold_value
+          increment(key, options[:scope], options[:interval]) > threshold_value
       end
 
       # Increments the given cache key and increments the value by 1 with the
@@ -140,6 +142,15 @@ module Gitlab
 
       def application_settings
         Gitlab::CurrentSettings.current_application_settings
+      end
+
+      def scoped_user_in_allowlist?(options)
+        return unless options[:users_allowlist].present?
+
+        scoped_user = [options[:scope]].flatten.find { |s| s.is_a?(User) }
+        return unless scoped_user
+
+        scoped_user.username.downcase.in?(options[:users_allowlist])
       end
     end
   end

@@ -74,4 +74,12 @@ RSpec.shared_examples 'a Note mutation when there are rate limit validation erro
   it_behaves_like 'a Note mutation that does not create a Note'
   it_behaves_like 'a mutation that returns top-level errors',
                   errors: ['This endpoint has been requested too many times. Try again later.']
+
+  context 'when the user is in the allowlist' do
+    before do
+      stub_application_setting(notes_create_limit_allowlist: ["#{current_user.username}"])
+    end
+
+    it_behaves_like 'a Note mutation that creates a Note'
+  end
 end

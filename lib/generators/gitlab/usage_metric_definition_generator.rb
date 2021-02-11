@@ -4,18 +4,18 @@ require 'rails/generators'
 
 module Gitlab
   class UsageMetricDefinitionGenerator < Rails::Generators::Base
-    Directory = Struct.new(:name, :time_frame) do
+    Directory = Struct.new(:name, :time_frame, :value_type) do
       def match?(str)
         (name == str || time_frame == str) && str != 'none'
       end
     end
 
     TIME_FRAME_DIRS = [
-      Directory.new('counts_7d',  '7d'),
-      Directory.new('counts_28d', '28d'),
-      Directory.new('counts_all', 'all'),
-      Directory.new('settings',   'none'),
-      Directory.new('license',    'none')
+      Directory.new('counts_7d',  '7d',   'number'),
+      Directory.new('counts_28d', '28d',  'number'),
+      Directory.new('counts_all', 'all',  'number'),
+      Directory.new('settings',   'none', 'boolean'),
+      Directory.new('license',    'none', 'string')
     ].freeze
 
     VALID_INPUT_DIRS = (TIME_FRAME_DIRS.flat_map { |d| [d.name, d.time_frame] } - %w(none)).freeze
@@ -38,6 +38,10 @@ module Gitlab
 
     def time_frame
       directory&.time_frame
+    end
+
+    def value_type
+      directory&.value_type
     end
 
     def distribution

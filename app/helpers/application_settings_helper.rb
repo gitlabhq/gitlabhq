@@ -329,6 +329,7 @@ module ApplicationSettingsHelper
       :email_restrictions,
       :issues_create_limit,
       :notes_create_limit,
+      :notes_create_limit_allowlist_raw,
       :raw_blob_request_limit,
       :project_import_limit,
       :project_export_limit,

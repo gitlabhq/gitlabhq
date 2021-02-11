@@ -23,17 +23,15 @@ function mountRemoveMemberModal() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  groupsSelect();
-  memberExpirationDate();
-  memberExpirationDate('.js-access-expiration-date-groups');
-  mountRemoveMemberModal();
-  initInviteMembersModal();
-  initInviteMembersTrigger();
+groupsSelect();
+memberExpirationDate();
+memberExpirationDate('.js-access-expiration-date-groups');
+mountRemoveMemberModal();
+initInviteMembersModal();
+initInviteMembersTrigger();
 
-  new Members(); // eslint-disable-line no-new
-  new UsersSelect(); // eslint-disable-line no-new
-});
+new Members(); // eslint-disable-line no-new
+new UsersSelect(); // eslint-disable-line no-new
 
 if (window.gon.features.vueProjectMembersList) {
   const SHARED_FIELDS = ['account', 'expires', 'maxRole', 'expiration', 'actions'];

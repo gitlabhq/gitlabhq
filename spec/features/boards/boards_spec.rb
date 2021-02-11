@@ -575,7 +575,7 @@ RSpec.describe 'Issue Boards', :js do
     end
 
     it 'shows the button' do
-      expect(page).to have_link('Toggle focus mode')
+      expect(page).to have_button('Toggle focus mode')
     end
   end
 

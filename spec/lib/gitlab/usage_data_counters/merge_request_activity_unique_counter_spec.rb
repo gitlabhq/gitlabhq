@@ -221,6 +221,22 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
     end
   end
 
+  describe '.track_marked_as_draft_action' do
+    subject { described_class.track_marked_as_draft_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_MARKED_AS_DRAFT_ACTION }
+    end
+  end
+
+  describe '.track_unmarked_as_draft_action' do
+    subject { described_class.track_unmarked_as_draft_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_UNMARKED_AS_DRAFT_ACTION }
+    end
+  end
+
   describe '.track_users_review_requested' do
     subject { described_class.track_users_review_requested(users: [user]) }
 

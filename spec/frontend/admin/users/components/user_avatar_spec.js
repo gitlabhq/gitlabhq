@@ -1,4 +1,4 @@
-import { GlAvatarLink, GlAvatarLabeled, GlBadge, GlIcon } from '@gitlab/ui';
+import { GlAvatarLabeled, GlBadge, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -14,7 +14,7 @@ describe('AdminUserAvatar component', () => {
 
   const findNote = () => wrapper.find(GlIcon);
   const findAvatar = () => wrapper.find(GlAvatarLabeled);
-  const findAvatarLink = () => wrapper.find(GlAvatarLink);
+  const findUserLink = () => wrapper.find('.js-user-link');
   const findAllBadges = () => wrapper.findAll(GlBadge);
   const findTooltip = () => getBinding(findNote().element, 'gl-tooltip');
 
@@ -44,20 +44,25 @@ describe('AdminUserAvatar component', () => {
       initComponent();
     });
 
-    it("links to the user's admin path", () => {
-      expect(findAvatarLink().attributes()).toMatchObject({
-        href: adminUserPath.replace('id', user.username),
+    it('adds a user link hover card', () => {
+      expect(findUserLink().attributes()).toMatchObject({
         'data-user-id': user.id.toString(),
         'data-username': user.username,
       });
     });
 
-    it("renders the user's name", () => {
-      expect(findAvatar().props('label')).toBe(user.name);
+    it("renders the user's name with an admin path link", () => {
+      const avatar = findAvatar();
+
+      expect(avatar.props('label')).toBe(user.name);
+      expect(avatar.props('labelLink')).toBe(adminUserPath.replace('id', user.username));
     });
 
-    it("renders the user's email", () => {
-      expect(findAvatar().props('subLabel')).toBe(user.email);
+    it("renders the user's email with a mailto link", () => {
+      const avatar = findAvatar();
+
+      expect(avatar.props('subLabel')).toBe(user.email);
+      expect(avatar.props('subLabelLink')).toBe(`mailto:${user.email}`);
     });
 
     it("renders the user's avatar image", () => {

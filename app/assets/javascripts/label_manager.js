@@ -2,8 +2,7 @@
 
 import $ from 'jquery';
 import Sortable from 'sortablejs';
-
-import { hide, dispose } from '~/tooltips';
+import { dispose } from '~/tooltips';
 import { deprecatedCreateFlash as flash } from './flash';
 import axios from './lib/utils/axios_utils';
 import { __ } from './locale';
@@ -30,7 +29,6 @@ export default class LabelManager {
   }
 
   bindEvents() {
-    this.prioritizedLabels.find('.btn-action').on('mousedown', this, this.onButtonActionClick);
     return this.togglePriorityButton.on('click', this, this.onTogglePriorityClick);
   }
 
@@ -44,11 +42,6 @@ export default class LabelManager {
     dispose($tooltip);
     _this.toggleLabelPriority($label, action);
     _this.toggleEmptyState($label, $btn, action);
-  }
-
-  onButtonActionClick(e) {
-    e.stopPropagation();
-    hide(e.currentTarget);
   }
 
   toggleEmptyState() {

@@ -10,8 +10,9 @@ type: reference
 This is the GitLab Support Team's collection of information regarding the GitLab Rails
 console, for use while troubleshooting. It is listed here for transparency,
 and it may be useful for users with experience with these tools. If you are currently
-having an issue with GitLab, it is highly recommended that you check your
-[support options](https://about.gitlab.com/support/) first, before attempting to use
+having an issue with GitLab, it is highly recommended that you first check
+our guide on [navigating our Rails console](navigating_gitlab_via_rails_console.md),
+and your [support options](https://about.gitlab.com/support/), before attempting to use
 this information.
 
 WARNING:

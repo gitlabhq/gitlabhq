@@ -89,6 +89,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
       context 'usage counters' do
         let(:merge_request2) { create(:merge_request) }
+        let(:draft_merge_request) { create(:merge_request, :draft_merge_request)}
 
         it 'update as expected' do
           expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
@@ -97,6 +98,24 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
             .to receive(:track_description_edit_action).once.with(user: user)
 
           MergeRequests::UpdateService.new(project, user, opts).execute(merge_request2)
+        end
+
+        it 'tracks Draft/WIP marking' do
+          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+            .to receive(:track_marked_as_draft_action).once.with(user: user)
+
+          opts[:title] = "WIP: #{opts[:title]}"
+
+          MergeRequests::UpdateService.new(project, user, opts).execute(merge_request2)
+        end
+
+        it 'tracks Draft/WIP un-marking' do
+          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+            .to receive(:track_unmarked_as_draft_action).once.with(user: user)
+
+          opts[:title] = "Non-draft/wip title string"
+
+          MergeRequests::UpdateService.new(project, user, opts).execute(draft_merge_request)
         end
       end
 

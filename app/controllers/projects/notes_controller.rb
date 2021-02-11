@@ -94,8 +94,7 @@ class Projects::NotesController < Projects::ApplicationController
 
   def create_rate_limit
     key = :notes_create
-
-    return unless rate_limiter.throttled?(key, scope: [current_user])
+    return unless rate_limiter.throttled?(key, scope: [current_user], users_allowlist: rate_limit_users_allowlist)
 
     rate_limiter.log_request(request, "#{key}_request_limit".to_sym, current_user)
     render plain: _('This endpoint has been requested too many times. Try again later.'), status: :too_many_requests
@@ -103,5 +102,9 @@ class Projects::NotesController < Projects::ApplicationController
 
   def rate_limiter
     ::Gitlab::ApplicationRateLimiter
+  end
+
+  def rate_limit_users_allowlist
+    Gitlab::CurrentSettings.current_application_settings.notes_create_limit_allowlist
   end
 end

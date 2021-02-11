@@ -95,7 +95,12 @@ export default {
 
     <p v-if="hasTags" class="build-detail-row" data-testid="job-tags">
       <span class="font-weight-bold">{{ __('Tags:') }}</span>
-      <span v-for="(tag, i) in job.tags" :key="i" class="badge badge-primary mr-1">{{ tag }}</span>
+      <span
+        v-for="(tag, i) in job.tags"
+        :key="i"
+        class="badge badge-pill badge-primary gl-badge sm"
+        >{{ tag }}</span
+      >
     </p>
   </div>
 </template>

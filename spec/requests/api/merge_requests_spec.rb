@@ -1316,7 +1316,16 @@ RSpec.describe API::MergeRequests do
     end
 
     context 'Work in Progress' do
-      let!(:merge_request_wip) { create(:merge_request, author: user, assignees: [user], source_project: project, target_project: project, title: "WIP: Test", created_at: base_time + 1.second) }
+      let!(:merge_request_wip) do
+        create(:merge_request,
+          author: user,
+          assignees: [user],
+          source_project: project,
+          target_project: project,
+          title: "WIP: Test",
+          created_at: base_time + 1.second
+        )
+      end
 
       it "returns merge request" do
         get api("/projects/#{project.id}/merge_requests/#{merge_request_wip.iid}", user)

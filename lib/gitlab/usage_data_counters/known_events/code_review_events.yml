@@ -119,6 +119,16 @@
   category: code_review
   aggregation: weekly
   feature_flag: usage_data_i_code_review_user_assigned
+- name: i_code_review_user_marked_as_draft
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+  feature_flag: usage_data_i_code_review_user_marked_as_draft
+- name: i_code_review_user_unmarked_as_draft
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+  feature_flag: usage_data_i_code_review_user_unmarked_as_draft
 - name: i_code_review_user_review_requested
   redis_slot: code_review
   category: code_review

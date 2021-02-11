@@ -668,6 +668,23 @@ However, some larger installations may wish to tune the merge policy settings:
 
 - Do not do a [force merge](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-forcemerge.html "Force Merge") to remove deleted documents. A warning in the [documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-forcemerge.html "Force Merge") states that this can lead to very large segments that may never get reclaimed, and can also cause significant performance or availability issues.
 
+## Reverting to Basic Search
+
+Sometimes there may be issues with your Elasticsearch index data and as such
+GitLab will allow you to revert to "basic search" when there are no search
+results and assuming that basic search is supported in that scope. This "basic
+search" will behave as though you don't have Advanced Search enabled at all for
+your instance and search using other data sources (such as PostgreSQL data and Git
+data).
+
+## Data recovery: Elasticsearch is a secondary data store only
+
+The use of Elasticsearch in GitLab is only ever as a secondary data store.
+This means that all of the data stored in Elasticsearch can always be derived
+again from other data sources, specifically PostgreSQL and Gitaly. Therefore, if
+the Elasticsearch data store is ever corrupted for whatever reason, you can
+simply reindex everything from scratch.
+
 ## Troubleshooting
 
 One of the most valuable tools for identifying issues with the Elasticsearch
@@ -849,27 +866,12 @@ problem.
 
 There is a [more structured, lower-level troubleshooting document](../administration/troubleshooting/elasticsearch.md) for when you experience other issues, including poor performance.
 
-### Known issues
-
-[Elasticsearch `code_analyzer` doesn't account for all code cases](https://gitlab.com/groups/gitlab-org/-/epics/3621).
+### Elasticsearch `code_analyzer` doesn't account for all code cases
 
 The `code_analyzer` pattern and filter configuration is being evaluated for improvement. We have fixed [most edge cases](https://gitlab.com/groups/gitlab-org/-/epics/3621#note_363429094) that were not returning expected search results due to our pattern and filter configuration.
 
 Improvements to the `code_analyzer` pattern and filters are being discussed in [epic 3621](https://gitlab.com/groups/gitlab-org/-/epics/3621).
 
-### Reverting to Basic Search
+### Some binary files may not be searchable by name
 
-Sometimes there may be issues with your Elasticsearch index data and as such
-GitLab will allow you to revert to "basic search" when there are no search
-results and assuming that basic search is supported in that scope. This "basic
-search" will behave as though you don't have Advanced Search enabled at all for
-your instance and search using other data sources (such as PostgreSQL data and Git
-data).
-
-### Data recovery: Elasticsearch is a secondary data store only
-
-The use of Elasticsearch in GitLab is only ever as a secondary data store.
-This means that all of the data stored in Elasticsearch can always be derived
-again from other data sources, specifically PostgreSQL and Gitaly. Therefore, if
-the Elasticsearch data store is ever corrupted for whatever reason, you can
-simply reindex everything from scratch.
+In GitLab 13.9, a change was made where [binary file names are being indexed](https://gitlab.com/gitlab-org/gitlab/-/issues/301083). However, without indexing all projects' data from scratch, only binary files that are added or updated after the GitLab 13.9 release are searchable.
