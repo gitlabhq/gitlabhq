@@ -97,5 +97,21 @@ RSpec.describe ContainerExpirationPolicies::CleanupService do
         expect(response.success?).to eq(false)
       end
     end
+
+    context 'with a network error' do
+      before do
+        expect(Projects::ContainerRepository::CleanupTagsService)
+          .to receive(:new).and_raise(Faraday::TimeoutError)
+      end
+
+      it 'raises an error' do
+        expect { subject }.to raise_error(Faraday::TimeoutError)
+
+        expect(ContainerRepository.waiting_for_cleanup.count).to eq(1)
+        expect(repository.reload.cleanup_unfinished?).to be_truthy
+        expect(repository.expiration_policy_started_at).not_to eq(nil)
+        expect(repository.expiration_policy_completed_at).to eq(nil)
+      end
+    end
   end
 end

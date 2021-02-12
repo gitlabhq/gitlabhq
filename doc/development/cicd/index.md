@@ -165,3 +165,20 @@ we should use "Job" in general, instead of "Build".
 We have a few inconsistencies in our codebase that should be refactored.
 For example, `CommitStatus` should be `Ci::Job` and `Ci::JobArtifact` should be `Ci::BuildArtifact`.
 See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/16111) for the full refactoring plan.
+
+## CI Minutes
+
+This diagram shows how the [CI minutes](../../subscriptions/gitlab_com/index.md#ci-pipeline-minutes)
+feature and its components work.
+
+![CI Minutes architecture](img/ci_minutes.png)
+<!-- Editable diagram available at https://app.diagrams.net/?libs=general;flowchart#G1XjLPvJXbzMofrC3eKRyDEk95clV6ypOb -->
+
+Watch a walkthrough of this feature in details in the video below.
+
+<div class="video-fallback">
+  See the video: <a href="https://www.youtube.com/watch?v=NmdWRGT8kZg">CI Minutes - architectural overview</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/NmdWRGT8kZg" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>

@@ -15,9 +15,15 @@ module ContainerExpirationPolicies
 
       repository.start_expiration_policy!
 
-      service_result = Projects::ContainerRepository::CleanupTagsService
-        .new(project, nil, policy_params.merge('container_expiration_policy' => true))
-        .execute(repository)
+      begin
+        service_result = Projects::ContainerRepository::CleanupTagsService
+                           .new(project, nil, policy_params.merge('container_expiration_policy' => true))
+                           .execute(repository)
+      rescue
+        repository.cleanup_unfinished!
+
+        raise
+      end
 
       if service_result[:status] == :success
         repository.update!(
@@ -25,6 +31,7 @@ module ContainerExpirationPolicies
           expiration_policy_started_at: nil,
           expiration_policy_completed_at: Time.zone.now
         )
+
         success(:finished, service_result)
       else
         repository.cleanup_unfinished!

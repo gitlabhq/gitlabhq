@@ -154,9 +154,9 @@
     "vuedraggable": "^2.23.0",
     "vuex": "^3.6.0",
     "web-vitals": "^0.2.4",
-    "webpack": "^4.42.0",
+    "webpack": "^4.46.0",
     "webpack-bundle-analyzer": "^3.6.0",
-    "webpack-cli": "^3.3.11",
+    "webpack-cli": "^3.3.12",
     "webpack-stats-plugin": "^0.3.1",
     "worker-loader": "^2.0.0",
     "xterm": "3.14.5"
@@ -217,7 +217,7 @@
     "stylelint-scss": "^3.9.2",
     "timezone-mock": "^1.0.8",
     "vue-jest": "4.0.0-rc.0",
-    "webpack-dev-server": "^3.10.3",
+    "webpack-dev-server": "^3.11.2",
     "xhr-mock": "^2.5.1",
     "yarn-check-webpack-plugin": "^1.2.0",
     "yarn-deduplicate": "^1.1.1"

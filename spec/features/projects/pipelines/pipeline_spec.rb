@@ -58,7 +58,7 @@ RSpec.describe 'Pipeline', :js do
     end
   end
 
-  describe 'GET /:project/pipelines/:id' do
+  describe 'GET /:project/-/pipelines/:id' do
     include_context 'pipeline builds'
 
     let(:group) { create(:group) }
@@ -633,7 +633,7 @@ RSpec.describe 'Pipeline', :js do
       project.update(public_builds: false)
     end
 
-    describe 'GET /:project/pipelines/:id' do
+    describe 'GET /:project/-/pipelines/:id' do
       include_context 'pipeline builds'
 
       let(:project) { create(:project, :repository) }
@@ -678,7 +678,7 @@ RSpec.describe 'Pipeline', :js do
                          downstream: downstream)
     end
 
-    describe 'GET /:project/pipelines/:id' do
+    describe 'GET /:project/-/pipelines/:id' do
       before do
         visit project_pipeline_path(project, pipeline)
       end
@@ -727,7 +727,7 @@ RSpec.describe 'Pipeline', :js do
       end
     end
 
-    describe 'GET /:project/pipelines/:id/builds' do
+    describe 'GET /:project/-/pipelines/:id/builds' do
       before do
         visit builds_project_pipeline_path(project, pipeline)
       end
@@ -754,7 +754,7 @@ RSpec.describe 'Pipeline', :js do
         stage_idx: 2, pipeline: pipeline, project: project, resource_group: resource_group)
     end
 
-    describe 'GET /:project/pipelines/:id' do
+    describe 'GET /:project/-/pipelines/:id' do
       subject { visit project_pipeline_path(project, pipeline) }
 
       it 'shows deploy job as created' do
@@ -872,7 +872,7 @@ RSpec.describe 'Pipeline', :js do
     end
   end
 
-  describe 'GET /:project/pipelines/:id/builds' do
+  describe 'GET /:project/-/pipelines/:id/builds' do
     include_context 'pipeline builds'
 
     let(:project) { create(:project, :repository) }
@@ -974,7 +974,7 @@ RSpec.describe 'Pipeline', :js do
     end
   end
 
-  describe 'GET /:project/pipelines/:id/failures' do
+  describe 'GET /:project/-/pipelines/:id/failures' do
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: '1234') }
     let(:pipeline_failures_page) { failures_project_pipeline_path(project, pipeline) }
     let!(:failed_build) { create(:ci_build, :failed, pipeline: pipeline) }
@@ -1092,7 +1092,7 @@ RSpec.describe 'Pipeline', :js do
     end
   end
 
-  describe 'GET /:project/pipelines/:id/dag' do
+  describe 'GET /:project/-/pipelines/:id/dag' do
     include_context 'pipeline builds'
 
     let(:project) { create(:project, :repository) }

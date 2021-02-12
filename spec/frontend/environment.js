@@ -4,7 +4,10 @@ const path = require('path');
 const { ErrorWithStack } = require('jest-util');
 const JSDOMEnvironment = require('jest-environment-jsdom');
 const { TEST_HOST } = require('./__helpers__/test_constants');
-const { setGlobalDateToFakeDate } = require('./__helpers__/fake_date/fake_date');
+const {
+  setGlobalDateToFakeDate,
+  setGlobalDateToRealDate,
+} = require('./__helpers__/fake_date/fake_date');
 
 const ROOT_PATH = path.resolve(__dirname, '../..');
 
@@ -74,6 +77,9 @@ class CustomEnvironment extends JSDOMEnvironment {
   }
 
   async teardown() {
+    // Reset `Date` so that Jest can report timing accurately *roll eyes*...
+    setGlobalDateToRealDate();
+
     await new Promise(setImmediate);
 
     if (this.rejectedPromises.length > 0) {

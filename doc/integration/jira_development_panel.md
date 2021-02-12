@@ -18,8 +18,8 @@ to configure both integrations to take advantage of both sets of features. See a
 
 Depending on your environment, you can enable this integration by either:
 
-- Configuring the Jira DVCS connector.
-- Using the GitLab for Jira app in the Atlassian Marketplace.
+- Configuring [the Jira DVCS connector](#jira-dvcs-configuration).
+- Using the [GitLab for Jira app](#gitlab-for-jira-app) in the Atlassian Marketplace.
 
 See the [Configuration](#configuration) section for details.
 
@@ -246,9 +246,12 @@ resynchronize the information. To do so:
    the button. For more information, see
    [Atlassian's documentation](https://support.atlassian.com/jira-cloud-administration/docs/synchronize-jira-cloud-to-bitbucket/).
 
-### GitLab for Jira app
+### GitLab for Jira app **(FREE SAAS)**
 
-You can integrate GitLab.com and Jira Cloud using the [GitLab for Jira](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud) app in the Atlassian Marketplace.
+You can integrate GitLab.com and Jira Cloud using the
+[GitLab for Jira](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud)
+app in the Atlassian Marketplace. The user configuring GitLab for Jira must have
+[Maintainer](../user/permissions.md) permissions in the GitLab namespace.
 
 This method is recommended when using GitLab.com and Jira Cloud because data is synchronized in real-time. The DVCS connector updates data only once per hour. If you are not using both of these environments, use the [Jira DVCS Connector](#jira-dvcs-configuration) method.
 
@@ -256,20 +259,27 @@ This method is recommended when using GitLab.com and Jira Cloud because data is 
 For a walkthrough of the integration with GitLab for Jira, watch [Configure GitLab Jira Integration using Marketplace App](https://youtu.be/SwR-g1s1zTo) on YouTube.
 
 1. Go to **Jira Settings > Apps > Find new apps**, then search for GitLab.
-1. Click **GitLab for Jira**, then click **Get it now**. Or go the [App in the marketplace directly](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud)
+1. Click **GitLab for Jira**, then click **Get it now**, or go to the
+   [App in the marketplace directly](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud).
 
    ![Install GitLab App on Jira](img/jira_dev_panel_setup_com_1.png)
-1. After installing, click **Get started** to go to the configurations page. This page is always available under **Jira Settings > Apps > Manage apps**.
+1. After installing, click **Get started** to go to the configurations page.
+   This page is always available under **Jira Settings > Apps > Manage apps**.
 
    ![Start GitLab App configuration on Jira](img/jira_dev_panel_setup_com_2.png)
-1. In **Namespace**, enter the group or personal namespace, and then click
-   **Link namespace to Jira**. The user setting up *GitLab for Jira* must have
-   *Maintainer* access to the GitLab namespace.
+1. If not already signed in to GitLab.com, you must sign in as a user with
+   [Maintainer](../user/permissions.md) permissions to add namespaces.
+
+   ![Sign in to GitLab.com in GitLab Jira App](img/jira_dev_panel_setup_com_3_v13_9.png)
+1. Select **Add namespace** to open the list of available namespaces.
+
+1. Identify the namespace you want to link, and select **Link**.
+
+   ![Link namespace in GitLab Jira App](img/jira_dev_panel_setup_com_4_v13_9.png)
 
 NOTE:
-The GitLab user only needs access when adding a new namespace. For syncing with Jira, we do not depend on the user's token.
-
-   ![Configure namespace on GitLab Jira App](img/jira_dev_panel_setup_com_3.png)
+The GitLab user only needs access when adding a new namespace. For syncing with
+Jira, we do not depend on the user's token.
 
 After a namespace is added:
 
@@ -287,7 +297,7 @@ The GitLab for Jira App uses an iframe to add namespaces on the settings page. S
 
 > "You need to sign in or sign up before continuing."
 
-In this case, use [Firefox](https://www.mozilla.org/en-US/firefox/), [Google Chrome](https://www.google.com/chrome/index.html) or enable cross-site cookies in your browser.
+In this case, use [Firefox](https://www.mozilla.org/en-US/firefox/) or enable cross-site cookies in your browser.
 
 ## Usage
 

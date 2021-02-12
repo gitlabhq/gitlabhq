@@ -18,7 +18,7 @@ RSpec.describe 'Pipelines', :js do
       project.update!(auto_devops_attributes: { enabled: false })
     end
 
-    describe 'GET /:project/pipelines' do
+    describe 'GET /:project/-/pipelines' do
       let(:project) { create(:project, :repository) }
 
       let!(:pipeline) do
@@ -617,7 +617,7 @@ RSpec.describe 'Pipelines', :js do
       end
     end
 
-    describe 'GET /:project/pipelines/show' do
+    describe 'GET /:project/-/pipelines/show' do
       let(:project) { create(:project, :repository) }
 
       let(:pipeline) do
@@ -669,7 +669,7 @@ RSpec.describe 'Pipelines', :js do
       end
     end
 
-    describe 'POST /:project/pipelines' do
+    describe 'POST /:project/-/pipelines' do
       let(:project) { create(:project, :repository) }
 
       before do
