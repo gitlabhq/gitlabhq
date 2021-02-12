@@ -17,6 +17,8 @@ RSpec.describe Clusters::Platforms::Kubernetes do
   it { is_expected.to delegate_method(:enabled?).to(:cluster) }
   it { is_expected.to delegate_method(:provided_by_user?).to(:cluster) }
 
+  it { is_expected.to nullify_if_blank(:namespace) }
+
   it_behaves_like 'having unique enum values'
 
   describe 'before_validation' do
@@ -27,14 +29,6 @@ RSpec.describe Clusters::Platforms::Kubernetes do
 
       it 'converts to lower case' do
         expect(kubernetes.namespace).to eq('abc')
-      end
-    end
-
-    context 'when namespace is blank' do
-      let(:namespace) { '' }
-
-      it 'nullifies the namespace' do
-        expect(kubernetes.namespace).to be_nil
       end
     end
   end

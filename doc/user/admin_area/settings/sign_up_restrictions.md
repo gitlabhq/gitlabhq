@@ -53,9 +53,7 @@ To enforce confirmation of the email address used for new sign ups:
 ## User cap **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4315) in GitLab 13.7.
-> - It's [deployed behind a feature flag](../../feature_flags.md), enabled by default.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-user-cap). **(FREE SELF)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292600) in GitLab 13.9.
 
 When the number of billable users reaches the user cap, any user who is added or requests access must be
 [approved](../approving_users.md#approving-a-user) by an administrator before they can start using
@@ -63,25 +61,6 @@ their account.
 
 If an administrator increases or removes the user cap, the users in pending approval state are
 automatically approved in a background job.
-
-### Enable or disable User cap **(FREE SELF)**
-
-User cap is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To disable it:
-
-```ruby
-Feature.disable(:admin_new_user_signups_cap)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:admin_new_user_signups_cap)
-```
 
 ## Soft email confirmation
 

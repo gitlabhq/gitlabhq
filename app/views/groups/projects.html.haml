@@ -7,15 +7,15 @@
     projects:
     - if can? current_user, :admin_group, @group
       .controls
-        = link_to new_project_path(namespace_id: @group.id), class: "btn btn-sm btn-success" do
+        = link_to new_project_path(namespace_id: @group.id), class: "btn gl-button btn-sm btn-success" do
           New project
   %ul.projects-list.content-list.group-settings-projects
     - @projects.each do |project|
       %li.project-row{ class: ('no-description' if project.description.blank?) }
         .controls
-          = link_to _('Members'), project_project_members_path(project), id: "edit_#{dom_id(project)}", class: "btn"
-          = link_to _('Edit'), edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn"
-          = link_to _('Delete'), project, data: { confirm: remove_project_message(project)}, method: :delete, class: "gl-button btn btn-danger"
+          = link_to _('Members'), project_project_members_path(project), id: "edit_#{dom_id(project)}", class: "btn gl-button"
+          = link_to _('Edit'), edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn gl-button"
+          = link_to _('Delete'), project, data: { confirm: remove_project_message(project)}, method: :delete, class: "btn gl-button btn-danger"
 
         .stats
           %span.badge.badge-pill

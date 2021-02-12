@@ -6,8 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Export Issues to CSV
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1126) in [GitLab Starter 9.0](https://about.gitlab.com/releases/2017/03/22/gitlab-9-0-released/#export-issues-ees-eep).
-> - Moved to GitLab Free in GitLab 12.10.
+> Moved to GitLab Free in 12.10.
 
 Issues can be exported as CSV from GitLab and are sent to your default notification email as an attachment.
 
@@ -48,10 +47,6 @@ GitLab asks you to confirm the number of issues and email address for the export
 Exported issues are always sorted by `Issue ID`.
 
 ## Format
-
-> **Time Estimate** and **Time Spent** columns were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2627) in GitLab Starter 10.0.
->
-> **Weight** and **Locked** columns were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5300) in GitLab Starter 10.8.
 
 Data is encoded with a comma as the column delimiter, with `"` used to quote fields if needed, and newlines to separate rows. The first row contains the headers, which are listed in the following table along with a description of the values:
 
