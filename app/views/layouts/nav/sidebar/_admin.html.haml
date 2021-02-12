@@ -247,6 +247,7 @@
             = _('Settings')
 
         %ul.sidebar-sub-level-items{ data: { qa_selector: 'admin_sidebar_settings_submenu_content' } }
+          -# This active_nav_link check is also used in `app/views/layouts/admin.html.haml`
           = nav_link(controller: [:application_settings, :integrations], html_options: { class: "fly-out-top-item" } ) do
             = link_to general_admin_application_settings_path do
               %strong.fly-out-top-item-name

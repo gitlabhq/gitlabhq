@@ -8,11 +8,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2149) in GitLab Premium 13.9.
 
-In maintenance mode, most write operations are disabled at the application level.
-This means that GitLab is effectively in a read-only mode for all non-administrative
-users (administrators are still able to edit application settings). Regular users
-are able to log in to GitLab, view the interface and perform other read-only
-operations, such as `git clone` or `git pull`.
+Maintenance mode allows administrators to reduce write operations to a minimum while maintenance tasks are performed. The main goal is to block all external actions that change the internal state, including the PostgreSQL database, but especially files, Git repositories, Container repositories, etc.
+
+Once maintenance mode is enabled, in-progress actions will finish relatively quickly since no new actions are coming in, and internal state changes will be minimal.
+In that state, various maintenance tasks are easier, and services can be stopped completely or be
+further degraded for a much shorter period of time than might otherwise be needed, for example stopping cron jobs and draining queues should be fairly quick.
+
+Maintenance mode allows most external actions that do not change internal state. On a high-level, HTTP POST, PUT, PATCH, and DELETE requests are blocked and a detailed overview of [how special cases are handled](#rest-api) is available.
 
 ## Enable maintenance mode
 
@@ -21,6 +23,7 @@ There are three ways to enable maintenance mode as an administrator:
 - **Web UI**:
   1. Go to **Admin Area > Settings > General**, expand **Maintenance mode**, and toggle **Enable maintenance mode**. 
      You can optionally add a message for the banner as well.
+
   1. Click **Save** for the changes to take effect.
 
 - **API**:
@@ -42,6 +45,7 @@ There are three ways to disable maintenance mode:
 
 - **Web UI**:
   1. Go to **Admin Area > Settings > General**, expand **Maintenance mode**, and toggle **Enable maintenance mode**.
+
   1. Click **Save** for the changes to take effect.
 
 - **API**:
@@ -56,31 +60,72 @@ There are three ways to disable maintenance mode:
   ::Gitlab::CurrentSettings.update_attributes!(maintenance_mode: false)
   ```
 
-## Behavior in maintenance mode
+## Behavior of GitLab features in maintenance mode
 
 When maintenance mode is enabled, a banner is displayed at the top of the page.
 The banner can be customized with a specific message.
 
 An error is displayed when a user tries to perform a write operation that isn't allowed.
-The API will return a 403 or 503 error for failed write requests.
+
+![Maintenance mode banner and error message](maintenance_mode_error_message.png)
 
 NOTE:
-In some cases, the visual feedback from an action could be misleading, for example
-when starring a project, the **Star** button changes to show the **Unstar** action,
-however, this is only the frontend update, and it doesn't take into account the
-failed status of the POST request. These visual bugs are to be fixed
-[in follow-up iterations](https://gitlab.com/gitlab-org/gitlab/-/issues/295197).
+In some cases, the visual feedback from an action could be misleading, for example when starring a project, the **Star** button changes to show the **Unstar** action, however, this is only the frontend update, and it doesn't take into account the failed status of the POST request. These visual bugs are to be fixed [in follow-up iterations](https://gitlab.com/gitlab-org/gitlab/-/issues/295197).
 
-### Application settings
+### Admin functions
 
-In maintenance mode, admins can edit the application settings. This will allow
+Systems administrators can edit the application settings. This will allow
 them to disable maintenance mode after it's been enabled.
 
-### Logging in/out
+### Authentication
 
-All users can log in and out of the GitLab instance.
+All users can log in and out of the GitLab instance but no new users can be created.
 
-### CI/CD
+If there are [LDAP syncs](../auth/ldap/index.md) scheduled for that time, they will fail since user creation is disabled. Similarly, [user creations based on SAML](../../integration/saml.md#general-setup) will fail.
+
+### Git actions
+
+All read-only Git operations will continue to work, for example
+`git clone` and `git pull`. All write operations will fail, both through the CLI and Web IDE with the error message: `Git push is not allowed because this GitLab instance is currently in (read-only) maintenance mode.`
+
+If Geo is enabled, Git pushes to both primary and secondaries will fail.
+
+### Merge requests, issues, epics
+
+All write actions except those mentioned above will fail. For example, a user cannot update merge requests or issues.
+
+### Incoming email
+
+Creating new issue replies, issues (including new Service Desk issues), merge requests [by email](../incoming_email.md) will fail.
+
+### Outgoing email
+
+Notification emails will continue to arrive, but emails that require database writes, like resetting the password, will not arrive.
+
+### REST API
+
+For most JSON requests, POST, PUT, PATCH, and DELETE are blocked, and the API returns a 403 response with the error message: `You cannot perform write operations on a read-only instance`. Only the following requests are allowed:
+
+|HTTP request | Allowed routes |  Notes |
+|:----:|:--------------------------------------:|:----:|
+| POST | `/admin/application_settings/general` | To allow updating application settings in the admin UI |
+| PUT  | `/api/v4/application/settings` | To allow updating application settings with the API |
+| POST | `/users/sign_in` | To allow users to log in. |
+| POST | `/users/sign_out`| To allow users to log out. |
+| POST | `/oauth/token` | To allow users to log in to a Geo secondary for the first time. |
+| POST | `/admin/session`, `/admin/session/destroy` | To allow [Admin mode for GitLab administrators](https://gitlab.com/groups/gitlab-org/-/epics/2158) |
+| POST | Paths ending with `/compare`| Git revision routes. |
+| POST | `.git/git-upload-pack` | To allow Git pull/clone. |
+| POST | `/api/v4/internal` | [internal API routes](../../development/internal_api.md) |
+| POST | `/admin/sidekiq` | To allow management of background jobs in the admin UI |
+| POST | `/admin/geo` | To allow updating Geo Nodes in the admin UI |
+| POST | `/api/v4/geo_replication`| To allow certain Geo-specific admin UI actions on secondary sites |
+
+### GraphQL API
+
+`POST /api/graphql` requests are allowed but mutations are blocked with the error message `You cannot perform write operations on a read-only instance`.
+
+### Continuous Integration
 
 In maintenance mode:
 
@@ -92,37 +137,30 @@ In maintenance mode:
 - Pipelines cannot be started, retried or canceled in maintenance mode.
   No new jobs can be created either.
 
-Once maintenance mode is disabled, new jobs are picked up again. The jobs that were
-in the running state before enabling maintenance mode, will resume, and their logs
-will start getting updated again.
+Once maintenance mode is disabled, new jobs are picked up again. The jobs that were in the running state before enabling maintenance mode, will resume, and their logs will start getting updated again.
 
-### Git actions
+### Deployments
 
-All read-only Git operations will continue to work in maintenance mode, for example
-`git clone` and `git pull`, but all write operations will fail, both through the CLI
-and Web IDE.
-
-Geo secondaries are read-only instances that allow Git pushes because they are
-proxied to the primary instance. However, in maintenance mode, Git pushes to
-both primary and secondaries will fail.
-
-### Merge requests, issues, epics
-
-All write actions except those mentioned above will fail. So, in maintenance mode, a user cannot update merge requests, issues, etc.
-
-### Container Registry
-
-In maintenance mode, `docker push` is blocked, but `docker pull` is available.
-
-### Auto Deploys
+Deployments won't go through because pipelines will be unfinished.
 
 It is recommended to disable auto deploys during maintenance mode, and enable
 them once maintenance mode is disabled.
 
+#### Terraform integration
+
+Terraform integration depends on running CI pipelines, hence it will be blocked.
+
+### Container Registry
+
+`docker push` will fail with this error: `denied: requested access to the resource is denied`, but `docker pull` will work.
+
+### Package Registry
+
+Package Registry will allow you to install but not publish packages.
+
 ### Background jobs
 
-Background jobs (cron jobs, Sidekiq) will continue running as is, because maintenance
-mode does not disable any background jobs.
+Background jobs (cron jobs, Sidekiq) will continue running as is, because background jobs are not automatically disabled.
 
 [During a planned Geo failover](../geo/disaster_recovery/planned_failover.md#prevent-updates-to-the-primary-node),
 it is recommended that you disable all cron jobs except for those related to Geo.
@@ -131,11 +169,37 @@ You can monitor queues and disable jobs in **Admin Area > Monitoring > Backgroun
 
 ### Incident management
 
-During Maintenance Mode, [Incident management](../../operations/incident_management/index.md) functions will be limited. The creation of [alerts](../../operations/incident_management/alerts.md) and [incidents](../../operations/incident_management/incidents.md#incident-creation) will be paused entirely. Notifications and paging on alerts and incidents will therefore be disabled.
+[Incident management](../../operations/incident_management/index.md) functions will be limited. The creation of [alerts](../../operations/incident_management/alerts.md) and [incidents](../../operations/incident_management/incidents.md#incident-creation) will be paused entirely. Notifications and paging on alerts and incidents will therefore be disabled.
+
+### Feature flags 
+
+- [Development feature flags](../../development/feature_flags/index.md) cannot be turned on or off through the API, but can be toggled through the Rails console.
+- [The feature flag service](../../operations/feature_flags.md) will respond to feature flag checks but feature flags cannot be toggled
 
 ### Geo secondaries
 
-The maintenance mode setting will be propagated to the secondary as they sync up.
+When primary is in maintenance mode, secondary will also automatically go into maintenance mode.
+
 It is important that you do not disable replication before enabling maintenance mode.
 
-Replication and verification will continue to work in maintenance mode.
+Replication and verification will continue to work but proxied Git pushes to primary will not work.
+
+### Secure features
+
+Features that depend on creating issues or creating or approving Merge Requests, will not work.
+
+Exporting a vulnerability list from a Vulnerability Report page will not work.
+
+Changing the status on a finding or vulnerability object will not work, even though no error is shown in the UI.
+
+SAST and Secret Detection cannot be initiated because they depend on passing CI jobs to create artifacts.
+
+## An example use case: a planned failover
+
+In the use case of [a planned failover](../geo/disaster_recovery/planned_failover.md), a few writes in the primary database are acceptable, since they will be replicated quickly and are not significant in number.
+
+For the same reason we don't automatically block background jobs when maintenance mode is enabled.
+
+The resulting database writes are acceptable. Here, the trade-off is between more service degradation and the completion of replication.
+
+However, during a planned failover, we [ask users to turn off cron jobs that are not related to Geo, manually](../geo/disaster_recovery/planned_failover.md#prevent-updates-to-the-primary-node). In the absence of new database writes and non-Geo cron jobs, new background jobs would either not be created at all or be minimal.

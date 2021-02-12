@@ -195,7 +195,7 @@ As a user:
 
 ### Dependent repositories
 
-The [Job environment variable](../../ci/variables/README.md#predefined-environment-variables) `CI_JOB_TOKEN` can be used to
+The [CI/CD variable](../../ci/variables/README.md#predefined-cicd-variables) `CI_JOB_TOKEN` can be used to
 authenticate any clones of dependent repositories. For example:
 
 ```shell

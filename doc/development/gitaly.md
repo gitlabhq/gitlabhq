@@ -211,9 +211,9 @@ and specify it in the URL:
 GITALY_REPO_URL=https://gitlab+deploy-token-1000:token-here@gitlab.com/nick.thomas/gitaly bundle exec rspec spec/lib/gitlab/git/repository_spec.rb
 ```
 
-To use a custom Gitaly repository in CI, for instance if you want your
+To use a custom Gitaly repository in CI/CD, for instance if you want your
 GitLab fork to always use your own Gitaly fork, set `GITALY_REPO_URL`
-as a [CI environment variable](../ci/variables/README.md#gitlab-cicd-environment-variables).
+as a [CI/CD variable](../ci/variables/README.md).
 
 ### Use a locally modified version of Gitaly RPC client
 

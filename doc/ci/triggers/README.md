@@ -17,7 +17,7 @@ The following methods of authentication are supported:
 - [Trigger token](#trigger-token)
 - [CI job token](#ci-job-token)
 
-If using the `$CI_PIPELINE_SOURCE` [predefined environment variable](../variables/predefined_variables.md)
+If using the `$CI_PIPELINE_SOURCE` [predefined CI/CD variable](../variables/predefined_variables.md)
 to limit which jobs run in a pipeline, the value could be either `pipeline` or `trigger`,
 depending on which trigger method is used.
 
@@ -35,12 +35,12 @@ A unique trigger token can be obtained when [adding a new trigger](#adding-a-new
 WARNING:
 Passing plain text tokens in public projects is a security issue. Potential
 attackers can impersonate the user that exposed their trigger token publicly in
-their `.gitlab-ci.yml` file. Use [variables](../variables/README.md#gitlab-cicd-environment-variables)
+their `.gitlab-ci.yml` file. Use [CI/CD variables](../variables/README.md)
 to protect trigger tokens.
 
 ### CI job token
 
-You can use the `CI_JOB_TOKEN` [variable](../variables/README.md#predefined-environment-variables) (used to authenticate
+You can use the `CI_JOB_TOKEN` [CI/CD variable](../variables/README.md#predefined-cicd-variables) (used to authenticate
 with the [GitLab Container Registry](../../user/packages/container_registry/index.md)) in the following cases.
 
 #### When used with multi-project pipelines
@@ -247,7 +247,7 @@ curl --request POST \
   "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
 ```
 
-Trigger variables have the [highest priority](../variables/README.md#priority-of-environment-variables)
+Trigger variables have the [highest priority](../variables/README.md#priority-of-cicd-variables)
 of all types of variables.
 
 ## Using cron to trigger nightly pipelines

@@ -87,7 +87,7 @@ differentiates the new cluster from the rest.
 
 When adding more than one Kubernetes cluster to your project, you need to differentiate
 them with an environment scope. The environment scope associates clusters with [environments](../../../ci/environments/index.md) similar to how the
-[environment-specific variables](../../../ci/variables/README.md#limit-the-environment-scopes-of-environment-variables) work.
+[environment-specific variables](../../../ci/variables/README.md#limit-the-environment-scopes-of-cicd-variables) work.
 
 The default environment scope is `*`, which means all jobs, regardless of their
 environment, use that cluster. Each scope can be used only by a single cluster
@@ -289,7 +289,7 @@ A Kubernetes cluster can be the destination for a deployment job. If
   the cluster from your jobs using tools such as `kubectl` or `helm`.
 - You don't use the GitLab cluster integration, you can still deploy to your
   cluster. However, you must configure Kubernetes tools yourself
-  using [environment variables](../../../ci/variables/README.md#custom-environment-variables)
+  using [environment variables](../../../ci/variables/README.md#custom-cicd-variables)
   before you can interact with the cluster from your jobs.
 
 ### Deployment variables
@@ -311,7 +311,7 @@ following command in your deployment job script, for Kubernetes to access the re
   ```
 
 The Kubernetes cluster integration exposes these
-[deployment variables](../../../ci/variables/README.md#deployment-environment-variables) in the
+[deployment variables](../../../ci/variables/README.md#deployment-variables) in the
 GitLab CI/CD build environment to deployment jobs. Deployment jobs have
 [defined a target environment](../../../ci/environments/index.md#defining-environments).
 

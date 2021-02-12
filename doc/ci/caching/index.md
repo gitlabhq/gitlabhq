@@ -87,7 +87,7 @@ use one or more of the following:
   that are only available to a particular project.
 - [Use a `key`](../yaml/README.md#cachekey) that fits your workflow (for example,
   different caches on each branch). For that, you can take advantage of the
-  [CI/CD predefined variables](../variables/README.md#predefined-environment-variables).
+  [predefined CI/CD variables](../variables/README.md#predefined-cicd-variables).
 
 For runners to work with caches efficiently, you must do one of the following:
 

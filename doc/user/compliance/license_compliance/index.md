@@ -367,7 +367,7 @@ source "https://gems.example.com"
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables), or by
 specifying a [`BUNDLE_SSL_CA_CERT`](https://bundler.io/v2.0/man/bundle-config.1.html)
-[environment variable](../../../ci/variables/README.md#custom-environment-variables)
+[environment variable](../../../ci/variables/README.md#custom-cicd-variables)
 in the job definition.
 
 ### Configuring Cargo projects
@@ -391,7 +391,7 @@ To supply a custom root certificate to complete TLS verification, do one of the 
 
 - Use the `ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables).
 - Specify a [`CARGO_HTTP_CAINFO`](https://doc.rust-lang.org/cargo/reference/environment-variables.html)
-  [environment variable](../../../ci/variables/README.md#custom-environment-variables)
+  [environment variable](../../../ci/variables/README.md#custom-cicd-variables)
   in the job definition.
 
 ### Configuring Composer projects
@@ -424,7 +424,7 @@ For example:
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables), or by
 specifying a [`COMPOSER_CAFILE`](https://getcomposer.org/doc/03-cli.md#composer-cafile)
-[environment variable](../../../ci/variables/README.md#custom-environment-variables)
+[environment variable](../../../ci/variables/README.md#custom-cicd-variables)
 in the job definition.
 
 ### Configuring Conan projects

@@ -77,7 +77,7 @@ You can also configure specific aspects of your pipelines through the GitLab UI.
 
 - [Pipeline settings](settings.md) for each project.
 - [Pipeline schedules](schedules.md).
-- [Custom CI/CD variables](../variables/README.md#custom-environment-variables).
+- [Custom CI/CD variables](../variables/README.md#custom-cicd-variables).
 
 ### Ref Specs for Runners
 

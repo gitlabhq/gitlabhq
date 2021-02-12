@@ -528,7 +528,7 @@ To access private container registries, the GitLab Runner process can use:
 To define which should be used, the GitLab Runner process reads the configuration in the following order:
 
 - `DOCKER_AUTH_CONFIG` variable provided as either:
-  - A [variable](../variables/README.md#gitlab-cicd-environment-variables) in `.gitlab-ci.yml`.
+  - A [variable](../variables/README.md) in `.gitlab-ci.yml`.
   - A project's variables stored on the projects **Settings > CI/CD** page.
 - `DOCKER_AUTH_CONFIG` variable provided as environment variable in `config.toml` of the runner.
 - `config.json` file placed in `$HOME/.docker` directory of the user running GitLab Runner process.
@@ -627,7 +627,7 @@ Use one of the following methods to determine the value of `DOCKER_AUTH_CONFIG`:
 To configure a single job with access for `registry.example.com:5000`,
 follow these steps:
 
-1. Create a [variable](../variables/README.md#gitlab-cicd-environment-variables) `DOCKER_AUTH_CONFIG` with the content of the
+1. Create a [variable](../variables/README.md) `DOCKER_AUTH_CONFIG` with the content of the
    Docker configuration file as the value:
 
    ```json
@@ -702,7 +702,7 @@ To configure credentials store, follow these steps:
 1. Make GitLab Runner use it. There are two ways to accomplish this. Either:
 
    - Create a
-     [variable](../variables/README.md#gitlab-cicd-environment-variables)
+     [variable](../variables/README.md)
      `DOCKER_AUTH_CONFIG` with the content of the
      Docker configuration file as the value:
 
@@ -734,7 +734,7 @@ To configure access for `aws_account_id.dkr.ecr.region.amazonaws.com`, follow th
    Make sure that GitLab Runner can access the credentials.
 1. Make GitLab Runner use it. There are two ways to accomplish this. Either:
 
-   - Create a [variable](../variables/README.md#gitlab-cicd-environment-variables)
+   - Create a [variable](../variables/README.md)
      `DOCKER_AUTH_CONFIG` with the content of the
      Docker configuration file as the value:
 

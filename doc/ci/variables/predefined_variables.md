@@ -5,19 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Predefined environment variables reference
+# Predefined variables reference
 
 For an introduction on this subject, read through the
-[getting started with environment variables](README.md) document.
+[CI/CD variables](README.md) document.
 
-Some of the predefined environment variables are available only if a minimum
+Some of the predefined variables are available only if a minimum
 version of [GitLab Runner](https://docs.gitlab.com/runner/) is used. Consult the table below to find the
 version of GitLab Runner that's required.
 
 You can add a command to your `.gitlab-ci.yml` file to
 [output the values of all variables available for a job](README.md#list-all-environment-variables).
 
-Kubernetes-specific environment variables are detailed in the
+Kubernetes-specific variables are detailed in the
 [Kubernetes deployment variables](../../user/project/clusters/index.md#deployment-variables) section.
 
 | Variable                                      | GitLab | Runner | Description |

@@ -38,7 +38,7 @@ Some credentials are required to be able to run `aws` commands:
    A new **Access key ID** and **Secret access key** are generated. Please take a note of them right away.
 
 1. In your GitLab project, go to **Settings > CI / CD**. Set the following as
-   [environment variables](../variables/README.md#gitlab-cicd-environment-variables)
+   [CI/CD variables](../variables/README.md)
    (see table below):
 
    - Access key ID.
@@ -141,15 +141,15 @@ After you have these prerequisites ready, follow these steps:
    ```
 
    You can create your `CI_AWS_ECS_TASK_DEFINITION_FILE` variable as a
-   [file-typed environment variable](../variables/README.md#custom-environment-variables-of-type-file) instead of a
-   regular environment variable. If you choose to do so, set the variable value to be the full contents of
+   [file-typed CI/CD variable](../variables/README.md#custom-cicd-variables-of-type-file) instead of a
+   regular CI/CD variable. If you choose to do so, set the variable value to be the full contents of
    the JSON task definition. You can then remove the JSON file from your project.
 
    In both cases, make sure that the value for the `containerDefinitions[].name` attribute is
    the same as the `Container name` defined in your targeted ECS service.
 
    WARNING:
-   `CI_AWS_ECS_TASK_DEFINITION_FILE` takes precedence over `CI_AWS_ECS_TASK_DEFINITION` if both these environment
+   `CI_AWS_ECS_TASK_DEFINITION_FILE` takes precedence over `CI_AWS_ECS_TASK_DEFINITION` if both these
    variables are defined within your project.
 
    NOTE:
@@ -252,12 +252,12 @@ pass three JSON input objects, based on existing templates:
        CI_AWS_EC2_DEPLOYMENT_FILE: 'aws/create_deployment.json'
      ```
 
-   - Alternatively, you can provide these JSON objects as [file-typed environment variables](../variables/README.md#custom-environment-variables-of-type-file).
-   In your project, go to **Settings > CI / CD > Variables** and add
-   the three variables listed above as file-typed environment variables.
-   For each variable, set the value to its corresponding JSON object.
+   - Alternatively, you can provide these JSON objects as [file-typed CI/CD variables](../variables/README.md#custom-cicd-variables-of-type-file).
+     In your project, go to **Settings > CI/CD > Variables** and add
+     the three variables listed above as file-typed CI/CD variables.
+     For each variable, set the value to its corresponding JSON object.
 
-1. Provide the name of the stack you're creating and/or targeting, as an environment variable:
+1. Provide the name of the stack you're creating and/or targeting, as a CI/CD variable:
 
    ```yaml
    variables:

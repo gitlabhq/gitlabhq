@@ -549,7 +549,7 @@ This is often followed by the [error `No files to upload`](../../ci/pipelines/jo
 and preceded by other errors or warnings that indicate why the JSON report wasn't generated. Please
 check the entire job log for such messages. If you don't find these messages, retry the failed job
 after setting `SECURE_LOG_LEVEL: "debug"` as a
-[custom environment variable](../../ci/variables/README.md#custom-environment-variables).
+[custom environment variable](../../ci/variables/README.md#custom-cicd-variables).
 This provides useful information to investigate further.
 
 ### Getting error message `sast job: config key may not be used with 'rules': only/except`

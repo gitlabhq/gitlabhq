@@ -771,7 +771,7 @@ The next time the `deploy` job runs, it copies `ci_settings.xml` to the
 user's home location. In this example:
 
 - The user is `root`, because the job runs in a Docker container.
-- Maven uses the configured CI [environment variables](../../../ci/variables/README.md#predefined-environment-variables).
+- Maven uses the configured CI [environment variables](../../../ci/variables/README.md#predefined-cicd-variables).
 
 ### Create Maven packages with GitLab CI/CD by using Gradle
 

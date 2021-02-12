@@ -810,7 +810,7 @@ data into (`gitlabhq_production`). All existing data is either erased
 To restore a backup, you must restore `/etc/gitlab/gitlab-secrets.json`
 (for Omnibus packages) or `/home/git/gitlab/.secret` (for installations from
 source). This file contains the database encryption key,
-[CI/CD variables](../ci/variables/README.md#gitlab-cicd-environment-variables), and
+[CI/CD variables](../ci/variables/README.md), and
 variables used for [two-factor authentication](../user/profile/account/two_factor_authentication.md).
 If you fail to restore this encryption key file along with the application data
 backup, users with two-factor authentication enabled and GitLab Runner

@@ -124,7 +124,7 @@ They are:
   - Script execution shell.
 - Not supported:
   - For definitions where the ["Expansion place"](#gitlab-ciyml-file) is GitLab.
-  - In the `only` and `except` [variables expressions](README.md#environment-variables-expressions).
+  - In the `only` and `except` [variables expressions](README.md#cicd-variable-expressions).
 
 Some of the persisted variables contain tokens and cannot be used by some definitions
 due to security reasons.

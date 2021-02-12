@@ -51,7 +51,7 @@ to access it. This is where an SSH key pair comes in handy.
    **Do not** add a passphrase to the SSH key, or the `before_script` will
    prompt for it.
 
-1. Create a new [variable](../variables/README.md#gitlab-cicd-environment-variables).
+1. Create a new [CI/CD variable](../variables/README.md).
    As **Key** enter the name `SSH_PRIVATE_KEY` and in the **Value** field paste
    the content of your _private_ key that you created earlier.
 
@@ -159,7 +159,7 @@ ssh-keyscan example.com
 ssh-keyscan 1.2.3.4
 ```
 
-Create a new [variable](../variables/README.md#gitlab-cicd-environment-variables) with
+Create a new [CI/CD variable](../variables/README.md) with
 `SSH_KNOWN_HOSTS` as "Key", and as a "Value" add the output of `ssh-keyscan`.
 
 If you need to connect to multiple servers, all the server host keys

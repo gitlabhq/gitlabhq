@@ -351,9 +351,9 @@ https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=karma&key_te
 
 ![Badge with custom text and width](https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=130)
 
-## Environment Variables
+## CI/CD Variables
 
-[Environment variables](../variables/README.md#gitlab-cicd-environment-variables) can be set in an environment to be available to a runner.
+[CI/CD variables](../variables/README.md) can be set to be available to a runner.
 
 <!-- ## Troubleshooting
 
