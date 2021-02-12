@@ -1,5 +1,5 @@
 <script>
-/* eslint-disable vue/require-default-prop, vue/no-v-html */
+/* eslint-disable vue/require-default-prop */
 import {
   GlIcon,
   GlLink,
@@ -7,6 +7,7 @@ import {
   GlSprintf,
   GlTooltip,
   GlTooltipDirective,
+  GlSafeHtmlDirective,
 } from '@gitlab/ui';
 import mrWidgetPipelineMixin from 'ee_else_ce/vue_merge_request_widget/mixins/mr_widget_pipeline';
 import { s__, n__ } from '~/locale';
@@ -32,6 +33,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml: GlSafeHtmlDirective,
   },
   mixins: [mrWidgetPipelineMixin],
   props: {
@@ -201,10 +203,10 @@ export default {
               <template v-if="showSourceBranch">
                 {{ s__('Pipeline|on') }}
                 <tooltip-on-truncate
+                  v-safe-html="sourceBranchLink"
                   :title="sourceBranch"
                   truncate-target="child"
                   class="label-branch label-truncate gl-font-weight-normal"
-                  v-html="sourceBranchLink"
                 />
               </template>
             </div>

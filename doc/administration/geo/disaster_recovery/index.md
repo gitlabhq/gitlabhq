@@ -252,12 +252,6 @@ Data that was created on the primary while the secondary was paused will be lost
    sudo gitlab-ctl promote-db
    ```
 
-1. Disable Patroni auto-failover:
-
-   ```shell
-   sudo gitlab-ctl patroni pause
-   ```
-
 1. Edit `/etc/gitlab/gitlab.rb` on every application and Sidekiq nodes in the secondary to reflect its new status as primary by removing any lines that enabled the `geo_secondary_role`:
 
    ```ruby
@@ -278,12 +272,6 @@ Data that was created on the primary while the secondary was paused will be lost
 
    ```shell
    sudo gitlab-ctl reconfigure
-   ```
-
-1. Resume Patroni auto-failover:
-
-   ```shell
-   sudo gitlab-ctl patroni resume
    ```
 
 1. Promote the **secondary** to **primary**. SSH into a single application server and execute:

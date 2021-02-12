@@ -6,6 +6,9 @@
   - elsif @user.blocked?
     %span.cred
       = s_('AdminUsers|(Blocked)')
+  - if @user.group_managed_account?
+    %span.cred
+      = s_('AdminUsers|(Group Managed Account)')
   - if @user.internal?
     %span.cred
       = s_('AdminUsers|(Internal)')

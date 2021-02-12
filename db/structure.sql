@@ -8885,24 +8885,6 @@ CREATE SEQUENCE alert_management_http_integrations_id_seq
 
 ALTER SEQUENCE alert_management_http_integrations_id_seq OWNED BY alert_management_http_integrations.id;
 
-CREATE TABLE alerts_service_data (
-    id bigint NOT NULL,
-    service_id integer NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    encrypted_token character varying(255),
-    encrypted_token_iv character varying(255)
-);
-
-CREATE SEQUENCE alerts_service_data_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE alerts_service_data_id_seq OWNED BY alerts_service_data.id;
-
 CREATE TABLE allowed_email_domains (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -18635,8 +18617,6 @@ ALTER TABLE ONLY alert_management_alerts ALTER COLUMN id SET DEFAULT nextval('al
 
 ALTER TABLE ONLY alert_management_http_integrations ALTER COLUMN id SET DEFAULT nextval('alert_management_http_integrations_id_seq'::regclass);
 
-ALTER TABLE ONLY alerts_service_data ALTER COLUMN id SET DEFAULT nextval('alerts_service_data_id_seq'::regclass);
-
 ALTER TABLE ONLY allowed_email_domains ALTER COLUMN id SET DEFAULT nextval('allowed_email_domains_id_seq'::regclass);
 
 ALTER TABLE ONLY analytics_cycle_analytics_group_stages ALTER COLUMN id SET DEFAULT nextval('analytics_cycle_analytics_group_stages_id_seq'::regclass);
@@ -19660,9 +19640,6 @@ ALTER TABLE ONLY alert_management_alerts
 
 ALTER TABLE ONLY alert_management_http_integrations
     ADD CONSTRAINT alert_management_http_integrations_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY alerts_service_data
-    ADD CONSTRAINT alerts_service_data_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY allowed_email_domains
     ADD CONSTRAINT allowed_email_domains_pkey PRIMARY KEY (id);
@@ -21359,8 +21336,6 @@ CREATE UNIQUE INDEX index_alert_user_mentions_on_alert_id ON alert_management_al
 CREATE UNIQUE INDEX index_alert_user_mentions_on_alert_id_and_note_id ON alert_management_alert_user_mentions USING btree (alert_management_alert_id, note_id);
 
 CREATE UNIQUE INDEX index_alert_user_mentions_on_note_id ON alert_management_alert_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
-
-CREATE INDEX index_alerts_service_data_on_service_id ON alerts_service_data USING btree (service_id);
 
 CREATE INDEX index_allowed_email_domains_on_group_id ON allowed_email_domains USING btree (group_id);
 
@@ -25812,9 +25787,6 @@ ALTER TABLE ONLY approval_project_rules_protected_branches
 
 ALTER TABLE ONLY packages_composer_cache_files
     ADD CONSTRAINT fk_rails_b82cea43a0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY alerts_service_data
-    ADD CONSTRAINT fk_rails_b93215a42c FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_trains
     ADD CONSTRAINT fk_rails_b9d67af01d FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;

@@ -2253,6 +2253,9 @@ msgstr ""
 msgid "AdminUsers|(Deactivated)"
 msgstr ""
 
+msgid "AdminUsers|(Group Managed Account)"
+msgstr ""
+
 msgid "AdminUsers|(Internal)"
 msgstr ""
 
@@ -2889,9 +2892,6 @@ msgid "AlertSettings|{ \"events\": [{ \"application\": \"Name of application\" }
 msgstr ""
 
 msgid "Alerts"
-msgstr ""
-
-msgid "Alerts endpoint is deprecated and should not be created or modified. Use HTTP Integrations instead."
 msgstr ""
 
 msgid "AlertsIntegrations|Alerts will be created through this integration"
@@ -16295,7 +16295,40 @@ msgstr ""
 msgid "InviteEmail|%{inviter} invited you to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} as a %{role}"
 msgstr ""
 
+msgid "InviteEmail|%{inviter} invited you to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} with the %{role} permission level."
+msgstr ""
+
+msgid "InviteEmail|As a developer, you have full access to projects, so you can take an idea from concept to production."
+msgstr ""
+
+msgid "InviteEmail|As a guest, you can view projects, leave comments, and create issues."
+msgstr ""
+
+msgid "InviteEmail|As a maintainer, you have full access to projects. You can push commits to master and deploy to production."
+msgstr ""
+
+msgid "InviteEmail|As a reporter, you can view projects and reports, and leave comments on issues."
+msgstr ""
+
+msgid "InviteEmail|As a user with minimal access, you can view the high-level group from the UI and API."
+msgstr ""
+
+msgid "InviteEmail|As an owner, you have full access to projects and can manage access to the group, including inviting new members."
+msgstr ""
+
+msgid "InviteEmail|Groups assemble related projects together and grant members access to several projects at once."
+msgstr ""
+
 msgid "InviteEmail|Join now"
+msgstr ""
+
+msgid "InviteEmail|Projects can be used to host your code, track issues, collaborate on code, and continuously build, test, and deploy your app with built-in GitLab CI/CD."
+msgstr ""
+
+msgid "InviteEmail|What can I do with the %{role} permission level?"
+msgstr ""
+
+msgid "InviteEmail|What is a GitLab %{project_or_group}?"
 msgstr ""
 
 msgid "InviteEmail|You are invited to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} as a %{role}"

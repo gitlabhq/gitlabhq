@@ -912,6 +912,15 @@ RSpec.describe Notify do
           stub_experiments('members/invite_email': :avatar)
 
           is_expected.not_to have_content('You are invited!')
+          is_expected.not_to have_body_text 'What is a GitLab'
+        end
+
+        it 'contains invite link for the avatar', :experiment do
+          stub_experiments('members/invite_email': :permission_info)
+
+          is_expected.not_to have_content('You are invited!')
+          is_expected.to have_body_text 'What is a GitLab'
+          is_expected.to have_body_text 'What can I do with'
         end
 
         it 'has invite link for the control group' do

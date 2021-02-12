@@ -3,27 +3,23 @@
 require 'spec_helper'
 
 RSpec.describe Members::InviteEmailExperiment do
-  subject do
+  subject :invite_email do
     experiment('members/invite_email', actor: double('Member', created_by: double('User', avatar_url: '_avatar_url_')))
   end
 
   before do
-    allow(subject).to receive(:enabled?).and_return(true)
+    allow(invite_email).to receive(:enabled?).and_return(true)
   end
 
-  describe "variant resolution" do
-    it "returns nil when not rolled out" do
-      stub_feature_flags(members_invite_email: false)
-
-      expect(subject.variant.name).to eq('control')
+  describe "#rollout_strategy" do
+    it "resolves to round_robin" do
+      expect(invite_email.rollout_strategy).to eq(:round_robin)
     end
+  end
 
-    context "when rolled out to 100%" do
-      it "returns the first variant name" do
-        subject.try(:avatar) {}
-
-        expect(subject.variant.name).to eq('avatar')
-      end
+  describe "#variants" do
+    it "has all the expected variants" do
+      expect(invite_email.variants).to match(%i[avatar permission_info control])
     end
   end
 
