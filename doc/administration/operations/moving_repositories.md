@@ -26,11 +26,9 @@ For more information, see:
   querying and scheduling project repository moves.
 - [The API documentation](../../api/snippet_repository_storage_moves.md) details the endpoints for
   querying and scheduling snippet repository moves.
+- [The API documentation](../../api/group_repository_storage_moves.md) details the endpoints for
+  querying and scheduling group repository moves **(PREMIUM SELF)**.
 - [Migrate existing repositories to Gitaly Cluster](../gitaly/praefect.md#migrate-existing-repositories-to-gitaly-cluster).
-
-### Limitations
-
-Read more in the [API documentation for projects](../../api/project_repository_storage_moves.md#limitations) and the [API documentation for snippets](../../api/snippet_repository_storage_moves.md#limitations).
 
 ## Migrating to another GitLab instance
 

@@ -168,6 +168,7 @@ type:
 | [`--dry-run`](#--dry-run-or--n)       | `-n`      | Don't actually write anything, just print                                                                                               |
 | [`--git-username`](#--git-username-or--u)  | `-u`      | Use Git user.name configuration as the author                                                                                           |
 | [`--type`](#--type-or--t)          | `-t`      | The category of the change, valid options are: `added`, `fixed`, `changed`, `deprecated`, `removed`, `security`, `performance`, `other` |
+| [`--ee`](#how-to-generate-a-changelog-entry)          |       | Create an EE changelog
 | `--help`          | `-h`      | Print help message                                                                                                                      |
 
 #### `--amend`
@@ -267,6 +268,20 @@ Use the **`--type`** or **`-t`** argument to provide the `type` value:
 ```plaintext
 $ bin/changelog 'Hey DZ, I added a feature to GitLab!' -t added
 create changelogs/unreleased/feature-hey-dz.yml
+---
+title: Hey DZ, I added a feature to GitLab!
+merge_request:
+author:
+type: added
+```
+
+#### `--ee`
+
+Use the **`--ee`** argument to create an EE changelog:
+
+```plaintext
+$ bin/changelog 'Hey DZ, I added a feature to GitLab!' -ee
+create ee/changelogs/unreleased/feature-hey-dz.yml
 ---
 title: Hey DZ, I added a feature to GitLab!
 merge_request:

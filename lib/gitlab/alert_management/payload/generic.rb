@@ -6,7 +6,6 @@ module Gitlab
     module Payload
       class Generic < Base
         DEFAULT_TITLE = 'New: Incident'
-        DEFAULT_SEVERITY = 'critical'
 
         attribute :description, paths: 'description'
         attribute :ends_at, paths: 'end_time', type: :time
@@ -15,9 +14,11 @@ module Gitlab
         attribute :monitoring_tool, paths: 'monitoring_tool'
         attribute :runbook, paths: 'runbook'
         attribute :service, paths: 'service'
-        attribute :severity, paths: 'severity', fallback: -> { DEFAULT_SEVERITY }
         attribute :starts_at, paths: 'start_time', type: :time, fallback: -> { Time.current.utc }
         attribute :title, paths: 'title', fallback: -> { DEFAULT_TITLE }
+
+        attribute :severity_raw, paths: 'severity'
+        private :severity_raw
 
         attribute :plain_gitlab_fingerprint, paths: 'fingerprint'
         private :plain_gitlab_fingerprint

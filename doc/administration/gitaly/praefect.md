@@ -1416,10 +1416,10 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 If your GitLab instance already has repositories on single Gitaly nodes, these aren't migrated to
 Gitaly Cluster automatically.
 
-Project repositories may be moved from one storage location using the [Project repository storage moves API](../../api/project_repository_storage_moves.md):
+Project repositories may be moved from one storage location using the [Project repository storage moves API](../../api/project_repository_storage_moves.md). Note that this API cannot move all repository types. For moving other repositories types, see:
 
-NOTE:
-The Project repository storage moves API [cannot move all repository types](../../api/project_repository_storage_moves.md#limitations).
+- [Snippet repository storage moves API](../../api/snippet_repository_storage_moves.md).
+- [Group repository storage moves API](../../api/group_repository_storage_moves.md).
 
 To move repositories to Gitaly Cluster:
 
@@ -1440,7 +1440,9 @@ To move repositories to Gitaly Cluster:
    using the API to confirm that all projects have moved. No projects should be returned
    with `repository_storage` field set to the old storage.
 
-In a similar way, you can move Snippet repositories using the [Snippet repository storage moves API](../../api/snippet_repository_storage_moves.md):
+In a similar way, you can move other repository types by using the
+[Snippet repository storage moves API](../../api/snippet_repository_storage_moves.md) **(FREE SELF)**
+or the [Groups repository storage moves API](../../api/group_repository_storage_moves.md) **(PREMIUM SELF)**.
 
 ## Debugging Praefect
 

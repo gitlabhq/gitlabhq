@@ -5,6 +5,8 @@ module Gitlab
     module Payload
       # Attribute mapping for alerts via prometheus alerting integration.
       class Prometheus < Base
+        extend Gitlab::Utils::Override
+
         attribute :alert_markdown, paths: %w(annotations gitlab_incident_markdown)
         attribute :annotations, paths: 'annotations'
         attribute :description, paths: %w(annotations description)
@@ -35,12 +37,7 @@ module Gitlab
 
         METRIC_TIME_WINDOW = 30.minutes
 
-        SEVERITY_MAP = {
-          'critical' => :critical,
-          'high' => :high,
-          'medium' => :medium,
-          'low' => :low,
-          'info' => :info,
+        ADDITIONAL_SEVERITY_MAPPING = {
           's1' => :critical,
           's2' => :high,
           's3' => :medium,
@@ -64,10 +61,6 @@ module Gitlab
           'alert' => :medium,
           'page' => :high
         }.freeze
-
-        # Handle an unmapped severity value the same way we treat missing values
-        # so we can fallback to alert's default severity `critical`.
-        UNMAPPED_SEVERITY = nil
 
         def monitoring_tool
           Gitlab::AlertManagement::Payload::MONITORING_TOOLS[:prometheus]
@@ -101,13 +94,12 @@ module Gitlab
           project && title && starts_at_raw
         end
 
-        def severity
-          return unless severity_raw
-
-          SEVERITY_MAP.fetch(severity_raw.to_s.downcase, UNMAPPED_SEVERITY)
-        end
-
         private
+
+        override :severity_mapping
+        def severity_mapping
+          super.merge(ADDITIONAL_SEVERITY_MAPPING)
+        end
 
         def plain_gitlab_fingerprint
           [starts_at_raw, title, full_query].join('/')

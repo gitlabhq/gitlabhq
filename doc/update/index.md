@@ -103,7 +103,7 @@ sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMi
 If using GitLab 12.8 and older, run the following using a [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby
-puts Sidekiq::Queue.new("background_migration").size
+Sidekiq::Queue.new("background_migration").size
 Sidekiq::ScheduledSet.new.select { |r| r.klass == 'BackgroundMigrationWorker' }.size
 ```
 

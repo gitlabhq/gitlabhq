@@ -18,6 +18,8 @@ The storage location of these files defaults to:
 
 These locations can be configured using the options described below.
 
+Use [external object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-pseudonymizer-terraform-state-dependency-proxy) configuration for [GitLab Helm chart](https://docs.gitlab.com/charts/) installations.
+
 ## Using local storage
 
 The default configuration uses local storage. To change the location where

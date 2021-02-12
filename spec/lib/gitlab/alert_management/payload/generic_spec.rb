@@ -19,7 +19,34 @@ RSpec.describe Gitlab::AlertManagement::Payload::Generic do
   describe '#severity' do
     subject { parsed_payload.severity }
 
-    it_behaves_like 'parsable alert payload field with fallback', 'critical', 'severity'
+    context 'when set' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:raw_payload) { { 'severity' => payload_severity } }
+
+      where(:payload_severity, :expected_severity) do
+        'critical' | :critical
+        'high'     | :high
+        'medium'   | :medium
+        'low'      | :low
+        'info'     | :info
+
+        'CRITICAL' | :critical
+        'cRiTiCaL' | :critical
+
+        'unmapped' | nil
+        1          | nil
+        nil        | nil
+      end
+
+      with_them do
+        it { is_expected.to eq(expected_severity) }
+      end
+    end
+
+    context 'without key' do
+      it { is_expected.to be_nil }
+    end
   end
 
   describe '#monitoring_tool' do

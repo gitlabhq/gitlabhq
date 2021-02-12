@@ -141,6 +141,7 @@ The following API resources are available outside of project and group contexts 
 | [Feature flags](features.md)                       | `/features`                                                             |
 | [Geo Nodes](geo_nodes.md) **(PREMIUM SELF)**       | `/geo_nodes`                                                            |
 | [Group Activity Analytics](group_activity_analytics.md) **(STARTER)**  | `/analytics/group_activity/{issues_count | merge_requests_count | new_members_count }`  |
+| [Group repository storage moves](group_repository_storage_moves.md) **(PREMIUM SELF)** | `/group_repository_storage_moves` |
 | [Import repository from GitHub](import.md)         | `/import/github`                                                        |
 | [Instance clusters](instance_clusters.md)          | `/admin/clusters`                                                       |
 | [Issues](issues.md)                                | `/issues` (also available for groups and projects)                      |

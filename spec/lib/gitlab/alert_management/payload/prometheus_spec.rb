@@ -239,13 +239,13 @@ RSpec.describe Gitlab::AlertManagement::Payload::Prometheus do
   end
 
   describe '#severity' do
-    using RSpec::Parameterized::TableSyntax
-
-    let(:raw_payload) { { 'labels' => { 'severity' => payload_severity } } }
-
     subject { parsed_payload.severity }
 
     context 'when set' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:raw_payload) { { 'labels' => { 'severity' => payload_severity } } }
+
       where(:payload_severity, :expected_severity) do
         'critical' | :critical
         'high'     | :high
@@ -293,8 +293,6 @@ RSpec.describe Gitlab::AlertManagement::Payload::Prometheus do
     end
 
     context 'without key' do
-      let(:raw_payload) { {} }
-
       it { is_expected.to be_nil }
     end
   end

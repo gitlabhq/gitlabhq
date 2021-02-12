@@ -459,6 +459,8 @@ Group wikis work the same way as [project wikis](../project/wiki/index.md), plea
 Group wikis can be edited by members with [Developer permissions](../../user/permissions.md#group-members-permissions)
 and above.
 
+Group wiki repositories can be moved through the [Group repository storage moves API](../../api/group_repository_storage_moves.md).
+
 ### Group wikis limitations
 
 There are a few limitations compared to project wikis:
@@ -466,13 +468,10 @@ There are a few limitations compared to project wikis:
 - Git LFS is not supported.
 - Group wikis are not included in global search, group exports, and Geo replication.
 - Changes to group wikis don't show up in the group's activity feed.
-- Group wikis [can't be moved](../../api/project_repository_storage_moves.md#limitations) using the project
-  repository moves API.
 
 For updates, you can follow:
 
 - [The epic tracking feature parity with project wikis](https://gitlab.com/groups/gitlab-org/-/epics/2782).
-- [The issue for adding the ability to move group wikis using the API](https://gitlab.com/gitlab-org/gitlab/-/issues/219003).
 
 ## Group Security Dashboard **(ULTIMATE)**
 
