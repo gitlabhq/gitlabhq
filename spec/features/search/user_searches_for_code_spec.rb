@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User searches for code', :js do
+RSpec.describe 'User searches for code' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
 
@@ -16,7 +16,6 @@ RSpec.describe 'User searches for code', :js do
       visit(project_path(project))
 
       submit_search('application.js')
-
       select_search_scope('Code')
 
       expect(page).to have_selector('.results', text: 'application.js')
@@ -25,7 +24,7 @@ RSpec.describe 'User searches for code', :js do
       expect(page).to have_link('application.js', href: /master\/files\/js\/application.js/)
     end
 
-    context 'when on a project page' do
+    context 'when on a project page', :js do
       before do
         visit(search_path)
         find('[data-testid="project-filter"]').click
@@ -49,7 +48,7 @@ RSpec.describe 'User searches for code', :js do
         expect(current_url).to match(/master\/.gitignore#L3/)
       end
 
-      it 'search multiple words with refs switching' do
+      it 'search mutiple words with refs switching' do
         expected_result = 'Use `snake_case` for naming files'
         search = 'for naming files'
 
@@ -68,7 +67,7 @@ RSpec.describe 'User searches for code', :js do
       end
     end
 
-    context 'search code within refs' do
+    context 'search code within refs', :js do
       let(:ref_name) { 'v1.0.0' }
 
       before do
@@ -86,9 +85,9 @@ RSpec.describe 'User searches for code', :js do
         expect(find('.js-project-refs-dropdown')).to have_text(ref_name)
       end
 
-      #  this example is use to test the design that the refs is not
-      #  only represent the branch as well as the tags.
-      it 'ref switcher list all the branches and tags' do
+      #  this example is use to test the desgine that the refs is not
+      #  only repersent the branch as well as the tags.
+      it 'ref swither list all the branchs and tags' do
         find('.js-project-refs-dropdown').click
         expect(find('.dropdown-page-one .dropdown-content')).to have_link('sha-starting-with-large-number')
         expect(find('.dropdown-page-one .dropdown-content')).to have_link('v1.0.0')

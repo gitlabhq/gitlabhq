@@ -21,7 +21,8 @@ module BoardsHelper
       group_id: @group&.id,
       labels_filter_base_path: build_issue_link_base,
       labels_fetch_path: labels_fetch_path,
-      labels_manage_path: labels_manage_path
+      labels_manage_path: labels_manage_path,
+      board_type: board.to_type
     }
   end
 

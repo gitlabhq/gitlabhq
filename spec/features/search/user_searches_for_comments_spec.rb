@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User searches for comments', :js do
+RSpec.describe 'User searches for comments' do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 

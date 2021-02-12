@@ -1,13 +1,7 @@
 import mutations from '~/search/store/mutations';
 import createState from '~/search/store/state';
 import * as types from '~/search/store/mutation_types';
-import {
-  MOCK_QUERY,
-  MOCK_GROUPS,
-  MOCK_PROJECTS,
-  MOCK_SEARCH_COUNTS,
-  MOCK_SCOPE_TABS,
-} from '../mock_data';
+import { MOCK_QUERY, MOCK_GROUPS, MOCK_PROJECTS } from '../mock_data';
 
 describe('Global Search Store Mutations', () => {
   let state;
@@ -75,34 +69,6 @@ describe('Global Search Store Mutations', () => {
       mutations[types.SET_QUERY](state, payload);
 
       expect(state.query[payload.key]).toBe(payload.value);
-    });
-  });
-
-  describe('REQUEST_SEARCH_COUNTS', () => {
-    it('sets the count to for the query.scope activeCount', () => {
-      const payload = { scopeTabs: ['issues'], activeCount: '22' };
-      mutations[types.REQUEST_SEARCH_COUNTS](state, payload);
-
-      expect(state.inflatedScopeTabs).toStrictEqual([
-        { scope: 'issues', title: 'Issues', count: '22' },
-      ]);
-    });
-
-    it('sets other scopes count to empty string', () => {
-      const payload = { scopeTabs: ['milestones'], activeCount: '22' };
-      mutations[types.REQUEST_SEARCH_COUNTS](state, payload);
-
-      expect(state.inflatedScopeTabs).toStrictEqual([
-        { scope: 'milestones', title: 'Milestones', count: '' },
-      ]);
-    });
-  });
-
-  describe('RECEIVE_SEARCH_COUNTS_SUCCESS', () => {
-    it('sets the count from the input for all tabs', () => {
-      mutations[types.RECEIVE_SEARCH_COUNTS_SUCCESS](state, MOCK_SEARCH_COUNTS);
-
-      expect(state.inflatedScopeTabs).toStrictEqual(MOCK_SCOPE_TABS);
     });
   });
 });

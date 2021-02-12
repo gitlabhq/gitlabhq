@@ -33,7 +33,9 @@ module Gitlab
       end
 
       def force_push?
-        Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev)
+        strong_memoize(:force_push) do
+          Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev)
+        end
       end
 
       def branch_push?

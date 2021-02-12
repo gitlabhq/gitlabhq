@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'qa/tools/revoke_all_personal_access_tokens'
 require_relative 'qa/tools/delete_subgroups'
 require_relative 'qa/tools/generate_perf_testdata'

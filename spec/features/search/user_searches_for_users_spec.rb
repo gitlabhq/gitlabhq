@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User searches for users', :js do
+RSpec.describe 'User searches for users' do
   let(:user1) { create(:user, username: 'gob_bluth', name: 'Gob Bluth') }
   let(:user2) { create(:user, username: 'michael_bluth', name: 'Michael Bluth') }
   let(:user3) { create(:user, username: 'gob_2018', name: 'George Oscar Bluth') }
@@ -12,7 +12,7 @@ RSpec.describe 'User searches for users', :js do
   end
 
   context 'when on the dashboard' do
-    it 'finds the user' do
+    it 'finds the user', :js do
       visit dashboard_projects_path
 
       submit_search('gob')

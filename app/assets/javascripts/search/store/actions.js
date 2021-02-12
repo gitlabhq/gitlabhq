@@ -1,29 +1,8 @@
-import axios from '~/lib/utils/axios_utils';
 import Api from '~/api';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import * as types from './mutation_types';
-
-/* private */
-const getCount = ({ params, state, activeCount }) => {
-  const globalSearchCountsPath = '/search/count';
-  const url = Api.buildUrl(globalSearchCountsPath);
-
-  // count is known for active tab, so return it and skip the Api call
-  if (params.scope === state.query?.scope) {
-    return { scope: params.scope, count: activeCount };
-  }
-
-  return axios
-    .get(url, { params })
-    .then(({ data }) => {
-      return { scope: params.scope, count: data.count };
-    })
-    .catch((e) => {
-      throw e;
-    });
-};
 
 export const fetchGroups = ({ commit }, search) => {
   commit(types.REQUEST_GROUPS);
@@ -59,21 +38,6 @@ export const fetchProjects = ({ commit, state }, search) => {
   }
 };
 
-export const fetchSearchCounts = ({ commit, state }, { scopeTabs, activeCount }) => {
-  commit(types.REQUEST_SEARCH_COUNTS, { scopeTabs, activeCount });
-  const promises = scopeTabs.map((scope) =>
-    getCount({ params: { ...state.query, scope }, state, activeCount }),
-  );
-
-  Promise.all(promises)
-    .then((data) => {
-      commit(types.RECEIVE_SEARCH_COUNTS_SUCCESS, data);
-    })
-    .catch(() => {
-      createFlash({ message: __('There was an error fetching the Search Counts') });
-    });
-};
-
 export const setQuery = ({ commit }, { key, value }) => {
   commit(types.SET_QUERY, { key, value });
 };
@@ -82,22 +46,6 @@ export const applyQuery = ({ state }) => {
   visitUrl(setUrlParams({ ...state.query, page: null }));
 };
 
-export const resetQuery = ({ state }, snippets = false) => {
-  let defaultQuery = {
-    page: null,
-    state: null,
-    confidential: null,
-    nav_source: null,
-  };
-
-  if (snippets) {
-    defaultQuery = {
-      snippets: true,
-      group_id: null,
-      project_id: null,
-      ...defaultQuery,
-    };
-  }
-
-  visitUrl(setUrlParams({ ...state.query, ...defaultQuery }));
+export const resetQuery = ({ state }) => {
+  visitUrl(setUrlParams({ ...state.query, page: null, state: null, confidential: null }));
 };

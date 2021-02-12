@@ -61,28 +61,3 @@ export const MOCK_SORT_OPTIONS = [
     },
   },
 ];
-
-export const MOCK_SEARCH_COUNTS_INPUT = {
-  scopeTabs: ['issues', 'snippet_titles', 'merge_requests'],
-  activeCount: '15',
-};
-
-export const MOCK_SEARCH_COUNT = { scope: 'issues', count: '15' };
-
-export const MOCK_SEARCH_COUNTS_SUCCESS = [
-  { scope: 'issues', count: '15' },
-  { scope: 'snippet_titles', count: '15' },
-  { scope: 'merge_requests', count: '15' },
-];
-
-export const MOCK_SEARCH_COUNTS = [
-  { scope: 'issues', count: '15' },
-  { scope: 'snippet_titles', count: '5' },
-  { scope: 'merge_requests', count: '1' },
-];
-
-export const MOCK_SCOPE_TABS = [
-  { scope: 'issues', title: 'Issues', count: '15' },
-  { scope: 'snippet_titles', title: 'Titles and Descriptions', count: '5' },
-  { scope: 'merge_requests', title: 'Merge requests', count: '1' },
-];

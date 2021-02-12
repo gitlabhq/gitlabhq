@@ -4,6 +4,5 @@ const createState = ({ query }) => ({
   fetchingGroups: false,
   projects: [],
   fetchingProjects: false,
-  inflatedScopeTabs: [],
 });
 export default createState;

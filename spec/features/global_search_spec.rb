@@ -28,7 +28,7 @@ RSpec.describe 'Global search' do
       create_list(:issue, 2, project: project, title: 'initial')
     end
 
-    it "has a pagination", :js do
+    it "has a pagination" do
       submit_search('initial')
       select_search_scope('Issues')
 

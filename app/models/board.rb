@@ -44,6 +44,14 @@ class Board < ApplicationRecord
   def scoped?
     false
   end
+
+  def self.to_type
+    name.demodulize
+  end
+
+  def to_type
+    self.class.to_type
+  end
 end
 
 Board.prepend_if_ee('EE::Board')
