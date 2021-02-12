@@ -837,6 +837,16 @@ RSpec.describe Note do
     end
   end
 
+  describe '#for_project_snippet?' do
+    it 'returns true for a project snippet note' do
+      expect(build(:note_on_project_snippet).for_project_snippet?).to be true
+    end
+
+    it 'returns false for a personal snippet note' do
+      expect(build(:note_on_personal_snippet).for_project_snippet?).to be false
+    end
+  end
+
   describe '#for_personal_snippet?' do
     it 'returns false for a project snippet note' do
       expect(build(:note_on_project_snippet).for_personal_snippet?).to be_falsy

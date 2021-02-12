@@ -108,18 +108,6 @@ ul.related-merge-requests > li {
   }
 }
 
-.issuable-email-modal-btn {
-  padding: 0;
-  color: $blue-600;
-  background-color: transparent;
-  border: 0;
-  outline: 0;
-
-  &:hover {
-    text-decoration: underline;
-  }
-}
-
 .email-modal-input-group {
   margin-bottom: 10px;
 

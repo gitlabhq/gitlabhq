@@ -1,0 +1,5 @@
+---
+title: Replace bootstrap modal in issuable_by_email HAML template
+merge_request: 53599
+author:
+type: changed

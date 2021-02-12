@@ -83,6 +83,9 @@ export default {
     alertId: {
       default: '',
     },
+    isThreatMonitoringPage: {
+      default: false,
+    },
     projectId: {
       default: '',
     },
@@ -364,7 +367,11 @@ export default {
           </alert-summary-row>
           <alert-details-table :alert="alert" :loading="loading" />
         </gl-tab>
-        <gl-tab :data-testid="$options.tabsConfig[1].id" :title="$options.tabsConfig[1].title">
+        <gl-tab
+          v-if="isThreatMonitoringPage"
+          :data-testid="$options.tabsConfig[1].id"
+          :title="$options.tabsConfig[1].title"
+        >
           <alert-metrics :dashboard-url="alert.metricsDashboardUrl" />
         </gl-tab>
         <gl-tab :data-testid="$options.tabsConfig[2].id" :title="$options.tabsConfig[2].title">

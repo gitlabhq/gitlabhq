@@ -6,6 +6,7 @@ import initFilteredSearch from '~/pages/search/init_filtered_search';
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 import { FILTERED_SEARCH } from '~/pages/constants';
 import { ISSUABLE_INDEX } from '~/pages/projects/constants';
+import initIssuableByEmail from '~/issuable/init_issuable_by_email';
 
 new IssuableIndex(ISSUABLE_INDEX.MERGE_REQUEST); // eslint-disable-line no-new
 
@@ -19,3 +20,5 @@ initFilteredSearch({
 
 new UsersSelect(); // eslint-disable-line no-new
 new ShortcutsNavigation(); // eslint-disable-line no-new
+
+initIssuableByEmail();

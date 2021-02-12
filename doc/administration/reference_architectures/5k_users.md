@@ -20,7 +20,7 @@ costly-to-operate environment by using the
 
 > - **Supported users (approximate):** 5,000
 > - **High Availability:** Yes
-> - **Test requests per second (RPS) rates:** API: 100 RPS, Web: 10 RPS, Git: 10 RPS
+> - **Test requests per second (RPS) rates:** API: 100 RPS, Web: 10 RPS, Git (Pull): 10 RPS, Git (Push): 2 RPS
 
 | Service                                    | Nodes       | Configuration           | GCP            | AWS         | Azure    |
 |--------------------------------------------|-------------|-------------------------|----------------|-------------|----------|

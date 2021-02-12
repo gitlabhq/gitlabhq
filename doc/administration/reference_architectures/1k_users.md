@@ -18,6 +18,7 @@ many organizations .
 > - **Supported users (approximate):** 1,000
 > - **High Availability:** No. For a highly-available environment, you can
 >   follow the [3K reference architecture](3k_users.md).
+> - **Test requests per second (RPS) rates:** API: 20 RPS, Web: 2 RPS, Git (Pull): 2 RPS, Git (Push): 1 RPS
 
 | Users        | Configuration           | GCP            | AWS             | Azure          |
 |--------------|-------------------------|----------------|-----------------|----------------|

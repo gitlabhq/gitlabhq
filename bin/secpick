@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# frozen_string_literal: false
+# frozen_string_literal: true
 
 require 'active_support/core_ext/object/to_query'
 require 'optparse'
@@ -9,12 +9,12 @@ require 'rainbow/refinement'
 using Rainbow
 
 module Secpick
-  BRANCH_PREFIX = 'security'.freeze
-  STABLE_SUFFIX = 'stable'.freeze
+  BRANCH_PREFIX = 'security'
+  STABLE_SUFFIX = 'stable'
 
-  DEFAULT_REMOTE = 'security'.freeze
+  DEFAULT_REMOTE = 'security'
 
-  SECURITY_MR_URL = 'https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/new'.freeze
+  SECURITY_MR_URL = 'https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/new'
 
   class SecurityFix
     def initialize
@@ -27,12 +27,12 @@ module Secpick
 
     def source_branch
       branch = "#{@options[:branch]}-#{@options[:version]}"
-      branch.prepend("#{BRANCH_PREFIX}-") unless branch.start_with?("#{BRANCH_PREFIX}-")
-      branch.freeze
+      branch = "#{BRANCH_PREFIX}-#{branch}" unless branch.start_with?("#{BRANCH_PREFIX}-")
+      branch
     end
 
     def stable_branch
-      "#{@options[:version]}-#{STABLE_SUFFIX}-ee".freeze
+      "#{@options[:version]}-#{STABLE_SUFFIX}-ee"
     end
 
     def git_commands

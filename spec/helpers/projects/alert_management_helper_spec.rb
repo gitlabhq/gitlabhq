@@ -113,7 +113,8 @@ RSpec.describe Projects::AlertManagementHelper do
         'alert-id' => alert_id,
         'project-path' => project_path,
         'project-id' => project_id,
-        'project-issues-path' => issues_path
+        'project-issues-path' => issues_path,
+        'page' => 'OPERATIONS'
       )
     end
   end

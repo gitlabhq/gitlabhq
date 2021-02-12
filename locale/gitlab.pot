@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-msgid " %{project_name}#%{issuable_iid} &middot; opened %{issuable_created} by %{author}"
+msgid " %{project_name}#%{issuable_iid} &middot; opened %{issuable_created} by %{author} &middot; updated %{issuable_updated}"
 msgstr ""
 
 msgid " %{start} to %{end}"
@@ -8481,6 +8481,9 @@ msgstr ""
 msgid "Create new"
 msgstr ""
 
+msgid "Create new %{name} by email"
+msgstr ""
+
 msgid "Create new Value Stream"
 msgstr ""
 
@@ -10863,6 +10866,9 @@ msgstr ""
 msgid "Email Notification"
 msgstr ""
 
+msgid "Email a new %{name} to this project"
+msgstr ""
+
 msgid "Email address to use for Support Desk"
 msgstr ""
 
@@ -10933,12 +10939,6 @@ msgid "EmailParticipantsWarning|%{emails}, %{andMore} will be notified of your c
 msgstr ""
 
 msgid "EmailParticipantsWarning|and %{moreCount} more"
-msgstr ""
-
-msgid "EmailToken|reset it"
-msgstr ""
-
-msgid "EmailToken|resetting..."
 msgstr ""
 
 msgid "Emails"
@@ -11226,19 +11226,13 @@ msgstr ""
 msgid "Enter one or more user ID separated by commas"
 msgstr ""
 
+msgid "Enter the %{name} description"
+msgstr ""
+
+msgid "Enter the %{name} title"
+msgstr ""
+
 msgid "Enter the code from the two-factor app on your mobile device. If you've lost your device, you may enter one of your recovery codes."
-msgstr ""
-
-msgid "Enter the issue description"
-msgstr ""
-
-msgid "Enter the issue title"
-msgstr ""
-
-msgid "Enter the merge request description"
-msgstr ""
-
-msgid "Enter the merge request title"
 msgstr ""
 
 msgid "Enter the name of your application, and we'll return a unique %{type}."
@@ -23934,6 +23928,9 @@ msgstr ""
 msgid "Protip:"
 msgstr ""
 
+msgid "Protip: %{linkStart}Auto DevOps%{linkEnd} uses Kubernetes clusters to deploy your code!"
+msgstr ""
+
 msgid "Protocol"
 msgstr ""
 
@@ -29320,6 +29317,9 @@ msgstr ""
 msgid "The status of the table below only applies to the default branch and is based on the %{linkStart}latest pipeline%{linkEnd}. Once you've enabled a scan for the default branch, any subsequent feature branch you create will include the scan."
 msgstr ""
 
+msgid "The subject will be used as the title of the new issue, and the message will be the description. %{quickActionsLinkStart}Quick actions%{quickActionsLinkEnd} and styling with %{markdownLinkStart}Markdown%{markdownLinkEnd} are supported."
+msgstr ""
+
 msgid "The tag name can't be changed for an existing release."
 msgstr ""
 
@@ -29926,6 +29926,9 @@ msgstr ""
 msgid "This is a merge train pipeline"
 msgstr ""
 
+msgid "This is a private email address %{helpIcon} generated just for you. Anyone who gets ahold of it can create issues or merge requests as if they were you. You should %{resetLinkStart}reset it%{resetLinkEnd} if that ever happens."
+msgstr ""
+
 msgid "This is a security log of important events involving your account."
 msgstr ""
 
@@ -30221,6 +30224,9 @@ msgid "Thread to reply to cannot be found"
 msgstr ""
 
 msgid "Threat Monitoring"
+msgstr ""
+
+msgid "ThreatMonitoring|Alert Details"
 msgstr ""
 
 msgid "ThreatMonitoring|Alerts"
@@ -33347,6 +33353,9 @@ msgid "You can always edit this later"
 msgstr ""
 
 msgid "You can create a new %{link}."
+msgstr ""
+
+msgid "You can create a new %{name} inside this project by sending an email to the following email address:"
 msgstr ""
 
 msgid "You can create a new Personal Access Token by visiting %{link}"

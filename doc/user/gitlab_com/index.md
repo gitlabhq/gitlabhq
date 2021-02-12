@@ -534,14 +534,16 @@ limiting responses](#rate-limiting-responses).
 The following table describes the rate limits for GitLab.com, both before and
 after the limits change in January, 2021:
 
-| Rate limit                                                                | Before 2021-01-18           | From 2021-01-18               |
-|:--------------------------------------------------------------------------|:----------------------------|:------------------------------|
-| **Protected paths** (for a given **IP address**)                          | **10** requests per minute  | **10** requests per minute    |
-| **Raw endpoint** traffic (for a given **project, commit, and file path**) | **300** requests per minute | **300** requests per minute   |
-| **Unauthenticated** traffic (from a given **IP address**)                 | No specific limit           | **500** requests per minute   |
-| **Authenticated** API traffic (for a given **user**)                      | No specific limit           | **2,000** requests per minute |
-| **Authenticated** non-API HTTP traffic (for a given **user**)             | No specific limit           | **1,000** requests per minute |
-| **All** traffic (from a given **IP address**)                             | **600** requests per minute | **2,000** requests per minute |
+| Rate limit                                                                | Before 2021-01-18           | From 2021-01-18               | From 2021-02-12               |
+|:--------------------------------------------------------------------------|:----------------------------|:------------------------------|:------------------------------|
+| **Protected paths** (for a given **IP address**)                          | **10** requests per minute  | **10** requests per minute    | **10** requests per minute    |
+| **Raw endpoint** traffic (for a given **project, commit, and file path**) | **300** requests per minute | **300** requests per minute   | **300** requests per minute   |
+| **Unauthenticated** traffic (from a given **IP address**)                 | No specific limit           | **500** requests per minute   | **500** requests per minute   |
+| **Authenticated** API traffic (for a given **user**)                      | No specific limit           | **2,000** requests per minute | **2,000** requests per minute |
+| **Authenticated** non-API HTTP traffic (for a given **user**)             | No specific limit           | **1,000** requests per minute | **1,000** requests per minute |
+| **All** traffic (from a given **IP address**)                             | **600** requests per minute | **2,000** requests per minute | **2,000** requests per minute |
+| **Issue creation**                                                        |                             | **300** requests per minute   | **300** requests per minute   |
+| **Note creation** (on issues and merge requests)                          |                             | **300** requests per minute   | **60** requests per minute    |
 
 More details are available on the rate limits for [protected
 paths](#protected-paths-throttle) and [raw

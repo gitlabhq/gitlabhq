@@ -21,7 +21,7 @@ For a full list of reference architectures, see
 
 > - **Supported users (approximate):** 3,000
 > - **High Availability:** Yes
-> - **Test requests per second (RPS) rates:** API: 60 RPS, Web: 6 RPS, Git: 6 RPS
+> - **Test requests per second (RPS) rates:** API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS
 
 | Service                                    | Nodes       | Configuration         | GCP            | AWS         | Azure   |
 |--------------------------------------------|-------------|-----------------------|----------------|-------------|---------|

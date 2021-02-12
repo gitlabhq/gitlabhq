@@ -20,7 +20,8 @@ module Projects::AlertManagementHelper
       'alert-id' => alert_id,
       'project-path' => project.full_path,
       'project-id' => project.id,
-      'project-issues-path' => project_issues_path(project)
+      'project-issues-path' => project_issues_path(project),
+      'page' => 'OPERATIONS'
     }
   end
 

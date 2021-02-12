@@ -160,7 +160,6 @@ linters:
       - 'app/views/projects/_gitlab_import_modal.html.haml'
       - 'app/views/projects/_home_panel.html.haml'
       - 'app/views/projects/_import_project_pane.html.haml'
-      - 'app/views/projects/_issuable_by_email.html.haml'
       - 'app/views/projects/_readme.html.haml'
       - 'app/views/projects/artifacts/_artifact.html.haml'
       - 'app/views/projects/artifacts/_tree_file.html.haml'

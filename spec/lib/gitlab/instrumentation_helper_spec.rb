@@ -16,7 +16,6 @@ RSpec.describe Gitlab::InstrumentationHelper do
         :rugged_duration_s,
         :elasticsearch_calls,
         :elasticsearch_duration_s,
-        :elasticsearch_timed_out_count,
         :mem_objects,
         :mem_bytes,
         :mem_mallocs,

@@ -9,11 +9,10 @@ export const SEVERITY_LEVELS = {
   UNKNOWN: s__('severity|Unknown'),
 };
 
-export const DEFAULT_PAGE = 'OPERATIONS';
-
 /* eslint-disable @gitlab/require-i18n-strings */
 export const PAGE_CONFIG = {
   OPERATIONS: {
+    TITLE: 'OPERATIONS',
     // Tracks snowplow event when user views alert details
     TRACK_ALERTS_DETAILS_VIEWS_OPTIONS: {
       category: 'Alert Management',
@@ -25,5 +24,8 @@ export const PAGE_CONFIG = {
       action: 'update_alert_status',
       label: 'Status',
     },
+  },
+  THREAT_MONITORING: {
+    TITLE: 'THREAT_MONITORING',
   },
 };

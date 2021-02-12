@@ -9,15 +9,12 @@ module Gitlab
         start = Time.now
         headers = (headers || {})
           .reverse_merge({ 'X-Opaque-Id': Labkit::Correlation::CorrelationId.current_or_new_id })
-        response = super
+        super
       ensure
         if ::Gitlab::SafeRequestStore.active?
           duration = (Time.now - start)
 
           ::Gitlab::Instrumentation::ElasticsearchTransport.increment_request_count
-
-          ::Gitlab::Instrumentation::ElasticsearchTransport.increment_timed_out_count if response&.body&.dig('timed_out')
-
           ::Gitlab::Instrumentation::ElasticsearchTransport.add_duration(duration)
           ::Gitlab::Instrumentation::ElasticsearchTransport.add_call_details(duration, method, path, params, body)
         end
@@ -28,7 +25,6 @@ module Gitlab
       ELASTICSEARCH_REQUEST_COUNT = :elasticsearch_request_count
       ELASTICSEARCH_CALL_DURATION = :elasticsearch_call_duration
       ELASTICSEARCH_CALL_DETAILS = :elasticsearch_call_details
-      ELASTICSEARCH_TIMED_OUT_COUNT = :elasticsearch_timed_out_count
 
       def self.get_request_count
         ::Gitlab::SafeRequestStore[ELASTICSEARCH_REQUEST_COUNT] || 0
@@ -51,15 +47,6 @@ module Gitlab
       def self.add_duration(duration)
         ::Gitlab::SafeRequestStore[ELASTICSEARCH_CALL_DURATION] ||= 0
         ::Gitlab::SafeRequestStore[ELASTICSEARCH_CALL_DURATION] += duration
-      end
-
-      def self.increment_timed_out_count
-        ::Gitlab::SafeRequestStore[ELASTICSEARCH_TIMED_OUT_COUNT] ||= 0
-        ::Gitlab::SafeRequestStore[ELASTICSEARCH_TIMED_OUT_COUNT] += 1
-      end
-
-      def self.get_timed_out_count
-        ::Gitlab::SafeRequestStore[ELASTICSEARCH_TIMED_OUT_COUNT] || 0
       end
 
       def self.add_call_details(duration, method, path, params, body)

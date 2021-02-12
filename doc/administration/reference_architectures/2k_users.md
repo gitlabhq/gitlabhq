@@ -14,7 +14,7 @@ For a full list of reference architectures, see
 > - **Supported users (approximate):** 2,000
 > - **High Availability:** No. For a highly-available environment, you can
 >   follow the [3K reference architecture](3k_users.md).
-> - **Test requests per second (RPS) rates:** API: 40 RPS, Web: 4 RPS, Git: 4 RPS
+> - **Test requests per second (RPS) rates:** API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS
 
 | Service                                  | Nodes  | Configuration           | GCP            | AWS          | Azure   |
 |------------------------------------------|--------|-------------------------|----------------|--------------|---------|
@@ -27,44 +27,32 @@ For a full list of reference architectures, see
 | Object storage                           | n/a    | n/a                     | n/a            | n/a          | n/a     |
 | NFS server (optional, not recommended)   | 1      | 4 vCPU, 3.6 GB memory   | n1-highcpu-4   | `c5.xlarge`    | F4s v2  |
 
-```mermaid
-stateDiagram-v2
-    [*] --> LoadBalancer
-    LoadBalancer --> ApplicationServer
+```plantuml
+@startuml 2k
+card "**External Load Balancer**" as elb #6a9be7
 
-    ApplicationServer --> Gitaly
-    ApplicationServer --> Redis
-    ApplicationServer --> Database
-    ApplicationServer --> ObjectStorage
+collections "**GitLab Rails** x3" as gitlab #32CD32
+card "**Prometheus + Grafana**" as monitor #7FFFD4
+card "**Gitaly**" as gitaly #FF8C00
+card "**PostgreSQL**" as postgres #4EA7FF
+card "**Redis**" as redis #FF6347
+cloud "**Object Storage**" as object_storage #white
 
-    ApplicationMonitoring -->ApplicationServer
-    ApplicationMonitoring -->Redis
-    ApplicationMonitoring -->Database
+elb -[#6a9be7]-> gitlab
+elb -[#6a9be7]--> monitor
 
+gitlab -[#32CD32]--> gitaly
+gitlab -[#32CD32]--> postgres
+gitlab -[#32CD32]-> object_storage
+gitlab -[#32CD32]--> redis
 
-    state Database {
-      "PG_Node"
-    }
-    state Redis {
-      "Redis_Node"
-    }
+monitor .[#7FFFD4]u-> gitlab
+monitor .[#7FFFD4]-> gitaly
+monitor .[#7FFFD4]-> postgres
+monitor .[#7FFFD4,norank]--> redis
+monitor .[#7FFFD4,norank]u--> elb
 
-    state Gitaly {
-      "Gitaly"
-    }
-
-    state ApplicationServer {
-      "AppServ_1..2"
-    }
-
-    state LoadBalancer {
-      "LoadBalancer"
-    }
-
-    state ApplicationMonitoring {
-      "Prometheus"
-      "Grafana"
-    }
+@enduml
 ```
 
 The Google Cloud Platform (GCP) architectures were built and tested using the

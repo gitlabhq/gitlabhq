@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop: disable CodeReuse/ActiveRecord
 xml.title   "#{@group.name} issues"
 xml.link    href: url_for(safe_params), rel: "self", type: "application/atom+xml"

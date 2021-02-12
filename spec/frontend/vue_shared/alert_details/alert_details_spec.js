@@ -90,6 +90,7 @@ describe('AlertDetails', () => {
   const findEnvironmentName = () => wrapper.findByTestId('environmentName');
   const findEnvironmentPath = () => wrapper.findByTestId('environmentPath');
   const findDetailsTable = () => wrapper.find(AlertDetailsTable);
+  const findMetricsTab = () => wrapper.findByTestId('metrics');
 
   describe('Alert details', () => {
     describe('when alert is null', () => {
@@ -172,6 +173,15 @@ describe('AlertDetails', () => {
 
         expect(findEnvironmentPath().exists()).toBe(false);
         expect(findEnvironmentName().text()).toBe(environmentName);
+      });
+    });
+
+    describe('Threat Monitoring details', () => {
+      it('should not render the metrics tab', () => {
+        mountComponent({
+          data: { alert: mockAlert, provide: { isThreatMonitoringPage: true } },
+        });
+        expect(findMetricsTab().exists()).toBe(false);
       });
     });
 

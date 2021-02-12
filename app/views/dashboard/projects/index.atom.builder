@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 xml.title   "Activity"
 xml.link    href: dashboard_projects_url(rss_url_options), rel: "self", type: "application/atom+xml"
 xml.link    href: dashboard_projects_url, rel: "alternate", type: "text/html"

@@ -9,6 +9,7 @@ import { FILTERED_SEARCH } from '~/pages/constants';
 import { ISSUABLE_INDEX } from '~/pages/projects/constants';
 import initIssuablesList from '~/issues_list';
 import initManualOrdering from '~/manual_ordering';
+import initIssuableByEmail from '~/issuable/init_issuable_by_email';
 
 IssuableFilteredSearchTokenKeys.addExtraTokensForIssues();
 
@@ -24,3 +25,4 @@ new UsersSelect();
 
 initManualOrdering();
 initIssuablesList();
+initIssuableByEmail();

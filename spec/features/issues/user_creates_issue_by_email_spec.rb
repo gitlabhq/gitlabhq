@@ -12,7 +12,7 @@ RSpec.describe 'Issues > User creates issue by email' do
     project.add_developer(user)
   end
 
-  describe 'new issue by email' do
+  describe 'new issue by email', :js do
     shared_examples 'show the email in the modal' do
       let(:issue) { create(:issue, project: project) }
 
@@ -28,7 +28,7 @@ RSpec.describe 'Issues > User creates issue by email' do
         page.within '#issuable-email-modal' do
           email = project.new_issuable_address(user, 'issue')
 
-          expect(page).to have_selector("input[value='#{email}']")
+          expect(page.find('input[type="text"]').value).to eq email
         end
       end
     end

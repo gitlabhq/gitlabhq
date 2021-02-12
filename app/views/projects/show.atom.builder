@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 xml.title   "#{@project.name} activity"
 xml.link    href: project_url(@project, rss_url_options), rel: "self", type: "application/atom+xml"
 xml.link    href: project_url(@project), rel: "alternate", type: "text/html"

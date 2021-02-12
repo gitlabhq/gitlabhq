@@ -3,6 +3,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import AlertSidebar from '~/vue_shared/alert_details/components/alert_sidebar.vue';
 import SidebarAssignees from '~/vue_shared/alert_details/components/sidebar/sidebar_assignees.vue';
+import SidebarStatus from '~/vue_shared/alert_details/components/sidebar/sidebar_status.vue';
 import mockAlerts from '../mocks/alerts.json';
 
 const mockAlert = mockAlerts[0];
@@ -11,7 +12,12 @@ describe('Alert Details Sidebar', () => {
   let wrapper;
   let mock;
 
-  function mountComponent({ mountMethod = shallowMount, stubs = {}, alert = {} } = {}) {
+  function mountComponent({
+    mountMethod = shallowMount,
+    stubs = {},
+    alert = {},
+    provide = {},
+  } = {}) {
     wrapper = mountMethod(AlertSidebar, {
       data() {
         return {
@@ -24,6 +30,7 @@ describe('Alert Details Sidebar', () => {
       provide: {
         projectPath: 'projectPath',
         projectId: '1',
+        ...provide,
       },
       stubs,
       mocks: {
@@ -59,6 +66,30 @@ describe('Alert Details Sidebar', () => {
         alert: mockAlert,
       });
       expect(wrapper.find(SidebarAssignees).exists()).toBe(true);
+    });
+
+    it('should render side bar status dropdown', () => {
+      mountComponent({
+        mountMethod: mount,
+        alert: mockAlert,
+      });
+      expect(wrapper.find(SidebarStatus).exists()).toBe(true);
+    });
+  });
+
+  describe('the sidebar renders for threat monitoring', () => {
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+      mountComponent();
+    });
+
+    it('should not render side bar status dropdown', () => {
+      mountComponent({
+        mountMethod: mount,
+        alert: mockAlert,
+        provide: { isThreatMonitoringPage: true },
+      });
+      expect(wrapper.find(SidebarStatus).exists()).toBe(false);
     });
   });
 });

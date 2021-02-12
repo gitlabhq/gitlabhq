@@ -18,9 +18,9 @@ RSpec.describe 'Issue Boards', :js do
     project.add_maintainer(user)
     project.add_maintainer(user2)
 
-    set_cookie('sidebar_collapsed', 'true')
-
     sign_in(user)
+
+    set_cookie('sidebar_collapsed', 'true')
   end
 
   context 'no lists' do

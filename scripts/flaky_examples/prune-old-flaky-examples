@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 # lib/rspec_flaky/flaky_examples_collection.rb is requiring
 # `active_support/hash_with_indifferent_access`, and we install the `activesupport`

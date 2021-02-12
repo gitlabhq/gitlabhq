@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 xml.title   "#{@user.name} activity"
 xml.link    href: user_url(@user, :atom), rel: "self", type: "application/atom+xml"
 xml.link    href: user_url(@user), rel: "alternate", type: "text/html"
