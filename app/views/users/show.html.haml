@@ -52,8 +52,8 @@
               %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle= s_("UserProfile|(Busy)")
 
           - if show_status_emoji?(@user.status)
-            .cover-status
-              = emoji_icon(@user.status.emoji)
+            .cover-status.gl-display-inline-flex.gl-align-items-center
+              = emoji_icon(@user.status.emoji, class: 'gl-mr-2')
               = markdown_field(@user.status, :message)
           = render "users/profile_basic_info"
           .cover-desc.cgray.mb-1.mb-sm-2

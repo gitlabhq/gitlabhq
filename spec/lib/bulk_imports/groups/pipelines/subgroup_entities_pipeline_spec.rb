@@ -25,7 +25,7 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline do
       ]
     end
 
-    subject { described_class.new }
+    subject { described_class.new(context) }
 
     before do
       allow_next_instance_of(BulkImports::Groups::Extractors::SubgroupsExtractor) do |extractor|
@@ -36,7 +36,7 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline do
     end
 
     it 'creates entities for the subgroups' do
-      expect { subject.run(context) }.to change(BulkImports::Entity, :count).by(1)
+      expect { subject.run }.to change(BulkImports::Entity, :count).by(1)
 
       subgroup_entity = BulkImports::Entity.last
 

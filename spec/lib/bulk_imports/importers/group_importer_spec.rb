@@ -42,8 +42,8 @@ RSpec.describe BulkImports::Importers::GroupImporter do
   end
 
   def expect_to_run_pipeline(klass, context:)
-    expect_next_instance_of(klass) do |pipeline|
-      expect(pipeline).to receive(:run).with(context)
+    expect_next_instance_of(klass, context) do |pipeline|
+      expect(pipeline).to receive(:run)
     end
   end
 end

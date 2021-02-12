@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 42.1.1 (2021-02-12)
+
+### Security (2 changes)
+
+- Testing main branch.
+- Testing main branch.
+
+
 ## 13.8.4 (2021-02-11)
 
 ### Security (9 changes)

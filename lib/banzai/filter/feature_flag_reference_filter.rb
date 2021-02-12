@@ -14,8 +14,6 @@ module Banzai
       end
 
       def parent_records(parent, ids)
-        return self.class.object_class.none unless Feature.enabled?(:feature_flag_contextual_issue, parent)
-
         parent.operations_feature_flags.where(iid: ids.to_a)
       end
 

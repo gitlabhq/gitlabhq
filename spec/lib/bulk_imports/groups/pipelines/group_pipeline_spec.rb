@@ -33,6 +33,8 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline do
       }
     end
 
+    subject { described_class.new(context) }
+
     before do
       allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|
         allow(extractor).to receive(:extract).and_return([group_data])
@@ -44,7 +46,7 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline do
     it 'imports new group into destination group' do
       group_path = 'my-destination-group'
 
-      subject.run(context)
+      subject.run
 
       imported_group = Group.find_by_path(group_path)
 

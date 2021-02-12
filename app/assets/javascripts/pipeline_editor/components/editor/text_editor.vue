@@ -2,7 +2,7 @@
 import EditorLite from '~/vue_shared/components/editor_lite.vue';
 import { CiSchemaExtension } from '~/editor/extensions/editor_ci_schema_ext';
 import { EDITOR_READY_EVENT } from '~/editor/constants';
-import getCommitSha from '../graphql/queries/client/commit_sha.graphql';
+import getCommitSha from '../../graphql/queries/client/commit_sha.graphql';
 
 export default {
   components: {

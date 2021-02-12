@@ -3,7 +3,7 @@ import { GlAlert, GlButton, GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import TextEditor from '~/pipeline_editor/components/text_editor.vue';
+import TextEditor from '~/pipeline_editor/components/editor/text_editor.vue';
 
 import httpStatusCodes from '~/lib/utils/http_status';
 

@@ -40,7 +40,25 @@ class Projects::Ci::DailyBuildGroupReportResultsController < Projects::Applicati
   end
 
   def report_results
-    Ci::DailyBuildGroupReportResultsFinder.new(**finder_params).execute
+    if ::Gitlab::Ci::Features.use_coverage_data_new_finder?(project)
+      ::Ci::Testing::DailyBuildGroupReportResultsFinder.new(
+        params: new_finder_params,
+        current_user: current_user
+      ).execute
+    else
+      Ci::DailyBuildGroupReportResultsFinder.new(**finder_params).execute
+    end
+  end
+
+  def new_finder_params
+    {
+      project: project,
+      coverage: true,
+      start_date: start_date,
+      end_date: end_date,
+      ref_path: params[:ref_path],
+      sort: true
+    }
   end
 
   def finder_params

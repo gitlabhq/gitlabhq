@@ -1,8 +1,0 @@
----
-name: feature_flag_contextual_issue
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53021
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/320741
-milestone: '13.9'
-type: development
-group: group::release
-default_enabled: false

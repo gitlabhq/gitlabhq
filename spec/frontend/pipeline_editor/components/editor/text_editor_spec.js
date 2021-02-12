@@ -1,14 +1,14 @@
 import { shallowMount } from '@vue/test-utils';
 
 import { EDITOR_READY_EVENT } from '~/editor/constants';
-import TextEditor from '~/pipeline_editor/components/text_editor.vue';
+import TextEditor from '~/pipeline_editor/components/editor/text_editor.vue';
 import {
   mockCiConfigPath,
   mockCiYml,
   mockCommitSha,
   mockProjectPath,
   mockProjectNamespace,
-} from '../mock_data';
+} from '../../mock_data';
 
 describe('Pipeline Editor | Text editor component', () => {
   let wrapper;

@@ -73,12 +73,12 @@ RSpec.describe AuthHelper do
 
   describe 'enabled_button_based_providers' do
     before do
-      allow(helper).to receive(:auth_providers) { [:twitter, :github, :google_oauth2] }
+      allow(helper).to receive(:auth_providers) { [:twitter, :github, :google_oauth2, :openid_connect] }
     end
 
     context 'all providers are enabled to sign in' do
       it 'returns all the enabled providers from settings' do
-        expect(helper.enabled_button_based_providers).to include('twitter', 'github', 'google_oauth2')
+        expect(helper.enabled_button_based_providers).to include('twitter', 'github', 'google_oauth2', 'openid_connect')
       end
 
       it 'puts google and github in the beginning' do

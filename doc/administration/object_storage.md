@@ -75,8 +75,7 @@ types. If you want to use local storage for specific object types, you can
 
 Most types of objects, such as CI artifacts, LFS files, upload
 attachments, and so on can be saved in object storage by specifying a single
-credential for object storage with multiple buckets. A [different bucket
-for each type must be used](#use-separate-buckets).
+credential for object storage with multiple buckets.
 
 When the consolidated form is:
 
@@ -571,22 +570,13 @@ See the following additional guides:
 
 ## Warnings, limitations, and known issues
 
-### Use separate buckets
+### Separate buckets required when using Helm
 
-Using separate buckets for each data type is the recommended approach for GitLab.
+Generally, using the same bucket for your Object Storage is fine to do
+for convenience.
 
-A limitation of our configuration is that each use of object storage is separately configured.
-[We have an issue for improving this](https://gitlab.com/gitlab-org/gitlab/-/issues/23345)
-and easily using one bucket with separate folders is one improvement that this might bring.
-
-There is at least one specific issue with using the same bucket:
-when GitLab is deployed with the Helm chart restore from backup
-[will not properly function](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-pseudonymizer)
-unless separate buckets are used.
-
-One risk of using a single bucket would be that if your organisation decided to
-migrate GitLab to the Helm deployment in the future. GitLab would run, but the situation with
-backups might not be realised until the organisation had a critical requirement for the backups to work.
+However, if you're using or planning to use Helm, separate buckets will
+be required as there is a [known limitation with restorations of Helm chart backups](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-pseudonymizer).
 
 ### S3 API compatibility issues
 

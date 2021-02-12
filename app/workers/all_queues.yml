@@ -467,6 +467,14 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:user_status_cleanup_batch
+  :feature_category: :users
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:users_create_statistics
   :feature_category: :users
   :has_external_dependencies:

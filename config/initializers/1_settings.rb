@@ -553,6 +553,9 @@ Settings.cron_jobs['schedule_merge_request_cleanup_refs_worker']['job_class'] = 
 Settings.cron_jobs['manage_evidence_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['manage_evidence_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['manage_evidence_worker']['job_class'] = 'Releases::ManageEvidenceWorker'
+Settings.cron_jobs['user_status_cleanup_batch_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['user_status_cleanup_batch_worker']['cron'] ||= '* * * * *'
+Settings.cron_jobs['user_status_cleanup_batch_worker']['job_class'] = 'UserStatusCleanup::BatchWorker'
 
 Gitlab.com do
   Settings.cron_jobs['namespaces_in_product_marketing_emails_worker'] ||= Settingslogic.new({})

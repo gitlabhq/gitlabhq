@@ -2,6 +2,7 @@
 import CommitSection from './components/commit/commit_section.vue';
 import PipelineEditorTabs from './components/pipeline_editor_tabs.vue';
 import PipelineEditorHeader from './components/header/pipeline_editor_header.vue';
+import { TABS_WITH_COMMIT_FORM, CREATE_TAB } from './constants';
 
 export default {
   components: {
@@ -23,6 +24,21 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      currentTab: CREATE_TAB,
+    };
+  },
+  computed: {
+    showCommitForm() {
+      return TABS_WITH_COMMIT_FORM.includes(this.currentTab);
+    },
+  },
+  methods: {
+    setCurrentTab(tabName) {
+      this.currentTab = tabName;
+    },
+  },
 };
 </script>
 
@@ -37,7 +53,8 @@ export default {
       :ci-file-content="ciFileContent"
       :is-ci-config-data-loading="isCiConfigDataLoading"
       v-on="$listeners"
+      @set-current-tab="setCurrentTab"
     />
-    <commit-section :ci-file-content="ciFileContent" v-on="$listeners" />
+    <commit-section v-if="showCommitForm" :ci-file-content="ciFileContent" v-on="$listeners" />
   </div>
 </template>

@@ -2866,6 +2866,47 @@ RSpec.describe API::Users do
       expect(response).to have_gitlab_http_status(:success)
       expect(user.reload.status).to be_nil
     end
+
+    context 'when clear_status_after is given' do
+      it 'sets the clear_status_at column' do
+        freeze_time do
+          expected_clear_status_at = 3.hours.from_now
+
+          put api('/user/status', user), params: { emoji: 'smirk', message: 'hello world', clear_status_after: '3_hours' }
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(user.status.reload.clear_status_at).to be_within(1.minute).of(expected_clear_status_at)
+          expect(Time.parse(json_response["clear_status_at"])).to be_within(1.minute).of(expected_clear_status_at)
+        end
+      end
+
+      it 'unsets the clear_status_at column' do
+        user.create_status!(clear_status_at: 5.hours.ago)
+
+        put api('/user/status', user), params: { emoji: 'smirk', message: 'hello world', clear_status_after: nil }
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(user.status.reload.clear_status_at).to be_nil
+      end
+
+      it 'raises error when unknown status value is given' do
+        put api('/user/status', user), params: { emoji: 'smirk', message: 'hello world', clear_status_after: 'wrong' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      context 'when the clear_status_with_quick_options feature flag is disabled' do
+        before do
+          stub_feature_flags(clear_status_with_quick_options: false)
+        end
+
+        it 'does not persist clear_status_at' do
+          put api('/user/status', user), params: { emoji: 'smirk', message: 'hello world', clear_status_after: '3_hours' }
+
+          expect(user.status.reload.clear_status_at).to be_nil
+        end
+      end
+    end
   end
 
   describe 'POST /users/:user_id/personal_access_tokens' do

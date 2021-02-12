@@ -18,6 +18,8 @@ RSpec.describe BulkImports::Groups::Pipelines::LabelsPipeline do
 
   let(:context) { BulkImports::Pipeline::Context.new(entity) }
 
+  subject { described_class.new(context) }
+
   def extractor_data(title:, has_next_page:, cursor: nil)
     data = [
       {
@@ -46,7 +48,7 @@ RSpec.describe BulkImports::Groups::Pipelines::LabelsPipeline do
           .and_return(first_page, last_page)
       end
 
-      expect { subject.run(context) }.to change(Label, :count).by(2)
+      expect { subject.run }.to change(Label, :count).by(2)
 
       label = group.labels.order(:created_at).last
 
@@ -61,9 +63,9 @@ RSpec.describe BulkImports::Groups::Pipelines::LabelsPipeline do
       it 'updates tracker information and runs pipeline again' do
         data = extractor_data(title: 'label', has_next_page: true, cursor: cursor)
 
-        expect(subject).to receive(:run).with(context)
+        expect(subject).to receive(:run)
 
-        subject.after_run(context, data)
+        subject.after_run(data)
 
         tracker = entity.trackers.find_by(relation: :labels)
 
@@ -76,9 +78,9 @@ RSpec.describe BulkImports::Groups::Pipelines::LabelsPipeline do
       it 'updates tracker information and does not run pipeline' do
         data = extractor_data(title: 'label', has_next_page: false)
 
-        expect(subject).not_to receive(:run).with(context)
+        expect(subject).not_to receive(:run)
 
-        subject.after_run(context, data)
+        subject.after_run(data)
 
         tracker = entity.trackers.find_by(relation: :labels)
 

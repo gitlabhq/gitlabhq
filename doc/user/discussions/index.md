@@ -7,9 +7,9 @@ type: reference, howto
 
 # Threads **(FREE)**
 
-You can use words to communicate with other users all over GitLab.
+GitLab encourages communication through comments, threads, and suggestions.
 
-For example, you can leave a comment in the following places:
+For example, you can create a comment in the following places:
 
 - Issues
 - Epics

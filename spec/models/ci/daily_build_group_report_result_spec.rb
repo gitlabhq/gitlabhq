@@ -97,6 +97,35 @@ RSpec.describe Ci::DailyBuildGroupReportResult do
       end
     end
 
+    describe '.by_ref_path' do
+      subject(:coverages) { described_class.by_ref_path(recent_build_group_report_result.ref_path) }
+
+      it 'returns coverages by ref_path' do
+        expect(coverages).to contain_exactly(recent_build_group_report_result, old_build_group_report_result)
+      end
+    end
+
+    describe '.ordered_by_date_and_group_name' do
+      subject(:coverages) { described_class.ordered_by_date_and_group_name }
+
+      it 'returns coverages ordered by data and group name' do
+        expect(subject).to contain_exactly(recent_build_group_report_result, old_build_group_report_result)
+      end
+    end
+
+    describe '.by_dates' do
+      subject(:coverages) { described_class.by_dates(start_date, end_date) }
+
+      context 'when daily coverages exist during those dates' do
+        let(:start_date) { 1.day.ago.to_date.to_s }
+        let(:end_date) { Date.current.to_s }
+
+        it 'returns coverages' do
+          expect(coverages).to contain_exactly(recent_build_group_report_result)
+        end
+      end
+    end
+
     describe '.with_coverage' do
       subject { described_class.with_coverage }
 

@@ -179,3 +179,11 @@ jq --raw-output --slurp '
   663     106 ms,      96 ms,      94 ms      'groupABC/project123'
   ...
 ```
+
+#### Find all projects affected by a fatal Git problem
+
+```shell
+grep "fatal: " /var/log/gitlab/gitaly/current | \
+    jq '."grpc.request.glProjectPath"' | \
+    sort | uniq
+```

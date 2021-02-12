@@ -82,18 +82,6 @@ RSpec.describe Banzai::Filter::FeatureFlagReferenceFilter do
       expect(link).not_to match %r(https?://)
       expect(link).to eq urls.edit_project_feature_flag_url(project, feature_flag.iid, only_path: true)
     end
-
-    context 'when feature_flag_contextual_issue feture flag is disabled' do
-      before do
-        stub_feature_flags(feature_flag_contextual_issue: false)
-      end
-
-      it 'does not link the reference' do
-        doc = reference_filter("See #{reference}")
-
-        expect(doc.css('a').first).to be_nil
-      end
-    end
   end
 
   context 'with cross-project / cross-namespace complete reference' do

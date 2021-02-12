@@ -396,6 +396,69 @@ In GitLab 13.4, a seed project is added when GitLab is first installed. This mak
 on a new Geo secondary node. There is an [issue to account for seed projects](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5618)
 when checking the database.
 
+### Message: `Synchronization failed - Error syncing repository`
+
+WARNING:
+If large repositories are affected by this problem,
+their resync may take a long time and cause significant load on your Geo nodes,
+storage and network systems.
+
+If you get the error `Synchronization failed - Error syncing repository` along with the following log messages, this indicates that the expected `geo` remote is not present in the `.git/config` file
+of a repository on the secondary Geo node's filesystem:
+
+```json
+{
+  "created": "@1603481145.084348757",
+  "description": "Error received from peer unix:/var/opt/gitlab/gitaly/gitaly.socket",
+  …
+  "grpc_message": "exit status 128",
+  "grpc_status": 13
+}
+{  …
+  "grpc.request.fullMethod": "/gitaly.RemoteService/FindRemoteRootRef",
+  "grpc.request.glProjectPath": "<namespace>/<project>",
+  …
+  "level": "error",
+  "msg": "fatal: 'geo' does not appear to be a git repository
+          fatal: Could not read from remote repository. …",
+}
+```
+
+To solve this:
+
+1. Log into the secondary Geo node.
+
+1. Back up [the `.git` folder](../../repository_storage_types.md#translating-hashed-storage-paths).
+
+1. Optional: [Spot-check](../../troubleshooting/log_parsing.md#find-all-projects-affected-by-a-fatal-git-problem))
+   a few of those IDs whether they indeed correspond
+   to a project with known Geo replication failures.
+   Use `fatal: 'geo'` as the `grep` term and the following API call:
+
+   ```shell
+   curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<first_failed_geo_sync_ID>"
+   ```
+
+1. Enter the [Rails console](../../troubleshooting/navigating_gitlab_via_rails_console.md) and run:
+
+   ```ruby
+   failed_geo_syncs = Geo::ProjectRegistry.failed.pluck(:id)
+   failed_geo_syncs.each do |fgs|
+     puts Geo::ProjectRegistry.failed.find(fgs).project_id
+   end
+   ```
+
+1. Run the following commands to reset each project's
+   Geo-related attributes and execute a new sync:
+
+   ```ruby
+   failed_geo_syncs.each do |fgs|
+     registry = Geo::ProjectRegistry.failed.find(fgs)
+     registry.update(resync_repository: true, force_to_redownload_repository: false, repository_retry_count: 0)
+     Geo::RepositorySyncService.new(registry.project).execute
+   end
+   ```
+
 ### Very large repositories never successfully synchronize on the **secondary** node
 
 GitLab places a timeout on all repository clones, including project imports

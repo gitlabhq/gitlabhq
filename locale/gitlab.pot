@@ -11544,6 +11544,12 @@ msgstr ""
 msgid "Epics, Issues, and Merge Requests"
 msgstr ""
 
+msgid "Epics|%{startDate} – %{dueDate}"
+msgstr ""
+
+msgid "Epics|%{startDate} – No due date"
+msgstr ""
+
 msgid "Epics|Add a new epic"
 msgstr ""
 
@@ -11571,6 +11577,9 @@ msgstr ""
 msgid "Epics|Leave empty to inherit from milestone dates"
 msgstr ""
 
+msgid "Epics|No start date – %{dueDate}"
+msgstr ""
+
 msgid "Epics|Remove epic"
 msgstr ""
 
@@ -11596,6 +11605,9 @@ msgid "Epics|Something went wrong while creating issue."
 msgstr ""
 
 msgid "Epics|Something went wrong while fetching child epics."
+msgstr ""
+
+msgid "Epics|Something went wrong while fetching epics list."
 msgstr ""
 
 msgid "Epics|Something went wrong while fetching group epics."
@@ -21672,6 +21684,9 @@ msgstr ""
 msgid "Pipelines|Copy trigger token"
 msgstr ""
 
+msgid "Pipelines|Could not load merged YAML content"
+msgstr ""
+
 msgid "Pipelines|Description"
 msgstr ""
 
@@ -21706,6 +21721,9 @@ msgid "Pipelines|Lint"
 msgstr ""
 
 msgid "Pipelines|Loading Pipelines"
+msgstr ""
+
+msgid "Pipelines|Merged YAML is view only"
 msgstr ""
 
 msgid "Pipelines|More Information"
@@ -21778,6 +21796,9 @@ msgid "Pipelines|Trigger user has insufficient permissions to project"
 msgstr ""
 
 msgid "Pipelines|Validating GitLab CI configuration…"
+msgstr ""
+
+msgid "Pipelines|View merged YAML"
 msgstr ""
 
 msgid "Pipelines|Visualize"
@@ -29404,6 +29425,9 @@ msgstr ""
 msgid "There are no charts configured for this page"
 msgstr ""
 
+msgid "There are no closed epics"
+msgstr ""
+
 msgid "There are no closed issues"
 msgstr ""
 
@@ -29426,6 +29450,9 @@ msgid "There are no labels yet"
 msgstr ""
 
 msgid "There are no matching files"
+msgstr ""
+
+msgid "There are no open epics"
 msgstr ""
 
 msgid "There are no open issues"

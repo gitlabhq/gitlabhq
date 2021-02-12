@@ -1,6 +1,5 @@
 import Vue from 'vue';
-import jQuery from 'jquery';
-import { toArray, isFunction, isElement } from 'lodash';
+import { toArray, isElement } from 'lodash';
 import Tooltips from './components/tooltips.vue';
 
 let app;
@@ -60,72 +59,39 @@ const applyToElements = (elements, handler) => {
   toArray(iterable).forEach(handler);
 };
 
-const invokeBootstrapApi = (elements, method) => {
-  if (isFunction(elements.tooltip)) {
-    elements.tooltip(method);
-  } else {
-    jQuery(elements).tooltip(method);
-  }
-};
-
-const isGlTooltipsEnabled = () => Boolean(window.gon.features?.glTooltips);
-
-const tooltipApiInvoker = ({ glHandler, bsHandler }) => (elements, ...params) => {
-  if (isGlTooltipsEnabled()) {
-    applyToElements(elements, glHandler);
-  } else {
-    bsHandler(elements, ...params);
-  }
+const createTooltipApiInvoker = (glHandler) => (elements) => {
+  applyToElements(elements, glHandler);
 };
 
 export const initTooltips = (config = {}) => {
-  if (isGlTooltipsEnabled()) {
-    const triggers = config?.triggers || DEFAULT_TRIGGER;
-    const events = triggers.split(' ').map((trigger) => EVENTS_MAP[trigger]);
+  const triggers = config?.triggers || DEFAULT_TRIGGER;
+  const events = triggers.split(' ').map((trigger) => EVENTS_MAP[trigger]);
 
-    events.forEach((event) => {
-      document.addEventListener(
-        event,
-        (e) => handleTooltipEvent(document, e, config.selector, config),
-        true,
-      );
-    });
+  events.forEach((event) => {
+    document.addEventListener(
+      event,
+      (e) => handleTooltipEvent(document, e, config.selector, config),
+      true,
+    );
+  });
 
-    return tooltipsApp();
-  }
-
-  return invokeBootstrapApi(document.body, config);
+  return tooltipsApp();
 };
-export const add = (elements, config = {}) => {
-  if (isGlTooltipsEnabled()) {
-    return addTooltips(elements, config);
-  }
-  return invokeBootstrapApi(elements, config);
-};
-export const dispose = tooltipApiInvoker({
-  glHandler: (element) => tooltipsApp().dispose(element),
-  bsHandler: (elements) => invokeBootstrapApi(elements, 'dispose'),
-});
-export const fixTitle = tooltipApiInvoker({
-  glHandler: (element) => tooltipsApp().fixTitle(element),
-  bsHandler: (elements) => invokeBootstrapApi(elements, '_fixTitle'),
-});
-export const enable = tooltipApiInvoker({
-  glHandler: (element) => tooltipsApp().triggerEvent(element, 'enable'),
-  bsHandler: (elements) => invokeBootstrapApi(elements, 'enable'),
-});
-export const disable = tooltipApiInvoker({
-  glHandler: (element) => tooltipsApp().triggerEvent(element, 'disable'),
-  bsHandler: (elements) => invokeBootstrapApi(elements, 'disable'),
-});
-export const hide = tooltipApiInvoker({
-  glHandler: (element) => tooltipsApp().triggerEvent(element, 'close'),
-  bsHandler: (elements) => invokeBootstrapApi(elements, 'hide'),
-});
-export const show = tooltipApiInvoker({
-  glHandler: (element) => tooltipsApp().triggerEvent(element, 'open'),
-  bsHandler: (elements) => invokeBootstrapApi(elements, 'show'),
-});
+export const add = (elements, config = {}) => addTooltips(elements, config);
+export const dispose = createTooltipApiInvoker((element) => tooltipsApp().dispose(element));
+export const fixTitle = createTooltipApiInvoker((element) => tooltipsApp().fixTitle(element));
+export const enable = createTooltipApiInvoker((element) =>
+  tooltipsApp().triggerEvent(element, 'enable'),
+);
+export const disable = createTooltipApiInvoker((element) =>
+  tooltipsApp().triggerEvent(element, 'disable'),
+);
+export const hide = createTooltipApiInvoker((element) =>
+  tooltipsApp().triggerEvent(element, 'close'),
+);
+export const show = createTooltipApiInvoker((element) =>
+  tooltipsApp().triggerEvent(element, 'open'),
+);
 export const destroy = () => {
   tooltipsApp().$destroy();
   app = null;

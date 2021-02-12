@@ -25,6 +25,7 @@ From the pipeline editor page you can:
 - Do a deeper [lint](#lint-ci-configuration) of your configuration, that verifies it with any configuration
   added with the [`include`](../yaml/README.md#include) keyword.
 - See a [visualization](#visualize-ci-configuration) of the current configuration.
+- View an [expanded](#view-expanded-configuration) version of your configuration.
 - [Commit](#commit-changes-to-ci-configuration) the changes to a specific branch.
 
 NOTE:
@@ -99,6 +100,40 @@ To enable it:
 
 ```ruby
 Feature.enable(:ci_config_visualization_tab)
+```
+
+## View expanded configuration
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/246801) in GitLab 13.9.
+> - It is [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-expanded-configuration). **(FREE SELF)**
+
+To view the fully expanded CI/CD configuration as one combined file, go to the
+pipeline editor's **View merged YAML** tab. This tab displays an expanded configuration
+where:
+
+- Configuration imported with [`include`](../yaml/README.md#include) is copied into the view.
+- Jobs that use [`extends`](../yaml/README.md#extends) display with the
+  [extended configuration merged into the job](../yaml/README.md#merge-details).
+- YAML anchors are [replaced with the linked configuration](../yaml/README.md#anchors).
+
+### Enable or disable expanded configuration **(FREE SELF)**
+
+Expanded CI/CD configuration is under development and not ready for production use.
+It is deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can opt to enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:ci_config_visualization_tab)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:ci_config_visualization_tab)
 ```
 
 ## Commit changes to CI configuration

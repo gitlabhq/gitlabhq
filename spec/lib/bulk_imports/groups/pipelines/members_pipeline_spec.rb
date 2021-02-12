@@ -13,6 +13,8 @@ RSpec.describe BulkImports::Groups::Pipelines::MembersPipeline do
   let_it_be(:entity) { create(:bulk_import_entity, bulk_import: bulk_import, group: group) }
   let_it_be(:context) { BulkImports::Pipeline::Context.new(entity) }
 
+  subject { described_class.new(context) }
+
   describe '#run' do
     it 'maps existing users to the imported group' do
       first_page = member_data(email: member_user1.email, has_next_page: true, cursor: cursor)
@@ -24,7 +26,7 @@ RSpec.describe BulkImports::Groups::Pipelines::MembersPipeline do
           .and_return(first_page, last_page)
       end
 
-      expect { subject.run(context) }.to change(GroupMember, :count).by(2)
+      expect { subject.run }.to change(GroupMember, :count).by(2)
 
       members = group.members.map { |m| m.slice(:user_id, :access_level) }
 

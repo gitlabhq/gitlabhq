@@ -1004,11 +1004,15 @@ module API
         optional :emoji, type: String, desc: "The emoji to set on the status"
         optional :message, type: String, desc: "The status message to set"
         optional :availability, type: String, desc: "The availability of user to set"
+        optional :clear_status_after, type: String, desc: "Automatically clear emoji, message and availability fields after a certain time", values: UserStatus::CLEAR_STATUS_QUICK_OPTIONS.keys
       end
       put "status", feature_category: :users do
         forbidden! unless can?(current_user, :update_user_status, current_user)
 
-        if ::Users::SetStatusService.new(current_user, declared_params).execute
+        update_params = declared_params
+        update_params.delete(:clear_status_after) if Feature.disabled?(:clear_status_with_quick_options, current_user)
+
+        if ::Users::SetStatusService.new(current_user, update_params).execute
           present current_user.status, with: Entities::UserStatus
         else
           render_validation_error!(current_user.status)

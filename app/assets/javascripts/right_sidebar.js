@@ -123,7 +123,7 @@ Sidebar.prototype.todoUpdateDone = function (data) {
       .data('deletePath', deletePath);
 
     if ($el.hasClass('has-tooltip')) {
-      fixTitle($el);
+      fixTitle(el);
     }
 
     if (typeof $el.data('isCollapsed') !== 'undefined') {

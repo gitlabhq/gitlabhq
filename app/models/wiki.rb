@@ -104,7 +104,7 @@ class Wiki
   end
 
   def empty?
-    list_pages(limit: 1).empty?
+    !repository_exists? || list_pages(limit: 1).empty?
   end
 
   def exists?
