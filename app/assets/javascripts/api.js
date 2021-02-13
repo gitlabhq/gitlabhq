@@ -81,7 +81,6 @@ const Api = {
   usageDataIncrementUniqueUsersPath: '/api/:version/usage_data/increment_unique_users',
   featureFlagUserLists: '/api/:version/projects/:id/feature_flags_user_lists',
   featureFlagUserList: '/api/:version/projects/:id/feature_flags_user_lists/:list_iid',
-  billableGroupMembersPath: '/api/:version/groups/:id/billable_members',
   containerRegistryDetailsPath: '/api/:version/registry/repositories/:id/',
   projectNotificationSettingsPath: '/api/:version/projects/:id/notification_settings',
   groupNotificationSettingsPath: '/api/:version/groups/:id/notification_settings',
@@ -881,33 +880,6 @@ const Api = {
       .replace(':list_iid', listIid);
 
     return axios.delete(url);
-  },
-
-  fetchBillableGroupMembersList(namespaceId, options = {}, callback = () => {}) {
-    const url = Api.buildUrl(this.billableGroupMembersPath).replace(':id', namespaceId);
-    const defaults = {
-      per_page: DEFAULT_PER_PAGE,
-      page: 1,
-    };
-
-    const passedOptions = options;
-
-    // calling search API with empty string will not return results
-    if (!passedOptions.search) {
-      passedOptions.search = undefined;
-    }
-
-    return axios
-      .get(url, {
-        params: {
-          ...defaults,
-          ...passedOptions,
-        },
-      })
-      .then(({ data, headers }) => {
-        callback(data);
-        return { data, headers };
-      });
   },
 
   async updateNotificationSettings(projectId, groupId, data = {}) {
