@@ -6,9 +6,6 @@
   - elsif @user.blocked?
     %span.cred
       = s_('AdminUsers|(Blocked)')
-  - if @user.group_managed_account?
-    %span.cred
-      = s_('AdminUsers|(Group Managed Account)')
   - if @user.internal?
     %span.cred
       = s_('AdminUsers|(Internal)')
@@ -19,6 +16,7 @@
     %span.cred
       = s_('AdminUsers|(Deactivated)')
   = render_if_exists 'admin/users/auditor_user_badge'
+  = render_if_exists 'admin/users/gma_user_badge'
 
   .float-right
     - if impersonation_enabled? && @user != current_user && @user.can?(:log_in)

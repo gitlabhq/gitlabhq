@@ -988,6 +988,9 @@ msgstr ""
 msgid "(+%{count}&nbsp;rules)"
 msgstr ""
 
+msgid "(Group Managed Account)"
+msgstr ""
+
 msgid "(No changes)"
 msgstr ""
 
@@ -2251,9 +2254,6 @@ msgid "AdminUsers|(Blocked)"
 msgstr ""
 
 msgid "AdminUsers|(Deactivated)"
-msgstr ""
-
-msgid "AdminUsers|(Group Managed Account)"
 msgstr ""
 
 msgid "AdminUsers|(Internal)"
