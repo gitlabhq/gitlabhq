@@ -81,7 +81,7 @@ GEM
       faraday_middleware (~> 1.0)
       faraday_middleware-multi_json (~> 0.0)
       oauth2 (~> 1.4)
-    asciidoctor (2.0.10)
+    asciidoctor (2.0.12)
     asciidoctor-include-ext (0.3.1)
       asciidoctor (>= 1.5.6, < 3.0.0)
     asciidoctor-kroki (0.2.2)

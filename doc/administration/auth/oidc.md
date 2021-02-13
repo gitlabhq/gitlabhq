@@ -130,8 +130,7 @@ different providers with Omnibus GitLab.
 
 ### Google
 
-See the [Google
-documentation](https://developers.google.com/identity/protocols/oauth2/openid-connect)
+See the [Google documentation](https://developers.google.com/identity/protocols/oauth2/openid-connect)
 for more details:
 
 ```ruby
@@ -155,6 +154,44 @@ for more details:
    }
  }
 ```
+
+### Microsoft Azure
+
+The OpenID Connect (OIDC) protocol for Microsoft Azure uses the [Microsoft identity platform (v2) endpoints](https://docs.microsoft.com/en-us/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison).
+To get started, sign in to the [Azure Portal](https://portal.azure.com). For your app, you'll need the
+following information:
+
+- A tenant ID. You may already have one. For more information, review the
+  [Microsoft Azure Tenant](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant) documentation.
+- A client ID and a client secret. Follow the instructions in the
+  [Microsoft Quickstart Register an Application](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app) documentation.
+to obtain the tenant ID, client ID, and client secret for your app.
+
+Example Omnibus configuration block:
+
+```ruby
+ gitlab_rails['omniauth_providers'] = [
+ {
+   'name' => 'openid_connect',
+   'label' => 'Azure OIDC',
+   'args' => {
+     'name' => 'openid_connect',
+     'scope' => ['openid', 'profile', 'email'],
+     'response_type' => 'code',
+     'issuer' =>  'https://login.microsoftonline.com/<YOUR-TENANT-ID>/v2.0',
+     'client_auth_method' => 'query',
+     'discovery' => true,
+     'uid_field' => 'preferred_username',
+     'client_options' => {
+       'identifier' => '<YOUR APP CLIENT ID>',
+       'secret' => '<YOUR APP CLIENT SECRET>',
+       'redirect_uri' => 'https://gitlab.example.com/users/auth/openid_connect/callback'
+     }
+   }
+ }
+```
+
+Microsoft has documented how its platform works with [the OIDC protocol](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-protocols-oidc).
 
 ## Troubleshooting
 

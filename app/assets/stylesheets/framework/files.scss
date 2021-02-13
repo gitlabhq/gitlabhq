@@ -353,23 +353,17 @@ span.idiff {
     color: $gl-text-color;
   }
 
-  .file-actions .btn:not(.btn-icon) {
-    padding: 0 10px;
-    font-size: 13px;
-    line-height: 28px;
-    display: inline-block;
-    float: none;
-  }
-
   .file-actions .ide-edit-button {
     z-index: 2;
   }
 
-  @include media-breakpoint-down(sm) {
-    display: block;
-
+  @include media-breakpoint-down(md) {
     .file-actions {
-      margin-top: 5px;
+      margin-top: $gl-padding-8;
+
+      .btn {
+        margin-bottom: $gl-padding-8;
+      }
     }
   }
 }

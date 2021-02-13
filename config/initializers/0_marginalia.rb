@@ -9,6 +9,11 @@ require 'marginalia'
 # Refer: https://github.com/basecamp/marginalia/blob/v1.8.0/lib/marginalia/railtie.rb#L67
 ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.prepend(Gitlab::Marginalia::ActiveRecordInstrumentation)
 
+# By default, PostgreSQL only tracks the first 1024 bytes of a SQL
+# query. Prepending the comment allows us to trace the source of the
+# query without having to increase the `track_activity_query_size`
+# parameter.
+Marginalia::Comment.prepend_comment = true unless Rails.env.test? # Some tests do string matching against raw SQL
 Marginalia::Comment.components = [:application, :controller, :action, :correlation_id, :jid, :job_class]
 
 # As mentioned in https://github.com/basecamp/marginalia/pull/93/files,

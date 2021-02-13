@@ -8,6 +8,8 @@ module MergeRequests
   # Executed when you do merge via GitLab UI
   #
   class MergeService < MergeRequests::MergeBaseService
+    GENERIC_ERROR_MESSAGE = 'An error occurred while merging'
+
     delegate :merge_jid, :state, to: :@merge_request
 
     def execute(merge_request, options = {})
@@ -79,7 +81,7 @@ module MergeRequests
       if commit_id
         log_info("Git merge finished on JID #{merge_jid} commit #{commit_id}")
       else
-        raise_error('Conflicts detected during merge')
+        raise_error(GENERIC_ERROR_MESSAGE)
       end
 
       merge_request.update!(merge_commit_sha: commit_id)
@@ -96,7 +98,7 @@ module MergeRequests
             "Something went wrong during merge pre-receive hook. #{e.message}".strip
     rescue => e
       handle_merge_error(log_message: e.message)
-      raise_error('Something went wrong during merge')
+      raise_error(GENERIC_ERROR_MESSAGE)
     end
 
     def after_merge

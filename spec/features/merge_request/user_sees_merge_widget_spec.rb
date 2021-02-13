@@ -388,7 +388,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
       click_button 'Merge'
 
       page.within('.mr-widget-body') do
-        expect(page).to have_content('Conflicts detected during merge')
+        expect(page).to have_content('An error occurred while merging')
       end
     end
   end
