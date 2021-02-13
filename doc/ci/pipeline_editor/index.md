@@ -70,13 +70,15 @@ WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 It is not accessible if the [pipeline editor is disabled](#enable-or-disable-pipeline-editor).
 
-To see a visualization of your `gitlab-ci.yml` configuration, navigate to **CI/CD > Editor**
-and select the `visualization` tab. The visualization shows all stages and jobs.
-[`needs`](../yaml/README.md#needs) relationships are displayed as lines connecting jobs together, showing the hierarchy of execution:
+To view a visualization of your `gitlab-ci.yml` configuration, in your project,
+go to **CI/CD > Editor**, and then select the **Visualize** tab. The
+visualization shows all stages and jobs. Any [`needs`](../yaml/README.md#needs)
+relationships are displayed as lines connecting jobs together, showing the
+hierarchy of execution:
 
 ![CI configuration Visualization](img/ci_config_visualization_v13_7.png)
 
-Hovering on a job highlights its `needs` relationships:
+Hover over a job to highlight its `needs` relationships:
 
 ![CI configuration visualization on hover](img/ci_config_visualization_hover_v13_7.png)
 

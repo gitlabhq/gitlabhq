@@ -5,9 +5,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: tutorial
 ---
 
-# Running Composer and NPM scripts with deployment via SCP in GitLab CI/CD
+# Running Composer and npm scripts with deployment via SCP in GitLab CI/CD
 
-This guide covers the building of dependencies of a PHP project while compiling assets via an NPM script using [GitLab CI/CD](../../README.md).
+This guide covers the building of dependencies of a PHP project while compiling assets via an npm script using [GitLab CI/CD](../../README.md).
 
 While it is possible to create your own image with custom PHP and Node.js versions, for brevity we use an existing [Docker image](https://hub.docker.com/r/tetraweb/php/) that contains both PHP and Node.js installed.
 

@@ -589,7 +589,7 @@ On GitLab.com, the maximum file size for a package that's uploaded to the [GitLa
 - Conan: 5GB
 - Generic: 5GB
 - Maven: 5GB
-- NPM: 5GB
+- npm: 5GB
 - NuGet: 5GB
 - PyPI: 5GB
 
@@ -602,7 +602,7 @@ To set this limit on a self-managed installation, run the following in the
 # For Conan Packages
 Plan.default.actual_limits.update!(conan_max_file_size: 100.megabytes)
 
-# For NPM Packages
+# For npm Packages
 Plan.default.actual_limits.update!(npm_max_file_size: 100.megabytes)
 
 # For NuGet Packages

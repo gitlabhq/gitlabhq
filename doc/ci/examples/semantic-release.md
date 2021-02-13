@@ -4,9 +4,9 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Publish NPM packages to the GitLab Package Registry using semantic-release
+# Publish npm packages to the GitLab Package Registry using semantic-release
 
-This guide demonstrates how to automatically publish NPM packages to the [GitLab Package Registry](../../user/packages/npm_registry/index.md) by using [semantic-release](https://github.com/semantic-release/semantic-release).
+This guide demonstrates how to automatically publish npm packages to the [GitLab Package Registry](../../user/packages/npm_registry/index.md) by using [semantic-release](https://github.com/semantic-release/semantic-release).
 
 You can also view or fork the complete [example source](https://gitlab.com/gitlab-examples/semantic-release-npm).
 
@@ -15,7 +15,7 @@ You can also view or fork the complete [example source](https://gitlab.com/gitla
 1. Open a terminal and navigate to the project's repository
 1. Run `npm init`. Name the module according to [the Package Registry's naming conventions](../../user/packages/npm_registry/index.md#package-naming-convention). For example, if the project's path is `gitlab-examples/semantic-release-npm`, name the module `@gitlab-examples/semantic-release-npm`.
 
-1. Install the following NPM packages:
+1. Install the following npm packages:
 
    ```shell
    npm install semantic-release @semantic-release/git @semantic-release/gitlab @semantic-release/npm --save-dev
@@ -35,7 +35,7 @@ You can also view or fork the complete [example source](https://gitlab.com/gitla
    }
    ```
 
-1. Update the `files` key with glob pattern(s) that selects all files that should be included in the published module. More information about `files` can be found [in NPM's documentation](https://docs.npmjs.com/cli/v6/configuring-npm/package-json/#files).
+1. Update the `files` key with glob pattern(s) that selects all files that should be included in the published module. More information about `files` can be found [in npm's documentation](https://docs.npmjs.com/cli/v6/configuring-npm/package-json/#files).
 
 1. Add a `.gitignore` file to the project to avoid committing `node_modules`:
 
@@ -80,7 +80,7 @@ publish:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
-This example configures the pipeline with a single job, `publish`, which runs `semantic-release`. The semantic-release library publishes new versions of the NPM package and creates new GitLab releases (if necessary).
+This example configures the pipeline with a single job, `publish`, which runs `semantic-release`. The semantic-release library publishes new versions of the npm package and creates new GitLab releases (if necessary).
 
 The default `before_script` generates a temporary `.npmrc` that is used to authenticate to the Package Registry during the `publish` job.
 

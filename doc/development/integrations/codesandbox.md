@@ -42,7 +42,7 @@ Before using CodeSandbox with your local GitLab instance, you must:
 
 GitLab integrates with two parts of CodeSandbox:
 
-- An NPM package called `smooshpack` (called `sandpack` in the `codesandbox-client` project).
+- An npm package called `smooshpack` (called `sandpack` in the `codesandbox-client` project).
   This exposes an entrypoint for us to kick off Codesandbox's bundler.
 - A server that houses CodeSandbox assets for bundling and previewing. This is hosted
   on a separate server for security.

@@ -200,16 +200,16 @@ With a few API endpoints you can use a [GitLab CI/CD job token](../user/project/
 to authenticate with the API:
 
 - Packages:
-  - [Composer Repository](../user/packages/composer_repository/index.md)
-  - [Conan Repository](../user/packages/conan_repository/index.md)
+  - [Package Registry for Composer](../user/packages/composer_repository/index.md)
+  - [Package Registry for Conan](../user/packages/conan_repository/index.md)
   - [Container Registry](../user/packages/container_registry/index.md)
     (`$CI_REGISTRY_PASSWORD` is `$CI_JOB_TOKEN`)
   - [Go Proxy](../user/packages/go_proxy/index.md)
-  - [Maven Repository](../user/packages/maven_repository/index.md#authenticate-with-a-ci-job-token-in-maven)
-  - [NPM Repository](../user/packages/npm_registry/index.md#authenticate-with-a-ci-job-token)
-  - [NuGet Repository](../user/packages/nuget_repository/index.md)
-  - [PyPI Repository](../user/packages/pypi_repository/index.md#authenticate-with-a-ci-job-token)
-  - [Generic packages](../user/packages/generic_packages/index.md#publish-a-generic-package-by-using-cicd)
+  - [Package Registry for Maven](../user/packages/maven_repository/index.md#authenticate-with-a-ci-job-token-in-maven)
+  - [Package Registry for npm](../user/packages/npm_registry/index.md#authenticate-with-a-ci-job-token)
+  - [Package Registry for NuGet](../user/packages/nuget_repository/index.md)
+  - [Package Registry for PyPI](../user/packages/pypi_repository/index.md#authenticate-with-a-ci-job-token)
+  - [Package Registry for generic packages](../user/packages/generic_packages/index.md#publish-a-generic-package-by-using-cicd)
 - [Get job artifacts](job_artifacts.md#get-job-artifacts)
 - [Pipeline triggers](pipeline_triggers.md) (using the `token=` parameter)
 - [Release creation](releases/index.md#create-a-release)

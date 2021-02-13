@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Get started with GitLab CI/CD
+# Get started with GitLab CI/CD **(FREE)**
 
 Use this document to get started with
 GitLab [continuous integration](https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/).

@@ -27,7 +27,7 @@ When upgrading the Rails gem and its dependencies, you also should update the fo
 - The [`Gemfile` in Gitaly Ruby](https://gitlab.com/gitlab-org/gitaly/-/blob/master/ruby/Gemfile),
   to ensure that we ship only one version of these gems.
 
-You should also update NPM packages that follow the current version of Rails:
+You should also update npm packages that follow the current version of Rails:
 
 - `@rails/ujs`
 - `@rails/actioncable`
