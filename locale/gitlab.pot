@@ -3509,6 +3509,9 @@ msgstr ""
 msgid "An example project for managing Kubernetes clusters integrated with GitLab"
 msgstr ""
 
+msgid "An example project that shows off the best practices for setting up GitLab for your own organization, including sample issues, merge requests, and milestones"
+msgstr ""
+
 msgid "An example showing how to use Jsonnet with GitLab dynamic child pipelines"
 msgstr ""
 
@@ -13512,9 +13515,6 @@ msgid "Get started"
 msgstr ""
 
 msgid "Get started with GitLab"
-msgstr ""
-
-msgid "Get started with a project that follows best practices for setting up GitLab for your own organization, including sample Issues, Merge Requests, and Milestones"
 msgstr ""
 
 msgid "Get started with error tracking"
