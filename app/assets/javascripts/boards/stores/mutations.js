@@ -1,7 +1,7 @@
-import Vue from 'vue';
 import { pull, union } from 'lodash';
-import { s__ } from '~/locale';
+import Vue from 'vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { s__ } from '~/locale';
 import { formatIssue, moveIssueListHelper } from '../boards_util';
 import * as mutationTypes from './mutation_types';
 

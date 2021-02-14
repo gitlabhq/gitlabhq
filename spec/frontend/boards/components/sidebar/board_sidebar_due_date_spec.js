@@ -1,7 +1,7 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlDatepicker } from '@gitlab/ui';
-import BoardSidebarDueDate from '~/boards/components/sidebar/board_sidebar_due_date.vue';
+import { shallowMount } from '@vue/test-utils';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
+import BoardSidebarDueDate from '~/boards/components/sidebar/board_sidebar_due_date.vue';
 import { createStore } from '~/boards/stores';
 import createFlash from '~/flash';
 

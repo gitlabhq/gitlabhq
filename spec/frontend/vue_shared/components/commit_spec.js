@@ -1,8 +1,8 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import CommitComponent from '~/vue_shared/components/commit.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
 describe('Commit component', () => {
   let props;

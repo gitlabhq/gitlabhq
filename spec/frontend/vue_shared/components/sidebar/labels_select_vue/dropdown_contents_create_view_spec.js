@@ -1,7 +1,7 @@
-import Vuex from 'vuex';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-
 import { GlButton, GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
+
 import DropdownContentsCreateView from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_contents_create_view.vue';
 
 import labelSelectModule from '~/vue_shared/components/sidebar/labels_select_vue/store';

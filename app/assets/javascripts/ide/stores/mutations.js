@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import * as types from './mutation_types';
-import projectMutations from './mutations/project';
-import mergeRequestMutation from './mutations/merge_request';
-import fileMutations from './mutations/file';
-import treeMutations from './mutations/tree';
 import branchMutations from './mutations/branch';
+import fileMutations from './mutations/file';
+import mergeRequestMutation from './mutations/merge_request';
+import projectMutations from './mutations/project';
+import treeMutations from './mutations/tree';
 import {
   sortTree,
   swapInParentTreeWithSorting,

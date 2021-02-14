@@ -1,7 +1,7 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import createState from '~/create_cluster/gke_cluster/store/state';
 import GkeProjectIdDropdown from '~/create_cluster/gke_cluster/components/gke_project_id_dropdown.vue';
+import createState from '~/create_cluster/gke_cluster/store/state';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
 import { selectedProjectMock, gapiProjectsResponseMock } from '../mock_data';

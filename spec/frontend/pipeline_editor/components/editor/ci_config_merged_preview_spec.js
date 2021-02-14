@@ -1,10 +1,10 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlAlert, GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 
 import { EDITOR_READY_EVENT } from '~/editor/constants';
-import { INVALID_CI_CONFIG } from '~/pipelines/constants';
 import CiConfigMergedPreview from '~/pipeline_editor/components/editor/ci_config_merged_preview.vue';
 import { CI_CONFIG_STATUS_INVALID } from '~/pipeline_editor/constants';
+import { INVALID_CI_CONFIG } from '~/pipelines/constants';
 import { mockLintResponse, mockCiConfigPath } from '../../mock_data';
 
 describe('Text editor component', () => {

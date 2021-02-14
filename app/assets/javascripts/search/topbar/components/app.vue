@@ -1,6 +1,6 @@
 <script>
-import { mapState, mapActions } from 'vuex';
 import { GlForm, GlSearchBoxByType, GlButton } from '@gitlab/ui';
+import { mapState, mapActions } from 'vuex';
 import GroupFilter from './group_filter.vue';
 import ProjectFilter from './project_filter.vue';
 

@@ -1,10 +1,10 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlFilteredSearch } from '@gitlab/ui';
-import { defaultTimeRange } from '~/vue_shared/constants';
+import { shallowMount } from '@vue/test-utils';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
-import { createStore } from '~/logs/stores';
-import { TOKEN_TYPE_POD_NAME } from '~/logs/constants';
 import LogAdvancedFilters from '~/logs/components/log_advanced_filters.vue';
+import { TOKEN_TYPE_POD_NAME } from '~/logs/constants';
+import { createStore } from '~/logs/stores';
+import { defaultTimeRange } from '~/vue_shared/constants';
 import { mockPods, mockSearch } from '../mock_data';
 
 const module = 'environmentLogs';

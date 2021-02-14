@@ -1,13 +1,13 @@
 import Vue from 'vue';
 import { deprecatedCreateFlash as Flash } from '~/flash';
-import Translate from '~/vue_shared/translate';
 import { __ } from '~/locale';
+import Translate from '~/vue_shared/translate';
 import PipelineGraphLegacy from './components/graph/graph_component_legacy.vue';
-import createDagApp from './pipeline_details_dag';
-import GraphBundleMixin from './mixins/graph_pipeline_bundle_mixin';
-import TestReports from './components/test_reports/test_reports.vue';
-import createTestReportsStore from './stores/test_reports';
 import { reportToSentry } from './components/graph/utils';
+import TestReports from './components/test_reports/test_reports.vue';
+import GraphBundleMixin from './mixins/graph_pipeline_bundle_mixin';
+import createDagApp from './pipeline_details_dag';
+import createTestReportsStore from './stores/test_reports';
 
 Vue.use(Translate);
 

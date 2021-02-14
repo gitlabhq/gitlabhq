@@ -1,6 +1,4 @@
 <script>
-import { throttle } from 'lodash';
-import { mapActions, mapState, mapGetters } from 'vuex';
 import {
   GlSprintf,
   GlAlert,
@@ -10,13 +8,15 @@ import {
   GlDropdownDivider,
   GlInfiniteScroll,
 } from '@gitlab/ui';
+import { throttle } from 'lodash';
+import { mapActions, mapState, mapGetters } from 'vuex';
 
-import { defaultTimeRange } from '~/vue_shared/constants';
 import { timeRangeFromUrl } from '~/monitoring/utils';
+import { defaultTimeRange } from '~/vue_shared/constants';
 import { formatDate } from '../utils';
-import LogSimpleFilters from './log_simple_filters.vue';
 import LogAdvancedFilters from './log_advanced_filters.vue';
 import LogControlButtons from './log_control_buttons.vue';
+import LogSimpleFilters from './log_simple_filters.vue';
 
 export default {
   components: {

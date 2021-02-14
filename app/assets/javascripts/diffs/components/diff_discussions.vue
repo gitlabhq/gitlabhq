@@ -1,6 +1,6 @@
 <script>
-import { mapActions } from 'vuex';
 import { GlIcon } from '@gitlab/ui';
+import { mapActions } from 'vuex';
 import noteableDiscussion from '../../notes/components/noteable_discussion.vue';
 
 export default {

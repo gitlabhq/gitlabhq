@@ -6,8 +6,8 @@ import {
   GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
 import { generateBadges } from 'ee_else_ce/members/utils';
-import { __ } from '~/locale';
 import { glEmojiTag } from '~/emoji';
+import { __ } from '~/locale';
 import { AVATAR_SIZE } from '../../constants';
 
 export default {

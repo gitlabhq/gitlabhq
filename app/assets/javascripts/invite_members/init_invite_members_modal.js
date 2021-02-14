@@ -1,7 +1,7 @@
-import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import Vue from 'vue';
 import InviteMembersModal from '~/invite_members/components/invite_members_modal.vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 Vue.use(GlToast);
 

@@ -1,9 +1,9 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { isEmpty } from 'lodash';
 import { GlLink, GlModal } from '@gitlab/ui';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import { isEmpty } from 'lodash';
 import { __, s__, sprintf } from '~/locale';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
 /**
  * Pipeline Stop Modal.

@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
 import { initEmojiMap, EMOJI_VERSION } from '~/emoji';
+import axios from '~/lib/utils/axios_utils';
 
 export const emojiFixtureMap = {
   atom: {

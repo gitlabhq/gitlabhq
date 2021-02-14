@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import PipelineFailed from '~/vue_merge_request_widget/components/states/pipeline_failed.vue';
 import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
+import PipelineFailed from '~/vue_merge_request_widget/components/states/pipeline_failed.vue';
 
 describe('PipelineFailed', () => {
   let wrapper;

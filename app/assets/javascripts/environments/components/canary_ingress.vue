@@ -1,6 +1,6 @@
 <script>
-import { uniqueId } from 'lodash';
 import { GlDropdown, GlDropdownItem, GlModalDirective as GlModal } from '@gitlab/ui';
+import { uniqueId } from 'lodash';
 import { s__ } from '~/locale';
 import { CANARY_UPDATE_MODAL } from '../constants';
 

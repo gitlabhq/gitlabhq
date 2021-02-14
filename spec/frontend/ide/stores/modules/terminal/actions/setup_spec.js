@@ -1,6 +1,6 @@
 import testAction from 'helpers/vuex_action_helper';
-import * as mutationTypes from '~/ide/stores/modules/terminal/mutation_types';
 import * as actions from '~/ide/stores/modules/terminal/actions/setup';
+import * as mutationTypes from '~/ide/stores/modules/terminal/mutation_types';
 
 describe('IDE store terminal setup actions', () => {
   describe('init', () => {

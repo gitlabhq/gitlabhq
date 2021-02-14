@@ -1,7 +1,7 @@
 import testAction from 'helpers/vuex_action_helper';
-import createState from '~/milestones/stores/state';
 import * as actions from '~/milestones/stores/actions';
 import * as types from '~/milestones/stores/mutation_types';
+import createState from '~/milestones/stores/state';
 
 let mockProjectMilestonesReturnValue;
 let mockGroupMilestonesReturnValue;

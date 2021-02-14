@@ -1,15 +1,15 @@
 import initTree from 'ee_else_ce/repository';
-import { initUploadForm } from '~/blob_edit/blob_bundle';
-import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
-import NotificationsForm from '~/notifications_form';
-import UserCallout from '~/user_callout';
-import BlobViewer from '~/blob/viewer/index';
 import Activities from '~/activities';
-import initReadMore from '~/read_more';
-import leaveByUrl from '~/namespaces/leave_by_url';
-import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
+import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
+import BlobViewer from '~/blob/viewer/index';
+import { initUploadForm } from '~/blob_edit/blob_bundle';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
+import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
+import leaveByUrl from '~/namespaces/leave_by_url';
 import initVueNotificationsDropdown from '~/notifications';
+import NotificationsForm from '~/notifications_form';
+import initReadMore from '~/read_more';
+import UserCallout from '~/user_callout';
 import notificationsDropdown from '../../../notifications_dropdown';
 import Star from '../../../star';
 

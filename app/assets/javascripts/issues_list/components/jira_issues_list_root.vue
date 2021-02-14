@@ -1,13 +1,13 @@
 <script>
 import { GlAlert, GlLabel } from '@gitlab/ui';
 import { last } from 'lodash';
-import { n__ } from '~/locale';
 import {
   calculateJiraImportLabel,
   isInProgress,
   setFinishedAlertHideMap,
   shouldShowFinishedAlert,
 } from '~/jira_import/utils/jira_import_utils';
+import { n__ } from '~/locale';
 import getIssuesListDetailsQuery from '../queries/get_issues_list_details.query.graphql';
 
 export default {

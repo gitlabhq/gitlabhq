@@ -1,5 +1,5 @@
-import { __ } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import { __ } from '~/locale';
 import initProjectVisibilitySelector from '../../../project_visibility';
 import initProjectNew from '../../../projects/project_new';
 

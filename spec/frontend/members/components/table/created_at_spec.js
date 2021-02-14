@@ -1,5 +1,5 @@
-import { mount, createWrapper } from '@vue/test-utils';
 import { within } from '@testing-library/dom';
+import { mount, createWrapper } from '@vue/test-utils';
 import { useFakeDate } from 'helpers/fake_date';
 import CreatedAt from '~/members/components/table/created_at.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';

@@ -1,5 +1,4 @@
 import 'document-register-element';
-import isEmojiUnicodeSupported from '../emoji/support';
 import {
   initEmojiMap,
   getEmojiInfo,
@@ -7,6 +6,7 @@ import {
   emojiImageTag,
   FALLBACK_EMOJI_KEY,
 } from '../emoji';
+import isEmojiUnicodeSupported from '../emoji/support';
 
 class GlEmoji extends HTMLElement {
   connectedCallback() {

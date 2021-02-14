@@ -1,6 +1,6 @@
-import { merge } from 'lodash';
-import { shallowMount } from '@vue/test-utils';
 import { GlTabs, GlTab } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import { merge } from 'lodash';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import { mergeUrlParams, updateHistory, getParameterValues } from '~/lib/utils/url_utility';

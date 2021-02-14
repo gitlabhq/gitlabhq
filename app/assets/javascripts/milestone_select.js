@@ -4,16 +4,16 @@
 
 import $ from 'jquery';
 import { template, escape } from 'lodash';
-import { __, sprintf } from '~/locale';
-import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import Api from '~/api';
-import axios from './lib/utils/axios_utils';
-import { timeFor, parsePikadayDate, dateInWords } from './lib/utils/datetime_utility';
-import ModalStore from './boards/stores/modal_store';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import { __, sprintf } from '~/locale';
 import boardsStore, {
   boardStoreIssueSet,
   boardStoreIssueDelete,
 } from './boards/stores/boards_store';
+import ModalStore from './boards/stores/modal_store';
+import axios from './lib/utils/axios_utils';
+import { timeFor, parsePikadayDate, dateInWords } from './lib/utils/datetime_utility';
 
 export default class MilestoneSelect {
   constructor(currentProject, els, options = {}) {

@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 
-import $ from 'jquery';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import $ from 'jquery';
 import { isObject } from '~/lib/utils/type_utility';
 
 const BLUR_KEYCODES = [27, 40];

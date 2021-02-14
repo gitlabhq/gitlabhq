@@ -2,8 +2,8 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { mapActions, mapGetters } from 'vuex';
 import { __ } from '~/locale';
-import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import Tracking from '~/tracking';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { ASC, DESC } from '../constants';
 
 const SORT_OPTIONS = [

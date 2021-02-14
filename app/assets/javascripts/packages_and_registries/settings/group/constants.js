@@ -1,5 +1,5 @@
-import { s__, __ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { s__, __ } from '~/locale';
 
 export const PACKAGE_SETTINGS_HEADER = s__('PackageRegistry|Package Registry');
 export const PACKAGE_SETTINGS_DESCRIPTION = s__(

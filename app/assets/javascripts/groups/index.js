@@ -1,16 +1,16 @@
-import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
-import UserCallout from '~/user_callout';
+import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import UserCallout from '~/user_callout';
 import Translate from '../vue_shared/translate';
-import GroupFilterableList from './groups_filterable_list';
-import GroupsStore from './store/groups_store';
-import GroupsService from './service/groups_service';
 
 import groupsApp from './components/app.vue';
 import groupFolderComponent from './components/group_folder.vue';
 import groupItemComponent from './components/group_item.vue';
 import { GROUPS_LIST_HOLDER_CLASS, CONTENT_LIST_CLASS } from './constants';
+import GroupFilterableList from './groups_filterable_list';
+import GroupsService from './service/groups_service';
+import GroupsStore from './store/groups_store';
 
 Vue.use(Translate);
 

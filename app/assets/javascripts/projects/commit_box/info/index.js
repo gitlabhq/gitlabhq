@@ -1,7 +1,7 @@
 import { fetchCommitMergeRequests } from '~/commit_merge_requests';
 import MiniPipelineGraph from '~/mini_pipeline_graph_dropdown';
-import { loadBranches } from './load_branches';
 import { initDetailsButton } from './init_details_button';
+import { loadBranches } from './load_branches';
 
 export const initCommitBoxInfo = (containerSelector = '.js-commit-box-info') => {
   const containerEl = document.querySelector(containerSelector);

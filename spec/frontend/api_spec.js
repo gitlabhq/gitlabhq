@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
 import Api from '~/api';
+import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
 
 describe('Api', () => {

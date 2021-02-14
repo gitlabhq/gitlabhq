@@ -4,16 +4,16 @@ import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 import { unescape } from 'lodash';
 import { GlIcon } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
-import { stripHtml } from '~/lib/utils/text_utility';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import GLForm from '~/gl_form';
+import axios from '~/lib/utils/axios_utils';
+import { stripHtml } from '~/lib/utils/text_utility';
+import { __, sprintf } from '~/locale';
 import GfmAutocomplete from '~/vue_shared/components/gfm_autocomplete/gfm_autocomplete.vue';
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import axios from '~/lib/utils/axios_utils';
-import MarkdownToolbar from './toolbar.vue';
 import MarkdownHeader from './header.vue';
+import MarkdownToolbar from './toolbar.vue';
 
 export default {
   components: {

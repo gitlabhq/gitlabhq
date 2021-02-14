@@ -1,6 +1,5 @@
 <script>
 import { GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
-import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import MavenSettings from '~/packages_and_registries/settings/group/components/maven_settings.vue';
 
 import {
@@ -10,10 +9,11 @@ import {
   ERROR_UPDATING_SETTINGS,
   SUCCESS_UPDATING_SETTINGS,
 } from '~/packages_and_registries/settings/group/constants';
+import updateNamespacePackageSettings from '~/packages_and_registries/settings/group/graphql/mutations/update_group_packages_settings.mutation.graphql';
+import getGroupPackagesSettingsQuery from '~/packages_and_registries/settings/group/graphql/queries/get_group_packages_settings.query.graphql';
 import { updateGroupPackageSettings } from '~/packages_and_registries/settings/group/graphql/utils/cache_update';
 import { updateGroupPackagesSettingsOptimisticResponse } from '~/packages_and_registries/settings/group/graphql/utils/optimistic_responses';
-import getGroupPackagesSettingsQuery from '~/packages_and_registries/settings/group/graphql/queries/get_group_packages_settings.query.graphql';
-import updateNamespacePackageSettings from '~/packages_and_registries/settings/group/graphql/mutations/update_group_packages_settings.mutation.graphql';
+import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 
 export default {
   name: 'GroupSettingsApp',

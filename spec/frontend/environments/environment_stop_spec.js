@@ -1,6 +1,6 @@
-import $ from 'jquery';
-import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import $ from 'jquery';
 import StopComponent from '~/environments/components/environment_stop.vue';
 import eventHub from '~/environments/event_hub';
 

@@ -1,10 +1,10 @@
-import Vue from 'vue';
 import _ from 'lodash';
-import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
+import Vue from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
-import { createStore } from '~/ide/stores';
+import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import IdeStatusBar from '~/ide/components/ide_status_bar.vue';
 import { rightSidebarViews } from '~/ide/constants';
+import { createStore } from '~/ide/stores';
 import { projectData } from '../mock_data';
 
 const TEST_PROJECT_ID = 'abcproject';

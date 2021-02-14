@@ -1,11 +1,11 @@
 import { last } from 'lodash';
 import AvailableDropdownMappings from 'ee_else_ce/filtered_search/available_dropdown_mappings';
 import DropLab from '~/droplab/drop_lab';
-import FilteredSearchContainer from './container';
-import FilteredSearchTokenKeys from './filtered_search_token_keys';
-import DropdownUtils from './dropdown_utils';
-import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
 import { DROPDOWN_TYPE } from './constants';
+import FilteredSearchContainer from './container';
+import DropdownUtils from './dropdown_utils';
+import FilteredSearchTokenKeys from './filtered_search_token_keys';
+import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
 
 export default class FilteredSearchDropdownManager {
   constructor({

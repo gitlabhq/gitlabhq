@@ -1,8 +1,8 @@
+import { DATA_TRIGGER } from './constants';
 import HookButton from './hook_button';
 import HookInput from './hook_input';
-import utils from './utils';
 import Keyboard from './keyboard';
-import { DATA_TRIGGER } from './constants';
+import utils from './utils';
 
 class DropLab {
   constructor() {

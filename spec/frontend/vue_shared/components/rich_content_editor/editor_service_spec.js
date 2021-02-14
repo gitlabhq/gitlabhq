@@ -1,3 +1,5 @@
+import buildCustomRenderer from '~/vue_shared/components/rich_content_editor/services/build_custom_renderer';
+import buildHTMLToMarkdownRenderer from '~/vue_shared/components/rich_content_editor/services/build_html_to_markdown_renderer';
 import {
   generateToolbarItem,
   addCustomEventListener,
@@ -8,8 +10,6 @@ import {
   getMarkdown,
   getEditorOptions,
 } from '~/vue_shared/components/rich_content_editor/services/editor_service';
-import buildHTMLToMarkdownRenderer from '~/vue_shared/components/rich_content_editor/services/build_html_to_markdown_renderer';
-import buildCustomRenderer from '~/vue_shared/components/rich_content_editor/services/build_custom_renderer';
 import sanitizeHTML from '~/vue_shared/components/rich_content_editor/services/sanitize_html';
 
 jest.mock('~/vue_shared/components/rich_content_editor/services/build_html_to_markdown_renderer');

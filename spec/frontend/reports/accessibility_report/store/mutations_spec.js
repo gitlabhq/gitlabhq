@@ -1,5 +1,5 @@
-import mutations from '~/reports/accessibility_report/store/mutations';
 import createStore from '~/reports/accessibility_report/store';
+import mutations from '~/reports/accessibility_report/store/mutations';
 
 describe('Accessibility Reports mutations', () => {
   let localState;

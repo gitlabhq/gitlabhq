@@ -1,7 +1,7 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
-import eventHub from '~/deploy_keys/eventhub';
+import { shallowMount } from '@vue/test-utils';
 import actionBtn from '~/deploy_keys/components/action_btn.vue';
+import eventHub from '~/deploy_keys/eventhub';
 
 describe('Deploy keys action btn', () => {
   const data = getJSONFixture('deploy_keys/keys.json');

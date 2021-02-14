@@ -16,14 +16,14 @@ import {
 } from 'jest/vue_shared/security_reports/mock_data';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import HelpIcon from '~/vue_shared/security_reports/components/help_icon.vue';
+import SecurityReportDownloadDropdown from '~/vue_shared/security_reports/components/security_report_download_dropdown.vue';
 import {
   REPORT_TYPE_SAST,
   REPORT_TYPE_SECRET_DETECTION,
 } from '~/vue_shared/security_reports/constants';
-import HelpIcon from '~/vue_shared/security_reports/components/help_icon.vue';
-import SecurityReportDownloadDropdown from '~/vue_shared/security_reports/components/security_report_download_dropdown.vue';
-import SecurityReportsApp from '~/vue_shared/security_reports/security_reports_app.vue';
 import securityReportDownloadPathsQuery from '~/vue_shared/security_reports/queries/security_report_download_paths.query.graphql';
+import SecurityReportsApp from '~/vue_shared/security_reports/security_reports_app.vue';
 
 jest.mock('~/flash');
 

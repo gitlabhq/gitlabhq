@@ -1,12 +1,12 @@
 import httpStatusCodes from '~/lib/utils/http_status';
 
-import mutations from '~/monitoring/stores/mutations';
-import * as types from '~/monitoring/stores/mutation_types';
-import state from '~/monitoring/stores/state';
 import { dashboardEmptyStates, metricStates } from '~/monitoring/constants';
-import { deploymentData, dashboardGitResponse, storeTextVariables } from '../mock_data';
-import { prometheusMatrixMultiResult } from '../graph_data';
+import * as types from '~/monitoring/stores/mutation_types';
+import mutations from '~/monitoring/stores/mutations';
+import state from '~/monitoring/stores/state';
 import { metricsDashboardPayload } from '../fixture_data';
+import { prometheusMatrixMultiResult } from '../graph_data';
+import { deploymentData, dashboardGitResponse, storeTextVariables } from '../mock_data';
 
 describe('Monitoring mutations', () => {
   let stateCopy;

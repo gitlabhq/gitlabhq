@@ -1,8 +1,8 @@
+import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import { TEST_HOST } from 'spec/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
+import { TEST_HOST } from 'spec/test_constants';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import PipelinesActions from '~/pipelines/components/pipelines_list/pipelines_actions.vue';

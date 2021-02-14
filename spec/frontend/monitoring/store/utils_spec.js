@@ -1,4 +1,6 @@
 import { SUPPORTED_FORMATS } from '~/lib/utils/unit_format';
+import * as urlUtils from '~/lib/utils/url_utility';
+import { NOT_IN_DB_PREFIX } from '~/monitoring/constants';
 import {
   uniqMetricsId,
   parseEnvironmentsResponse,
@@ -10,8 +12,6 @@ import {
   addDashboardMetaDataToLink,
   normalizeCustomDashboardPath,
 } from '~/monitoring/stores/utils';
-import * as urlUtils from '~/lib/utils/url_utility';
-import { NOT_IN_DB_PREFIX } from '~/monitoring/constants';
 import { annotationsData } from '../mock_data';
 
 const projectPath = 'gitlab-org/gitlab-test';

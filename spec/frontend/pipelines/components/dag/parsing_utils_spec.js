@@ -1,3 +1,4 @@
+import { createSankey } from '~/pipelines/components/dag/drawing_utils';
 import {
   createNodeDict,
   makeLinksFromNodes,
@@ -7,7 +8,6 @@ import {
   getMaxNodes,
 } from '~/pipelines/components/parsing_utils';
 
-import { createSankey } from '~/pipelines/components/dag/drawing_utils';
 import { mockParsedGraphQLNodes } from './mock_data';
 
 describe('DAG visualization parsing utilities', () => {

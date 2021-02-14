@@ -1,7 +1,7 @@
+import dateFormat from 'dateformat';
 import $ from 'jquery';
 import { isString, mapValues, isNumber, reduce } from 'lodash';
 import * as timeago from 'timeago.js';
-import dateFormat from 'dateformat';
 import { languageCode, s__, __, n__ } from '../../locale';
 
 const MILLISECONDS_IN_HOUR = 60 * 60 * 1000;

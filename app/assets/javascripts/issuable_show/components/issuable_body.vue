@@ -3,9 +3,9 @@ import { GlLink } from '@gitlab/ui';
 
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
-import IssuableTitle from './issuable_title.vue';
 import IssuableDescription from './issuable_description.vue';
 import IssuableEditForm from './issuable_edit_form.vue';
+import IssuableTitle from './issuable_title.vue';
 
 export default {
   components: {

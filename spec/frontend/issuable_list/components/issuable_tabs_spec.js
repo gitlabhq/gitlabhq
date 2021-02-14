@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
 import { GlTab, GlBadge } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 
 import IssuableTabs from '~/issuable_list/components/issuable_tabs.vue';
 

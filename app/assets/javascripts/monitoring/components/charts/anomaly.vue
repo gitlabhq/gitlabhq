@@ -1,9 +1,9 @@
 <script>
+import { GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import produce from 'immer';
 import { flattenDeep, isNumber } from 'lodash';
-import { GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
-import { roundOffFloat } from '~/lib/utils/common_utils';
 import { hexToRgb } from '~/lib/utils/color_utils';
+import { roundOffFloat } from '~/lib/utils/common_utils';
 import { areaOpacityValues, symbolSizes, colorValues, panelTypes } from '../../constants';
 import { graphDataValidatorForAnomalyValues } from '../../utils';
 import MonitorTimeSeriesChart from './time_series.vue';

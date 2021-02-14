@@ -1,10 +1,10 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
+import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
 import { defaultTimeRange } from '~/vue_shared/constants';
-import { timeRangeFromUrl, removeTimeRangeParams } from '../../utils';
 import { sidebarAnimationDuration } from '../../constants';
+import { timeRangeFromUrl, removeTimeRangeParams } from '../../utils';
 
 let sidebarMutationObserver;
 

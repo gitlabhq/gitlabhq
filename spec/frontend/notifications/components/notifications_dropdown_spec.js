@@ -1,13 +1,13 @@
+import { GlButtonGroup, GlButton, GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { shallowMount } from '@vue/test-utils';
-import { GlButtonGroup, GlButton, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
 import httpStatus from '~/lib/utils/http_status';
+import CustomNotificationsModal from '~/notifications/components/custom_notifications_modal.vue';
 import NotificationsDropdown from '~/notifications/components/notifications_dropdown.vue';
 import NotificationsDropdownItem from '~/notifications/components/notifications_dropdown_item.vue';
-import CustomNotificationsModal from '~/notifications/components/custom_notifications_modal.vue';
 
 const mockDropdownItems = ['global', 'watch', 'participating', 'mention', 'disabled'];
 const mockToastShow = jest.fn();

@@ -1,7 +1,7 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
-import { once } from 'lodash';
 import { GlButton } from '@gitlab/ui';
+import { once } from 'lodash';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { sprintf, s__ } from '~/locale';
 import Tracking from '~/tracking';
 import createStore from '../store';
@@ -12,10 +12,10 @@ import {
   recentFailuresTextBuilder,
 } from '../store/utils';
 import { componentNames } from './issue_body';
-import ReportSection from './report_section.vue';
-import SummaryRow from './summary_row.vue';
 import IssuesList from './issues_list.vue';
 import Modal from './modal.vue';
+import ReportSection from './report_section.vue';
+import SummaryRow from './summary_row.vue';
 
 export default {
   name: 'GroupedTestReportsApp',

@@ -2,8 +2,8 @@ import Vue from 'vue';
 
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import typeDefs from './graphql/typedefs.graphql';
 import { resolvers } from './graphql/resolvers';
+import typeDefs from './graphql/typedefs.graphql';
 
 import PipelineEditorApp from './pipeline_editor_app.vue';
 

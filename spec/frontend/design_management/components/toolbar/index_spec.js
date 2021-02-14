@@ -1,8 +1,8 @@
+import { GlButton } from '@gitlab/ui';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import VueRouter from 'vue-router';
-import { GlButton } from '@gitlab/ui';
-import Toolbar from '~/design_management/components/toolbar/index.vue';
 import DeleteButton from '~/design_management/components/delete_button.vue';
+import Toolbar from '~/design_management/components/toolbar/index.vue';
 import { DESIGNS_ROUTE_NAME } from '~/design_management/router/constants';
 
 const localVue = createLocalVue();

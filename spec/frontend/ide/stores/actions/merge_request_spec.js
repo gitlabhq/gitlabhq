@@ -1,15 +1,15 @@
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
-import { createStore } from '~/ide/stores';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import { leftSidebarViews, PERMISSION_READ_MR } from '~/ide/constants';
+import service from '~/ide/services';
+import { createStore } from '~/ide/stores';
 import {
   getMergeRequestData,
   getMergeRequestChanges,
   getMergeRequestVersions,
   openMergeRequest,
 } from '~/ide/stores/actions/merge_request';
-import service from '~/ide/services';
-import { leftSidebarViews, PERMISSION_READ_MR } from '~/ide/constants';
+import axios from '~/lib/utils/axios_utils';
 
 const TEST_PROJECT = 'abcproject';
 const TEST_PROJECT_ID = 17;

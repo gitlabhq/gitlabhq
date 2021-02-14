@@ -1,13 +1,13 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlSprintf, GlLabel, GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
 import { trimText } from 'helpers/text_helper';
-import initUserPopovers from '~/user_popovers';
+import Issuable from '~/issues_list/components/issuable.vue';
+import { isScopedLabel } from '~/lib/utils/common_utils';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
-import Issuable from '~/issues_list/components/issuable.vue';
+import initUserPopovers from '~/user_popovers';
 import IssueAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
-import { isScopedLabel } from '~/lib/utils/common_utils';
 import { simpleIssue, testAssignees, testLabels } from '../issuable_list_test_data';
 
 jest.mock('~/user_popovers');

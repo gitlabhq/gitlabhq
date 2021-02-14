@@ -1,7 +1,6 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlSprintf, GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { useFakeDate } from 'helpers/fake_date';
-import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import component from '~/registry/explorer/components/details_page/details_header.vue';
 import {
   DETAILS_PAGE_TITLE,
@@ -15,6 +14,7 @@ import {
   CLEANUP_ONGOING_TOOLTIP,
   CLEANUP_UNFINISHED_TOOLTIP,
 } from '~/registry/explorer/constants';
+import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 
 describe('Details Header', () => {
   let wrapper;

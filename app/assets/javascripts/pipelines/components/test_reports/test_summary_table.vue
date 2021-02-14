@@ -1,6 +1,6 @@
 <script>
-import { mapGetters } from 'vuex';
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { mapGetters } from 'vuex';
 import { s__ } from '~/locale';
 
 export default {

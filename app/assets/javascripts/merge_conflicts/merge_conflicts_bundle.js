@@ -4,8 +4,8 @@
 /* eslint-disable @gitlab/no-runtime-template-compiler */
 import $ from 'jquery';
 import Vue from 'vue';
-import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { __ } from '~/locale';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { deprecatedCreateFlash as createFlash } from '../flash';
 import initIssuableSidebar from '../init_issuable_sidebar';
 import './merge_conflict_store';

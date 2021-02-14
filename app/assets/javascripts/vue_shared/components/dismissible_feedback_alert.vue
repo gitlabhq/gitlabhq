@@ -1,7 +1,7 @@
 <script>
 import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
-import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { slugifyWithUnderscore } from '~/lib/utils/text_utility';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
 export default {
   components: {

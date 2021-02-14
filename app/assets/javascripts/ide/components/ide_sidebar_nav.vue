@@ -1,8 +1,8 @@
 <script>
 import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
-import { otherSide } from '../utils';
 import { SIDE_RIGHT } from '../constants';
+import { otherSide } from '../utils';
 
 export default {
   directives: {

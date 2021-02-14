@@ -1,6 +1,6 @@
-import state from '~/monitoring/stores/embed_group/state';
-import mutations from '~/monitoring/stores/embed_group/mutations';
 import * as types from '~/monitoring/stores/embed_group/mutation_types';
+import mutations from '~/monitoring/stores/embed_group/mutations';
+import state from '~/monitoring/stores/embed_group/state';
 import { mockNamespace } from '../../mock_data';
 
 describe('Embed group mutations', () => {

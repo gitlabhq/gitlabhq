@@ -1,7 +1,7 @@
-import Vuex from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import smooshpack from 'smooshpack';
+import Vuex from 'vuex';
 import Clientside from '~/ide/components/preview/clientside.vue';
 import eventHub from '~/ide/eventhub';
 

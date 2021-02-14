@@ -1,7 +1,7 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLink, GlSprintf } from '@gitlab/ui';
-import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
+import { shallowMount } from '@vue/test-utils';
 import component from '~/packages/details/components/additional_metadata.vue';
+import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
 
 import { mavenPackage, conanPackage, nugetPackage, npmPackage } from '../../mock_data';
 

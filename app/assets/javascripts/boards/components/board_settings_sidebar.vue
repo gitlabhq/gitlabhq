@@ -1,11 +1,11 @@
 <script>
 import { GlButton, GlDrawer, GlLabel } from '@gitlab/ui';
 import { mapActions, mapState, mapGetters } from 'vuex';
-import { __ } from '~/locale';
-import boardsStore from '~/boards/stores/boards_store';
-import eventHub from '~/sidebar/event_hub';
-import { isScopedLabel } from '~/lib/utils/common_utils';
 import { LIST, ListType, ListTypeTitles } from '~/boards/constants';
+import boardsStore from '~/boards/stores/boards_store';
+import { isScopedLabel } from '~/lib/utils/common_utils';
+import { __ } from '~/locale';
+import eventHub from '~/sidebar/event_hub';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 // NOTE: need to revisit how we handle headerHeight, because we have so many different header and footer options.

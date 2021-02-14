@@ -1,5 +1,4 @@
 import { TEST_HOST } from 'spec/test_constants';
-import { getFirstCharacterCapitalized } from '~/lib/utils/text_utility';
 import {
   DEFAULT_SIZE_CLASS,
   IDENTICON_BG_COUNT,
@@ -8,6 +7,7 @@ import {
   getIdenticonBackgroundClass,
   getIdenticonTitle,
 } from '~/helpers/avatar_helper';
+import { getFirstCharacterCapitalized } from '~/lib/utils/text_utility';
 
 function matchAll(str) {
   return new RegExp(`^${str}$`);

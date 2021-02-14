@@ -1,6 +1,6 @@
-import createState from '~/ide/stores/state';
 import { leftSidebarViews } from '~/ide/constants';
 import * as getters from '~/ide/stores/modules/file_templates/getters';
+import createState from '~/ide/stores/state';
 
 describe('IDE file templates getters', () => {
   describe('templateTypes', () => {

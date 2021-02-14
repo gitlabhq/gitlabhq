@@ -1,9 +1,9 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlFormInput } from '@gitlab/ui';
-import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import { shallowMount } from '@vue/test-utils';
 
 import IssuableEditForm from '~/issuable_show/components/issuable_edit_form.vue';
 import IssuableEventHub from '~/issuable_show/event_hub';
+import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 
 import { mockIssuableShowProps, mockIssuable } from '../mock_data';
 

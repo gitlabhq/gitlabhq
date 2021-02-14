@@ -1,13 +1,13 @@
-import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 
-import notes from '~/notes/stores/modules/index';
-import createStore from '~/notes/stores';
 import { suggestionCommitMessage } from '~/diffs/store/getters';
+import noteBody from '~/notes/components/note_body.vue';
+import createStore from '~/notes/stores';
+import notes from '~/notes/stores/modules/index';
 
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
-import noteBody from '~/notes/components/note_body.vue';
 
 import { noteableDataMock, notesDataMock, note } from '../mock_data';
 

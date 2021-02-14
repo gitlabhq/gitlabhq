@@ -1,17 +1,17 @@
-import { noop } from 'lodash';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { members, group } from 'jest/members/mock_data';
-import testAction from 'helpers/vuex_action_helper';
+import { noop } from 'lodash';
 import { useFakeDate } from 'helpers/fake_date';
+import testAction from 'helpers/vuex_action_helper';
+import { members, group } from 'jest/members/mock_data';
 import httpStatusCodes from '~/lib/utils/http_status';
-import * as types from '~/members/store/mutation_types';
 import {
   updateMemberRole,
   showRemoveGroupLinkModal,
   hideRemoveGroupLinkModal,
   updateMemberExpiration,
 } from '~/members/store/actions';
+import * as types from '~/members/store/mutation_types';
 
 describe('Vuex members actions', () => {
   describe('update member actions', () => {

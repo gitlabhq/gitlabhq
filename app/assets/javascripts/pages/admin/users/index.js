@@ -1,10 +1,10 @@
 import Vue from 'vue';
 
-import Translate from '~/vue_shared/translate';
-import csrf from '~/lib/utils/csrf';
-import initConfirmModal from '~/confirm_modal';
 import { initAdminUsersApp, initCohortsEmptyState } from '~/admin/users';
 import initTabs from '~/admin/users/tabs';
+import initConfirmModal from '~/confirm_modal';
+import csrf from '~/lib/utils/csrf';
+import Translate from '~/vue_shared/translate';
 import ModalManager from './components/user_modal_manager.vue';
 
 const CONFIRM_DELETE_BUTTON_SELECTOR = '.js-delete-user-modal-button';

@@ -1,10 +1,10 @@
-import { nextTick } from 'vue';
-import { shallowMount, mount } from '@vue/test-utils';
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
-import CiLint from '~/pipeline_editor/components/lint/ci_lint.vue';
-import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
-import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tabs.vue';
+import { shallowMount, mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import CiConfigMergedPreview from '~/pipeline_editor/components/editor/ci_config_merged_preview.vue';
+import CiLint from '~/pipeline_editor/components/lint/ci_lint.vue';
+import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tabs.vue';
+import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 
 import { mockLintResponse, mockCiYml } from '../mock_data';
 

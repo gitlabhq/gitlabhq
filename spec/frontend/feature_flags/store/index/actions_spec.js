@@ -2,6 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'spec/test_constants';
 import Api from '~/api';
+import { mapToScopesViewModel } from '~/feature_flags/store/helpers';
 import {
   requestFeatureFlags,
   receiveFeatureFlagsSuccess,
@@ -24,9 +25,8 @@ import {
   receiveDeleteUserListError,
   clearAlert,
 } from '~/feature_flags/store/index/actions';
-import { mapToScopesViewModel } from '~/feature_flags/store/helpers';
-import state from '~/feature_flags/store/index/state';
 import * as types from '~/feature_flags/store/index/mutation_types';
+import state from '~/feature_flags/store/index/state';
 import axios from '~/lib/utils/axios_utils';
 import { getRequestData, rotateData, featureFlag, userList } from '../../mock_data';
 

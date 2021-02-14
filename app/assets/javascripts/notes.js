@@ -12,22 +12,20 @@ old_notes_spec.js is the spec for the legacy, jQuery notes application. It has n
 
 import $ from 'jquery';
 import '~/lib/utils/jquery_at_who';
-import { escape, uniqueId } from 'lodash';
 import Cookies from 'js-cookie';
+import { escape, uniqueId } from 'lodash';
 import Autosize from 'autosize';
 import Vue from 'vue';
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import syntaxHighlight from '~/syntax_highlight';
-import axios from './lib/utils/axios_utils';
-import { getLocationHash } from './lib/utils/url_utility';
+import Autosave from './autosave';
+import loadAwardsHandler from './awards_handler';
+import CommentTypeToggle from './comment_type_toggle';
 import { deprecatedCreateFlash as Flash } from './flash';
 import { defaultAutocompleteConfig } from './gfm_auto_complete';
-import CommentTypeToggle from './comment_type_toggle';
 import GLForm from './gl_form';
-import loadAwardsHandler from './awards_handler';
-import Autosave from './autosave';
-import TaskList from './task_list';
+import axios from './lib/utils/axios_utils';
 import {
   isInViewport,
   getPagePath,
@@ -36,7 +34,9 @@ import {
   isInMRPage,
 } from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime_utility';
+import { getLocationHash } from './lib/utils/url_utility';
 import { sprintf, s__, __ } from './locale';
+import TaskList from './task_list';
 
 window.autosize = Autosize;
 

@@ -1,7 +1,7 @@
-import Vuex from 'vuex';
-import $ from 'jquery';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import $ from 'jquery';
+import Vuex from 'vuex';
 import Dropdown from '~/ide/components/file_templates/dropdown.vue';
 
 const localVue = createLocalVue();

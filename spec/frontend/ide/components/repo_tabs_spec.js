@@ -1,7 +1,7 @@
-import Vuex from 'vuex';
 import { mount, createLocalVue } from '@vue/test-utils';
-import { createStore } from '~/ide/stores';
+import Vuex from 'vuex';
 import RepoTabs from '~/ide/components/repo_tabs.vue';
+import { createStore } from '~/ide/stores';
 import { file } from '../helpers';
 
 const localVue = createLocalVue();

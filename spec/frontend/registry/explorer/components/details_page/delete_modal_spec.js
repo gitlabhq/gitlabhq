@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlSprintf } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import component from '~/registry/explorer/components/details_page/delete_modal.vue';
 import {
   REMOVE_TAG_CONFIRMATION_TEXT,

@@ -2,8 +2,8 @@ import { GlIcon, GlFormInput, GlDropdown, GlSearchBoxByType, GlDropdownItem } fr
 import { shallowMount } from '@vue/test-utils';
 import AlertMappingBuilder, { i18n } from '~/alerts_settings/components/alert_mapping_builder.vue';
 import parsedMapping from '~/alerts_settings/components/mocks/parsedMapping.json';
-import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import * as transformationUtils from '~/alerts_settings/utils/mapping_transformations';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import alertFields from '../mocks/alertFields.json';
 
 describe('AlertMappingBuilder', () => {

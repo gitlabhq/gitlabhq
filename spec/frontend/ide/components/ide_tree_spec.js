@@ -1,6 +1,6 @@
+import { mount, createLocalVue } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { mount, createLocalVue } from '@vue/test-utils';
 import { keepAlive } from 'helpers/keep_alive_component_helper';
 import IdeTree from '~/ide/components/ide_tree.vue';
 import { createStore } from '~/ide/stores';

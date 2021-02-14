@@ -1,6 +1,6 @@
+import { defaultDataIdFromObject } from 'apollo-cache-inmemory';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { defaultDataIdFromObject } from 'apollo-cache-inmemory';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { PAGE_CONFIG } from '~/vue_shared/alert_details/constants';

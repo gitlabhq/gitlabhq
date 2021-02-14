@@ -1,18 +1,18 @@
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex';
 import { GlButton, GlModalDirective, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import eventHub from '../event_hub';
 import { integrationLevels } from '../constants';
+import eventHub from '../event_hub';
 
-import OverrideDropdown from './override_dropdown.vue';
 import ActiveCheckbox from './active_checkbox.vue';
-import JiraTriggerFields from './jira_trigger_fields.vue';
-import JiraIssuesFields from './jira_issues_fields.vue';
-import TriggerFields from './trigger_fields.vue';
-import DynamicField from './dynamic_field.vue';
 import ConfirmationModal from './confirmation_modal.vue';
+import DynamicField from './dynamic_field.vue';
+import JiraIssuesFields from './jira_issues_fields.vue';
+import JiraTriggerFields from './jira_trigger_fields.vue';
+import OverrideDropdown from './override_dropdown.vue';
 import ResetConfirmationModal from './reset_confirmation_modal.vue';
+import TriggerFields from './trigger_fields.vue';
 
 export default {
   name: 'IntegrationForm',

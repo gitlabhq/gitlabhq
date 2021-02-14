@@ -1,5 +1,5 @@
-import * as commonUtils from '~/lib/utils/common_utils';
 import initCopyAsGFM, { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
+import * as commonUtils from '~/lib/utils/common_utils';
 
 describe('CopyAsGFM', () => {
   describe('CopyAsGFM.pasteGFM', () => {

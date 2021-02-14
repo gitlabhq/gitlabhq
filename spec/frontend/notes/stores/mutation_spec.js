@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import mutations from '~/notes/stores/mutations';
 import { DISCUSSION_NOTE, ASC, DESC } from '~/notes/constants';
+import mutations from '~/notes/stores/mutations';
 import {
   note,
   discussionMock,

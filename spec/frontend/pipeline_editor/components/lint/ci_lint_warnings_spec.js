@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
 import { GlAlert, GlSprintf } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
 import CiLintWarnings from '~/pipeline_editor/components/lint/ci_lint_warnings.vue';
 

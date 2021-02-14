@@ -1,6 +1,6 @@
 import * as pathUtils from 'path';
-import { decorateData } from '~/ide/stores/utils';
 import { commitActionTypes } from '~/ide/constants';
+import { decorateData } from '~/ide/stores/utils';
 
 export const file = (name = 'name', id = name, type = '', parent = null) =>
   decorateData({

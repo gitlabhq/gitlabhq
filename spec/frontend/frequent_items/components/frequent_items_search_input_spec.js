@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlSearchBoxByType } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import searchComponent from '~/frequent_items/components/frequent_items_search_input.vue';
 import { createStore } from '~/frequent_items/store';

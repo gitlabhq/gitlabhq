@@ -1,5 +1,5 @@
-import formatRefs from '~/pipeline_new/utils/format_refs';
 import { BRANCH_REF_TYPE, TAG_REF_TYPE } from '~/pipeline_new/constants';
+import formatRefs from '~/pipeline_new/utils/format_refs';
 import { mockBranchRefs, mockTagRefs } from '../mock_data';
 
 describe('Format refs util', () => {

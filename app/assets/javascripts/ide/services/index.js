@@ -1,6 +1,6 @@
+import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
-import Api from '~/api';
 import getUserPermissions from '../queries/getUserPermissions.query.graphql';
 import { query } from './gql';
 

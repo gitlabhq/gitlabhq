@@ -1,5 +1,5 @@
-import { updateGroupPackageSettings } from '~/packages_and_registries/settings/group/graphql/utils/cache_update';
 import expirationPolicyQuery from '~/packages_and_registries/settings/group/graphql/queries/get_group_packages_settings.query.graphql';
+import { updateGroupPackageSettings } from '~/packages_and_registries/settings/group/graphql/utils/cache_update';
 
 describe('Package and Registries settings group cache updates', () => {
   let client;

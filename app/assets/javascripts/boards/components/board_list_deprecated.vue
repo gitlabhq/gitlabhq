@@ -1,16 +1,16 @@
 <script>
-import { Sortable, MultiDrag } from 'sortablejs';
 import { GlLoadingIcon } from '@gitlab/ui';
-import { sprintf, __ } from '~/locale';
+import { Sortable, MultiDrag } from 'sortablejs';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
+import { sprintf, __ } from '~/locale';
 import eventHub from '../eventhub';
-import boardsStore from '../stores/boards_store';
 import {
   getBoardSortableDefaultOptions,
   sortableStart,
   sortableEnd,
 } from '../mixins/sortable_default_options';
+import boardsStore from '../stores/boards_store';
 import boardCard from './board_card.vue';
 import boardNewIssue from './board_new_issue_deprecated.vue';
 

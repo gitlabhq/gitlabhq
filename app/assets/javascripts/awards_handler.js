@@ -1,15 +1,15 @@
 /* eslint-disable class-methods-use-this, @gitlab/require-i18n-strings */
 
-import $ from 'jquery';
-import { uniq } from 'lodash';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import $ from 'jquery';
 import Cookies from 'js-cookie';
+import { uniq } from 'lodash';
 import * as Emoji from '~/emoji';
 import { dispose, fixTitle } from '~/tooltips';
-import { __ } from './locale';
-import { isInVueNoteablePage } from './lib/utils/dom_utils';
 import { deprecatedCreateFlash as flash } from './flash';
 import axios from './lib/utils/axios_utils';
+import { isInVueNoteablePage } from './lib/utils/dom_utils';
+import { __ } from './locale';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
 const transitionEndEventString = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';

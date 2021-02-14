@@ -1,5 +1,5 @@
-import { SNIPPET_MEASURE_BLOBS_CONTENT } from '~/performance/constants';
 import eventHub from '~/blob/components/eventhub';
+import { SNIPPET_MEASURE_BLOBS_CONTENT } from '~/performance/constants';
 
 export default {
   props: {

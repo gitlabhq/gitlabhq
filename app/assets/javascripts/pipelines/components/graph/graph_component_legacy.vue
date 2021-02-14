@@ -1,10 +1,10 @@
 <script>
-import { escape, capitalize } from 'lodash';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { escape, capitalize } from 'lodash';
 import GraphBundleMixin from '../../mixins/graph_pipeline_bundle_mixin';
-import StageColumnComponentLegacy from './stage_column_component_legacy.vue';
-import LinkedPipelinesColumnLegacy from './linked_pipelines_column_legacy.vue';
 import { UPSTREAM, DOWNSTREAM, MAIN } from './constants';
+import LinkedPipelinesColumnLegacy from './linked_pipelines_column_legacy.vue';
+import StageColumnComponentLegacy from './stage_column_component_legacy.vue';
 import { reportToSentry } from './utils';
 
 export default {

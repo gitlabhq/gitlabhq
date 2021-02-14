@@ -1,11 +1,11 @@
 <script>
 import { mapGetters, mapState } from 'vuex';
 import { __ } from '~/locale';
-import ResizablePanel from '../resizable_panel.vue';
 import { rightSidebarViews, SIDEBAR_INIT_WIDTH, SIDEBAR_NAV_WIDTH } from '../../constants';
-import PipelinesList from '../pipelines/list.vue';
 import JobsDetail from '../jobs/detail.vue';
+import PipelinesList from '../pipelines/list.vue';
 import Clientside from '../preview/clientside.vue';
+import ResizablePanel from '../resizable_panel.vue';
 import TerminalView from '../terminal/view.vue';
 import CollapsibleSidebar from './collapsible_sidebar.vue';
 

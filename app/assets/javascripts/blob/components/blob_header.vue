@@ -1,7 +1,7 @@
 <script>
-import ViewerSwitcher from './blob_header_viewer_switcher.vue';
 import DefaultActions from './blob_header_default_actions.vue';
 import BlobFilepath from './blob_header_filepath.vue';
+import ViewerSwitcher from './blob_header_viewer_switcher.vue';
 import { SIMPLE_BLOB_VIEWER } from './constants';
 
 export default {

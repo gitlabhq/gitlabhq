@@ -1,8 +1,8 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import { GlButton, GlLink } from '@gitlab/ui';
-import StatusFilter from './status_filter.vue';
+import { mapActions, mapState } from 'vuex';
 import ConfidentialityFilter from './confidentiality_filter.vue';
+import StatusFilter from './status_filter.vue';
 
 export default {
   name: 'GlobalSearchSidebar',

@@ -1,6 +1,5 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { escape } from 'lodash';
 import {
   GlButton,
   GlDropdown,
@@ -9,12 +8,13 @@ import {
   GlTooltipDirective,
   GlModalDirective,
 } from '@gitlab/ui';
-import { n__, s__, sprintf } from '~/locale';
+import { escape } from 'lodash';
 import { mergeUrlParams, webIDEUrl } from '~/lib/utils/url_utility';
+import { n__, s__, sprintf } from '~/locale';
 import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
-import MrWidgetIcon from './mr_widget_icon.vue';
 import MrWidgetHowToMergeModal from './mr_widget_how_to_merge_modal.vue';
+import MrWidgetIcon from './mr_widget_icon.vue';
 
 export default {
   name: 'MRWidgetHeader',

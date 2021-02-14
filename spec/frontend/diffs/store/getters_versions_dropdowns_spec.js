@@ -1,9 +1,9 @@
-import * as getters from '~/diffs/store/getters';
-import state from '~/diffs/store/modules/diff_state';
 import {
   DIFF_COMPARE_BASE_VERSION_INDEX,
   DIFF_COMPARE_HEAD_VERSION_INDEX,
 } from '~/diffs/constants';
+import * as getters from '~/diffs/store/getters';
+import state from '~/diffs/store/modules/diff_state';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
 describe('Compare diff version dropdowns', () => {

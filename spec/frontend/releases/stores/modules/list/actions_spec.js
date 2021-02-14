@@ -1,6 +1,14 @@
 import { cloneDeep } from 'lodash';
-import testAction from 'helpers/vuex_action_helper';
 import { getJSONFixture } from 'helpers/fixtures';
+import testAction from 'helpers/vuex_action_helper';
+import api from '~/api';
+import {
+  normalizeHeaders,
+  parseIntPagination,
+  convertObjectPropsToCamelCase,
+} from '~/lib/utils/common_utils';
+import { PAGE_SIZE } from '~/releases/constants';
+import allReleasesQuery from '~/releases/queries/all_releases.query.graphql';
 import {
   fetchReleases,
   fetchReleasesGraphQl,
@@ -8,17 +16,9 @@ import {
   receiveReleasesError,
   setSorting,
 } from '~/releases/stores/modules/list/actions';
-import createState from '~/releases/stores/modules/list/state';
 import * as types from '~/releases/stores/modules/list/mutation_types';
-import api from '~/api';
+import createState from '~/releases/stores/modules/list/state';
 import { gqClient, convertAllReleasesGraphQLResponse } from '~/releases/util';
-import {
-  normalizeHeaders,
-  parseIntPagination,
-  convertObjectPropsToCamelCase,
-} from '~/lib/utils/common_utils';
-import allReleasesQuery from '~/releases/queries/all_releases.query.graphql';
-import { PAGE_SIZE } from '~/releases/constants';
 import { pageInfoHeadersWithoutPagination } from '../../../mock_data';
 
 const originalRelease = getJSONFixture('api/releases/release.json');

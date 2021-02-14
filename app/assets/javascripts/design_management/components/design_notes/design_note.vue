@@ -1,12 +1,12 @@
 <script>
-import { ApolloMutation } from 'vue-apollo';
 import { GlTooltipDirective, GlIcon, GlLink, GlSafeHtmlDirective } from '@gitlab/ui';
-import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import { ApolloMutation } from 'vue-apollo';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import updateNoteMutation from '../../graphql/mutations/update_note.mutation.graphql';
-import { findNoteId, extractDesignNoteId } from '../../utils/design_management_utils';
 import { hasErrors } from '../../utils/cache_update';
+import { findNoteId, extractDesignNoteId } from '../../utils/design_management_utils';
 import DesignReplyForm from './design_reply_form.vue';
 
 export default {

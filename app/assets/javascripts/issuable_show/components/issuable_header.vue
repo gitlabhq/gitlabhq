@@ -2,8 +2,8 @@
 import { GlIcon, GlButton, GlTooltipDirective, GlAvatarLink, GlAvatarLabeled } from '@gitlab/ui';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { isExternal } from '~/lib/utils/url_utility';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
   components: {

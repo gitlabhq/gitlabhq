@@ -7,14 +7,12 @@ import { __ } from '~/locale';
 
 import DropdownValueCollapsed from '~/vue_shared/components/sidebar/labels_select/dropdown_value_collapsed.vue';
 
-import labelsSelectModule from './store';
-
-import DropdownTitle from './dropdown_title.vue';
-import DropdownValue from './dropdown_value.vue';
+import { DropdownVariant } from './constants';
 import DropdownButton from './dropdown_button.vue';
 import DropdownContents from './dropdown_contents.vue';
-
-import { DropdownVariant } from './constants';
+import DropdownTitle from './dropdown_title.vue';
+import DropdownValue from './dropdown_value.vue';
+import labelsSelectModule from './store';
 
 Vue.use(Vuex);
 

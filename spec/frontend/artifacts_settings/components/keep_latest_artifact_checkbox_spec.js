@@ -2,10 +2,10 @@ import { GlFormCheckbox, GlLink } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import KeepLatestArtifactCheckbox from '~/artifacts_settings/keep_latest_artifact_checkbox.vue';
-import GetKeepLatestArtifactProjectSetting from '~/artifacts_settings/graphql/queries/get_keep_latest_artifact_project_setting.query.graphql';
-import GetKeepLatestArtifactApplicationSetting from '~/artifacts_settings/graphql/queries/get_keep_latest_artifact_application_setting.query.graphql';
 import UpdateKeepLatestArtifactProjectSetting from '~/artifacts_settings/graphql/mutations/update_keep_latest_artifact_project_setting.mutation.graphql';
+import GetKeepLatestArtifactApplicationSetting from '~/artifacts_settings/graphql/queries/get_keep_latest_artifact_application_setting.query.graphql';
+import GetKeepLatestArtifactProjectSetting from '~/artifacts_settings/graphql/queries/get_keep_latest_artifact_project_setting.query.graphql';
+import KeepLatestArtifactCheckbox from '~/artifacts_settings/keep_latest_artifact_checkbox.vue';
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);

@@ -1,10 +1,10 @@
 <script>
 import { GlSafeHtmlDirective as SafeHtml, GlModal } from '@gitlab/ui';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
-import { deprecatedCreateFlash as Flash } from '~/flash';
-import { __, n__, s__, sprintf } from '~/locale';
 import { redirectTo } from '~/lib/utils/url_utility';
+import { __, n__, s__, sprintf } from '~/locale';
 import eventHub from '../event_hub';
 
 export default {

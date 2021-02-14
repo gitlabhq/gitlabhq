@@ -1,9 +1,9 @@
 import testAction from 'helpers/vuex_action_helper';
 import Api from '~/api';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import { FETCH_PACKAGE_VERSIONS_ERROR } from '~/packages/details/constants';
 import { fetchPackageVersions, deletePackage } from '~/packages/details/store/actions';
 import * as types from '~/packages/details/store/mutation_types';
-import { FETCH_PACKAGE_VERSIONS_ERROR } from '~/packages/details/constants';
 import { DELETE_PACKAGE_ERROR_MESSAGE } from '~/packages/shared/constants';
 import { npmPackage as packageEntity } from '../../mock_data';
 

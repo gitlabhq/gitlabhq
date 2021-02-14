@@ -1,5 +1,5 @@
-import { mapToScopesViewModel, mapStrategiesToViewModel } from '../helpers';
 import { LEGACY_FLAG } from '../../constants';
+import { mapToScopesViewModel, mapStrategiesToViewModel } from '../helpers';
 import * as types from './mutation_types';
 
 export default {

@@ -11,9 +11,9 @@ import {
   VISUALIZE_TAB,
 } from '../constants';
 import CiConfigMergedPreview from './editor/ci_config_merged_preview.vue';
+import TextEditor from './editor/text_editor.vue';
 import CiLint from './lint/ci_lint.vue';
 import EditorTab from './ui/editor_tab.vue';
-import TextEditor from './editor/text_editor.vue';
 
 export default {
   i18n: {

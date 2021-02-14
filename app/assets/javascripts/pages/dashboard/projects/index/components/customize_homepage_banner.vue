@@ -1,7 +1,7 @@
 <script>
 import { GlBanner } from '@gitlab/ui';
-import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 
 const trackingMixin = Tracking.mixin();

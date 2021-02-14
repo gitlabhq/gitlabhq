@@ -1,9 +1,9 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { sprintf, s__, n__ } from '~/locale';
 import { stripHtml } from '~/lib/utils/text_utility';
-import statusIcon from '../mr_widget_status_icon.vue';
+import { sprintf, s__, n__ } from '~/locale';
 import eventHub from '../../event_hub';
+import statusIcon from '../mr_widget_status_icon.vue';
 
 export default {
   name: 'MRWidgetFailedToMerge',

@@ -1,6 +1,6 @@
-import * as THREE from 'three/build/three.module';
-import STLLoaderClass from 'three-stl-loader';
 import OrbitControlsClass from 'three-orbit-controls';
+import STLLoaderClass from 'three-stl-loader';
+import * as THREE from 'three/build/three.module';
 import MeshObject from './mesh_object';
 
 const STLLoader = STLLoaderClass(THREE);

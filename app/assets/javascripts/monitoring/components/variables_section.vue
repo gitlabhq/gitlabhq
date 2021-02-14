@@ -1,7 +1,7 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import { setCustomVariablesFromUrl } from '../utils';
 import { VARIABLE_TYPES } from '../constants';
+import { setCustomVariablesFromUrl } from '../utils';
 import DropdownField from './variables/dropdown_field.vue';
 import TextField from './variables/text_field.vue';
 

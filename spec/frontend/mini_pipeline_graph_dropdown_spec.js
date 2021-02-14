@@ -1,5 +1,5 @@
-import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
+import $ from 'jquery';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import MiniPipelineGraph from '~/mini_pipeline_graph_dropdown';

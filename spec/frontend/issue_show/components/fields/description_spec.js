@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import DescriptionField from '~/issue_show/components/fields/description.vue';
-import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import eventHub from '~/issue_show/event_hub';
+import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 
 describe('Description field component', () => {
   let wrapper;

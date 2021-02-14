@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
-import { Mark } from 'tiptap';
 import { escape } from 'lodash';
+import { Mark } from 'tiptap';
 
 // Transforms generated HTML back to GFM for Banzai::Filter::MarkdownFilter
 export default class InlineHTML extends Mark {

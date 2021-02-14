@@ -1,8 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
+import axios from '~/lib/utils/axios_utils';
 import statusCodes from '~/lib/utils/http_status';
 import { fetchFunctions, fetchMetrics } from '~/serverless/store/actions';
-import axios from '~/lib/utils/axios_utils';
 import { mockServerlessFunctions, mockMetrics } from '../mock_data';
 import { adjustMetricQuery } from '../utils';
 

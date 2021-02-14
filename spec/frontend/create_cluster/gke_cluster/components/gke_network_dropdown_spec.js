@@ -1,7 +1,7 @@
-import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import GkeNetworkDropdown from '~/create_cluster/gke_cluster/components/gke_network_dropdown.vue';
+import Vuex from 'vuex';
 import ClusterFormDropdown from '~/create_cluster/components/cluster_form_dropdown.vue';
+import GkeNetworkDropdown from '~/create_cluster/gke_cluster/components/gke_network_dropdown.vue';
 import createClusterDropdownState from '~/create_cluster/store/cluster_dropdown/state';
 
 const localVue = createLocalVue();

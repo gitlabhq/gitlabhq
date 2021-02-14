@@ -1,9 +1,9 @@
 import { GlSprintf, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { scrollDown } from '~/lib/utils/scroll_utils';
 import EnvironmentLogs from '~/logs/components/environment_logs.vue';
 
 import { createStore } from '~/logs/stores';
-import { scrollDown } from '~/lib/utils/scroll_utils';
 import {
   mockEnvName,
   mockEnvironments,

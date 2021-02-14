@@ -1,9 +1,9 @@
 <script>
-import { uniqueId } from 'lodash';
 import { GlAlert, GlIcon } from '@gitlab/ui';
+import { uniqueId } from 'lodash';
 import { __, s__ } from '~/locale';
-import { DEFAULT, INVALID_CI_CONFIG } from '~/pipelines/constants';
 import { CI_CONFIG_STATUS_INVALID } from '~/pipeline_editor/constants';
+import { DEFAULT, INVALID_CI_CONFIG } from '~/pipelines/constants';
 import EditorLite from '~/vue_shared/components/editor_lite.vue';
 
 export default {

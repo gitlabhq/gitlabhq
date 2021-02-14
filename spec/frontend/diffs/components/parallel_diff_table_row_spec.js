@@ -1,12 +1,12 @@
-import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
-import { createStore } from '~/mr_notes/stores';
-import ParallelDiffTableRow from '~/diffs/components/parallel_diff_table_row.vue';
-import { mapParallel } from '~/diffs/components/diff_row_utils';
 import DiffGutterAvatars from '~/diffs/components/diff_gutter_avatars.vue';
-import diffFileMockData from '../mock_data/diff_file';
+import { mapParallel } from '~/diffs/components/diff_row_utils';
+import ParallelDiffTableRow from '~/diffs/components/parallel_diff_table_row.vue';
+import { createStore } from '~/mr_notes/stores';
 import discussionsMockData from '../mock_data/diff_discussions';
+import diffFileMockData from '../mock_data/diff_file';
 
 describe('ParallelDiffTableRow', () => {
   const mockDiffContent = {

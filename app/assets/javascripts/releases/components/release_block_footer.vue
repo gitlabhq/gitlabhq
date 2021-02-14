@@ -1,8 +1,8 @@
 <script>
 import { GlTooltipDirective, GlLink, GlIcon } from '@gitlab/ui';
+import { __, sprintf } from '~/locale';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import { __, sprintf } from '~/locale';
 
 export default {
   name: 'ReleaseBlockFooter',

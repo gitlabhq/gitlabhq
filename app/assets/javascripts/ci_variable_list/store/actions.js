@@ -1,6 +1,6 @@
-import axios from '~/lib/utils/axios_utils';
 import Api from '~/api';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import * as types from './mutation_types';
 import { prepareDataForApi, prepareDataForDisplay, prepareEnvironments } from './utils';

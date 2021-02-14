@@ -1,13 +1,13 @@
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import CommitFormModal from './components/form_modal.vue';
-import createStore from './store';
 import {
   I18N_MODAL,
   I18N_CHERRY_PICK_MODAL,
   OPEN_CHERRY_PICK_MODAL,
   CHERRY_PICK_MODAL_ID,
 } from './constants';
+import createStore from './store';
 
 export default function initInviteMembersModal() {
   const el = document.querySelector('.js-cherry-pick-commit-modal');

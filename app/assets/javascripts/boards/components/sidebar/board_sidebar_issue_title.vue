@@ -1,11 +1,11 @@
 <script>
-import { mapGetters, mapActions } from 'vuex';
 import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormInput } from '@gitlab/ui';
+import { mapGetters, mapActions } from 'vuex';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
-import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
-import { joinPaths } from '~/lib/utils/url_utility';
 import createFlash from '~/flash';
+import { joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
+import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
 
 export default {
   components: {

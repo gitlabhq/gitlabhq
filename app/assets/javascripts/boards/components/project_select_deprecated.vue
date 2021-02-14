@@ -8,9 +8,9 @@ import {
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { featureAccessLevel } from '~/pages/projects/shared/permissions/constants';
-import eventHub from '../eventhub';
 import Api from '../../api';
 import { ListType } from '../constants';
+import eventHub from '../eventhub';
 
 export default {
   name: 'ProjectSelect',

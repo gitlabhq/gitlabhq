@@ -1,7 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import GroupedCodequalityReportsApp from '~/reports/codequality_report/grouped_codequality_reports_app.vue';
 import CodequalityIssueBody from '~/reports/codequality_report/components/codequality_issue_body.vue';
+import GroupedCodequalityReportsApp from '~/reports/codequality_report/grouped_codequality_reports_app.vue';
 import { getStoreConfig } from '~/reports/codequality_report/store';
 import { mockParsedHeadIssues, mockParsedBaseIssues } from './mock_data';
 

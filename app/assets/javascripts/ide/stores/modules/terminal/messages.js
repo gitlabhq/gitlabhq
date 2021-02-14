@@ -1,6 +1,6 @@
 import { escape } from 'lodash';
-import { __, sprintf } from '~/locale';
 import httpStatus from '~/lib/utils/http_status';
+import { __, sprintf } from '~/locale';
 
 export const UNEXPECTED_ERROR_CONFIG = __(
   'An unexpected error occurred while checking the project environment.',

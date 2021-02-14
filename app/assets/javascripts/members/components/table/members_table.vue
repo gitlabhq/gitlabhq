@@ -1,18 +1,18 @@
 <script>
-import { mapState } from 'vuex';
 import { GlTable, GlBadge } from '@gitlab/ui';
+import { mapState } from 'vuex';
 import MembersTableCell from 'ee_else_ce/members/components/table/members_table_cell.vue';
 import { canOverride, canRemove, canResend, canUpdate } from 'ee_else_ce/members/utils';
 import initUserPopovers from '~/user_popovers';
 import { FIELDS } from '../../constants';
 import RemoveGroupLinkModal from '../modals/remove_group_link_modal.vue';
-import MemberAvatar from './member_avatar.vue';
-import MemberSource from './member_source.vue';
 import CreatedAt from './created_at.vue';
+import ExpirationDatepicker from './expiration_datepicker.vue';
 import ExpiresAt from './expires_at.vue';
 import MemberActionButtons from './member_action_buttons.vue';
+import MemberAvatar from './member_avatar.vue';
+import MemberSource from './member_source.vue';
 import RoleDropdown from './role_dropdown.vue';
-import ExpirationDatepicker from './expiration_datepicker.vue';
 
 export default {
   name: 'MembersTable',

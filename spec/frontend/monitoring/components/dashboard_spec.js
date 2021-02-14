@@ -1,22 +1,28 @@
 import { shallowMount, mount } from '@vue/test-utils';
-import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
+import VueDraggable from 'vuedraggable';
 import { TEST_HOST } from 'helpers/test_constants';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import { ESC_KEY } from '~/lib/utils/keys';
 import { objectToQuery } from '~/lib/utils/url_utility';
-import axios from '~/lib/utils/axios_utils';
-import { dashboardEmptyStates, metricStates } from '~/monitoring/constants';
 import Dashboard from '~/monitoring/components/dashboard.vue';
 
 import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
-import EmptyState from '~/monitoring/components/empty_state.vue';
-import GroupEmptyState from '~/monitoring/components/group_empty_state.vue';
 import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
+import EmptyState from '~/monitoring/components/empty_state.vue';
 import GraphGroup from '~/monitoring/components/graph_group.vue';
+import GroupEmptyState from '~/monitoring/components/group_empty_state.vue';
 import LinksSection from '~/monitoring/components/links_section.vue';
+import { dashboardEmptyStates, metricStates } from '~/monitoring/constants';
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import {
+  metricsDashboardViewModel,
+  metricsDashboardPanelCount,
+  dashboardProps,
+} from '../fixture_data';
+import { dashboardGitResponse, storeVariables } from '../mock_data';
 import {
   setupAllDashboards,
   setupStoreWithDashboard,
@@ -25,12 +31,6 @@ import {
   setupStoreWithDataForPanelCount,
   setupStoreWithLinks,
 } from '../store_utils';
-import { dashboardGitResponse, storeVariables } from '../mock_data';
-import {
-  metricsDashboardViewModel,
-  metricsDashboardPanelCount,
-  dashboardProps,
-} from '../fixture_data';
 
 jest.mock('~/flash');
 

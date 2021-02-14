@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import createState from './state';
 import * as actions from './actions';
 import * as getters from './getters';
 import mutations from './mutations';
+import createState from './state';
 
 Vue.use(Vuex);
 

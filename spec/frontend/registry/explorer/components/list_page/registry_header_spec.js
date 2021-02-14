@@ -1,13 +1,13 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlSprintf } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import Component from '~/registry/explorer/components/list_page/registry_header.vue';
-import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import {
   CONTAINER_REGISTRY_TITLE,
   LIST_INTRO_TEXT,
   EXPIRATION_POLICY_DISABLED_MESSAGE,
   EXPIRATION_POLICY_DISABLED_TEXT,
 } from '~/registry/explorer/constants';
+import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 
 jest.mock('~/lib/utils/datetime_utility', () => ({
   approximateDuration: jest.fn(),

@@ -1,9 +1,9 @@
 <script>
 import LinkedGraphWrapper from '../graph_shared/linked_graph_wrapper.vue';
 import LinksLayer from '../graph_shared/links_layer.vue';
+import { DOWNSTREAM, MAIN, UPSTREAM, ONE_COL_WIDTH } from './constants';
 import LinkedPipelinesColumn from './linked_pipelines_column.vue';
 import StageColumnComponent from './stage_column_component.vue';
-import { DOWNSTREAM, MAIN, UPSTREAM, ONE_COL_WIDTH } from './constants';
 import { reportToSentry } from './utils';
 
 export default {

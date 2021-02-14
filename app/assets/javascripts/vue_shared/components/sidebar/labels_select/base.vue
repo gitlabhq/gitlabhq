@@ -1,19 +1,19 @@
 <script>
-import $ from 'jquery';
 import { GlLoadingIcon } from '@gitlab/ui';
-import { __ } from '~/locale';
+import $ from 'jquery';
 import LabelsSelect from '~/labels_select';
+import { __ } from '~/locale';
 import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
 
 import { DropdownVariant } from '../labels_select_vue/constants';
+import DropdownButton from './dropdown_button.vue';
+import DropdownCreateLabel from './dropdown_create_label.vue';
+import DropdownFooter from './dropdown_footer.vue';
+import DropdownHeader from './dropdown_header.vue';
+import DropdownSearchInput from './dropdown_search_input.vue';
 import DropdownTitle from './dropdown_title.vue';
 import DropdownValue from './dropdown_value.vue';
 import DropdownValueCollapsed from './dropdown_value_collapsed.vue';
-import DropdownButton from './dropdown_button.vue';
-import DropdownHeader from './dropdown_header.vue';
-import DropdownSearchInput from './dropdown_search_input.vue';
-import DropdownFooter from './dropdown_footer.vue';
-import DropdownCreateLabel from './dropdown_create_label.vue';
 
 export default {
   DropdownVariant,

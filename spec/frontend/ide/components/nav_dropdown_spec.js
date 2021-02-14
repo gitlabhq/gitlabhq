@@ -1,8 +1,8 @@
-import $ from 'jquery';
 import { mount } from '@vue/test-utils';
-import { createStore } from '~/ide/stores';
+import $ from 'jquery';
 import NavDropdown from '~/ide/components/nav_dropdown.vue';
 import { PERMISSION_READ_MR } from '~/ide/constants';
+import { createStore } from '~/ide/stores';
 
 const TEST_PROJECT_ID = 'lorem-ipsum';
 

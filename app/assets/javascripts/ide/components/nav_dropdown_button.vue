@@ -1,6 +1,6 @@
 <script>
-import { mapState } from 'vuex';
 import { GlIcon } from '@gitlab/ui';
+import { mapState } from 'vuex';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 
 const EMPTY_LABEL = '-';

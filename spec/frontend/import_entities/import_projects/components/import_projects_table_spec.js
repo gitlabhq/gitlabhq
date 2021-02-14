@@ -1,12 +1,12 @@
+import { GlLoadingIcon, GlButton, GlIntersectionObserver } from '@gitlab/ui';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import Vuex from 'vuex';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { GlLoadingIcon, GlButton, GlIntersectionObserver } from '@gitlab/ui';
-import state from '~/import_entities/import_projects/store/state';
-import * as getters from '~/import_entities/import_projects/store/getters';
 import { STATUSES } from '~/import_entities/constants';
 import ImportProjectsTable from '~/import_entities/import_projects/components/import_projects_table.vue';
 import ProviderRepoTableRow from '~/import_entities/import_projects/components/provider_repo_table_row.vue';
+import * as getters from '~/import_entities/import_projects/store/getters';
+import state from '~/import_entities/import_projects/store/state';
 
 describe('ImportProjectsTable', () => {
   let wrapper;

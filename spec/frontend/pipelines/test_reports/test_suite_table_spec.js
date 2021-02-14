@@ -1,11 +1,11 @@
-import Vuex from 'vuex';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlButton, GlFriendlyWrap, GlLink, GlPagination } from '@gitlab/ui';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { getJSONFixture } from 'helpers/fixtures';
 import SuiteTable from '~/pipelines/components/test_reports/test_suite_table.vue';
+import { TestStatus } from '~/pipelines/constants';
 import * as getters from '~/pipelines/stores/test_reports/getters';
 import { formatFilePath } from '~/pipelines/stores/test_reports/utils';
-import { TestStatus } from '~/pipelines/constants';
 import skippedTestCases from './mock_data';
 
 const localVue = createLocalVue();

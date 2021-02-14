@@ -1,9 +1,9 @@
+import { STATUSES } from '~/import_entities/constants';
 import {
   isProjectImportable,
   isIncompatible,
   getImportStatus,
 } from '~/import_entities/import_projects/utils';
-import { STATUSES } from '~/import_entities/constants';
 
 describe('import_projects utils', () => {
   const COMPATIBLE_PROJECT = {

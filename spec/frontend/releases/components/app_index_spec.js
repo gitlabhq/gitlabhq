@@ -1,14 +1,14 @@
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { range as rge } from 'lodash';
 import Vuex from 'vuex';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import waitForPromises from 'helpers/wait_for_promises';
 import { getJSONFixture } from 'helpers/fixtures';
-import ReleasesApp from '~/releases/components/app_index.vue';
-import createStore from '~/releases/stores';
-import createListModule from '~/releases/stores/modules/list';
+import waitForPromises from 'helpers/wait_for_promises';
 import api from '~/api';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import ReleasesApp from '~/releases/components/app_index.vue';
 import ReleasesPagination from '~/releases/components/releases_pagination.vue';
+import createStore from '~/releases/stores';
+import createListModule from '~/releases/stores/modules/list';
 import { pageInfoHeadersWithoutPagination, pageInfoHeadersWithPagination } from '../mock_data';
 
 jest.mock('~/lib/utils/common_utils', () => ({

@@ -1,7 +1,7 @@
-import { stateAndPropsFromDataset } from '~/monitoring/utils';
-import { mapToDashboardViewModel } from '~/monitoring/stores/utils';
-import { metricStates } from '~/monitoring/constants';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { metricStates } from '~/monitoring/constants';
+import { mapToDashboardViewModel } from '~/monitoring/stores/utils';
+import { stateAndPropsFromDataset } from '~/monitoring/utils';
 
 import { metricsResult } from './mock_data';
 

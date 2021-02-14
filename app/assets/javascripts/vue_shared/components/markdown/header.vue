@@ -1,8 +1,8 @@
 <script>
-import $ from 'jquery';
 import { GlPopover, GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import $ from 'jquery';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
+import { s__ } from '~/locale';
 import { CopyAsGFM } from '../../../behaviors/markdown/copy_as_gfm';
 import ToolbarButton from './toolbar_button.vue';
 

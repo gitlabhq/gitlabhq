@@ -1,5 +1,5 @@
-import { throttle } from 'lodash';
 import $ from 'jquery';
+import { throttle } from 'lodash';
 import { Terminal } from 'xterm';
 import * as fit from 'xterm/lib/addons/fit/fit';
 import * as webLinks from 'xterm/lib/addons/webLinks/webLinks';

@@ -1,5 +1,5 @@
-import state from '~/frequent_items/store/state';
 import * as getters from '~/frequent_items/store/getters';
+import state from '~/frequent_items/store/state';
 
 describe('Frequent Items Dropdown Store Getters', () => {
   let mockedState;

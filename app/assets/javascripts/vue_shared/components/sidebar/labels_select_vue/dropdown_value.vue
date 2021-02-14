@@ -1,6 +1,6 @@
 <script>
-import { mapState } from 'vuex';
 import { GlLabel } from '@gitlab/ui';
+import { mapState } from 'vuex';
 
 import { isScopedLabel } from '~/lib/utils/common_utils';
 

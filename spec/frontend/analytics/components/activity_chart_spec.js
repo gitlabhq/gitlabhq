@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlColumnChart } from '@gitlab/ui/dist/charts';
+import { shallowMount } from '@vue/test-utils';
 import ActivityChart from '~/analytics/product_analytics/components/activity_chart.vue';
 
 describe('Activity Chart Bundle', () => {

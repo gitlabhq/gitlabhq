@@ -1,12 +1,12 @@
-import { sprintf, __ } from '~/locale';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import { addNumericSuffix } from '~/ide/utils';
-import * as rootTypes from '../../mutation_types';
-import { createCommitPayload, createNewMergeRequestUrl } from '../../utils';
-import service from '../../../services';
+import { sprintf, __ } from '~/locale';
 import { leftSidebarViews } from '../../../constants';
 import eventHub from '../../../eventhub';
 import { parseCommitError } from '../../../lib/errors';
+import service from '../../../services';
+import * as rootTypes from '../../mutation_types';
+import { createCommitPayload, createNewMergeRequestUrl } from '../../utils';
 import { COMMIT_TO_CURRENT_BRANCH } from './constants';
 import * as types from './mutation_types';
 

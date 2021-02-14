@@ -1,6 +1,6 @@
 import * as types from '~/monitoring/stores/mutation_types';
-import { metricsResult, environmentData, dashboardGitResponse } from './mock_data';
 import { metricsDashboardPayload } from './fixture_data';
+import { metricsResult, environmentData, dashboardGitResponse } from './mock_data';
 
 export const setMetricResult = ({ store, result, group = 0, panel = 0, metric = 0 }) => {
   const { dashboard } = store.state.monitoringDashboard;

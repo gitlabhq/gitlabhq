@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Tracking from '~/tracking';
 import TrackEvent from '~/vue_shared/directives/track_event';
 

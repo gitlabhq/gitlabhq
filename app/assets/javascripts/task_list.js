@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import 'deckar01-task_list';
 import { __ } from '~/locale';
-import axios from './lib/utils/axios_utils';
 import { deprecatedCreateFlash as Flash } from './flash';
+import axios from './lib/utils/axios_utils';
 
 export default class TaskList {
   constructor(options = {}) {

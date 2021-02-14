@@ -1,11 +1,11 @@
+import { GlAlert } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlAlert } from '@gitlab/ui';
 import { TEST_HOST } from 'spec/test_constants';
 import Form from '~/feature_flags/components/form.vue';
-import createStore from '~/feature_flags/store/new';
 import NewFeatureFlag from '~/feature_flags/components/new_feature_flag.vue';
 import { ROLLOUT_STRATEGY_ALL_USERS, DEFAULT_PERCENT_ROLLOUT } from '~/feature_flags/constants';
+import createStore from '~/feature_flags/store/new';
 import { allUsersStrategy } from '../mock_data';
 
 const userCalloutId = 'feature_flags_new_version';

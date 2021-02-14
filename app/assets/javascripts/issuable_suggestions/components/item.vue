@@ -1,10 +1,10 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
-import { uniqueId } from 'lodash';
 import { GlLink, GlTooltip, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { uniqueId } from 'lodash';
 import { __ } from '~/locale';
-import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import timeago from '~/vue_shared/mixins/timeago';
 
 export default {

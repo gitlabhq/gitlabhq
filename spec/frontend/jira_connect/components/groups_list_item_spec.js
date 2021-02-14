@@ -1,10 +1,10 @@
-import { mount, shallowMount } from '@vue/test-utils';
 import { GlAvatar, GlButton } from '@gitlab/ui';
+import { mount, shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
-import GroupsListItem from '~/jira_connect/components/groups_list_item.vue';
 import * as JiraConnectApi from '~/jira_connect/api';
+import GroupsListItem from '~/jira_connect/components/groups_list_item.vue';
 import { mockGroup1 } from '../mock_data';
 
 describe('GroupsListItem', () => {

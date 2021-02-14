@@ -25,8 +25,6 @@ Your caret can stop touching a `rawReference` can happen in a variety of ways:
 */
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import { __ } from '~/locale';
-import RelatedIssuesStore from '../stores/related_issues_store';
-import RelatedIssuesService from '../services/related_issues_service';
 import {
   relatedIssuesRemoveErrorMap,
   pathIndeterminateErrorMap,
@@ -34,6 +32,8 @@ import {
   issuableTypesMap,
   PathIdSeparator,
 } from '../constants';
+import RelatedIssuesService from '../services/related_issues_service';
+import RelatedIssuesStore from '../stores/related_issues_store';
 import RelatedIssuesBlock from './related_issues_block.vue';
 
 export default {

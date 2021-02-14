@@ -1,12 +1,12 @@
-import Vuex from 'vuex';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlEmptyState, GlSprintf, GlLink } from '@gitlab/ui';
-import * as commonUtils from '~/lib/utils/common_utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import createFlash from '~/flash';
-import PackageListApp from '~/packages/list/components/packages_list_app.vue';
+import * as commonUtils from '~/lib/utils/common_utils';
 import PackageSearch from '~/packages/list/components/package_search.vue';
-import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages/shared/constants';
+import PackageListApp from '~/packages/list/components/packages_list_app.vue';
 import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '~/packages/list/constants';
+import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages/shared/constants';
 
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/flash');

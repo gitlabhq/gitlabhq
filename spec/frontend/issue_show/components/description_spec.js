@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import '~/behaviors/markdown/render_gfm';
-import mountComponent from 'helpers/vue_mount_component_helper';
 import { TEST_HOST } from 'helpers/test_constants';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import Description from '~/issue_show/components/description.vue';
 import TaskList from '~/task_list';
 import { descriptionProps as props } from '../mock_data';

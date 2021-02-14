@@ -1,7 +1,7 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { groupBy } from 'lodash';
 import { GlIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { groupBy } from 'lodash';
 import { __, sprintf } from '~/locale';
 import { glEmojiTag } from '../../emoji';
 

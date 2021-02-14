@@ -1,17 +1,16 @@
 import MockAdapter from 'axios-mock-adapter';
-import testAction from 'helpers/vuex_action_helper';
 import { backoffMockImplementation } from 'helpers/backoff_helper';
-import Tracking from '~/tracking';
-import axios from '~/lib/utils/axios_utils';
-import statusCodes from '~/lib/utils/http_status';
-import * as commonUtils from '~/lib/utils/common_utils';
+import testAction from 'helpers/vuex_action_helper';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import { defaultTimeRange } from '~/vue_shared/constants';
-import * as getters from '~/monitoring/stores/getters';
+import axios from '~/lib/utils/axios_utils';
+import * as commonUtils from '~/lib/utils/common_utils';
+import statusCodes from '~/lib/utils/http_status';
 import { ENVIRONMENT_AVAILABLE_STATE } from '~/monitoring/constants';
 
+import getAnnotations from '~/monitoring/queries/getAnnotations.query.graphql';
+import getDashboardValidationWarnings from '~/monitoring/queries/getDashboardValidationWarnings.query.graphql';
+import getEnvironments from '~/monitoring/queries/getEnvironments.query.graphql';
 import { createStore } from '~/monitoring/stores';
-import * as types from '~/monitoring/stores/mutation_types';
 import {
   setGettingStartedEmptyState,
   setInitialState,
@@ -33,15 +32,21 @@ import {
   fetchVariableMetricLabelValues,
   fetchPanelPreview,
 } from '~/monitoring/stores/actions';
+import * as getters from '~/monitoring/stores/getters';
+import * as types from '~/monitoring/stores/mutation_types';
+import storeState from '~/monitoring/stores/state';
 import {
   gqClient,
   parseEnvironmentsResponse,
   parseAnnotationsResponse,
 } from '~/monitoring/stores/utils';
-import getEnvironments from '~/monitoring/queries/getEnvironments.query.graphql';
-import getAnnotations from '~/monitoring/queries/getAnnotations.query.graphql';
-import getDashboardValidationWarnings from '~/monitoring/queries/getDashboardValidationWarnings.query.graphql';
-import storeState from '~/monitoring/stores/state';
+import Tracking from '~/tracking';
+import { defaultTimeRange } from '~/vue_shared/constants';
+import {
+  metricsDashboardResponse,
+  metricsDashboardViewModel,
+  metricsDashboardPanelCount,
+} from '../fixture_data';
 import {
   deploymentData,
   environmentData,
@@ -49,11 +54,6 @@ import {
   dashboardGitResponse,
   mockDashboardsErrorResponse,
 } from '../mock_data';
-import {
-  metricsDashboardResponse,
-  metricsDashboardViewModel,
-  metricsDashboardPanelCount,
-} from '../fixture_data';
 
 jest.mock('~/flash');
 

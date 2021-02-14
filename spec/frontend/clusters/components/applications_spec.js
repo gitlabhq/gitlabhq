@@ -1,12 +1,12 @@
 import { shallowMount, mount } from '@vue/test-utils';
+import ApplicationRow from '~/clusters/components/application_row.vue';
 import Applications from '~/clusters/components/applications.vue';
+import CrossplaneProviderStack from '~/clusters/components/crossplane_provider_stack.vue';
+import FluentdOutputSettings from '~/clusters/components/fluentd_output_settings.vue';
+import IngressModsecuritySettings from '~/clusters/components/ingress_modsecurity_settings.vue';
+import KnativeDomainEditor from '~/clusters/components/knative_domain_editor.vue';
 import { CLUSTER_TYPE, PROVIDER_TYPE } from '~/clusters/constants';
 import eventHub from '~/clusters/event_hub';
-import ApplicationRow from '~/clusters/components/application_row.vue';
-import KnativeDomainEditor from '~/clusters/components/knative_domain_editor.vue';
-import CrossplaneProviderStack from '~/clusters/components/crossplane_provider_stack.vue';
-import IngressModsecuritySettings from '~/clusters/components/ingress_modsecurity_settings.vue';
-import FluentdOutputSettings from '~/clusters/components/fluentd_output_settings.vue';
 import { APPLICATIONS_MOCK_STATE } from '../services/mock_data';
 
 describe('Applications', () => {

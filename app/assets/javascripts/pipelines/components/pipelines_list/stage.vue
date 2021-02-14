@@ -11,15 +11,15 @@
  * 3. Merge request widget
  * 4. Commit widget
  */
-import $ from 'jquery';
 import { GlDropdown, GlLoadingIcon, GlTooltipDirective, GlIcon } from '@gitlab/ui';
-import { __ } from '~/locale';
+import $ from 'jquery';
 import { deprecatedCreateFlash as Flash } from '~/flash';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import axios from '~/lib/utils/axios_utils';
+import { __ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { PIPELINES_TABLE } from '../../constants';
 import eventHub from '../../event_hub';
 import JobItem from '../graph/job_item.vue';
-import { PIPELINES_TABLE } from '../../constants';
 
 export default {
   components: {

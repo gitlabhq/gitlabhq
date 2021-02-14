@@ -4,9 +4,9 @@
  * Fixed: [name] in [link]:[line]
  */
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import ReportLink from '~/reports/components/report_link.vue';
 import { STATUS_SUCCESS } from '~/reports/constants';
-import { s__ } from '~/locale';
 import { SEVERITY_CLASSES, SEVERITY_ICONS } from '../constants';
 
 export default {

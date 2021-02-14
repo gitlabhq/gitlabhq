@@ -1,11 +1,11 @@
-import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 
-import PipelineEditorHome from '~/pipeline_editor/pipeline_editor_home.vue';
-import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tabs.vue';
 import CommitSection from '~/pipeline_editor/components/commit/commit_section.vue';
 import PipelineEditorHeader from '~/pipeline_editor/components/header/pipeline_editor_header.vue';
+import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tabs.vue';
 import { MERGED_TAB, VISUALIZE_TAB } from '~/pipeline_editor/constants';
+import PipelineEditorHome from '~/pipeline_editor/pipeline_editor_home.vue';
 
 import { mockLintResponse, mockCiYml } from './mock_data';
 

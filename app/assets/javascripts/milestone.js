@@ -1,8 +1,8 @@
 import $ from 'jquery';
-import axios from './lib/utils/axios_utils';
 import { deprecatedCreateFlash as flash } from './flash';
-import { mouseenter, debouncedMouseleave, togglePopover } from './shared/popover';
+import axios from './lib/utils/axios_utils';
 import { __ } from './locale';
+import { mouseenter, debouncedMouseleave, togglePopover } from './shared/popover';
 
 export default class Milestone {
   constructor() {

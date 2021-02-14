@@ -1,6 +1,6 @@
 <script>
-import { mapGetters } from 'vuex';
 import { GlModal } from '@gitlab/ui';
+import { mapGetters } from 'vuex';
 import { __ } from '~/locale';
 
 export default {

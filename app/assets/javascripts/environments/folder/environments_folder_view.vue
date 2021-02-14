@@ -1,9 +1,9 @@
 <script>
 import { GlBadge, GlTab, GlTabs } from '@gitlab/ui';
+import DeleteEnvironmentModal from '../components/delete_environment_modal.vue';
+import StopEnvironmentModal from '../components/stop_environment_modal.vue';
 import environmentsMixin from '../mixins/environments_mixin';
 import EnvironmentsPaginationApiMixin from '../mixins/environments_pagination_api_mixin';
-import StopEnvironmentModal from '../components/stop_environment_modal.vue';
-import DeleteEnvironmentModal from '../components/delete_environment_modal.vue';
 
 export default {
   components: {

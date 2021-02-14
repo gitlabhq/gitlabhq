@@ -1,14 +1,14 @@
-import { shallowMount } from '@vue/test-utils';
 import { Editor, mockEditorApi } from '@toast-ui/vue-editor';
-import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
-import AddImageModal from '~/vue_shared/components/rich_content_editor/modals/add_image/add_image_modal.vue';
-import InsertVideoModal from '~/vue_shared/components/rich_content_editor/modals/insert_video_modal.vue';
+import { shallowMount } from '@vue/test-utils';
 import {
   EDITOR_TYPES,
   EDITOR_HEIGHT,
   EDITOR_PREVIEW_STYLE,
   CUSTOM_EVENTS,
 } from '~/vue_shared/components/rich_content_editor/constants';
+import AddImageModal from '~/vue_shared/components/rich_content_editor/modals/add_image/add_image_modal.vue';
+import InsertVideoModal from '~/vue_shared/components/rich_content_editor/modals/insert_video_modal.vue';
+import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
 
 import {
   addCustomEventListener,

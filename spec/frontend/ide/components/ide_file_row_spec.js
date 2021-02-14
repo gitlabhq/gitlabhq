@@ -1,9 +1,9 @@
 import { createLocalVue, mount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import IdeFileRow from '~/ide/components/ide_file_row.vue';
-import FileRow from '~/vue_shared/components/file_row.vue';
 import FileRowExtra from '~/ide/components/file_row_extra.vue';
+import IdeFileRow from '~/ide/components/ide_file_row.vue';
 import { createStore } from '~/ide/stores';
+import FileRow from '~/vue_shared/components/file_row.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

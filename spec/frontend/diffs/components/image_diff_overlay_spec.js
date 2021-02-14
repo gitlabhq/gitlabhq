@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
 import { createStore } from '~/mr_notes/stores';
 import { imageDiffDiscussions } from '../mock_data/diff_discussions';

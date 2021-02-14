@@ -1,7 +1,7 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import { __, sprintf } from '~/locale';
 import ServiceDeskSetting from './service_desk_setting.vue';
 
 export default {

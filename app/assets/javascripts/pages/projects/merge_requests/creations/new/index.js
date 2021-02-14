@@ -1,5 +1,5 @@
-import MergeRequest from '~/merge_request';
 import initPipelines from '~/commit/pipelines/pipelines_bundle';
+import MergeRequest from '~/merge_request';
 import initCompare from './compare';
 
 document.addEventListener('DOMContentLoaded', () => {

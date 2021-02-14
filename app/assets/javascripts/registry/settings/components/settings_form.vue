@@ -1,6 +1,5 @@
 <script>
 import { GlCard, GlButton, GlSprintf } from '@gitlab/ui';
-import Tracking from '~/tracking';
 import {
   UPDATE_SETTINGS_ERROR_MESSAGE,
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
@@ -19,13 +18,14 @@ import {
   CADENCE_LABEL,
   EXPIRATION_POLICY_FOOTER_NOTE,
 } from '~/registry/settings/constants';
-import { formOptionsGenerator } from '~/registry/settings/utils';
 import updateContainerExpirationPolicyMutation from '~/registry/settings/graphql/mutations/update_container_expiration_policy.mutation.graphql';
 import { updateContainerExpirationPolicy } from '~/registry/settings/graphql/utils/cache_update';
+import { formOptionsGenerator } from '~/registry/settings/utils';
+import Tracking from '~/tracking';
 import ExpirationDropdown from './expiration_dropdown.vue';
 import ExpirationInput from './expiration_input.vue';
-import ExpirationToggle from './expiration_toggle.vue';
 import ExpirationRunText from './expiration_run_text.vue';
+import ExpirationToggle from './expiration_toggle.vue';
 
 export default {
   components: {

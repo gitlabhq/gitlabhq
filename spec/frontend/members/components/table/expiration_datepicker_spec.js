@@ -1,7 +1,7 @@
-import { mount, createLocalVue } from '@vue/test-utils';
-import Vuex from 'vuex';
-import { nextTick } from 'vue';
 import { GlDatepicker } from '@gitlab/ui';
+import { mount, createLocalVue } from '@vue/test-utils';
+import { nextTick } from 'vue';
+import Vuex from 'vuex';
 import { useFakeDate } from 'helpers/fake_date';
 import waitForPromises from 'helpers/wait_for_promises';
 import ExpirationDatepicker from '~/members/components/table/expiration_datepicker.vue';

@@ -1,9 +1,9 @@
 <script>
-import { escape } from 'lodash';
 import { GlSafeHtmlDirective as SafeHtml, GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
+import { escape } from 'lodash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { s__, sprintf } from '~/locale';
-import { deprecatedCreateFlash as Flash } from '~/flash';
 
 export default {
   components: {

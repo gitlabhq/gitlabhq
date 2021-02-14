@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { trimText } from 'helpers/text_helper';
+import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import component from '~/reports/components/test_issue_body.vue';
 import createStore from '~/reports/store';
 import { issue } from '../mock_data/mock_data';

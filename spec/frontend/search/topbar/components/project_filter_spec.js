@@ -1,5 +1,5 @@
-import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { MOCK_PROJECT, MOCK_QUERY } from 'jest/search/mock_data';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import ProjectFilter from '~/search/topbar/components/project_filter.vue';

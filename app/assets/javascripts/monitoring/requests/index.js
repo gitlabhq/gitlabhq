@@ -1,6 +1,6 @@
 import axios from '~/lib/utils/axios_utils';
-import statusCodes from '~/lib/utils/http_status';
 import { backOff } from '~/lib/utils/common_utils';
+import statusCodes from '~/lib/utils/http_status';
 import { PROMETHEUS_TIMEOUT } from '../constants';
 
 const cancellableBackOffRequest = (makeRequestCallback) =>

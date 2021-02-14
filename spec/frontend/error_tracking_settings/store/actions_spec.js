@@ -1,12 +1,12 @@
 import MockAdapter from 'axios-mock-adapter';
-import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'helpers/test_constants';
-import axios from '~/lib/utils/axios_utils';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { refreshCurrentPage } from '~/lib/utils/url_utility';
+import testAction from 'helpers/vuex_action_helper';
 import * as actions from '~/error_tracking_settings/store/actions';
 import * as types from '~/error_tracking_settings/store/mutation_types';
 import defaultState from '~/error_tracking_settings/store/state';
+import axios from '~/lib/utils/axios_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import { projectList } from '../mock';
 
 jest.mock('~/lib/utils/url_utility');

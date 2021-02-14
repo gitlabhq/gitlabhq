@@ -1,7 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
 import csrf from '~/lib/utils/csrf';
+import { __, s__ } from '~/locale';
 import { formDataValidator } from '../constants';
 import CustomMetricsFormFields from './custom_metrics_form_fields.vue';
 import DeleteCustomMetricModal from './delete_custom_metric_modal.vue';

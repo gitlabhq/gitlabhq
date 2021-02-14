@@ -7,20 +7,20 @@ import VueApollo from 'vue-apollo';
 import BoardSidebar from 'ee_else_ce/boards/components/board_sidebar';
 import initNewListDropdown from 'ee_else_ce/boards/components/new_list_dropdown';
 import boardConfigToggle from 'ee_else_ce/boards/config_toggle';
-import toggleLabels from 'ee_else_ce/boards/toggle_labels';
-import toggleEpicsSwimlanes from 'ee_else_ce/boards/toggle_epics_swimlanes';
 import {
   setWeightFetchingState,
   setEpicFetchingState,
   getMilestoneTitle,
   getBoardsModalData,
 } from 'ee_else_ce/boards/ee_functions';
+import toggleEpicsSwimlanes from 'ee_else_ce/boards/toggle_epics_swimlanes';
+import toggleLabels from 'ee_else_ce/boards/toggle_labels';
 
 import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
 import BoardContent from '~/boards/components/board_content.vue';
 import BoardExtraActions from '~/boards/components/board_extra_actions.vue';
-import createDefaultClient from '~/lib/graphql';
 import { deprecatedCreateFlash as Flash } from '~/flash';
+import createDefaultClient from '~/lib/graphql';
 import { __ } from '~/locale';
 import './models/label';
 import './models/assignee';

@@ -1,10 +1,10 @@
-import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 
-import defaultState from '~/boards/stores/state';
 import BoardCardLayout from '~/boards/components/board_card_layout.vue';
 import IssueCardInner from '~/boards/components/issue_card_inner.vue';
 import { ISSUABLE } from '~/boards/constants';
+import defaultState from '~/boards/stores/state';
 import { mockLabelList, mockIssue } from '../mock_data';
 
 describe('Board card layout', () => {

@@ -1,32 +1,32 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import VueRouter from 'vue-router';
 import { GlAlert } from '@gitlab/ui';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { ApolloMutation } from 'vue-apollo';
+import VueRouter from 'vue-router';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
-import createFlash from '~/flash';
 import Api from '~/api';
-import DesignIndex from '~/design_management/pages/design/index.vue';
-import DesignSidebar from '~/design_management/components/design_sidebar.vue';
 import DesignPresentation from '~/design_management/components/design_presentation.vue';
+import DesignSidebar from '~/design_management/components/design_sidebar.vue';
+import { DESIGN_DETAIL_LAYOUT_CLASSLIST } from '~/design_management/constants';
 import createImageDiffNoteMutation from '~/design_management/graphql/mutations/create_image_diff_note.mutation.graphql';
 import updateActiveDiscussion from '~/design_management/graphql/mutations/update_active_discussion.mutation.graphql';
+import DesignIndex from '~/design_management/pages/design/index.vue';
+import createRouter from '~/design_management/router';
+import { DESIGNS_ROUTE_NAME, DESIGN_ROUTE_NAME } from '~/design_management/router/constants';
+import * as utils from '~/design_management/utils/design_management_utils';
 import {
   DESIGN_NOT_FOUND_ERROR,
   DESIGN_VERSION_NOT_EXIST_ERROR,
 } from '~/design_management/utils/error_messages';
-import { DESIGNS_ROUTE_NAME, DESIGN_ROUTE_NAME } from '~/design_management/router/constants';
-import createRouter from '~/design_management/router';
-import * as utils from '~/design_management/utils/design_management_utils';
-import { DESIGN_DETAIL_LAYOUT_CLASSLIST } from '~/design_management/constants';
 import {
   DESIGN_TRACKING_PAGE_NAME,
   DESIGN_SNOWPLOW_EVENT_TYPES,
   DESIGN_USAGE_PING_EVENT_TYPES,
 } from '~/design_management/utils/tracking';
+import createFlash from '~/flash';
+import mockAllVersions from '../../mock_data/all_versions';
 import design from '../../mock_data/design';
 import mockResponseWithDesigns from '../../mock_data/designs';
 import mockResponseNoDesigns from '../../mock_data/no_designs';
-import mockAllVersions from '../../mock_data/all_versions';
 
 jest.mock('~/flash');
 jest.mock('~/api.js');

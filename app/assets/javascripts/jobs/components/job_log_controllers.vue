@@ -1,8 +1,8 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { GlTooltipDirective, GlLink, GlButton } from '@gitlab/ui';
-import { polyfillSticky } from '~/lib/utils/sticky';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
+import { polyfillSticky } from '~/lib/utils/sticky';
 import { __, sprintf } from '~/locale';
 import scrollDown from '../svg/scroll_down.svg';
 

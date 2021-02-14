@@ -1,11 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
-import AxiosMockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
-import SidebarAssignees from '~/sidebar/components/assignees/sidebar_assignees.vue';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import Assigness from '~/sidebar/components/assignees/assignees.vue';
 import AssigneesRealtime from '~/sidebar/components/assignees/assignees_realtime.vue';
-import SidebarMediator from '~/sidebar/sidebar_mediator';
+import SidebarAssignees from '~/sidebar/components/assignees/sidebar_assignees.vue';
 import SidebarService from '~/sidebar/services/sidebar_service';
+import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
 import Mock from './mock_data';
 

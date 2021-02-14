@@ -1,6 +1,6 @@
+import { GlButton } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlButton } from '@gitlab/ui';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import RemoveGroupLinkButton from '~/members/components/action_buttons/remove_group_link_button.vue';
 import { group } from '../../mock_data';

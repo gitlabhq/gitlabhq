@@ -1,8 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
-import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'helpers/test_constants';
-import axios from '~/lib/utils/axios_utils';
+import testAction from 'helpers/vuex_action_helper';
 import * as actions from '~/ide/stores/modules/clientside/actions';
+import axios from '~/lib/utils/axios_utils';
 
 const TEST_PROJECT_URL = `${TEST_HOST}/lorem/ipsum`;
 const TEST_USAGE_URL = `${TEST_PROJECT_URL}/usage_ping/web_ide_clientside_preview`;

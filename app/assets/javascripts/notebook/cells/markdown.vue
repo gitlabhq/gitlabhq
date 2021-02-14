@@ -1,7 +1,7 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import marked from 'marked';
 import katex from 'katex';
+import marked from 'marked';
 import { sanitize } from '~/lib/dompurify';
 import Prompt from './prompt.vue';
 

@@ -1,10 +1,10 @@
 import $ from 'jquery';
-import AccessDropdown from '~/projects/settings/access_dropdown';
-import axios from '~/lib/utils/axios_utils';
-import AccessorUtilities from '~/lib/utils/accessor';
-import { deprecatedCreateFlash as Flash } from '~/flash';
 import CreateItemDropdown from '~/create_item_dropdown';
+import { deprecatedCreateFlash as Flash } from '~/flash';
+import AccessorUtilities from '~/lib/utils/accessor';
+import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
+import AccessDropdown from '~/projects/settings/access_dropdown';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
 
 export default class ProtectedBranchCreate {

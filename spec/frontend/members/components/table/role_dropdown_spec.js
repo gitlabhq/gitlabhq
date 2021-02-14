@@ -1,12 +1,12 @@
-import { mount, createWrapper, createLocalVue } from '@vue/test-utils';
-import Vuex from 'vuex';
-import { nextTick } from 'vue';
-import { within } from '@testing-library/dom';
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { within } from '@testing-library/dom';
+import { mount, createWrapper, createLocalVue } from '@vue/test-utils';
+import { nextTick } from 'vue';
+import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
-import RoleDropdown from '~/members/components/table/role_dropdown.vue';
 import { BV_DROPDOWN_SHOW } from '~/lib/utils/constants';
+import RoleDropdown from '~/members/components/table/role_dropdown.vue';
 import { member } from '../../mock_data';
 
 const localVue = createLocalVue();

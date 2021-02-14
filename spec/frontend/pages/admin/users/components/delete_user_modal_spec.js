@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton, GlFormInput } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import DeleteUserModal from '~/pages/admin/users/components/delete_user_modal.vue';
 import ModalStub from './stubs/modal_stub';
 

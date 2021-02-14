@@ -1,6 +1,6 @@
-import { nextTick } from 'vue';
-import { shallowMount } from '@vue/test-utils';
 import { GlDropdownItem, GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 
 import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
 

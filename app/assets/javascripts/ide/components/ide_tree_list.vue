@@ -1,9 +1,9 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
-import FileTree from '~/vue_shared/components/file_tree.vue';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { WEBIDE_MARK_FILE_CLICKED } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
+import FileTree from '~/vue_shared/components/file_tree.vue';
 import IdeFileRow from './ide_file_row.vue';
 import NavDropdown from './nav_dropdown.vue';
 

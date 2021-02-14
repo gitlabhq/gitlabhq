@@ -1,6 +1,6 @@
-import createState from '~/user_lists/store/new/state';
 import * as types from '~/user_lists/store/new/mutation_types';
 import mutations from '~/user_lists/store/new/mutations';
+import createState from '~/user_lists/store/new/state';
 
 describe('User List Edit Mutations', () => {
   let state;

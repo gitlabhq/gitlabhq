@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
-import { createStore } from '~/ide/stores';
 import radioGroup from '~/ide/components/commit_sidebar/radio_group.vue';
+import { createStore } from '~/ide/stores';
 
 describe('IDE commit sidebar radio group', () => {
   let vm;

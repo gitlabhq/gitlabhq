@@ -5,8 +5,8 @@
 /*= provides zen_mode:enter */
 /*= provides zen_mode:leave */
 
-import $ from 'jquery';
 import Dropzone from 'dropzone';
+import $ from 'jquery';
 import Mousetrap from 'mousetrap';
 import 'mousetrap/plugins/pause/mousetrap-pause';
 import { scrollToElement } from '~/lib/utils/common_utils';

@@ -1,11 +1,11 @@
-import { mount } from '@vue/test-utils';
 import { GlFormTextarea, GlFormInput, GlLoadingIcon } from '@gitlab/ui';
-import CommitSection from '~/pipeline_editor/components/commit/commit_section.vue';
-import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
+import { mount } from '@vue/test-utils';
 import { objectToQuery, redirectTo } from '~/lib/utils/url_utility';
+import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
+import CommitSection from '~/pipeline_editor/components/commit/commit_section.vue';
+import { COMMIT_SUCCESS } from '~/pipeline_editor/constants';
 import commitCreate from '~/pipeline_editor/graphql/mutations/commit_ci_file.mutation.graphql';
 
-import { COMMIT_SUCCESS } from '~/pipeline_editor/constants';
 import {
   mockCiConfigPath,
   mockCiYml,

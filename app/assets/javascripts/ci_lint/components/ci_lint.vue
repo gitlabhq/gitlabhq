@@ -1,8 +1,8 @@
 <script>
 import { GlButton, GlFormCheckbox, GlIcon, GlLink, GlAlert } from '@gitlab/ui';
-import EditorLite from '~/vue_shared/components/editor_lite.vue';
 import CiLintResults from '~/pipeline_editor/components/lint/ci_lint_results.vue';
 import lintCiMutation from '~/pipeline_editor/graphql/mutations/lint_ci.mutation.graphql';
+import EditorLite from '~/vue_shared/components/editor_lite.vue';
 
 export default {
   components: {

@@ -5,8 +5,8 @@
  */
 
 import { GlTooltipDirective, GlButton, GlModalDirective } from '@gitlab/ui';
-import { s__ } from '~/locale';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
+import { s__ } from '~/locale';
 import eventHub from '../event_hub';
 
 export default {

@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
-import { createStore } from '~/monitoring/stores';
-import DashboardPage from '~/monitoring/pages/dashboard_page.vue';
 import Dashboard from '~/monitoring/components/dashboard.vue';
+import DashboardPage from '~/monitoring/pages/dashboard_page.vue';
+import { createStore } from '~/monitoring/stores';
 import { dashboardProps } from '../fixture_data';
 
 describe('monitoring/pages/dashboard_page', () => {

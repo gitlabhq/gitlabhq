@@ -1,8 +1,8 @@
 <script>
 import { kebabCase } from 'lodash';
-import UserAvatar from '../avatars/user_avatar.vue';
-import InviteAvatar from '../avatars/invite_avatar.vue';
 import GroupAvatar from '../avatars/group_avatar.vue';
+import InviteAvatar from '../avatars/invite_avatar.vue';
+import UserAvatar from '../avatars/user_avatar.vue';
 
 export default {
   name: 'MemberAvatar',

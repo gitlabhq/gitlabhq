@@ -1,11 +1,11 @@
 <script>
 import { capitalize, escape, isEmpty } from 'lodash';
 import MainGraphWrapper from '../graph_shared/main_graph_wrapper.vue';
-import JobItem from './job_item.vue';
-import JobGroupDropdown from './job_group_dropdown.vue';
+import { accessValue } from './accessors';
 import ActionComponent from './action_component.vue';
 import { GRAPHQL } from './constants';
-import { accessValue } from './accessors';
+import JobGroupDropdown from './job_group_dropdown.vue';
+import JobItem from './job_item.vue';
 import { reportToSentry } from './utils';
 
 export default {

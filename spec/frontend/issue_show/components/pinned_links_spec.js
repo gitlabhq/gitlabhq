@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import PinnedLinks from '~/issue_show/components/pinned_links.vue';
 import { STATUS_PAGE_PUBLISHED, JOIN_ZOOM_MEETING } from '~/issue_show/constants';
 

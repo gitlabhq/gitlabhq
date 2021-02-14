@@ -1,6 +1,6 @@
 <script>
-import { mapGetters, mapActions } from 'vuex';
 import { GlToggle } from '@gitlab/ui';
+import { mapGetters, mapActions } from 'vuex';
 import createFlash from '~/flash';
 import { __, s__ } from '~/locale';
 

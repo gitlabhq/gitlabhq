@@ -1,8 +1,8 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon, GlDropdown } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { mockMilestone as TEST_MILESTONE } from 'jest/boards/mock_data';
-import BoardSidebarMilestoneSelect from '~/boards/components/sidebar/board_sidebar_milestone_select.vue';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
+import BoardSidebarMilestoneSelect from '~/boards/components/sidebar/board_sidebar_milestone_select.vue';
 import { createStore } from '~/boards/stores';
 import createFlash from '~/flash';
 

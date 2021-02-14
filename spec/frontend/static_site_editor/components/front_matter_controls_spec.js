@@ -1,6 +1,6 @@
+import { GlFormGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
-import { GlFormGroup } from '@gitlab/ui';
 import { humanize } from '~/lib/utils/text_utility';
 
 import FrontMatterControls from '~/static_site_editor/components/front_matter_controls.vue';

@@ -1,6 +1,6 @@
 <script>
-import Tabs from '~/vue_shared/components/tabs/tabs';
 import Tab from '~/vue_shared/components/tabs/tab.vue';
+import Tabs from '~/vue_shared/components/tabs/tabs';
 import BranchesSearchList from './branches/search_list.vue';
 import MergeRequestSearchList from './merge_requests/list.vue';
 

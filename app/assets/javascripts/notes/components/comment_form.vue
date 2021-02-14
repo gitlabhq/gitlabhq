@@ -1,27 +1,27 @@
 <script>
+import { GlButton, GlIcon, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
+import Autosize from 'autosize';
 import $ from 'jquery';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import Autosize from 'autosize';
-import { GlButton, GlIcon, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
-import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
-import { deprecatedCreateFlash as Flash } from '~/flash';
 import Autosave from '~/autosave';
+import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import {
   capitalizeFirstCharacter,
   convertToCamelCase,
   splitCamelCase,
   slugifyWithUnderscore,
 } from '~/lib/utils/text_utility';
-import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
+import { __, sprintf } from '~/locale';
 import markdownField from '~/vue_shared/components/markdown/field.vue';
+import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
 import issuableStateMixin from '../mixins/issuable_state';
-import noteSignedOutWidget from './note_signed_out_widget.vue';
-import discussionLockedWidget from './discussion_locked_widget.vue';
 import CommentFieldLayout from './comment_field_layout.vue';
+import discussionLockedWidget from './discussion_locked_widget.vue';
+import noteSignedOutWidget from './note_signed_out_widget.vue';
 
 export default {
   name: 'CommentForm',

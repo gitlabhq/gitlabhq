@@ -1,8 +1,8 @@
 <script>
 import { GlTruncate } from '@gitlab/ui';
-import FileHeader from '~/vue_shared/components/file_row_header.vue';
-import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
+import FileHeader from '~/vue_shared/components/file_row_header.vue';
 
 export default {
   name: 'FileRow',

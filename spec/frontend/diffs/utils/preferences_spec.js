@@ -1,12 +1,11 @@
 import Cookies from 'js-cookie';
-import { getParameterValues } from '~/lib/utils/url_utility';
-
-import { fileByFile } from '~/diffs/utils/preferences';
 import {
   DIFF_FILE_BY_FILE_COOKIE_NAME,
   DIFF_VIEW_FILE_BY_FILE,
   DIFF_VIEW_ALL_FILES,
 } from '~/diffs/constants';
+import { fileByFile } from '~/diffs/utils/preferences';
+import { getParameterValues } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility');
 

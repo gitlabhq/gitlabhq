@@ -1,5 +1,5 @@
-import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { MOCK_QUERY } from 'jest/search/mock_data';
 import ConfidentialityFilter from '~/search/sidebar/components/confidentiality_filter.vue';
 import RadioFilter from '~/search/sidebar/components/radio_filter.vue';

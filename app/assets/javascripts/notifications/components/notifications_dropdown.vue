@@ -7,11 +7,11 @@ import {
   GlTooltipDirective,
   GlModalDirective,
 } from '@gitlab/ui';
-import { sprintf } from '~/locale';
 import Api from '~/api';
+import { sprintf } from '~/locale';
 import { CUSTOM_LEVEL, i18n } from '../constants';
-import NotificationsDropdownItem from './notifications_dropdown_item.vue';
 import CustomNotificationsModal from './custom_notifications_modal.vue';
+import NotificationsDropdownItem from './notifications_dropdown_item.vue';
 
 export default {
   name: 'NotificationsDropdown',

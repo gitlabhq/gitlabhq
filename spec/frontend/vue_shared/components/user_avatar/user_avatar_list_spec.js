@@ -1,8 +1,8 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'spec/test_constants';
-import UserAvatarList from '~/vue_shared/components/user_avatar/user_avatar_list.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import UserAvatarList from '~/vue_shared/components/user_avatar/user_avatar_list.vue';
 
 const TEST_IMAGE_SIZE = 7;
 const TEST_BREAKPOINT = 5;

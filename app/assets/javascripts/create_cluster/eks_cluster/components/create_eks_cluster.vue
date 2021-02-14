@@ -1,7 +1,7 @@
 <script>
 import { mapState } from 'vuex';
-import ServiceCredentialsForm from './service_credentials_form.vue';
 import EksClusterConfigurationForm from './eks_cluster_configuration_form.vue';
+import ServiceCredentialsForm from './service_credentials_form.vue';
 
 export default {
   components: {

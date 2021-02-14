@@ -1,6 +1,6 @@
 <script>
-import { isEmpty } from 'lodash';
 import { GlSprintf, GlLink } from '@gitlab/ui';
+import { isEmpty } from 'lodash';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import { __ } from '../../locale';
 

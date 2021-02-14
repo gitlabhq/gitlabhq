@@ -1,8 +1,8 @@
+import { GlSorting, GlSortingItem } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlSorting, GlSortingItem } from '@gitlab/ui';
-import SortDropdown from '~/members/components/filter_sort/sort_dropdown.vue';
 import * as urlUtilities from '~/lib/utils/url_utility';
+import SortDropdown from '~/members/components/filter_sort/sort_dropdown.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

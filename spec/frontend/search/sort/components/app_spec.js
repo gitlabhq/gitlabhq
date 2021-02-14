@@ -1,6 +1,6 @@
-import Vuex from 'vuex';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { GlButtonGroup, GlButton, GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { MOCK_QUERY, MOCK_SORT_OPTIONS } from 'jest/search/mock_data';
 import GlobalSearchSort from '~/search/sort/components/app.vue';
 import { SORT_DIRECTION_UI } from '~/search/sort/constants';

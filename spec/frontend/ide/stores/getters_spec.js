@@ -1,8 +1,8 @@
 import { TEST_HOST } from 'helpers/test_constants';
-import * as getters from '~/ide/stores/getters';
 import { createStore } from '~/ide/stores';
-import { file } from '../helpers';
+import * as getters from '~/ide/stores/getters';
 import { DEFAULT_PERMISSIONS } from '../../../../app/assets/javascripts/ide/constants';
+import { file } from '../helpers';
 
 const TEST_PROJECT_ID = 'test_project';
 

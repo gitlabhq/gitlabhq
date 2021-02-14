@@ -9,9 +9,9 @@ import {
   GlFormInputGroup,
   GlIcon,
 } from '@gitlab/ui';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
-import { sprintf, __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import { sprintf, __ } from '~/locale';
+import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 
 export default {
   name: 'IssuableByEmail',

@@ -1,9 +1,9 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { getByTestId, fireEvent } from '@testing-library/dom';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import diffsModule from '~/diffs/store/modules';
 import DiffRow from '~/diffs/components/diff_row.vue';
 import { mapParallel } from '~/diffs/components/diff_row_utils';
+import diffsModule from '~/diffs/store/modules';
 import diffFileMockData from '../mock_data/diff_file';
 
 describe('DiffRow', () => {

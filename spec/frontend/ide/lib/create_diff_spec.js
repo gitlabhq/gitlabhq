@@ -1,6 +1,6 @@
+import { commitActionTypes } from '~/ide/constants';
 import createDiff from '~/ide/lib/create_diff';
 import createFileDiff from '~/ide/lib/create_file_diff';
-import { commitActionTypes } from '~/ide/constants';
 import {
   createNewFile,
   createUpdatedFile,

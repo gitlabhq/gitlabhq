@@ -1,9 +1,9 @@
-import commitState from '~/ide/stores/modules/commit/state';
-import * as getters from '~/ide/stores/modules/commit/getters';
 import {
   COMMIT_TO_CURRENT_BRANCH,
   COMMIT_TO_NEW_BRANCH,
 } from '~/ide/stores/modules/commit/constants';
+import * as getters from '~/ide/stores/modules/commit/getters';
+import commitState from '~/ide/stores/modules/commit/state';
 
 describe('IDE commit module getters', () => {
   let state;

@@ -1,4 +1,5 @@
 <script>
+import clusterPopover from '@gitlab/svgs/dist/illustrations/cluster_popover.svg';
 import {
   GlPopover,
   GlSprintf,
@@ -6,10 +7,9 @@ import {
   GlButton,
   GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
-import clusterPopover from '@gitlab/svgs/dist/illustrations/cluster_popover.svg';
 import { __ } from '~/locale';
-import { dismiss } from './feature_highlight_helper';
 import { POPOVER_TARGET_ID } from './constants';
+import { dismiss } from './feature_highlight_helper';
 
 export default {
   components: {

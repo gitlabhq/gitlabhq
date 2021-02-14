@@ -1,6 +1,6 @@
 <script>
-import { mapState, mapActions } from 'vuex';
 import { GlFormGroup, GlFormInput } from '@gitlab/ui';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   components: {

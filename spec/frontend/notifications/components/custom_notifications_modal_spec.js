@@ -1,7 +1,7 @@
+import { GlSprintf, GlModal, GlFormGroup, GlFormCheckbox, GlLoadingIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { shallowMount } from '@vue/test-utils';
-import { GlSprintf, GlModal, GlFormGroup, GlFormCheckbox, GlLoadingIcon } from '@gitlab/ui';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import httpStatus from '~/lib/utils/http_status';

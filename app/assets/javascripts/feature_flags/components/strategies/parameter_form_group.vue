@@ -1,6 +1,6 @@
 <script>
-import { uniqueId } from 'lodash';
 import { GlFormGroup } from '@gitlab/ui';
+import { uniqueId } from 'lodash';
 
 export default {
   components: {

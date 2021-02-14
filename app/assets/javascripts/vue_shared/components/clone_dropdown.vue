@@ -6,8 +6,8 @@ import {
   GlButton,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
 import { getHTTPProtocol } from '~/lib/utils/url_utility';
+import { __, sprintf } from '~/locale';
 
 export default {
   components: {

@@ -1,10 +1,10 @@
-import { uniqueId } from 'lodash';
-import { shallowMount } from '@vue/test-utils';
 import { GlFormTextarea, GlFormCheckbox, GlButton, GlToggle } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import { uniqueId } from 'lodash';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import Api from '~/api';
-import Form from '~/feature_flags/components/form.vue';
 import EnvironmentsDropdown from '~/feature_flags/components/environments_dropdown.vue';
+import Form from '~/feature_flags/components/form.vue';
 import Strategy from '~/feature_flags/components/strategy.vue';
 import {
   ROLLOUT_STRATEGY_ALL_USERS,

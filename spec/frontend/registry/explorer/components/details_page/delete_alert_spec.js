@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import component from '~/registry/explorer/components/details_page/delete_alert.vue';
 import {
   DELETE_TAG_SUCCESS_MESSAGE,

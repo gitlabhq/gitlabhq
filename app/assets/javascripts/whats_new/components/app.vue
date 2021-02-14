@@ -1,5 +1,4 @@
 <script>
-import { mapState, mapActions } from 'vuex';
 import {
   GlDrawer,
   GlInfiniteScroll,
@@ -9,10 +8,11 @@ import {
   GlBadge,
   GlLoadingIcon,
 } from '@gitlab/ui';
+import { mapState, mapActions } from 'vuex';
 import Tracking from '~/tracking';
 import { getDrawerBodyHeight } from '../utils/get_drawer_body_height';
-import SkeletonLoader from './skeleton_loader.vue';
 import Feature from './feature.vue';
+import SkeletonLoader from './skeleton_loader.vue';
 
 const trackingMixin = Tracking.mixin();
 

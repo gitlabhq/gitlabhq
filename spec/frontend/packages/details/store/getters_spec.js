@@ -1,3 +1,4 @@
+import { NpmManager } from '~/packages/details/constants';
 import {
   conanInstallationCommand,
   conanSetupCommand,
@@ -17,7 +18,6 @@ import {
   composerPackageInclude,
   groupExists,
 } from '~/packages/details/store/getters';
-import { NpmManager } from '~/packages/details/constants';
 import {
   conanPackage,
   npmPackage,

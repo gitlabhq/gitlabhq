@@ -5,7 +5,7 @@
  */
 
 // TODO: need to move this component to graphql - https://gitlab.com/gitlab-org/gitlab/-/issues/221246
-import { escape, isNumber } from 'lodash';
+import jiraLogo from '@gitlab/svgs/dist/illustrations/logos/jira.svg';
 import {
   GlLink,
   GlTooltipDirective as GlTooltip,
@@ -14,7 +14,8 @@ import {
   GlIcon,
   GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
-import jiraLogo from '@gitlab/svgs/dist/illustrations/logos/jira.svg';
+import { escape, isNumber } from 'lodash';
+import { isScopedLabel } from '~/lib/utils/common_utils';
 import {
   dateInWords,
   formatDate,
@@ -23,13 +24,11 @@ import {
   timeFor,
   newDateAsLocaleTime,
 } from '~/lib/utils/datetime_utility';
+import { convertToCamelCase } from '~/lib/utils/text_utility';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { sprintf, __ } from '~/locale';
 import initUserPopovers from '~/user_popovers';
-import { mergeUrlParams } from '~/lib/utils/url_utility';
 import IssueAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
-import { isScopedLabel } from '~/lib/utils/common_utils';
-
-import { convertToCamelCase } from '~/lib/utils/text_utility';
 
 export default {
   i18n: {

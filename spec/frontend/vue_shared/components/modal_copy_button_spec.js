@@ -1,6 +1,6 @@
 import { shallowMount, createWrapper } from '@vue/test-utils';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
+import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 
 describe('modal copy button', () => {
   let wrapper;

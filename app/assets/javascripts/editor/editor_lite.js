@@ -1,17 +1,17 @@
 import { editor as monacoEditor, languages as monacoLanguages, Uri } from 'monaco-editor';
-import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
-import languages from '~/ide/lib/languages';
+import { uuids } from '~/diffs/utils/uuids';
 import { defaultEditorOptions } from '~/ide/lib/editor_options';
+import languages from '~/ide/lib/languages';
+import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
 import { registerLanguages } from '~/ide/utils';
 import { joinPaths } from '~/lib/utils/url_utility';
-import { uuids } from '~/diffs/utils/uuids';
-import { clearDomElement } from './utils';
 import {
   EDITOR_LITE_INSTANCE_ERROR_NO_EL,
   URI_PREFIX,
   EDITOR_READY_EVENT,
   EDITOR_TYPE_DIFF,
 } from './constants';
+import { clearDomElement } from './utils';
 
 export default class EditorLite {
   constructor(options = {}) {

@@ -1,9 +1,9 @@
-import Vuex from 'vuex';
 import { mount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
+import { historyPushState } from '~/lib/utils/common_utils';
+import ReleasesPaginationGraphql from '~/releases/components/releases_pagination_graphql.vue';
 import createStore from '~/releases/stores';
 import createListModule from '~/releases/stores/modules/list';
-import ReleasesPaginationGraphql from '~/releases/components/releases_pagination_graphql.vue';
-import { historyPushState } from '~/lib/utils/common_utils';
 
 jest.mock('~/lib/utils/common_utils', () => ({
   ...jest.requireActual('~/lib/utils/common_utils'),

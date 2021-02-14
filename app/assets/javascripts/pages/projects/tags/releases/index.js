@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import ZenMode from '~/zen_mode';
 import GLForm from '~/gl_form';
+import ZenMode from '~/zen_mode';
 
 document.addEventListener('DOMContentLoaded', () => {
   new ZenMode(); // eslint-disable-line no-new

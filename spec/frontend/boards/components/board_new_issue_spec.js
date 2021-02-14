@@ -1,5 +1,5 @@
-import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import BoardNewIssue from '~/boards/components/board_new_issue.vue';
 
 import '~/boards/models/list';

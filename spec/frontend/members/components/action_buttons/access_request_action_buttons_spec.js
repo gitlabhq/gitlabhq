@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import AccessRequestActionButtons from '~/members/components/action_buttons/access_request_action_buttons.vue';
-import RemoveMemberButton from '~/members/components/action_buttons/remove_member_button.vue';
 import ApproveAccessRequestButton from '~/members/components/action_buttons/approve_access_request_button.vue';
+import RemoveMemberButton from '~/members/components/action_buttons/remove_member_button.vue';
 import { accessRequest as member } from '../../mock_data';
 
 describe('AccessRequestActionButtons', () => {

@@ -1,7 +1,7 @@
-import { mount } from '@vue/test-utils';
 import { GlFormInput } from '@gitlab/ui';
-import PercentRollout from '~/feature_flags/components/strategies/percent_rollout.vue';
+import { mount } from '@vue/test-utils';
 import ParameterFormGroup from '~/feature_flags/components/strategies/parameter_form_group.vue';
+import PercentRollout from '~/feature_flags/components/strategies/percent_rollout.vue';
 import { PERCENT_ROLLOUT_GROUP_ID } from '~/feature_flags/constants';
 import { percentRolloutStrategy } from '../../mock_data';
 

@@ -1,10 +1,9 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlFormInput } from '@gitlab/ui';
-
-import MarkdownField from '~/vue_shared/components/markdown/field.vue';
-import LabelsSelect from '~/vue_shared/components/sidebar/labels_select_vue/labels_select_root.vue';
+import { shallowMount } from '@vue/test-utils';
 
 import IssuableForm from '~/issuable_create/components/issuable_form.vue';
+import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import LabelsSelect from '~/vue_shared/components/sidebar/labels_select_vue/labels_select_root.vue';
 
 const createComponent = ({
   descriptionPreviewPath = '/gitlab-org/gitlab-shell/preview_markdown',

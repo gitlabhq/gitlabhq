@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
-import Upgrade from '~/security_configuration/components/upgrade.vue';
 import { UPGRADE_CTA } from '~/security_configuration/components/features_constants';
+import Upgrade from '~/security_configuration/components/upgrade.vue';
 
 let wrapper;
 const createComponent = () => {

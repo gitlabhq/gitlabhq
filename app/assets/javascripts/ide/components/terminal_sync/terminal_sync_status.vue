@@ -1,6 +1,6 @@
 <script>
-import { throttle } from 'lodash';
 import { GlTooltipDirective, GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { throttle } from 'lodash';
 import { mapState } from 'vuex';
 import {
   MSG_TERMINAL_SYNC_CONNECTING,

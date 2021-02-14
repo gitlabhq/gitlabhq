@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
-import { Rails } from '~/lib/utils/rails_ujs';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { Rails } from '~/lib/utils/rails_ujs';
 import TimezoneDropdown, {
   formatTimezone,
 } from '~/pages/projects/pipeline_schedules/shared/components/timezone_dropdown';

@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
+import DurationBadge from '~/jobs/components/log/duration_badge.vue';
 import LineHeader from '~/jobs/components/log/line_header.vue';
 import LineNumber from '~/jobs/components/log/line_number.vue';
-import DurationBadge from '~/jobs/components/log/duration_badge.vue';
 
 describe('Job Log Header Line', () => {
   let wrapper;

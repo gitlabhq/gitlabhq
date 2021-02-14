@@ -1,7 +1,7 @@
 import Visibility from 'visibilityjs';
-import Poll from '~/lib/utils/poll';
-import httpStatusCodes from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
+import httpStatusCodes from '~/lib/utils/http_status';
+import Poll from '~/lib/utils/poll';
 import * as types from './mutation_types';
 
 let eTagPoll;

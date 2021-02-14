@@ -1,8 +1,8 @@
 import { isEqual } from 'lodash';
-import * as constants from '../constants';
 import { isInMRPage } from '../../lib/utils/common_utils';
-import * as utils from './utils';
+import * as constants from '../constants';
 import * as types from './mutation_types';
+import * as utils from './utils';
 
 export default {
   [types.ADD_NEW_NOTE](state, data) {

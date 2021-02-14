@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
 import { GlSkeletonLoader } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import ReleaseSkeletonLoader from '~/releases/components/release_skeleton_loader.vue';
 
 describe('release_skeleton_loader.vue', () => {

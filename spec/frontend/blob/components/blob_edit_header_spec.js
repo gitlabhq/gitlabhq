@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlFormInput, GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import BlobEditHeader from '~/blob/components/blob_edit_header.vue';
 
 describe('Blob Header Editing', () => {

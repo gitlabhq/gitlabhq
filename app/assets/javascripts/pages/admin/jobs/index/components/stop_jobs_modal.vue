@@ -1,7 +1,7 @@
 <script>
 import { GlModal } from '@gitlab/ui';
-import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 

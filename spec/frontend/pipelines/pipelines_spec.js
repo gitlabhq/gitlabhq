@@ -1,22 +1,21 @@
-import { nextTick } from 'vue';
+import { GlFilteredSearch, GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import { GlFilteredSearch, GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import BlankState from '~/pipelines/components/pipelines_list/blank_state.vue';
+import EmptyState from '~/pipelines/components/pipelines_list/empty_state.vue';
+import NavigationControls from '~/pipelines/components/pipelines_list/nav_controls.vue';
+import PipelinesComponent from '~/pipelines/components/pipelines_list/pipelines.vue';
+import PipelinesTableComponent from '~/pipelines/components/pipelines_list/pipelines_table.vue';
+import { RAW_TEXT_WARNING } from '~/pipelines/constants';
+import Store from '~/pipelines/stores/pipelines_store';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 
-import NavigationControls from '~/pipelines/components/pipelines_list/nav_controls.vue';
-import EmptyState from '~/pipelines/components/pipelines_list/empty_state.vue';
-import BlankState from '~/pipelines/components/pipelines_list/blank_state.vue';
-import PipelinesTableComponent from '~/pipelines/components/pipelines_list/pipelines_table.vue';
-
-import PipelinesComponent from '~/pipelines/components/pipelines_list/pipelines.vue';
-import Store from '~/pipelines/stores/pipelines_store';
-import { RAW_TEXT_WARNING } from '~/pipelines/constants';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { pipelineWithStages, stageReply, users, mockSearch, branches } from './mock_data';
 
 jest.mock('~/flash');

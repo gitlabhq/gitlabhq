@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import BoardSidebarItem from '~/boards/components/sidebar/board_editable_item.vue';
 
 describe('boards sidebar remove issue', () => {

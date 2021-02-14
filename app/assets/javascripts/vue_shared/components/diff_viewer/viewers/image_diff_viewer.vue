@@ -1,9 +1,9 @@
 <script>
 import ImageViewer from '../../content_viewer/viewers/image_viewer.vue';
 import { diffModes, imageViewMode } from '../constants';
-import TwoUpViewer from './image_diff/two_up_viewer.vue';
-import SwipeViewer from './image_diff/swipe_viewer.vue';
 import OnionSkinViewer from './image_diff/onion_skin_viewer.vue';
+import SwipeViewer from './image_diff/swipe_viewer.vue';
+import TwoUpViewer from './image_diff/two_up_viewer.vue';
 
 export default {
   components: {

@@ -1,6 +1,6 @@
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 
-import { createLocalVue, shallowMount } from '@vue/test-utils';
 import functionDetailsComponent from '~/serverless/components/function_details.vue';
 import { createStore } from '~/serverless/store';
 

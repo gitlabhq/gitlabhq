@@ -1,7 +1,7 @@
 <script>
 import { GlAlert, GlBadge, GlKeysetPagination, GlLoadingIcon, GlTab, GlTabs } from '@gitlab/ui';
-import getStatesQuery from '../graphql/queries/get_states.query.graphql';
 import { MAX_LIST_COUNT } from '../constants';
+import getStatesQuery from '../graphql/queries/get_states.query.graphql';
 import EmptyState from './empty_state.vue';
 import StatesTable from './states_table.vue';
 

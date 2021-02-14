@@ -1,7 +1,7 @@
 import $ from 'jquery';
+import GLForm from '../../../../gl_form';
 import RefSelectDropdown from '../../../../ref_select_dropdown';
 import ZenMode from '../../../../zen_mode';
-import GLForm from '../../../../gl_form';
 
 document.addEventListener('DOMContentLoaded', () => {
   new ZenMode(); // eslint-disable-line no-new

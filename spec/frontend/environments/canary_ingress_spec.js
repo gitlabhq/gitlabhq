@@ -1,8 +1,8 @@
-import { mount } from '@vue/test-utils';
 import { GlDropdownItem } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import { CANARY_UPDATE_MODAL } from '~/environments/constants';
 import CanaryIngress from '~/environments/components/canary_ingress.vue';
+import { CANARY_UPDATE_MODAL } from '~/environments/constants';
 
 describe('/environments/components/canary_ingress.vue', () => {
   let wrapper;

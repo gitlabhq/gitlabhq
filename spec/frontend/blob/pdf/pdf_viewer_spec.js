@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 
 import { FIXTURES_PATH } from 'spec/test_constants';
 import component from '~/blob/pdf/pdf_viewer.vue';

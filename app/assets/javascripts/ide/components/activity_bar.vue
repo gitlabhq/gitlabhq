@@ -1,6 +1,6 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { mapActions, mapState } from 'vuex';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { leftSidebarViews } from '../constants';
 

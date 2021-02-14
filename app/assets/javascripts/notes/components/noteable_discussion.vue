@@ -1,22 +1,22 @@
 <script>
-import { mapActions, mapGetters } from 'vuex';
 import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
-import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
-import { s__, __ } from '~/locale';
-import { clearDraft, getDiscussionReplyKey } from '~/lib/utils/autosave';
-import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
+import { mapActions, mapGetters } from 'vuex';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
+import { clearDraft, getDiscussionReplyKey } from '~/lib/utils/autosave';
+import { s__, __ } from '~/locale';
+import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
+import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import { deprecatedCreateFlash as Flash } from '../../flash';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
-import eventHub from '../event_hub';
 import diffDiscussionHeader from './diff_discussion_header.vue';
-import noteSignedOutWidget from './note_signed_out_widget.vue';
-import noteForm from './note_form.vue';
 import diffWithNote from './diff_with_note.vue';
-import DiscussionNotes from './discussion_notes.vue';
 import DiscussionActions from './discussion_actions.vue';
+import DiscussionNotes from './discussion_notes.vue';
+import noteForm from './note_form.vue';
+import noteSignedOutWidget from './note_signed_out_widget.vue';
 
 export default {
   name: 'NoteableDiscussion',

@@ -1,8 +1,8 @@
 import { __ } from '~/locale';
-import { deprecatedCreateFlash as createFlash } from '../flash';
 import AjaxFilter from '../droplab/plugins/ajax_filter';
-import FilteredSearchDropdown from './filtered_search_dropdown';
+import { deprecatedCreateFlash as createFlash } from '../flash';
 import DropdownUtils from './dropdown_utils';
+import FilteredSearchDropdown from './filtered_search_dropdown';
 import FilteredSearchTokenizer from './filtered_search_tokenizer';
 
 export default class DropdownAjaxFilter extends FilteredSearchDropdown {

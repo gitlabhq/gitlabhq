@@ -1,8 +1,8 @@
 <script>
 import { GlTable } from '@gitlab/ui';
 import { __ } from '~/locale';
-import UserAvatar from './user_avatar.vue';
 import UserActions from './user_actions.vue';
+import UserAvatar from './user_avatar.vue';
 import UserDate from './user_date.vue';
 
 const DEFAULT_TH_CLASSES =

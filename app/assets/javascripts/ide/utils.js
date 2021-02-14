@@ -1,5 +1,5 @@
-import { languages } from 'monaco-editor';
 import { flatten, isString } from 'lodash';
+import { languages } from 'monaco-editor';
 import { performanceMarkAndMeasure } from '~/performance/utils';
 import { SIDE_LEFT, SIDE_RIGHT } from './constants';
 

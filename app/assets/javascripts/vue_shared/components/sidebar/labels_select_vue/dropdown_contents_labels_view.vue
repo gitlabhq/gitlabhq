@@ -1,5 +1,4 @@
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex';
 import {
   GlIntersectionObserver,
   GlLoadingIcon,
@@ -8,6 +7,7 @@ import {
   GlLink,
 } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import { mapState, mapGetters, mapActions } from 'vuex';
 
 import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
 

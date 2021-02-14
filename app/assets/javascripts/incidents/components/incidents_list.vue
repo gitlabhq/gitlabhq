@@ -10,22 +10,20 @@ import {
   GlIcon,
   GlEmptyState,
 } from '@gitlab/ui';
+import { convertToSnakeCase } from '~/lib/utils/text_utility';
+import { visitUrl, mergeUrlParams, joinPaths } from '~/lib/utils/url_utility';
+import { s__ } from '~/locale';
+import { INCIDENT_SEVERITY } from '~/sidebar/components/severity/constants';
+import SeverityToken from '~/sidebar/components/severity/severity.vue';
 import Tracking from '~/tracking';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import PaginatedTableWithSearchAndTabs from '~/vue_shared/components/paginated_table_with_search_and_tabs/paginated_table_with_search_and_tabs.vue';
 import {
   tdClass,
   thClass,
   bodyTrClass,
   initialPaginationState,
 } from '~/vue_shared/components/paginated_table_with_search_and_tabs/constants';
-import { convertToSnakeCase } from '~/lib/utils/text_utility';
-import { s__ } from '~/locale';
-import { visitUrl, mergeUrlParams, joinPaths } from '~/lib/utils/url_utility';
-import SeverityToken from '~/sidebar/components/severity/severity.vue';
-import { INCIDENT_SEVERITY } from '~/sidebar/components/severity/constants';
-import getIncidents from '../graphql/queries/get_incidents.query.graphql';
-import getIncidentsCountByStatus from '../graphql/queries/get_count_by_status.query.graphql';
+import PaginatedTableWithSearchAndTabs from '~/vue_shared/components/paginated_table_with_search_and_tabs/paginated_table_with_search_and_tabs.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import {
   I18N,
   INCIDENT_STATUS_TABS,
@@ -37,6 +35,8 @@ import {
   trackIncidentCreateNewOptions,
   trackIncidentListViewsOptions,
 } from '../constants';
+import getIncidentsCountByStatus from '../graphql/queries/get_count_by_status.query.graphql';
+import getIncidents from '../graphql/queries/get_incidents.query.graphql';
 
 export default {
   trackIncidentCreateNewOptions,

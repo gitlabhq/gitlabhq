@@ -1,11 +1,11 @@
 <script>
-import { mapState } from 'vuex';
 import { GlFilteredSearchToken } from '@gitlab/ui';
-import { setUrlParams, queryToObject } from '~/lib/utils/url_utility';
+import { mapState } from 'vuex';
 import { getParameterByName } from '~/lib/utils/common_utils';
+import { setUrlParams, queryToObject } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
-import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { SEARCH_TOKEN_TYPE, SORT_PARAM } from '~/members/constants';
+import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
 export default {
   name: 'MembersFilteredSearchBar',

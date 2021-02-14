@@ -1,7 +1,7 @@
-import Vuex from 'vuex';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { GlAlert } from '@gitlab/ui';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Draggable from 'vuedraggable';
+import Vuex from 'vuex';
 import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
 import getters from 'ee_else_ce/boards/stores/getters';
 import BoardColumnDeprecated from '~/boards/components/board_column_deprecated.vue';

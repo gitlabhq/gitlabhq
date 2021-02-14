@@ -1,7 +1,7 @@
 <script>
 import { GlTooltipDirective, GlLink, GlBadge, GlButton } from '@gitlab/ui';
-import { BACK_URL_PARAM } from '~/releases/constants';
 import { setUrlParams } from '~/lib/utils/url_utility';
+import { BACK_URL_PARAM } from '~/releases/constants';
 
 export default {
   name: 'ReleaseBlockHeader',

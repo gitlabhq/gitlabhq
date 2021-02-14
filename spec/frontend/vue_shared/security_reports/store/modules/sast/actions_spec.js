@@ -1,10 +1,10 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 
-import createState from '~/vue_shared/security_reports/store/modules/sast/state';
-import * as types from '~/vue_shared/security_reports/store/modules/sast/mutation_types';
-import * as actions from '~/vue_shared/security_reports/store/modules/sast/actions';
 import axios from '~/lib/utils/axios_utils';
+import * as actions from '~/vue_shared/security_reports/store/modules/sast/actions';
+import * as types from '~/vue_shared/security_reports/store/modules/sast/mutation_types';
+import createState from '~/vue_shared/security_reports/store/modules/sast/state';
 
 const diffEndpoint = 'diff-endpoint.json';
 const blobPath = 'blob-path.json';

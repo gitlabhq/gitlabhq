@@ -12,8 +12,8 @@ import {
 import { s__ } from '~/locale';
 import addDataToState from '../graphql/mutations/add_data_to_state.mutation.graphql';
 import lockState from '../graphql/mutations/lock_state.mutation.graphql';
-import unlockState from '../graphql/mutations/unlock_state.mutation.graphql';
 import removeState from '../graphql/mutations/remove_state.mutation.graphql';
+import unlockState from '../graphql/mutations/unlock_state.mutation.graphql';
 
 export default {
   components: {

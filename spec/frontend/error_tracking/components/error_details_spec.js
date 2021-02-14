@@ -1,5 +1,3 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import Vuex from 'vuex';
 import {
   GlButton,
   GlLoadingIcon,
@@ -9,21 +7,23 @@ import {
   GlAlert,
   GlSprintf,
 } from '@gitlab/ui';
-import { __ } from '~/locale';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
-import Stacktrace from '~/error_tracking/components/stacktrace.vue';
-import ErrorDetails from '~/error_tracking/components/error_details.vue';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import {
   severityLevel,
   severityLevelVariant,
   errorStatus,
 } from '~/error_tracking/components/constants';
-import Tracking from '~/tracking';
+import ErrorDetails from '~/error_tracking/components/error_details.vue';
+import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 import {
   trackClickErrorLinkToSentryOptions,
   trackErrorDetailsViewsOptions,
   trackErrorStatusUpdateOptions,
 } from '~/error_tracking/utils';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
+import { __ } from '~/locale';
+import Tracking from '~/tracking';
 
 jest.mock('~/flash');
 

@@ -1,9 +1,9 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import RunnerInstructions from '~/vue_shared/components/runner_instructions/runner_instructions.vue';
 import getRunnerPlatforms from '~/vue_shared/components/runner_instructions/graphql/queries/get_runner_platforms.query.graphql';
 import getRunnerSetupInstructions from '~/vue_shared/components/runner_instructions/graphql/queries/get_runner_setup.query.graphql';
+import RunnerInstructions from '~/vue_shared/components/runner_instructions/runner_instructions.vue';
 
 import { mockGraphqlRunnerPlatforms, mockGraphqlInstructions } from './mock_data';
 

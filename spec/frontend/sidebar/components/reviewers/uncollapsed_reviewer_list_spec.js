@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
-import UncollapsedReviewerList from '~/sidebar/components/reviewers/uncollapsed_reviewer_list.vue';
 import ReviewerAvatarLink from '~/sidebar/components/reviewers/reviewer_avatar_link.vue';
+import UncollapsedReviewerList from '~/sidebar/components/reviewers/uncollapsed_reviewer_list.vue';
 import userDataMock from '../../user_data_mock';
 
 describe('UncollapsedReviewerList component', () => {

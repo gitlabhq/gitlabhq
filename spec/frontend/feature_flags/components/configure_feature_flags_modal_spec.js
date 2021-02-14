@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlModal, GlSprintf, GlAlert } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import Component from '~/feature_flags/components/configure_feature_flags_modal.vue';
 
 describe('Configure Feature Flags Modal', () => {

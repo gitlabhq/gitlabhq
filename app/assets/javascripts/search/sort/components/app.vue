@@ -1,5 +1,4 @@
 <script>
-import { mapState, mapActions } from 'vuex';
 import {
   GlButtonGroup,
   GlButton,
@@ -7,6 +6,7 @@ import {
   GlDropdownItem,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { mapState, mapActions } from 'vuex';
 import { SORT_DIRECTION_UI } from '../constants';
 
 export default {

@@ -1,7 +1,7 @@
 <script>
 import { mapActions, mapState } from 'vuex';
-import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import { historyPushState, buildUrlWithCurrentLocation } from '~/lib/utils/common_utils';
+import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 
 export default {
   name: 'ReleasesPaginationRest',

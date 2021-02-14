@@ -1,12 +1,12 @@
 <script>
-import { mapState, mapGetters } from 'vuex';
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import { mapState, mapGetters } from 'vuex';
 import { SIDEBAR_INIT_WIDTH, leftSidebarViews } from '../constants';
-import IdeTree from './ide_tree.vue';
-import ResizablePanel from './resizable_panel.vue';
 import ActivityBar from './activity_bar.vue';
 import CommitForm from './commit_sidebar/form.vue';
 import IdeProjectHeader from './ide_project_header.vue';
+import IdeTree from './ide_tree.vue';
+import ResizablePanel from './resizable_panel.vue';
 
 export default {
   components: {

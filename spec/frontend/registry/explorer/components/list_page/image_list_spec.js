@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlKeysetPagination } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import Component from '~/registry/explorer/components/list_page/image_list.vue';
 import ImageListRow from '~/registry/explorer/components/list_page/image_list_row.vue';
 

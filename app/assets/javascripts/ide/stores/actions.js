@@ -1,18 +1,18 @@
-import Vue from 'vue';
 import { escape } from 'lodash';
-import { __, sprintf } from '~/locale';
-import { visitUrl } from '~/lib/utils/url_utility';
+import Vue from 'vue';
 import { deprecatedCreateFlash as flash } from '~/flash';
-import { performanceMarkAndMeasure } from '~/performance/utils';
+import { visitUrl } from '~/lib/utils/url_utility';
+import { __, sprintf } from '~/locale';
 import {
   WEBIDE_MARK_FETCH_BRANCH_DATA_START,
   WEBIDE_MARK_FETCH_BRANCH_DATA_FINISH,
   WEBIDE_MEASURE_FETCH_BRANCH_DATA,
 } from '~/performance/constants';
-import { decorateFiles } from '../lib/files';
+import { performanceMarkAndMeasure } from '~/performance/utils';
 import { stageKeys, commitActionTypes } from '../constants';
-import service from '../services';
 import eventHub from '../eventhub';
+import { decorateFiles } from '../lib/files';
+import service from '../services';
 import * as types from './mutation_types';
 
 export const redirectToUrl = (self, url) => visitUrl(url);

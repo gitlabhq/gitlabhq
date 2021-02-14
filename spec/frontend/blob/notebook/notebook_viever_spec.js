@@ -1,9 +1,9 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
-import axios from '~/lib/utils/axios_utils';
 import component from '~/blob/notebook/notebook_viewer.vue';
+import axios from '~/lib/utils/axios_utils';
 import NotebookLab from '~/notebook/index.vue';
 
 describe('iPython notebook renderer', () => {

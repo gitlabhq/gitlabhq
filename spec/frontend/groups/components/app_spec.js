@@ -1,16 +1,16 @@
 import '~/flash';
-import Vue from 'vue';
-import AxiosMockAdapter from 'axios-mock-adapter';
 import { GlModal, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import AxiosMockAdapter from 'axios-mock-adapter';
+import Vue from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import axios from '~/lib/utils/axios_utils';
 import appComponent from '~/groups/components/app.vue';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
 import groupItemComponent from '~/groups/components/group_item.vue';
 import eventHub from '~/groups/event_hub';
-import GroupsStore from '~/groups/store/groups_store';
 import GroupsService from '~/groups/service/groups_service';
+import GroupsStore from '~/groups/store/groups_store';
+import axios from '~/lib/utils/axios_utils';
 import * as urlUtilities from '~/lib/utils/url_utility';
 
 import {

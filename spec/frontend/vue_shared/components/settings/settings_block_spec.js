@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import component from '~/vue_shared/components/settings/settings_block.vue';
 
 describe('Settings Block', () => {

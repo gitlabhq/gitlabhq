@@ -1,7 +1,7 @@
 <script>
+import { MANUAL_DEPLOY, WILL_DEPLOY, CREATED } from './constants';
 import DeploymentActions from './deployment_actions.vue';
 import DeploymentInfo from './deployment_info.vue';
-import { MANUAL_DEPLOY, WILL_DEPLOY, CREATED } from './constants';
 
 export default {
   // name: 'Deployment' is a false positive: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26#possible-false-positives

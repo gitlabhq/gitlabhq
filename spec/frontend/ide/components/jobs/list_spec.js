@@ -1,5 +1,5 @@
-import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import StageList from '~/ide/components/jobs/list.vue';
 import Stage from '~/ide/components/jobs/stage.vue';

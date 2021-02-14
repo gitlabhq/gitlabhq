@@ -1,8 +1,8 @@
 <script>
 import $ from 'jquery';
 import { mapGetters } from 'vuex';
-import NavForm from './nav_form.vue';
 import NavDropdownButton from './nav_dropdown_button.vue';
+import NavForm from './nav_form.vue';
 
 export default {
   components: {

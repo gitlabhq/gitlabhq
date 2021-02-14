@@ -1,29 +1,29 @@
-import VueApollo, { ApolloMutation } from 'vue-apollo';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import { merge } from 'lodash';
+import { nextTick } from 'vue';
+import VueApollo, { ApolloMutation } from 'vue-apollo';
 import { useFakeDate } from 'helpers/fake_date';
-import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
+import waitForPromises from 'helpers/wait_for_promises';
 import GetSnippetQuery from 'shared_queries/snippet/snippet.query.graphql';
+import CaptchaModal from '~/captcha/captcha_modal.vue';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import * as urlUtils from '~/lib/utils/url_utility';
 import SnippetEditApp from '~/snippets/components/edit.vue';
-import CaptchaModal from '~/captcha/captcha_modal.vue';
+import SnippetBlobActionsEdit from '~/snippets/components/snippet_blob_actions_edit.vue';
 import SnippetDescriptionEdit from '~/snippets/components/snippet_description_edit.vue';
 import SnippetVisibilityEdit from '~/snippets/components/snippet_visibility_edit.vue';
-import SnippetBlobActionsEdit from '~/snippets/components/snippet_blob_actions_edit.vue';
-import TitleField from '~/vue_shared/components/form/title.vue';
-import FormFooterActions from '~/vue_shared/components/form/form_footer_actions.vue';
 import {
   SNIPPET_VISIBILITY_PRIVATE,
   SNIPPET_VISIBILITY_INTERNAL,
   SNIPPET_VISIBILITY_PUBLIC,
 } from '~/snippets/constants';
-import UpdateSnippetMutation from '~/snippets/mutations/updateSnippet.mutation.graphql';
 import CreateSnippetMutation from '~/snippets/mutations/createSnippet.mutation.graphql';
+import UpdateSnippetMutation from '~/snippets/mutations/updateSnippet.mutation.graphql';
+import FormFooterActions from '~/vue_shared/components/form/form_footer_actions.vue';
+import TitleField from '~/vue_shared/components/form/title.vue';
 import { testEntries, createGQLSnippetsQueryResponse, createGQLSnippet } from '../test_utils';
 
 jest.mock('~/flash');

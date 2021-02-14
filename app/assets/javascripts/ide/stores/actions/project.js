@@ -1,8 +1,8 @@
 import { escape } from 'lodash';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import { __, sprintf } from '~/locale';
-import service from '../../services';
 import api from '../../../api';
+import service from '../../services';
 import * as types from '../mutation_types';
 
 export const getProjectData = ({ commit, state }, { namespace, projectId, force = false } = {}) =>

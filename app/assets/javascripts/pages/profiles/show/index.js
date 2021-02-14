@@ -1,9 +1,9 @@
-import $ from 'jquery';
 import emojiRegex from 'emoji-regex';
+import $ from 'jquery';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
+import * as Emoji from '~/emoji';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __ } from '~/locale';
-import * as Emoji from '~/emoji';
 import EmojiMenu from './emoji_menu';
 
 const defaultStatusEmoji = 'speech_balloon';

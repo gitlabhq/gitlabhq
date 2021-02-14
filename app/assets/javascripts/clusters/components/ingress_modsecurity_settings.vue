@@ -1,5 +1,4 @@
 <script>
-import { escape } from 'lodash';
 import {
   GlAlert,
   GlSprintf,
@@ -10,6 +9,7 @@ import {
   GlDropdownItem,
   GlIcon,
 } from '@gitlab/ui';
+import { escape } from 'lodash';
 import modSecurityLogo from 'images/cluster_app_logos/gitlab.png';
 import { APPLICATION_STATUS, INGRESS, LOGGING_MODE, BLOCKING_MODE } from '~/clusters/constants';
 import eventHub from '~/clusters/event_hub';

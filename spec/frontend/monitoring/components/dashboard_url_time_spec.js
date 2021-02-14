@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import {
   queryToObject,
   redirectTo,
@@ -8,7 +9,6 @@ import {
   mergeUrlParams,
   updateHistory,
 } from '~/lib/utils/url_utility';
-import axios from '~/lib/utils/axios_utils';
 
 import Dashboard from '~/monitoring/components/dashboard.vue';
 import DashboardHeader from '~/monitoring/components/dashboard_header.vue';

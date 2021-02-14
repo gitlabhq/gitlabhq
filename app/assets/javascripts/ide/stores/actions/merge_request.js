@@ -1,8 +1,8 @@
 import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
+import { leftSidebarViews, PERMISSION_READ_MR } from '../../constants';
 import service from '../../services';
 import * as types from '../mutation_types';
-import { leftSidebarViews, PERMISSION_READ_MR } from '../../constants';
 
 export const getMergeRequestsForBranch = (
   { commit, state, getters },

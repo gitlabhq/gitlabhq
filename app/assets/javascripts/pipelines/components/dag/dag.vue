@@ -1,14 +1,14 @@
 <script>
 import { GlAlert, GlButton, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
-import { __ } from '~/locale';
 import { fetchPolicies } from '~/lib/graphql';
+import { __ } from '~/locale';
+import { DEFAULT, PARSE_FAILURE, LOAD_FAILURE, UNSUPPORTED_DATA } from '../../constants';
 import getDagVisData from '../../graphql/queries/get_dag_vis_data.query.graphql';
 import { parseData } from '../parsing_utils';
-import { DEFAULT, PARSE_FAILURE, LOAD_FAILURE, UNSUPPORTED_DATA } from '../../constants';
-import DagGraph from './dag_graph.vue';
-import DagAnnotations from './dag_annotations.vue';
 import { ADD_NOTE, REMOVE_NOTE, REPLACE_NOTES } from './constants';
+import DagAnnotations from './dag_annotations.vue';
+import DagGraph from './dag_graph.vue';
 
 export default {
   // eslint-disable-next-line @gitlab/require-i18n-strings

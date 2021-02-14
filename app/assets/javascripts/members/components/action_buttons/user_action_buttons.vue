@@ -1,8 +1,8 @@
 <script>
 import { s__, sprintf } from '~/locale';
 import ActionButtonGroup from './action_button_group.vue';
-import RemoveMemberButton from './remove_member_button.vue';
 import LeaveButton from './leave_button.vue';
+import RemoveMemberButton from './remove_member_button.vue';
 
 export default {
   name: 'UserActionButtons',

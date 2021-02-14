@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
-import groupItemComponent from '~/groups/components/group_item.vue';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
-import { getGroupItemMicrodata } from '~/groups/store/utils';
+import groupItemComponent from '~/groups/components/group_item.vue';
 import eventHub from '~/groups/event_hub';
+import { getGroupItemMicrodata } from '~/groups/store/utils';
 import * as urlUtilities from '~/lib/utils/url_utility';
 import { mockParentGroupItem, mockChildren } from '../mock_data';
 

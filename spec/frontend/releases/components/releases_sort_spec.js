@@ -1,6 +1,6 @@
-import Vuex from 'vuex';
 import { GlSorting, GlSortingItem } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import ReleasesSort from '~/releases/components/releases_sort.vue';
 import createStore from '~/releases/stores';
 import createListModule from '~/releases/stores/modules/list';

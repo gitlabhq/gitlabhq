@@ -1,5 +1,5 @@
-import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import GkeSubmitButton from '~/create_cluster/gke_cluster/components/gke_submit_button.vue';
 
 const localVue = createLocalVue();

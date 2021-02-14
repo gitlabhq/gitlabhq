@@ -1,16 +1,16 @@
 import { pickBy, mapKeys } from 'lodash';
-import {
-  queryToObject,
-  mergeUrlParams,
-  removeParams,
-  updateHistory,
-} from '~/lib/utils/url_utility';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import {
   timeRangeParamNames,
   timeRangeFromParams,
   timeRangeToParams,
 } from '~/lib/utils/datetime_range';
+import {
+  queryToObject,
+  mergeUrlParams,
+  removeParams,
+  updateHistory,
+} from '~/lib/utils/url_utility';
 import { VARIABLE_PREFIX } from './constants';
 
 /**

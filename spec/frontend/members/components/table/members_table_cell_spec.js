@@ -1,7 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { MEMBER_TYPES } from '~/members/constants';
 import MembersTableCell from '~/members/components/table/members_table_cell.vue';
+import { MEMBER_TYPES } from '~/members/constants';
 import {
   member as memberMock,
   directMember,

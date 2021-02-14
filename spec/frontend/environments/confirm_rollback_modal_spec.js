@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlModal } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import ConfirmRollbackModal from '~/environments/components/confirm_rollback_modal.vue';
 import eventHub from '~/environments/event_hub';
 

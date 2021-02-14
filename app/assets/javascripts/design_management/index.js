@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import createRouter from './router';
 import App from './components/app.vue';
 import apolloProvider from './graphql';
+import createRouter from './router';
 
 export default () => {
   const el = document.querySelector('.js-design-management');

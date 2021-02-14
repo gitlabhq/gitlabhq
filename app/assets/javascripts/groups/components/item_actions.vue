@@ -1,7 +1,7 @@
 <script>
 import { GlTooltipDirective, GlButton, GlModalDirective } from '@gitlab/ui';
-import eventHub from '../event_hub';
 import { COMMON_STR } from '../constants';
+import eventHub from '../event_hub';
 
 export default {
   components: {

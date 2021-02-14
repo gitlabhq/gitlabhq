@@ -1,9 +1,9 @@
+import { GlDropdown } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import { GlDropdown } from '@gitlab/ui';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import RevisionDropdown from '~/projects/compare/components/revision_dropdown.vue';
-import createFlash from '~/flash';
 
 const defaultProps = {
   refsProjectPath: 'some/refs/path',

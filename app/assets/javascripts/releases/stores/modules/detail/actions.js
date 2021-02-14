@@ -1,14 +1,14 @@
 import api from '~/api';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import { s__ } from '~/locale';
 import { redirectTo } from '~/lib/utils/url_utility';
+import { s__ } from '~/locale';
+import oneReleaseQuery from '~/releases/queries/one_release.query.graphql';
 import {
   releaseToApiJson,
   apiJsonToRelease,
   gqClient,
   convertOneReleaseGraphQLResponse,
 } from '~/releases/util';
-import oneReleaseQuery from '~/releases/queries/one_release.query.graphql';
 import * as types from './mutation_types';
 
 export const initializeRelease = ({ commit, dispatch, getters }) => {

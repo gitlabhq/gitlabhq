@@ -1,6 +1,6 @@
 <script>
-import { mapGetters } from 'vuex';
 import { GlSprintf, GlIcon } from '@gitlab/ui';
+import { mapGetters } from 'vuex';
 import { IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { sprintf, __ } from '~/locale';
 import {

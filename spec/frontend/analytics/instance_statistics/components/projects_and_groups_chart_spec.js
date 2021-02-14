@@ -1,14 +1,14 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { GlLineChart } from '@gitlab/ui/dist/charts';
 import { GlAlert } from '@gitlab/ui';
+import { GlLineChart } from '@gitlab/ui/dist/charts';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import ProjectsAndGroupChart from '~/analytics/instance_statistics/components/projects_and_groups_chart.vue';
-import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';
-import projectsQuery from '~/analytics/instance_statistics/graphql/queries/projects.query.graphql';
 import groupsQuery from '~/analytics/instance_statistics/graphql/queries/groups.query.graphql';
-import { mockCountsData2, roundedSortedCountsMonthlyChartData2 } from '../mock_data';
+import projectsQuery from '~/analytics/instance_statistics/graphql/queries/projects.query.graphql';
+import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';
 import { mockQueryResponse } from '../apollo_mock_data';
+import { mockCountsData2, roundedSortedCountsMonthlyChartData2 } from '../mock_data';
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);

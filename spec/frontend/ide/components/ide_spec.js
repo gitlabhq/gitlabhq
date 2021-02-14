@@ -1,10 +1,10 @@
-import Vuex from 'vuex';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { GlAlert } from '@gitlab/ui';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createStore } from '~/ide/stores';
 import ErrorMessage from '~/ide/components/error_message.vue';
 import Ide from '~/ide/components/ide.vue';
+import { createStore } from '~/ide/stores';
 import { file } from '../helpers';
 import { projectData } from '../mock_data';
 

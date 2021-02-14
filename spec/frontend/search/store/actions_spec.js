@@ -1,12 +1,12 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import Api from '~/api';
+import createFlash from '~/flash';
+import axios from '~/lib/utils/axios_utils';
+import * as urlUtils from '~/lib/utils/url_utility';
 import * as actions from '~/search/store/actions';
 import * as types from '~/search/store/mutation_types';
-import * as urlUtils from '~/lib/utils/url_utility';
 import createState from '~/search/store/state';
-import axios from '~/lib/utils/axios_utils';
-import createFlash from '~/flash';
 import { MOCK_QUERY, MOCK_GROUPS, MOCK_PROJECT, MOCK_PROJECTS } from '../mock_data';
 
 jest.mock('~/flash');

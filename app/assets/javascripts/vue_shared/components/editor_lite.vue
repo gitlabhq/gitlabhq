@@ -1,7 +1,7 @@
 <script>
 import { debounce } from 'lodash';
-import Editor from '~/editor/editor_lite';
 import { CONTENT_UPDATE_DEBOUNCE, EDITOR_READY_EVENT } from '~/editor/constants';
+import Editor from '~/editor/editor_lite';
 
 function initEditorLite({ el, ...args }) {
   const editor = new Editor({

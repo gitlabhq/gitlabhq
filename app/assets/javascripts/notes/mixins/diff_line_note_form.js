@@ -2,8 +2,8 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import { getDraftReplyFormData, getDraftFormData } from '~/batch_comments/utils';
 import { TEXT_DIFF_POSITION_TYPE, IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import { s__ } from '~/locale';
 import { clearDraft } from '~/lib/utils/autosave';
+import { s__ } from '~/locale';
 import { formatLineRange } from '~/notes/components/multiline_comment_utils';
 
 export default {

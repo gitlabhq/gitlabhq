@@ -1,11 +1,11 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { first } from 'lodash';
-import { s__, n__ } from '~/locale';
 import { truncateSha } from '~/lib/utils/text_utility';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import HistoryItem from '~/vue_shared/components/registry/history_item.vue';
+import { s__, n__ } from '~/locale';
 import { HISTORY_PIPELINES_LIMIT } from '~/packages/details/constants';
+import HistoryItem from '~/vue_shared/components/registry/history_item.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
   name: 'PackageHistory',

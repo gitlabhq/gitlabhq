@@ -1,5 +1,5 @@
-import { createDefaultFileEditor } from '~/ide/stores/modules/editor/utils';
 import * as getters from '~/ide/stores/modules/editor/getters';
+import { createDefaultFileEditor } from '~/ide/stores/modules/editor/utils';
 
 const TEST_PATH = 'test/path.md';
 const TEST_FILE_EDITOR = {

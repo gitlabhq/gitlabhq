@@ -1,9 +1,9 @@
 <script>
 import { GlLink, GlModalDirective, GlSprintf, GlButton, GlAlert } from '@gitlab/ui';
 import { s__, __, sprintf } from '~/locale';
-import eventHub from '../event_hub';
 import identicon from '../../vue_shared/components/identicon.vue';
 import { APPLICATION_STATUS, ELASTIC_STACK } from '../constants';
+import eventHub from '../event_hub';
 import UninstallApplicationButton from './uninstall_application_button.vue';
 import UninstallApplicationConfirmationModal from './uninstall_application_confirmation_modal.vue';
 import UpdateApplicationConfirmationModal from './update_application_confirmation_modal.vue';

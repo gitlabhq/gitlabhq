@@ -2,9 +2,9 @@
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { modalTypes, viewerTypes } from '../constants';
 import IdeTreeList from './ide_tree_list.vue';
-import Upload from './new_dropdown/upload.vue';
 import NewEntryButton from './new_dropdown/button.vue';
 import NewModal from './new_dropdown/modal.vue';
+import Upload from './new_dropdown/upload.vue';
 
 export default {
   components: {

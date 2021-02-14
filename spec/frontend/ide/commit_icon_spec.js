@@ -1,6 +1,6 @@
+import getCommitIconMap from '~/ide/commit_icon';
 import { commitItemIconMap } from '~/ide/constants';
 import { decorateData } from '~/ide/stores/utils';
-import getCommitIconMap from '~/ide/commit_icon';
 
 const createFile = (name = 'name', id = name, type = '', parent = null) =>
   decorateData({

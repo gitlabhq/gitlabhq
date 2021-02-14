@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlTooltipDirective, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
-import animateMixin from '../mixins/animate';
 import eventHub from '../event_hub';
+import animateMixin from '../mixins/animate';
 
 export default {
   components: {

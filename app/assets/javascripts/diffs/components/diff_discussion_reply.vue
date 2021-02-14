@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
-import NoteSignedOutWidget from '~/notes/components/note_signed_out_widget.vue';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
+import NoteSignedOutWidget from '~/notes/components/note_signed_out_widget.vue';
 
 export default {
   name: 'DiffDiscussionReply',

@@ -1,13 +1,13 @@
-import Vuex from 'vuex';
 import { createLocalVue, mount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import Vuex from 'vuex';
 import { TEST_HOST } from 'helpers/test_constants';
 import createEventHub from '~/helpers/event_hub_factory';
 
 import axios from '~/lib/utils/axios_utils';
-import notesModule from '~/notes/stores/modules';
 import DiscussionFilter from '~/notes/components/discussion_filter.vue';
 import { DISCUSSION_FILTERS_DEFAULT_VALUE, DISCUSSION_FILTER_TYPES } from '~/notes/constants';
+import notesModule from '~/notes/stores/modules';
 
 import { discussionFiltersMock, discussionMock } from '../mock_data';
 

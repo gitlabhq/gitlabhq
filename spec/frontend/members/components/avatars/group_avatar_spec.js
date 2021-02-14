@@ -1,6 +1,6 @@
-import { mount, createWrapper } from '@vue/test-utils';
-import { getByText as getByTextHelper } from '@testing-library/dom';
 import { GlAvatarLink } from '@gitlab/ui';
+import { getByText as getByTextHelper } from '@testing-library/dom';
+import { mount, createWrapper } from '@vue/test-utils';
 import GroupAvatar from '~/members/components/avatars/group_avatar.vue';
 import { group as member } from '../../mock_data';
 

@@ -4,8 +4,8 @@ import { GlStackedColumnChart } from '@gitlab/ui/dist/charts';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import { s__ } from '~/locale';
 import { chartHeight, legendLayoutTypes } from '../../constants';
-import { graphDataValidatorForValues } from '../../utils';
 import { formats, timezones } from '../../format_date';
+import { graphDataValidatorForValues } from '../../utils';
 import { getTimeAxisOptions, axisTypes } from './options';
 
 export default {

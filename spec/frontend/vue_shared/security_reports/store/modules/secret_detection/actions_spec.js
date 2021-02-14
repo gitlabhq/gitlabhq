@@ -1,10 +1,10 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 
-import createState from '~/vue_shared/security_reports/store/modules/secret_detection/state';
-import * as types from '~/vue_shared/security_reports/store/modules/secret_detection/mutation_types';
-import * as actions from '~/vue_shared/security_reports/store/modules/secret_detection/actions';
 import axios from '~/lib/utils/axios_utils';
+import * as actions from '~/vue_shared/security_reports/store/modules/secret_detection/actions';
+import * as types from '~/vue_shared/security_reports/store/modules/secret_detection/mutation_types';
+import createState from '~/vue_shared/security_reports/store/modules/secret_detection/state';
 
 const diffEndpoint = 'diff-endpoint.json';
 const blobPath = 'blob-path.json';

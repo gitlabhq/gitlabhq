@@ -1,6 +1,6 @@
 <script>
-import { mapActions } from 'vuex';
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { mapActions } from 'vuex';
 import { s__ } from '~/locale';
 
 export default {

@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlDropdown, GlDropdownDivider, GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ActionsButton from '~/vue_shared/components/actions_button.vue';
 

@@ -1,6 +1,4 @@
 <script>
-import Vue from 'vue';
-import { uniqueId } from 'lodash';
 import {
   GlAlert,
   GlIcon,
@@ -19,12 +17,14 @@ import {
   GlLoadingIcon,
   GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
-import * as Sentry from '~/sentry/wrapper';
-import { s__, __, n__ } from '~/locale';
+import { uniqueId } from 'lodash';
+import Vue from 'vue';
 import axios from '~/lib/utils/axios_utils';
-import { redirectTo } from '~/lib/utils/url_utility';
 import { backOff } from '~/lib/utils/common_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
+import { redirectTo } from '~/lib/utils/url_utility';
+import { s__, __, n__ } from '~/locale';
+import * as Sentry from '~/sentry/wrapper';
 import { VARIABLE_TYPE, FILE_TYPE, CONFIG_VARIABLES_TIMEOUT } from '../constants';
 
 export default {

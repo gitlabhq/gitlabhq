@@ -1,5 +1,5 @@
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import AccessorUtils from '~/lib/utils/accessor';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import * as types from './mutation_types';
 
 export default {

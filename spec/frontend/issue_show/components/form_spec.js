@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
-import formComponent from '~/issue_show/components/form.vue';
 import Autosave from '~/autosave';
+import formComponent from '~/issue_show/components/form.vue';
 import eventHub from '~/issue_show/event_hub';
 
 jest.mock('~/autosave');

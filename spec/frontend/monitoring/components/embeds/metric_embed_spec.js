@@ -1,7 +1,7 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { TEST_HOST } from 'helpers/test_constants';
 import { setHTMLFixture } from 'helpers/fixtures';
+import { TEST_HOST } from 'helpers/test_constants';
 import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
 import MetricEmbed from '~/monitoring/components/embeds/metric_embed.vue';
 import { groups, initialState, metricsData, metricsWithData } from './mock_data';

@@ -1,6 +1,6 @@
-import Editor from '~/ide/lib/editor';
-import DecorationsController from '~/ide/lib/decorations/controller';
 import Model from '~/ide/lib/common/model';
+import DecorationsController from '~/ide/lib/decorations/controller';
+import Editor from '~/ide/lib/editor';
 import { createStore } from '~/ide/stores';
 import { file } from '../../helpers';
 

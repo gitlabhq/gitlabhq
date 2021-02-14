@@ -1,7 +1,7 @@
-import { __, s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
-import statusCodes from '~/lib/utils/http_status';
 import { backOff } from '~/lib/utils/common_utils';
+import statusCodes from '~/lib/utils/http_status';
+import { __, s__ } from '~/locale';
 import * as types from './mutation_types';
 
 const TWO_MINUTES = 120000;

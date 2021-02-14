@@ -1,14 +1,13 @@
+import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import axios from 'axios';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
-import httpStatus from '~/lib/utils/http_status';
-import { featureAccessLevel } from '~/pages/projects/shared/permissions/constants';
+import ProjectSelect from '~/boards/components/project_select_deprecated.vue';
 import { ListType } from '~/boards/constants';
 import eventHub from '~/boards/eventhub';
 import { deprecatedCreateFlash as flash } from '~/flash';
-
-import ProjectSelect from '~/boards/components/project_select_deprecated.vue';
+import httpStatus from '~/lib/utils/http_status';
+import { featureAccessLevel } from '~/pages/projects/shared/permissions/constants';
 
 import { listObj, mockRawGroupProjects } from './mock_data';
 

@@ -1,12 +1,12 @@
-import MockAdapter from 'axios-mock-adapter';
-import { shallowMount } from '@vue/test-utils';
 import { GlAlert, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
+import { shallowMount } from '@vue/test-utils';
+import MockAdapter from 'axios-mock-adapter';
 
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
-import CodeCoverage from '~/pages/projects/graphs/components/code_coverage.vue';
 import httpStatusCodes from '~/lib/utils/http_status';
+import CodeCoverage from '~/pages/projects/graphs/components/code_coverage.vue';
 import { codeCoverageMockData, sortedDataByDates } from './mock_data';
 
 describe('Code Coverage', () => {

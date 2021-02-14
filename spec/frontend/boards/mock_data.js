@@ -1,7 +1,7 @@
 /* global List */
 
-import Vue from 'vue';
 import { keyBy } from 'lodash';
+import Vue from 'vue';
 import '~/boards/models/list';
 import boardsStore from '~/boards/stores/boards_store';
 

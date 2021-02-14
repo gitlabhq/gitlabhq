@@ -1,9 +1,9 @@
 <script>
 import { GlTabs, GlTab, GlLoadingIcon, GlPagination, GlAlert } from '@gitlab/ui';
-import { s__ } from '~/locale';
-import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { fetchGroups } from '~/jira_connect/api';
 import { defaultPerPage } from '~/jira_connect/constants';
+import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
+import { s__ } from '~/locale';
 import GroupsListItem from './groups_list_item.vue';
 
 export default {

@@ -1,5 +1,5 @@
-import $ from 'jquery';
 import { shallowMount } from '@vue/test-utils';
+import $ from 'jquery';
 
 import MarkdownFieldView from '~/vue_shared/components/markdown/field_view.vue';
 

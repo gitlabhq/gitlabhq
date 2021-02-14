@@ -1,12 +1,12 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import TimelineToggle, {
   timelineEnabledTooltip,
   timelineDisabledTooltip,
 } from '~/notes/components/timeline_toggle.vue';
-import createStore from '~/notes/stores';
 import { ASC, DESC } from '~/notes/constants';
+import createStore from '~/notes/stores';
 import { trackToggleTimelineView } from '~/notes/utils';
 import Tracking from '~/tracking';
 

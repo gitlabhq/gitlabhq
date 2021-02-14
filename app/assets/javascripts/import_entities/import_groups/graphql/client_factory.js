@@ -1,8 +1,8 @@
+import createFlash from '~/flash';
+import createDefaultClient from '~/lib/graphql';
 import axios from '~/lib/utils/axios_utils';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
-import createDefaultClient from '~/lib/graphql';
 import { s__ } from '~/locale';
-import createFlash from '~/flash';
 import { STATUSES } from '../../constants';
 import availableNamespacesQuery from './queries/available_namespaces.query.graphql';
 import { SourceGroupsManager } from './services/source_groups_manager';

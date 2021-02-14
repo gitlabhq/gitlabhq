@@ -1,5 +1,5 @@
-import serverlessState from '~/serverless/store/state';
 import * as getters from '~/serverless/store/getters';
+import serverlessState from '~/serverless/store/state';
 import { mockServerlessFunctions } from '../mock_data';
 
 describe('Serverless Store Getters', () => {

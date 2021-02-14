@@ -3,14 +3,14 @@
 import { GlLoadingIcon, GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import { visitUrl } from '../../lib/utils/url_utility';
 import identicon from '../../vue_shared/components/identicon.vue';
-import eventHub from '../event_hub';
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '../constants';
+import eventHub from '../event_hub';
 
+import itemActions from './item_actions.vue';
 import itemCaret from './item_caret.vue';
-import itemTypeIcon from './item_type_icon.vue';
 import itemStats from './item_stats.vue';
 import itemStatsValue from './item_stats_value.vue';
-import itemActions from './item_actions.vue';
+import itemTypeIcon from './item_type_icon.vue';
 
 export default {
   directives: {

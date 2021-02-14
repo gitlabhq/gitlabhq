@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlSprintf, GlFormInput, GlLink } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { GlFormGroup } from 'jest/registry/shared/stubs';
 import component from '~/registry/settings/components/expiration_input.vue';
 import { NAME_REGEX_LENGTH } from '~/registry/settings/constants';

@@ -1,5 +1,4 @@
 <script>
-import Vue from 'vue';
 import {
   GlIcon,
   GlFormInput,
@@ -9,8 +8,9 @@ import {
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
-import { s__, __ } from '~/locale';
+import Vue from 'vue';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { s__, __ } from '~/locale';
 import {
   getMappingData,
   getPayloadFields,

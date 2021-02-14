@@ -1,10 +1,10 @@
-import Visibility from 'visibilityjs';
 import axios from 'axios';
+import Visibility from 'visibilityjs';
 import httpStatus from '../../../../lib/utils/http_status';
-import { __ } from '../../../../locale';
 import Poll from '../../../../lib/utils/poll';
-import service from '../../../services';
+import { __ } from '../../../../locale';
 import { rightSidebarViews } from '../../../constants';
+import service from '../../../services';
 import * as types from './mutation_types';
 
 let eTagPoll;

@@ -1,9 +1,9 @@
 <script>
 import { mapState } from 'vuex';
+import { helpPagePath } from '~/helpers/help_page_helper';
+import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import { __, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
-import { helpPagePath } from '~/helpers/help_page_helper';
 import DetailRow from './sidebar_detail_row.vue';
 
 export default {

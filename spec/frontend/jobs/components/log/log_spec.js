@@ -1,7 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { logLinesParser } from '~/jobs/store/utils';
 import Log from '~/jobs/components/log/log.vue';
+import { logLinesParser } from '~/jobs/store/utils';
 import { jobLog } from './mock_data';
 
 describe('Job Log', () => {

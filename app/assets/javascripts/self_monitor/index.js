@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from './store';
 import SelfMonitorForm from './components/self_monitor_form.vue';
+import store from './store';
 
 export default () => {
   const el = document.querySelector('.js-self-monitoring-settings');

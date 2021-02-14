@@ -1,9 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
-import InstanceStatisticsApp from '~/analytics/instance_statistics/components/app.vue';
 import InstanceCounts from '~/analytics/instance_statistics/components//instance_counts.vue';
+import InstanceStatisticsApp from '~/analytics/instance_statistics/components/app.vue';
 import InstanceStatisticsCountChart from '~/analytics/instance_statistics/components/instance_statistics_count_chart.vue';
-import UsersChart from '~/analytics/instance_statistics/components/users_chart.vue';
 import ProjectsAndGroupsChart from '~/analytics/instance_statistics/components/projects_and_groups_chart.vue';
+import UsersChart from '~/analytics/instance_statistics/components/users_chart.vue';
 
 describe('InstanceStatisticsApp', () => {
   let wrapper;

@@ -1,11 +1,11 @@
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { HOUR_IN_MS, FREQUENT_ITEMS } from '~/frequent_items/constants';
 import {
   isMobile,
   getTopFrequentItems,
   updateExistingFrequentItem,
   sanitizeItem,
 } from '~/frequent_items/utils';
-import { HOUR_IN_MS, FREQUENT_ITEMS } from '~/frequent_items/constants';
 import { mockProject, unsortedFrequentItems, sortedFrequentItems } from './mock_data';
 
 describe('Frequent Items utils spec', () => {

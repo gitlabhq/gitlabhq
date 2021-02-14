@@ -1,5 +1,5 @@
-import IssuableBulkUpdateSidebar from './issuable_bulk_update_sidebar';
 import issuableBulkUpdateActions from './issuable_bulk_update_actions';
+import IssuableBulkUpdateSidebar from './issuable_bulk_update_sidebar';
 
 export default {
   bulkUpdateSidebar: null,

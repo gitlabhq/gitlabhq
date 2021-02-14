@@ -1,10 +1,9 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import DashboardPanelBuilder from '~/monitoring/components/dashboard_panel_builder.vue';
+import PanelNewPage from '~/monitoring/pages/panel_new_page.vue';
 import { DASHBOARD_PAGE, PANEL_NEW_PAGE } from '~/monitoring/router/constants';
 import { createStore } from '~/monitoring/stores';
-import DashboardPanelBuilder from '~/monitoring/components/dashboard_panel_builder.vue';
-
-import PanelNewPage from '~/monitoring/pages/panel_new_page.vue';
 
 const dashboard = 'dashboard.yml';
 

@@ -1,4 +1,3 @@
-import { mount } from '@vue/test-utils';
 import {
   GlForm,
   GlFormSelect,
@@ -7,9 +6,10 @@ import {
   GlToggle,
   GlFormTextarea,
 } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form.vue';
 import MappingBuilder from '~/alerts_settings/components/alert_mapping_builder.vue';
+import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form.vue';
 import { typeSet } from '~/alerts_settings/constants';
 import alertFields from '../mocks/alertFields.json';
 import { defaultAlertSettingsConfig } from './util';

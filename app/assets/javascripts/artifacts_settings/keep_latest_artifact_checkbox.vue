@@ -1,9 +1,9 @@
 <script>
 import { GlAlert, GlFormCheckbox, GlLink } from '@gitlab/ui';
 import { __ } from '~/locale';
-import GetKeepLatestArtifactProjectSetting from './graphql/queries/get_keep_latest_artifact_project_setting.query.graphql';
-import GetKeepLatestArtifactApplicationSetting from './graphql/queries/get_keep_latest_artifact_application_setting.query.graphql';
 import UpdateKeepLatestArtifactProjectSetting from './graphql/mutations/update_keep_latest_artifact_project_setting.mutation.graphql';
+import GetKeepLatestArtifactApplicationSetting from './graphql/queries/get_keep_latest_artifact_application_setting.query.graphql';
+import GetKeepLatestArtifactProjectSetting from './graphql/queries/get_keep_latest_artifact_project_setting.query.graphql';
 
 export default {
   errors: {

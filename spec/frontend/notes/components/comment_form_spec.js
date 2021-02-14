@@ -1,15 +1,15 @@
-import { nextTick } from 'vue';
 import { mount, shallowMount } from '@vue/test-utils';
 import Autosize from 'autosize';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import createStore from '~/notes/stores';
 import CommentForm from '~/notes/components/comment_form.vue';
 import * as constants from '~/notes/constants';
 import eventHub from '~/notes/event_hub';
-import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
+import createStore from '~/notes/stores';
 import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
 
 jest.mock('autosize');

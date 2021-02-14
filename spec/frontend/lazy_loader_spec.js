@@ -1,6 +1,6 @@
 import { noop } from 'lodash';
-import { TEST_HOST } from 'helpers/test_constants';
 import { useMockMutationObserver, useMockIntersectionObserver } from 'helpers/mock_dom_observer';
+import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import LazyLoader from '~/lazy_loader';
 

@@ -1,20 +1,20 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import Vuex from 'vuex';
 import { cloneDeep } from 'lodash';
+import Vuex from 'vuex';
 
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
+import { DIFF_FILE_AUTOMATIC_COLLAPSE, DIFF_FILE_MANUAL_COLLAPSE } from '~/diffs/constants';
+import { reviewFile } from '~/diffs/store/actions';
+import { SET_MR_FILE_REVIEWS } from '~/diffs/store/mutation_types';
+import { diffViewerModes } from '~/ide/constants';
+import { scrollToElement } from '~/lib/utils/common_utils';
+import { truncateSha } from '~/lib/utils/text_utility';
+import { __, sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
-import { truncateSha } from '~/lib/utils/text_utility';
-import { diffViewerModes } from '~/ide/constants';
-import { __, sprintf } from '~/locale';
-import { scrollToElement } from '~/lib/utils/common_utils';
 
-import { SET_MR_FILE_REVIEWS } from '~/diffs/store/mutation_types';
-import { reviewFile } from '~/diffs/store/actions';
-import { DIFF_FILE_AUTOMATIC_COLLAPSE, DIFF_FILE_MANUAL_COLLAPSE } from '~/diffs/constants';
 import testAction from '../../__helpers__/vuex_action_helper';
 import diffDiscussionsMockData from '../mock_data/diff_discussions';
 

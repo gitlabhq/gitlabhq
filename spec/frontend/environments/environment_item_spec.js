@@ -1,9 +1,9 @@
-import { cloneDeep } from 'lodash';
 import { mount } from '@vue/test-utils';
+import { cloneDeep } from 'lodash';
 import { format } from 'timeago.js';
+import DeleteComponent from '~/environments/components/environment_delete.vue';
 import EnvironmentItem from '~/environments/components/environment_item.vue';
 import PinComponent from '~/environments/components/environment_pin.vue';
-import DeleteComponent from '~/environments/components/environment_delete.vue';
 import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
 import { environment, folder, tableData } from './mock_data';
 

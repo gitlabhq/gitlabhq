@@ -8,8 +8,8 @@
 // captcha implementations other than reCAPTCHA (e.g. FriendlyCaptcha) without having to
 // change the references in the code or API.
 
-import { uniqueId } from 'lodash';
 import { GlModal } from '@gitlab/ui';
+import { uniqueId } from 'lodash';
 import { initRecaptchaScript } from '~/captcha/init_recaptcha_script';
 
 export default {

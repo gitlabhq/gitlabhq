@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import component from '~/packages/list/components/tokens/package_type_token.vue';
 import { PACKAGE_TYPES } from '~/packages/list/constants';
 

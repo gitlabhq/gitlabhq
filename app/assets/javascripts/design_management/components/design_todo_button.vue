@@ -1,8 +1,8 @@
 <script>
 import todoMarkDoneMutation from '~/graphql_shared/mutations/todo_mark_done.mutation.graphql';
 import TodoButton from '~/vue_shared/components/todo_button.vue';
-import getDesignQuery from '../graphql/queries/get_design.query.graphql';
 import createDesignTodoMutation from '../graphql/mutations/create_design_todo.mutation.graphql';
+import getDesignQuery from '../graphql/queries/get_design.query.graphql';
 import allVersionsMixin from '../mixins/all_versions';
 import { updateStoreAfterDeleteDesignTodo } from '../utils/cache_update';
 import { findIssueId, findDesignId } from '../utils/design_management_utils';

@@ -1,8 +1,8 @@
 <script>
-import TitleArea from '~/vue_shared/components/registry/title_area.vue';
-import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
-import { n__, sprintf } from '~/locale';
 import { approximateDuration, calculateRemainingMilliseconds } from '~/lib/utils/datetime_utility';
+import { n__, sprintf } from '~/locale';
+import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
+import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 
 import {
   CONTAINER_REGISTRY_TITLE,

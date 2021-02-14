@@ -1,5 +1,4 @@
 <script>
-import { mapGetters, mapActions } from 'vuex';
 import {
   GlDropdown,
   GlDropdownItem,
@@ -8,6 +7,7 @@ import {
   GlDropdownDivider,
   GlLoadingIcon,
 } from '@gitlab/ui';
+import { mapGetters, mapActions } from 'vuex';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
 import createFlash from '~/flash';
 import { __, s__ } from '~/locale';

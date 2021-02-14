@@ -1,9 +1,9 @@
 <script>
 import sidebarStatusQuery from '../graphql/queries/alert_sidebar_status.query.graphql';
-import SidebarHeader from './sidebar/sidebar_header.vue';
-import SidebarTodo from './sidebar/sidebar_todo.vue';
-import SidebarStatus from './sidebar/sidebar_status.vue';
 import SidebarAssignees from './sidebar/sidebar_assignees.vue';
+import SidebarHeader from './sidebar/sidebar_header.vue';
+import SidebarStatus from './sidebar/sidebar_status.vue';
+import SidebarTodo from './sidebar/sidebar_todo.vue';
 
 export default {
   components: {

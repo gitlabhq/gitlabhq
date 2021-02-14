@@ -1,7 +1,7 @@
 <script>
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
-import { __ } from '~/locale';
 import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';
+import { __ } from '~/locale';
 import { graphDataValidatorForValues } from '../../utils';
 
 const defaultPrecision = 2;

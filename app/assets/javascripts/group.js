@@ -1,6 +1,6 @@
-import fetchGroupPathAvailability from '~/pages/groups/new/fetch_group_path_availability';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
+import fetchGroupPathAvailability from '~/pages/groups/new/fetch_group_path_availability';
 import { slugify } from './lib/utils/text_utility';
 
 export default class Group {

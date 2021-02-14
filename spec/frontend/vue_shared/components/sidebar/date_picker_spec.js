@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
-import SidebarDatePicker from '~/vue_shared/components/sidebar/date_picker.vue';
 import DatePicker from '~/vue_shared/components/pikaday.vue';
+import SidebarDatePicker from '~/vue_shared/components/sidebar/date_picker.vue';
 
 describe('SidebarDatePicker', () => {
   let wrapper;

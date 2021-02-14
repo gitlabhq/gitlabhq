@@ -1,6 +1,4 @@
 <script>
-import { mapState } from 'vuex';
-import { mapValues, pickBy } from 'lodash';
 import {
   GlResizeObserverDirective,
   GlIcon,
@@ -15,27 +13,28 @@ import {
   GlTooltip,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import invalidUrl from '~/lib/utils/invalid_url';
+import { mapValues, pickBy } from 'lodash';
+import { mapState } from 'vuex';
+import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
+import invalidUrl from '~/lib/utils/invalid_url';
 import { relativePathToAbsolute, getBaseURL, visitUrl, isSafeURL } from '~/lib/utils/url_utility';
 import { __, n__ } from '~/locale';
-import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { panelTypes } from '../constants';
 
-import { timeRangeToUrl, downloadCSVOptions, generateLinkToChartOptions } from '../utils';
 import { graphDataToCsv } from '../csv_export';
-import MonitorEmptyChart from './charts/empty_chart.vue';
-import MonitorTimeSeriesChart from './charts/time_series.vue';
+import { timeRangeToUrl, downloadCSVOptions, generateLinkToChartOptions } from '../utils';
+import AlertWidget from './alert_widget.vue';
 import MonitorAnomalyChart from './charts/anomaly.vue';
-import MonitorSingleStatChart from './charts/single_stat.vue';
+import MonitorBarChart from './charts/bar.vue';
+import MonitorColumnChart from './charts/column.vue';
+import MonitorEmptyChart from './charts/empty_chart.vue';
 import MonitorGaugeChart from './charts/gauge.vue';
 import MonitorHeatmapChart from './charts/heatmap.vue';
-import MonitorColumnChart from './charts/column.vue';
-import MonitorBarChart from './charts/bar.vue';
+import MonitorSingleStatChart from './charts/single_stat.vue';
 import MonitorStackedColumnChart from './charts/stacked_column.vue';
-
-import AlertWidget from './alert_widget.vue';
+import MonitorTimeSeriesChart from './charts/time_series.vue';
 
 const events = {
   timeRangeZoom: 'timerangezoom',

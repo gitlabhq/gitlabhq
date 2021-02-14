@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlBadge, GlButton, GlLink } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import ForkGroupsListItem from '~/pages/projects/forks/new/components/fork_groups_list_item.vue';
 
 describe('Fork groups list item component', () => {

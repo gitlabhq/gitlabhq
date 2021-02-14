@@ -1,7 +1,7 @@
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex';
-import sum from 'lodash/sum';
 import { GlButton, GlCard, GlIcon } from '@gitlab/ui';
+import sum from 'lodash/sum';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import { n__ } from '~/locale';
 import { monitoringDashboard } from '~/monitoring/stores';
 import MetricEmbed from './metric_embed.vue';

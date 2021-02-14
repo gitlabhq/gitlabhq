@@ -1,11 +1,11 @@
 import { pick } from 'lodash';
 
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
-import createGqClient, { fetchPolicies } from '~/lib/graphql';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { convertObjectPropsToCamelCase, urlParamsToObject } from '~/lib/utils/common_utils';
 import { BoardType, ListType, inactiveId } from '~/boards/constants';
 import createFlash from '~/flash';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import createGqClient, { fetchPolicies } from '~/lib/graphql';
+import { convertObjectPropsToCamelCase, urlParamsToObject } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import updateAssigneesMutation from '~/vue_shared/components/sidebar/queries/updateAssignees.mutation.graphql';
 import {
@@ -18,19 +18,19 @@ import {
   updateListPosition,
   transformNotFilters,
 } from '../boards_util';
-import listsIssuesQuery from '../graphql/lists_issues.query.graphql';
 import boardLabelsQuery from '../graphql/board_labels.query.graphql';
 import createBoardListMutation from '../graphql/board_list_create.mutation.graphql';
-import updateBoardListMutation from '../graphql/board_list_update.mutation.graphql';
-import issueMoveListMutation from '../graphql/issue_move_list.mutation.graphql';
 import destroyBoardListMutation from '../graphql/board_list_destroy.mutation.graphql';
-import issueCreateMutation from '../graphql/issue_create.mutation.graphql';
-import issueSetLabelsMutation from '../graphql/issue_set_labels.mutation.graphql';
-import issueSetDueDateMutation from '../graphql/issue_set_due_date.mutation.graphql';
-import issueSetSubscriptionMutation from '../graphql/issue_set_subscription.mutation.graphql';
-import issueSetMilestoneMutation from '../graphql/issue_set_milestone.mutation.graphql';
-import issueSetTitleMutation from '../graphql/issue_set_title.mutation.graphql';
+import updateBoardListMutation from '../graphql/board_list_update.mutation.graphql';
 import groupProjectsQuery from '../graphql/group_projects.query.graphql';
+import issueCreateMutation from '../graphql/issue_create.mutation.graphql';
+import issueMoveListMutation from '../graphql/issue_move_list.mutation.graphql';
+import issueSetDueDateMutation from '../graphql/issue_set_due_date.mutation.graphql';
+import issueSetLabelsMutation from '../graphql/issue_set_labels.mutation.graphql';
+import issueSetMilestoneMutation from '../graphql/issue_set_milestone.mutation.graphql';
+import issueSetSubscriptionMutation from '../graphql/issue_set_subscription.mutation.graphql';
+import issueSetTitleMutation from '../graphql/issue_set_title.mutation.graphql';
+import listsIssuesQuery from '../graphql/lists_issues.query.graphql';
 import * as types from './mutation_types';
 
 const notImplemented = () => {

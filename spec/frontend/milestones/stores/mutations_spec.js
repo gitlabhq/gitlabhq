@@ -1,6 +1,6 @@
-import createState from '~/milestones/stores/state';
-import mutations from '~/milestones/stores/mutations';
 import * as types from '~/milestones/stores/mutation_types';
+import mutations from '~/milestones/stores/mutations';
+import createState from '~/milestones/stores/state';
 
 describe('Milestones combobox Vuex store mutations', () => {
   let state;

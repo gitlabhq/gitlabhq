@@ -1,14 +1,14 @@
-import { deprecatedCreateFlash as createFlash } from '~/flash';
-import { __ } from '~/locale';
 import api from '~/api';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import {
   normalizeHeaders,
   parseIntPagination,
   convertObjectPropsToCamelCase,
 } from '~/lib/utils/common_utils';
+import { __ } from '~/locale';
 import allReleasesQuery from '~/releases/queries/all_releases.query.graphql';
-import { gqClient, convertAllReleasesGraphQLResponse } from '../../../util';
 import { PAGE_SIZE } from '../../../constants';
+import { gqClient, convertAllReleasesGraphQLResponse } from '../../../util';
 import * as types from './mutation_types';
 
 /**

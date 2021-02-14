@@ -1,7 +1,7 @@
+import { ASC } from '../../constants';
 import * as actions from '../actions';
 import * as getters from '../getters';
 import mutations from '../mutations';
-import { ASC } from '../../constants';
 
 export default () => ({
   state: {

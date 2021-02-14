@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import DropdownField from '~/monitoring/components/variables/dropdown_field.vue';
 
 describe('Custom variable component', () => {

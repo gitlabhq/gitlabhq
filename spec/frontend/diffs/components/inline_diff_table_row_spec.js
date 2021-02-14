@@ -1,10 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
-import { createStore } from '~/mr_notes/stores';
-import InlineDiffTableRow from '~/diffs/components/inline_diff_table_row.vue';
 import DiffGutterAvatars from '~/diffs/components/diff_gutter_avatars.vue';
 import { mapInline } from '~/diffs/components/diff_row_utils';
-import diffFileMockData from '../mock_data/diff_file';
+import InlineDiffTableRow from '~/diffs/components/inline_diff_table_row.vue';
+import { createStore } from '~/mr_notes/stores';
 import discussionsMockData from '../mock_data/diff_discussions';
+import diffFileMockData from '../mock_data/diff_file';
 
 const TEST_USER_ID = 'abc123';
 const TEST_USER = { id: TEST_USER_ID };

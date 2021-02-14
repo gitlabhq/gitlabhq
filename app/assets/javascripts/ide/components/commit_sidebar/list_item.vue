@@ -1,9 +1,9 @@
 <script>
-import { mapActions } from 'vuex';
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { mapActions } from 'vuex';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
-import { viewerTypes } from '../../constants';
 import getCommitIconMap from '../../commit_icon';
+import { viewerTypes } from '../../constants';
 
 export default {
   components: {

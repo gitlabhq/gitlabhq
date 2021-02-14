@@ -1,10 +1,10 @@
 import { GlTable } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 
-import AdminUsersTable from '~/admin/users/components/users_table.vue';
+import AdminUserActions from '~/admin/users/components/user_actions.vue';
 import AdminUserAvatar from '~/admin/users/components/user_avatar.vue';
 import AdminUserDate from '~/admin/users/components/user_date.vue';
-import AdminUserActions from '~/admin/users/components/user_actions.vue';
+import AdminUsersTable from '~/admin/users/components/users_table.vue';
 
 import { users, paths } from '../mock_data';
 

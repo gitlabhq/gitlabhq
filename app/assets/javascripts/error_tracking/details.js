@@ -2,8 +2,8 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import csrf from '~/lib/utils/csrf';
-import store from './store';
 import ErrorDetails from './components/error_details.vue';
+import store from './store';
 
 Vue.use(VueApollo);
 

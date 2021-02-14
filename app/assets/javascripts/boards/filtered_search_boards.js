@@ -1,10 +1,10 @@
-import IssuableFilteredSearchTokenKeys from 'ee_else_ce/filtered_search/issuable_filtered_search_token_keys';
-import FilteredSearchManager from 'ee_else_ce/filtered_search/filtered_search_manager';
 import { transformBoardConfig } from 'ee_else_ce/boards/boards_util';
+import FilteredSearchManager from 'ee_else_ce/filtered_search/filtered_search_manager';
+import IssuableFilteredSearchTokenKeys from 'ee_else_ce/filtered_search/issuable_filtered_search_token_keys';
 import { updateHistory } from '~/lib/utils/url_utility';
 import FilteredSearchContainer from '../filtered_search/container';
-import boardsStore from './stores/boards_store';
 import vuexstore from './stores';
+import boardsStore from './stores/boards_store';
 
 export default class FilteredSearchBoards extends FilteredSearchManager {
   constructor(store, updateUrl = false, cantEdit = []) {

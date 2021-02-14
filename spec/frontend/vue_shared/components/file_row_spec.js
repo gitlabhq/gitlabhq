@@ -1,10 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { file } from 'jest/ide/helpers';
+import { escapeFileUrl } from '~/lib/utils/url_utility';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import FileHeader from '~/vue_shared/components/file_row_header.vue';
-import FileIcon from '~/vue_shared/components/file_icon.vue';
-import { escapeFileUrl } from '~/lib/utils/url_utility';
 
 describe('File row component', () => {
   let wrapper;

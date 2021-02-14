@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading, GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import Table from '~/repository/components/table/index.vue';
 import TableRow from '~/repository/components/table/row.vue';
 

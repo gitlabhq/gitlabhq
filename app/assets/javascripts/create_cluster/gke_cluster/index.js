@@ -1,14 +1,13 @@
 import Vue from 'vue';
 import { deprecatedCreateFlash as Flash } from '~/flash';
-import GkeProjectIdDropdown from './components/gke_project_id_dropdown.vue';
-import GkeZoneDropdown from './components/gke_zone_dropdown.vue';
 import GkeMachineTypeDropdown from './components/gke_machine_type_dropdown.vue';
+import GkeProjectIdDropdown from './components/gke_project_id_dropdown.vue';
 import GkeSubmitButton from './components/gke_submit_button.vue';
+import GkeZoneDropdown from './components/gke_zone_dropdown.vue';
+import * as CONSTANTS from './constants';
 import gapiLoader from './gapi_loader';
 
 import store from './store';
-
-import * as CONSTANTS from './constants';
 
 const mountComponent = (entryPoint, component, componentName, extraProps = {}) => {
   const el = document.querySelector(entryPoint);

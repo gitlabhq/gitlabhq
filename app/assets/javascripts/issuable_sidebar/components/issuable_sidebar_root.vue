@@ -1,7 +1,7 @@
 <script>
-import Cookies from 'js-cookie';
 import { GlIcon } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import Cookies from 'js-cookie';
 
 import { parseBoolean } from '~/lib/utils/common_utils';
 

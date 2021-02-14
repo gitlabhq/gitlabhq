@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { escape } from 'lodash';
-import { __ } from '~/locale';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import { __ } from '~/locale';
 
 function isValidProjectId(id) {
   return id > 0;

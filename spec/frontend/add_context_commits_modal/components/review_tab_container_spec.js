@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import ReviewTabContainer from '~/add_context_commits_modal/components/review_tab_container.vue';
 import CommitItem from '~/diffs/components/commit_item.vue';
 import getDiffWithCommit from '../../diffs/mock_data/diff_with_commit';

@@ -2,13 +2,13 @@
 /* global Flash */
 
 import { GlLoadingIcon, GlModal } from '@gitlab/ui';
-import { __, s__, sprintf } from '~/locale';
-import { HIDDEN_CLASS } from '~/lib/utils/constants';
 import { getParameterByName } from '~/lib/utils/common_utils';
+import { HIDDEN_CLASS } from '~/lib/utils/constants';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
+import { __, s__, sprintf } from '~/locale';
 
-import eventHub from '../event_hub';
 import { COMMON_STR, CONTENT_LIST_CLASS } from '../constants';
+import eventHub from '../event_hub';
 import groupsComponent from './groups.vue';
 
 export default {

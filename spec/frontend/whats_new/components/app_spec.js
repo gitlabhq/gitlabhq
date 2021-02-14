@@ -1,6 +1,6 @@
+import { GlDrawer, GlInfiniteScroll, GlTabs } from '@gitlab/ui';
 import { createLocalVue, mount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlDrawer, GlInfiniteScroll, GlTabs } from '@gitlab/ui';
 import { mockTracking, unmockTracking, triggerEvent } from 'helpers/tracking_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import App from '~/whats_new/components/app.vue';

@@ -1,13 +1,15 @@
 /* eslint-disable no-new, class-methods-use-this */
 
-import $ from 'jquery';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import $ from 'jquery';
 import Cookies from 'js-cookie';
 import createEventHub from '~/helpers/event_hub_factory';
-import axios from './lib/utils/axios_utils';
-import { deprecatedCreateFlash as flash } from './flash';
+import initAddContextCommitsTriggers from './add_context_commits_modal';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
+import Diff from './diff';
+import { deprecatedCreateFlash as flash } from './flash';
 import initChangesDropdown from './init_changes_dropdown';
+import axios from './lib/utils/axios_utils';
 import {
   parseUrlPathname,
   handleLocationHash,
@@ -15,15 +17,13 @@ import {
   parseBoolean,
   scrollToElement,
 } from './lib/utils/common_utils';
-import { isInVueNoteablePage } from './lib/utils/dom_utils';
-import { getLocationHash } from './lib/utils/url_utility';
-import Diff from './diff';
 import { localTimeAgo } from './lib/utils/datetime_utility';
-import syntaxHighlight from './syntax_highlight';
-import Notes from './notes';
+import { isInVueNoteablePage } from './lib/utils/dom_utils';
 import { polyfillSticky } from './lib/utils/sticky';
-import initAddContextCommitsTriggers from './add_context_commits_modal';
+import { getLocationHash } from './lib/utils/url_utility';
 import { __ } from './locale';
+import Notes from './notes';
+import syntaxHighlight from './syntax_highlight';
 
 // MergeRequestTabs
 //

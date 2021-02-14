@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
-import testAction from 'helpers/vuex_action_helper';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
-import createState from '~/create_cluster/eks_cluster/store/state';
+import testAction from 'helpers/vuex_action_helper';
+import { DEFAULT_REGION } from '~/create_cluster/eks_cluster/constants';
 import * as actions from '~/create_cluster/eks_cluster/store/actions';
 import {
   SET_CLUSTER_NAME,
@@ -23,9 +23,9 @@ import {
   REQUEST_CREATE_CLUSTER,
   CREATE_CLUSTER_ERROR,
 } from '~/create_cluster/eks_cluster/store/mutation_types';
-import { DEFAULT_REGION } from '~/create_cluster/eks_cluster/constants';
-import axios from '~/lib/utils/axios_utils';
+import createState from '~/create_cluster/eks_cluster/store/state';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 
 jest.mock('~/flash');
 

@@ -1,6 +1,6 @@
 <script>
-import { mapGetters, mapActions } from 'vuex';
 import { GlTooltipDirective, GlIcon, GlButton, GlButtonGroup } from '@gitlab/ui';
+import { mapGetters, mapActions } from 'vuex';
 import { __ } from '~/locale';
 import discussionNavigation from '../mixins/discussion_navigation';
 

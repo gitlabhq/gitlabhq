@@ -1,6 +1,6 @@
+import { SELECTED_CLASS } from '~/droplab/constants';
 import DropDown from '~/droplab/drop_down';
 import utils from '~/droplab/utils';
-import { SELECTED_CLASS } from '~/droplab/constants';
 
 describe('DropLab DropDown', () => {
   let testContext;

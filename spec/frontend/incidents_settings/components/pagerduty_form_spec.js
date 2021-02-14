@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlAlert, GlModal } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import PagerDutySettingsForm from '~/incidents_settings/components/pagerduty_form.vue';
 

@@ -1,9 +1,9 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import Tracking from '~/tracking';
-import * as types from '~/logs/stores/mutation_types';
+import { deprecatedCreateFlash as flash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
-import logsPageState from '~/logs/stores/state';
+import { TOKEN_TYPE_POD_NAME } from '~/logs/constants';
 import {
   setInitData,
   showFilteredLogs,
@@ -13,13 +13,12 @@ import {
   fetchMoreLogsPrepend,
   fetchManagedApps,
 } from '~/logs/stores/actions';
+import * as types from '~/logs/stores/mutation_types';
+import logsPageState from '~/logs/stores/state';
+import Tracking from '~/tracking';
 
 import { defaultTimeRange } from '~/vue_shared/constants';
 
-import axios from '~/lib/utils/axios_utils';
-import { deprecatedCreateFlash as flash } from '~/flash';
-
-import { TOKEN_TYPE_POD_NAME } from '~/logs/constants';
 import {
   mockPodName,
   mockEnvironmentsEndpoint,

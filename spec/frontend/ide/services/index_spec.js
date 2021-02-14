@@ -1,10 +1,10 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import services from '~/ide/services';
 import Api from '~/api';
+import getUserPermissions from '~/ide/queries/getUserPermissions.query.graphql';
+import services from '~/ide/services';
 import { query } from '~/ide/services/gql';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
-import getUserPermissions from '~/ide/queries/getUserPermissions.query.graphql';
 import { projectData } from '../mock_data';
 
 jest.mock('~/api');

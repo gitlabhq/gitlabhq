@@ -6,10 +6,10 @@ import {
   GlDropdownSectionHeader,
   GlDropdownDivider,
 } from '@gitlab/ui';
-import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { convertArrayToCamelCase } from '~/lib/utils/common_utils';
-import { generateUserPaths } from '../utils';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { I18N_USER_ACTIONS } from '../constants';
+import { generateUserPaths } from '../utils';
 import Actions from './actions';
 
 export default {

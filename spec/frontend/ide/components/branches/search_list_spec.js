@@ -1,9 +1,9 @@
+import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlLoadingIcon } from '@gitlab/ui';
-import { __ } from '~/locale';
-import List from '~/ide/components/branches/search_list.vue';
 import Item from '~/ide/components/branches/item.vue';
+import List from '~/ide/components/branches/search_list.vue';
+import { __ } from '~/locale';
 import { branches } from '../../mock_data';
 
 const localVue = createLocalVue();

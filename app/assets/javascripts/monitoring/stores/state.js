@@ -1,7 +1,7 @@
 import invalidUrl from '~/lib/utils/invalid_url';
 import { defaultTimeRange } from '~/vue_shared/constants';
-import { timezones } from '../format_date';
 import { dashboardEmptyStates } from '../constants';
+import { timezones } from '../format_date';
 
 export default () => ({
   // API endpoints

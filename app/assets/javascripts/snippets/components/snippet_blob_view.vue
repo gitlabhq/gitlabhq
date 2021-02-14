@@ -1,8 +1,8 @@
 <script>
 import GetBlobContent from 'shared_queries/snippet/snippet_blob_content.query.graphql';
 
-import BlobHeader from '~/blob/components/blob_header.vue';
 import BlobContent from '~/blob/components/blob_content.vue';
+import BlobHeader from '~/blob/components/blob_header.vue';
 
 import {
   SIMPLE_BLOB_VIEWER,

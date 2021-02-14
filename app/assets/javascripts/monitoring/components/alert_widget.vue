@@ -1,12 +1,12 @@
 <script>
 import { GlBadge, GlLoadingIcon, GlModalDirective, GlIcon, GlTooltip, GlSprintf } from '@gitlab/ui';
 import { values, get } from 'lodash';
-import { s__ } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
+import { s__ } from '~/locale';
+import { OPERATORS } from '../constants';
 import AlertsService from '../services/alerts_service';
 import { alertsValidator, queriesValidator } from '../validators';
-import { OPERATORS } from '../constants';
 import AlertWidgetForm from './alert_widget_form.vue';
 
 export default {

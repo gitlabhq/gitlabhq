@@ -1,6 +1,4 @@
 <script>
-import { escape } from 'lodash';
-import { mapActions, mapGetters, mapState } from 'vuex';
 import {
   GlTooltipDirective,
   GlSafeHtmlDirective,
@@ -13,20 +11,21 @@ import {
   GlFormCheckbox,
   GlLoadingIcon,
 } from '@gitlab/ui';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import FileIcon from '~/vue_shared/components/file_icon.vue';
+import { escape } from 'lodash';
+import { mapActions, mapGetters, mapState } from 'vuex';
+import { diffViewerModes } from '~/ide/constants';
+import { scrollToElement } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __, s__, sprintf } from '~/locale';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
-import { diffViewerModes } from '~/ide/constants';
+import { DIFF_FILE_AUTOMATIC_COLLAPSE } from '../constants';
+import { DIFF_FILE_HEADER } from '../i18n';
 import { collapsedType, isCollapsed } from '../utils/diff_file';
 import { reviewable } from '../utils/file_reviews';
 
-import { DIFF_FILE_AUTOMATIC_COLLAPSE } from '../constants';
-
-import { DIFF_FILE_HEADER } from '../i18n';
 import DiffStats from './diff_stats.vue';
 
 export default {

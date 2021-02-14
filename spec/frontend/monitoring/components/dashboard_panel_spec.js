@@ -1,34 +1,32 @@
-import Vuex from 'vuex';
+import { GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import { GlDropdownItem } from '@gitlab/ui';
+import Vuex from 'vuex';
 import { setTestTimeout } from 'helpers/timeout';
-import invalidUrl from '~/lib/utils/invalid_url';
 import axios from '~/lib/utils/axios_utils';
+import invalidUrl from '~/lib/utils/invalid_url';
 import AlertWidget from '~/monitoring/components/alert_widget.vue';
 
-import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
-
-import { panelTypes } from '~/monitoring/constants';
-
-import MonitorEmptyChart from '~/monitoring/components/charts/empty_chart.vue';
-import MonitorTimeSeriesChart from '~/monitoring/components/charts/time_series.vue';
 import MonitorAnomalyChart from '~/monitoring/components/charts/anomaly.vue';
-import MonitorSingleStatChart from '~/monitoring/components/charts/single_stat.vue';
-import MonitorHeatmapChart from '~/monitoring/components/charts/heatmap.vue';
-import MonitorColumnChart from '~/monitoring/components/charts/column.vue';
 import MonitorBarChart from '~/monitoring/components/charts/bar.vue';
+import MonitorColumnChart from '~/monitoring/components/charts/column.vue';
+import MonitorEmptyChart from '~/monitoring/components/charts/empty_chart.vue';
+import MonitorHeatmapChart from '~/monitoring/components/charts/heatmap.vue';
+import MonitorSingleStatChart from '~/monitoring/components/charts/single_stat.vue';
 import MonitorStackedColumnChart from '~/monitoring/components/charts/stacked_column.vue';
+import MonitorTimeSeriesChart from '~/monitoring/components/charts/time_series.vue';
+import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
+import { panelTypes } from '~/monitoring/constants';
 
 import { createStore, monitoringDashboard } from '~/monitoring/stores';
 import { createStore as createEmbedGroupStore } from '~/monitoring/stores/embed_group';
+import { dashboardProps, graphData, graphDataEmpty } from '../fixture_data';
 import {
   anomalyGraphData,
   singleStatGraphData,
   heatmapGraphData,
   barGraphData,
 } from '../graph_data';
-import { dashboardProps, graphData, graphDataEmpty } from '../fixture_data';
 import {
   mockAlert,
   mockLogsHref,

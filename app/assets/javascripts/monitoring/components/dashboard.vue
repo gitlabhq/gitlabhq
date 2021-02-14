@@ -1,30 +1,30 @@
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex';
-import VueDraggable from 'vuedraggable';
-import Mousetrap from 'mousetrap';
 import { GlButton, GlModalDirective, GlTooltipDirective, GlIcon } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import Mousetrap from 'mousetrap';
+import VueDraggable from 'vuedraggable';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import invalidUrl from '~/lib/utils/invalid_url';
 import { ESC_KEY } from '~/lib/utils/keys';
 import { mergeUrlParams, updateHistory } from '~/lib/utils/url_utility';
-import invalidUrl from '~/lib/utils/invalid_url';
-import TrackEventDirective from '~/vue_shared/directives/track_event';
+import { s__ } from '~/locale';
 import { defaultTimeRange } from '~/vue_shared/constants';
+import TrackEventDirective from '~/vue_shared/directives/track_event';
+import { metricStates, keyboardShortcutKeys } from '../constants';
 import {
   timeRangeFromUrl,
   panelToUrl,
   expandedPanelPayloadFromUrl,
   convertVariablesForURL,
 } from '../utils';
-import { metricStates, keyboardShortcutKeys } from '../constants';
 import DashboardHeader from './dashboard_header.vue';
 import DashboardPanel from './dashboard_panel.vue';
 
-import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
+import GraphGroup from './graph_group.vue';
 import GroupEmptyState from './group_empty_state.vue';
-import VariablesSection from './variables_section.vue';
 import LinksSection from './links_section.vue';
+import VariablesSection from './variables_section.vue';
 
 export default {
   components: {

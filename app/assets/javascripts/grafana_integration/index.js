@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from './store';
 import GrafanaIntegration from './components/grafana_integration.vue';
+import store from './store';
 
 export default () => {
   const el = document.querySelector('.js-grafana-integration');

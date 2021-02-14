@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
+import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import NotificationsDropdown from './components/notifications_dropdown.vue';
 

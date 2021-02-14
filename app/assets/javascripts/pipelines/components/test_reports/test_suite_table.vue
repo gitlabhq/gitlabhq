@@ -1,5 +1,4 @@
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex';
 import {
   GlModalDirective,
   GlTooltipDirective,
@@ -9,6 +8,7 @@ import {
   GlButton,
   GlPagination,
 } from '@gitlab/ui';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import { __ } from '~/locale';
 import TestCaseDetails from './test_case_details.vue';
 

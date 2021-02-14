@@ -1,13 +1,13 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlDropdownDivider } from '@gitlab/ui';
-import AdminUserActions from '~/admin/users/components/user_actions.vue';
-import { generateUserPaths } from '~/admin/users/utils';
-import { I18N_USER_ACTIONS } from '~/admin/users/constants';
+import { shallowMount } from '@vue/test-utils';
 import Actions from '~/admin/users/components/actions';
+import AdminUserActions from '~/admin/users/components/user_actions.vue';
+import { I18N_USER_ACTIONS } from '~/admin/users/constants';
+import { generateUserPaths } from '~/admin/users/utils';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
-import { users, paths } from '../mock_data';
 import { CONFIRMATION_ACTIONS, DELETE_ACTIONS, LINK_ACTIONS, LDAP, EDIT } from '../constants';
+import { users, paths } from '../mock_data';
 
 describe('AdminUserActions component', () => {
   let wrapper;

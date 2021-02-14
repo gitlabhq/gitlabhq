@@ -1,5 +1,5 @@
-import { mount, createWrapper } from '@vue/test-utils';
 import { within } from '@testing-library/dom';
+import { mount, createWrapper } from '@vue/test-utils';
 import { useFakeDate } from 'helpers/fake_date';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ExpiresAt from '~/members/components/table/expires_at.vue';

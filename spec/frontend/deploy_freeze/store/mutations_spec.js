@@ -1,6 +1,6 @@
-import state from '~/deploy_freeze/store/state';
-import mutations from '~/deploy_freeze/store/mutations';
 import * as types from '~/deploy_freeze/store/mutation_types';
+import mutations from '~/deploy_freeze/store/mutations';
+import state from '~/deploy_freeze/store/state';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { findTzByName, formatTz, freezePeriodsFixture, timezoneDataFixture } from '../helpers';
 

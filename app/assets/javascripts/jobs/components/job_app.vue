@@ -1,21 +1,21 @@
 <script>
-import { throttle, isEmpty } from 'lodash';
-import { mapGetters, mapState, mapActions } from 'vuex';
 import { GlLoadingIcon, GlIcon, GlSafeHtmlDirective as SafeHtml, GlAlert } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { throttle, isEmpty } from 'lodash';
+import { mapGetters, mapState, mapActions } from 'vuex';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 import { polyfillSticky } from '~/lib/utils/sticky';
-import CiHeader from '~/vue_shared/components/header_ci_component.vue';
 import { sprintf } from '~/locale';
+import CiHeader from '~/vue_shared/components/header_ci_component.vue';
 import delayedJobMixin from '../mixins/delayed_job_mixin';
 import EmptyState from './empty_state.vue';
 import EnvironmentsBlock from './environments_block.vue';
 import ErasedBlock from './erased_block.vue';
 import LogTopBar from './job_log_controllers.vue';
+import Log from './log/log.vue';
+import Sidebar from './sidebar.vue';
 import StuckBlock from './stuck_block.vue';
 import UnmetPrerequisitesBlock from './unmet_prerequisites_block.vue';
-import Sidebar from './sidebar.vue';
-import Log from './log/log.vue';
 
 export default {
   name: 'JobPageApp',

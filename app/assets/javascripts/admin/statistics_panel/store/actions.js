@@ -1,7 +1,7 @@
 import Api from '~/api';
-import { s__ } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { s__ } from '~/locale';
 import * as types from './mutation_types';
 
 export const requestStatistics = ({ commit }) => commit(types.REQUEST_STATISTICS);

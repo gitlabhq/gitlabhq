@@ -5,11 +5,11 @@ import { s__ } from '~/locale';
 import eventHub from '../event_hub';
 import environmentsMixin from '../mixins/environments_mixin';
 import EnvironmentsPaginationApiMixin from '../mixins/environments_pagination_api_mixin';
+import ConfirmRollbackModal from './confirm_rollback_modal.vue';
+import DeleteEnvironmentModal from './delete_environment_modal.vue';
 import emptyState from './empty_state.vue';
 import EnableReviewAppModal from './enable_review_app_modal.vue';
 import StopEnvironmentModal from './stop_environment_modal.vue';
-import DeleteEnvironmentModal from './delete_environment_modal.vue';
-import ConfirmRollbackModal from './confirm_rollback_modal.vue';
 
 export default {
   i18n: {

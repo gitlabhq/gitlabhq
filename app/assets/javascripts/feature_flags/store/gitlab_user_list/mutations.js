@@ -1,5 +1,5 @@
-import statuses from './status';
 import * as types from './mutation_types';
+import statuses from './status';
 
 export default {
   [types.FETCH_USER_LISTS](state) {

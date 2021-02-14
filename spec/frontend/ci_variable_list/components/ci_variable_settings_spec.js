@@ -1,5 +1,5 @@
-import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import CiVariableSettings from '~/ci_variable_list/components/ci_variable_settings.vue';
 import createStore from '~/ci_variable_list/store';
 

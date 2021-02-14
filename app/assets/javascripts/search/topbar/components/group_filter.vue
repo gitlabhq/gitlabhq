@@ -1,6 +1,6 @@
 <script>
-import { mapState, mapActions } from 'vuex';
 import { isEmpty } from 'lodash';
+import { mapState, mapActions } from 'vuex';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { ANY_OPTION, GROUP_DATA, PROJECT_DATA } from '../constants';
 import SearchableDropdown from './searchable_dropdown.vue';

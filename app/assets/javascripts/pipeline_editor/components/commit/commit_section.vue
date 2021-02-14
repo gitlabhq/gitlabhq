@@ -1,10 +1,10 @@
 <script>
 import { mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
+import { COMMIT_FAILURE, COMMIT_SUCCESS } from '../../constants';
 import commitCIFile from '../../graphql/mutations/commit_ci_file.mutation.graphql';
 import getCommitSha from '../../graphql/queries/client/commit_sha.graphql';
 
-import { COMMIT_FAILURE, COMMIT_SUCCESS } from '../../constants';
 import CommitForm from './commit_form.vue';
 
 const MR_SOURCE_BRANCH = 'merge_request[source_branch]';

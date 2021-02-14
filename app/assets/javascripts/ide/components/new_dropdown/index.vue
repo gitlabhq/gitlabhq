@@ -1,10 +1,10 @@
 <script>
-import { mapActions } from 'vuex';
 import { GlIcon } from '@gitlab/ui';
+import { mapActions } from 'vuex';
 import { modalTypes } from '../../constants';
-import upload from './upload.vue';
 import ItemButton from './button.vue';
 import NewModal from './modal.vue';
+import upload from './upload.vue';
 
 export default {
   components: {

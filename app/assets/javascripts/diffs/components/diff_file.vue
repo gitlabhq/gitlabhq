@@ -1,15 +1,13 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
-import { escape } from 'lodash';
 import { GlButton, GlLoadingIcon, GlSafeHtmlDirective as SafeHtml, GlSprintf } from '@gitlab/ui';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { sprintf } from '~/locale';
+import { escape } from 'lodash';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { hasDiff } from '~/helpers/diffs_helper';
 import { diffViewerErrors } from '~/ide/constants';
+import { sprintf } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import notesEventHub from '../../notes/event_hub';
-
-import { collapsedType, isCollapsed, getShortShaFromFile } from '../utils/diff_file';
 
 import {
   DIFF_FILE_AUTOMATIC_COLLAPSE,
@@ -18,8 +16,9 @@ import {
   EVT_PERF_MARK_DIFF_FILES_END,
   EVT_PERF_MARK_FIRST_DIFF_FILE_SHOWN,
 } from '../constants';
-import { DIFF_FILE, GENERIC_ERROR } from '../i18n';
 import eventHub from '../event_hub';
+import { DIFF_FILE, GENERIC_ERROR } from '../i18n';
+import { collapsedType, isCollapsed, getShortShaFromFile } from '../utils/diff_file';
 import DiffContent from './diff_content.vue';
 import DiffFileHeader from './diff_file_header.vue';
 

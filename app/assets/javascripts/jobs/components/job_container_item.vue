@@ -1,8 +1,8 @@
 <script>
 import { GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 import { sprintf } from '~/locale';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
 export default {
   components: {

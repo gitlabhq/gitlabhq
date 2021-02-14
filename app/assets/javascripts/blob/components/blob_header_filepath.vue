@@ -1,7 +1,7 @@
 <script>
-import FileIcon from '~/vue_shared/components/file_icon.vue';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
 
 export default {
   components: {

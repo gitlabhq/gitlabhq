@@ -2,8 +2,8 @@ import Visibility from 'visibilityjs';
 import { deprecatedCreateFlash as Flash } from '../flash';
 import Poll from '../lib/utils/poll';
 import { __ } from '../locale';
-import PipelineStore from './stores/pipeline_store';
 import PipelineService from './services/pipeline_service';
+import PipelineStore from './stores/pipeline_store';
 
 export default class pipelinesMediator {
   constructor(options = {}) {

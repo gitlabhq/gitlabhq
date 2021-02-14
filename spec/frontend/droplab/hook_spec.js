@@ -1,5 +1,5 @@
-import Hook from '~/droplab/hook';
 import DropDown from '~/droplab/drop_down';
+import Hook from '~/droplab/hook';
 
 jest.mock('~/droplab/drop_down', () => jest.fn());
 

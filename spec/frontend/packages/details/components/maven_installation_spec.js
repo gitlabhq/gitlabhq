@@ -1,10 +1,10 @@
-import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { registryUrl as mavenPath } from 'jest/packages/details/mock_data';
 import { mavenPackage as packageEntity } from 'jest/packages/mock_data';
 import MavenInstallation from '~/packages/details/components/maven_installation.vue';
-import CodeInstructions from '~/vue_shared/components/registry/code_instruction.vue';
 import { TrackingActions } from '~/packages/details/constants';
+import CodeInstructions from '~/vue_shared/components/registry/code_instruction.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

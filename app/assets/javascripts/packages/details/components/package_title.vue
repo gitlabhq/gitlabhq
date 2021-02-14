@@ -1,13 +1,13 @@
 <script>
 /* eslint-disable vue/v-slot-style */
-import { mapState, mapGetters } from 'vuex';
 import { GlIcon, GlSprintf, GlTooltipDirective, GlBadge } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { mapState, mapGetters } from 'vuex';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
-import TitleArea from '~/vue_shared/components/registry/title_area.vue';
-import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import { __ } from '~/locale';
+import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
+import TitleArea from '~/vue_shared/components/registry/title_area.vue';
+import timeagoMixin from '~/vue_shared/mixins/timeago';
 import PackageTags from '../../shared/components/package_tags.vue';
 
 export default {

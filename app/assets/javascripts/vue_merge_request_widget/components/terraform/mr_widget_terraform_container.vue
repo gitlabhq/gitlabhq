@@ -1,8 +1,8 @@
 <script>
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading, GlSprintf } from '@gitlab/ui';
-import { n__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import Poll from '~/lib/utils/poll';
+import { n__ } from '~/locale';
 import MrWidgetExpanableSection from '../mr_widget_expandable_section.vue';
 import TerraformPlan from './terraform_plan.vue';
 

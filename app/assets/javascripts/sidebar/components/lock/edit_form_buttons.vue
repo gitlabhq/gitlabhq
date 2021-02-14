@@ -1,6 +1,6 @@
 <script>
-import $ from 'jquery';
 import { GlButton } from '@gitlab/ui';
+import $ from 'jquery';
 import { mapActions } from 'vuex';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import { __, sprintf } from '../../../locale';

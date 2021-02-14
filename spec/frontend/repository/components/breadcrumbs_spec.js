@@ -1,5 +1,5 @@
-import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import { GlDropdown } from '@gitlab/ui';
+import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import Breadcrumbs from '~/repository/components/breadcrumbs.vue';
 
 let vm;

@@ -1,5 +1,4 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import {
   GlAlert,
   GlButton,
@@ -7,6 +6,7 @@ import {
   GlLoadingIcon,
   GlModalDirective as GlModal,
 } from '@gitlab/ui';
+import { mapActions, mapState } from 'vuex';
 import { s__, __ } from '~/locale';
 import { states, ADD_USER_MODAL_ID } from '../constants/show';
 import AddUserModal from './add_user_modal.vue';

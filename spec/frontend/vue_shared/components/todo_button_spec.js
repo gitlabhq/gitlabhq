@@ -1,5 +1,5 @@
-import { shallowMount, mount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount, mount } from '@vue/test-utils';
 import TodoButton from '~/vue_shared/components/todo_button.vue';
 
 describe('Todo Button', () => {

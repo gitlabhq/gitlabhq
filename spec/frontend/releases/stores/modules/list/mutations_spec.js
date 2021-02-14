@@ -1,8 +1,8 @@
 import { getJSONFixture } from 'helpers/fixtures';
-import createState from '~/releases/stores/modules/list/state';
-import mutations from '~/releases/stores/modules/list/mutations';
-import * as types from '~/releases/stores/modules/list/mutation_types';
 import { parseIntPagination, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import * as types from '~/releases/stores/modules/list/mutation_types';
+import mutations from '~/releases/stores/modules/list/mutations';
+import createState from '~/releases/stores/modules/list/state';
 import { convertAllReleasesGraphQLResponse } from '~/releases/util';
 import { pageInfoHeadersWithoutPagination } from '../../../mock_data';
 

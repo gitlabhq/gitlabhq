@@ -1,9 +1,9 @@
-import Vuex from 'vuex';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlSprintf } from '@gitlab/ui';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import projectEmptyState from '~/registry/explorer/components/list_page/project_empty_state.vue';
-import { GlEmptyState } from '../../stubs';
 import { dockerCommands } from '../../mock_data';
+import { GlEmptyState } from '../../stubs';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

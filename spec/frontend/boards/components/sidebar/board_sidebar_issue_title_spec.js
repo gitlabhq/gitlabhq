@@ -1,9 +1,9 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlAlert, GlFormInput, GlForm } from '@gitlab/ui';
-import BoardSidebarIssueTitle from '~/boards/components/sidebar/board_sidebar_issue_title.vue';
+import { shallowMount } from '@vue/test-utils';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
-import createFlash from '~/flash';
+import BoardSidebarIssueTitle from '~/boards/components/sidebar/board_sidebar_issue_title.vue';
 import { createStore } from '~/boards/stores';
+import createFlash from '~/flash';
 
 const TEST_TITLE = 'New issue title';
 const TEST_ISSUE_A = {

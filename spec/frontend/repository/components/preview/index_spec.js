@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 import Preview from '~/repository/components/preview/index.vue';
 

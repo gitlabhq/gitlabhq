@@ -1,5 +1,5 @@
-import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { s__ } from '~/locale';
 
 import {
   REPORT_TYPE_SAST,

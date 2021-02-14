@@ -1,7 +1,7 @@
 import sidebarDetailsQuery from 'ee_else_ce/sidebar/queries/sidebarDetails.query.graphql';
-import axios from '~/lib/utils/axios_utils';
-import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
+import createGqClient, { fetchPolicies } from '~/lib/graphql';
+import axios from '~/lib/utils/axios_utils';
 import reviewerRereviewMutation from '../queries/reviewer_rereview.mutation.graphql';
 
 export const gqClient = createGqClient(

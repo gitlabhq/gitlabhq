@@ -1,5 +1,5 @@
-import Tracking from '~/tracking';
 import Api from '~/api';
+import Tracking from '~/tracking';
 
 // Snowplow tracking constants
 const DESIGN_TRACKING_CONTEXT_SCHEMAS = {

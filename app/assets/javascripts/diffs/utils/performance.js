@@ -9,7 +9,6 @@ import {
   MR_DIFFS_MEASURE_DIFF_FILES_DONE,
 } from '../../performance/constants';
 
-import eventHub from '../event_hub';
 import {
   EVT_PERF_MARK_FILE_TREE_START,
   EVT_PERF_MARK_FILE_TREE_END,
@@ -17,6 +16,7 @@ import {
   EVT_PERF_MARK_FIRST_DIFF_FILE_SHOWN,
   EVT_PERF_MARK_DIFF_FILES_END,
 } from '../constants';
+import eventHub from '../event_hub';
 
 function treeStart() {
   performanceMarkAndMeasure({

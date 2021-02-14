@@ -1,9 +1,9 @@
-import { extractSecurityReportArtifacts } from '~/vue_shared/security_reports/utils';
 import {
   REPORT_TYPE_SAST,
   REPORT_TYPE_SECRET_DETECTION,
   REPORT_FILE_TYPES,
 } from '~/vue_shared/security_reports/constants';
+import { extractSecurityReportArtifacts } from '~/vue_shared/security_reports/utils';
 import {
   securityReportDownloadPathsQueryResponse,
   sastArtifacts,

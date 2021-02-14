@@ -1,5 +1,5 @@
-import pollUntilComplete from '~/lib/utils/poll_until_complete';
 import axios from '~/lib/utils/axios_utils';
+import pollUntilComplete from '~/lib/utils/poll_until_complete';
 import { __, n__, sprintf } from '~/locale';
 import { CRITICAL, HIGH } from '~/vulnerabilities/constants';
 import {

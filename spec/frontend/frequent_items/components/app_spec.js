@@ -1,15 +1,15 @@
 import MockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
-import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
-import { useLocalStorageSpy } from 'helpers/local_storage_helper';
-import waitForPromises from 'helpers/wait_for_promises';
 import { useRealDate } from 'helpers/fake_date';
-import axios from '~/lib/utils/axios_utils';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import appComponent from '~/frequent_items/components/app.vue';
-import eventHub from '~/frequent_items/event_hub';
 import { FREQUENT_ITEMS, HOUR_IN_MS } from '~/frequent_items/constants';
-import { getTopFrequentItems } from '~/frequent_items/utils';
+import eventHub from '~/frequent_items/event_hub';
 import { createStore } from '~/frequent_items/store';
+import { getTopFrequentItems } from '~/frequent_items/utils';
+import axios from '~/lib/utils/axios_utils';
 import { currentSession, mockFrequentProjects, mockSearchedProjects } from '../mock_data';
 
 useLocalStorageSpy();

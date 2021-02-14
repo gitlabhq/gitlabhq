@@ -1,5 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { getByRole } from '@testing-library/dom';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import { createStore } from '~/batch_comments/stores';
 import NoteableNote from '~/notes/components/noteable_note.vue';

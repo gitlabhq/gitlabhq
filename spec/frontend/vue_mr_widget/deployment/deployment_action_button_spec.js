@@ -1,12 +1,12 @@
-import { mount } from '@vue/test-utils';
 import { GlIcon, GlLoadingIcon, GlButton } from '@gitlab/ui';
-import DeploymentActionButton from '~/vue_merge_request_widget/components/deployment/deployment_action_button.vue';
+import { mount } from '@vue/test-utils';
 import {
   CREATED,
   RUNNING,
   DEPLOYING,
   REDEPLOYING,
 } from '~/vue_merge_request_widget/components/deployment/constants';
+import DeploymentActionButton from '~/vue_merge_request_widget/components/deployment/deployment_action_button.vue';
 import { actionButtonMocks } from './deployment_mock_data';
 
 const baseProps = {

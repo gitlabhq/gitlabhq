@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from './store';
 import MetricsSettingsForm from './components/metrics_settings.vue';
+import store from './store';
 
 export default () => {
   const el = document.querySelector('.js-operation-settings');

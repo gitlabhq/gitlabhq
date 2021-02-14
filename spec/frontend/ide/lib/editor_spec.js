@@ -4,10 +4,10 @@ import {
   Range,
   Selection,
 } from 'monaco-editor';
-import Editor from '~/ide/lib/editor';
-import { createStore } from '~/ide/stores';
-import { defaultEditorOptions } from '~/ide/lib/editor_options';
 import { EDITOR_TYPE_DIFF } from '~/editor/constants';
+import Editor from '~/ide/lib/editor';
+import { defaultEditorOptions } from '~/ide/lib/editor_options';
+import { createStore } from '~/ide/stores';
 import { file } from '../helpers';
 
 describe('Multi-file editor library', () => {

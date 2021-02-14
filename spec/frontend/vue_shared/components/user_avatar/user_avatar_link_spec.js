@@ -1,10 +1,10 @@
-import { each } from 'lodash';
-import { shallowMount } from '@vue/test-utils';
 import { GlLink } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import { each } from 'lodash';
 import { trimText } from 'helpers/text_helper';
 import { TEST_HOST } from 'spec/test_constants';
-import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 
 describe('User Avatar Link Component', () => {
   let wrapper;

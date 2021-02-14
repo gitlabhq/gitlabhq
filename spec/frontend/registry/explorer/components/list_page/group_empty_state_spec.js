@@ -1,6 +1,6 @@
-import Vuex from 'vuex';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlSprintf } from '@gitlab/ui';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import groupEmptyState from '~/registry/explorer/components/list_page/group_empty_state.vue';
 import { GlEmptyState } from '../../stubs';
 

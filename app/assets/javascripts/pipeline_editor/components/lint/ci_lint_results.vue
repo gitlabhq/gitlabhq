@@ -1,9 +1,9 @@
 <script>
 import { GlAlert, GlLink, GlSprintf, GlTable } from '@gitlab/ui';
 import { __ } from '~/locale';
-import CiLintWarnings from './ci_lint_warnings.vue';
-import CiLintResultsValue from './ci_lint_results_value.vue';
 import CiLintResultsParam from './ci_lint_results_param.vue';
+import CiLintResultsValue from './ci_lint_results_value.vue';
+import CiLintWarnings from './ci_lint_warnings.vue';
 
 const thBorderColor = 'gl-border-gray-100!';
 

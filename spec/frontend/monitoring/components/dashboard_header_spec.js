@@ -1,20 +1,20 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlDropdownItem, GlSearchBoxByType, GlLoadingIcon, GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import { redirectTo } from '~/lib/utils/url_utility';
+import ActionsMenu from '~/monitoring/components/dashboard_actions_menu.vue';
+import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
+import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
+import RefreshButton from '~/monitoring/components/refresh_button.vue';
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
-import RefreshButton from '~/monitoring/components/refresh_button.vue';
-import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
-import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
-import ActionsMenu from '~/monitoring/components/dashboard_actions_menu.vue';
-import { redirectTo } from '~/lib/utils/url_utility';
-import { setupAllDashboards, setupStoreWithDashboard, setupStoreWithData } from '../store_utils';
 import {
   environmentData,
   dashboardGitResponse,
   selfMonitoringDashboardGitResponse,
   dashboardHeaderProps,
 } from '../mock_data';
+import { setupAllDashboards, setupStoreWithDashboard, setupStoreWithData } from '../store_utils';
 
 const mockProjectPath = 'https://path/to/project';
 

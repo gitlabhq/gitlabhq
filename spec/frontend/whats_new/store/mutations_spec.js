@@ -1,6 +1,6 @@
+import * as types from '~/whats_new/store/mutation_types';
 import mutations from '~/whats_new/store/mutations';
 import createState from '~/whats_new/store/state';
-import * as types from '~/whats_new/store/mutation_types';
 
 describe('whats new mutations', () => {
   let state;

@@ -1,7 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
-import axios from '~/lib/utils/axios_utils';
 import {
   setBaseConfig,
   setTabIndex,
@@ -16,6 +15,7 @@ import {
   resetModalState,
 } from '~/add_context_commits_modal/store/actions';
 import * as types from '~/add_context_commits_modal/store/mutation_types';
+import axios from '~/lib/utils/axios_utils';
 
 describe('AddContextCommitsModalStoreActions', () => {
   const contextCommitEndpoint =

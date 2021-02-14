@@ -1,6 +1,6 @@
+import { GlBanner } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Cookies from 'js-cookie';
-import { GlBanner } from '@gitlab/ui';
 import SurveyBanner from '~/serverless/survey_banner.vue';
 
 describe('Knative survey banner', () => {

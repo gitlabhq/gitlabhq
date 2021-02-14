@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton, GlAlert } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 
 import SubmitChangesError from '~/static_site_editor/components/submit_changes_error.vue';
 

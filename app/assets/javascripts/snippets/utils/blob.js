@@ -1,6 +1,6 @@
 import { uniqueId } from 'lodash';
-import { performanceMarkAndMeasure } from '~/performance/utils';
 import { SNIPPET_MARK_BLOBS_CONTENT, SNIPPET_MEASURE_BLOBS_CONTENT } from '~/performance/constants';
+import { performanceMarkAndMeasure } from '~/performance/utils';
 import {
   SNIPPET_BLOB_ACTION_CREATE,
   SNIPPET_BLOB_ACTION_UPDATE,

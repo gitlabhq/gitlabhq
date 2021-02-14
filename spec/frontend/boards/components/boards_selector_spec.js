@@ -1,10 +1,10 @@
-import { nextTick } from 'vue';
-import { mount } from '@vue/test-utils';
 import { GlDropdown, GlLoadingIcon, GlDropdownSectionHeader } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { TEST_HOST } from 'spec/test_constants';
-import axios from '~/lib/utils/axios_utils';
 import BoardsSelector from '~/boards/components/boards_selector.vue';
+import axios from '~/lib/utils/axios_utils';
 
 const throttleDuration = 1;
 

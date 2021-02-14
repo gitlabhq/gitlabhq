@@ -1,12 +1,12 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import Api from '~/api';
-import axios from '~/lib/utils/axios_utils';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
-import getInitialState from '~/ci_variable_list/store/state';
 import * as actions from '~/ci_variable_list/store/actions';
 import * as types from '~/ci_variable_list/store/mutation_types';
+import getInitialState from '~/ci_variable_list/store/state';
 import { prepareDataForDisplay, prepareEnvironments } from '~/ci_variable_list/store/utils';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import mockData from '../services/mock_data';
 
 jest.mock('~/api.js');

@@ -1,8 +1,8 @@
 <script>
-import { uniqBy } from 'lodash';
 import { GlButton, GlIcon } from '@gitlab/ui';
-import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import { uniqBy } from 'lodash';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 
 export default {
   components: {

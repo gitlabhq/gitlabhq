@@ -1,9 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
-import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
-import AlertMetrics from '~/vue_shared/alert_details/components/alert_metrics.vue';
 import MetricEmbed from '~/monitoring/components/embeds/metric_embed.vue';
+import AlertMetrics from '~/vue_shared/alert_details/components/alert_metrics.vue';
 
 jest.mock('~/monitoring/stores', () => ({
   monitoringDashboard: {},

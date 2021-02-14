@@ -1,6 +1,6 @@
-import state from '~/ide/stores/modules/branches/state';
-import mutations from '~/ide/stores/modules/branches/mutations';
 import * as types from '~/ide/stores/modules/branches/mutation_types';
+import mutations from '~/ide/stores/modules/branches/mutations';
+import state from '~/ide/stores/modules/branches/state';
 import { branches } from '../../../mock_data';
 
 describe('IDE branches mutations', () => {

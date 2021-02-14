@@ -1,21 +1,21 @@
 /* global List */
 /* global ListLabel */
 
-import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 
 import MockAdapter from 'axios-mock-adapter';
+import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
-import axios from '~/lib/utils/axios_utils';
 
 import '~/boards/models/label';
 import '~/boards/models/assignee';
 import '~/boards/models/list';
-import boardsVuexStore from '~/boards/stores';
-import boardsStore from '~/boards/stores/boards_store';
 import BoardCardLayout from '~/boards/components/board_card_layout_deprecated.vue';
 import issueCardInner from '~/boards/components/issue_card_inner.vue';
 import { ISSUABLE } from '~/boards/constants';
+import boardsVuexStore from '~/boards/stores';
+import boardsStore from '~/boards/stores/boards_store';
+import axios from '~/lib/utils/axios_utils';
 import { listObj, boardsMockInterceptor, setMockEndpoints } from '../mock_data';
 
 describe('Board card layout', () => {

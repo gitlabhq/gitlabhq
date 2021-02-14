@@ -1,14 +1,14 @@
 import $ from 'jquery';
 import '~/lib/utils/jquery_at_who';
 import { escape, template } from 'lodash';
-import { s__ } from '~/locale';
-import SidebarMediator from '~/sidebar/sidebar_mediator';
-import { isUserBusy } from '~/set_status_modal/utils';
-import axios from '~/lib/utils/axios_utils';
 import * as Emoji from '~/emoji';
-import glRegexp from './lib/utils/regexp';
+import axios from '~/lib/utils/axios_utils';
+import { s__ } from '~/locale';
+import { isUserBusy } from '~/set_status_modal/utils';
+import SidebarMediator from '~/sidebar/sidebar_mediator';
 import AjaxCache from './lib/utils/ajax_cache';
 import { spriteIcon } from './lib/utils/common_utils';
+import glRegexp from './lib/utils/regexp';
 
 function sanitize(str) {
   return str.replace(/<(?:.|\n)*?>/gm, '');

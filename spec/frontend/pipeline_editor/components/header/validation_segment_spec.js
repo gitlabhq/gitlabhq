@@ -1,6 +1,6 @@
-import { escape } from 'lodash';
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import { escape } from 'lodash';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { sprintf } from '~/locale';
 import ValidationSegment, {

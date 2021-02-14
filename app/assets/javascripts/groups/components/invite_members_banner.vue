@@ -1,7 +1,7 @@
 <script>
 import { GlBanner } from '@gitlab/ui';
-import { s__ } from '~/locale';
 import { parseBoolean, setCookie, getCookie } from '~/lib/utils/common_utils';
+import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 
 const trackingMixin = Tracking.mixin();

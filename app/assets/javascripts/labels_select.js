@@ -4,15 +4,15 @@
 
 import $ from 'jquery';
 import { difference, isEqual, escape, sortBy, template, union } from 'lodash';
-import { isScopedLabel } from '~/lib/utils/common_utils';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
-import { sprintf, __ } from './locale';
-import axios from './lib/utils/axios_utils';
-import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
+import { isScopedLabel } from '~/lib/utils/common_utils';
+import boardsStore from './boards/stores/boards_store';
+import ModalStore from './boards/stores/modal_store';
 import CreateLabelDropdown from './create_label';
 import { deprecatedCreateFlash as flash } from './flash';
-import ModalStore from './boards/stores/modal_store';
-import boardsStore from './boards/stores/boards_store';
+import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
+import axios from './lib/utils/axios_utils';
+import { sprintf, __ } from './locale';
 
 export default class LabelsSelect {
   constructor(els, options = {}) {

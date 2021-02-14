@@ -1,6 +1,6 @@
-import state from '~/contributors/stores/state';
-import mutations from '~/contributors/stores/mutations';
 import * as types from '~/contributors/stores/mutation_types';
+import mutations from '~/contributors/stores/mutations';
+import state from '~/contributors/stores/state';
 
 describe('Contributors mutations', () => {
   let stateCopy;

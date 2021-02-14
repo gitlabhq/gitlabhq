@@ -1,5 +1,5 @@
-import mutations from '~/reports/codequality_report/store/mutations';
 import createStore from '~/reports/codequality_report/store';
+import mutations from '~/reports/codequality_report/store/mutations';
 
 describe('Codequality Reports mutations', () => {
   let localState;

@@ -11,13 +11,13 @@ import {
   GlButton,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import CanCreatePersonalSnippet from 'shared_queries/snippet/user_permissions.query.graphql';
 import CanCreateProjectSnippet from 'shared_queries/snippet/project_permissions.query.graphql';
+import CanCreatePersonalSnippet from 'shared_queries/snippet/user_permissions.query.graphql';
+import { fetchPolicies } from '~/lib/graphql';
+import { joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
-import { joinPaths } from '~/lib/utils/url_utility';
-import { fetchPolicies } from '~/lib/graphql';
 import DeleteSnippetMutation from '../mutations/deleteSnippet.mutation.graphql';
 
 export default {

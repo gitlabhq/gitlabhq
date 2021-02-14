@@ -1,6 +1,5 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { escapeRegExp } from 'lodash';
 import {
   GlBadge,
   GlLink,
@@ -9,9 +8,10 @@ import {
   GlLoadingIcon,
   GlIcon,
 } from '@gitlab/ui';
+import { escapeRegExp } from 'lodash';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
-import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
+import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import getRefMixin from '../../mixins/get_ref';
 import commitQuery from '../../queries/commit.query.graphql';
 

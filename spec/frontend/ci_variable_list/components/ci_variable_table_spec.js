@@ -1,6 +1,6 @@
-import Vuex from 'vuex';
-import { createLocalVue, mount } from '@vue/test-utils';
 import { GlTable } from '@gitlab/ui';
+import { createLocalVue, mount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import CiVariableTable from '~/ci_variable_list/components/ci_variable_table.vue';
 import createStore from '~/ci_variable_list/store';
 import mockData from '../services/mock_data';

@@ -1,9 +1,9 @@
 /* eslint-disable no-underscore-dangle, class-methods-use-this */
 import { escape, find, countBy } from 'lodash';
-import axios from '~/lib/utils/axios_utils';
-import createFlash from '~/flash';
-import { n__, s__, __, sprintf } from '~/locale';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import createFlash from '~/flash';
+import axios from '~/lib/utils/axios_utils';
+import { n__, s__, __, sprintf } from '~/locale';
 import { LEVEL_TYPES, LEVEL_ID_PROP, ACCESS_LEVELS, ACCESS_LEVEL_NONE } from './constants';
 
 export default class AccessDropdown {

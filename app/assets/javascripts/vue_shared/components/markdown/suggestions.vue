@@ -1,8 +1,8 @@
 <script>
-import Vue from 'vue';
 import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
-import { __ } from '~/locale';
+import Vue from 'vue';
 import { deprecatedCreateFlash as Flash } from '~/flash';
+import { __ } from '~/locale';
 import SuggestionDiff from './suggestion_diff.vue';
 
 export default {

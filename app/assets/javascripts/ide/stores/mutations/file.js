@@ -1,7 +1,7 @@
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { diffModes } from '../../constants';
 import * as types from '../mutation_types';
 import { sortTree } from '../utils';
-import { diffModes } from '../../constants';
 
 export default {
   [types.SET_FILE_ACTIVE](state, { path, active }) {

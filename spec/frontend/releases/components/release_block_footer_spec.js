@@ -1,10 +1,10 @@
-import { mount } from '@vue/test-utils';
 import { GlLink, GlIcon } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
-import { trimText } from 'helpers/text_helper';
 import { getJSONFixture } from 'helpers/fixtures';
-import ReleaseBlockFooter from '~/releases/components/release_block_footer.vue';
+import { trimText } from 'helpers/text_helper';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import ReleaseBlockFooter from '~/releases/components/release_block_footer.vue';
 
 const originalRelease = getJSONFixture('api/releases/release.json');
 

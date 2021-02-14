@@ -1,7 +1,7 @@
 <script>
+import { GlSearchBoxByType } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { mapActions, mapState } from 'vuex';
-import { GlSearchBoxByType } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import frequentItemsMixin from './frequent_items_mixin';
 

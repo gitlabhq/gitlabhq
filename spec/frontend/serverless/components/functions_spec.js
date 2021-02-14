@@ -1,13 +1,13 @@
-import Vuex from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
-import AxiosMockAdapter from 'axios-mock-adapter';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import AxiosMockAdapter from 'axios-mock-adapter';
+import Vuex from 'vuex';
 import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
-import functionsComponent from '~/serverless/components/functions.vue';
-import { createStore } from '~/serverless/store';
 import EmptyState from '~/serverless/components/empty_state.vue';
 import EnvironmentRow from '~/serverless/components/environment_row.vue';
+import functionsComponent from '~/serverless/components/functions.vue';
+import { createStore } from '~/serverless/store';
 import { mockServerlessFunctions } from '../mock_data';
 
 describe('functionsComponent', () => {

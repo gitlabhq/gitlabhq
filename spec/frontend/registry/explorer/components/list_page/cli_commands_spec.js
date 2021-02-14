@@ -1,9 +1,7 @@
-import Vuex from 'vuex';
-import { mount, createLocalVue } from '@vue/test-utils';
 import { GlDropdown } from '@gitlab/ui';
-import Tracking from '~/tracking';
+import { mount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import QuickstartDropdown from '~/registry/explorer/components/list_page/cli_commands.vue';
-import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 import {
   QUICK_START,
   LOGIN_COMMAND_LABEL,
@@ -13,6 +11,8 @@ import {
   PUSH_COMMAND_LABEL,
   COPY_PUSH_TITLE,
 } from '~/registry/explorer/constants';
+import Tracking from '~/tracking';
+import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 
 import { dockerCommands } from '../../mock_data';
 

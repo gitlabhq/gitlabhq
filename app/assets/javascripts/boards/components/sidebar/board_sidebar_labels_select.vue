@@ -1,12 +1,12 @@
 <script>
-import { mapGetters, mapActions } from 'vuex';
 import { GlLabel } from '@gitlab/ui';
-import LabelsSelect from '~/vue_shared/components/sidebar/labels_select_vue/labels_select_root.vue';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { mapGetters, mapActions } from 'vuex';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
-import { isScopedLabel } from '~/lib/utils/common_utils';
 import createFlash from '~/flash';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { isScopedLabel } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
+import LabelsSelect from '~/vue_shared/components/sidebar/labels_select_vue/labels_select_root.vue';
 
 export default {
   components: {

@@ -1,10 +1,10 @@
 import MockAdapter from 'axios-mock-adapter';
-import testAction from 'helpers/vuex_action_helper';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import testAction from 'helpers/vuex_action_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import axios from '~/lib/utils/axios_utils';
 import actions from '~/whats_new/store/actions';
 import * as types from '~/whats_new/store/mutation_types';
-import axios from '~/lib/utils/axios_utils';
 
 describe('whats new actions', () => {
   describe('openDrawer', () => {

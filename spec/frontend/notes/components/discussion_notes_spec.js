@@ -1,13 +1,13 @@
-import { shallowMount } from '@vue/test-utils';
 import { getByRole } from '@testing-library/dom';
+import { shallowMount } from '@vue/test-utils';
 import '~/behaviors/markdown/render_gfm';
-import { SYSTEM_NOTE } from '~/notes/constants';
 import DiscussionNotes from '~/notes/components/discussion_notes.vue';
 import NoteableNote from '~/notes/components/noteable_note.vue';
+import { SYSTEM_NOTE } from '~/notes/constants';
+import createStore from '~/notes/stores';
 import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
 import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
-import createStore from '~/notes/stores';
 import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 
 const LINE_RANGE = {};

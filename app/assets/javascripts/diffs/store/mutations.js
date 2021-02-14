@@ -5,6 +5,7 @@ import {
   DIFF_FILE_AUTOMATIC_COLLAPSE,
   INLINE_DIFF_LINES_KEY,
 } from '../constants';
+import * as types from './mutation_types';
 import {
   findDiffFile,
   addLineReferences,
@@ -14,7 +15,6 @@ import {
   isDiscussionApplicableToLine,
   updateLineInFile,
 } from './utils';
-import * as types from './mutation_types';
 
 function updateDiffFilesInState(state, files) {
   return Object.assign(state, { diffFiles: files });

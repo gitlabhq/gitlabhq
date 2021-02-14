@@ -1,7 +1,7 @@
 /* global Mousetrap */
 import 'mousetrap';
-import Vue from 'vue';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
 import DiscussionNavigator from '~/notes/components/discussion_navigator.vue';
 import eventHub from '~/notes/event_hub';
 

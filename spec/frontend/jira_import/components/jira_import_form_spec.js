@@ -11,11 +11,11 @@ import {
 import { getByRole } from '@testing-library/dom';
 import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
 import JiraImportForm from '~/jira_import/components/jira_import_form.vue';
 import getJiraUserMappingMutation from '~/jira_import/queries/get_jira_user_mapping.mutation.graphql';
 import initiateJiraImportMutation from '~/jira_import/queries/initiate_jira_import.mutation.graphql';
 import searchProjectMembersQuery from '~/jira_import/queries/search_project_members.query.graphql';
+import axios from '~/lib/utils/axios_utils';
 import {
   imports,
   issuesPath,

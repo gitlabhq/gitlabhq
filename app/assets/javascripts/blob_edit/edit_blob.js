@@ -1,9 +1,9 @@
 import $ from 'jquery';
-import axios from '~/lib/utils/axios_utils';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
-import { addEditorMarkdownListeners } from '~/lib/utils/text_markdown';
 import EditorLite from '~/editor/editor_lite';
 import { FileTemplateExtension } from '~/editor/extensions/editor_file_template_ext';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
+import { addEditorMarkdownListeners } from '~/lib/utils/text_markdown';
 import { insertFinalNewline } from '~/lib/utils/text_utility';
 import TemplateSelectorMediator from '../blob/file_template_mediator';
 import { BLOB_EDITOR_ERROR, BLOB_PREVIEW_ERROR } from './constants';

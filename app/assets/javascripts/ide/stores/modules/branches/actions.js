@@ -1,5 +1,5 @@
-import { __ } from '~/locale';
 import Api from '~/api';
+import { __ } from '~/locale';
 import * as types from './mutation_types';
 
 export const requestBranches = ({ commit }) => commit(types.REQUEST_BRANCHES);

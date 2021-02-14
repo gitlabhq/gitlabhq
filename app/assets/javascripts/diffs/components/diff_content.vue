@@ -1,25 +1,25 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
-import draftCommentsMixin from '~/diffs/mixins/draft_comments';
-import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
-import NotDiffableViewer from '~/vue_shared/components/diff_viewer/viewers/not_diffable.vue';
-import NoPreviewViewer from '~/vue_shared/components/diff_viewer/viewers/no_preview.vue';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import DiffFileDrafts from '~/batch_comments/components/diff_file_drafts.vue';
+import draftCommentsMixin from '~/diffs/mixins/draft_comments';
 import { diffViewerModes } from '~/ide/constants';
-import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
+import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
+import NoPreviewViewer from '~/vue_shared/components/diff_viewer/viewers/no_preview.vue';
+import NotDiffableViewer from '~/vue_shared/components/diff_viewer/viewers/not_diffable.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import NoteForm from '../../notes/components/note_form.vue';
 import eventHub from '../../notes/event_hub';
+import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import { IMAGE_DIFF_POSITION_TYPE } from '../constants';
 import { getDiffMode } from '../store/utils';
-import InlineDiffView from './inline_diff_view.vue';
-import ParallelDiffView from './parallel_diff_view.vue';
-import DiffView from './diff_view.vue';
-import ImageDiffOverlay from './image_diff_overlay.vue';
 import DiffDiscussions from './diff_discussions.vue';
 import { mapInline, mapParallel } from './diff_row_utils';
+import DiffView from './diff_view.vue';
+import ImageDiffOverlay from './image_diff_overlay.vue';
+import InlineDiffView from './inline_diff_view.vue';
+import ParallelDiffView from './parallel_diff_view.vue';
 
 export default {
   components: {

@@ -1,9 +1,9 @@
+import * as urlUtils from '~/lib/utils/url_utility';
 import {
   parseTemplatingVariables,
   mergeURLVariables,
   optionsFromSeriesData,
 } from '~/monitoring/stores/variable_mapping';
-import * as urlUtils from '~/lib/utils/url_utility';
 import {
   templatingVariablesExamples,
   storeTextVariables,

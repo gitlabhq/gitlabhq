@@ -12,8 +12,12 @@ import './behaviors';
 import applyGitLabUIConfig from '@gitlab/ui/dist/config';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { initRails } from '~/lib/utils/rails_ujs';
-import * as tooltips from '~/tooltips';
 import * as popovers from '~/popovers';
+import * as tooltips from '~/tooltips';
+import initAlertHandler from './alert_handler';
+import { deprecatedCreateFlash as Flash, removeFlashClickListener } from './flash';
+import initTodoToggle from './header';
+import initLayoutNav from './layout_nav';
 import {
   handleLocationHash,
   addSelectOnFocusBehaviour,
@@ -23,22 +27,18 @@ import { localTimeAgo } from './lib/utils/datetime_utility';
 import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 
 // everything else
-import { deprecatedCreateFlash as Flash, removeFlashClickListener } from './flash';
-import initTodoToggle from './header';
-import initLayoutNav from './layout_nav';
-import initAlertHandler from './alert_handler';
 import './feature_highlight/feature_highlight_options';
 import LazyLoader from './lazy_loader';
+import { __ } from './locale';
 import initLogoAnimation from './logo';
 import initFrequentItemDropdowns from './frequent_items';
 import initBreadcrumbs from './breadcrumb';
+import initPersistentUserCallouts from './persistent_user_callouts';
+import { initUserTracking, initDefaultTrackers } from './tracking';
 import initUsagePingConsent from './usage_ping_consent';
 import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
-import initPersistentUserCallouts from './persistent_user_callouts';
-import { initUserTracking, initDefaultTrackers } from './tracking';
-import { __ } from './locale';
 
 import 'ee_else_ce/main_ee';
 

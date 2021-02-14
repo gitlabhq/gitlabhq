@@ -1,22 +1,22 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
-import { isEmpty } from 'lodash';
 import { GlTooltipDirective, GlIcon, GlLink } from '@gitlab/ui';
-import { __, s__, sprintf } from '~/locale';
+import { isEmpty } from 'lodash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
-import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import { __, s__, sprintf } from '~/locale';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import CommitComponent from '~/vue_shared/components/commit.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import timeagoMixin from '~/vue_shared/mixins/timeago';
 import eventHub from '../event_hub';
 import ActionsComponent from './environment_actions.vue';
+import DeleteComponent from './environment_delete.vue';
 import ExternalUrlComponent from './environment_external_url.vue';
 import MonitoringButtonComponent from './environment_monitoring.vue';
 import PinComponent from './environment_pin.vue';
-import DeleteComponent from './environment_delete.vue';
-import StopComponent from './environment_stop.vue';
 import RollbackComponent from './environment_rollback.vue';
+import StopComponent from './environment_stop.vue';
 import TerminalButtonComponent from './environment_terminal_button.vue';
 
 /**

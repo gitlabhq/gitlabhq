@@ -1,5 +1,5 @@
-import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import { GlBadge, GlLink, GlIcon } from '@gitlab/ui';
+import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import TableRow from '~/repository/components/table/row.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { FILE_SYMLINK_MODE } from '~/vue_shared/constants';

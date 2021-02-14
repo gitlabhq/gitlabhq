@@ -3,8 +3,8 @@
 import { GlPopover, GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import CiIcon from '../../vue_shared/components/ci_icon.vue';
 import timeagoMixin from '../../vue_shared/mixins/timeago';
-import query from '../queries/merge_request.query.graphql';
 import { mrStates, humanMRStates } from '../constants';
+import query from '../queries/merge_request.query.graphql';
 
 export default {
   // name: 'MRPopover' is a false positive: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25

@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
-import { createMockDirective } from 'helpers/vue_mock_directive';
 import { stubTransition } from 'helpers/stub_transition';
+import { createMockDirective } from 'helpers/vue_mock_directive';
 import TimeTracker from '~/sidebar/components/time_tracking/time_tracker.vue';
 
 describe('Issuable Time Tracker', () => {

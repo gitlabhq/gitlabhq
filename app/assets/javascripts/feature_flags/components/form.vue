@@ -1,6 +1,4 @@
 <script>
-import Vue from 'vue';
-import { memoize, isString, cloneDeep, isNumber, uniqueId } from 'lodash';
 import {
   GlButton,
   GlBadge,
@@ -12,8 +10,10 @@ import {
   GlIcon,
   GlToggle,
 } from '@gitlab/ui';
-import RelatedIssuesRoot from '~/related_issues/components/related_issues_root.vue';
+import { memoize, isString, cloneDeep, isNumber, uniqueId } from 'lodash';
+import Vue from 'vue';
 import { s__ } from '~/locale';
+import RelatedIssuesRoot from '~/related_issues/components/related_issues_root.vue';
 import featureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   ROLLOUT_STRATEGY_ALL_USERS,

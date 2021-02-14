@@ -1,6 +1,6 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { s__, sprintf } from '~/locale';
 import FileTree from '~/vue_shared/components/file_tree.vue';
 import DiffFileRow from './diff_file_row.vue';

@@ -1,7 +1,7 @@
-import $ from 'jquery';
-import { debounce } from 'lodash';
-import Cookies from 'js-cookie';
 import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/dist/utils';
+import $ from 'jquery';
+import Cookies from 'js-cookie';
+import { debounce } from 'lodash';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
 export const SIDEBAR_COLLAPSED_CLASS = 'js-sidebar-collapsed';

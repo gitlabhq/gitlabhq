@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import NewBranchForm from '~/new_branch_form';
 import setupNativeFormVariableList from '~/ci_variable_list/native_form_variable_list';
+import NewBranchForm from '~/new_branch_form';
 import initNewPipeline from '~/pipeline_new/index';
 
 const el = document.getElementById('js-new-pipeline');

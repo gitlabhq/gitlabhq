@@ -3,22 +3,22 @@
 // template.
 /* eslint-disable no-new, @gitlab/no-runtime-template-compiler */
 
+import { GlLabel } from '@gitlab/ui';
 import $ from 'jquery';
 import Vue from 'vue';
-import { GlLabel } from '@gitlab/ui';
-import { deprecatedCreateFlash as Flash } from '~/flash';
-import { sprintf, __ } from '~/locale';
-import Sidebar from '~/right_sidebar';
-import eventHub from '~/sidebar/event_hub';
 import DueDateSelectors from '~/due_date_select';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import IssuableContext from '~/issuable_context';
 import LabelsSelect from '~/labels_select';
+import { isScopedLabel } from '~/lib/utils/common_utils';
+import { sprintf, __ } from '~/locale';
+import MilestoneSelect from '~/milestone_select';
+import Sidebar from '~/right_sidebar';
 import AssigneeTitle from '~/sidebar/components/assignees/assignee_title.vue';
 import Assignees from '~/sidebar/components/assignees/assignees.vue';
 import Subscriptions from '~/sidebar/components/subscriptions/subscriptions.vue';
 import TimeTracker from '~/sidebar/components/time_tracking/time_tracker.vue';
-import MilestoneSelect from '~/milestone_select';
-import { isScopedLabel } from '~/lib/utils/common_utils';
+import eventHub from '~/sidebar/event_hub';
 import boardsStore from '../stores/boards_store';
 import RemoveBtn from './sidebar/remove_issue.vue';
 

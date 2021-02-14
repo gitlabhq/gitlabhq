@@ -1,5 +1,5 @@
-import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { trimText } from 'helpers/text_helper';
 import DetailedMetric from '~/performance_bar/components/detailed_metric.vue';
 import RequestWarning from '~/performance_bar/components/request_warning.vue';

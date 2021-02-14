@@ -1,6 +1,6 @@
+import ImageFile from '../../commit/image_file';
 import ImageDiff from '../image_diff';
 import ReplacedImageDiff from '../replaced_image_diff';
-import ImageFile from '../../commit/image_file';
 
 function initImageDiff(fileEl, canCreateNote, renderCommentBadge) {
   const options = {

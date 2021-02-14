@@ -1,16 +1,16 @@
 <script>
 import { GlModal } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
 import { deprecatedCreateFlash as Flash } from '~/flash';
-import { visitUrl } from '~/lib/utils/url_utility';
-import { getParameterByName } from '~/lib/utils/common_utils';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { getParameterByName } from '~/lib/utils/common_utils';
+import { visitUrl } from '~/lib/utils/url_utility';
+import { __, s__ } from '~/locale';
 import { fullLabelId, fullBoardId } from '../boards_util';
 import { formType } from '../constants';
 
-import updateBoardMutation from '../graphql/board_update.mutation.graphql';
 import createBoardMutation from '../graphql/board_create.mutation.graphql';
 import destroyBoardMutation from '../graphql/board_destroy.mutation.graphql';
+import updateBoardMutation from '../graphql/board_update.mutation.graphql';
 import BoardConfigurationOptions from './board_configuration_options.vue';
 
 const boardDefaults = {

@@ -1,5 +1,4 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import {
   GlEmptyState,
   GlButton,
@@ -15,11 +14,12 @@ import {
   GlPagination,
 } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
+import { mapActions, mapState } from 'vuex';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import AccessorUtils from '~/lib/utils/accessor';
-import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
+import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { trackErrorListViewsOptions, trackErrorStatusUpdateOptions } from '../utils';
 import ErrorTrackingActions from './error_tracking_actions.vue';
 

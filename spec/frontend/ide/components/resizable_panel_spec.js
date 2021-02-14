@@ -1,8 +1,8 @@
-import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import ResizablePanel from '~/ide/components/resizable_panel.vue';
-import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import { SIDE_LEFT, SIDE_RIGHT } from '~/ide/constants';
+import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 
 const TEST_WIDTH = 500;
 const TEST_MIN_WIDTH = 400;

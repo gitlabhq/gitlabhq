@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import BlobContent from '~/blob/components/blob_content.vue';
 import BlobContentError from '~/blob/components/blob_content_error.vue';
 import {

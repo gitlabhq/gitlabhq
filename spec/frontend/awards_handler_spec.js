@@ -1,10 +1,10 @@
+import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import Cookies from 'js-cookie';
-import MockAdapter from 'axios-mock-adapter';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
-import axios from '~/lib/utils/axios_utils';
 import loadAwardsHandler from '~/awards_handler';
 import { EMOJI_VERSION } from '~/emoji';
+import axios from '~/lib/utils/axios_utils';
 
 window.gl = window.gl || {};
 window.gon = window.gon || {};

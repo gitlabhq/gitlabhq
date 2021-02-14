@@ -1,8 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import { visitUrl } from '~/lib/utils/url_utility';
-import { createStore } from '~/ide/stores';
+import eventHub from '~/ide/eventhub';
 import { createRouter } from '~/ide/ide_router';
+import { createStore } from '~/ide/stores';
 import {
   stageAllChanges,
   unstageAllChanges,
@@ -18,9 +18,9 @@ import {
   createTempEntry,
   discardAllChanges,
 } from '~/ide/stores/actions';
-import axios from '~/lib/utils/axios_utils';
 import * as types from '~/ide/stores/mutation_types';
-import eventHub from '~/ide/eventhub';
+import axios from '~/lib/utils/axios_utils';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { file, createTriggerRenameAction, createTriggerChangeAction } from '../helpers';
 
 jest.mock('~/lib/utils/url_utility', () => ({

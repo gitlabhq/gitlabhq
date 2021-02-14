@@ -1,8 +1,8 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import UsersMockHelper from 'helpers/user_mock_data_helper';
-import CollapsedAssigneeList from '~/sidebar/components/assignees/collapsed_assignee_list.vue';
 import CollapsedAssignee from '~/sidebar/components/assignees/collapsed_assignee.vue';
+import CollapsedAssigneeList from '~/sidebar/components/assignees/collapsed_assignee_list.vue';
 
 const DEFAULT_MAX_COUNTER = 99;
 

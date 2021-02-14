@@ -1,13 +1,13 @@
 /* eslint-disable import/no-commonjs, no-new */
 
-import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
+import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 import { createSpyObj } from 'helpers/jest_helpers';
-import { setTestTimeoutOnce } from 'helpers/timeout';
 import { TEST_HOST } from 'helpers/test_constants';
-import * as urlUtility from '~/lib/utils/url_utility';
+import { setTestTimeoutOnce } from 'helpers/timeout';
 import axios from '~/lib/utils/axios_utils';
+import * as urlUtility from '~/lib/utils/url_utility';
 
 // These must be imported synchronously because they pull dependencies
 // from the DOM.

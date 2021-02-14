@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLink, GlLabel, GlIcon, GlFormCheckbox } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { useFakeDate } from 'helpers/fake_date';
 import IssuableItem from '~/issuable_list/components/issuable_item.vue';
 import IssuableAssignees from '~/vue_shared/components/issue/issue_assignees.vue';

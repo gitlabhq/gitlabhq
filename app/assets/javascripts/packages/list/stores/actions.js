@@ -1,6 +1,6 @@
 import Api from '~/api';
-import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import { DELETE_PACKAGE_ERROR_MESSAGE } from '~/packages/shared/constants';
 import {
   FETCH_PACKAGES_LIST_ERROR_MESSAGE,

@@ -2,13 +2,13 @@
 
 import $ from 'jquery';
 import Cookies from 'js-cookie';
-import { __ } from '~/locale';
-import { mergeUrlParams } from '~/lib/utils/url_utility';
-import { serializeForm } from '~/lib/utils/forms';
-import axios from '~/lib/utils/axios_utils';
-import { deprecatedCreateFlash as flash } from '~/flash';
-import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import initClonePanel from '~/clone_panel';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import { deprecatedCreateFlash as flash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
+import { serializeForm } from '~/lib/utils/forms';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
+import { __ } from '~/locale';
 import projectSelect from '../../project_select';
 
 export default class Project {

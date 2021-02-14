@@ -1,5 +1,5 @@
-import NamespaceSelect from '~/namespace_select';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import NamespaceSelect from '~/namespace_select';
 
 jest.mock('~/deprecated_jquery_dropdown');
 

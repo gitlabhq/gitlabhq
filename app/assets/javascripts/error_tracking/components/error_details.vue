@@ -1,5 +1,4 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
 import {
   GlButton,
   GlFormInput,
@@ -13,19 +12,20 @@ import {
   GlDropdownDivider,
   GlIcon,
 } from '@gitlab/ui';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __, sprintf, n__ } from '~/locale';
+import Tracking from '~/tracking';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import Tracking from '~/tracking';
+import query from '../queries/details.query.graphql';
 import {
   trackClickErrorLinkToSentryOptions,
   trackErrorDetailsViewsOptions,
   trackErrorStatusUpdateOptions,
 } from '../utils';
 
-import query from '../queries/details.query.graphql';
 import { severityLevel, severityLevelVariant, errorStatus } from './constants';
 import Stacktrace from './stacktrace.vue';
 

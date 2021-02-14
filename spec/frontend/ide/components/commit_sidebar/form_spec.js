@@ -1,12 +1,10 @@
-import Vue from 'vue';
-import { shallowMount } from '@vue/test-utils';
 import { GlModal } from '@gitlab/ui';
-import { projectData } from 'jest/ide/mock_data';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import { stubComponent } from 'helpers/stub_component';
-import waitForPromises from 'helpers/wait_for_promises';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import { createStore } from '~/ide/stores';
-import { COMMIT_TO_NEW_BRANCH } from '~/ide/stores/modules/commit/constants';
+import waitForPromises from 'helpers/wait_for_promises';
+import { projectData } from 'jest/ide/mock_data';
 import CommitForm from '~/ide/components/commit_sidebar/form.vue';
 import CommitMessageField from '~/ide/components/commit_sidebar/message_field.vue';
 import { leftSidebarViews } from '~/ide/constants';
@@ -16,6 +14,8 @@ import {
   createBranchChangedCommitError,
   branchAlreadyExistsCommitError,
 } from '~/ide/lib/errors';
+import { createStore } from '~/ide/stores';
+import { COMMIT_TO_NEW_BRANCH } from '~/ide/stores/modules/commit/constants';
 
 describe('IDE commit form', () => {
   let wrapper;

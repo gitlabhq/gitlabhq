@@ -3,9 +3,9 @@ import { GlButton } from '@gitlab/ui';
 import footerEEMixin from 'ee_else_ce/boards/mixins/modal_footer';
 import { deprecatedCreateFlash as Flash } from '../../../flash';
 import { __, n__ } from '../../../locale';
-import ModalStore from '../../stores/modal_store';
 import modalMixin from '../../mixins/modal_mixins';
 import boardsStore from '../../stores/boards_store';
+import ModalStore from '../../stores/modal_store';
 import ListsDropdown from './lists_dropdown.vue';
 
 export default {

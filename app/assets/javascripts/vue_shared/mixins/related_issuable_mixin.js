@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
-import { sprintf, __ } from '~/locale';
 import { formatDate } from '~/lib/utils/datetime_utility';
+import { sprintf, __ } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 const mixins = {

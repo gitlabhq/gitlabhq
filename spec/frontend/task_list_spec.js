@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import TaskList from '~/task_list';
 import axios from '~/lib/utils/axios_utils';
+import TaskList from '~/task_list';
 
 describe('TaskList', () => {
   let taskList;

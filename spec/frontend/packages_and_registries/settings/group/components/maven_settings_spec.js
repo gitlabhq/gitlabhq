@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlSprintf, GlToggle, GlFormGroup, GlFormInput } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import component from '~/packages_and_registries/settings/group/components/maven_settings.vue';
 
 import {

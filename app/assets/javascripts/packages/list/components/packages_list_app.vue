@@ -1,14 +1,14 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { mapActions, mapState } from 'vuex';
 import createFlash from '~/flash';
 import { historyReplaceState } from '~/lib/utils/common_utils';
+import { s__ } from '~/locale';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages/shared/constants';
 import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '../constants';
-import PackageList from './packages_list.vue';
-import PackageTitle from './package_title.vue';
 import PackageSearch from './package_search.vue';
+import PackageTitle from './package_title.vue';
+import PackageList from './packages_list.vue';
 
 export default {
   components: {

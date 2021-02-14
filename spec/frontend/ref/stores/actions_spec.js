@@ -1,7 +1,7 @@
 import testAction from 'helpers/vuex_action_helper';
-import createState from '~/ref/stores/state';
 import * as actions from '~/ref/stores/actions';
 import * as types from '~/ref/stores/mutation_types';
+import createState from '~/ref/stores/state';
 
 let mockBranchesReturnValue;
 let mockTagsReturnValue;

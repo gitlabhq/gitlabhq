@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import IdeSidebarNav from '~/ide/components/ide_sidebar_nav.vue';
 import { SIDE_RIGHT, SIDE_LEFT } from '~/ide/constants';

@@ -9,9 +9,9 @@ import {
   REPORT_TYPE_COVERAGE_FUZZING,
   REPORT_TYPE_LICENSE_COMPLIANCE,
 } from '~/vue_shared/security_reports/constants';
+import { features } from './features_constants';
 import ManageSast from './manage_sast.vue';
 import Upgrade from './upgrade.vue';
-import { features } from './features_constants';
 
 const borderClasses = 'gl-border-b-1! gl-border-b-solid! gl-border-gray-100!';
 const thClass = `gl-text-gray-900 gl-bg-transparent! ${borderClasses}`;

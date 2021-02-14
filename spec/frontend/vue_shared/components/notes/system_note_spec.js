@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
-import IssueSystemNote from '~/vue_shared/components/notes/system_note.vue';
-import createStore from '~/notes/stores';
 import initMRPopovers from '~/mr_popover/index';
+import createStore from '~/notes/stores';
+import IssueSystemNote from '~/vue_shared/components/notes/system_note.vue';
 
 jest.mock('~/mr_popover/index', () => jest.fn());
 

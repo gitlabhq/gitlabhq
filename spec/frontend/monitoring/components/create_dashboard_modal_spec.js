@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlModal } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import CreateDashboardModal from '~/monitoring/components/create_dashboard_modal.vue';
 
 describe('Create dashboard modal', () => {

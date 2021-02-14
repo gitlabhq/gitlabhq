@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import DiffView from '~/diffs/components/diff_view.vue';
 

@@ -5,10 +5,10 @@ import * as jqueryMatchers from 'custom-jquery-matchers';
 import { config as testUtilsConfig } from '@vue/test-utils';
 import { setGlobalDateToFakeDate } from 'helpers/fake_date';
 import Translate from '~/vue_shared/translate';
-import { initializeTestTimeout } from './__helpers__/timeout';
 import { getJSONFixture, loadHTMLFixture, setHTMLFixture } from './__helpers__/fixtures';
-import { setupManualMocks } from './mocks/mocks_helper';
+import { initializeTestTimeout } from './__helpers__/timeout';
 import customMatchers from './matchers';
+import { setupManualMocks } from './mocks/mocks_helper';
 
 import './__helpers__/dom_shims';
 import './__helpers__/jquery';

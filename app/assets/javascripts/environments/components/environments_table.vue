@@ -5,9 +5,9 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { flow, reverse, sortBy } from 'lodash/fp';
 import { s__ } from '~/locale';
-import EnvironmentItem from './environment_item.vue';
-import DeployBoard from './deploy_board.vue';
 import CanaryUpdateModal from './canary_update_modal.vue';
+import DeployBoard from './deploy_board.vue';
+import EnvironmentItem from './environment_item.vue';
 
 export default {
   components: {

@@ -1,5 +1,5 @@
-import { s__, __ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { s__, __ } from '~/locale';
 
 //  Translations strings
 export const DETAILS_PAGE_TITLE = s__('ContainerRegistry|%{imageName} tags');

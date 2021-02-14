@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import ConfigurationTable from '~/security_configuration/components/configuration_table.vue';
 import { features, UPGRADE_CTA } from '~/security_configuration/components/features_constants';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
 import {
   REPORT_TYPE_SAST,

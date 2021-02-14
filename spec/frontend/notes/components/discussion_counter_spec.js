@@ -1,8 +1,8 @@
-import Vuex from 'vuex';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
-import notesModule from '~/notes/stores/modules';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
+import notesModule from '~/notes/stores/modules';
 import * as types from '~/notes/stores/mutation_types';
 import { noteableDataMock, discussionMock, notesDataMock, userDataMock } from '../mock_data';
 

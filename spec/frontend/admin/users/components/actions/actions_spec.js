@@ -1,10 +1,10 @@
-import { nextTick } from 'vue';
-import { shallowMount } from '@vue/test-utils';
 import { GlDropdownItem } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { kebabCase } from 'lodash';
-import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { nextTick } from 'vue';
 import Actions from '~/admin/users/components/actions';
 import SharedDeleteAction from '~/admin/users/components/actions/shared/shared_delete_action.vue';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
 import { CONFIRMATION_ACTIONS, DELETE_ACTIONS } from '../../constants';
 

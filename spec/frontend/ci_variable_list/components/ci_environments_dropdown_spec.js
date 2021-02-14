@@ -1,6 +1,6 @@
-import Vuex from 'vuex';
-import { mount, createLocalVue } from '@vue/test-utils';
 import { GlDropdownItem, GlIcon } from '@gitlab/ui';
+import { mount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import CiEnvironmentsDropdown from '~/ci_variable_list/components/ci_environments_dropdown.vue';
 
 const localVue = createLocalVue();

@@ -1,6 +1,6 @@
+import * as types from '~/integrations/edit/store/mutation_types';
 import mutations from '~/integrations/edit/store/mutations';
 import createState from '~/integrations/edit/store/state';
-import * as types from '~/integrations/edit/store/mutation_types';
 
 describe('Integration form store mutations', () => {
   let state;

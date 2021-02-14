@@ -1,14 +1,14 @@
 <script>
+import { GlSprintf } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { mapState, mapGetters, createNamespacedHelpers } from 'vuex';
-import { GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import {
   COMMIT_TO_CURRENT_BRANCH,
   COMMIT_TO_NEW_BRANCH,
 } from '../../stores/modules/commit/constants';
-import RadioGroup from './radio_group.vue';
 import NewMergeRequestOption from './new_merge_request_option.vue';
+import RadioGroup from './radio_group.vue';
 
 const { mapState: mapCommitState, mapActions: mapCommitActions } = createNamespacedHelpers(
   'commit',

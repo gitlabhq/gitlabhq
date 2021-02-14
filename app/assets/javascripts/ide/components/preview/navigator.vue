@@ -1,6 +1,6 @@
 <script>
-import { listen } from 'codesandbox-api';
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { listen } from 'codesandbox-api';
 
 export default {
   components: {

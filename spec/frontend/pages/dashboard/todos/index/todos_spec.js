@@ -1,5 +1,5 @@
-import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
+import $ from 'jquery';
 import Todos from '~/pages/dashboard/todos/index/todos';
 import '~/lib/utils/common_utils';
 import axios from '~/lib/utils/axios_utils';

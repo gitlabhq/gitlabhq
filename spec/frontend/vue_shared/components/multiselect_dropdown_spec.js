@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { getByText } from '@testing-library/dom';
+import { shallowMount } from '@vue/test-utils';
 import MultiSelectDropdown from '~/vue_shared/components/sidebar/multiselect_dropdown.vue';
 
 describe('MultiSelectDropdown Component', () => {

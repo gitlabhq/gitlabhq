@@ -1,5 +1,5 @@
-import eventHub from '~/ide/eventhub';
 import { commitActionTypes } from '~/ide/constants';
+import eventHub from '~/ide/eventhub';
 
 const removeUnusedFileEditors = (store) => {
   Object.keys(store.state.editor.fileEditors)

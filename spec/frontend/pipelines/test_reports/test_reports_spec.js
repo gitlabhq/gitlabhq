@@ -1,6 +1,6 @@
-import Vuex from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { getJSONFixture } from 'helpers/fixtures';
 import TestReports from '~/pipelines/components/test_reports/test_reports.vue';
 import TestSummary from '~/pipelines/components/test_reports/test_summary.vue';

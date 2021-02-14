@@ -1,9 +1,9 @@
-import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import component from '~/packages/list/components/package_search.vue';
-import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import PackageTypeToken from '~/packages/list/components/tokens/package_type_token.vue';
 import getTableHeaders from '~/packages/list/utils';
+import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

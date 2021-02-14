@@ -1,11 +1,11 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
+import * as actions from '~/ide/stores/modules/terminal/actions/session_status';
 import { PENDING, RUNNING, STOPPING, STOPPED } from '~/ide/stores/modules/terminal/constants';
 import * as messages from '~/ide/stores/modules/terminal/messages';
 import * as mutationTypes from '~/ide/stores/modules/terminal/mutation_types';
-import * as actions from '~/ide/stores/modules/terminal/actions/session_status';
 import axios from '~/lib/utils/axios_utils';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
 
 jest.mock('~/flash');
 

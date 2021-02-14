@@ -11,20 +11,20 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
-import Tracking from '~/tracking';
-import { s__ } from '~/locale';
 import { objectToQueryString } from '~/lib/utils/common_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import PackagesListLoader from '../../shared/components/packages_list_loader.vue';
+import { s__ } from '~/locale';
+import Tracking from '~/tracking';
 import PackageListRow from '../../shared/components/package_list_row.vue';
-import { packageTypeToTrackCategory } from '../../shared/utils';
+import PackagesListLoader from '../../shared/components/packages_list_loader.vue';
 import { PackageType, TrackingActions, SHOW_DELETE_SUCCESS_ALERT } from '../../shared/constants';
-import PackageTitle from './package_title.vue';
-import PackageHistory from './package_history.vue';
-import DependencyRow from './dependency_row.vue';
+import { packageTypeToTrackCategory } from '../../shared/utils';
 import AdditionalMetadata from './additional_metadata.vue';
+import DependencyRow from './dependency_row.vue';
 import InstallationCommands from './installation_commands.vue';
 import PackageFiles from './package_files.vue';
+import PackageHistory from './package_history.vue';
+import PackageTitle from './package_title.vue';
 
 export default {
   name: 'PackagesApp',

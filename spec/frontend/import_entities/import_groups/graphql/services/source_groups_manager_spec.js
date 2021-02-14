@@ -1,7 +1,7 @@
 import { defaultDataIdFromObject } from 'apollo-cache-inmemory';
-import { SourceGroupsManager } from '~/import_entities/import_groups/graphql/services/source_groups_manager';
-import ImportSourceGroupFragment from '~/import_entities/import_groups/graphql/fragments/bulk_import_source_group_item.fragment.graphql';
 import { clientTypenames } from '~/import_entities/import_groups/graphql/client_factory';
+import ImportSourceGroupFragment from '~/import_entities/import_groups/graphql/fragments/bulk_import_source_group_item.fragment.graphql';
+import { SourceGroupsManager } from '~/import_entities/import_groups/graphql/services/source_groups_manager';
 
 describe('SourceGroupsManager', () => {
   let manager;

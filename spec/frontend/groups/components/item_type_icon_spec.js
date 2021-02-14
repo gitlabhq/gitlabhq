@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import ItemTypeIcon from '~/groups/components/item_type_icon.vue';
 import { ITEM_TYPE } from '../mock_data';
 

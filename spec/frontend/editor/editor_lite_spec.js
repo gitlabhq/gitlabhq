@@ -1,15 +1,15 @@
 /* eslint-disable max-classes-per-file */
 import { editor as monacoEditor, languages as monacoLanguages } from 'monaco-editor';
 import waitForPromises from 'helpers/wait_for_promises';
-import { joinPaths } from '~/lib/utils/url_utility';
-import EditorLite from '~/editor/editor_lite';
-import { EditorLiteExtension } from '~/editor/extensions/editor_lite_extension_base';
-import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
 import {
   EDITOR_LITE_INSTANCE_ERROR_NO_EL,
   URI_PREFIX,
   EDITOR_READY_EVENT,
 } from '~/editor/constants';
+import EditorLite from '~/editor/editor_lite';
+import { EditorLiteExtension } from '~/editor/extensions/editor_lite_extension_base';
+import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
+import { joinPaths } from '~/lib/utils/url_utility';
 
 describe('Base editor', () => {
   let editorEl;

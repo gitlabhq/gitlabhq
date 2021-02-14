@@ -1,8 +1,8 @@
 import { GlIcon, GlTooltip } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { useFakeDate } from 'helpers/fake_date';
-import StateActions from '~/terraform/components/states_table_actions.vue';
 import StatesTable from '~/terraform/components/states_table.vue';
+import StateActions from '~/terraform/components/states_table_actions.vue';
 
 describe('StatesTable', () => {
   let wrapper;

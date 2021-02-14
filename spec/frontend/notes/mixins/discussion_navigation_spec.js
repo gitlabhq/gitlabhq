@@ -1,10 +1,10 @@
-import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { setHTMLFixture } from 'helpers/fixtures';
-import * as utils from '~/lib/utils/common_utils';
-import discussionNavigation from '~/notes/mixins/discussion_navigation';
-import eventHub from '~/notes/event_hub';
 import createEventHub from '~/helpers/event_hub_factory';
+import * as utils from '~/lib/utils/common_utils';
+import eventHub from '~/notes/event_hub';
+import discussionNavigation from '~/notes/mixins/discussion_navigation';
 import notesModule from '~/notes/stores/modules';
 
 const discussion = (id, index) => ({

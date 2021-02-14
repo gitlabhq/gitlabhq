@@ -1,6 +1,6 @@
-import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import $ from 'jquery';
+import Vue from 'vue';
 import ResizableChartContainer from '~/vue_shared/components/resizable_chart/resizable_chart_container.vue';
 
 jest.mock('~/lib/utils/common_utils', () => ({

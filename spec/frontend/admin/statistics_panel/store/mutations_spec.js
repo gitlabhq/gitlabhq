@@ -1,5 +1,5 @@
-import mutations from '~/admin/statistics_panel/store/mutations';
 import * as types from '~/admin/statistics_panel/store/mutation_types';
+import mutations from '~/admin/statistics_panel/store/mutations';
 import getInitialState from '~/admin/statistics_panel/store/state';
 import mockStatistics from '../mock_data';
 

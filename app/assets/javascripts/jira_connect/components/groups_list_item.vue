@@ -1,8 +1,7 @@
 <script>
 import { GlAvatar, GlButton, GlIcon } from '@gitlab/ui';
-import { s__ } from '~/locale';
-
 import { addSubscription } from '~/jira_connect/api';
+import { s__ } from '~/locale';
 
 export default {
   components: {

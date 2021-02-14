@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
-import { createStore } from '~/ide/stores';
 import FileRowExtra from '~/ide/components/file_row_extra.vue';
+import { createStore } from '~/ide/stores';
 import { file } from '../helpers';
 
 describe('IDE extra file row component', () => {

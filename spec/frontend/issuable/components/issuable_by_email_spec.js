@@ -1,11 +1,11 @@
+import { GlModal, GlSprintf, GlFormInputGroup, GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { shallowMount } from '@vue/test-utils';
-import { GlModal, GlSprintf, GlFormInputGroup, GlButton } from '@gitlab/ui';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import httpStatus from '~/lib/utils/http_status';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
+import httpStatus from '~/lib/utils/http_status';
 
 const initialEmail = 'user@gitlab.com';
 

@@ -11,8 +11,8 @@ import {
 } from '@gitlab/ui';
 import mrWidgetPipelineMixin from 'ee_else_ce/vue_merge_request_widget/mixins/mr_widget_pipeline';
 import { s__, n__ } from '~/locale';
-import PipelineStage from '~/pipelines/components/pipelines_list/stage.vue';
 import PipelineArtifacts from '~/pipelines/components/pipelines_list/pipelines_artifacts.vue';
+import PipelineStage from '~/pipelines/components/pipelines_list/stage.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 

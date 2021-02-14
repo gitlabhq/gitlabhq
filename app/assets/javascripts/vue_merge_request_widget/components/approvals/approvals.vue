@@ -1,8 +1,8 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import { s__ } from '~/locale';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
+import { s__ } from '~/locale';
 import eventHub from '../../event_hub';
 import approvalsMixin from '../../mixins/approvals';
 import MrWidgetContainer from '../mr_widget_container.vue';

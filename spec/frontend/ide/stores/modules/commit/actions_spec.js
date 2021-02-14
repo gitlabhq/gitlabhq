@@ -1,20 +1,20 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { file } from 'jest/ide/helpers';
 import testAction from 'helpers/vuex_action_helper';
-import { visitUrl } from '~/lib/utils/url_utility';
-import { createStore } from '~/ide/stores';
-import service from '~/ide/services';
-import { createRouter } from '~/ide/ide_router';
+import { file } from 'jest/ide/helpers';
+import { commitActionTypes, PERMISSION_CREATE_MR } from '~/ide/constants';
 import eventHub from '~/ide/eventhub';
+import { createRouter } from '~/ide/ide_router';
+import { createUnexpectedCommitError } from '~/ide/lib/errors';
+import service from '~/ide/services';
+import { createStore } from '~/ide/stores';
+import * as actions from '~/ide/stores/modules/commit/actions';
 import {
   COMMIT_TO_CURRENT_BRANCH,
   COMMIT_TO_NEW_BRANCH,
 } from '~/ide/stores/modules/commit/constants';
 import * as mutationTypes from '~/ide/stores/modules/commit/mutation_types';
-import * as actions from '~/ide/stores/modules/commit/actions';
-import { createUnexpectedCommitError } from '~/ide/lib/errors';
-import { commitActionTypes, PERMISSION_CREATE_MR } from '~/ide/constants';
+import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),

@@ -1,6 +1,6 @@
 import testAction from 'helpers/vuex_action_helper';
-import * as types from '~/ide/stores/modules/editor/mutation_types';
 import * as actions from '~/ide/stores/modules/editor/actions';
+import * as types from '~/ide/stores/modules/editor/mutation_types';
 import { createTriggerRenamePayload } from '../../../helpers';
 
 describe('~/ide/stores/modules/editor/actions', () => {

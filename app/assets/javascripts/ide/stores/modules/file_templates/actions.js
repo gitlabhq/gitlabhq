@@ -1,6 +1,6 @@
 import Api from '~/api';
-import { __ } from '~/locale';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
+import { __ } from '~/locale';
 import eventHub from '../../../eventhub';
 import * as types from './mutation_types';
 

@@ -1,5 +1,5 @@
-import { take } from 'lodash';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { take } from 'lodash';
 import { sanitize } from '~/lib/dompurify';
 import { FREQUENT_ITEMS, HOUR_IN_MS } from './constants';
 

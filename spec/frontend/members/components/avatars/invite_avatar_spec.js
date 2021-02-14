@@ -1,5 +1,5 @@
-import { mount, createWrapper } from '@vue/test-utils';
 import { getByText as getByTextHelper } from '@testing-library/dom';
+import { mount, createWrapper } from '@vue/test-utils';
 import InviteAvatar from '~/members/components/avatars/invite_avatar.vue';
 import { invite as member } from '../../mock_data';
 

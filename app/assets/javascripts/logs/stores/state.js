@@ -1,5 +1,5 @@
-import { timeRanges, defaultTimeRange } from '~/vue_shared/constants';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
+import { timeRanges, defaultTimeRange } from '~/vue_shared/constants';
 
 export default () => ({
   /**

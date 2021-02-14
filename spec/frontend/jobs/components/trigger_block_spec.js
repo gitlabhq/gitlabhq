@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
 import { GlButton, GlTable } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import TriggerBlock from '~/jobs/components/trigger_block.vue';
 
 describe('Trigger block', () => {

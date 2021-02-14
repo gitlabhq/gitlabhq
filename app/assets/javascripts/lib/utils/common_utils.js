@@ -4,11 +4,11 @@
 
 import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
-import { isFunction, defer } from 'lodash';
 import Cookies from 'js-cookie';
-import { getLocationHash } from './url_utility';
+import { isFunction, defer } from 'lodash';
 import { convertToCamelCase, convertToSnakeCase } from './text_utility';
 import { isObject } from './type_utility';
+import { getLocationHash } from './url_utility';
 
 export const getPagePath = (index = 0) => {
   const page = $('body').attr('data-page') || '';

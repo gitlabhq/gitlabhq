@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLink } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import INVALID_URL from '~/lib/utils/invalid_url';
 import AlertWidgetForm from '~/monitoring/components/alert_widget_form.vue';
 import ModalStub from '../stubs/modal_stub';

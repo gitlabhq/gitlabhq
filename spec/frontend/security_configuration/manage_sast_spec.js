@@ -1,13 +1,13 @@
+import { GlButton } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { mount } from '@vue/test-utils';
-import { GlButton } from '@gitlab/ui';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createMockApollo from 'helpers/mock_apollo_helper';
-import configureSastMutation from '~/security_configuration/graphql/configure_sast.mutation.graphql';
-import ManageSast from '~/security_configuration/components/manage_sast.vue';
 import { redirectTo } from '~/lib/utils/url_utility';
+import ManageSast from '~/security_configuration/components/manage_sast.vue';
+import configureSastMutation from '~/security_configuration/graphql/configure_sast.mutation.graphql';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   redirectTo: jest.fn(),

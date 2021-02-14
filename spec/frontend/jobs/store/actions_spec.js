@@ -1,7 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
-import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'helpers/test_constants';
-import axios from '~/lib/utils/axios_utils';
+import testAction from 'helpers/vuex_action_helper';
 import {
   setJobEndpoint,
   setTraceOptions,
@@ -28,8 +27,9 @@ import {
   showSidebar,
   toggleSidebar,
 } from '~/jobs/store/actions';
-import state from '~/jobs/store/state';
 import * as types from '~/jobs/store/mutation_types';
+import state from '~/jobs/store/state';
+import axios from '~/lib/utils/axios_utils';
 
 describe('Job State actions', () => {
   let mockedState;

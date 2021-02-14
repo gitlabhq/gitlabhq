@@ -1,10 +1,10 @@
 import { mount } from '@vue/test-utils';
 
-import createStore from '~/notes/stores';
 import diffDiscussionHeader from '~/notes/components/diff_discussion_header.vue';
+import createStore from '~/notes/stores';
 
-import { discussionMock } from '../mock_data';
 import mockDiffFile from '../../diffs/mock_data/diff_discussions';
+import { discussionMock } from '../mock_data';
 
 const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
 

@@ -1,6 +1,6 @@
 <script>
-import { createNamespacedHelpers } from 'vuex';
 import { GlTooltipDirective } from '@gitlab/ui';
+import { createNamespacedHelpers } from 'vuex';
 import { s__ } from '~/locale';
 
 const { mapActions: mapCommitActions, mapGetters: mapCommitGetters } = createNamespacedHelpers(

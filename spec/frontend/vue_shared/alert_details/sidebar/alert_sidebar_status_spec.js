@@ -1,7 +1,7 @@
-import { mount } from '@vue/test-utils';
 import { GlDropdown, GlDropdownItem, GlLoadingIcon } from '@gitlab/ui';
-import AlertSidebarStatus from '~/vue_shared/alert_details/components/sidebar/sidebar_status.vue';
+import { mount } from '@vue/test-utils';
 import updateAlertStatusMutation from '~/graphql_shared/mutations/alert_status_update.mutation.graphql';
+import AlertSidebarStatus from '~/vue_shared/alert_details/components/sidebar/sidebar_status.vue';
 import mockAlerts from '../mocks/alerts.json';
 
 const mockAlert = mockAlerts[0];

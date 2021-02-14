@@ -1,32 +1,32 @@
-import { nextTick } from 'vue';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import VueApollo, { ApolloMutation } from 'vue-apollo';
-import VueDraggable from 'vuedraggable';
-import VueRouter from 'vue-router';
 import { GlEmptyState } from '@gitlab/ui';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
+import VueApollo, { ApolloMutation } from 'vue-apollo';
+import VueRouter from 'vue-router';
+import VueDraggable from 'vuedraggable';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
-import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
-import Index from '~/design_management/pages/index.vue';
-import uploadDesignMutation from '~/design_management/graphql/mutations/upload_design.mutation.graphql';
-import DesignDestroyer from '~/design_management/components/design_destroyer.vue';
-import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
+import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
 import DeleteButton from '~/design_management/components/delete_button.vue';
+import DesignDestroyer from '~/design_management/components/design_destroyer.vue';
 import Design from '~/design_management/components/list/item.vue';
+import moveDesignMutation from '~/design_management/graphql/mutations/move_design.mutation.graphql';
+import uploadDesignMutation from '~/design_management/graphql/mutations/upload_design.mutation.graphql';
+import Index from '~/design_management/pages/index.vue';
+import createRouter from '~/design_management/router';
 import { DESIGNS_ROUTE_NAME } from '~/design_management/router/constants';
+import * as utils from '~/design_management/utils/design_management_utils';
 import {
   EXISTING_DESIGN_DROP_MANY_FILES_MESSAGE,
   EXISTING_DESIGN_DROP_INVALID_FILENAME_MESSAGE,
 } from '~/design_management/utils/error_messages';
-import createFlash from '~/flash';
-import createRouter from '~/design_management/router';
-import * as utils from '~/design_management/utils/design_management_utils';
-import moveDesignMutation from '~/design_management/graphql/mutations/move_design.mutation.graphql';
 import {
   DESIGN_TRACKING_PAGE_NAME,
   DESIGN_SNOWPLOW_EVENT_TYPES,
 } from '~/design_management/utils/tracking';
+import createFlash from '~/flash';
+import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import {
   designListQueryResponse,
   designUploadMutationCreatedResponse,

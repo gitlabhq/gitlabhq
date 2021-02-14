@@ -1,5 +1,4 @@
 <script>
-import { throttle } from 'lodash';
 import {
   GlLoadingIcon,
   GlSearchBoxByType,
@@ -9,12 +8,13 @@ import {
   GlDropdownItem,
   GlModalDirective,
 } from '@gitlab/ui';
-
-import httpStatusCodes from '~/lib/utils/http_status';
+import { throttle } from 'lodash';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import projectQuery from '../graphql/project_boards.query.graphql';
+import httpStatusCodes from '~/lib/utils/http_status';
+
 import groupQuery from '../graphql/group_boards.query.graphql';
+import projectQuery from '../graphql/project_boards.query.graphql';
 
 import boardsStore from '../stores/boards_store';
 import BoardForm from './board_form.vue';

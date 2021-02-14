@@ -1,13 +1,13 @@
 <script>
 /* global ListIssue */
 import { GlLoadingIcon } from '@gitlab/ui';
-import { urlParamsToObject } from '~/lib/utils/common_utils';
 import boardsStore from '~/boards/stores/boards_store';
+import { urlParamsToObject } from '~/lib/utils/common_utils';
 import ModalStore from '../../stores/modal_store';
+import EmptyState from './empty_state.vue';
+import ModalFooter from './footer.vue';
 import ModalHeader from './header.vue';
 import ModalList from './list.vue';
-import ModalFooter from './footer.vue';
-import EmptyState from './empty_state.vue';
 
 export default {
   components: {

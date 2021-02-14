@@ -1,6 +1,6 @@
-import state from '~/feature_flags/store/new/state';
-import mutations from '~/feature_flags/store/new/mutations';
 import * as types from '~/feature_flags/store/new/mutation_types';
+import mutations from '~/feature_flags/store/new/mutations';
+import state from '~/feature_flags/store/new/state';
 
 describe('Feature flags New Module Mutations', () => {
   let stateCopy;

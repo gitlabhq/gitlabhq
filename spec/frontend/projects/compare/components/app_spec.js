@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import CompareApp from '~/projects/compare/components/app.vue';
 import RevisionDropdown from '~/projects/compare/components/revision_dropdown.vue';
 

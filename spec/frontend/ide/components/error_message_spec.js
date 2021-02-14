@@ -1,6 +1,6 @@
+import { GlLoadingIcon } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlLoadingIcon } from '@gitlab/ui';
 import ErrorMessage from '~/ide/components/error_message.vue';
 
 const localVue = createLocalVue();

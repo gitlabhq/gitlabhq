@@ -1,7 +1,7 @@
 <script>
+import { GlDropdown, GlDropdownItem, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { createNamespacedHelpers } from 'vuex';
-import { GlDropdown, GlDropdownItem, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import ParameterFormGroup from './parameter_form_group.vue';
 

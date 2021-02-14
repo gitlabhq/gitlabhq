@@ -1,9 +1,9 @@
-import Vuex from 'vuex';
 import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
-import createStore from '~/diffs/store/modules';
+import Vuex from 'vuex';
 import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vue';
 import { CENTERED_LIMITED_CONTAINER_CLASSES, EVT_EXPAND_ALL_FILES } from '~/diffs/constants';
 import eventHub from '~/diffs/event_hub';
+import createStore from '~/diffs/store/modules';
 
 const propsData = {
   limited: true,

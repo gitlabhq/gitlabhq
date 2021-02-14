@@ -1,9 +1,8 @@
-import Vuex from 'vuex';
-import { createLocalVue, mount } from '@vue/test-utils';
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
-import defaultState from '~/boards/stores/state';
-
+import { createLocalVue, mount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import ProjectSelect from '~/boards/components/project_select.vue';
+import defaultState from '~/boards/stores/state';
 
 import { mockList, mockGroupProjects } from './mock_data';
 

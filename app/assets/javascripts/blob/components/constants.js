@@ -1,5 +1,5 @@
-import { __, sprintf } from '~/locale';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
+import { __, sprintf } from '~/locale';
 
 export const BTN_COPY_CONTENTS_TITLE = __('Copy file contents');
 export const BTN_RAW_TITLE = __('Open raw');

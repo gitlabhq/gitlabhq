@@ -2,10 +2,10 @@ import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
 import Anomaly from '~/monitoring/components/charts/anomaly.vue';
 
-import { colorValues } from '~/monitoring/constants';
 import MonitorTimeSeriesChart from '~/monitoring/components/charts/time_series.vue';
-import { anomalyDeploymentData, mockProjectDir } from '../../mock_data';
+import { colorValues } from '~/monitoring/constants';
 import { anomalyGraphData } from '../../graph_data';
+import { anomalyDeploymentData, mockProjectDir } from '../../mock_data';
 
 const mockProjectPath = `${TEST_HOST}${mockProjectDir}`;
 

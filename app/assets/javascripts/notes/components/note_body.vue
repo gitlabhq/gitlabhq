@@ -1,15 +1,15 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { mapActions, mapGetters, mapState } from 'vuex';
 import $ from 'jquery';
 import { escape } from 'lodash';
+import { mapActions, mapGetters, mapState } from 'vuex';
 
 import '~/behaviors/markdown/render_gfm';
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 import autosave from '../mixins/autosave';
-import noteEditedText from './note_edited_text.vue';
-import noteAwardsList from './note_awards_list.vue';
 import noteAttachment from './note_attachment.vue';
+import noteAwardsList from './note_awards_list.vue';
+import noteEditedText from './note_edited_text.vue';
 import noteForm from './note_form.vue';
 
 export default {

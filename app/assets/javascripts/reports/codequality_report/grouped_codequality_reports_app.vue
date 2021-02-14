@@ -1,9 +1,9 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
-import { componentNames } from '~/reports/components/issue_body';
 import { s__, sprintf } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { componentNames } from '~/reports/components/issue_body';
 import ReportSection from '~/reports/components/report_section.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import createStore from './store';
 
 export default {

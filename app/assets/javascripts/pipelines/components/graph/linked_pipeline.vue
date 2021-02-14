@@ -1,8 +1,8 @@
 <script>
 import { GlTooltipDirective, GlButton, GlLink, GlLoadingIcon, GlBadge } from '@gitlab/ui';
-import CiStatus from '~/vue_shared/components/ci_icon.vue';
-import { __, sprintf } from '~/locale';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
+import { __, sprintf } from '~/locale';
+import CiStatus from '~/vue_shared/components/ci_icon.vue';
 import { accessValue } from './accessors';
 import { DOWNSTREAM, REST, UPSTREAM } from './constants';
 import { reportToSentry } from './utils';

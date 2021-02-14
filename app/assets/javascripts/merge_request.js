@@ -1,14 +1,14 @@
 /* eslint-disable func-names, no-underscore-dangle, consistent-return */
 
 import $ from 'jquery';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __ } from '~/locale';
 import eventHub from '~/vue_merge_request_widget/event_hub';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
 import axios from './lib/utils/axios_utils';
-import TaskList from './task_list';
-import MergeRequestTabs from './merge_request_tabs';
 import { addDelimiter } from './lib/utils/text_utility';
 import { getParameterValues, setUrlParams } from './lib/utils/url_utility';
+import MergeRequestTabs from './merge_request_tabs';
+import TaskList from './task_list';
 
 function MergeRequest(opts) {
   // Initialize MergeRequest behavior

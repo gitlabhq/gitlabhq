@@ -1,5 +1,3 @@
-import { mount, shallowMount } from '@vue/test-utils';
-import timezoneMock from 'timezone-mock';
 import { GlLink } from '@gitlab/ui';
 import {
   GlAreaChart,
@@ -7,19 +5,20 @@ import {
   GlChartSeriesLabel,
   GlChartLegend,
 } from '@gitlab/ui/dist/charts';
+import { mount, shallowMount } from '@vue/test-utils';
+import timezoneMock from 'timezone-mock';
 import { TEST_HOST } from 'helpers/test_constants';
 import { setTestTimeout } from 'helpers/timeout';
 import { shallowWrapperContainsSlotText } from 'helpers/vue_test_utils_helper';
-import { panelTypes, chartHeight } from '~/monitoring/constants';
 import TimeSeries from '~/monitoring/components/charts/time_series.vue';
+import { panelTypes, chartHeight } from '~/monitoring/constants';
+import { timeSeriesGraphData } from '../../graph_data';
 import {
   deploymentData,
   mockProjectDir,
   annotationsData,
   mockFixedTimeRange,
 } from '../../mock_data';
-
-import { timeSeriesGraphData } from '../../graph_data';
 
 jest.mock('lodash/throttle', () =>
   // this throttle mock executes immediately

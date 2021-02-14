@@ -1,14 +1,14 @@
-import { nextTick } from 'vue';
-import { mount } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { setHTMLFixture } from 'helpers/fixtures';
-import PipelineStore from '~/pipelines/stores/pipeline_store';
 import GraphComponentLegacy from '~/pipelines/components/graph/graph_component_legacy.vue';
-import StageColumnComponentLegacy from '~/pipelines/components/graph/stage_column_component_legacy.vue';
 import LinkedPipelinesColumnLegacy from '~/pipelines/components/graph/linked_pipelines_column_legacy.vue';
+import StageColumnComponentLegacy from '~/pipelines/components/graph/stage_column_component_legacy.vue';
 import PipelinesMediator from '~/pipelines/pipeline_details_mediator';
-import graphJSON from './mock_data_legacy';
+import PipelineStore from '~/pipelines/stores/pipeline_store';
 import linkedPipelineJSON from './linked_pipelines_mock_data';
+import graphJSON from './mock_data_legacy';
 
 describe('graph component', () => {
   let store;

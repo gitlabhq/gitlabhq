@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
 import { GlButton, GlPopover } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 
 describe('HelpPopover', () => {

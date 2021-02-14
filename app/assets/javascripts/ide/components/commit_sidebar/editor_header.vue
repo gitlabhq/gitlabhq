@@ -1,9 +1,9 @@
 <script>
-import { mapActions } from 'vuex';
 import { GlModal, GlButton } from '@gitlab/ui';
+import { mapActions } from 'vuex';
 import { sprintf, __ } from '~/locale';
-import FileIcon from '~/vue_shared/components/file_icon.vue';
 import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
 
 export default {
   components: {

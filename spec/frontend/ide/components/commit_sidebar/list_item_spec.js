@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import { trimText } from 'helpers/text_helper';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
-import { createStore } from '~/ide/stores';
 import listItem from '~/ide/components/commit_sidebar/list_item.vue';
 import { createRouter } from '~/ide/ide_router';
+import { createStore } from '~/ide/stores';
 import { file } from '../../helpers';
 
 describe('Multi-file editor commit sidebar list item', () => {

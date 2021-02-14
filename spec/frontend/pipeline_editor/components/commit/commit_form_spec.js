@@ -1,5 +1,5 @@
-import { shallowMount, mount } from '@vue/test-utils';
 import { GlFormInput, GlFormTextarea } from '@gitlab/ui';
+import { shallowMount, mount } from '@vue/test-utils';
 
 import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
 

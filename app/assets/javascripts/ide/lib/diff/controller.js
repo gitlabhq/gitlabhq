@@ -1,5 +1,5 @@
-import { Range } from 'monaco-editor';
 import { throttle } from 'lodash';
+import { Range } from 'monaco-editor';
 import Disposable from '../common/disposable';
 import DirtyDiffWorker from './diff_worker';
 

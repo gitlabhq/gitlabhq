@@ -1,19 +1,19 @@
-import { mount, createLocalVue, createWrapper } from '@vue/test-utils';
-import Vuex from 'vuex';
+import { GlBadge, GlTable } from '@gitlab/ui';
 import {
   getByText as getByTextHelper,
   getByTestId as getByTestIdHelper,
   within,
 } from '@testing-library/dom';
-import { GlBadge, GlTable } from '@gitlab/ui';
-import MembersTable from '~/members/components/table/members_table.vue';
+import { mount, createLocalVue, createWrapper } from '@vue/test-utils';
+import Vuex from 'vuex';
+import CreatedAt from '~/members/components/table/created_at.vue';
+import ExpirationDatepicker from '~/members/components/table/expiration_datepicker.vue';
+import ExpiresAt from '~/members/components/table/expires_at.vue';
+import MemberActionButtons from '~/members/components/table/member_action_buttons.vue';
 import MemberAvatar from '~/members/components/table/member_avatar.vue';
 import MemberSource from '~/members/components/table/member_source.vue';
-import ExpiresAt from '~/members/components/table/expires_at.vue';
-import CreatedAt from '~/members/components/table/created_at.vue';
+import MembersTable from '~/members/components/table/members_table.vue';
 import RoleDropdown from '~/members/components/table/role_dropdown.vue';
-import ExpirationDatepicker from '~/members/components/table/expiration_datepicker.vue';
-import MemberActionButtons from '~/members/components/table/member_action_buttons.vue';
 import * as initUserPopovers from '~/user_popovers';
 import { member as memberMock, directMember, invite, accessRequest } from '../../mock_data';
 

@@ -1,9 +1,9 @@
 import Visibility from 'visibilityjs';
-import axios from '~/lib/utils/axios_utils';
-import Poll from '~/lib/utils/poll';
-import { setFaviconOverlay, resetFavicon } from '~/lib/utils/favicon';
 import { deprecatedCreateFlash as flash } from '~/flash';
-import { __ } from '~/locale';
+import axios from '~/lib/utils/axios_utils';
+import { setFaviconOverlay, resetFavicon } from '~/lib/utils/favicon';
+import httpStatusCodes from '~/lib/utils/http_status';
+import Poll from '~/lib/utils/poll';
 import {
   canScroll,
   isScrolledToBottom,
@@ -12,7 +12,7 @@ import {
   scrollDown,
   scrollUp,
 } from '~/lib/utils/scroll_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
+import { __ } from '~/locale';
 import * as types from './mutation_types';
 
 export const init = ({ dispatch }, { endpoint, logState, pagePath }) => {

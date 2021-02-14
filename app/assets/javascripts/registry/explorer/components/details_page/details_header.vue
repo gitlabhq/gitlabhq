@@ -1,8 +1,8 @@
 <script>
 import { GlSprintf, GlButton } from '@gitlab/ui';
 import { sprintf, n__ } from '~/locale';
-import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
+import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import {
   DETAILS_PAGE_TITLE,

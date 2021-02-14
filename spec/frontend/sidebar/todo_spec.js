@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 
 import SidebarTodos from '~/sidebar/components/todo_toggle/todo.vue';
 

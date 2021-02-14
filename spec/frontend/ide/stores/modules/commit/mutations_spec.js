@@ -1,6 +1,6 @@
-import commitState from '~/ide/stores/modules/commit/state';
-import mutations from '~/ide/stores/modules/commit/mutations';
 import * as types from '~/ide/stores/modules/commit/mutation_types';
+import mutations from '~/ide/stores/modules/commit/mutations';
+import commitState from '~/ide/stores/modules/commit/state';
 
 describe('IDE commit module mutations', () => {
   let state;

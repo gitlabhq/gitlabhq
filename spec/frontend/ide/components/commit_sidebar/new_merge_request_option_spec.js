@@ -2,8 +2,8 @@ import Vue from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { projectData, branches } from 'jest/ide/mock_data';
 import NewMergeRequestOption from '~/ide/components/commit_sidebar/new_merge_request_option.vue';
-import { createStore } from '~/ide/stores';
 import { PERMISSION_CREATE_MR } from '~/ide/constants';
+import { createStore } from '~/ide/stores';
 import {
   COMMIT_TO_CURRENT_BRANCH,
   COMMIT_TO_NEW_BRANCH,

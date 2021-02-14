@@ -1,6 +1,6 @@
-import state from '~/ide/stores/modules/pane/state';
-import mutations from '~/ide/stores/modules/pane/mutations';
 import * as types from '~/ide/stores/modules/pane/mutation_types';
+import mutations from '~/ide/stores/modules/pane/mutations';
+import state from '~/ide/stores/modules/pane/state';
 
 describe('IDE pane module mutations', () => {
   const TEST_VIEW = 'test-view';

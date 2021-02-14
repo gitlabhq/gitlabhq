@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { FILE_SYMLINK_MODE } from '~/vue_shared/constants';
 

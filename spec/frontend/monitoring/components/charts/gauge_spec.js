@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlGaugeChart } from '@gitlab/ui/dist/charts';
+import { shallowMount } from '@vue/test-utils';
 import GaugeChart from '~/monitoring/components/charts/gauge.vue';
 import { gaugeChartGraphData } from '../../graph_data';
 

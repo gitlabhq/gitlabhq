@@ -1,9 +1,8 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlDropdown, GlLink } from '@gitlab/ui';
-import { createStore } from '~/integrations/edit/store';
-
-import { integrationLevels, overrideDropdownDescriptions } from '~/integrations/edit/constants';
+import { shallowMount } from '@vue/test-utils';
 import OverrideDropdown from '~/integrations/edit/components/override_dropdown.vue';
+import { integrationLevels, overrideDropdownDescriptions } from '~/integrations/edit/constants';
+import { createStore } from '~/integrations/edit/store';
 
 describe('OverrideDropdown', () => {
   let wrapper;

@@ -1,8 +1,8 @@
-import { shallowMount } from '@vue/test-utils';
 import ActionCable from '@rails/actioncable';
+import { shallowMount } from '@vue/test-utils';
+import query from '~/issuable_sidebar/queries/issue_sidebar.query.graphql';
 import AssigneesRealtime from '~/sidebar/components/assignees/assignees_realtime.vue';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
-import query from '~/issuable_sidebar/queries/issue_sidebar.query.graphql';
 import Mock from './mock_data';
 
 jest.mock('@rails/actioncable', () => {

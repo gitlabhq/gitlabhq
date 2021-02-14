@@ -1,8 +1,8 @@
 import testAction from 'helpers/vuex_action_helper';
 import Api from '~/api';
-import createState from '~/feature_flags/store/gitlab_user_list/state';
 import { fetchUserLists, setFilter } from '~/feature_flags/store/gitlab_user_list/actions';
 import * as types from '~/feature_flags/store/gitlab_user_list/mutation_types';
+import createState from '~/feature_flags/store/gitlab_user_list/state';
 import { userList } from '../../mock_data';
 
 jest.mock('~/api');

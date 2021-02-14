@@ -1,8 +1,8 @@
 <script>
 /* eslint-disable @gitlab/require-i18n-strings */
 import { GlModal, GlLink, GlSprintf } from '@gitlab/ui';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { __ } from '~/locale';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 export default {
   i18n: {

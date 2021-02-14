@@ -10,11 +10,11 @@ import {
 } from 'ee_else_ce/users_select/constants';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { fixTitle, dispose } from '~/tooltips';
-import axios from '../lib/utils/axios_utils';
-import { s__, __, sprintf } from '../locale';
 import ModalStore from '../boards/stores/modal_store';
+import axios from '../lib/utils/axios_utils';
 import { parseBoolean, spriteIcon } from '../lib/utils/common_utils';
 import { loadCSSFile } from '../lib/utils/css_utils';
+import { s__, __, sprintf } from '../locale';
 import { getAjaxUsersSelectOptions, getAjaxUsersSelectParams } from './utils';
 
 // TODO: remove eventHub hack after code splitting refactor

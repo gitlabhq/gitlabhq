@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
 import SelfMonitor from '~/self_monitor/components/self_monitor_form.vue';
 import { createStore } from '~/self_monitor/store';

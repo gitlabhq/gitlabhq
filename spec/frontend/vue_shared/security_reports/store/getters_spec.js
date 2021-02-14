@@ -1,7 +1,3 @@
-import createState from '~/vue_shared/security_reports/store/state';
-import createSastState from '~/vue_shared/security_reports/store/modules/sast/state';
-import createSecretScanningState from '~/vue_shared/security_reports/store/modules/secret_detection/state';
-import { groupedTextBuilder } from '~/vue_shared/security_reports/store/utils';
 import {
   groupedSummaryText,
   allReportsHaveError,
@@ -11,6 +7,10 @@ import {
   anyReportHasIssues,
   summaryCounts,
 } from '~/vue_shared/security_reports/store/getters';
+import createSastState from '~/vue_shared/security_reports/store/modules/sast/state';
+import createSecretScanningState from '~/vue_shared/security_reports/store/modules/secret_detection/state';
+import createState from '~/vue_shared/security_reports/store/state';
+import { groupedTextBuilder } from '~/vue_shared/security_reports/store/utils';
 import { CRITICAL, HIGH, LOW } from '~/vulnerabilities/constants';
 
 const generateVuln = (severity) => ({ severity });

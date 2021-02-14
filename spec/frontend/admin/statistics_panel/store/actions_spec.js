@@ -1,10 +1,10 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import * as actions from '~/admin/statistics_panel/store/actions';
 import * as types from '~/admin/statistics_panel/store/mutation_types';
 import getInitialState from '~/admin/statistics_panel/store/state';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import mockStatistics from '../mock_data';
 
 describe('Admin statistics panel actions', () => {

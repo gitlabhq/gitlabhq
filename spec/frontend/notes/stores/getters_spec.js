@@ -1,5 +1,5 @@
-import * as getters from '~/notes/stores/getters';
 import { DESC } from '~/notes/constants';
+import * as getters from '~/notes/stores/getters';
 import {
   notesDataMock,
   userDataMock,

@@ -1,22 +1,21 @@
-import Vuex from 'vuex';
-import { mount, createLocalVue } from '@vue/test-utils';
 import { GlEmptyState, GlModal } from '@gitlab/ui';
+import { mount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import stubChildren from 'helpers/stub_children';
-import Tracking from '~/tracking';
-import * as getters from '~/packages/details/store/getters';
-import PackagesApp from '~/packages/details/components/app.vue';
-import PackageTitle from '~/packages/details/components/package_title.vue';
 
-import * as SharedUtils from '~/packages/shared/utils';
-import { TrackingActions } from '~/packages/shared/constants';
-import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
-import PackageListRow from '~/packages/shared/components/package_list_row.vue';
-
-import DependencyRow from '~/packages/details/components/dependency_row.vue';
-import PackageHistory from '~/packages/details/components/package_history.vue';
 import AdditionalMetadata from '~/packages/details/components/additional_metadata.vue';
+import PackagesApp from '~/packages/details/components/app.vue';
+import DependencyRow from '~/packages/details/components/dependency_row.vue';
 import InstallationCommands from '~/packages/details/components/installation_commands.vue';
 import PackageFiles from '~/packages/details/components/package_files.vue';
+import PackageHistory from '~/packages/details/components/package_history.vue';
+import PackageTitle from '~/packages/details/components/package_title.vue';
+import * as getters from '~/packages/details/store/getters';
+import PackageListRow from '~/packages/shared/components/package_list_row.vue';
+import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
+import { TrackingActions } from '~/packages/shared/constants';
+import * as SharedUtils from '~/packages/shared/utils';
+import Tracking from '~/tracking';
 
 import {
   composerPackage,

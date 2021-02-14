@@ -1,8 +1,8 @@
-import { mount } from '@vue/test-utils';
 import { GlPopover, GlLink, GlButton } from '@gitlab/ui';
-import FeatureHighlightPopover from '~/feature_highlight/feature_highlight_popover.vue';
-import { dismiss } from '~/feature_highlight/feature_highlight_helper';
+import { mount } from '@vue/test-utils';
 import { POPOVER_TARGET_ID } from '~/feature_highlight/constants';
+import { dismiss } from '~/feature_highlight/feature_highlight_helper';
+import FeatureHighlightPopover from '~/feature_highlight/feature_highlight_popover.vue';
 
 jest.mock('~/feature_highlight/feature_highlight_helper');
 

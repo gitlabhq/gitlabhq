@@ -1,18 +1,18 @@
 import testAction from 'helpers/vuex_action_helper';
-import actions, { gqlClient } from '~/boards/stores/actions';
-import * as types from '~/boards/stores/mutation_types';
-import { inactiveId } from '~/boards/constants';
-import issueMoveListMutation from '~/boards/graphql/issue_move_list.mutation.graphql';
-import destroyBoardListMutation from '~/boards/graphql/board_list_destroy.mutation.graphql';
-import issueCreateMutation from '~/boards/graphql/issue_create.mutation.graphql';
-import updateAssignees from '~/vue_shared/components/sidebar/queries/updateAssignees.mutation.graphql';
 import {
   fullBoardId,
   formatListIssues,
   formatBoardLists,
   formatIssueInput,
 } from '~/boards/boards_util';
+import { inactiveId } from '~/boards/constants';
+import destroyBoardListMutation from '~/boards/graphql/board_list_destroy.mutation.graphql';
+import issueCreateMutation from '~/boards/graphql/issue_create.mutation.graphql';
+import issueMoveListMutation from '~/boards/graphql/issue_move_list.mutation.graphql';
+import actions, { gqlClient } from '~/boards/stores/actions';
+import * as types from '~/boards/stores/mutation_types';
 import createFlash from '~/flash';
+import updateAssignees from '~/vue_shared/components/sidebar/queries/updateAssignees.mutation.graphql';
 import {
   mockLists,
   mockListsById,

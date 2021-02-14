@@ -1,9 +1,9 @@
 import { Range } from 'monaco-editor';
-import Editor from '~/ide/lib/editor';
 import ModelManager from '~/ide/lib/common/model_manager';
 import DecorationsController from '~/ide/lib/decorations/controller';
 import DirtyDiffController, { getDiffChangeType, getDecorator } from '~/ide/lib/diff/controller';
 import { computeDiff } from '~/ide/lib/diff/diff';
+import Editor from '~/ide/lib/editor';
 import { createStore } from '~/ide/stores';
 import { file } from '../../helpers';
 

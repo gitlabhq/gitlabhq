@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import Success from '~/static_site_editor/pages/success.vue';
 import { HOME_ROUTE } from '~/static_site_editor/router/constants';
 import { savedContentMeta, returnUrl, sourcePath } from '../mock_data';

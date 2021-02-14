@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import SystemNote from '~/vue_shared/alert_details/components/system_notes/system_note.vue';
 import mockAlerts from '../mocks/alerts.json';
 

@@ -1,8 +1,8 @@
 <script>
 import $ from 'jquery';
 import { __ } from '~/locale';
-import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import ActionsButton from '~/vue_shared/components/actions_button.vue';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
 const KEY_EDIT = 'edit';
 const KEY_WEB_IDE = 'webide';

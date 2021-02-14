@@ -1,6 +1,5 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import diffModule from '~/diffs/store/modules';
 import SettingsDropdown from '~/diffs/components/settings_dropdown.vue';
 import {
   EVT_VIEW_FILE_BY_FILE,
@@ -8,6 +7,7 @@ import {
   INLINE_DIFF_VIEW_TYPE,
 } from '~/diffs/constants';
 import eventHub from '~/diffs/event_hub';
+import diffModule from '~/diffs/store/modules';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

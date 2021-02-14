@@ -1,28 +1,28 @@
 <script>
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 
+import eventHub from '~/blob/components/eventhub';
 import { deprecatedCreateFlash as Flash } from '~/flash';
-import { __, sprintf } from '~/locale';
-import TitleField from '~/vue_shared/components/form/title.vue';
 import { redirectTo, joinPaths } from '~/lib/utils/url_utility';
-import FormFooterActions from '~/vue_shared/components/form/form_footer_actions.vue';
+import { __, sprintf } from '~/locale';
 import {
   SNIPPET_MARK_EDIT_APP_START,
   SNIPPET_MEASURE_BLOBS_CONTENT,
 } from '~/performance/constants';
-import eventHub from '~/blob/components/eventhub';
 import { performanceMarkAndMeasure } from '~/performance/utils';
+import FormFooterActions from '~/vue_shared/components/form/form_footer_actions.vue';
+import TitleField from '~/vue_shared/components/form/title.vue';
 
-import UpdateSnippetMutation from '../mutations/updateSnippet.mutation.graphql';
-import CreateSnippetMutation from '../mutations/createSnippet.mutation.graphql';
-import { getSnippetMixin } from '../mixins/snippets';
 import { SNIPPET_CREATE_MUTATION_ERROR, SNIPPET_UPDATE_MUTATION_ERROR } from '../constants';
+import { getSnippetMixin } from '../mixins/snippets';
+import CreateSnippetMutation from '../mutations/createSnippet.mutation.graphql';
+import UpdateSnippetMutation from '../mutations/updateSnippet.mutation.graphql';
 import { markBlobPerformance } from '../utils/blob';
 import { getErrorMessage } from '../utils/error';
 
 import SnippetBlobActionsEdit from './snippet_blob_actions_edit.vue';
-import SnippetVisibilityEdit from './snippet_visibility_edit.vue';
 import SnippetDescriptionEdit from './snippet_description_edit.vue';
+import SnippetVisibilityEdit from './snippet_visibility_edit.vue';
 
 eventHub.$on(SNIPPET_MEASURE_BLOBS_CONTENT, markBlobPerformance);
 

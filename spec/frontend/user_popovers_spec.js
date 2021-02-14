@@ -1,5 +1,5 @@
-import initUserPopovers from '~/user_popovers';
 import UsersCache from '~/lib/utils/users_cache';
+import initUserPopovers from '~/user_popovers';
 
 describe('User Popovers', () => {
   const fixtureTemplate = 'merge_requests/merge_request_with_mentions.html';

@@ -1,8 +1,8 @@
 /* eslint-disable no-new */
 
 import $ from 'jquery';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
 import initPopover from '~/blob/suggest_gitlab_ci_yml';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { disableButtonIfEmptyField, setCookie } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
 import BlobFileDropzone from '../blob/blob_file_dropzone';

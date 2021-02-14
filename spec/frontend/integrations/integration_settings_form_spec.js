@@ -1,6 +1,6 @@
 import MockAdaptor from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
 import IntegrationSettingsForm from '~/integrations/integration_settings_form';
+import axios from '~/lib/utils/axios_utils';
 import toast from '~/vue_shared/plugins/global_toast';
 
 jest.mock('~/vue_shared/plugins/global_toast');

@@ -1,7 +1,7 @@
 import { escape, minBy } from 'lodash';
 import emojiAliases from 'emojis/aliases.json';
-import axios from '../lib/utils/axios_utils';
 import AccessorUtilities from '../lib/utils/accessor';
+import axios from '../lib/utils/axios_utils';
 
 let emojiMap = null;
 let validEmojiNames = null;

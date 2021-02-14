@@ -1,14 +1,14 @@
 import '~/boards/models/list';
-import MockAdapter from 'axios-mock-adapter';
-import axios from 'axios';
-import Vuex from 'vuex';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlDrawer, GlLabel } from '@gitlab/ui';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
+import Vuex from 'vuex';
 import BoardSettingsSidebar from '~/boards/components/board_settings_sidebar.vue';
-import boardsStore from '~/boards/stores/boards_store';
-import { createStore } from '~/boards/stores';
-import sidebarEventHub from '~/sidebar/event_hub';
 import { inactiveId, LIST } from '~/boards/constants';
+import { createStore } from '~/boards/stores';
+import boardsStore from '~/boards/stores/boards_store';
+import sidebarEventHub from '~/sidebar/event_hub';
 
 const localVue = createLocalVue();
 

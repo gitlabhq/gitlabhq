@@ -1,9 +1,8 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import component from '~/packages_and_registries/settings/group/components/group_settings_app.vue';
 import MavenSettings from '~/packages_and_registries/settings/group/components/maven_settings.vue';
 import {
@@ -14,8 +13,9 @@ import {
   SUCCESS_UPDATING_SETTINGS,
 } from '~/packages_and_registries/settings/group/constants';
 
-import getGroupPackagesSettingsQuery from '~/packages_and_registries/settings/group/graphql/queries/get_group_packages_settings.query.graphql';
 import updateNamespacePackageSettings from '~/packages_and_registries/settings/group/graphql/mutations/update_group_packages_settings.mutation.graphql';
+import getGroupPackagesSettingsQuery from '~/packages_and_registries/settings/group/graphql/queries/get_group_packages_settings.query.graphql';
+import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import {
   groupPackageSettingsMock,
   groupPackageSettingsMutationMock,

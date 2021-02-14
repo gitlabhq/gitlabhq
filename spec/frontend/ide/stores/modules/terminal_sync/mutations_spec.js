@@ -1,6 +1,6 @@
-import createState from '~/ide/stores/modules/terminal_sync/state';
 import * as types from '~/ide/stores/modules/terminal_sync/mutation_types';
 import mutations from '~/ide/stores/modules/terminal_sync/mutations';
+import createState from '~/ide/stores/modules/terminal_sync/state';
 
 const TEST_MESSAGE = 'lorem ipsum dolar sit';
 

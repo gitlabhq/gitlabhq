@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
-import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'helpers/test_constants';
+import testAction from 'helpers/vuex_action_helper';
 import axios from '~/lib/utils/axios_utils';
 import {
   setEndpoint,
@@ -11,8 +11,8 @@ import {
   receiveArtifactsSuccess,
   receiveArtifactsError,
 } from '~/vue_merge_request_widget/stores/artifacts_list/actions';
-import state from '~/vue_merge_request_widget/stores/artifacts_list/state';
 import * as types from '~/vue_merge_request_widget/stores/artifacts_list/mutation_types';
+import state from '~/vue_merge_request_widget/stores/artifacts_list/state';
 
 describe('Artifacts App Store Actions', () => {
   let mockedState;

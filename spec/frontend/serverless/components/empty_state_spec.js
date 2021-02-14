@@ -1,7 +1,7 @@
 import { GlEmptyState, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { createStore } from '~/serverless/store';
 import EmptyStateComponent from '~/serverless/components/empty_state.vue';
+import { createStore } from '~/serverless/store';
 
 describe('EmptyStateComponent', () => {
   let wrapper;

@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlDropdownItem } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import CommitMessageDropdown from '~/vue_merge_request_widget/components/states/commit_message_dropdown.vue';
 
 const commits = [

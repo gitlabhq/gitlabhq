@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import axios from '~/lib/utils/axios_utils';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
-import { s__ } from '~/locale';
 import Api from '~/api';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
+import { s__ } from '~/locale';
 import * as types from './mutation_types';
 
 export const setBaseConfig = ({ commit }, options) => {

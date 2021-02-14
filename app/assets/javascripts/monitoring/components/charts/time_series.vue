@@ -1,15 +1,15 @@
 <script>
-import { isEmpty, omit, throttle } from 'lodash';
 import { GlLink, GlTooltip, GlResizeObserverDirective, GlIcon } from '@gitlab/ui';
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
-import { s__ } from '~/locale';
-import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
+import { isEmpty, omit, throttle } from 'lodash';
 import { makeDataSeries } from '~/helpers/monitor_helper';
+import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
+import { s__ } from '~/locale';
 import { panelTypes, chartHeight, lineTypes, lineWidths, legendLayoutTypes } from '../../constants';
-import { graphDataValidatorForValues } from '../../utils';
 import { formatDate, timezones } from '../../format_date';
-import { getYAxisOptions, getTimeAxisOptions, getChartGrid, getTooltipFormatter } from './options';
+import { graphDataValidatorForValues } from '../../utils';
 import { annotationsYAxis, generateAnnotationsSeries } from './annotations';
+import { getYAxisOptions, getTimeAxisOptions, getChartGrid, getTooltipFormatter } from './options';
 
 export const timestampToISODate = (timestamp) => new Date(timestamp).toISOString();
 

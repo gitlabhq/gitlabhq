@@ -1,6 +1,6 @@
+import { GlColumnChart } from '@gitlab/ui/dist/charts';
 import { shallowMount } from '@vue/test-utils';
 import timezoneMock from 'timezone-mock';
-import { GlColumnChart } from '@gitlab/ui/dist/charts';
 import ColumnChart from '~/monitoring/components/charts/column.vue';
 
 jest.mock('~/lib/utils/icon_utils', () => ({

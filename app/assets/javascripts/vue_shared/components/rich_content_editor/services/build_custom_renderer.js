@@ -1,12 +1,12 @@
 import { union, mapValues } from 'lodash';
-import renderBlockHtml from './renderers/render_html_block';
+import renderAttributeDefinition from './renderers/render_attribute_definition';
+import renderFontAwesomeHtmlInline from './renderers/render_font_awesome_html_inline';
 import renderHeading from './renderers/render_heading';
+import renderBlockHtml from './renderers/render_html_block';
 import renderIdentifierInstanceText from './renderers/render_identifier_instance_text';
 import renderIdentifierParagraph from './renderers/render_identifier_paragraph';
-import renderFontAwesomeHtmlInline from './renderers/render_font_awesome_html_inline';
-import renderSoftbreak from './renderers/render_softbreak';
-import renderAttributeDefinition from './renderers/render_attribute_definition';
 import renderListItem from './renderers/render_list_item';
+import renderSoftbreak from './renderers/render_softbreak';
 
 const htmlInlineRenderers = [renderFontAwesomeHtmlInline];
 const htmlBlockRenderers = [renderBlockHtml];

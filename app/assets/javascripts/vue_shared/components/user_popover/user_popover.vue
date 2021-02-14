@@ -7,8 +7,8 @@ import {
   GlIcon,
 } from '@gitlab/ui';
 import UserAvailabilityStatus from '~/set_status_modal/components/user_availability_status.vue';
-import UserAvatarImage from '../user_avatar/user_avatar_image.vue';
 import { glEmojiTag } from '../../../emoji';
+import UserAvatarImage from '../user_avatar/user_avatar_image.vue';
 
 const MAX_SKELETON_LINES = 4;
 

@@ -3,11 +3,11 @@
 import $ from 'jquery';
 import { property } from 'lodash';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
-import MilestoneSelect from './milestone_select';
 import issueStatusSelect from './issue_status_select';
-import subscriptionSelect from './subscription_select';
-import LabelsSelect from './labels_select';
 import issueableEventHub from './issues_list/eventhub';
+import LabelsSelect from './labels_select';
+import MilestoneSelect from './milestone_select';
+import subscriptionSelect from './subscription_select';
 
 const HIDDEN_CLASS = 'hidden';
 const DISABLED_CONTENT_CLASS = 'disabled-content';

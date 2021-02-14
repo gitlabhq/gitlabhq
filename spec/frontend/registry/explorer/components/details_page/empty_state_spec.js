@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlEmptyState } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import component from '~/registry/explorer/components/details_page/empty_state.vue';
 import {
   NO_TAGS_TITLE,

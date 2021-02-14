@@ -1,7 +1,7 @@
 <script>
-import Vue from 'vue';
-import { isNumber } from 'lodash';
 import { GlAlert, GlButton, GlFormSelect, GlFormGroup, GlIcon, GlLink, GlToken } from '@gitlab/ui';
+import { isNumber } from 'lodash';
+import Vue from 'vue';
 import { s__, __ } from '~/locale';
 import {
   EMPTY_PARAMETERS,

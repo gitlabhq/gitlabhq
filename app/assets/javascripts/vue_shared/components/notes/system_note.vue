@@ -18,8 +18,6 @@
  *    }"
  *   />
  */
-import $ from 'jquery';
-import { mapGetters, mapActions, mapState } from 'vuex';
 import {
   GlButton,
   GlDeprecatedSkeletonLoading as GlSkeletonLoading,
@@ -27,10 +25,12 @@ import {
   GlIcon,
   GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
+import $ from 'jquery';
+import { mapGetters, mapActions, mapState } from 'vuex';
 import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_version_history';
+import initMRPopovers from '~/mr_popover/';
 import noteHeader from '~/notes/components/note_header.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import initMRPopovers from '~/mr_popover/';
 import { spriteIcon } from '../../../lib/utils/common_utils';
 import TimelineEntryItem from './timeline_entry_item.vue';
 

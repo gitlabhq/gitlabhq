@@ -1,17 +1,17 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { cloneDeep } from 'lodash';
-import testAction from 'helpers/vuex_action_helper';
 import { getJSONFixture } from 'helpers/fixtures';
+import testAction from 'helpers/vuex_action_helper';
+import api from '~/api';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import httpStatus from '~/lib/utils/http_status';
+import { redirectTo } from '~/lib/utils/url_utility';
+import { ASSET_LINK_TYPE } from '~/releases/constants';
 import * as actions from '~/releases/stores/modules/detail/actions';
 import * as types from '~/releases/stores/modules/detail/mutation_types';
 import createState from '~/releases/stores/modules/detail/state';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { redirectTo } from '~/lib/utils/url_utility';
-import api from '~/api';
-import httpStatus from '~/lib/utils/http_status';
-import { ASSET_LINK_TYPE } from '~/releases/constants';
 import { releaseToApiJson, apiJsonToRelease } from '~/releases/util';
 
 jest.mock('~/flash');

@@ -1,19 +1,19 @@
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
-import { shallowMount } from '@vue/test-utils';
 import {
   GlEmptyState,
   GlPagination,
   GlDeprecatedSkeletonLoading as GlSkeletonLoading,
 } from '@gitlab/ui';
-import waitForPromises from 'helpers/wait_for_promises';
+import { shallowMount } from '@vue/test-utils';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
+import waitForPromises from 'helpers/wait_for_promises';
 import { deprecatedCreateFlash as flash } from '~/flash';
-import IssuablesListApp from '~/issues_list/components/issuables_list_app.vue';
 import Issuable from '~/issues_list/components/issuable.vue';
-import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
-import issueablesEventBus from '~/issues_list/eventhub';
+import IssuablesListApp from '~/issues_list/components/issuables_list_app.vue';
 import { PAGE_SIZE, PAGE_SIZE_MANUAL, RELATIVE_POSITION } from '~/issues_list/constants';
+import issueablesEventBus from '~/issues_list/eventhub';
+import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
 jest.mock('~/flash');
 jest.mock('~/issues_list/eventhub');

@@ -1,13 +1,13 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { GlLineChart } from '@gitlab/ui/dist/charts';
 import { GlAlert } from '@gitlab/ui';
+import { GlLineChart } from '@gitlab/ui/dist/charts';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import InstanceStatisticsCountChart from '~/analytics/instance_statistics/components/instance_statistics_count_chart.vue';
 import statsQuery from '~/analytics/instance_statistics/graphql/queries/instance_count.query.graphql';
 import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';
-import { mockCountsData1 } from '../mock_data';
 import { mockQueryResponse, mockApolloResponse } from '../apollo_mock_data';
+import { mockCountsData1 } from '../mock_data';
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);

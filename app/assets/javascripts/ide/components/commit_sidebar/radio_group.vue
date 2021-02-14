@@ -1,6 +1,6 @@
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex';
 import { GlTooltipDirective } from '@gitlab/ui';
+import { mapActions, mapState, mapGetters } from 'vuex';
 
 export default {
   directives: {

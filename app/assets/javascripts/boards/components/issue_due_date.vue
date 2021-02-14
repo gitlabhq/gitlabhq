@@ -1,13 +1,13 @@
 <script>
-import dateFormat from 'dateformat';
 import { GlTooltip, GlIcon } from '@gitlab/ui';
-import { __ } from '~/locale';
+import dateFormat from 'dateformat';
 import {
   getDayDifference,
   getTimeago,
   dateInWords,
   parsePikadayDate,
 } from '~/lib/utils/datetime_utility';
+import { __ } from '~/locale';
 
 export default {
   components: {

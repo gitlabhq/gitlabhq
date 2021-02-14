@@ -1,5 +1,4 @@
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex';
 import {
   GlButton,
   GlDropdown,
@@ -10,10 +9,11 @@ import {
   GlModalDirective,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';
-import { s__ } from '~/locale';
 import invalidUrl from '~/lib/utils/invalid_url';
 import { redirectTo } from '~/lib/utils/url_utility';
+import { s__ } from '~/locale';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { PANEL_NEW_PAGE } from '../router/constants';
 import { getAddMetricTrackingOptions } from '../utils';

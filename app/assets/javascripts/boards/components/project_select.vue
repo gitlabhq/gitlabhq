@@ -1,5 +1,4 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import {
   GlDropdown,
   GlDropdownItem,
@@ -8,6 +7,7 @@ import {
   GlIntersectionObserver,
   GlLoadingIcon,
 } from '@gitlab/ui';
+import { mapActions, mapState } from 'vuex';
 import { s__ } from '~/locale';
 import { featureAccessLevel } from '~/pages/projects/shared/permissions/constants';
 import { ListType } from '../constants';

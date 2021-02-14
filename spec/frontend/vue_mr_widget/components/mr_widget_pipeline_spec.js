@@ -1,9 +1,9 @@
-import { shallowMount, mount } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { shallowMount, mount } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
-import { SUCCESS } from '~/vue_merge_request_widget/constants';
-import PipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
 import PipelineStage from '~/pipelines/components/pipelines_list/stage.vue';
+import PipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
+import { SUCCESS } from '~/vue_merge_request_widget/constants';
 import mockData from '../mock_data';
 
 describe('MRWidgetPipeline', () => {

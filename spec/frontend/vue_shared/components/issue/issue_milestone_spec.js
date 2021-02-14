@@ -1,7 +1,7 @@
-import Vue from 'vue';
-import { shallowMount } from '@vue/test-utils';
-
 import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+
 import { mockMilestone } from 'jest/boards/mock_data';
 import IssueMilestone from '~/vue_shared/components/issue/issue_milestone.vue';
 

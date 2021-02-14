@@ -1,12 +1,12 @@
 /* eslint-disable max-classes-per-file */
+import dateFormat from 'dateformat';
 import $ from 'jquery';
 import Pikaday from 'pikaday';
-import dateFormat from 'dateformat';
-import { __ } from '~/locale';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import { __ } from '~/locale';
+import boardsStore from './boards/stores/boards_store';
 import axios from './lib/utils/axios_utils';
 import { timeFor, parsePikadayDate, pikadayToString } from './lib/utils/datetime_utility';
-import boardsStore from './boards/stores/boards_store';
 
 class DueDateSelect {
   constructor({ $dropdown, $loading } = {}) {

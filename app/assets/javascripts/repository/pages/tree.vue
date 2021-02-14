@@ -1,7 +1,7 @@
 <script>
 import TreeContent from '../components/tree_content.vue';
-import { updateElementsVisibility } from '../utils/dom';
 import preloadMixin from '../mixins/preload';
+import { updateElementsVisibility } from '../utils/dom';
 
 export default {
   components: {

@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import TimeAgo from '~/pipelines/components/pipelines_list/time_ago.vue';
 
 describe('Timeago component', () => {

@@ -1,7 +1,7 @@
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex';
 import { GlFormGroup, GlFormInput } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import { __ } from '~/locale';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import FormFieldContainer from './form_field_container.vue';

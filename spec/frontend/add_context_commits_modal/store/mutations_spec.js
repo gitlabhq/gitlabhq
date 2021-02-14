@@ -1,6 +1,6 @@
 import { TEST_HOST } from 'helpers/test_constants';
-import mutations from '~/add_context_commits_modal/store/mutations';
 import * as types from '~/add_context_commits_modal/store/mutation_types';
+import mutations from '~/add_context_commits_modal/store/mutations';
 import getDiffWithCommit from '../../diffs/mock_data/diff_with_commit';
 
 describe('AddContextCommitsModalStoreMutations', () => {

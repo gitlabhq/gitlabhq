@@ -1,6 +1,6 @@
-import Vuex from 'vuex';
 import { GlFormInput } from '@gitlab/ui';
 import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import TagFieldExisting from '~/releases/components/tag_field_existing.vue';
 import createStore from '~/releases/stores';
 import createDetailModule from '~/releases/stores/modules/detail';

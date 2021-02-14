@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign */
 
-import $ from 'jquery';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import $ from 'jquery';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import initSearchAutocomplete from '~/search_autocomplete';
 import '~/lib/utils/common_utils';

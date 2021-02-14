@@ -1,7 +1,7 @@
-import { mount } from '@vue/test-utils';
 import { getByText } from '@testing-library/dom';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import { mount } from '@vue/test-utils';
 import CopyEmailToClipboard from '~/sidebar/components/copy_email_to_clipboard.vue';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 describe('CopyEmailToClipboard component', () => {
   const sampleEmail = 'sample+email@test.com';

@@ -1,7 +1,7 @@
 import testAction from 'helpers/vuex_action_helper';
-import createState from '~/create_cluster/gke_cluster/store/state';
-import * as types from '~/create_cluster/gke_cluster/store/mutation_types';
 import * as actions from '~/create_cluster/gke_cluster/store/actions';
+import * as types from '~/create_cluster/gke_cluster/store/mutation_types';
+import createState from '~/create_cluster/gke_cluster/store/state';
 import gapi from '../helpers';
 import {
   selectedProjectMock,

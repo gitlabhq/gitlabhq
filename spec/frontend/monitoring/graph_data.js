@@ -1,5 +1,5 @@
-import { mapPanelToViewModel, normalizeQueryResponseData } from '~/monitoring/stores/utils';
 import { panelTypes, metricStates } from '~/monitoring/constants';
+import { mapPanelToViewModel, normalizeQueryResponseData } from '~/monitoring/stores/utils';
 
 const initTime = 1435781450; // "Wed, 01 Jul 2015 20:10:50 GMT"
 const intervalSeconds = 120;

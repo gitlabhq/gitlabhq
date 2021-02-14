@@ -1,7 +1,7 @@
-import { shallowMount, mount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
-import eventHub from '~/environments/event_hub';
+import { shallowMount, mount } from '@vue/test-utils';
 import RollbackComponent from '~/environments/components/environment_rollback.vue';
+import eventHub from '~/environments/event_hub';
 
 describe('Rollback Component', () => {
   const retryUrl = 'https://gitlab.com/retry';

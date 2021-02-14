@@ -1,12 +1,12 @@
 <script>
 import { GlButton, GlLoadingIcon, GlModal, GlLink } from '@gitlab/ui';
+import { getParameterByName } from '~/lib/utils/common_utils';
+import eventHub from '~/pipelines/event_hub';
+import pipelinesMixin from '~/pipelines/mixins/pipelines';
+import PipelinesPaginationApiMixin from '~/pipelines/mixins/pipelines_pagination_api_mixin';
 import PipelinesService from '~/pipelines/services/pipelines_service';
 import PipelineStore from '~/pipelines/stores/pipelines_store';
-import pipelinesMixin from '~/pipelines/mixins/pipelines';
-import eventHub from '~/pipelines/event_hub';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
-import { getParameterByName } from '~/lib/utils/common_utils';
-import PipelinesPaginationApiMixin from '~/pipelines/mixins/pipelines_pagination_api_mixin';
 
 export default {
   components: {

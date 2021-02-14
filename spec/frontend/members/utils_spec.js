@@ -1,3 +1,4 @@
+import { DEFAULT_SORT } from '~/members/constants';
 import {
   generateBadges,
   isGroup,
@@ -12,7 +13,6 @@ import {
   parseDataAttributes,
   groupLinkRequestFormatter,
 } from '~/members/utils';
-import { DEFAULT_SORT } from '~/members/constants';
 import {
   member as memberMock,
   directMember,

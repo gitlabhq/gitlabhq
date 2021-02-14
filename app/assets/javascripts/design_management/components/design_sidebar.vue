@@ -1,13 +1,13 @@
 <script>
-import Cookies from 'js-cookie';
 import { GlCollapse, GlButton, GlPopover } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import Cookies from 'js-cookie';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { s__ } from '~/locale';
 import Participants from '~/sidebar/components/participants/participants.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../constants';
 import updateActiveDiscussionMutation from '../graphql/mutations/update_active_discussion.mutation.graphql';
 import { extractDiscussions, extractParticipants } from '../utils/design_management_utils';
-import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../constants';
 import DesignDiscussion from './design_notes/design_discussion.vue';
 import DesignTodoButton from './design_todo_button.vue';
 

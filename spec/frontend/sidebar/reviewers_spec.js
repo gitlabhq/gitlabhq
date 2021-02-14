@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
 import UsersMockHelper from 'helpers/user_mock_data_helper';
 import Reviewer from '~/sidebar/components/reviewers/reviewers.vue';

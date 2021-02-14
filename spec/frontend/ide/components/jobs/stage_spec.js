@@ -1,7 +1,7 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
-import Stage from '~/ide/components/jobs/stage.vue';
+import { shallowMount } from '@vue/test-utils';
 import Item from '~/ide/components/jobs/item.vue';
+import Stage from '~/ide/components/jobs/stage.vue';
 import { stages, jobs } from '../../mock_data';
 
 describe('IDE pipeline stage', () => {

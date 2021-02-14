@@ -1,8 +1,8 @@
 import Store from 'ee_else_ce/sidebar/stores/sidebar_store';
-import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
-import { visitUrl } from '../lib/utils/url_utility';
+import toast from '~/vue_shared/plugins/global_toast';
 import { deprecatedCreateFlash as Flash } from '../flash';
+import { visitUrl } from '../lib/utils/url_utility';
 import Service from './services/sidebar_service';
 
 export default class SidebarMediator {

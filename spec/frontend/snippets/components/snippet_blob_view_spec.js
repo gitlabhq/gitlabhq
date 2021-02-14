@@ -1,5 +1,5 @@
-import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import {
   Blob as BlobMock,
   SimpleViewerMock,
@@ -7,16 +7,16 @@ import {
   RichBlobContentMock,
   SimpleBlobContentMock,
 } from 'jest/blob/components/mock_data';
-import SnippetBlobView from '~/snippets/components/snippet_blob_view.vue';
-import BlobHeader from '~/blob/components/blob_header.vue';
 import BlobContent from '~/blob/components/blob_content.vue';
+import BlobHeader from '~/blob/components/blob_header.vue';
 import {
   BLOB_RENDER_EVENT_LOAD,
   BLOB_RENDER_EVENT_SHOW_SOURCE,
   BLOB_RENDER_ERRORS,
 } from '~/blob/components/constants';
-import { RichViewer, SimpleViewer } from '~/vue_shared/components/blob_viewers';
+import SnippetBlobView from '~/snippets/components/snippet_blob_view.vue';
 import { SNIPPET_VISIBILITY_PUBLIC } from '~/snippets/constants';
+import { RichViewer, SimpleViewer } from '~/vue_shared/components/blob_viewers';
 
 describe('Blob Embeddable', () => {
   let wrapper;

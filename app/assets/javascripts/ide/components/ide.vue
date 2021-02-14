@@ -1,6 +1,6 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlAlert, GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { __, s__ } from '~/locale';
 import {
   WEBIDE_MARK_APP_START,

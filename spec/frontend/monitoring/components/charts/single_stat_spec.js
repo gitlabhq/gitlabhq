@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
+import { shallowMount } from '@vue/test-utils';
 import SingleStatChart from '~/monitoring/components/charts/single_stat.vue';
 import { singleStatGraphData } from '../../graph_data';
 

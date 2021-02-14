@@ -1,11 +1,11 @@
 <script>
-import { mapState, mapActions } from 'vuex';
 import { GlEmptyState, GlLink, GlButton } from '@gitlab/ui';
+import { mapState, mapActions } from 'vuex';
 import { getParameterByName } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import ReleaseBlock from './release_block.vue';
-import ReleasesPagination from './releases_pagination.vue';
 import ReleaseSkeletonLoader from './release_skeleton_loader.vue';
+import ReleasesPagination from './releases_pagination.vue';
 import ReleasesSort from './releases_sort.vue';
 
 export default {

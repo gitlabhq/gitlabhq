@@ -1,5 +1,5 @@
-import Vuex from 'vuex';
 import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import TreeList from '~/diffs/components/tree_list.vue';
 import createStore from '~/diffs/store/modules';
 import FileTree from '~/vue_shared/components/file_tree.vue';

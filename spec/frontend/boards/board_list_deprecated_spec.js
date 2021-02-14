@@ -1,12 +1,12 @@
 /* global List */
 /* global ListIssue */
 
-import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
+import Vue from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
-import eventHub from '~/boards/eventhub';
 import BoardList from '~/boards/components/board_list_deprecated.vue';
+import eventHub from '~/boards/eventhub';
 import '~/boards/models/issue';
 import '~/boards/models/list';
 import store from '~/boards/stores';

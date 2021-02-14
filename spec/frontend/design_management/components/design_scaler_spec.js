@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import DesignScaler from '~/design_management/components/design_scaler.vue';
 
 describe('Design management design scaler component', () => {

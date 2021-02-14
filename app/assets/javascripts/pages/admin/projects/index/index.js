@@ -1,8 +1,8 @@
 import Vue from 'vue';
 
-import Translate from '~/vue_shared/translate';
-import csrf from '~/lib/utils/csrf';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
+import csrf from '~/lib/utils/csrf';
+import Translate from '~/vue_shared/translate';
 
 import deleteProjectModal from './components/delete_project_modal.vue';
 

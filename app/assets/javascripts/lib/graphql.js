@@ -1,11 +1,11 @@
-import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import { createUploadLink } from 'apollo-upload-client';
+import { ApolloClient } from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
 import { BatchHttpLink } from 'apollo-link-batch-http';
+import { createUploadLink } from 'apollo-upload-client';
+import { StartupJSLink } from '~/lib/utils/apollo_startup_js_link';
 import csrf from '~/lib/utils/csrf';
 import PerformanceBarService from '~/performance_bar/services/performance_bar_service';
-import { StartupJSLink } from '~/lib/utils/apollo_startup_js_link';
 
 export const fetchPolicies = {
   CACHE_FIRST: 'cache-first',

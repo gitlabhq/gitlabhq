@@ -1,11 +1,11 @@
-import { mount, shallowMount } from '@vue/test-utils';
 import { GlDropdown, GlDropdownItem, GlForm, GlSprintf, GlLoadingIcon } from '@gitlab/ui';
+import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
-import httpStatusCodes from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
-import PipelineNewForm from '~/pipeline_new/components/pipeline_new_form.vue';
+import httpStatusCodes from '~/lib/utils/http_status';
 import { redirectTo } from '~/lib/utils/url_utility';
+import PipelineNewForm from '~/pipeline_new/components/pipeline_new_form.vue';
 import {
   mockBranches,
   mockTags,

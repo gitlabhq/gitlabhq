@@ -1,12 +1,12 @@
 import { GlToggle } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
+import projectFeatureSetting from '~/pages/projects/shared/permissions/components/project_feature_setting.vue';
 import settingsPanel from '~/pages/projects/shared/permissions/components/settings_panel.vue';
 import {
   featureAccessLevel,
   visibilityLevelDescriptions,
   visibilityOptions,
 } from '~/pages/projects/shared/permissions/constants';
-import projectFeatureSetting from '~/pages/projects/shared/permissions/components/project_feature_setting.vue';
 
 const defaultProps = {
   currentSettings: {

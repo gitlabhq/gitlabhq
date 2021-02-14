@@ -1,6 +1,6 @@
+import { GlButton, GlForm } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlButton, GlForm } from '@gitlab/ui';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ApproveAccessRequestButton from '~/members/components/action_buttons/approve_access_request_button.vue';
 

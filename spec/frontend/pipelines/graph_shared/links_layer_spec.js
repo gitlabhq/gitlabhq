@@ -1,7 +1,7 @@
-import { mount, shallowMount } from '@vue/test-utils';
 import { GlAlert, GlButton } from '@gitlab/ui';
-import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
+import { mount, shallowMount } from '@vue/test-utils';
 import LinksInner from '~/pipelines/components/graph_shared/links_inner.vue';
+import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
 import { generateResponse, mockPipelineResponse } from '../graph/mock_data';
 
 describe('links layer component', () => {

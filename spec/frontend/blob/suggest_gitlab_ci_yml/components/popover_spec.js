@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { mockTracking, unmockTracking, triggerEvent } from 'helpers/tracking_helper';
 import Popover from '~/blob/suggest_gitlab_ci_yml/components/popover.vue';
 import * as utils from '~/lib/utils/common_utils';

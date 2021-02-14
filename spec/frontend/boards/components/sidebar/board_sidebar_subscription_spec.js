@@ -1,9 +1,9 @@
-import Vuex from 'vuex';
-import { mount, createLocalVue } from '@vue/test-utils';
 import { GlToggle, GlLoadingIcon } from '@gitlab/ui';
+import { mount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import BoardSidebarSubscription from '~/boards/components/sidebar/board_sidebar_subscription.vue';
-import * as types from '~/boards/stores/mutation_types';
 import { createStore } from '~/boards/stores';
+import * as types from '~/boards/stores/mutation_types';
 import createFlash from '~/flash';
 import { mockActiveIssue } from '../../mock_data';
 

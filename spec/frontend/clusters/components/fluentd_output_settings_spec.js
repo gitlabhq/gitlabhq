@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlAlert, GlDropdown, GlFormCheckbox } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import FluentdOutputSettings from '~/clusters/components/fluentd_output_settings.vue';
 import { APPLICATION_STATUS, FLUENTD } from '~/clusters/constants';
 import eventHub from '~/clusters/event_hub';

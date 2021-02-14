@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
-import UserActionButtons from '~/members/components/action_buttons/user_action_buttons.vue';
-import RemoveMemberButton from '~/members/components/action_buttons/remove_member_button.vue';
 import LeaveButton from '~/members/components/action_buttons/leave_button.vue';
+import RemoveMemberButton from '~/members/components/action_buttons/remove_member_button.vue';
+import UserActionButtons from '~/members/components/action_buttons/user_action_buttons.vue';
 import { member, orphanedMember } from '../../mock_data';
 
 describe('UserActionButtons', () => {

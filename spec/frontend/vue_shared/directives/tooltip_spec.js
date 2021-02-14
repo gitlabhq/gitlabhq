@@ -1,6 +1,6 @@
+import { mount } from '@vue/test-utils';
 import $ from 'jquery';
 import { escape } from 'lodash';
-import { mount } from '@vue/test-utils';
 import tooltip from '~/vue_shared/directives/tooltip';
 
 const DEFAULT_TOOLTIP_TEMPLATE = '<div v-tooltip :title="tooltip"></div>';

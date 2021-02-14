@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon, GlAvatarLabeled } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
 import IssuableHeader from '~/issuable_show/components/issuable_header.vue';

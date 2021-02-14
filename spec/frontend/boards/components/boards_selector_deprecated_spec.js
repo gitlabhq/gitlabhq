@@ -1,6 +1,6 @@
-import { nextTick } from 'vue';
-import { mount } from '@vue/test-utils';
 import { GlDropdown, GlLoadingIcon, GlDropdownSectionHeader } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { TEST_HOST } from 'spec/test_constants';
 import BoardsSelector from '~/boards/components/boards_selector_deprecated.vue';
 import boardsStore from '~/boards/stores/boards_store';

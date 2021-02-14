@@ -1,5 +1,5 @@
-import { trimText } from 'helpers/text_helper';
 import { emojiFixtureMap, mockEmojiData, initEmojiMock } from 'helpers/emoji';
+import { trimText } from 'helpers/text_helper';
 import { glEmojiTag, searchEmoji, getEmojiInfo, sortEmoji } from '~/emoji';
 import isEmojiUnicodeSupported, {
   isFlagEmoji,

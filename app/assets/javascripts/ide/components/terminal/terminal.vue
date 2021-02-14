@@ -1,6 +1,6 @@
 <script>
-import { mapState } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { mapState } from 'vuex';
 import { __ } from '~/locale';
 import GLTerminal from '~/terminal/terminal';
 import { RUNNING, STOPPING } from '../../stores/modules/terminal/constants';

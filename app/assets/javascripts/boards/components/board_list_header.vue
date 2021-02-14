@@ -1,5 +1,4 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import {
   GlButton,
   GlButtonGroup,
@@ -9,14 +8,15 @@ import {
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { mapActions, mapState } from 'vuex';
+import { isListDraggable } from '~/boards/boards_util';
+import { isScopedLabel } from '~/lib/utils/common_utils';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { n__, s__, __ } from '~/locale';
 import sidebarEventHub from '~/sidebar/event_hub';
-import { isScopedLabel } from '~/lib/utils/common_utils';
-import { isListDraggable } from '~/boards/boards_util';
-import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
+import AccessorUtilities from '../../lib/utils/accessor';
 import { inactiveId, LIST, ListType } from '../constants';
 import eventHub from '../eventhub';
-import AccessorUtilities from '../../lib/utils/accessor';
 import IssueCount from './issue_count.vue';
 
 export default {

@@ -2,8 +2,8 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import JiraIssuesListRoot from './components/jira_issues_list_root.vue';
 import IssuablesListApp from './components/issuables_list_app.vue';
+import JiraIssuesListRoot from './components/jira_issues_list_root.vue';
 
 function mountJiraIssuesListApp() {
   const el = document.querySelector('.js-projects-issues-root');

@@ -1,6 +1,6 @@
-import { nextTick } from 'vue';
-import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon, GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import AutoMergeFailedComponent from '~/vue_merge_request_widget/components/states/mr_widget_auto_merge_failed.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 

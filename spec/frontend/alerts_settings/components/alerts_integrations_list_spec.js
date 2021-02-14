@@ -1,11 +1,11 @@
 import { GlTable, GlIcon, GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
-import Tracking from '~/tracking';
 import AlertIntegrationsList, {
   i18n,
 } from '~/alerts_settings/components/alerts_integrations_list.vue';
 import { trackAlertIntegrationsViewsOptions } from '~/alerts_settings/constants';
+import Tracking from '~/tracking';
 
 const mockIntegrations = [
   {

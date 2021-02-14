@@ -1,8 +1,8 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import configureSastMutation from '~/security_configuration/graphql/configure_sast.mutation.graphql';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
+import configureSastMutation from '~/security_configuration/graphql/configure_sast.mutation.graphql';
 
 export default {
   components: {

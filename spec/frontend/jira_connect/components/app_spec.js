@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlAlert, GlButton, GlModal } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
 import JiraConnectApp from '~/jira_connect/components/app.vue';

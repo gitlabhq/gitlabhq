@@ -1,6 +1,6 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import { GlLoadingIcon, GlButton, GlModalDirective } from '@gitlab/ui';
+import { mapActions, mapState } from 'vuex';
 import { s__ } from '~/locale';
 import { PROJECT_BADGE } from '../constants';
 import Badge from './badge.vue';

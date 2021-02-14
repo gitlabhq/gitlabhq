@@ -1,8 +1,9 @@
 import _ from 'lodash';
-import * as getters from '~/monitoring/stores/getters';
-import mutations from '~/monitoring/stores/mutations';
-import * as types from '~/monitoring/stores/mutation_types';
 import { metricStates } from '~/monitoring/constants';
+import * as getters from '~/monitoring/stores/getters';
+import * as types from '~/monitoring/stores/mutation_types';
+import mutations from '~/monitoring/stores/mutations';
+import { metricsDashboardPayload } from '../fixture_data';
 import {
   customDashboardBasePath,
   environmentData,
@@ -11,7 +12,6 @@ import {
   storeVariables,
   mockLinks,
 } from '../mock_data';
-import { metricsDashboardPayload } from '../fixture_data';
 
 describe('Monitoring store Getters', () => {
   let state;

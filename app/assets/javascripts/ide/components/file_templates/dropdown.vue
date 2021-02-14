@@ -1,7 +1,7 @@
 <script>
+import { GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import $ from 'jquery';
 import { mapActions, mapState } from 'vuex';
-import { GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 
 export default {

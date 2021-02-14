@@ -1,6 +1,6 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import TestSuiteTable from './test_suite_table.vue';
 import TestSummary from './test_summary.vue';
 import TestSummaryTable from './test_summary_table.vue';

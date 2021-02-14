@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { deprecatedCreateFlash as Flash } from './flash';
-import { __ } from './locale';
 import { parseBoolean } from './lib/utils/common_utils';
+import { __ } from './locale';
 
 /*
  example HAML:

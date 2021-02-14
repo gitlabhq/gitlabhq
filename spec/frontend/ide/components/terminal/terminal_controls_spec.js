@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import TerminalControls from '~/ide/components/terminal/terminal_controls.vue';
 import ScrollButton from '~/ide/components/jobs/detail/scroll_button.vue';
+import TerminalControls from '~/ide/components/terminal/terminal_controls.vue';
 
 describe('IDE TerminalControls', () => {
   let wrapper;

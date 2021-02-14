@@ -1,5 +1,5 @@
-import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 
 import DropdownContents from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_contents.vue';
 

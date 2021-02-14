@@ -1,10 +1,10 @@
 <script>
-import { mapState } from 'vuex';
 import { GlAlert, GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
+import { mapState } from 'vuex';
+import { getLocation } from '~/jira_connect/api';
 import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
-import { getLocation } from '~/jira_connect/api';
 import GroupsList from './groups_list.vue';
 
 export default {

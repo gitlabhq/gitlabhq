@@ -1,6 +1,6 @@
 <script>
-import { isEmpty } from 'lodash';
 import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
+import { isEmpty } from 'lodash';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {

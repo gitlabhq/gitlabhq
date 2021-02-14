@@ -9,7 +9,7 @@
  * - Button Actions.
  * [Mockup](https://gitlab.com/gitlab-org/gitlab-foss/uploads/2f655655c0eadf655d0ae7467b53002a/environments__deploy-graphic.png)
  */
-import { isEmpty } from 'lodash';
+import deployBoardSvg from '@gitlab/svgs/dist/illustrations/deploy-boards.svg';
 import {
   GlIcon,
   GlLoadingIcon,
@@ -18,9 +18,9 @@ import {
   GlTooltipDirective,
   GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
-import deployBoardSvg from '@gitlab/svgs/dist/illustrations/deploy-boards.svg';
-import instanceComponent from '~/vue_shared/components/deployment_instance.vue';
+import { isEmpty } from 'lodash';
 import { n__ } from '~/locale';
+import instanceComponent from '~/vue_shared/components/deployment_instance.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { STATUS_MAP, CANARY_STATUS } from '../constants';
 import CanaryIngress from './canary_ingress.vue';

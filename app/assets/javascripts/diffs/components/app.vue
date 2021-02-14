@@ -1,22 +1,17 @@
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex';
 import { GlLoadingIcon, GlPagination, GlSprintf } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import Mousetrap from 'mousetrap';
-import { __ } from '~/locale';
-import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import { isSingleViewStyle } from '~/helpers/diffs_helper';
+import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
+import { updateHistory } from '~/lib/utils/url_utility';
+import { __ } from '~/locale';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { isSingleViewStyle } from '~/helpers/diffs_helper';
-import { updateHistory } from '~/lib/utils/url_utility';
 
 import notesEventHub from '../../notes/event_hub';
-import eventHub from '../event_hub';
-
-import { diffsApp } from '../utils/performance';
-import { fileByFile } from '../utils/preferences';
-import { reviewStatuses } from '../utils/file_reviews';
 import {
   TREE_LIST_WIDTH_STORAGE_KEY,
   INITIAL_TREE_WIDTH,
@@ -30,15 +25,19 @@ import {
   ALERT_COLLAPSED_FILES,
   EVT_VIEW_FILE_BY_FILE,
 } from '../constants';
+import eventHub from '../event_hub';
+
+import { reviewStatuses } from '../utils/file_reviews';
+import { diffsApp } from '../utils/performance';
+import { fileByFile } from '../utils/preferences';
+import CollapsedFilesWarning from './collapsed_files_warning.vue';
+import CommitWidget from './commit_widget.vue';
 import CompareVersions from './compare_versions.vue';
 import DiffFile from './diff_file.vue';
-import NoChanges from './no_changes.vue';
-import CommitWidget from './commit_widget.vue';
-import TreeList from './tree_list.vue';
-
 import HiddenFilesWarning from './hidden_files_warning.vue';
 import MergeConflictWarning from './merge_conflict_warning.vue';
-import CollapsedFilesWarning from './collapsed_files_warning.vue';
+import NoChanges from './no_changes.vue';
+import TreeList from './tree_list.vue';
 
 export default {
   name: 'DiffsApp',

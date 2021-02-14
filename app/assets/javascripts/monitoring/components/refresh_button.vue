@@ -1,6 +1,4 @@
 <script>
-import Visibility from 'visibilityjs';
-import { mapActions } from 'vuex';
 import {
   GlButtonGroup,
   GlButton,
@@ -9,6 +7,8 @@ import {
   GlDropdownDivider,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import Visibility from 'visibilityjs';
+import { mapActions } from 'vuex';
 import { n__, __ } from '~/locale';
 
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';

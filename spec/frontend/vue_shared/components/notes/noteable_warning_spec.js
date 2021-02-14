@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import NoteableWarning from '~/vue_shared/components/notes/noteable_warning.vue';
 
 describe('Issue Warning Component', () => {

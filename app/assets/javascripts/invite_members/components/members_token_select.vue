@@ -1,6 +1,6 @@
 <script>
-import { debounce } from 'lodash';
 import { GlTokenSelector, GlAvatar, GlAvatarLabeled, GlSprintf } from '@gitlab/ui';
+import { debounce } from 'lodash';
 import { __ } from '~/locale';
 import { getUsers } from '~/rest_api';
 import { USER_SEARCH_DELAY } from '../constants';

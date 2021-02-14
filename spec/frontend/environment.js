@@ -1,13 +1,13 @@
 /* eslint-disable import/no-commonjs, max-classes-per-file */
 
 const path = require('path');
-const { ErrorWithStack } = require('jest-util');
 const JSDOMEnvironment = require('jest-environment-jsdom');
-const { TEST_HOST } = require('./__helpers__/test_constants');
+const { ErrorWithStack } = require('jest-util');
 const {
   setGlobalDateToFakeDate,
   setGlobalDateToRealDate,
 } = require('./__helpers__/fake_date/fake_date');
+const { TEST_HOST } = require('./__helpers__/test_constants');
 
 const ROOT_PATH = path.resolve(__dirname, '../..');
 

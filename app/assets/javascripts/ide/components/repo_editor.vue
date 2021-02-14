@@ -1,9 +1,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { viewerInformationForPath } from '~/vue_shared/components/content_viewer/lib/viewer_utils';
 import { deprecatedCreateFlash as flash } from '~/flash';
-import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
-import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
+import { __ } from '~/locale';
 import {
   WEBIDE_MARK_FILE_CLICKED,
   WEBIDE_MARK_REPO_EDITOR_START,
@@ -12,8 +10,9 @@ import {
   WEBIDE_MEASURE_FILE_AFTER_INTERACTION,
 } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
-import { __ } from '~/locale';
-import Editor from '../lib/editor';
+import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
+import { viewerInformationForPath } from '~/vue_shared/components/content_viewer/lib/viewer_utils';
+import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import {
   leftSidebarViews,
   viewerTypes,
@@ -21,11 +20,12 @@ import {
   FILE_VIEW_MODE_PREVIEW,
 } from '../constants';
 import eventHub from '../eventhub';
-import { extractMarkdownImagesFromEntries } from '../stores/utils';
-import { getFileEditorOrDefault } from '../stores/modules/editor/utils';
-import { getPathParent, readFileAsDataURL, registerSchema, isTextFile } from '../utils';
+import Editor from '../lib/editor';
 import { getRulesWithTraversal } from '../lib/editorconfig/parser';
 import mapRulesToMonaco from '../lib/editorconfig/rules_mapper';
+import { getFileEditorOrDefault } from '../stores/modules/editor/utils';
+import { extractMarkdownImagesFromEntries } from '../stores/utils';
+import { getPathParent, readFileAsDataURL, registerSchema, isTextFile } from '../utils';
 import FileTemplatesBar from './file_templates/bar.vue';
 
 export default {

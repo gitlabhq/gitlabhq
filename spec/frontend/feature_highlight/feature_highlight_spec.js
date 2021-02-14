@@ -1,8 +1,8 @@
-import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
+import $ from 'jquery';
 import * as featureHighlight from '~/feature_highlight/feature_highlight';
-import * as popover from '~/shared/popover';
 import axios from '~/lib/utils/axios_utils';
+import * as popover from '~/shared/popover';
 
 jest.mock('~/shared/popover');
 

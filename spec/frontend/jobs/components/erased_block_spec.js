@@ -1,7 +1,7 @@
-import { mount } from '@vue/test-utils';
 import { GlLink } from '@gitlab/ui';
-import { getTimeago } from '~/lib/utils/datetime_utility';
+import { mount } from '@vue/test-utils';
 import ErasedBlock from '~/jobs/components/erased_block.vue';
+import { getTimeago } from '~/lib/utils/datetime_utility';
 
 describe('Erased block', () => {
   let wrapper;

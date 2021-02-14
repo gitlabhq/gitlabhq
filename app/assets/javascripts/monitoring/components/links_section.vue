@@ -1,6 +1,6 @@
 <script>
-import { mapGetters } from 'vuex';
 import { GlIcon, GlLink } from '@gitlab/ui';
+import { mapGetters } from 'vuex';
 
 export default {
   components: {

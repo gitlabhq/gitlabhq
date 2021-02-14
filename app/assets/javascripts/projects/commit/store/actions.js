@@ -1,5 +1,5 @@
-import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import { PROJECT_BRANCHES_ERROR } from '../constants';
 import * as types from './mutation_types';
 

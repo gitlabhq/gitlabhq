@@ -1,7 +1,7 @@
+import { GlFormSelect } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { mount } from '@vue/test-utils';
-import { GlFormSelect } from '@gitlab/ui';
 import MultilineCommentForm from '~/notes/components/multiline_comment_form.vue';
 import notesModule from '~/notes/stores/modules';
 

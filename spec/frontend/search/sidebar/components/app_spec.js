@@ -1,6 +1,6 @@
-import Vuex from 'vuex';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { GlButton, GlLink } from '@gitlab/ui';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { MOCK_QUERY } from 'jest/search/mock_data';
 import GlobalSearchSidebar from '~/search/sidebar/components/app.vue';
 import ConfidentialityFilter from '~/search/sidebar/components/confidentiality_filter.vue';

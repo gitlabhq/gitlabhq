@@ -1,7 +1,7 @@
 <script>
 import { GlSprintf } from '@gitlab/ui';
-import { s__, sprintf } from '~/locale';
 import { toNounSeriesText } from '~/lib/utils/grammar';
+import { s__, sprintf } from '~/locale';
 
 export default {
   components: {

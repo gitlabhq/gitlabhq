@@ -1,7 +1,7 @@
-import { mount } from '@vue/test-utils';
 import { GlModal } from '@gitlab/ui';
-import SplitButton from '~/vue_shared/components/split_button.vue';
+import { mount } from '@vue/test-utils';
 import RemoveClusterConfirmation from '~/clusters/components/remove_cluster_confirmation.vue';
+import SplitButton from '~/vue_shared/components/split_button.vue';
 
 describe('Remove cluster confirmation modal', () => {
   let wrapper;

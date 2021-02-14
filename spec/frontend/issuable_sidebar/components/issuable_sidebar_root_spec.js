@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { shallowMount } from '@vue/test-utils';
 import Cookies from 'js-cookie';
 
 import IssuableSidebarRoot from '~/issuable_sidebar/components/issuable_sidebar_root.vue';

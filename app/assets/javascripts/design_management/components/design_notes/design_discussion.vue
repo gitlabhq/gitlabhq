@@ -1,15 +1,15 @@
 <script>
-import { ApolloMutation } from 'vue-apollo';
 import { GlTooltipDirective, GlIcon, GlLoadingIcon, GlLink, GlBadge } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { ApolloMutation } from 'vue-apollo';
 import createFlash from '~/flash';
+import { s__ } from '~/locale';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import allVersionsMixin from '../../mixins/all_versions';
+import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../../constants';
 import createNoteMutation from '../../graphql/mutations/create_note.mutation.graphql';
 import toggleResolveDiscussionMutation from '../../graphql/mutations/toggle_resolve_discussion.mutation.graphql';
 import activeDiscussionQuery from '../../graphql/queries/active_discussion.query.graphql';
-import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../../constants';
+import allVersionsMixin from '../../mixins/all_versions';
 import { hasErrors } from '../../utils/cache_update';
 import { ADD_DISCUSSION_COMMENT_ERROR } from '../../utils/error_messages';
 import DesignNote from './design_note.vue';

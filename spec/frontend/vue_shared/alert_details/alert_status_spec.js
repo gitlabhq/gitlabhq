@@ -1,9 +1,9 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import AlertManagementStatus from '~/vue_shared/alert_details/components/alert_status.vue';
 import updateAlertStatusMutation from '~/graphql_shared//mutations/alert_status_update.mutation.graphql';
 import Tracking from '~/tracking';
+import AlertManagementStatus from '~/vue_shared/alert_details/components/alert_status.vue';
 import mockAlerts from './mocks/alerts.json';
 
 const mockAlert = mockAlerts[0];

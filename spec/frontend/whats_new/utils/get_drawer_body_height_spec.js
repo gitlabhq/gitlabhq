@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
 import { GlDrawer } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import { getDrawerBodyHeight } from '~/whats_new/utils/get_drawer_body_height';
 
 describe('~/whats_new/utils/get_drawer_body_height', () => {

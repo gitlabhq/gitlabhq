@@ -1,7 +1,7 @@
+import { GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { GlDropdownItem } from '@gitlab/ui';
 import SidebarAssignee from '~/vue_shared/alert_details/components/sidebar/sidebar_assignee.vue';
 import SidebarAssignees from '~/vue_shared/alert_details/components/sidebar/sidebar_assignees.vue';
 import AlertSetAssignees from '~/vue_shared/alert_details/graphql/mutations/alert_set_assignees.mutation.graphql';

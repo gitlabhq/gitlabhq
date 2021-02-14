@@ -1,5 +1,5 @@
-import { addNumericSuffix } from '~/ide/utils';
 import Api from '~/api';
+import { addNumericSuffix } from '~/ide/utils';
 import {
   leftSidebarViews,
   packageJsonPath,

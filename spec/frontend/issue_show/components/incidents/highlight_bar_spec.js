@@ -1,6 +1,6 @@
+import { GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import merge from 'lodash/merge';
-import { GlLink } from '@gitlab/ui';
 import HighlightBar from '~/issue_show/components/incidents/highlight_bar.vue';
 import { formatDate } from '~/lib/utils/datetime_utility';
 

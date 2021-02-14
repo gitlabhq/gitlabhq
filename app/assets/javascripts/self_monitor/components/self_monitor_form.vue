@@ -1,11 +1,11 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import Vue from 'vue';
 import { GlFormGroup, GlButton, GlModal, GlToast, GlToggle } from '@gitlab/ui';
+import Vue from 'vue';
 import { mapState, mapActions } from 'vuex';
-import { __, s__, sprintf } from '~/locale';
-import { visitUrl, getBaseURL } from '~/lib/utils/url_utility';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
+import { visitUrl, getBaseURL } from '~/lib/utils/url_utility';
+import { __, s__, sprintf } from '~/locale';
 
 Vue.use(GlToast);
 

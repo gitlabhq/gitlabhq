@@ -1,17 +1,17 @@
 <script>
+import { GlButton, GlIcon, GlLink } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { GlButton, GlIcon, GlLink } from '@gitlab/ui';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import { JOB_SIDEBAR } from '../constants';
 import ArtifactsBlock from './artifacts_block.vue';
-import JobSidebarRetryButton from './job_sidebar_retry_button.vue';
-import JobRetryForwardDeploymentModal from './job_retry_forward_deployment_modal.vue';
-import TriggerBlock from './trigger_block.vue';
 import CommitBlock from './commit_block.vue';
-import StagesDropdown from './stages_dropdown.vue';
+import JobRetryForwardDeploymentModal from './job_retry_forward_deployment_modal.vue';
+import JobSidebarRetryButton from './job_sidebar_retry_button.vue';
 import JobsContainer from './jobs_container.vue';
 import JobSidebarDetailsContainer from './sidebar_job_details_container.vue';
+import StagesDropdown from './stages_dropdown.vue';
+import TriggerBlock from './trigger_block.vue';
 
 export const forwardDeploymentFailureModalId = 'forward-deployment-failure';
 

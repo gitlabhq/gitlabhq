@@ -1,10 +1,10 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { TEST_HOST } from 'spec/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
+import { TEST_HOST } from 'spec/test_constants';
 import TerminalEmptyState from '~/ide/components/terminal/empty_state.vue';
-import TerminalView from '~/ide/components/terminal/view.vue';
 import TerminalSession from '~/ide/components/terminal/session.vue';
+import TerminalView from '~/ide/components/terminal/view.vue';
 
 const TEST_HELP_PATH = `${TEST_HOST}/help`;
 const TEST_SVG_PATH = `${TEST_HOST}/illustration.svg`;

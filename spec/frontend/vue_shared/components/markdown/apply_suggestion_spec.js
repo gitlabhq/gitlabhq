@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlDropdown, GlFormTextarea, GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import ApplySuggestionComponent from '~/vue_shared/components/markdown/apply_suggestion.vue';
 
 describe('Apply Suggestion component', () => {

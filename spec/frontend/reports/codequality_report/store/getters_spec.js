@@ -1,5 +1,5 @@
-import * as getters from '~/reports/codequality_report/store/getters';
 import createStore from '~/reports/codequality_report/store';
+import * as getters from '~/reports/codequality_report/store/getters';
 import { LOADING, ERROR, SUCCESS } from '~/reports/constants';
 
 describe('Codequality reports store getters', () => {

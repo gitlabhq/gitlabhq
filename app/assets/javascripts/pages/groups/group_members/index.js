@@ -1,14 +1,14 @@
 import Vue from 'vue';
-import memberExpirationDate from '~/member_expiration_date';
-import UsersSelect from '~/users_select';
+import { groupMemberRequestFormatter } from '~/groups/members/utils';
 import groupsSelect from '~/groups_select';
-import RemoveMemberModal from '~/vue_shared/components/remove_member_modal.vue';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
 import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
-import { initMembersApp } from '~/members/index';
-import { groupMemberRequestFormatter } from '~/groups/members/utils';
-import { groupLinkRequestFormatter } from '~/members/utils';
 import { s__ } from '~/locale';
+import memberExpirationDate from '~/member_expiration_date';
+import { initMembersApp } from '~/members/index';
+import { groupLinkRequestFormatter } from '~/members/utils';
+import UsersSelect from '~/users_select';
+import RemoveMemberModal from '~/vue_shared/components/remove_member_modal.vue';
 
 function mountRemoveMemberModal() {
   const el = document.querySelector('.js-remove-member-modal');

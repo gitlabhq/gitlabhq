@@ -1,9 +1,9 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import { GlButton } from '@gitlab/ui';
+import { mapActions, mapState } from 'vuex';
 import { getMilestone } from 'ee_else_ce/boards/boards_util';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __ } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../eventhub';
 import ProjectSelect from './project_select.vue';
 

@@ -1,7 +1,7 @@
 import axios from 'axios';
+import setupAxiosStartupCalls from './axios_startup_calls';
 import csrf from './csrf';
 import suppressAjaxErrorsDuringNavigation from './suppress_ajax_errors_during_navigation';
-import setupAxiosStartupCalls from './axios_startup_calls';
 
 axios.defaults.headers.common[csrf.headerKey] = csrf.token;
 // Used by Rails to check if it is a valid XHR request

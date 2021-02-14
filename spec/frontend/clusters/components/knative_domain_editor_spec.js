@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlDropdownItem, GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import KnativeDomainEditor from '~/clusters/components/knative_domain_editor.vue';
 import { APPLICATION_STATUS } from '~/clusters/constants';
 

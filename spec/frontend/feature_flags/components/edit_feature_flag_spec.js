@@ -1,13 +1,13 @@
-import Vuex from 'vuex';
+import { GlToggle, GlAlert } from '@gitlab/ui';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import { GlToggle, GlAlert } from '@gitlab/ui';
-import { TEST_HOST } from 'spec/test_constants';
+import Vuex from 'vuex';
 import { mockTracking } from 'helpers/tracking_helper';
-import { LEGACY_FLAG, NEW_VERSION_FLAG } from '~/feature_flags/constants';
-import Form from '~/feature_flags/components/form.vue';
-import createStore from '~/feature_flags/store/edit';
+import { TEST_HOST } from 'spec/test_constants';
 import EditFeatureFlag from '~/feature_flags/components/edit_feature_flag.vue';
+import Form from '~/feature_flags/components/form.vue';
+import { LEGACY_FLAG, NEW_VERSION_FLAG } from '~/feature_flags/constants';
+import createStore from '~/feature_flags/store/edit';
 import axios from '~/lib/utils/axios_utils';
 
 const localVue = createLocalVue();

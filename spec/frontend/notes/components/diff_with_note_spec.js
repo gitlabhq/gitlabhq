@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import DiffWithNote from '~/notes/components/diff_with_note.vue';
 import { createStore } from '~/mr_notes/stores';
+import DiffWithNote from '~/notes/components/diff_with_note.vue';
 
 const discussionFixture = 'merge_requests/diff_discussion.json';
 const imageDiscussionFixture = 'merge_requests/image_diff_discussion.json';

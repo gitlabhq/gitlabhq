@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
 import { GlAlert, GlModal } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import CanaryUpdateModal from '~/environments/components/canary_update_modal.vue';
 import updateCanaryIngress from '~/environments/graphql/mutations/update_canary_ingress.mutation.graphql';

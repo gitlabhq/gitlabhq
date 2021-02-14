@@ -1,5 +1,5 @@
-import { commitActionForFile } from '~/ide/stores/utils';
 import { commitActionTypes } from '~/ide/constants';
+import { commitActionForFile } from '~/ide/stores/utils';
 import createFileDiff from './create_file_diff';
 
 const getDeletedParents = (entries, file) => {

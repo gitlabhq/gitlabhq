@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import { PathIdSeparator } from '~/related_issues/constants';
 import IssueToken from '~/related_issues/components/issue_token.vue';
+import { PathIdSeparator } from '~/related_issues/constants';
 
 describe('IssueToken', () => {
   const idKey = 200;

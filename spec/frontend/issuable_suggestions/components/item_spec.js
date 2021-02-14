@@ -1,8 +1,8 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlTooltip, GlLink, GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
-import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import Suggestion from '~/issuable_suggestions/components/item.vue';
+import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import mockData from '../mock_data';
 
 describe('Issuable suggestions suggestion component', () => {

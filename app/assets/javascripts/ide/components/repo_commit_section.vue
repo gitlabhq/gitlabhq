@@ -1,8 +1,8 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { stageKeys } from '../constants';
-import CommitFilesList from './commit_sidebar/list.vue';
 import EmptyState from './commit_sidebar/empty_state.vue';
+import CommitFilesList from './commit_sidebar/list.vue';
 
 export default {
   components: {

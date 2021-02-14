@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import List from './pages/list.vue';
-import Details from './pages/details.vue';
 import { CONTAINER_REGISTRY_TITLE } from './constants/index';
+import Details from './pages/details.vue';
+import List from './pages/list.vue';
 
 Vue.use(VueRouter);
 

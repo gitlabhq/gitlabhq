@@ -1,13 +1,13 @@
 /* eslint-disable consistent-return */
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import $ from 'jquery';
 import { escape } from 'lodash';
-import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import { visitUrl } from '~/lib/utils/url_utility';
 import { isObject } from '~/lib/utils/type_utility';
-import renderItem from './render';
-import { GitLabDropdownRemote } from './gl_dropdown_remote';
-import { GitLabDropdownInput } from './gl_dropdown_input';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { GitLabDropdownFilter } from './gl_dropdown_filter';
+import { GitLabDropdownInput } from './gl_dropdown_input';
+import { GitLabDropdownRemote } from './gl_dropdown_remote';
+import renderItem from './render';
 
 const LOADING_CLASS = 'is-loading';
 

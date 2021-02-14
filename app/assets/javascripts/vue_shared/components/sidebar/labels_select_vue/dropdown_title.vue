@@ -1,6 +1,6 @@
 <script>
-import { mapState, mapActions } from 'vuex';
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   components: {

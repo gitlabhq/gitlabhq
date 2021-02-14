@@ -1,6 +1,6 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import { GlButton } from '@gitlab/ui';
+import { mapActions, mapState } from 'vuex';
 import { __ } from '~/locale';
 import { isEndingStatus } from '../../stores/modules/terminal/utils';
 import Terminal from './terminal.vue';

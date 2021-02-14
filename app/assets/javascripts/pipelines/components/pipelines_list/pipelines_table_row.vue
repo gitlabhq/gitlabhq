@@ -3,13 +3,13 @@ import { GlButton, GlTooltipDirective, GlModalDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
 import CommitComponent from '~/vue_shared/components/commit.vue';
-import eventHub from '../../event_hub';
 import { PIPELINES_TABLE } from '../../constants';
+import eventHub from '../../event_hub';
+import PipelineTriggerer from './pipeline_triggerer.vue';
+import PipelineUrl from './pipeline_url.vue';
 import PipelinesActionsComponent from './pipelines_actions.vue';
 import PipelinesArtifactsComponent from './pipelines_artifacts.vue';
 import PipelineStage from './stage.vue';
-import PipelineUrl from './pipeline_url.vue';
-import PipelineTriggerer from './pipeline_triggerer.vue';
 import PipelinesTimeago from './time_ago.vue';
 
 export default {

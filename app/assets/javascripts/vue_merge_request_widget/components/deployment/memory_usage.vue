@@ -1,9 +1,9 @@
 <script>
 import { GlLoadingIcon, GlSprintf, GlLink } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { backOff } from '~/lib/utils/common_utils';
 import statusCodes from '~/lib/utils/http_status';
 import { bytesToMiB } from '~/lib/utils/number_utils';
-import { backOff } from '~/lib/utils/common_utils';
+import { s__ } from '~/locale';
 import MemoryGraph from '~/vue_shared/components/memory_graph.vue';
 import MRWidgetService from '../../services/mr_widget_service';
 

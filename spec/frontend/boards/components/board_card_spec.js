@@ -6,17 +6,17 @@ import { mount } from '@vue/test-utils';
 
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
+import BoardCard from '~/boards/components/board_card.vue';
+import issueCardInner from '~/boards/components/issue_card_inner.vue';
+import eventHub from '~/boards/eventhub';
+import store from '~/boards/stores';
+import boardsStore from '~/boards/stores/boards_store';
 import axios from '~/lib/utils/axios_utils';
 
-import eventHub from '~/boards/eventhub';
 import sidebarEventHub from '~/sidebar/event_hub';
 import '~/boards/models/label';
 import '~/boards/models/assignee';
 import '~/boards/models/list';
-import store from '~/boards/stores';
-import boardsStore from '~/boards/stores/boards_store';
-import BoardCard from '~/boards/components/board_card.vue';
-import issueCardInner from '~/boards/components/issue_card_inner.vue';
 import userAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { listObj, boardsMockInterceptor, setMockEndpoints } from '../mock_data';
 

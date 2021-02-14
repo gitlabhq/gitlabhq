@@ -1,5 +1,5 @@
-import mutations from '~/ide/stores/modules/router/mutations';
 import * as types from '~/ide/stores/modules/router/mutation_types';
+import mutations from '~/ide/stores/modules/router/mutations';
 import createState from '~/ide/stores/modules/router/state';
 
 const TEST_PATH = 'test/path/abc';

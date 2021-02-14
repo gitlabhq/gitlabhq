@@ -1,5 +1,5 @@
-import mutations from '~/logs/stores/mutations';
 import * as types from '~/logs/stores/mutation_types';
+import mutations from '~/logs/stores/mutations';
 
 import logsPageState from '~/logs/stores/state';
 import {

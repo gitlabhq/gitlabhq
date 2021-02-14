@@ -3,8 +3,8 @@ import {
   RECEIVE_ITEMS_SUCCESS,
   RECEIVE_ITEMS_ERROR,
 } from '~/create_cluster/store/cluster_dropdown/mutation_types';
-import createState from '~/create_cluster/store/cluster_dropdown/state';
 import mutations from '~/create_cluster/store/cluster_dropdown/mutations';
+import createState from '~/create_cluster/store/cluster_dropdown/state';
 
 describe('Cluster dropdown store mutations', () => {
   let state;

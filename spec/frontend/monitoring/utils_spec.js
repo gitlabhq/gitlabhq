@@ -1,9 +1,9 @@
 import { TEST_HOST } from 'helpers/test_constants';
-import * as monitoringUtils from '~/monitoring/utils';
 import * as urlUtils from '~/lib/utils/url_utility';
-import { mockProjectDir, barMockData } from './mock_data';
-import { singleStatGraphData, anomalyGraphData } from './graph_data';
+import * as monitoringUtils from '~/monitoring/utils';
 import { metricsDashboardViewModel, graphData } from './fixture_data';
+import { singleStatGraphData, anomalyGraphData } from './graph_data';
+import { mockProjectDir, barMockData } from './mock_data';
 
 const mockPath = `${TEST_HOST}${mockProjectDir}/-/environments/29/metrics`;
 

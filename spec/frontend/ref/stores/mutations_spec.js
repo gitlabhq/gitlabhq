@@ -1,7 +1,7 @@
-import createState from '~/ref/stores/state';
-import mutations from '~/ref/stores/mutations';
-import * as types from '~/ref/stores/mutation_types';
 import { X_TOTAL_HEADER } from '~/ref/constants';
+import * as types from '~/ref/stores/mutation_types';
+import mutations from '~/ref/stores/mutations';
+import createState from '~/ref/stores/state';
 
 describe('Ref selector Vuex store mutations', () => {
   let state;

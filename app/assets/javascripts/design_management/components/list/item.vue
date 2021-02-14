@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon, GlIcon, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
-import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
 import { n__, __ } from '~/locale';
+import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
 import { DESIGN_ROUTE_NAME } from '../../router/constants';
 
 export default {

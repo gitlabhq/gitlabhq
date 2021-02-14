@@ -1,6 +1,6 @@
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex';
 import { GlButton, GlLoadingIcon, GlIntersectionObserver, GlModal } from '@gitlab/ui';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import { n__, __, sprintf } from '~/locale';
 import ProviderRepoTableRow from './provider_repo_table_row.vue';
 

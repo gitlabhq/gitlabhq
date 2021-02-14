@@ -1,7 +1,7 @@
 <script>
-import { mapGetters } from 'vuex';
-import { startCase } from 'lodash';
 import { GlFormGroup, GlFormCheckbox, GlFormInput } from '@gitlab/ui';
+import { startCase } from 'lodash';
+import { mapGetters } from 'vuex';
 import { __ } from '~/locale';
 
 const typeWithPlaceholder = {

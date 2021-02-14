@@ -1,7 +1,7 @@
 <script>
 import CommitSection from './components/commit/commit_section.vue';
-import PipelineEditorTabs from './components/pipeline_editor_tabs.vue';
 import PipelineEditorHeader from './components/header/pipeline_editor_header.vue';
+import PipelineEditorTabs from './components/pipeline_editor_tabs.vue';
 import { TABS_WITH_COMMIT_FORM, CREATE_TAB } from './constants';
 
 export default {

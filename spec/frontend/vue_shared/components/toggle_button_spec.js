@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import ToggleButton from '~/vue_shared/components/toggle_button.vue';
 
 describe('Toggle Button component', () => {

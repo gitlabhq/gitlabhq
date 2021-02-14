@@ -1,23 +1,23 @@
 <script>
 import { GlLoadingIcon, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
+import certManagerLogo from 'images/cluster_app_logos/cert_manager.png';
+import crossplaneLogo from 'images/cluster_app_logos/crossplane.png';
+import elasticStackLogo from 'images/cluster_app_logos/elastic_stack.png';
+import fluentdLogo from 'images/cluster_app_logos/fluentd.png';
 import gitlabLogo from 'images/cluster_app_logos/gitlab.png';
 import helmLogo from 'images/cluster_app_logos/helm.png';
 import jupyterhubLogo from 'images/cluster_app_logos/jupyterhub.png';
-import kubernetesLogo from 'images/cluster_app_logos/kubernetes.png';
-import certManagerLogo from 'images/cluster_app_logos/cert_manager.png';
-import crossplaneLogo from 'images/cluster_app_logos/crossplane.png';
 import knativeLogo from 'images/cluster_app_logos/knative.png';
+import kubernetesLogo from 'images/cluster_app_logos/kubernetes.png';
 import prometheusLogo from 'images/cluster_app_logos/prometheus.png';
-import elasticStackLogo from 'images/cluster_app_logos/elastic_stack.png';
-import fluentdLogo from 'images/cluster_app_logos/fluentd.png';
 import eventHub from '~/clusters/event_hub';
 import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import { CLUSTER_TYPE, PROVIDER_TYPE, APPLICATION_STATUS, INGRESS } from '../constants';
 import applicationRow from './application_row.vue';
-import KnativeDomainEditor from './knative_domain_editor.vue';
 import CrossplaneProviderStack from './crossplane_provider_stack.vue';
-import IngressModsecuritySettings from './ingress_modsecurity_settings.vue';
 import FluentdOutputSettings from './fluentd_output_settings.vue';
+import IngressModsecuritySettings from './ingress_modsecurity_settings.vue';
+import KnativeDomainEditor from './knative_domain_editor.vue';
 
 export default {
   components: {

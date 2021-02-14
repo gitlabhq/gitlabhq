@@ -1,22 +1,22 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 import { __ } from '~/locale';
 import initUserPopovers from '~/user_popovers';
+import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { getLocationHash, doesHashExistInUrl } from '../../lib/utils/url_utility';
 import { deprecatedCreateFlash as Flash } from '../../flash';
-import * as constants from '../constants';
-import eventHub from '../event_hub';
-import systemNote from '../../vue_shared/components/notes/system_note.vue';
+import { getLocationHash, doesHashExistInUrl } from '../../lib/utils/url_utility';
 import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
 import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
 import skeletonLoadingContainer from '../../vue_shared/components/notes/skeleton_note.vue';
-import noteableNote from './noteable_note.vue';
-import noteableDiscussion from './noteable_discussion.vue';
-import discussionFilterNote from './discussion_filter_note.vue';
+import systemNote from '../../vue_shared/components/notes/system_note.vue';
+import * as constants from '../constants';
+import eventHub from '../event_hub';
 import commentForm from './comment_form.vue';
+import discussionFilterNote from './discussion_filter_note.vue';
+import noteableDiscussion from './noteable_discussion.vue';
+import noteableNote from './noteable_note.vue';
 
 export default {
   name: 'NotesApp',

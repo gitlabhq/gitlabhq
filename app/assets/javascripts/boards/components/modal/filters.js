@@ -1,5 +1,5 @@
-import FilteredSearchBoards from '../../filtered_search_boards';
 import FilteredSearchContainer from '../../../filtered_search/container';
+import FilteredSearchBoards from '../../filtered_search_boards';
 
 export default {
   name: 'modal-filters',

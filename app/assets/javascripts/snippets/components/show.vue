@@ -1,20 +1,20 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import CloneDropdownButton from '~/vue_shared/components/clone_dropdown.vue';
-import { SNIPPET_VISIBILITY_PUBLIC } from '~/snippets/constants';
+import eventHub from '~/blob/components/eventhub';
 import {
   SNIPPET_MARK_VIEW_APP_START,
   SNIPPET_MEASURE_BLOBS_CONTENT,
 } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
-import eventHub from '~/blob/components/eventhub';
+import { SNIPPET_VISIBILITY_PUBLIC } from '~/snippets/constants';
+import CloneDropdownButton from '~/vue_shared/components/clone_dropdown.vue';
 
 import { getSnippetMixin } from '../mixins/snippets';
 import { markBlobPerformance } from '../utils/blob';
-import SnippetBlob from './snippet_blob_view.vue';
-import SnippetTitle from './snippet_title.vue';
-import SnippetHeader from './snippet_header.vue';
 import EmbedDropdown from './embed_dropdown.vue';
+import SnippetBlob from './snippet_blob_view.vue';
+import SnippetHeader from './snippet_header.vue';
+import SnippetTitle from './snippet_title.vue';
 
 eventHub.$on(SNIPPET_MEASURE_BLOBS_CONTENT, markBlobPerformance);
 

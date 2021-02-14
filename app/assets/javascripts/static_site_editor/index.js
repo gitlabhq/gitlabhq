@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import App from './components/app.vue';
-import createRouter from './router';
 import createApolloProvider from './graphql';
+import createRouter from './router';
 
 const initStaticSiteEditor = (el) => {
   const {

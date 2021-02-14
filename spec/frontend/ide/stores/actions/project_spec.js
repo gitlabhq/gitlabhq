@@ -1,7 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
-import testAction from 'helpers/vuex_action_helper';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
-import axios from '~/lib/utils/axios_utils';
+import testAction from 'helpers/vuex_action_helper';
+import api from '~/api';
+import service from '~/ide/services';
 import { createStore } from '~/ide/stores';
 import {
   refreshLastCommitData,
@@ -12,8 +13,7 @@ import {
   loadFile,
   loadBranch,
 } from '~/ide/stores/actions';
-import service from '~/ide/services';
-import api from '~/api';
+import axios from '~/lib/utils/axios_utils';
 
 const TEST_PROJECT_ID = 'abc/def';
 

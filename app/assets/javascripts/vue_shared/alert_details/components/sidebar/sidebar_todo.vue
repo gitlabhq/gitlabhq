@@ -1,8 +1,8 @@
 <script>
 import produce from 'immer';
+import todoMarkDoneMutation from '~/graphql_shared/mutations/todo_mark_done.mutation.graphql';
 import { s__ } from '~/locale';
 import Todo from '~/sidebar/components/todo_toggle/todo.vue';
-import todoMarkDoneMutation from '~/graphql_shared/mutations/todo_mark_done.mutation.graphql';
 import createAlertTodoMutation from '../../graphql/mutations/alert_todo_create.mutation.graphql';
 import alertQuery from '../../graphql/queries/alert_details.query.graphql';
 

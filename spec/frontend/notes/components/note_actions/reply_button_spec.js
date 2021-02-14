@@ -1,5 +1,5 @@
-import Vuex from 'vuex';
 import { createLocalVue, mount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
 
 const localVue = createLocalVue();

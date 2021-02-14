@@ -1,7 +1,7 @@
 <script>
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
-import { __, s__, sprintf } from '~/locale';
 import httpStatusCodes from '~/lib/utils/http_status';
+import { __, s__, sprintf } from '~/locale';
 
 import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
 import ConfirmUnsavedChangesDialog from './components/ui/confirm_unsaved_changes_dialog.vue';

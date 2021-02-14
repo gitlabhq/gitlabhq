@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { toArray } from 'lodash';
+import Vue from 'vue';
 import PopoversComponent from './components/popovers.vue';
 
 let app;

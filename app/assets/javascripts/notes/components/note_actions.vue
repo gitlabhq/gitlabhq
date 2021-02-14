@@ -1,12 +1,12 @@
 <script>
-import { mapGetters } from 'vuex';
 import { GlTooltipDirective, GlIcon, GlButton, GlDropdownItem } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
-import resolvedStatusMixin from '~/batch_comments/mixins/resolved_status';
-import eventHub from '~/sidebar/event_hub';
+import { mapGetters } from 'vuex';
 import Api from '~/api';
+import resolvedStatusMixin from '~/batch_comments/mixins/resolved_status';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
+import { __, sprintf } from '~/locale';
+import eventHub from '~/sidebar/event_hub';
 import { splitCamelCase } from '../../lib/utils/text_utility';
 import ReplyButton from './note_actions/reply_button.vue';
 

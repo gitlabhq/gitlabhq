@@ -1,10 +1,10 @@
-import Vue from 'vue';
 import { getByRole } from '@testing-library/dom';
+import Vue from 'vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
+import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '~/projects/commit/constants';
+import modalEventHub from '~/projects/commit/event_hub';
 import mergedComponent from '~/vue_merge_request_widget/components/states/mr_widget_merged.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
-import modalEventHub from '~/projects/commit/event_hub';
-import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '~/projects/commit/constants';
 
 describe('MRWidgetMerged', () => {
   let vm;

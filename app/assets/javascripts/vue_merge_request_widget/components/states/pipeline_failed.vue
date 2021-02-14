@@ -1,7 +1,7 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
-import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { s__ } from '~/locale';
 import statusIcon from '../mr_widget_status_icon.vue';
 
 export default {

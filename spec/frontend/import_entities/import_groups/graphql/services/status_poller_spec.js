@@ -1,13 +1,13 @@
-import { createMockClient } from 'mock-apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import { createMockClient } from 'mock-apollo-client';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import createFlash from '~/flash';
-import { StatusPoller } from '~/import_entities/import_groups/graphql/services/status_poller';
+import { STATUSES } from '~/import_entities/constants';
 import { clientTypenames } from '~/import_entities/import_groups/graphql/client_factory';
 import bulkImportSourceGroupsQuery from '~/import_entities/import_groups/graphql/queries/bulk_import_source_groups.query.graphql';
-import { STATUSES } from '~/import_entities/constants';
 import { SourceGroupsManager } from '~/import_entities/import_groups/graphql/services/source_groups_manager';
+import { StatusPoller } from '~/import_entities/import_groups/graphql/services/status_poller';
 import { generateFakeEntry } from '../fixtures';
 
 jest.mock('~/flash');

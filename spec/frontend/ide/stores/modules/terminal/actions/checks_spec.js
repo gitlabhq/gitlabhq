@@ -1,14 +1,14 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'spec/test_constants';
+import * as actions from '~/ide/stores/modules/terminal/actions/checks';
 import {
   CHECK_CONFIG,
   CHECK_RUNNERS,
   RETRY_RUNNERS_INTERVAL,
 } from '~/ide/stores/modules/terminal/constants';
-import * as mutationTypes from '~/ide/stores/modules/terminal/mutation_types';
 import * as messages from '~/ide/stores/modules/terminal/messages';
-import * as actions from '~/ide/stores/modules/terminal/actions/checks';
+import * as mutationTypes from '~/ide/stores/modules/terminal/mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
 

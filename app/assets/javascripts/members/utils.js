@@ -1,11 +1,11 @@
 import { isUndefined } from 'lodash';
-import { __ } from '~/locale';
 import {
   getParameterByName,
   convertObjectPropsToCamelCase,
   parseBoolean,
 } from '~/lib/utils/common_utils';
 import { setUrlParams } from '~/lib/utils/url_utility';
+import { __ } from '~/locale';
 import {
   FIELDS,
   DEFAULT_SORT,

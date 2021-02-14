@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlFormInputGroup, GlDropdownSectionHeader } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import CloneDropdown from '~/vue_shared/components/clone_dropdown.vue';
 
 describe('Clone Dropdown Button', () => {

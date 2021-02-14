@@ -1,8 +1,8 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { GlModal } from '@gitlab/ui';
-import { __, s__, sprintf } from '~/locale';
 import csrf from '~/lib/utils/csrf';
+import { __, s__, sprintf } from '~/locale';
 
 export default {
   components: {

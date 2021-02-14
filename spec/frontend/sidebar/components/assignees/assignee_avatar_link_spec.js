@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
-import AssigneeAvatarLink from '~/sidebar/components/assignees/assignee_avatar_link.vue';
 import AssigneeAvatar from '~/sidebar/components/assignees/assignee_avatar.vue';
+import AssigneeAvatarLink from '~/sidebar/components/assignees/assignee_avatar_link.vue';
 import userDataMock from '../../user_data_mock';
 
 const TOOLTIP_PLACEMENT = 'bottom';

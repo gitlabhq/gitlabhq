@@ -1,14 +1,14 @@
 import { defer } from 'lodash';
-import { performanceMarkAndMeasure } from '~/performance/utils';
 import {
   WEBIDE_MARK_FETCH_FILES_FINISH,
   WEBIDE_MEASURE_FETCH_FILES,
   WEBIDE_MARK_FETCH_FILES_START,
 } from '~/performance/constants';
+import { performanceMarkAndMeasure } from '~/performance/utils';
 import { __ } from '../../../locale';
+import { decorateFiles } from '../../lib/files';
 import service from '../../services';
 import * as types from '../mutation_types';
-import { decorateFiles } from '../../lib/files';
 
 export const toggleTreeOpen = ({ commit }, path) => {
   commit(types.TOGGLE_TREE_OPEN, path);

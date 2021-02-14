@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
-import bulkImportSourceGroupsQuery from '../queries/bulk_import_source_groups.query.graphql';
 import { STATUSES } from '../../../constants';
+import bulkImportSourceGroupsQuery from '../queries/bulk_import_source_groups.query.graphql';
 import { SourceGroupsManager } from './source_groups_manager';
 
 const groupId = (i) => `group${i}`;

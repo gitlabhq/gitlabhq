@@ -1,12 +1,12 @@
 import Visibility from 'visibilityjs';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import Poll from '~/lib/utils/poll';
-import { visitUrl, objectToQuery } from '~/lib/utils/url_utility';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import { s__, sprintf } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
+import Poll from '~/lib/utils/poll';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { visitUrl, objectToQuery } from '~/lib/utils/url_utility';
+import { s__, sprintf } from '~/locale';
 import { isProjectImportable } from '../utils';
 import * as types from './mutation_types';
 

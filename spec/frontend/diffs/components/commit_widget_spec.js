@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import CommitWidget from '~/diffs/components/commit_widget.vue';
 import CommitItem from '~/diffs/components/commit_item.vue';
+import CommitWidget from '~/diffs/components/commit_widget.vue';
 
 describe('diffs/components/commit_widget', () => {
   let wrapper;

@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
+import todoMarkDoneMutation from '~/graphql_shared/mutations/todo_mark_done.mutation.graphql';
 import SidebarTodo from '~/vue_shared/alert_details/components/sidebar/sidebar_todo.vue';
 import createAlertTodoMutation from '~/vue_shared/alert_details/graphql/mutations/alert_todo_create.mutation.graphql';
-import todoMarkDoneMutation from '~/graphql_shared/mutations/todo_mark_done.mutation.graphql';
 import mockAlerts from './mocks/alerts.json';
 
 const mockAlert = mockAlerts[0];

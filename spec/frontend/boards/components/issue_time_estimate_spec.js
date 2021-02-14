@@ -1,5 +1,5 @@
-import { config as vueConfig } from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import { config as vueConfig } from 'vue';
 import IssueTimeEstimate from '~/boards/components/issue_time_estimate.vue';
 
 describe('Issue Time Estimate component', () => {

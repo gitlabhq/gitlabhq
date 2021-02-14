@@ -1,10 +1,10 @@
 <script>
 import { isString } from 'lodash';
 import { mapState, mapActions, mapGetters } from 'vuex';
-import PodBox from './pod_box.vue';
-import Url from './url.vue';
 import AreaChart from './area.vue';
 import MissingPrometheus from './missing_prometheus.vue';
+import PodBox from './pod_box.vue';
+import Url from './url.vue';
 
 export default {
   components: {

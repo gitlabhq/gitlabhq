@@ -1,6 +1,6 @@
 import { flatten } from 'lodash';
-import { s__ } from '~/locale';
 import AccessorUtilities from '~/lib/utils/accessor';
+import { s__ } from '~/locale';
 import { shouldDisableShortcuts } from './shortcuts_toggle';
 
 export const LOCAL_STORAGE_KEY = 'gl-keyboard-shortcuts-customizations';

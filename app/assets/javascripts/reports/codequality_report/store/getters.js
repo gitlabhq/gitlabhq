@@ -1,5 +1,5 @@
-import { sprintf, __, s__, n__ } from '~/locale';
 import { spriteIcon } from '~/lib/utils/common_utils';
+import { sprintf, __, s__, n__ } from '~/locale';
 import { LOADING, ERROR, SUCCESS } from '../../constants';
 
 export const hasCodequalityIssues = (state) =>

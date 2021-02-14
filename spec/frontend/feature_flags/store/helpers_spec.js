@@ -1,12 +1,5 @@
 import { uniqueId } from 'lodash';
 import {
-  mapToScopesViewModel,
-  mapFromScopesViewModel,
-  createNewEnvironmentScope,
-  mapStrategiesToViewModel,
-  mapStrategiesToRails,
-} from '~/feature_flags/store/helpers';
-import {
   ROLLOUT_STRATEGY_ALL_USERS,
   ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
   ROLLOUT_STRATEGY_USER_ID,
@@ -16,6 +9,13 @@ import {
   LEGACY_FLAG,
   NEW_VERSION_FLAG,
 } from '~/feature_flags/constants';
+import {
+  mapToScopesViewModel,
+  mapFromScopesViewModel,
+  createNewEnvironmentScope,
+  mapStrategiesToViewModel,
+  mapStrategiesToRails,
+} from '~/feature_flags/store/helpers';
 
 describe('feature flags helpers spec', () => {
   describe('mapToScopesViewModel', () => {

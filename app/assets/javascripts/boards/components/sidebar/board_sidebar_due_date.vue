@@ -1,9 +1,9 @@
 <script>
-import { mapGetters, mapActions } from 'vuex';
 import { GlButton, GlDatepicker } from '@gitlab/ui';
+import { mapGetters, mapActions } from 'vuex';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
-import { dateInWords, formatDate, parsePikadayDate } from '~/lib/utils/datetime_utility';
 import createFlash from '~/flash';
+import { dateInWords, formatDate, parsePikadayDate } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 
 export default {

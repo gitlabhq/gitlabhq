@@ -1,9 +1,9 @@
-import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import Vue from 'vue';
+import ContributorsCharts from '~/contributors/components/contributors.vue';
 import { createStore } from '~/contributors/stores';
 import axios from '~/lib/utils/axios_utils';
-import ContributorsCharts from '~/contributors/components/contributors.vue';
 
 let wrapper;
 let mock;

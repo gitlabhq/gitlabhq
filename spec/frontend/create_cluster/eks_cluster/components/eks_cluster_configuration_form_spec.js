@@ -1,7 +1,7 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import Vuex from 'vuex';
-import Vue from 'vue';
 import { GlFormCheckbox } from '@gitlab/ui';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
+import Vuex from 'vuex';
 
 import EksClusterConfigurationForm from '~/create_cluster/eks_cluster/components/eks_cluster_configuration_form.vue';
 import eksClusterFormState from '~/create_cluster/eks_cluster/store/state';

@@ -1,5 +1,5 @@
-import getters from '~/boards/stores/getters';
 import { inactiveId } from '~/boards/constants';
+import getters from '~/boards/stores/getters';
 import {
   mockIssue,
   mockIssue2,

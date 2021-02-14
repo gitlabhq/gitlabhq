@@ -1,8 +1,8 @@
-import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
+import DeployFreezeModal from '~/deploy_freeze/components/deploy_freeze_modal.vue';
 import DeployFreezeSettings from '~/deploy_freeze/components/deploy_freeze_settings.vue';
 import DeployFreezeTable from '~/deploy_freeze/components/deploy_freeze_table.vue';
-import DeployFreezeModal from '~/deploy_freeze/components/deploy_freeze_modal.vue';
 import createStore from '~/deploy_freeze/store';
 import { timezoneDataFixture } from '../helpers';
 

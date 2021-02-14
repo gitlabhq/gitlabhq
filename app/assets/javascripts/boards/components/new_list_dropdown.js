@@ -1,15 +1,15 @@
 /* eslint-disable func-names, no-new */
 
 import $ from 'jquery';
-import { __ } from '~/locale';
-import axios from '~/lib/utils/axios_utils';
-import { deprecatedCreateFlash as flash } from '~/flash';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import store from '~/boards/stores';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import { deprecatedCreateFlash as flash } from '~/flash';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import axios from '~/lib/utils/axios_utils';
+import { __ } from '~/locale';
 import CreateLabelDropdown from '../../create_label';
-import boardsStore from '../stores/boards_store';
 import { fullLabelId } from '../boards_util';
+import boardsStore from '../stores/boards_store';
 
 function shouldCreateListGraphQL(label) {
   return store.getters.shouldUseGraphQL && !store.getters.getListByLabelId(fullLabelId(label));

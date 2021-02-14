@@ -4,8 +4,8 @@
  * Render modal to confirm rollback/redeploy.
  */
 
-import { escape } from 'lodash';
 import { GlModal } from '@gitlab/ui';
+import { escape } from 'lodash';
 import { s__, sprintf } from '~/locale';
 
 import eventHub from '../event_hub';

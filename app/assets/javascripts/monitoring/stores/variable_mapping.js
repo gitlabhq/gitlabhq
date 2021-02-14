@@ -1,6 +1,6 @@
 import { isString } from 'lodash';
-import { templatingVariablesFromUrl } from '../utils';
 import { VARIABLE_TYPES } from '../constants';
+import { templatingVariablesFromUrl } from '../utils';
 
 /**
  * This file exclusively deals with parsing user-defined variables

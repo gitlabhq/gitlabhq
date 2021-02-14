@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import Translate from '~/vue_shared/translate';
 import createDefaultClient from '~/lib/graphql';
-import { createStore } from './stores';
+import Translate from '~/vue_shared/translate';
 import PackagesListApp from './components/packages_list_app.vue';
+import { createStore } from './stores';
 
 Vue.use(VueApollo);
 Vue.use(Translate);

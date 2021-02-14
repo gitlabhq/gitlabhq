@@ -1,16 +1,16 @@
+import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlLoadingIcon } from '@gitlab/ui';
 import DiffContentComponent from '~/diffs/components/diff_content.vue';
-import InlineDiffView from '~/diffs/components/inline_diff_view.vue';
-import NotDiffableViewer from '~/vue_shared/components/diff_viewer/viewers/not_diffable.vue';
-import NoPreviewViewer from '~/vue_shared/components/diff_viewer/viewers/no_preview.vue';
-import ParallelDiffView from '~/diffs/components/parallel_diff_view.vue';
-import NoteForm from '~/notes/components/note_form.vue';
 import DiffDiscussions from '~/diffs/components/diff_discussions.vue';
+import DiffView from '~/diffs/components/diff_view.vue';
+import InlineDiffView from '~/diffs/components/inline_diff_view.vue';
+import ParallelDiffView from '~/diffs/components/parallel_diff_view.vue';
 import { IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { diffViewerModes } from '~/ide/constants';
-import DiffView from '~/diffs/components/diff_view.vue';
+import NoteForm from '~/notes/components/note_form.vue';
+import NoPreviewViewer from '~/vue_shared/components/diff_viewer/viewers/no_preview.vue';
+import NotDiffableViewer from '~/vue_shared/components/diff_viewer/viewers/not_diffable.vue';
 import diffFileMockData from '../mock_data/diff_file';
 
 const localVue = createLocalVue();

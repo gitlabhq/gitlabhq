@@ -4,9 +4,9 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import AlertDetails from './components/alert_details.vue';
+import { PAGE_CONFIG } from './constants';
 import sidebarStatusQuery from './graphql/queries/alert_sidebar_status.query.graphql';
 import createRouter from './router';
-import { PAGE_CONFIG } from './constants';
 
 Vue.use(VueApollo);
 

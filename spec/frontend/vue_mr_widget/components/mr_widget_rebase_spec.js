@@ -1,7 +1,7 @@
-import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
-import eventHub from '~/vue_merge_request_widget/event_hub';
+import { nextTick } from 'vue';
 import WidgetRebase from '~/vue_merge_request_widget/components/states/mr_widget_rebase.vue';
+import eventHub from '~/vue_merge_request_widget/event_hub';
 
 let wrapper;
 

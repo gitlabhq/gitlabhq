@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
+import BadgeList from '~/badges/components/badge_list.vue';
 import { GROUP_BADGE, PROJECT_BADGE } from '~/badges/constants';
 import store from '~/badges/store';
-import BadgeList from '~/badges/components/badge_list.vue';
 import { createDummyBadge } from '../dummy_badge';
 
 describe('BadgeList component', () => {

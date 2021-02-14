@@ -1,6 +1,6 @@
 import { createWrapper } from '@vue/test-utils';
-import { initMembersApp } from '~/members/index';
 import MembersApp from '~/members/components/app.vue';
+import { initMembersApp } from '~/members/index';
 import { membersJsonString, members } from './mock_data';
 
 describe('initMembersApp', () => {

@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 
-import ProfilePreferences from '~/profile/preferences/components/profile_preferences.vue';
 import IntegrationView from '~/profile/preferences/components/integration_view.vue';
+import ProfilePreferences from '~/profile/preferences/components/profile_preferences.vue';
 import { integrationViews, userFields } from '../mock_data';
 
 describe('ProfilePreferences component', () => {

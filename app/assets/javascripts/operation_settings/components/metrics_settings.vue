@@ -1,8 +1,8 @@
 <script>
-import { mapState, mapActions } from 'vuex';
 import { GlButton, GlLink } from '@gitlab/ui';
-import ExternalDashboard from './form_group/external_dashboard.vue';
+import { mapState, mapActions } from 'vuex';
 import DashboardTimezone from './form_group/dashboard_timezone.vue';
+import ExternalDashboard from './form_group/external_dashboard.vue';
 
 export default {
   components: {

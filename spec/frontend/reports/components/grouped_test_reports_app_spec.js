@@ -5,11 +5,11 @@ import GroupedTestReportsApp from '~/reports/components/grouped_test_reports_app
 import { getStoreConfig } from '~/reports/store';
 
 import { failedReport } from '../mock_data/mock_data';
-import successTestReports from '../mock_data/no_failures_report.json';
-import newFailedTestReports from '../mock_data/new_failures_report.json';
-import recentFailuresTestReports from '../mock_data/recent_failures_report.json';
-import newErrorsTestReports from '../mock_data/new_errors_report.json';
 import mixedResultsTestReports from '../mock_data/new_and_fixed_failures_report.json';
+import newErrorsTestReports from '../mock_data/new_errors_report.json';
+import newFailedTestReports from '../mock_data/new_failures_report.json';
+import successTestReports from '../mock_data/no_failures_report.json';
+import recentFailuresTestReports from '../mock_data/recent_failures_report.json';
 import resolvedFailures from '../mock_data/resolved_failures.json';
 
 const localVue = createLocalVue();

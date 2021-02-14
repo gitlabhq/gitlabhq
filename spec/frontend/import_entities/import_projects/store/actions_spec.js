@@ -1,9 +1,10 @@
 import MockAdapter from 'axios-mock-adapter';
-import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'helpers/test_constants';
+import testAction from 'helpers/vuex_action_helper';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import axios from '~/lib/utils/axios_utils';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { STATUSES } from '~/import_entities/constants';
+import actionsFactory from '~/import_entities/import_projects/store/actions';
+import { getImportTarget } from '~/import_entities/import_projects/store/getters';
 import {
   REQUEST_REPOS,
   RECEIVE_REPOS_SUCCESS,
@@ -18,10 +19,9 @@ import {
   SET_PAGE,
   SET_FILTER,
 } from '~/import_entities/import_projects/store/mutation_types';
-import actionsFactory from '~/import_entities/import_projects/store/actions';
-import { getImportTarget } from '~/import_entities/import_projects/store/getters';
 import state from '~/import_entities/import_projects/store/state';
-import { STATUSES } from '~/import_entities/constants';
+import axios from '~/lib/utils/axios_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
 jest.mock('~/flash');
 

@@ -1,7 +1,7 @@
-import AjaxCache from '~/lib/utils/ajax_cache';
 import { trimFirstCharOfLineContent } from '~/diffs/store/utils';
-import { sprintf, __ } from '~/locale';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
+import AjaxCache from '~/lib/utils/ajax_cache';
+import { sprintf, __ } from '~/locale';
 
 // factory function because global flag makes RegExp stateful
 const createQuickActionsRegex = () => /^\/\w+.*$/gm;

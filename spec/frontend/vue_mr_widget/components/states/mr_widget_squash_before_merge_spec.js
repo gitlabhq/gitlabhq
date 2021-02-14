@@ -1,5 +1,5 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { GlFormCheckbox } from '@gitlab/ui';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import SquashBeforeMerge from '~/vue_merge_request_widget/components/states/squash_before_merge.vue';
 import { SQUASH_BEFORE_MERGE } from '~/vue_merge_request_widget/i18n';
 

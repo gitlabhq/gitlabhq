@@ -1,6 +1,6 @@
+import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { GlToast } from '@gitlab/ui';
 import { parseDataAttributes } from 'ee_else_ce/members/utils';
 import App from './components/app.vue';
 import membersStore from './store';

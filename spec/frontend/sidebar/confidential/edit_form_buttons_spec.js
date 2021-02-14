@@ -1,9 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
+import { deprecatedCreateFlash as flash } from '~/flash';
+import createStore from '~/notes/stores';
 import EditFormButtons from '~/sidebar/components/confidential/edit_form_buttons.vue';
 import eventHub from '~/sidebar/event_hub';
-import createStore from '~/notes/stores';
-import { deprecatedCreateFlash as flash } from '~/flash';
 
 jest.mock('~/sidebar/event_hub', () => ({ $emit: jest.fn() }));
 jest.mock('~/flash');

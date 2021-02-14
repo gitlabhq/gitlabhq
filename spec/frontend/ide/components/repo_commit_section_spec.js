@@ -1,10 +1,10 @@
 import { mount } from '@vue/test-utils';
 import { keepAlive } from 'helpers/keep_alive_component_helper';
-import { createStore } from '~/ide/stores';
-import { createRouter } from '~/ide/ide_router';
-import RepoCommitSection from '~/ide/components/repo_commit_section.vue';
 import EmptyState from '~/ide/components/commit_sidebar/empty_state.vue';
+import RepoCommitSection from '~/ide/components/repo_commit_section.vue';
 import { stageKeys } from '~/ide/constants';
+import { createRouter } from '~/ide/ide_router';
+import { createStore } from '~/ide/stores';
 import { file } from '../helpers';
 
 const TEST_NO_CHANGES_SVG = 'nochangessvg';

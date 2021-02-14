@@ -1,9 +1,9 @@
+import { GlLabel } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { range } from 'lodash';
-import { GlLabel } from '@gitlab/ui';
 import IssueCardInner from '~/boards/components/issue_card_inner.vue';
-import defaultStore from '~/boards/stores';
 import eventHub from '~/boards/eventhub';
+import defaultStore from '~/boards/stores';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { mockLabelList } from './mock_data';
 

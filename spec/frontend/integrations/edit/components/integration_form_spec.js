@@ -1,18 +1,18 @@
 import { shallowMount } from '@vue/test-utils';
-import { mockIntegrationProps } from 'jest/integrations/edit/mock_data';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { setHTMLFixture } from 'helpers/fixtures';
-import { createStore } from '~/integrations/edit/store';
-import IntegrationForm from '~/integrations/edit/components/integration_form.vue';
-import OverrideDropdown from '~/integrations/edit/components/override_dropdown.vue';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mockIntegrationProps } from 'jest/integrations/edit/mock_data';
 import ActiveCheckbox from '~/integrations/edit/components/active_checkbox.vue';
 import ConfirmationModal from '~/integrations/edit/components/confirmation_modal.vue';
-import ResetConfirmationModal from '~/integrations/edit/components/reset_confirmation_modal.vue';
-import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_fields.vue';
-import JiraIssuesFields from '~/integrations/edit/components/jira_issues_fields.vue';
-import TriggerFields from '~/integrations/edit/components/trigger_fields.vue';
 import DynamicField from '~/integrations/edit/components/dynamic_field.vue';
+import IntegrationForm from '~/integrations/edit/components/integration_form.vue';
+import JiraIssuesFields from '~/integrations/edit/components/jira_issues_fields.vue';
+import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_fields.vue';
+import OverrideDropdown from '~/integrations/edit/components/override_dropdown.vue';
+import ResetConfirmationModal from '~/integrations/edit/components/reset_confirmation_modal.vue';
+import TriggerFields from '~/integrations/edit/components/trigger_fields.vue';
 import { integrationLevels } from '~/integrations/edit/constants';
+import { createStore } from '~/integrations/edit/store';
 
 describe('IntegrationForm', () => {
   let wrapper;

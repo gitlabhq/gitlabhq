@@ -1,16 +1,14 @@
-import Vue from 'vue';
 import Cookies from 'js-cookie';
-import Poll from '~/lib/utils/poll';
-import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
+import Vue from 'vue';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import { __, s__ } from '~/locale';
-import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/utils/common_utils';
-import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
 import { diffViewerModes } from '~/ide/constants';
-import TreeWorker from '../workers/tree_worker';
+import axios from '~/lib/utils/axios_utils';
+import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/utils/common_utils';
+import httpStatusCodes from '~/lib/utils/http_status';
+import Poll from '~/lib/utils/poll';
+import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
+import { __, s__ } from '~/locale';
 import notesEventHub from '../../notes/event_hub';
-import eventHub from '../event_hub';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
   INLINE_DIFF_VIEW_TYPE,
@@ -39,9 +37,11 @@ import {
   DIFF_VIEW_ALL_FILES,
   DIFF_FILE_BY_FILE_COOKIE_NAME,
 } from '../constants';
+import eventHub from '../event_hub';
 import { isCollapsed } from '../utils/diff_file';
-import { getDerivedMergeRequestInformation } from '../utils/merge_request';
 import { markFileReview, setReviewsForMergeRequest } from '../utils/file_reviews';
+import { getDerivedMergeRequestInformation } from '../utils/merge_request';
+import TreeWorker from '../workers/tree_worker';
 import * as types from './mutation_types';
 import {
   getDiffPositionByLineCode,

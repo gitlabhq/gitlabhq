@@ -1,6 +1,6 @@
 import { objectToQueryString, spriteIcon } from '~/lib/utils/common_utils';
-import VisualTokenValue from './visual_token_value';
 import FilteredSearchContainer from './container';
+import VisualTokenValue from './visual_token_value';
 
 export default class FilteredSearchVisualTokens {
   static permissibleOperatorValues = ['=', '!='];

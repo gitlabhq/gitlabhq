@@ -1,5 +1,5 @@
-import mutations from '~/ide/stores/mutations/file';
 import { createStore } from '~/ide/stores';
+import mutations from '~/ide/stores/mutations/file';
 import { file } from '../../helpers';
 
 describe('IDE store file mutations', () => {

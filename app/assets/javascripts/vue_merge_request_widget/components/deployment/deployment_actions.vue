@@ -1,11 +1,9 @@
 <script>
-import { __, s__ } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { visitUrl } from '~/lib/utils/url_utility';
+import { __, s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MRWidgetService from '../../services/mr_widget_service';
-import DeploymentActionButton from './deployment_action_button.vue';
-import DeploymentViewButton from './deployment_view_button.vue';
 import {
   MANUAL_DEPLOY,
   FAILED,
@@ -15,6 +13,8 @@ import {
   REDEPLOYING,
   ACT_BUTTON_ICONS,
 } from './constants';
+import DeploymentActionButton from './deployment_action_button.vue';
+import DeploymentViewButton from './deployment_view_button.vue';
 
 export default {
   name: 'DeploymentActions',

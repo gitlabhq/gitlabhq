@@ -1,7 +1,7 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlButton } from '@gitlab/ui';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import NoteableNote from '~/notes/components/noteable_note.vue';
 import PublishButton from './publish_button.vue';
 

@@ -1,9 +1,9 @@
-import { mount } from '@vue/test-utils';
 import { GlTable, GlBadge } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
+import TriggersList from '~/ci_settings_pipeline_triggers/components/triggers_list.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
-import TriggersList from '~/ci_settings_pipeline_triggers/components/triggers_list.vue';
 import { triggers } from '../mock_data';
 
 describe('TriggersList', () => {

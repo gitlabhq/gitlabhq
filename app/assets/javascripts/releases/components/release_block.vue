@@ -1,10 +1,10 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { isEmpty } from 'lodash';
 import $ from 'jquery';
+import { isEmpty } from 'lodash';
+import { scrollToElement } from '~/lib/utils/common_utils';
 import { slugify } from '~/lib/utils/text_utility';
 import { getLocationHash } from '~/lib/utils/url_utility';
-import { scrollToElement } from '~/lib/utils/common_utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import '~/behaviors/markdown/render_gfm';
 import EvidenceBlock from './evidence_block.vue';

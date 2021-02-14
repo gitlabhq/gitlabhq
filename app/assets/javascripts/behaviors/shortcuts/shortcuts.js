@@ -1,14 +1,14 @@
 import $ from 'jquery';
 import Cookies from 'js-cookie';
+import { flatten } from 'lodash';
 import Mousetrap from 'mousetrap';
 import Vue from 'vue';
-import { flatten } from 'lodash';
-import { refreshCurrentPage, visitUrl } from '~/lib/utils/url_utility';
-import findAndFollowLink from '~/lib/utils/navigation_utility';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import findAndFollowLink from '~/lib/utils/navigation_utility';
+import { refreshCurrentPage, visitUrl } from '~/lib/utils/url_utility';
 
-import { disableShortcuts, shouldDisableShortcuts } from './shortcuts_toggle';
 import { keysFor, TOGGLE_PERFORMANCE_BAR, TOGGLE_CANARY } from './keybindings';
+import { disableShortcuts, shouldDisableShortcuts } from './shortcuts_toggle';
 
 const defaultStopCallback = Mousetrap.prototype.stopCallback;
 Mousetrap.prototype.stopCallback = function customStopCallback(e, element, combo) {

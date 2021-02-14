@@ -1,6 +1,6 @@
 <script>
-import { isEmpty } from 'lodash';
 import { GlLink, GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { isEmpty } from 'lodash';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
 export default {

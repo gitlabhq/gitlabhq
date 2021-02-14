@@ -1,6 +1,6 @@
+import GroupsService from '~/groups/service/groups_service';
 import axios from '~/lib/utils/axios_utils';
 
-import GroupsService from '~/groups/service/groups_service';
 import { mockEndpoint, mockParentGroupItem } from '../mock_data';
 
 describe('GroupsService', () => {

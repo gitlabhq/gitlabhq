@@ -1,6 +1,6 @@
 import { members, group } from 'jest/members/mock_data';
-import mutations from '~/members/store/mutations';
 import * as types from '~/members/store/mutation_types';
+import mutations from '~/members/store/mutations';
 
 describe('Vuex members mutations', () => {
   describe('update member mutations', () => {

@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
+import Vue from 'vue';
 import IssuableByEmail from './components/issuable_by_email.vue';
 
 Vue.use(GlToast);

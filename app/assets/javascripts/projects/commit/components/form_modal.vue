@@ -1,8 +1,8 @@
 <script>
 import { GlModal, GlForm, GlFormCheckbox, GlSprintf, GlFormGroup } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
-import csrf from '~/lib/utils/csrf';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
+import csrf from '~/lib/utils/csrf';
 import eventHub from '../event_hub';
 import BranchesDropdown from './branches_dropdown.vue';
 

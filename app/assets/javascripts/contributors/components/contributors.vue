@@ -1,11 +1,11 @@
 <script>
-import { debounce, uniq } from 'lodash';
-import { mapActions, mapState, mapGetters } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
-import { __ } from '~/locale';
-import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
+import { debounce, uniq } from 'lodash';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import { getDatesInRange } from '~/lib/utils/datetime_utility';
+import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
+import { __ } from '~/locale';
 import ResizableChartContainer from '~/vue_shared/components/resizable_chart/resizable_chart_container.vue';
 import { xAxisLabelFormatter, dateFormatter } from '../utils';
 

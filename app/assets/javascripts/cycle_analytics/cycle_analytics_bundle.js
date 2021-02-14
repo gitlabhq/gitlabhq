@@ -2,20 +2,20 @@
 // relies on app/views/projects/cycle_analytics/show.html.haml for its
 // template.
 /* eslint-disable @gitlab/no-runtime-template-compiler */
-import $ from 'jquery';
-import Vue from 'vue';
-import Cookies from 'js-cookie';
 import { GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
+import $ from 'jquery';
+import Cookies from 'js-cookie';
+import Vue from 'vue';
 import { __ } from '~/locale';
 import { deprecatedCreateFlash as Flash } from '../flash';
 import Translate from '../vue_shared/translate';
 import banner from './components/banner.vue';
 import stageCodeComponent from './components/stage_code_component.vue';
 import stageComponent from './components/stage_component.vue';
+import stageNavItem from './components/stage_nav_item.vue';
 import stageReviewComponent from './components/stage_review_component.vue';
 import stageStagingComponent from './components/stage_staging_component.vue';
 import stageTestComponent from './components/stage_test_component.vue';
-import stageNavItem from './components/stage_nav_item.vue';
 import CycleAnalyticsService from './cycle_analytics_service';
 import CycleAnalyticsStore from './cycle_analytics_store';
 

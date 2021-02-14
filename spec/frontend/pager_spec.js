@@ -1,9 +1,9 @@
-import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
+import $ from 'jquery';
 import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
-import Pager from '~/pager';
 import { removeParams } from '~/lib/utils/url_utility';
+import Pager from '~/pager';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   removeParams: jest.fn().mockName('removeParams'),

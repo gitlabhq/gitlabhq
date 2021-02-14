@@ -1,8 +1,8 @@
 <script>
 import { s__, sprintf } from '~/locale';
 import ActionButtonGroup from './action_button_group.vue';
-import RemoveMemberButton from './remove_member_button.vue';
 import ApproveAccessRequestButton from './approve_access_request_button.vue';
+import RemoveMemberButton from './remove_member_button.vue';
 
 export default {
   name: 'AccessRequestActionButtons',

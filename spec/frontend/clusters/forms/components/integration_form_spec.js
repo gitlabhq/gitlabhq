@@ -1,6 +1,6 @@
-import Vuex from 'vuex';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlToggle, GlButton } from '@gitlab/ui';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import IntegrationForm from '~/clusters/forms/components/integration_form.vue';
 import { createStore } from '~/clusters/forms/stores/index';
 

@@ -1,7 +1,7 @@
-import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
-import { createStore } from './stores';
+import Vue from 'vue';
 import createRouter from './router';
+import { createStore } from './stores';
 import { stateAndPropsFromDataset } from './utils';
 
 Vue.use(GlToast);

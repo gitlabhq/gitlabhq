@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import TagField from '~/releases/components/tag_field.vue';
-import TagFieldNew from '~/releases/components/tag_field_new.vue';
 import TagFieldExisting from '~/releases/components/tag_field_existing.vue';
+import TagFieldNew from '~/releases/components/tag_field_new.vue';
 import createStore from '~/releases/stores';
 import createDetailModule from '~/releases/stores/modules/detail';
 

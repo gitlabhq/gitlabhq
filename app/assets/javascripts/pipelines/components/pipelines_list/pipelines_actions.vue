@@ -1,7 +1,7 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import { s__, __, sprintf } from '~/locale';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 import eventHub from '../../event_hub';

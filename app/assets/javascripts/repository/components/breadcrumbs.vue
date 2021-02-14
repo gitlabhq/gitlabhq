@@ -10,8 +10,8 @@ import permissionsQuery from 'shared_queries/repository/permissions.query.graphq
 import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
 import { __ } from '../../locale';
 import getRefMixin from '../mixins/get_ref';
-import projectShortPathQuery from '../queries/project_short_path.query.graphql';
 import projectPathQuery from '../queries/project_path.query.graphql';
+import projectShortPathQuery from '../queries/project_short_path.query.graphql';
 
 const ROW_TYPES = {
   header: 'header',

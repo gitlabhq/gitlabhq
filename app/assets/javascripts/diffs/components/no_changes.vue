@@ -1,6 +1,6 @@
 <script>
-import { mapGetters } from 'vuex';
 import { GlButton, GlSprintf } from '@gitlab/ui';
+import { mapGetters } from 'vuex';
 
 export default {
   components: {

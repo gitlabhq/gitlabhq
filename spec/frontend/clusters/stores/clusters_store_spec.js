@@ -1,5 +1,5 @@
-import ClustersStore from '~/clusters/stores/clusters_store';
 import { APPLICATION_INSTALLED_STATUSES, APPLICATION_STATUS, RUNNER } from '~/clusters/constants';
+import ClustersStore from '~/clusters/stores/clusters_store';
 import { CLUSTERS_MOCK_DATA } from '../services/mock_data';
 
 describe('Clusters Store', () => {

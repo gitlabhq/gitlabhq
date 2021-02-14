@@ -1,8 +1,8 @@
 import 'bootstrap/js/dist/dropdown';
-import $ from 'jquery';
 import { GlDropdown } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
 import StageComponent from '~/pipelines/components/pipelines_list/stage.vue';
 import eventHub from '~/pipelines/event_hub';

@@ -1,21 +1,18 @@
 <script>
-import $ from 'jquery';
-import { mapGetters, mapActions } from 'vuex';
-import { escape } from 'lodash';
 import { GlSprintf, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import $ from 'jquery';
+import { escape } from 'lodash';
+import { mapGetters, mapActions } from 'vuex';
+import { INLINE_DIFF_LINES_KEY } from '~/diffs/constants';
+import httpStatusCodes from '~/lib/utils/http_status';
 import { truncateSha } from '~/lib/utils/text_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
-import httpStatusCodes from '~/lib/utils/http_status';
-import { INLINE_DIFF_LINES_KEY } from '~/diffs/constants';
-import { __, s__, sprintf } from '../../locale';
 import { deprecatedCreateFlash as Flash } from '../../flash';
+import { __, s__, sprintf } from '../../locale';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
-import noteHeader from './note_header.vue';
-import noteActions from './note_actions.vue';
-import NoteBody from './note_body.vue';
 import {
   getStartLineNumber,
   getEndLineNumber,
@@ -23,6 +20,9 @@ import {
   commentLineOptions,
   formatLineRange,
 } from './multiline_comment_utils';
+import noteActions from './note_actions.vue';
+import NoteBody from './note_body.vue';
+import noteHeader from './note_header.vue';
 
 export default {
   name: 'NoteableNote',

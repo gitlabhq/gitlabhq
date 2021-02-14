@@ -1,13 +1,12 @@
 <script>
 import { GlLink, GlIcon, GlLabel, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 
-import { __, sprintf } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { getTimeago } from '~/lib/utils/datetime_utility';
 import { isScopedLabel } from '~/lib/utils/common_utils';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
-
+import { getTimeago } from '~/lib/utils/datetime_utility';
+import { __, sprintf } from '~/locale';
 import IssuableAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
+import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {
   components: {

@@ -1,12 +1,12 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { GlLoadingIcon } from '@gitlab/ui';
+import { listen } from 'codesandbox-api';
 import { isEmpty, debounce } from 'lodash';
 import { Manager } from 'smooshpack';
-import { listen } from 'codesandbox-api';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { packageJsonPath, LIVE_PREVIEW_DEBOUNCE } from '../../constants';
-import { createPathWithExt } from '../../utils';
 import eventHub from '../../eventhub';
+import { createPathWithExt } from '../../utils';
 import Navigator from './navigator.vue';
 
 export default {

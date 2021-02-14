@@ -1,11 +1,11 @@
-import $ from 'jquery';
-import { last } from 'lodash';
 import { scaleLinear, scaleThreshold } from 'd3-scale';
 import { select } from 'd3-selection';
 import dateFormat from 'dateformat';
-import { getDayName, getDayDifference } from '~/lib/utils/datetime_utility';
-import axios from '~/lib/utils/axios_utils';
+import $ from 'jquery';
+import { last } from 'lodash';
 import { deprecatedCreateFlash as flash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
+import { getDayName, getDayDifference } from '~/lib/utils/datetime_utility';
 import { n__, s__, __ } from '~/locale';
 
 const d3 = { select, scaleLinear, scaleThreshold };

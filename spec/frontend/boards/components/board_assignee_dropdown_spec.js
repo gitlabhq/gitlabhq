@@ -1,4 +1,3 @@
-import { mount, createLocalVue } from '@vue/test-utils';
 import {
   GlDropdownItem,
   GlAvatarLink,
@@ -6,15 +5,16 @@ import {
   GlSearchBoxByType,
   GlLoadingIcon,
 } from '@gitlab/ui';
+import { mount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import BoardAssigneeDropdown from '~/boards/components/board_assignee_dropdown.vue';
+import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
+import searchUsers from '~/boards/graphql/users_search.query.graphql';
+import store from '~/boards/stores';
 import IssuableAssignees from '~/sidebar/components/assignees/issuable_assignees.vue';
 import MultiSelectDropdown from '~/vue_shared/components/sidebar/multiselect_dropdown.vue';
-import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
-import store from '~/boards/stores';
 import getIssueParticipants from '~/vue_shared/components/sidebar/queries/getIssueParticipants.query.graphql';
-import searchUsers from '~/boards/graphql/users_search.query.graphql';
 import { participants } from '../mock_data';
 
 const localVue = createLocalVue();

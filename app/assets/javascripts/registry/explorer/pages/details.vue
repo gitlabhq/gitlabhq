@@ -2,21 +2,18 @@
 import { GlKeysetPagination, GlResizeObserverDirective } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import createFlash from '~/flash';
-import Tracking from '~/tracking';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
+import Tracking from '~/tracking';
+import DeleteImage from '../components/delete_image.vue';
 import DeleteAlert from '../components/details_page/delete_alert.vue';
-import PartialCleanupAlert from '../components/details_page/partial_cleanup_alert.vue';
 import DeleteModal from '../components/details_page/delete_modal.vue';
 import DetailsHeader from '../components/details_page/details_header.vue';
+import EmptyState from '../components/details_page/empty_state.vue';
+import PartialCleanupAlert from '../components/details_page/partial_cleanup_alert.vue';
+import StatusAlert from '../components/details_page/status_alert.vue';
 import TagsList from '../components/details_page/tags_list.vue';
 import TagsLoader from '../components/details_page/tags_loader.vue';
-import EmptyState from '../components/details_page/empty_state.vue';
-import StatusAlert from '../components/details_page/status_alert.vue';
-import DeleteImage from '../components/delete_image.vue';
-
-import getContainerRepositoryDetailsQuery from '../graphql/queries/get_container_repository_details.query.graphql';
-import deleteContainerRepositoryTagsMutation from '../graphql/mutations/delete_container_repository_tags.mutation.graphql';
 
 import {
   ALERT_SUCCESS_TAG,
@@ -29,6 +26,8 @@ import {
   UNFINISHED_STATUS,
   MISSING_OR_DELETE_IMAGE_BREADCRUMB,
 } from '../constants/index';
+import deleteContainerRepositoryTagsMutation from '../graphql/mutations/delete_container_repository_tags.mutation.graphql';
+import getContainerRepositoryDetailsQuery from '../graphql/queries/get_container_repository_details.query.graphql';
 
 export default {
   name: 'RegistryDetailsPage',

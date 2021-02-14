@@ -1,10 +1,10 @@
 <script>
-import { mapState, mapActions } from 'vuex';
 import { GlModal, GlTabs, GlTab, GlSearchBoxByType, GlSprintf } from '@gitlab/ui';
-import { BV_SHOW_MODAL } from '~/lib/utils/constants';
+import { mapState, mapActions } from 'vuex';
 import ReviewTabContainer from '~/add_context_commits_modal/components/review_tab_container.vue';
-import { s__ } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import { BV_SHOW_MODAL } from '~/lib/utils/constants';
+import { s__ } from '~/locale';
 import eventHub from '../event_hub';
 import {
   findCommitIndex,

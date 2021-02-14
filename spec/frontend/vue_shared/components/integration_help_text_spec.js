@@ -1,6 +1,6 @@
+import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
-import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import IntegrationHelpText from '~/vue_shared/components/integrations_help_text.vue';
 
 describe('IntegrationHelpText component', () => {

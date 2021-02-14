@@ -1,10 +1,10 @@
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { createStore } from '~/ide/stores';
-import RightPane from '~/ide/components/panes/right.vue';
 import CollapsibleSidebar from '~/ide/components/panes/collapsible_sidebar.vue';
+import RightPane from '~/ide/components/panes/right.vue';
 import { rightSidebarViews } from '~/ide/constants';
+import { createStore } from '~/ide/stores';
 import extendStore from '~/ide/stores/extend';
 
 const localVue = createLocalVue();

@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import axios from '~/lib/utils/axios_utils';
 import { getSelector, dismiss, inserted } from '~/feature_highlight/feature_highlight_helper';
+import axios from '~/lib/utils/axios_utils';
 import { togglePopover } from '~/shared/popover';
 
 describe('feature highlight helper', () => {

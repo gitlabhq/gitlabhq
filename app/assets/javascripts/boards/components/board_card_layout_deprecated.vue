@@ -1,7 +1,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ISSUABLE } from '~/boards/constants';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import boardsStore from '../stores/boards_store';
 import IssueCardInner from './issue_card_inner.vue';
 import IssueCardInnerDeprecated from './issue_card_inner_deprecated.vue';

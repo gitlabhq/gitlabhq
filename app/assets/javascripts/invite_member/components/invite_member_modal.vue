@@ -1,9 +1,9 @@
 <script>
 import { GlModal, GlLink } from '@gitlab/ui';
-import { s__, __ } from '~/locale';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
-import eventHub from '../event_hub';
+import { s__, __ } from '~/locale';
 import { OPEN_MODAL, MODAL_ID } from '../constants';
+import eventHub from '../event_hub';
 
 export default {
   cancelProps: {

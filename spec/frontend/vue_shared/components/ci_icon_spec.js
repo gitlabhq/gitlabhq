@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import ciIcon from '~/vue_shared/components/ci_icon.vue';
 
 describe('CI Icon component', () => {

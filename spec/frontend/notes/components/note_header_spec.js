@@ -1,7 +1,7 @@
+import { GlSprintf } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import Vuex from 'vuex';
-import { GlSprintf } from '@gitlab/ui';
 import NoteHeader from '~/notes/components/note_header.vue';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/utils';
 

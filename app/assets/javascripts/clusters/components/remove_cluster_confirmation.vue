@@ -1,10 +1,10 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { escape } from 'lodash';
 import { GlModal, GlButton, GlFormInput, GlSprintf } from '@gitlab/ui';
-import SplitButton from '~/vue_shared/components/split_button.vue';
-import { s__, sprintf } from '~/locale';
+import { escape } from 'lodash';
 import csrf from '~/lib/utils/csrf';
+import { s__, sprintf } from '~/locale';
+import SplitButton from '~/vue_shared/components/split_button.vue';
 
 const splitButtonActionItems = [
   {

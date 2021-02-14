@@ -1,11 +1,11 @@
+import { GlModal, GlSearchBoxByType } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlModal, GlSearchBoxByType } from '@gitlab/ui';
 import AddReviewItemsModal from '~/add_context_commits_modal/components/add_context_commits_modal_wrapper.vue';
 
-import defaultState from '~/add_context_commits_modal/store/state';
-import mutations from '~/add_context_commits_modal/store/mutations';
 import * as actions from '~/add_context_commits_modal/store/actions';
+import mutations from '~/add_context_commits_modal/store/mutations';
+import defaultState from '~/add_context_commits_modal/store/state';
 import getDiffWithCommit from '../../diffs/mock_data/diff_with_commit';
 
 const localVue = createLocalVue();

@@ -1,8 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
+import { addSubscription, removeSubscription, fetchGroups } from '~/jira_connect/api';
 import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
-
-import { addSubscription, removeSubscription, fetchGroups } from '~/jira_connect/api';
 
 describe('JiraConnect API', () => {
   let mock;

@@ -1,7 +1,7 @@
 import Api from '~/api';
-import Tracking from '~/tracking';
 import { convertObjectPropsToSnakeCase } from '~/lib/utils/common_utils';
 import generateBranchName from '~/static_site_editor/services/generate_branch_name';
+import Tracking from '~/tracking';
 
 import {
   DEFAULT_TARGET_BRANCH,

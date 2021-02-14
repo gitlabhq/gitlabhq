@@ -1,9 +1,9 @@
+import { GlModal } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlModal } from '@gitlab/ui';
+import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import GlModalVuex from '~/vue_shared/components/gl_modal_vuex.vue';
 import createState from '~/vuex_shared/modules/modal/state';
-import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

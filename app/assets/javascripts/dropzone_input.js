@@ -1,13 +1,13 @@
-import $ from 'jquery';
 import Dropzone from 'dropzone';
+import $ from 'jquery';
 import { escape } from 'lodash';
 import './behaviors/preview_markdown';
-import { n__, __ } from '~/locale';
-import { getFilename } from '~/lib/utils/file_upload';
 import { spriteIcon } from '~/lib/utils/common_utils';
+import { getFilename } from '~/lib/utils/file_upload';
+import { n__, __ } from '~/locale';
 import PasteMarkdownTable from './behaviors/markdown/paste_markdown_table';
-import csrf from './lib/utils/csrf';
 import axios from './lib/utils/axios_utils';
+import csrf from './lib/utils/csrf';
 
 Dropzone.autoDiscover = false;
 

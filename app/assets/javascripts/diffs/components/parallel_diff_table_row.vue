@@ -1,7 +1,7 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
-import $ from 'jquery';
 import { GlTooltipDirective, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import $ from 'jquery';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { CONTEXT_LINE_CLASS_NAME, PARALLEL_DIFF_VIEW_TYPE } from '../constants';
 import DiffGutterAvatars from './diff_gutter_avatars.vue';
 import * as utils from './diff_row_utils';

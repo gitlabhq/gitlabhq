@@ -1,5 +1,4 @@
 <script>
-import { mapState, mapActions } from 'vuex';
 import {
   GlBadge,
   GlLink,
@@ -10,6 +9,7 @@ import {
   GlTable,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { mapState, mapActions } from 'vuex';
 import { __, sprintf } from '~/locale';
 import { CLUSTER_TYPES, STATUSES } from '../constants';
 import AncestorNotice from './ancestor_notice.vue';

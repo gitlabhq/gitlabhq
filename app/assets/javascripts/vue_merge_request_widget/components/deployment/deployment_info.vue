@@ -3,7 +3,6 @@ import { GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import MemoryUsage from './memory_usage.vue';
 import {
   MANUAL_DEPLOY,
   WILL_DEPLOY,
@@ -13,6 +12,7 @@ import {
   CANCELED,
   SKIPPED,
 } from './constants';
+import MemoryUsage from './memory_usage.vue';
 
 export default {
   name: 'DeploymentInfo',

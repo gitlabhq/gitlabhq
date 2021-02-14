@@ -1,9 +1,9 @@
-import { mount } from '@vue/test-utils';
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
+import { UPSTREAM, DOWNSTREAM } from '~/pipelines/components/graph/constants';
 import LinkedPipelineComponent from '~/pipelines/components/graph/linked_pipeline.vue';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
-import { UPSTREAM, DOWNSTREAM } from '~/pipelines/components/graph/constants';
-import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import mockData from './linked_pipelines_mock_data';
 
 const mockPipeline = mockData.triggered[0];

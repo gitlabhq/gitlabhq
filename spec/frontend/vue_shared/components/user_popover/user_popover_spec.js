@@ -1,8 +1,8 @@
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading, GlSprintf, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import UserPopover from '~/vue_shared/components/user_popover/user_popover.vue';
 import UserAvailabilityStatus from '~/set_status_modal/components/user_availability_status.vue';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/utils';
+import UserPopover from '~/vue_shared/components/user_popover/user_popover.vue';
 
 const DEFAULT_PROPS = {
   user: {

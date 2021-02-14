@@ -1,6 +1,6 @@
+import { GlLoadingIcon, GlSearchBoxByType, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import { GlLoadingIcon, GlSearchBoxByType, GlDropdownItem } from '@gitlab/ui';
 import NewEnvironmentsDropdown from '~/feature_flags/components/new_environments_dropdown.vue';
 import axios from '~/lib/utils/axios_utils';
 import httpStatusCodes from '~/lib/utils/http_status';

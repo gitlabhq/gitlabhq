@@ -1,7 +1,7 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon, GlEmptyState } from '@gitlab/ui';
-import { dashboardEmptyStates } from '~/monitoring/constants';
+import { shallowMount } from '@vue/test-utils';
 import EmptyState from '~/monitoring/components/empty_state.vue';
+import { dashboardEmptyStates } from '~/monitoring/constants';
 
 function createComponent(props) {
   return shallowMount(EmptyState, {

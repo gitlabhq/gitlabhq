@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { toArray, isElement } from 'lodash';
+import Vue from 'vue';
 import Tooltips from './components/tooltips.vue';
 
 let app;

@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import ItemCaret from '~/groups/components/item_caret.vue';
 
 describe('ItemCaret', () => {

@@ -1,5 +1,5 @@
-import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 
 import { mockLabelList } from 'jest/boards/mock_data';
 import BoardListHeader from '~/boards/components/board_list_header.vue';

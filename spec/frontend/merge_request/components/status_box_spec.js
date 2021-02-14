@@ -1,6 +1,6 @@
-import { nextTick } from 'vue';
-import { shallowMount } from '@vue/test-utils';
 import { GlSprintf } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import StatusBox from '~/merge_request/components/status_box.vue';
 import mrEventHub from '~/merge_request/eventhub';
 

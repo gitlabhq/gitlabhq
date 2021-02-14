@@ -1,21 +1,21 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import createFlash from '~/flash';
+import { s__ } from '~/locale';
 import ReportSection from '~/reports/components/report_section.vue';
 import { ERROR, SLOT_SUCCESS, SLOT_LOADING, SLOT_ERROR } from '~/reports/constants';
-import { s__ } from '~/locale';
-import createFlash from '~/flash';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import HelpIcon from './components/help_icon.vue';
 import SecurityReportDownloadDropdown from './components/security_report_download_dropdown.vue';
 import SecuritySummary from './components/security_summary.vue';
-import store from './store';
-import { MODULE_SAST, MODULE_SECRET_DETECTION } from './store/constants';
 import {
   REPORT_TYPE_SAST,
   REPORT_TYPE_SECRET_DETECTION,
   reportTypeToSecurityReportTypeEnum,
 } from './constants';
 import securityReportDownloadPathsQuery from './queries/security_report_download_paths.query.graphql';
+import store from './store';
+import { MODULE_SAST, MODULE_SECRET_DETECTION } from './store/constants';
 import { extractSecurityReportArtifacts } from './utils';
 
 export default {

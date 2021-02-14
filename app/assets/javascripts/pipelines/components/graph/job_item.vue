@@ -1,12 +1,12 @@
 <script>
 import { GlTooltipDirective, GlLink } from '@gitlab/ui';
-import { sprintf } from '~/locale';
 import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
-import ActionComponent from './action_component.vue';
-import JobNameComponent from './job_name_component.vue';
+import { sprintf } from '~/locale';
 import { accessValue } from './accessors';
+import ActionComponent from './action_component.vue';
 import { REST } from './constants';
+import JobNameComponent from './job_name_component.vue';
 import { reportToSentry } from './utils';
 
 /**

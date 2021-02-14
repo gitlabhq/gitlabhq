@@ -1,6 +1,6 @@
 import imageDiffHelper from './helpers/index';
-import { viewTypes, isValidViewType } from './view_types';
 import ImageDiff from './image_diff';
+import { viewTypes, isValidViewType } from './view_types';
 
 export default class ReplacedImageDiff extends ImageDiff {
   init(defaultViewType = viewTypes.TWO_UP) {

@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlAlert, GlSprintf } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import component from '~/registry/explorer/components/details_page/partial_cleanup_alert.vue';
 import { DELETE_ALERT_TITLE, DELETE_ALERT_LINK_TEXT } from '~/registry/explorer/constants';
 

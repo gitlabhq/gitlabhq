@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import EditorLite from '~/vue_shared/components/editor_lite.vue';
-import Editor from '~/editor/editor_lite';
 import { EDITOR_READY_EVENT } from '~/editor/constants';
+import Editor from '~/editor/editor_lite';
+import EditorLite from '~/vue_shared/components/editor_lite.vue';
 
 jest.mock('~/editor/editor_lite');
 

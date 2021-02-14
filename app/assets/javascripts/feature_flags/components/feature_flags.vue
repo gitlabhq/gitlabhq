@@ -1,20 +1,19 @@
 <script>
-import { mapState, mapActions } from 'vuex';
-import { isEmpty } from 'lodash';
 import { GlAlert, GlButton, GlModalDirective, GlSprintf, GlTabs } from '@gitlab/ui';
+import { isEmpty } from 'lodash';
+import { mapState, mapActions } from 'vuex';
 
-import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import {
   buildUrlWithCurrentLocation,
   getParameterByName,
   historyPushState,
 } from '~/lib/utils/common_utils';
+import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import { FEATURE_FLAG_SCOPE, USER_LIST_SCOPE } from '../constants';
+import ConfigureFeatureFlagsModal from './configure_feature_flags_modal.vue';
 import FeatureFlagsTab from './feature_flags_tab.vue';
 import FeatureFlagsTable from './feature_flags_table.vue';
 import UserListsTable from './user_lists_table.vue';
-
-import ConfigureFeatureFlagsModal from './configure_feature_flags_modal.vue';
 
 const SCOPES = { FEATURE_FLAG_SCOPE, USER_LIST_SCOPE };
 

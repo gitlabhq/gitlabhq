@@ -1,10 +1,10 @@
+import { createLocalVue, mount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { createLocalVue, mount } from '@vue/test-utils';
-import { trimText } from 'helpers/text_helper';
 import { keepAlive } from 'helpers/keep_alive_component_helper';
-import IdeReview from '~/ide/components/ide_review.vue';
+import { trimText } from 'helpers/text_helper';
 import EditorModeDropdown from '~/ide/components/editor_mode_dropdown.vue';
+import IdeReview from '~/ide/components/ide_review.vue';
 import { createStore } from '~/ide/stores';
 import { file } from '../helpers';
 import { projectData } from '../mock_data';

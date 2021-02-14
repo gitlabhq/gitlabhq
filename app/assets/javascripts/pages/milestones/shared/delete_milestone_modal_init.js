@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import Translate from '~/vue_shared/translate';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
+import Translate from '~/vue_shared/translate';
 import DeleteMilestoneModal from './components/delete_milestone_modal.vue';
 import eventHub from './event_hub';
 

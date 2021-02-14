@@ -1,5 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlModal } from '@gitlab/ui';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import TestCaseDetails from '~/pipelines/components/test_reports/test_case_details.vue';
 import CodeBlock from '~/vue_shared/components/code_block.vue';
 

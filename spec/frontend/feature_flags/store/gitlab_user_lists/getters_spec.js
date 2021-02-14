@@ -4,8 +4,8 @@ import {
   isLoading,
   hasError,
 } from '~/feature_flags/store/gitlab_user_list/getters';
-import statuses from '~/feature_flags/store/gitlab_user_list/status';
 import createState from '~/feature_flags/store/gitlab_user_list/state';
+import statuses from '~/feature_flags/store/gitlab_user_list/status';
 import { userList } from '../../mock_data';
 
 describe('~/feature_flags/store/gitlab_user_list/getters', () => {

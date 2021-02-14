@@ -1,7 +1,7 @@
 import { deprecatedCreateFlash as flash } from '../flash';
 import axios from '../lib/utils/axios_utils';
-import ProtectedTagAccessDropdown from './protected_tag_access_dropdown';
 import { FAILED_TO_UPDATE_TAG_MESSAGE } from './constants';
+import ProtectedTagAccessDropdown from './protected_tag_access_dropdown';
 
 export default class ProtectedTagEdit {
   constructor(options) {

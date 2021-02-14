@@ -10,13 +10,11 @@ import {
 } from '@gitlab/ui';
 import { get } from 'lodash';
 import getContainerRepositoriesQuery from 'shared_queries/container_registry/get_container_repositories.query.graphql';
-import Tracking from '~/tracking';
 import createFlash from '~/flash';
+import Tracking from '~/tracking';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
-import RegistryHeader from '../components/list_page/registry_header.vue';
 import DeleteImage from '../components/delete_image.vue';
-
-import getContainerRepositoriesDetails from '../graphql/queries/get_container_repositories_details.query.graphql';
+import RegistryHeader from '../components/list_page/registry_header.vue';
 
 import {
   DELETE_IMAGE_SUCCESS_MESSAGE,
@@ -31,6 +29,7 @@ import {
   FETCH_IMAGES_LIST_ERROR_MESSAGE,
   SORT_FIELDS,
 } from '../constants/index';
+import getContainerRepositoriesDetails from '../graphql/queries/get_container_repositories_details.query.graphql';
 
 export default {
   name: 'RegistryListPage',

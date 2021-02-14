@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import UsagePingDisabled from './components/usage_ping_disabled.vue';
 import AdminUsersApp from './components/app.vue';
+import UsagePingDisabled from './components/usage_ping_disabled.vue';
 
 export const initAdminUsersApp = (el = document.querySelector('#js-admin-users-app')) => {
   if (!el) {

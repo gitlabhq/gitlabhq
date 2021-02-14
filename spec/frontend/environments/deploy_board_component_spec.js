@@ -1,8 +1,8 @@
 import { GlTooltip, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue from 'vue';
-import DeployBoard from '~/environments/components/deploy_board.vue';
 import CanaryIngress from '~/environments/components/canary_ingress.vue';
+import DeployBoard from '~/environments/components/deploy_board.vue';
 import { deployBoardMockData, environment } from './mock_data';
 
 const logsPath = `gitlab-org/gitlab-test/-/logs?environment_name=${environment.name}`;

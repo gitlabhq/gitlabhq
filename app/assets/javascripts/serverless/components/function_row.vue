@@ -1,7 +1,7 @@
 <script>
 import { isString } from 'lodash';
-import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
+import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
 import Url from './url.vue';
 
 export default {

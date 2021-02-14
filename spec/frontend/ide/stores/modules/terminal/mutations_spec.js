@@ -4,9 +4,9 @@ import {
   RUNNING,
   STOPPING,
 } from '~/ide/stores/modules/terminal/constants';
-import createState from '~/ide/stores/modules/terminal/state';
 import * as types from '~/ide/stores/modules/terminal/mutation_types';
 import mutations from '~/ide/stores/modules/terminal/mutations';
+import createState from '~/ide/stores/modules/terminal/state';
 
 describe('IDE store terminal mutations', () => {
   let state;

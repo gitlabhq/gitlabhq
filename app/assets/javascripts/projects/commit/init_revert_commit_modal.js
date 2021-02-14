@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import CommitFormModal from './components/form_modal.vue';
-import createStore from './store';
 import {
   I18N_MODAL,
   I18N_REVERT_MODAL,
@@ -9,6 +8,7 @@ import {
   OPEN_REVERT_MODAL,
   REVERT_MODAL_ID,
 } from './constants';
+import createStore from './store';
 
 export default function initInviteMembersModal() {
   const el = document.querySelector('.js-revert-commit-modal');

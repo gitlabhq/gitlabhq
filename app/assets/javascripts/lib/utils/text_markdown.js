@@ -1,7 +1,7 @@
 /* eslint-disable func-names, no-param-reassign, operator-assignment, consistent-return */
 import $ from 'jquery';
-import { insertText } from '~/lib/utils/common_utils';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
+import { insertText } from '~/lib/utils/common_utils';
 
 const LINK_TAG_PATTERN = '[{text}](url)';
 

@@ -1,9 +1,9 @@
-import Vue from 'vue';
 import Mousetrap from 'mousetrap';
-import { file } from 'jest/ide/helpers';
+import Vue from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import FindFileComponent from '~/vue_shared/components/file_finder/index.vue';
+import { file } from 'jest/ide/helpers';
 import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
+import FindFileComponent from '~/vue_shared/components/file_finder/index.vue';
 
 describe('File finder item spec', () => {
   const Component = Vue.extend(FindFileComponent);

@@ -9,9 +9,9 @@ import {
   GlButton,
   GlAlert,
 } from '@gitlab/ui';
+import { APPLICATION_STATUS } from '~/clusters/constants';
 import { __, s__ } from '~/locale';
 
-import { APPLICATION_STATUS } from '~/clusters/constants';
 import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
 
 const { UPDATING, UNINSTALLING } = APPLICATION_STATUS;

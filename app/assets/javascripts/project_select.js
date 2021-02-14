@@ -2,9 +2,9 @@
 
 import $ from 'jquery';
 import Api from './api';
-import ProjectSelectComboButton from './project_select_combo_button';
-import { s__ } from './locale';
 import { loadCSSFile } from './lib/utils/css_utils';
+import { s__ } from './locale';
+import ProjectSelectComboButton from './project_select_combo_button';
 
 const projectSelect = () => {
   loadCSSFile(gon.select2_css_path)

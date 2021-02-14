@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import DiffCommentCell from '~/diffs/components/diff_comment_cell.vue';
-import DiffDiscussions from '~/diffs/components/diff_discussions.vue';
 import DiffDiscussionReply from '~/diffs/components/diff_discussion_reply.vue';
+import DiffDiscussions from '~/diffs/components/diff_discussions.vue';
 
 describe('DiffCommentCell', () => {
   const createWrapper = (props = {}) => {

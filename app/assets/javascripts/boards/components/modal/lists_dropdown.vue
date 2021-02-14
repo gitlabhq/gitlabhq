@@ -1,7 +1,7 @@
 <script>
 import { GlLink, GlIcon } from '@gitlab/ui';
-import ModalStore from '../../stores/modal_store';
 import boardsStore from '../../stores/boards_store';
+import ModalStore from '../../stores/modal_store';
 
 export default {
   components: {

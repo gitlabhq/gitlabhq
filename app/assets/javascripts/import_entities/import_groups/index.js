@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import Translate from '~/vue_shared/translate';
-import { createApolloClient } from './graphql/client_factory';
 import ImportTable from './components/import_table.vue';
+import { createApolloClient } from './graphql/client_factory';
 
 Vue.use(Translate);
 Vue.use(VueApollo);

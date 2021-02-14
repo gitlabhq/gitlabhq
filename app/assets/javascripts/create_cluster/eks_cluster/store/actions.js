@@ -1,8 +1,8 @@
-import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { setAWSConfig } from '../services/aws_services_facade';
 import { DEFAULT_REGION } from '../constants';
+import { setAWSConfig } from '../services/aws_services_facade';
 import * as types from './mutation_types';
 
 const getErrorMessage = (data) => {

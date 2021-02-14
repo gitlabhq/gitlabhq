@@ -1,7 +1,7 @@
-import { mount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import { mount } from '@vue/test-utils';
 import initCopyToClipboard from '~/behaviors/copy_to_clipboard';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 describe('clipboard button', () => {
   let wrapper;

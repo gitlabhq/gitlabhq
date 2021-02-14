@@ -1,5 +1,5 @@
-import Home from '../pages/index.vue';
 import DesignDetail from '../pages/design/index.vue';
+import Home from '../pages/index.vue';
 import { DESIGNS_ROUTE_NAME, DESIGN_ROUTE_NAME } from './constants';
 
 export default [

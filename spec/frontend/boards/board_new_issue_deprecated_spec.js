@@ -1,11 +1,11 @@
 /* global List */
 
-import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
+import Vue from 'vue';
 import boardNewIssue from '~/boards/components/board_new_issue_deprecated.vue';
 import boardsStore from '~/boards/stores/boards_store';
+import axios from '~/lib/utils/axios_utils';
 
 import '~/boards/models/list';
 import { listObj, boardsMockInterceptor } from './mock_data';

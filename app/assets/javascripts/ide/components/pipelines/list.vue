@@ -1,6 +1,4 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
-import { escape } from 'lodash';
 import {
   GlLoadingIcon,
   GlIcon,
@@ -10,10 +8,12 @@ import {
   GlBadge,
   GlAlert,
 } from '@gitlab/ui';
+import { escape } from 'lodash';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import IDEServices from '~/ide/services';
 import { sprintf, __ } from '../../../locale';
-import CiIcon from '../../../vue_shared/components/ci_icon.vue';
 import EmptyState from '../../../pipelines/components/pipelines_list/empty_state.vue';
+import CiIcon from '../../../vue_shared/components/ci_icon.vue';
 import JobsList from '../jobs/list.vue';
 
 export default {

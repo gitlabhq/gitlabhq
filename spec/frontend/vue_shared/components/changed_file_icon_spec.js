@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
 
 const changedFile = () => ({ changed: true });

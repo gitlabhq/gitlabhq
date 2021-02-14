@@ -1,7 +1,7 @@
-import mutations from '~/packages/list/stores/mutations';
-import * as types from '~/packages/list/stores/mutation_types';
-import createState from '~/packages/list/stores/state';
 import * as commonUtils from '~/lib/utils/common_utils';
+import * as types from '~/packages/list/stores/mutation_types';
+import mutations from '~/packages/list/stores/mutations';
+import createState from '~/packages/list/stores/state';
 import { npmPackage, mavenPackage } from '../../mock_data';
 
 describe('Mutations Registry Store', () => {

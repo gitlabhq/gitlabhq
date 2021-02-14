@@ -1,6 +1,6 @@
 import getJiraImportDetailsQuery from '~/jira_import/queries/get_jira_import_details.query.graphql';
-import { IMPORT_STATE } from '~/jira_import/utils/jira_import_utils';
 import { userMappingsPageSize } from '~/jira_import/utils/constants';
+import { IMPORT_STATE } from '~/jira_import/utils/jira_import_utils';
 
 export const fullPath = 'gitlab-org/gitlab-test';
 

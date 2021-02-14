@@ -1,6 +1,4 @@
 import testAction from 'helpers/vuex_action_helper';
-import { refreshCurrentPage } from '~/lib/utils/url_utility';
-import createState from '~/integrations/edit/store/state';
 import {
   setOverride,
   setIsSaving,
@@ -14,6 +12,8 @@ import {
   receiveJiraIssueTypesError,
 } from '~/integrations/edit/store/actions';
 import * as types from '~/integrations/edit/store/mutation_types';
+import createState from '~/integrations/edit/store/state';
+import { refreshCurrentPage } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility');
 

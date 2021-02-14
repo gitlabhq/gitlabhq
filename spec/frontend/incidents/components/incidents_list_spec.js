@@ -1,10 +1,6 @@
-import { mount } from '@vue/test-utils';
 import { GlAlert, GlLoadingIcon, GlTable, GlAvatar, GlEmptyState } from '@gitlab/ui';
-import Tracking from '~/tracking';
-import { visitUrl, joinPaths, mergeUrlParams } from '~/lib/utils/url_utility';
+import { mount } from '@vue/test-utils';
 import IncidentsList from '~/incidents/components/incidents_list.vue';
-import SeverityToken from '~/sidebar/components/severity/severity.vue';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import {
   I18N,
   TH_CREATED_AT_TEST_ID,
@@ -14,6 +10,10 @@ import {
   trackIncidentCreateNewOptions,
   trackIncidentListViewsOptions,
 } from '~/incidents/constants';
+import { visitUrl, joinPaths, mergeUrlParams } from '~/lib/utils/url_utility';
+import SeverityToken from '~/sidebar/components/severity/severity.vue';
+import Tracking from '~/tracking';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import mockIncidents from '../mocks/incidents.json';
 
 jest.mock('~/lib/utils/url_utility', () => ({

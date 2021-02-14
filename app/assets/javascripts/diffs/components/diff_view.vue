@@ -1,11 +1,11 @@
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex';
-import draftCommentsMixin from '~/diffs/mixins/draft_comments';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
+import draftCommentsMixin from '~/diffs/mixins/draft_comments';
 import { getCommentedLines } from '~/notes/components/multiline_comment_utils';
-import DiffRow from './diff_row.vue';
 import DiffCommentCell from './diff_comment_cell.vue';
 import DiffExpansionCell from './diff_expansion_cell.vue';
+import DiffRow from './diff_row.vue';
 
 export default {
   components: {

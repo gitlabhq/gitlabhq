@@ -1,9 +1,9 @@
 import { uniq } from 'lodash';
 import { userList } from 'jest/feature_flags/mock_data';
-import createState from '~/user_lists/store/show/state';
-import mutations from '~/user_lists/store/show/mutations';
 import { states } from '~/user_lists/constants/show';
 import * as types from '~/user_lists/store/show/mutation_types';
+import mutations from '~/user_lists/store/show/mutations';
+import createState from '~/user_lists/store/show/state';
 
 describe('User Lists Show Mutations', () => {
   let mockState;

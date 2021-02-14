@@ -1,6 +1,6 @@
-import Vuex from 'vuex';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { GlForm, GlSearchBoxByType, GlButton } from '@gitlab/ui';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { MOCK_QUERY } from 'jest/search/mock_data';
 import GlobalSearchTopbar from '~/search/topbar/components/app.vue';
 import GroupFilter from '~/search/topbar/components/group_filter.vue';

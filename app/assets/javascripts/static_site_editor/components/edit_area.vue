@@ -1,15 +1,15 @@
 <script>
-import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
 import parseSourceFile from '~/static_site_editor/services/parse_source_file';
 import { EDITOR_TYPES } from '~/vue_shared/components/rich_content_editor/constants';
+import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
 import imageRepository from '../image_repository';
 import formatter from '../services/formatter';
-import templater from '../services/templater';
 import renderImage from '../services/renderers/render_image';
-import UnsavedChangesConfirmDialog from './unsaved_changes_confirm_dialog.vue';
+import templater from '../services/templater';
 import EditDrawer from './edit_drawer.vue';
 import EditHeader from './edit_header.vue';
 import PublishToolbar from './publish_toolbar.vue';
+import UnsavedChangesConfirmDialog from './unsaved_changes_confirm_dialog.vue';
 
 export default {
   components: {

@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import Translate from '~/vue_shared/translate';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
-import UpdateUsername from './components/update_username.vue';
+import Translate from '~/vue_shared/translate';
 import deleteAccountModal from './components/delete_account_modal.vue';
+import UpdateUsername from './components/update_username.vue';
 
 export default () => {
   Vue.use(Translate);

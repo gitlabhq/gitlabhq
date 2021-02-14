@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLink, GlSprintf, GlAlert } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import AncestorNotice from '~/clusters_list/components/ancestor_notice.vue';
 import ClusterStore from '~/clusters_list/store';
 

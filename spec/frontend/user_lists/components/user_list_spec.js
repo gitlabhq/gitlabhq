@@ -1,12 +1,12 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import { GlAlert, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { uniq } from 'lodash';
-import { GlAlert, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
+import Vue from 'vue';
+import Vuex from 'vuex';
 import Api from '~/api';
-import { parseUserIds, stringifyUserIds } from '~/user_lists/store/utils';
-import createStore from '~/user_lists/store/show';
 import UserList from '~/user_lists/components/user_list.vue';
+import createStore from '~/user_lists/store/show';
+import { parseUserIds, stringifyUserIds } from '~/user_lists/store/utils';
 import { userList } from '../../feature_flags/mock_data';
 
 jest.mock('~/api');

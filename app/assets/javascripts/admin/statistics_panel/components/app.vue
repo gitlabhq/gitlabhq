@@ -1,6 +1,6 @@
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import statisticsLabels from '../constants';
 
 export default {

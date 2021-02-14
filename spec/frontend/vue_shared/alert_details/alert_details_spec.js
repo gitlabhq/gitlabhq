@@ -4,12 +4,12 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { joinPaths } from '~/lib/utils/url_utility';
+import Tracking from '~/tracking';
 import AlertDetails from '~/vue_shared/alert_details/components/alert_details.vue';
 import AlertSummaryRow from '~/vue_shared/alert_details/components/alert_summary_row.vue';
 import { SEVERITY_LEVELS } from '~/vue_shared/alert_details/constants';
 import createIssueMutation from '~/vue_shared/alert_details/graphql/mutations/alert_issue_create.mutation.graphql';
-import { joinPaths } from '~/lib/utils/url_utility';
-import Tracking from '~/tracking';
 import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
 import mockAlerts from './mocks/alerts.json';
 

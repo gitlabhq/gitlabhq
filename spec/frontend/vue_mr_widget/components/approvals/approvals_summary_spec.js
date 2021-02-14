@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
-import { APPROVED_MESSAGE } from '~/vue_merge_request_widget/components/approvals/messages';
-import ApprovalsSummary from '~/vue_merge_request_widget/components/approvals/approvals_summary.vue';
 import { toNounSeriesText } from '~/lib/utils/grammar';
+import ApprovalsSummary from '~/vue_merge_request_widget/components/approvals/approvals_summary.vue';
+import { APPROVED_MESSAGE } from '~/vue_merge_request_widget/components/approvals/messages';
 import UserAvatarList from '~/vue_shared/components/user_avatar/user_avatar_list.vue';
 
 const testApprovers = () => Array.from({ length: 5 }, (_, i) => i).map((id) => ({ id }));
