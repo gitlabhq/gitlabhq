@@ -1,13 +1,13 @@
 <script>
 import { GlButton, GlLoadingIcon, GlModal, GlLink } from '@gitlab/ui';
 import { getParameterByName } from '~/lib/utils/common_utils';
+import SvgBlankState from '~/pipelines/components/pipelines_list/blank_state.vue';
+import PipelinesTableComponent from '~/pipelines/components/pipelines_list/pipelines_table.vue';
 import eventHub from '~/pipelines/event_hub';
 import PipelinesMixin from '~/pipelines/mixins/pipelines_mixin';
 import PipelinesService from '~/pipelines/services/pipelines_service';
 import PipelineStore from '~/pipelines/stores/pipelines_store';
-import PipelinesTableComponent from '~/pipelines/components/pipelines_list/pipelines_table.vue';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
-import SvgBlankState from '~/pipelines/components/pipelines_list/blank_state.vue';
 
 export default {
   components: {

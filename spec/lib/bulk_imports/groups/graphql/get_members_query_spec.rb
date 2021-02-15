@@ -5,11 +5,12 @@ require 'spec_helper'
 RSpec.describe BulkImports::Groups::Graphql::GetMembersQuery do
   it 'has a valid query' do
     entity = create(:bulk_import_entity)
+    context = BulkImports::Pipeline::Context.new(entity)
 
     query = GraphQL::Query.new(
       GitlabSchema,
       described_class.to_s,
-      variables: described_class.variables(entity)
+      variables: described_class.variables(context)
     )
     result = GitlabSchema.static_validator.validate(query)
 

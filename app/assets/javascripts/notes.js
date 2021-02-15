@@ -10,13 +10,13 @@ class-methods-use-this */
 old_notes_spec.js is the spec for the legacy, jQuery notes application. It has nothing to do with the new, fancy Vue notes app.
  */
 
+import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import Autosize from 'autosize';
 import $ from 'jquery';
-import '~/lib/utils/jquery_at_who';
 import Cookies from 'js-cookie';
 import { escape, uniqueId } from 'lodash';
-import Autosize from 'autosize';
 import Vue from 'vue';
-import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import '~/lib/utils/jquery_at_who';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import syntaxHighlight from '~/syntax_highlight';
 import Autosave from './autosave';

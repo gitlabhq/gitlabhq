@@ -83,6 +83,14 @@ There are several types of users in GitLab:
   self-managed instances' features and settings.
 - [Internal users](../development/internal_users.md).
 
+## User activity
+
+You can follow or unfollow other users from their [user profiles](profile/index.md#user-profile).
+To see their activity in the top-level Activity view, select Follow or Unfollow, and select
+the Followed Users tab:
+
+![Follow users](img/activity_followed_users_v13_9.png)
+
 ## Projects
 
 In GitLab, you can create [projects](project/index.md) to host

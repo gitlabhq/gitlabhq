@@ -22,27 +22,24 @@ import Heading from './nodes/heading';
 import HorizontalRule from './nodes/horizontal_rule';
 import Image from './nodes/image';
 
-import Reference from './nodes/reference';
-import Table from './nodes/table';
-import TableHead from './nodes/table_head';
-import TableBody from './nodes/table_body';
-import TableHeaderRow from './nodes/table_header_row';
-import TableRow from './nodes/table_row';
-import TableCell from './nodes/table_cell';
-
-import TableOfContents from './nodes/table_of_contents';
-import TaskList from './nodes/task_list';
-import TaskListItem from './nodes/task_list_item';
-import Video from './nodes/video';
-
-import OrderedList from './nodes/ordered_list';
 import ListItem from './nodes/list_item';
-
+import OrderedList from './nodes/ordered_list';
 import OrderedTaskList from './nodes/ordered_task_list';
 import Paragraph from './nodes/paragraph';
-
+import Reference from './nodes/reference';
 import Summary from './nodes/summary';
+import Table from './nodes/table';
+import TableBody from './nodes/table_body';
+import TableCell from './nodes/table_cell';
+import TableHead from './nodes/table_head';
+import TableHeaderRow from './nodes/table_header_row';
+import TableOfContents from './nodes/table_of_contents';
+import TableRow from './nodes/table_row';
+
+import TaskList from './nodes/task_list';
+import TaskListItem from './nodes/task_list_item';
 import Text from './nodes/text';
+import Video from './nodes/video';
 
 // The filters referenced in lib/banzai/pipeline/gfm_pipeline.rb transform
 // GitLab Flavored Markdown (GFM) to HTML.

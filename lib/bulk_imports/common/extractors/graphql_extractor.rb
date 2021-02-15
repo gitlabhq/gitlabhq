@@ -13,7 +13,7 @@ module BulkImports
 
           response = client.execute(
             client.parse(query.to_s),
-            query.variables(context.entity)
+            query.variables(context)
           ).original_hash.deep_dup
 
           BulkImports::Pipeline::ExtractedData.new(

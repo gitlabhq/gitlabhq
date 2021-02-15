@@ -1,8 +1,8 @@
-import Vuex from 'vuex';
-import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
-import '~/behaviors/markdown/render_gfm';
 import { Range } from 'monaco-editor';
+import Vue from 'vue';
+import Vuex from 'vuex';
+import '~/behaviors/markdown/render_gfm';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import waitUsingRealTimer from 'helpers/wait_using_real_timer';

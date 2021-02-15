@@ -3,6 +3,7 @@
 // see: https://gitlab.com/groups/gitlab-org/-/epics/895#what-if-theres-a-karma-spec-which-is-simply-unmovable-to-jest-ie-it-is-dependent-on-a-running-browser-environment
 
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { SIDEBAR_COLLAPSED_CLASS } from '~/contextual_sidebar';
 import {
   calculateTop,
   showSubLevelItems,
@@ -19,7 +20,6 @@ import {
   setSidebar,
   subItemsMouseLeave,
 } from '~/fly_out_nav';
-import { SIDEBAR_COLLAPSED_CLASS } from '~/contextual_sidebar';
 
 describe('Fly out sidebar navigation', () => {
   let el;

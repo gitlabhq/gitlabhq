@@ -15,27 +15,49 @@ class UserRecentEventsFinder
 
   requires_cross_project_access
 
-  attr_reader :current_user, :target_user, :params
+  attr_reader :current_user, :target_user, :params, :event_filter
 
   DEFAULT_LIMIT = 20
   MAX_LIMIT = 100
 
-  def initialize(current_user, target_user, params = {})
+  def initialize(current_user, target_user, event_filter, params = {})
     @current_user = current_user
     @target_user = target_user
     @params = params
+    @event_filter = event_filter || EventFilter.new(EventFilter::ALL)
   end
 
   def execute
-    return Event.none unless can?(current_user, :read_user_profile, target_user)
-
-    target_events
-      .with_associations
-      .limit_recent(limit, params[:offset])
-      .order_created_desc
+    if target_user.is_a? User
+      execute_single
+    else
+      execute_multi
+    end
   end
 
   private
+
+  def execute_single
+    return Event.none unless can?(current_user, :read_user_profile, target_user)
+
+    event_filter.apply_filter(target_events
+      .with_associations
+      .limit_recent(limit, params[:offset])
+      .order_created_desc)
+  end
+
+  # rubocop: disable CodeReuse/ActiveRecord
+  def execute_multi
+    users = []
+    @target_user.each do |user|
+      users.append(user.id) if can?(current_user, :read_user_profile, user)
+    end
+
+    return Event.none if users.empty?
+
+    event_filter.apply_filter(Event.where(author: users).limit_recent(limit, params[:offset] || 0))
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   # rubocop: disable CodeReuse/ActiveRecord
   def target_events

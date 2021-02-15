@@ -1,10 +1,9 @@
 /* eslint no-param-reassign: "off" */
-
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
+import GfmAutoComplete, { membersBeforeSave } from 'ee_else_ce/gfm_auto_complete';
 import { initEmojiMock } from 'helpers/emoji';
 import '~/lib/utils/jquery_at_who';
-import GfmAutoComplete, { membersBeforeSave } from 'ee_else_ce/gfm_auto_complete';
 import { getJSONFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';

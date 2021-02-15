@@ -1,8 +1,8 @@
-import { waitForText } from 'helpers/wait_for_text';
-import waitForPromises from 'helpers/wait_for_promises';
 import { setTestTimeout } from 'helpers/timeout';
-import { useOverclockTimers } from 'test_helpers/utils/overclock_timers';
+import waitForPromises from 'helpers/wait_for_promises';
+import { waitForText } from 'helpers/wait_for_text';
 import { createCommitId } from 'test_helpers/factories/commit_id';
+import { useOverclockTimers } from 'test_helpers/utils/overclock_timers';
 import * as ideHelper from './helpers/ide_helper';
 import startWebIDE from './helpers/start';
 

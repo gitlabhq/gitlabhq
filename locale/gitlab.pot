@@ -1123,6 +1123,11 @@ msgid_plural "%d deploy keys"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "1 follower"
+msgid_plural "%{count} followers"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "1 group"
 msgid_plural "%d groups"
 msgstr[0] ""
@@ -12971,6 +12976,12 @@ msgstr ""
 msgid "Folder/%{name}"
 msgstr ""
 
+msgid "Follow"
+msgstr ""
+
+msgid "Followed users"
+msgstr ""
+
 msgid "Font Color"
 msgstr ""
 
@@ -22224,19 +22235,37 @@ msgstr ""
 msgid "Preferences|Choose what content you want to see on your homepage."
 msgstr ""
 
+msgid "Preferences|Customize integrations with third party services."
+msgstr ""
+
 msgid "Preferences|Customize the appearance of the application header and navigation sidebar."
 msgstr ""
 
 msgid "Preferences|Display time in 24-hour format"
 msgstr ""
 
+msgid "Preferences|Enable Gitpod integration"
+msgstr ""
+
+msgid "Preferences|Enable integrated code intelligence on code views"
+msgstr ""
+
+msgid "Preferences|Failed to save preferences."
+msgstr ""
+
 msgid "Preferences|For example: 30 mins ago."
+msgstr ""
+
+msgid "Preferences|Gitpod"
 msgstr ""
 
 msgid "Preferences|Homepage content"
 msgstr ""
 
 msgid "Preferences|Instead of all the files changed, show only one file at a time. To switch between files, use the file browser."
+msgstr ""
+
+msgid "Preferences|Integrations"
 msgstr ""
 
 msgid "Preferences|Layout width"
@@ -22258,6 +22287,9 @@ msgid "Preferences|Show one file at a time on merge request's Changes tab"
 msgstr ""
 
 msgid "Preferences|Show whitespace changes in diffs"
+msgstr ""
+
+msgid "Preferences|Sourcegraph"
 msgstr ""
 
 msgid "Preferences|Syntax highlighting theme"
@@ -22450,24 +22482,6 @@ msgid "Profile"
 msgstr ""
 
 msgid "Profile Settings"
-msgstr ""
-
-msgid "ProfilePreferences|Customize integrations with third party services."
-msgstr ""
-
-msgid "ProfilePreferences|Enable Gitpod integration"
-msgstr ""
-
-msgid "ProfilePreferences|Enable integrated code intelligence on code views"
-msgstr ""
-
-msgid "ProfilePreferences|Gitpod"
-msgstr ""
-
-msgid "ProfilePreferences|Integrations"
-msgstr ""
-
-msgid "ProfilePreferences|Sourcegraph"
 msgstr ""
 
 msgid "ProfileSession|on"
@@ -31381,6 +31395,9 @@ msgstr ""
 msgid "Unexpected error"
 msgstr ""
 
+msgid "Unfollow"
+msgstr ""
+
 msgid "Unfortunately, your email message to GitLab could not be processed."
 msgstr ""
 
@@ -32038,6 +32055,12 @@ msgstr ""
 msgid "UserProfile|Explore public groups to find projects to contribute to."
 msgstr ""
 
+msgid "UserProfile|Followers"
+msgstr ""
+
+msgid "UserProfile|Following"
+msgstr ""
+
 msgid "UserProfile|Groups"
 msgstr ""
 
@@ -32080,6 +32103,9 @@ msgstr ""
 msgid "UserProfile|Subscribe"
 msgstr ""
 
+msgid "UserProfile|This user doesn't have any followers."
+msgstr ""
+
 msgid "UserProfile|This user doesn't have any personal projects"
 msgstr ""
 
@@ -32095,6 +32121,9 @@ msgstr ""
 msgid "UserProfile|This user is blocked"
 msgstr ""
 
+msgid "UserProfile|This user isn't following other users."
+msgstr ""
+
 msgid "UserProfile|Unconfirmed user"
 msgstr ""
 
@@ -32104,7 +32133,13 @@ msgstr ""
 msgid "UserProfile|View user in admin area"
 msgstr ""
 
+msgid "UserProfile|You are not following other users."
+msgstr ""
+
 msgid "UserProfile|You can create a group for several dependent projects."
+msgstr ""
+
+msgid "UserProfile|You do not have any followers."
 msgstr ""
 
 msgid "UserProfile|You haven't created any personal projects."
@@ -34670,6 +34705,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "finding is not found or is already attached to a vulnerability"
+msgstr ""
+
+msgid "following"
 msgstr ""
 
 msgid "for %{link_to_merge_request} with %{link_to_merge_request_source_branch}"

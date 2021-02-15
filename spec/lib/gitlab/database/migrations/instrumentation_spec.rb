@@ -11,6 +11,41 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
       expect { |b| subject.observe(migration, &b) }.to yield_control
     end
 
+    context 'behavior with observers' do
+      subject { described_class.new(observers).observe(migration) {} }
+
+      let(:observers) { [observer] }
+      let(:observer) { instance_double('Gitlab::Database::Migrations::Observers::MigrationObserver', before: nil, after: nil, record: nil) }
+
+      it 'calls #before, #after, #record on given observers' do
+        expect(observer).to receive(:before).ordered
+        expect(observer).to receive(:after).ordered
+        expect(observer).to receive(:record).ordered do |observation|
+          expect(observation.migration).to eq(migration)
+        end
+
+        subject
+      end
+
+      it 'ignores errors coming from observers #before' do
+        expect(observer).to receive(:before).and_raise('some error')
+
+        subject
+      end
+
+      it 'ignores errors coming from observers #after' do
+        expect(observer).to receive(:after).and_raise('some error')
+
+        subject
+      end
+
+      it 'ignores errors coming from observers #record' do
+        expect(observer).to receive(:record).and_raise('some error')
+
+        subject
+      end
+    end
+
     context 'on successful execution' do
       subject { described_class.new.observe(migration) {} }
 

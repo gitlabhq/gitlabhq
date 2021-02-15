@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import timezoneMock from 'timezone-mock';
+import * as datetimeUtility from '~/lib/utils/datetime_utility';
 import { __, s__ } from '~/locale';
 import '~/commons/bootstrap';
-import * as datetimeUtility from '~/lib/utils/datetime_utility';
 
 describe('Date time utils', () => {
   describe('timeFor', () => {

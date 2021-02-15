@@ -46,9 +46,13 @@ scope(constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }) d
     get :contributed, as: :contributed_projects
     get :starred, as: :starred_projects
     get :snippets
+    get :followers
+    get :following
     get :exists
     get :suggests
     get :activity
+    post :follow
+    post :unfollow
     get '/', to: redirect('%{username}'), as: nil
   end
 end

@@ -42,48 +42,50 @@ rules:
   no-jquery/no-serialize: error
   promise/always-return: off
   promise/no-callback-in-promise: off
-  "@gitlab/no-global-event-off": error
+  '@gitlab/no-global-event-off': error
   import/order:
-  - error
-  - groups:
-    - builtin
-    - external
-    - internal
-    - parent
-    - sibling
-    - index
-    pathGroups:
-    - pattern: ~/**
-      group: internal
-    - pattern: emojis/**
-      group: internal
-    - pattern: "{ee_,}empty_states/**"
-      group: internal
-    - pattern: "{ee_,}icons/**"
-      group: internal
-    - pattern: "{ee_,}images/**"
-      group: internal
-    - pattern: vendor/**
-      group: internal
-    - pattern: shared_queries/**
-      group: internal
-    - pattern: "{ee_,}spec/**"
-      group: internal
-    - pattern: "{ee_,}jest/**"
-      group: internal
-    - pattern: ee_else_ce/**
-      group: internal
-    - pattern: ee/**
-      group: internal
-    - pattern: ee_component/**
-      group: internal
-    - pattern: "{test_,}helpers/**"
-      group: internal
-    - pattern: test_fixtures/**
-      group: internal
+    - error
+    - groups:
+        - builtin
+        - external
+        - internal
+        - parent
+        - sibling
+        - index
+      pathGroups:
+        - pattern: ~/**
+          group: internal
+        - pattern: emojis/**
+          group: internal
+        - pattern: '{ee_,}empty_states/**'
+          group: internal
+        - pattern: '{ee_,}icons/**'
+          group: internal
+        - pattern: '{ee_,}images/**'
+          group: internal
+        - pattern: vendor/**
+          group: internal
+        - pattern: shared_queries/**
+          group: internal
+        - pattern: '{ee_,}spec/**'
+          group: internal
+        - pattern: '{ee_,}jest/**'
+          group: internal
+        - pattern: ee_else_ce/**
+          group: internal
+        - pattern: ee/**
+          group: internal
+        - pattern: ee_component/**
+          group: internal
+        - pattern: '{test_,}helpers/**'
+          group: internal
+        - pattern: test_fixtures/**
+          group: internal
+      alphabetize:
+        order: asc
 overrides:
   - files:
       - '**/spec/**/*'
     rules:
-      "@gitlab/require-i18n-strings": off
-      "@gitlab/no-runtime-template-compiler": off
+      '@gitlab/require-i18n-strings': off
+      '@gitlab/no-runtime-template-compiler': off

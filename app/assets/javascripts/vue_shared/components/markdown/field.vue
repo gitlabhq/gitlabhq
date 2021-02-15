@@ -1,9 +1,9 @@
 <script>
 /* eslint-disable vue/no-v-html */
+import { GlIcon } from '@gitlab/ui';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 import { unescape } from 'lodash';
-import { GlIcon } from '@gitlab/ui';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import GLForm from '~/gl_form';
 import axios from '~/lib/utils/axios_utils';

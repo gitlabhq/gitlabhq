@@ -652,6 +652,34 @@ RSpec.describe API::Users do
         expect(response).to match_response_schema('public_api/v4/user/basic')
         expect(json_response.keys).not_to include 'created_at'
       end
+
+      it "returns the `followers` field for public users" do
+        get api("/users/#{user.id}")
+
+        expect(response).to match_response_schema('public_api/v4/user/basic')
+        expect(json_response.keys).to include 'followers'
+      end
+
+      it "does not return the `followers` field for private users" do
+        get api("/users/#{private_user.id}")
+
+        expect(response).to match_response_schema('public_api/v4/user/basic')
+        expect(json_response.keys).not_to include 'followers'
+      end
+
+      it "returns the `following` field for public users" do
+        get api("/users/#{user.id}")
+
+        expect(response).to match_response_schema('public_api/v4/user/basic')
+        expect(json_response.keys).to include 'following'
+      end
+
+      it "does not return the `following` field for private users" do
+        get api("/users/#{private_user.id}")
+
+        expect(response).to match_response_schema('public_api/v4/user/basic')
+        expect(json_response.keys).not_to include 'following'
+      end
     end
 
     it "returns a 404 error if user id not found" do
@@ -684,6 +712,128 @@ RSpec.describe API::Users do
     context 'when finding the user by username (case insensitive)' do
       it_behaves_like 'rendering user status' do
         let(:path) { "/users/#{user.username.upcase}/status" }
+      end
+    end
+  end
+
+  describe 'POST /users/:id/follow' do
+    let(:followee) { create(:user) }
+
+    context 'on an unfollowed user' do
+      it 'follows the user' do
+        post api("/users/#{followee.id}/follow", user)
+
+        expect(user.followees).to contain_exactly(followee)
+        expect(response).to have_gitlab_http_status(:created)
+      end
+    end
+
+    context 'on a followed user' do
+      before do
+        user.follow(followee)
+      end
+
+      it 'does not change following' do
+        post api("/users/#{followee.id}/follow", user)
+
+        expect(user.followees).to contain_exactly(followee)
+        expect(response).to have_gitlab_http_status(:not_modified)
+      end
+    end
+  end
+
+  describe 'POST /users/:id/unfollow' do
+    let(:followee) { create(:user) }
+
+    context 'on a followed user' do
+      before do
+        user.follow(followee)
+      end
+
+      it 'unfollow the user' do
+        post api("/users/#{followee.id}/unfollow", user)
+
+        expect(user.followees).to be_empty
+        expect(response).to have_gitlab_http_status(:created)
+      end
+    end
+
+    context 'on an unfollowed user' do
+      it 'does not change following' do
+        post api("/users/#{followee.id}/unfollow", user)
+
+        expect(user.followees).to be_empty
+        expect(response).to have_gitlab_http_status(:not_modified)
+      end
+    end
+  end
+
+  describe 'GET /users/:id/followers' do
+    let(:follower) { create(:user) }
+
+    context 'user has followers' do
+      it 'lists followers' do
+        follower.follow(user)
+
+        get api("/users/#{user.id}/followers", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+      end
+
+      it 'do not lists followers if profile is private' do
+        follower.follow(private_user)
+
+        get api("/users/#{private_user.id}/followers", user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 User Not Found')
+      end
+    end
+
+    context 'user does not have any follower' do
+      it 'does list nothing' do
+        get api("/users/#{user.id}/followers", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_empty
+      end
+    end
+  end
+
+  describe 'GET /users/:id/following' do
+    let(:followee) { create(:user) }
+
+    context 'user has followers' do
+      it 'lists following user' do
+        user.follow(followee)
+
+        get api("/users/#{user.id}/following", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+      end
+
+      it 'do not lists following user if profile is private' do
+        user.follow(private_user)
+
+        get api("/users/#{private_user.id}/following", user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 User Not Found')
+      end
+    end
+
+    context 'user does not have any follower' do
+      it 'does list nothing' do
+        get api("/users/#{user.id}/following", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_empty
       end
     end
   end

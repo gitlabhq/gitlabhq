@@ -31,10 +31,10 @@ module BulkImports
           GRAPHQL
         end
 
-        def variables(entity)
+        def variables(context)
           {
-            full_path: entity.source_full_path,
-            cursor: entity.next_page_for(:group_members)
+            full_path: context.entity.source_full_path,
+            cursor: context.entity.next_page_for(:group_members)
           }
         end
 

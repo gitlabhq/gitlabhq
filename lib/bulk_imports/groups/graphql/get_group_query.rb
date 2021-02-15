@@ -29,8 +29,8 @@ module BulkImports
           GRAPHQL
         end
 
-        def variables(entity)
-          { full_path: entity.source_full_path }
+        def variables(context)
+          { full_path: context.entity.source_full_path }
         end
 
         def base_path

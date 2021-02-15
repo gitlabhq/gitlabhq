@@ -4,8 +4,9 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::Importers::GroupImporter do
   let(:user) { create(:user) }
+  let(:group) { create(:group) }
   let(:bulk_import) { create(:bulk_import) }
-  let(:bulk_import_entity) { create(:bulk_import_entity, :started, bulk_import: bulk_import) }
+  let(:bulk_import_entity) { create(:bulk_import_entity, :started, bulk_import: bulk_import, group: group) }
   let(:bulk_import_configuration) { create(:bulk_import_configuration, bulk_import: bulk_import) }
   let(:context) { BulkImports::Pipeline::Context.new(bulk_import_entity) }
 
@@ -21,7 +22,11 @@ RSpec.describe BulkImports::Importers::GroupImporter do
       expect_to_run_pipeline BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline, context: context
       expect_to_run_pipeline BulkImports::Groups::Pipelines::MembersPipeline, context: context
       expect_to_run_pipeline BulkImports::Groups::Pipelines::LabelsPipeline, context: context
-      expect_to_run_pipeline('EE::BulkImports::Groups::Pipelines::EpicsPipeline'.constantize, context: context) if Gitlab.ee?
+
+      if Gitlab.ee?
+        expect_to_run_pipeline('EE::BulkImports::Groups::Pipelines::EpicsPipeline'.constantize, context: context)
+        expect_to_run_pipeline('EE::BulkImports::Groups::Pipelines::EpicAwardEmojiPipeline'.constantize, context: context)
+      end
 
       subject.execute
 
@@ -29,7 +34,7 @@ RSpec.describe BulkImports::Importers::GroupImporter do
     end
 
     context 'when failed' do
-      let(:bulk_import_entity) { create(:bulk_import_entity, :failed, bulk_import: bulk_import) }
+      let(:bulk_import_entity) { create(:bulk_import_entity, :failed, bulk_import: bulk_import, group: group) }
 
       it 'does not transition entity to finished state' do
         allow(bulk_import_entity).to receive(:start!)

@@ -159,6 +159,68 @@ module API
         present user.status || {}, with: Entities::UserStatus
       end
 
+      desc 'Follow a user' do
+        success Entities::User
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+      end
+      post ':id/follow', feature_category: :users do
+        user = find_user(params[:id])
+        not_found!('User') unless user
+
+        if current_user.follow(user)
+          present user, with: Entities::UserBasic
+        else
+          not_modified!
+        end
+      end
+
+      desc 'Unfollow a user' do
+        success Entities::User
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+      end
+      post ':id/unfollow', feature_category: :users do
+        user = find_user(params[:id])
+        not_found!('User') unless user
+
+        if current_user.unfollow(user)
+          present user, with: Entities::UserBasic
+        else
+          not_modified!
+        end
+      end
+
+      desc 'Get the users who follow a user' do
+        success Entities::UserBasic
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+        use :pagination
+      end
+      get ':id/following', feature_category: :users do
+        user = find_user(params[:id])
+        not_found!('User') unless user && can?(current_user, :read_user_profile, user)
+
+        present paginate(user.followees), with: Entities::UserBasic
+      end
+
+      desc 'Get the followers of a user' do
+        success Entities::UserBasic
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+        use :pagination
+      end
+      get ':id/followers', feature_category: :users do
+        user = find_user(params[:id])
+        not_found!('User') unless user && can?(current_user, :read_user_profile, user)
+
+        present paginate(user.followers), with: Entities::UserBasic
+      end
+
       desc 'Create a user. Available only for admins.' do
         success Entities::UserWithAdmin
       end

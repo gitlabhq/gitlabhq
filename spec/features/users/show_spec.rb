@@ -20,6 +20,8 @@ RSpec.describe 'User page' do
         expect(page).to have_link('Contributed projects')
         expect(page).to have_link('Personal projects')
         expect(page).to have_link('Snippets')
+        expect(page).to have_link('Followers')
+        expect(page).to have_link('Following')
       end
     end
 
@@ -54,6 +56,50 @@ RSpec.describe 'User page' do
         expect(page).to have_content('GitLab - work info test')
       end
     end
+
+    context 'follow/unfollow and followers/following' do
+      let_it_be(:followee) { create(:user) }
+      let_it_be(:follower) { create(:user) }
+
+      it 'does not show link to follow' do
+        subject
+
+        expect(page).not_to have_link(text: 'Follow', class: 'gl-button')
+      end
+
+      it 'shows 0 followers and 0 following' do
+        subject
+
+        expect(page).to have_content('0 followers')
+        expect(page).to have_content('0 following')
+      end
+
+      it 'shows 1 followers and 1 following' do
+        follower.follow(user)
+        user.follow(followee)
+
+        subject
+
+        expect(page).to have_content('1 follower')
+        expect(page).to have_content('1 following')
+      end
+
+      it 'does show link to follow' do
+        sign_in(user)
+        visit user_path(followee)
+
+        expect(page).to have_link(text: 'Follow', class: 'gl-button')
+      end
+
+      it 'does show link to unfollow' do
+        sign_in(user)
+        user.follow(followee)
+
+        visit user_path(followee)
+
+        expect(page).to have_link(text: 'Unfollow', class: 'gl-button')
+      end
+    end
   end
 
   context 'with private profile' do
@@ -83,6 +129,8 @@ RSpec.describe 'User page' do
         expect(page).to have_link('Contributed projects')
         expect(page).to have_link('Personal projects')
         expect(page).to have_link('Snippets')
+        expect(page).to have_link('Followers')
+        expect(page).to have_link('Following')
       end
     end
   end
@@ -242,6 +290,8 @@ RSpec.describe 'User page' do
           expect(page).not_to have_link('Contributed projects')
           expect(page).not_to have_link('Personal projects')
           expect(page).not_to have_link('Snippets')
+          expect(page).not_to have_link('Followers')
+          expect(page).not_to have_link('Following')
         end
       end
     end
@@ -261,6 +311,8 @@ RSpec.describe 'User page' do
           expect(page).to have_link('Contributed projects')
           expect(page).to have_link('Personal projects')
           expect(page).to have_link('Snippets')
+          expect(page).to have_link('Followers')
+          expect(page).to have_link('Following')
         end
       end
     end

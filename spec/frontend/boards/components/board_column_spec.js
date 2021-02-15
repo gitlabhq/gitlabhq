@@ -1,5 +1,5 @@
-import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 
 import { listObj } from 'jest/boards/mock_data';
 import BoardColumn from '~/boards/components/board_column.vue';

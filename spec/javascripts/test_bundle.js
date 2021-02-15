@@ -2,19 +2,18 @@
   jasmine/no-global-setup, no-underscore-dangle, no-console
 */
 
+import { config as testUtilsConfig } from '@vue/test-utils';
+import jasmineDiff from 'jasmine-diff';
 import $ from 'jquery';
 import 'core-js/features/set-immediate';
 import 'vendor/jasmine-jquery';
 import '~/commons';
 import Vue from 'vue';
-import jasmineDiff from 'jasmine-diff';
-import { config as testUtilsConfig } from '@vue/test-utils';
+import { getDefaultAdapter } from '~/lib/utils/axios_utils';
 import Translate from '~/vue_shared/translate';
 
-import { getDefaultAdapter } from '~/lib/utils/axios_utils';
-import { FIXTURES_PATH, TEST_HOST } from './test_constants';
-
 import customMatchers from './matchers';
+import { FIXTURES_PATH, TEST_HOST } from './test_constants';
 
 // Tech debt issue TBD
 testUtilsConfig.logModifiedComponents = false;

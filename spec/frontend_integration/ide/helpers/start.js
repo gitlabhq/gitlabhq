@@ -1,7 +1,7 @@
 import { TEST_HOST } from 'helpers/test_constants';
-import extendStore from '~/ide/stores/extend';
 import { initIde } from '~/ide';
 import Editor from '~/ide/lib/editor';
+import extendStore from '~/ide/stores/extend';
 import { IDE_DATASET } from './mock_data';
 
 export default (container, { isRepoEmpty = false, path = '' } = {}) => {

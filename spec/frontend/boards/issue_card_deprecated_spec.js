@@ -1,11 +1,11 @@
 /* global ListAssignee, ListLabel, ListIssue */
+import { GlLabel } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { range } from 'lodash';
 import '~/boards/models/label';
 import '~/boards/models/assignee';
 import '~/boards/models/issue';
 import '~/boards/models/list';
-import { GlLabel } from '@gitlab/ui';
 import IssueCardInner from '~/boards/components/issue_card_inner_deprecated.vue';
 import store from '~/boards/stores';
 import { listObj } from './mock_data';

@@ -3,16 +3,11 @@
 module Gitlab
   module Database
     module Migrations
-      Observation = Struct.new(
-        :migration,
-        :walltime,
-        :success
-      )
-
       class Instrumentation
         attr_reader :observations
 
-        def initialize
+        def initialize(observers = ::Gitlab::Database::Migrations::Observers.all_observers)
+          @observers = observers
           @observations = []
         end
 
@@ -22,12 +17,17 @@ module Gitlab
 
           exception = nil
 
+          on_each_observer { |observer| observer.before }
+
           observation.walltime = Benchmark.realtime do
             yield
           rescue => e
             exception = e
             observation.success = false
           end
+
+          on_each_observer { |observer| observer.after }
+          on_each_observer { |observer| observer.record(observation) }
 
           record_observation(observation)
 
@@ -38,8 +38,18 @@ module Gitlab
 
         private
 
+        attr_reader :observers
+
         def record_observation(observation)
           @observations << observation
+        end
+
+        def on_each_observer(&block)
+          observers.each do |observer|
+            yield observer
+          rescue => e
+            Gitlab::AppLogger.error("Migration observer #{observer.class} failed with: #{e}")
+          end
         end
       end
     end

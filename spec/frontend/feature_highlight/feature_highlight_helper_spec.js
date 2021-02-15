@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
 import { dismiss } from '~/feature_highlight/feature_highlight_helper';
 import { deprecatedCreateFlash as Flash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
 
 jest.mock('~/flash');

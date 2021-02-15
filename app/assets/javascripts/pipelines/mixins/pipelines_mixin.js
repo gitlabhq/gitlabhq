@@ -1,9 +1,9 @@
 import Visibility from 'visibilityjs';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import Poll from '~/lib/utils/poll';
 import { historyPushState, buildUrlWithCurrentLocation } from '~/lib/utils/common_utils';
-import { validateParams } from '~/pipelines/utils';
+import Poll from '~/lib/utils/poll';
 import { __ } from '~/locale';
+import { validateParams } from '~/pipelines/utils';
 import { CANCEL_REQUEST } from '../constants';
 import eventHub from '../event_hub';
 

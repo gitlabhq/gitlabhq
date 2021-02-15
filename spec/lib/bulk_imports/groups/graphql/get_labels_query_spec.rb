@@ -4,12 +4,13 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::Groups::Graphql::GetLabelsQuery do
   describe '#variables' do
-    let(:entity) { double(source_full_path: 'test', next_page_for: 'next_page') }
+    let(:entity) { double(source_full_path: 'test', next_page_for: 'next_page', bulk_import: nil) }
+    let(:context) { BulkImports::Pipeline::Context.new(entity) }
 
     it 'returns query variables based on entity information' do
       expected = { full_path: entity.source_full_path, cursor: entity.next_page_for }
 
-      expect(described_class.variables(entity)).to eq(expected)
+      expect(described_class.variables(context)).to eq(expected)
     end
   end
 

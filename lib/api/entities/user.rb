@@ -10,6 +10,12 @@ module API
       expose :work_information do |user|
         work_information(user)
       end
+      expose :followers, if: ->(user, opts) { Ability.allowed?(opts[:current_user], :read_user_profile, user) } do |user|
+        user.followers.count
+      end
+      expose :following, if: ->(user, opts) { Ability.allowed?(opts[:current_user], :read_user_profile, user) } do |user|
+        user.followees.count
+      end
     end
   end
 end

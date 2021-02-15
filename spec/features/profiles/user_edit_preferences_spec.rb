@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'User edit preferences profile' do
+RSpec.describe 'User edit preferences profile', :js do
   let(:user) { create(:user) }
 
   before do
@@ -53,7 +53,14 @@ RSpec.describe 'User edit preferences profile' do
       fill_in 'Tab width', with: -1
       click_button 'Save changes'
 
-      expect(page).to have_content('Failed to save preferences')
+      field = page.find_field('user[tab_width]')
+      message = field.native.attribute("validationMessage")
+      expect(message).to eq "Value must be greater than or equal to 1."
+
+      # User trying to hack an invalid value
+      page.execute_script("document.querySelector('#user_tab_width').setAttribute('min', '-1')")
+      click_button 'Save changes'
+      expect(page).to have_content('Failed to save preferences.')
     end
   end
 

@@ -5,7 +5,10 @@
   %ul.nav-links.nav.nav-tabs
     %li{ class: active_when(params[:filter].nil?) }>
       = link_to activity_dashboard_path, class: 'shortcuts-activity', data: {placement: 'right'} do
-        Your projects
+        = _('Your projects')
     %li{ class: active_when(params[:filter] == 'starred') }>
       = link_to activity_dashboard_path(filter: 'starred'), data: {placement: 'right'} do
-        Starred projects
+        = _('Starred projects')
+    %li{ class: active_when(params[:filter] == 'followed') }>
+      = link_to activity_dashboard_path(filter: 'followed'), data: {placement: 'right'} do
+        = _('Followed users')

@@ -1,8 +1,7 @@
+import { config as testUtilsConfig } from '@vue/test-utils';
+import * as jqueryMatchers from 'custom-jquery-matchers';
 import Vue from 'vue';
 import 'jquery';
-
-import * as jqueryMatchers from 'custom-jquery-matchers';
-import { config as testUtilsConfig } from '@vue/test-utils';
 import { setGlobalDateToFakeDate } from 'helpers/fake_date';
 import Translate from '~/vue_shared/translate';
 import { getJSONFixture, loadHTMLFixture, setHTMLFixture } from './__helpers__/fixtures';

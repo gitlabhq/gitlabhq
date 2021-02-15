@@ -1,6 +1,6 @@
 /* eslint-disable no-new */
-
 import $ from 'jquery';
+import loadAwardsHandler from '~/awards_handler';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import Diff from '~/diff';
 import flash from '~/flash';
@@ -14,7 +14,6 @@ import { initCommitBoxInfo } from '~/projects/commit_box/info';
 import syntaxHighlight from '~/syntax_highlight';
 import ZenMode from '~/zen_mode';
 import '~/sourcegraph/load';
-import loadAwardsHandler from '~/awards_handler';
 
 const hasPerfBar = document.querySelector('.with-performance-bar');
 const performanceHeight = hasPerfBar ? 35 : 0;

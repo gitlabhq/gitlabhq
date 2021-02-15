@@ -115,10 +115,4 @@ describe('IntegrationView component', () => {
 
     expect(findFormGroupLabel().text()).toBe('Enable foo');
   });
-
-  it('should render IntegrationView properly', () => {
-    wrapper = createComponent();
-
-    expect(wrapper.element).toMatchSnapshot();
-  });
 });

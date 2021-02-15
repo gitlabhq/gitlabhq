@@ -2831,6 +2831,79 @@ RSpec.describe User do
     end
   end
 
+  describe '#following?' do
+    it 'check if following another user' do
+      user = create :user
+      followee1 = create :user
+
+      expect(user.follow(followee1)).to be_truthy
+
+      expect(user.following?(followee1)).to be_truthy
+
+      expect(user.unfollow(followee1)).to be_truthy
+
+      expect(user.following?(followee1)).to be_falsey
+    end
+  end
+
+  describe '#follow' do
+    it 'follow another user' do
+      user = create :user
+      followee1 = create :user
+      followee2 = create :user
+
+      expect(user.followees).to be_empty
+
+      expect(user.follow(followee1)).to be_truthy
+      expect(user.follow(followee1)).to be_falsey
+
+      expect(user.followees).to contain_exactly(followee1)
+
+      expect(user.follow(followee2)).to be_truthy
+      expect(user.follow(followee2)).to be_falsey
+
+      expect(user.followees).to contain_exactly(followee1, followee2)
+    end
+
+    it 'follow itself is not possible' do
+      user = create :user
+
+      expect(user.followees).to be_empty
+
+      expect(user.follow(user)).to be_falsey
+
+      expect(user.followees).to be_empty
+    end
+  end
+
+  describe '#unfollow' do
+    it 'unfollow another user' do
+      user = create :user
+      followee1 = create :user
+      followee2 = create :user
+
+      expect(user.followees).to be_empty
+
+      expect(user.follow(followee1)).to be_truthy
+      expect(user.follow(followee1)).to be_falsey
+
+      expect(user.follow(followee2)).to be_truthy
+      expect(user.follow(followee2)).to be_falsey
+
+      expect(user.followees).to contain_exactly(followee1, followee2)
+
+      expect(user.unfollow(followee1)).to be_truthy
+      expect(user.unfollow(followee1)).to be_falsey
+
+      expect(user.followees).to contain_exactly(followee2)
+
+      expect(user.unfollow(followee2)).to be_truthy
+      expect(user.unfollow(followee2)).to be_falsey
+
+      expect(user.followees).to be_empty
+    end
+  end
+
   describe '.find_by_private_commit_email' do
     context 'with email' do
       let_it_be(:user) { create(:user) }

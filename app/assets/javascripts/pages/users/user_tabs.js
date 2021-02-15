@@ -141,7 +141,15 @@ export default class UserTabs {
       this.loadOverviewTab();
     }
 
-    const loadableActions = ['groups', 'contributed', 'projects', 'starred', 'snippets'];
+    const loadableActions = [
+      'groups',
+      'contributed',
+      'projects',
+      'starred',
+      'snippets',
+      'followers',
+      'following',
+    ];
     if (loadableActions.indexOf(action) > -1) {
       this.loadTab(action, endpoint);
     }
