@@ -148,19 +148,19 @@ The project using the `Secure-Binaries.gitlab-ci.yml` template should now host a
 images and resources needed to run GitLab Security features.
 
 Next, you must tell the offline instance to use these resources instead of the default ones on
-GitLab.com. To do so, set the environment variable `SECURE_ANALYZERS_PREFIX` with the URL of the
+GitLab.com. To do so, set the CI/CD variable `SECURE_ANALYZERS_PREFIX` with the URL of the
 project [container registry](../../packages/container_registry/index.md).
 
 You can set this variable in the projects' `.gitlab-ci.yml`, or
-in the GitLab UI at the project or group level. See the [GitLab CI/CD environment variables page](../../../ci/variables/README.md#custom-cicd-variables)
+in the GitLab UI at the project or group level. See the [GitLab CI/CD variables page](../../../ci/variables/README.md#custom-cicd-variables)
 for more information.
 
 #### Variables
 
-The following table shows which variables you can use with the `Secure-Binaries.gitlab-ci.yml`
+The following table shows which CI/CD variables you can use with the `Secure-Binaries.gitlab-ci.yml`
 template:
 
-| VARIABLE                                  | Description                                   | Default value                     |
+| CI/CD variable                            | Description                                   | Default value                     |
 |-------------------------------------------|-----------------------------------------------|-----------------------------------|
 | `SECURE_BINARIES_ANALYZERS`               | Comma-separated list of analyzers to download | `"bandit, brakeman, gosec, and so on..."` |
 | `SECURE_BINARIES_DOWNLOAD_IMAGES`         | Used to disable jobs                          | `"true"`                          |
@@ -224,11 +224,11 @@ these steps:
    Before running AutoDevOps, follow the [above steps](#using-the-official-gitlab-template)
    to load those container images into the local container registry.
 
-1. Set the pipeline variable to ensure that AutoDevOps looks in the right place for those images.
+1. Set the CI/CD variable to ensure that AutoDevOps looks in the right place for those images.
    The AutoDevOps templates leverage the `SECURE_ANALYZERS_PREFIX` variable to identify the location
    of analyzer images. This variable is discussed above in [Using the secure bundle created](#using-the-secure-bundle-created).
    Ensure that you set this variable to the correct value for where you loaded the analyzer images.
-   You could consider doing this with a pipeline variable or by [modifying](../../../topics/autodevops/customize.md#customizing-gitlab-ciyml)
+   You could consider doing this with a project CI/CD variable or by [modifying](../../../topics/autodevops/customize.md#customizing-gitlab-ciyml)
    the `.gitlab-ci.yml` file directly.
 
 Once these steps are complete, GitLab has local copies of the Secure analyzers and is set up to use

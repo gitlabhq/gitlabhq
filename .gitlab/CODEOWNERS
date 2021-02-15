@@ -23,9 +23,10 @@
 /doc/administration/snippets/ @aqualls
 /doc/administration/troubleshooting @axil @marcia @mjang1
 /doc/ci/ @marcel.amirault @sselhorn
-/doc/ci/release/ @axil
 /doc/ci/environments/ @axil
+/doc/ci/release/ @axil
 /doc/ci/services/ @sselhorn
+/doc/ci/test_cases/ @msedlakjakubowski
 /doc/development/ @marcia @mjang1
 /doc/development/documentation/ @cnorris
 /doc/gitlab-basics/ @marcia
@@ -43,9 +44,14 @@
 /doc/user/clusters/ @marcia
 /doc/user/compliance/ @mjang1 @rdickenson
 /doc/user/group/ @mjang1 @msedlakjakubowski
+/doc/user/group/bulk_editing/ @msedlakjakubowski
+/doc/user/group/epics/ @msedlakjakubowski
+/doc/user/group/iterations/ @msedlakjakubowski
+/doc/user/group/roadmap/ @msedlakjakubowski
 /doc/user/infrastructure/ @marcia
 /doc/user/packages/ @ngaskill
 /doc/user/profile/ @mjang1 @msedlakjakubowski
+/doc/user/project/ @aqualls @axil @eread @mjang1 @msedlakjakubowski @ngaskill
 /doc/user/project/clusters/ @ngaskill
 /doc/user/project/import/ @mjang1 @msedlakjakubowski
 /doc/user/project/integrations/ @aqualls

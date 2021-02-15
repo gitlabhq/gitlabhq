@@ -1,30 +1,33 @@
-%li.d-flex.align-items-center.key-list-item
-  .gl-mr-3
-    - if key.valid?
-      - if key.expired?
-        %span.d-inline-block.has-tooltip{ title: s_('Profiles|Your key has expired') }
-          = sprite_icon('warning-solid', css_class: 'settings-list-icon d-none d-sm-block')
-      - else
-        = sprite_icon('key', css_class: 'settings-list-icon d-none d-sm-block ')
-    - else
-      %span.d-inline-block.has-tooltip{ title: key.errors.full_messages.join(', ') }
-        = sprite_icon('warning-solid', css_class: 'settings-list-icon d-none d-sm-block')
+%li.key-list-item
+  .gl-display-flex.gl-align-items-flex-start
+    .key-list-item-info.gl-w-full.float-none
+      = link_to path_to_key(key, is_admin), class: "title text-3" do
+        = key.title
 
-  .key-list-item-info.w-100.float-none
-    = link_to path_to_key(key, is_admin), class: "title" do
-      = key.title
-    %span.text-truncate
-      = key.fingerprint
+      .gl-display-flex.gl-align-items-center.gl-mt-2
+        - if key.valid?
+          - if key.expired?
+            %span.gl-display-inline-block.has-tooltip{ title: s_('Profiles|Your key has expired') }
+              = sprite_icon('warning-solid', css_class: 'settings-list-icon gl-display-none gl-sm-display-block')
+          - else
+            = sprite_icon('key', css_class: 'settings-list-icon gl-display-none gl-sm-display-block')
+        - else
+          %span.gl-display-inline-block.has-tooltip{ title: key.errors.full_messages.join(', ') }
+            = sprite_icon('warning-solid', css_class: 'settings-list-icon gl-display-none gl-sm-display-block')
 
-    .key-list-item-dates.d-flex.align-items-start.justify-content-between
-      %span.last-used-at.gl-mr-3
-        = s_('Profiles|Last used:')
-        = key.last_used_at ? time_ago_with_tooltip(key.last_used_at) : _('Never')
-      %span.expires.gl-mr-3
-        = s_('Profiles|Expires:')
-        = key.expires_at ? key.expires_at.to_date : _('Never')
-      %span.key-created-at.gl-display-flex.gl-align-items-center
-        = s_('Profiles|Created%{time_ago}'.html_safe) % { time_ago: time_ago_with_tooltip(key.created_at, html_class: 'gl-ml-2')}
-        - if key.can_delete?
-          .gl-ml-3
-            = render 'shared/ssh_keys/key_delete', html_class: "btn btn-default gl-button btn-default-tertiary js-confirm-modal-button", button_data: ssh_key_delete_modal_data(key, path_to_key(key, is_admin))
+        %span.gl-text-truncate.gl-sm-ml-3
+          = key.fingerprint
+
+      .gl-mt-3= s_('Profiles|Created%{time_ago}'.html_safe) % { time_ago: time_ago_with_tooltip(key.created_at, html_class: 'gl-ml-2')}
+
+      .key-list-item-dates
+        %span.last-used-at.gl-mr-3
+          = s_('Profiles|Last used:')
+          = key.last_used_at ? time_ago_with_tooltip(key.last_used_at) : _('Never')
+        %span.expires.gl-mr-3
+          = s_('Profiles|Expires:')
+          = key.expires_at ? key.expires_at.to_date : _('Never')
+    %span.key-created-at.gl-display-flex.gl-align-items-center
+      - if key.can_delete?
+        .gl-ml-3
+          = render 'shared/ssh_keys/key_delete', html_class: "btn gl-button btn-icon btn-danger js-confirm-modal-button", button_data: ssh_key_delete_modal_data(key, path_to_key(key, is_admin))

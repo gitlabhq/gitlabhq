@@ -57,7 +57,7 @@ see [configure SAST in the UI](sast/index.md#configure-sast-in-the-ui).
 ### Override the default registry base address
 
 By default, GitLab security scanners use `registry.gitlab.com/gitlab-org/security-products/analyzers` as the
-base address for Docker images. You can override this globally by setting the variable
+base address for Docker images. You can override this globally by setting the CI/CD variable
 `SECURE_ANALYZERS_PREFIX` to another location. Note that this affects all scanners at once.
 
 ## Security scanning tools
@@ -442,7 +442,7 @@ Read how to [operate the Secure scanners in an offline environment](offline_depl
 ## Using private Maven repositories
 
 If you have a private Apache Maven repository that requires login credentials,
-you can use the `MAVEN_CLI_OPTS` environment variable
+you can use the `MAVEN_CLI_OPTS` CI/CD variable
 to pass a username and password. You can set it under your project's settings
 so that your credentials aren't exposed in `.gitlab-ci.yml`.
 
@@ -450,8 +450,8 @@ If the username is `myuser` and the password is `verysecret` then you would
 [set the following variable](../../ci/variables/README.md#create-a-custom-variable-in-the-ui)
 under your project's settings:
 
-| Type | Key | Value |
-| ---- | --- | ----- |
+| Type     | Key              | Value |
+| -------- | ---------------- | ----- |
 | Variable | `MAVEN_CLI_OPTS` | `--settings mysettings.xml -Drepository.password=verysecret -Drepository.user=myuser` |
 
 ```xml
@@ -549,7 +549,7 @@ This is often followed by the [error `No files to upload`](../../ci/pipelines/jo
 and preceded by other errors or warnings that indicate why the JSON report wasn't generated. Please
 check the entire job log for such messages. If you don't find these messages, retry the failed job
 after setting `SECURE_LOG_LEVEL: "debug"` as a
-[custom environment variable](../../ci/variables/README.md#custom-cicd-variables).
+[custom CI/CD variable](../../ci/variables/README.md#custom-cicd-variables).
 This provides useful information to investigate further.
 
 ### Getting error message `sast job: config key may not be used with 'rules': only/except`
