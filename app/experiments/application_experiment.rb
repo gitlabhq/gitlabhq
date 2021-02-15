@@ -108,7 +108,6 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
     end
 
     def write_entry(key, entry, **options)
-      return false unless Feature.enabled?(:caching_experiments)
       return false if entry.value.blank? # don't cache any empty values
 
       pool { |redis| redis.hset(*hkey(key), entry.value) }

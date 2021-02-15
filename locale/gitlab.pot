@@ -17135,9 +17135,6 @@ msgstr ""
 msgid "Kubernetes error: %{error_code}"
 msgstr ""
 
-msgid "Kubernetes popover"
-msgstr ""
-
 msgid "LDAP"
 msgstr ""
 
@@ -23977,9 +23974,6 @@ msgid "ProtectedEnvironment|Your environment has been protected."
 msgstr ""
 
 msgid "ProtectedEnvironment|Your environment has been unprotected"
-msgstr ""
-
-msgid "Protip:"
 msgstr ""
 
 msgid "Protip: %{linkStart}Auto DevOps%{linkEnd} uses Kubernetes clusters to deploy your code!"
@@ -35643,9 +35637,6 @@ msgid "user preferences"
 msgstr ""
 
 msgid "username"
-msgstr ""
-
-msgid "uses Kubernetes clusters to deploy your code!"
 msgstr ""
 
 msgid "v%{version} published %{timeAgo}"

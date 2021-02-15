@@ -27,7 +27,7 @@ import { localTimeAgo } from './lib/utils/datetime_utility';
 import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 
 // everything else
-import './feature_highlight/feature_highlight_options';
+import initFeatureHighlight from './feature_highlight';
 import LazyLoader from './lazy_loader';
 import { __ } from './locale';
 import initLogoAnimation from './logo';
@@ -114,6 +114,7 @@ function deferredInitialisation() {
   initFrequentItemDropdowns();
   initPersistentUserCallouts();
   initDefaultTrackers();
+  initFeatureHighlight();
 
   const search = document.querySelector('#search');
   if (search) {

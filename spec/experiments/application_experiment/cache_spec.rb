@@ -51,16 +51,4 @@ RSpec.describe ApplicationExperiment::Cache do
       'invalid call to clear a non-hash cache key'
     )
   end
-
-  context "when the :caching_experiments feature is disabled" do
-    before do
-      stub_feature_flags(caching_experiments: false)
-    end
-
-    it "doesn't write to the cache" do
-      subject.write(key_field, 'value')
-
-      expect(subject.read(key_field)).to be_nil
-    end
-  end
 end

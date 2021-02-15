@@ -69,7 +69,7 @@
       .home-panel-description.text-break
         .home-panel-description-markdown.read-more-container{ itemprop: 'description' }
           = markdown_field(@project, :description)
-        %button.btn.btn-blank.btn-link.js-read-more-trigger.d-lg-none{ type: "button" }
+        %button.btn.gl-button.btn-blank.btn-link.js-read-more-trigger.d-lg-none{ type: "button" }
           = _("Read more")
 
     - if @project.forked?

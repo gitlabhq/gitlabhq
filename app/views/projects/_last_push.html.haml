@@ -15,5 +15,5 @@
 
       - if can?(current_user, :create_merge_request_in, event.project.default_merge_request_target)
         .flex-right
-          = link_to new_mr_path_from_push_event(event), title: _("New merge request"), class: "btn btn-info btn-sm qa-create-merge-request" do
+          = link_to new_mr_path_from_push_event(event), title: _("New merge request"), class: "btn gl-button btn-info btn-sm qa-create-merge-request" do
             #{ _('Create merge request') }
