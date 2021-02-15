@@ -1,21 +1,13 @@
-import { GlLoadingIcon } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import Poll from '~/lib/utils/poll';
+import { historyPushState, buildUrlWithCurrentLocation } from '~/lib/utils/common_utils';
+import { validateParams } from '~/pipelines/utils';
 import { __ } from '~/locale';
-import SvgBlankState from '../components/pipelines_list/blank_state.vue';
-import EmptyState from '../components/pipelines_list/empty_state.vue';
-import PipelinesTableComponent from '../components/pipelines_list/pipelines_table.vue';
 import { CANCEL_REQUEST } from '../constants';
 import eventHub from '../event_hub';
 
 export default {
-  components: {
-    PipelinesTableComponent,
-    SvgBlankState,
-    EmptyState,
-    GlLoadingIcon,
-  },
   data() {
     return {
       isLoading: false,
@@ -76,6 +68,25 @@ export default {
     this.poll.stop();
   },
   methods: {
+    updateInternalState(parameters) {
+      this.poll.stop();
+
+      const queryString = Object.keys(parameters)
+        .map((parameter) => {
+          const value = parameters[parameter];
+          // update internal state for UI
+          this[parameter] = value;
+          return `${parameter}=${encodeURIComponent(value)}`;
+        })
+        .join('&');
+
+      // update polling parameters
+      this.requestData = parameters;
+
+      historyPushState(buildUrlWithCurrentLocation(`?${queryString}`));
+
+      this.isLoading = true;
+    },
     /**
      * Handles URL and query parameter changes.
      * When the user uses the pagination or the tabs,
@@ -183,6 +194,24 @@ export default {
           );
         })
         .finally(() => this.store.toggleIsRunningPipeline(false));
+    },
+    onChangePage(page) {
+      /* URLS parameters are strings, we need to parse to match types */
+      let params = {
+        page: Number(page).toString(),
+      };
+
+      if (this.scope) {
+        params.scope = this.scope;
+      }
+
+      params = this.onChangeWithFilter(params);
+
+      this.updateContent(params);
+    },
+
+    onChangeWithFilter(params) {
+      return { ...params, ...validateParams(this.requestData) };
     },
   },
 };

@@ -18,7 +18,7 @@ RSpec.shared_examples 'a GraphQL type with labels' do
     subject { described_class.fields['labels'] }
 
     it { is_expected.to have_graphql_type(Types::LabelType.connection_type) }
-    it { is_expected.to have_graphql_arguments(:search_term) }
+    it { is_expected.to have_graphql_arguments(labels_resolver_arguments) }
   end
 end
 

@@ -18,6 +18,8 @@ const createComponent = ({ issuableSymbol = '#', issuable = mockIssuable, slots 
     slots,
   });
 
+const MOCK_GITLAB_URL = 'http://0.0.0.0:3000';
+
 describe('IssuableItem', () => {
   // The mock data is dependent that this is after our default date
   useFakeDate(2020, 11, 11);
@@ -28,7 +30,7 @@ describe('IssuableItem', () => {
   let wrapper;
 
   beforeEach(() => {
-    gon.gitlab_url = 'http://0.0.0.0:3000';
+    gon.gitlab_url = MOCK_GITLAB_URL;
     wrapper = createComponent();
   });
 
@@ -73,11 +75,11 @@ describe('IssuableItem', () => {
 
     describe('isIssuableUrlExternal', () => {
       it.each`
-        issuableWebUrl                                             | urlType                    | returnValue
-        ${'/gitlab-org/gitlab-test/-/issues/2'}                    | ${'relative'}              | ${false}
-        ${'http://0.0.0.0:3000/gitlab-org/gitlab-test/-/issues/1'} | ${'absolute and internal'} | ${false}
-        ${'http://jira.atlassian.net/browse/IG-1'}                 | ${'external'}              | ${true}
-        ${'https://github.com/gitlabhq/gitlabhq/issues/1'}         | ${'external'}              | ${true}
+        issuableWebUrl                                            | urlType                    | returnValue
+        ${'/gitlab-org/gitlab-test/-/issues/2'}                   | ${'relative'}              | ${false}
+        ${`${MOCK_GITLAB_URL}/gitlab-org/gitlab-test/-/issues/1`} | ${'absolute and internal'} | ${false}
+        ${'http://jira.atlassian.net/browse/IG-1'}                | ${'external'}              | ${true}
+        ${'https://github.com/gitlabhq/gitlabhq/issues/1'}        | ${'external'}              | ${true}
       `(
         'returns $returnValue when `issuable.webUrl` is $urlType',
         async ({ issuableWebUrl, returnValue }) => {
@@ -217,14 +219,32 @@ describe('IssuableItem', () => {
   });
 
   describe('template', () => {
-    it('renders issuable title', () => {
-      const titleEl = wrapper.find('[data-testid="issuable-title"]');
+    it.each`
+      gitlabWebUrl           | webUrl                        | expectedHref                  | expectedTarget
+      ${undefined}           | ${`${MOCK_GITLAB_URL}/issue`} | ${`${MOCK_GITLAB_URL}/issue`} | ${undefined}
+      ${undefined}           | ${'https://jira.com/issue'}   | ${'https://jira.com/issue'}   | ${'_blank'}
+      ${'/gitlab-org/issue'} | ${'https://jira.com/issue'}   | ${'/gitlab-org/issue'}        | ${undefined}
+    `(
+      'renders issuable title correctly when `gitlabWebUrl` is `$gitlabWebUrl` and webUrl is `$webUrl`',
+      async ({ webUrl, gitlabWebUrl, expectedHref, expectedTarget }) => {
+        wrapper.setProps({
+          issuable: {
+            ...mockIssuable,
+            webUrl,
+            gitlabWebUrl,
+          },
+        });
 
-      expect(titleEl.exists()).toBe(true);
-      expect(titleEl.find(GlLink).attributes('href')).toBe(mockIssuable.webUrl);
-      expect(titleEl.find(GlLink).attributes('target')).not.toBeDefined();
-      expect(titleEl.find(GlLink).text()).toBe(mockIssuable.title);
-    });
+        await wrapper.vm.$nextTick();
+
+        const titleEl = wrapper.find('[data-testid="issuable-title"]');
+
+        expect(titleEl.exists()).toBe(true);
+        expect(titleEl.find(GlLink).attributes('href')).toBe(expectedHref);
+        expect(titleEl.find(GlLink).attributes('target')).toBe(expectedTarget);
+        expect(titleEl.find(GlLink).text()).toBe(mockIssuable.title);
+      },
+    );
 
     it('renders checkbox when `showCheckbox` prop is true', async () => {
       wrapper.setProps({

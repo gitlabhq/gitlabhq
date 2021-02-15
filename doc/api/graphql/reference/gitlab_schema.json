@@ -10821,7 +10821,7 @@
             },
             {
               "name": "pipelineConfigurationFullPath",
-              "description": "Full path of the compliance pipeline configuration stored in a project repository, such as `.gitlab/compliance/soc2/.gitlab-ci.yml`.",
+              "description": "Full path of the compliance pipeline configuration stored in a project repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hippa`.",
               "args": [
 
               ],
@@ -10991,7 +10991,7 @@
             },
             {
               "name": "pipelineConfigurationFullPath",
-              "description": "Full path of the compliance pipeline configuration stored in a project repository, such as `.gitlab/compliance/soc2/.gitlab-ci.yml`.",
+              "description": "Full path of the compliance pipeline configuration stored in a project repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hippa`.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -31573,6 +31573,46 @@
               "description": "Labels available on this group.",
               "args": [
                 {
+                  "name": "searchTerm",
+                  "description": "A search term to find labels with.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "includeAncestorGroups",
+                  "description": "Include labels from ancestor groups.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false"
+                },
+                {
+                  "name": "includeDescendantGroups",
+                  "description": "Include labels from descendant groups.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false"
+                },
+                {
+                  "name": "onlyGroupLabels",
+                  "description": "Include only group level labels.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false"
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -31608,16 +31648,6 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "searchTerm",
-                  "description": "A search term to find labels with.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -53370,7 +53400,7 @@
             },
             {
               "name": "NPM",
-              "description": "Packages from the NPM package manager",
+              "description": "Packages from the npm package manager",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -53950,7 +53980,7 @@
             },
             {
               "name": "configSource",
-              "description": "Configuration source of the pipeline (UNKNOWN_SOURCE, REPOSITORY_SOURCE, AUTO_DEVOPS_SOURCE, WEBIDE_SOURCE, REMOTE_SOURCE, EXTERNAL_PROJECT_SOURCE, BRIDGE_SOURCE, PARAMETER_SOURCE)",
+              "description": "Configuration source of the pipeline (UNKNOWN_SOURCE, REPOSITORY_SOURCE, AUTO_DEVOPS_SOURCE, WEBIDE_SOURCE, REMOTE_SOURCE, EXTERNAL_PROJECT_SOURCE, BRIDGE_SOURCE, PARAMETER_SOURCE, COMPLIANCE_SOURCE)",
               "args": [
 
               ],
@@ -54844,6 +54874,12 @@
             },
             {
               "name": "PARAMETER_SOURCE",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "COMPLIANCE_SOURCE",
               "description": null,
               "isDeprecated": false,
               "deprecationReason": null
@@ -57712,6 +57748,26 @@
               "description": "Labels available on this project.",
               "args": [
                 {
+                  "name": "searchTerm",
+                  "description": "A search term to find labels with.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "includeAncestorGroups",
+                  "description": "Include labels from ancestor groups.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false"
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -57747,16 +57803,6 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "searchTerm",
-                  "description": "A search term to find labels with.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null

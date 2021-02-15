@@ -96,7 +96,7 @@ Define both the success metrics and acceptance criteria. Note that success metri
 ### What is the type of buyer?
 
 What is the buyer persona for this feature? See https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/buyer-persona/
-In which enterprise tier should this feature go? See https://about.gitlab.com/handbook/product/pricing/#four-tiers
+In which enterprise tier should this feature go? See https://about.gitlab.com/handbook/product/pricing/#three-tiers
 
 ### Is this a cross-stage feature?
 

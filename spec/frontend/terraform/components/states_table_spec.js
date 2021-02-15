@@ -1,4 +1,4 @@
-import { GlIcon, GlTooltip } from '@gitlab/ui';
+import { GlIcon, GlLoadingIcon, GlTooltip } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { useFakeDate } from 'helpers/fake_date';
 import StatesTable from '~/terraform/components/states_table.vue';
@@ -92,6 +92,17 @@ describe('StatesTable', () => {
           },
         },
       },
+      {
+        _showDetails: false,
+        errorMessages: [],
+        name: 'state-5',
+        loadingLock: false,
+        loadingRemove: true,
+        lockedAt: null,
+        lockedByUser: null,
+        updatedAt: '2020-10-10T00:00:00Z',
+        latestVersion: null,
+      },
     ],
   };
 
@@ -112,14 +123,15 @@ describe('StatesTable', () => {
   });
 
   it.each`
-    name         | toolTipText                            | locked   | lineNumber
-    ${'state-1'} | ${'Locked by user-1 2 days ago'}       | ${true}  | ${0}
-    ${'state-2'} | ${'Locking state'}                     | ${false} | ${1}
-    ${'state-3'} | ${'Unlocking state'}                   | ${false} | ${2}
-    ${'state-4'} | ${'Locked by Unknown User 5 days ago'} | ${true}  | ${3}
+    name         | toolTipText                            | locked   | loading  | lineNumber
+    ${'state-1'} | ${'Locked by user-1 2 days ago'}       | ${true}  | ${false} | ${0}
+    ${'state-2'} | ${'Locking state'}                     | ${false} | ${true}  | ${1}
+    ${'state-3'} | ${'Unlocking state'}                   | ${false} | ${true}  | ${2}
+    ${'state-4'} | ${'Locked by Unknown User 5 days ago'} | ${true}  | ${false} | ${3}
+    ${'state-5'} | ${'Removing'}                          | ${false} | ${true}  | ${4}
   `(
     'displays the name and locked information "$name" for line "$lineNumber"',
-    ({ name, toolTipText, locked, lineNumber }) => {
+    ({ name, toolTipText, locked, loading, lineNumber }) => {
       const states = wrapper.findAll('[data-testid="terraform-states-table-name"]');
 
       const state = states.at(lineNumber);
@@ -127,6 +139,7 @@ describe('StatesTable', () => {
 
       expect(state.text()).toContain(name);
       expect(state.find(GlIcon).exists()).toBe(locked);
+      expect(state.find(GlLoadingIcon).exists()).toBe(loading);
       expect(toolTip.exists()).toBe(locked);
 
       if (locked) {

@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::TemplateUsage do
       %w(Template-1 Template-2).each do |expected_template|
         expect(Gitlab::UsageDataCounters::CiTemplateUniqueCounter).to(
           receive(:track_unique_project_event)
-            .with(project_id: project.id, template: expected_template)
+            .with(project_id: project.id, template: expected_template, config_source: pipeline.config_source)
         )
       end
 

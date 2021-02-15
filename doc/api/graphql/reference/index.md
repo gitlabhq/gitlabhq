@@ -630,7 +630,7 @@ Represents a ComplianceFramework associated with a Project.
 | `description` | String! | Description of the compliance framework. |
 | `id` | ID! | Compliance framework ID. |
 | `name` | String! | Name of the compliance framework. |
-| `pipelineConfigurationFullPath` | String | Full path of the compliance pipeline configuration stored in a project repository, such as `.gitlab/compliance/soc2/.gitlab-ci.yml`. |
+| `pipelineConfigurationFullPath` | String | Full path of the compliance pipeline configuration stored in a project repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hippa`. |
 
 ### ComposerMetadata
 
@@ -2785,7 +2785,7 @@ Information about pagination in a connection..
 | `beforeSha` | String | Base SHA of the source branch. |
 | `cancelable` | Boolean! | Specifies if a pipeline can be canceled. |
 | `committedAt` | Time | Timestamp of the pipeline's commit. |
-| `configSource` | PipelineConfigSourceEnum | Configuration source of the pipeline (UNKNOWN_SOURCE, REPOSITORY_SOURCE, AUTO_DEVOPS_SOURCE, WEBIDE_SOURCE, REMOTE_SOURCE, EXTERNAL_PROJECT_SOURCE, BRIDGE_SOURCE, PARAMETER_SOURCE) |
+| `configSource` | PipelineConfigSourceEnum | Configuration source of the pipeline (UNKNOWN_SOURCE, REPOSITORY_SOURCE, AUTO_DEVOPS_SOURCE, WEBIDE_SOURCE, REMOTE_SOURCE, EXTERNAL_PROJECT_SOURCE, BRIDGE_SOURCE, PARAMETER_SOURCE, COMPLIANCE_SOURCE) |
 | `coverage` | Float | Coverage percentage. |
 | `createdAt` | Time! | Timestamp of the pipeline's creation. |
 | `detailedStatus` | DetailedStatus! | Detailed status of the pipeline. |
@@ -5203,7 +5203,7 @@ Rotation length unit of an on-call rotation.
 | `GENERIC` | Packages from the Generic package manager |
 | `GOLANG` | Packages from the Golang package manager |
 | `MAVEN` | Packages from the Maven package manager |
-| `NPM` | Packages from the NPM package manager |
+| `NPM` | Packages from the npm package manager |
 | `NUGET` | Packages from the Nuget package manager |
 | `PYPI` | Packages from the PyPI package manager |
 | `RUBYGEMS` | Packages from the Rubygems package manager |
@@ -5214,6 +5214,7 @@ Rotation length unit of an on-call rotation.
 | ----- | ----------- |
 | `AUTO_DEVOPS_SOURCE` |  |
 | `BRIDGE_SOURCE` |  |
+| `COMPLIANCE_SOURCE` |  |
 | `EXTERNAL_PROJECT_SOURCE` |  |
 | `PARAMETER_SOURCE` |  |
 | `REMOTE_SOURCE` |  |

@@ -68,7 +68,7 @@ RSpec.describe 'Terraform', :js do
           fill_in "terraform-state-remove-input-#{additional_state.name}", with: additional_state.name
           click_button 'Remove'
 
-          expect(page).not_to have_content(additional_state.name)
+          expect(page).to have_content("#{additional_state.name} successfully removed")
           expect { additional_state.reload }.to raise_error ActiveRecord::RecordNotFound
         end
       end

@@ -74,7 +74,8 @@ module Enums
           remote_source: 4,
           external_project_source: 5,
           bridge_source: 6,
-          parameter_source: 7
+          parameter_source: 7,
+          compliance_source: 8
         }
       end
     end

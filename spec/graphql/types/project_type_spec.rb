@@ -332,7 +332,9 @@ RSpec.describe GitlabSchema.types['Project'] do
     it { is_expected.to have_graphql_resolver(Resolvers::Terraform::StatesResolver) }
   end
 
-  it_behaves_like 'a GraphQL type with labels'
+  it_behaves_like 'a GraphQL type with labels' do
+    let(:labels_resolver_arguments) { [:search_term, :includeAncestorGroups] }
+  end
 
   describe 'jira_imports' do
     subject { resolve_field(:jira_imports, project) }

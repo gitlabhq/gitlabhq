@@ -4,6 +4,7 @@ import { GlLink, GlIcon, GlLabel, GlFormCheckbox, GlTooltipDirective } from '@gi
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { getTimeago } from '~/lib/utils/datetime_utility';
+import { isExternal, setUrlFragment } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import IssuableAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
@@ -47,17 +48,14 @@ export default {
     author() {
       return this.issuable.author;
     },
+    webUrl() {
+      return this.issuable.gitlabWebUrl || this.issuable.webUrl;
+    },
     authorId() {
       return getIdFromGraphQLId(`${this.author.id}`);
     },
     isIssuableUrlExternal() {
-      // Check if URL is relative, which means it is internal.
-      if (!/^https?:\/\//g.test(this.issuable.webUrl)) {
-        return false;
-      }
-      // In case URL is absolute, it may or may not be internal,
-      // hence use `gon.gitlab_url` which is current instance domain.
-      return !this.issuable.webUrl.includes(gon.gitlab_url);
+      return isExternal(this.webUrl);
     },
     labels() {
       return this.issuable.labels?.nodes || this.issuable.labels || [];
@@ -90,6 +88,9 @@ export default {
       return Boolean(
         this.hasSlotContents('status') || this.showDiscussions || this.issuable.assignees,
       );
+    },
+    issuableNotesLink() {
+      return setUrlFragment(this.webUrl, 'notes');
     },
   },
   methods: {
@@ -144,7 +145,7 @@ export default {
               name="eye-slash"
               :title="__('Confidential')"
             />
-            <gl-link :href="issuable.webUrl" v-bind="issuableTitleProps"
+            <gl-link :href="webUrl" v-bind="issuableTitleProps"
               >{{ issuable.title
               }}<gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2"
             /></gl-link>
@@ -206,7 +207,7 @@ export default {
             <gl-link
               v-gl-tooltip:tooltipcontainer.top
               :title="__('Comments')"
-              :href="`${issuable.webUrl}#notes`"
+              :href="issuableNotesLink"
               :class="{ 'no-comments': !issuable.userDiscussionsCount }"
               class="gl-reset-color!"
             >

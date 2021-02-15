@@ -657,15 +657,16 @@ license_scanning:
 The License Compliance job should now use local copies of the License Compliance analyzers to scan
 your code and generate security reports, without requiring internet access.
 
-Additional configuration may be needed for connecting to
-[private Bower registries](#using-private-bower-registries),
-[private Bundler registries](#using-private-bundler-registries),
-[private Conan registries](#using-private-bower-registries),
-[private Go registries](#using-private-go-registries),
-[private Maven repositories](#using-private-maven-repositories),
-[private npm registries](#using-private-npm-registries),
-[private Python repositories](#using-private-python-repositories),
-and [private Yarn registries](#using-private-yarn-registries).
+Additional configuration may be needed for connecting to private registries for:
+
+- [Bower](#using-private-bower-registries),
+- [Bundler](#using-private-bundler-registries),
+- [Conan](#using-private-bower-registries),
+- [Go](#using-private-go-registries),
+- [Maven repositories](#using-private-maven-repositories),
+- [npm](#using-private-npm-registries),
+- [Python repositories](#using-private-python-repositories),
+- [Yarn](#using-private-yarn-registries).
 
 ### SPDX license list name matching
 

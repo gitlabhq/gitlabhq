@@ -28728,6 +28728,9 @@ msgstr ""
 msgid "Terraform"
 msgstr ""
 
+msgid "Terraform|%{name} successfully removed"
+msgstr ""
+
 msgid "Terraform|%{number} Terraform report failed to generate"
 msgid_plural "Terraform|%{number} Terraform reports failed to generate"
 msgstr[0] ""
@@ -28802,6 +28805,9 @@ msgid "Terraform|Remove"
 msgstr ""
 
 msgid "Terraform|Remove state file and versions"
+msgstr ""
+
+msgid "Terraform|Removing"
 msgstr ""
 
 msgid "Terraform|Reported Resource Changes: %{addNum} to add, %{changeNum} to change, %{deleteNum} to delete"
@@ -30855,12 +30861,6 @@ msgid "Toggle this dialog"
 msgstr ""
 
 msgid "Toggle thread"
-msgstr ""
-
-msgid "ToggleButton|Toggle Status: OFF"
-msgstr ""
-
-msgid "ToggleButton|Toggle Status: ON"
 msgstr ""
 
 msgid "Toggled :%{name}: emoji award."

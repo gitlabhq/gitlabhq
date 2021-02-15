@@ -1,5 +1,5 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { isEqual } from 'lodash';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { getParameterByName } from '~/lib/utils/common_utils';
@@ -7,22 +7,28 @@ import { __, s__ } from '~/locale';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import { ANY_TRIGGER_AUTHOR, RAW_TEXT_WARNING, FILTER_TAG_IDENTIFIER } from '../../constants';
-import pipelinesMixin from '../../mixins/pipelines';
-import PipelinesPaginationApiMixin from '../../mixins/pipelines_pagination_api_mixin';
+import PipelinesMixin from '../../mixins/pipelines_mixin';
 import PipelinesService from '../../services/pipelines_service';
 import { validateParams } from '../../utils';
+import EmptyState from './empty_state.vue';
 import NavigationControls from './nav_controls.vue';
 import PipelinesFilteredSearch from './pipelines_filtered_search.vue';
+import PipelinesTableComponent from './pipelines_table.vue';
+import SvgBlankState from './blank_state.vue';
 
 export default {
   components: {
-    TablePagination,
+    EmptyState,
+    GlIcon,
+    GlLoadingIcon,
     NavigationTabs,
     NavigationControls,
     PipelinesFilteredSearch,
-    GlIcon,
+    PipelinesTableComponent,
+    SvgBlankState,
+    TablePagination,
   },
-  mixins: [pipelinesMixin, PipelinesPaginationApiMixin],
+  mixins: [PipelinesMixin],
   props: {
     store: {
       type: Object,
@@ -217,6 +223,20 @@ export default {
     this.requestData = { page: this.page, scope: this.scope, ...this.validatedParams };
   },
   methods: {
+    onChangeTab(scope) {
+      if (this.scope === scope) {
+        return;
+      }
+
+      let params = {
+        scope,
+        page: '1',
+      };
+
+      params = this.onChangeWithFilter(params);
+
+      this.updateContent(params);
+    },
     successCallback(resp) {
       // Because we are polling & the user is interacting verify if the response received
       // matches the last request made

@@ -159,7 +159,7 @@ export default {
       <div class="rebase-state-find-class-convention media media-body space-children">
         <span
           v-if="rebaseInProgress || isMakingRequest"
-          class="gl-font-weight-bold gl-ml-0!"
+          class="gl-font-weight-bold"
           data-testid="rebase-message"
           >{{ __('Rebase in progress') }}</span
         >

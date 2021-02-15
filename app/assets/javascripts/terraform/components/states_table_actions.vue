@@ -9,7 +9,7 @@ import {
   GlModal,
   GlSprintf,
 } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import addDataToState from '../graphql/mutations/add_data_to_state.mutation.graphql';
 import lockState from '../graphql/mutations/lock_state.mutation.graphql';
 import removeState from '../graphql/mutations/remove_state.mutation.graphql';
@@ -52,6 +52,7 @@ export default {
     ),
     modalRemove: s__('Terraform|Remove'),
     remove: s__('Terraform|Remove state file and versions'),
+    removeSuccessful: s__('Terraform|%{name} successfully removed'),
     unlock: s__('Terraform|Unlock'),
   },
   computed: {
@@ -121,10 +122,13 @@ export default {
           loadingRemove: true,
         });
 
-        this.stateActionMutation(removeState);
+        this.stateActionMutation(
+          removeState,
+          sprintf(this.$options.i18n.removeSuccessful, { name: this.state.name }),
+        );
       }
     },
-    stateActionMutation(mutation) {
+    stateActionMutation(mutation, successMessage = null) {
       let errorMessages = [];
 
       this.$apollo
@@ -143,6 +147,10 @@ export default {
             data?.terraformStateLock?.errors ||
             data?.terraformStateUnlock?.errors ||
             [];
+
+          if (errorMessages.length === 0 && successMessage) {
+            this.$toast.show(successMessage);
+          }
         })
         .catch(() => {
           errorMessages = [this.$options.i18n.errorUpdate];

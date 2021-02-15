@@ -107,17 +107,8 @@ module Types
     field :labels,
           Types::LabelType.connection_type,
           null: true,
-          description: 'Labels available on this group.' do
-            argument :search_term, GraphQL::STRING_TYPE,
-              required: false,
-              description: 'A search term to find labels with.'
-          end
-
-    def labels(search_term: nil)
-      LabelsFinder
-        .new(current_user, group: group, search: search_term)
-        .execute
-    end
+          description: 'Labels available on this group.',
+          resolver: Resolvers::GroupLabelsResolver
 
     def avatar_url
       object.avatar_url(only_path: false)

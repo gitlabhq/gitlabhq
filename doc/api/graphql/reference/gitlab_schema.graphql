@@ -3973,7 +3973,7 @@ type ComplianceFramework {
 
   """
   Full path of the compliance pipeline configuration stored in a project
-  repository, such as `.gitlab/compliance/soc2/.gitlab-ci.yml`.
+  repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hippa`.
   """
   pipelineConfigurationFullPath: String
 }
@@ -4031,7 +4031,7 @@ input ComplianceFrameworkInput {
 
   """
   Full path of the compliance pipeline configuration stored in a project
-  repository, such as `.gitlab/compliance/soc2/.gitlab-ci.yml`.
+  repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hippa`.
   """
   pipelineConfigurationFullPath: String
 }
@@ -11620,9 +11620,24 @@ type Group {
     first: Int
 
     """
+    Include labels from ancestor groups.
+    """
+    includeAncestorGroups: Boolean = false
+
+    """
+    Include labels from descendant groups.
+    """
+    includeDescendantGroups: Boolean = false
+
+    """
     Returns the last _n_ elements from the list.
     """
     last: Int
+
+    """
+    Include only group level labels.
+    """
+    onlyGroupLabels: Boolean = false
 
     """
     A search term to find labels with.
@@ -18179,7 +18194,7 @@ enum PackageTypeEnum {
   MAVEN
 
   """
-  Packages from the NPM package manager
+  Packages from the npm package manager
   """
   NPM
 
@@ -18383,7 +18398,7 @@ type Pipeline {
   """
   Configuration source of the pipeline (UNKNOWN_SOURCE, REPOSITORY_SOURCE,
   AUTO_DEVOPS_SOURCE, WEBIDE_SOURCE, REMOTE_SOURCE, EXTERNAL_PROJECT_SOURCE,
-  BRIDGE_SOURCE, PARAMETER_SOURCE)
+  BRIDGE_SOURCE, PARAMETER_SOURCE, COMPLIANCE_SOURCE)
   """
   configSource: PipelineConfigSourceEnum
 
@@ -18654,6 +18669,7 @@ type PipelineCancelPayload {
 enum PipelineConfigSourceEnum {
   AUTO_DEVOPS_SOURCE
   BRIDGE_SOURCE
+  COMPLIANCE_SOURCE
   EXTERNAL_PROJECT_SOURCE
   PARAMETER_SOURCE
   REMOTE_SOURCE
@@ -19832,6 +19848,11 @@ type Project {
     Returns the first _n_ elements from the list.
     """
     first: Int
+
+    """
+    Include labels from ancestor groups.
+    """
+    includeAncestorGroups: Boolean = false
 
     """
     Returns the last _n_ elements from the list.

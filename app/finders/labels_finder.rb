@@ -177,7 +177,7 @@ class LabelsFinder < UnionFinder
                 end
 
     if group?
-      @projects = if params[:include_subgroups]
+      @projects = if params[:include_descendant_groups]
                     @projects.in_namespace(group.self_and_descendants.select(:id))
                   else
                     @projects.in_namespace(group.id)
