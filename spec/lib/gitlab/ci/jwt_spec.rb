@@ -44,6 +44,9 @@ RSpec.describe Gitlab::Ci::Jwt do
         expect(payload[:pipeline_id]).to eq(pipeline.id.to_s)
         expect(payload[:job_id]).to eq(build.id.to_s)
         expect(payload[:ref]).to eq(pipeline.source_ref)
+        expect(payload[:ref_protected]).to eq(build.protected.to_s)
+        expect(payload[:environment]).to be_nil
+        expect(payload[:environment_protected]).to be_nil
       end
     end
 
@@ -88,6 +91,39 @@ RSpec.describe Gitlab::Ci::Jwt do
         expect(build).to receive(:protected).and_return(true)
 
         expect(payload[:ref_protected]).to eq('true')
+      end
+    end
+
+    describe 'environment' do
+      let(:environment) { build_stubbed(:environment, project: project, name: 'production') }
+      let(:build) do
+        build_stubbed(
+          :ci_build,
+          project: project,
+          user: user,
+          pipeline: pipeline,
+          environment: environment.name
+        )
+      end
+
+      before do
+        allow(build).to receive(:persisted_environment).and_return(environment)
+      end
+
+      it 'has correct values for environment attributes' do
+        expect(payload[:environment]).to eq('production')
+        expect(payload[:environment_protected]).to eq('false')
+      end
+
+      context ':ci_jwt_include_environment feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_jwt_include_environment: false)
+        end
+
+        it 'does not include environment attributes' do
+          expect(payload).not_to have_key(:environment)
+          expect(payload).not_to have_key(:environment_protected)
+        end
       end
     end
   end

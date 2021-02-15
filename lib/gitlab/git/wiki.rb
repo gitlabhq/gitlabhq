@@ -151,6 +151,8 @@ module Gitlab
       end
 
       def gitaly_find_page(title:, version: nil, dir: nil)
+        return unless title.present?
+
         wiki_page, version = gitaly_wiki_client.find_page(title: title, version: version, dir: dir)
         return unless wiki_page
 
