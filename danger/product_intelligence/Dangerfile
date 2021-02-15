@@ -45,9 +45,13 @@ usage_data_changed_files = all_changed_files.grep(%r{(usage_data)})
 metrics_changed_files    = all_changed_files.grep(%r{((ee/)?config/metrics/.*\.yml)})
 dictionary_changed_file  = all_changed_files.grep(%r{(doc/development/usage_ping/dictionary.md)})
 
-usage_changed_files = usage_data_changed_files + tracking_changed_files + metrics_changed_files + dictionary_changed_file
+snowplow_changed_files = all_changed_files.select do |file|
+  helper.changed_lines(file).grep(%r{Gitlab::Tracking\.event}).any?
+end
 
-if usage_changed_files.any?
+matching_changed_files = usage_data_changed_files + tracking_changed_files + metrics_changed_files + dictionary_changed_file + snowplow_changed_files
+
+if matching_changed_files.any?
 
   mention = if helper.draft_mr?
               "`#{ENGINEERS_GROUP}`"
@@ -55,7 +59,7 @@ if usage_changed_files.any?
               ENGINEERS_GROUP
             end
 
-  warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(usage_changed_files), engineers_group: mention)
+  warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(matching_changed_files), engineers_group: mention)
   warn format(UPDATE_METRICS_DEFINITIONS_MESSAGE) if usage_data_changed_files.any?
 
   fail format(UPDATE_DICTIONARY_MESSAGE) if metrics_changed_files.any? && dictionary_changed_file.empty?

@@ -28,6 +28,7 @@ module Gitlab
       MR_UNRESOLVE_THREAD_ACTION = 'i_code_review_user_unresolve_thread'
       MR_ASSIGNED_USERS_ACTION = 'i_code_review_user_assigned'
       MR_REVIEW_REQUESTED_USERS_ACTION = 'i_code_review_user_review_requested'
+      MR_TASK_ITEM_STATUS_CHANGED_ACTION = 'i_code_review_user_toggled_task_item_status'
       MR_APPROVAL_RULE_ADDED_USERS_ACTION = 'i_code_review_user_approval_rule_added'
       MR_APPROVAL_RULE_EDITED_USERS_ACTION = 'i_code_review_user_approval_rule_edited'
       MR_APPROVAL_RULE_DELETED_USERS_ACTION = 'i_code_review_user_approval_rule_deleted'
@@ -141,6 +142,10 @@ module Gitlab
 
         def track_approval_rule_deleted_action(user:)
           track_unique_action_by_user(MR_APPROVAL_RULE_DELETED_USERS_ACTION, user)
+        end
+
+        def track_task_item_status_changed(user:)
+          track_unique_action_by_user(MR_TASK_ITEM_STATUS_CHANGED_ACTION, user)
         end
 
         private

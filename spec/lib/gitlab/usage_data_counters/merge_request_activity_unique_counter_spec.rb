@@ -237,6 +237,14 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
     end
   end
 
+  describe '.track_task_item_status_changed' do
+    subject { described_class.track_task_item_status_changed(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_TASK_ITEM_STATUS_CHANGED_ACTION }
+    end
+  end
+
   describe '.track_users_review_requested' do
     subject { described_class.track_users_review_requested(users: [user]) }
 

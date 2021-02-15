@@ -14,7 +14,8 @@
   .cover-block.user-cover-block{ class: [('border-bottom' if profile_tabs.empty?)] }
     = render layout: 'users/cover_controls' do
       - if @user == current_user
-        = link_to profile_path, class: link_classes + 'btn gl-button btn-default btn-icon has-tooltip', title: s_('UserProfile|Edit profile'), 'aria-label': 'Edit profile' do
+        = link_to profile_path, class: link_classes + 'btn gl-button btn-default btn-icon has-tooltip',
+          title: s_('UserProfile|Edit profile'), 'aria-label': 'Edit profile', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
           = sprite_icon('pencil')
       - elsif current_user
         - if @user.abuse_report

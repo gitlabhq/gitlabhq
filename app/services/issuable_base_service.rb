@@ -258,6 +258,11 @@ class IssuableBaseService < BaseService
         invalidate_cache_counts(issuable, users: issuable.assignees.to_a)
         after_update(issuable)
         execute_hooks(issuable, 'update', old_associations: nil)
+
+        if issuable.is_a?(MergeRequest)
+          Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
+            .track_task_item_status_changed(user: current_user)
+        end
       end
     end
 

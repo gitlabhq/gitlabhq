@@ -14,6 +14,11 @@
   category: code_review
   aggregation: weekly
   feature_flag: usage_data_i_code_review_mr_single_file_diffs
+- name: i_code_review_user_toggled_task_item_status
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+  feature_flag: usage_data_i_code_review_user_toggled_task_item_status
 - name: i_code_review_user_create_mr
   redis_slot: code_review
   category: code_review

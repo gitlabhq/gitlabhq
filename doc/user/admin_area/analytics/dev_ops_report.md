@@ -40,7 +40,7 @@ collected before this feature is available.
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247112) in GitLab 13.7 as a [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta).
 
-The DevOps Adoption tab shows you which segments of your organization are using the most essential features of GitLab:
+The DevOps Adoption tab shows you which groups within your organization are using the most essential features of GitLab:
 
 - Issues
 - Merge Requests
@@ -50,9 +50,7 @@ The DevOps Adoption tab shows you which segments of your organization are using 
 - Deploys
 - Scanning
 
-Segments are arbitrary collections of GitLab groups that you define. You might define a segment to represent a small team, a large department, or a whole organization.
-You are limited to creating a maximum of 20 segments, and each segment is limited to a maximum of 20 groups.
-Buttons to manage your segments appear in the DevOps Adoption section of the page.
+Buttons to manage your groups appear in the DevOps Adoption section of the page.
 
 DevOps Adoption allows you to:
 
@@ -60,7 +58,7 @@ DevOps Adoption allows you to:
 - Identify specific groups that are lagging in their adoption of GitLab so you can help them along in their DevOps journey.
 - Find the groups that have adopted certain features and can provide guidance to other groups on how to use those features.
 
-![DevOps Report](img/dev_ops_adoption_v13_7.png)
+![DevOps Report](img/dev_ops_adoption_v13_9.png)
 
 ### Disable or enable DevOps Adoption
 

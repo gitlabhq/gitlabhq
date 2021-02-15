@@ -9059,7 +9059,7 @@ msgstr ""
 msgid "DAG visualization requires at least 3 dependent jobs."
 msgstr ""
 
-msgid "DAST Profiles"
+msgid "DAST Scans"
 msgstr ""
 
 msgid "DNS"
@@ -9215,7 +9215,13 @@ msgstr ""
 msgid "DastProfiles|New site profile"
 msgstr ""
 
-msgid "DastProfiles|No profiles created yet"
+msgid "DastProfiles|No scanner profiles created yet"
+msgstr ""
+
+msgid "DastProfiles|No scans saved yet"
+msgstr ""
+
+msgid "DastProfiles|No site profiles created yet"
 msgstr ""
 
 msgid "DastProfiles|Not Validated"
@@ -10234,18 +10240,6 @@ msgstr ""
 msgid "DevOps Report"
 msgstr ""
 
-msgid "DevopsAdoptionSegmentSelection|The maximum number of selections has been reached"
-msgstr ""
-
-msgid "DevopsAdoptionSegmentSelection|The selection cannot be configured for a project and for a group at the same time"
-msgstr ""
-
-msgid "DevopsAdoptionSegment|The maximum number of segments has been reached"
-msgstr ""
-
-msgid "DevopsAdoptionSegment|The maximum number of selections has been reached"
-msgstr ""
-
 msgid "DevopsAdoption|%{selectedCount} group selected"
 msgstr ""
 
@@ -10261,7 +10255,7 @@ msgstr ""
 msgid "DevopsAdoption|Adopted"
 msgstr ""
 
-msgid "DevopsAdoption|An error occured while deleting the group. Please try again."
+msgid "DevopsAdoption|An error occured while removing the group. Please try again."
 msgstr ""
 
 msgid "DevopsAdoption|An error occured while saving the group. Please try again."
@@ -10270,7 +10264,7 @@ msgstr ""
 msgid "DevopsAdoption|Approvals"
 msgstr ""
 
-msgid "DevopsAdoption|Are you sure that you would like to delete %{name}?"
+msgid "DevopsAdoption|Are you sure that you would like to remove %{name} from the table?"
 msgstr ""
 
 msgid "DevopsAdoption|At least 1 MR opened"
@@ -10291,19 +10285,13 @@ msgstr ""
 msgid "DevopsAdoption|At least 1 security scan of any type run in pipeline"
 msgstr ""
 
-msgid "DevopsAdoption|Confirm delete Group"
-msgstr ""
-
-msgid "DevopsAdoption|Delete Group"
+msgid "DevopsAdoption|Confirm remove Group"
 msgstr ""
 
 msgid "DevopsAdoption|Deploys"
 msgstr ""
 
 msgid "DevopsAdoption|DevOps adoption tracks the use of key features across your favorite groups. Add a group to the table to begin."
-msgstr ""
-
-msgid "DevopsAdoption|Edit Group"
 msgstr ""
 
 msgid "DevopsAdoption|Feature adoption is based on usage in the last calendar month. Last updated: %{timestamp}."
@@ -10324,9 +10312,6 @@ msgstr ""
 msgid "DevopsAdoption|My group"
 msgstr ""
 
-msgid "DevopsAdoption|Name"
-msgstr ""
-
 msgid "DevopsAdoption|No filter results."
 msgstr ""
 
@@ -10334,6 +10319,12 @@ msgid "DevopsAdoption|Not adopted"
 msgstr ""
 
 msgid "DevopsAdoption|Pipelines"
+msgstr ""
+
+msgid "DevopsAdoption|Remove Group"
+msgstr ""
+
+msgid "DevopsAdoption|Remove Group from the table"
 msgstr ""
 
 msgid "DevopsAdoption|Runner configured for project/group"
@@ -29693,6 +29684,9 @@ msgid "There was an error syncing the %{replicableType}"
 msgstr ""
 
 msgid "There was an error trying to validate your query"
+msgstr ""
+
+msgid "There was an error updating merge request approval settings."
 msgstr ""
 
 msgid "There was an error updating the Geo Settings"
