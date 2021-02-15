@@ -10,12 +10,14 @@ module Gitlab
         class Commands < ::Gitlab::Config::Entry::Node
           include ::Gitlab::Config::Entry::Validatable
 
+          MAX_NESTING_LEVEL = 10
+
           validations do
-            validates :config, string_or_nested_array_of_strings: true
+            validates :config, string_or_nested_array_of_strings: { max_level: MAX_NESTING_LEVEL }
           end
 
           def value
-            Array(@config).flatten(1)
+            Array(@config).flatten(MAX_NESTING_LEVEL)
           end
         end
       end

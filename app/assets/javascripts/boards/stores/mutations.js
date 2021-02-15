@@ -274,4 +274,12 @@ export default {
   [mutationTypes.SET_ADD_COLUMN_FORM_VISIBLE]: (state, visible) => {
     state.addColumnFormVisible = visible;
   },
+
+  [mutationTypes.ADD_LIST_TO_HIGHLIGHTED_LISTS]: (state, listId) => {
+    state.highlightedLists.push(listId);
+  },
+
+  [mutationTypes.REMOVE_LIST_FROM_HIGHLIGHTED_LISTS]: (state, listId) => {
+    state.highlightedLists = state.highlightedLists.filter((id) => id !== listId);
+  },
 };

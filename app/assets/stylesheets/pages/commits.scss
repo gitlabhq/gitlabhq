@@ -108,6 +108,30 @@
   }
 }
 
+.text-expander {
+  display: inline-flex;
+  background: $white;
+  color: $gl-text-color-secondary;
+  padding: 1px $gl-padding-4;
+  cursor: pointer;
+  border: 1px solid $border-white-normal;
+  border-radius: $border-radius-default;
+  margin-left: 5px;
+  font-size: 12px;
+  line-height: $gl-font-size;
+  outline: none;
+
+  &.open {
+    background-color: darken($gray-light, 10%);
+    box-shadow: inset 0 0 2px rgba($black, 0.2);
+  }
+
+  &:hover {
+    background-color: darken($gray-light, 10%);
+    text-decoration: none;
+  }
+}
+
 .commit.flex-list {
   display: flex;
 }

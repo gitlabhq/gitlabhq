@@ -14,7 +14,7 @@ import {
   convertObjectPropsToCamelCase,
 } from '~/lib/utils/common_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
-import { ListType } from '../constants';
+import { ListType, flashAnimationDuration } from '../constants';
 import eventHub from '../eventhub';
 import ListAssignee from '../models/assignee';
 import ListLabel from '../models/label';
@@ -106,6 +106,11 @@ const boardsStore = {
     list
       .save()
       .then(() => {
+        list.highlighted = true;
+        setTimeout(() => {
+          list.highlighted = false;
+        }, flashAnimationDuration);
+
         // Remove any new issues from the backlog
         // as they will be visible in the new list
         list.issues.forEach(backlogList.removeIssue.bind(backlogList));

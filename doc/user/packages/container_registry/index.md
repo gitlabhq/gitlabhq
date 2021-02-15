@@ -144,7 +144,7 @@ Before you can build and push images by using GitLab CI/CD, you must authenticat
 
 To use CI/CD to authenticate, you can use:
 
-- The `CI_REGISTRY_USER` variable.
+- The `CI_REGISTRY_USER` CI/CD variable.
 
   This variable has read-write access to the Container Registry and is valid for
   one job only. Its password is also automatically created and assigned to `CI_REGISTRY_PASSWORD`.
@@ -209,7 +209,7 @@ build:
     - docker push $CI_REGISTRY/group/project/image:latest
 ```
 
-You can also make use of [other variables](../../../ci/variables/README.md) to avoid hard-coding:
+You can also make use of [other CI/CD variables](../../../ci/variables/README.md) to avoid hard-coding:
 
 ```yaml
 build:
@@ -382,7 +382,7 @@ The following example defines two stages: `build`, and `clean`. The
 `build_image` job builds the Docker image for the branch, and the
 `delete_image` job deletes it. The `reg` executable is downloaded and used to
 remove the image matching the `$CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG`
-[environment variable](../../../ci/variables/predefined_variables.md).
+[predefined CI/CD variable](../../../ci/variables/predefined_variables.md).
 
 To use this example, change the `IMAGE_TAG` variable to match your needs:
 

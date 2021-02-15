@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 
 import { listObj } from 'jest/boards/mock_data';
@@ -64,6 +65,18 @@ describe('Board Column Component', () => {
       createComponent({ collapsed: true });
 
       expect(isCollapsed()).toBe(true);
+    });
+  });
+
+  describe('highlighting', () => {
+    it('scrolls to column when highlighted', async () => {
+      createComponent();
+
+      store.state.highlightedLists.push(listObj.id);
+
+      await nextTick();
+
+      expect(wrapper.element.scrollIntoView).toHaveBeenCalled();
     });
   });
 });

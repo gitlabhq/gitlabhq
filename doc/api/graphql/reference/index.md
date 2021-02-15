@@ -2807,6 +2807,7 @@ Information about pagination in a connection..
 | `upstream` | Pipeline | Pipeline that triggered the pipeline. |
 | `user` | User | Pipeline user. |
 | `userPermissions` | PipelinePermissions! | Permissions for the current user on the resource |
+| `warnings` | Boolean! | Indicates if a pipeline has warnings. |
 
 ### PipelineAnalytics
 

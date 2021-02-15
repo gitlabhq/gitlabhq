@@ -34,6 +34,8 @@ export const LIST = 'list';
 
 export const NOT_FILTER = 'not[';
 
+export const flashAnimationDuration = 2000;
+
 export default {
   BoardType,
   ListType,

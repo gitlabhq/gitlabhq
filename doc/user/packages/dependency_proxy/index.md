@@ -96,17 +96,17 @@ You can authenticate using:
 
 Runners log in to the Dependency Proxy automatically. To pull through
 the Dependency Proxy, use the `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`
-environment variable:
+[predefined CI/CD variable](../../../ci/variables/predefined_variables.md):
 
 ```yaml
 # .gitlab-ci.yml
 image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/node:latest
 ```
 
-There are other additional predefined environment variables you can also use:
+There are other additional predefined CI/CD variables you can also use:
 
-- `CI_DEPENDENCY_PROXY_USER`: A CI user for logging in to the Dependency Proxy.
-- `CI_DEPENDENCY_PROXY_PASSWORD`: A CI password for logging in to the Dependency Proxy.
+- `CI_DEPENDENCY_PROXY_USER`: A CI/CD user for logging in to the Dependency Proxy.
+- `CI_DEPENDENCY_PROXY_PASSWORD`: A CI/CD password for logging in to the Dependency Proxy.
 - `CI_DEPENDENCY_PROXY_SERVER`: The server for logging in to the Dependency Proxy.
 - `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`: The image prefix for pulling images through the Dependency Proxy.
 
@@ -119,7 +119,7 @@ Proxy manually without including the port:
 docker pull gitlab.example.com:443/my-group/dependency_proxy/containers/alpine:latest
 ```
 
-You can also use [custom environment variables](../../../ci/variables/README.md#custom-cicd-variables) to store and access your personal access token or other valid credentials.
+You can also use [custom CI/CD variables](../../../ci/variables/README.md#custom-cicd-variables) to store and access your personal access token or other valid credentials.
 
 ### Store a Docker image in Dependency Proxy cache
 

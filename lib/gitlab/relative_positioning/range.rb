@@ -2,8 +2,6 @@
 
 module Gitlab
   module RelativePositioning
-    IllegalRange = Class.new(ArgumentError)
-
     class Range
       attr_reader :lhs, :rhs
 
@@ -31,18 +29,6 @@ module Gitlab
 
       def ==(other)
         other.is_a?(RelativePositioning::Range) && lhs == other.lhs && rhs == other.rhs
-      end
-    end
-
-    def self.range(lhs, rhs)
-      if lhs && rhs
-        ClosedRange.new(lhs, rhs)
-      elsif lhs
-        StartingFrom.new(lhs)
-      elsif rhs
-        EndingAt.new(rhs)
-      else
-        raise IllegalRange, 'One of rhs or lhs must be provided' unless lhs && rhs
       end
     end
 

@@ -7525,7 +7525,19 @@ msgstr ""
 msgid "ComplianceFrameworks|All"
 msgstr ""
 
+msgid "ComplianceFrameworks|Combines with the CI configuration at runtime."
+msgstr ""
+
+msgid "ComplianceFrameworks|Compliance pipeline configuration location (optional)"
+msgstr ""
+
+msgid "ComplianceFrameworks|Could not find this configuration location, please try a different location"
+msgstr ""
+
 msgid "ComplianceFrameworks|Error fetching compliance frameworks data. Please refresh the page"
+msgstr ""
+
+msgid "ComplianceFrameworks|Invalid format: it should follow the format [PATH].y(a)ml@[GROUP]/[PROJECT]"
 msgstr ""
 
 msgid "ComplianceFrameworks|Once you have created a compliance framework it will appear here."
@@ -7541,6 +7553,9 @@ msgid "ComplianceFrameworks|Unable to save this compliance framework. Please try
 msgstr ""
 
 msgid "ComplianceFrameworks|Use %{codeStart}::%{codeEnd} to create a %{linkStart}scoped set%{linkEnd} (eg. %{codeStart}SOX::AWS%{codeEnd})"
+msgstr ""
+
+msgid "ComplianceFrameworks|e.g. include-gitlab.ci.yml@group-name/project-name"
 msgstr ""
 
 msgid "ComplianceFramework|GDPR"
@@ -24235,6 +24250,9 @@ msgid "Receive alerts from manually configured Prometheus servers."
 msgstr ""
 
 msgid "Receive notifications about your own activity"
+msgstr ""
+
+msgid "Receive product marketing emails"
 msgstr ""
 
 msgid "Recent"

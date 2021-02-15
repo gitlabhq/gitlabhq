@@ -199,7 +199,7 @@ Then, you can run `npm publish` either locally or by using GitLab CI/CD.
   NPM_TOKEN=<your_token> npm publish
   ```
 
-- **GitLab CI/CD:** Set an `NPM_TOKEN` [variable](../../../ci/variables/README.md)
+- **GitLab CI/CD:** Set an `NPM_TOKEN` [CI/CD variable](../../../ci/variables/README.md)
   under your project's **Settings > CI/CD > Variables**.
 
 ## Package naming convention
@@ -450,7 +450,7 @@ And the `.npmrc` file should look like:
 
 ### `npm install` returns `Error: Failed to replace env in config: ${npm_TOKEN}`
 
-You do not need a token to run `npm install` unless your project is private. The token is only required to publish. If the `.npmrc` file was checked in with a reference to `$npm_TOKEN`, you can remove it. If you prefer to leave the reference in, you must set a value prior to running `npm install` or set the value by using [GitLab environment variables](../../../ci/variables/README.md):
+You do not need a token to run `npm install` unless your project is private. The token is only required to publish. If the `.npmrc` file was checked in with a reference to `$npm_TOKEN`, you can remove it. If you prefer to leave the reference in, you must set a value prior to running `npm install` or set the value by using [GitLab CI/CD variables](../../../ci/variables/README.md):
 
 ```shell
 NPM_TOKEN=<your_token> npm install

@@ -84,9 +84,9 @@ This example configures the pipeline with a single job, `publish`, which runs `s
 
 The default `before_script` generates a temporary `.npmrc` that is used to authenticate to the Package Registry during the `publish` job.
 
-## Set up environment variables
+## Set up CI/CD variables
 
-As part of publishing a package, semantic-release increases the version number in `package.json`. For semantic-release to commit this change and push it back to GitLab, the pipeline requires a custom environment variable named `GITLAB_TOKEN`. To create this variable:
+As part of publishing a package, semantic-release increases the version number in `package.json`. For semantic-release to commit this change and push it back to GitLab, the pipeline requires a custom CI/CD variable named `GITLAB_TOKEN`. To create this variable:
 
 1. Navigate to **Project > Settings > Access Tokens**.
 1. Give the token a name, and select the `api` scope.

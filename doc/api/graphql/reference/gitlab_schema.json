@@ -54399,6 +54399,24 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "warnings",
+              "description": "Indicates if a pipeline has warnings.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
@@ -58805,6 +58823,16 @@
                     }
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "lastTestReportState",
+                  "description": "The state of latest requirement test report.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "TestReportState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
                 }
               ],
               "type": {
@@ -58906,6 +58934,16 @@
                         "ofType": null
                       }
                     }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "lastTestReportState",
+                  "description": "The state of latest requirement test report.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "TestReportState",
+                    "ofType": null
                   },
                   "defaultValue": null
                 },

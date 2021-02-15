@@ -77,7 +77,7 @@ module Gitlab
       private
 
       def version
-        if Feature.enabled?(:improved_merge_diff_highlighting, diffable.project)
+        if Feature.enabled?(:improved_merge_diff_highlighting, diffable.project, default_enabled: :yaml)
           NEXT_VERSION
         else
           VERSION

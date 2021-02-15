@@ -42,6 +42,7 @@ export default class Profile {
     $('#user_notification_email').on('select2-selecting', (event) => {
       setTimeout(this.submitForm.bind(event.currentTarget));
     });
+    $('#user_email_opted_in').on('change', this.submitForm);
     $('#user_notified_of_own_activity').on('change', this.submitForm);
     this.form.on('submit', this.onSubmitForm);
   }

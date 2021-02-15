@@ -31,8 +31,11 @@ export default {
     },
   },
   computed: {
-    ...mapState(['filterParams']),
+    ...mapState(['filterParams', 'highlightedLists']),
     ...mapGetters(['getIssuesByList']),
+    highlighted() {
+      return this.highlightedLists.includes(this.list.id);
+    },
     listIssues() {
       return this.getIssuesByList(this.list.id);
     },
@@ -46,6 +49,16 @@ export default {
         this.fetchIssuesForList({ listId: this.list.id });
       },
       deep: true,
+      immediate: true,
+    },
+    highlighted: {
+      handler(highlighted) {
+        if (highlighted) {
+          this.$nextTick(() => {
+            this.$el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          });
+        }
+      },
       immediate: true,
     },
   },
@@ -68,6 +81,7 @@ export default {
   >
     <div
       class="board-inner gl-display-flex gl-flex-direction-column gl-relative gl-h-full gl-rounded-base"
+      :class="{ 'board-column-highlighted': highlighted }"
     >
       <board-list-header :can-admin-list="canAdminList" :list="list" :disabled="disabled" />
       <board-list

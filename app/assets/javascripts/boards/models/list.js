@@ -44,6 +44,7 @@ class List {
     this.isExpandable = Boolean(typeInfo.isExpandable);
     this.isExpanded = !obj.collapsed;
     this.page = 1;
+    this.highlighted = obj.highlighted;
     this.loading = true;
     this.loadingMore = false;
     this.issues = obj.issues || [];

@@ -31,7 +31,7 @@ module Gitlab
         # Skip inline diff if empty line was replaced with content
         return if old_line == ""
 
-        if Feature.enabled?(:improved_merge_diff_highlighting, project)
+        if Feature.enabled?(:improved_merge_diff_highlighting, project, default_enabled: :yaml)
           CharDiff.new(old_line, new_line).changed_ranges(offset: offset)
         else
           deprecated_diff

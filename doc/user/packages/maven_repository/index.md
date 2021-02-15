@@ -732,7 +732,7 @@ You can create a new package each time the `master` branch is updated.
    ```
 
 1. Make sure your `pom.xml` file includes the following.
-   You can either let Maven use the CI environment variables, as shown in this example,
+   You can either let Maven use the [predefined CI/CD variables](../../../ci/variables/predefined_variables.md), as shown in this example,
    or you can hard code your server's hostname and project's ID.
 
    ```xml
@@ -771,7 +771,7 @@ The next time the `deploy` job runs, it copies `ci_settings.xml` to the
 user's home location. In this example:
 
 - The user is `root`, because the job runs in a Docker container.
-- Maven uses the configured CI [environment variables](../../../ci/variables/README.md#predefined-cicd-variables).
+- Maven uses the configured CI/CD variables.
 
 ### Create Maven packages with GitLab CI/CD by using Gradle
 

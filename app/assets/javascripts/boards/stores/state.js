@@ -15,6 +15,7 @@ export default () => ({
   filterParams: {},
   boardConfig: {},
   labels: [],
+  highlightedLists: [],
   selectedBoardItems: [],
   groupProjects: [],
   groupProjectsFlags: {

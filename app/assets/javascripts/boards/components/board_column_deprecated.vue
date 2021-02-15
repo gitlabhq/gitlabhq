@@ -54,6 +54,16 @@ export default {
       },
       deep: true,
     },
+    'list.highlighted': {
+      handler(highlighted) {
+        if (highlighted) {
+          this.$nextTick(() => {
+            this.$el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          });
+        }
+      },
+      immediate: true,
+    },
   },
   mounted() {
     const instance = this;
@@ -98,6 +108,7 @@ export default {
   >
     <div
       class="board-inner gl-display-flex gl-flex-direction-column gl-relative gl-h-full gl-rounded-base"
+      :class="{ 'board-column-highlighted': list.highlighted }"
     >
       <board-list-header :can-admin-list="canAdminList" :list="list" :disabled="disabled" />
       <board-list ref="board-list" :disabled="disabled" :issues="listIssues" :list="list" />

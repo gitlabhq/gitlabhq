@@ -28,6 +28,9 @@ export default {
   },
 
   getListByLabelId: (state) => (labelId) => {
+    if (!labelId) {
+      return null;
+    }
     return find(state.boardLists, (l) => l.label?.id === labelId);
   },
 
