@@ -15260,6 +15260,11 @@ type MergeRequest implements CurrentUserTodos & Noteable {
   hasCi: Boolean!
 
   """
+  Indicates if the source branch has any security reports.
+  """
+  hasSecurityReports: Boolean!
+
+  """
   The pipeline running on the branch HEAD of the merge request.
   """
   headPipeline: Pipeline

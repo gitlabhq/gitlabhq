@@ -256,8 +256,8 @@ To create a custom ruleset:
 1. Create a custom ruleset file named `sast-ruleset.toml` in the `.gitlab` directory.
 1. In the `sast-ruleset.toml` file, do one of the following:
 
-   - Disable predefined rules belonging to SAST analyzers. In this example, the disabled rules
-     belong to `eslint` and `sobelow` and have the corresponding identifiers `type` and `value`:
+   - Disable predefined rules belonging to SAST analyzers. In this example, the three disabled rules
+     belong to `eslint` and `sobelow` by matching the corresponding identifiers' `type` and `value`:
 
      ```toml
      [eslint]
@@ -266,6 +266,12 @@ To create a custom ruleset:
          [eslint.ruleset.identifier]
            type = "eslint_rule_id"
            value = "security/detect-object-injection"
+
+       [[eslint.ruleset]]
+         disable = true
+         [eslint.ruleset.identifier]
+           type = "cwe"
+           value = "185"
 
      [sobelow]
        [[sobelow.ruleset]]

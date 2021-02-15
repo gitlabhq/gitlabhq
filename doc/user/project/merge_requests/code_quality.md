@@ -73,7 +73,7 @@ GitLab 11.4 or earlier, you can view the deprecated job definitions in the
 [documentation archive](https://docs.gitlab.com/12.10/ee/user/project/merge_requests/code_quality.html#previous-job-definitions).
 
 - Using shared runners, the job should be configured For the [Docker-in-Docker workflow](../../../ci/docker/using_docker_build.md#use-the-docker-executor-with-the-docker-image-docker-in-docker).
-- Using private runners, there is an [alternative configuration](#set-up-a-private-runner-for-code-quality-without-docker-in-docker) recommended for running CodeQuality analysis more efficiently.
+- Using private runners, there is an [alternative configuration](#set-up-a-private-runner-for-code-quality-without-docker-in-docker) recommended for running Code Quality analysis more efficiently.
 
 In either configuration, the runner must have enough disk space to handle generated Code Quality files. For example on the [GitLab project](https://gitlab.com/gitlab-org/gitlab) the files are approximately 7 GB.
 
@@ -426,7 +426,7 @@ Here's [an example project](https://gitlab.com/jheimbuck_gl/jh_java_example_proj
 
 If you set the `CODE_QUALITY_IMAGE` to an image that is hosted in a
 Docker registry which uses a TLS certificate that is not trusted, such as
-a self-signed certificate, you will see errors like the one below:
+a self-signed certificate, you can see errors like the one below:
 
 ```shell
 $ docker pull --quiet "$CODE_QUALITY_IMAGE"
@@ -438,7 +438,7 @@ by putting the certificate inside of the `/etc/docker/certs.d`
 directory.
 
 This Docker daemon is exposed to the subsequent Code Quality Docker container in the
-[GitLab Code Quality](https://gitlab.com/gitlab-org/gitlab/-/blob/v13.8.3-ee/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml#L41)
+[GitLab Code Quality template](https://gitlab.com/gitlab-org/gitlab/-/blob/v13.8.3-ee/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml#L41)
 and should be to exposed any other containers in which you want to have
 your certificate configuration apply.
 
@@ -466,24 +466,24 @@ you can [mount a ConfigMap](https://docs.gitlab.com/runner/executors/kubernetes.
 
 1. Create a ConfigMap with the certificate:
 
-    ```shell
-    kubectl create configmap registry-crt --namespace gitlab-runner --from-file /etc/gitlab-runner/certs/gitlab.example.com.crt
-    ```
+   ```shell
+   kubectl create configmap registry-crt --namespace gitlab-runner --from-file /etc/gitlab-runner/certs/gitlab.example.com.crt
+   ```
 
 1. Update GitLab Runner `config.toml` to specify the ConfigMap:
 
-    ```toml
-    [[runners]]
-      ...
-      executor = "kubernetes"
-      [runners.kubernetes]
-        image = "alpine:3.12"
-        privileged = true
-        [[runners.kubernetes.volumes.config_map]]
-          name = "registry-crt"
-          mount_path = "/etc/docker/certs.d/gitlab.example.com/ca.crt"
-          sub_path = "gitlab.example.com.crt"
-    ```
+   ```toml
+   [[runners]]
+     ...
+     executor = "kubernetes"
+     [runners.kubernetes]
+       image = "alpine:3.12"
+       privileged = true
+       [[runners.kubernetes.volumes.config_map]]
+         name = "registry-crt"
+         mount_path = "/etc/docker/certs.d/gitlab.example.com/ca.crt"
+         sub_path = "gitlab.example.com.crt"
+   ```
 
 Replace `gitlab.example.com` with the actual domain of the registry.
 
@@ -504,7 +504,7 @@ This can be due to multiple reasons:
 - You just added the Code Quality job in your `.gitlab-ci.yml`. The report does not
   have anything to compare to yet, so no information can be displayed. It only displays
   after future merge requests have something to compare to.
-- Your pipeline is not set to run the code quality job on your default branch. If there is no report generated from the default branch, your MR branch reports will not have anything to compare to.
+- Your pipeline is not set to run the code quality job on your default branch. If there is no report generated from the default branch, your MR branch reports have nothing to compare to.
 - If no [degradation or error is detected](https://docs.codeclimate.com/docs/maintainability#section-checks),
   nothing is displayed.
 - The [`artifacts:expire_in`](../../../ci/yaml/README.md#artifactsexpire_in) CI/CD
@@ -525,7 +525,7 @@ To avoid confusion, configure only one job to generate a `gl-code-quality-report
 
 ### Rubocop errors
 
-When using Code Quality jobs on a **Ruby** project, you can encounter problems running Rubocop.
+When using Code Quality jobs on a Ruby project, you can encounter problems running Rubocop.
 For example, the following error can appear when using either a very recent or very old version
 of Ruby:
 
@@ -535,14 +535,15 @@ Unknown Ruby version 2.7 found in `.ruby-version`. (RuboCop::ValidationError)
 Supported versions: 2.1, 2.2, 2.3, 2.4, 2.5
 ```
 
-This is caused by the default version of **rubocop** used by the check engine not covering
+This is caused by the default version of Rubocop used by the check engine not covering
 support for the Ruby version in use.
-To use a custom version of **rubocop** that
+
+To use a custom version of Rubocop that
 [supports the version of Ruby used by the project](https://docs.rubocop.org/rubocop/compatibility.html#support-matrix),
 you can [override the configuration through a `.codeclimate.yml` file](https://docs.codeclimate.com/docs/rubocop#using-rubocops-newer-versions)
 created in the project repository.
 
-For example, to specify using **rubocop** release **0.67**:
+For example, to specify using Rubocop release **0.67**:
 
 ```yaml
 version: "2"

@@ -150,7 +150,7 @@ in merge requests. For more information, see
 > - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) in GitLab 13.2.
 > - Requires GitLab Runner 11.5 and above.
 
-The `codequality` report collects [CodeQuality issues](../../user/project/merge_requests/code_quality.md)
+The `codequality` report collects [Code Quality issues](../../user/project/merge_requests/code_quality.md)
 as artifacts.
 
 The collected Code Quality report uploads to GitLab as an artifact and is summarized in merge requests.
