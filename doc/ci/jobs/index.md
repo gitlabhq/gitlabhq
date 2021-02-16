@@ -139,6 +139,23 @@ usually want the first number to be the index and the second number to be the to
 [This regular expression](https://gitlab.com/gitlab-org/gitlab/blob/2f3dc314f42dbd79813e6251792853bc231e69dd/app/models/commit_status.rb#L99)
 evaluates the job names: `\d+[\s:\/\\]+\d+\s*`.
 
+### Improved job grouping
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52644) in GitLab 13.9.
+> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+> - It's enabled on GitLab.com.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](../../administration/feature_flags.md). **(FREE SELF)**
+
+Job grouping is evaluated with an improved regular expression to group jobs by name:
+
+- `([\b\s:]+((\[.*\])|(\d+[\s:\/\\]+\d+)))+\s*\z`.
+
+The new implementation removes one or more `: [...]`, `X Y`, `X/Y`, or `X\Y` sequences
+from the **end** of job names only.
+
+Matching substrings occuring at the beginning or in the middle of build names are
+no longer removed.
+
 ## Specifying variables when running manual jobs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30485) in GitLab 12.2.
@@ -150,7 +167,7 @@ additional variables. To access this page, click on the **name** of the manual j
 the pipeline view, *not* the play (**{play}**) button.
 
 This is useful when you want to alter the execution of a job that uses
-[custom environment variables](../variables/README.md#custom-cicd-variables).
+[custom CI/CD variables](../variables/README.md#custom-cicd-variables).
 Add a variable name (key) and value here to override the value defined in
 [the UI or `.gitlab-ci.yml`](../variables/README.md#custom-cicd-variables),
 for a single run of the manual job.

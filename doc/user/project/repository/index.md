@@ -242,13 +242,32 @@ Learn how to [clone a repository through the command line](../../../gitlab-basic
 
 Alternatively, clone directly into a code editor as documented below.
 
-### Clone to Apple Xcode
+### Clone and open in Apple Xcode
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45820) in GitLab 11.0.
 
 Projects that contain a `.xcodeproj` or `.xcworkspace` directory can now be cloned
-into Xcode using the new **Open in Xcode** button, located next to the Git URL
-used for cloning your project. The button is only shown on macOS.
+into Xcode on macOS. To do that:
+
+1. From the GitLab UI, go to the project's overview page.
+1. Click **Clone**.
+1. Select **Xcode**.
+
+The project will be cloned onto your computer in a folder of your choice and you'll
+be prompted to open in XCode.
+
+### Clone and open in Visual Studio Code
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220957) in GitLab 13.8.
+
+All projects can be cloned into Visual Studio Code. To do that:
+
+1. From the GitLab UI, go to the project's overview page.
+1. Click **Clone**.
+1. Select **VS Code**
+
+You'll be prompted to select a folder to clone the project into. When VS Code has
+successfully cloned your project, it will open the folder.
 
 ## Download Source Code
 

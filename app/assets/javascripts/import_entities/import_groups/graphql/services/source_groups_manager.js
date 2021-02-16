@@ -14,6 +14,12 @@ function generateGroupId(id) {
 }
 
 export class SourceGroupsManager {
+  static importMap = new Map();
+
+  static attachImportId(group, importId) {
+    SourceGroupsManager.importMap.set(importId, group.id);
+  }
+
   constructor({ client }) {
     this.client = client;
   }
@@ -34,6 +40,10 @@ export class SourceGroupsManager {
   updateById(id, fn) {
     const group = this.findById(id);
     this.update(group, fn);
+  }
+
+  findByImportId(importId) {
+    return this.findById(SourceGroupsManager.importMap.get(importId));
   }
 
   setImportStatus(group, status) {

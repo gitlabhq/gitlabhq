@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# WARNING: This finder does not check permissions!
+#
 # Arguments:
 #   params:
 #     project: Project model - Find deployments for this project
@@ -27,11 +29,13 @@ class DeploymentsFinder
   def execute
     items = init_collection
     items = by_updated_at(items)
+    items = by_finished_at(items)
     items = by_environment(items)
     items = by_status(items)
     items = preload_associations(items)
-    items = by_finished_between(items)
-    sort(items)
+    items = sort(items)
+
+    items
   end
 
   private
@@ -44,15 +48,20 @@ class DeploymentsFinder
     end
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def sort(items)
-    items.order(sort_params)
+    items.order(sort_params) # rubocop: disable CodeReuse/ActiveRecord
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_updated_at(items)
     items = items.updated_before(params[:updated_before]) if params[:updated_before].present?
     items = items.updated_after(params[:updated_after]) if params[:updated_after].present?
+
+    items
+  end
+
+  def by_finished_at(items)
+    items = items.finished_before(params[:finished_before]) if params[:finished_before].present?
+    items = items.finished_after(params[:finished_after]) if params[:finished_after].present?
 
     items
   end
@@ -63,12 +72,6 @@ class DeploymentsFinder
     else
       items
     end
-  end
-
-  def by_finished_between(items)
-    items = items.finished_between(params[:finished_after], params[:finished_before].presence) if params[:finished_after].present?
-
-    items
   end
 
   def by_status(items)

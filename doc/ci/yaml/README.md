@@ -396,7 +396,7 @@ include:
 ```
 
 For an example of how you can include these predefined variables, and their impact on CI jobs,
-see the following [CI variable demo](https://youtu.be/4XR8gw3Pkos).
+see the following [CI/CD variable demo](https://youtu.be/4XR8gw3Pkos).
 
 #### `include:local`
 
@@ -1217,8 +1217,8 @@ by using `&&` or `||`, and the [variable matching operators (`==`, `!=`, `=~` an
 Unlike variables in [`script`](../variables/README.md#syntax-of-cicd-variables-in-job-scripts)
 sections, variables in rules expressions are always formatted as `$VARIABLE`.
 
-`if:` clauses are evaluated based on the values of [predefined environment variables](../variables/predefined_variables.md)
-or [custom environment variables](../variables/README.md#custom-cicd-variables).
+`if:` clauses are evaluated based on the values of [predefined CI/CD variables](../variables/predefined_variables.md)
+or [custom CI/CD variables](../variables/README.md#custom-cicd-variables).
 
 For example:
 
@@ -1359,7 +1359,7 @@ if there is no `if:` statement that limits the job to branch or merge request pi
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34272) in GitLab 13.6.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/267192) in GitLab 13.7.
 
-Environment variables can be used in `rules:changes` expressions to determine when
+CI/CD variables can be used in `rules:changes` expressions to determine when
 to add jobs to a pipeline:
 
 ```yaml
@@ -2143,7 +2143,7 @@ build_job:
       artifacts: true
 ```
 
-Environment variables support for `project:`, `job:`, and `ref` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202093)
+CI/CD variable support for `project:`, `job:`, and `ref` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202093)
 in GitLab 13.3. [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235761) in GitLab 13.4.
 
 For example:
@@ -2711,7 +2711,7 @@ deploy as review app:
 
 The `deploy as review app` job is marked as a deployment to dynamically
 create the `review/$CI_COMMIT_REF_NAME` environment. `$CI_COMMIT_REF_NAME`
-is an [environment variable](../variables/README.md) set by the runner. The
+is a [CI/CD variable](../variables/README.md) set by the runner. The
 `$CI_ENVIRONMENT_SLUG` variable is based on the environment name, but suitable
 for inclusion in URLs. If the `deploy as review app` job runs in a branch named
 `pow`, this environment would be accessible with a URL like `https://review-pow.example.com/`.
@@ -2812,7 +2812,7 @@ URI-encoded `%2F`. A value made only of dots (`.`, `%2E`) is also forbidden.
 
 You can specify a [fallback cache key](#fallback-cache-key) to use if the specified `cache:key` is not found.
 
-#### Fallback cache key
+##### Fallback cache key
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1534) in GitLab Runner 13.4.
 
@@ -3577,7 +3577,7 @@ test:
 ```
 
 Every parallel job has a `CI_NODE_INDEX` and `CI_NODE_TOTAL`
-[environment variable](../variables/README.md#predefined-cicd-variables) set.
+[predefined CI/CD variable](../variables/README.md#predefined-cicd-variables) set.
 
 Different languages and test suites have different methods to enable parallelization.
 For example, use [Semaphore Test Boosters](https://github.com/renderedtext/test-boosters)
@@ -4207,10 +4207,10 @@ release-cli create --name "Release $CI_COMMIT_SHA" --description "Created using 
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33014) in GitLab 13.4.
 
-`secrets` indicates the [CI Secrets](../secrets/index.md) this job needs. It should be a hash,
-and the keys should be the names of the environment variables that are made available to the job.
+`secrets` indicates the [CI/CD Secrets](../secrets/index.md) this job needs. It should be a hash,
+and the keys should be the names of the variables that are made available to the job.
 The value of each secret is saved in a temporary file. This file's path is stored in these
-environment variables.
+variables.
 
 #### `secrets:vault` **(PREMIUM)**
 

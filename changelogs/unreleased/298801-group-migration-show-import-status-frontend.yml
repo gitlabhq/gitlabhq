@@ -1,0 +1,5 @@
+---
+title: Use realtime_changes endpoint for reporting group import status
+merge_request: 52796
+author:
+type: changed

@@ -28,6 +28,7 @@ const FAKE_ENDPOINTS = {
   status: '/fake_status_url',
   availableNamespaces: '/fake_available_namespaces',
   createBulkImport: '/fake_create_bulk_import',
+  jobs: '/fake_jobs',
 };
 
 describe('Bulk import resolvers', () => {
@@ -108,6 +109,11 @@ describe('Bulk import resolvers', () => {
               (r) => r.import_target.target_namespace === availableNamespacesFixture[0].full_path,
             ),
           ).toBe(true);
+        });
+
+        it('starts polling when request completes', async () => {
+          const [statusPoller] = StatusPoller.mock.instances;
+          expect(statusPoller.startPolling).toHaveBeenCalled();
         });
       });
 
@@ -215,23 +221,13 @@ describe('Bulk import resolvers', () => {
       });
 
       it('sets group status to STARTED when request completes', async () => {
-        axiosMockAdapter.onPost(FAKE_ENDPOINTS.createBulkImport).reply(httpStatus.OK);
+        axiosMockAdapter.onPost(FAKE_ENDPOINTS.createBulkImport).reply(httpStatus.OK, { id: 1 });
         await client.mutate({
           mutation: importGroupMutation,
           variables: { sourceGroupId: GROUP_ID },
         });
 
         expect(results[0].status).toBe(STATUSES.STARTED);
-      });
-
-      it('starts polling when request completes', async () => {
-        axiosMockAdapter.onPost(FAKE_ENDPOINTS.createBulkImport).reply(httpStatus.OK);
-        await client.mutate({
-          mutation: importGroupMutation,
-          variables: { sourceGroupId: GROUP_ID },
-        });
-        const [statusPoller] = StatusPoller.mock.instances;
-        expect(statusPoller.startPolling).toHaveBeenCalled();
       });
 
       it('resets status to NONE if request fails', async () => {

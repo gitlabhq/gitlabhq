@@ -135,12 +135,12 @@ In summary, with the above `.gitlab-ci.yml` we have achieved the following:
   job deploys our code to a staging server while the deployment
   is recorded in an environment named `staging`.
 
-#### Environment variables and runners
+#### CI/CD variables and runners
 
 Starting with GitLab 8.15, the environment name is exposed to the runner in
 two forms:
 
-- `$CI_ENVIRONMENT_NAME`. The name given in `.gitlab-ci.yml` (with any variables
+- `$CI_ENVIRONMENT_NAME`. The name given in `.gitlab-ci.yml` (with any CI/CD variables
   expanded).
 - `$CI_ENVIRONMENT_SLUG`. A "cleaned-up" version of the name, suitable for use in URLs,
   DNS, etc.
@@ -221,7 +221,7 @@ The assigned URL for the `review/your-branch-name` environment is [visible in th
 Note the following:
 
 - `stop_review` doesn't generate a dotenv report artifact, so it doesn't recognize the
-  `DYNAMIC_ENVIRONMENT_URL` variable. Therefore you shouldn't set `environment:url:` in the
+  `DYNAMIC_ENVIRONMENT_URL` environment variable. Therefore you shouldn't set `environment:url:` in the
   `stop_review` job.
 - If the environment URL isn't valid (for example, the URL is malformed), the system doesn't update
   the environment URL.
@@ -327,7 +327,7 @@ For more information, see [Where variables can be used](../variables/where_varia
 
 #### Example configuration
 
-Runners expose various [environment variables](../variables/README.md) when a job runs, so
+Runners expose various [predefined CI/CD variables](../variables/predefined_variables.md) when a job runs, so
 you can use them as environment names.
 
 In the following example, the job deploys to all branches except `master`:
@@ -825,7 +825,7 @@ build with the specified environment runs. Newer deployments can also
 
 You may want to specify an environment keyword to
 [protect builds from unauthorized access](protected_environments.md), or to get
-access to [scoped variables](#scoping-environments-with-specs). In these cases,
+access to [environment-scoped variables](#scoping-environments-with-specs). In these cases,
 you can use the `action: prepare` keyword to ensure deployments aren't created,
 and no builds are canceled:
 
@@ -846,7 +846,7 @@ build:
 
 As documented in [Configuring dynamic environments](#configuring-dynamic-environments), you can
 prepend environment name with a word, followed by a `/`, and finally the branch
-name, which is automatically defined by the `CI_COMMIT_REF_NAME` variable.
+name, which is automatically defined by the `CI_COMMIT_REF_NAME` predefined CI/CD variable.
 
 In short, environments that are named like `type/foo` are all presented under the same
 group, named `type`.
@@ -1009,9 +1009,9 @@ fetch = +refs/environments/*:refs/remotes/origin/environments/*
 ### Scoping environments with specs
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2112) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
-> - [Scoping for environment variables was moved to Free](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30779) in GitLab 12.2.
+> - [Environment scoping for CI/CD variables was moved to all tiers](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30779) in GitLab 12.2.
 
-You can limit the environment scope of a variable by
+You can limit the environment scope of a CI/CD variable by
 defining which environments it can be available for.
 
 Wildcards can be used and the default environment scope is `*`. This means that
@@ -1061,7 +1061,7 @@ environment's operational health.
 
 ## Limitations
 
-In the `environment: name`, you are limited to only the [predefined environment variables](../variables/predefined_variables.md).
+In the `environment: name`, you are limited to only the [predefined CI/CD variables](../variables/predefined_variables.md).
 Re-using variables defined inside `script` as part of the environment name doesn't work.
 
 ## Further reading

@@ -12,7 +12,7 @@ class Label < ApplicationRecord
 
   cache_markdown_field :description, pipeline: :single_line
 
-  DEFAULT_COLOR = '#428BCA'
+  DEFAULT_COLOR = '#6699cc'
 
   default_value_for :color, DEFAULT_COLOR
 

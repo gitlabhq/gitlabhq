@@ -35,7 +35,7 @@ The following images and packages are supported.
 | Docker           | 11.11+         |
 
 For a list of planned additions, view the
-[direction page](https://about.gitlab.com/direction/package/dependency_proxy/#top-vision-items).
+[direction page](https://about.gitlab.com/direction/package/#dependency-proxy).
 
 ## Enable the Dependency Proxy
 

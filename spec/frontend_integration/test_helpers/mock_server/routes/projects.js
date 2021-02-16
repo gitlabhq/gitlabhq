@@ -20,4 +20,22 @@ export default (server) => {
 
     return result.models;
   });
+
+  server.get('/api/v4/projects/:id/merge_requests/:mid', (schema, request) => {
+    const mr = schema.mergeRequests.findBy({ iid: request.params.mid });
+
+    return mr.attrs;
+  });
+
+  server.get('/api/v4/projects/:id/merge_requests/:mid/versions', (schema, request) => {
+    const versions = schema.mergeRequestVersions.where({ merge_request_id: request.params.mid });
+
+    return versions.models;
+  });
+
+  server.get('/api/v4/projects/:id/merge_requests/:mid/changes', (schema, request) => {
+    const mrWithChanges = schema.mergeRequestChanges.findBy({ iid: request.params.mid });
+
+    return mrWithChanges.attrs;
+  });
 };

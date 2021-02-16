@@ -120,7 +120,7 @@ cat ~/.ssh/id_rsa
 ```
 
 Now, let's add it to your GitLab project as a [CI/CD variable](../../variables/README.md).
-Variables are user-defined variables and are stored out of `.gitlab-ci.yml`, for security purposes.
+Project CI/CD variables are user-defined variables and are stored out of `.gitlab-ci.yml`, for security purposes.
 They can be added per project by navigating to the project's **Settings** > **CI/CD**.
 
 To the field **KEY**, add the name `SSH_PRIVATE_KEY`, and to the **VALUE** field, paste the private key you've copied earlier.
@@ -546,9 +546,9 @@ services:
 
 If you wish to test your app with different PHP versions and [database management systems](../../services/index.md), you can define different `image` and `services` keywords for each test job.
 
-#### Variables
+#### CI/CD variables
 
-GitLab CI/CD allows us to use [environment variables](../../yaml/README.md#variables) in our jobs.
+GitLab CI/CD allows us to use [CI/CD variables](../../yaml/README.md#variables) in our jobs.
 We defined MySQL as our database management system, which comes with a superuser root created by default.
 
 So we should adjust the configuration of MySQL instance by defining `MYSQL_DATABASE` variable as our database name and `MYSQL_ROOT_PASSWORD` variable as the password of `root`.
@@ -567,7 +567,7 @@ variables:
 
 #### Unit Test as the first job
 
-We defined the required shell scripts as an array of the [script](../../yaml/README.md#script) variable to be executed when running `unit_test` job.
+We defined the required shell scripts as an array of the [script](../../yaml/README.md#script) keyword to be executed when running `unit_test` job.
 
 These scripts are some Artisan commands to prepare the Laravel, and, at the end of the script, we'll run the tests by `PHPUnit`.
 

@@ -17,14 +17,14 @@
       .js-notification-toggle-btns
         %div{ class: ("btn-group" if notification_setting.custom?) }
           - if notification_setting.custom?
-            %button.dropdown-new.btn.btn-default.has-tooltip.notifications-btn#notifications-button{ type: "button", title: button_title, class: "#{btn_class}", "aria-label" => button_title, data: { container: "body", placement: 'top', toggle: "modal", target: "#" + notifications_menu_identifier("modal", notification_setting), display: 'static' } }
+            %button.dropdown-new.btn.gl-button.btn-default.has-tooltip.notifications-btn#notifications-button{ type: "button", title: button_title, class: "#{btn_class}", "aria-label" => button_title, data: { container: "body", placement: 'top', toggle: "modal", target: "#" + notifications_menu_identifier("modal", notification_setting), display: 'static' } }
               = notification_setting_icon(notification_setting)
               %span.js-notification-loading.fa.hidden
-            %button.btn.dropdown-toggle{ data: { toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" }, class: "#{btn_class}" }
+            %button.btn.gl-button.btn-default.dropdown-toggle{ data: { toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" }, class: "#{btn_class}" }
               = sprite_icon("chevron-down", css_class: "icon mr-0")
               .sr-only Toggle dropdown
           - else
-            %button.dropdown-new.btn.btn-default.has-tooltip.notifications-btn#notifications-button{ type: "button", title: button_title, class: "#{btn_class}", "aria-label" => button_title, data: { container: "body", placement: 'top', toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
+            %button.dropdown-new.btn.gl-button.btn-default.has-tooltip.notifications-btn#notifications-button{ type: "button", title: button_title, class: "#{btn_class}", "aria-label" => button_title, data: { container: "body", placement: 'top', toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
               = notification_setting_icon(notification_setting)
               %span.js-notification-loading.fa.hidden
               = sprite_icon("chevron-down", css_class: "icon")

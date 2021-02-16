@@ -37,9 +37,8 @@ class Import::BulkImportsController < ApplicationController
   end
 
   def create
-    BulkImportService.new(current_user, create_params, credentials).execute
-
-    render json: :ok
+    result = BulkImportService.new(current_user, create_params, credentials).execute
+    render json: result.to_json(only: [:id])
   end
 
   def realtime_changes

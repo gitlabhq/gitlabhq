@@ -45,7 +45,8 @@ module Ci
       return unless pipeline
       raise Gitlab::Access::AccessDeniedError unless can?(current_user, :read_build, pipeline)
 
-      jobs_by_type(pipeline, type).latest
+      jobs_scope = jobs_by_type(pipeline, type)
+      params[:include_retried] ? jobs_scope : jobs_scope.latest
     end
 
     def filter_by_scope(builds)

@@ -4,7 +4,6 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { throttle, isEmpty } from 'lodash';
 import { mapGetters, mapState, mapActions } from 'vuex';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
-import { polyfillSticky } from '~/lib/utils/sticky';
 import { sprintf } from '~/locale';
 import CiHeader from '~/vue_shared/components/header_ci_component.vue';
 import delayedJobMixin from '../mixins/delayed_job_mixin';
@@ -135,14 +134,6 @@ export default {
           this.fetchJobsForStage(defaultStage);
         }
       }
-
-      if (newVal.archived) {
-        this.$nextTick(() => {
-          if (this.$refs.sticky) {
-            polyfillSticky(this.$refs.sticky);
-          }
-        });
-      }
     },
   },
   created() {
@@ -265,7 +256,6 @@ export default {
 
         <div
           v-if="job.archived"
-          ref="sticky"
           class="gl-mt-3 archived-job"
           :class="{ 'sticky-top border-bottom-0': hasTrace }"
           data-testid="archived-job"

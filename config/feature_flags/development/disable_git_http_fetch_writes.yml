@@ -1,0 +1,8 @@
+---
+name: disable_git_http_fetch_writes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54322
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/883
+milestone: '13.9'
+type: development
+group: group::source code
+default_enabled: false

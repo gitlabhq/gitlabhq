@@ -109,7 +109,7 @@ The ECS task definition can be:
 
 After you have these prerequisites ready, follow these steps:
 
-1. Make sure your AWS credentials are set up as environment variables for your
+1. Make sure your AWS credentials are set up as CI/CD variables for your
    project. You can follow [the steps above](#run-aws-commands-from-gitlab-cicd) to complete this setup.
 1. Add these variables to your project's `.gitlab-ci.yml` file, or in the project's
    [CI/CD settings](../variables/README.md#create-a-custom-variable-in-the-ui):
@@ -242,7 +242,7 @@ pass three JSON input objects, based on existing templates:
    have two ways to pass in these JSON objects:
 
    - They can be three actual files located in your project. You must specify their path relative to
-     your project root in your `.gitlab-ci.yml` file, using the following variables. For example, if
+     your project root in your `.gitlab-ci.yml` file, using the following CI/CD variables. For example, if
      your files are in a `<project_root>/aws` folder:
 
      ```yaml
@@ -286,7 +286,7 @@ When running your project pipeline at this point:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216008) in GitLab 13.6.
 
 To leverage [Auto DevOps](../../topics/autodevops/index.md) for your project when deploying to
-AWS EC2, first you must define [your AWS credentials as environment variables](#run-aws-commands-from-gitlab-cicd).
+AWS EC2, first you must define [your AWS credentials as CI/CD variables](#run-aws-commands-from-gitlab-cicd).
 
 Next, define a job for the `build` stage. To do so, you must reference the
 `Auto-DevOps.gitlab-ci.yml` template and include a job named `build_artifact` in your

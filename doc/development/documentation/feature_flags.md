@@ -265,7 +265,7 @@ It is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](<replace with path to>/administration/feature_flags.md)
 can opt to disable it.
 
-To enabled it:
+To enable it:
 
 ```ruby
 # For the instance

@@ -30,7 +30,7 @@ You must replace the `vault.example.com` URL below with the URL of your Vault se
 
 ## How it works
 
-Each job has JSON Web Token (JWT) provided as environment variable named `CI_JOB_JWT`. This JWT can be used to authenticate with Vault using the [JWT Auth](https://www.vaultproject.io/docs/auth/jwt#jwt-authentication) method.
+Each job has JSON Web Token (JWT) provided as CI/CD variable named `CI_JOB_JWT`. This JWT can be used to authenticate with Vault using the [JWT Auth](https://www.vaultproject.io/docs/auth/jwt#jwt-authentication) method.
 
 The JWT's payload looks like this:
 
@@ -187,7 +187,7 @@ read_secrets:
     - echo $CI_COMMIT_REF_NAME
     # and is this ref protected
     - echo $CI_COMMIT_REF_PROTECTED
-    # Vault's address can be provided here or as CI variable
+    # Vault's address can be provided here or as CI/CD variable
     - export VAULT_ADDR=http://vault.example.com:8200
     # Authenticate and get token. Token expiry time and other properties can be configured
     # when configuring JWT Auth - https://www.vaultproject.io/api/auth/jwt#parameters-1
@@ -211,7 +211,7 @@ read_secrets:
     - echo $CI_COMMIT_REF_NAME
     # and is this ref protected
     - echo $CI_COMMIT_REF_PROTECTED
-    # Vault's address can be provided here or as CI variable
+    # Vault's address can be provided here or as CI/CD variable
     - export VAULT_ADDR=http://vault.example.com:8200
     # Authenticate and get token. Token expiry time and other properties can be configured
     # when configuring JWT Auth - https://www.vaultproject.io/api/auth/jwt#parameters-1

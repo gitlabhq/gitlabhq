@@ -12,7 +12,7 @@ RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :co
   let!(:user) { create(:user, developer_projects: [project], email: commit.author_email) }
   let!(:pipeline) { create(:ci_pipeline, project: project, sha: commit.id, user: user) }
   let!(:pipeline_without_author) { create(:ci_pipeline, project: project, sha: commit_without_author.id) }
-  let!(:pipeline_without_commit) { create(:ci_pipeline, project: project, sha: '0000') }
+  let!(:pipeline_without_commit) { create(:ci_pipeline, status: :success, project: project, sha: '0000') }
 
   render_views
 

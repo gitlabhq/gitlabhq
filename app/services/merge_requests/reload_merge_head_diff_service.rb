@@ -24,7 +24,7 @@ module MergeRequests
     attr_reader :merge_request
 
     def enabled?
-      Feature.enabled?(:default_merge_ref_for_diffs, merge_request.project)
+      Feature.enabled?(:default_merge_ref_for_diffs, merge_request.project, default_enabled: :yaml)
     end
 
     def recreate_merge_head_diff

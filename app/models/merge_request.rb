@@ -921,6 +921,10 @@ class MergeRequest < ApplicationRecord
     closed? && !source_project_missing? && source_branch_exists?
   end
 
+  def can_be_closed?
+    opened?
+  end
+
   def ensure_merge_request_diff
     merge_request_diff.persisted? || create_merge_request_diff
   end

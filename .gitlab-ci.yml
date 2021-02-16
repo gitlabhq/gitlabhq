@@ -111,4 +111,5 @@ include:
   - local: .gitlab/ci/dast.gitlab-ci.yml
   - local: .gitlab/ci/workhorse.gitlab-ci.yml
   - local: .gitlab/ci/graphql.gitlab-ci.yml
-  - local: .gitlab/ci/verify-lockfile.gitlab-ci.yml
+  - project: 'gitlab-org/frontend/untamper-my-lockfile'
+    file: '.gitlab-ci-template.yml'

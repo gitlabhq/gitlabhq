@@ -9,7 +9,7 @@ RSpec.describe Ci::JobsFinder, '#execute' do
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:job_1) { create(:ci_build) }
   let_it_be(:job_2) { create(:ci_build, :running) }
-  let_it_be(:job_3) { create(:ci_build, :success, pipeline: pipeline) }
+  let_it_be(:job_3) { create(:ci_build, :success, pipeline: pipeline, name: 'build') }
 
   let(:params) { {} }
 
@@ -92,6 +92,37 @@ RSpec.describe Ci::JobsFinder, '#execute' do
 
       it 'returns no jobs' do
         expect(subject).to be_empty
+      end
+    end
+  end
+
+  context 'when pipeline is present' do
+    before_all do
+      project.add_maintainer(user)
+      job_3.update!(retried: true)
+    end
+
+    let_it_be(:job_4) { create(:ci_build, :success, pipeline: pipeline, name: 'build') }
+
+    subject { described_class.new(current_user: user, pipeline: pipeline, params: params).execute }
+
+    it 'does not return retried jobs by default' do
+      expect(subject).to match_array([job_4])
+    end
+
+    context 'when include_retried is false' do
+      let(:params) { { include_retried: false } }
+
+      it 'does not return retried jobs' do
+        expect(subject).to match_array([job_4])
+      end
+    end
+
+    context 'when include_retried is true' do
+      let(:params) { { include_retried: true } }
+
+      it 'returns retried jobs' do
+        expect(subject).to match_array([job_3, job_4])
       end
     end
   end

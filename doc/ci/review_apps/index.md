@@ -58,7 +58,7 @@ The process of configuring Review Apps is as follows:
 
 1. Set up the infrastructure to host and deploy the Review Apps (check the [examples](#review-apps-examples) below).
 1. [Install](https://docs.gitlab.com/runner/install/) and [configure](https://docs.gitlab.com/runner/commands/) a runner to do deployment.
-1. Set up a job in `.gitlab-ci.yml` that uses the [predefined CI environment variable](../variables/README.md) `${CI_COMMIT_REF_NAME}`
+1. Set up a job in `.gitlab-ci.yml` that uses the [predefined CI/CD variable](../variables/README.md) `${CI_COMMIT_REF_NAME}`
    to create dynamic environments and restrict it to run only on branches.
    Alternatively, you can get a YML template for this job by [enabling review apps](#enable-review-apps-button) for your project.
 1. Optionally, set a job that [manually stops](../environments/index.md#stopping-an-environment) the Review Apps.
@@ -243,7 +243,7 @@ looks for a project with code hosted in a project on GitLab.com:
 </script>
 ```
 
-Ideally, you should use [environment variables](../variables/predefined_variables.md)
+Ideally, you should use [CI/CD variables](../variables/predefined_variables.md)
 to replace those values at runtime when each review app is created:
 
 - `data-project-id` is the project ID, which can be found by the `CI_PROJECT_ID`

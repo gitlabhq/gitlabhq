@@ -194,6 +194,8 @@ update-rails-cache:
   extends:
     - update-setup-test-env-cache
     - .rails-cache
+  cache:
+    policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .coverage-base:
   extends:

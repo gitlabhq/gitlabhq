@@ -120,10 +120,6 @@ export const getFileData = (
     });
 };
 
-export const setFileMrChange = ({ commit }, { file, mrChange }) => {
-  commit(types.SET_FILE_MERGE_REQUEST_CHANGE, { file, mrChange });
-};
-
 export const getRawFileData = ({ state, commit, dispatch, getters }, { path }) => {
   const file = state.entries[path];
   const stagedFile = state.stagedFiles.find((f) => f.path === path);

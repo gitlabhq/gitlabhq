@@ -25,6 +25,14 @@ export function createResolvers({ endpoints }) {
           data: { availableNamespaces },
         } = await client.query({ query: availableNamespacesQuery });
 
+        if (!statusPoller) {
+          statusPoller = new StatusPoller({
+            client,
+            pollPath: endpoints.jobs,
+          });
+          statusPoller.startPolling();
+        }
+
         return axios
           .get(endpoints.status, {
             params: {
@@ -83,7 +91,7 @@ export function createResolvers({ endpoints }) {
         const group = groupManager.findById(sourceGroupId);
         groupManager.setImportStatus(group, STATUSES.SCHEDULING);
         try {
-          await axios.post(endpoints.createBulkImport, {
+          const response = await axios.post(endpoints.createBulkImport, {
             bulk_import: [
               {
                 source_type: 'group_entity',
@@ -94,10 +102,7 @@ export function createResolvers({ endpoints }) {
             ],
           });
           groupManager.setImportStatus(group, STATUSES.STARTED);
-          if (!statusPoller) {
-            statusPoller = new StatusPoller({ client, interval: 3000 });
-            statusPoller.startPolling();
-          }
+          SourceGroupsManager.attachImportId(group, response.data.id);
         } catch (e) {
           createFlash({
             message: s__('BulkImport|Importing the group failed'),

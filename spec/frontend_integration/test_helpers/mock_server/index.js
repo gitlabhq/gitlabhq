@@ -4,6 +4,8 @@ import {
   getEmptyProject,
   getBranch,
   getMergeRequests,
+  getMergeRequestWithChanges,
+  getMergeRequestVersions,
   getRepositoryFiles,
   getBlobReadme,
   getBlobImage,
@@ -16,6 +18,8 @@ export const createMockServerOptions = () => ({
     project: Model,
     branch: Model,
     mergeRequest: Model,
+    mergeRequestChange: Model,
+    mergeRequestVersion: Model,
     file: Model,
     userPermission: Model,
   },
@@ -30,6 +34,8 @@ export const createMockServerOptions = () => ({
       projects: [getProject(), getEmptyProject()],
       branches: [getBranch()],
       mergeRequests: getMergeRequests(),
+      mergeRequestChanges: [getMergeRequestWithChanges()],
+      mergeRequestVersions: getMergeRequestVersions(),
       filesRaw: [
         {
           raw: getBlobReadme(),

@@ -498,7 +498,7 @@ This is often preceded by other errors or warnings that specify the filename and
 generated in the first place. Please check the entire job log for such messages.
 
 If you find no helpful messages, please retry the failed job after activating
-[CI debug logging](../variables/README.md#debug-logging).
+[CI/CD debug logging](../variables/README.md#debug-logging).
 This provides useful information to investigate further.
 
 <!-- ## Troubleshooting

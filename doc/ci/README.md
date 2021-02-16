@@ -90,7 +90,7 @@ GitLab CI/CD uses a number of concepts to describe and run your build and deploy
 | Concept                                                 | Description                                                                    |
 |:--------------------------------------------------------|:-------------------------------------------------------------------------------|
 | [Pipelines](pipelines/index.md)                         | Structure your CI/CD process through pipelines.                                |
-| [Environment variables](variables/README.md)            | Reuse values based on a variable/value key pair.                               |
+| [CI/CD variables](variables/README.md)                  | Reuse values based on a variable/value key pair.                               |
 | [Environments](environments/index.md)                   | Deploy your application to different environments (e.g., staging, production). |
 | [Job artifacts](pipelines/job_artifacts.md)             | Output, use, and reuse job artifacts.                                          |
 | [Cache dependencies](caching/index.md)                  | Cache your dependencies for a faster execution.                                |

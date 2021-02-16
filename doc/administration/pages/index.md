@@ -234,6 +234,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `domain_config_source` | Domain configuration source (default: `auto`)
 | `gitlab_id` |  The OAuth application public ID. Leave blank to automatically fill when Pages authenticates with GitLab.
 | `gitlab_secret` |  The OAuth application secret. Leave blank to automatically fill when Pages authenticates with GitLab.
+| `auth_scope` |  The OAuth application scope to use for authentication. Must match GitLab Pages OAuth application settings. Leave blank to use `api` scope by default.
 | `gitlab_server` |  Server to use for authentication when access control is enabled; defaults to GitLab `external_url`.
 | `headers` |  Specify any additional http headers that should be sent to the client with each response.
 | `inplace_chroot` |  On [systems that don't support bind-mounts](index.md#additional-configuration-for-docker-container), this instructs GitLab Pages to `chroot` into its `pages_path` directory. Some caveats exist when using in-place `chroot`; refer to the GitLab Pages [README](https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md#caveats) for more information.
@@ -399,6 +400,25 @@ Pages access control is disabled by default. To enable it:
 NOTE:
 For this setting to be effective with multi-node setups, it has to be applied to
 all the App nodes and Sidekiq nodes.
+
+#### Using Pages with reduced authentication scope
+
+By default, the Pages daemon uses the `api` scope to authenticate. You can configure this. For
+example, this reduces the scope to `read_api` in `/etc/gitlab/gitlab.rb`:
+
+```ruby
+gitlab_pages['auth_scope'] = 'read_api'
+```
+
+The scope to use for authentication must match the GitLab Pages OAuth application settings. Users of
+pre-existing applications must modify the GitLab Pages OAuth application. Follow these steps to do
+this:
+
+1. Navigate to your instance's **Admin Area > Settings > Applications** and expand **GitLab Pages**
+   settings.
+1. Clear the `api` scope's checkbox and select the desired scope's checkbox (for example,
+   `read_api`).
+1. Click **Save changes**.
 
 #### Disabling public access to all Pages websites
 

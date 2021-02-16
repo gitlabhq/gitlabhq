@@ -185,6 +185,7 @@ RSpec.describe Import::BulkImportsController do
 
       describe 'POST create' do
         let(:instance_url) { "http://fake-intance" }
+        let(:bulk_import) { create(:bulk_import) }
         let(:pat) { "fake-pat" }
 
         before do
@@ -201,12 +202,13 @@ RSpec.describe Import::BulkImportsController do
 
           expect_next_instance_of(
             BulkImportService, user, bulk_import_params, { url: instance_url, access_token: pat }) do |service|
-            expect(service).to receive(:execute)
+            allow(service).to receive(:execute).and_return(bulk_import)
           end
 
           post :create, params: { bulk_import: bulk_import_params }
 
           expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to eq({ id: bulk_import.id }.to_json)
         end
       end
     end

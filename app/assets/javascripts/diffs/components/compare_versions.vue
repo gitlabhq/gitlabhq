@@ -1,7 +1,6 @@
 <script>
 import { GlTooltipDirective, GlLink, GlButton, GlSprintf } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { polyfillSticky } from '~/lib/utils/sticky';
 import { __ } from '~/locale';
 import { CENTERED_LIMITED_CONTAINER_CLASSES, EVT_EXPAND_ALL_FILES } from '../constants';
 import eventHub from '../event_hub';
@@ -60,9 +59,6 @@ export default {
   },
   created() {
     this.CENTERED_LIMITED_CONTAINER_CLASSES = CENTERED_LIMITED_CONTAINER_CLASSES;
-  },
-  mounted() {
-    polyfillSticky(this.$el);
   },
   methods: {
     ...mapActions('diffs', ['setInlineDiffViewType', 'setParallelDiffViewType', 'setShowTreeList']),

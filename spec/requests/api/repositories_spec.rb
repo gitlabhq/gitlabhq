@@ -687,7 +687,7 @@ RSpec.describe API::Repositories do
         }
       )
 
-      expect(response).to have_gitlab_http_status(:internal_server_error)
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
       expect(json_response['message']).to eq('Failed to generate the changelog: oops')
     end
   end

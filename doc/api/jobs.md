@@ -154,11 +154,12 @@ Get a list of jobs for a pipeline.
 GET /projects/:id/pipelines/:pipeline_id/jobs
 ```
 
-| Attribute     | Type                           | Required | Description                                                                                                                                                                                                    |
-|---------------|--------------------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`          | integer/string                 | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                                                                                               |
-| `pipeline_id` | integer                        | yes      | ID of a pipeline.                                                                                                                                                                                          |
-| `scope`       | string **or** array of strings | no       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, or `manual`. All jobs are returned if `scope` is not provided. |
+| Attribute         | Type                           | Required | Description                                                                                                                                                                                                    |
+|-------------------|--------------------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`              | integer/string                 | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                                                                                                   |
+| `pipeline_id`     | integer                        | yes      | ID of a pipeline.                                                                                                                                                                                              |
+| `scope`           | string **or** array of strings | no       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, or `manual`. All jobs are returned if `scope` is not provided. |
+| `include_retried` | boolean                        | no       | Include retried jobs in the response. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/272627) in GitLab 13.9.                                                                  |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/6/jobs?scope[]=pending&scope[]=running"
@@ -260,7 +261,6 @@ Example of response
       "status": "pending"
     },
     "ref": "master",
-    "artifacts": [],
     "runner": null,
     "stage": "test",
     "status": "failed",
@@ -289,6 +289,12 @@ Example of response
 
 In GitLab 13.3 and later, this endpoint [returns data for any pipeline](pipelines.md#single-pipeline-requests)
 including [child pipelines](../ci/parent_child_pipelines.md).
+
+In GitLab 13.5 and later, this endpoint does not return retried jobs in the response
+by default.
+
+In GitLab 13.9 and later, this endpoint can include retried jobs in the response
+with `include_retried` set to `true`.
 
 ## List pipeline bridges
 

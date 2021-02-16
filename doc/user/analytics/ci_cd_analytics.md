@@ -42,8 +42,8 @@ performance indicators for software development teams:
   production.
 
 GitLab plans to add support for all the DORA4 metrics at the project and group levels. GitLab added
-the first metric, deployment frequency, at the project level for [CI/CD charts](ci_cd_analytics.md#deployment-frequency-charts)
-and the [API]( ../../api/project_analytics.md).
+the first metric, deployment frequency, at the project and group scopes for [CI/CD charts](ci_cd_analytics.md#deployment-frequency-charts),
+the [Project API]( ../../api/dora4_project_analytics.md), and the [Group API]( ../../api/dora4_group_analytics.md).
 
 ## Deployment frequency charts **(ULTIMATE)**
 

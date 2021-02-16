@@ -80,27 +80,27 @@ module LabelsHelper
 
   def suggested_colors
     {
-      '#0033CC' => s_('SuggestedColors|UA blue'),
-      '#428BCA' => s_('SuggestedColors|Moderate blue'),
-      '#44AD8E' => s_('SuggestedColors|Lime green'),
-      '#A8D695' => s_('SuggestedColors|Feijoa'),
-      '#5CB85C' => s_('SuggestedColors|Slightly desaturated green'),
-      '#69D100' => s_('SuggestedColors|Bright green'),
-      '#004E00' => s_('SuggestedColors|Very dark lime green'),
-      '#34495E' => s_('SuggestedColors|Very dark desaturated blue'),
-      '#7F8C8D' => s_('SuggestedColors|Dark grayish cyan'),
-      '#A295D6' => s_('SuggestedColors|Slightly desaturated blue'),
-      '#5843AD' => s_('SuggestedColors|Dark moderate blue'),
-      '#8E44AD' => s_('SuggestedColors|Dark moderate violet'),
-      '#FFECDB' => s_('SuggestedColors|Very pale orange'),
-      '#AD4363' => s_('SuggestedColors|Dark moderate pink'),
-      '#D10069' => s_('SuggestedColors|Strong pink'),
-      '#CC0033' => s_('SuggestedColors|Strong red'),
-      '#FF0000' => s_('SuggestedColors|Pure red'),
-      '#D9534F' => s_('SuggestedColors|Soft red'),
-      '#D1D100' => s_('SuggestedColors|Strong yellow'),
-      '#F0AD4E' => s_('SuggestedColors|Soft orange'),
-      '#AD8D43' => s_('SuggestedColors|Dark moderate orange')
+      '#009966' => s_('SuggestedColors|Green-cyan'),
+      '#8fbc8f' => s_('SuggestedColors|Dark sea green'),
+      '#3cb371' => s_('SuggestedColors|Medium sea green'),
+      '#00b140' => s_('SuggestedColors|Green screen'),
+      '#013220' => s_('SuggestedColors|Dark green'),
+      '#6699cc' => s_('SuggestedColors|Blue-gray'),
+      '#0000ff' => s_('SuggestedColors|Blue'),
+      '#e6e6fa' => s_('SuggestedColors|Lavendar'),
+      '#9400d3' => s_('SuggestedColors|Dark violet'),
+      '#330066' => s_('SuggestedColors|Deep violet'),
+      '#808080' => s_('SuggestedColors|Gray'),
+      '#36454f' => s_('SuggestedColors|Charcoal grey'),
+      '#f7e7ce' => s_('SuggestedColors|Champagne'),
+      '#c21e56' => s_('SuggestedColors|Rose red'),
+      '#cc338b' => s_('SuggestedColors|Magenta-pink'),
+      '#dc143c' => s_('SuggestedColors|Crimson'),
+      '#ff0000' => s_('SuggestedColors|Red'),
+      '#cd5b45' => s_('SuggestedColors|Dark coral'),
+      '#eee600' => s_('SuggestedColors|Titanium yellow'),
+      '#ed9121' => s_('SuggestedColors|Carrot orange'),
+      '#c39953' => s_('SuggestedColors|Aztec Gold')
     }
   end
 

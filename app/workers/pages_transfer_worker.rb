@@ -9,7 +9,7 @@ class PagesTransferWorker # rubocop:disable Scalability/IdempotentWorker
   loggable_arguments 0, 1
 
   def perform(method, args)
-    return unless Gitlab::PagesTransfer::Async::METHODS.include?(method)
+    return unless Gitlab::PagesTransfer::METHODS.include?(method)
 
     result = Gitlab::PagesTransfer.new.public_send(method, *args) # rubocop:disable GitlabSecurity/PublicSend
 

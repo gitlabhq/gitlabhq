@@ -19,7 +19,6 @@ import {
 } from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import { isInVueNoteablePage } from './lib/utils/dom_utils';
-import { polyfillSticky } from './lib/utils/sticky';
 import { getLocationHash } from './lib/utils/url_utility';
 import { __ } from './locale';
 import Notes from './notes';
@@ -123,7 +122,6 @@ export default class MergeRequestTabs {
     ) {
       this.mergeRequestTabs.querySelector(`a[data-action='${action}']`).click();
     }
-    this.initAffix();
   }
 
   bindEvents() {
@@ -508,22 +506,5 @@ export default class MergeRequestTabs {
         $gutterBtn.trigger('click', [true]);
       }
     }, 0);
-  }
-
-  initAffix() {
-    const $tabs = $('.js-tabs-affix');
-
-    // Screen space on small screens is usually very sparse
-    // So we dont affix the tabs on these
-    if (bp.getBreakpointSize() === 'xs' || !$tabs.length) return;
-
-    /**
-      If the browser does not support position sticky, it returns the position as static.
-      If the browser does support sticky, then we allow the browser to handle it, if not
-      then we default back to Bootstraps affix
-    */
-    if ($tabs.css('position') !== 'static') return;
-
-    polyfillSticky($tabs);
   }
 }

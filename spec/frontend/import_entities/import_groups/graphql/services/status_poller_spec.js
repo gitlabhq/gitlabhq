@@ -1,191 +1,113 @@
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { createMockClient } from 'mock-apollo-client';
-import waitForPromises from 'helpers/wait_for_promises';
-
+import MockAdapter from 'axios-mock-adapter';
+import Visibility from 'visibilityjs';
 import createFlash from '~/flash';
 import { STATUSES } from '~/import_entities/constants';
-import { clientTypenames } from '~/import_entities/import_groups/graphql/client_factory';
-import bulkImportSourceGroupsQuery from '~/import_entities/import_groups/graphql/queries/bulk_import_source_groups.query.graphql';
 import { SourceGroupsManager } from '~/import_entities/import_groups/graphql/services/source_groups_manager';
 import { StatusPoller } from '~/import_entities/import_groups/graphql/services/status_poller';
-import { generateFakeEntry } from '../fixtures';
+import axios from '~/lib/utils/axios_utils';
+import Poll from '~/lib/utils/poll';
 
+jest.mock('visibilityjs');
 jest.mock('~/flash');
+jest.mock('~/lib/utils/poll');
 jest.mock('~/import_entities/import_groups/graphql/services/source_groups_manager', () => ({
   SourceGroupsManager: jest.fn().mockImplementation(function mock() {
     this.setImportStatus = jest.fn();
+    this.findByImportId = jest.fn();
   }),
 }));
 
-const TEST_POLL_INTERVAL = 1000;
-const FAKE_PAGE_INFO = { page: 1, perPage: 20, total: 40, totalPages: 2 };
+const FAKE_POLL_PATH = '/fake/poll/path';
+const CLIENT_MOCK = {};
 
 describe('Bulk import status poller', () => {
   let poller;
-  let clientMock;
+  let mockAdapter;
 
-  const listQueryCacheCalls = () =>
-    clientMock.readQuery.mock.calls.filter((call) => call[0].query === bulkImportSourceGroupsQuery);
-
-  const generateFakeGroups = (statuses) =>
-    statuses.map((status, idx) => generateFakeEntry({ status, id: idx }));
-
-  const writeFakeGroupsQuery = (nodes) => {
-    clientMock.cache.writeQuery({
-      query: bulkImportSourceGroupsQuery,
-      data: {
-        bulkImportSourceGroups: {
-          __typename: clientTypenames.BulkImportSourceGroupConnection,
-          nodes,
-          pageInfo: {
-            __typename: clientTypenames.BulkImportPageInfo,
-            ...FAKE_PAGE_INFO,
-          },
-        },
-      },
-    });
-  };
+  const getPollHistory = () => mockAdapter.history.get.filter((x) => x.url === FAKE_POLL_PATH);
 
   beforeEach(() => {
-    clientMock = createMockClient({
-      cache: new InMemoryCache({
-        fragmentMatcher: { match: () => true },
-      }),
-    });
-
-    jest.spyOn(clientMock, 'readQuery');
-
-    poller = new StatusPoller({
-      client: clientMock,
-      interval: TEST_POLL_INTERVAL,
-    });
+    mockAdapter = new MockAdapter(axios);
+    mockAdapter.onGet(FAKE_POLL_PATH).reply(200, {});
+    poller = new StatusPoller({ client: CLIENT_MOCK, pollPath: FAKE_POLL_PATH });
   });
 
-  describe('general behavior', () => {
-    beforeEach(() => {
-      writeFakeGroupsQuery([]);
-    });
-
-    it('does not perform polling when constructed', () => {
-      jest.runOnlyPendingTimers();
-      expect(listQueryCacheCalls()).toHaveLength(0);
-    });
-
-    it('immediately start polling when requested', async () => {
-      await poller.startPolling();
-      expect(listQueryCacheCalls()).toHaveLength(1);
-    });
-
-    it('constantly polls when started', async () => {
-      poller.startPolling();
-      expect(listQueryCacheCalls()).toHaveLength(1);
-
-      jest.advanceTimersByTime(TEST_POLL_INTERVAL);
-      expect(listQueryCacheCalls()).toHaveLength(2);
-
-      jest.advanceTimersByTime(TEST_POLL_INTERVAL);
-      expect(listQueryCacheCalls()).toHaveLength(3);
-    });
-
-    it('does not start polling when requested multiple times', async () => {
-      poller.startPolling();
-      expect(listQueryCacheCalls()).toHaveLength(1);
-
-      poller.startPolling();
-      expect(listQueryCacheCalls()).toHaveLength(1);
-    });
-
-    it('stops polling when requested', async () => {
-      poller.startPolling();
-      expect(listQueryCacheCalls()).toHaveLength(1);
-
-      poller.stopPolling();
-      jest.runOnlyPendingTimers();
-      expect(listQueryCacheCalls()).toHaveLength(1);
-    });
-
-    it('does not query server when list is empty', async () => {
-      jest.spyOn(clientMock, 'query');
-      poller.startPolling();
-      expect(clientMock.query).not.toHaveBeenCalled();
-    });
+  it('creates source group manager with proper client', () => {
+    expect(SourceGroupsManager.mock.calls).toHaveLength(1);
+    const [[{ client }]] = SourceGroupsManager.mock.calls;
+    expect(client).toBe(CLIENT_MOCK);
   });
 
-  it('does not query server when no groups have STARTED status', async () => {
-    writeFakeGroupsQuery(generateFakeGroups([STATUSES.NONE, STATUSES.FINISHED]));
+  it('creates poller with proper config', () => {
+    expect(Poll.mock.calls).toHaveLength(1);
+    const [[pollConfig]] = Poll.mock.calls;
+    expect(typeof pollConfig.method).toBe('string');
 
-    jest.spyOn(clientMock, 'query');
+    const pollOperation = pollConfig.resource[pollConfig.method];
+    expect(typeof pollOperation).toBe('function');
+  });
+
+  it('invokes axios when polling is performed', async () => {
+    const [[pollConfig]] = Poll.mock.calls;
+    const pollOperation = pollConfig.resource[pollConfig.method];
+    expect(getPollHistory()).toHaveLength(0);
+
+    pollOperation();
+    await axios.waitForAll();
+
+    expect(getPollHistory()).toHaveLength(1);
+  });
+
+  it('subscribes to visibility changes', () => {
+    expect(Visibility.change).toHaveBeenCalled();
+  });
+
+  it.each`
+    isHidden | action
+    ${true}  | ${'stop'}
+    ${false} | ${'restart'}
+  `('$action polling when hidden is $isHidden', ({ action, isHidden }) => {
+    const [pollInstance] = Poll.mock.instances;
+    const [[changeHandler]] = Visibility.change.mock.calls;
+    Visibility.hidden.mockReturnValue(isHidden);
+    expect(pollInstance[action]).not.toHaveBeenCalled();
+
+    changeHandler();
+
+    expect(pollInstance[action]).toHaveBeenCalled();
+  });
+
+  it('does not perform polling when constructed', async () => {
+    await axios.waitForAll();
+
+    expect(getPollHistory()).toHaveLength(0);
+  });
+
+  it('immediately start polling when requested', async () => {
+    const [pollInstance] = Poll.mock.instances;
+
     poller.startPolling();
-    expect(clientMock.query).not.toHaveBeenCalled();
+
+    expect(pollInstance.makeRequest).toHaveBeenCalled();
   });
 
-  describe('when there are groups which have STARTED status', () => {
-    const TARGET_NAMESPACE = 'root';
+  it('when error occurs shows flash with error', () => {
+    const [[pollConfig]] = Poll.mock.calls;
+    pollConfig.errorCallback();
+    expect(createFlash).toHaveBeenCalled();
+  });
 
-    const STARTED_GROUP_1 = generateFakeEntry({
-      status: STATUSES.STARTED,
-      id: 'started1',
-    });
+  it('when success response arrives updates relevant group status', () => {
+    const FAKE_ID = 5;
+    const [[pollConfig]] = Poll.mock.calls;
+    const [managerInstance] = SourceGroupsManager.mock.instances;
+    managerInstance.findByImportId.mockReturnValue({ id: FAKE_ID });
 
-    const STARTED_GROUP_2 = generateFakeEntry({
-      status: STATUSES.STARTED,
-      id: 'started2',
-    });
+    pollConfig.successCallback({ data: [{ id: FAKE_ID, status_name: STATUSES.FINISHED }] });
 
-    const NOT_STARTED_GROUP = generateFakeEntry({
-      status: STATUSES.NONE,
-      id: 'not_started',
-    });
-
-    it('query server only for groups with STATUSES.STARTED', async () => {
-      writeFakeGroupsQuery([STARTED_GROUP_1, NOT_STARTED_GROUP, STARTED_GROUP_2]);
-
-      clientMock.query = jest.fn().mockResolvedValue({ data: {} });
-      poller.startPolling();
-
-      expect(clientMock.query).toHaveBeenCalledTimes(1);
-      await waitForPromises();
-      const [[doc]] = clientMock.query.mock.calls;
-      const { selections } = doc.query.definitions[0].selectionSet;
-      expect(selections.every((field) => field.name.value === 'group')).toBeTruthy();
-      expect(selections).toHaveLength(2);
-      expect(selections.map((sel) => sel.arguments[0].value.value)).toStrictEqual([
-        `${TARGET_NAMESPACE}/${STARTED_GROUP_1.import_target.new_name}`,
-        `${TARGET_NAMESPACE}/${STARTED_GROUP_2.import_target.new_name}`,
-      ]);
-    });
-
-    it('updates statuses only for groups in response', async () => {
-      writeFakeGroupsQuery([STARTED_GROUP_1, STARTED_GROUP_2]);
-
-      clientMock.query = jest.fn().mockResolvedValue({ data: { group0: {} } });
-      poller.startPolling();
-      await waitForPromises();
-      const [managerInstance] = SourceGroupsManager.mock.instances;
-      expect(managerInstance.setImportStatus).toHaveBeenCalledTimes(1);
-      expect(managerInstance.setImportStatus).toHaveBeenCalledWith(
-        expect.objectContaining({ id: STARTED_GROUP_1.id }),
-        STATUSES.FINISHED,
-      );
-    });
-
-    describe('when error occurs', () => {
-      beforeEach(() => {
-        writeFakeGroupsQuery([STARTED_GROUP_1, STARTED_GROUP_2]);
-
-        clientMock.query = jest.fn().mockRejectedValue(new Error('dummy error'));
-        poller.startPolling();
-        return waitForPromises();
-      });
-
-      it('reports an error', () => {
-        expect(createFlash).toHaveBeenCalled();
-      });
-
-      it('continues polling', async () => {
-        jest.advanceTimersByTime(TEST_POLL_INTERVAL);
-        expect(listQueryCacheCalls()).toHaveLength(2);
-      });
-    });
+    expect(managerInstance.setImportStatus).toHaveBeenCalledWith(
+      expect.objectContaining({ id: FAKE_ID }),
+      STATUSES.FINISHED,
+    );
   });
 });

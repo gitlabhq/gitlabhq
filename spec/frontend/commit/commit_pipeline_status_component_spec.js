@@ -141,8 +141,8 @@ describe('Commit pipeline status component', () => {
         expect(findLink().attributes('href')).toEqual(mockCiStatus.details_path);
       });
 
-      it('renders CI icon', () => {
-        expect(findCiIcon().attributes('title')).toEqual('Pipeline: pending');
+      it('renders CI icon with the correct title and status', () => {
+        expect(findCiIcon().attributes('title')).toEqual('Pipeline: passed');
         expect(findCiIcon().props('status')).toEqual(mockCiStatus);
       });
     });

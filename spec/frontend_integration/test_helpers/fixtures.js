@@ -31,6 +31,12 @@ export const getBranch = factory.json(() =>
 export const getMergeRequests = factory.json(() =>
   require('test_fixtures/api/merge_requests/get.json'),
 );
+export const getMergeRequestWithChanges = factory.json(() =>
+  require('test_fixtures/api/merge_requests/changes.json'),
+);
+export const getMergeRequestVersions = factory.json(() =>
+  require('test_fixtures/api/merge_requests/versions.json'),
+);
 export const getRepositoryFiles = factory.json(() =>
   require('test_fixtures/projects_json/files.json'),
 );

@@ -1,5 +1,3 @@
-import StickyFill from 'stickyfilljs';
-
 export const createPlaceholder = () => {
   const placeholder = document.createElement('div');
   placeholder.classList.add('sticky-placeholder');
@@ -59,14 +57,4 @@ export const stickyMonitor = (el, stickyTop, insertPlaceholder = true) => {
       passive: true,
     },
   );
-};
-
-/**
- * Polyfill the `position: sticky` behavior.
- *
- * - If the current environment supports `position: sticky`, do nothing.
- * - Can receive an iterable element list (NodeList, jQuery collection, etc.) or single HTMLElement.
- */
-export const polyfillSticky = (el) => {
-  StickyFill.add(el);
 };

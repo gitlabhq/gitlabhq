@@ -497,7 +497,7 @@
   li {
     a,
     button,
-    .dropdown-item {
+    .dropdown-item:not(.open-with-link) {
       padding: 8px 40px;
       position: relative;
 

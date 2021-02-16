@@ -73,11 +73,11 @@ RSpec.describe Ci::DagPipelineEntity do
         end
       end
 
-      it 'performs the smallest number of queries' do
+      it 'performs the smallest number of queries', :request_store do
         log = ActiveRecord::QueryRecorder.new { subject }
 
-        # stages, project, builds, build_needs
-        expect(log.count).to eq 4
+        # stages, project, builds, build_needs, feature_flag
+        expect(log.count).to eq 5
       end
 
       it 'contains all the data' do

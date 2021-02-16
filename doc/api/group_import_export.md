@@ -20,6 +20,7 @@ Group exports include the following:
 - Group badges
 - Group members
 - Sub-groups. Each sub-group includes all data above
+- Group wikis **(PREMIUM SELF)**
 
 ## Schedule new export
 

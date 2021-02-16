@@ -50,7 +50,7 @@ This project has three jobs:
 
 ## Store API keys
 
-You'll need to create two variables in your project's **Settings > CI/CD > Environment variables** and do not check **Protect variable** and **Mask variable**:
+You'll need to create two CI/CD variables in your project's **Settings > CI/CD > Variables** and do not check **Protect variable** or **Mask variable**:
 
 - `HEROKU_STAGING_API_KEY` - Heroku API key used to deploy staging app.
 - `HEROKU_PRODUCTION_API_KEY` - Heroku API key used to deploy production app.
