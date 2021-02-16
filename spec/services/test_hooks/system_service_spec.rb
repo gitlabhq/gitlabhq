@@ -64,7 +64,7 @@ RSpec.describe TestHooks::SystemService do
     context 'merge_requests_events' do
       let(:trigger) { 'merge_requests_events' }
       let(:trigger_key) { :merge_request_hooks }
-      let(:merge_requests) { build_list(:merge_request, 2) }
+      let(:merge_request) { build(:merge_request) }
       let(:sample_data) { { data: 'sample' } }
 
       it 'returns error message if the user does not have any repository with a merge request' do
@@ -73,23 +73,10 @@ RSpec.describe TestHooks::SystemService do
       end
 
       it 'executes hook' do
-        expect(MergeRequest).to receive(:of_projects).and_return(merge_requests)
-        expect(merge_requests.last).to receive(:to_hook_data).and_return(sample_data)
+        expect(MergeRequest).to receive(:of_projects).and_return([merge_request])
+        expect(merge_request).to receive(:to_hook_data).and_return(sample_data)
         expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
         expect(service.execute).to include(success_result)
-      end
-
-      context 'when the reorder feature flag is disabled' do
-        before do
-          stub_feature_flags(integrations_test_webhook_reorder: false)
-        end
-
-        it 'executes the old query' do
-          expect(MergeRequest).to receive(:of_projects).and_return(merge_requests)
-          expect(merge_requests.first).to receive(:to_hook_data).and_return(sample_data)
-          expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
-          expect(service.execute).to include(success_result)
-        end
       end
     end
   end

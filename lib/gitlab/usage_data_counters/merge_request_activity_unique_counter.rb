@@ -34,6 +34,7 @@ module Gitlab
       MR_APPROVAL_RULE_DELETED_USERS_ACTION = 'i_code_review_user_approval_rule_deleted'
       MR_EDIT_MR_TITLE_ACTION = 'i_code_review_edit_mr_title'
       MR_EDIT_MR_DESC_ACTION = 'i_code_review_edit_mr_desc'
+      MR_CREATE_FROM_ISSUE_ACTION = 'i_code_review_user_create_mr_from_issue'
 
       class << self
         def track_mr_diffs_action(merge_request:)
@@ -146,6 +147,10 @@ module Gitlab
 
         def track_task_item_status_changed(user:)
           track_unique_action_by_user(MR_TASK_ITEM_STATUS_CHANGED_ACTION, user)
+        end
+
+        def track_mr_create_from_issue(user:)
+          track_unique_action_by_user(MR_CREATE_FROM_ISSUE_ACTION, user)
         end
 
         private

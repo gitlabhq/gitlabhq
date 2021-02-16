@@ -1,8 +1,0 @@
----
-name: integrations_test_webhook_reorder
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53433
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/320861
-milestone: '13.9'
-type: development
-group: group::ecosystem
-default_enabled: false
