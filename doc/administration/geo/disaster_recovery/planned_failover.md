@@ -144,41 +144,10 @@ will take to finish syncing. An example message would be:
 
 ## Prevent updates to the **primary** node
 
-Until a [read-only mode](https://gitlab.com/gitlab-org/gitlab/-/issues/14609) is implemented, updates must be prevented
-from happening manually. Note that your **secondary** node still needs read-only
-access to the **primary** node during the maintenance window.
+To ensure that all data is replicated to a secondary site, updates (write requests) need to
+be disabled on the primary site:
 
-1. At the scheduled time, using your cloud provider or your node's firewall, block
-   all HTTP, HTTPS and SSH traffic to/from the **primary** node, **except** for your IP and
-   the **secondary** node's IP.
-
-   For instance, you might run the following commands on the server(s) making up your **primary** node:
-
-   ```shell
-   sudo iptables -A INPUT -p tcp -s <secondary_node_ip> --destination-port 22 -j ACCEPT
-   sudo iptables -A INPUT -p tcp -s <your_ip> --destination-port 22 -j ACCEPT
-   sudo iptables -A INPUT --destination-port 22 -j REJECT
-
-   sudo iptables -A INPUT -p tcp -s <secondary_node_ip> --destination-port 80 -j ACCEPT
-   sudo iptables -A INPUT -p tcp -s <your_ip> --destination-port 80 -j ACCEPT
-   sudo iptables -A INPUT --tcp-dport 80 -j REJECT
-
-   sudo iptables -A INPUT -p tcp -s <secondary_node_ip> --destination-port 443 -j ACCEPT
-   sudo iptables -A INPUT -p tcp -s <your_ip> --destination-port 443 -j ACCEPT
-   sudo iptables -A INPUT --tcp-dport 443 -j REJECT
-   ```
-
-   From this point, users will be unable to view their data or make changes on the
-   **primary** node. They will also be unable to log in to the **secondary** node.
-   However, existing sessions will work for the remainder of the maintenance period, and
-   public data will be accessible throughout.
-
-1. Verify the **primary** node is blocked to HTTP traffic by visiting it in browser via
-   another IP. The server should refuse connection.
-
-1. Verify the **primary** node is blocked to Git over SSH traffic by attempting to pull an
-   existing Git repository with an SSH remote URL. The server should refuse
-   connection.
+1. Enable [maintenance mode](../../maintenance_mode/index.md).
 
 1. Disable non-Geo periodic background jobs on the **primary** node by navigating
    to **Admin Area > Monitoring > Background Jobs > Cron**, pressing `Disable All`,

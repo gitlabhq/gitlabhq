@@ -90,27 +90,10 @@ module Gitlab
       end
 
       def build_config(config)
-        if ::Feature.enabled?(:ci_custom_yaml_tags, @context.project, default_enabled: :yaml)
-          build_config_with_custom_tags(config)
-        else
-          build_config_without_custom_tags(config)
-        end
-      end
-
-      def build_config_with_custom_tags(config)
-        initial_config = Config::Yaml.load!(config, project: @context.project)
+        initial_config = Config::Yaml.load!(config)
         initial_config = Config::External::Processor.new(initial_config, @context).perform
         initial_config = Config::Extendable.new(initial_config).to_hash
         initial_config = Config::Yaml::Tags::Resolver.new(initial_config).to_hash
-        initial_config = Config::EdgeStagesInjector.new(initial_config).to_hash
-
-        initial_config
-      end
-
-      def build_config_without_custom_tags(config)
-        initial_config = Gitlab::Config::Loader::Yaml.new(config).load!
-        initial_config = Config::External::Processor.new(initial_config, @context).perform
-        initial_config = Config::Extendable.new(initial_config).to_hash
         initial_config = Config::EdgeStagesInjector.new(initial_config).to_hash
 
         initial_config

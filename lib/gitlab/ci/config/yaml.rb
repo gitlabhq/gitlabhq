@@ -7,7 +7,7 @@ module Gitlab
         AVAILABLE_TAGS = [Config::Yaml::Tags::Reference].freeze
 
         class << self
-          def load!(content, project: nil)
+          def load!(content)
             ensure_custom_tags
 
             Gitlab::Config::Loader::Yaml.new(content, additional_permitted_classes: AVAILABLE_TAGS).load!

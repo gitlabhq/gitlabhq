@@ -60,11 +60,7 @@ module Gitlab
 
             def content_hash
               strong_memoize(:content_yaml) do
-                if ::Feature.enabled?(:ci_custom_yaml_tags, context.project, default_enabled: :yaml)
-                  ::Gitlab::Ci::Config::Yaml.load!(content)
-                else
-                  Gitlab::Config::Loader::Yaml.new(content).load!
-                end
+                ::Gitlab::Ci::Config::Yaml.load!(content)
               end
             rescue Gitlab::Config::Loader::FormatError
               nil
