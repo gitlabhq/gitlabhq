@@ -211,8 +211,6 @@ module API
           desc: 'The commit message to use when committing the changelog'
       end
       post ':id/repository/changelog' do
-        not_found! unless Feature.enabled?(:changelog_api, user_project)
-
         branch = params[:branch] || user_project.default_branch_or_master
         access = Gitlab::UserAccess.new(current_user, container: user_project)
 

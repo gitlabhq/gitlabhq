@@ -16,6 +16,7 @@ import (
 	"gitlab.com/gitlab-org/labkit/correlation"
 
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab-workhorse/internal/errortracker"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/rejectmethods"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/upload"
@@ -63,7 +64,7 @@ func NewUpstream(cfg config.Config, accessLogger *logrus.Logger) http.Handler {
 		correlationOpts = append(correlationOpts, correlation.WithPropagation())
 	}
 
-	handler := correlation.InjectCorrelationID(&up, correlationOpts...)
+	handler := correlation.InjectCorrelationID(errortracker.NewHandler(&up), correlationOpts...)
 	// TODO: move to LabKit https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/339
 	handler = rejectmethods.NewMiddleware(handler)
 	return handler

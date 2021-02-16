@@ -768,7 +768,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def sort_diffs?
-    Feature.enabled?(:sort_diffs, project, default_enabled: false)
+    Feature.enabled?(:sort_diffs, project, default_enabled: :yaml)
   end
 end
 

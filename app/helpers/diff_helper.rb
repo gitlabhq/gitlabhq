@@ -214,6 +214,15 @@ module DiffHelper
     )
   end
 
+  # As the fork suggestion button is identical every time, we cache it for a full page load
+  def render_fork_suggestion
+    return unless current_user
+
+    strong_memoize(:fork_suggestion) do
+      render partial: "projects/fork_suggestion"
+    end
+  end
+
   private
 
   def diff_btn(title, name, selected)

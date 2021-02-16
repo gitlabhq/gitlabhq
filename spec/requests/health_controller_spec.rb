@@ -77,91 +77,129 @@ RSpec.describe HealthController do
 
     shared_context 'endpoint responding with readiness data' do
       context 'when requesting instance-checks' do
-        it 'responds with readiness checks data' do
-          expect(Gitlab::HealthChecks::MasterCheck).to receive(:check) { true }
+        context 'when Puma runs in Clustered mode' do
+          before do
+            allow(Gitlab::Runtime).to receive(:puma_in_clustered_mode?).and_return(true)
+          end
 
-          subject
+          it 'responds with readiness checks data' do
+            expect(Gitlab::HealthChecks::MasterCheck).to receive(:check) { true }
 
-          expect(json_response).to include({ 'status' => 'ok' })
-          expect(json_response['master_check']).to contain_exactly({ 'status' => 'ok' })
+            subject
+
+            expect(json_response).to include({ 'status' => 'ok' })
+            expect(json_response['master_check']).to contain_exactly({ 'status' => 'ok' })
+          end
+
+          it 'responds with readiness checks data when a failure happens' do
+            expect(Gitlab::HealthChecks::MasterCheck).to receive(:check) { false }
+
+            subject
+
+            expect(json_response).to include({ 'status' => 'failed' })
+            expect(json_response['master_check']).to contain_exactly(
+              { 'status' => 'failed', 'message' => 'unexpected Master check result: false' })
+
+            expect(response).to have_gitlab_http_status(:service_unavailable)
+            expect(response.headers['X-GitLab-Custom-Error']).to eq(1)
+          end
         end
 
-        it 'responds with readiness checks data when a failure happens' do
-          expect(Gitlab::HealthChecks::MasterCheck).to receive(:check) { false }
+        context 'when Puma runs in Single mode' do
+          before do
+            allow(Gitlab::Runtime).to receive(:puma_in_clustered_mode?).and_return(false)
+          end
 
-          subject
+          it 'does not invoke MasterCheck, succeedes' do
+            expect(Gitlab::HealthChecks::MasterCheck).not_to receive(:check) { true }
 
-          expect(json_response).to include({ 'status' => 'failed' })
-          expect(json_response['master_check']).to contain_exactly(
-            { 'status' => 'failed', 'message' => 'unexpected Master check result: false' })
+            subject
 
-          expect(response).to have_gitlab_http_status(:service_unavailable)
-          expect(response.headers['X-GitLab-Custom-Error']).to eq(1)
+            expect(json_response).to eq('status' => 'ok')
+          end
         end
       end
 
       context 'when requesting all checks' do
-        before do
-          params.merge!(all: true)
-        end
-
-        it 'responds with readiness checks data' do
-          subject
-
-          expect(json_response['db_check']).to contain_exactly({ 'status' => 'ok' })
-          expect(json_response['cache_check']).to contain_exactly({ 'status' => 'ok' })
-          expect(json_response['queues_check']).to contain_exactly({ 'status' => 'ok' })
-          expect(json_response['shared_state_check']).to contain_exactly({ 'status' => 'ok' })
-          expect(json_response['gitaly_check']).to contain_exactly(
-            { 'status' => 'ok', 'labels' => { 'shard' => 'default' } })
-        end
-
-        it 'responds with readiness checks data when a failure happens' do
-          allow(Gitlab::HealthChecks::Redis::RedisCheck).to receive(:readiness).and_return(
-            Gitlab::HealthChecks::Result.new('redis_check', false, "check error"))
-
-          subject
-
-          expect(json_response['cache_check']).to contain_exactly({ 'status' => 'ok' })
-          expect(json_response['redis_check']).to contain_exactly(
-            { 'status' => 'failed', 'message' => 'check error' })
-
-          expect(response).to have_gitlab_http_status(:service_unavailable)
-          expect(response.headers['X-GitLab-Custom-Error']).to eq(1)
-        end
-
-        context 'when DB is not accessible and connection raises an exception' do
+        shared_context 'endpoint responding with readiness data for all checks' do
           before do
-            expect(Gitlab::HealthChecks::DbCheck)
-              .to receive(:readiness)
-              .and_raise(PG::ConnectionBad, 'could not connect to server')
+            params.merge!(all: true)
           end
 
-          it 'responds with 500 including the exception info' do
+          it 'responds with readiness checks data' do
             subject
 
-            expect(response).to have_gitlab_http_status(:internal_server_error)
+            expect(json_response['db_check']).to contain_exactly({ 'status' => 'ok' })
+            expect(json_response['cache_check']).to contain_exactly({ 'status' => 'ok' })
+            expect(json_response['queues_check']).to contain_exactly({ 'status' => 'ok' })
+            expect(json_response['shared_state_check']).to contain_exactly({ 'status' => 'ok' })
+            expect(json_response['gitaly_check']).to contain_exactly(
+              { 'status' => 'ok', 'labels' => { 'shard' => 'default' } })
+          end
+
+          it 'responds with readiness checks data when a failure happens' do
+            allow(Gitlab::HealthChecks::Redis::RedisCheck).to receive(:readiness).and_return(
+              Gitlab::HealthChecks::Result.new('redis_check', false, "check error"))
+
+            subject
+
+            expect(json_response['cache_check']).to contain_exactly({ 'status' => 'ok' })
+            expect(json_response['redis_check']).to contain_exactly(
+              { 'status' => 'failed', 'message' => 'check error' })
+
+            expect(response).to have_gitlab_http_status(:service_unavailable)
             expect(response.headers['X-GitLab-Custom-Error']).to eq(1)
-            expect(json_response).to eq(
-              { 'status' => 'failed', 'message' => 'PG::ConnectionBad : could not connect to server' })
+          end
+
+          context 'when DB is not accessible and connection raises an exception' do
+            before do
+              expect(Gitlab::HealthChecks::DbCheck)
+                .to receive(:readiness)
+                .and_raise(PG::ConnectionBad, 'could not connect to server')
+            end
+
+            it 'responds with 500 including the exception info' do
+              subject
+
+              expect(response).to have_gitlab_http_status(:internal_server_error)
+              expect(response.headers['X-GitLab-Custom-Error']).to eq(1)
+              expect(json_response).to eq(
+                { 'status' => 'failed', 'message' => 'PG::ConnectionBad : could not connect to server' })
+            end
+          end
+
+          context 'when any exception happens during the probing' do
+            before do
+              expect(Gitlab::HealthChecks::Redis::RedisCheck)
+                .to receive(:readiness)
+                .and_raise(::Redis::CannotConnectError, 'Redis down')
+            end
+
+            it 'responds with 500 including the exception info' do
+              subject
+
+              expect(response).to have_gitlab_http_status(:internal_server_error)
+              expect(response.headers['X-GitLab-Custom-Error']).to eq(1)
+              expect(json_response).to eq(
+                { 'status' => 'failed', 'message' => 'Redis::CannotConnectError : Redis down' })
+            end
           end
         end
 
-        context 'when any exception happens during the probing' do
+        context 'when Puma runs in Clustered mode' do
           before do
-            expect(Gitlab::HealthChecks::Redis::RedisCheck)
-              .to receive(:readiness)
-              .and_raise(::Redis::CannotConnectError, 'Redis down')
+            allow(Gitlab::Runtime).to receive(:puma_in_clustered_mode?).and_return(true)
           end
 
-          it 'responds with 500 including the exception info' do
-            subject
+          it_behaves_like 'endpoint responding with readiness data for all checks'
+        end
 
-            expect(response).to have_gitlab_http_status(:internal_server_error)
-            expect(response.headers['X-GitLab-Custom-Error']).to eq(1)
-            expect(json_response).to eq(
-              { 'status' => 'failed', 'message' => 'Redis::CannotConnectError : Redis down' })
+        context 'when Puma runs in Single mode' do
+          before do
+            allow(Gitlab::Runtime).to receive(:puma_in_clustered_mode?).and_return(false)
           end
+
+          it_behaves_like 'endpoint responding with readiness data for all checks'
         end
       end
     end

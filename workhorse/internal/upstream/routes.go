@@ -55,7 +55,7 @@ type uploadPreparers struct {
 const (
 	apiPattern           = `^/api/`
 	ciAPIPattern         = `^/ci/api/`
-	gitProjectPattern    = `^/([^/]+/){1,}[^/]+\.git/`
+	gitProjectPattern    = `^/.+\.git/`
 	projectPattern       = `^/([^/]+/){1,}[^/]+/`
 	snippetUploadPattern = `^/uploads/personal_snippet`
 	userUploadPattern    = `^/uploads/user`

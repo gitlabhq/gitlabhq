@@ -333,15 +333,19 @@ export default {
       this.fetchIssuables();
     },
     handleFilter(filters) {
-      let search = null;
+      const searchTokens = [];
 
       filters.forEach((filter) => {
-        if (typeof filter === 'string') {
-          search = filter;
+        if (filter.type === 'filtered-search-term') {
+          if (filter.value.data) {
+            searchTokens.push(filter.value.data);
+          }
         }
       });
 
-      this.filters.search = search;
+      if (searchTokens.length) {
+        this.filters.search = searchTokens.join(' ');
+      }
       this.page = 1;
 
       this.refetchIssuables();

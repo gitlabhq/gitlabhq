@@ -148,7 +148,6 @@ RSpec.shared_examples 'clone quick action' do
         expect(issue.reload).not_to be_closed
 
         edit_note("/cloe #{target_project.full_path}", "test note.\n/clone #{target_project.full_path}")
-        wait_for_all_requests
 
         expect(page).to have_content 'test note.'
         expect(issue.reload).to be_open
@@ -166,7 +165,6 @@ RSpec.shared_examples 'clone quick action' do
         expect(page).not_to have_content 'Commands applied'
 
         edit_note("/cloe #{target_project.full_path}", "/clone #{target_project.full_path}")
-        wait_for_all_requests
 
         expect(page).not_to have_content "/clone #{target_project.full_path}"
         expect(issue.reload).to be_open

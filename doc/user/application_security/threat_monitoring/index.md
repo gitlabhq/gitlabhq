@@ -126,14 +126,13 @@ any pods. The policy itself is still deployed to the corresponding deployment na
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3403) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.4.
 
-The policy editor allows you to create, edit, and delete policies. To
-create a new policy click the **New policy** button located in the
-**Policy** tab's header. To edit an existing policy, click**Edit
-policy** in the selected policy drawer.
+You can use the policy editor to create, edit, and delete policies.
 
-Note that the policy editor only supports the
-[CiliumNetworkPolicy](https://docs.cilium.io/en/v1.8/policy/)specification. Regular Kubernetes
-[NetworkPolicy](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#networkpolicy-v1-networking-k8s-io)
+- To create a new policy, click the **New policy** button located in the **Policy** tab's header.
+- To edit an existing policy, click **Edit policy** in the selected policy drawer.
+
+The policy editor only supports the [CiliumNetworkPolicy](https://docs.cilium.io/en/v1.8/policy/)
+specification. Regular Kubernetes [NetworkPolicy](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#networkpolicy-v1-networking-k8s-io)
 resources aren't supported.
 
 The policy editor has two modes:
@@ -163,3 +162,65 @@ Once your policy is complete, save it by pressing the **Save policy**
 button at the bottom of the editor. Existing policies can also be
 removed from the editor interface by clicking the **Delete policy**
 button at the bottom of the editor.
+
+### Configuring Network Policy Alerts
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3438) and [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/287676) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.9.
+
+You can use policy alerts to track your policy's impact. Alerts are only available if you've
+[installed](../../clusters/agent/repository.md)
+and [configured](../../clusters/agent/index.md#create-an-agent-record-in-gitlab)
+a Kubernetes Agent for this project.
+
+There are two ways to create policy alerts:
+
+- In the [policy editor UI](#container-network-policy-editor),
+  by clicking **Add alert**.
+- In the policy editor's YAML mode, through the `metadata.annotations` property:
+
+  ```yaml
+  metadata:
+    annotations:
+      app.gitlab.com/alert: 'true'
+  ```
+
+Once added, the UI updates and displays a warning about the dangers of too many alerts.
+
+#### Enable or disable Policy Alerts **(FREE SELF)**
+
+Policy Alerts is under development but ready for production use.
+It is deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can opt to disable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:threat_monitoring_alerts)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:threat_monitoring_alerts)
+```
+
+### Container Network Policy Alert list
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3438) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.9.
+
+The policy alert list displays your policy's alert activity. You can sort the list by the
+**Date and time** column, and the **Status** column. Use the selector menu in the **Status** column
+to set the status for each alert:
+
+- Unreviewed
+- In review
+- Resolved
+- Dismissed
+
+By default, the list doesn't display resolved or dismissed alerts. To show these alerts, clear the
+checkbox **Hide dismissed alerts**.
+
+![Policy Alert List](img/threat_monitoring_policy_alert_list_v13_9.png)
+
+For information on work in progress for the alerts dashboard, see [this epic](https://gitlab.com/groups/gitlab-org/-/epics/5041).

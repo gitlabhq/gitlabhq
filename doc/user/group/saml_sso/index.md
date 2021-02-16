@@ -296,6 +296,10 @@ WARNING:
 Unlinking an account removes all roles assigned to that user in the group.
 If a user re-links their account, roles need to be reassigned.
 
+Groups require at least one owner. If your account is the only owner in the
+group, you are not allowed to unlink the account. In that case, set up another user as a
+group owner, and then you can unlink the account.
+
 For example, to unlink the `MyOrg` account:
 
 1. In the top-right corner, select your avatar.

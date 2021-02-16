@@ -591,5 +591,75 @@ describe('Issuables list component', () => {
         expect(findFilteredSearchBar().props('initialFilterValue')).toEqual(['free text']);
       });
     });
+
+    describe('on filter search', () => {
+      beforeEach(() => {
+        factory({ type: 'jira' });
+
+        window.history.pushState = jest.fn();
+      });
+
+      afterEach(() => {
+        window.history.pushState.mockRestore();
+      });
+
+      const emitOnFilter = (filter) => findFilteredSearchBar().vm.$emit('onFilter', filter);
+
+      describe('empty filter', () => {
+        const mockFilter = [];
+
+        it('updates URL with correct params', () => {
+          emitOnFilter(mockFilter);
+
+          expect(window.history.pushState).toHaveBeenCalledWith(
+            {},
+            '',
+            `${TEST_LOCATION}?state=opened`,
+          );
+        });
+      });
+
+      describe('filter with search term', () => {
+        const mockFilter = [
+          {
+            type: 'filtered-search-term',
+            value: { data: 'free' },
+          },
+        ];
+
+        it('updates URL with correct params', () => {
+          emitOnFilter(mockFilter);
+
+          expect(window.history.pushState).toHaveBeenCalledWith(
+            {},
+            '',
+            `${TEST_LOCATION}?state=opened&search=free`,
+          );
+        });
+      });
+
+      describe('filter with multiple search terms', () => {
+        const mockFilter = [
+          {
+            type: 'filtered-search-term',
+            value: { data: 'free' },
+          },
+          {
+            type: 'filtered-search-term',
+            value: { data: 'text' },
+          },
+        ];
+
+        it('updates URL with correct params', () => {
+          emitOnFilter(mockFilter);
+
+          expect(window.history.pushState).toHaveBeenCalledWith(
+            {},
+            '',
+            `${TEST_LOCATION}?state=opened&search=free+text`,
+          );
+        });
+      });
+    });
   });
 });

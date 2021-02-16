@@ -31,6 +31,8 @@ module Spec
               fill_in('note[note]', with: new_note_text)
               find('.js-comment-button').click
             end
+
+            wait_for_requests
           end
 
           def preview_note(text)

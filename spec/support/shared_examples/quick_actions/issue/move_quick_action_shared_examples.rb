@@ -106,7 +106,6 @@ RSpec.shared_examples 'move quick action' do
         expect(issue.reload).not_to be_closed
 
         edit_note("/mvoe #{target_project.full_path}", "test note.\n/move #{target_project.full_path}")
-        wait_for_all_requests
 
         expect(page).to have_content 'test note.'
         expect(issue.reload).to be_closed
@@ -125,7 +124,6 @@ RSpec.shared_examples 'move quick action' do
         expect(issue.reload).not_to be_closed
 
         edit_note("/mvoe #{target_project.full_path}", "/move #{target_project.full_path}")
-        wait_for_all_requests
 
         expect(page).not_to have_content "/move #{target_project.full_path}"
         expect(issue.reload).to be_closed

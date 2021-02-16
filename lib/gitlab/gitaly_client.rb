@@ -248,6 +248,8 @@ module Gitlab
 
       return {} unless Gitlab::SafeRequestStore[:gitlab_git_env]
 
+      return {} if Gitlab::SafeRequestStore[:gitlab_git_env].empty?
+
       { 'gitaly-route-repository-accessor-policy' => 'primary-only' }
     end
     private_class_method :route_to_primary

@@ -32,7 +32,7 @@ module Gitlab
           GitalyServer: {
             address: Gitlab::GitalyClient.address(repository.storage),
             token: Gitlab::GitalyClient.token(repository.storage),
-            features: Feature::Gitaly.server_feature_flags
+            features: Feature::Gitaly.server_feature_flags(repository.project)
           }
         }
 
@@ -231,7 +231,7 @@ module Gitlab
         {
           address: Gitlab::GitalyClient.address(repository.shard),
           token: Gitlab::GitalyClient.token(repository.shard),
-          features: Feature::Gitaly.server_feature_flags
+          features: Feature::Gitaly.server_feature_flags(repository.project)
         }
       end
 

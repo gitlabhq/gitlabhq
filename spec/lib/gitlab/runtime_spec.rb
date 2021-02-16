@@ -44,10 +44,11 @@ RSpec.describe Gitlab::Runtime do
 
   context "puma" do
     let(:puma_type) { double('::Puma') }
+    let(:max_workers) { 2 }
 
     before do
       stub_const('::Puma', puma_type)
-      allow(puma_type).to receive_message_chain(:cli_config, :options).and_return(max_threads: 2)
+      allow(puma_type).to receive_message_chain(:cli_config, :options).and_return(max_threads: 2, workers: max_workers)
       stub_env('ACTION_CABLE_IN_APP', 'false')
     end
 
@@ -69,6 +70,20 @@ RSpec.describe Gitlab::Runtime do
       end
 
       it_behaves_like "valid runtime", :puma, 11
+    end
+
+    describe ".puma_in_clustered_mode?" do
+      context 'when Puma is set up with workers > 0' do
+        let(:max_workers) { 4 }
+
+        specify { expect(described_class.puma_in_clustered_mode?).to be true }
+      end
+
+      context 'when Puma is set up with workers = 0' do
+        let(:max_workers) { 0 }
+
+        specify { expect(described_class.puma_in_clustered_mode?).to be false }
+      end
     end
   end
 

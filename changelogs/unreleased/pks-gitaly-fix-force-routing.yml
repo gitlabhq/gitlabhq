@@ -1,0 +1,5 @@
+---
+title: Fix force-routing to Gitaly primary with empty hook env
+merge_request: 54317
+author:
+type: fixed

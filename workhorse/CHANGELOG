@@ -1,5 +1,15 @@
 # Changelog for gitlab-workhorse
 
+## v8.63.0
+
+### Added
+- Accept more paths as Git HTTP
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/684
+
+### Other
+- Migrate error tracking from raven to labkit
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/671
+
 ## v8.62.0
 
 ### Added

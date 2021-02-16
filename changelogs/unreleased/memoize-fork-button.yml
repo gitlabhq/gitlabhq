@@ -1,0 +1,5 @@
+---
+title: Memoize the fork suggestion button partial
+merge_request: 53256
+author:
+type: performance

@@ -23,7 +23,6 @@ module Gitlab
 
       MUTEX = Mutex.new
 
-      DISK_ACCESS_DENIED_FLAG = :deny_disk_access
       ALLOW_KEY = :allow_disk_access
 
       # If your code needs this method then your code needs to be fixed.
@@ -34,7 +33,7 @@ module Gitlab
       def self.disk_access_denied?
         return false if rugged_enabled?
 
-        !temporarily_allowed?(ALLOW_KEY) && Feature::Gitaly.enabled?(DISK_ACCESS_DENIED_FLAG)
+        !temporarily_allowed?(ALLOW_KEY)
       rescue
         false # Err on the side of caution, don't break gitlab for people
       end
@@ -62,7 +61,7 @@ module Gitlab
 
       def legacy_disk_path
         if self.class.disk_access_denied?
-          raise DirectPathAccessError, "git disk access denied via the gitaly_#{DISK_ACCESS_DENIED_FLAG} feature"
+          raise DirectPathAccessError, "git disk access denied"
         end
 
         @legacy_disk_path

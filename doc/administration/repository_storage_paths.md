@@ -5,73 +5,100 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Repository storage paths
+# Repository storage **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4578) in GitLab 8.10.
 
-GitLab allows you to define multiple repository storage paths (sometimes called
-storage shards) to distribute the storage load between several mount points.
+GitLab stores [repositories](../user/project/repository/index.md) on repository storage. Repository
+storage is either:
 
-> **Notes:**
->
-> - You must have at least one storage path called `default`.
-> - The paths are defined in key-value pairs. The key is an arbitrary name you
->   can pick to name the file path.
-> - The target directories and any of its sub-paths must not be a symlink.
-> - No target directory may be a sub-directory of another; no nesting.
+- A `gitaly_address`, which points to a [Gitaly node](gitaly/index.md).
+- A `path`, which points directly a directory where the repository is stored.
 
-Example: this is OK:
+GitLab allows you to define multiple repository storages to distribute the storage load between
+several mount points. For example:
 
-```plaintext
-default:
-  path: /mnt/git-storage-1
-storage2:
-  path: /mnt/git-storage-2
-```
+- When using Gitaly (Omnibus GitLab-style configuration):
 
-This is not OK because it nests storage paths:
+  ```ruby
+   git_data_dirs({
+     'default' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
+     'storage1' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
+   })
+   ```
 
-```plaintext
-default:
-  path: /mnt/git-storage-1
-storage2:
-  path: /mnt/git-storage-1/git-storage-2 # <- NOT OK because of nesting
-```
+- When using direct repository storage (source install-style configuration):
 
-## Configure GitLab
+  ```plaintext
+  default:
+    path: /mnt/git-storage-1
+  storage2:
+    path: /mnt/git-storage-2
+  ```
 
-For [backups](../raketasks/backup_restore.md) to work correctly, the storage path cannot be a
-mount point, and the GitLab user must have correct permissions for the parent
-directory of the path. Omnibus GitLab takes care of these issues for you,
-but for source installations you should be extra careful.
+For more information on
 
-The thing is that for compatibility reasons `gitlab.yml` has a different
-structure than Omnibus. In `gitlab.yml` you indicate the path for the
-repositories, for example `/home/git/repositories`, while in Omnibus you
-indicate `git_data_dirs`, which for the example above would be `/home/git`.
-Then, Omnibus creates a `repositories` directory under that path to use with
-`gitlab.yml`.
+- Configuring Gitaly, see [Configure Gitaly](gitaly/index.md#configure-gitaly).
+- Configuring direct repository access, see the following section below.
 
-WARNING:
-This detail matters because while restoring a backup, the current
-contents of `/home/git/repositories`
-[are moved to](https://gitlab.com/gitlab-org/gitlab/blob/033e5423a2594e08a7ebcd2379bd2331f4c39032/lib/backup/repository.rb#L54-56)
-`/home/git/repositories.old`.
-If `/home/git/repositories` is the mount point, then `mv` would be moving
-things between mount points, and bad things could happen. Ideally,
-`/home/git` would be the mount point, so things would remain inside the
-same mount point. Omnibus installations guarantee this, because they
-don't specify the full repository path but instead the parent path, but source
-installations do not.
+## Configure repository storage paths
 
-Next, edit the configuration
-files, and add the full paths of the alternative repository storage paths. In
-the example below, we add two more mount points that are named `nfs_1` and `nfs_2`
-respectively.
+To configure repository storage paths:
+
+1. Edit the necessary configuration files:
+   - `/etc/gitlab/gitlab.rb`, for Omnibus GitLab installations.
+   - `gitlab.yml`, for installations from source.
+1. Add the required repository storage paths.
+
+For repository storage paths:
+
+- You must have at least one storage path called `default`.
+- The paths are defined in key-value pairs. Apart from `default`, the key can be any name you choose
+  to name the file path.
+- The target directories and any of its sub paths must not be a symlink.
+- No target directory may be a sub-directory of another. That is, no nesting. For example, the
+  following configuration is invalid:
+
+  ```plaintext
+  default:
+    path: /mnt/git-storage-1
+  storage2:
+    path: /mnt/git-storage-1/git-storage-2 # <- NOT OK because of nesting
+  ```
+
+### Configure for backups
+
+For [backups](../raketasks/backup_restore.md) to work correctly:
+
+- The repository storage path cannot be a mount point.
+- The GitLab user must have correct permissions for the parent directory of the path.
+
+Omnibus GitLab takes care of these issues for you, but for source installations you should be extra
+careful.
+
+While restoring a backup, the current contents of `/home/git/repositories` are moved to 
+`/home/git/repositories.old`. If `/home/git/repositories` is a mount point, then `mv` would be
+moving things between mount points, and problems can occur.
+
+Ideally, `/home/git` is the mount point, so things remain inside the same mount point. Omnibus
+GitLab installations guarantee this because they don't specify the full repository path but instead
+the parent path, but source installations do not.
+
+### Example configuration
+
+In the examples below, we add two additional repository storage paths configured to two additional
+mount points.
+
+For compatibility reasons `gitlab.yml` has a different structure than Omnibus GitLab configuration:
+
+- In `gitlab.yml`, you indicate the path for the repositories, for example `/home/git/repositories`
+- In Omnibus GitLab configuration you indicate `git_data_dirs`, which could be `/home/git` for
+  example. Then Omnibus GitLab creates a `repositories` directory under that path to use with
+  `gitlab.yml`.
 
 NOTE:
-This example uses NFS. We do not recommend using EFS for storage as it may impact GitLab performance. Read
-the [relevant documentation](nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
+This example uses NFS. We do not recommend using EFS for storage as it may impact GitLab performance.
+Read the [relevant documentation](nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
 
 **For installations from source**
 
@@ -81,7 +108,7 @@ the [relevant documentation](nfs.md#avoid-using-awss-elastic-file-system-efs) fo
    repositories:
      # Paths where repositories can be stored. Give the canonicalized absolute pathname.
      # NOTE: REPOS PATHS MUST NOT CONTAIN ANY SYMLINK!!!
-     storages: # You must have at least a 'default' storage path.
+     storages: # You must have at least a 'default' repository storage path.
        default:
          path: /home/git/repositories
        nfs_1:
@@ -92,42 +119,39 @@ the [relevant documentation](nfs.md#avoid-using-awss-elastic-file-system-efs) fo
 
 1. [Restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-NOTE:
-We plan to replace [`gitlab_shell: repos_path` entry](https://gitlab.com/gitlab-org/gitlab-foss/-/blob/8-9-stable/config/gitlab.yml.example#L457) in `gitlab.yml` with `repositories: storages`. If you
-are upgrading from a version prior to 8.10, make sure to add the configuration
-as described in the step above. After you make the changes and confirm they are
-working, you can remove the `repos_path` line.
-
 **For Omnibus installations**
 
-1. Edit `/etc/gitlab/gitlab.rb` by appending the rest of the paths to the
-   default one:
+Edit `/etc/gitlab/gitlab.rb` by appending the rest of the paths to the default one:
 
-   ```ruby
-   git_data_dirs({
-     "default" => { "path" => "/var/opt/gitlab/git-data" },
-     "nfs_1" => { "path" => "/mnt/nfs1/git-data" },
-     "nfs_2" => { "path" => "/mnt/nfs2/git-data" }
-   })
-   ```
+```ruby
+git_data_dirs({
+ "default" => { "path" => "/var/opt/gitlab/git-data" },
+ "nfs_1" => { "path" => "/mnt/nfs1/git-data" },
+ "nfs_2" => { "path" => "/mnt/nfs2/git-data" }
+})
+```
 
-   Note that Omnibus stores the repositories in a `repositories` subdirectory
-   of the `git-data` directory.
+NOTE:
+Omnibus stores the repositories in a `repositories` subdirectory of the `git-data` directory.
 
-## Choose where new repositories are stored
+## Configure where new repositories are stored
 
-After you set the multiple storage paths, you can choose where new repositories
-are stored in the Admin Area under **Settings > Repository > Repository storage > Storage nodes for new repositories**.
+After you [configure](#configure-repository-storage-paths) multiple repository storage paths, you
+can choose where new repositories are stored:
 
-Each storage can be assigned a weight from 0-100. When a new project is created, these
-weights are used to determine the storage location the repository is created on.
+1. Go to the Admin Area (**{admin}**).
+1. Go to **Settings > Repository** and expand the **Repository storage** section.
+1. Enter values in the **Storage nodes for new repositories** fields.
+1. Select **Save changes**.
+
+Each repository storage path can be assigned a weight from 0-100. When a new project is created,
+these weights are used to determine the storage location the repository is created on. The higher
+the weight of a given repository storage path relative to other repository storages paths, the more
+often it is chosen. That is, `(storage weight) / (sum of all weights) * 100 = chance %`.
 
 ![Choose repository storage path in Admin Area](img/repository_storages_admin_ui_v13_1.png)
 
-Beginning with GitLab 8.13.4, multiple paths can be chosen. New repositories
-are randomly placed on one of the selected paths.
-
-## Move a repository to a different repository path
+## Move repositories
 
 To move a repository to a different repository path, use the
 [Project repository storage moves](../api/project_repository_storage_moves.md) API. Use

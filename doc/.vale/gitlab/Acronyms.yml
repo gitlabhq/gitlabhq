@@ -43,6 +43,7 @@ exceptions:
   - DSA
   - DVCS
   - ECDSA
+  - EFS
   - EKS
   - EOL
   - EXIF

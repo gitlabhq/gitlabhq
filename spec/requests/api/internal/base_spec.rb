@@ -543,25 +543,51 @@ RSpec.describe API::Internal::Base do
       end
 
       context "git pull" do
-        before do
-          stub_feature_flags(gitaly_mep_mep: true)
+        context "with a feature flag enabled globally" do
+          before do
+            stub_feature_flags(gitaly_mep_mep: true)
+          end
+
+          it "has the correct payload" do
+            pull(key, project)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response["status"]).to be_truthy
+            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+            expect(json_response["gl_project_path"]).to eq(project.full_path)
+            expect(json_response["gitaly"]).not_to be_nil
+            expect(json_response["gitaly"]["repository"]).not_to be_nil
+            expect(json_response["gitaly"]["repository"]["storage_name"]).to eq(project.repository.gitaly_repository.storage_name)
+            expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
+            expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
+            expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
+            expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-mep-mep' => 'true')
+            expect(user.reload.last_activity_on).to eql(Date.today)
+          end
         end
 
-        it "has the correct payload" do
-          pull(key, project)
+        context "with a feature flag enabled for a project" do
+          before do
+            stub_feature_flags(gitaly_mep_mep: project)
+          end
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response["status"]).to be_truthy
-          expect(json_response["gl_repository"]).to eq("project-#{project.id}")
-          expect(json_response["gl_project_path"]).to eq(project.full_path)
-          expect(json_response["gitaly"]).not_to be_nil
-          expect(json_response["gitaly"]["repository"]).not_to be_nil
-          expect(json_response["gitaly"]["repository"]["storage_name"]).to eq(project.repository.gitaly_repository.storage_name)
-          expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
-          expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
-          expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
-          expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-mep-mep' => 'true')
-          expect(user.reload.last_activity_on).to eql(Date.today)
+          it "has the flag set to true for that project" do
+            pull(key, project)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+            expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-mep-mep' => 'true')
+          end
+
+          it "has the flag set to false for other projects" do
+            other_project = create(:project, :public, :repository)
+
+            pull(key, other_project)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response["gl_repository"]).to eq("project-#{other_project.id}")
+            expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-mep-mep' => 'false')
+          end
         end
       end
 

@@ -117,7 +117,7 @@ module Gitlab
         end
 
         def sort_diffs(diffs)
-          return diffs unless Feature.enabled?(:sort_diffs, project, default_enabled: false)
+          return diffs unless Feature.enabled?(:sort_diffs, project, default_enabled: :yaml)
 
           Gitlab::Diff::FileCollectionSorter.new(diffs).sort
         end
