@@ -20,6 +20,8 @@ export const getSuiteTests = (state) => {
   return testCases
     .map((testCase) => ({
       ...testCase,
+      classname: testCase.classname || '',
+      name: testCase.name || '',
       filePath: testCase.file ? `${state.blobPath}/${formatFilePath(testCase.file)}` : null,
     }))
     .map(addIconStatus)

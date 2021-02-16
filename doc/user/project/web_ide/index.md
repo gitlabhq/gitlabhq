@@ -10,7 +10,7 @@ type: reference, how-to
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4539) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44157) to GitLab Free in 10.7.
 
-The Web IDE editor makes it faster and easier to contribute changes to your
+The Web Integrated Development Environment (IDE) editor makes it faster and easier to contribute changes to your
 projects by providing an advanced editor with commit staging.
 
 ## Open the Web IDE

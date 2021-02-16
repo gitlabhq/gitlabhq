@@ -18,8 +18,6 @@ export default {
     testCase: {
       type: Object,
       required: true,
-      validator: ({ classname, formattedTime, name }) =>
-        Boolean(classname) && Boolean(formattedTime) && Boolean(name),
     },
   },
   computed: {

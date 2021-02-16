@@ -8,6 +8,7 @@ RSpec.describe Ci::DailyBuildGroupReportResult do
   describe 'associations' do
     it { is_expected.to belong_to(:last_pipeline) }
     it { is_expected.to belong_to(:project) }
+    it { is_expected.to belong_to(:group) }
   end
 
   describe 'validations' do
@@ -83,8 +84,9 @@ RSpec.describe Ci::DailyBuildGroupReportResult do
   end
 
   describe 'scopes' do
-    let_it_be(:project) { create(:project) }
-    let(:recent_build_group_report_result) { create(:ci_daily_build_group_report_result, project: project) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+    let(:recent_build_group_report_result) { create(:ci_daily_build_group_report_result, project: project, group: group) }
     let(:old_build_group_report_result) do
       create(:ci_daily_build_group_report_result, date: 1.week.ago, project: project)
     end
@@ -94,6 +96,14 @@ RSpec.describe Ci::DailyBuildGroupReportResult do
 
       it 'returns records by projects' do
         expect(subject).to contain_exactly(recent_build_group_report_result, old_build_group_report_result)
+      end
+    end
+
+    describe '.by_group' do
+      subject { described_class.by_group(group) }
+
+      it 'returns records by group' do
+        expect(subject).to contain_exactly(recent_build_group_report_result)
       end
     end
 

@@ -198,3 +198,7 @@ To see what polyfills are being used:
    which polyfills are being loaded and where:
 
    ![Image of webpack report](img/webpack_report_v12_8.png)
+
+### 9. Why is my page broken in dark mode?
+
+See [dark mode docs](dark_mode.md)

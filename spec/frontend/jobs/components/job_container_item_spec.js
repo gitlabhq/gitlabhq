@@ -1,78 +1,80 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
+import { GlIcon, GlLink } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import JobContainerItem from '~/jobs/components/job_container_item.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import job from '../mock_data';
 
 describe('JobContainerItem', () => {
+  let wrapper;
   const delayedJobFixture = getJSONFixture('jobs/delayed.json');
-  const Component = Vue.extend(JobContainerItem);
-  let vm;
+
+  const findCiIconComponent = () => wrapper.findComponent(CiIcon);
+  const findGlIconComponent = () => wrapper.findComponent(GlIcon);
+
+  function createComponent(jobData = {}, props = { isActive: false, retried: false }) {
+    wrapper = shallowMount(JobContainerItem, {
+      propsData: {
+        job: {
+          ...jobData,
+          retried: props.retried,
+        },
+        isActive: props.isActive,
+      },
+    });
+  }
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
+    wrapper = null;
   });
 
-  const sharedTests = () => {
+  describe('when a job is not active and not retried', () => {
+    beforeEach(() => {
+      createComponent(job);
+    });
+
     it('displays a status icon', () => {
-      expect(vm.$el).toHaveSpriteIcon(job.status.icon);
+      const ciIcon = findCiIconComponent();
+
+      expect(ciIcon.props('status')).toBe(job.status);
     });
 
     it('displays the job name', () => {
-      expect(vm.$el.innerText).toContain(job.name);
+      expect(wrapper.text()).toContain(job.name);
     });
 
     it('displays a link to the job', () => {
-      const link = vm.$el.querySelector('.js-job-link');
+      const link = wrapper.findComponent(GlLink);
 
-      expect(link.href).toBe(job.status.details_path);
+      expect(link.attributes('href')).toBe(job.status.details_path);
     });
-  };
-
-  describe('when a job is not active and not retied', () => {
-    beforeEach(() => {
-      vm = mountComponent(Component, {
-        job,
-        isActive: false,
-      });
-    });
-
-    sharedTests();
   });
 
   describe('when a job is active', () => {
     beforeEach(() => {
-      vm = mountComponent(Component, {
-        job,
-        isActive: true,
-      });
+      createComponent(job, { isActive: true });
     });
 
-    sharedTests();
+    it('displays an arrow sprite icon', () => {
+      const icon = findGlIconComponent();
 
-    it('displays an arrow', () => {
-      expect(vm.$el).toHaveSpriteIcon('arrow-right');
+      expect(icon.props('name')).toBe('arrow-right');
     });
   });
 
   describe('when a job is retried', () => {
     beforeEach(() => {
-      vm = mountComponent(Component, {
-        job: {
-          ...job,
-          retried: true,
-        },
-        isActive: false,
-      });
+      createComponent(job, { isActive: false, retried: true });
     });
 
-    sharedTests();
+    it('displays a retry icon', () => {
+      const icon = findGlIconComponent();
 
-    it('displays an icon', () => {
-      expect(vm.$el).toHaveSpriteIcon('retry');
+      expect(icon.props('name')).toBe('retry');
     });
   });
 
-  describe('for delayed job', () => {
+  describe('for a delayed job', () => {
     beforeEach(() => {
       const remainingMilliseconds = 1337000;
       jest
@@ -80,22 +82,16 @@ describe('JobContainerItem', () => {
         .mockImplementation(
           () => new Date(delayedJobFixture.scheduled_at).getTime() - remainingMilliseconds,
         );
+
+      createComponent(delayedJobFixture);
     });
 
-    it('displays remaining time in tooltip', (done) => {
-      vm = mountComponent(Component, {
-        job: delayedJobFixture,
-        isActive: false,
-      });
+    it('displays remaining time in tooltip', async () => {
+      await wrapper.vm.$nextTick();
 
-      Vue.nextTick()
-        .then(() => {
-          expect(vm.$el.querySelector('.js-job-link').getAttribute('title')).toEqual(
-            'delayed job - delayed manual action (00:22:17)',
-          );
-        })
-        .then(done)
-        .catch(done.fail);
+      const link = wrapper.findComponent(GlLink);
+
+      expect(link.attributes('title')).toMatch('delayed job - delayed manual action (00:22:17)');
     });
   });
 });

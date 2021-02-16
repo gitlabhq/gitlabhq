@@ -68,7 +68,7 @@ describe('Test reports suite table', () => {
     beforeEach(() => createComponent());
 
     it('renders the correct number of rows', () => {
-      expect(allCaseRows().length).toBe(testCases.length);
+      expect(allCaseRows()).toHaveLength(testCases.length);
     });
 
     it.each([
@@ -112,6 +112,34 @@ describe('Test reports suite table', () => {
 
     it('renders a pagination component', () => {
       expect(wrapper.find(GlPagination).exists()).toBe(true);
+    });
+  });
+
+  describe('when a test case classname property is null', () => {
+    it('still renders all test cases', () => {
+      createComponent({
+        ...testSuite,
+        test_cases: testSuite.test_cases.map((testCase) => ({
+          ...testCase,
+          classname: null,
+        })),
+      });
+
+      expect(allCaseRows()).toHaveLength(testCases.length);
+    });
+  });
+
+  describe('when a test case name property is null', () => {
+    it('still renders all test cases', () => {
+      createComponent({
+        ...testSuite,
+        test_cases: testSuite.test_cases.map((testCase) => ({
+          ...testCase,
+          name: null,
+        })),
+      });
+
+      expect(allCaseRows()).toHaveLength(testCases.length);
     });
   });
 });

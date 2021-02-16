@@ -48,6 +48,7 @@ class Group < Namespace
 
   has_many :labels, class_name: 'GroupLabel'
   has_many :variables, class_name: 'Ci::GroupVariable'
+  has_many :daily_build_group_report_results, class_name: 'Ci::DailyBuildGroupReportResult'
   has_many :custom_attributes, class_name: 'GroupCustomAttribute'
 
   has_many :boards

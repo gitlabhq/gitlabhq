@@ -105,7 +105,7 @@ export default {
     <section class="header-main-content">
       <ci-icon-badge :status="status" />
 
-      <strong> {{ itemName }} #{{ itemId }} </strong>
+      <strong data-testid="ci-header-item-text"> {{ itemName }} #{{ itemId }} </strong>
 
       <template v-if="shouldRenderTriggeredLabel">{{ __('triggered') }}</template>
       <template v-else>{{ __('created') }}</template>
@@ -142,7 +142,7 @@ export default {
       </template>
     </section>
 
-    <section v-if="$slots.default" data-testid="headerButtons" class="gl-display-flex">
+    <section v-if="$slots.default" data-testid="ci-header-action-buttons" class="gl-display-flex">
       <slot></slot>
     </section>
     <gl-button

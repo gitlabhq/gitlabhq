@@ -50,7 +50,7 @@ service in GitLab.
 1. Enter the build key from your Bamboo build plan. Build keys are typically made
    up from the Project Key and Plan Key that are set on project/plan creation and
    separated with a dash (`-`), for example  **PROJ-PLAN**. This is a short, all
-   uppercase identifier that is unique. When viewing a plan within Bamboo, the
+   uppercase identifier that is unique. When viewing a plan in Bamboo, the
    build key is also shown in the browser URL, for example `https://bamboo.example.com/browse/PROJ-PLAN`.
 1. If necessary, enter username and password for a Bamboo user that has
    access to trigger the build plan. Leave these fields blank if you do not require
@@ -60,8 +60,12 @@ service in GitLab.
 
 ## Troubleshooting
 
+### Builds not triggered
+
 If builds are not triggered, ensure you entered the right GitLab IP address in
 Bamboo under 'Trigger IP addresses'. Also check [service hook logs](overview.md#troubleshooting-integrations) for request failures.
 
-NOTE:
-Starting with GitLab 8.14.0, builds are triggered on push events.
+### Advanced Atlassian Bamboo features not available in GitLab UI
+
+Advanced Atlassian Bamboo features are not compatible with GitLab. These features
+include, but are not limited to, the ability to watch the build logs from the GitLab UI.

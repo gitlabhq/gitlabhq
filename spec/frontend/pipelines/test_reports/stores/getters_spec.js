@@ -94,6 +94,70 @@ describe('Getters TestReports Store', () => {
 
       expect(getters.getSuiteTests(state)).toEqual([]);
     });
+
+    describe('when a test case classname property is null', () => {
+      it('should return an empty string value for the classname property', () => {
+        const testCases = testReports.test_suites[0].test_cases;
+        setupState({
+          ...defaultState,
+          testReports: {
+            ...testReports,
+            test_suites: [
+              {
+                test_cases: testCases.map((testCase) => ({
+                  ...testCase,
+                  classname: null,
+                })),
+              },
+            ],
+          },
+        });
+
+        const expected = testCases
+          .map((x) => ({
+            ...x,
+            classname: '',
+            filePath: `${state.blobPath}/${formatFilePath(x.file)}`,
+            formattedTime: formattedTime(x.execution_time),
+            icon: iconForTestStatus(x.status),
+          }))
+          .slice(0, state.pageInfo.perPage);
+
+        expect(getters.getSuiteTests(state)).toEqual(expected);
+      });
+    });
+
+    describe('when a test case name property is null', () => {
+      it('should return an empty string value for the name property', () => {
+        const testCases = testReports.test_suites[0].test_cases;
+        setupState({
+          ...defaultState,
+          testReports: {
+            ...testReports,
+            test_suites: [
+              {
+                test_cases: testCases.map((testCase) => ({
+                  ...testCase,
+                  name: null,
+                })),
+              },
+            ],
+          },
+        });
+
+        const expected = testCases
+          .map((x) => ({
+            ...x,
+            name: '',
+            filePath: `${state.blobPath}/${formatFilePath(x.file)}`,
+            formattedTime: formattedTime(x.execution_time),
+            icon: iconForTestStatus(x.status),
+          }))
+          .slice(0, state.pageInfo.perPage);
+
+        expect(getters.getSuiteTests(state)).toEqual(expected);
+      });
+    });
   });
 
   describe('getSuiteTestCount', () => {
