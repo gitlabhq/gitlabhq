@@ -232,7 +232,7 @@ If the results:
 ### Troubleshooting indexing
 
 Troubleshooting indexing issues can be tricky. It can pretty quickly go to either GitLab
-support or your Elasticsearch admin.
+support or your Elasticsearch administrator.
 
 The best place to start is to determine if the issue is with creating an empty index.
 If it is, check on the Elasticsearch side to determine if the `gitlab-production` (the
@@ -245,7 +245,7 @@ If you still encounter issues, try creating an index manually on the Elasticsear
 instance. The details of the index aren't important here, as we want to test if indices
 can be made. If the indices:
 
-- Cannot be made, speak with your Elasticsearch admin.
+- Cannot be made, speak with your Elasticsearch administrator.
 - Can be made, Escalate this to GitLab support.
 
 If the issue is not with creating an empty index, the next step is to check for errors
@@ -253,7 +253,7 @@ during the indexing of projects. If errors do occur, they will either stem from 
 
 - On the GitLab side. You need to rectify those. If they are not
   something you are familiar with, contact GitLab support for guidance.
-- Within the Elasticsearch instance itself. See if the error is [documented and has a fix](../../integration/elasticsearch.md#troubleshooting). If not, speak with your Elasticsearch admin.
+- Within the Elasticsearch instance itself. See if the error is [documented and has a fix](../../integration/elasticsearch.md#troubleshooting). If not, speak with your Elasticsearch administrator.
 
 If the indexing process does not present errors, you will want to check the status of the indexed projects. You can do this via the following Rake tasks:
 
@@ -271,7 +271,7 @@ If reindexing the project shows:
 
 - Errors on the GitLab side, escalate those to GitLab support.
 - Elasticsearch errors or doesn't present any errors at all, reach out to your
-  Elasticsearch admin to check the instance.
+  Elasticsearch administrator to check the instance.
 
 ### Troubleshooting integration
 
@@ -284,7 +284,7 @@ If the issue is:
   This is a required package so make sure you install it.
   Go indexer was a beta indexer which can be optionally turned on/off, but in 12.3 it reached stable status and is now the default.
 - Not concerning the Go indexer, it is almost always an
-  Elasticsearch-side issue. This means you should reach out to your Elasticsearch admin
+  Elasticsearch-side issue. This means you should reach out to your Elasticsearch administrator
   regarding the error(s) you are seeing. If you are unsure here, it never hurts to reach
   out to GitLab support.
 
@@ -354,12 +354,12 @@ learn them, so it is best to escalate/pair with an Elasticsearch expert if you n
 dig further into these.
 
 Feel free to reach out to GitLab support, but this is likely to be something a skilled
-Elasticsearch admin has more experience with.
+Elasticsearch administrator has more experience with.
 
 ### Troubleshooting background migrations
 
 Troubleshooting background migration failures can be difficult and may require contacting 
-an Elasticsearch admin or GitLab Support.
+an Elasticsearch administrator or GitLab Support.
 
 The best place to start while debugging issues with a background migration is the 
 [`elasticsearch.log` file](../logs.md#elasticsearchlog). Migrations will

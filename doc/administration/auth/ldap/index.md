@@ -647,8 +647,8 @@ like the following.
 
 NOTE:
 Administrators are not synced unless `group_base` is also
-specified alongside `admin_group`. Also, only specify the CN of the admin
-group, as opposed to the full DN.
+specified alongside `admin_group`. Also, only specify the CN of the `admin_group`,
+as opposed to the full DN.
 
 **Omnibus configuration**
 
@@ -698,7 +698,7 @@ When enabled, the following applies:
 To enable it you need to:
 
 1. [Enable LDAP](#configuration)
-1. Navigate to **(admin)** **Admin Area > Settings -> Visibility and access controls**.
+1. Navigate to **Admin Area > Settings -> Visibility and access controls**.
 1. Make sure the "Lock memberships to LDAP synchronization" checkbox is enabled.
 
 ### Adjusting LDAP group sync schedule **(PREMIUM SELF)**

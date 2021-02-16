@@ -9,7 +9,7 @@ type: howto
 
 ## Changing the sync/verification capacity values
 
-In the Geo admin page at **Admin Area > Geo** (`/admin/geo/nodes`),
+In **Admin Area > Geo** (`/admin/geo/nodes`),
 there are several variables that can be tuned to improve performance of Geo:
 
 - Repository sync capacity

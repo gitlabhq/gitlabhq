@@ -329,6 +329,11 @@ You can also retrieve the reports via the [GitLab API](../api/pipelines.md#get-a
 > - It's deployed behind a feature flag, disabled by default.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enabling-the-junit-screenshots-feature). **(FREE SELF)**
 
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+When [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/6061) is complete, the attached file will be visible on the pipeline details page.
+
 If JUnit report format XML files contain an `attachment` tag, GitLab parses the attachment.
 
 Upload your screenshots as [artifacts](pipelines/job_artifacts.md#artifactsreportsjunit) to GitLab. The `attachment` tag **must** contain the absolute path to the screenshots you uploaded.
@@ -338,8 +343,6 @@ Upload your screenshots as [artifacts](pipelines/job_artifacts.md#artifactsrepor
   <system-out>[[ATTACHMENT|/absolute/path/to/some/file]]</system-out>
 </testcase>
 ```
-
-When [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/6061) is complete, the attached file will be visible on the pipeline details page.
 
 ### Enabling the JUnit screenshots feature **(FREE SELF)**
 

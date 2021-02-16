@@ -7,13 +7,13 @@ type: howto
 
 # Removing secondary Geo nodes **(PREMIUM SELF)**
 
-**Secondary** nodes can be removed from the Geo cluster using the Geo admin page of the **primary** node. To remove a **secondary** node:
+**Secondary** nodes can be removed from the Geo cluster using the Geo administration page of the **primary** node. To remove a **secondary** node:
 
 1. Navigate to **Admin Area > Geo** (`/admin/geo/nodes`).
 1. Click the **Remove** button for the **secondary** node you want to remove.
 1. Confirm by clicking **Remove** when the prompt appears.
 
-Once removed from the Geo admin page, you must stop and uninstall the **secondary** node:
+Once removed from the Geo administration page, you must stop and uninstall the **secondary** node:
 
 1. On the **secondary** node, stop GitLab:
 

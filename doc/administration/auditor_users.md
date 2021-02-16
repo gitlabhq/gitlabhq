@@ -19,7 +19,7 @@ snippets, and create milestones on their groups, while also having read-only
 access to all projects on the server to which they haven't been explicitly
 [given access](../user/permissions.md).
 
-The Auditor role is _not_ a read-only version of the Admin role. Auditor users
+The `Auditor` access level is _not_ a read-only version of the `Admin` access level. Auditor users
 can't access the project or group settings pages, or the Admin Area.
 
 Assuming you have signed in as an Auditor user:
@@ -33,7 +33,7 @@ Assuming you have signed in as an Auditor user:
   have the same access as their given [permissions](../user/permissions.md).
   For example, if they were added as a Developer, they can push commits or
   comment on issues.
-- The Auditor can't view the Admin Area, or perform any admin actions.
+- The Auditor can't view the Admin Area, or perform any administration actions.
 
 For more information about what an Auditor can or can't do, see the
 [Permissions and restrictions of an Auditor user](#permissions-and-restrictions-of-an-auditor-user)
@@ -47,7 +47,7 @@ helpful:
 - Your compliance department wants to run tests against the entire GitLab base
   to ensure users are complying with password, credit card, and other sensitive
   data policies. With Auditor users, this can be achieved very without having
-  to give them user admin rights or using the API to add them to all projects.
+  to give them user administration rights or using the API to add them to all projects.
 - If particular users need visibility or access to most of all projects in
   your GitLab instance, instead of manually adding the user to all projects,
   you can create an Auditor user and then share the credentials with those users
@@ -83,7 +83,7 @@ instance, with the following permissions and restrictions:
 - Can read all files in a repository
 - Can read issues and MRs
 - Can read project snippets
-- Cannot be Admin and Auditor at the same time
+- Cannot be Administrator and Auditor at the same time
 - Cannot access the Admin Area
 - In a group or project they're not a member of:
   - Cannot access project settings

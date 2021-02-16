@@ -71,7 +71,7 @@ Requests with warnings display `(!)` after their path in the **Request selector*
 
 ![Request selector showing dropdown](img/performance_bar_request_selector_warning_expanded.png)
 
-## Enable the Performance Bar via the Admin panel
+## Enable the Performance Bar via the Admin Area
 
 The GitLab Performance Bar is disabled by default. To enable it for a given group:
 

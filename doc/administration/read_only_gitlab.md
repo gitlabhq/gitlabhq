@@ -68,7 +68,7 @@ the database is read-only:
 
 1. Take a [GitLab backup](../raketasks/backup_restore.md#back-up-gitlab)
    in case things don't go as expected.
-1. Enter PostgreSQL on the console as an admin user:
+1. Enter PostgreSQL on the console as an administrator user:
 
     ```shell
     sudo \

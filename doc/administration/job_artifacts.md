@@ -368,7 +368,7 @@ steps below.
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
 If the `expire` directive is not set explicitly in your pipeline, artifacts expire per the
-default artifacts expiration setting, which you can find in the [CI/CD Admin settings](../user/admin_area/settings/continuous_integration.md).
+default artifacts expiration setting, which you can find in the [CI/CD Administration settings](../user/admin_area/settings/continuous_integration.md).
 
 ## Validation for dependencies
 

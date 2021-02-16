@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Geo Nodes API **(PREMIUM SELF)**
 
 To interact with Geo node endpoints, you need to authenticate yourself as an
-admin.
+administrator.
 
 ## Create a new Geo node
 

@@ -38,8 +38,6 @@ RSpec.describe 'User sees user popover', :js do
     it "displays user popover in system note" do
       add_note("/assign @#{user.username}")
 
-      wait_for_requests
-
       find('.system-note-message .js-user-link').hover
 
       page.within(popover_selector) do

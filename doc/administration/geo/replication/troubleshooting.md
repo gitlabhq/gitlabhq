@@ -219,7 +219,7 @@ sudo gitlab-rake gitlab:geo:check
    ```
 
    - Ensure that you have added the secondary node in the Admin Area of the **primary** node.
-   - Ensure that you entered the `external_url` or `gitlab_rails['geo_node_name']` when adding the secondary node in the admin are of the **primary** node.
+   - Ensure that you entered the `external_url` or `gitlab_rails['geo_node_name']` when adding the secondary node in the Admin Area of the **primary** node.
    - Prior to GitLab 12.4, edit the secondary node in the Admin Area of the **primary** node and ensure that there is a trailing `/` in the `Name` field.
 
 1. Check returns `Exception: PG::UndefinedTable: ERROR:  relation "geo_nodes" does not exist`
@@ -780,7 +780,7 @@ node's URL matches its external URL.
 
 ## Fixing common errors
 
-This section documents common errors reported in the Admin UI and how to fix them.
+This section documents common errors reported in the Admin Area and how to fix them.
 
 ### Geo database configuration file is missing
 

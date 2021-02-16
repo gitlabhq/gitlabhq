@@ -27,8 +27,6 @@ RSpec.shared_examples 'move quick action' do
       it 'does not move the issue' do
         add_note("/move #{project_unauthorized.full_path}")
 
-        wait_for_requests
-
         expect(page).to have_content "Moved this issue to #{project_unauthorized.full_path}."
         expect(issue.reload).to be_open
       end
@@ -37,8 +35,6 @@ RSpec.shared_examples 'move quick action' do
     context 'when the project is invalid' do
       it 'does not move the issue' do
         add_note("/move not/valid")
-
-        wait_for_requests
 
         expect(page).to have_content "Failed to move this issue because target project doesn't exist."
         expect(issue.reload).to be_open

@@ -148,11 +148,11 @@ We have a workaround, based on toggling the access level of affected users:
 1. As an administrator, go to **Admin Area > Overview > Users**.
 1. Select the name of the affected user.
 1. In the user's administrative page, press **Edit** on the top right of the page.
-1. Change the user's access level from **Regular** to **Admin** (or vice versa),
+1. Change the user's access level from `Regular` to `Admin` (or vice versa),
    and press **Save changes** at the bottom of the page.
 1. Press **Edit** on the top right of the user's profile page
    again.
-1. Restore the user's original access level (**Regular** or **Admin**)
+1. Restore the user's original access level (`Regular` or `Admin`)
    and press **Save changes** again.
 
 The user should now be able to sign in.
@@ -191,7 +191,7 @@ have to be taken here:
   will associate this profile to the LDAP identity.
 
 The user can do either of these steps [in their
-profile](../../../user/profile/index.md#user-profile) or an admin can do it.
+profile](../../../user/profile/index.md#user-profile) or an administrator can do it.
 
 #### Debug LDAP user filter
 
@@ -358,17 +358,17 @@ the rails console.
    UIDs here should match the 'Identifier' from the LDAP identity checked earlier. If it doesn't,
    the user does not appear to be in the LDAP group.
 
-#### Admin privileges not granted
+#### Administrator privileges not granted
 
 When [Administrator sync](index.md#administrator-sync) has been configured
-but the configured users aren't granted the correct admin privileges, confirm
+but the configured users aren't granted the correct administrator privileges, confirm
 the following are true:
 
 - A [`group_base` is also configured](index.md#group-sync).
 - The configured `admin_group` in the `gitlab.rb` is a CN, rather than a DN or an array.
 - This CN falls under the scope of the configured `group_base`.
 - The members of the `admin_group` have already signed into GitLab with their LDAP
-  credentials. GitLab will only grant this admin access to the users whose
+  credentials. GitLab will only grant this administrator access to the users whose
   accounts are already connected to LDAP.
 
 If all the above are true and the users are still not getting access, [run a manual
@@ -477,7 +477,7 @@ this line will indicate the sync is finished:
 Finished syncing admin users for 'ldapmain' provider
 ```
 
-If [admin sync](index.md#administrator-sync) is not configured, you'll see a message
+If [administrator sync](index.md#administrator-sync) is not configured, you'll see a message
 stating as such:
 
 ```shell

@@ -229,7 +229,7 @@ keys must be manually replicated to the **secondary** node.
    gitlab-rake gitlab:geo:check
    ```
 
-Once added to the admin panel and restarted, the **secondary** node will automatically start
+Once added to the Geo administration page and restarted, the **secondary** node will automatically start
 replicating missing data from the **primary** node in a process known as **backfill**.
 Meanwhile, the **primary** node will start to notify each **secondary** node of any changes, so
 that the **secondary** node can act on those notifications immediately.
@@ -299,7 +299,7 @@ Currently, this is what is synced:
 
 ## Selective synchronization
 
-Geo supports selective synchronization, which allows admins to choose
+Geo supports selective synchronization, which allows administrators to choose
 which projects should be synchronized by **secondary** nodes.
 A subset of projects can be chosen, either by group or by storage shard. The
 former is ideal for replicating data belonging to a subset of users, while the

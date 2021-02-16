@@ -78,7 +78,7 @@ from [owasp.org](https://owasp.org/).
 ### Who has administrative capabilities in the application?
 
 - Nothing Geo-specific. Any user where `admin: true` is set in the database is
-  considered an admin with super-user privileges.
+  considered an administrator with super-user privileges.
 - See also: [more granular access control](https://gitlab.com/gitlab-org/gitlab/-/issues/18242)
   (not Geo-specific).
 - Much of Geo’s integration (database replication, for instance) must be

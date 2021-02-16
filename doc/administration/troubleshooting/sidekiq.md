@@ -221,7 +221,7 @@ It is possible to use [Sidekiq API](https://github.com/mperham/sidekiq/wiki/API)
 to perform a number of troubleshooting steps on Sidekiq.
 
 These are the administrative commands and it should only be used if currently
-admin interface is not suitable due to scale of installation.
+administration interface is not suitable due to scale of installation.
 
 All these commands should be run using `gitlab-rails console`.
 

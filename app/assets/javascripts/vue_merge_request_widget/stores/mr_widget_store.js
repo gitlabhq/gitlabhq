@@ -172,11 +172,6 @@ export default class MergeRequestStore {
     this.canBeMerged = mergeRequest.mergeStatus === 'can_be_merged';
     this.canMerge = mergeRequest.userPermissions.canMerge;
     this.ciStatus = pipeline?.status.toLowerCase();
-
-    if (pipeline?.warnings && this.ciStatus === 'success') {
-      this.ciStatus = `${this.ciStatus}-with-warnings`;
-    }
-
     this.commitsCount = mergeRequest.commitCount || 10;
     this.branchMissing = !mergeRequest.sourceBranchExists || !mergeRequest.targetBranchExists;
     this.hasConflicts = mergeRequest.conflicts;

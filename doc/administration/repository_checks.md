@@ -12,8 +12,8 @@ type: reference
 Git has a built-in mechanism, [`git fsck`](https://git-scm.com/docs/git-fsck), to verify the
 integrity of all data committed to a repository. GitLab administrators
 can trigger such a check for a project via the project page under the
-admin panel. The checks run asynchronously so it may take a few minutes
-before the check result is visible on the project admin page. If the
+Admin Area. The checks run asynchronously so it may take a few minutes
+before the check result is visible on the project Admin Area. If the
 checks failed you can see their output on in the
 [`repocheck.log` file.](logs.md#repochecklog)
 
@@ -31,8 +31,7 @@ failures can be found at `/admin/projects?last_repository_check_failed=1`.
 
 ## Disabling periodic checks
 
-You can disable the periodic checks on the **Settings** page of the admin
-panel.
+You can disable the periodic checks on the **Settings** page of the Admin Area.
 
 ## What to do if a check failed
 

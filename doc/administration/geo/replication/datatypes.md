@@ -70,7 +70,7 @@ Communication is done via Gitaly's own gRPC API. There are three possible ways o
 
 - Using regular Git clone/fetch from one Geo node to another (with special authentication).
 - Using repository snapshots (for when the first method fails or repository is corrupt).
-- Manual trigger from the Admin UI (a combination of both of the above).
+- Manual trigger from the Admin Area (a combination of both of the above).
 
 Each project can have at most 3 different repositories:
 

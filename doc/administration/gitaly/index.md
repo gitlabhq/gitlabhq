@@ -19,7 +19,7 @@ In the Gitaly documentation:
   - [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell).
   - [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse).
 
-GitLab end users do not have direct access to Gitaly. Gitaly only manages Git
+GitLab end users do not have direct access to Gitaly. Gitaly manages only Git
 repository access for GitLab. Other types of GitLab data aren't accessed using Gitaly.
 
 <!-- vale gitlab.FutureTense = NO -->
@@ -91,8 +91,8 @@ When running Gitaly on its own server, note the following regarding GitLab versi
 - From GitLab 11.4, Gitaly was able to serve all Git requests without requiring a shared NFS mount
   for Git repository data, except for the
   [Elasticsearch indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).
-- From GitLab 11.8, the Elasticsearch indexer uses Gitaly for data access as well. NFS can still be
-  leveraged for redundancy on block-level Git data, but only has to be mounted on the Gitaly
+- From GitLab 11.8, the Elasticsearch indexer also uses Gitaly for data access. NFS can still be
+  leveraged for redundancy on block-level Git data, but should be mounted only on the Gitaly
   servers.
 - From GitLab 11.8 to 12.2, it is possible to use Elasticsearch in a Gitaly setup that doesn't use
   NFS. To use Elasticsearch in these versions, the
@@ -497,16 +497,16 @@ gitaly['certificate_path'] = "/etc/gitlab/ssl/cert.pem"
 gitaly['key_path'] = "/etc/gitlab/ssl/key.pem"
 ```
 
-`path` can only be included for storage shards on the local Gitaly server.
+`path` can be included only for storage shards on the local Gitaly server.
 If it's excluded, default Git storage directory is used for that storage shard.
 
 ### Disable Gitaly where not required (optional)
 
 If you run Gitaly [as a remote service](#run-gitaly-on-its-own-server), consider
-disabling the local Gitaly service that runs on your GitLab server by default, and only run it
-where required.
+disabling the local Gitaly service that runs on your GitLab server by default, and run it
+only where required.
 
-Disabling Gitaly on the GitLab instance only makes sense when you run GitLab in a custom cluster configuration, where
+Disabling Gitaly on the GitLab instance makes sense only when you run GitLab in a custom cluster configuration, where
 Gitaly runs on a separate machine from the GitLab instance. Disabling Gitaly on all machines in the cluster is not
 a valid configuration (some machines much act as Gitaly servers).
 
@@ -724,7 +724,7 @@ Gitaly Go process. Some examples of things that are implemented in `gitaly-ruby`
 
 We recommend:
 
-- At least 300MB memory per worker.
+- At least 300 MB memory per worker.
 - No more than one worker per core.
 
 NOTE:
@@ -752,7 +752,7 @@ settings:
    gitaly['ruby_num_workers'] = 4
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file, and then [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
 **For installations from source**
 
@@ -810,9 +810,9 @@ You can observe the behavior of this queue using the Gitaly logs and Prometheus:
   - `gitaly_rate_limiting_seconds`.
 
 NOTE:
-Though the name of the Prometheus metric contains `rate_limiting`, it is a concurrency limiter, not
-a rate limiter. If a Gitaly client makes 1000 requests in a row very quickly, concurrency does not
-exceed 1 and the concurrency limiter has no effect.
+Although the name of the Prometheus metric contains `rate_limiting`, it's a concurrency limiter, not
+a rate limiter. If a Gitaly client makes 1,000 requests in a row very quickly, concurrency doesn't
+exceed 1, and the concurrency limiter has no effect.
 
 ## Background Repository Optimization
 
@@ -880,7 +880,7 @@ see something like this:
 {enforced="true",status="ok"}  4424.985419441742
 ```
 
-There may also be other numbers with rate 0. We only care about the non-zero numbers.
+There may also be other numbers with rate 0. We care only about the non-zero numbers.
 
 The only non-zero number should have `enforced="true",status="ok"`. If you have other non-zero
 numbers, something is wrong in your configuration.
@@ -939,7 +939,7 @@ After the new token is set, and all services involved have been restarted, you w
 - `status="would be ok"`.
 - `status="denied"`.
 
-After the new token has been picked up by all Gitaly clients and Gitaly servers, the
+After the new token is picked up by all Gitaly clients and Gitaly servers, the
 **only non-zero rate** should be `enforced="false",status="would be ok"`.
 
 ### Disable "auth transitioning" mode
@@ -1145,7 +1145,7 @@ PID=<Git process ID>
 sudo cat /proc/$PID/environ | tr '\0' '\n' | grep ^CORRELATION_ID=
 ```
 
-Please note that this method is not reliable for `git cat-file` processes because Gitaly
+This method isn't reliable for `git cat-file` processes, because Gitaly
 internally pools and re-uses those across RPCs.
 
 ### Observing `gitaly-ruby` traffic
@@ -1161,7 +1161,7 @@ not differentiate between `gitaly-ruby` and other RPCs, but in practice
 (as of GitLab 11.9), all gRPC calls made by Gitaly itself are internal
 calls from the main Gitaly process to one of its `gitaly-ruby` sidecars.
 
-Assuming your `grpc_client_handled_total` counter only observes Gitaly,
+Assuming your `grpc_client_handled_total` counter observes only Gitaly,
 the following query shows you RPCs are (most likely) internally
 implemented as calls to `gitaly-ruby`:
 
@@ -1306,8 +1306,8 @@ If this error occurs even though file permissions are correct, it's likely that
 the Gitaly server is experiencing
 [clock drift](https://en.wikipedia.org/wiki/Clock_drift).
 
-Please ensure that the Gitaly clients and servers are synchronized and use an NTP time
-server to keep them synchronized if possible.
+Ensure the Gitaly clients and servers are synchronized, and use an NTP time
+server to keep them synchronized, if possible.
 
 ### Praefect
 

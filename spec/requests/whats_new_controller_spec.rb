@@ -2,7 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe WhatsNewController do
+RSpec.describe WhatsNewController, :clean_gitlab_redis_cache do
+  after do
+    ReleaseHighlight.instance_variable_set(:@file_paths, nil)
+  end
+
   describe 'whats_new_path' do
     let(:item) { double(:item) }
     let(:highlights) { double(:highlight, items: [item], map: [item].map, next_page: 2) }

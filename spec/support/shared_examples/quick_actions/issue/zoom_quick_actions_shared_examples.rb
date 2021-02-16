@@ -10,8 +10,6 @@ RSpec.shared_examples 'zoom quick actions' do
       it 'skips addition silently' do
         add_note("/zoom #{zoom_link}")
 
-        wait_for_requests
-
         expect(page).not_to have_content('Zoom meeting added')
         expect(page).not_to have_content('Failed to add a Zoom meeting')
         expect(ZoomMeeting.canonical_meeting_url(issue.reload)).not_to eq(zoom_link)
@@ -21,8 +19,6 @@ RSpec.shared_examples 'zoom quick actions' do
     shared_examples 'success' do
       it 'adds a Zoom link' do
         add_note("/zoom #{zoom_link}")
-
-        wait_for_requests
 
         expect(page).to have_content('Zoom meeting added')
         expect(ZoomMeeting.canonical_meeting_url(issue.reload)).to eq(zoom_link)
@@ -34,8 +30,6 @@ RSpec.shared_examples 'zoom quick actions' do
 
       it 'cannot add invalid zoom link' do
         add_note("/zoom #{invalid_zoom_link}")
-
-        wait_for_requests
 
         expect(page).to have_content('Failed to add a Zoom meeting')
         expect(page).not_to have_content(zoom_link)
@@ -64,8 +58,6 @@ RSpec.shared_examples 'zoom quick actions' do
       it 'skips removal silently' do
         add_note('/remove_zoom')
 
-        wait_for_requests
-
         expect(page).not_to have_content('Zoom meeting removed')
         expect(page).not_to have_content('Failed to remove a Zoom meeting')
         expect(ZoomMeeting.canonical_meeting_url(issue.reload)).to be_nil
@@ -77,8 +69,6 @@ RSpec.shared_examples 'zoom quick actions' do
 
       it 'removes last Zoom link' do
         add_note('/remove_zoom')
-
-        wait_for_requests
 
         expect(page).to have_content('Zoom meeting removed')
         expect(ZoomMeeting.canonical_meeting_url(issue.reload)).to be_nil

@@ -70,7 +70,7 @@ other CDNs or Function as a Service (FaaS) systems should work using the same pr
 
    - `ORIGIN_HOSTNAME`: the hostname of your GitLab installation.
    - `STORAGE_TOKEN`: any arbitrary secure token. You can get a token by running
-     `pwgen -cn1 64` on a UNIX machine. Save this token for the admin panel, as
+     `pwgen -cn1 64` on a UNIX machine. Save this token for the Admin Area, as
      described in the [configuring](#configuring) section.
 
      ```javascript

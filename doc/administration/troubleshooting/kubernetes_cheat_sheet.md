@@ -154,7 +154,7 @@ and they will assist you with any issues you are having.
   - On the side of GitLab check Sidekiq log and Kubernetes log. When GitLab is installed
     via Helm Chart, `kubernetes.log` can be found inside the Sidekiq pod.
 
-- How to get your initial admin password <https://docs.gitlab.com/charts/installation/deployment.html#initial-login>:
+- How to get your initial administrator password <https://docs.gitlab.com/charts/installation/deployment.html#initial-login>:
 
   ```shell
   # find the name of the secret containing the password

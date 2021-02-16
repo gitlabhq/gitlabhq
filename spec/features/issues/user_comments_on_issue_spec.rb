@@ -39,8 +39,6 @@ RSpec.describe "User comments on issue", :js do
 
       add_note(comment)
 
-      wait_for_requests
-
       expect(page.find('pre code').text).to eq code_block_content
     end
 
@@ -50,8 +48,6 @@ RSpec.describe "User comments on issue", :js do
       comment = "```mermaid\n#{mermaid_content}\n```"
 
       add_note(comment)
-
-      wait_for_requests
 
       expect(page.find('svg.mermaid')).to have_content html_content
       within('svg.mermaid') { expect(page).not_to have_selector('img') }
