@@ -10,7 +10,7 @@ import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { __, s__ } from '~/locale';
 import { updateUserStatus } from '~/rest_api';
 import EmojiMenuInModal from './emoji_menu_in_modal';
-import { isUserBusy, isValidAvailibility } from './utils';
+import { isUserBusy } from './utils';
 
 const emojiMenuClass = 'js-modal-status-emoji-menu';
 export const AVAILABILITY_STATUS = {
@@ -46,7 +46,6 @@ export default {
     currentAvailability: {
       type: String,
       required: false,
-      validator: isValidAvailibility,
       default: '',
     },
     canSetUserAvailability: {

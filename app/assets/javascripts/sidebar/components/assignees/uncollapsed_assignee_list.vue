@@ -1,12 +1,14 @@
 <script>
 import { __, sprintf } from '~/locale';
 import AssigneeAvatarLink from './assignee_avatar_link.vue';
+import UserNameWithStatus from './user_name_with_status.vue';
 
 const DEFAULT_RENDER_COUNT = 5;
 
 export default {
   components: {
     AssigneeAvatarLink,
+    UserNameWithStatus,
   },
   props: {
     users: {
@@ -55,6 +57,9 @@ export default {
     toggleShowLess() {
       this.showLess = !this.showLess;
     },
+    userAvailability(u) {
+      return u?.availability || '';
+    },
   },
 };
 </script>
@@ -68,7 +73,7 @@ export default {
     :issuable-type="issuableType"
   >
     <div class="ml-2 gl-line-height-normal">
-      <div>{{ firstUser.name }}</div>
+      <user-name-with-status :name="firstUser.name" :availability="userAvailability(firstUser)" />
       <div>{{ username }}</div>
     </div>
   </assignee-avatar-link>

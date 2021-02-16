@@ -29,130 +29,859 @@ The Metrics Dictionary is based on the following metrics definition YAML files:
 Each table includes a `milestone`, which corresponds to the GitLab version when the metric
 was released.
 
-## counts.deployments
+## `active_user_count`
+
+This is named the instance_user_count in the Versions application.
+
+| field | value |
+| --- | --- |
+| `key_path` | **`active_user_count`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `container_registry_enabled`
+
+Whether container registry is enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`container_registry_enabled`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.deployments`
 
 Total deployments count
 
 | field | value |
 | --- | --- |
-| `key_path` | **counts.deployments** |
-| `value_type` | integer |
+| `key_path` | **`counts.deployments`** |
+| `product_section` | ops |
 | `product_stage` | release |
+| `product_group` | `group::ops release` |
+| `value_type` | number |
 | `status` | data_available |
 | `milestone` | 8.12 |
 | `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/735) |
-| `product_group` | `group::ops release` |
 | `time_frame` | all |
 | `data_source` | Database |
 | `distribution` | ee, ce |
-| `tier` | free, starter, premium, ultimate, bronze, silver, gold |
+| `tier` | free, premium, ultimate |
 
-## counts.geo_nodes
+## `counts.geo_nodes`
 
 Total number of sites in a Geo deployment
 
 | field | value |
 | --- | --- |
-| `key_path` | **counts.geo_nodes** |
-| `value_type` | integer |
-| `product_category` | disaster_recovery |
+| `key_path` | **`counts.geo_nodes`** |
+| `product_section` | enablement |
 | `product_stage` | enablement |
+| `product_group` | `group::geo` |
+| `product_category` | disaster_recovery |
+| `value_type` | integer |
 | `status` | data_available |
 | `milestone` | 11.2 |
-| `product_group` | `group::geo` |
 | `time_frame` | all |
 | `data_source` | Database |
 | `distribution` | ee |
 | `tier` | premium, ultimate |
 
-## counts_monthly.deployments
+## `counts.license_management_jobs`
+
+Name on the GitLab license
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.license_management_jobs`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `counts_monthly.deployments`
 
 Total deployments count for recent 28 days
 
 | field | value |
 | --- | --- |
-| `key_path` | **counts_monthly.deployments** |
-| `value_type` | integer |
+| `key_path` | **`counts_monthly.deployments`** |
+| `product_section` | ops |
 | `product_stage` | release |
+| `product_group` | `group::ops release` |
+| `product_category` |  |
+| `value_type` | number |
 | `status` | data_available |
 | `milestone` | 13.2 |
 | `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35493) |
-| `product_group` | `group::ops release` |
 | `time_frame` | 28d |
 | `data_source` | Database |
 | `distribution` | ee, ce |
-| `tier` | free, starter, premium, ultimate, bronze, silver, gold |
+| `tier` | free, premium, ultimate |
 
-## database.adapter
+## `database.adapter`
 
 This metric only returns a value of PostgreSQL in supported versions of GitLab. It could be removed from the usage ping. Historically MySQL was also supported.
 
 | field | value |
 | --- | --- |
-| `key_path` | **database.adapter** |
-| `value_type` | string |
-| `product_category` | collection |
-| `product_stage` | growth |
-| `status` | data_available |
+| `key_path` | **`database.adapter`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
 | `product_group` | `group::enablement distribution` |
+| `product_category` | collection |
+| `value_type` | string |
+| `status` | data_available |
 | `time_frame` | none |
 | `data_source` | Database |
 | `distribution` | ee, ce |
-| `tier` | free, starter, premium, ultimate, bronze, silver, gold |
+| `tier` | free, premium, ultimate |
 
-## recorded_at
+## `dependency_proxy_enabled`
+
+Whether dependency proxy is enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`dependency_proxy_enabled`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `elasticsearch_enabled`
+
+Whether Elasticsearch is enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`elasticsearch_enabled`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `gitaly.clusters`
+
+Total GitLab Managed clusters both enabled and disabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`gitaly.clusters`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `gitaly.servers`
+
+Total Gitalty Servers
+
+| field | value |
+| --- | --- |
+| `key_path` | **`gitaly.servers`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `gitaly.version`
+
+Version of Gitaly
+
+| field | value |
+| --- | --- |
+| `key_path` | **`gitaly.version`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `gitlab_pages.enabled`
+
+Whether GitLab Pages is enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`gitlab_pages.enabled`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `gitlab_pages.version`
+
+The version number of GitLab Pages
+
+| field | value |
+| --- | --- |
+| `key_path` | **`gitlab_pages.version`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `gitlab_shared_runners_enabled`
+
+Whether shared runners is enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`gitlab_shared_runners_enabled`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `grafana_link_enabled`
+
+Whether Grafana is enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`grafana_link_enabled`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `gravatar_enabled`
+
+Whether gravatar is enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`gravatar_enabled`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `historical_max_users`
+
+The maximum active user count. Active is defined in UsersStatistics model.
+
+| field | value |
+| --- | --- |
+| `key_path` | **`historical_max_users`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `hostname`
+
+Host name of GitLab instance
+
+| field | value |
+| --- | --- |
+| `key_path` | **`hostname`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `instance_auto_devops_enabled`
+
+Whether auto DevOps is enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`instance_auto_devops_enabled`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `ldap_enabled`
+
+Whether LDAP is enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`ldap_enabled`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `license_expires_at`
+
+The date the license ends
+
+| field | value |
+| --- | --- |
+| `key_path` | **`license_expires_at`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `license_id`
+
+The ID of the license
+
+| field | value |
+| --- | --- |
+| `key_path` | **`license_id`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `license_md5`
+
+The license key of the GitLab instance
+
+| field | value |
+| --- | --- |
+| `key_path` | **`license_md5`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `license_plan`
+
+The plan of the GitLab license
+
+| field | value |
+| --- | --- |
+| `key_path` | **`license_plan`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `license_starts_at`
+
+The date the license starts
+
+| field | value |
+| --- | --- |
+| `key_path` | **`license_starts_at`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `license_subscription_id`
+
+Licese zuora_subscription_id
+
+| field | value |
+| --- | --- |
+| `key_path` | **`license_subscription_id`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `license_trial`
+
+Whether this is a trial license or not
+
+| field | value |
+| --- | --- |
+| `key_path` | **`license_trial`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `license_trial_ends_on`
+
+Date the license ends on
+
+| field | value |
+| --- | --- |
+| `key_path` | **`license_trial_ends_on`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `license_user_count`
+
+The number of users included in the license
+
+| field | value |
+| --- | --- |
+| `key_path` | **`license_user_count`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `licensee.Company`
+
+Company on the GitLab license
+
+| field | value |
+| --- | --- |
+| `key_path` | **`licensee.Company`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `licensee.Email`
+
+Email on the GitLab license
+
+| field | value |
+| --- | --- |
+| `key_path` | **`licensee.Email`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `licensee.Name`
+
+Name on the GitLab license
+
+| field | value |
+| --- | --- |
+| `key_path` | **`licensee.Name`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `mattermost_enabled`
+
+Whether Mattermost is enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`mattermost_enabled`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `omniauth_enabled`
+
+Whether OmniAuth is enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`omniauth_enabled`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `prometheus_enabled`
+
+Whether the bundled Prometheus is enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`prometheus_enabled`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `prometheus_metrics_enabled`
+
+Whether Prometheus Metrics endpoint is enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`prometheus_metrics_enabled`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `recorded_at`
 
 When the Usage Ping computation was started
 
 | field | value |
 | --- | --- |
-| `key_path` | **recorded_at** |
-| `value_type` | string |
-| `product_category` | collection |
+| `key_path` | **`recorded_at`** |
+| `product_section` | growth |
 | `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | string |
 | `status` | data_available |
 | `milestone` | 8.1 |
 | `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/557) |
-| `product_group` | `group::product intelligence` |
 | `time_frame` | none |
 | `data_source` | Ruby |
 | `distribution` | ee, ce |
-| `tier` | free, starter, premium, ultimate, bronze, silver, gold |
+| `tier` | free, premium, ultimate |
 
-## redis_hll_counters.issues_edit.g_project_management_issue_title_changed_weekly
+## `recording_ce_finished_at`
+
+When the core features were computed
+
+| field | value |
+| --- | --- |
+| `key_path` | **`recording_ce_finished_at`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `recording_ee_finished_at`
+
+When the EE-specific features were computed
+
+| field | value |
+| --- | --- |
+| `key_path` | **`recording_ee_finished_at`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_title_changed_weekly`
 
 Distinct users count that changed issue title in a group for last recent week
 
 | field | value |
 | --- | --- |
-| `key_path` | **redis_hll_counters.issues_edit.g_project_management_issue_title_changed_weekly** |
-| `value_type` | integer |
-| `product_category` | issue_tracking |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_title_changed_weekly`** |
 | `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | issue_tracking |
+| `value_type` | number |
 | `status` | data_available |
 | `milestone` | 13.6 |
 | `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/issues/229918) |
-| `product_group` | `group::project management` |
 | `time_frame` | 7d |
 | `data_source` | Redis_hll |
 | `distribution` | ee, ce |
-| `tier` | free, starter, premium, ultimate, bronze, silver, gold |
+| `tier` | free, premium, ultimate |
 
-## uuid
+## `reply_by_email_enabled`
+
+Whether incoming email is setup
+
+| field | value |
+| --- | --- |
+| `key_path` | **`reply_by_email_enabled`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `signup_enabled`
+
+Whether public signup is enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`signup_enabled`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `uuid`
 
 GitLab instance unique identifier
 
 | field | value |
 | --- | --- |
-| `key_path` | **uuid** |
-| `value_type` | string |
-| `product_category` | collection |
+| `key_path` | **`uuid`** |
+| `product_section` | growth |
 | `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | string |
 | `status` | data_available |
 | `milestone` | 9.1 |
 | `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1521) |
-| `product_group` | `group::product intelligence` |
 | `time_frame` | none |
 | `data_source` | Database |
 | `distribution` | ee, ce |
-| `tier` | free, starter, premium, ultimate, bronze, silver, gold |
+| `tier` | free, premium, ultimate |
+
+## `web_ide_clientside_preview_enabled`
+
+Whether web ide clientside preview is enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`web_ide_clientside_preview_enabled`** |
+| `product_section` | growth |
+| `product_stage` | growth |
+| `product_group` | `group::product intelligence` |
+| `product_category` | collection |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |

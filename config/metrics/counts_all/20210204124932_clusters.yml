@@ -1,0 +1,14 @@
+---
+key_path: gitaly.clusters
+description: Total GitLab Managed clusters both enabled and disabled
+product_section: growth
+product_stage: growth
+product_group: group::product intelligence
+product_category: collection
+value_type: number
+status: data_available
+time_frame: all
+data_source:
+distribution: []
+tier: []
+skip_validation: true

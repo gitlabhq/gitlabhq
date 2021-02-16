@@ -61,6 +61,9 @@ export default {
     isUpstream() {
       return this.type === UPSTREAM;
     },
+    minWidth() {
+      return this.isUpstream ? 0 : this.$options.minWidth;
+    },
   },
   methods: {
     getPipelineData(pipeline) {
@@ -132,8 +135,8 @@ export default {
 
       this.$emit('pipelineExpandToggle', jobName, expanded);
     },
-    showDownstreamContainer(id) {
-      return !this.isUpstream && (this.isExpanded(id) || this.isLoadingPipeline(id));
+    showContainer(id) {
+      return this.isExpanded(id) || this.isLoadingPipeline(id);
     },
   },
 };
@@ -164,8 +167,8 @@ export default {
             @pipelineExpandToggle="onPipelineExpandToggle"
           />
           <div
-            v-if="showDownstreamContainer(pipeline.id)"
-            :style="{ minWidth: $options.minWidth }"
+            v-if="showContainer(pipeline.id)"
+            :style="{ minWidth }"
             class="gl-display-inline-block"
           >
             <pipeline-graph

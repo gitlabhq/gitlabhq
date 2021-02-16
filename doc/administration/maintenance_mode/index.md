@@ -4,24 +4,24 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab in maintenance mode **(PREMIUM SELF)**
+# GitLab Maintenance Mode **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2149) in GitLab Premium 13.9.
 
-Maintenance mode allows administrators to reduce write operations to a minimum while maintenance tasks are performed. The main goal is to block all external actions that change the internal state, including the PostgreSQL database, but especially files, Git repositories, Container repositories, etc.
+Maintenance Mode allows administrators to reduce write operations to a minimum while maintenance tasks are performed. The main goal is to block all external actions that change the internal state, including the PostgreSQL database, but especially files, Git repositories, Container repositories, etc.
 
-Once maintenance mode is enabled, in-progress actions will finish relatively quickly since no new actions are coming in, and internal state changes will be minimal.
+Once Maintenance Mode is enabled, in-progress actions will finish relatively quickly since no new actions are coming in, and internal state changes will be minimal.
 In that state, various maintenance tasks are easier, and services can be stopped completely or be
 further degraded for a much shorter period of time than might otherwise be needed, for example stopping cron jobs and draining queues should be fairly quick.
 
-Maintenance mode allows most external actions that do not change internal state. On a high-level, HTTP POST, PUT, PATCH, and DELETE requests are blocked and a detailed overview of [how special cases are handled](#rest-api) is available.
+Maintenance Mode allows most external actions that do not change internal state. On a high-level, HTTP POST, PUT, PATCH, and DELETE requests are blocked and a detailed overview of [how special cases are handled](#rest-api) is available.
 
-## Enable maintenance mode
+## Enable Maintenance Mode
 
-There are three ways to enable maintenance mode as an administrator:
+There are three ways to enable Maintenance Mode as an administrator:
 
 - **Web UI**:
-  1. Go to **Admin Area > Settings > General**, expand **Maintenance mode**, and toggle **Enable maintenance mode**. 
+  1. Go to **Admin Area > Settings > General**, expand **Maintenance Mode**, and toggle **Enable Maintenance Mode**.
      You can optionally add a message for the banner as well.
 
   1. Click **Save** for the changes to take effect.
@@ -39,12 +39,12 @@ There are three ways to enable maintenance mode as an administrator:
   ::Gitlab::CurrentSettings.update_attributes!(maintenance_mode_message: "New message")
   ```
 
-## Disable maintenance mode
+## Disable Maintenance Mode
 
-There are three ways to disable maintenance mode:
+There are three ways to disable Maintenance Mode:
 
 - **Web UI**:
-  1. Go to **Admin Area > Settings > General**, expand **Maintenance mode**, and toggle **Enable maintenance mode**.
+  1. Go to **Admin Area > Settings > General**, expand **Maintenance Mode**, and toggle **Enable Maintenance Mode**.
 
   1. Click **Save** for the changes to take effect.
 
@@ -60,14 +60,14 @@ There are three ways to disable maintenance mode:
   ::Gitlab::CurrentSettings.update_attributes!(maintenance_mode: false)
   ```
 
-## Behavior of GitLab features in maintenance mode
+## Behavior of GitLab features in Maintenance Mode
 
-When maintenance mode is enabled, a banner is displayed at the top of the page.
+When Maintenance Mode is enabled, a banner is displayed at the top of the page.
 The banner can be customized with a specific message.
 
 An error is displayed when a user tries to perform a write operation that isn't allowed.
 
-![Maintenance mode banner and error message](maintenance_mode_error_message.png)
+![Maintenance Mode banner and error message](maintenance_mode_error_message.png)
 
 NOTE:
 In some cases, the visual feedback from an action could be misleading, for example when starring a project, the **Star** button changes to show the **Unstar** action, however, this is only the frontend update, and it doesn't take into account the failed status of the POST request. These visual bugs are to be fixed [in follow-up iterations](https://gitlab.com/gitlab-org/gitlab/-/issues/295197).
@@ -75,7 +75,7 @@ In some cases, the visual feedback from an action could be misleading, for examp
 ### Admin functions
 
 Systems administrators can edit the application settings. This will allow
-them to disable maintenance mode after it's been enabled.
+them to disable Maintenance Mode after it's been enabled.
 
 ### Authentication
 
@@ -127,24 +127,25 @@ For most JSON requests, POST, PUT, PATCH, and DELETE are blocked, and the API re
 
 ### Continuous Integration
 
-In maintenance mode:
+- No new jobs or pipelines start, scheduled or otherwise.
+- Jobs that were already running continue to have a `running` status in the GitLab UI,
+  even if they finish running on the GitLab Runner.
+- Jobs in the `running` state for longer than the project's time limit do not time out.
+- Pipelines cannot be started, retried or canceled. No new jobs can be created either.
 
-- No new jobs or pipelines, scheduled or otherwise, will start in maintenance mode.
-- Those jobs that were already running, will continue to show status as 'running' in the Web UI, even if they finish running on GitLab Runner.
-**Note** It is recommended that you restart already running pipelines after maintenance mode is turned off.
-- If the job has been in 'running' state for longer than the project's time limit,
-  it will **not** time out.
-- Pipelines cannot be started, retried or canceled in maintenance mode.
-  No new jobs can be created either.
+After Maintenance Mode is disabled, new jobs are picked up again. Jobs that were
+in the `running` state before enabling Maintenance Mode resume and their logs start
+updating again.
 
-Once maintenance mode is disabled, new jobs are picked up again. The jobs that were in the running state before enabling maintenance mode, will resume, and their logs will start getting updated again.
+NOTE:
+It is recommended that you restart previously `running` pipelines after Maintenance Mode
+is turned off.
 
 ### Deployments
 
 Deployments won't go through because pipelines will be unfinished.
 
-It is recommended to disable auto deploys during maintenance mode, and enable
-them once maintenance mode is disabled.
+It is recommended to disable auto deploys during Maintenance Mode, and enable them once it is disabled.
 
 #### Terraform integration
 
@@ -178,9 +179,9 @@ You can monitor queues and disable jobs in **Admin Area > Monitoring > Backgroun
 
 ### Geo secondaries
 
-When primary is in maintenance mode, secondary will also automatically go into maintenance mode.
+When primary is in Maintenance Mode, secondary will also automatically go into Maintenance Mode.
 
-It is important that you do not disable replication before enabling maintenance mode.
+It is important that you do not disable replication before enabling Maintenance Mode.
 
 Replication and verification will continue to work but proxied Git pushes to primary will not work.
 
@@ -198,7 +199,7 @@ SAST and Secret Detection cannot be initiated because they depend on passing CI 
 
 In the use case of [a planned failover](../geo/disaster_recovery/planned_failover.md), a few writes in the primary database are acceptable, since they will be replicated quickly and are not significant in number.
 
-For the same reason we don't automatically block background jobs when maintenance mode is enabled.
+For the same reason we don't automatically block background jobs when Maintenance Mode is enabled.
 
 The resulting database writes are acceptable. Here, the trade-off is between more service degradation and the completion of replication.
 

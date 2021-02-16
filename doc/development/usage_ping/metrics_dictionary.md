@@ -59,8 +59,13 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1521
 product_group: group::product intelligence
 time_frame: none
 data_source: database
-distribution: [ee, ce]
-tier: ['free', 'starter', 'premium', 'ultimate', 'bronze', 'silver', 'gold']
+distribution:
+- ee
+- ce
+tier:
+- free
+- premium
+- ultimate
 ```
 
 ## Create a new metric definition

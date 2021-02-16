@@ -187,4 +187,26 @@ describe('CollapsedAssigneeList component', () => {
       expect(findAvatarCounter().text()).toEqual(`${DEFAULT_MAX_COUNTER}+`);
     });
   });
+
+  const [busyUser] = UsersMockHelper.createNumberRandomUsers(1);
+  const [canMergeUser] = UsersMockHelper.createNumberRandomUsers(1);
+  busyUser.availability = 'busy';
+  canMergeUser.can_merge = true;
+
+  describe.each`
+    users                       | busy | canMerge | expected
+    ${[busyUser, canMergeUser]} | ${1} | ${1}     | ${`${busyUser.name} (Busy), ${canMergeUser.name} (1/2 can merge)`}
+    ${[busyUser]}               | ${1} | ${0}     | ${`${busyUser.name} (Busy) (cannot merge)`}
+    ${[canMergeUser]}           | ${0} | ${1}     | ${`${canMergeUser.name}`}
+    ${[]}                       | ${0} | ${0}     | ${'Assignee(s)'}
+  `(
+    'with $users.length users, $busy is busy and $canMerge that can merge',
+    ({ users, expected }) => {
+      it('generates the tooltip text', () => {
+        createComponent({ users });
+
+        expect(getTooltipTitle()).toEqual(expected);
+      });
+    },
+  );
 });

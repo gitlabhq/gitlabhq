@@ -84,7 +84,7 @@ export default {
 };
 </script>
 <template>
-  <main-graph-wrapper class="gl-px-6">
+  <main-graph-wrapper class="gl-px-6" data-testid="stage-column">
     <template #stages>
       <div
         data-testid="stage-column-title"

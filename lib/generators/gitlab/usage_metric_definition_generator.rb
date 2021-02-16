@@ -45,9 +45,13 @@ module Gitlab
     end
 
     def distribution
-      value = ['ce']
-      value << 'ee' if ee?
-      value
+      value = ['- ce']
+      value << '- ee' if ee?
+      value.join("\n")
+    end
+
+    def milestone
+      Gitlab::VERSION.match('(\d+\.\d+)').captures.first
     end
 
     private

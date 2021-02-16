@@ -4,11 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Internal workings of maintenance mode **(PREMIUM SELF)**
+# Internal workings of GitLab Maintenance Mode **(PREMIUM SELF)**
 
-## Where is maintenance mode enforced?
+## Where is Maintenance Mode enforced?
 
-Maintenance mode **only** blocks writes from HTTP and SSH requests at the application level in a few key places within the rails application.
+GitLab Maintenance Mode **only** blocks writes from HTTP and SSH requests at the application level in a few key places within the rails application.
 [Search the codebase for `maintenance_mode?`.](https://gitlab.com/search?utf8=%E2%9C%93&search=maintenance_mode%3F&group_id=9970&project_id=278964&scope=blobs&search_code=false&snippets=false&repository_ref=)
 
 - [the read-only database method](https://gitlab.com/gitlab-org/gitlab/blob/2425e9de50c678413ceaad6ee3bf66f42b7e228c/ee/lib/ee/gitlab/database.rb#L13), which toggles special behavior when we are not allowed to write to the database. [Search the codebase for `Gitlab::Database.read_only?`.](https://gitlab.com/search?utf8=%E2%9C%93&search=Gitlab%3A%3ADatabase.read_only%3F&group_id=9970&project_id=278964&scope=blobs&search_code=false&snippets=false&repository_ref=)

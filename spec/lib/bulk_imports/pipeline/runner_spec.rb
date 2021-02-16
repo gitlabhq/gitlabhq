@@ -39,6 +39,8 @@ RSpec.describe BulkImports::Pipeline::Runner do
         extractor BulkImports::Extractor
         transformer BulkImports::Transformer
         loader BulkImports::Loader
+
+        def after_run(_); end
       end
 
       stub_const('BulkImports::MyPipeline', pipeline)
@@ -102,6 +104,13 @@ RSpec.describe BulkImports::Pipeline::Runner do
               pipeline_class: 'BulkImports::MyPipeline',
               pipeline_step: :loader,
               step_class: 'BulkImports::Loader'
+            )
+          expect(logger).to receive(:info)
+            .with(
+              bulk_import_entity_id: entity.id,
+              bulk_import_entity_type: 'group_entity',
+              pipeline_class: 'BulkImports::MyPipeline',
+              pipeline_step: :after_run
             )
           expect(logger).to receive(:info)
             .with(

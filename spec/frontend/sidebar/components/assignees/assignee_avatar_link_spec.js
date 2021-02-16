@@ -79,4 +79,34 @@ describe('AssigneeAvatarLink component', () => {
       });
     },
   );
+
+  describe.each`
+    tooltipHasName | availability | canMerge | expected
+    ${true}        | ${'Busy'}    | ${false} | ${'Root (Busy) (cannot merge)'}
+    ${true}        | ${'Busy'}    | ${true}  | ${'Root (Busy)'}
+    ${true}        | ${''}        | ${false} | ${'Root (cannot merge)'}
+    ${true}        | ${''}        | ${true}  | ${'Root'}
+    ${false}       | ${'Busy'}    | ${false} | ${'Cannot merge'}
+    ${false}       | ${'Busy'}    | ${true}  | ${''}
+    ${false}       | ${''}        | ${false} | ${'Cannot merge'}
+    ${false}       | ${''}        | ${true}  | ${''}
+  `(
+    "with tooltipHasName=$tooltipHasName and availability='$availability' and canMerge=$canMerge",
+    ({ tooltipHasName, availability, canMerge, expected }) => {
+      beforeEach(() => {
+        createComponent({
+          tooltipHasName,
+          user: {
+            ...userDataMock(),
+            can_merge: canMerge,
+            availability,
+          },
+        });
+      });
+
+      it('sets tooltip to $expected', () => {
+        expect(findTooltipText()).toBe(expected);
+      });
+    },
+  );
 });

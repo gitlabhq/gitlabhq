@@ -2,7 +2,7 @@ import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
-import { DOWNSTREAM, GRAPHQL } from '~/pipelines/components/graph/constants';
+import { DOWNSTREAM, GRAPHQL, UPSTREAM } from '~/pipelines/components/graph/constants';
 import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
 import LinkedPipeline from '~/pipelines/components/graph/linked_pipeline.vue';
 import LinkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines_column.vue';
@@ -17,7 +17,7 @@ const processedPipeline = pipelineWithUpstreamDownstream(mockPipelineResponse);
 
 describe('Linked Pipelines Column', () => {
   const defaultProps = {
-    columnTitle: 'Upstream',
+    columnTitle: 'Downstream',
     linkedPipelines: processedPipeline.downstream,
     type: DOWNSTREAM,
   };
@@ -45,14 +45,15 @@ describe('Linked Pipelines Column', () => {
     });
   };
 
-  const createComponentWithApollo = (
+  const createComponentWithApollo = ({
     mountFn = shallowMount,
     getPipelineDetailsHandler = jest.fn().mockResolvedValue(wrappedPipelineReturn),
-  ) => {
+    props = {},
+  } = {}) => {
     const requestHandlers = [[getPipelineDetails, getPipelineDetailsHandler]];
 
     const apolloProvider = createMockApollo(requestHandlers);
-    createComponent({ apolloProvider, mountFn });
+    createComponent({ apolloProvider, mountFn, props });
   };
 
   afterEach(() => {
@@ -86,34 +87,90 @@ describe('Linked Pipelines Column', () => {
       await wrapper.vm.$nextTick();
     };
 
-    describe('when successful', () => {
-      beforeEach(() => {
-        createComponentWithApollo(mount);
+    describe('downstream', () => {
+      describe('when successful', () => {
+        beforeEach(() => {
+          createComponentWithApollo({ mountFn: mount });
+        });
+
+        it('toggles the pipeline visibility', async () => {
+          expect(findPipelineGraph().exists()).toBe(false);
+          await clickExpandButtonAndAwaitTimers();
+          expect(findPipelineGraph().exists()).toBe(true);
+          await clickExpandButton();
+          expect(findPipelineGraph().exists()).toBe(false);
+        });
       });
 
-      it('toggles the pipeline visibility', async () => {
-        expect(findPipelineGraph().exists()).toBe(false);
-        await clickExpandButtonAndAwaitTimers();
-        expect(findPipelineGraph().exists()).toBe(true);
-        await clickExpandButton();
-        expect(findPipelineGraph().exists()).toBe(false);
+      describe('on error', () => {
+        beforeEach(() => {
+          createComponentWithApollo({
+            mountFn: mount,
+            getPipelineDetailsHandler: jest.fn().mockRejectedValue(new Error('GraphQL error')),
+          });
+        });
+
+        it('emits the error', async () => {
+          await clickExpandButton();
+          expect(wrapper.emitted().error).toEqual([[LOAD_FAILURE]]);
+        });
+
+        it('does not show the pipeline', async () => {
+          expect(findPipelineGraph().exists()).toBe(false);
+          await clickExpandButtonAndAwaitTimers();
+          expect(findPipelineGraph().exists()).toBe(false);
+        });
       });
     });
 
-    describe('on error', () => {
-      beforeEach(() => {
-        createComponentWithApollo(mount, jest.fn().mockRejectedValue(new Error('GraphQL error')));
+    describe('upstream', () => {
+      const upstreamProps = {
+        columnTitle: 'Upstream',
+        /*
+          Because the IDs need to match to work, rather
+          than make new mock data, we are representing
+          the upstream pipeline with the downstream data.
+        */
+        linkedPipelines: processedPipeline.downstream,
+        type: UPSTREAM,
+      };
+
+      describe('when successful', () => {
+        beforeEach(() => {
+          createComponentWithApollo({
+            mountFn: mount,
+            props: upstreamProps,
+          });
+        });
+
+        it('toggles the pipeline visibility', async () => {
+          expect(findPipelineGraph().exists()).toBe(false);
+          await clickExpandButtonAndAwaitTimers();
+          expect(findPipelineGraph().exists()).toBe(true);
+          await clickExpandButton();
+          expect(findPipelineGraph().exists()).toBe(false);
+        });
       });
 
-      it('emits the error', async () => {
-        await clickExpandButton();
-        expect(wrapper.emitted().error).toEqual([[LOAD_FAILURE]]);
-      });
+      describe('on error', () => {
+        beforeEach(() => {
+          createComponentWithApollo({
+            mountFn: mount,
+            getPipelineDetailsHandler: jest.fn().mockRejectedValue(new Error('GraphQL error')),
+            props: upstreamProps,
+          });
+        });
 
-      it('does not show the pipeline', async () => {
-        expect(findPipelineGraph().exists()).toBe(false);
-        await clickExpandButtonAndAwaitTimers();
-        expect(findPipelineGraph().exists()).toBe(false);
+        it('emits the error', async () => {
+          await clickExpandButton();
+          expect(wrapper.emitted().error).toEqual([[LOAD_FAILURE]]);
+        });
+
+        it('does not show the pipeline', async () => {
+          expect(findPipelineGraph().exists()).toBe(false);
+          await clickExpandButtonAndAwaitTimers();
+          expect(findPipelineGraph().exists()).toBe(false);
+        });
       });
     });
   });

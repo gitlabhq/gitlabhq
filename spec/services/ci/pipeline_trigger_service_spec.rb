@@ -45,6 +45,27 @@ RSpec.describe Ci::PipelineTriggerService do
             expect(result[:status]).to eq(:success)
           end
 
+          it 'stores the payload as a variable' do
+            expect { result }.to change { Ci::PipelineVariable.count }.by(1)
+
+            var = result[:pipeline].variables.first
+
+            expect(var.key).to eq('TRIGGER_PAYLOAD')
+            expect(var.value).to eq('{"ref":"master","variables":null}')
+            expect(var.variable_type).to eq('file')
+          end
+
+          context 'when FF ci_trigger_payload_into_pipeline is disabled' do
+            before do
+              stub_feature_flags(ci_trigger_payload_into_pipeline: false)
+            end
+
+            it 'does not store the payload as a variable' do
+              expect { result }.not_to change { Ci::PipelineVariable.count }
+              expect(result[:pipeline].variables).to be_empty
+            end
+          end
+
           context 'when commit message has [ci skip]' do
             before do
               allow_next(Ci::Pipeline).to receive(:git_commit_message) { '[ci skip]' }
@@ -60,8 +81,8 @@ RSpec.describe Ci::PipelineTriggerService do
             let(:params) { { token: trigger.token, ref: 'master', variables: variables } }
             let(:variables) { { 'AAA' => 'AAA123' } }
 
-            it 'has a variable' do
-              expect { result }.to change { Ci::PipelineVariable.count }.by(1)
+            it 'has variables' do
+              expect { result }.to change { Ci::PipelineVariable.count }.by(2)
                                .and change { Ci::TriggerRequest.count }.by(1)
               expect(result[:pipeline].variables.map { |v| { v.key => v.value } }.first).to eq(variables)
               expect(result[:pipeline].trigger_requests.last.variables).to be_nil
@@ -155,8 +176,8 @@ RSpec.describe Ci::PipelineTriggerService do
             let(:params) { { token: job.token, ref: 'master', variables: variables } }
             let(:variables) { { 'AAA' => 'AAA123' } }
 
-            it 'has a variable' do
-              expect { result }.to change { Ci::PipelineVariable.count }.by(1)
+            it 'has variables' do
+              expect { result }.to change { Ci::PipelineVariable.count }.by(2)
                                .and change { Ci::Sources::Pipeline.count }.by(1)
               expect(result[:pipeline].variables.map { |v| { v.key => v.value } }.first).to eq(variables)
               expect(job.sourced_pipelines.last.pipeline_id).to eq(result[:pipeline].id)

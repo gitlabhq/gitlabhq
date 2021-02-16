@@ -4,6 +4,7 @@ import { nextTick } from 'vue';
 import Vuex from 'vuex';
 import NoteHeader from '~/notes/components/note_header.vue';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/utils';
+import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -36,9 +37,7 @@ describe('NoteHeader component', () => {
     username: 'root',
     show_status: true,
     status_tooltip_html: statusHtml,
-    status: {
-      availability: '',
-    },
+    availability: '',
   };
 
   const createComponent = (props) => {
@@ -48,7 +47,7 @@ describe('NoteHeader component', () => {
         actions,
       }),
       propsData: { ...props },
-      stubs: { GlSprintf },
+      stubs: { GlSprintf, UserNameWithStatus },
     });
   };
 
@@ -110,7 +109,7 @@ describe('NoteHeader component', () => {
   });
 
   it('renders busy status if author availability is set', () => {
-    createComponent({ author: { ...author, status: { availability: AVAILABILITY_STATUS.BUSY } } });
+    createComponent({ author: { ...author, availability: AVAILABILITY_STATUS.BUSY } });
 
     expect(wrapper.find('.js-user-link').text()).toContain('(Busy)');
   });

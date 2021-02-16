@@ -17,6 +17,9 @@ module Ci
 
     private
 
+    PAYLOAD_VARIABLE_KEY = 'TRIGGER_PAYLOAD'
+    PAYLOAD_VARIABLE_HIDDEN_PARAMS = %i(token).freeze
+
     def create_pipeline_from_trigger(trigger)
       # this check is to not leak the presence of the project if user cannot read it
       return unless trigger.project == project
@@ -70,9 +73,23 @@ module Ci
     end
 
     def variables
+      if ::Feature.enabled?(:ci_trigger_payload_into_pipeline, project, default_enabled: :yaml)
+        param_variables + [payload_variable]
+      else
+        param_variables
+      end
+    end
+
+    def param_variables
       params[:variables].to_h.map do |key, value|
         { key: key, value: value }
       end
+    end
+
+    def payload_variable
+      { key: PAYLOAD_VARIABLE_KEY,
+        value: params.except(*PAYLOAD_VARIABLE_HIDDEN_PARAMS).to_json,
+        variable_type: :file }
     end
   end
 end

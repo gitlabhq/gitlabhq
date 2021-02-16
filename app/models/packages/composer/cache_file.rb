@@ -16,6 +16,8 @@ module Packages
 
       scope :with_namespace, ->(namespace) { where(namespace: namespace) }
       scope :with_sha, ->(sha) { where(file_sha256: sha) }
+      scope :expired, -> { where("delete_at <= ?", Time.current) }
+      scope :without_namespace, -> { where(namespace_id: nil) }
     end
   end
 end

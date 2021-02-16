@@ -27,7 +27,7 @@ module Gitlab
         end
 
         def render_name(name)
-          "## #{name}\n"
+          "## `#{name}`\n"
         end
 
         def render_description(object)

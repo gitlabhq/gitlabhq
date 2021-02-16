@@ -12,7 +12,6 @@ import Vue from 'vue';
 import { getDefaultAdapter } from '~/lib/utils/axios_utils';
 import Translate from '~/vue_shared/translate';
 
-import customMatchers from './matchers';
 import { FIXTURES_PATH, TEST_HOST } from './test_constants';
 
 // Tech debt issue TBD
@@ -57,7 +56,6 @@ beforeAll(() => {
       inline: window.__karma__.config.color,
     }),
   );
-  jasmine.addMatchers(customMatchers);
 });
 
 // globalize common libraries

@@ -54,6 +54,15 @@ RSpec.describe API::Triggers do
         expect(pipeline.builds.size).to eq(5)
       end
 
+      it 'stores payload as a variable' do
+        post api("/projects/#{project.id}/trigger/pipeline"), params: options.merge(ref: 'master')
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(pipeline.variables.find { |v| v.key == 'TRIGGER_PAYLOAD' }.value).to eq(
+          "{\"ref\":\"master\",\"id\":\"#{project.id}\",\"variables\":{}}"
+        )
+      end
+
       it 'returns bad request with no pipeline created if there\'s no commit for that ref' do
         post api("/projects/#{project.id}/trigger/pipeline"), params: options.merge(ref: 'other-branch')
 
@@ -84,7 +93,7 @@ RSpec.describe API::Triggers do
           post api("/projects/#{project.id}/trigger/pipeline"), params: options.merge(variables: variables, ref: 'master')
 
           expect(response).to have_gitlab_http_status(:created)
-          expect(pipeline.variables.map { |v| { v.key => v.value } }.last).to eq(variables)
+          expect(pipeline.variables.find { |v| v.key == 'TRIGGER_KEY' }.value).to eq('TRIGGER_VALUE')
         end
       end
     end

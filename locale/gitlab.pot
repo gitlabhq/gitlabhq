@@ -653,6 +653,12 @@ msgstr ""
 msgid "%{name_with_link} has run out of Shared Runner Pipeline minutes so no new jobs or pipelines in its projects will run."
 msgstr ""
 
+msgid "%{name} %{status}"
+msgstr ""
+
+msgid "%{name} (Busy)"
+msgstr ""
+
 msgid "%{name} contained %{resultsString}"
 msgstr ""
 
@@ -5073,6 +5079,9 @@ msgid "Business"
 msgstr ""
 
 msgid "Business metrics (Custom)"
+msgstr ""
+
+msgid "Busy"
 msgstr ""
 
 msgid "Buy License"
@@ -14042,6 +14051,9 @@ msgid "Group SAML must be enabled to test"
 msgstr ""
 
 msgid "Group URL"
+msgstr ""
+
+msgid "Group Wikis"
 msgstr ""
 
 msgid "Group avatar"

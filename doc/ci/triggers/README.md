@@ -185,6 +185,41 @@ You should pass `ref` as part of the URL, to take precedence over `ref` from
 the webhook body that designates the branch ref that fired the trigger in the
 source repository. Be sure to URL-encode `ref` if it contains slashes.
 
+### Using webhook payload in the triggered pipeline
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31197) in GitLab 13.9.
+> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-the-trigger_payload-variable). **(FREE SELF)**
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+If you trigger a pipeline by using a webhook, you can access the webhook payload with
+the `TRIGGER_PAYLOAD` [predefined CI/CD variable](../variables/predefined_variables.md).
+The payload is exposed as a [file-type variable](../variables/README.md#custom-cicd-variables-of-type-file),
+so you can access the data with `cat $TRIGGER_PAYLOAD` or a similar command.
+
+#### Enable or disable the `TRIGGER_PAYLOAD` variable
+
+The `TRIGGER_PAYLOAD` CI/CD variable is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:ci_trigger_payload_into_pipeline)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:ci_trigger_payload_into_pipeline)
+```
+
 ## Making use of trigger variables
 
 You can pass any number of arbitrary variables in the trigger API call and they

@@ -145,3 +145,4 @@ Kubernetes-specific variables are detailed in the
 | `GITLAB_USER_ID`                              | 8.12   | all    | The ID of the user who started the job. |
 | `GITLAB_USER_LOGIN`                           | 10.0   | all    | The login username of the user who started the job. |
 | `GITLAB_USER_NAME`                            | 10.0   | all    | The real name of the user who started the job. |
+| `TRIGGER_PAYLOAD`                             | 13.9   | all    | This variable is available when a pipeline is [triggered with a webhook](../triggers/README.md#using-webhook-payload-in-the-triggered-pipeline) |

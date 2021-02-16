@@ -1,8 +1,0 @@
----
-name: group_wiki_import_export
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51873
-rollout_issue_url: 
-milestone: '13.9'
-type: development
-group: group::editor
-default_enabled: false

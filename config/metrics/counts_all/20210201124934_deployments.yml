@@ -1,12 +1,19 @@
+---
 key_path: counts.deployments
 description: Total deployments count
-value_type: integer
+product_section: ops
 product_stage: release
+product_group: group::ops release
+value_type: number
 status: data_available
 milestone: 8.12
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/735
-product_group: 'group::ops release'
 time_frame: all
 data_source: database
-distribution: [ee, ce]
-tier: ['free', 'starter', 'premium', 'ultimate', 'bronze', 'silver', 'gold']
+distribution:
+- ee
+- ce
+tier:
+- free
+- premium
+- ultimate
