@@ -1,0 +1,8 @@
+---
+name: learn_gitlab_b_experiment_percentage
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53089
+rollout_issue_url: https://gitlab.com/gitlab-org/growth/team-tasks/-/issues/306
+milestone: '13.9'
+type: experiment
+group: group::conversion
+default_enabled: false

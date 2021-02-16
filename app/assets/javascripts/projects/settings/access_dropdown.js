@@ -11,7 +11,6 @@ export default class AccessDropdown {
     const { $dropdown, accessLevel, accessLevelsData, hasLicense = true } = options;
     this.options = options;
     this.hasLicense = hasLicense;
-    this.deployKeysOnProtectedBranchesEnabled = gon.features.deployKeysOnProtectedBranches;
     this.groups = [];
     this.accessLevel = accessLevel;
     this.accessLevelsData = accessLevelsData.roles;
@@ -330,11 +329,7 @@ export default class AccessDropdown {
           );
         })
         .catch(() => {
-          if (this.deployKeysOnProtectedBranchesEnabled) {
-            createFlash({ message: __('Failed to load groups, users and deploy keys.') });
-          } else {
-            createFlash({ message: __('Failed to load groups & users.') });
-          }
+          createFlash({ message: __('Failed to load groups, users and deploy keys.') });
         });
     } else {
       this.getDeployKeys(query)
@@ -445,35 +440,33 @@ export default class AccessDropdown {
       }
     }
 
-    if (this.deployKeysOnProtectedBranchesEnabled) {
-      const deployKeys = deployKeysResponse.map((response) => {
-        const {
-          id,
-          fingerprint,
-          title,
-          owner: { avatar_url, name, username },
-        } = response;
+    const deployKeys = deployKeysResponse.map((response) => {
+      const {
+        id,
+        fingerprint,
+        title,
+        owner: { avatar_url, name, username },
+      } = response;
 
-        const shortFingerprint = `(${fingerprint.substring(0, 14)}...)`;
+      const shortFingerprint = `(${fingerprint.substring(0, 14)}...)`;
 
-        return {
-          id,
-          title: title.concat(' ', shortFingerprint),
-          avatar_url,
-          fullname: name,
-          username,
-          type: LEVEL_TYPES.DEPLOY_KEY,
-        };
-      });
+      return {
+        id,
+        title: title.concat(' ', shortFingerprint),
+        avatar_url,
+        fullname: name,
+        username,
+        type: LEVEL_TYPES.DEPLOY_KEY,
+      };
+    });
 
-      if (this.accessLevel === ACCESS_LEVELS.PUSH) {
-        if (deployKeys.length) {
-          consolidatedData = consolidatedData.concat(
-            [{ type: 'divider' }],
-            [{ type: 'header', content: s__('AccessDropdown|Deploy Keys') }],
-            deployKeys,
-          );
-        }
+    if (this.accessLevel === ACCESS_LEVELS.PUSH) {
+      if (deployKeys.length) {
+        consolidatedData = consolidatedData.concat(
+          [{ type: 'divider' }],
+          [{ type: 'header', content: s__('AccessDropdown|Deploy Keys') }],
+          deployKeys,
+        );
       }
     }
 
@@ -501,19 +494,15 @@ export default class AccessDropdown {
   }
 
   getDeployKeys(query) {
-    if (this.deployKeysOnProtectedBranchesEnabled) {
-      return axios.get(this.buildUrl(gon.relative_url_root, this.deployKeysPath), {
-        params: {
-          search: query,
-          per_page: 20,
-          active: true,
-          project_id: gon.current_project_id,
-          push_code: true,
-        },
-      });
-    }
-
-    return Promise.resolve({ data: [] });
+    return axios.get(this.buildUrl(gon.relative_url_root, this.deployKeysPath), {
+      params: {
+        search: query,
+        per_page: 20,
+        active: true,
+        project_id: gon.current_project_id,
+        push_code: true,
+      },
+    });
   }
 
   buildUrl(urlRoot, url) {

@@ -1,0 +1,5 @@
+---
+title: Fix some image diff URLs with special characters causing the diff to not show
+merge_request: 53638
+author:
+type: fixed

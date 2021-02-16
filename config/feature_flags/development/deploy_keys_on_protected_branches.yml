@@ -1,8 +1,0 @@
----
-name: deploy_keys_on_protected_branches
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35638
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/247866
-milestone: '13.5'
-type: development
-group: group::release
-default_enabled: false

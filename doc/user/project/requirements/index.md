@@ -262,6 +262,7 @@ For GitLab.com, it is set to 10 MB.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290813) in GitLab 13.8.
 > - Revised CSV column headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299247) in GitLab 13.9.
+> - Ability to select which fields to export [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290823) in GitLab 13.9.
 
 You can export GitLab requirements to a
 [CSV file](https://en.wikipedia.org/wiki/Comma-separated_values) sent to your default notification
@@ -276,7 +277,14 @@ Users with Reporter or higher [permissions](../../permissions.md) can export req
 To export requirements:
 
 1. In a project, go to **Requirements**.
-1. Select the **Export as CSV** icon (**{export}**) in the top right. A confirmation modal appears.
+1. In the top right, select the **Export as CSV** icon (**{export}**).
+
+   A confirmation modal appears.
+
+1. Under **Advanced export options**, select which fields to export.
+
+   All fields are selected by default. To exclude a field from being exported, clear the checkbox next to it.
+
 1. Select **Export requirements**. The exported CSV file is sent to the email address associated with your user.
 
 ### Exported CSV file format

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ProjectsHelper do
   include ProjectForksHelper
+  include AfterNextHelpers
 
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be_with_refind(:project_with_repo) { create(:project, :repository) }
@@ -497,6 +498,20 @@ RSpec.describe ProjectsHelper do
     context 'when project does not have confluence enabled' do
       it { is_expected.not_to include(:confluence) }
       it { is_expected.to include(:wiki) }
+    end
+
+    context 'learn gitlab experiment' do
+      context 'when it is enabled' do
+        before do
+          expect(helper).to receive(:learn_gitlab_experiment_enabled?).with(project).and_return(true)
+        end
+
+        it { is_expected.to include(:learn_gitlab) }
+      end
+
+      context 'when it is not enabled' do
+        it { is_expected.not_to include(:learn_gitlab) }
+      end
     end
   end
 

@@ -47,6 +47,10 @@ class OnboardingProgress < ApplicationRecord
       safe_find_or_create_by(namespace: namespace)
     end
 
+    def onboarding?(namespace)
+      where(namespace: namespace).any?
+    end
+
     def register(namespace, action)
       return unless root_namespace?(namespace) && ACTIONS.include?(action)
 

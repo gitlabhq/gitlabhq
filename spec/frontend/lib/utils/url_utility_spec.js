@@ -880,4 +880,37 @@ describe('URL utility', () => {
       expect(urlUtils.getURLOrigin(url)).toBe(expectation);
     });
   });
+
+  describe('encodeSaferUrl', () => {
+    it.each`
+      character | input                 | output
+      ${' '}    | ${'/url/hello 1.jpg'} | ${'/url/hello%201.jpg'}
+      ${'#'}    | ${'/url/hello#1.jpg'} | ${'/url/hello%231.jpg'}
+      ${'!'}    | ${'/url/hello!.jpg'}  | ${'/url/hello%21.jpg'}
+      ${'~'}    | ${'/url/hello~.jpg'}  | ${'/url/hello%7E.jpg'}
+      ${'*'}    | ${'/url/hello*.jpg'}  | ${'/url/hello%2A.jpg'}
+      ${"'"}    | ${"/url/hello'.jpg"}  | ${'/url/hello%27.jpg'}
+      ${'('}    | ${'/url/hello(.jpg'}  | ${'/url/hello%28.jpg'}
+      ${')'}    | ${'/url/hello).jpg'}  | ${'/url/hello%29.jpg'}
+      ${'?'}    | ${'/url/hello?.jpg'}  | ${'/url/hello%3F.jpg'}
+      ${'='}    | ${'/url/hello=.jpg'}  | ${'/url/hello%3D.jpg'}
+      ${'+'}    | ${'/url/hello+.jpg'}  | ${'/url/hello%2B.jpg'}
+      ${'&'}    | ${'/url/hello&.jpg'}  | ${'/url/hello%26.jpg'}
+    `(
+      'properly escapes `$character` characters while retaining the integrity of the URL',
+      ({ input, output }) => {
+        expect(urlUtils.encodeSaferUrl(input)).toBe(output);
+      },
+    );
+
+    it.each`
+      character | input
+      ${'/, .'} | ${'/url/hello.png'}
+      ${'\\d'}  | ${'/url/hello123.png'}
+      ${'-'}    | ${'/url/hello-123.png'}
+      ${'_'}    | ${'/url/hello_123.png'}
+    `('makes no changes to unproblematic characters ($character)', ({ input }) => {
+      expect(urlUtils.encodeSaferUrl(input)).toBe(input);
+    });
+  });
 });

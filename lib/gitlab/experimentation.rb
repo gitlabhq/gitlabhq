@@ -95,6 +95,12 @@ module Gitlab
       trial_onboarding_issues: {
         tracking_category: 'Growth::Conversion::Experiment::TrialOnboardingIssues'
       },
+      learn_gitlab_a: {
+        tracking_category: 'Growth::Conversion::Experiment::LearnGitLabA'
+      },
+      learn_gitlab_b: {
+        tracking_category: 'Growth::Activation::Experiment::LearnGitLabB'
+      },
       in_product_marketing_emails: {
         tracking_category: 'Growth::Activation::Experiment::InProductMarketingEmails'
       }

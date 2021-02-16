@@ -1,0 +1,5 @@
+---
+title: Allow deploy keys to push to a protected branch
+merge_request: 53812
+author:
+type: added

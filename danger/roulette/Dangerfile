@@ -24,8 +24,8 @@ and [code review guidelines](https://docs.gitlab.com/ee/development/code_review.
 Please consider assigning a reviewer or maintainer who is a
 [domain expert](https://about.gitlab.com/handbook/engineering/projects/#gitlab) in the area of the merge request.
 
-Once you've decided who will review this merge request, mention them as you
-normally would! Danger does not automatically notify them for you.
+Once you've decided who will review this merge request, assign them as a reviewer!
+Danger does not automatically notify them for you.
 
 | Category | Reviewer | Maintainer |
 | -------- | -------- | ---------- |

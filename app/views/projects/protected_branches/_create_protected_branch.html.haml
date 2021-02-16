@@ -1,5 +1,3 @@
-- select_mode_for_dropdown = Feature.enabled?(:deploy_keys_on_protected_branches, @project) ? 'js-multiselect' : ''
-
 - content_for :merge_access_levels do
   .merge_access_levels-container
     = dropdown_tag('Select',
@@ -9,7 +7,7 @@
 - content_for :push_access_levels do
   .push_access_levels-container
     = dropdown_tag('Select',
-                    options: { toggle_class: "js-allowed-to-push qa-allowed-to-push-select #{select_mode_for_dropdown} wide",
+                    options: { toggle_class: "js-allowed-to-push qa-allowed-to-push-select js-multiselect wide",
                     dropdown_class: 'dropdown-menu-selectable qa-allowed-to-push-dropdown rspec-allowed-to-push-dropdown capitalize-header',
                     data: { field_name: 'protected_branch[push_access_levels_attributes][0][access_level]', input_id: 'push_access_levels_attributes' }})
 

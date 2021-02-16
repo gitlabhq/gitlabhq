@@ -738,9 +738,6 @@ msgstr ""
 msgid "%{reportType} detected %{totalStart}no%{totalEnd} vulnerabilities."
 msgstr ""
 
-msgid "%{requirementCount} requirements have been selected for export. These will be sent to %{email} as an attachment once finished."
-msgstr ""
-
 msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}."
 msgstr ""
 
@@ -2550,6 +2547,9 @@ msgid "Advanced Search with Elasticsearch"
 msgstr ""
 
 msgid "Advanced Settings"
+msgstr ""
+
+msgid "Advanced export options"
 msgstr ""
 
 msgid "Advanced permissions, Large File Storage and Two-Factor authentication settings."
@@ -12125,6 +12125,9 @@ msgstr ""
 msgid "Export"
 msgstr ""
 
+msgid "Export %{requirementsCount} requirements?"
+msgstr ""
+
 msgid "Export as CSV"
 msgstr ""
 
@@ -12318,9 +12321,6 @@ msgid "Failed to load errors from Sentry."
 msgstr ""
 
 msgid "Failed to load group activity metrics. Please try again."
-msgstr ""
-
-msgid "Failed to load groups & users."
 msgstr ""
 
 msgid "Failed to load groups, users and deploy keys."
@@ -17445,6 +17445,30 @@ msgstr ""
 msgid "Learn more."
 msgstr ""
 
+msgid "LearnGitLab|Add code owners"
+msgstr ""
+
+msgid "LearnGitLab|Create a repository"
+msgstr ""
+
+msgid "LearnGitLab|Enable require merge approvals"
+msgstr ""
+
+msgid "LearnGitLab|Invite your colleagues"
+msgstr ""
+
+msgid "LearnGitLab|Run a Security scan using CI/CD"
+msgstr ""
+
+msgid "LearnGitLab|Set-up CI/CD"
+msgstr ""
+
+msgid "LearnGitLab|Start a free trial of GitLab Gold"
+msgstr ""
+
+msgid "LearnGitLab|Submit a merge request (MR)"
+msgstr ""
+
 msgid "Leave"
 msgstr ""
 
@@ -22164,6 +22188,9 @@ msgid "Please select and add a member"
 msgstr ""
 
 msgid "Please select at least one filter to see results"
+msgstr ""
+
+msgid "Please select what should be included in each exported requirement."
 msgstr ""
 
 msgid "Please set a new password before proceeding."
@@ -29782,6 +29809,9 @@ msgid "These runners are specific to this project."
 msgstr ""
 
 msgid "These variables are inherited from the parent group."
+msgstr ""
+
+msgid "These will be sent to %{email} in an attachment once finished."
 msgstr ""
 
 msgid "Third Party Advisory Link"

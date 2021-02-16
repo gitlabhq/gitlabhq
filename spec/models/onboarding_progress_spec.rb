@@ -114,6 +114,22 @@ RSpec.describe OnboardingProgress do
     end
   end
 
+  describe '.onboarding?' do
+    subject(:onboarding?) { described_class.onboarding?(namespace) }
+
+    context 'when onboarded' do
+      before do
+        described_class.onboard(namespace)
+      end
+
+      it { is_expected.to eq true }
+    end
+
+    context 'when not onboarding' do
+      it { is_expected.to eq false }
+    end
+  end
+
   describe '.register' do
     subject(:register_action) { described_class.register(namespace, action) }
 
