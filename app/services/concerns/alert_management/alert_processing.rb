@@ -29,7 +29,7 @@ module AlertManagement
     # Creates or closes issue for alert and notifies stakeholders
     def complete_post_processing_tasks
       process_incident_issues if process_issues?
-      send_alert_email if send_email?
+      send_alert_email if send_email? && notifying_alert?
     end
 
     def process_existing_alert
@@ -114,6 +114,10 @@ module AlertManagement
 
     def resolving_alert?
       incoming_payload.ends_at.present?
+    end
+
+    def notifying_alert?
+      alert.triggered? || alert.resolved?
     end
 
     def alert_source

@@ -5,10 +5,9 @@
 #
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: substitution
-message: 'Use "administration", "administrator", "administer", or "Admin Area" instead of "admin" or "admin area".'
+message: 'Verify this use of the word "admin". Can it be updated to "administration", "administrator", "administer", or "Admin Area"?'
 link: https://docs.gitlab.com/ee/development/documentation/styleguide.html
-# Do not set `level: error`, as our docs refer to other docs which use "admin" and "Admin"
-level: warning
+level: suggestion
 ignorecase: true
 swap:
   'admin ?\w*': '(?:Admin Area|[Aa]dminist(ration|rator|rators|er|rative))'

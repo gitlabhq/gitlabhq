@@ -14,6 +14,7 @@ query getState($projectPath: ID!, $iid: String!) {
       pipelines(first: 1) {
         nodes {
           status
+          warnings
         }
       }
       shouldBeRebased

@@ -167,10 +167,8 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
       subject { described_class.validate!(import_url, dns_rebind_protection: dns_rebind_protection) }
 
       before do
-        skip 'timeout is not available' unless timeout_available?
-
         stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
-        stub_const("#{described_class}::GETADDRINFO_TIMEOUT_SECONDS", 0)
+        allow(Addrinfo).to receive(:getaddrinfo).and_raise(SocketError)
       end
 
       context 'with dns rebinding enabled' do
@@ -188,17 +186,6 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
           let(:expected_uri) { import_url }
           let(:expected_hostname) { nil }
         end
-      end
-
-      # Detect whether the timeout option is available.
-      #
-      # See https://bugs.ruby-lang.org/issues/15553
-      def timeout_available?
-        Addrinfo.getaddrinfo('localhost', nil, timeout: 0)
-
-        false
-      rescue SocketError
-        true
       end
     end
   end

@@ -27,6 +27,9 @@ module Types
       field :status, PipelineStatusEnum, null: false,
             description: "Status of the pipeline (#{::Ci::Pipeline.all_state_names.compact.join(', ').upcase})"
 
+      field :warnings, GraphQL::BOOLEAN_TYPE, null: false, method: :has_warnings?,
+            description: "Indicates if a pipeline has warnings."
+
       field :detailed_status, Types::Ci::DetailedStatusType, null: false,
             description: 'Detailed status of the pipeline.'
 

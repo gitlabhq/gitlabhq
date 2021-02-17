@@ -253,7 +253,6 @@
   .btn-default:not(.gl-button),
   .dropdown,
   .dropdown-menu-toggle {
-    background-color: var(--ide-input-background, $white) !important;
     color: var(--ide-input-color, $gl-text-color) !important;
     border-color: var(--ide-btn-default-border, $border-color);
   }
