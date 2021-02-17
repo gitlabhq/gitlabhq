@@ -2,7 +2,7 @@
 
 module Packages
   class PackagesFinder
-    attr_reader :params, :project
+    include ::Packages::FinderHelper
 
     def initialize(project, params = {})
       @project = project
@@ -21,29 +21,14 @@ module Packages
       packages = filter_with_version(packages)
       packages = filter_by_package_type(packages)
       packages = filter_by_package_name(packages)
+      packages = filter_by_status(packages)
       packages = order_packages(packages)
       packages
     end
 
     private
 
-    def filter_with_version(packages)
-      return packages if params[:include_versionless].present?
-
-      packages.has_version
-    end
-
-    def filter_by_package_type(packages)
-      return packages unless params[:package_type]
-
-      packages.with_package_type(params[:package_type])
-    end
-
-    def filter_by_package_name(packages)
-      return packages unless params[:package_name]
-
-      packages.search_by_name(params[:package_name])
-    end
+    attr_reader :params, :project
 
     def order_packages(packages)
       packages.sort_by_attribute("#{params[:order_by]}_#{params[:sort]}")

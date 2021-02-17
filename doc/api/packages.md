@@ -29,6 +29,7 @@ GET /projects/:id/packages
 | `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, or `golang`. (_Introduced in GitLab 12.9_)
 | `package_name` | string | no | Filter the project packages with a fuzzy search by name. (_Introduced in GitLab 12.9_)
 | `include_versionless` | boolean | no | When set to true, versionless packages are included in the response. (_Introduced in GitLab 13.8_)
+| `status` | string | no | Filter the returned packages by status. One of `default` (default), `hidden`, or `processing`. (_Introduced in GitLab 13.9_)
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages"
@@ -70,6 +71,9 @@ Example response:
 
 By default, the `GET` request returns 20 results, because the API is [paginated](README.md#pagination).
 
+Although you can filter packages by status, working with packages that have a `processing` status
+can result in malformed data or broken packages.
+
 ### Within a group
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18871) in GitLab 12.5.
@@ -90,6 +94,7 @@ GET /groups/:id/packages
 | `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, or `golang`. (_Introduced in GitLab 12.9_) |
 | `package_name` | string | no | Filter the project packages with a fuzzy search by name. (_[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30980) in GitLab 13.0_)
 | `include_versionless` | boolean | no | When set to true, versionless packages are included in the response. (_Introduced in GitLab 13.8_)
+| `status` | string | no | Filter the returned packages by status. One of `default` (default), `hidden`, or `processing`. (_Introduced in GitLab 13.9_)
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/packages?exclude_subgroups=false"
@@ -165,6 +170,9 @@ The `_links` object contains the following properties:
 
 - `web_path`: The path which you can visit in GitLab and see the details of the package.
 - `delete_api_path`: The API path to delete the package. Only available if the request user has permission to do so.
+
+Although you can filter packages by status, working with packages that have a `processing` status
+can result in malformed data or broken packages.
 
 ## Get a project package
 

@@ -160,34 +160,6 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
         end
       end
     end
-
-    context 'when resolving runs into a timeout' do
-      let(:import_url) { 'http://example.com' }
-
-      subject { described_class.validate!(import_url, dns_rebind_protection: dns_rebind_protection) }
-
-      before do
-        stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
-        allow(Addrinfo).to receive(:getaddrinfo).and_raise(SocketError)
-      end
-
-      context 'with dns rebinding enabled' do
-        let(:dns_rebind_protection) { true }
-
-        it 'raises an error due to DNS timeout' do
-          expect { subject }.to raise_error(described_class::BlockedUrlError)
-        end
-      end
-
-      context 'with dns rebinding disabled' do
-        let(:dns_rebind_protection) { false }
-
-        it_behaves_like 'validates URI and hostname' do
-          let(:expected_uri) { import_url }
-          let(:expected_hostname) { nil }
-        end
-      end
-    end
   end
 
   describe '#blocked_url?' do

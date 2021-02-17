@@ -4,6 +4,8 @@ require 'spec_helper'
 RSpec.describe Packages::Package, type: :model do
   include SortingHelper
 
+  it_behaves_like 'having unique enum values'
+
   describe 'relationships' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:creator) }
@@ -604,6 +606,28 @@ RSpec.describe Packages::Package, type: :model do
       subject { described_class.with_normalized_pypi_name('foo-bar-baz-buz') }
 
       it { is_expected.to match_array([pypi_package]) }
+    end
+
+    describe '.displayable' do
+      let_it_be(:hidden_package) { create(:maven_package, :hidden) }
+      let_it_be(:processing_package) { create(:maven_package, :processing) }
+
+      subject { described_class.displayable }
+
+      it 'does not include hidden packages', :aggregate_failures do
+        is_expected.not_to include(hidden_package)
+        is_expected.not_to include(processing_package)
+      end
+    end
+
+    describe '.with_status' do
+      let_it_be(:hidden_package) { create(:maven_package, :hidden) }
+
+      subject { described_class.with_status(:hidden) }
+
+      it 'returns packages with specified status' do
+        is_expected.to match_array([hidden_package])
+      end
     end
   end
 

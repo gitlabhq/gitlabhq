@@ -18536,6 +18536,9 @@ msgstr ""
 msgid "Merge request (MR) approvals"
 msgstr ""
 
+msgid "Merge request approval settings have been updated."
+msgstr ""
+
 msgid "Merge request approvals"
 msgstr ""
 

@@ -15244,7 +15244,8 @@ CREATE TABLE packages_packages (
     name character varying NOT NULL,
     version character varying,
     package_type smallint NOT NULL,
-    creator_id integer
+    creator_id integer,
+    status smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE packages_packages_id_seq
@@ -22885,6 +22886,8 @@ CREATE INDEX index_packages_packages_on_name_trigram ON packages_packages USING 
 CREATE INDEX index_packages_packages_on_project_id_and_created_at ON packages_packages USING btree (project_id, created_at);
 
 CREATE INDEX index_packages_packages_on_project_id_and_package_type ON packages_packages USING btree (project_id, package_type);
+
+CREATE INDEX index_packages_packages_on_project_id_and_status ON packages_packages USING btree (project_id, status);
 
 CREATE INDEX index_packages_packages_on_project_id_and_version ON packages_packages USING btree (project_id, version);
 

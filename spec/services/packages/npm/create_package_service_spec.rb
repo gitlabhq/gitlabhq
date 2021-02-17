@@ -53,6 +53,7 @@ RSpec.describe Packages::Npm::CreatePackageService do
         let(:params) { super().merge(build: job) }
 
         it_behaves_like 'assigns build to package'
+        it_behaves_like 'assigns status to package'
 
         it 'creates a package file build info' do
           expect { subject }.to change { Packages::PackageFileBuildInfo.count }.by(1)

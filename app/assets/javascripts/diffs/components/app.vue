@@ -522,7 +522,7 @@ export default {
               :file="file"
               :reviewed="fileReviews[index]"
               :is-first-file="index === 0"
-              :is-last-file="index === diffs.length - 1"
+              :is-last-file="index === diffFilesLength - 1"
               :help-page-path="helpPagePath"
               :can-current-user-fork="canCurrentUserFork"
               :view-diffs-file-by-file="viewDiffsFileByFile"

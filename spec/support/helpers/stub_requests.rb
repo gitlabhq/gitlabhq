@@ -18,13 +18,14 @@ module StubRequests
   end
 
   def stub_dns(url, ip_address:, port: 80)
-    url = URI(url)
+    url = parse_url(url)
     socket = Socket.sockaddr_in(port, ip_address)
     addr = Addrinfo.new(socket)
 
+    # See Gitlab::UrlBlocker
     allow(Addrinfo).to receive(:getaddrinfo)
-      .with(url.hostname, url.port, any_args)
-      .and_return([addr])
+                         .with(url.hostname, url.port, nil, :STREAM)
+                         .and_return([addr])
   end
 
   def stub_all_dns(url, ip_address:)
@@ -33,14 +34,22 @@ module StubRequests
     socket = Socket.sockaddr_in(port, ip_address)
     addr = Addrinfo.new(socket)
 
+    # See Gitlab::UrlBlocker
+    allow(Addrinfo).to receive(:getaddrinfo).and_call_original
     allow(Addrinfo).to receive(:getaddrinfo)
-      .with(url.hostname, any_args)
+      .with(url.hostname, anything, nil, :STREAM)
       .and_return([addr])
   end
 
   def stubbed_hostname(url, hostname: IP_ADDRESS_STUB)
-    url = URI(url)
+    url = parse_url(url)
     url.hostname = hostname
     url.to_s
+  end
+
+  private
+
+  def parse_url(url)
+    url.is_a?(URI) ? url : URI(url)
   end
 end

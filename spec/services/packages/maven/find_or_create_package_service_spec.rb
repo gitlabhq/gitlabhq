@@ -36,10 +36,11 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService do
         expect(pkg.version).to eq(version)
       end
 
-      context 'with a build' do
+      context 'with optional attributes' do
         subject { service.execute.payload[:package] }
 
         it_behaves_like 'assigns build to package'
+        it_behaves_like 'assigns status to package'
       end
     end
 

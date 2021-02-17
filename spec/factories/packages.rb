@@ -6,6 +6,15 @@ FactoryBot.define do
     name { 'my/company/app/my-app' }
     sequence(:version) { |n| "1.#{n}-SNAPSHOT" }
     package_type { :maven }
+    status { :default }
+
+    trait :hidden do
+      status { :hidden }
+    end
+
+    trait :processing do
+      status { :processing }
+    end
 
     factory :maven_package do
       maven_metadatum

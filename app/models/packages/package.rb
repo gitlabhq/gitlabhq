@@ -69,6 +69,8 @@ class Packages::Package < ApplicationRecord
                        composer: 6, generic: 7, golang: 8, debian: 9,
                        rubygems: 10 }
 
+  enum status: { default: 0, hidden: 1, processing: 2 }
+
   scope :with_name, ->(name) { where(name: name) }
   scope :with_name_like, ->(name) { where(arel_table[:name].matches(name)) }
   scope :with_normalized_pypi_name, ->(name) { where("LOWER(regexp_replace(name, '[-_.]+', '-', 'g')) = ?", name.downcase) }
@@ -76,6 +78,8 @@ class Packages::Package < ApplicationRecord
   scope :with_version, ->(version) { where(version: version) }
   scope :without_version_like, -> (version) { where.not(arel_table[:version].matches(version)) }
   scope :with_package_type, ->(package_type) { where(package_type: package_type) }
+  scope :with_status, ->(status) { where(status: status) }
+  scope :displayable, -> { with_status(:default) }
   scope :including_build_info, -> { includes(pipelines: :user) }
   scope :including_project_route, -> { includes(project: { namespace: :route }) }
   scope :including_tags, -> { includes(:tags) }

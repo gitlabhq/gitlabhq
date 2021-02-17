@@ -42,6 +42,7 @@ module Packages
           package_params = {
             name: package_name,
             path: params[:path],
+            status: params[:status],
             version: version
           }
 

@@ -82,5 +82,6 @@ RSpec.describe ::Packages::PackagesFinder do
     end
 
     it_behaves_like 'concerning versionless param'
+    it_behaves_like 'concerning package statuses'
   end
 end
