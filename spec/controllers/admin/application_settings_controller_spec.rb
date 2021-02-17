@@ -150,6 +150,13 @@ RSpec.describe Admin::ApplicationSettingsController do
       expect(ApplicationSetting.current.repository_storages_weighted_default).to eq(75)
     end
 
+    it 'updates kroki_formats setting' do
+      put :update, params: { application_setting: { kroki_formats_excalidraw: '1' } }
+
+      expect(response).to redirect_to(general_admin_application_settings_path)
+      expect(ApplicationSetting.current.kroki_formats_excalidraw).to eq(true)
+    end
+
     it "updates default_branch_name setting" do
       put :update, params: { application_setting: { default_branch_name: "example_branch_name" } }
 

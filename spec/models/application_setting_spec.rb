@@ -964,6 +964,50 @@ RSpec.describe ApplicationSetting do
     end
   end
 
+  describe 'kroki_format_supported?' do
+    it 'returns true when Excalidraw is enabled' do
+      subject.kroki_formats_excalidraw = true
+      expect(subject.kroki_format_supported?('excalidraw')).to eq(true)
+    end
+
+    it 'returns true when BlockDiag is enabled' do
+      subject.kroki_formats_blockdiag = true
+      # format "blockdiag" aggregates multiple diagram types: actdiag, blockdiag, nwdiag...
+      expect(subject.kroki_format_supported?('actdiag')).to eq(true)
+      expect(subject.kroki_format_supported?('blockdiag')).to eq(true)
+    end
+
+    it 'returns false when BlockDiag is disabled' do
+      subject.kroki_formats_blockdiag = false
+      # format "blockdiag" aggregates multiple diagram types: actdiag, blockdiag, nwdiag...
+      expect(subject.kroki_format_supported?('actdiag')).to eq(false)
+      expect(subject.kroki_format_supported?('blockdiag')).to eq(false)
+    end
+
+    it 'returns false when the diagram type is optional and not enabled' do
+      expect(subject.kroki_format_supported?('bpmn')).to eq(false)
+    end
+
+    it 'returns true when the diagram type is enabled by default' do
+      expect(subject.kroki_format_supported?('vegalite')).to eq(true)
+      expect(subject.kroki_format_supported?('nomnoml')).to eq(true)
+      expect(subject.kroki_format_supported?('unknown-diagram-type')).to eq(false)
+    end
+
+    it 'returns false when the diagram type is unknown' do
+      expect(subject.kroki_format_supported?('unknown-diagram-type')).to eq(false)
+    end
+  end
+
+  describe 'kroki_formats' do
+    it 'returns the value for kroki_formats' do
+      subject.kroki_formats = { blockdiag: true, bpmn: false, excalidraw: true }
+      expect(subject.kroki_formats_blockdiag).to eq(true)
+      expect(subject.kroki_formats_bpmn).to eq(false)
+      expect(subject.kroki_formats_excalidraw).to eq(true)
+    end
+  end
+
   it 'does not allow to set weight for non existing storage' do
     setting.repository_storages_weighted = { invalid_storage: 100 }
 

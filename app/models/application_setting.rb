@@ -29,6 +29,21 @@ class ApplicationSetting < ApplicationRecord
     @repository_storages_weighted_atributes ||= Gitlab.config.repositories.storages.keys.map { |k| "repository_storages_weighted_#{k}".to_sym }.freeze
   end
 
+  def self.kroki_formats_attributes
+    {
+      blockdiag: {
+        label: 'BlockDiag (includes BlockDiag, SeqDiag, ActDiag, NwDiag, PacketDiag and RackDiag)'
+      },
+      bpmn: {
+        label: 'BPMN'
+      },
+      excalidraw: {
+        label: 'Excalidraw'
+      }
+    }
+  end
+
+  store_accessor :kroki_formats, *ApplicationSetting.kroki_formats_attributes.keys, prefix: true
   store_accessor :repository_storages_weighted, *Gitlab.config.repositories.storages.keys, prefix: true
 
   # Include here so it can override methods from
@@ -54,6 +69,7 @@ class ApplicationSetting < ApplicationRecord
 
   default_value_for :id, 1
   default_value_for :repository_storages_weighted, {}
+  default_value_for :kroki_formats, {}
 
   chronic_duration_attr_writer :archive_builds_in_human_readable, :archive_builds_in_seconds
 
@@ -134,6 +150,8 @@ class ApplicationSetting < ApplicationRecord
             presence: { if: :kroki_enabled }
 
   validate :validate_kroki_url, if: :kroki_enabled
+
+  validates :kroki_formats, json_schema: { filename: 'application_setting_kroki_formats' }
 
   validates :plantuml_url,
             presence: true,
@@ -568,6 +586,25 @@ class ApplicationSetting < ApplicationRecord
     define_method :"#{attribute}=" do |value|
       super(value.to_i)
     end
+  end
+
+  kroki_formats_attributes.keys.each do |key|
+    define_method :"kroki_formats_#{key}=" do |value|
+      super(::Gitlab::Utils.to_boolean(value))
+    end
+  end
+
+  def kroki_format_supported?(diagram_type)
+    case diagram_type
+    when 'excalidraw'
+      return kroki_formats_excalidraw
+    when 'bpmn'
+      return kroki_formats_bpmn
+    end
+
+    return kroki_formats_blockdiag if ::Gitlab::Kroki::BLOCKDIAG_FORMATS.include?(diagram_type)
+
+    ::AsciidoctorExtensions::Kroki::SUPPORTED_DIAGRAM_NAMES.include?(diagram_type)
   end
 
   private

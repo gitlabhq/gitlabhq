@@ -510,6 +510,73 @@ module Gitlab
 
           expect(render(input, context)).to include(output.strip)
         end
+
+        it 'does not convert a blockdiag diagram to image' do
+          input = <<~ADOC
+            [blockdiag]
+            ....
+            blockdiag {
+              Kroki -> generates -> "Block diagrams";
+              Kroki -> is -> "very easy!";
+
+              Kroki [color = "greenyellow"];
+              "Block diagrams" [color = "pink"];
+              "very easy!" [color = "orange"];
+            }
+            ....
+          ADOC
+
+          output = <<~HTML
+            <div>
+            <div>
+            <pre>blockdiag {
+              Kroki -&gt; generates -&gt; "Block diagrams";
+              Kroki -&gt; is -&gt; "very easy!";
+
+              Kroki [color = "greenyellow"];
+              "Block diagrams" [color = "pink"];
+              "very easy!" [color = "orange"];
+            }</pre>
+            </div>
+            </div>
+          HTML
+
+          expect(render(input, context)).to include(output.strip)
+        end
+      end
+
+      context 'with Kroki and BlockDiag (additional format) enabled' do
+        before do
+          allow_any_instance_of(ApplicationSetting).to receive(:kroki_enabled).and_return(true)
+          allow_any_instance_of(ApplicationSetting).to receive(:kroki_url).and_return('https://kroki.io')
+          allow_any_instance_of(ApplicationSetting).to receive(:kroki_formats_blockdiag).and_return(true)
+        end
+
+        it 'converts a blockdiag diagram to image' do
+          input = <<~ADOC
+            [blockdiag]
+            ....
+            blockdiag {
+              Kroki -> generates -> "Block diagrams";
+              Kroki -> is -> "very easy!";
+
+              Kroki [color = "greenyellow"];
+              "Block diagrams" [color = "pink"];
+              "very easy!" [color = "orange"];
+            }
+            ....
+          ADOC
+
+          output = <<~HTML
+            <div>
+            <div>
+            <a class="no-attachment-icon" href="https://kroki.io/blockdiag/svg/eNpdzDEKQjEQhOHeU4zpPYFoYesRxGJ9bwghMSsbUYJ4d10UCZbDfPynolOek0Q8FsDeNCestoisNLmy-Qg7R3Blcm5hPcr0ITdaB6X15fv-_YdJixo2CNHI2lmK3sPRA__RwV5SzV80ZAegJjXSyfMFptc71w==" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Diagram" class="lazy" data-src="https://kroki.io/blockdiag/svg/eNpdzDEKQjEQhOHeU4zpPYFoYesRxGJ9bwghMSsbUYJ4d10UCZbDfPynolOek0Q8FsDeNCestoisNLmy-Qg7R3Blcm5hPcr0ITdaB6X15fv-_YdJixo2CNHI2lmK3sPRA__RwV5SzV80ZAegJjXSyfMFptc71w=="></a>
+            </div>
+            </div>
+          HTML
+
+          expect(render(input, context)).to include(output.strip)
+        end
       end
     end
 

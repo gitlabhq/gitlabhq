@@ -21,5 +21,13 @@
           = f.text_field :kroki_url, class: 'form-control gl-form-input', placeholder: 'http://your-kroki-instance:8000'
           .form-text.text-muted
             = (_('When Kroki is enabled, GitLab sends diagrams to an instance of Kroki to display them as images. You can use the free public cloud instance %{kroki_public_url} or you can %{install_link} on your own infrastructure. Once you\'ve installed Kroki, make sure to update the server URL to point to your instance.') % { kroki_public_url: '<code>https://kroki.io</code>', install_link: link_to('install Kroki', 'https://docs.kroki.io/kroki/setup/install/', target: '_blank') }).html_safe
+        .form-group
+          = f.label :kroki_formats, 'Additional diagram formats', class: 'label-bold'
+          .form-text.text-muted
+            = (_('Using additional formats requires starting the companion containers. Make sure that all %{kroki_images} are running.') % { kroki_images: link_to('required containers', 'https://docs.kroki.io/kroki/setup/install/#_images', target: '_blank') }).html_safe
+          - kroki_available_formats.each do |format|
+            .form-check
+              = f.check_box format[:name], class: 'form-check-input'
+              = f.label format[:name], format[:label], class: 'form-check-label'
 
       = f.submit _('Save changes'), class: "btn gl-button btn-success"

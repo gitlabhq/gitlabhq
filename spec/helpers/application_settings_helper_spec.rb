@@ -194,4 +194,33 @@ RSpec.describe ApplicationSettingsHelper do
       it { is_expected.to be false }
     end
   end
+
+  describe '.kroki_available_formats' do
+    let(:application_setting) { build(:application_setting) }
+
+    before do
+      helper.instance_variable_set(:@application_setting, application_setting)
+      stub_application_setting(kroki_formats: { 'blockdiag' => true, 'bpmn' => false, 'excalidraw' => false })
+    end
+
+    it 'returns available formats correctly' do
+      expect(helper.kroki_available_formats).to eq([
+                                             {
+                                               name: 'kroki_formats_blockdiag',
+                                               label: 'BlockDiag (includes BlockDiag, SeqDiag, ActDiag, NwDiag, PacketDiag and RackDiag)',
+                                               value: true
+                                             },
+                                             {
+                                               name: 'kroki_formats_bpmn',
+                                               label: 'BPMN',
+                                               value: false
+                                             },
+                                             {
+                                               name: 'kroki_formats_excalidraw',
+                                               label: 'Excalidraw',
+                                               value: false
+                                             }
+                                           ])
+    end
+  end
 end

@@ -61,7 +61,8 @@ RSpec.describe ContainerExpirationPolicies::CleanupService do
             original_size: 1000,
             before_truncate_size: 800,
             after_truncate_size: 200,
-            before_delete_size: 100
+            before_delete_size: 100,
+            deleted_size: 100
           }
         end
 
@@ -77,7 +78,8 @@ RSpec.describe ContainerExpirationPolicies::CleanupService do
                 cleanup_tags_service_original_size: 1000,
                 cleanup_tags_service_before_truncate_size: 800,
                 cleanup_tags_service_after_truncate_size: 200,
-                cleanup_tags_service_before_delete_size: 100
+                cleanup_tags_service_before_delete_size: 100,
+                cleanup_tags_service_deleted_size: 100
               )
             expect(ContainerRepository.waiting_for_cleanup.count).to eq(1)
             expect(repository.reload.cleanup_unfinished?).to be_truthy

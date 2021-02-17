@@ -88,6 +88,7 @@ module QA
             read_from_project(project, number_of_reads)
 
             praefect_manager.query_read_distribution.each_with_index do |data, index|
+              diff_found[index] = {} unless diff_found[index]
               diff_found[index][:diff] = true if data[:value] > praefect_manager.value_for_node(pre_read_data, data[:node])
             end
             diff_found.all? { |node| node.key?(:diff) && node[:diff] }

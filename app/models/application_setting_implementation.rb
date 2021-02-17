@@ -176,6 +176,7 @@ module ApplicationSettingImplementation
         container_registry_expiration_policies_worker_capacity: 0,
         kroki_enabled: false,
         kroki_url: nil,
+        kroki_formats: { blockdiag: false, bpmn: false, excalidraw: false },
         rate_limiting_response_text: nil
       }
     end

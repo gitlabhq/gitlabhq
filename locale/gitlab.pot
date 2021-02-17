@@ -32271,6 +32271,9 @@ msgstr ""
 msgid "Using %{code_start}::%{code_end} denotes a %{link_start}scoped label set%{link_end}"
 msgstr ""
 
+msgid "Using additional formats requires starting the companion containers. Make sure that all %{kroki_images} are running."
+msgstr ""
+
 msgid "Using required encryption strategy when encrypted field is missing!"
 msgstr ""
 

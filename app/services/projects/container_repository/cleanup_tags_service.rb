@@ -25,6 +25,7 @@ module Projects
           result[:before_truncate_size] = before_truncate_size
           result[:after_truncate_size] = after_truncate_size
           result[:before_delete_size] = tags.size
+          result[:deleted_size] = result[:deleted]&.size
 
           result[:status] = :error if before_truncate_size != after_truncate_size
         end

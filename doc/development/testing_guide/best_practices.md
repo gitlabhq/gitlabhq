@@ -521,35 +521,6 @@ let_it_be_with_refind(:project) { create(:project) }
 let_it_be(:project, refind: true) { create(:project) }
 ```
 
-### License stubbing with `let_it_be`
-
-`let_it_be_with_refind` is also useful when using `stub_licensed_features` in your tests:
-
-```ruby
-let_it_be_with_refind(:project) { create(:project) }
-# Project#licensed_feature_available? is memoized, and so we need to refind
-# the project for license updates to be applied.
-# An alternative is `project.clear_memoization(:licensed_feature_available)`.
-
-subject { project.allows_multiple_assignees? }
-
-context 'with license multiple_issue_assignees disabled' do
-  before do
-    stub_licensed_features(multiple_issue_assignees: true)
-  end
-
-  it { is_expected.to eq(true) }
-end
-
-context 'with license multiple_issue_assignees disabled' do
-  before do
-    stub_licensed_features(multiple_issue_assignees: false)
-  end
-
-  it { is_expected.to eq(false) }
-end
-```
-
 ### Time-sensitive tests
 
 [`ActiveSupport::Testing::TimeHelpers`](https://api.rubyonrails.org/v6.0.3.1/classes/ActiveSupport/Testing/TimeHelpers.html)
