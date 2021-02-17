@@ -1655,3 +1655,17 @@ Error: Could not get apiVersions from Kubernetes: unable to retrieve the complet
 
 This is a bug that was introduced in Helm `2.15` and fixed in `3.0.2`. As a workaround,
 ensure [`cert-manager`](#cert-manager) is installed successfully prior to installing Prometheus.
+
+### Unable to create a Persistent Volume Claim with DigitalOcean
+
+Trying to create additional block storage volumes might lead to the following error when using DigitalOcean:
+
+```plaintext
+Server requested
+[Warning] pod has unbound immediate PersistentVolumeClaims (repeated 2 times)
+[Normal] pod didn't trigger scale-up (it wouldn't fit if a new node is added):
+Spawn failed: Timeout
+```
+
+This is due to DigitalOcean imposing a few limits with regards to creating additional block storage volumes.
+[Learn more about DigitalOcean Block Storage Volumes limits.](https://www.digitalocean.com/docs/volumes/#limits)

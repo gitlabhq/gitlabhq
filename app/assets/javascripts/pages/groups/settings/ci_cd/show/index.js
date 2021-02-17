@@ -4,6 +4,7 @@ import initSharedRunnersForm from '~/group_settings/mount_shared_runners';
 import { FILTERED_SEARCH } from '~/pages/constants';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
 import { initInstallRunner } from '~/pages/shared/mount_runner_instructions';
+import initSearchSettings from '~/search_settings';
 import initSettingsPanels from '~/settings_panels';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -21,4 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initVariableList();
 
   initInstallRunner();
+
+  initSearchSettings();
 });

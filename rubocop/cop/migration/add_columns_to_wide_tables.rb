@@ -9,8 +9,8 @@ module RuboCop
       class AddColumnsToWideTables < RuboCop::Cop::Cop
         include MigrationHelpers
 
-        MSG = '`%s` is a wide table with several columns, addig more should be avoided unless absolutely necessary.' \
-              ' Consider storing the column in a different table or creating a new one.'.freeze
+        MSG = '`%s` is a wide table with several columns, adding more should be avoided unless absolutely necessary.' \
+              ' Consider storing the column in a different table or creating a new one.'
 
         BLACKLISTED_METHODS = %i[
           add_column

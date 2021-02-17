@@ -5,6 +5,8 @@
 - expanded = expanded_by_default?
 - general_expanded = @project.errors.empty? ? expanded : true
 
+- enable_search_settings locals: { container_class: 'gl-my-5' }
+
 %section.settings#js-general-pipeline-settings.no-animate{ class: ('expanded' if general_expanded), data: { qa_selector: 'general_pipelines_settings_content' } }
   .settings-header
     %h4

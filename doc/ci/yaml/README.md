@@ -267,14 +267,14 @@ Some example `if` clauses for `workflow: rules`:
 See the [common `if` clauses for `rules`](#common-if-clauses-for-rules) for more examples.
 
 For example, in the following configuration, pipelines run for all `push` events (changes to
-branches and new tags). Pipelines for push events with `-wip` in the commit message
+branches and new tags). Pipelines for push events with `-draft` in the commit message
 don't run, because they are set to `when: never`. Pipelines for schedules or merge requests
 don't run either, because no rules evaluate to true for them:
 
 ```yaml
 workflow:
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /-wip$/
+    - if: $CI_COMMIT_MESSAGE =~ /-draft$/
       when: never
     - if: '$CI_PIPELINE_SOURCE == "push"'
 ```

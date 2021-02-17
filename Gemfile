@@ -31,7 +31,8 @@ gem 'doorkeeper', '~> 5.5.0.rc2'
 gem 'doorkeeper-openid_connect', '~> 1.7.5'
 gem 'omniauth', '~> 1.8'
 gem 'omniauth-auth0', '~> 2.0.0'
-gem 'omniauth-azure-oauth2', '~> 0.0.9'
+gem 'omniauth-azure-activedirectory-v2', '~> 0.1'
+gem 'omniauth-azure-oauth2', '~> 0.0.9' # Deprecated v1 version
 gem 'omniauth-cas3', '~> 1.1.4'
 gem 'omniauth-facebook', '~> 4.0.0'
 gem 'omniauth-github', '~> 1.4'
@@ -233,7 +234,7 @@ gem 'connection_pool', '~> 2.0'
 gem 'redis-rails', '~> 5.0.2'
 
 # Discord integration
-gem 'discordrb-webhooks-blackst0ne', '~> 3.3', require: false
+gem 'discordrb-webhooks', '~> 3.4', require: false
 
 # HipChat integration
 gem 'hipchat', '~> 1.5.0'

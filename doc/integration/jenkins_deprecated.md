@@ -42,7 +42,7 @@ In GitLab, perform the following steps.
 Jenkins needs read access to the GitLab repository. We already specified a
 private key to use in Jenkins, now we need to add a public one to the GitLab
 project. For that case we need a Deploy key. Read the documentation on
-[how to set up a Deploy key](../ssh/README.md#deploy-keys).
+[how to set up a Deploy key](../user/project/deploy_keys/index.md).
 
 ### Jenkins service
 

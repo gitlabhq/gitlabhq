@@ -20,7 +20,7 @@ Deploy tokens can be managed by [maintainers only](../../permissions.md).
 
 Deploy tokens cannot be used with the GitLab API.
 
-If you have a key pair, you might want to use [deploy keys](../../../ssh/README.md#deploy-keys)
+If you have a key pair, you might want to use [deploy keys](../../project/deploy_keys/index.md)
 instead.
 
 ## Creating a Deploy Token

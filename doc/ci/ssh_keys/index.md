@@ -33,7 +33,7 @@ with any type of [executor](https://docs.gitlab.com/runner/executors/)
 1. Run the [`ssh-agent`](https://linux.die.net/man/1/ssh-agent) during job to load
    the private key.
 1. Copy the public key to the servers you want to have access to (usually in
-   `~/.ssh/authorized_keys`) or add it as a [deploy key](../../ssh/README.md#deploy-keys)
+   `~/.ssh/authorized_keys`) or add it as a [deploy key](../../user/project/deploy_keys/index.md)
    if you are accessing a private GitLab repository.
 
 The private key is displayed in the job log, unless you enable
@@ -101,7 +101,7 @@ to access it. This is where an SSH key pair comes in handy.
 1. As a final step, add the _public_ key from the one you created in the first
    step to the services that you want to have an access to from within the build
    environment. If you are accessing a private GitLab repository you need to add
-   it as a [deploy key](../../ssh/README.md#deploy-keys).
+   it as a [deploy key](../../user/project/deploy_keys/index.md).
 
 That's it! You can now have access to private servers or repositories in your
 build environment.
@@ -130,7 +130,7 @@ on, and use that key for all projects that are run on this machine.
 1. As a final step, add the _public_ key from the one you created earlier to the
    services that you want to have an access to from within the build environment.
    If you are accessing a private GitLab repository you need to add it as a
-   [deploy key](../../ssh/README.md#deploy-keys).
+   [deploy key](../../user/project/deploy_keys/index.md).
 
 After generating the key, try to sign in to the remote server to accept the
 fingerprint:
