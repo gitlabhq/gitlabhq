@@ -26030,7 +26030,7 @@ msgstr ""
 msgid "Secret Detection"
 msgstr ""
 
-msgid "Secret Token"
+msgid "Secret token"
 msgstr ""
 
 msgid "Security"
@@ -28607,7 +28607,7 @@ msgstr ""
 msgid "System hook was successfully updated."
 msgstr ""
 
-msgid "System hook will be triggered on set of events like creating project or adding ssh key. But you can also enable extra triggers like Push events."
+msgid "System hooks are triggered on sets of events like creating a project or adding an SSH key. You can also enable extra triggers, such as push events."
 msgstr ""
 
 msgid "System metrics (Custom)"
@@ -29878,18 +29878,6 @@ msgid "This Project is currently archived and read-only. Please unarchive the pr
 msgstr ""
 
 msgid "This URL is already used for another link; duplicate URLs are not allowed"
-msgstr ""
-
-msgid "This URL will be triggered for each branch updated to the repository"
-msgstr ""
-
-msgid "This URL will be triggered when a merge request is created/updated/merged"
-msgstr ""
-
-msgid "This URL will be triggered when a new tag is pushed to the repository"
-msgstr ""
-
-msgid "This URL will be triggered when repository is updated"
 msgstr ""
 
 msgid "This action can lead to data loss. To prevent accidental actions we ask you to confirm your intention."
@@ -31317,6 +31305,21 @@ msgstr ""
 msgid "URL is required"
 msgstr ""
 
+msgid "URL is triggered for each branch updated to the repository"
+msgstr ""
+
+msgid "URL is triggered when a merge request is created, updated, or merged"
+msgstr ""
+
+msgid "URL is triggered when a new tag is pushed to the repository"
+msgstr ""
+
+msgid "URL is triggered when repository is updated"
+msgstr ""
+
+msgid "URL must be percent-encoded if neccessary."
+msgstr ""
+
 msgid "URL must start with %{codeStart}http://%{codeEnd}, %{codeStart}https://%{codeEnd}, or %{codeStart}ftp://%{codeEnd}"
 msgstr ""
 
@@ -31938,7 +31941,7 @@ msgstr ""
 msgid "Use template"
 msgstr ""
 
-msgid "Use this token to validate received payloads"
+msgid "Use this token to validate received payloads."
 msgstr ""
 
 msgid "Use webhook"
@@ -32941,10 +32944,10 @@ msgstr ""
 msgid "Webhooks|Comments"
 msgstr ""
 
-msgid "Webhooks|Confidential Comments"
+msgid "Webhooks|Confidential comments"
 msgstr ""
 
-msgid "Webhooks|Confidential Issues events"
+msgid "Webhooks|Confidential issues events"
 msgstr ""
 
 msgid "Webhooks|Deployment events"
@@ -32953,7 +32956,7 @@ msgstr ""
 msgid "Webhooks|Enable SSL verification"
 msgstr ""
 
-msgid "Webhooks|Feature Flag events"
+msgid "Webhooks|Feature flag events"
 msgstr ""
 
 msgid "Webhooks|Issues events"
@@ -32980,7 +32983,7 @@ msgstr ""
 msgid "Webhooks|SSL verification"
 msgstr ""
 
-msgid "Webhooks|Secret Token"
+msgid "Webhooks|Secret token"
 msgstr ""
 
 msgid "Webhooks|Subgroup events"
@@ -32989,61 +32992,64 @@ msgstr ""
 msgid "Webhooks|Tag push events"
 msgstr ""
 
-msgid "Webhooks|This URL is triggered when a deployment starts, finishes, fails, or is canceled"
-msgstr ""
-
-msgid "Webhooks|This URL is triggered when a feature flag is turned on or off"
-msgstr ""
-
-msgid "Webhooks|This URL is triggered when a release is created/updated"
-msgstr ""
-
-msgid "Webhooks|This URL will be triggered by a push to the repository"
-msgstr ""
-
-msgid "Webhooks|This URL will be triggered when a confidential issue is created/updated/merged"
-msgstr ""
-
-msgid "Webhooks|This URL will be triggered when a group member is created/updated/removed"
-msgstr ""
-
-msgid "Webhooks|This URL will be triggered when a merge request is created/updated/merged"
-msgstr ""
-
-msgid "Webhooks|This URL will be triggered when a new tag is pushed to the repository"
-msgstr ""
-
-msgid "Webhooks|This URL will be triggered when a subgroup is created/removed"
-msgstr ""
-
-msgid "Webhooks|This URL will be triggered when a wiki page is created/updated"
-msgstr ""
-
-msgid "Webhooks|This URL will be triggered when an issue is created/updated/merged"
-msgstr ""
-
-msgid "Webhooks|This URL will be triggered when someone adds a comment"
-msgstr ""
-
-msgid "Webhooks|This URL will be triggered when someone adds a comment on a confidential issue"
-msgstr ""
-
-msgid "Webhooks|This URL will be triggered when the job status changes"
-msgstr ""
-
-msgid "Webhooks|This URL will be triggered when the pipeline status changes"
-msgstr ""
-
 msgid "Webhooks|Trigger"
 msgstr ""
 
 msgid "Webhooks|URL"
 msgstr ""
 
-msgid "Webhooks|Use this token to validate received payloads. It will be sent with the request in the X-Gitlab-Token HTTP header."
+msgid "Webhooks|URL is triggered by a push to the repository"
 msgstr ""
 
-msgid "Webhooks|Wiki Page events"
+msgid "Webhooks|URL is triggered when a confidential issue is created, updated, or merged"
+msgstr ""
+
+msgid "Webhooks|URL is triggered when a deployment starts, finishes, fails, or is canceled"
+msgstr ""
+
+msgid "Webhooks|URL is triggered when a feature flag is turned on or off"
+msgstr ""
+
+msgid "Webhooks|URL is triggered when a group member is created, updated, or removed"
+msgstr ""
+
+msgid "Webhooks|URL is triggered when a merge request is created, updated, or merged"
+msgstr ""
+
+msgid "Webhooks|URL is triggered when a new tag is pushed to the repository"
+msgstr ""
+
+msgid "Webhooks|URL is triggered when a release is created or updated"
+msgstr ""
+
+msgid "Webhooks|URL is triggered when a subgroup is created or removed"
+msgstr ""
+
+msgid "Webhooks|URL is triggered when a wiki page is created or updated"
+msgstr ""
+
+msgid "Webhooks|URL is triggered when an issue is created, updated, or merged"
+msgstr ""
+
+msgid "Webhooks|URL is triggered when someone adds a comment"
+msgstr ""
+
+msgid "Webhooks|URL is triggered when someone adds a comment on a confidential issue"
+msgstr ""
+
+msgid "Webhooks|URL is triggered when the job status changes"
+msgstr ""
+
+msgid "Webhooks|URL is triggered when the pipeline status changes"
+msgstr ""
+
+msgid "Webhooks|URL must be percent-encoded if neccessary."
+msgstr ""
+
+msgid "Webhooks|Use this token to validate received payloads. It is sent with the request in the X-Gitlab-Token HTTP header."
+msgstr ""
+
+msgid "Webhooks|Wiki page events"
 msgstr ""
 
 msgid "Wednesday"

@@ -907,14 +907,6 @@ $system-note-svg-size: 16px;
 .discussion-filter-container {
   .dropdown-menu {
     margin-bottom: $gl-padding-4;
-
-    @include media-breakpoint-down(md) {
-      margin-left: $btn-side-margin + $contextual-sidebar-collapsed-width;
-    }
-
-    @include media-breakpoint-down(xs) {
-      margin-left: $btn-side-margin;
-    }
   }
 }
 

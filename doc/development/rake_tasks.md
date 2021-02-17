@@ -64,9 +64,9 @@ By default, this seeds an average of 10 issues per week for the last 52 weeks
 per project. All issues are also randomly labeled with team, type, severity,
 and priority.
 
-#### Seeding groups with sub-groups
+#### Seeding groups with subgroups
 
-You can seed groups with sub-groups that contain milestones/projects/issues
+You can seed groups with subgroups that contain milestones/projects/issues
 with the `gitlab:seed:group_seed` task:
 
 ```shell

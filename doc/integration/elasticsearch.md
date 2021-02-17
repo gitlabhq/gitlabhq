@@ -239,7 +239,7 @@ If you select `Limit namespaces and projects that can be indexed`, more options 
 ![limit namespaces and projects options](img/limit_namespaces_projects_options.png)
 
 You can select namespaces and projects to index exclusively. Note that if the namespace is a group it will include
-any sub-groups and projects belonging to those sub-groups to be indexed as well.
+any subgroups and projects belonging to those subgroups to be indexed as well.
 
 Advanced Search only provides cross-group code/commit search (global) if all name-spaces are indexed. In this particular scenario where only a subset of namespaces are indexed, a global search will not provide a code or commit scope. This will be possible only in the scope of an indexed namespace. Currently there is no way to code/commit search in multiple indexed namespaces (when only a subset of namespaces has been indexed). For example if two groups are indexed, there is no way to run a single code search on both. You can only run a code search on the first group and then on the second.
 

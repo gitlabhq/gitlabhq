@@ -3,11 +3,13 @@
 .form-group
   = form.label :url, s_('Webhooks|URL'), class: 'label-bold'
   = form.text_field :url, class: 'form-control gl-form-input', placeholder: 'http://example.com/trigger-ci.json'
+  %p.form-text.text-muted
+  = s_('Webhooks|URL must be percent-encoded if neccessary.')
 .form-group
-  = form.label :token, s_('Webhooks|Secret Token'), class: 'label-bold'
+  = form.label :token, s_('Webhooks|Secret token'), class: 'label-bold'
   = form.text_field :token, class: 'form-control gl-form-input', placeholder: ''
   %p.form-text.text-muted
-  = s_('Webhooks|Use this token to validate received payloads. It will be sent with the request in the X-Gitlab-Token HTTP header.')
+  = s_('Webhooks|Use this token to validate received payloads. It is sent with the request in the X-Gitlab-Token HTTP header.')
 .form-group
   = form.label :url, s_('Webhooks|Trigger'), class: 'label-bold'
   %ul.list-unstyled.gl-ml-6
@@ -17,37 +19,37 @@
         %strong= s_('Webhooks|Push events')
       = form.text_field :push_events_branch_filter, class: 'form-control gl-form-input', placeholder: 'Branch name or wildcard pattern to trigger on (leave blank for all)'
       %p.text-muted.gl-ml-1
-        = s_('Webhooks|This URL will be triggered by a push to the repository')
+        = s_('Webhooks|URL is triggered by a push to the repository')
     %li
       = form.check_box :tag_push_events, class: 'form-check-input'
       = form.label :tag_push_events, class: 'list-label form-check-label gl-ml-1' do
         %strong= s_('Webhooks|Tag push events')
       %p.text-muted.gl-ml-1
-        = s_('Webhooks|This URL will be triggered when a new tag is pushed to the repository')
+        = s_('Webhooks|URL is triggered when a new tag is pushed to the repository')
     %li
       = form.check_box :note_events, class: 'form-check-input'
       = form.label :note_events, class: 'list-label form-check-label gl-ml-1' do
         %strong= s_('Webhooks|Comments')
       %p.text-muted.gl-ml-1
-        = s_('Webhooks|This URL will be triggered when someone adds a comment')
+        = s_('Webhooks|URL is triggered when someone adds a comment')
     %li
       = form.check_box :confidential_note_events, class: 'form-check-input'
       = form.label :confidential_note_events, class: 'list-label form-check-label gl-ml-1' do
-        %strong= s_('Webhooks|Confidential Comments')
+        %strong= s_('Webhooks|Confidential comments')
       %p.text-muted.gl-ml-1
-        = s_('Webhooks|This URL will be triggered when someone adds a comment on a confidential issue')
+        = s_('Webhooks|URL is triggered when someone adds a comment on a confidential issue')
     %li
       = form.check_box :issues_events, class: 'form-check-input'
       = form.label :issues_events, class: 'list-label form-check-label gl-ml-1' do
         %strong= s_('Webhooks|Issues events')
       %p.text-muted.gl-ml-1
-        = s_('Webhooks|This URL will be triggered when an issue is created/updated/merged')
+        = s_('Webhooks|URL is triggered when an issue is created, updated, or merged')
     %li
       = form.check_box :confidential_issues_events, class: 'form-check-input'
       = form.label :confidential_issues_events, class: 'list-label form-check-label gl-ml-1' do
-        %strong= s_('Webhooks|Confidential Issues events')
+        %strong= s_('Webhooks|Confidential issues events')
       %p.text-muted.gl-ml-1
-        = s_('Webhooks|This URL will be triggered when a confidential issue is created/updated/merged')
+        = s_('Webhooks|URL is triggered when a confidential issue is created, updated, or merged')
     - if @group
       = render_if_exists 'groups/hooks/member_events', form: form
       = render_if_exists 'groups/hooks/subgroup_events', form: form
@@ -56,43 +58,43 @@
       = form.label :merge_requests_events, class: 'list-label form-check-label gl-ml-1' do
         %strong= s_('Webhooks|Merge request events')
       %p.text-muted.gl-ml-1
-        = s_('Webhooks|This URL will be triggered when a merge request is created/updated/merged')
+        = s_('Webhooks|URL is triggered when a merge request is created, updated, or merged')
     %li
       = form.check_box :job_events, class: 'form-check-input'
       = form.label :job_events, class: 'list-label form-check-label gl-ml-1' do
         %strong= s_('Webhooks|Job events')
       %p.text-muted.gl-ml-1
-        = s_('Webhooks|This URL will be triggered when the job status changes')
+        = s_('Webhooks|URL is triggered when the job status changes')
     %li
       = form.check_box :pipeline_events, class: 'form-check-input'
       = form.label :pipeline_events, class: 'list-label form-check-label gl-ml-1' do
         %strong= s_('Webhooks|Pipeline events')
       %p.text-muted.gl-ml-1
-        = s_('Webhooks|This URL will be triggered when the pipeline status changes')
+        = s_('Webhooks|URL is triggered when the pipeline status changes')
     %li
       = form.check_box :wiki_page_events, class: 'form-check-input'
       = form.label :wiki_page_events, class: 'list-label form-check-label gl-ml-1' do
-        %strong= s_('Webhooks|Wiki Page events')
+        %strong= s_('Webhooks|Wiki page events')
       %p.text-muted.gl-ml-1
-        = s_('Webhooks|This URL will be triggered when a wiki page is created/updated')
+        = s_('Webhooks|URL is triggered when a wiki page is created or updated')
     %li
       = form.check_box :deployment_events, class: 'form-check-input'
       = form.label :deployment_events, class: 'list-label form-check-label gl-ml-1' do
         %strong= s_('Webhooks|Deployment events')
       %p.text-muted.gl-ml-1
-        = s_('Webhooks|This URL is triggered when a deployment starts, finishes, fails, or is canceled')
+        = s_('Webhooks|URL is triggered when a deployment starts, finishes, fails, or is canceled')
     %li
       = form.check_box :feature_flag_events, class: 'form-check-input'
       = form.label :feature_flag_events, class: 'list-label form-check-label gl-ml-1' do
-        %strong= s_('Webhooks|Feature Flag events')
+        %strong= s_('Webhooks|Feature flag events')
       %p.text-muted.gl-ml-1
-        = s_('Webhooks|This URL is triggered when a feature flag is turned on or off')
+        = s_('Webhooks|URL is triggered when a feature flag is turned on or off')
     %li
       = form.check_box :releases_events, class: 'form-check-input'
       = form.label :releases_events, class: 'list-label form-check-label gl-ml-1' do
         %strong= s_('Webhooks|Releases events')
       %p.text-muted.gl-ml-1
-        = s_('Webhooks|This URL is triggered when a release is created/updated')
+        = s_('Webhooks|URL is triggered when a release is created or updated')
 .form-group
   = form.label :enable_ssl_verification, s_('Webhooks|SSL verification'), class: 'label-bold checkbox'
   .form-check

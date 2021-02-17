@@ -443,7 +443,7 @@ group = Group.find_by_full_path('group/subgroup')
 # Get group's immediate child projects
 group.projects
 
-# Get group's child projects, including those in sub-groups
+# Get group's child projects, including those in subgroups
 group.all_projects
 ```
 

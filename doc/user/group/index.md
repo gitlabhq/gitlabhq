@@ -787,7 +787,7 @@ To enable delayed deletion of projects:
 1. Click **Save changes**.
 
 NOTE:
-The group setting for delayed deletion is not inherited by sub-groups and has to be individually defined for each group.
+The group setting for delayed deletion is not inherited by subgroups and has to be individually defined for each group.
 
 #### Prevent project forking outside group **(PREMIUM)**
 

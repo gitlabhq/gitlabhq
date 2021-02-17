@@ -38,7 +38,7 @@ in the project namespace.
 If the project's cluster is available and not disabled, GitLab uses the
 project's cluster before using any cluster belonging to the group containing
 the project.
-In the case of sub-groups, GitLab uses the cluster of the closest ancestor group
+In the case of subgroups, GitLab uses the cluster of the closest ancestor group
 to the project, provided the cluster is not disabled.
 
 ## Multiple Kubernetes clusters

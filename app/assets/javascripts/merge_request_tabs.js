@@ -1,8 +1,9 @@
 /* eslint-disable no-new, class-methods-use-this */
-
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
 import Cookies from 'js-cookie';
+import Vue from 'vue';
+import CommitPipelinesTable from '~/commit/pipelines/pipelines_table.vue';
 import createEventHub from '~/helpers/event_hub_factory';
 import initAddContextCommitsTriggers from './add_context_commits_modal';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
@@ -350,25 +351,29 @@ export default class MergeRequestTabs {
 
   mountPipelinesView() {
     const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
-    const { CommitPipelinesTable, mrWidgetData } = gl;
+    const { mrWidgetData } = gl;
 
-    this.commitPipelinesTable = new CommitPipelinesTable({
-      propsData: {
-        endpoint: pipelineTableViewEl.dataset.endpoint,
-        helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
-        emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
-        errorStateSvgPath: pipelineTableViewEl.dataset.errorStateSvgPath,
-        autoDevopsHelpPath: pipelineTableViewEl.dataset.helpAutoDevopsPath,
-        canCreatePipelineInTargetProject: Boolean(
-          mrWidgetData?.can_create_pipeline_in_target_project,
-        ),
-        sourceProjectFullPath: mrWidgetData?.source_project_full_path || '',
-        targetProjectFullPath: mrWidgetData?.target_project_full_path || '',
-        projectId: pipelineTableViewEl.dataset.projectId,
-        mergeRequestId: mrWidgetData ? mrWidgetData.iid : null,
-      },
+    this.commitPipelinesTable = new Vue({
       provide: {
         targetProjectFullPath: mrWidgetData?.target_project_full_path || '',
+      },
+      render(createElement) {
+        return createElement(CommitPipelinesTable, {
+          props: {
+            endpoint: pipelineTableViewEl.dataset.endpoint,
+            helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
+            emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
+            errorStateSvgPath: pipelineTableViewEl.dataset.errorStateSvgPath,
+            autoDevopsHelpPath: pipelineTableViewEl.dataset.helpAutoDevopsPath,
+            canCreatePipelineInTargetProject: Boolean(
+              mrWidgetData?.can_create_pipeline_in_target_project,
+            ),
+            sourceProjectFullPath: mrWidgetData?.source_project_full_path || '',
+            targetProjectFullPath: mrWidgetData?.target_project_full_path || '',
+            projectId: pipelineTableViewEl.dataset.projectId,
+            mergeRequestId: mrWidgetData ? mrWidgetData.iid : null,
+          },
+        });
       },
     }).$mount();
 

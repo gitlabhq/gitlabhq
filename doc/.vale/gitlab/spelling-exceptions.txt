@@ -561,6 +561,8 @@ subfolder
 subfolders
 subgraph
 subgraphs
+subgroup
+subgroups
 subkey
 subkeys
 sublicense

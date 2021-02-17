@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import commitPipelinesTable from './pipelines_table.vue';
+import CommitPipelinesTable from './pipelines_table.vue';
 
 /**
  * Used in:
@@ -8,14 +8,6 @@ import commitPipelinesTable from './pipelines_table.vue';
  *  - Merge Request details View > Pipelines Tab > Pipelines Table (projects:merge_requests:show)
  *  - New Merge Request View > Pipelines Tab > Pipelines Table (projects:merge_requests:creations:new)
  */
-
-const CommitPipelinesTable = Vue.extend(commitPipelinesTable);
-
-// export for use in merge_request_tabs.js (TODO: remove this hack when we understand how to load
-// vue.js in merge_request_tabs.js)
-window.gl = window.gl || {};
-window.gl.CommitPipelinesTable = CommitPipelinesTable;
-
 export default () => {
   const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
 
@@ -34,13 +26,17 @@ export default () => {
     });
 
     if (pipelineTableViewEl.dataset.disableInitialization === undefined) {
-      const table = new CommitPipelinesTable({
-        propsData: {
-          endpoint: pipelineTableViewEl.dataset.endpoint,
-          helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
-          emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
-          errorStateSvgPath: pipelineTableViewEl.dataset.errorStateSvgPath,
-          autoDevopsHelpPath: pipelineTableViewEl.dataset.helpAutoDevopsPath,
+      const table = new Vue({
+        render(createElement) {
+          return createElement(CommitPipelinesTable, {
+            props: {
+              endpoint: pipelineTableViewEl.dataset.endpoint,
+              helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
+              emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
+              errorStateSvgPath: pipelineTableViewEl.dataset.errorStateSvgPath,
+              autoDevopsHelpPath: pipelineTableViewEl.dataset.helpAutoDevopsPath,
+            },
+          });
         },
       }).$mount();
       pipelineTableViewEl.appendChild(table.$el);

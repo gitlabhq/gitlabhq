@@ -99,9 +99,9 @@ confidential information prematurely. To make a confidential commit public,
 open a merge request from the private fork to the public upstream project.
 
 Permissions are inherited from parent groups. Developers have the same permissions
-for private forks created in the same group or in a sub-group of the original
+for private forks created in the same group or in a subgroup of the original
 Permissions are inherited from parent groups. When private forks are created
-in the same group or sub-group as the original upstream repository, users
+in the same group or subgroup as the original upstream repository, users
 receive the same permissions in both projects. This inheritance ensures
 Developer users have the needed permissions to both view confidential issues and
 resolve them.

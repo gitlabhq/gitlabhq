@@ -16,7 +16,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 WARNING:
 This feature is [under construction](https://gitlab.com/groups/gitlab-org/-/epics/2771) and currently migrates only some of the Group data. Please see below for the full list of what is included in the migration at this time.
 
-Using GitLab Group Migration, you can migrate existing top-level groups from GitLab.com or a self-managed instance. Groups can be migrated to a target instance, as a top-level group, or as a sub-group of any existing top-level group.
+Using GitLab Group Migration, you can migrate existing top-level groups from GitLab.com or a self-managed instance. Groups can be migrated to a target instance, as a top-level group, or as a subgroup of any existing top-level group.
 
 The following resources are migrated to the target instance:
 

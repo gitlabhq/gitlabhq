@@ -3,29 +3,30 @@
 .form-group
   = form.label :url, _('URL'), class: 'label-bold'
   = form.text_field :url, class: 'form-control gl-form-input'
+  %p.form-text.text-muted= _('URL must be percent-encoded if neccessary.')
 .form-group
-  = form.label :token, _('Secret Token'), class: 'label-bold'
+  = form.label :token, _('Secret token'), class: 'label-bold'
   = form.text_field :token, class: 'form-control gl-form-input'
-  %p.form-text.text-muted= _('Use this token to validate received payloads')
+  %p.form-text.text-muted= _('Use this token to validate received payloads.')
 .form-group
   = form.label :url, _('Trigger'), class: 'label-bold'
-  .form-text.text-secondary.gl-mb-5= _('System hook will be triggered on set of events like creating project or adding ssh key. But you can also enable extra triggers like Push events.')
+  .form-text.text-secondary.gl-mb-5= _('System hooks are triggered on sets of events like creating a project or adding an SSH key. You can also enable extra triggers, such as push events.')
   %fieldset.form-group.form-check
     = form.check_box :repository_update_events, class: 'form-check-input'
     = form.label :repository_update_events, _('Repository update events'), class: 'label-bold form-check-label'
-    .text-secondary= _('This URL will be triggered when repository is updated')
+    .text-secondary= _('URL is triggered when repository is updated')
   %fieldset.form-group.form-check
     = form.check_box :push_events, class: 'form-check-input'
     = form.label :push_events, _('Push events'), class: 'label-bold form-check-label'
-    .text-secondary= _('This URL will be triggered for each branch updated to the repository')
+    .text-secondary= _('URL is triggered for each branch updated to the repository')
   %fieldset.form-group.form-check
     = form.check_box :tag_push_events, class: 'form-check-input'
     = form.label :tag_push_events, _('Tag push events'), class: 'label-bold form-check-label'
-    .text-secondary= _('This URL will be triggered when a new tag is pushed to the repository')
+    .text-secondary= _('URL is triggered when a new tag is pushed to the repository')
   %fieldset.form-group.form-check
     = form.check_box :merge_requests_events, class: 'form-check-input'
     = form.label :merge_requests_events, _('Merge request events'), class: 'label-bold form-check-label'
-    .text-secondary= _('This URL will be triggered when a merge request is created/updated/merged')
+    .text-secondary= _('URL is triggered when a merge request is created, updated, or merged')
 .form-group
   = form.label :enable_ssl_verification, _('SSL verification'), class: 'label-bold checkbox'
   .form-check

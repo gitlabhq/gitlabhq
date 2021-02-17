@@ -52,7 +52,7 @@ WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 GitLab 13.9 introduces custom compliance frameworks at the group-level. A group owner can create a compliance framework label
-and assign it to any number of projects within that group or sub-groups. When this feature is enabled, projects can only
+and assign it to any number of projects within that group or subgroups. When this feature is enabled, projects can only
 be assigned compliance framework labels that already exist within that group.
 
 If existing [Compliance frameworks](#compliance-framework) are not sufficient, project and group owners

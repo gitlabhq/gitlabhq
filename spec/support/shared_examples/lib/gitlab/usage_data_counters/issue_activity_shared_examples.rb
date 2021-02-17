@@ -24,12 +24,4 @@ RSpec.shared_examples 'a tracked issue edit event' do |event|
   it 'does not track edit actions if author is not present' do
     expect(track_action(author: nil)).to be_nil
   end
-
-  context 'when feature flag track_issue_activity_actions is disabled' do
-    it 'does not track edit actions' do
-      stub_feature_flags(track_issue_activity_actions: false)
-
-      expect(track_action(author: user1)).to be_nil
-    end
-  end
 end

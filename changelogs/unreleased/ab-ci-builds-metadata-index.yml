@@ -1,0 +1,5 @@
+---
+title: Extend index on ci_builds_metadata
+merge_request: 52123
+author:
+type: performance
